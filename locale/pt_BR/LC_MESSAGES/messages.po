@@ -15582,3 +15582,13 @@ msgid ""
 msgstr ""
 "Falha ao definir o locale. O locale selecionado pode não ser compatível com "
 "este sistema. Entre em contato com o administrador."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Erro:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Informação:"

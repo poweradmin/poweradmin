@@ -14307,3 +14307,13 @@ msgid ""
 "Please contact your administrator."
 msgstr ""
 "无法设置区域语言。所选区域语言可能在此系统上不受支持。请联系您的管理员。"
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "错误："
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "信息："

@@ -15362,3 +15362,13 @@ msgid ""
 msgstr ""
 "Kunne ikke angive sprogindstilling. Den valgte sprogindstilling understøttes "
 "muligvis ikke på dette system. Kontakt din administrator."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Fejl:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Oplysninger:"

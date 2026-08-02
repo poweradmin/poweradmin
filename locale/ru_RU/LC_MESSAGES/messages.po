@@ -15497,3 +15497,13 @@ msgid ""
 msgstr ""
 "Не удалось установить локаль. Выбранная локаль может не поддерживаться в "
 "этой системе. Обратитесь к администратору."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Ошибка:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Информация:"

@@ -14897,3 +14897,13 @@ msgid ""
 msgstr ""
 "הגדרת השפה נכשלה. ייתכן שהשפה שנבחרה אינה נתמכת במערכת זו. יש לפנות למנהל "
 "המערכת."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "שגיאה:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "מידע:"

@@ -15392,3 +15392,13 @@ msgid ""
 msgstr ""
 "Nepavyko nustatyti lokalės. Pasirinkta lokalė šioje sistemoje gali būti "
 "nepalaikoma. Kreipkitės į savo administratorių."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Klaida:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Informacija:"

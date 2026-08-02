@@ -15684,3 +15684,13 @@ msgstr ""
 "Die Locale konnte nicht gesetzt werden. Die ausgewählte Locale wird auf "
 "diesem System möglicherweise nicht unterstützt. Bitte wenden Sie sich an "
 "Ihren Administrator."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Fehler:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Information:"

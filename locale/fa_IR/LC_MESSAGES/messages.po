@@ -10561,7 +10561,7 @@ msgstr "گزارش‌های فعالیت API"
 
 #: templates/default/list_log_api.html:10 templates/modern/list_log_api.html:10
 msgid "API Log Behavior:"
-msgstr "رفتار Log API :"
+msgstr "رفتار Log API:"
 
 #: templates/default/list_log_api.html:11 templates/modern/list_log_api.html:11
 msgid ""
@@ -10908,7 +10908,7 @@ msgstr "نسخه قرارداد:"
 
 #: templates/modern/user_agreement_content.html:31
 msgid "Last Updated:"
-msgstr "آخرین بروزرسانی :"
+msgstr "آخرین بروزرسانی:"
 
 #: templates/modern/user_agreement_content.html:31
 msgid "Please contact your administrator for the last update date"
@@ -11053,11 +11053,11 @@ msgstr "مناطق معکوس:"
 
 #: templates/modern/list_reverse_zones.html:67
 msgid "IPv4 reverse zones:"
-msgstr "مناطق معکوس IPv4 :"
+msgstr "مناطق معکوس IPv4:"
 
 #: templates/modern/list_reverse_zones.html:69
 msgid "IPv6 reverse zones:"
-msgstr "مناطق معکوس IPv6 :"
+msgstr "مناطق معکوس IPv6:"
 
 #: templates/modern/search.html:119 templates/modern/search.html:324
 msgid "Rows per page:"
@@ -15219,3 +15219,13 @@ msgid ""
 msgstr ""
 "تنظیم زبان و منطقه انجام نشد. ممکن است زبان و منطقه انتخاب‌شده در این سیستم "
 "پشتیبانی نشود. لطفاً با مدیر سیستم خود تماس بگیرید."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "خطا:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "اطلاعات:"

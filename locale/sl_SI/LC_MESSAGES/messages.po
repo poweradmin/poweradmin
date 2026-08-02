@@ -15379,3 +15379,13 @@ msgid ""
 msgstr ""
 "Nastavitev jezikovnega okolja ni uspela. Izbrano jezikovno okolje v tem "
 "sistemu morda ni podprto. Obrnite se na skrbnika."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Napaka:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Podatki:"

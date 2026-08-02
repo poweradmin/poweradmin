@@ -15643,3 +15643,13 @@ msgstr ""
 "No se ha podido establecer la configuración regional. Puede que la "
 "configuración regional seleccionada no esté disponible en este sistema. "
 "Póngase en contacto con su administrador."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Error:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Información:"

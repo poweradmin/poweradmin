@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.5.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-02 16:44+0300\n"
+"POT-Creation-Date: 2026-08-02 20:32+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -317,342 +317,342 @@ msgid ""
 "DNSSEC, TLSA records provide NO security benefit."
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:46
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:44
 msgid "DMARC Record"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:47
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:45
 msgid "Email authentication policy and reporting configuration"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:59
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:56
 msgid "Policy Settings"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:138
+#: lib/Module/DnsWizard/Service/SPFWizard.php:135
 msgid "Policy"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:68
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:65
 msgid "None (monitor only)"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:68
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:65
 msgid "No action taken, just collect reports for analysis"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:83
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:80
 msgid "Quarantine"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:69
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:66
 msgid "Treat suspicious emails as spam/junk"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:84
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:81
 msgid "Reject"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:70
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:67
 msgid "Block delivery of suspicious emails entirely"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:72
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:69
 msgid "Start with \"none\" to collect data before enforcing a stricter policy."
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:76
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:73
 msgid "Subdomain Policy"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:81
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:78
 msgid "Same as domain policy"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:81
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:78
 msgid "Use the same policy as the main domain"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:82
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:79
 msgid "None"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:82
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:79
 msgid "Monitor only for subdomains"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:83
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:80
 msgid "Quarantine suspicious subdomain emails"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:84
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:81
 msgid "Reject suspicious subdomain emails"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:86
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:83
 msgid "Policy for emails from subdomains (e.g., mail.example.com)"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:90
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:87
 msgid "Policy Application Percentage"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:96
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:93
 msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:101
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:98
 msgid "Reporting Settings"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:105
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:102
 msgid "Aggregate Report Email"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:109
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:106
 msgid "Email address to receive daily aggregate reports"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:113
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:110
 msgid "Forensic Report Email"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:117
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:114
 msgid ""
 "Email address to receive detailed failure reports (optional, can be high "
 "volume)"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:121
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:118
 msgid "Forensic Reporting Options"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:125
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:122
 msgid "Generate reports if all authentication mechanisms fail"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:126
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:123
 msgid "Generate reports if any authentication mechanism fails"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:127
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:124
 msgid "Generate reports if DKIM check fails"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:128
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:125
 msgid "Generate reports if SPF check fails"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:130
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:127
 msgid ""
 "When to generate forensic reports (only applies if forensic email is set)"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:135
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:132
 msgid "Alignment Settings"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:136
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:133
 msgid "Advanced settings for SPF and DKIM alignment modes"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:140
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:137
 msgid "DKIM Alignment Mode"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:156
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:153
 msgid "Relaxed"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:145
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:142
 msgid "DKIM domain can be subdomain of From: domain"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:157
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:154
 msgid "Strict"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:146
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:143
 msgid "DKIM domain must exactly match From: domain"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:151
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:148
 msgid "SPF Alignment Mode"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:156
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:153
 msgid "SPF domain can be subdomain of From: domain"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:157
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:154
 msgid "SPF domain must exactly match From: domain"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:261
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:258
 msgid "Policy is required"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:263
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:260
 msgid "Invalid policy value"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:268
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:265
 msgid "Invalid subdomain policy value"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:275
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:272
 msgid "Percentage must be between 0 and 100"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:277
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:274
 #, php-format
 msgid ""
 "Policy will only apply to %d%% of messages. Use 100%% once testing is "
 "complete."
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:283
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:280
 msgid "Invalid aggregate report email address"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:287
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:284
 msgid "Invalid forensic report email address"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:292
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:289
 msgid ""
 "No reporting email addresses configured. You will not receive DMARC reports."
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/DMARCWizard.php:305
+#: lib/Module/DnsWizard/Service/DMARCWizard.php:302
 msgid ""
 "Using \"p=none\" provides monitoring only. Consider stricter policy "
 "(quarantine/reject) once you've reviewed reports."
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:48
+#: lib/Module/DnsWizard/Service/SPFWizard.php:46
 msgid "SPF Record"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:49
+#: lib/Module/DnsWizard/Service/SPFWizard.php:47
 msgid "Authorized mail server configuration"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:61
+#: lib/Module/DnsWizard/Service/SPFWizard.php:58
 msgid "Basic Mechanisms"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:62
+#: lib/Module/DnsWizard/Service/SPFWizard.php:59
 msgid "Select common mechanisms to authorize email sending"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:66
+#: lib/Module/DnsWizard/Service/SPFWizard.php:63
 msgid "MX Records"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:69
+#: lib/Module/DnsWizard/Service/SPFWizard.php:66
 msgid "Authorize all servers listed in MX records for this domain"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:73
+#: lib/Module/DnsWizard/Service/SPFWizard.php:70
 msgid "A/AAAA Records"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:76
+#: lib/Module/DnsWizard/Service/SPFWizard.php:73
 msgid "Authorize the domain's A and AAAA records"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:81
+#: lib/Module/DnsWizard/Service/SPFWizard.php:78
 msgid "IP Addresses"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:82
+#: lib/Module/DnsWizard/Service/SPFWizard.php:79
 msgid "Authorized IP addresses and networks (CIDR notation supported)"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:86
+#: lib/Module/DnsWizard/Service/SPFWizard.php:83
 msgid "IPv4 Addresses"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:90
+#: lib/Module/DnsWizard/Service/SPFWizard.php:87
 msgid "One IP address or network per line (e.g., 192.0.2.1 or 192.0.2.0/24)"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:94
+#: lib/Module/DnsWizard/Service/SPFWizard.php:91
 msgid "IPv6 Addresses"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:98
+#: lib/Module/DnsWizard/Service/SPFWizard.php:95
 msgid "One IPv6 address or network per line"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:103
+#: lib/Module/DnsWizard/Service/SPFWizard.php:100
 msgid "Include Mechanisms"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:104
+#: lib/Module/DnsWizard/Service/SPFWizard.php:101
 msgid "Include SPF records from other domains"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:108
+#: lib/Module/DnsWizard/Service/SPFWizard.php:105
 msgid "Include Domains"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:112
+#: lib/Module/DnsWizard/Service/SPFWizard.php:109
 msgid ""
 "Domains whose SPF records should be included (one per line). Common: "
 "_spf.google.com, spf.protection.outlook.com"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:117
+#: lib/Module/DnsWizard/Service/SPFWizard.php:114
 msgid "Additional Mechanisms"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:121
+#: lib/Module/DnsWizard/Service/SPFWizard.php:118
 msgid "Additional A/AAAA Hosts"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:125
+#: lib/Module/DnsWizard/Service/SPFWizard.php:122
 msgid "Authorize specific hostnames' A/AAAA records (one per line)"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:129
+#: lib/Module/DnsWizard/Service/SPFWizard.php:126
 msgid "Additional MX Hosts"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:133
+#: lib/Module/DnsWizard/Service/SPFWizard.php:130
 msgid "Authorize MX records from other domains (one per line)"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:142
+#: lib/Module/DnsWizard/Service/SPFWizard.php:139
 msgid "Default Action"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:147
+#: lib/Module/DnsWizard/Service/SPFWizard.php:144
 msgid "Pass all - allows anyone to send (insecure)"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:148
+#: lib/Module/DnsWizard/Service/SPFWizard.php:145
 msgid "Neutral (no policy)"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:149
+#: lib/Module/DnsWizard/Service/SPFWizard.php:146
 msgid "Soft fail (mark as spam but accept)"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:150
+#: lib/Module/DnsWizard/Service/SPFWizard.php:147
 msgid "Fail (reject unauthorized emails)"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:152
+#: lib/Module/DnsWizard/Service/SPFWizard.php:149
 msgid ""
 "Policy for emails not matching any mechanism. Start with ~all (softfail) for "
 "testing."
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:289
+#: lib/Module/DnsWizard/Service/SPFWizard.php:286
 #, php-format
 msgid ""
 "SPF record exceeds the DNS lookup limit (%d/10). This will cause SPF "
@@ -660,34 +660,34 @@ msgid ""
 "instead."
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:294
+#: lib/Module/DnsWizard/Service/SPFWizard.php:291
 #, php-format
 msgid ""
 "SPF record has %d DNS lookups (limit is 10). Consider using ip4/ip6 instead "
 "of include mechanisms, or consolidate includes to stay under the limit."
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:304
+#: lib/Module/DnsWizard/Service/SPFWizard.php:301
 #, php-format
 msgid "Invalid IPv4 address or network: %s"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:313
+#: lib/Module/DnsWizard/Service/SPFWizard.php:310
 #, php-format
 msgid "Invalid IPv6 address or network: %s"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:323
+#: lib/Module/DnsWizard/Service/SPFWizard.php:320
 #, php-format
 msgid "Invalid include domain: %s"
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:343
+#: lib/Module/DnsWizard/Service/SPFWizard.php:340
 msgid ""
 "No mechanisms selected. This SPF record will only contain the default action."
 msgstr ""
 
-#: lib/Module/DnsWizard/Service/SPFWizard.php:348
+#: lib/Module/DnsWizard/Service/SPFWizard.php:345
 msgid ""
 "Using \"+all\" allows anyone to send email as your domain. This is strongly "
 "discouraged."
@@ -1945,7 +1945,7 @@ msgstr ""
 msgid "You do not have permission to create new zone templates."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:367 lib/Domain/Model/ZoneTemplate.php:1211
+#: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:1208
 msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 
@@ -2235,7 +2235,7 @@ msgstr ""
 msgid "OIDC authentication is not enabled"
 msgstr ""
 
-#: lib/Application/Service/SamlService.php:425
+#: lib/Application/Service/SamlService.php:426
 msgid "Authentication failed: "
 msgstr ""
 
@@ -2634,7 +2634,7 @@ msgstr ""
 msgid "You have logged out."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:885
+#: lib/Domain/Model/ZoneTemplate.php:361 lib/Domain/Model/ZoneTemplate.php:882
 msgid "You do not have the permission to add a zone template."
 msgstr ""
 
@@ -2667,7 +2667,7 @@ msgstr ""
 msgid "Add Secondary Zone"
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:465 lib/Domain/Model/ZoneTemplate.php:506
+#: lib/Domain/Model/ZoneTemplate.php:462 lib/Domain/Model/ZoneTemplate.php:503
 msgid "You do not have the permission to delete zone templates."
 msgstr ""
 
@@ -3189,11 +3189,11 @@ msgstr ""
 msgid "Authentication failed: No authorization code"
 msgstr ""
 
-#: lib/Application/Service/SamlService.php:222
+#: lib/Application/Service/SamlService.php:223
 msgid "Authentication failed: Invalid session"
 msgstr ""
 
-#: lib/Application/Service/SamlService.php:385
+#: lib/Application/Service/SamlService.php:386
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 
@@ -3217,7 +3217,7 @@ msgstr ""
 msgid "Failed to authenticate against LDAP."
 msgstr ""
 
-#: lib/Application/Service/SamlService.php:280
+#: lib/Application/Service/SamlService.php:281
 msgid "Authentication failed: Invalid SAML response"
 msgstr ""
 
@@ -3479,113 +3479,113 @@ msgstr ""
 msgid "Enter a valid user name."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:307
+#: lib/Domain/Model/ZoneTemplate.php:304
 msgid "Zone template not found."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:311
+#: lib/Domain/Model/ZoneTemplate.php:308
 msgid "Only global zone templates can be set as the default."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:327
+#: lib/Domain/Model/ZoneTemplate.php:324
 msgid "Error setting default zone template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:346
+#: lib/Domain/Model/ZoneTemplate.php:343
 msgid "Error clearing default zone template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:392 lib/Domain/Model/ZoneTemplate.php:959
+#: lib/Domain/Model/ZoneTemplate.php:389 lib/Domain/Model/ZoneTemplate.php:956
 msgid "Error creating zone template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:428
+#: lib/Domain/Model/ZoneTemplate.php:425
 msgid "Error adding default SOA record to template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:490
+#: lib/Domain/Model/ZoneTemplate.php:487
 msgid "Error deleting zone template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:514
+#: lib/Domain/Model/ZoneTemplate.php:511
 msgid "Error deleting user zone templates: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:642
+#: lib/Domain/Model/ZoneTemplate.php:639
 msgid "You do not have the permission to add a record to this zone template."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:647 lib/Domain/Model/ZoneTemplate.php:753
+#: lib/Domain/Model/ZoneTemplate.php:644 lib/Domain/Model/ZoneTemplate.php:750
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:133
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:79
+#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:76
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:743 lib/Domain/Model/ZoneTemplate.php:828
+#: lib/Domain/Model/ZoneTemplate.php:740 lib/Domain/Model/ZoneTemplate.php:825
 msgid "The record does not belong to this zone template."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:805
+#: lib/Domain/Model/ZoneTemplate.php:802
 msgid "Error updating zone template record: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:834
+#: lib/Domain/Model/ZoneTemplate.php:831
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:843
+#: lib/Domain/Model/ZoneTemplate.php:840
 msgid "Error deleting zone template record: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:865
+#: lib/Domain/Model/ZoneTemplate.php:862
 msgid "Error checking template ownership: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:951
+#: lib/Domain/Model/ZoneTemplate.php:948
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1090
+#: lib/Domain/Model/ZoneTemplate.php:1087
 msgid "Error retrieving zones using template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1190
+#: lib/Domain/Model/ZoneTemplate.php:1187
 msgid "Failed to get list of zones using template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1208
+#: lib/Domain/Model/ZoneTemplate.php:1205
 msgid "You do not have the permission to edit a zone template."
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1256
+#: lib/Domain/Model/ZoneTemplate.php:1253
 msgid "Error unlinking zone from template: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1305
+#: lib/Domain/Model/ZoneTemplate.php:1302
 msgid "Error retrieving zones: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1324
+#: lib/Domain/Model/ZoneTemplate.php:1321
 msgid "Error checking template name existence: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1345
+#: lib/Domain/Model/ZoneTemplate.php:1342
 msgid "Error looking up template by name: "
 msgstr ""
 
-#: lib/Domain/Model/ZoneTemplate.php:1368
+#: lib/Domain/Model/ZoneTemplate.php:1365
 msgid "Error checking template existence: "
 msgstr ""
 
@@ -3764,7 +3764,7 @@ msgstr ""
 msgid "Priority must be 0 for HHIT records."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:115
+#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:112
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
@@ -6688,84 +6688,84 @@ msgstr ""
 msgid "You are using an invalid top level domain."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:101
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:116
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:113
 #, php-format
 msgid ""
 "SOA record name must match the zone apex \"%s\". Leave the name field blank "
 "or enter \"@\"."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:177
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:174
 msgid "SOA record must have between 1 and 7 fields."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:185
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:182
 #, php-format
 msgid ""
 "SOA contains the template placeholder %s. Use literal values; placeholders "
 "are only expanded when creating a zone from a template."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:195
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:192
 msgid "Invalid primary nameserver in SOA record."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:215
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:212
 msgid ""
 "Invalid email address in SOA record. Use the form \"hostmaster.example.net\" "
 "(the first unescaped dot represents @)."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:226
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:223
 msgid "Serial number must be numeric."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:232
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:229
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:245
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:242
 msgid ""
 "Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
 "This is allowed but not recommended."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:259
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:256
 msgid ""
 "SOA record must have exactly 7 fields (primary NS, email, serial, refresh, "
 "retry, expire, minimum)."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:276
 #, php-format
 msgid "SOA %s field must be numeric."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:285
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:282
 #, php-format
 msgid "SOA %s field must be a positive integer."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:293
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:290
 #, php-format
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:302
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:299
 msgid ""
 "SOA retry value should be less than refresh value according to RFC 2308. "
 "This is allowed but not recommended."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:310
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:307
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
@@ -11936,6 +11936,18 @@ msgstr ""
 msgid "Enter the 6-digit code from your email"
 msgstr ""
 
+#: templates/default/message_alert.html:4 templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr ""
+
+#: lib/Module/ZoneImportExport/templates/import.html:24
+msgid "Success:"
+msgstr ""
+
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr ""
+
 #: templates/modern/list_template_zones.html:9
 msgid "Zones using template"
 msgstr ""
@@ -12947,10 +12959,6 @@ msgstr ""
 
 #: lib/Module/ZoneImportExport/templates/import.html:11
 msgid "Import Results"
-msgstr ""
-
-#: lib/Module/ZoneImportExport/templates/import.html:24
-msgid "Success:"
 msgstr ""
 
 #: lib/Module/ZoneImportExport/templates/import.html:18

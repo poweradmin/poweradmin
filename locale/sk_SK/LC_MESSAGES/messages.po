@@ -15159,3 +15159,13 @@ msgstr ""
 "Nepodarilo sa nastaviť národné prostredie. Vybrané národné prostredie "
 "(locale) nemusí byť v tomto systéme podporované. Kontaktujte svojho "
 "administrátora."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Chyba:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Informácie:"

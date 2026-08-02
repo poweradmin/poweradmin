@@ -15578,3 +15578,13 @@ msgid ""
 msgstr ""
 "Não foi possível definir a configuração regional. A configuração regional "
 "escolhida pode não ser suportada neste sistema. Contacte o seu administrador."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Erro:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Informação:"

@@ -15127,3 +15127,13 @@ msgid ""
 msgstr ""
 "로케일을 설정하지 못했습니다. 선택한 로케일이 이 시스템에서 지원되지 않을 수 "
 "있습니다. 관리자에게 문의하십시오."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "오류:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "정보:"

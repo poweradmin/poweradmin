@@ -15025,3 +15025,13 @@ msgid ""
 msgstr ""
 "Постављање локализације није успело. Изабрана локализација можда није "
 "подржана на овом систему. Обратите се администратору."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Грешка:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Информација:"

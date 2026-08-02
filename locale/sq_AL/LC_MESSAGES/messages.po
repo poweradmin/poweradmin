@@ -15662,3 +15662,13 @@ msgid ""
 msgstr ""
 "Vendosja e parametrave gjuhësorë dështoi. Gjuha e zgjedhur mund të mos "
 "mbështetet në këtë sistem. Ju lutemi kontaktoni administratorin tuaj."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Gabim:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Informacione:"

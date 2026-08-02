@@ -14974,3 +14974,13 @@ msgid ""
 msgstr ""
 "Kieliasetuksen määrittäminen epäonnistui. Valittua kieliasetusta ei ehkä "
 "tueta tässä järjestelmässä. Ota yhteyttä ylläpitäjään."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Virhe:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Tieto:"

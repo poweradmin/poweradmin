@@ -15261,3 +15261,13 @@ msgid ""
 msgstr ""
 "Không thể thiết lập locale. Locale đã chọn có thể không được hỗ trợ trên hệ "
 "thống này. Vui lòng liên hệ quản trị viên của bạn."
+
+#: templates/default/message_alert.html:4
+#: templates/modern/message_alert.html:4
+msgid "Error:"
+msgstr "Lỗi:"
+
+#: templates/default/message_alert.html:16
+#: templates/modern/message_alert.html:16
+msgid "Info:"
+msgstr "Thông tin:"
