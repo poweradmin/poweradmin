@@ -556,23 +556,20 @@ class MfaService
         $needsRefresh = true;
 
         if (!empty($metadataJson)) {
-            try {
-                $metadata = json_decode($metadataJson, true);
+            // Malformed metadata decodes to null, which fails the isset check below
+            // and refreshes the code - the same outcome as an expired one.
+            $metadata = json_decode($metadataJson, true);
 
-                // Check if code has expired or was used
-                if (
-                    !isset($metadata['expires_at']) ||
-                    $metadata['expires_at'] < time() ||
-                    (isset($metadata['used']) && $metadata['used'] === true)
-                ) {
-                    $needsRefresh = true;
-                } else {
-                    // Code is still valid
-                    $needsRefresh = false;
-                }
-            } catch (Exception $e) {
-                $this->logger->error('Error checking verification code status: {error}', ['error' => $e->getMessage()]);
+            // Check if code has expired or was used
+            if (
+                !isset($metadata['expires_at']) ||
+                $metadata['expires_at'] < time() ||
+                (isset($metadata['used']) && $metadata['used'] === true)
+            ) {
                 $needsRefresh = true;
+            } else {
+                // Code is still valid
+                $needsRefresh = false;
             }
         }
 

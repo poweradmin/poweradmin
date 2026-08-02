@@ -22,6 +22,12 @@ parameters:
       path: tests/*
     # Ignore constructor unused parameter errors
     - '#Constructor of class .+ has an unused parameter \$_?config.#'
+    # php-saml annotates processSLO() as never-returning when $stay is false, but
+    # its SAMLResponse branch falls through and returns - which is exactly the path
+    # that records the logout errors read on the next line.
+    -
+      identifier: deadCode.unreachable
+      path: lib/Application/Service/SamlService.php
     # Tests assert types on purpose, so "already narrowed" is expected there.
     -
       identifier: method.alreadyNarrowedType
