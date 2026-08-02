@@ -212,32 +212,18 @@ class DeleteRecordController extends BaseController
                     $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                 }
 
-                $shouldShowCommentWarning = false;
-
-                if ($shouldShowCommentWarning) {
-                    if ($deletedPtrRecord && $deletedForwardRecord) {
-                        $this->setMessage('edit', 'warn', _('The record and its corresponding PTR and A/AAAA records were deleted but the comment was preserved because similar records exist.'));
-                    } elseif ($deletedPtrRecord) {
-                        $this->setMessage('edit', 'warn', _('The record and its corresponding PTR record were deleted but the comment was preserved because similar records exist.'));
-                    } elseif ($deletedForwardRecord) {
-                        $this->setMessage('edit', 'warn', _('The record and its corresponding A/AAAA record were deleted but the comment was preserved because similar records exist.'));
-                    } else {
-                        $this->setMessage('edit', 'warn', _('The record was deleted but the comment was preserved because similar records exist.'));
-                    }
+                if ($deletedPtrRecord && $deletedForwardRecord) {
+                    $this->setMessage('edit', 'success', _('The record and its corresponding PTR and A/AAAA records have been deleted successfully.'));
+                } elseif ($deletedPtrRecord) {
+                    $this->setMessage('edit', 'success', _('The record and its corresponding PTR record have been deleted successfully.'));
+                } elseif ($deletedForwardRecord) {
+                    $this->setMessage('edit', 'success', _('The record and its corresponding A/AAAA record have been deleted successfully.'));
+                } elseif ($hasPtrRecord) {
+                    $this->setMessage('edit', 'success', _('The record has been deleted successfully. No matching PTR record was found.'));
+                } elseif ($hasForwardRecord) {
+                    $this->setMessage('edit', 'success', _('The record has been deleted successfully. No matching A/AAAA record was found.'));
                 } else {
-                    if ($deletedPtrRecord && $deletedForwardRecord) {
-                        $this->setMessage('edit', 'success', _('The record and its corresponding PTR and A/AAAA records have been deleted successfully.'));
-                    } elseif ($deletedPtrRecord) {
-                        $this->setMessage('edit', 'success', _('The record and its corresponding PTR record have been deleted successfully.'));
-                    } elseif ($deletedForwardRecord) {
-                        $this->setMessage('edit', 'success', _('The record and its corresponding A/AAAA record have been deleted successfully.'));
-                    } elseif ($hasPtrRecord) {
-                        $this->setMessage('edit', 'success', _('The record has been deleted successfully. No matching PTR record was found.'));
-                    } elseif ($hasForwardRecord) {
-                        $this->setMessage('edit', 'success', _('The record has been deleted successfully. No matching A/AAAA record was found.'));
-                    } else {
-                        $this->setMessage('edit', 'success', _('The record has been deleted successfully.'));
-                    }
+                    $this->setMessage('edit', 'success', _('The record has been deleted successfully.'));
                 }
 
                 $this->redirect('/zones/' . $zid . '/edit');

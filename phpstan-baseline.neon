@@ -223,14 +223,8 @@ parameters:
 			path: lib/Application/Controller/DeleteDomainsController.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DeleteRecordController\:\:run\(\)" is 44, keep it under 15$#'
+			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DeleteRecordController\:\:run\(\)" is 31, keep it under 15$#'
 			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/DeleteRecordController.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
 			count: 1
 			path: lib/Application/Controller/DeleteRecordController.php
 
