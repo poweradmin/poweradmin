@@ -154,7 +154,7 @@ class BasicAuthenticationMiddleware
 
         // Decode the Authorization header
         $encoded = substr($authHeader, 6);
-        $decoded = base64_decode($encoded);
+        $decoded = base64_decode($encoded, true);
         if ($decoded === false) {
             return null;
         }

@@ -86,4 +86,17 @@ class PasswordEncryptionServiceTest extends TestCase
     {
         $this->assertSame('', $this->service->encrypt(''));
     }
+
+    /**
+     * The '!' makes this invalid base64, but a lax decode silently drops it and
+     * still yields 16 bytes - passing the IV length check with a different IV
+     * than was encoded. Strict decoding rejects it outright.
+     */
+    public function testDecryptRejectsIvThatIsNotValidBase64(): void
+    {
+        $encrypted = $this->service->encrypt('secret-value-123');
+        $ciphertext = explode(':', $encrypted, 2)[0];
+
+        $this->assertSame('', $this->service->decrypt($ciphertext . ':AAAA!AAAAAAAAAAAAAAAAAA=='));
+    }
 }

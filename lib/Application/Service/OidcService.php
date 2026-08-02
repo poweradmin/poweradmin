@@ -549,7 +549,7 @@ class OidcService extends LoggingService
             return [];
         }
 
-        $payload = base64_decode(strtr($parts[1], '-_', '+/'));
+        $payload = base64_decode(strtr($parts[1], '-_', '+/'), true);
         if ($payload === false) {
             $this->logWarning('Failed to decode ID token payload');
             return [];

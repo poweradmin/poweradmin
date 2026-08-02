@@ -55,7 +55,7 @@ class PasswordEncryptionService
         $key = $this->computeKey();
 
         list($encryptedPassword, $iv) = explode(':', $password, 2);
-        $iv = base64_decode($iv);
+        $iv = base64_decode($iv, true);
         if ($iv === false || strlen($iv) !== self::IV_LENGTH) {
             return '';
         }
