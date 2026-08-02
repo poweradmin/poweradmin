@@ -41,14 +41,12 @@ use Psr\Log\NullLogger;
 class SqlDnsBackendProvider implements DnsBackendProvider
 {
     private PDO $db;
-    private ConfigurationInterface $config;
     private TableNameService $tableNameService;
     private LoggerInterface $logger;
 
     public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
-        $this->config = $config;
         $this->tableNameService = new TableNameService($config);
         $this->logger = $logger ?? new NullLogger();
     }

@@ -33,7 +33,6 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 class DatabaseConsistencyService
 {
     private PDO $db;
-    private ConfigurationManager $config;
     private TableNameService $tableNameService;
     private ?DnsBackendProvider $backendProvider;
     private bool $apiReadFailed = false;
@@ -41,7 +40,6 @@ class DatabaseConsistencyService
     public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
-        $this->config = $config;
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
     }

@@ -57,13 +57,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class NSECRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private TTLValidator $ttlValidator;
     private HostnameValidator $hostnameValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->ttlValidator = new TTLValidator();
         $this->hostnameValidator = new HostnameValidator($config);
     }

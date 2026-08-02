@@ -41,14 +41,12 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class SVCBRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
     private IPAddressValidator $ipValidator;
 
     public function __construct(ConfigurationManager $config, ?IPAddressValidator $ipValidator = null)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();

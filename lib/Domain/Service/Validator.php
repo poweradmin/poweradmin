@@ -29,13 +29,11 @@ use PDO;
 
 class Validator
 {
-    private PDO $db;
     private ConfigurationManager $config;
     private DnsValidatorRegistry $validatorRegistry;
 
     public function __construct(PDO $db, ConfigurationManager $config)
     {
-        $this->db = $db;
         $this->config = $config;
         $this->validatorRegistry = new DnsValidatorRegistry($config, $db);
     }

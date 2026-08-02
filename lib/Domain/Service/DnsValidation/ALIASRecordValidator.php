@@ -51,7 +51,6 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private ConfigurationManager $config;
 
     /**
      * Constructor
@@ -62,7 +61,6 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
-        $this->config = $config;
     }
 
     /**
