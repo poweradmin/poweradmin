@@ -601,12 +601,6 @@ parameters:
 			path: lib/Application/Service/PowerdnsStatusService.php
 
 		-
-			message: '#^Method Poweradmin\\Application\\Service\\RecordManagerService\:\:handleComments\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: lib/Application/Service/RecordManagerService.php
-
-		-
 			message: '#^Property Poweradmin\\Application\\Service\\RecordManagerService\:\:\$commentSyncService is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -1817,12 +1811,6 @@ parameters:
 			identifier: property.onlyWritten
 			count: 1
 			path: lib/Infrastructure/Service/BasicAuthenticationMiddleware.php
-
-		-
-			message: '#^Constant Poweradmin\\Infrastructure\\Service\\MessageService\:\:TYPE_WARNING is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: lib/Infrastructure/Service/MessageService.php
 
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Service\\SessionAuthenticator\:\:authenticate\(\)" is 20, keep it under 15$#'

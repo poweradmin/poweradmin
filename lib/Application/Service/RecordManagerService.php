@@ -133,46 +133,6 @@ class RecordManagerService
         }
     }
 
-    private function handleComments(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin, string $zone_name, ?int $prio = null, ?int $ttl = null): void
-    {
-        if ($comment === '') {
-            return;
-        }
-
-        $fullZoneName = DnsHelper::restoreZoneSuffix($name, $zone_name);
-
-        // Get record ID for per-record comment linking (via linking table)
-        // Pass prio and ttl for deterministic lookup (important for MX, SRV records with same content)
-        $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
-        $recordId = $recordRepository->getRecordId($zoneId, strtolower($fullZoneName), $type, $content, $prio, $ttl);
-
-        if ($recordId !== null) {
-            // Use per-record comment (linked by record ID via linking table)
-            $this->recordCommentService->createCommentForRecord(
-                $zoneId,
-                $fullZoneName,
-                $type,
-                $comment,
-                $recordId,
-                $userLogin
-            );
-        } else {
-            // Fallback to legacy RRset-based comment if record ID not found
-            $this->recordCommentService->createComment(
-                $zoneId,
-                $fullZoneName,
-                $type,
-                $comment,
-                $userLogin
-            );
-        }
-
-        // Handle synced comments separately (for PTR records, etc.)
-        if ($this->config->get('misc', 'record_comments_sync')) {
-            $this->handleSyncedComments($zoneId, $name, $type, $content, $comment, $userLogin, $fullZoneName);
-        }
-    }
-
     /**
      * Sync comments to related records (A/AAAA <-> PTR).
      * This only syncs to the TARGET record, not the source record

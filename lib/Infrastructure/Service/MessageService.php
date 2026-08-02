@@ -29,7 +29,6 @@ class MessageService
 {
     private const TYPE_ERROR = 'error';
     private const TYPE_WARN = 'warn';
-    private const TYPE_WARNING = 'warning';
     private const TYPE_SUCCESS = 'success';
     private const TYPE_INFO = 'info';
 
