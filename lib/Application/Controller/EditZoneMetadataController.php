@@ -603,17 +603,6 @@ class EditZoneMetadataController extends BaseController
     }
 
     /**
-     * Check whether a metadata definition should be shown for the current environment.
-     *
-     * @param array<string, mixed> $definition
-     */
-    private function isDefinitionSupportedInCurrentEnvironment(array $definition): bool
-    {
-        $caps = PdnsCapabilities::fromVersion($this->getPowerDnsVersion());
-        return $this->classifyDefinitionSupport($definition, $caps) === 'supported';
-    }
-
-    /**
      * Tri-state classification used by the metadata editor.
      *
      * Returns 'supported' when the kind is known to work on the connected

@@ -32,45 +32,6 @@ class HybridPermissionServiceTest extends TestCase
         );
     }
 
-    private function mockDirectPermissions(array $permissions): void
-    {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('fetchAll')->with(PDO::FETCH_COLUMN)->willReturn($permissions);
-        $stmt->method('execute')->willReturn(true);
-
-        $this->db->method('prepare')
-            ->willReturnCallback(function (string $sql) use ($stmt) {
-                // Direct user permissions query vs group permissions query
-                if (str_contains($sql, 'z.owner = :user_id AND z.domain_id = :domain_id')) {
-                    return $stmt;
-                }
-                // Group permissions query - return empty by default
-                $emptyStmt = $this->createMock(PDOStatement::class);
-                $emptyStmt->method('fetchAll')->willReturn([]);
-                $emptyStmt->method('execute')->willReturn(true);
-                return $emptyStmt;
-            });
-    }
-
-    private function mockGroupPermissions(array $rows): void
-    {
-        $groupStmt = $this->createMock(PDOStatement::class);
-        $groupStmt->method('fetchAll')->with(PDO::FETCH_ASSOC)->willReturn($rows);
-        $groupStmt->method('execute')->willReturn(true);
-
-        $this->db->method('prepare')
-            ->willReturnCallback(function (string $sql) use ($groupStmt) {
-                if (str_contains($sql, 'user_group_members')) {
-                    return $groupStmt;
-                }
-                // Direct permissions - return empty
-                $emptyStmt = $this->createMock(PDOStatement::class);
-                $emptyStmt->method('fetchAll')->willReturn([]);
-                $emptyStmt->method('execute')->willReturn(true);
-                return $emptyStmt;
-            });
-    }
-
     private function mockBothPermissions(array $directPerms, array $groupRows): void
     {
         $directStmt = $this->createMock(PDOStatement::class);

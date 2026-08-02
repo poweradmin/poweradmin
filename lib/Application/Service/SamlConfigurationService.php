@@ -224,11 +224,6 @@ class SamlConfigurationService extends LoggingService
         return $url;
     }
 
-    private function validateProviderConfig(array $config): bool
-    {
-        return $this->describeConfigError($config) === null;
-    }
-
     private function isValidX509Certificate(string $cert): bool
     {
         $cert = trim($cert);

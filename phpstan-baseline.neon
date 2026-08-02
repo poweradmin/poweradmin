@@ -349,12 +349,6 @@ parameters:
 			path: lib/Application/Controller/EditZoneMetadataController.php
 
 		-
-			message: '#^Method Poweradmin\\Application\\Controller\\EditZoneMetadataController\:\:isDefinitionSupportedInCurrentEnvironment\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: lib/Application/Controller/EditZoneMetadataController.php
-
-		-
 			message: '#^Offset 0 on non\-empty\-list\<string\> on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
@@ -571,7 +565,7 @@ parameters:
 			path: lib/Application/Service/PdnsVersionService.php
 
 		-
-			message: '#^Class cognitive complexity is 81, keep it under 60$#'
+			message: '#^Class cognitive complexity is 79, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
 			path: lib/Application/Service/PowerdnsStatusService.php
@@ -589,22 +583,10 @@ parameters:
 			path: lib/Application/Service/PowerdnsStatusService.php
 
 		-
-			message: '#^Method Poweradmin\\Application\\Service\\PowerdnsStatusService\:\:isSecureUrl\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: lib/Application/Service/PowerdnsStatusService.php
-
-		-
 			message: '#^Property Poweradmin\\Application\\Service\\RecordManagerService\:\:\$commentSyncService is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
 			path: lib/Application/Service/RecordManagerService.php
-
-		-
-			message: '#^Method Poweradmin\\Application\\Service\\SamlConfigurationService\:\:validateProviderConfig\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: lib/Application/Service/SamlConfigurationService.php
 
 		-
 			message: '#^Class cognitive complexity is 85, keep it under 60$#'
@@ -703,12 +685,6 @@ parameters:
 			path: lib/Domain/Model/ZoneTemplate.php
 
 		-
-			message: '#^Method Poweradmin\\Domain\\Model\\ZoneTemplate\:\:recordBelongsToTemplate\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: lib/Domain/Model/ZoneTemplate.php
-
-		-
 			message: '#^Property Poweradmin\\Domain\\Model\\ZoneTemplate\:\:\$dnsCommonValidator is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -747,12 +723,6 @@ parameters:
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\BatchReverseRecordCreator\:\:createIPv6Network\(\)" is 59, keep it under 15$#'
 			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/BatchReverseRecordCreator.php
-
-		-
-			message: '#^Method Poweradmin\\Domain\\Service\\BatchReverseRecordCreator\:\:createSuccessResponse\(\) is unused\.$#'
-			identifier: method.unused
 			count: 1
 			path: lib/Domain/Service/BatchReverseRecordCreator.php
 
@@ -1147,18 +1117,6 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php
 
 		-
-			message: '#^Method Poweradmin\\Domain\\Service\\DnsValidation\\NAPTRRecordValidator\:\:isValidNAPTRContent\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php
-
-		-
-			message: '#^Method Poweradmin\\Domain\\Service\\DnsValidation\\NAPTRRecordValidator\:\:isValidQuotedString\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php
-
-		-
 			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\NAPTRRecordValidator\:\:\$config is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -1291,12 +1249,6 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/SPFRecordValidator.php
 
 		-
-			message: '#^Method Poweradmin\\Domain\\Service\\DnsValidation\\SPFRecordValidator\:\:buildSpfRegexPattern\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: lib/Domain/Service/DnsValidation/SPFRecordValidator.php
-
-		-
 			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\SPFRecordValidator\:\:\$config is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -1345,12 +1297,6 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php
 
 		-
-			message: '#^Method Poweradmin\\Domain\\Service\\DnsValidation\\TKEYRecordValidator\:\:isValidAlgorithmName\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php
-
-		-
 			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\TKEYRecordValidator\:\:\$config is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -1371,12 +1317,6 @@ parameters:
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\TLSARecordValidator\:\:validateTLSAContent\(\)" is 20, keep it under 15$#'
 			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/TLSARecordValidator.php
-
-		-
-			message: '#^Method Poweradmin\\Domain\\Service\\DnsValidation\\TLSARecordValidator\:\:validateTLSAHostname\(\) is unused\.$#'
-			identifier: method.unused
 			count: 1
 			path: lib/Domain/Service/DnsValidation/TLSARecordValidator.php
 
@@ -1403,12 +1343,6 @@ parameters:
 			identifier: property.onlyWritten
 			count: 1
 			path: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php
-
-		-
-			message: '#^Constant Poweradmin\\Domain\\Service\\DnsValidation\\TTLValidator\:\:TTL_MAX_UNSIGNED is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: lib/Domain/Service/DnsValidation/TTLValidator.php
 
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\TXTRecordValidator\:\:validateContent\(\)" is 19, keep it under 15$#'
@@ -1813,12 +1747,6 @@ parameters:
 			path: lib/Infrastructure/Service/SessionAuthenticator.php
 
 		-
-			message: '#^Method Poweradmin\\Infrastructure\\Service\\SessionAuthenticator\:\:userUsesLDAP\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: lib/Infrastructure/Service/SessionAuthenticator.php
-
-		-
 			message: '#^Property Poweradmin\\Infrastructure\\Service\\SqlDnsBackendProvider\:\:\$config is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -2005,12 +1933,6 @@ parameters:
 			path: lib/Module/ZoneImportExport/Service/BindZoneFileParser.php
 
 		-
-			message: '#^Constant Poweradmin\\Module\\ZoneImportExport\\Service\\BindZoneFileParser\:\:TYPES_WITH_NAME_RDATA is unused\.$#'
-			identifier: classConstant.unused
-			count: 1
-			path: lib/Module/ZoneImportExport/Service/BindZoneFileParser.php
-
-		-
 			message: '#^Cognitive complexity for "TestHelpers\\BaseDnsTest\:\:setUp\(\)" is 30, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -2035,24 +1957,6 @@ parameters:
 			path: tests/integration/LdapUserProvisioningIntegrationTest.php
 
 		-
-			message: '#^Result of \|\| is always false\.$#'
-			identifier: booleanOr.alwaysFalse
-			count: 1
-			path: tests/integration/LdapUserProvisioningIntegrationTest.php
-
-		-
-			message: '#^Static property Poweradmin\\Tests\\Integration\\LdapUserProvisioningIntegrationTest\:\:\$ldap \(LDAP\\Connection\|resource\) in isset\(\) is not nullable\.$#'
-			identifier: isset.property
-			count: 1
-			path: tests/integration/LdapUserProvisioningIntegrationTest.php
-
-		-
-			message: '#^Static property Poweradmin\\Tests\\Integration\\LdapUserProvisioningIntegrationTest\:\:\$ldap \(LDAP\\Connection\|resource\) is never assigned resource so it can be removed from the property type\.$#'
-			identifier: property.unusedType
-			count: 1
-			path: tests/integration/LdapUserProvisioningIntegrationTest.php
-
-		-
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
@@ -2063,12 +1967,6 @@ parameters:
 			identifier: property.onlyWritten
 			count: 1
 			path: tests/integration/RecordRepositoryApexSortingIntegrationTest.php
-
-		-
-			message: '#^Method Poweradmin\\Tests\\Unit\\Application\\Controller\\EditZoneMetadataControllerTest\:\:getProjectRoot\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: tests/unit/Application/Controller/EditZoneMetadataControllerTest.php
 
 		-
 			message: '#^Call to function assert\(\) with false will always evaluate to false\.$#'
@@ -2111,18 +2009,6 @@ parameters:
 			identifier: complexity.functionLike
 			count: 1
 			path: tests/unit/Dns/TTLValidatorTest.php
-
-		-
-			message: '#^Method Poweradmin\\Tests\\Unit\\HybridPermissionServiceTest\:\:mockDirectPermissions\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: tests/unit/HybridPermissionServiceTest.php
-
-		-
-			message: '#^Method Poweradmin\\Tests\\Unit\\HybridPermissionServiceTest\:\:mockGroupPermissions\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: tests/unit/HybridPermissionServiceTest.php
 
 		-
 			message: '#^Property Poweradmin\\Tests\\Unit\\StyleManagerTest\:\:\$testStyleDir is never read, only written\.$#'

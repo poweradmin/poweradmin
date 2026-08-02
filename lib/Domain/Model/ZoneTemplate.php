@@ -690,19 +690,6 @@ class ZoneTemplate
     }
 
     /**
-     * Confirm a template record actually lives in the given template.
-     *
-     * @param int $rid template record id
-     * @param int $zone_templ_id template the caller is authorized to edit
-     *
-     * @return boolean true when the record belongs to the template
-     */
-    private function recordBelongsToTemplate(int $rid, int $zone_templ_id): bool
-    {
-        return !empty(self::getZoneTemplRecordFromId($this->db, $rid, $zone_templ_id));
-    }
-
-    /**
      * Confirm the current user may store this record type in a zone template.
      *
      * @param string $type DNS record type

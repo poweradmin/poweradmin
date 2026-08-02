@@ -208,29 +208,6 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
     }
 
     /**
-     * Validates TLSA hostname format (_port._protocol.hostname)
-     *
-     * @param string $hostname
-     * @return ValidationResult ValidationResult containing validated hostname or error messages
-     */
-    private function validateTLSAHostname(string $hostname): ValidationResult
-    {
-        // Check if hostname is valid
-        if (!StringValidator::validatePrintable($hostname)->isValid()) {
-            return ValidationResult::failure(_('Invalid characters in hostname.'));
-        }
-
-        // TLSA records often follow pattern _port._protocol.hostname
-        // e.g., _443._tcp.www.example.com
-        if (!preg_match('/^_\d+\._[a-z]+\..+$/i', $hostname)) {
-            $warning = _('TLSA record name should typically follow the format _port._protocol.hostname (e.g., _443._tcp.www.example.com).');
-            // This is just a warning, still allow the record
-        }
-
-        return ValidationResult::success($hostname);
-    }
-
-    /**
      * Validates the content of a TLSA record
      * Format: <usage> <selector> <matching-type> <certificate-data>
      *

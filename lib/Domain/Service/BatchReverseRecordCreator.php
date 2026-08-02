@@ -650,15 +650,6 @@ class BatchReverseRecordCreator
         }
     }
 
-    private function createSuccessResponse(string $message): array
-    {
-        return [
-            'success' => true,
-            'type' => 'success',
-            'message' => $message,
-        ];
-    }
-
     private function createErrorResponse(string $message): array
     {
         return [

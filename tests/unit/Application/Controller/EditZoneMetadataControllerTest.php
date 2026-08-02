@@ -367,9 +367,4 @@ class EditZoneMetadataControllerTest extends TestCase
         $property->setAccessible(true);
         $property->setValue($object, $value);
     }
-
-    private function getProjectRoot(): string
-    {
-        return dirname(__DIR__, 4);
-    }
 }

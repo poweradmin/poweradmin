@@ -429,9 +429,4 @@ class SessionAuthenticator extends LoggingService
             return 'sql'; // Return default to prevent further errors
         }
     }
-
-    private function userUsesLDAP(): bool
-    {
-        return $this->getUserAuthMethod() === UserProvisioningService::AUTH_METHOD_LDAP;
-    }
 }

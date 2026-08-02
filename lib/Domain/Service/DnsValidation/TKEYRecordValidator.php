@@ -319,18 +319,6 @@ class TKEYRecordValidator implements DnsRecordValidatorInterface
     }
 
     /**
-     * Legacy adapter method for backward compatibility
-     *
-     * @param string $algorithmName
-     * @return bool
-     */
-    private function isValidAlgorithmName(string $algorithmName): bool
-    {
-        $result = $this->validateAlgorithmName($algorithmName);
-        return $result['isValid'];
-    }
-
-    /**
      * Validates time format (Unix timestamp or YYYYMMDDHHmmSS)
      *
      * @param string $time

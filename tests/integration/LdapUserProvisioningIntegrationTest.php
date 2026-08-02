@@ -55,8 +55,8 @@ class LdapUserProvisioningIntegrationTest extends TestCase
     private const PROVISION_UID = 'itest-provision';
     private const GROUP_CN = 'itest-admins';
 
-    /** @var resource|\LDAP\Connection */
-    private static $ldap;
+    /** @var \LDAP\Connection|null */
+    private static $ldap = null;
     private static string $baseDn;
     private static bool $memberOfAvailable = false;
 
