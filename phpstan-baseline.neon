@@ -25,6 +25,12 @@ parameters:
 			path: install/helpers/DatabaseHelper.php
 
 		-
+			message: '#^Offset ''Administrators''\|''Editors''\|''Guests''\|''Viewers''\|''Zone Managers'' on array\{Administrators\: string\|false, ''Zone Managers''\: string\|false, Editors\: string\|false, Viewers\: string\|false, Guests\: string\|false\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 2
+			path: install/helpers/DatabaseHelper.php
+
+		-
 			message: '#^Class cognitive complexity is 98, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
@@ -39,6 +45,12 @@ parameters:
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\AddRecordController\:\:addRecord\(\)" is 30, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Application/Controller/AddRecordController.php
+
+		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
 			count: 1
 			path: lib/Application/Controller/AddRecordController.php
 
@@ -79,6 +91,12 @@ parameters:
 			path: lib/Application/Controller/Api/V2/GroupZonesController.php
 
 		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: lib/Application/Controller/Api/V2/GroupsController.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZoneDnssecController\:\:setStatus\(\)" is 23, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -87,6 +105,18 @@ parameters:
 		-
 			message: '#^Class cognitive complexity is 66, keep it under 60$#'
 			identifier: complexity.classLike
+			count: 1
+			path: lib/Application/Controller/Api/V2/ZoneMetadataController.php
+
+		-
+			message: '#^Offset ''kind'' on array\{kind\: string, content\: string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: lib/Application/Controller/Api/V2/ZoneMetadataController.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
 			count: 1
 			path: lib/Application/Controller/Api/V2/ZoneMetadataController.php
 
@@ -135,6 +165,12 @@ parameters:
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRecordsBulkController\:\:bulkRecordOperations\(\)" is 30, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Application/Controller/Api/V2/ZonesRecordsBulkController.php
+
+		-
+			message: '#^Comparison operation "\>" between 0 and 0 is always false\.$#'
+			identifier: greater.alwaysFalse
 			count: 1
 			path: lib/Application/Controller/Api/V2/ZonesRecordsBulkController.php
 
@@ -193,6 +229,12 @@ parameters:
 			path: lib/Application/Controller/DeleteRecordController.php
 
 		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: lib/Application/Controller/DeleteRecordController.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DeleteRecordsController\:\:deleteRecords\(\)" is 28, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -201,6 +243,18 @@ parameters:
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DeleteRecordsController\:\:showRecords\(\)" is 21, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Application/Controller/DeleteRecordsController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between array and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
+			path: lib/Application/Controller/DeleteRecordsController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between int and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: lib/Application/Controller/DeleteRecordsController.php
 
@@ -215,6 +269,12 @@ parameters:
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Application/Controller/DnssecController.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: lib/Application/Controller/DnssecDeleteKeyController.php
 
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DnssecToggleKeyController\:\:run\(\)" is 16, keep it under 15$#'
@@ -247,6 +307,30 @@ parameters:
 			path: lib/Application/Controller/EditController.php
 
 		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: lib/Application/Controller/EditController.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: lib/Application/Controller/EditController.php
+
+		-
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
+			count: 1
+			path: lib/Application/Controller/EditController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
+			path: lib/Application/Controller/EditController.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\EditRecordController\:\:saveRecord\(\)" is 23, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -271,8 +355,26 @@ parameters:
 			path: lib/Application/Controller/EditZoneMetadataController.php
 
 		-
+			message: '#^Method Poweradmin\\Application\\Controller\\EditZoneMetadataController\:\:isDefinitionSupportedInCurrentEnvironment\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Application/Controller/EditZoneMetadataController.php
+
+		-
+			message: '#^Offset 0 on non\-empty\-list\<string\> on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: lib/Application/Controller/EditZoneMetadataController.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\IndexController\:\:showIndex\(\)" is 17, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Application/Controller/IndexController.php
+
+		-
+			message: '#^Left side of && is always false\.$#'
+			identifier: booleanAnd.leftAlwaysFalse
 			count: 1
 			path: lib/Application/Controller/IndexController.php
 
@@ -337,6 +439,12 @@ parameters:
 			path: lib/Application/Controller/MfaVerifyController.php
 
 		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 2
+			path: lib/Application/Controller/SaveZoneAsTemplateController.php
+
+		-
 			message: '#^Class cognitive complexity is 72, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
@@ -347,6 +455,12 @@ parameters:
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Application/Controller/SearchController.php
+
+		-
+			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: lib/Application/Controller/ZoneOwnershipController.php
 
 		-
 			message: '#^Class cognitive complexity is 74, keep it under 60$#'
@@ -361,6 +475,12 @@ parameters:
 			path: lib/Application/Controller/ZoneOwnershipController.php
 
 		-
+			message: '#^Strict comparison using \!\=\= between string and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: lib/Application/Controller/ZoneOwnershipController.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Application\\Query\\RecordSearch\:\:fetchRecords\(\)" is 17, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -369,6 +489,12 @@ parameters:
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\AvatarService\:\:getAvatarUrl\(\)" is 19, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Application/Service/AvatarService.php
+
+		-
+			message: '#^Property Poweradmin\\Application\\Service\\AvatarService\:\:\$cache is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: lib/Application/Service/AvatarService.php
 
@@ -397,6 +523,30 @@ parameters:
 			path: lib/Application/Service/DnsDataService.php
 
 		-
+			message: '#^Offset ''records'' on array\{zones\: array, records\: array\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 2
+			path: lib/Application/Service/DnsDataService.php
+
+		-
+			message: '#^Offset ''zones'' on array\{zones\: array, records\: array\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 2
+			path: lib/Application/Service/DnsDataService.php
+
+		-
+			message: '#^Property Poweradmin\\Application\\Service\\HybridPermissionService\:\:\$groupRepository is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Application/Service/HybridPermissionService.php
+
+		-
+			message: '#^Property Poweradmin\\Application\\Service\\HybridPermissionService\:\:\$memberRepository is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Application/Service/HybridPermissionService.php
+
+		-
 			message: '#^Class cognitive complexity is 73, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
@@ -421,6 +571,12 @@ parameters:
 			path: lib/Application/Service/OidcService.php
 
 		-
+			message: '#^Offset ''version'' on non\-empty\-array on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: lib/Application/Service/PdnsVersionService.php
+
+		-
 			message: '#^Class cognitive complexity is 81, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
@@ -439,6 +595,30 @@ parameters:
 			path: lib/Application/Service/PowerdnsStatusService.php
 
 		-
+			message: '#^Method Poweradmin\\Application\\Service\\PowerdnsStatusService\:\:isSecureUrl\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Application/Service/PowerdnsStatusService.php
+
+		-
+			message: '#^Method Poweradmin\\Application\\Service\\RecordManagerService\:\:handleComments\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Application/Service/RecordManagerService.php
+
+		-
+			message: '#^Property Poweradmin\\Application\\Service\\RecordManagerService\:\:\$commentSyncService is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Application/Service/RecordManagerService.php
+
+		-
+			message: '#^Method Poweradmin\\Application\\Service\\SamlConfigurationService\:\:validateProviderConfig\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Application/Service/SamlConfigurationService.php
+
+		-
 			message: '#^Class cognitive complexity is 85, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
@@ -448,6 +628,18 @@ parameters:
 			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\SamlService\:\:handleAssertion\(\)" is 45, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
+			path: lib/Application/Service/SamlService.php
+
+		-
+			message: '#^Property Poweradmin\\Application\\Service\\SamlService\:\:\$request is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Application/Service/SamlService.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 4
 			path: lib/Application/Service/SamlService.php
 
 		-
@@ -475,6 +667,24 @@ parameters:
 			path: lib/Application/Service/UserProvisioningService.php
 
 		-
+			message: '#^Property Poweradmin\\Application\\Service\\UsernameRecoveryService\:\:\$userRepository is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Application/Service/UsernameRecoveryService.php
+
+		-
+			message: '#^Offset ''timestamp'' on array\{message\: string, context\: non\-empty\-array, timestamp\: int\} in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: lib/Application/Service/ZoneSyncService.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: lib/Application/Service/ZoneSyncService.php
+
+		-
 			message: '#^Class cognitive complexity is 91, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
@@ -493,8 +703,26 @@ parameters:
 			path: lib/Domain/Model/UserManager.php
 
 		-
+			message: '#^Call to function is_numeric\(\) with int will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: lib/Domain/Model/ZoneTemplate.php
+
+		-
 			message: '#^Class cognitive complexity is 138, keep it under 60$#'
 			identifier: complexity.classLike
+			count: 1
+			path: lib/Domain/Model/ZoneTemplate.php
+
+		-
+			message: '#^Method Poweradmin\\Domain\\Model\\ZoneTemplate\:\:recordBelongsToTemplate\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Domain/Model/ZoneTemplate.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Model\\ZoneTemplate\:\:\$dnsCommonValidator is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: lib/Domain/Model/ZoneTemplate.php
 
@@ -509,6 +737,12 @@ parameters:
 			identifier: complexity.classLike
 			count: 1
 			path: lib/Domain/Service/ApiPermissionService.php
+
+		-
+			message: '#^Call to function is_int\(\) with int\<min, \-1\>\|int\<1, max\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: lib/Domain/Service/BatchReverseRecordCreator.php
 
 		-
 			message: '#^Class cognitive complexity is 161, keep it under 60$#'
@@ -529,6 +763,12 @@ parameters:
 			path: lib/Domain/Service/BatchReverseRecordCreator.php
 
 		-
+			message: '#^Method Poweradmin\\Domain\\Service\\BatchReverseRecordCreator\:\:createSuccessResponse\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Domain/Service/BatchReverseRecordCreator.php
+
+		-
 			message: '#^Class cognitive complexity is 93, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
@@ -537,6 +777,24 @@ parameters:
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DatabaseConsistencyService\:\:checkZonesHaveOwners\(\)" is 16, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Domain/Service/DatabaseConsistencyService.php
+
+		-
+			message: '#^Offset ''data'' on array\{status\: string, message\: string, data\: array\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: lib/Domain/Service/DatabaseConsistencyService.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DatabaseConsistencyService\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DatabaseConsistencyService.php
+
+		-
+			message: '#^Ternary operator condition is always false\.$#'
+			identifier: ternary.alwaysFalse
 			count: 1
 			path: lib/Domain/Service/DatabaseConsistencyService.php
 
@@ -551,6 +809,12 @@ parameters:
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Domain/Service/DatabaseSchemaService.php
+
+		-
+			message: '#^Call to function is_numeric\(\) with int\|numeric\-string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: lib/Domain/Service/Dns/DomainManager.php
 
 		-
 			message: '#^Class cognitive complexity is 305, keep it under 60$#'
@@ -583,6 +847,30 @@ parameters:
 			path: lib/Domain/Service/Dns/DomainManager.php
 
 		-
+			message: '#^Offset ''name'' on non\-empty\-array on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: lib/Domain/Service/Dns/DomainManager.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: lib/Domain/Service/Dns/DomainManager.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between non\-empty\-list\<int\> and array\{\} will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: lib/Domain/Service/Dns/DomainManager.php
+
+		-
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: lib/Domain/Service/Dns/RecordManager.php
+
+		-
 			message: '#^Class cognitive complexity is 67, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
@@ -595,6 +883,30 @@ parameters:
 			path: lib/Domain/Service/Dns/RecordManager.php
 
 		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsRecordValidationService\:\:\$messageService is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsRecordValidationService.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsRecordValidationService\:\:\$ttlValidator is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsRecordValidationService.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\AFSDBRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\ALIASRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\APLRecordValidator\:\:validate\(\)" is 18, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -604,6 +916,12 @@ parameters:
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\APLRecordValidator\:\:validateAPLElement\(\)" is 20, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
+			path: lib/Domain/Service/DnsValidation/APLRecordValidator.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 2
 			path: lib/Domain/Service/DnsValidation/APLRecordValidator.php
 
 		-
@@ -619,8 +937,38 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/CAARecordValidator.php
 
 		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\CAARecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/CAARecordValidator.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-falsy\-string and '''' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: lib/Domain/Service/DnsValidation/CAARecordValidator.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\CDNSKEYRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\CDSRecordValidator\:\:validateCDSContent\(\)" is 17, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Domain/Service/DnsValidation/CDSRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\CDSRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: lib/Domain/Service/DnsValidation/CDSRecordValidator.php
 
@@ -631,6 +979,24 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/CERTRecordValidator.php
 
 		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\CERTRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/CERTRecordValidator.php
+
+		-
+			message: '#^Offset ''records'' on array\{zones\: array, records\: array\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 3
+			path: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\DHCIDRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\DLVRecordValidator\:\:validateDLVContent\(\)" is 16, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -639,6 +1005,12 @@ parameters:
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\DMARCRecordValidator\:\:validateDMARCContent\(\)" is 34, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\DMARCRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php
 
@@ -655,8 +1027,32 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/DSRecordValidator.php
 
 		-
+			message: '#^Offset ''records'' on array\{zones\: array, records\: array\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: lib/Domain/Service/DnsValidation/DnsCommonValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\DnsCommonValidator\:\:\$messageService is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/DnsCommonValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\EUI48RecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\HINFORecordValidator\:\:validateHinfoContent\(\)" is 20, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Domain/Service/DnsValidation/HINFORecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\HINFORecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: lib/Domain/Service/DnsValidation/HINFORecordValidator.php
 
@@ -703,8 +1099,32 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php
 
 		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\IPSECKEYRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\KEYRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/KEYRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\KXRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/KXRecordValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\LOCRecordValidator\:\:validateLOCContent\(\)" is 24, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Domain/Service/DnsValidation/LOCRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\LOCRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: lib/Domain/Service/DnsValidation/LOCRecordValidator.php
 
@@ -715,10 +1135,52 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/LUARecordValidator.php
 
 		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\LUARecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/LUARecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\MINFORecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/MINFORecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\MXRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/MXRecordValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\NAPTRRecordValidator\:\:validateNAPTRContent\(\)" is 19, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php
+
+		-
+			message: '#^Method Poweradmin\\Domain\\Service\\DnsValidation\\NAPTRRecordValidator\:\:isValidNAPTRContent\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php
+
+		-
+			message: '#^Method Poweradmin\\Domain\\Service\\DnsValidation\\NAPTRRecordValidator\:\:isValidQuotedString\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\NAPTRRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\NSEC3PARAMRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php
 
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\NSEC3RecordValidator\:\:validateNsec3Content\(\)" is 21, keep it under 15$#'
@@ -733,14 +1195,38 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php
 
 		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\NSEC3RecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\NSECRecordValidator\:\:validateTypeBitMaps\(\)" is 19, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Domain/Service/DnsValidation/NSECRecordValidator.php
 
 		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\NSECRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/NSECRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\NSRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/NSRecordValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\OPENPGPKEYRecordValidator\:\:validateOpenPGPKeyContent\(\)" is 24, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\OPENPGPKEYRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php
 
@@ -751,8 +1237,32 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php
 
 		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\RKEYRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\RPRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/RPRecordValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\RRSIGRecordValidator\:\:validateRRSIGContent\(\)" is 43, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\RRSIGRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php
 
@@ -763,8 +1273,20 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php
 
 		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\SMIMEARecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\SOARecordValidator\:\:validateSoaContent\(\)" is 31, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Domain/Service/DnsValidation/SOARecordValidator.php
+
+		-
+			message: '#^Offset int\<0, 3\> on array\{''refresh'', ''retry'', ''expire'', ''minimum''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
 			count: 1
 			path: lib/Domain/Service/DnsValidation/SOARecordValidator.php
 
@@ -781,6 +1303,42 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/SPFRecordValidator.php
 
 		-
+			message: '#^Method Poweradmin\\Domain\\Service\\DnsValidation\\SPFRecordValidator\:\:buildSpfRegexPattern\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Domain/Service/DnsValidation/SPFRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\SPFRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/SPFRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\SRVRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/SRVRecordValidator.php
+
+		-
+			message: '#^Result of \|\| is always true\.$#'
+			identifier: booleanOr.alwaysTrue
+			count: 1
+			path: lib/Domain/Service/DnsValidation/SRVRecordValidator.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between int\<1, 65535\> and 0 will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: lib/Domain/Service/DnsValidation/SRVRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\SSHFPRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\SVCBRecordValidator\:\:validateSVCBParameters\(\)" is 21, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -793,6 +1351,30 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php
 
 		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\SVCBRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php
+
+		-
+			message: '#^Method Poweradmin\\Domain\\Service\\DnsValidation\\TKEYRecordValidator\:\:isValidAlgorithmName\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\TKEYRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''gss\-tsig\.''\|''hmac\-sha1\.''\|''hmac\-sha224\.''\|''hmac\-sha256\.''\|''hmac\-sha384\.''\|''hmac\-sha512\.'' and ''hmac\-md5\.'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\TLSARecordValidator\:\:validate\(\)" is 33, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -801,6 +1383,18 @@ parameters:
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\TLSARecordValidator\:\:validateTLSAContent\(\)" is 20, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Domain/Service/DnsValidation/TLSARecordValidator.php
+
+		-
+			message: '#^Method Poweradmin\\Domain\\Service\\DnsValidation\\TLSARecordValidator\:\:validateTLSAHostname\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Domain/Service/DnsValidation/TLSARecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\TLSARecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: lib/Domain/Service/DnsValidation/TLSARecordValidator.php
 
@@ -817,6 +1411,18 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php
 
 		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\TSIGRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php
+
+		-
+			message: '#^Constant Poweradmin\\Domain\\Service\\DnsValidation\\TTLValidator\:\:TTL_MAX_UNSIGNED is unused\.$#'
+			identifier: classConstant.unused
+			count: 1
+			path: lib/Domain/Service/DnsValidation/TTLValidator.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\TXTRecordValidator\:\:validateContent\(\)" is 19, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -827,6 +1433,54 @@ parameters:
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Domain/Service/DnsValidation/URIRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\URIRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/URIRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\ZONEMDRecordValidator\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\ZONEMDRecordValidator\:\:\$hostnameValidator is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php
+
+		-
+			message: '#^Method Poweradmin\\Domain\\Service\\DomainRecordCreator\:\:processIPv6\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Domain/Service/DomainRecordCreator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DomainRecordCreator\:\:\$logger is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DomainRecordCreator.php
+
+		-
+			message: '#^Left side of \|\| is always false\.$#'
+			identifier: booleanOr.leftAlwaysFalse
+			count: 2
+			path: lib/Domain/Service/DynamicDnsUpdateService.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\DynamicDnsValidationService\:\:\$ipValidator is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/DynamicDnsValidationService.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Poweradmin\\Application\\Service\\MailService and ''isMailConfiguration…'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: lib/Domain/Service/MfaService.php
 
 		-
 			message: '#^Class cognitive complexity is 73, keep it under 60$#'
@@ -859,6 +1513,12 @@ parameters:
 			path: lib/Domain/Service/ReverseRecordCreator.php
 
 		-
+			message: '#^Offset ''records'' on array\{zones\: array, records\: array\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: lib/Domain/Service/ReverseRecordCreator.php
+
+		-
 			message: '#^Class cognitive complexity is 73, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
@@ -869,6 +1529,18 @@ parameters:
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Domain/Service/UserManagementService.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\Validator\:\:\$db is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/Validator.php
+
+		-
+			message: '#^Property Poweradmin\\Domain\\Service\\Validator\:\:\$validatorRegistry is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Domain/Service/Validator.php
 
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\ZoneCountService\:\:countZones\(\)" is 19, keep it under 15$#'
@@ -895,6 +1567,24 @@ parameters:
 			path: lib/Domain/Service/ZoneValidationService.php
 
 		-
+			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: lib/Domain/Utility/DomainHelper.php
+
+		-
+			message: '#^Comparison operation "\<" between int\<1, max\> and 1 is always false\.$#'
+			identifier: smaller.alwaysFalse
+			count: 1
+			path: lib/Domain/Utility/IpHelper.php
+
+		-
+			message: '#^Static property Poweradmin\\Domain\\Utility\\NetworkUtility\:\:\$instance \(Poweradmin\\Domain\\Utility\\NetworkUtility\|null\) is never assigned Poweradmin\\Domain\\Utility\\NetworkUtility so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: lib/Domain/Utility/NetworkUtility.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Api\\HttpClient\:\:performSingleRequest\(\)" is 16, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -907,8 +1597,38 @@ parameters:
 			path: lib/Infrastructure/Api/PowerdnsApiClient.php
 
 		-
+			message: '#^Call to function is_int\(\) with int\<0, 65535\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: lib/Infrastructure/Configuration/ConfigValidator.php
+
+		-
+			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: lib/Infrastructure/Configuration/ConfigValidator.php
+
+		-
+			message: '#^Comparison operation "\>" between int\<1, 65535\> and 65535 is always false\.$#'
+			identifier: greater.alwaysFalse
+			count: 1
+			path: lib/Infrastructure/Configuration/ConfigValidator.php
+
+		-
+			message: '#^Call to function is_array\(\) with array\{kind\?\: string, content\?\: string\} will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: lib/Infrastructure/Logger/RecordChangeLogger.php
+
+		-
 			message: '#^Class cognitive complexity is 67, keep it under 60$#'
 			identifier: complexity.classLike
+			count: 1
+			path: lib/Infrastructure/Logger/RecordChangeLogger.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
 			count: 1
 			path: lib/Infrastructure/Logger/RecordChangeLogger.php
 
@@ -921,6 +1641,12 @@ parameters:
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Network\\ProxyContext\:\:matchesNoProxy\(\)" is 19, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Infrastructure/Network/ProxyContext.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between numeric\-string and '''' will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: lib/Infrastructure/Network/ProxyContext.php
 
@@ -949,6 +1675,18 @@ parameters:
 			path: lib/Infrastructure/Repository/ApiZoneRepository.php
 
 		-
+			message: '#^Property Poweradmin\\Infrastructure\\Repository\\DbPermissionTemplateRepository\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php
+
+		-
+			message: '#^Property Poweradmin\\Infrastructure\\Repository\\DbUserPreferenceRepository\:\:\$db_type is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Infrastructure/Repository/DbUserPreferenceRepository.php
+
+		-
 			message: '#^Class cognitive complexity is 64, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
@@ -965,6 +1703,12 @@ parameters:
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Infrastructure/Repository/DbUserRepository.php
+
+		-
+			message: '#^Call to function is_int\(\) with int will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: lib/Infrastructure/Repository/DbZoneRepository.php
 
 		-
 			message: '#^Class cognitive complexity is 149, keep it under 60$#'
@@ -987,6 +1731,30 @@ parameters:
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Repository\\DbZoneRepository\:\:listZones\(\)" is 16, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Infrastructure/Repository/DbZoneRepository.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: lib/Infrastructure/Repository/DbZoneRepository.php
+
+		-
+			message: '#^Property Poweradmin\\Infrastructure\\Repository\\DbZoneRepository\:\:\$naturalSorting is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Infrastructure/Repository/DbZoneRepository.php
+
+		-
+			message: '#^Property Poweradmin\\Infrastructure\\Repository\\DbZoneRepository\:\:\$pdns_db_name is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Infrastructure/Repository/DbZoneRepository.php
+
+		-
+			message: '#^Property Poweradmin\\Infrastructure\\Repository\\DbZoneRepository\:\:\$reverseDomainNaturalSorting is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: lib/Infrastructure/Repository/DbZoneRepository.php
 
@@ -1027,16 +1795,76 @@ parameters:
 			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php
 
 		-
+			message: '#^Property Poweradmin\\Infrastructure\\Service\\ApiDnsBackendProvider\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between mixed and null will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php
+
+		-
+			message: '#^Property Poweradmin\\Infrastructure\\Service\\BasicAuthenticationMiddleware\:\:\$messageService is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Infrastructure/Service/BasicAuthenticationMiddleware.php
+
+		-
+			message: '#^Property Poweradmin\\Infrastructure\\Service\\BasicAuthenticationMiddleware\:\:\$sqlAuthenticator is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Infrastructure/Service/BasicAuthenticationMiddleware.php
+
+		-
+			message: '#^Constant Poweradmin\\Infrastructure\\Service\\MessageService\:\:TYPE_WARNING is unused\.$#'
+			identifier: classConstant.unused
+			count: 1
+			path: lib/Infrastructure/Service/MessageService.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Service\\SessionAuthenticator\:\:authenticate\(\)" is 20, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Infrastructure/Service/SessionAuthenticator.php
 
 		-
+			message: '#^Method Poweradmin\\Infrastructure\\Service\\SessionAuthenticator\:\:userUsesLDAP\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: lib/Infrastructure/Service/SessionAuthenticator.php
+
+		-
+			message: '#^Property Poweradmin\\Infrastructure\\Service\\SqlDnsBackendProvider\:\:\$config is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Infrastructure/Service/SqlDnsBackendProvider.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: lib/Infrastructure/Service/SqlDnsBackendProvider.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Utility\\ReverseDomainHierarchySorting\:\:sortDomainsHierarchically\(\)" is 20, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Infrastructure/Utility/ReverseDomainHierarchySorting.php
+
+		-
+			message: '#^Offset 0 on non\-empty\-list\<string\> in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 2
+			path: lib/Infrastructure/Utility/ReverseDomainHierarchySorting.php
+
+		-
+			message: '#^Offset 1 on array\{non\-falsy\-string, non\-empty\-string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: lib/Infrastructure/Utility/UserAgentService.php
 
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Web\\BadgeTwigExtension\:\:getAutoprimariesLabel\(\)" is 19, keep it under 15$#'
@@ -1057,6 +1885,12 @@ parameters:
 			path: lib/Module/DnsWizard/Controller/DnsWizardFormController.php
 
 		-
+			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: lib/Module/DnsWizard/Controller/DnsWizardFormController.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Module\\DnsWizard\\Service\\CAAWizard\:\:validate\(\)" is 21, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -1065,6 +1899,12 @@ parameters:
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Module\\DnsWizard\\Service\\DMARCWizard\:\:validate\(\)" is 18, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: lib/Module/DnsWizard/Service/DMARCWizard.php
+
+		-
+			message: '#^Property Poweradmin\\Module\\DnsWizard\\Service\\DMARCWizard\:\:\$validator is never read, only written\.$#'
+			identifier: property.onlyWritten
 			count: 1
 			path: lib/Module/DnsWizard/Service/DMARCWizard.php
 
@@ -1087,6 +1927,12 @@ parameters:
 			path: lib/Module/DnsWizard/Service/SPFWizard.php
 
 		-
+			message: '#^Property Poweradmin\\Module\\DnsWizard\\Service\\SPFWizard\:\:\$validator is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: lib/Module/DnsWizard/Service/SPFWizard.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Module\\DnsWizard\\Service\\SRVWizard\:\:validate\(\)" is 20, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
@@ -1099,10 +1945,40 @@ parameters:
 			path: lib/Module/DnsWizard/Service/TLSAWizard.php
 
 		-
+			message: '#^Instanceof between Poweradmin\\Module\\ModuleInterface and Poweradmin\\Module\\ModuleInterface will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: lib/Module/ModuleRegistry.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: lib/Module/Rdap/Controller/RdapController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 3
+			path: lib/Module/Rdap/Service/RdapService.php
+
+		-
 			message: '#^Cognitive complexity for "Poweradmin\\Module\\SecondaryZoneImport\\Controller\\SecondaryZoneImportController\:\:resolveOwnership\(\)" is 16, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: lib/Module/Whois/Controller/WhoisController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 3
+			path: lib/Module/Whois/Service/WhoisService.php
 
 		-
 			message: '#^Class cognitive complexity is 104, keep it under 60$#'
@@ -1147,8 +2023,20 @@ parameters:
 			path: lib/Module/ZoneImportExport/Service/BindZoneFileParser.php
 
 		-
+			message: '#^Constant Poweradmin\\Module\\ZoneImportExport\\Service\\BindZoneFileParser\:\:TYPES_WITH_NAME_RDATA is unused\.$#'
+			identifier: classConstant.unused
+			count: 1
+			path: lib/Module/ZoneImportExport/Service/BindZoneFileParser.php
+
+		-
 			message: '#^Cognitive complexity for "TestHelpers\\BaseDnsTest\:\:setUp\(\)" is 30, keep it under 15$#'
 			identifier: complexity.functionLike
+			count: 1
+			path: tests/helpers/BaseDnsTest.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between false and false will always evaluate to false\.$#'
+			identifier: notIdentical.alwaysFalse
 			count: 1
 			path: tests/helpers/BaseDnsTest.php
 
@@ -1157,6 +2045,78 @@ parameters:
 			identifier: complexity.classLike
 			count: 1
 			path: tests/integration/ApiDnsBackendProviderIntegrationTest.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: tests/integration/LdapUserProvisioningIntegrationTest.php
+
+		-
+			message: '#^Result of \|\| is always false\.$#'
+			identifier: booleanOr.alwaysFalse
+			count: 1
+			path: tests/integration/LdapUserProvisioningIntegrationTest.php
+
+		-
+			message: '#^Static property Poweradmin\\Tests\\Integration\\LdapUserProvisioningIntegrationTest\:\:\$ldap \(LDAP\\Connection\|resource\) in isset\(\) is not nullable\.$#'
+			identifier: isset.property
+			count: 1
+			path: tests/integration/LdapUserProvisioningIntegrationTest.php
+
+		-
+			message: '#^Static property Poweradmin\\Tests\\Integration\\LdapUserProvisioningIntegrationTest\:\:\$ldap \(LDAP\\Connection\|resource\) is never assigned resource so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: tests/integration/LdapUserProvisioningIntegrationTest.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: tests/integration/NaturalSortingIntegrationTest.php
+
+		-
+			message: '#^Property integration\\RecordRepositoryApexSortingIntegrationTest\:\:\$createdRecordIds is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: tests/integration/RecordRepositoryApexSortingIntegrationTest.php
+
+		-
+			message: '#^Method Poweradmin\\Tests\\Unit\\Application\\Controller\\EditZoneMetadataControllerTest\:\:getProjectRoot\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: tests/unit/Application/Controller/EditZoneMetadataControllerTest.php
+
+		-
+			message: '#^Call to function assert\(\) with false will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php
+
+		-
+			message: '#^Offset ''ldap_auth_ip'' on \*NEVER\* in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php
+
+		-
+			message: '#^Offset ''ldap_auth_timestamp'' on non\-empty\-array\<mixed, mixed\> in isset\(\) does not exist\.$#'
+			identifier: isset.offset
+			count: 1
+			path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php
+
+		-
+			message: '#^Offset ''ldap_auth_username'' on \*NEVER\* in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.offset
+			count: 1
+			path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php
+
+		-
+			message: '#^Property Poweradmin\\Infrastructure\\Logger\\LegacyLogger@anonymous/tests/unit/Application/Service/UserEventLoggerTest\.php\:195\:\:\$sink is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: tests/unit/Application/Service/UserEventLoggerTest.php
 
 		-
 			message: '#^Cognitive complexity for "AnonymousClass0b8b38bbb9ef944664cd7a1116cc5c85\:\:validate\(\)" is 19, keep it under 15$#'
@@ -1169,3 +2129,33 @@ parameters:
 			identifier: complexity.functionLike
 			count: 1
 			path: tests/unit/Dns/TTLValidatorTest.php
+
+		-
+			message: '#^Method Poweradmin\\Tests\\Unit\\HybridPermissionServiceTest\:\:mockDirectPermissions\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: tests/unit/HybridPermissionServiceTest.php
+
+		-
+			message: '#^Method Poweradmin\\Tests\\Unit\\HybridPermissionServiceTest\:\:mockGroupPermissions\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: tests/unit/HybridPermissionServiceTest.php
+
+		-
+			message: '#^Property Poweradmin\\Tests\\Unit\\StyleManagerTest\:\:\$testStyleDir is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: tests/unit/StyleManagerTest.php
+
+		-
+			message: '#^Property Poweradmin\\Tests\\Unit\\SymfonyRouterTest\:\:\$router is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: tests/unit/SymfonyRouterTest.php
+
+		-
+			message: '#^Property Poweradmin\\Tests\\Unit\\TableNameServiceEnumTest\:\:\$service is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: tests/unit/TableNameServiceEnumTest.php
