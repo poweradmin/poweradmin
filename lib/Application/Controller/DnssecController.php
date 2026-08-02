@@ -99,7 +99,7 @@ class DnssecController extends BaseController
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
             // Check if zone is secured before attempting to unsecure
-            if ($zone_name === false) {
+            if ($zone_name === null) {
                 $this->setMessage('dnssec', 'info', _('Zone is not currently signed with DNSSEC.'));
             } elseif ($dnssecProvider->isZonePresigned($zone_name)) {
                 $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
@@ -138,11 +138,7 @@ class DnssecController extends BaseController
     {
         $domainRepository = $this->createDomainRepository();
         $domain_name = $domainRepository->getDomainNameById($zone_id);
-        if (str_starts_with($domain_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($domain_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());

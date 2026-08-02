@@ -188,11 +188,7 @@ class DnssecAddKeyController extends BaseController
             }
         }
 
-        if (str_starts_with($domain_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($domain_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
 
         // Check PowerDNS version to determine if CSK should be the default
         $pdnsVersion = DnssecProviderFactory::getPowerDnsVersion($this->getConfig());

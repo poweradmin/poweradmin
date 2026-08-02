@@ -262,11 +262,7 @@ class DeleteRecordController extends BaseController
         $domainRepository = $this->createDomainRepository();
         $zone_name = $domainRepository->getDomainNameById($zone_id);
 
-        if (str_starts_with($zone_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($zone_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
 
         $record_info = $recordRepository->getRecordFromId($record_id);
 

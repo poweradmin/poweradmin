@@ -296,11 +296,7 @@ class AddRecordController extends BaseController
         $ttl = $this->reverseTtlResolver->getForwardTtl();
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
 
-        if ($zone_name !== null && str_starts_with($zone_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($zone_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
 
         // Retrieve form state data from session (e.g. after validation error redirect)
         $formData = null;

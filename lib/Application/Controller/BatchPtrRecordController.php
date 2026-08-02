@@ -241,11 +241,7 @@ class BatchPtrRecordController extends BaseController
             $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
             $preFillDomain = $zone_name;
 
-            if (str_starts_with($zone_name, "xn--")) {
-                $idn_zone_name = DnsIdnService::toUtf8($zone_name);
-            } else {
-                $idn_zone_name = "";
-            }
+            $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
         }
 
         // Get all reverse zones for the dropdown

@@ -250,11 +250,7 @@ class BulkRecordAddController extends BaseController
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
         // For internationalized domain names
-        if (str_starts_with($zone_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($zone_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
 
         $this->render('bulk_record_add.html', [
             'zone_id' => $zone_id,

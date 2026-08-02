@@ -428,11 +428,7 @@ class EditController extends BaseController
         }
 
         $zone_name_to_display = $this->zoneRepository->getDomainNameById($zone_id);
-        if (str_starts_with($zone_name_to_display, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($zone_name_to_display);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($zone_name_to_display);
         // Get records via DnsDataService (supports both SQL and API backends)
         $dnsDataService = $this->createDnsDataService();
         $recordResult = $dnsDataService->getZoneRecords(

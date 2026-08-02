@@ -41,6 +41,19 @@ class DnsIdnService
         return str_starts_with($domainName, 'xn--') ? self::toUtf8($domainName) : $domainName;
     }
 
+    /**
+     * UTF-8 alias to show alongside a punycode zone name. Returns an empty string
+     * when the name is not punycode, or when the zone name is unknown.
+     */
+    public static function toIdnAlias(?string $domainName): string
+    {
+        if ($domainName === null || !str_starts_with($domainName, 'xn--')) {
+            return '';
+        }
+
+        return self::toUtf8($domainName);
+    }
+
     public static function toUtf8(string $domainName): string
     {
         if ($domainName === '') {

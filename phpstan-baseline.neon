@@ -25,7 +25,7 @@ parameters:
 			path: install/helpers/DatabaseHelper.php
 
 		-
-			message: '#^Class cognitive complexity is 101, keep it under 60$#'
+			message: '#^Class cognitive complexity is 98, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
 			path: lib/Application/Controller/AddRecordController.php
@@ -205,7 +205,7 @@ parameters:
 			path: lib/Application/Controller/DeleteRecordsController.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DnssecAddKeyController\:\:run\(\)" is 54, keep it under 15$#'
+			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DnssecAddKeyController\:\:run\(\)" is 52, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Application/Controller/DnssecAddKeyController.php
@@ -223,7 +223,7 @@ parameters:
 			path: lib/Application/Controller/DnssecToggleKeyController.php
 
 		-
-			message: '#^Class cognitive complexity is 216, keep it under 60$#'
+			message: '#^Class cognitive complexity is 214, keep it under 60$#'
 			identifier: complexity.classLike
 			count: 1
 			path: lib/Application/Controller/EditController.php
@@ -235,7 +235,7 @@ parameters:
 			path: lib/Application/Controller/EditController.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\EditController\:\:run\(\)" is 92, keep it under 15$#'
+			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\EditController\:\:run\(\)" is 90, keep it under 15$#'
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Application/Controller/EditController.php
@@ -593,12 +593,6 @@ parameters:
 			identifier: complexity.functionLike
 			count: 1
 			path: lib/Domain/Service/Dns/RecordManager.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsRecordValidationService\:\:validateRecord\(\)" is 16, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsRecordValidationService.php
 
 		-
 			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\APLRecordValidator\:\:validate\(\)" is 18, keep it under 15$#'

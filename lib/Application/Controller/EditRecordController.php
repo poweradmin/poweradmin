@@ -160,11 +160,7 @@ class EditRecordController extends BaseController
             $record['record_name'] = DnsHelper::stripZoneSuffix($record['name'], $zone_name);
         }
 
-        if (str_starts_with($zone_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($zone_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
 
         $iface_record_comments = $this->config->get('interface', 'show_record_comments', false);
         // Use record ID to find per-record comment, with fallback to RRset-based lookup for legacy comments

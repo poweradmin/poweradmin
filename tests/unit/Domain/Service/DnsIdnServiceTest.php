@@ -101,6 +101,42 @@ class DnsIdnServiceTest extends TestCase
     }
 
     /**
+     * A zone name is only aliased when it is punycode; anything else shows nothing.
+     */
+    public function testToIdnAliasWithPunycodeDomain(): void
+    {
+        $this->assertEquals('münchen.de', DnsIdnService::toIdnAlias('xn--mnchen-3ya.de'));
+    }
+
+    public function testToIdnAliasWithAsciiDomainReturnsEmptyString(): void
+    {
+        $this->assertSame('', DnsIdnService::toIdnAlias('example.com'));
+    }
+
+    public function testToIdnAliasWithEmptyStringReturnsEmptyString(): void
+    {
+        $this->assertSame('', DnsIdnService::toIdnAlias(''));
+    }
+
+    /**
+     * An unknown zone id yields a null name; the alias must degrade to an empty
+     * string rather than reaching str_starts_with() with null.
+     */
+    public function testToIdnAliasWithNullReturnsEmptyString(): void
+    {
+        $this->assertSame('', DnsIdnService::toIdnAlias(null));
+    }
+
+    /**
+     * Malformed punycode still has the xn-- prefix, so it is aliased, and the
+     * fallback in toUtf8 keeps the result a string.
+     */
+    public function testToIdnAliasWithMalformedPunycodeReturnsOriginal(): void
+    {
+        $this->assertEquals('xn--a.com', DnsIdnService::toIdnAlias('xn--a.com'));
+    }
+
+    /**
      * getFirstLetter must not fatal on a malformed-punycode zone name.
      */
     public function testGetFirstLetterWithMalformedPunycode(): void
