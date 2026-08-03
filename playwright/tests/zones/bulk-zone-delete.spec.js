@@ -35,158 +35,67 @@ test.describe('Bulk Zone Deletion', () => {
   });
 
   test.describe('Bulk Delete Page', () => {
-    test('should access bulk delete page with selected zones', async ({ page }) => {
+    /**
+     * Tick this spec's own zones and open the bulk confirmation page.
+     * The submit control is #delete-zones-btn - its label is "Delete zone(s)".
+     */
+    async function openBulkDeleteConfirmation(page, zones) {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
 
-      // Select multiple zones using checkboxes if available
-      const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
-      if (await checkboxes.count() >= 2) {
-        await checkboxes.nth(0).check();
-        await checkboxes.nth(1).check();
-
-        // Find and click delete selected button
-        const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected")').first();
-        if (await deleteBtn.count() > 0) {
-          await deleteBtn.click();
-          await expect(page).toHaveURL(/.*delete/);
-        }
+      for (const zone of zones) {
+        const checkbox = page.locator(`tr:has-text("${zone}") input[type="checkbox"][name="zone_id[]"]`).first();
+        await expect(checkbox).toBeVisible();
+        await checkbox.check();
       }
+
+      const deleteBtn = page.locator('#delete-zones-btn');
+      await expect(deleteBtn).toBeEnabled();
+      await deleteBtn.click();
+    }
+
+    test('should access bulk delete page with selected zones', async ({ page }) => {
+      await openBulkDeleteConfirmation(page, testZones.slice(0, 2));
+      await expect(page).toHaveURL(/.*delete/);
     });
 
     test('should display confirmation message', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
-
-      const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
-      if (await checkboxes.count() >= 1) {
-        await checkboxes.nth(0).check();
-
-        const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected")').first();
-        if (await deleteBtn.count() > 0) {
-          await deleteBtn.click();
-
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).toContainText(/are you sure|confirm|delete/i);
-        }
-      }
+      await openBulkDeleteConfirmation(page, testZones.slice(0, 1));
+      await expect(page.locator('body')).toContainText(/are you sure|confirm|delete/i);
     });
 
     test('should display zone names to be deleted', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
-
-      const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
-      if (await checkboxes.count() >= 1) {
-        await checkboxes.nth(0).check();
-
-        const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected")').first();
-        if (await deleteBtn.count() > 0) {
-          await deleteBtn.click();
-
-          // Should show table with zone info
-          const table = page.locator('table');
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(table.first()).toBeAttached();
-        }
-      }
+      await openBulkDeleteConfirmation(page, testZones.slice(0, 1));
+      await expect(page.locator('body')).toContainText(testZones[0]);
     });
 
     test('should display zone owner information', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
-
-      const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
-      if (await checkboxes.count() >= 1) {
-        await checkboxes.nth(0).check();
-
-        const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected")').first();
-        if (await deleteBtn.count() > 0) {
-          await deleteBtn.click();
-
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).toContainText(/owner|name|type/i);
-        }
-      }
+      await openBulkDeleteConfirmation(page, testZones.slice(0, 1));
+      await expect(page.locator('body')).toContainText(/owner|name|type/i);
     });
 
     test('should display Yes button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
-
-      const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
-      if (await checkboxes.count() >= 1) {
-        await checkboxes.nth(0).check();
-
-        const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected")').first();
-        if (await deleteBtn.count() > 0) {
-          await deleteBtn.click();
-
-          const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")');
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(yesBtn.first()).toBeAttached();
-        }
-      }
+      await openBulkDeleteConfirmation(page, testZones.slice(0, 1));
+      await expect(page.locator('button[type="submit"]:has-text("Yes")').first()).toBeVisible();
     });
 
     test('should display No button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
-
-      const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
-      if (await checkboxes.count() >= 1) {
-        await checkboxes.nth(0).check();
-
-        const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected")').first();
-        if (await deleteBtn.count() > 0) {
-          await deleteBtn.click();
-
-          const noBtn = page.locator('input[value="No"], button:has-text("No")');
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(noBtn.first()).toBeAttached();
-        }
-      }
+      await openBulkDeleteConfirmation(page, testZones.slice(0, 1));
+      await expect(page.locator('a:has-text("No")').first()).toBeVisible();
     });
 
     test('should cancel bulk delete and return to zones list', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
+      await openBulkDeleteConfirmation(page, testZones.slice(0, 1));
 
-      const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
-      if (await checkboxes.count() >= 1) {
-        await checkboxes.nth(0).check();
-
-        const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected")').first();
-        if (await deleteBtn.count() > 0) {
-          await deleteBtn.click();
-
-          const noBtn = page.locator('input[value="No"], button:has-text("No")').first();
-          if (await noBtn.count() > 0) {
-            await noBtn.click();
-            await expect(page).toHaveURL(/.*zones\/forward/);
-          }
-        }
-      }
+      await page.locator('a:has-text("No")').first().click();
+      await expect(page).toHaveURL(/.*zones\/forward/);
+      // Cancelling must leave the zone in place
+      await expect(page.locator(`tr:has-text("${testZones[0]}")`).first()).toBeVisible();
     });
 
     test('should display breadcrumb navigation', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
-
-      const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
-      if (await checkboxes.count() >= 1) {
-        await checkboxes.nth(0).check();
-
-        const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected")').first();
-        if (await deleteBtn.count() > 0) {
-          await deleteBtn.click();
-
-          const breadcrumb = page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]');
-          if (await breadcrumb.count() > 0) {
-            await expect(breadcrumb.first()).toBeVisible();
-          }
-        }
-      }
+      await openBulkDeleteConfirmation(page, testZones.slice(0, 1));
+      await expect(page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]').first()).toBeVisible();
     });
   });
 
@@ -210,26 +119,23 @@ test.describe('Bulk Zone Deletion', () => {
       // Go to zones list and select for deletion
       await page.goto('/zones/forward?letter=all');
 
-      const checkbox1 = page.locator(`tr:has-text("${tempZone1}") input[type="checkbox"]`).first();
-      const checkbox2 = page.locator(`tr:has-text("${tempZone2}") input[type="checkbox"]`).first();
-
-      if (await checkbox1.count() > 0 && await checkbox2.count() > 0) {
-        await checkbox1.check();
-        await checkbox2.check();
-
-        const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected")').first();
-        if (await deleteBtn.count() > 0) {
-          await deleteBtn.click();
-
-          const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-          if (await yesBtn.count() > 0) {
-            await yesBtn.click();
-
-            // Auto-retrying assertion: the click navigation may still be in flight
-            await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-          }
-        }
+      for (const zone of [tempZone1, tempZone2]) {
+        const checkbox = page.locator(`tr:has-text("${zone}") input[type="checkbox"][name="zone_id[]"]`).first();
+        await expect(checkbox).toBeVisible();
+        await checkbox.check();
       }
+
+      const deleteBtn = page.locator('#delete-zones-btn');
+      await expect(deleteBtn).toBeEnabled();
+      await deleteBtn.click();
+
+      await page.locator('button[type="submit"]:has-text("Yes")').first().click();
+
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      // Both zones must actually be gone
+      await page.goto('/zones/forward?letter=all');
+      await expect(page.locator(`tr:has-text("${tempZone1}")`)).toHaveCount(0);
+      await expect(page.locator(`tr:has-text("${tempZone2}")`)).toHaveCount(0);
     });
 
     test('should redirect to zones list with success message after deletion (issue #971)', async ({ page }) => {

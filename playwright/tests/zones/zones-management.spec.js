@@ -48,27 +48,21 @@ test.describe('List Zones', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       const rows = page.locator('table tbody tr');
-      if (await rows.count() > 0) {
-        await expect(rows.first()).toBeVisible();
-      }
+      await expect(rows.first()).toBeVisible();
     });
 
     test('should display edit links for zones', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       const editLinks = page.locator('table a[href*="/edit"]');
-      if (await editLinks.count() > 0) {
-        await expect(editLinks.first()).toBeVisible();
-      }
+      await expect(editLinks.first()).toBeVisible();
     });
 
     test('should display delete links for zones', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
-      const deleteLinks = page.locator('a[href*="/delete"]');
-      if (await deleteLinks.count() > 0) {
-        await expect(deleteLinks.first()).toBeVisible();
-      }
+      const deleteLinks = page.locator('table a[href*="/delete"]');
+      await expect(deleteLinks.first()).toBeVisible();
     });
 
     test('should have working add master zone navigation', async ({ page }) => {
@@ -145,32 +139,28 @@ test.describe('Edit Zone', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await expect(page).toHaveURL(/.*edit/);
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      await expect(page).toHaveURL(/.*edit/);
     });
 
     test('should display records table on edit page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const table = page.locator('table').first();
-        await expect(table).toBeVisible();
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      await expect(page.locator('table').first()).toBeVisible();
     });
 
     test('should display zone metadata', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/owner|zone|type/i);
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/owner|zone|type/i);
     });
   });
 });
@@ -180,39 +170,32 @@ test.describe('Delete Zone', () => {
     test('should navigate to delete zone page from list', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        await expect(page).toHaveURL(/.*delete/);
-      }
+      const deleteLink = page.locator('table a[href*="/delete"]').first();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
+      await expect(page).toHaveURL(/.*delete/);
     });
 
     test('should display confirmation on delete page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
-      }
+      const deleteLink = page.locator('table a[href*="/delete"]').first();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
     });
 
     test('should display yes and no buttons on delete page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        const noBtn = page.locator('input[value="No"], button:has-text("No")').first();
-        if (await yesBtn.count() > 0) {
-          await expect(yesBtn).toBeVisible();
-        }
-        if (await noBtn.count() > 0) {
-          await expect(noBtn).toBeVisible();
-        }
-      }
+      const deleteLink = page.locator('table a[href*="/delete"]').first();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
+
+      // delete_actions() renders confirm as a button and cancel as a link
+      await expect(page.locator('button[type="submit"]:has-text("Yes"), input[value*="Yes"]').first()).toBeVisible();
+      await expect(page.locator('a:has-text("No"), input[value*="No"]').first()).toBeVisible();
     });
   });
 
@@ -228,51 +211,34 @@ test.describe('Delete Zone', () => {
 
 test.describe('Edit Zone Comment', () => {
   test.describe('Admin User', () => {
-    test('should access edit comment page', async ({ page }) => {
+    // The comment link lives on the zone edit page; the list only shows the comment as a tooltip
+    async function openCommentForm(page) {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
-      const row = page.locator('table tbody tr').first();
-      if (await row.count() > 0) {
-        const editLink = row.locator('a[href*="/comment"]').first();
-        if (await editLink.count() > 0) {
-          await editLink.click();
-          await expect(page).toHaveURL(/.*comment/);
-        }
-      }
+
+      const editLink = page.locator('table a[href*="/edit"]').first();
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+
+      // The comment UI is gated behind show_zone_comments; skip visibly when it is off
+      const commentLink = page.locator('a[href*="/comment/edit"]').first();
+      test.skip(await commentLink.count() === 0, 'zone comments are disabled on this instance (show_zone_comments)');
+      await commentLink.click();
+    }
+
+    test('should access edit comment page', async ({ page }) => {
+      await openCommentForm(page);
+      await expect(page).toHaveURL(/.*\/comment\/edit/);
     });
 
     test('should display comment form on edit comment page', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
-      const editLink = page.locator('a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        const href = await editLink.getAttribute('href');
-        const match = href.match(/\/zones\/(\d+)\/edit/);
-        if (match) {
-          await page.goto(`/zones/${match[1]}/comment`);
-          const textarea = page.locator('textarea').first();
-          if (await textarea.count() > 0) {
-            await expect(textarea).toBeVisible();
-          }
-        }
-      }
+      await openCommentForm(page);
+      await expect(page.locator('textarea').first()).toBeVisible();
     });
 
     test('should display update button on edit comment page', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
-      const editLink = page.locator('a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        const href = await editLink.getAttribute('href');
-        const match = href.match(/\/zones\/(\d+)\/edit/);
-        if (match) {
-          await page.goto(`/zones/${match[1]}/comment`);
-          const updateBtn = page.locator('input[type="submit"], button[type="submit"]').first();
-          if (await updateBtn.count() > 0) {
-            await expect(updateBtn).toBeVisible();
-          }
-        }
-      }
+      await openCommentForm(page);
+      await expect(page.locator('input[type="submit"], button[type="submit"]').first()).toBeVisible();
     });
   });
 });
