@@ -233,7 +233,7 @@ class CAARecordValidator implements DnsRecordValidatorInterface
                 }
             } elseif ($tag === 'issuewild') {
                 // For issuewild, RFC 8659 doesn't define parameters, so it should be just a domain
-                if (!$this->hostnameValidator->isValid($unquoted) && $unquoted !== '') {
+                if (!$this->hostnameValidator->isValid($unquoted)) {
                     return ValidationResult::failure(_('Invalid CA domain in issuewild tag.'));
                 }
             }

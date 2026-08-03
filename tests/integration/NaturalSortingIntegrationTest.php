@@ -93,9 +93,7 @@ class NaturalSortingIntegrationTest extends TestCase
         if ($this->pgsqlConnection) {
             $this->pgsqlConnection->exec("DROP TABLE IF EXISTS test_table");
         }
-        if ($this->sqliteConnection) {
-            $this->sqliteConnection->exec("DROP TABLE IF EXISTS test_table");
-        }
+        $this->sqliteConnection->exec("DROP TABLE IF EXISTS test_table");
     }
 
     public function testGetNaturalSortOrderMySQLExample()

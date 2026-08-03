@@ -260,7 +260,7 @@ class AddRecordController extends BaseController
                     $message = _('Record successfully added. A matching PTR record was also created.');
                     $this->setMessage('edit', 'success', $message);
                 }
-            } elseif ($reverseResult && isset($reverseResult['success']) && !$reverseResult['success'] && isset($reverseResult['message'])) {
+            } elseif ($reverseResult && isset($reverseResult['success'], $reverseResult['message'])) {
                 // Reverse record creation failed with a specific message
                 $message = _('Record successfully added, but PTR record creation failed: ') . $reverseResult['message'];
                 $this->setMessage('edit', 'warning', $message);

@@ -106,10 +106,7 @@ class ZoneOwnershipController extends BaseController
         $owners = $this->zoneRepository->getZoneOwners($zone_id);
 
         // Filter out users who are already owners
-        $ownerIds = [];
-        if (is_array($owners)) {
-            $ownerIds = array_column($owners, 'id');
-        }
+        $ownerIds = array_column($owners, 'id');
         $availableUsers = array_values(array_filter($users, function ($user) use ($ownerIds) {
             return !in_array($user['id'], $ownerIds);
         }));
@@ -156,7 +153,7 @@ class ZoneOwnershipController extends BaseController
         $this->render('zone-ownership.html', [
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
-            'is_reverse_zone' => $zone_name !== null && DnsHelper::isReverseZoneName($zone_name),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),
             'users' => $availableUsers,
             'owners' => $owners,
             'group_owners' => $groupOwners,

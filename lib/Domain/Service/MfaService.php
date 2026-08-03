@@ -461,10 +461,7 @@ class MfaService
         }
 
         // Validate mail configuration before proceeding
-        if (
-            method_exists($this->mailService, 'isMailConfigurationValid') &&
-            !$this->mailService->isMailConfigurationValid()
-        ) {
+        if (!$this->mailService->isMailConfigurationValid()) {
             $this->logger->warning('Email verification attempted but mail configuration is invalid for user ID: {userId}', ['userId' => $userId]);
             throw new RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
         }
@@ -536,10 +533,7 @@ class MfaService
         }
 
         // Validate mail configuration before proceeding
-        if (
-            method_exists($this->mailService, 'isMailConfigurationValid') &&
-            !$this->mailService->isMailConfigurationValid()
-        ) {
+        if (!$this->mailService->isMailConfigurationValid()) {
             $this->logger->warning('Email verification refresh attempted but mail configuration is invalid for user ID: {userId}', ['userId' => $userId]);
             throw new RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
         }

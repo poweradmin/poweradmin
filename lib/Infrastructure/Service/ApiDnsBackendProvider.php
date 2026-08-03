@@ -954,7 +954,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         $records = [];
         foreach ($zoneData['rrsets'] ?? [] as $rrset) {
             $type = $rrset['type'] ?? '';
-            if ($type === '' || $type === null) {
+            if ($type === '') {
                 continue; // Skip ENT records
             }
 

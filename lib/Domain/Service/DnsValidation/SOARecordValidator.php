@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -269,7 +269,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         // Process the SOA timing fields (refresh, retry, expire, minimum)
         for ($i = 3; ($i < 7); $i++) {
             $field_idx = $i - 3;
-            $field_name = $soa_field_names[$field_idx] ?? 'unknown';
+            $field_name = $soa_field_names[$field_idx];
 
             // Basic validation - fields must be numeric
             if (!is_numeric($fields[$i])) {

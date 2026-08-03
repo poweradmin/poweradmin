@@ -284,10 +284,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        if ($countOnly) {
-            return (int)$stmt->fetchColumn();
-        }
-
         // Process results
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $zones = [];

@@ -137,7 +137,7 @@ class ConfigValidator
         }
 
         foreach ($enabledLanguagesArray as $lang) {
-            if (!is_string($lang) || empty($lang)) {
+            if (empty($lang)) {
                 $this->errors['interface.enabled_languages'] = 'enabled_languages must be a non-empty string and contain a list of languages separated by commas';
                 break;
             }

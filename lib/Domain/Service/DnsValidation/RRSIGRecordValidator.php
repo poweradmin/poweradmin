@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -273,7 +273,7 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
                 $thirtyDaysLater = (clone $currentTime)->modify('+30 days');
                 if ($expirationTime < $currentTime) {
                     $warnings[] = _('CRITICAL: This signature has already expired. It will not be validated by DNSSEC resolvers.');
-                } elseif ($sevenDaysLater && $expirationTime < $sevenDaysLater) {
+                } elseif ($expirationTime < $sevenDaysLater) {
                     $warnings[] = _('WARNING: This signature will expire within the next 7 days. Consider renewing it soon.');
                 } elseif ($thirtyDaysLater && $expirationTime < $thirtyDaysLater) {
                     $warnings[] = _('This signature will expire within the next 30 days. Plan for renewal.');

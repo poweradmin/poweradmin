@@ -301,7 +301,7 @@ class BatchReverseRecordCreator
                         if ($result && $createForwardRecords) {
                             // Find or get domain ID for the forward zone
                             $forward_domain_id = $this->domainRepository->getDomainIdByName($domain);
-                            if ($forward_domain_id && is_int($forward_domain_id)) {
+                            if ($forward_domain_id) {
                                 // Create the hostname for the A record
                                 $hostname = !empty($hostPrefix) ? $hostPrefix . $i . '.' . $domain : $domain;
 
@@ -534,7 +534,7 @@ class BatchReverseRecordCreator
                     if ($result && $createForwardRecords) {
                         // Find or get domain ID for the forward zone
                         $forward_domain_id = $this->domainRepository->getDomainIdByName($domain);
-                        if ($forward_domain_id && is_int($forward_domain_id)) {
+                        if ($forward_domain_id) {
                             // Create the hostname for the AAAA record
                             $hostname = !empty($hostPrefix) ? $hostPrefix . $hex . '.' . $domain : $domain;
 

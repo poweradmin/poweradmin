@@ -335,7 +335,7 @@ final class ProxyContext
             $entryHost = $entry;
             if (preg_match('/^\[([^\]]+)\](?::(\d+))?$/', $entry, $m)) {
                 $entryHost = $m[1];
-                if (isset($m[2]) && $m[2] !== '') {
+                if (isset($m[2])) {
                     $entryPort = (int) $m[2];
                 }
             } elseif (preg_match('/^([^:]+):(\d+)$/', $entry, $m)) {

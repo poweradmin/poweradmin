@@ -131,7 +131,7 @@ class DnsWizardFormController extends BaseController
         foreach ($schema['sections'] as $section) {
             if (isset($section['fields'])) {
                 foreach ($section['fields'] as $field) {
-                    if (isset($field['default']) && $field['default'] !== null && $field['default'] !== '') {
+                    if (isset($field['default']) && $field['default'] !== '') {
                         $formData[$field['name']] = $field['default'];
                     }
                 }
