@@ -67,11 +67,10 @@ test.describe('User Permission Combinations', () => {
     test('should edit any zone', async ({ page }) => {
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/you do not have|access denied|not authorized/i);
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/you do not have|access denied|not authorized/i);
     });
 
     test('should delete any zone', async ({ page }) => {
@@ -85,12 +84,15 @@ test.describe('User Permission Combinations', () => {
 
     test('should access DNSSEC settings', async ({ page }) => {
       await page.goto('/zones/forward?letter=all');
-      const dnssecLink = page.locator('a[href*="/dnssec"]').first();
-      if (await dnssecLink.count() > 0) {
-        await dnssecLink.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/access denied|you do not have permission/i);
-      }
+      // The zone list only shows a DNSSEC status icon; the controls live on the zone edit page
+      const editLink = page.locator('table a[href*="/edit"]').first();
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+
+      // A signed zone links to the DNSSEC manager, an unsigned one offers to sign it.
+      // Either affordance proves the admin may manage DNSSEC for the zone.
+      await expect(page.locator('a[href*="/dnssec"], button[name="sign_zone"]').first()).toBeVisible();
+      await expect(page.locator('body')).not.toContainText(/access denied|you do not have permission/i);
     });
   });
 
@@ -114,11 +116,10 @@ test.describe('User Permission Combinations', () => {
     test('should edit own zones', async ({ page }) => {
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/access denied|you do not have permission/i);
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/access denied|you do not have permission/i);
     });
 
     test('should delete own zones', async ({ page }) => {
@@ -130,15 +131,14 @@ test.describe('User Permission Combinations', () => {
     test('should add records to own zones', async ({ page }) => {
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const addRecordLink = page.locator('a[href*="/records/add"]').first();
-        if (await addRecordLink.count() > 0) {
-          await addRecordLink.click();
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/access denied|you do not have permission/i);
-        }
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+
+      const addRecordLink = page.locator('a[href*="/records/add"]').first();
+      await expect(addRecordLink).toBeVisible();
+      await addRecordLink.click();
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/access denied|you do not have permission/i);
     });
 
     test('should search zones and records', async ({ page }) => {
@@ -179,13 +179,11 @@ test.describe('User Permission Combinations', () => {
     test('should edit records in assigned zones', async ({ page }) => {
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        // Check for access denied messages in the main content, not navigation
-        const mainContent = page.locator('main, .container, .content, #content').first();
-        // Should not show access denied in main content area
-        await expect(mainContent).not.toContainText(/access denied|you do not have permission/i);
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      // Check for access denied messages in the main content, not navigation
+      const mainContent = page.locator('main, .container, .content, #content').first();
+      await expect(mainContent).not.toContainText(/access denied|you do not have permission/i);
     });
 
     test('should search zones', async ({ page }) => {
@@ -220,44 +218,40 @@ test.describe('User Permission Combinations', () => {
     test('should view zone details', async ({ page }) => {
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should not have add record option', async ({ page }) => {
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const addRecordLink = page.locator('a[href*="/records/add"]');
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(addRecordLink).toHaveCount(0);
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      const addRecordLink = page.locator('a[href*="/records/add"]');
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(addRecordLink).toHaveCount(0);
     });
 
     test('should not have edit record option', async ({ page }) => {
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const editRecordLink = page.locator('a[href*="/records/"][href*="/edit"]');
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(editRecordLink).toHaveCount(0);
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      const editRecordLink = page.locator('a[href*="/records/"][href*="/edit"]');
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(editRecordLink).toHaveCount(0);
     });
 
     test('should not have delete record option', async ({ page }) => {
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const deleteRecordLink = page.locator('a[href*="/records/"][href*="/delete"]');
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(deleteRecordLink).toHaveCount(0);
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      const deleteRecordLink = page.locator('a[href*="/records/"][href*="/delete"]');
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(deleteRecordLink).toHaveCount(0);
     });
 
     test('should search zones read-only', async ({ page }) => {

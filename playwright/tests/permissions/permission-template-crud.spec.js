@@ -7,6 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { ensurePermTemplateExists } from '../../helpers/templates.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
@@ -40,13 +41,9 @@ test.describe('Permission Template CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/permissions/templates');
 
-      const addBtn = page.locator('a[href*="/permissions/templates/add"], input[value*="Add"], button:has-text("Add"), a:has-text("Add permission template")');
-      if (await addBtn.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/permission template/i);
-      } else {
-        expect(await addBtn.count()).toBeGreaterThan(0);
-      }
+      // :not(.dropdown-item) keeps this off the hidden nav menu entry of the same href
+      const addBtn = page.locator('a[href*="/permissions/templates/add"]:not(.dropdown-item)');
+      await expect(addBtn.first()).toBeVisible();
     });
 
     test('should display filter tabs for All/User/Group', async ({ page }) => {
@@ -106,12 +103,7 @@ test.describe('Permission Template CRUD Operations', () => {
       await page.goto('/permissions/templates/add');
 
       const nameField = page.locator('input[name="templ_name"], input[id="templ_name"], input[name*="name"]');
-      if (await nameField.count() > 0) {
-        await expect(nameField.first()).toBeVisible();
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/name|template/i);
-      }
+      await expect(nameField.first()).toBeVisible();
     });
 
     test('should display description field', async ({ page }) => {
@@ -119,9 +111,7 @@ test.describe('Permission Template CRUD Operations', () => {
       await page.goto('/permissions/templates/add');
 
       const descField = page.locator('input[name*="descr"], textarea[name*="descr"]');
-      if (await descField.count() > 0) {
-        await expect(descField.first()).toBeVisible();
-      }
+      await expect(descField.first()).toBeVisible();
     });
 
     test('should display permission checkboxes', async ({ page }) => {
@@ -187,171 +177,115 @@ test.describe('Permission Template CRUD Operations', () => {
   });
 
   test.describe('Edit Permission Template', () => {
-    test('should access edit template page', async ({ page }) => {
+    // Edit against a template of our own so the run cannot mutate a built-in one
+    const editableName = `${templateName}-editable`;
+
+    async function openEditableTemplate(page) {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/permissions/templates');
+      const templateId = await ensurePermTemplateExists(page, editableName);
+      expect(templateId, `permission template "${editableName}" must exist`).toBeTruthy();
+      await page.goto(`/permissions/templates/${templateId}/edit`);
+      return templateId;
+    }
 
-      // Use table-specific selector to avoid matching dropdown menu items
-      const table = page.locator('table');
-      if (await table.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-        return;
-      }
-
-      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await expect(page).toHaveURL(/.*permissions\/templates\/\d+\/edit/);
-      } else {
-        // No templates to edit - this is acceptable
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      }
+    test('should access edit template page', async ({ page }) => {
+      await openEditableTemplate(page);
+      await expect(page).toHaveURL(/.*permissions\/templates\/\d+\/edit/);
     });
 
     test('should display current template name', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/permissions/templates');
+      await openEditableTemplate(page);
 
-      const table = page.locator('table');
-      if (await table.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-        return;
-      }
-
-      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-
-        const nameField = page.locator('input[type="text"][name*="name"]:not([name*="id"]), input[type="text"][name*="templ"]').first();
-        if (await nameField.count() > 0) {
-          const value = await nameField.inputValue();
-          expect(value.length).toBeGreaterThan(0);
-        }
-      }
+      const nameField = page.locator('input[type="text"][name*="name"]:not([name*="id"]), input[type="text"][name*="templ"]').first();
+      await expect(nameField).toHaveValue(editableName);
     });
 
     test('should update template name', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await openEditableTemplate(page);
+
+      const renamed = `${editableName}-renamed`;
+      const nameField = page.locator('input[type="text"][name*="name"]:not([name*="id"]), input[type="text"][name*="templ"]').first();
+      await nameField.fill(renamed);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       await page.goto('/permissions/templates');
+      await expect(page.locator(`tr:has-text("${renamed}")`)).toBeVisible();
 
-      const table = page.locator('table');
-      if (await table.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-        return;
-      }
-
-      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-
-        const nameField = page.locator('input[type="text"][name*="name"]:not([name*="id"]), input[type="text"][name*="templ"]').first();
-        if (await nameField.count() > 0) {
-          await nameField.fill(`updated-template-${Date.now()}`);
-          await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
-      }
+      // Restore the name so the other tests in this block still find the template
+      await page.locator(`tr:has-text("${renamed}") a[href*="/edit"]`).first().click();
+      await page.locator('input[type="text"][name*="name"]:not([name*="id"]), input[type="text"][name*="templ"]').first().fill(editableName);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
     });
 
     test('should add permissions to template', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/permissions/templates');
+      await openEditableTemplate(page);
 
-      const table = page.locator('table');
-      if (await table.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-        return;
-      }
+      // .permission-checkbox skips the #select-all toggle, which carries no id of its own
+      const target = page.locator('.permission-checkbox:not(:checked)').first();
+      await expect(target).toBeVisible();
+      const permId = await target.getAttribute('id');
+      await target.check();
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-
-        const uncheckedBoxes = page.locator('input[type="checkbox"]:not(:checked)');
-        const uncheckedCount = await uncheckedBoxes.count();
-        if (uncheckedCount > 0) {
-          await uncheckedBoxes.first().check();
-          await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
-      }
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await openEditableTemplate(page);
+      await expect(page.locator(`#${permId}`)).toBeChecked();
     });
 
     test('should remove permissions from template', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/permissions/templates');
+      await openEditableTemplate(page);
 
-      const table = page.locator('table');
-      if (await table.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-        return;
-      }
+      // Grant a permission first so the removal has something to act on when run in isolation
+      const unchecked = page.locator('.permission-checkbox:not(:checked)').first();
+      await expect(unchecked).toBeVisible();
+      const permId = await unchecked.getAttribute('id');
+      await unchecked.check();
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      const editLink = table.locator('tbody a[href*="permissions"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
+      await openEditableTemplate(page);
+      const checkedBox = page.locator(`#${permId}`);
+      await expect(checkedBox).toBeChecked();
+      await checkedBox.uncheck();
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        const checkedBox = page.locator('input[type="checkbox"]:checked').first();
-        if (await checkedBox.count() > 0) {
-          await checkedBox.uncheck();
-          await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
-      }
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await openEditableTemplate(page);
+      await expect(page.locator(`#${permId}`)).not.toBeChecked();
     });
   });
 
   test.describe('Delete Permission Template', () => {
-    test('should access delete confirmation', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/permissions/templates');
+    // Confirm against a template of our own so a stray confirmation cannot delete a built-in one
+    const deletableName = `${templateName}-deletable`;
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        await expect(page).toHaveURL(/.*delete/);
-      }
+    async function openDeleteConfirmation(page) {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const templateId = await ensurePermTemplateExists(page, deletableName);
+      expect(templateId, `permission template "${deletableName}" must exist`).toBeTruthy();
+      await page.goto(`/permissions/templates/${templateId}/delete`);
+    }
+
+    test('should access delete confirmation', async ({ page }) => {
+      await openDeleteConfirmation(page);
+      await expect(page).toHaveURL(/.*permissions\/templates\/\d+\/delete/);
     });
 
     test('should display confirmation message', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/permissions/templates');
-
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
-      }
+      await openDeleteConfirmation(page);
+      await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
     });
 
     test('should cancel delete and return to list', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/permissions/templates');
+      await openDeleteConfirmation(page);
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      const noBtn = page.locator('input[value="No"], button:has-text("No"), a:has-text("No")').first();
+      await expect(noBtn).toBeVisible();
+      await noBtn.click();
 
-        const noBtn = page.locator('input[value="No"], button:has-text("No"), a:has-text("No")').first();
-        if (await noBtn.count() > 0) {
-          await noBtn.click();
-          await expect(page).toHaveURL(/.*permissions\/templates/);
-        }
-      }
+      await expect(page).toHaveURL(/.*permissions\/templates/);
+      // Cancelling must leave the template in place
+      await expect(page.locator(`tr:has-text("${deletableName}")`)).toBeVisible();
     });
   });
 
