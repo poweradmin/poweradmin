@@ -30,30 +30,29 @@ test.describe('Error Handling and Edge Cases', () => {
       await page.goto('/zones/add/master');
       await page.waitForLoadState('networkidle');
 
-      // Find and tamper with the CSRF token (correct field name is _token per CLAUDE.md)
+      // A missing or blank token is itself the regression this test guards against
       const csrfField = page.locator('input[name="_token"]');
-      if (await csrfField.count() > 0) {
-        await csrfField.evaluate((el) => el.value = 'invalid-token');
+      await expect(csrfField).toHaveCount(1);
+      await expect(csrfField).not.toHaveValue('');
 
-        // Fill in zone name
-        const zoneInput = page.locator('[data-testid="zone-name-input"], input[name*="zone_name"], input[name*="zonename"]').first();
-        if (await zoneInput.count() > 0) {
-          await zoneInput.fill('csrf-test.com');
-        }
+      await csrfField.evaluate((el) => el.value = 'invalid-token');
 
-        // Try to submit the form
-        const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-        await submitBtn.click();
-        await page.waitForLoadState('networkidle');
+      const zoneName = `csrf-test-${Date.now()}.com`;
+      const zoneInput = page.locator('[data-testid="zone-name-input"], input[name*="zone_name"], input[name*="zonename"]').first();
+      await expect(zoneInput).toBeVisible();
+      await zoneInput.fill(zoneName);
 
-        // The key test is that the application doesn't crash
-        // CSRF protection may result in various behaviors (error, redirect, stay on form)
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      } else {
-        // CSRF protection may be implemented differently
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+      // The test instances run with security.global_token_validation = false, so the
+      // tampered submission is accepted here and rejection cannot be asserted end-to-end.
+      // Remove the zone if it went through, so the run leaves no residue.
+      await page.goto('/zones/forward?letter=all');
+      const created = page.locator(`tr:has-text("${zoneName}")`);
+      if (await created.count() > 0) {
+        await created.first().locator('a[href*="/delete"]').first().click();
+        await page.locator('button[type="submit"]:has-text("Yes"), input[value*="Yes"]').first().click();
       }
     });
   });
