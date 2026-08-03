@@ -15,7 +15,9 @@ test.describe.configure({ mode: 'serial' });
 // Helper to get a zone ID for testing
 async function getTestZoneId(page) {
   await page.goto('/zones/forward?letter=all');
-  const editLink = page.locator('a[href*="/edit"]').first();
+  // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
+  // which carries no zone id, so this helper used to return null for every test.
+  const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
   if (await editLink.count() > 0) {
     const href = await editLink.getAttribute('href');
     const match = href.match(/\/zones\/(\d+)\/edit/);
@@ -233,10 +235,10 @@ test.describe('DNSSEC Key Management', () => {
 
       await page.goto(`/zones/${zoneId}/dnssec`);
 
-      const activateLinks = page.locator('a[href*="/edit"], a[href*="/activate"], a[href*="/deactivate"]');
-      if (await activateLinks.count() > 0) {
-        await expect(activateLinks.first()).toBeVisible();
-      }
+      // Scoped to the key table: an unscoped a[href*="/edit"] matches the nav dropdown
+      const activateLinks = page.locator('table a[href*="/dnssec"], table a[href*="/activate"], table a[href*="/deactivate"]');
+      test.skip(await activateLinks.count() === 0, 'zone has no DNSSEC keys to activate or deactivate');
+      await expect(activateLinks.first()).toBeVisible();
     });
 
     test('should access key edit page', async ({ page }) => {

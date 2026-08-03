@@ -13,7 +13,9 @@ test.describe.configure({ mode: 'serial' });
 
 async function getTestZoneId(page) {
   await page.goto('/zones/forward?letter=all');
-  const editLink = page.locator('a[href*="/edit"]').first();
+  // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
+  // which carries no zone id, so this helper used to return null for every test.
+  const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
   if (await editLink.count() > 0) {
     const href = await editLink.getAttribute('href');
     const match = href.match(/\/zones\/(\d+)\/edit/);
@@ -80,11 +82,11 @@ test.describe('Zone Metadata Editor', () => {
 
     // Save
     await page.locator('[data-testid="save-zone-metadata"]').click();
-    await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-    expect(bodyText).toContain('successfully');
+    // The controller redirects back to the metadata page with a flash message, so
+    // wait for the alert rather than reading the body once and racing the redirect.
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
   });
 
   test('should persist saved metadata on reload', async ({ page }) => {
@@ -160,16 +162,18 @@ test.describe('Zone Metadata Editor', () => {
     const lastKindSelect = page.locator('.metadata-kind-select').last();
     await lastKindSelect.selectOption('SOA-EDIT-API');
 
-    const lastContentInput = page.locator('.metadata-content').last();
-    await lastContentInput.fill('DEFAULT');
+    // Kinds with a fixed vocabulary swap the free-text input for a select and
+    // disable the input, so SOA-EDIT-API takes its value from the dropdown.
+    const lastContentSelect = page.locator('.metadata-content-select').last();
+    await lastContentSelect.selectOption('DEFAULT');
 
     // Save
     await page.locator('[data-testid="save-zone-metadata"]').click();
-    await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-    expect(bodyText).toContain('successfully');
+    // The controller redirects back to the metadata page with a flash message, so
+    // wait for the alert rather than reading the body once and racing the redirect.
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
   });
 
   test('should clean up test metadata', async ({ page }) => {

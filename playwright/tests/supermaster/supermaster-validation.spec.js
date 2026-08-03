@@ -110,9 +110,7 @@ test.describe('Supermaster Validation', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/supermasters/add');
       const accountSelect = page.locator('select[name*="account"], select[name*="user"]');
-      if (await accountSelect.count() > 0) {
-        await expect(accountSelect.first()).toBeVisible();
-      }
+      await expect(accountSelect.first()).toBeVisible();
     });
 
     test('should assign supermaster to account', async ({ page }) => {
@@ -173,26 +171,28 @@ test.describe('Supermaster Validation', () => {
     test('should confirm before delete', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/supermasters');
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        await page.waitForLoadState('networkidle');
-        await expect(page.locator('.alert-heading:has-text("Warning")')).toBeVisible();
-      }
+      const deleteLink = page.locator('table a[href*="/supermasters/delete"]').first();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
+      await expect(page.locator('.alert-heading:has-text("Warning")')).toBeVisible();
     });
 
     test('should cancel delete', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/supermasters');
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        const noBtn = page.locator('input[value="No"], button:has-text("No")').first();
-        if (await noBtn.count() > 0) {
-          await noBtn.click();
-          await expect(page).toHaveURL(/.*supermasters/);
-        }
-      }
+      const deleteLink = page.locator('table a[href*="/supermasters/delete"]').first();
+      await expect(deleteLink).toBeVisible();
+      const deleteHref = await deleteLink.getAttribute('href');
+      await deleteLink.click();
+
+      // delete_actions() renders the cancel control as a link, not a button
+      const noBtn = page.locator('input[value*="No"], button:has-text("No"), a:has-text("No")').first();
+      await expect(noBtn).toBeVisible();
+      await noBtn.click();
+
+      await expect(page).toHaveURL(/.*supermasters/);
+      // Cancelling must leave the autoprimary in place
+      await expect(page.locator(`a[href="${deleteHref}"]`).first()).toBeVisible();
     });
   });
 

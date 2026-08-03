@@ -7,7 +7,9 @@ test.describe.configure({ mode: 'serial' });
 test.describe('Record save busy state - Issue #1409', () => {
   async function getTestZoneId(page) {
     await page.goto('/zones/forward?letter=all');
-    const editLink = page.locator('a[href*="/edit"]').first();
+    // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
+    // which carries no zone id, so this helper used to return null for every test.
+      const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
     if (await editLink.count() > 0) {
       const href = await editLink.getAttribute('href');
       const match = href.match(/\/zones\/(\d+)\/edit/);
@@ -29,34 +31,37 @@ test.describe('Record save busy state - Issue #1409', () => {
     await page.locator('input[name*="name"]').first().fill(`busy-${Date.now()}`);
     await page.locator('input[name*="content"]').first().fill('192.0.2.44');
 
-    let release;
-    const held = new Promise(resolve => {
-      release = resolve;
-    });
     let postCount = 0;
-
     await page.route('**/records/add', async route => {
-      if (route.request().method() !== 'POST') {
-        await route.continue();
-        return;
+      if (route.request().method() === 'POST') {
+        postCount++;
       }
-      postCount++;
-      await held;
       await route.continue();
     });
 
-    const button = page.locator('button[name="commit"]');
-    await button.click();
+    // Record the button state at submit time and stash it somewhere that survives
+    // the navigation. Querying the DOM while the POST is in flight only blocks on
+    // "waiting for navigation to finish". The second requestSubmit proves the form
+    // refuses a repeat while it is already submitting.
+    await page.evaluate(() => {
+      document.addEventListener('submit', () => {
+        const b = document.querySelector('button[name="commit"]');
+        sessionStorage.setItem('addBusyProbe', JSON.stringify({
+          ariaBusy: b.getAttribute('aria-busy'),
+          spinner: !!b.querySelector('.spinner-border'),
+        }));
+        b.form.requestSubmit(b);
+      }, { once: true });
+    });
 
-    await expect(button).toHaveAttribute('aria-busy', 'true');
-    await expect(button.locator('.spinner-border')).toBeVisible();
+    await page.locator('button[name="commit"]').click();
+    await page.waitForLoadState('domcontentloaded');
 
-    // A second click must not produce a second POST
-    await button.click({ force: true });
+    const probe = JSON.parse(await page.evaluate(() => sessionStorage.getItem('addBusyProbe')));
+    expect(probe.ariaBusy).toBe('true');
+    expect(probe.spinner).toBe(true);
     expect(postCount).toBe(1);
 
-    release();
-    await page.waitForLoadState('domcontentloaded');
     await page.unroute('**/records/add');
   });
 

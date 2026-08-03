@@ -61,9 +61,8 @@ test.describe('Signed Serial Display (Issue #1378)', () => {
     await page.goto(editHref);
     await page.waitForLoadState('networkidle');
 
-    // Signed serial sits inside the collapsed Zone Configuration card
-    await page.locator('[data-bs-target="#zone-config-body"]').click();
-    await expect(page.locator('#zone-config-body')).toContainText('Signed serial:');
-    await expect(page.locator('#zone-config-body p:has-text("Signed serial:") code')).toHaveText(/^\d+$/);
+    // Signed serial sits in the Zone Configuration card, which renders expanded
+    await expect(page.locator('p:has-text("Signed serial:")')).toBeVisible();
+    await expect(page.locator('p:has-text("Signed serial:") code')).toHaveText(/^\d+$/);
   });
 });
