@@ -128,7 +128,7 @@ class EditZoneMetadataController extends BaseController
             $validationErrors = $this->validateMetadataRows($submittedMetadata);
 
             if (!empty($validationErrors)) {
-                $this->setMessage('zone_metadata', 'error', $validationErrors[0]);
+                $this->setMessage('edit_zone_metadata', 'error', $validationErrors[0]);
                 $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
                 return;
             }
@@ -140,7 +140,7 @@ class EditZoneMetadataController extends BaseController
 
             $restrictionErrors = $this->operatorOnlyViolations($submittedMetadata, $beforeMetadata);
             if (!empty($restrictionErrors)) {
-                $this->setMessage('zone_metadata', 'error', $restrictionErrors[0]);
+                $this->setMessage('edit_zone_metadata', 'error', $restrictionErrors[0]);
                 $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
                 return;
             }
@@ -168,12 +168,12 @@ class EditZoneMetadataController extends BaseController
                     $this->logger->warning('Failed to write zone metadata edit log: {error}', ['error' => $e->getMessage()]);
                 }
 
-                $this->setMessage('zone_metadata', 'success', _('Zone metadata has been updated successfully.'));
+                $this->setMessage('edit_zone_metadata', 'success', _('Zone metadata has been updated successfully.'));
                 $this->redirect('/zones/' . $zoneId . '/metadata');
                 return;
             }
 
-            $this->setMessage('zone_metadata', 'error', _('Failed to update zone metadata.'));
+            $this->setMessage('edit_zone_metadata', 'error', _('Failed to update zone metadata.'));
             $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
             return;
         }

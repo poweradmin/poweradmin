@@ -177,14 +177,14 @@ class ZoneOwnershipController extends BaseController
         $newowner = $this->request->getPostParam('newowner');
         if ($newowner !== null && is_numeric($newowner) && $meta_edit) {
             if (!$ownershipMode->isUserOwnerAllowed()) {
-                $this->setMessage('zone_ownership', 'error', _('User-owner assignment is disabled by the current zone ownership mode.'));
+                $this->setMessage('zone-ownership', 'error', _('User-owner assignment is disabled by the current zone ownership mode.'));
                 return;
             }
             $ownerAdded = $this->zoneRepository->addOwnerToZone($zone_id, (int)$newowner);
 
             if ($ownerAdded) {
                 $auditService->logZoneOwnerAdd($zone_id, $zone_name, (int)$newowner);
-                $this->setMessage('zone_ownership', 'success', _('Owner has been added successfully.'));
+                $this->setMessage('zone-ownership', 'success', _('Owner has been added successfully.'));
 
                 // Send zone access granted notification
                 if ($this->config->get('notifications', 'zone_access_enabled', false)) {
@@ -214,26 +214,26 @@ class ZoneOwnershipController extends BaseController
             $wouldRemoveLastUserOwner = $isCurrentOwner && count($currentOwners) <= 1;
             if ($wouldRemoveLastUserOwner && count($currentGroups) === 0) {
                 $hint = $this->buildLastOwnerHint($ownershipMode);
-                $this->setMessage('zone_ownership', 'error', _('Cannot remove the last owner: this would leave the zone with no ownership.') . ' ' . $hint);
+                $this->setMessage('zone-ownership', 'error', _('Cannot remove the last owner: this would leave the zone with no ownership.') . ' ' . $hint);
                 return;
             }
             // users_only requires at least one user owner; refuse to leave the
             // zone with only legacy group ownership that the mode forbids.
             if ($wouldRemoveLastUserOwner && !$ownershipMode->isGroupOwnerAllowed()) {
-                $this->setMessage('zone_ownership', 'error', _('Cannot remove the last user owner: zone ownership mode is users_only and requires at least one user owner. Add another user owner first.'));
+                $this->setMessage('zone-ownership', 'error', _('Cannot remove the last user owner: zone ownership mode is users_only and requires at least one user owner. Add another user owner first.'));
                 return;
             }
             // groups_only requires at least one group: block any user-owner
             // removal on a zone that currently has no group ownership.
             if ($isCurrentOwner && !$ownershipMode->isUserOwnerAllowed() && count($currentGroups) === 0) {
-                $this->setMessage('zone_ownership', 'error', _('Cannot remove user owner: zone ownership mode is groups_only and the zone has no group owners. Add a group first.'));
+                $this->setMessage('zone-ownership', 'error', _('Cannot remove user owner: zone ownership mode is groups_only and the zone has no group owners. Add a group first.'));
                 return;
             }
             $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, $deleteUserId);
 
             if ($ownerRemoved) {
                 $auditService->logZoneOwnerRemove($zone_id, $zone_name, (int)$delete_owner);
-                $this->setMessage('zone_ownership', 'success', _('Owner has been removed successfully.'));
+                $this->setMessage('zone-ownership', 'success', _('Owner has been removed successfully.'));
 
                 // Send zone access revoked notification
                 if ($this->config->get('notifications', 'zone_access_enabled', false)) {
@@ -247,7 +247,7 @@ class ZoneOwnershipController extends BaseController
         $newgroup = $this->request->getPostParam('newgroup');
         if ($newgroup !== null && is_numeric($newgroup) && $meta_edit) {
             if (!$ownershipMode->isGroupOwnerAllowed()) {
-                $this->setMessage('zone_ownership', 'error', _('Group-ownership assignment is disabled by the current zone ownership mode.'));
+                $this->setMessage('zone-ownership', 'error', _('Group-ownership assignment is disabled by the current zone ownership mode.'));
                 return;
             }
             $groupId = (int)$newgroup;
@@ -259,7 +259,7 @@ class ZoneOwnershipController extends BaseController
                 $allowedGroups = $userGroupRepo->findByUserId($userId);
                 $allowedGroupIds = array_map(fn($g) => $g->getId(), $allowedGroups);
                 if (!in_array($groupId, $allowedGroupIds)) {
-                    $this->setMessage('zone_ownership', 'error', _('You do not have permission to assign this group.'));
+                    $this->setMessage('zone-ownership', 'error', _('You do not have permission to assign this group.'));
                     return;
                 }
             }
@@ -267,7 +267,7 @@ class ZoneOwnershipController extends BaseController
             $zoneGroupRepo = $this->createZoneGroupRepository();
             $zoneGroupRepo->add($zone_id, $groupId);
             $auditService->logZoneGroupAdd($zone_id, $zone_name, $groupId);
-            $this->setMessage('zone_ownership', 'success', _('Group has been added successfully.'));
+            $this->setMessage('zone-ownership', 'success', _('Group has been added successfully.'));
         }
 
         // Delete group
@@ -290,24 +290,24 @@ class ZoneOwnershipController extends BaseController
             $wouldRemoveLastGroup = $isCurrentGroup && count($currentGroups) <= 1;
             if ($wouldRemoveLastGroup && count($currentOwners) === 0) {
                 $hint = $this->buildLastOwnerHint($ownershipMode);
-                $this->setMessage('zone_ownership', 'error', _('Cannot remove the last owner: this would leave the zone with no ownership.') . ' ' . $hint);
+                $this->setMessage('zone-ownership', 'error', _('Cannot remove the last owner: this would leave the zone with no ownership.') . ' ' . $hint);
                 return;
             }
             // groups_only requires at least one group; refuse to leave the zone
             // with only legacy user ownership that the mode forbids.
             if ($wouldRemoveLastGroup && !$ownershipMode->isUserOwnerAllowed()) {
-                $this->setMessage('zone_ownership', 'error', _('Cannot remove the last group: zone ownership mode is groups_only and requires at least one group. Add another group first.'));
+                $this->setMessage('zone-ownership', 'error', _('Cannot remove the last group: zone ownership mode is groups_only and requires at least one group. Add another group first.'));
                 return;
             }
             // users_only requires at least one user owner: block any group
             // removal on a zone that currently has no user owners.
             if ($isCurrentGroup && !$ownershipMode->isGroupOwnerAllowed() && count($currentOwners) === 0) {
-                $this->setMessage('zone_ownership', 'error', _('Cannot remove group: zone ownership mode is users_only and the zone has no user owners. Add a user owner first.'));
+                $this->setMessage('zone-ownership', 'error', _('Cannot remove group: zone ownership mode is users_only and the zone has no user owners. Add a user owner first.'));
                 return;
             }
             $zoneGroupRepo->remove($zone_id, $deleteGroupId);
             $auditService->logZoneGroupRemove($zone_id, $zone_name, $deleteGroupId);
-            $this->setMessage('zone_ownership', 'success', _('Group has been removed successfully.'));
+            $this->setMessage('zone-ownership', 'success', _('Group has been removed successfully.'));
         }
     }
 

@@ -119,12 +119,12 @@ class SaveZoneAsTemplateController extends BaseController
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
 
         if ($zoneTemplate->zoneTemplNameExists($template_name)) {
-            $this->setMessage('save_zone_template', 'error', _('Zone template with this name already exists, please choose another one.'));
+            $this->setMessage('save-zone-template', 'error', _('Zone template with this name already exists, please choose another one.'));
             return;
         }
 
         if ($template_name == '') {
-            $this->setMessage('save_zone_template', 'error', _("Template name can't be an empty string."));
+            $this->setMessage('save-zone-template', 'error', _("Template name can't be an empty string."));
             return;
         }
 
@@ -148,7 +148,7 @@ class SaveZoneAsTemplateController extends BaseController
 
         $auditService = new AuditService($this->db);
         $auditService->logZoneTemplateAdd($template_name);
-        $this->setMessage('save_zone_template', 'success', _('Zone template has been created successfully.'));
+        $this->setMessage('list_zone_templ', 'success', _('Zone template has been created successfully.'));
 
         // Redirect to template list after successful save
         $this->redirect("/zones/templates");
