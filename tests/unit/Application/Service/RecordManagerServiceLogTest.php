@@ -26,7 +26,6 @@ use PDO;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -58,7 +57,6 @@ class RecordManagerServiceLogTest extends TestCase
             $domainRepository,
             $recordManager,
             $this->createMock(RecordCommentService::class),
-            $this->createMock(RecordCommentSyncService::class),
             $logger,
             $config,
             null

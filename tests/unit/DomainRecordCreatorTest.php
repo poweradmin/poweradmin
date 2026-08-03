@@ -7,7 +7,6 @@ use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class DomainRecordCreatorTest extends TestCase
 {
@@ -23,8 +22,6 @@ class DomainRecordCreatorTest extends TestCase
             }
             return $default;
         });
-
-        $logger = $this->createMock(LegacyLogger::class);
 
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $recordManager = $this->createMock(RecordManagerInterface::class);
@@ -42,7 +39,7 @@ class DomainRecordCreatorTest extends TestCase
         });
         $recordManager->method('addRecord')->willReturn($addRecordResult);
 
-        return new DomainRecordCreator($config, $logger, $domainRepository, $recordManager);
+        return new DomainRecordCreator($config, $domainRepository, $recordManager);
     }
 
     // =========================================================================
@@ -206,12 +203,11 @@ class DomainRecordCreatorTest extends TestCase
             return $default;
         });
 
-        $logger = $this->createMock(LegacyLogger::class);
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $recordManager = $this->createMock(RecordManagerInterface::class);
         $domainRepository->method('getDomainIdByName')->willReturn(1);
 
-        $creator = new DomainRecordCreator($config, $logger, $domainRepository, $recordManager);
+        $creator = new DomainRecordCreator($config, $domainRepository, $recordManager);
 
         $result = $creator->addDomainRecord('55', 'PTR', 'host.example.com', 5);
 
@@ -247,7 +243,7 @@ class DomainRecordCreatorTest extends TestCase
             return $default ?? 3600;
         });
 
-        $creator = new DomainRecordCreator($config, $this->createMock(LegacyLogger::class), $domainRepository, $recordManager);
+        $creator = new DomainRecordCreator($config, $domainRepository, $recordManager);
         $creator->addDomainRecord('55', 'PTR', 'host.example.com', 5);
 
         $this->assertSame('192.0.2.55', $addedIP);
@@ -279,7 +275,7 @@ class DomainRecordCreatorTest extends TestCase
             return $default ?? 3600;
         });
 
-        $creator = new DomainRecordCreator($config, $this->createMock(LegacyLogger::class), $domainRepository, $recordManager);
+        $creator = new DomainRecordCreator($config, $domainRepository, $recordManager);
         $creator->addDomainRecord('55', 'PTR', 'test.manager-zone.example.com', 5);
 
         $this->assertSame('test', $addedName);
@@ -309,7 +305,7 @@ class DomainRecordCreatorTest extends TestCase
             return $default ?? 3600;
         });
 
-        $creator = new DomainRecordCreator($config, $this->createMock(LegacyLogger::class), $domainRepository, $recordManager);
+        $creator = new DomainRecordCreator($config, $domainRepository, $recordManager);
         $creator->addDomainRecord('55', 'PTR', 'host.example.com.', 5);
 
         $this->assertSame('host', $addedName);

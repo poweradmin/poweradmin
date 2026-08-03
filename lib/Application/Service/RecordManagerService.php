@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,7 +39,6 @@ class RecordManagerService
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
     private RecordCommentService $recordCommentService;
-    private RecordCommentSyncService $commentSyncService;
     private LegacyLogger $logger;
     private ConfigurationManager $config;
     private ?DnsBackendProvider $backendProvider;
@@ -49,7 +48,6 @@ class RecordManagerService
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,
         RecordCommentService $recordCommentService,
-        RecordCommentSyncService $commentSyncService,
         LegacyLogger $logger,
         ConfigurationManager $config,
         ?DnsBackendProvider $backendProvider = null
@@ -58,7 +56,6 @@ class RecordManagerService
         $this->domainRepository = $domainRepository;
         $this->recordManager = $recordManager;
         $this->recordCommentService = $recordCommentService;
-        $this->commentSyncService = $commentSyncService;
         $this->logger = $logger;
         $this->config = $config;
         $this->backendProvider = $backendProvider;

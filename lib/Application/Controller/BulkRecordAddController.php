@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use Exception;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
@@ -73,14 +72,12 @@ class BulkRecordAddController extends BaseController
         $this->domainRepository = $repositoryFactory->createDomainRepository();
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
-        $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
 
         $this->recordManager = new RecordManagerService(
             $this->db,
             $this->domainRepository,
             $this->createRecordManager(),
             $recordCommentService,
-            $commentSyncService,
             $this->auditLogger,
             $this->getConfig(),
             $backendProvider

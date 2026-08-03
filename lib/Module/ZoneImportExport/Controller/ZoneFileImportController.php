@@ -29,7 +29,6 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -401,7 +400,6 @@ class ZoneFileImportController extends BaseController
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
         $recordRepository = $repositoryFactory->createRecordRepository();
-        $commentSyncService = new RecordCommentSyncService($recordCommentService, $recordRepository, $backendProvider);
         $logger = new LegacyLogger($this->db);
         $dnsRecordManager = $this->createRecordManager();
         $recordManager = new RecordManagerService(
@@ -409,7 +407,6 @@ class ZoneFileImportController extends BaseController
             $repositoryFactory->createDomainRepository(),
             $dnsRecordManager,
             $recordCommentService,
-            $commentSyncService,
             $logger,
             $this->getConfig(),
             $backendProvider

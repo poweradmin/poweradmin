@@ -26,12 +26,10 @@ use Poweradmin\Domain\Service\DnsValidation\PTRRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Base DNS test class with common setup for all DNS-related tests
@@ -44,7 +42,6 @@ class BaseDnsTest extends TestCase
     {
         $dbMock = $this->createMock(PDO::class);
         $configMock = $this->createMock(ConfigurationManager::class);
-        $messageServiceMock = $this->createMock(MessageService::class);
         $zoneRepositoryMock = $this->createMock(ZoneRepositoryInterface::class);
 
         // Configure the mock to return expected values
@@ -196,7 +193,6 @@ class BaseDnsTest extends TestCase
                 return $validator;
             });
 
-        $ttlValidator = new TTLValidator();
         $dnsCommonValidator = new DnsCommonValidator($dbMock, $configMock);
         $recordRepositoryMock = $this->createMock(RecordRepositoryInterface::class);
         $recordRepositoryMock->method('getRecordsByName')->willReturn([]);
@@ -206,8 +202,6 @@ class BaseDnsTest extends TestCase
         $this->validationService = new DnsRecordValidationService(
             $registryMock,
             $dnsCommonValidator,
-            $ttlValidator,
-            $messageServiceMock,
             $zoneRepositoryMock,
             $dnsViolationValidator
         );

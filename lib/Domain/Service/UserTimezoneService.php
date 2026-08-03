@@ -85,8 +85,7 @@ class UserTimezoneService
      */
     public static function createDefault(PDO $db, ConfigurationManager $config): self
     {
-        $dbType = $config->get('database', 'type') ?? 'mysql';
-        $repository = new DbUserPreferenceRepository($db, $dbType);
+        $repository = new DbUserPreferenceRepository($db);
         $preferenceService = new UserPreferenceService($repository, $config);
         return new self($preferenceService, $config);
     }

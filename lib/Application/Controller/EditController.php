@@ -122,7 +122,6 @@ class EditController extends BaseController
             $this->domainRepository,
             $this->dnsRecordManager,
             $this->recordCommentService,
-            $this->commentSyncService,
             $this->auditLogger,
             $this->getConfig(),
             $backendProvider
@@ -132,7 +131,6 @@ class EditController extends BaseController
 
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
-            $this->auditLogger,
             $this->domainRepository,
             $this->dnsRecordManager,
             null,

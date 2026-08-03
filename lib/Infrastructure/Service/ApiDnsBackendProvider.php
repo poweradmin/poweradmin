@@ -45,14 +45,14 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 {
     private PowerdnsApiClient $client;
     private PDO $db;
-    private ConfigurationInterface $config;
     private LoggerInterface $logger;
 
+    // $config is unused here but kept so both DnsBackendProvider implementations
+    // are constructed alike; the API backend needs no table-name resolution.
     public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
         $this->client = $client;
         $this->db = $db;
-        $this->config = $config;
         $this->logger = $logger ?? new NullLogger();
     }
 

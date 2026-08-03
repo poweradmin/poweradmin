@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use Exception;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -80,7 +79,6 @@ class AddRecordController extends BaseController
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
-        $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
         $this->domainRepository = $repositoryFactory->createDomainRepository();
         $dnsRecordManager = $this->createRecordManager();
 
@@ -89,7 +87,6 @@ class AddRecordController extends BaseController
             $this->domainRepository,
             $dnsRecordManager,
             $recordCommentService,
-            $commentSyncService,
             $this->auditLogger,
             $this->getConfig(),
             $backendProvider
@@ -100,7 +97,6 @@ class AddRecordController extends BaseController
 
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
-            $this->auditLogger,
             $this->domainRepository,
             $dnsRecordManager,
             null,

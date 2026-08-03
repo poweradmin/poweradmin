@@ -85,8 +85,7 @@ class ControllerServiceFactory
     public function userPreferenceService(): UserPreferenceService
     {
         if ($this->userPreferenceService === null) {
-            $db_type = $this->config->get('database', 'type');
-            $repository = new DbUserPreferenceRepository($this->db, $db_type);
+            $repository = new DbUserPreferenceRepository($this->db);
             $this->userPreferenceService = new UserPreferenceService($repository, $this->config);
         }
         return $this->userPreferenceService;

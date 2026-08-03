@@ -24,13 +24,11 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
-use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 
 /**
@@ -45,25 +43,19 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
  */
 class DnsRecordValidationService implements DnsRecordValidationServiceInterface
 {
-    private TTLValidator $ttlValidator;
     private DnsCommonValidator $dnsCommonValidator;
     private DnsValidatorRegistry $validatorRegistry;
-    private MessageService $messageService;
     private ZoneRepositoryInterface $zoneRepository;
     private DNSViolationValidator $dnsViolationValidator;
 
     public function __construct(
         DnsValidatorRegistry $validatorRegistry,
         DnsCommonValidator $dnsCommonValidator,
-        TTLValidator $ttlValidator,
-        MessageService $messageService,
         ZoneRepositoryInterface $zoneRepository,
         DNSViolationValidator $dnsViolationValidator
     ) {
         $this->validatorRegistry = $validatorRegistry;
         $this->dnsCommonValidator = $dnsCommonValidator;
-        $this->ttlValidator = $ttlValidator;
-        $this->messageService = $messageService;
         $this->zoneRepository = $zoneRepository;
         $this->dnsViolationValidator = $dnsViolationValidator;
     }

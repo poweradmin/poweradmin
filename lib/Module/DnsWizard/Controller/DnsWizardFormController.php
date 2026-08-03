@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 namespace Poweradmin\Module\DnsWizard\Controller;
 
 use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -64,14 +63,12 @@ class DnsWizardFormController extends BaseController
         $this->domainRepository = $repositoryFactory->createDomainRepository();
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
-        $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
 
         $this->recordManager = new RecordManagerService(
             $this->db,
             $this->domainRepository,
             $this->createRecordManager(),
             $recordCommentService,
-            $commentSyncService,
             $logger,
             $this->getConfig(),
             $backendProvider

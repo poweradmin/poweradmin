@@ -36,7 +36,6 @@ use Poweradmin\Domain\Service\Dns\SupermasterManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
-use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
@@ -70,17 +69,13 @@ class DnsServiceFactory
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
         $validatorRegistry = new DnsValidatorRegistry($config, $db, $backendProvider);
-        $ttlValidator = new TTLValidator();
         $dnsCommonValidator = new DnsCommonValidator($db, $config, $backendProvider);
-        $messageService = new MessageService();
         $zoneRepository = $repositoryFactory->createZoneRepository();
         $dnsViolationValidator = new DNSViolationValidator($repositoryFactory->createRecordRepository());
 
         return new DnsRecordValidationService(
             $validatorRegistry,
             $dnsCommonValidator,
-            $ttlValidator,
-            $messageService,
             $zoneRepository,
             $dnsViolationValidator
         );

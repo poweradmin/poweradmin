@@ -29,12 +29,11 @@ use Throwable;
 class DbPermissionTemplateRepository
 {
     private object $db;
-    private ConfigurationManager $config;
 
+    // $config is unused but kept so every Db*Repository is constructed alike.
     public function __construct($db, ConfigurationManager $config)
     {
         $this->db = $db;
-        $this->config = $config;
     }
 
     /**

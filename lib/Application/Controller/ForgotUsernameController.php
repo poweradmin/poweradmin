@@ -69,14 +69,12 @@ class ForgotUsernameController extends BaseController
 
         try {
             $recoveryRepository = new DbUsernameRecoveryRepository($this->db, $configManager);
-            $userRepository = $this->createUserRepository();
             $mailService = new MailService($configManager, null);
             $this->ipRetriever = new IpAddressRetriever($_SERVER);
             $this->userAgentService = new UserAgentService($_SERVER);
 
             $this->usernameRecoveryService = new UsernameRecoveryService(
                 $recoveryRepository,
-                $userRepository,
                 $mailService,
                 $configManager,
                 $this->ipRetriever,

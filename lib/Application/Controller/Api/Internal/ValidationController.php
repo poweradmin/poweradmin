@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,9 +38,7 @@ use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
-use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ValidationController extends InternalApiController
@@ -56,16 +54,12 @@ class ValidationController extends InternalApiController
 
         $validatorRegistry = new DnsValidatorRegistry($this->getConfig(), $this->db);
         $dnsCommonValidator = new DnsCommonValidator($this->db, $this->getConfig());
-        $ttlValidator = new TTLValidator();
-        $messageService = new MessageService();
         $this->zoneRepository = $this->createZoneRepository();
         $dnsViolationValidator = new DNSViolationValidator($this->getRepositoryFactory()->createRecordRepository());
 
         $this->validationService = new DnsRecordValidationService(
             $validatorRegistry,
             $dnsCommonValidator,
-            $ttlValidator,
-            $messageService,
             $this->zoneRepository,
             $dnsViolationValidator
         );
