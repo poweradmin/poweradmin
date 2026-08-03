@@ -3451,7 +3451,7 @@ msgstr "Secondary"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:114
 #: lib/Module/ZoneImportExport/templates/import.html:129
 msgid "Native"
-msgstr "Native"
+msgstr "Nativ"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:115
 msgid "Producer"

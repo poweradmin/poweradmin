@@ -3431,7 +3431,7 @@ msgstr "Secondary"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:114
 #: lib/Module/ZoneImportExport/templates/import.html:129
 msgid "Native"
-msgstr "Native"
+msgstr "Bản địa"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:115
 msgid "Producer"
@@ -3444,7 +3444,7 @@ msgstr "Consumer"
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:112
 #: lib/Module/ZoneImportExport/templates/import.html:128
 msgid "Master"
-msgstr "Master"
+msgstr "Chủ"
 
 #: lib/Infrastructure/Web/BadgeTwigExtension.php:113
 msgid "Slave"

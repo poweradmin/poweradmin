@@ -272,8 +272,10 @@ class AppManager
 
         $translator = new Translator($interfaceLang);
         $translator->addLoader('po', new PoFileLoader());
-        $translator->addResource('po', $this->getLocaleFile(), $interfaceLang);
 
+        // Modules are registered first so the main catalogue, added last, wins on
+        // any msgid both define - a module supplements the app, it does not
+        // redefine it.
         foreach ($registry->getEnabledModules() as $module) {
             $localePath = $module->getLocalePath();
             if (empty($localePath)) {
@@ -285,6 +287,8 @@ class AppManager
                 $translator->addResource('po', $moduleLocaleFile, $interfaceLang);
             }
         }
+
+        $translator->addResource('po', $this->getLocaleFile(), $interfaceLang);
 
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
     }
