@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -329,9 +329,10 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Invalid value for the weight field of the SRV record. Must be 0-65535.'));
         }
 
-        // Validate port (1-65535)
-        if (!is_numeric($port) || (int)$port < 1 || (int)$port > 65535) {
-            return ValidationResult::failure(_('Invalid value for the port field of the SRV record. Must be 1-65535.'));
+        // Validate port (0-65535). RFC 2782 uses port 0 with target "." to say
+        // the service is deliberately not available at this domain.
+        if (!is_numeric($port) || (int)$port < 0 || (int)$port > 65535) {
+            return ValidationResult::failure(_('Invalid value for the port field of the SRV record. Must be 0-65535.'));
         }
 
         // Check port against well-known service

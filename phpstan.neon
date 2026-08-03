@@ -120,17 +120,6 @@ parameters:
     -
       identifier: booleanAnd.rightAlwaysTrue
       path: lib/Application/Controller/Api/V2/ZoneMetadataController.php
-    # RFC 2782 says port and weight should both be 0 when an SRV target is ".",
-    # but the port validator rejects 0 (it enforces 1-65535), so this warning
-    # fires for every "." target regardless of input and the conformant value can
-    # never reach it. Allowing port 0 for SRV is a validation change, tracked
-    # separately - do not "fix" it by deleting the comparison.
-    -
-      identifier: notIdentical.alwaysTrue
-      path: lib/Domain/Service/DnsValidation/SRVRecordValidator.php
-    -
-      identifier: booleanOr.alwaysTrue
-      path: lib/Domain/Service/DnsValidation/SRVRecordValidator.php
     # Tests assert types on purpose, so "already narrowed" is expected there.
     -
       identifier: method.alreadyNarrowedType
