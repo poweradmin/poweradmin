@@ -92,7 +92,7 @@ class LdapUserProvisioningIntegrationTest extends TestCase
 
     public static function tearDownAfterClass(): void
     {
-        if (!isset(self::$ldap) || !self::$ldap) {
+        if (!isset(self::$ldap)) {
             return;
         }
         // Delete in dependency order (group references members).

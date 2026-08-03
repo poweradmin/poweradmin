@@ -24,6 +24,22 @@ parameters:
     -
       identifier: deadCode.unreachable
       path: lib/Application/Service/SamlService.php
+    # LdapAuthenticator writes its cache keys into $_SESSION from a private method
+    # the test reaches by reflection, so PHPStan still sees them as unset from the
+    # test's own unset() and reports every later read as a missing offset.
+    -
+      identifier: offsetAccess.notFound
+      path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php
+    # The sign/unsign flows call isZoneSecured() again to verify the result of
+    # secureZone()/unsecureZone(). PHPStan reuses the narrowed result of the
+    # earlier identical call and calls the verify branch dead, but the zone state
+    # changed in between. Scoped to the whole file for want of a narrower hook.
+    -
+      identifier: if.alwaysFalse
+      path: lib/Application/Controller/EditController.php
+    -
+      identifier: booleanNot.alwaysFalse
+      path: lib/Application/Controller/EditController.php
     # processIPv6() is kept alongside its commented-out call site until IPv6
     # reverse-record creation is finished; see the FIXME above that call.
     -

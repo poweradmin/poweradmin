@@ -447,7 +447,7 @@ class EditController extends BaseController
         $soa_record = $this->soaRecordManager->getSOARecord($zone_id);
 
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
-        $is_secured = $zone_name !== null && $dnssecProvider->isZoneSecured($zone_name, $this->getConfig());
+        $is_secured = $dnssecProvider->isZoneSecured($zone_name, $this->getConfig());
         // Presigned zones always report secured, so unsigned zones skip the metadata lookup
         $is_presigned = $is_secured && $dnssecProvider->isZonePresigned($zone_name);
         // Serial as served by PowerDNS (SOA-EDIT applied); only relevant for signed zones
@@ -456,14 +456,9 @@ class EditController extends BaseController
         // Transform records for display using the RecordDisplayService
         $recordDisplayService = new RecordDisplayService($display_hostname_only);
 
-        $displayRecords = [];
-        if ($zone_name !== null) {
-            $recordDisplayObjects = $recordDisplayService->transformRecords($records, $zone_name);
-            // Convert to arrays for template compatibility
-            $displayRecords = array_map(fn($recordDisplay) => $recordDisplay->toArray(), $recordDisplayObjects);
-        } else {
-            $displayRecords = $records;
-        }
+        $recordDisplayObjects = $recordDisplayService->transformRecords($records, $zone_name);
+        // Convert to arrays for template compatibility
+        $displayRecords = array_map(fn($recordDisplay) => $recordDisplay->toArray(), $recordDisplayObjects);
 
         $perm_edit_ns_subzone = $this->hasPermission(Permission::PERM_EDIT_NS_SUBZONE);
         $perm_is_godlike = $this->permissionService->isAdmin($userId);
@@ -1006,7 +1001,7 @@ class EditController extends BaseController
             if ($reverseResult && isset($reverseResult['success']) && $reverseResult['success']) {
                 $message = _('Record successfully added. A matching PTR record was also created.');
                 $this->setMessage('edit', 'success', $message);
-            } elseif ($reverseResult && isset($reverseResult['success']) && !$reverseResult['success'] && isset($reverseResult['message'])) {
+            } elseif ($reverseResult && isset($reverseResult['success'], $reverseResult['message'])) {
                 // Reverse record creation failed with a specific message
                 $message = _('Record successfully added, but PTR record creation failed: ') . $reverseResult['message'];
                 $this->setMessage('edit', 'warning', $message);

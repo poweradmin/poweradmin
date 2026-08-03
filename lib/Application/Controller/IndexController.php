@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -149,8 +149,7 @@ class IndexController extends BaseController
             || ($ifaceAddReverseRecord && ($permissions['zone_content_edit_own'] || $permissions['zone_content_edit_others']));
         $hasAdministration = $permissions['user_view_others'] || $permissions['user_edit_others']
             || $permissions['user_add_new'] || $permissions['user_is_ueberuser']
-            || $permissions['templ_perm_edit']
-            || ($permissions['user_is_ueberuser'] && $dblogUse);
+            || $permissions['templ_perm_edit'];
         $hasTools = ($permissions['user_is_ueberuser'] && $enableConsistencyChecks)
             || (($permissions['user_is_ueberuser'] || $permissions['api_manage_keys']) && $apiEnabled)
             || count($moduleNavItems) > 0;

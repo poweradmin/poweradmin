@@ -240,14 +240,10 @@ class ConfigValidator
 
         // Check port if specified
         if (isset($parsedUrl['port'])) {
+            // parse_url() already constrains the port to 0-65535
             $port = $parsedUrl['port'];
-            // parse_url() returns int|null for port, so this should always be int here
-            if (!is_int($port)) {
-                $this->errors['pdns_api.url'] = 'PowerDNS API URL contains an invalid port number';
-                return;
-            }
 
-            if ($port < 1 || $port > 65535) {
+            if ($port < 1) {
                 $this->errors['pdns_api.url'] = 'PowerDNS API URL port must be between 1 and 65535';
                 return;
             }

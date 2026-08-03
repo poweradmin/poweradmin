@@ -187,7 +187,6 @@ class DomainManager implements DomainManagerInterface
 
             if (
                 ($domain && $zone_template) ||
-                (preg_match('/in-addr.arpa/i', $domain) && $zone_template) ||
                 ($type == "SLAVE" && $domain && $slave_master)
             ) {
                 // Create zone BEFORE starting the transaction. In API mode,
@@ -1204,10 +1203,6 @@ class DomainManager implements DomainManagerInterface
                 });
             }
             $deletedMappingIds[] = (int) $mapping['id'];
-        }
-
-        if ($deletedMappingIds === []) {
-            return;
         }
 
         $placeholders = implode(',', array_fill(0, count($deletedMappingIds), '?'));

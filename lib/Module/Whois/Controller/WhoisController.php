@@ -77,10 +77,7 @@ class WhoisController extends BaseController
             $domain = trim($this->getRequest()['domain']);
 
             if (preg_match('/[^\x20-\x7E]/', $domain)) {
-                $punycode = DnsIdnService::toPunycode($domain);
-                if ($punycode !== false) {
-                    $domain = $punycode;
-                }
+                $domain = DnsIdnService::toPunycode($domain);
             }
         } elseif (isset($this->getRequest()['id'])) {
             $zone_id = (int)$this->getRequest()['id'];

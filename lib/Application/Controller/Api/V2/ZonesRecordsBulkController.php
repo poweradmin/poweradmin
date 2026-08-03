@@ -312,12 +312,8 @@ class ZonesRecordsBulkController extends PublicApiController
                     $this->db->commit();
                 }
 
-                $message = 'Bulk operations completed successfully';
-                if ($results['failed'] > 0) {
-                    $message = 'Some operations failed';
-                }
-
-                return $this->returnApiResponse($results, true, $message, 200);
+                // Any failed operation rethrows above, so reaching here means all succeeded
+                return $this->returnApiResponse($results, true, 'Bulk operations completed successfully', 200);
             } catch (\Throwable $e) {
                 if ($useTransaction) {
                     $this->db->rollBack();

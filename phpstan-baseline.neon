@@ -31,58 +31,10 @@ parameters:
 			path: lib/Application/Controller/Api/V2/ZoneMetadataController.php
 
 		-
-			message: '#^Comparison operation "\>" between 0 and 0 is always false\.$#'
-			identifier: greater.alwaysFalse
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZonesRecordsBulkController.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between array and null will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 2
-			path: lib/Application/Controller/DeleteRecordsController.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between int and null will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 1
-			path: lib/Application/Controller/DeleteRecordsController.php
-
-		-
 			message: '#^Right side of && is always true\.$#'
 			identifier: booleanAnd.rightAlwaysTrue
 			count: 1
 			path: lib/Application/Controller/DnssecDeleteKeyController.php
-
-		-
-			message: '#^If condition is always false\.$#'
-			identifier: if.alwaysFalse
-			count: 1
-			path: lib/Application/Controller/EditController.php
-
-		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 1
-			path: lib/Application/Controller/EditController.php
-
-		-
-			message: '#^Negated boolean expression is always true\.$#'
-			identifier: booleanNot.alwaysTrue
-			count: 1
-			path: lib/Application/Controller/EditController.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between string and null will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 2
-			path: lib/Application/Controller/EditController.php
-
-		-
-			message: '#^Left side of && is always false\.$#'
-			identifier: booleanAnd.leftAlwaysFalse
-			count: 1
-			path: lib/Application/Controller/IndexController.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
@@ -101,12 +53,6 @@ parameters:
 			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: lib/Application/Controller/ZoneOwnershipController.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 4
-			path: lib/Application/Service/SamlService.php
 
 		-
 			message: '#^Offset ''timestamp'' on array\{message\: string, context\: non\-empty\-array, timestamp\: int\} in isset\(\) always exists and is not nullable\.$#'
@@ -131,18 +77,6 @@ parameters:
 			identifier: ternary.alwaysFalse
 			count: 1
 			path: lib/Domain/Service/DatabaseConsistencyService.php
-
-		-
-			message: '#^Right side of && is always false\.$#'
-			identifier: booleanAnd.rightAlwaysFalse
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
-			message: '#^Strict comparison using \=\=\= between non\-empty\-list\<int\> and array\{\} will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
 
 		-
 			message: '#^Left side of && is always true\.$#'
@@ -205,32 +139,14 @@ parameters:
 			path: lib/Domain/Service/MfaService.php
 
 		-
-			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 1
-			path: lib/Domain/Utility/DomainHelper.php
-
-		-
 			message: '#^Comparison operation "\<" between int\<1, max\> and 1 is always false\.$#'
 			identifier: smaller.alwaysFalse
 			count: 1
 			path: lib/Domain/Utility/IpHelper.php
 
 		-
-			message: '#^Call to function is_int\(\) with int\<0, 65535\> will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: lib/Infrastructure/Configuration/ConfigValidator.php
-
-		-
 			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
-			count: 1
-			path: lib/Infrastructure/Configuration/ConfigValidator.php
-
-		-
-			message: '#^Comparison operation "\>" between int\<1, 65535\> and 65535 is always false\.$#'
-			identifier: greater.alwaysFalse
 			count: 1
 			path: lib/Infrastructure/Configuration/ConfigValidator.php
 
@@ -295,67 +211,7 @@ parameters:
 			path: lib/Module/ModuleRegistry.php
 
 		-
-			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 1
-			path: lib/Module/Rdap/Controller/RdapController.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 3
-			path: lib/Module/Rdap/Service/RdapService.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 1
-			path: lib/Module/Whois/Controller/WhoisController.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 3
-			path: lib/Module/Whois/Service/WhoisService.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between false and false will always evaluate to false\.$#'
-			identifier: notIdentical.alwaysFalse
-			count: 1
-			path: tests/helpers/BaseDnsTest.php
-
-		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 1
-			path: tests/integration/LdapUserProvisioningIntegrationTest.php
-
-		-
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
 			path: tests/integration/NaturalSortingIntegrationTest.php
-
-		-
-			message: '#^Call to function assert\(\) with false will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php
-
-		-
-			message: '#^Offset ''ldap_auth_ip'' on \*NEVER\* in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.offset
-			count: 1
-			path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php
-
-		-
-			message: '#^Offset ''ldap_auth_timestamp'' on non\-empty\-array\<mixed, mixed\> in isset\(\) does not exist\.$#'
-			identifier: isset.offset
-			count: 1
-			path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php
-
-		-
-			message: '#^Offset ''ldap_auth_username'' on \*NEVER\* in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.offset
-			count: 1
-			path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php

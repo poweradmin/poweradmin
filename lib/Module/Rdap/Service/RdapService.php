@@ -63,16 +63,13 @@ class RdapService
 
         if (preg_match('/[^\x20-\x7E]/', $tld)) {
             $punycodeTld = DnsIdnService::toPunycode($tld);
-            if ($punycodeTld !== false && isset($this->rdapServers[$punycodeTld])) {
+            if (isset($this->rdapServers[$punycodeTld])) {
                 return $this->rdapServers[$punycodeTld];
             }
         } elseif (str_starts_with($tld, 'xn--')) {
             try {
                 $unicodeTld = DnsIdnService::toUtf8($tld);
-                if (
-                    $unicodeTld !== false && $unicodeTld !== $tld &&
-                    isset($this->rdapServers[$unicodeTld])
-                ) {
+                if ($unicodeTld !== $tld && isset($this->rdapServers[$unicodeTld])) {
                     return $this->rdapServers[$unicodeTld];
                 }
             } catch (Exception $e) {
@@ -142,8 +139,7 @@ class RdapService
         $parts = explode('.', $domain);
         foreach ($parts as &$part) {
             if (preg_match('/[^\x20-\x7E]/', $part)) {
-                $punycode = DnsIdnService::toPunycode($part);
-                $part = $punycode !== false ? $punycode : $part;
+                $part = DnsIdnService::toPunycode($part);
             }
         }
 
