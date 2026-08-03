@@ -30,16 +30,36 @@ parameters:
     -
       identifier: offsetAccess.notFound
       path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php
-    # The sign/unsign flows call isZoneSecured() again to verify the result of
-    # secureZone()/unsecureZone(). PHPStan reuses the narrowed result of the
-    # earlier identical call and calls the verify branch dead, but the zone state
-    # changed in between. Scoped to the whole file for want of a narrower hook.
+    # PHPStan treats a repeated identical call as pure and reuses the first
+    # result's narrowing, so every "did the mutation take effect?" check below
+    # looks dead. The state genuinely changed in between and removing any of
+    # these would drop a verification or, worse, a rollback. Each is scoped to
+    # its file for want of a narrower hook.
+    #   EditController      - isZoneSecured() after secureZone()/unsecureZone()
     -
       identifier: if.alwaysFalse
       path: lib/Application/Controller/EditController.php
     -
       identifier: booleanNot.alwaysFalse
       path: lib/Application/Controller/EditController.php
+    #   DnssecDeleteKeyController - keyExists() after removeZoneKey()
+    -
+      identifier: booleanAnd.rightAlwaysTrue
+      path: lib/Application/Controller/DnssecDeleteKeyController.php
+    #   SqlDnsBackendProvider, ZoneSyncService - inTransaction() in the catch,
+    #   narrowed from the call made before beginTransaction(). Deleting either
+    #   skips the rollback.
+    -
+      identifier: booleanAnd.rightAlwaysFalse
+      path: lib/Infrastructure/Service/SqlDnsBackendProvider.php
+    -
+      identifier: booleanAnd.rightAlwaysFalse
+      path: lib/Application/Service/ZoneSyncService.php
+    #   DatabaseConsistencyService - the check* calls set $apiReadFailed, which
+    #   PHPStan cannot see, so the "did any API read fail?" ternary reads as dead.
+    -
+      identifier: ternary.alwaysFalse
+      path: lib/Domain/Service/DatabaseConsistencyService.php
     # processIPv6() is kept alongside its commented-out call site until IPv6
     # reverse-record creation is finished; see the FIXME above that call.
     -
@@ -55,6 +75,56 @@ parameters:
     -
       identifier: property.unusedType
       path: lib/Domain/Utility/NetworkUtility.php
+    # Defensive checks PHPStan can prove redundant today, kept on purpose.
+    #   DbZoneRepository - is_int() picks PDO::PARAM_INT vs PARAM_STR in the
+    #   bindValue loops. $params happens to be all-int now; hardcoding PARAM_INT
+    #   would break the first time a string parameter is added, and MariaDB is
+    #   unforgiving about the wrong type on LIMIT/OFFSET.
+    -
+      identifier: function.alreadyNarrowedType
+      path: lib/Infrastructure/Repository/DbZoneRepository.php
+    #   ModuleRegistry - instanceof after `new $className()`. The class-string
+    #   type is only as good as the registry declaration; this is a real guard.
+    -
+      identifier: instanceof.alwaysTrue
+      path: lib/Module/ModuleRegistry.php
+    #   DynamicDnsUpdateService - `$flag = $flag || ...` accumulators, whose left
+    #   side is literally false on first use. Rewriting would only obscure it.
+    -
+      identifier: booleanOr.leftAlwaysFalse
+      path: lib/Domain/Service/DynamicDnsUpdateService.php
+    # Array shapes asserted by docblock over data that does not have to obey them:
+    # session payloads written by an older release, and DB rows. isset()/?? here
+    # is protection against the docblock being wrong, which is exactly when it
+    # matters. Dropping them turns a skipped row into a deprecation or a warning.
+    -
+      identifier: isset.offset
+      path: lib/Application/Service/ZoneSyncService.php
+    -
+      identifier: function.alreadyNarrowedType
+      path: lib/Infrastructure/Logger/RecordChangeLogger.php
+    -
+      identifier: booleanAnd.rightAlwaysTrue
+      path: lib/Infrastructure/Logger/RecordChangeLogger.php
+    -
+      identifier: nullCoalesce.offset
+      path: lib/Application/Controller/Api/V2/ZoneMetadataController.php
+    # The match arms are deliberately parallel and self-documenting; the second
+    # GET arm restates $hasKind that the first arm already excluded.
+    -
+      identifier: booleanAnd.rightAlwaysTrue
+      path: lib/Application/Controller/Api/V2/ZoneMetadataController.php
+    # RFC 2782 says port and weight should both be 0 when an SRV target is ".",
+    # but the port validator rejects 0 (it enforces 1-65535), so this warning
+    # fires for every "." target regardless of input and the conformant value can
+    # never reach it. Allowing port 0 for SRV is a validation change, tracked
+    # separately - do not "fix" it by deleting the comparison.
+    -
+      identifier: notIdentical.alwaysTrue
+      path: lib/Domain/Service/DnsValidation/SRVRecordValidator.php
+    -
+      identifier: booleanOr.alwaysTrue
+      path: lib/Domain/Service/DnsValidation/SRVRecordValidator.php
     # Tests assert types on purpose, so "already narrowed" is expected there.
     -
       identifier: method.alreadyNarrowedType
