@@ -225,11 +225,11 @@ class SamlService extends LoggingService
             return;
         }
 
-        try {
-            // Temporarily set environment for reverse proxy detection during SAML processing
-            $originalHttps = $_SERVER['HTTPS'] ?? null;
-            $originalPort = $_SERVER['SERVER_PORT'] ?? null;
+        // Captured outside the try so the catch block can always restore them
+        $originalHttps = $_SERVER['HTTPS'] ?? null;
+        $originalPort = $_SERVER['SERVER_PORT'] ?? null;
 
+        try {
             // Detect if we're behind a reverse proxy (like ngrok) and need HTTPS detection help
             if ($this->isReverseProxyEnvironment()) {
                 $_SERVER['HTTPS'] = 'on';
