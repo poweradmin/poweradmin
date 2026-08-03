@@ -93,6 +93,12 @@ parameters:
     -
       identifier: booleanOr.leftAlwaysFalse
       path: lib/Domain/Service/DynamicDnsUpdateService.php
+    #   RRSIGRecordValidator - DateTime::modify() is typed DateTime by PHPStan but
+    #   returns DateTime|false before PHP 8.3, which phan does flag. Dropping the
+    #   truthiness check produces a TypeError on the ordering comparison.
+    -
+      identifier: booleanAnd.leftAlwaysTrue
+      path: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php
     # Array shapes asserted by docblock over data that does not have to obey them:
     # session payloads written by an older release, and DB rows. isset()/?? here
     # is protection against the docblock being wrong, which is exactly when it

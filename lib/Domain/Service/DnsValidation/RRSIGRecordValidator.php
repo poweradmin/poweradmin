@@ -273,7 +273,7 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
                 $thirtyDaysLater = (clone $currentTime)->modify('+30 days');
                 if ($expirationTime < $currentTime) {
                     $warnings[] = _('CRITICAL: This signature has already expired. It will not be validated by DNSSEC resolvers.');
-                } elseif ($expirationTime < $sevenDaysLater) {
+                } elseif ($sevenDaysLater && $expirationTime < $sevenDaysLater) {
                     $warnings[] = _('WARNING: This signature will expire within the next 7 days. Consider renewing it soon.');
                 } elseif ($thirtyDaysLater && $expirationTime < $thirtyDaysLater) {
                     $warnings[] = _('This signature will expire within the next 30 days. Plan for renewal.');
