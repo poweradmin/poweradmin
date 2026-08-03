@@ -91,9 +91,8 @@ test.describe('Supermaster CRUD Operations', () => {
 
       // Select account if field exists
       const accountSelect = page.locator('select[name*="account"]').first();
-      if (await accountSelect.count() > 0) {
-        await accountSelect.selectOption({ index: 0 });
-      }
+      await expect(accountSelect).toBeVisible();
+      await accountSelect.selectOption({ index: 0 });
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
@@ -191,11 +190,10 @@ test.describe('Supermaster CRUD Operations', () => {
       await page.goto('/supermasters');
       const row = page.locator(`tr:has-text("192.168.250.1")`);
 
-      if (await row.count() > 0) {
-        const deleteLink = row.locator('a[href*="/delete"]').first();
-        await deleteLink.click();
-        await expect(page).toHaveURL(/.*delete/);
-      }
+      await expect(row.first()).toBeVisible();
+      const deleteLink = row.locator('a[href*="/delete"]').first();
+      await deleteLink.click();
+      await expect(page).toHaveURL(/.*delete/);
     });
 
     test('should display confirmation message', async ({ page }) => {
@@ -203,12 +201,11 @@ test.describe('Supermaster CRUD Operations', () => {
       await page.goto('/supermasters');
       const deleteLink = page.locator('a[href*="/delete"]').first();
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
-      }
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
     });
 
     test('should cancel delete and return to list', async ({ page }) => {
@@ -216,14 +213,13 @@ test.describe('Supermaster CRUD Operations', () => {
       await page.goto('/supermasters');
       const deleteLink = page.locator('a[href*="/delete"]').first();
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
 
-        const noBtn = page.locator('input[value="No"], button:has-text("No"), a:has-text("No")').first();
-        if (await noBtn.count() > 0) {
-          await noBtn.click();
-          await expect(page).toHaveURL(/.*supermasters/);
-        }
+      const noBtn = page.locator('input[value="No"], button:has-text("No"), a:has-text("No")').first();
+      if (await noBtn.count() > 0) {
+        await noBtn.click();
+        await expect(page).toHaveURL(/.*supermasters/);
       }
     });
 
@@ -239,17 +235,16 @@ test.describe('Supermaster CRUD Operations', () => {
       await page.goto('/supermasters');
       const row = page.locator(`tr:has-text("192.168.251.1")`);
 
-      if (await row.count() > 0) {
-        const deleteLink = row.locator('a[href*="/delete"]').first();
-        await deleteLink.click();
+      await expect(row.first()).toBeVisible();
+      const deleteLink = row.locator('a[href*="/delete"]').first();
+      await deleteLink.click();
 
-        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        if (await yesBtn.count() > 0) {
-          await yesBtn.click();
+      const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
+      if (await yesBtn.count() > 0) {
+        await yesBtn.click();
 
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });
@@ -266,21 +261,20 @@ test.describe('Supermaster CRUD Operations', () => {
       await page.goto('/supermasters');
       const row = page.locator('tr:has-text("2001:db8::200")');
 
-      if (await row.count() > 0) {
-        const editLink = row.locator('a[href*="/edit"]').first();
-        await editLink.click();
+      await expect(row.first()).toBeVisible();
+      const editLink = row.locator('a[href*="/edit"]').first();
+      await editLink.click();
 
-        const ipField = page.locator('input[name="master_ip"]').first();
-        await expect(ipField).toHaveValue('2001:db8::200');
+      const ipField = page.locator('input[name="master_ip"]').first();
+      await expect(ipField).toHaveValue('2001:db8::200');
 
-        const nsField = page.locator('input[name="ns_name"]').first();
-        const updatedNs = `ns-ipv6-edited-${Date.now()}.example.com`;
-        await nsField.fill(updatedNs);
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      const nsField = page.locator('input[name="ns_name"]').first();
+      const updatedNs = `ns-ipv6-edited-${Date.now()}.example.com`;
+      await nsField.fill(updatedNs);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/not a valid ip|error/i);
-      }
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/not a valid ip|error/i);
     });
 
     test('should delete supermaster with IPv6 address', async ({ page }) => {
@@ -294,20 +288,19 @@ test.describe('Supermaster CRUD Operations', () => {
       await page.goto('/supermasters');
       const row = page.locator('tr:has-text("2001:db8::201")');
 
-      if (await row.count() > 0) {
-        const deleteLink = row.locator('a[href*="/delete"]').first();
-        await deleteLink.click();
+      await expect(row.first()).toBeVisible();
+      const deleteLink = row.locator('a[href*="/delete"]').first();
+      await deleteLink.click();
+
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/not a valid ip/i);
+
+      const yesBtn = page.locator('a:has-text("Yes"), input[value="Yes"], button:has-text("Yes")').first();
+      if (await yesBtn.count() > 0) {
+        await yesBtn.click();
 
         // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/not a valid ip/i);
-
-        const yesBtn = page.locator('a:has-text("Yes"), input[value="Yes"], button:has-text("Yes")').first();
-        if (await yesBtn.count() > 0) {
-          await yesBtn.click();
-
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/not a valid ip|error/i);
-        }
+        await expect(page.locator('body')).not.toContainText(/not a valid ip|error/i);
       }
     });
   });
