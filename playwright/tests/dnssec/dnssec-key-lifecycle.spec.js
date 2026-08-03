@@ -6,6 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { listDnssecKeyIds, pruneDnssecKeys } from '../../helpers/dnssec.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
@@ -39,6 +40,30 @@ test.describe('DNSSEC Key Lifecycle', () => {
     }
     return null;
   }
+
+  // Several tests below submit the add-key form, so remove whatever this run added.
+  let pristineKeyIds = [];
+  let pruneZoneId = null;
+
+  test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    pruneZoneId = await getTestZoneId(page);
+    if (pruneZoneId) {
+      pristineKeyIds = await listDnssecKeyIds(page, pruneZoneId);
+    }
+    await page.close();
+  });
+
+  test.afterAll(async ({ browser }) => {
+    if (!pruneZoneId) {
+      return;
+    }
+    const page = await browser.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await pruneDnssecKeys(page, pruneZoneId, pristineKeyIds);
+    await page.close();
+  });
 
   test.describe('Key Generation', () => {
     test('should access DNSSEC page for zone', async ({ page }) => {
