@@ -103,18 +103,6 @@ parameters:
 			path: lib/Application/Controller/ZoneOwnershipController.php
 
 		-
-			message: '#^Property Poweradmin\\Application\\Service\\HybridPermissionService\:\:\$groupRepository is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Application/Service/HybridPermissionService.php
-
-		-
-			message: '#^Property Poweradmin\\Application\\Service\\HybridPermissionService\:\:\$memberRepository is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Application/Service/HybridPermissionService.php
-
-		-
 			message: '#^Property Poweradmin\\Application\\Service\\RecordManagerService\:\:\$commentSyncService is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -269,12 +257,6 @@ parameters:
 			identifier: smaller.alwaysFalse
 			count: 1
 			path: lib/Domain/Utility/IpHelper.php
-
-		-
-			message: '#^Static property Poweradmin\\Domain\\Utility\\NetworkUtility\:\:\$instance \(Poweradmin\\Domain\\Utility\\NetworkUtility\|null\) is never assigned Poweradmin\\Domain\\Utility\\NetworkUtility so it can be removed from the property type\.$#'
-			identifier: property.unusedType
-			count: 1
-			path: lib/Domain/Utility/NetworkUtility.php
 
 		-
 			message: '#^Call to function is_int\(\) with int\<0, 65535\> will always evaluate to true\.$#'

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,8 +23,6 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 
 /**
  * Hybrid Permission Resolution Service
@@ -41,8 +39,6 @@ use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 class HybridPermissionService
 {
     private PDO $db;
-    private UserGroupRepositoryInterface $groupRepository;
-    private UserGroupMemberRepositoryInterface $memberRepository;
 
     /**
      * Per-instance cache of resolved zone permissions, keyed by "userId:domainId".
@@ -53,14 +49,9 @@ class HybridPermissionService
      */
     private array $zonePermissionCache = [];
 
-    public function __construct(
-        PDO $db,
-        UserGroupRepositoryInterface $groupRepository,
-        UserGroupMemberRepositoryInterface $memberRepository
-    ) {
+    public function __construct(PDO $db)
+    {
         $this->db = $db;
-        $this->groupRepository = $groupRepository;
-        $this->memberRepository = $memberRepository;
     }
 
     /**

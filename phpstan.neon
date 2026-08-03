@@ -24,6 +24,11 @@ parameters:
     -
       identifier: deadCode.unreachable
       path: lib/Application/Service/SamlService.php
+    # NetworkUtility::$instance is a test seam. DomainUtilityTest installs a stub
+    # through ReflectionProperty, which static analysis cannot see.
+    -
+      identifier: property.unusedType
+      path: lib/Domain/Utility/NetworkUtility.php
     # Tests assert types on purpose, so "already narrowed" is expected there.
     -
       identifier: method.alreadyNarrowedType

@@ -9,27 +9,17 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\HybridPermissionService;
-use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 
 #[CoversClass(HybridPermissionService::class)]
 class HybridPermissionServiceTest extends TestCase
 {
     private MockObject&PDO $db;
-    private MockObject&UserGroupRepositoryInterface $groupRepo;
-    private MockObject&UserGroupMemberRepositoryInterface $memberRepo;
     private HybridPermissionService $service;
 
     protected function setUp(): void
     {
         $this->db = $this->createMock(PDO::class);
-        $this->groupRepo = $this->createMock(UserGroupRepositoryInterface::class);
-        $this->memberRepo = $this->createMock(UserGroupMemberRepositoryInterface::class);
-        $this->service = new HybridPermissionService(
-            $this->db,
-            $this->groupRepo,
-            $this->memberRepo
-        );
+        $this->service = new HybridPermissionService($this->db);
     }
 
     private function mockBothPermissions(array $directPerms, array $groupRows): void

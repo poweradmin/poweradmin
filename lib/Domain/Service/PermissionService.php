@@ -24,8 +24,6 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Domain\Repository\UserRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 /**
  * Service for managing user permissions
@@ -156,11 +154,7 @@ class PermissionService
 
     private function getHybridPermissionService(\PDO $db): HybridPermissionService
     {
-        return $this->hybridPermissionService ??= new HybridPermissionService(
-            $db,
-            new DbUserGroupRepository($db),
-            new DbUserGroupMemberRepository($db)
-        );
+        return $this->hybridPermissionService ??= new HybridPermissionService($db);
     }
 
     /**

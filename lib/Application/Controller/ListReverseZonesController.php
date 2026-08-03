@@ -204,13 +204,12 @@ class ListReverseZonesController extends BaseController
         // Augment zones with group information and shorten IPv6 reverse zones
         $zoneGroupRepo = $this->createZoneGroupRepository();
         $userGroupRepo = $this->createUserGroupRepository();
-        $memberRepo = $this->createUserGroupMemberRepository();
         $allGroups = $userGroupRepo->findAll();
 
         // Resolve where the user can delete (direct vs. which groups grant it). Two
         // queries up front lets the per-row decision below stay in PHP, instead of
         // running canPerformZoneAction once per rendered zone.
-        $hybridPermissions = new HybridPermissionService($this->db, $userGroupRepo, $memberRepo);
+        $hybridPermissions = new HybridPermissionService($this->db);
         $deleteSources = $perm_delete === 'own'
             ? $hybridPermissions->getPermissionSourcesForUser($loggedInUserId, 'zone_delete_own')
             : ['has_direct' => false, 'group_ids' => []];

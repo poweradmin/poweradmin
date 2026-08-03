@@ -414,12 +414,7 @@ class SearchController extends BaseController
         string $ownershipViewPermission
     ): array {
         $userGroupRepo = $this->createUserGroupRepository();
-        $memberRepo = $this->createUserGroupMemberRepository();
-        $hybridPermissions = new HybridPermissionService(
-            $this->db,
-            $userGroupRepo,
-            $memberRepo
-        );
+        $hybridPermissions = new HybridPermissionService($this->db);
 
         // 'own' and 'own_as_client' may come from different sources (e.g. direct
         // template grants one, a group template the other). Union both so a zone
