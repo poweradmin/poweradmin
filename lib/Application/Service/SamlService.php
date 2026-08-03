@@ -391,35 +391,27 @@ class SamlService extends LoggingService
             }
 
             // Restore original $_SERVER values after successful processing
-            if (isset($originalHttps)) {
-                if ($originalHttps !== null) {
-                    $_SERVER['HTTPS'] = $originalHttps;
-                } else {
-                    unset($_SERVER['HTTPS']);
-                }
+            if ($originalHttps !== null) {
+                $_SERVER['HTTPS'] = $originalHttps;
+            } else {
+                unset($_SERVER['HTTPS']);
             }
-            if (isset($originalPort)) {
-                if ($originalPort !== null) {
-                    $_SERVER['SERVER_PORT'] = $originalPort;
-                } else {
-                    unset($_SERVER['SERVER_PORT']);
-                }
+            if ($originalPort !== null) {
+                $_SERVER['SERVER_PORT'] = $originalPort;
+            } else {
+                unset($_SERVER['SERVER_PORT']);
             }
         } catch (\Exception $e) {
             // Restore original $_SERVER values before handling error
-            if (isset($originalHttps)) {
-                if ($originalHttps !== null) {
-                    $_SERVER['HTTPS'] = $originalHttps;
-                } else {
-                    unset($_SERVER['HTTPS']);
-                }
+            if ($originalHttps !== null) {
+                $_SERVER['HTTPS'] = $originalHttps;
+            } else {
+                unset($_SERVER['HTTPS']);
             }
-            if (isset($originalPort)) {
-                if ($originalPort !== null) {
-                    $_SERVER['SERVER_PORT'] = $originalPort;
-                } else {
-                    unset($_SERVER['SERVER_PORT']);
-                }
+            if ($originalPort !== null) {
+                $_SERVER['SERVER_PORT'] = $originalPort;
+            } else {
+                unset($_SERVER['SERVER_PORT']);
             }
 
             $this->logError('SAML authentication error: {error}', ['error' => $e->getMessage()]);

@@ -122,7 +122,8 @@ class DeleteRecordsController extends BaseController
 
             $zid = $recordRepository->getZoneIdFromRecordId($record_id);
 
-            if ($zid !== null) {
+            // 0 means the record no longer exists
+            if ($zid > 0) {
                 $domain_id = $recordRepository->recidToDomid($record_id);
 
                 // Check if this is an A or AAAA record that might have a corresponding PTR record
@@ -205,7 +206,7 @@ class DeleteRecordsController extends BaseController
         if (is_numeric($post_zone_id)) {
             $zone_id = (int) $post_zone_id;
             // Validate zone exists
-            if ($domainRepository->getZoneInfoFromId($zone_id) !== null) {
+            if ($domainRepository->getZoneInfoFromId($zone_id) !== []) {
                 $redirectPage = 'edit';
                 $messageKey = 'edit';
                 $redirectParams['id'] = $zone_id;
@@ -279,7 +280,7 @@ class DeleteRecordsController extends BaseController
             if (is_numeric($post_zone_id)) {
                 $zone_id = (int) $post_zone_id;
                 // Validate zone exists
-                if ($domainRepository->getZoneInfoFromId($zone_id) !== null) {
+                if ($domainRepository->getZoneInfoFromId($zone_id) !== []) {
                     $redirectPage = 'edit';
                     $messageKey = 'edit';
                     $redirectParams['id'] = $zone_id;

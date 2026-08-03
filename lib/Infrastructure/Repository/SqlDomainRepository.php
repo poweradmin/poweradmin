@@ -489,6 +489,9 @@ class SqlDomainRepository implements DomainRepositoryInterface
                 GROUP BY $domains_table.id, $domains_table.type, $domains_table.name, $domains_table.master");
         $stmt->execute([':zid' => $zid]);
         $result = $stmt->fetch();
+        if ($result === false) {
+            return [];
+        }
         return array(
             "id" => $zid,
             "name" => $result['name'],

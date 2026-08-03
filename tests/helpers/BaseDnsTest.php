@@ -84,18 +84,14 @@ class BaseDnsTest extends TestCase
                 if (strpos($query, "TYPE = 'CNAME'") !== false) {
                     if (strpos($query, "'existing.cname.example.com'") !== false) {
                         $stmtMock->method('fetch')->willReturn([123]); // Record exists
+                    } elseif (strpos($query, "'alias.example.com'") !== false) {
+                        $stmtMock->method('fetch')->willReturn([456]); // Record exists - CNAME exists for target
                     } else {
                         $stmtMock->method('fetch')->willReturn(false);
                     }
                 } elseif (strpos($query, "type = 'MX'") !== false || strpos($query, "type = 'NS'") !== false) {
                     if (strpos($query, "'invalid.cname.target'") !== false) {
                         $stmtMock->method('fetch')->willReturn([123]); // Record exists - makes CNAME invalid
-                    } else {
-                        $stmtMock->method('fetch')->willReturn(false);
-                    }
-                } elseif (strpos($query, "TYPE = 'CNAME'") !== false) {
-                    if (strpos($query, "'alias.example.com'") !== false) {
-                        $stmtMock->method('fetch')->willReturn([456]); // Record exists - CNAME exists for target
                     } else {
                         $stmtMock->method('fetch')->willReturn(false);
                     }
