@@ -7,7 +7,7 @@
 
 /**
  * Extract ID from a URL path
- * Supports both legacy (?id=123) and modern (/zone-templates/123/edit) URL patterns
+ * Supports both legacy (?id=123) and modern (/zones/templates/123/edit) URL patterns
  *
  * @param {string} href - URL to extract ID from
  * @returns {string|null} - ID or null if not found
@@ -15,7 +15,7 @@
 function extractIdFromUrl(href) {
   if (!href) return null;
 
-  // Modern URL pattern: /zone-templates/123/edit, /permission-templates/123/edit
+  // Modern URL pattern: /zones/templates/123/edit, /permissions/templates/123/edit
   const modernMatch = href.match(/\/(\d+)(?:\/edit|\/delete|$)/);
   if (modernMatch) return modernMatch[1];
 
@@ -34,7 +34,7 @@ function extractIdFromUrl(href) {
  * @returns {Promise<string|null>} - Template ID or null if not found
  */
 export async function findTemplateIdByName(page, templateName) {
-  await page.goto('/zone-templates');
+  await page.goto('/zones/templates');
 
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);
@@ -46,7 +46,7 @@ export async function findTemplateIdByName(page, templateName) {
     return null;
   }
 
-  // Find edit link and extract ID (modern URLs: /zone-templates/123/edit)
+  // Find edit link and extract ID (modern URLs: /zones/templates/123/edit)
   const editLink = row.locator('a[href*="/edit"]').first();
   if (await editLink.count() === 0) {
     return null;
@@ -65,7 +65,7 @@ export async function findTemplateIdByName(page, templateName) {
  * @returns {Promise<string|null>} - Template ID or null if creation failed
  */
 export async function createTemplate(page, name, description = '') {
-  await page.goto('/zone-templates/add');
+  await page.goto('/zones/templates/add');
 
   // Fill template name
   const nameField = page.locator('input[name*="name"], input[name*="templ"]').first();
@@ -118,7 +118,7 @@ export async function ensureTemplateExists(page, name, description = '') {
  * @returns {Promise<string|null>} - Template ID or null if not found
  */
 export async function findPermTemplateIdByName(page, templateName) {
-  await page.goto('/permission-templates');
+  await page.goto('/permissions/templates');
 
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);
@@ -130,7 +130,7 @@ export async function findPermTemplateIdByName(page, templateName) {
     return null;
   }
 
-  // Find edit link and extract ID (modern URLs: /permission-templates/123/edit)
+  // Find edit link and extract ID (modern URLs: /permissions/templates/123/edit)
   const editLink = row.locator('a[href*="/edit"]').first();
   if (await editLink.count() === 0) {
     return null;
@@ -149,7 +149,7 @@ export async function findPermTemplateIdByName(page, templateName) {
  * @returns {Promise<string|null>} - Template ID or null if creation failed
  */
 export async function createPermTemplate(page, name, description = '') {
-  await page.goto('/permission-templates/add');
+  await page.goto('/permissions/templates/add');
 
   // Fill template name
   const nameField = page.locator('input[name*="name"]').first();
