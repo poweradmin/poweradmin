@@ -1,5 +1,6 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import { ensureAnyZoneExists, getZoneIdForTest } from '../../helpers/zones.js';
+import { listDnssecKeyIds } from '../../helpers/dnssec.js';
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
@@ -44,9 +45,7 @@ test.describe('DNSSEC Management', () => {
       await expect(page).toHaveURL(/.*\/dnssec\/keys\/add/);
       // Form may or may not be visible depending on DNSSEC configuration
       const form = page.locator('form, [data-testid*="form"]');
-      if (await form.count() > 0) {
-        await expect(form.first()).toBeVisible();
-      }
+      await expect(form.first()).toBeVisible();
     } else {
       test.info().annotations.push({ type: 'note', description: 'DNSSEC key addition not available - zone may not exist or DNSSEC not enabled' });
     }
@@ -133,9 +132,7 @@ test.describe('Add DNSSEC Key', () => {
 
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const form = page.locator('form').first();
-      if (await form.count() > 0) {
-        await expect(form).toBeVisible();
-      }
+      await expect(form.first()).toBeVisible();
     });
 
     test('should display key type select', async ({ adminPage: page }) => {
@@ -144,9 +141,7 @@ test.describe('Add DNSSEC Key', () => {
 
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const keyTypeSelect = page.locator('select[name*="type"], select[name*="key"]').first();
-      if (await keyTypeSelect.count() > 0) {
-        await expect(keyTypeSelect).toBeVisible();
-      }
+      await expect(keyTypeSelect.first()).toBeVisible();
     });
 
     test('should display bits select', async ({ adminPage: page }) => {
@@ -155,9 +150,7 @@ test.describe('Add DNSSEC Key', () => {
 
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const bitsSelect = page.locator('select[name*="bits"], select[name*="size"]').first();
-      if (await bitsSelect.count() > 0) {
-        await expect(bitsSelect).toBeVisible();
-      }
+      await expect(bitsSelect.first()).toBeVisible();
     });
 
     test('should display algorithm select', async ({ adminPage: page }) => {
@@ -166,9 +159,7 @@ test.describe('Add DNSSEC Key', () => {
 
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const algoSelect = page.locator('select[name*="algo"], select[name*="algorithm"]').first();
-      if (await algoSelect.count() > 0) {
-        await expect(algoSelect).toBeVisible();
-      }
+      await expect(algoSelect.first()).toBeVisible();
     });
 
     test('should display submit button', async ({ adminPage: page }) => {
@@ -177,9 +168,7 @@ test.describe('Add DNSSEC Key', () => {
 
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const submitBtn = page.locator('input[type="submit"], button[type="submit"]').first();
-      if (await submitBtn.count() > 0) {
-        await expect(submitBtn).toBeVisible();
-      }
+      await expect(submitBtn.first()).toBeVisible();
     });
 
     test('should allow selecting key type', async ({ adminPage: page }) => {
@@ -188,10 +177,9 @@ test.describe('Add DNSSEC Key', () => {
 
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const keyTypeSelect = page.locator('select[name*="type"], select[name*="key"]').first();
-      if (await keyTypeSelect.count() > 0) {
-        const options = await keyTypeSelect.locator('option').count();
-        expect(options).toBeGreaterThan(0);
-      }
+      await expect(keyTypeSelect.first()).toBeVisible();
+      const options = await keyTypeSelect.locator('option').count();
+      expect(options).toBeGreaterThan(0);
     });
   });
 
@@ -236,15 +224,13 @@ test.describe('Edit DNSSEC Key', () => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
-      await page.goto(`/zones/${zoneId}/dnssec/keys/1/edit`);
-      const submitBtn = page.locator('button[type="submit"], input[type="submit"]');
-      const cancelBtn = page.locator('a:has-text("Cancel"), button:has-text("Cancel")');
-      if (await submitBtn.count() > 0) {
-        await expect(submitBtn.first()).toBeVisible();
-      }
-      if (await cancelBtn.count() > 0) {
-        await expect(cancelBtn.first()).toBeVisible();
-      }
+      // Key id 1 need not belong to this zone; resolve one the zone actually has
+      const keyIds = await listDnssecKeyIds(page, zoneId);
+      test.skip(keyIds.length === 0, 'zone has no DNSSEC keys to edit');
+
+      await page.goto(`/zones/${zoneId}/dnssec/keys/${keyIds[0]}/edit`);
+      await expect(page.locator('button[type="submit"], input[type="submit"]').first()).toBeVisible();
+      await expect(page.locator('a:has-text("Cancel"), button:has-text("Cancel")').first()).toBeVisible();
     });
   });
 
@@ -253,11 +239,11 @@ test.describe('Edit DNSSEC Key', () => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
-      await page.goto(`/zones/${zoneId}/dnssec`);
-      const editLinks = page.locator('a[href*="/keys/"][href*="/edit"]');
-      if (await editLinks.count() > 0) {
-        await expect(editLinks.first()).toBeVisible();
-      }
+      // getZoneIdForTest may return a zone with no keys, and the link only exists per key
+      const keyIds = await listDnssecKeyIds(page, zoneId);
+      test.skip(keyIds.length === 0, 'zone has no DNSSEC keys, so no edit link is rendered');
+
+      await expect(page.locator('a[href*="/keys/"][href*="/edit"]').first()).toBeVisible();
     });
   });
 });
@@ -302,11 +288,12 @@ test.describe('Delete DNSSEC Key', () => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
-      await page.goto(`/zones/${zoneId}/dnssec/keys/1/delete`);
-      const form = page.locator('form').first();
-      if (await form.count() > 0) {
-        await expect(form).toBeVisible();
-      }
+      // Key id 1 need not belong to this zone; resolve one the zone actually has
+      const keyIds = await listDnssecKeyIds(page, zoneId);
+      test.skip(keyIds.length === 0, 'zone has no DNSSEC keys to delete');
+
+      await page.goto(`/zones/${zoneId}/dnssec/keys/${keyIds[0]}/delete`);
+      await expect(page.locator('form').first()).toBeVisible();
     });
 
     test('should display confirm and cancel buttons', async ({ adminPage: page }) => {
@@ -318,34 +305,33 @@ test.describe('Delete DNSSEC Key', () => {
         return;
       }
 
-      await page.goto(`/zones/${zoneId}/dnssec/keys/1/delete`, { timeout: 30000 });
-      await page.waitForLoadState('networkidle');
+      // Key id 1 need not belong to this zone; resolve one the zone actually has
+      const keyIds = await listDnssecKeyIds(page, zoneId);
+      test.skip(keyIds.length === 0, 'zone has no DNSSEC keys to delete');
 
-      const deleteBtn = page.locator('button[type="submit"]:has-text("Delete"), button:has-text("Delete")');
-      const cancelBtn = page.locator('a:has-text("Cancel"), button:has-text("Cancel")');
-      if (await deleteBtn.count() > 0) {
-        await expect(deleteBtn.first()).toBeVisible();
-      }
-      if (await cancelBtn.count() > 0) {
-        await expect(cancelBtn.first()).toBeVisible();
-      }
+      await page.goto(`/zones/${zoneId}/dnssec/keys/${keyIds[0]}/delete`, { timeout: 30000 });
+
+      await expect(page.locator('button[type="submit"]:has-text("Delete"), button:has-text("Delete")').first()).toBeVisible();
+      await expect(page.locator('a:has-text("Cancel"), button:has-text("Cancel")').first()).toBeVisible();
     });
 
     test('should use correct CSRF token field name', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
-      await page.goto(`/zones/${zoneId}/dnssec/keys/1/delete`);
-      const form = page.locator('form').first();
-      if (await form.count() > 0) {
-        // Should use _token (correct)
-        const correctToken = page.locator('input[name="_token"]');
-        expect(await correctToken.count()).toBe(1);
+      // Key id 1 need not belong to this zone; resolve one the zone actually has
+      const keyIds = await listDnssecKeyIds(page, zoneId);
+      test.skip(keyIds.length === 0, 'zone has no DNSSEC keys to delete');
 
-        // Should NOT use csrf_token (incorrect)
-        const wrongToken = page.locator('input[name="csrf_token"]');
-        expect(await wrongToken.count()).toBe(0);
-      }
+      await page.goto(`/zones/${zoneId}/dnssec/keys/${keyIds[0]}/delete`);
+      await expect(page.locator('form').first()).toBeVisible();
+      // Should use _token (correct)
+      const correctToken = page.locator('input[name="_token"]');
+      expect(await correctToken.count()).toBe(1);
+
+      // Should NOT use csrf_token (incorrect)
+      const wrongToken = page.locator('input[name="csrf_token"]');
+      expect(await wrongToken.count()).toBe(0);
     });
   });
 
@@ -354,11 +340,11 @@ test.describe('Delete DNSSEC Key', () => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
-      await page.goto(`/zones/${zoneId}/dnssec`);
-      const deleteLinks = page.locator('a[href*="/keys/"][href*="/delete"]');
-      if (await deleteLinks.count() > 0) {
-        await expect(deleteLinks.first()).toBeVisible();
-      }
+      // getZoneIdForTest may return a zone with no keys, and the link only exists per key
+      const keyIds = await listDnssecKeyIds(page, zoneId);
+      test.skip(keyIds.length === 0, 'zone has no DNSSEC keys, so no delete link is rendered');
+
+      await expect(page.locator('a[href*="/keys/"][href*="/delete"]').first()).toBeVisible();
     });
   });
 });
@@ -419,14 +405,10 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
       // Check page loaded without fatal errors
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
-      // Records containers are optional - DNSSEC may not be configured
+      // The DS/DNSKEY blocks only render for a signed zone, so skip visibly otherwise
       const pre = page.locator('pre, code, .records');
-      if (await pre.count() > 0) {
-        const firstPre = pre.first();
-        if (await firstPre.isVisible()) {
-          await expect(firstPre).toBeVisible();
-        }
-      }
+      test.skip(await pre.count() === 0, 'zone is unsigned, so no DS/DNSKEY records are rendered');
+      await expect(pre.first()).toBeVisible();
     });
   });
 
@@ -437,9 +419,7 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
 
       await page.goto(`/zones/${zoneId}/dnssec`);
       const dsLink = page.locator('a[href*="ds-dnskey"]');
-      if (await dsLink.count() > 0) {
-        await expect(dsLink.first()).toBeVisible();
-      }
+      await expect(dsLink.first()).toBeVisible();
     });
   });
 
