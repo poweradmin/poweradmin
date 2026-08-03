@@ -439,5 +439,24 @@ export async function getColumnIndex(page, headerText) {
   }, headerText);
 }
 
+/**
+ * Ports of the instances configured with dns.backend = 'api'
+ */
+export const API_MODE_PORTS = ['8083', '8084', '8085'];
+
+/**
+ * Whether a base URL points at an API-backend instance.
+ *
+ * Zone list columns whose data comes from PowerDNS rather than the local
+ * database are rendered without a sort link there, so tests asserting those
+ * links have to skip.
+ *
+ * @param {string} baseURL - Base URL under test
+ * @returns {boolean} - True when the instance runs the API backend
+ */
+export function isApiModeInstance(baseURL) {
+  return API_MODE_PORTS.some((port) => (baseURL || '').includes(`:${port}`));
+}
+
 // Export zones fixture for direct access
 export { zones };

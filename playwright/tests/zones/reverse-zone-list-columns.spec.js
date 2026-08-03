@@ -8,7 +8,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getColumnIndex } from '../../helpers/zones.js';
+import { getColumnIndex, isApiModeInstance } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
@@ -68,7 +68,8 @@ test.describe('Reverse Zone List Columns (Issue #1186)', () => {
     }
   });
 
-  test('Group column is sortable (Issue #1051)', async ({ page }) => {
+  test('Group column is sortable (Issue #1051)', async ({ page, baseURL }) => {
+    test.skip(isApiModeInstance(baseURL), 'group sorting is not offered on the API backend');
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     await page.goto('/zones/reverse');
     await page.waitForLoadState('networkidle');

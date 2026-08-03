@@ -7,6 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { isApiModeInstance } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Zone List Sorting', () => {
@@ -49,7 +50,8 @@ test.describe('Zone List Sorting', () => {
 
     // SQL backend only. In API mode record counts are resolved per page, so the
     // column is plain text - see api-backend-zone-list.spec.js.
-    test('should have sortable records count column', async ({ page }) => {
+    test('should have sortable records count column', async ({ page, baseURL }) => {
+      test.skip(isApiModeInstance(baseURL), 'records count is not sortable on the API backend');
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       await page.waitForLoadState('networkidle');
@@ -61,7 +63,10 @@ test.describe('Zone List Sorting', () => {
       expect(hasSortableRecordsHeader).toBeTruthy();
     });
 
-    test('should have sortable group column header', async ({ page }) => {
+    // SQL backend only: ListForwardZonesController disables group sorting in API
+    // mode, so the header renders as plain text.
+    test('should have sortable group column header', async ({ page, baseURL }) => {
+      test.skip(isApiModeInstance(baseURL), 'group sorting is not offered on the API backend');
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       await page.waitForLoadState('networkidle');
@@ -151,7 +156,8 @@ test.describe('Zone List Sorting', () => {
       expect(bodyDesc.toLowerCase()).toMatch(/zone|forward/i);
     });
 
-    test('clicking group sort link toggles direction', async ({ page }) => {
+    test('clicking group sort link toggles direction', async ({ page, baseURL }) => {
+      test.skip(isApiModeInstance(baseURL), 'group sorting is not offered on the API backend');
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       await page.waitForLoadState('networkidle');

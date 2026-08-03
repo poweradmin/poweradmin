@@ -12,13 +12,8 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getColumnIndex } from '../../helpers/zones.js';
+import { getColumnIndex, isApiModeInstance } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
-
-const API_MODE_PORTS = ['8083', '8084', '8085'];
-
-const isApiModeInstance = (baseURL) =>
-  API_MODE_PORTS.some((port) => (baseURL || '').includes(`:${port}`));
 
 test.describe('Zone list in API backend mode', () => {
   test.beforeEach(async ({ page, baseURL }) => {
