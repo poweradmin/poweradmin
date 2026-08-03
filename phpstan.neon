@@ -24,6 +24,16 @@ parameters:
     -
       identifier: deadCode.unreachable
       path: lib/Application/Service/SamlService.php
+    # processIPv6() is kept alongside its commented-out call site until IPv6
+    # reverse-record creation is finished; see the FIXME above that call.
+    -
+      identifier: method.unused
+      path: lib/Domain/Service/DomainRecordCreator.php
+    # The anonymous LegacyLogger captor binds $sink by reference to the caller's
+    # array, so writing the property is how the test observes the log call.
+    -
+      identifier: property.onlyWritten
+      path: tests/unit/Application/Service/UserEventLoggerTest.php
     # NetworkUtility::$instance is a test seam. DomainUtilityTest installs a stub
     # through ReflectionProperty, which static analysis cannot see.
     -

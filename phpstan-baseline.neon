@@ -103,22 +103,10 @@ parameters:
 			path: lib/Application/Controller/ZoneOwnershipController.php
 
 		-
-			message: '#^Property Poweradmin\\Application\\Service\\RecordManagerService\:\:\$commentSyncService is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Application/Service/RecordManagerService.php
-
-		-
 			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 4
 			path: lib/Application/Service/SamlService.php
-
-		-
-			message: '#^Property Poweradmin\\Application\\Service\\UsernameRecoveryService\:\:\$userRepository is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Application/Service/UsernameRecoveryService.php
 
 		-
 			message: '#^Offset ''timestamp'' on array\{message\: string, context\: non\-empty\-array, timestamp\: int\} in isset\(\) always exists and is not nullable\.$#'
@@ -155,18 +143,6 @@ parameters:
 			identifier: identical.alwaysFalse
 			count: 1
 			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
-			message: '#^Property Poweradmin\\Domain\\Service\\DnsRecordValidationService\:\:\$messageService is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Domain/Service/DnsRecordValidationService.php
-
-		-
-			message: '#^Property Poweradmin\\Domain\\Service\\DnsRecordValidationService\:\:\$ttlValidator is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Domain/Service/DnsRecordValidationService.php
 
 		-
 			message: '#^Left side of && is always true\.$#'
@@ -215,24 +191,6 @@ parameters:
 			identifier: identical.alwaysFalse
 			count: 1
 			path: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php
-
-		-
-			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\ZONEMDRecordValidator\:\:\$hostnameValidator is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php
-
-		-
-			message: '#^Method Poweradmin\\Domain\\Service\\DomainRecordCreator\:\:processIPv6\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: lib/Domain/Service/DomainRecordCreator.php
-
-		-
-			message: '#^Property Poweradmin\\Domain\\Service\\DomainRecordCreator\:\:\$logger is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Domain/Service/DomainRecordCreator.php
 
 		-
 			message: '#^Left side of \|\| is always false\.$#'
@@ -295,18 +253,6 @@ parameters:
 			path: lib/Infrastructure/Network/ProxyContext.php
 
 		-
-			message: '#^Property Poweradmin\\Infrastructure\\Repository\\DbPermissionTemplateRepository\:\:\$config is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php
-
-		-
-			message: '#^Property Poweradmin\\Infrastructure\\Repository\\DbUserPreferenceRepository\:\:\$db_type is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Infrastructure/Repository/DbUserPreferenceRepository.php
-
-		-
 			message: '#^Call to function is_int\(\) with int will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 2
@@ -317,12 +263,6 @@ parameters:
 			identifier: if.alwaysFalse
 			count: 1
 			path: lib/Infrastructure/Repository/DbZoneRepository.php
-
-		-
-			message: '#^Property Poweradmin\\Infrastructure\\Service\\ApiDnsBackendProvider\:\:\$config is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php
 
 		-
 			message: '#^Strict comparison using \=\=\= between mixed and null will always evaluate to false\.$#'
@@ -419,9 +359,3 @@ parameters:
 			identifier: isset.offset
 			count: 1
 			path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php
-
-		-
-			message: '#^Property Poweradmin\\Infrastructure\\Logger\\LegacyLogger@anonymous/tests/unit/Application/Service/UserEventLoggerTest\.php\:195\:\:\$sink is never read, only written\.$#'
-			identifier: property.onlyWritten
-			count: 1
-			path: tests/unit/Application/Service/UserEventLoggerTest.php
