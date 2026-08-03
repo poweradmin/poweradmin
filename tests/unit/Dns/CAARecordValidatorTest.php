@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -87,6 +87,31 @@ class CAARecordValidatorTest extends TestCase
 
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
+    }
+
+    /**
+     * RFC 8659: ";" as the issuer-domain-name means no issuance is permitted.
+     * It is valid for issuewild exactly as it is for issue.
+     */
+    public function testValidateAcceptsSemicolonIssuewild()
+    {
+        $result = $this->validator->validate('0 issuewild ";"', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid(), implode('; ', $result->getErrors()));
+    }
+
+    public function testValidateAcceptsSemicolonIssue()
+    {
+        $result = $this->validator->validate('0 issue ";"', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid(), implode('; ', $result->getErrors()));
+    }
+
+    public function testValidateStillRejectsInvalidIssuewildDomain()
+    {
+        $result = $this->validator->validate('0 issuewild "not a valid domain"', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
     }
 
     public function testValidateWithValidIodefData()
