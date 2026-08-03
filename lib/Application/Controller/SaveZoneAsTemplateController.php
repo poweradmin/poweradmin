@@ -115,7 +115,7 @@ class SaveZoneAsTemplateController extends BaseController
 
     private function saveAsTemplate(int $zone_id, string $zone_name): void
     {
-        $template_name = htmlspecialchars($this->request->getPostParam('templ_name')) ?? '';
+        $template_name = htmlspecialchars($this->request->getPostParam('templ_name') ?? '');
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
 
         if ($zoneTemplate->zoneTemplNameExists($template_name)) {
@@ -130,7 +130,7 @@ class SaveZoneAsTemplateController extends BaseController
 
         $records = $this->createRecordRepository()->getRecordsFromDomainId($this->config->get('database', 'type', 'mysql'), $zone_id);
 
-        $description = htmlspecialchars($this->request->getPostParam('templ_descr')) ?? '';
+        $description = htmlspecialchars($this->request->getPostParam('templ_descr') ?? '');
 
         $options = [
             'NS1' => $this->config->get('dns', 'ns1', '') ?? '',

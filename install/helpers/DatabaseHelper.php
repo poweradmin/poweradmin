@@ -306,7 +306,9 @@ class DatabaseHelper
         $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
         foreach ($groupTemplatePermissions as $templateName => $permissions) {
             foreach ($permissions as $permName) {
-                if (isset($permissionIds[$permName]) && isset($groupTemplateIds[$templateName])) {
+                // lastInsertId() returns false on a failed template insert, and
+                // isset() would happily pass that through as a template id
+                if (isset($permissionIds[$permName]) && $groupTemplateIds[$templateName] !== false) {
                     $stmt->execute([
                         ':templ_id' => $groupTemplateIds[$templateName],
                         ':perm_id' => $permissionIds[$permName]
@@ -326,7 +328,7 @@ class DatabaseHelper
 
         $stmt = $this->db->prepare("INSERT INTO user_groups (name, description, perm_templ, created_by) VALUES (:name, :description, :perm_templ, NULL)");
         foreach ($defaultGroups as $group) {
-            if (isset($groupTemplateIds[$group['name']])) {
+            if ($groupTemplateIds[$group['name']] !== false) {
                 $stmt->execute([
                     ':name' => $group['name'],
                     ':description' => $group['description'],
