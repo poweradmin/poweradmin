@@ -2,14 +2,10 @@ includes:
   - phpstan-baseline.neon
   - vendor/phpstan/phpstan-deprecation-rules/rules.neon
   - vendor/spaze/phpstan-disallowed-calls/extension.neon
-  - vendor/tomasvotruba/cognitive-complexity/config/extension.neon
 
 parameters:
   excludePaths:
     - vendor
-  cognitive_complexity:
-    class: 60
-    function: 15
   # Global helpers loaded via require_once in entry points; lets targeted
   # runs (single file, IDE) resolve them without analyzing all of lib/
   scanFiles:

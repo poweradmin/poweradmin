@@ -1,52 +1,10 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Cognitive complexity for "renderRowHtml\(\)" is 23, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: addons/send_record_changes_email.php
-
-		-
-			message: '#^Class cognitive complexity is 66, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: install/helpers/DatabaseHelper.php
-
-		-
-			message: '#^Cognitive complexity for "PoweradminInstall\\DatabaseHelper\:\:createAdministratorUser\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: install/helpers/DatabaseHelper.php
-
-		-
-			message: '#^Cognitive complexity for "PoweradminInstall\\DatabaseHelper\:\:updateDatabase\(\)" is 23, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: install/helpers/DatabaseHelper.php
-
-		-
 			message: '#^Offset ''Administrators''\|''Editors''\|''Guests''\|''Viewers''\|''Zone Managers'' on array\{Administrators\: string\|false, ''Zone Managers''\: string\|false, Editors\: string\|false, Viewers\: string\|false, Guests\: string\|false\} in isset\(\) always exists and is not nullable\.$#'
 			identifier: isset.offset
 			count: 2
 			path: install/helpers/DatabaseHelper.php
-
-		-
-			message: '#^Class cognitive complexity is 98, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Controller/AddRecordController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\AddRecordController\:\:addMultipleRecords\(\)" is 46, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/AddRecordController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\AddRecordController\:\:addRecord\(\)" is 30, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/AddRecordController.php
 
 		-
 			message: '#^Negated boolean expression is always true\.$#'
@@ -55,58 +13,10 @@ parameters:
 			path: lib/Application/Controller/AddRecordController.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\AddUserController\:\:addUser\(\)" is 30, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/AddUserController.php
-
-		-
-			message: '#^Class cognitive complexity is 103, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Controller/AddZoneMasterController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\AddZoneMasterController\:\:addZone\(\)" is 67, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/AddZoneMasterController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\AddZoneMasterController\:\:showForm\(\)" is 26, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/AddZoneMasterController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\AddZoneSlaveController\:\:addZone\(\)" is 36, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/AddZoneSlaveController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\GroupZonesController\:\:unassignZone\(\)" is 24, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/GroupZonesController.php
-
-		-
 			message: '#^Negated boolean expression is always false\.$#'
 			identifier: booleanNot.alwaysFalse
 			count: 1
 			path: lib/Application/Controller/Api/V2/GroupsController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZoneDnssecController\:\:setStatus\(\)" is 23, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZoneDnssecController.php
-
-		-
-			message: '#^Class cognitive complexity is 66, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZoneMetadataController.php
 
 		-
 			message: '#^Offset ''kind'' on array\{kind\: string, content\: string\} on left side of \?\? always exists and is not nullable\.$#'
@@ -121,124 +31,10 @@ parameters:
 			path: lib/Application/Controller/Api/V2/ZoneMetadataController.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZoneOwnersController\:\:removeOwner\(\)" is 20, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZoneOwnersController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZoneTemplatesController\:\:updateZoneTemplate\(\)" is 17, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZoneTemplatesController.php
-
-		-
-			message: '#^Class cognitive complexity is 87, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZonesController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZonesController\:\:createZone\(\)" is 22, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZonesController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZonesController\:\:updateZone\(\)" is 36, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZonesController.php
-
-		-
-			message: '#^Class cognitive complexity is 91, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZonesRRSetsController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRRSetsController\:\:replaceRRSet\(\)" is 55, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZonesRRSetsController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRecordsBulkController\:\:bulkRecordOperations\(\)" is 30, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZonesRecordsBulkController.php
-
-		-
 			message: '#^Comparison operation "\>" between 0 and 0 is always false\.$#'
 			identifier: greater.alwaysFalse
 			count: 1
 			path: lib/Application/Controller/Api/V2/ZonesRecordsBulkController.php
-
-		-
-			message: '#^Class cognitive complexity is 94, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZonesRecordsController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRecordsController\:\:createRecord\(\)" is 34, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZonesRecordsController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRecordsController\:\:updateRecord\(\)" is 31, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/Api/V2/ZonesRecordsController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\BatchPtrRecordController\:\:getReverseZones\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/BatchPtrRecordController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\BulkRecordAddController\:\:doBulkRecordAddition\(\)" is 17, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/BulkRecordAddController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\BulkRegistrationController\:\:doBulkRegistration\(\)" is 33, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/BulkRegistrationController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DatabaseConsistencyController\:\:handleFixAction\(\)" is 25, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/DatabaseConsistencyController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DeleteDomainsController\:\:deleteDomains\(\)" is 29, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/DeleteDomainsController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DeleteRecordController\:\:run\(\)" is 31, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/DeleteRecordController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DeleteRecordsController\:\:deleteRecords\(\)" is 28, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/DeleteRecordsController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DeleteRecordsController\:\:showRecords\(\)" is 21, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/DeleteRecordsController.php
 
 		-
 			message: '#^Strict comparison using \!\=\= between array and null will always evaluate to true\.$#'
@@ -253,52 +49,10 @@ parameters:
 			path: lib/Application/Controller/DeleteRecordsController.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DnssecAddKeyController\:\:run\(\)" is 52, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/DnssecAddKeyController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DnssecController\:\:run\(\)" is 21, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/DnssecController.php
-
-		-
 			message: '#^Right side of && is always true\.$#'
 			identifier: booleanAnd.rightAlwaysTrue
 			count: 1
 			path: lib/Application/Controller/DnssecDeleteKeyController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\DnssecToggleKeyController\:\:run\(\)" is 16, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/DnssecToggleKeyController.php
-
-		-
-			message: '#^Class cognitive complexity is 214, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Controller/EditController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\EditController\:\:addRecord\(\)" is 27, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/EditController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\EditController\:\:run\(\)" is 90, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/EditController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\EditController\:\:saveRecords\(\)" is 46, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/EditController.php
 
 		-
 			message: '#^If condition is always false\.$#'
@@ -325,100 +79,10 @@ parameters:
 			path: lib/Application/Controller/EditController.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\EditRecordController\:\:saveRecord\(\)" is 23, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/EditRecordController.php
-
-		-
-			message: '#^Class cognitive complexity is 67, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Controller/EditUserController.php
-
-		-
-			message: '#^Class cognitive complexity is 103, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Controller/EditZoneMetadataController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\EditZoneMetadataController\:\:saveMetadataViaApi\(\)" is 25, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/EditZoneMetadataController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\IndexController\:\:showIndex\(\)" is 17, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/IndexController.php
-
-		-
 			message: '#^Left side of && is always false\.$#'
 			identifier: booleanAnd.leftAlwaysFalse
 			count: 1
 			path: lib/Application/Controller/IndexController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\ListForwardZonesController\:\:listForwardZones\(\)" is 40, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/ListForwardZonesController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\ListLogApiController\:\:exportLogs\(\)" is 23, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/ListLogApiController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\ListLogGroupsController\:\:exportLogs\(\)" is 23, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/ListLogGroupsController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\ListLogUsersController\:\:exportLogs\(\)" is 23, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/ListLogUsersController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\ListLogZonesController\:\:showListLogZones\(\)" is 22, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/ListLogZonesController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\ListNetworksController\:\:run\(\)" is 22, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/ListNetworksController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\ListRecordChangesController\:\:exportLogs\(\)" is 21, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/ListRecordChangesController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\ListReverseZonesController\:\:listReverseZones\(\)" is 41, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/ListReverseZonesController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\ListViewsController\:\:run\(\)" is 18, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/ListViewsController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\MfaVerifyController\:\:handleMfaVerification\(\)" is 33, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/MfaVerifyController.php
 
 		-
 			message: '#^Expression on left side of \?\? is not nullable\.$#'
@@ -427,32 +91,8 @@ parameters:
 			path: lib/Application/Controller/SaveZoneAsTemplateController.php
 
 		-
-			message: '#^Class cognitive complexity is 72, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Controller/SearchController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\SearchController\:\:run\(\)" is 38, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Controller/SearchController.php
-
-		-
 			message: '#^Call to function is_array\(\) with array will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
-			count: 1
-			path: lib/Application/Controller/ZoneOwnershipController.php
-
-		-
-			message: '#^Class cognitive complexity is 74, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Controller/ZoneOwnershipController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Controller\\ZoneOwnershipController\:\:handleFormSubmission\(\)" is 56, keep it under 15$#'
-			identifier: complexity.functionLike
 			count: 1
 			path: lib/Application/Controller/ZoneOwnershipController.php
 
@@ -461,42 +101,6 @@ parameters:
 			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: lib/Application/Controller/ZoneOwnershipController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Query\\RecordSearch\:\:fetchRecords\(\)" is 17, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Query/RecordSearch.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\AvatarService\:\:getAvatarUrl\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Service/AvatarService.php
-
-		-
-			message: '#^Class cognitive complexity is 117, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Service/DnsDataService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\DnsDataService\:\:enrichZonesWithOwnership\(\)" is 20, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Service/DnsDataService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\DnsDataService\:\:searchRecordsApi\(\)" is 32, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Service/DnsDataService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\DnsDataService\:\:searchZonesApi\(\)" is 26, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Service/DnsDataService.php
 
 		-
 			message: '#^Property Poweradmin\\Application\\Service\\HybridPermissionService\:\:\$groupRepository is never read, only written\.$#'
@@ -511,94 +115,16 @@ parameters:
 			path: lib/Application/Service/HybridPermissionService.php
 
 		-
-			message: '#^Class cognitive complexity is 73, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Service/LdapAuthenticator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\LdapAuthenticator\:\:authenticate\(\)" is 57, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Service/LdapAuthenticator.php
-
-		-
-			message: '#^Class cognitive complexity is 69, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Service/OidcService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\OidcService\:\:handleCallback\(\)" is 30, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Service/OidcService.php
-
-		-
-			message: '#^Class cognitive complexity is 79, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Service/PowerdnsStatusService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\PowerdnsStatusService\:\:categorizeMetrics\(\)" is 18, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Service/PowerdnsStatusService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\PowerdnsStatusService\:\:getServerStatus\(\)" is 21, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Service/PowerdnsStatusService.php
-
-		-
 			message: '#^Property Poweradmin\\Application\\Service\\RecordManagerService\:\:\$commentSyncService is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
 			path: lib/Application/Service/RecordManagerService.php
 
 		-
-			message: '#^Class cognitive complexity is 85, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Service/SamlService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\SamlService\:\:handleAssertion\(\)" is 45, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Service/SamlService.php
-
-		-
 			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 4
 			path: lib/Application/Service/SamlService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\SqlAuthenticator\:\:authenticate\(\)" is 22, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Service/SqlAuthenticator.php
-
-		-
-			message: '#^Class cognitive complexity is 155, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Application/Service/UserProvisioningService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\UserProvisioningService\:\:applyGroupMembership\(\)" is 27, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Service/UserProvisioningService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Application\\Service\\UserProvisioningService\:\:updateExistingUser\(\)" is 24, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Application/Service/UserProvisioningService.php
 
 		-
 			message: '#^Property Poweradmin\\Application\\Service\\UsernameRecoveryService\:\:\$userRepository is never read, only written\.$#'
@@ -619,124 +145,16 @@ parameters:
 			path: lib/Application/Service/ZoneSyncService.php
 
 		-
-			message: '#^Class cognitive complexity is 91, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Model/UserManager.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Model\\UserManager\:\:editUser\(\)" is 29, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Model/UserManager.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Model\\UserManager\:\:updateUserDetails\(\)" is 30, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Model/UserManager.php
-
-		-
-			message: '#^Class cognitive complexity is 138, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Model/ZoneTemplate.php
-
-		-
-			message: '#^Class cognitive complexity is 62, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/ApiKeyService.php
-
-		-
-			message: '#^Class cognitive complexity is 74, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/ApiPermissionService.php
-
-		-
 			message: '#^Call to function is_int\(\) with int\<min, \-1\>\|int\<1, max\> will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 2
 			path: lib/Domain/Service/BatchReverseRecordCreator.php
 
 		-
-			message: '#^Class cognitive complexity is 161, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/BatchReverseRecordCreator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\BatchReverseRecordCreator\:\:createIPv4Network\(\)" is 81, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/BatchReverseRecordCreator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\BatchReverseRecordCreator\:\:createIPv6Network\(\)" is 59, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/BatchReverseRecordCreator.php
-
-		-
-			message: '#^Class cognitive complexity is 93, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/DatabaseConsistencyService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DatabaseConsistencyService\:\:checkZonesHaveOwners\(\)" is 16, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DatabaseConsistencyService.php
-
-		-
 			message: '#^Ternary operator condition is always false\.$#'
 			identifier: ternary.alwaysFalse
 			count: 1
 			path: lib/Domain/Service/DatabaseConsistencyService.php
-
-		-
-			message: '#^Class cognitive complexity is 74, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/DatabaseSchemaService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DatabaseSchemaService\:\:createTable\(\)" is 49, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DatabaseSchemaService.php
-
-		-
-			message: '#^Class cognitive complexity is 299, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\Dns\\DomainManager\:\:addDomain\(\)" is 95, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\Dns\\DomainManager\:\:deleteDomains\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\Dns\\DomainManager\:\:deleteTemplateRecordsViaApi\(\)" is 16, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\Dns\\DomainManager\:\:updateZoneRecords\(\)" is 103, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
 
 		-
 			message: '#^Right side of && is always false\.$#'
@@ -751,12 +169,6 @@ parameters:
 			path: lib/Domain/Service/Dns/DomainManager.php
 
 		-
-			message: '#^Class cognitive complexity is 63, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/Dns/RecordManager.php
-
-		-
 			message: '#^Property Poweradmin\\Domain\\Service\\DnsRecordValidationService\:\:\$messageService is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1
@@ -769,34 +181,10 @@ parameters:
 			path: lib/Domain/Service/DnsRecordValidationService.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\APLRecordValidator\:\:validate\(\)" is 18, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/APLRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\APLRecordValidator\:\:validateAPLElement\(\)" is 20, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/APLRecordValidator.php
-
-		-
 			message: '#^Left side of && is always true\.$#'
 			identifier: booleanAnd.leftAlwaysTrue
 			count: 2
 			path: lib/Domain/Service/DnsValidation/APLRecordValidator.php
-
-		-
-			message: '#^Class cognitive complexity is 67, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/CAARecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\CAARecordValidator\:\:validateCAAContent\(\)" is 56, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/CAARecordValidator.php
 
 		-
 			message: '#^Strict comparison using \!\=\= between non\-falsy\-string and '''' will always evaluate to true\.$#'
@@ -811,178 +199,16 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\CDSRecordValidator\:\:validateCDSContent\(\)" is 17, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/CDSRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\CERTRecordValidator\:\:validateCERTContent\(\)" is 27, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/CERTRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\DLVRecordValidator\:\:validateDLVContent\(\)" is 16, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/DLVRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\DMARCRecordValidator\:\:validateDMARCContent\(\)" is 34, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\DNSKEYRecordValidator\:\:validateDNSKEYContent\(\)" is 20, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\DSRecordValidator\:\:validateDSContent\(\)" is 17, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/DSRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\HINFORecordValidator\:\:validateHinfoContent\(\)" is 20, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/HINFORecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\HTTPSRecordValidator\:\:validateHTTPSParams\(\)" is 26, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php
-
-		-
-			message: '#^Class cognitive complexity is 98, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/HostnameValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\HostnameValidator\:\:validate\(\)" is 92, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/HostnameValidator.php
-
-		-
-			message: '#^Class cognitive complexity is 62, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/IPAddressValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\IPAddressValidator\:\:canonicalizeIPv6\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/IPAddressValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\IPAddressValidator\:\:validateMultipleIPs\(\)" is 21, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/IPAddressValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\IPSECKEYRecordValidator\:\:validateIPSECKEYContent\(\)" is 16, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\LOCRecordValidator\:\:validateLOCContent\(\)" is 24, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/LOCRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\LUARecordValidator\:\:validate\(\)" is 20, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/LUARecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\NAPTRRecordValidator\:\:validateNAPTRContent\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\NSEC3RecordValidator\:\:validateNsec3Content\(\)" is 21, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\NSEC3RecordValidator\:\:validateTypeBitMaps\(\)" is 22, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\NSECRecordValidator\:\:validateTypeBitMaps\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/NSECRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\OPENPGPKEYRecordValidator\:\:validateOpenPGPKeyContent\(\)" is 24, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\RKEYRecordValidator\:\:validateRKEYContent\(\)" is 26, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\RRSIGRecordValidator\:\:validateRRSIGContent\(\)" is 43, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php
-
-		-
 			message: '#^Left side of && is always true\.$#'
 			identifier: booleanAnd.leftAlwaysTrue
 			count: 1
 			path: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\SMIMEARecordValidator\:\:validateSMIMEAContent\(\)" is 23, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\SOARecordValidator\:\:validateSoaContent\(\)" is 31, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/SOARecordValidator.php
-
-		-
 			message: '#^Offset int\<0, 3\> on array\{''refresh'', ''retry'', ''expire'', ''minimum''\} on left side of \?\? always exists and is not nullable\.$#'
 			identifier: nullCoalesce.offset
 			count: 1
 			path: lib/Domain/Service/DnsValidation/SOARecordValidator.php
-
-		-
-			message: '#^Class cognitive complexity is 75, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/SPFRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\SPFRecordValidator\:\:validateSPFContent\(\)" is 49, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/SPFRecordValidator.php
 
 		-
 			message: '#^Result of \|\| is always true\.$#'
@@ -997,58 +223,10 @@ parameters:
 			path: lib/Domain/Service/DnsValidation/SRVRecordValidator.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\SVCBRecordValidator\:\:validateSVCBParameters\(\)" is 21, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\SVCBRecordValidator\:\:validateSVCBRecordFormat\(\)" is 16, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php
-
-		-
 			message: '#^Strict comparison using \=\=\= between ''gss\-tsig\.''\|''hmac\-sha1\.''\|''hmac\-sha224\.''\|''hmac\-sha256\.''\|''hmac\-sha384\.''\|''hmac\-sha512\.'' and ''hmac\-md5\.'' will always evaluate to false\.$#'
 			identifier: identical.alwaysFalse
 			count: 1
 			path: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\TLSARecordValidator\:\:validate\(\)" is 33, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/TLSARecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\TLSARecordValidator\:\:validateTLSAContent\(\)" is 20, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/TLSARecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\TSIGRecordValidator\:\:isValidTSIGContent\(\)" is 21, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\TSIGRecordValidator\:\:validate\(\)" is 17, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\TXTRecordValidator\:\:validateContent\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/TXTRecordValidator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\DnsValidation\\URIRecordValidator\:\:isValidURIRecordFormat\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/DnsValidation/URIRecordValidator.php
 
 		-
 			message: '#^Property Poweradmin\\Domain\\Service\\DnsValidation\\ZONEMDRecordValidator\:\:\$hostnameValidator is never read, only written\.$#'
@@ -1081,72 +259,6 @@ parameters:
 			path: lib/Domain/Service/MfaService.php
 
 		-
-			message: '#^Class cognitive complexity is 73, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/MfaService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\MfaService\:\:verifyCode\(\)" is 28, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/MfaService.php
-
-		-
-			message: '#^Class cognitive complexity is 88, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/ReverseRecordCreator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\ReverseRecordCreator\:\:deleteForwardRecord\(\)" is 27, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/ReverseRecordCreator.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\ReverseRecordCreator\:\:deleteReverseRecord\(\)" is 27, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/ReverseRecordCreator.php
-
-		-
-			message: '#^Class cognitive complexity is 73, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Domain/Service/UserManagementService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\UserManagementService\:\:updateUser\(\)" is 26, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/UserManagementService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\ZoneCountService\:\:countZones\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/ZoneCountService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\ZoneCreateOwnershipResolver\:\:resolve\(\)" is 42, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/ZoneCreateOwnershipResolver.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\ZoneManagementService\:\:createZone\(\)" is 30, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/ZoneManagementService.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Domain\\Service\\ZoneValidationService\:\:getFormattedErrorMessage\(\)" is 22, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Domain/Service/ZoneValidationService.php
-
-		-
 			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 1
@@ -1163,18 +275,6 @@ parameters:
 			identifier: property.unusedType
 			count: 1
 			path: lib/Domain/Utility/NetworkUtility.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Api\\HttpClient\:\:performSingleRequest\(\)" is 16, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Api/HttpClient.php
-
-		-
-			message: '#^Class cognitive complexity is 154, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Infrastructure/Api/PowerdnsApiClient.php
 
 		-
 			message: '#^Call to function is_int\(\) with int\<0, 65535\> will always evaluate to true\.$#'
@@ -1201,58 +301,16 @@ parameters:
 			path: lib/Infrastructure/Logger/RecordChangeLogger.php
 
 		-
-			message: '#^Class cognitive complexity is 67, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Infrastructure/Logger/RecordChangeLogger.php
-
-		-
 			message: '#^Right side of && is always true\.$#'
 			identifier: booleanAnd.rightAlwaysTrue
 			count: 1
 			path: lib/Infrastructure/Logger/RecordChangeLogger.php
 
 		-
-			message: '#^Class cognitive complexity is 80, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Infrastructure/Network/ProxyContext.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Network\\ProxyContext\:\:matchesNoProxy\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Network/ProxyContext.php
-
-		-
 			message: '#^Strict comparison using \!\=\= between numeric\-string and '''' will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: lib/Infrastructure/Network/ProxyContext.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Repository\\ApiDomainRepository\:\:getZones\(\)" is 29, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Repository/ApiDomainRepository.php
-
-		-
-			message: '#^Class cognitive complexity is 158, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Infrastructure/Repository/ApiZoneRepository.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Repository\\ApiZoneRepository\:\:findForwardZonesByPtrRecords\(\)" is 23, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Repository/ApiZoneRepository.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Repository\\ApiZoneRepository\:\:getReverseZones\(\)" is 40, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Repository/ApiZoneRepository.php
 
 		-
 			message: '#^Property Poweradmin\\Infrastructure\\Repository\\DbPermissionTemplateRepository\:\:\$config is never read, only written\.$#'
@@ -1267,51 +325,9 @@ parameters:
 			path: lib/Infrastructure/Repository/DbUserPreferenceRepository.php
 
 		-
-			message: '#^Class cognitive complexity is 64, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Infrastructure/Repository/DbUserRepository.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Repository\\DbUserRepository\:\:getUserDetailList\(\)" is 18, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Repository/DbUserRepository.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Repository\\DbUserRepository\:\:updateUser\(\)" is 16, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Repository/DbUserRepository.php
-
-		-
 			message: '#^Call to function is_int\(\) with int will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 2
-			path: lib/Infrastructure/Repository/DbZoneRepository.php
-
-		-
-			message: '#^Class cognitive complexity is 149, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Infrastructure/Repository/DbZoneRepository.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Repository\\DbZoneRepository\:\:findForwardZonesByPtrRecords\(\)" is 22, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Repository/DbZoneRepository.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Repository\\DbZoneRepository\:\:getReverseZones\(\)" is 50, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Repository/DbZoneRepository.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Repository\\DbZoneRepository\:\:listZones\(\)" is 16, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
 			path: lib/Infrastructure/Repository/DbZoneRepository.php
 
 		-
@@ -1319,42 +335,6 @@ parameters:
 			identifier: if.alwaysFalse
 			count: 1
 			path: lib/Infrastructure/Repository/DbZoneRepository.php
-
-		-
-			message: '#^Class cognitive complexity is 113, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Infrastructure/Repository/SqlDomainRepository.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Repository\\SqlDomainRepository\:\:getZones\(\)" is 99, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Repository/SqlDomainRepository.php
-
-		-
-			message: '#^Class cognitive complexity is 214, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Service\\ApiDnsBackendProvider\:\:editRecord\(\)" is 22, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Service\\ApiDnsBackendProvider\:\:flattenRrsets\(\)" is 17, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Service\\ApiDnsBackendProvider\:\:searchDnsData\(\)" is 25, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php
 
 		-
 			message: '#^Property Poweradmin\\Infrastructure\\Service\\ApiDnsBackendProvider\:\:\$config is never read, only written\.$#'
@@ -1369,22 +349,10 @@ parameters:
 			path: lib/Infrastructure/Service/ApiDnsBackendProvider.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Service\\SessionAuthenticator\:\:authenticate\(\)" is 20, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Service/SessionAuthenticator.php
-
-		-
 			message: '#^Right side of && is always false\.$#'
 			identifier: booleanAnd.rightAlwaysFalse
 			count: 1
 			path: lib/Infrastructure/Service/SqlDnsBackendProvider.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Utility\\ReverseDomainHierarchySorting\:\:sortDomainsHierarchically\(\)" is 20, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Utility/ReverseDomainHierarchySorting.php
 
 		-
 			message: '#^Offset 0 on non\-empty\-list\<string\> in isset\(\) always exists and is not nullable\.$#'
@@ -1393,70 +361,10 @@ parameters:
 			path: lib/Infrastructure/Utility/ReverseDomainHierarchySorting.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Infrastructure\\Web\\BadgeTwigExtension\:\:getAutoprimariesLabel\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Infrastructure/Web/BadgeTwigExtension.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\DnsWizard\\Controller\\DnsWizardFormController\:\:handleFormSubmission\(\)" is 16, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/DnsWizard/Controller/DnsWizardFormController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\DnsWizard\\Controller\\DnsWizardFormController\:\:run\(\)" is 26, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/DnsWizard/Controller/DnsWizardFormController.php
-
-		-
 			message: '#^Strict comparison using \!\=\= between mixed and null will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 1
 			path: lib/Module/DnsWizard/Controller/DnsWizardFormController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\DnsWizard\\Service\\CAAWizard\:\:validate\(\)" is 21, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/DnsWizard/Service/CAAWizard.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\DnsWizard\\Service\\DMARCWizard\:\:validate\(\)" is 18, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/DnsWizard/Service/DMARCWizard.php
-
-		-
-			message: '#^Class cognitive complexity is 67, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Module/DnsWizard/Service/SPFWizard.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\DnsWizard\\Service\\SPFWizard\:\:generateRecord\(\)" is 17, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/DnsWizard/Service/SPFWizard.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\DnsWizard\\Service\\SPFWizard\:\:validate\(\)" is 30, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/DnsWizard/Service/SPFWizard.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\DnsWizard\\Service\\SRVWizard\:\:validate\(\)" is 20, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/DnsWizard/Service/SRVWizard.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\DnsWizard\\Service\\TLSAWizard\:\:validate\(\)" is 26, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/DnsWizard/Service/TLSAWizard.php
 
 		-
 			message: '#^Instanceof between Poweradmin\\Module\\ModuleInterface and Poweradmin\\Module\\ModuleInterface will always evaluate to true\.$#'
@@ -1477,12 +385,6 @@ parameters:
 			path: lib/Module/Rdap/Service/RdapService.php
 
 		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\SecondaryZoneImport\\Controller\\SecondaryZoneImportController\:\:resolveOwnership\(\)" is 16, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/SecondaryZoneImport/Controller/SecondaryZoneImportController.php
-
-		-
 			message: '#^Strict comparison using \!\=\= between string and false will always evaluate to true\.$#'
 			identifier: notIdentical.alwaysTrue
 			count: 1
@@ -1495,64 +397,10 @@ parameters:
 			path: lib/Module/Whois/Service/WhoisService.php
 
 		-
-			message: '#^Class cognitive complexity is 104, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\ZoneImportExport\\Controller\\ZoneFileImportController\:\:handleExecute\(\)" is 57, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\ZoneImportExport\\Controller\\ZoneFileImportController\:\:handleUpload\(\)" is 36, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php
-
-		-
-			message: '#^Class cognitive complexity is 123, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: lib/Module/ZoneImportExport/Service/BindZoneFileParser.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\ZoneImportExport\\Service\\BindZoneFileParser\:\:parse\(\)" is 20, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/ZoneImportExport/Service/BindZoneFileParser.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\ZoneImportExport\\Service\\BindZoneFileParser\:\:parseRecordLine\(\)" is 21, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/ZoneImportExport/Service/BindZoneFileParser.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Module\\ZoneImportExport\\Service\\BindZoneFileParser\:\:parseTxtRdata\(\)" is 23, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: lib/Module/ZoneImportExport/Service/BindZoneFileParser.php
-
-		-
-			message: '#^Cognitive complexity for "TestHelpers\\BaseDnsTest\:\:setUp\(\)" is 30, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: tests/helpers/BaseDnsTest.php
-
-		-
 			message: '#^Strict comparison using \!\=\= between false and false will always evaluate to false\.$#'
 			identifier: notIdentical.alwaysFalse
 			count: 1
 			path: tests/helpers/BaseDnsTest.php
-
-		-
-			message: '#^Class cognitive complexity is 70, keep it under 60$#'
-			identifier: complexity.classLike
-			count: 1
-			path: tests/integration/ApiDnsBackendProviderIntegrationTest.php
 
 		-
 			message: '#^Negated boolean expression is always false\.$#'
@@ -1595,15 +443,3 @@ parameters:
 			identifier: property.onlyWritten
 			count: 1
 			path: tests/unit/Application/Service/UserEventLoggerTest.php
-
-		-
-			message: '#^Cognitive complexity for "AnonymousClass0b8b38bbb9ef944664cd7a1116cc5c85\:\:validate\(\)" is 19, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: tests/unit/Dns/TTLValidatorTest.php
-
-		-
-			message: '#^Cognitive complexity for "Poweradmin\\Tests\\Unit\\Dns\\TTLValidatorTest\:\:createMockTTLValidator\(\)" is 22, keep it under 15$#'
-			identifier: complexity.functionLike
-			count: 1
-			path: tests/unit/Dns/TTLValidatorTest.php
