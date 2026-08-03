@@ -330,8 +330,8 @@ test.describe('DNSSEC Key Lifecycle', () => {
           await deleteBtn.click();
           await page.waitForLoadState('networkidle');
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/Invalid CSRF token/i);
+          // Auto-retrying so a slow render cannot read the page mid-flight
+          await expect(page.locator('body')).not.toContainText(/Invalid CSRF token/i);
         }
       }
     });

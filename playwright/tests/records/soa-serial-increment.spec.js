@@ -23,6 +23,9 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
     await page.waitForLoadState('networkidle');
     await page.goto('/zones/forward?letter=all');
     const row = page.locator('tr', { hasText: zoneName }).first();
+    // Auto-retrying: on the API backend the new zone can take a moment to show
+    // up in the list, and a one-shot count() read races it under load.
+    await expect(row).toBeVisible({ timeout: 15000 });
     const editLink = row.locator('a[href*="/edit"]').first();
     if (await editLink.count() > 0) {
       const href = await editLink.getAttribute('href');

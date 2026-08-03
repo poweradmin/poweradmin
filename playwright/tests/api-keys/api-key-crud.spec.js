@@ -260,12 +260,9 @@ test.describe('API Key Created', () => {
         const submitBtn = page.locator('button[type="submit"]');
         await submitBtn.click();
 
-        const bodyText = await page.locator('body').textContent();
-
-        const hasSuccess = bodyText.toLowerCase().includes('created') ||
-                           bodyText.toLowerCase().includes('success') ||
-                           bodyText.toLowerCase().includes('api key');
-        expect(hasSuccess).toBeTruthy();
+        // Auto-retrying so the assertion waits for the post-submit render
+        // instead of racing it.
+        await expect(page.locator('body')).toContainText(/created|success|api key/i);
       }
     });
 

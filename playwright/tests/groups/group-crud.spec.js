@@ -270,8 +270,8 @@ test.describe('Group CRUD Operations', () => {
         await deleteLink.click();
 
         await expect(page).toHaveURL(/.*groups\/\d+\/delete/);
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete|warning|confirm/i);
+        // Auto-retrying: the URL settles before the body finishes rendering
+        await expect(page.locator('body')).toContainText(/delete|warning|confirm/i);
       }
     });
 
