@@ -45,15 +45,9 @@ test.describe('Error Handling and Edge Cases', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
-      // The test instances run with security.global_token_validation = false, so the
-      // tampered submission is accepted here and rejection cannot be asserted end-to-end.
-      // Remove the zone if it went through, so the run leaves no residue.
+      // The tampered token must be rejected outright, so the zone must not exist
       await page.goto('/zones/forward?letter=all');
-      const created = page.locator(`tr:has-text("${zoneName}")`);
-      if (await created.count() > 0) {
-        await created.first().locator('a[href*="/delete"]').first().click();
-        await page.locator('button[type="submit"]:has-text("Yes"), input[value*="Yes"]').first().click();
-      }
+      await expect(page.locator(`tr:has-text("${zoneName}")`)).toHaveCount(0);
     });
   });
 
