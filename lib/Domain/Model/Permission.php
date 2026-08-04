@@ -32,6 +32,29 @@ use Poweradmin\Infrastructure\Database\PDOCommon;
 class Permission
 {
     /**
+     * Record types that holders of zone_content_edit_own_as_client may not modify.
+     */
+    public const RESTRICTED_TYPES_FOR_CLIENT = ['SOA', 'NS'];
+
+    /**
+     * Check whether the given record type is off-limits for a client-level editor.
+     *
+     * Mirrors the gates in RecordManager so a type that will be refused on save is
+     * not offered in the first place.
+     *
+     * @param string $type DNS record type (e.g. "A", "SOA", "NS")
+     * @param string $permEdit Edit permission level returned by getEditPermission()
+     */
+    public static function isRecordTypeRestrictedForClient(string $type, string $permEdit): bool
+    {
+        if ($permEdit !== 'own_as_client') {
+            return false;
+        }
+
+        return in_array(strtoupper($type), self::RESTRICTED_TYPES_FOR_CLIENT, true);
+    }
+
+    /**
      * Get view permission.
      *
      * This method determines the user's permission to view content.
