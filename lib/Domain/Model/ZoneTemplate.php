@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ use Poweradmin\AppConfiguration;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class ZoneTemplate
@@ -337,6 +337,14 @@ class ZoneTemplate
             return false;
         }
 
+        if (!self::can_store_template_record_type($db, $type)) {
+            $error = new ErrorMessage(_("You do not have the permission to add this record type to a zone template."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            return false;
+        }
+
         if ($content == '') {
             $error = new ErrorMessage(_('Your content field doesnt have a legit value.'));
             $errorPresenter = new ErrorPresenter();
@@ -393,6 +401,20 @@ class ZoneTemplate
             return false;
         }
 
+        // The stored type counts as well: posting a different type would otherwise
+        // let a client-level editor rewrite an existing SOA or NS template record.
+        $stored_record = self::get_zone_templ_record_from_id($db, (int)($record['rid'] ?? 0));
+        if (
+            !self::can_store_template_record_type($db, (string)($stored_record['type'] ?? ''))
+            || !self::can_store_template_record_type($db, (string)($record['type'] ?? ''))
+        ) {
+            $error = new ErrorMessage(_("You do not have the permission to add this record type to a zone template."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            return false;
+        }
+
         if ($record['name'] == "") {
             $error = new ErrorMessage(_('Invalid hostname.'));
             $errorPresenter = new ErrorPresenter();
@@ -435,12 +457,22 @@ class ZoneTemplate
             $errorPresenter->present($error);
 
             return false;
-        } else {
-            $query = "DELETE FROM zone_templ_records WHERE id = " . $db->quote($rid, 'integer')
-                . " AND zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
-            $db->query($query);
-            return true;
         }
+
+        // A caller who may not create this type may not remove one either.
+        $stored_record = self::get_zone_templ_record_from_id($db, $rid);
+        if (!self::can_store_template_record_type($db, (string)($stored_record['type'] ?? ''))) {
+            $error = new ErrorMessage(_("You do not have the permission to delete this record type from a zone template."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            return false;
+        }
+
+        $query = "DELETE FROM zone_templ_records WHERE id = " . $db->quote($rid, 'integer')
+            . " AND zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
+        $db->query($query);
+        return true;
     }
 
     /** Check if the session user is the owner for the zone template
@@ -495,7 +527,16 @@ class ZoneTemplate
 
             $zone_templ_id = $db->lastInsertId();
 
+            $skipped_types = [];
+
             foreach ($records as $record) {
+                // Skip rather than fail: a saved zone legitimately carries records
+                // the caller may read but not author. Skipped types are reported below.
+                if (!self::can_store_template_record_type($db, (string)$record['type'])) {
+                    $skipped_types[strtoupper((string)$record['type'])] = true;
+                    continue;
+                }
+
                 list($name, $content) = self::replaceWithTemplatePlaceholders($domain, $record, $options);
 
                 $query2 = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
@@ -509,8 +550,36 @@ class ZoneTemplate
             }
 
             $db->commit();
+
+            if ($skipped_types !== []) {
+                $error = new ErrorMessage(sprintf(
+                    _("These record types were left out of the template because you may not add them: %s"),
+                    implode(', ', array_keys($skipped_types))
+                ));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+            }
         }
         return true;
+    }
+
+    /** Check whether the caller may store the given record type in a template
+     *
+     * Template records are written straight to the backend when the template is
+     * applied, so they never pass the record-level checks in DnsRecord.
+     *
+     * @param $db
+     * @param string $type record type
+     *
+     * @return boolean true when the type may be stored
+     */
+    private static function can_store_template_record_type($db, string $type): bool
+    {
+        if (Permission::getEditPermission($db) != "own_as_client") {
+            return true;
+        }
+
+        return !in_array(strtoupper($type), array('SOA', 'NS'), true);
     }
 
     /** Get list of all zones using template
