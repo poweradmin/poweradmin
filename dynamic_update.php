@@ -38,6 +38,13 @@ use Poweradmin\AppConfiguration;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+// The DynDNS protocol requires clients to identify themselves. Checked before
+// any database work so unidentified clients cost nothing; 4.x enforces the same
+// rule via DynamicDnsValidationService.
+if (empty($_SERVER['HTTP_USER_AGENT'])) {
+    return status_exit('badagent');
+}
+
 $config = new AppConfiguration();
 $db_type = $config->get('db_type');
 
