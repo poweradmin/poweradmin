@@ -543,7 +543,7 @@ class ZoneTemplate
      */
     private function canStoreTemplateRecordType(string $type): bool
     {
-        return !Permission::isRecordTypeRestrictedForClient($type, Permission::getEditPermission($this->db));
+        return !Permission::isTemplateRecordTypeRestricted($type, Permission::getEditPermission($this->db));
     }
 
     /**

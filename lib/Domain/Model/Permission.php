@@ -34,7 +34,7 @@ class Permission
     /**
      * Record types that holders of zone_content_edit_own_as_client may not modify.
      */
-    public const RESTRICTED_TYPES_FOR_CLIENT = ['SOA', 'NS'];
+    public const RESTRICTED_TYPES_FOR_CLIENT = ['SOA', 'NS', 'LUA'];
 
     /**
      * Check whether the given record type is off-limits for a client-level editor.
@@ -42,7 +42,7 @@ class Permission
      * Mirrors the gates in RecordManager so a type that will be refused on save is
      * not offered in the first place.
      *
-     * @param string $type DNS record type (e.g. "A", "SOA", "NS")
+     * @param string $type DNS record type (e.g. "A", "SOA", "LUA")
      * @param string $permEdit Edit permission level returned by getEditPermission()
      */
     public static function isRecordTypeRestrictedForClient(string $type, string $permEdit): bool
@@ -52,6 +52,27 @@ class Permission
         }
 
         return in_array(strtoupper($type), self::RESTRICTED_TYPES_FOR_CLIENT, true);
+    }
+
+    /**
+     * Check whether a record type is off-limits inside a zone template.
+     *
+     * Template records are written straight to the backend when a template is
+     * applied, so they never pass the record-level gates. LUA is held to a
+     * stricter standard than the client rule alone: it executes on the DNS
+     * server, and a template seeds it into every zone created from it, so it
+     * requires the standing to write one directly.
+     *
+     * @param string $type DNS record type (e.g. "A", "NS", "LUA")
+     * @param string $permEdit Edit permission level returned by getEditPermission()
+     */
+    public static function isTemplateRecordTypeRestricted(string $type, string $permEdit): bool
+    {
+        if (self::isRecordTypeRestrictedForClient($type, $permEdit)) {
+            return true;
+        }
+
+        return strtoupper($type) === 'LUA' && !in_array($permEdit, ['all', 'own'], true);
     }
 
     /**

@@ -33,16 +33,22 @@ class PermissionRestrictedRecordTypeTest extends TestCase
         $this->assertTrue(Permission::isRecordTypeRestrictedForClient('NS', 'own_as_client'));
     }
 
-    public function testLuaIsNotRestrictedOnThisLine(): void
+    public function testLuaIsRestrictedForOwnAsClient(): void
     {
-        // The LUA restriction starts at 4.3.0. Restricting it here would take away a
-        // type this release permits, so the list stays SOA/NS.
-        $this->assertFalse(Permission::isRecordTypeRestrictedForClient('LUA', 'own_as_client'));
+        // LUA records make PowerDNS execute script content, so a client-level editor
+        // must not create them even where the server has LUA enabled.
+        $this->assertTrue(Permission::isRecordTypeRestrictedForClient('LUA', 'own_as_client'));
+    }
+
+    public function testLuaStaysAvailableToFullEditors(): void
+    {
+        $this->assertFalse(Permission::isRecordTypeRestrictedForClient('LUA', 'own'));
+        $this->assertFalse(Permission::isRecordTypeRestrictedForClient('LUA', 'all'));
     }
 
     public function testLowercaseTypeStillRestricted(): void
     {
-        $this->assertTrue(Permission::isRecordTypeRestrictedForClient('ns', 'own_as_client'));
+        $this->assertTrue(Permission::isRecordTypeRestrictedForClient('lua', 'own_as_client'));
         $this->assertTrue(Permission::isRecordTypeRestrictedForClient('soa', 'own_as_client'));
     }
 
@@ -68,5 +74,29 @@ class PermissionRestrictedRecordTypeTest extends TestCase
     {
         // "none" is gated by the zone-level check, not the record-type list.
         $this->assertFalse(Permission::isRecordTypeRestrictedForClient('SOA', 'none'));
+    }
+
+    public function testTemplateGateHoldsLuaToAStricterBar(): void
+    {
+        // A template seeds its records into every zone created from it and they are
+        // written straight to the backend, so LUA needs the standing to write one
+        // directly - "none" is not enough even though the record-type list is not hit.
+        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('LUA', 'own_as_client'));
+        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('LUA', 'none'));
+        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('LUA', 'own'));
+        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('LUA', 'all'));
+    }
+
+    public function testTemplateGateStillCoversSoaAndNsForClients(): void
+    {
+        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('SOA', 'own_as_client'));
+        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('NS', 'own_as_client'));
+        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('SOA', 'own'));
+    }
+
+    public function testTemplateGateLeavesOrdinaryTypesAlone(): void
+    {
+        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('A', 'own_as_client'));
+        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('TXT', 'none'));
     }
 }
