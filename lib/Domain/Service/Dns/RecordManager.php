@@ -405,11 +405,13 @@ class RecordManager implements RecordManagerInterface
         // Both the stored record and the posted state must pass: a client-level
         // editor may neither touch a restricted record nor turn a record into one.
         $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
-        if (
-            Permission::isRecordRestrictedForClient($recordDetails['type'], $perm_edit, $recordDetails['name'], $zone, $canEditSubzoneNs)
-            || Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)
-        ) {
-            $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($record['type'], 'edit'));
+        $storedIsRestricted = Permission::isRecordRestrictedForClient($recordDetails['type'], $perm_edit, $recordDetails['name'], $zone, $canEditSubzoneNs);
+        $postedIsRestricted = Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs);
+        if ($storedIsRestricted || $postedIsRestricted) {
+            // Name the type that actually triggered the refusal: reporting the posted
+            // type would call a LUA-to-A retype an SOA denial.
+            $refusedType = $storedIsRestricted ? $recordDetails['type'] : $record['type'];
+            $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($refusedType, 'edit'));
 
             return false;
         }
