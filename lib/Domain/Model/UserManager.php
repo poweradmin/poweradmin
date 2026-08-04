@@ -466,7 +466,7 @@ class UserManager
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
 
-            $stmt = $this->db->prepare("SELECT username, email, auth_method FROM users WHERE id = :id");
+            $stmt = $this->db->prepare("SELECT username, email, auth_method, perm_templ FROM users WHERE id = :id");
             $stmt->execute([':id' => $id]);
             $usercheck = $stmt->fetch();
 
@@ -498,7 +498,12 @@ class UserManager
 
             $query = "UPDATE users SET username = :username, fullname = :fullname, email = :email";
 
-            if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
+            $mayAssignTemplate = self::verifyPermission($this->db, 'user_edit_templ_perm');
+            if ($mayAssignTemplate) {
+                if ($this->templateAssignmentRejected((int)$usercheck['perm_templ'], (int)$perm_templ, $id)) {
+                    return false;
+                }
+
                 $query .= ", perm_templ = :perm_templ, perm_templ_source = 'admin'";
             }
 
@@ -537,7 +542,7 @@ class UserManager
             $stmt->bindValue(':auth_method', self::resolveAuthMethod((bool) $useLdap, $usercheck['auth_method'] ?? null), PDO::PARAM_STR);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
-            if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
+            if ($mayAssignTemplate) {
                 $stmt->bindValue(':perm_templ', $perm_templ, PDO::PARAM_INT);
             }
 
@@ -963,11 +968,12 @@ class UserManager
      * hand out a template carrying user_is_ueberuser, nor retemplate their own
      * account without the right to edit other users.
      *
+     * @param ?int $targetUserId Account being written, null when creating one
      * @return ?string Error to surface, or null when the assignment is allowed
      */
     private function permissionTemplateAssignmentError(
         int $permTemplId,
-        int $targetUserId,
+        ?int $targetUserId,
         bool $callerIsSuperuser,
         bool $callerMayEditOthers
     ): ?string {
@@ -984,6 +990,38 @@ class UserManager
         }
 
         return null;
+    }
+
+    /**
+     * Reject a permission template write, reporting the reason to the user.
+     *
+     * An unchanged ordinary template is not gated, so a self-editor keeps being
+     * able to save their own profile. Leaving a superuser template in place is
+     * still gated, otherwise relabelling nothing would hand a delegated manager
+     * write access to a protected account.
+     *
+     * @param ?int $currentTemplId Template the account holds now, null when creating one
+     * @param ?int $targetUserId Account being written, null when creating one
+     */
+    private function templateAssignmentRejected(?int $currentTemplId, int $newTemplId, ?int $targetUserId): bool
+    {
+        if ($currentTemplId === $newTemplId && !$this->templateGrantsUberuser($newTemplId)) {
+            return false;
+        }
+
+        $error = $this->permissionTemplateAssignmentError(
+            $newTemplId,
+            $targetUserId,
+            self::verifyPermission($this->db, 'user_is_ueberuser'),
+            self::verifyPermission($this->db, 'user_edit_others')
+        );
+        if ($error === null) {
+            return false;
+        }
+
+        $this->messageService->addSystemError($error);
+
+        return true;
     }
 
     private function templateGrantsUberuser(int $permTemplId): bool
@@ -1174,6 +1212,13 @@ class UserManager
             return false;
         }
 
+        // Callers without user_edit_templ_perm inherit the creator's own template
+        // below, so only a chosen template needs gating.
+        $mayAssignTemplate = self::verifyPermission($this->db, 'user_edit_templ_perm');
+        if ($mayAssignTemplate && $this->templateAssignmentRejected(null, (int)($details['perm_templ'] ?? 0), null)) {
+            return false;
+        }
+
         // Set active status (defaults to 0 if not set)
         $active = isset($details['active']) && $details['active'] == 1 ? 1 : 0;
 
@@ -1202,7 +1247,7 @@ class UserManager
         $stmt->bindValue(':email', $details['email']);
         $stmt->bindValue(':description', $details['descr'] ?? '');
 
-        if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
+        if ($mayAssignTemplate) {
             $stmt->bindValue(':perm_templ', $details['perm_templ'], PDO::PARAM_INT);
         } else {
             $current_user = self::getUserDetailList($this->db, $ldap_use, $_SESSION['userid']);
