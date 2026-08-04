@@ -1071,10 +1071,24 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function updateZone(int $zoneId, array $updates): bool
     {
+        // Renaming the zone would leave every records.name under the old name, so it is
+        // refused here exactly as it already is in API backend mode. A name equal to the
+        // current one is dropped so clients that PUT the whole zone object back still work.
+        $nameWasNoOp = false;
+        if (isset($updates['name'])) {
+            $currentName = $this->getDomainNameById($zoneId);
+            if ($currentName !== null && $updates['name'] !== $currentName) {
+                throw new \InvalidArgumentException(
+                    'Zone renaming is not supported. Delete the zone and recreate it under the new name.'
+                );
+            }
+            unset($updates['name']);
+            $nameWasNoOp = true;
+        }
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $allowedFields = ['name', 'type', 'master'];
+        $allowedFields = ['type', 'master'];
         $setClause = [];
         $params = [':id' => $zoneId];
 
@@ -1086,7 +1100,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         }
 
         if (empty($setClause)) {
-            return false;
+            return $nameWasNoOp;
         }
 
         $query = "UPDATE $domains_table SET " . implode(', ', $setClause) . " WHERE id = :id";
