@@ -302,10 +302,20 @@ class AddRecordController extends BaseController
             $savedRecords = $formData['saved_records'];
         }
 
+        $offeredTypes = $isReverseZone
+            ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities())
+            : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities());
+
+        // Offer only what this caller may actually submit, so a restricted type is not
+        // presented and then refused on save.
+        $permEdit = Permission::getEditPermission($this->db);
+        $offeredTypes = array_values(array_filter(
+            $offeredTypes,
+            fn(string $type): bool => !Permission::isRecordTypeRestrictedForClient($type, $permEdit)
+        ));
+
         $this->render('add_record.html', [
-            'types' => $isReverseZone
-                ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities())
-                : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities()),
+            'types' => $offeredTypes,
             'deprecated_types' => RecordType::DEPRECATED_TYPES,
             'name' => $formData['name'] ?? $_POST['name'] ?? '',
             'type' => $formData['type'] ?? $_POST['type'] ?? '',
@@ -470,7 +480,17 @@ class AddRecordController extends BaseController
             $ttl = isset($record['ttl']) && $record['ttl'] !== '' ? (int)$record['ttl'] : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
             $comment = $record['comment'] ?? '';
 
-            if ($this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
+            // A refused record type arrives as an exception; count it like any other
+            // failed row so the rest of the batch still saves and the reason is shown.
+            try {
+                $created = $this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment);
+            } catch (Exception $e) {
+                $this->messageService->addSystemError($e->getMessage());
+                $failureCount++;
+                continue;
+            }
+
+            if ($created) {
                 $successCount++;
 
                 // Handle reverse or domain record creation for individual records
