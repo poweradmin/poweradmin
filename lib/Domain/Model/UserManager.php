@@ -94,15 +94,19 @@ class UserManager
     /**
      * Reject a permission template write, reporting the reason to the user.
      *
-     * Only an actual change is gated, so editing other fields on a user who
-     * already holds a superuser template keeps working.
+     * An unchanged ordinary template is not gated, so a self-editor keeps being
+     * able to save their own profile. Leaving a superuser template in place is
+     * still gated, otherwise relabelling nothing would hand a delegated manager
+     * write access to a protected account.
      *
      * @param ?int $currentTemplId Template the account holds now, null when creating one
      * @param ?int $targetUserId Account being written, null when creating one
      */
     private function templateAssignmentRejected(?int $currentTemplId, int $newTemplId, ?int $targetUserId): bool
     {
-        if ($currentTemplId === $newTemplId) {
+        $this->apiPermissionService ??= new ApiPermissionService($this->db);
+
+        if ($currentTemplId === $newTemplId && !$this->apiPermissionService->templateGrantsSuperuser($newTemplId)) {
             return false;
         }
 
