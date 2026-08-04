@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use PDO;
+use Poweradmin\Domain\Model\Permission;
 
 /**
  * Stateless permission service for API requests
@@ -509,6 +510,48 @@ class ApiPermissionService
         }
 
         return $this->userHasPermission($userId, 'zone_templ_edit');
+    }
+
+    /**
+     * Check whether a record type may be written into a zone template (stateless).
+     *
+     * Mirrors the web ZoneTemplate gate: template records are applied straight to
+     * the backend, so they would otherwise skip the record-level type checks.
+     *
+     * @param int $userId User ID to check
+     * @param string $recordType DNS record type
+     * @return bool True if the type may be stored in a template
+     */
+    public function canWriteTemplateRecordType(int $userId, string $recordType): bool
+    {
+        if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+            return true;
+        }
+
+        return !Permission::isTemplateRecordTypeRestricted($recordType, $this->getEditPermissionLevel($userId));
+    }
+
+    /**
+     * Resolve the caller's zone-content edit level, matching Permission::getEditPermission().
+     *
+     * @param int $userId User ID to check
+     * @return string One of "all", "own", "own_as_client", "none"
+     */
+    private function getEditPermissionLevel(int $userId): string
+    {
+        if ($this->userHasPermission($userId, 'zone_content_edit_others')) {
+            return 'all';
+        }
+
+        if ($this->userHasPermission($userId, 'zone_content_edit_own')) {
+            return 'own';
+        }
+
+        if ($this->userHasPermission($userId, 'zone_content_edit_own_as_client')) {
+            return 'own_as_client';
+        }
+
+        return 'none';
     }
 
     /**

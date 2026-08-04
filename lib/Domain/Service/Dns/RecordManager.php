@@ -115,6 +115,12 @@ class RecordManager implements RecordManagerInterface
             throw new Exception(_("You do not have the permission to add NS record."));
         }
 
+        // LUA content is evaluated by the DNS server, so writing one reaches past
+        // the zone the client-level editor administers.
+        if ($type == 'LUA' && $perm_edit == "own_as_client") {
+            throw new Exception(_("You do not have the permission to add LUA record."));
+        }
+
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             throw new Exception(_("You do not have the permission to add a record to this zone."));
         }
@@ -211,6 +217,12 @@ class RecordManager implements RecordManagerInterface
 
         if ($type == 'NS' && $perm_edit == "own_as_client") {
             throw new Exception(_("You do not have the permission to add NS record."));
+        }
+
+        // LUA content is evaluated by the DNS server, so writing one reaches past
+        // the zone the client-level editor administers.
+        if ($type == 'LUA' && $perm_edit == "own_as_client") {
+            throw new Exception(_("You do not have the permission to add LUA record."));
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
@@ -322,6 +334,11 @@ class RecordManager implements RecordManagerInterface
 
             return false;
         }
+        if ($perm_edit == "own_as_client" && in_array('LUA', $affectedTypes, true)) {
+            $this->messageService->addSystemError(_("You do not have the permission to edit this LUA record."));
+
+            return false;
+        }
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         $record['content'] = $this->dnsFormatter->formatContent($record['type'], $record['content']);
@@ -406,6 +423,11 @@ class RecordManager implements RecordManagerInterface
 
             if ($record['type'] == "NS" && $perm_edit == "own_as_client") {
                 $this->messageService->addSystemError(_('You do not have the permission to delete NS records.'));
+                return false;
+            }
+
+            if ($record['type'] == "LUA" && $perm_edit == "own_as_client") {
+                $this->messageService->addSystemError(_('You do not have the permission to delete LUA records.'));
                 return false;
             }
 
