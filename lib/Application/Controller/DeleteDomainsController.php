@@ -128,7 +128,7 @@ class DeleteDomainsController extends BaseController
                 $slave_master = $dnsRecord->get_domain_slave_master($zone_id);
                 $zones[$zone_id]['slave_master'] = $slave_master;
 
-                if ($dnsRecord->supermaster_exists($slave_master)) {
+                if (is_string($slave_master) && $dnsRecord->supermaster_exists($slave_master)) {
                     $zones[$zone_id]['has_supermaster'] = true;
                 }
             }

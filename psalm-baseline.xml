@@ -121,9 +121,6 @@
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/DeleteDomainController.php">
-    <InvalidArgument>
-      <code><![CDATA[$slave_master]]></code>
-    </InvalidArgument>
     <InvalidScalarArgument>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
@@ -136,11 +133,6 @@
       <code><![CDATA[$zone_name]]></code>
       <code><![CDATA[$zone_name]]></code>
     </InvalidScalarArgument>
-  </file>
-  <file src="lib/Application/Controller/DeleteDomainsController.php">
-    <InvalidArgument>
-      <code><![CDATA[$slave_master]]></code>
-    </InvalidArgument>
   </file>
   <file src="lib/Application/Controller/DeletePermTemplController.php">
     <InvalidScalarArgument>

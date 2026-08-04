@@ -1655,7 +1655,7 @@ class DnsRecord
      *
      * @param int $id Domain ID
      *
-     * @return array|bool|void Master server
+     * @return string|false|null Master server, false when the zone is absent
      */
     public function get_domain_slave_master(int $id)
     {
