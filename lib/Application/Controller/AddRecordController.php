@@ -549,6 +549,10 @@ class AddRecordController extends BaseController
                 ];
                 $this->formStateService->saveFormData($formId, $formData);
 
+                // The form_data alert only renders inside the inline add-record card,
+                // which is off by default, so report the refused rows as a message too.
+                $this->setMessage('edit', 'warning', $message . ' ' . $errorMessage);
+
                 // Redirect to edit page since some records were already created
                 $this->redirect('/zones/' . $zone_id . '/edit?form_id=' . $formId);
                 return;
