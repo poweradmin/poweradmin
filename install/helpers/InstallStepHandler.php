@@ -20,6 +20,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @phan-file-suppress PhanAccessMethodInternal Symfony marks Request::get() @internal, but it is public API in practice
+ */
+
 namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\DatabaseService;

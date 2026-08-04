@@ -56,8 +56,11 @@ class PDOLayer extends PDOCommon
      * Quotes a string
      *
      * @param string $string
-     * @param string $type
+     * @param int|string|null $type Either a PDO::PARAM_* constant or 'integer'/'text'
      * @return string Returns quoted string
+     *
+     * @phan-suppress PhanParamSignatureMismatchInternal PDO::quote() takes an int, but this
+     *   wrapper also accepts the 'integer'/'text' names used throughout the codebase.
      */
     public function quote(string $string, $type = null): string
     {
@@ -66,7 +69,7 @@ class PDOLayer extends PDOCommon
         } elseif ($type == 'text') {
             $type = PDO::PARAM_STR;
         }
-        return parent::quote($string, $type);
+        return parent::quote($string, is_int($type) ? $type : PDO::PARAM_STR);
     }
 
     /**

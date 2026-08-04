@@ -63,9 +63,6 @@ class DatabaseHelper
         $fill_perm_items = $this->db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
         $def_permissions = PermissionHelper::getPermissionMappings();
         $this->db->executeMultiple($fill_perm_items, $def_permissions);
-        if (method_exists($fill_perm_items, 'free')) {
-            $fill_perm_items->free();
-        }
 
         // Sync PostgreSQL sequence after inserting with explicit IDs (fixes #942)
         if ($this->databaseCredentials['db_type'] === 'pgsql') {

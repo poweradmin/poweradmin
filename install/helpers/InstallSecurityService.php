@@ -20,6 +20,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * @phan-file-suppress PhanAccessMethodInternal Symfony marks Request::get() @internal, but it is public API in practice
+ */
+
 namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\CsrfTokenService;
@@ -28,6 +32,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class InstallSecurityService
 {
+    /** @var array{csrf:array{enabled:bool},ip_access:array{enabled:bool,allowed_ips:list<string>,allowed_ranges:list<string>,trusted_proxies:list<string>},password_policy:array<string,mixed>} */
     private array $config;
     private CsrfTokenService $csrfTokenService;
     private const DEFAULT_IP = '0.0.0.0';
@@ -84,7 +89,7 @@ class InstallSecurityService
         list($range, $netmask) = explode('/', $range, 2);
         $rangeDecimal = ip2long($range);
         $ipDecimal = ip2long($ip);
-        $wildcardDecimal = pow(2, (32 - $netmask)) - 1;
+        $wildcardDecimal = pow(2, (32 - (int)$netmask)) - 1;
         $netmaskDecimal = ~$wildcardDecimal;
 
         return ($ipDecimal & $netmaskDecimal) == ($rangeDecimal & $netmaskDecimal);

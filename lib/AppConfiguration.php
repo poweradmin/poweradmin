@@ -116,6 +116,7 @@ class AppConfiguration implements ConfigurationInterface
         }
 
         if (is_numeric($tokenValue)) {
+            // @phan-suppress-next-line PhanTypeInvalidLeftOperandOfAdd is_numeric() guarantees a numeric string
             return $tokenValue + 0; // Convert to int or float
         }
 

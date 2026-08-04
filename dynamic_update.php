@@ -74,7 +74,8 @@ function safe($db, $db_type, mixed $value): string
         $value = $db->quote($value, 'text');
         $value = substr($value, 1, -1); // remove quotes
     } else {
-        return status_exit('baddbtype');
+        status_exit('baddbtype');
+        return '';
     }
 
     return $value;
@@ -128,10 +129,6 @@ function valid_ip_address(string $ip): int|string
         $value = 0;
     }
     return $value;
-}
-
-if (!(isset($_SERVER)) && !$_SERVER['HTTP_USER_AGENT']) {
-    return status_exit('badagent');
 }
 
 // Grab username & password based on HTTP auth, alternatively the query string

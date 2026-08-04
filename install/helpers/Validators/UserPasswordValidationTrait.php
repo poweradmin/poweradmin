@@ -25,6 +25,9 @@ namespace PoweradminInstall\Validators;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
+/**
+ * @property array $config Supplied by AbstractStepValidator, which every user of this trait extends.
+ */
 trait UserPasswordValidationTrait
 {
     public function getPasswordValidationConstraints(): array

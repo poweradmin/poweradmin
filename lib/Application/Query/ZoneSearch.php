@@ -72,6 +72,7 @@ class ZoneSearch extends BaseSearch
                 $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
                 $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
                 $found_zone = $zones[$zone_id][0];
+                // @phan-suppress-next-line PhanTypeInvalidDimOffset,PhanTypeMismatchArgumentInternal rows come from the zone query, which always selects name
                 $found_zone['name'] = idn_to_utf8($found_zone['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
                 $foundZones[] = $found_zone;
             }
@@ -83,9 +84,9 @@ class ZoneSearch extends BaseSearch
      * Fetch zones based on specified search criteria and pagination.
      *
      * @param array $parameters An array of search parameters.
-     * @param string $search_string The search string to use for matching zones.
+     * @param string|null $search_string The search string to use for matching zones.
      * @param bool $reverse Whether to perform a reverse search or not.
-     * @param string $reverse_search_string The reverse search string to use for matching zones.
+     * @param string|null $reverse_search_string The reverse search string to use for matching zones.
      * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
      * @param string $sort_zones_by The column to sort the zone results by.
      * @param string $zone_sort_direction The direction to sort the zones in.

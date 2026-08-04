@@ -4,9 +4,6 @@
     <InternalMethod>
       <code><![CDATA[get]]></code>
     </InternalMethod>
-    <InvalidOperand>
-      <code><![CDATA[$netmask]]></code>
-    </InvalidOperand>
   </file>
   <file src="install/helpers/InstallStepHandler.php">
     <InternalMethod>
@@ -301,19 +298,9 @@
   <file src="lib/Domain/Model/CryptoKey.php">
     <InvalidNullableReturnType>
       <code><![CDATA[array]]></code>
-      <code><![CDATA[int]]></code>
-      <code><![CDATA[int]]></code>
-      <code><![CDATA[string]]></code>
-      <code><![CDATA[string]]></code>
-      <code><![CDATA[string]]></code>
     </InvalidNullableReturnType>
     <NullableReturnStatement>
-      <code><![CDATA[$this->algorithm]]></code>
-      <code><![CDATA[$this->dnskey]]></code>
       <code><![CDATA[$this->ds]]></code>
-      <code><![CDATA[$this->id]]></code>
-      <code><![CDATA[$this->size]]></code>
-      <code><![CDATA[$this->type]]></code>
     </NullableReturnStatement>
   </file>
   <file src="lib/Domain/Model/UserManager.php">
@@ -483,14 +470,8 @@
   </file>
   <file src="lib/Infrastructure/Database/PDOLayer.php">
     <FalsableReturnStatement>
-      <code><![CDATA[parent::quote($string, $type)]]></code>
+      <code><![CDATA[parent::quote($string, is_int($type) ? $type : PDO::PARAM_STR)]]></code>
     </FalsableReturnStatement>
-    <ImplementedParamTypeMismatch>
-      <code><![CDATA[$type]]></code>
-    </ImplementedParamTypeMismatch>
-    <InvalidScalarArgument>
-      <code><![CDATA[$type]]></code>
-    </InvalidScalarArgument>
   </file>
   <file src="lib/Infrastructure/Service/PdnsUtilProvider.php">
     <InvalidArgument>
