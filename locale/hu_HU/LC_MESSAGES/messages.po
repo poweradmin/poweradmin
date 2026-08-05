@@ -15316,3 +15316,19 @@ msgstr "Hiba:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Információ:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "A(z) %s metaadattípust a PowerDNS kezeli, itt nem módosítható."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "A(z) %s metaadattípus nem módosítható, amíg a PowerDNS API háttér használatban van."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "A(z) %s egyéni metaadattípusnak %s előtaggal kell kezdődnie, hogy a PowerDNS API elfogadja."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "A(z) %s metaadattípus csak a(z) %s típussal együtt lép érvénybe. Vegyen fel egy %s sort is."

@@ -15229,3 +15229,19 @@ msgstr "خطا:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "اطلاعات:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "نوع فراداده %s توسط PowerDNS مدیریت می‌شود و در اینجا قابل تغییر نیست."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "هنگام استفاده از PowerDNS API backend، نوع فراداده %s قابل تغییر نیست."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "نوع فراداده سفارشی %s باید با %s شروع شود تا PowerDNS API آن را بپذیرد."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "نوع فراداده %s تنها همراه با %s اثر می‌گذارد. یک ردیف %s نیز اضافه کنید."

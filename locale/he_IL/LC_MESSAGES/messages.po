@@ -14907,3 +14907,19 @@ msgstr "שגיאה:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "מידע:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "סוג המטא-נתונים %s מנוהל על ידי PowerDNS ולא ניתן לשנותו כאן."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "לא ניתן לשנות את סוג המטא-נתונים %s כאשר ה-PowerDNS API backend נמצא בשימוש."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "סוג מטא-נתונים מותאם אישית %s חייב להתחיל ב-%s כדי שיתקבל על ידי PowerDNS API."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "סוג המטא-נתונים %s נכנס לתוקף רק יחד עם %s. הוסף גם שורת %s."

@@ -15641,3 +15641,19 @@ msgstr "Errore:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Informazioni:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "Il tipo di metadati %s è gestito da PowerDNS e non può essere modificato qui."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "Il tipo di metadati %s non può essere modificato mentre è in uso il backend API di PowerDNS."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "Il tipo di metadati personalizzato %s deve iniziare con %s per essere accettato dall'API di PowerDNS."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "Il tipo di metadati %s ha effetto solo insieme a %s. Aggiungi anche una riga %s."

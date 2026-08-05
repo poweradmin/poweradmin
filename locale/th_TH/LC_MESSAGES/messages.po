@@ -14656,3 +14656,19 @@ msgstr "ผิดพลาด:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "ข้อมูล:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "ประเภทเมตาดาต้า %s ได้รับการดูแลโดย PowerDNS และไม่สามารถเปลี่ยนแปลงได้ที่นี่"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "ไม่สามารถเปลี่ยนประเภทเมตาดาต้า %s ขณะที่ใช้งานแบ็คเอนต์ PowerDNS API"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "ประเภทเมตาดาต้าแบบกำหนดเอง %s ต้องขึ้นต้นด้วย %s เพื่อให้ PowerDNS API ยอมรับ"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "ประเภทเมตาดาต้า %s จะมีผลก็ต่อเมื่อใช้ร่วมกับ %s เท่านั้น กรุณาเพิ่มแถว %s ด้วย"

@@ -176,6 +176,35 @@ test.describe('Zone Metadata Editor', () => {
     await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
   });
 
+  test('should accept two values for a multi-value kind', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    const zoneId = await getTestZoneId(page);
+    if (!zoneId) return;
+
+    await page.goto(`/zones/${zoneId}/metadata`);
+
+    // PowerDNS reads every TSIG-ALLOW-DNSUPDATE row, so a zone may carry more
+    // than one update key.
+    for (const key of ['update-key-one', 'update-key-two']) {
+      await page.locator('#add-metadata-row').click();
+      await page.locator('.metadata-kind-select').last().selectOption('TSIG-ALLOW-DNSUPDATE');
+      await page.locator('.metadata-content').last().fill(key);
+    }
+
+    await page.locator('[data-testid="save-zone-metadata"]').click();
+
+    // The badge legend always says "Single value", so assert on the alert only.
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
+    await expect(page.locator('[data-testid="system-message"]')).not.toContainText(/single value/i);
+
+    await page.goto(`/zones/${zoneId}/metadata`);
+    const values = await page.locator('.metadata-content').evaluateAll(
+      (inputs) => inputs.map((input) => input.value)
+    );
+    expect(values).toContain('update-key-one');
+    expect(values).toContain('update-key-two');
+  });
+
   test('should clean up test metadata', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await getTestZoneId(page);

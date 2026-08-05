@@ -15087,3 +15087,19 @@ msgstr "त्रुटि:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "सूचना:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "मेटाडाटा प्रकार %s का रखरखाव PowerDNS द्वारा किया जाता है और इसे यहाँ नहीं बदला जा सकता।"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "जब तक PowerDNS API बैकेंड उपयोग में है, मेटाडाटा प्रकार %s को नहीं बदला जा सकता।"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "कस्टम मेटाडाटा प्रकार %s को PowerDNS API द्वारा स्वीकार किए जाने के लिए %s से शुरू होना चाहिए।"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "मेटाडाटा प्रकार %s केवल %s के साथ मिलकर प्रभावी होता है। एक %s पंक्ति भी जोड़ें।"

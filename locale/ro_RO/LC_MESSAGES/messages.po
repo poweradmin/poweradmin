@@ -15826,3 +15826,19 @@ msgstr "Eroare:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Informație:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "Tipul de metadate %s este gestionat de PowerDNS și nu poate fi modificat aici."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "Tipul de metadate %s nu poate fi modificat cât timp este utilizat backend-ul API PowerDNS."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "Tipul de metadate personalizat %s trebuie să înceapă cu %s pentru a fi acceptat de API-ul PowerDNS."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "Tipul de metadate %s are efect doar împreună cu %s. Adăugați și un rând %s."

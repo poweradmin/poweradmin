@@ -15380,3 +15380,19 @@ msgstr "Hata:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Bilgi:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "%s meta veri türü PowerDNS tarafından yönetilir ve burada değiştirilemez."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "PowerDNS API arka ucu kullanımdayken %s meta veri türü değiştirilemez."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "Özel meta veri türü %s, PowerDNS API tarafından kabul edilmesi için %s ile başlamalıdır."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "%s meta veri türü yalnızca %s ile birlikte etkili olur. Ayrıca bir %s satırı ekleyin."

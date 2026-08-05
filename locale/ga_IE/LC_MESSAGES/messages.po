@@ -15758,3 +15758,19 @@ msgstr "Earráid:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Eolas:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "Tá an cineál meiteashonraí %s á chothabháil ag PowerDNS agus ní féidir é a athrú anseo."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "Ní féidir an cineál meiteashonraí %s a athrú fad atá cúlchóras API PowerDNS in úsáid."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "Ní mór don chineál meiteashonraí saincheaptha %s tosú le %s le go nglacfaidh API PowerDNS leis."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "Ní bhíonn éifeacht leis an gcineál meiteashonraí %s ach in éineacht le %s. Cuir ró %s leis freisin."

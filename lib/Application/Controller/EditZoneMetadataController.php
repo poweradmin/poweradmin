@@ -138,7 +138,11 @@ class EditZoneMetadataController extends BaseController
             // what was actually replaced.
             $beforeMetadata = $this->loadMetadata($zoneId, $zone['name']);
 
-            $restrictionErrors = $this->operatorOnlyViolations($submittedMetadata, $beforeMetadata);
+            $changedKinds = $this->changedKinds($submittedMetadata, $beforeMetadata);
+            $restrictionErrors = array_merge(
+                $this->operatorOnlyViolations($changedKinds),
+                $this->restrictedKindViolations($changedKinds)
+            );
             if (!empty($restrictionErrors)) {
                 $this->setMessage('edit_zone_metadata', 'error', $restrictionErrors[0]);
                 $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
@@ -208,6 +212,9 @@ class EditZoneMetadataController extends BaseController
             'metadata_definitions' => $definitions,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone['name']),
             'can_edit_metadata' => $canEdit,
+            // Rows rendered through the custom-kind path have their badges
+            // rebuilt client-side, so the list has to reach the template's JS.
+            'server_managed_kinds' => MetadataDefinitions::SERVER_MANAGED_KINDS,
         ]);
     }
 
@@ -233,29 +240,10 @@ class EditZoneMetadataController extends BaseController
     private function loadMetadataViaApi(string $zoneName): array
     {
         $apiName = str_ends_with($zoneName, '.') ? $zoneName : $zoneName . '.';
-        $zone = new Zone($apiName);
-        $apiMetadata = $this->apiClient->getZoneMetadata($zone);
-        $rows = [];
-        foreach ($apiMetadata as $entry) {
-            $kind = $entry['kind'] ?? '';
-            // Zone-object-backed kinds may also appear in the /metadata
-            // listing; the zone object below is their single source.
-            if (isset(MetadataDefinitions::ZONE_PROPERTY_KINDS[$kind])) {
-                continue;
-            }
-            foreach (($entry['metadata'] ?? []) as $value) {
-                $rows[] = ['kind' => $kind, 'content' => (string) $value];
-            }
-        }
-
-        $zoneData = $this->apiClient->getZone($apiName);
-        if ($zoneData !== null) {
-            foreach (MetadataDefinitions::ZONE_PROPERTY_KINDS as $kind => $property) {
-                if (!empty($zoneData[$property])) {
-                    $rows[] = ['kind' => $kind, 'content' => (string) $zoneData[$property]];
-                }
-            }
-        }
+        $rows = MetadataDefinitions::rowsFromApiPayload(
+            $this->apiClient->getZoneMetadata(new Zone($apiName)),
+            $this->apiClient->getZone($apiName, false)
+        );
 
         usort($rows, fn($a, $b) => strcmp($a['kind'], $b['kind']));
         return $rows;
@@ -282,9 +270,10 @@ class EditZoneMetadataController extends BaseController
     /**
      * Save metadata via the PowerDNS API.
      *
-     * Groups rows by kind and uses PUT per kind. Zone-object-backed kinds
-     * (SOA-EDIT, SOA-EDIT-API) go through the zone properties endpoint.
-     * Deletes kinds that were removed.
+     * Groups rows by kind and uses PUT per kind. Kinds PowerDNS refuses on the
+     * /metadata endpoint go through the zone properties endpoint instead.
+     * Deletes kinds that were removed. Kinds the API cannot store are skipped -
+     * restrictedKindViolations() has already rejected any change to them.
      *
      * @param array<int, array<string, string>> $metadataRows
      * @return array<string, bool|string>
@@ -306,31 +295,31 @@ class EditZoneMetadataController extends BaseController
             $currentKinds[] = $entry['kind'] ?? '';
         }
 
-        $success = true;
-
         // Zone-object-backed kinds are set (or cleared, when removed from the
         // form) through a single zone properties update.
         $properties = [];
         $zoneData = null;
         foreach (MetadataDefinitions::ZONE_PROPERTY_KINDS as $kind => $property) {
             if (isset($grouped[$kind])) {
-                $properties[$property] = $grouped[$kind][0];
+                $properties[$property] = MetadataDefinitions::toZonePropertyValue($kind, $grouped[$kind][0]);
                 unset($grouped[$kind]);
-            } else {
-                $zoneData ??= $this->apiClient->getZone($zoneName);
-                if ($zoneData !== null && !empty($zoneData[$property])) {
-                    $properties[$property] = '';
-                }
+                continue;
+            }
+
+            $zoneData ??= $this->apiClient->getZone($zoneName, false);
+            if (!empty($zoneData[$property])) {
+                $properties[$property] = MetadataDefinitions::toZonePropertyValue($kind, '');
             }
         }
+
+        $success = true;
         if ($properties !== []) {
             $success = $this->apiClient->updateZoneProperties($zoneName, $properties);
         }
 
         // Update or create each metadata kind
         foreach ($grouped as $kind => $values) {
-            $definition = $this->getMetadataDefinition($kind);
-            if (isset($definition['api_write']) && $definition['api_write'] === false) {
+            if (MetadataDefinitions::writeRejection($kind, true) !== null) {
                 continue;
             }
             $result = $this->apiClient->updateZoneMetadata($zone, $kind, $values);
@@ -339,13 +328,13 @@ class EditZoneMetadataController extends BaseController
 
         // Delete kinds that were removed
         foreach ($currentKinds as $kind) {
-            if ($kind !== '' && !isset($grouped[$kind]) && !isset(MetadataDefinitions::ZONE_PROPERTY_KINDS[$kind])) {
-                $definition = $this->getMetadataDefinition($kind);
-                if (isset($definition['api_write']) && $definition['api_write'] === false) {
-                    continue;
-                }
-                $this->apiClient->deleteZoneMetadata($zone, $kind);
+            if ($kind === '' || isset($grouped[$kind]) || isset(MetadataDefinitions::ZONE_PROPERTY_KINDS[$kind])) {
+                continue;
             }
+            if (MetadataDefinitions::writeRejection($kind, true) !== null) {
+                continue;
+            }
+            $this->apiClient->deleteZoneMetadata($zone, $kind);
         }
 
         return ['success' => $success];
@@ -413,23 +402,29 @@ class EditZoneMetadataController extends BaseController
 
         foreach ($rows as $row) {
             $kind = $row['kind'];
-            $definition = $this->getMetadataDefinition($kind);
             $countsByKind[$kind] = ($countsByKind[$kind] ?? 0) + 1;
 
-            if (!$definition['multi'] && $countsByKind[$kind] > 1) {
+            if (!MetadataDefinitions::isMultiValue($kind) && $countsByKind[$kind] > 1) {
                 $errors[] = sprintf(_('Metadata kind %s accepts only a single value. Add only one row for this kind.'), $kind);
             }
 
-            // PowerDNS accepts unknown policy strings silently, so enforce the
-            // allowed values here. A configured restriction narrows the set;
-            // an empty (hidden-kind) restriction still accepts any valid value
-            // so pre-existing rows keep saving.
-            $options = MetadataDefinitions::getOfferedOptions($kind, $this->getConfig());
-            if ($options === []) {
-                $options = MetadataDefinitions::getOptions($kind);
-            }
+            // PowerDNS stores an unknown policy string without complaint and
+            // then ignores it, so the vocabulary has to be enforced here.
+            $options = MetadataDefinitions::getAllowedValues($kind, $this->getConfig());
             if ($options !== null && !in_array($row['content'], $options, true)) {
                 $errors[] = sprintf(_('Invalid value for %s. Allowed values: %s.'), $kind, implode(', ', $options));
+            }
+        }
+
+        foreach ($rows as $row) {
+            $companion = MetadataDefinitions::requiredCompanionKind($row['kind'], $row['content']);
+            if ($companion !== null && !isset($countsByKind[$companion])) {
+                $errors[] = sprintf(
+                    _('Metadata kind %s only takes effect together with %s. Add a %s row as well.'),
+                    $row['kind'],
+                    $companion,
+                    $companion
+                );
             }
         }
 
@@ -444,21 +439,77 @@ class EditZoneMetadataController extends BaseController
      * compared rather than rejected outright, so an administrator-set value does
      * not lock the zone's own editor out of saving unrelated metadata.
      *
-     * @param array<int, array{kind: string, content: string}> $submitted
-     * @param array<int, array{kind: string, content: string}> $current
+     * @param array<int, string> $changedKinds
      * @return array<int, string>
      */
-    private function operatorOnlyViolations(array $submitted, array $current): array
+    private function operatorOnlyViolations(array $changedKinds): array
     {
         if ($this->hasPermission('user_is_ueberuser')) {
             return [];
         }
 
+        $errors = [];
+        foreach ($changedKinds as $kind) {
+            if (MetadataDefinitions::isOperatorOnly($kind)) {
+                $errors[] = sprintf(
+                    _('Metadata kind %s can only be changed by an administrator.'),
+                    $kind
+                );
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Reject metadata changes the active backend cannot store.
+     *
+     * Rows that already exist are compared rather than rejected outright, so a
+     * value set out of band does not lock the editor out of saving the rest of
+     * the zone's metadata.
+     *
+     * @param array<int, string> $changedKinds
+     * @return array<int, string>
+     */
+    private function restrictedKindViolations(array $changedKinds): array
+    {
+        $errors = [];
+        foreach ($changedKinds as $kind) {
+            $errors[] = match (MetadataDefinitions::writeRejection($kind, $this->apiClient !== null)) {
+                MetadataDefinitions::REJECT_SERVER_MANAGED => sprintf(
+                    _('Metadata kind %s is maintained by PowerDNS and cannot be changed here.'),
+                    $kind
+                ),
+                MetadataDefinitions::REJECT_NO_API_ROUTE => sprintf(
+                    _('Metadata kind %s cannot be changed while the PowerDNS API backend is in use.'),
+                    $kind
+                ),
+                MetadataDefinitions::REJECT_CUSTOM_PREFIX => sprintf(
+                    _('Custom metadata kind %s must start with %s to be accepted by the PowerDNS API.'),
+                    $kind,
+                    MetadataDefinitions::CUSTOM_KIND_API_PREFIX
+                ),
+                default => null,
+            };
+        }
+
+        return array_values(array_filter($errors));
+    }
+
+    /**
+     * List the kinds whose value set differs between two metadata snapshots.
+     *
+     * @param array<int, array{kind: string, content: string}> $submitted
+     * @param array<int, array{kind: string, content: string}> $current
+     * @return array<int, string>
+     */
+    private function changedKinds(array $submitted, array $current): array
+    {
         $collect = static function (array $rows): array {
             $byKind = [];
             foreach ($rows as $row) {
                 $kind = (string)($row['kind'] ?? '');
-                if ($kind !== '' && MetadataDefinitions::isOperatorOnly($kind)) {
+                if ($kind !== '') {
                     $byKind[$kind][] = (string)($row['content'] ?? '');
                 }
             }
@@ -472,17 +523,14 @@ class EditZoneMetadataController extends BaseController
         $before = $collect($current);
         $after = $collect($submitted);
 
-        $errors = [];
+        $changed = [];
         foreach (array_keys($before + $after) as $kind) {
             if (($before[$kind] ?? []) !== ($after[$kind] ?? [])) {
-                $errors[] = sprintf(
-                    _('Metadata kind %s can only be changed by an administrator.'),
-                    $kind
-                );
+                $changed[] = (string) $kind;
             }
         }
 
-        return $errors;
+        return $changed;
     }
 
     /**
@@ -582,7 +630,6 @@ class EditZoneMetadataController extends BaseController
             'multi' => true,
             'placeholder' => $this->getDefaultValueLabel(),
             'help' => $this->getCustomMetadataKindHelpText(),
-            'api_write' => true,
         ];
     }
 
@@ -640,6 +687,13 @@ class EditZoneMetadataController extends BaseController
     private function buildBadgeDescriptors(string $kind, array $definition, bool $isCustom = false): array
     {
         $badges = [];
+
+        if ($kind !== '' && MetadataDefinitions::writeRejection($kind, $this->apiClient !== null) !== null) {
+            $badges[] = [
+                'label' => _('Read-only'),
+                'class' => 'bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle',
+            ];
+        }
 
         if ($isCustom) {
             $badges[] = ['label' => _('Custom'), 'class' => 'bg-warning-subtle text-warning-emphasis border border-warning-subtle'];

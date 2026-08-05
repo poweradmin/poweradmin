@@ -15389,3 +15389,19 @@ msgstr "Napaka:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Podatki:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "Vrsto metapodatkov %s vzdržuje PowerDNS in je tukaj ni mogoče spremeniti."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "Vrste metapodatkov %s ni mogoče spremeniti, ko je v uporabi zaledje API PowerDNS."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "Vrsta metapodatkov po meri %s se mora začeti z %s, da jo API PowerDNS sprejme."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "Vrsta metapodatkov %s učinkuje samo skupaj z %s. Dodajte tudi vrstico %s."

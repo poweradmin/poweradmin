@@ -15169,3 +15169,19 @@ msgstr "Chyba:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Informácie:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "Typ metadát %s spravuje PowerDNS a nedá sa tu zmeniť."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "Typ metadát %s nie je možné zmeniť, keď sa používa API backend PowerDNS."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "Vlastný typ metadát %s musí začínať na %s, aby ho API PowerDNS akceptovalo."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "Typ metadát %s sa prejaví iba spolu s %s. Pridajte aj riadok %s."

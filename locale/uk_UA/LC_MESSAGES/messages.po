@@ -15446,3 +15446,19 @@ msgstr "Помилка:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Інформація:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "Тип метаданих %s керується PowerDNS і не може бути змінений тут."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "Тип метаданих %s не можна змінити, коли використовується API-бекенд PowerDNS."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "Власний тип метаданих %s має починатися з %s, щоб бути прийнятим API PowerDNS."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "Тип метаданих %s діє лише разом із %s. Додайте також рядок %s."

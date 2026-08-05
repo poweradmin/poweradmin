@@ -142,6 +142,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const defaultValueLabel = '{% trans %}Value{% endtrans %}';
     const customMetadataHelp = '{% trans %}Custom metadata kind stored directly in the PowerDNS domainmetadata table.{% endtrans %}';
     const customBadgeLabel = '{% trans %}Custom{% endtrans %}';
+    const readOnlyBadge = '<span class="badge bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">{% trans %}Read-only{% endtrans %}</span>';
+    const serverManagedKinds = {{ server_managed_kinds|json_encode|raw }};
 
     {% for definition in metadata_definitions %}
     definitions['{{ definition.kind }}'] = {
@@ -199,9 +201,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 return '<span class="badge ' + badge.class + '">' + badge.label + '</span>';
             }).join('');
         } else {
+            const customKind = (row.querySelector('.metadata-custom-kind').value || '').toUpperCase();
             content.placeholder = defaultValueLabel;
             hint.textContent = customMetadataHelp;
-            badgeContainer.innerHTML = '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">' + customBadgeLabel + '</span>';
+            badgeContainer.innerHTML = (serverManagedKinds.indexOf(customKind) !== -1 ? readOnlyBadge : '')
+                + '<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">' + customBadgeLabel + '</span>';
         }
     }
 

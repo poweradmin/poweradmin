@@ -15873,3 +15873,19 @@ msgstr "Σφάλμα:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Πληροφορίες:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "Το είδος μεταδεδομένων %s συντηρείται από το PowerDNS και δεν μπορεί να αλλάξει εδώ."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "Το είδος μεταδεδομένων %s δεν μπορεί να αλλάξει όσο χρησιμοποιείται το σύστημα υποστήριξης PowerDNS API."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "Το προσαρμοσμένο είδος μεταδεδομένων %s πρέπει να ξεκινά με %s για να γίνει δεκτό από το PowerDNS API."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "Το είδος μεταδεδομένων %s τίθεται σε ισχύ μόνο μαζί με %s. Προσθέστε επίσης μια σειρά %s."

@@ -14960,3 +14960,19 @@ msgstr "Kļūda:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Informācija:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "Metadatu veidu %s uztur PowerDNS, un to šeit nevar mainīt."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "Metadatu veidu %s nevar mainīt, kamēr tiek izmantota PowerDNS API aizmugure."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "Pielāgotam metadatu veidam %s jāsākas ar %s, lai PowerDNS API to pieņemtu."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "Metadatu veids %s stājas spēkā tikai kopā ar %s. Pievienojiet arī rindu %s."

@@ -15064,3 +15064,19 @@ msgstr "خطأ:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "المعلومات:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "نوع البيانات الوصفية %s يديره PowerDNS ولا يمكن تغييره هنا."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "لا يمكن تغيير نوع البيانات الوصفية %s أثناء استخدام الواجهة الخلفية PowerDNS API."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "يجب أن يبدأ نوع البيانات الوصفية المخصص %s بـ %s ليقبله PowerDNS API."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "نوع البيانات الوصفية %s لا يسري إلا مع %s. أضف صف %s أيضاً."

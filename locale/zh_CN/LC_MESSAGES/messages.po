@@ -14317,3 +14317,19 @@ msgstr "错误："
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "信息："
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "元数据类型 %s 由 PowerDNS 维护，无法在此处更改。"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "使用 PowerDNS API 后端时，无法更改元数据类型 %s。"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "自定义元数据类型 %s 必须以 %s 开头，才能被 PowerDNS API 接受。"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "元数据类型 %s 仅在与 %s 一起使用时才生效。请同时添加一行 %s。"

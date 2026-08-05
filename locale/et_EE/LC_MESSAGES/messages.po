@@ -14919,3 +14919,19 @@ msgstr "Viga:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Teave:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "Metaandmete liiki %s haldab PowerDNS ja seda ei saa siin muuta."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "Metaandmete liiki %s ei saa muuta, kui kasutusel on PowerDNS-i API taustaprogramm."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "Kohandatud metaandmete liik %s peab algama eesliitega %s, et PowerDNS-i API selle vastu võtaks."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "Metaandmete liik %s rakendub ainult koos liigiga %s. Lisage ka %s-rida."

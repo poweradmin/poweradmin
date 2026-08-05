@@ -468,7 +468,7 @@ interface DnsBackendProvider
      * Set the zone's SOA serial policy metadata.
      *
      * Keys are the zone-object property names from
-     * MetadataDefinitions::ZONE_PROPERTY_KINDS. An empty string clears the
+     * MetadataDefinitions::SERIAL_POLICY_PROPERTY_KINDS. An empty string clears the
      * policy. API backend updates the zone object; SQL backend replaces the
      * matching domainmetadata rows.
      *

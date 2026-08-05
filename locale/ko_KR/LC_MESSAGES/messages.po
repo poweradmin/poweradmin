@@ -15137,3 +15137,19 @@ msgstr "오류:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "정보:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "메타데이터 종류 %s은(는) PowerDNS가 관리하므로 여기에서 변경할 수 없습니다."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "PowerDNS API 백엔드를 사용하는 동안에는 메타데이터 종류 %s을(를) 변경할 수 없습니다."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "사용자 정의 메타데이터 종류 %s은(는) PowerDNS API에서 허용되려면 %s(으)로 시작해야 합니다."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "메타데이터 종류 %s은(는) %s과(와) 함께 사용할 때만 적용됩니다. %s 행도 추가하세요."

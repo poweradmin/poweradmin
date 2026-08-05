@@ -15271,3 +15271,19 @@ msgstr "Lỗi:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Thông tin:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "Loại siêu dữ liệu %s do PowerDNS quản lý và không thể thay đổi tại đây."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "Không thể thay đổi loại siêu dữ liệu %s khi đang sử dụng backend API PowerDNS."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "Loại siêu dữ liệu tùy chỉnh %s phải bắt đầu bằng %s để được PowerDNS API chấp nhận."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "Loại siêu dữ liệu %s chỉ có hiệu lực khi đi kèm với %s. Hãy thêm cả một dòng %s."

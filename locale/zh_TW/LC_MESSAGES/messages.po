@@ -14334,3 +14334,19 @@ msgstr "錯誤："
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "資訊："
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "元資料類型 %s 由 PowerDNS 維護，無法在此處變更。"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "使用 PowerDNS API 後端時，無法變更元資料類型 %s。"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "自訂元資料類型 %s 必須以 %s 開頭，才能被 PowerDNS API 接受。"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "元資料類型 %s 僅在與 %s 一起使用時才生效。請同時新增一行 %s。"

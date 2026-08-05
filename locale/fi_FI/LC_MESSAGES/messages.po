@@ -14984,3 +14984,19 @@ msgstr "Virhe:"
 #: templates/modern/message_alert.html:16
 msgid "Info:"
 msgstr "Tieto:"
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
+msgstr "Metatietotyyppiä %s ylläpitää PowerDNS, eikä sitä voi muuttaa täällä."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s cannot be changed while the PowerDNS API backend is in use."
+msgstr "Metatietotyyppiä %s ei voi muuttaa, kun PowerDNS API -taustajärjestelmä on käytössä."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Custom metadata kind %s must start with %s to be accepted by the PowerDNS API."
+msgstr "Mukautetun metatietotyypin %s on alettava etuliitteellä %s, jotta PowerDNS API hyväksyy sen."
+
+#: lib/Application/Controller/EditZoneMetadataController.php
+msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
+msgstr "Metatietotyyppi %s tulee voimaan vain yhdessä tyypin %s kanssa. Lisää myös %s-rivi."

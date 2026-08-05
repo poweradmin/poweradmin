@@ -780,7 +780,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
 
     public function setZoneSerialPolicy(int $domainId, string $zoneName, array $properties): bool
     {
-        $kindMap = array_flip(MetadataDefinitions::ZONE_PROPERTY_KINDS);
+        $kindMap = array_flip(MetadataDefinitions::SERIAL_POLICY_PROPERTY_KINDS);
         $properties = array_intersect_key($properties, $kindMap);
         if ($properties === []) {
             return true;
