@@ -317,8 +317,8 @@ class ZoneMetadataController extends PublicApiController
             return $this->returnApiError('You do not have permission to edit zone metadata', 403);
         }
 
-        if (!MetadataDefinitions::isApiWritable($kind)) {
-            return $this->returnApiError('Metadata kind ' . $kind . ' is read-only', 403);
+        if (($rejection = $this->kindWriteRejection($kind)) !== null) {
+            return $rejection;
         }
 
         if (
@@ -345,7 +345,19 @@ class ZoneMetadataController extends PublicApiController
                 return $this->returnApiError('Metadata kind ' . $kind . ' accepts only a single value', 400);
             }
 
+            if (($valueError = $this->invalidValueError($kind, $values)) !== null) {
+                return $valueError;
+            }
+
             $beforeMetadata = $this->loadMetadata($zoneId);
+
+            $companion = MetadataDefinitions::requiredCompanionKind($kind, $values[0]);
+            if ($companion !== null && !in_array($companion, array_column($beforeMetadata, 'kind'), true)) {
+                return $this->returnApiError(
+                    'Metadata kind ' . $kind . ' only takes effect together with ' . $companion,
+                    422
+                );
+            }
 
             if (!$this->saveMetadataKind($zoneId, $kind, $values)) {
                 return $this->returnApiError('Failed to update metadata', 500);
@@ -416,8 +428,8 @@ class ZoneMetadataController extends PublicApiController
             return $this->returnApiError('You do not have permission to edit zone metadata', 403);
         }
 
-        if (!MetadataDefinitions::isApiWritable($kind)) {
-            return $this->returnApiError('Metadata kind ' . $kind . ' is read-only', 403);
+        if (($rejection = $this->kindWriteRejection($kind)) !== null) {
+            return $rejection;
         }
 
         if (
@@ -444,37 +456,70 @@ class ZoneMetadataController extends PublicApiController
     }
 
     /**
+     * Reject a write for kinds the active backend cannot store.
+     */
+    private function kindWriteRejection(string $kind): ?JsonResponse
+    {
+        return match (MetadataDefinitions::writeRejection($kind, $this->apiClient !== null)) {
+            MetadataDefinitions::REJECT_SERVER_MANAGED =>
+                $this->returnApiError('Metadata kind ' . $kind . ' is maintained by PowerDNS', 403),
+            MetadataDefinitions::REJECT_NO_API_ROUTE =>
+                $this->returnApiError('Metadata kind ' . $kind . ' is read-only', 403),
+            MetadataDefinitions::REJECT_CUSTOM_PREFIX => $this->returnApiError(
+                'Custom metadata kind ' . $kind . ' must start with ' . MetadataDefinitions::CUSTOM_KIND_API_PREFIX,
+                422
+            ),
+            default => null,
+        };
+    }
+
+    /**
+     * Reject values outside a kind's vocabulary.
+     *
+     * PowerDNS stores an unknown serial policy without complaint and then skips
+     * every serial bump, so the check has to happen here.
+     *
+     * @param array<int, string> $values
+     */
+    private function invalidValueError(string $kind, array $values): ?JsonResponse
+    {
+        $options = MetadataDefinitions::getAllowedValues($kind, $this->config);
+        if ($options === null) {
+            return null;
+        }
+
+        foreach ($values as $value) {
+            if (!in_array($value, $options, true)) {
+                return $this->returnApiError(
+                    'Invalid value for ' . $kind . '. Allowed values: ' . implode(', ', $options),
+                    422
+                );
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Load all metadata rows for a zone.
      *
      * @return array<int, array{kind: string, content: string}>
      */
     private function loadMetadata(int $zoneId): array
     {
-        if ($this->apiClient !== null) {
-            $zone = $this->zoneRepository->getZone($zoneId);
-            if ($zone === null) {
-                return [];
-            }
-            $zoneObj = new Zone($zone['name']);
-            $apiMetadata = $this->apiClient->getZoneMetadata($zoneObj);
-            $rows = [];
-            foreach ($apiMetadata as $entry) {
-                $kind = $entry['kind'] ?? '';
-                foreach (($entry['metadata'] ?? []) as $value) {
-                    $rows[] = ['kind' => $kind, 'content' => (string)$value];
-                }
-            }
-
-            // SOA-EDIT-API is stored on the zone object, not in /metadata
-            $zoneData = $this->apiClient->getZone($zone['name']);
-            if ($zoneData !== null && !empty($zoneData['soa_edit_api'])) {
-                $rows[] = ['kind' => 'SOA-EDIT-API', 'content' => $zoneData['soa_edit_api']];
-            }
-
-            return $rows;
+        if ($this->apiClient === null) {
+            return $this->zoneRepository->getDomainMetadata($zoneId);
         }
 
-        return $this->zoneRepository->getDomainMetadata($zoneId);
+        $zone = $this->zoneRepository->getZone($zoneId);
+        if ($zone === null) {
+            return [];
+        }
+
+        return MetadataDefinitions::rowsFromApiPayload(
+            $this->apiClient->getZoneMetadata(new Zone($zone['name'])),
+            $this->apiClient->getZone($zone['name'], false)
+        );
     }
 
     /**
@@ -516,13 +561,14 @@ class ZoneMetadataController extends PublicApiController
             if ($zone === null) {
                 return false;
             }
-            $zoneObj = new Zone($zone['name']);
-
-            if ($kind === 'SOA-EDIT-API') {
-                return $this->apiClient->updateZoneProperties($zone['name'], ['soa_edit_api' => $values[0] ?? '']);
+            $property = MetadataDefinitions::ZONE_PROPERTY_KINDS[$kind] ?? null;
+            if ($property !== null) {
+                return $this->apiClient->updateZoneProperties($zone['name'], [
+                    $property => MetadataDefinitions::toZonePropertyValue($kind, $values[0] ?? ''),
+                ]);
             }
 
-            return $this->apiClient->updateZoneMetadata($zoneObj, $kind, $values);
+            return $this->apiClient->updateZoneMetadata(new Zone($zone['name']), $kind, $values);
         }
 
         // DB backend: load current metadata, replace this kind, save all
@@ -547,12 +593,14 @@ class ZoneMetadataController extends PublicApiController
                 return false;
             }
 
-            if ($kind === 'SOA-EDIT-API') {
-                return $this->apiClient->updateZoneProperties($zone['name'], ['soa_edit_api' => '']);
+            $property = MetadataDefinitions::ZONE_PROPERTY_KINDS[$kind] ?? null;
+            if ($property !== null) {
+                return $this->apiClient->updateZoneProperties($zone['name'], [
+                    $property => MetadataDefinitions::toZonePropertyValue($kind, ''),
+                ]);
             }
 
-            $zoneObj = new Zone($zone['name']);
-            return $this->apiClient->deleteZoneMetadata($zoneObj, $kind);
+            return $this->apiClient->deleteZoneMetadata(new Zone($zone['name']), $kind);
         }
 
         // DB backend: load current metadata, remove this kind, save remaining
