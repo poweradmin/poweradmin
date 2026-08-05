@@ -1,0 +1,52 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Psalm\Internal\TypeVisitor;
+
+use Override;
+use Psalm\Type\Atomic;
+use Psalm\Type\Atomic\TTemplateParam;
+use Psalm\Type\MutableTypeVisitor;
+use Psalm\Type\MutableUnion;
+use Psalm\Type\TypeNode;
+use Psalm\Type\Union;
+
+/**
+ * @internal
+ */
+final class FromDocblockSetter extends MutableTypeVisitor
+{
+    public function __construct(
+        private readonly bool $from_docblock,
+    ) {
+    }
+    /**
+     * @return self::STOP_TRAVERSAL|self::DONT_TRAVERSE_CHILDREN|null
+     */
+    #[Override]
+    protected function enterNode(TypeNode &$type): ?int
+    {
+        if (!$type instanceof Atomic && !$type instanceof Union && !$type instanceof MutableUnion) {
+            return null;
+        }
+        if ($type->from_docblock === $this->from_docblock) {
+            return null;
+        }
+        if ($type instanceof MutableUnion) {
+            $type->from_docblock = true;
+        } elseif ($type instanceof Union) {
+            $type = $type->setProperties(['from_docblock' => $this->from_docblock]);
+        } else {
+            $type = $type->setFromDocblock($this->from_docblock);
+        }
+
+        if ($type instanceof TTemplateParam
+            && $type->as->isMixed()
+        ) {
+            return self::DONT_TRAVERSE_CHILDREN;
+        }
+
+        return null;
+    }
+}

@@ -1,0 +1,38 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Psalm\Internal\Provider\ReturnTypeProvider;
+
+use Override;
+use Psalm\Internal\Analyzer\StatementsAnalyzer;
+use Psalm\Plugin\EventHandler\Event\FunctionReturnTypeProviderEvent;
+use Psalm\Plugin\EventHandler\FunctionReturnTypeProviderInterface;
+use Psalm\Type;
+use Psalm\Type\Union;
+
+/**
+ * @internal
+ */
+final class HexdecReturnTypeProvider implements FunctionReturnTypeProviderInterface
+{
+    /**
+     * @return array<lowercase-string>
+     */
+    #[Override]
+    public static function getFunctionIds(): array
+    {
+        return ['hexdec'];
+    }
+
+    #[Override]
+    public static function getFunctionReturnType(FunctionReturnTypeProviderEvent $event): Union
+    {
+        $statements_source = $event->getStatementsSource();
+        if (!$statements_source instanceof StatementsAnalyzer) {
+            return Type::getMixed();
+        }
+
+        return Type::getInt(true);
+    }
+}
