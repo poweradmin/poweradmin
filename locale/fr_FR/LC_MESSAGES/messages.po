@@ -1807,20 +1807,20 @@ msgstr "Vous n'avez pas la permission de voir les métadonnées de la zone."
 
 #: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to edit zone metadata."
-msgstr "Vous n'avez pas la permission de modifier les metadonnees de zone."
+msgstr "Vous n'avez pas la permission de modifier les métadonnées de zone."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."
-msgstr "Les metadonnees de zone ont ete mises a jour avec succes."
+msgstr "Les métadonnées de zone ont été mises à jour avec succès."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:176
 msgid "Failed to update zone metadata."
-msgstr "Echec de la mise a jour des metadonnees de zone."
+msgstr "Échec de la mise à jour des métadonnées de zone."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
 msgid "Edit Zone Metadata"
-msgstr "Modifier les metadonnees de zone"
+msgstr "Modifier les métadonnées de zone"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
@@ -1831,9 +1831,7 @@ msgstr "Métadonnées de zone"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
-"Le type de metadonnees %s n'accepte qu'une seule valeur. N'ajoutez qu'une "
-"seule ligne pour ce type."
+msgstr "Le type de métadonnées %s n'accepte qu'une seule valeur. N'ajoutez qu'une seule ligne pour ce type."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1850,9 +1848,7 @@ msgstr ""
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
-"Type de metadonnees personnalise stocke directement dans la table "
-"domainmetadata de PowerDNS."
+msgstr "Type de métadonnées personnalisé stocké directement dans la table domainmetadata de PowerDNS."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -12473,7 +12469,7 @@ msgstr ""
 
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
-msgstr "Metadonnees"
+msgstr "Métadonnées"
 
 #: templates/modern/edit.html:215 templates/modern/edit_zone_metadata.html:5
 msgid "View Metadata"
@@ -13236,7 +13232,7 @@ msgstr "Continuer sans SOA"
 
 #: templates/modern/edit_zone_metadata.html:5
 msgid "Edit Metadata"
-msgstr "Modifier les metadonnees"
+msgstr "Modifier les métadonnées"
 
 #: templates/modern/edit_zone_metadata.html:22
 msgid "Multiple values"
@@ -13246,9 +13242,7 @@ msgstr "Valeurs multiples"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
-"Pour les metadonnees comme ALLOW-AXFR-FROM, ajoutez plusieurs lignes avec le "
-"meme type. Chaque valeur est stockee separement, une ligne par valeur."
+msgstr "Pour les métadonnées comme ALLOW-AXFR-FROM, ajoutez plusieurs lignes avec le même type. Chaque valeur est stockée séparément, une ligne par valeur."
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"
@@ -13268,15 +13262,15 @@ msgstr "nécessite"
 
 #: templates/modern/edit_zone_metadata.html:94
 msgid "Add metadata row"
-msgstr "Ajouter une ligne de metadonnees"
+msgstr "Ajouter une ligne de métadonnées"
 
 #: templates/modern/edit_zone_metadata.html:97
 msgid "Save metadata"
-msgstr "Enregistrer les metadonnees"
+msgstr "Enregistrer les métadonnées"
 
 #: templates/modern/dnssec_ds_dnskey.html:30
 msgid "Back to zone"
-msgstr "Retour a la zone"
+msgstr "Retour à la zone"
 
 #: templates/modern/api_key_created.html:5
 msgid "API Key Created"

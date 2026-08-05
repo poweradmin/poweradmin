@@ -1776,11 +1776,11 @@ msgstr "Nie masz uprawnień do edycji metadanych strefy."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."
-msgstr "Metadane strefy zostaly pomyslnie zaktualizowane."
+msgstr "Metadane strefy zostały pomyślnie zaktualizowane."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:176
 msgid "Failed to update zone metadata."
-msgstr "Nie udalo sie zaktualizowac metadanych strefy."
+msgstr "Nie udało się zaktualizować metadanych strefy."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10

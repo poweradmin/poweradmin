@@ -1825,9 +1825,7 @@ msgstr "Zonen-Metadaten"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
-"Metadatenart %s akzeptiert nur einen einzelnen Wert. Verwenden Sie nur eine "
-"Zeile fuer diese Art."
+msgstr "Metadatenart %s akzeptiert nur einen einzelnen Wert. Verwenden Sie nur eine Zeile für diese Art."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -13228,9 +13226,7 @@ msgstr "Mehrere Werte"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
-"Fuer Metadaten wie ALLOW-AXFR-FROM fuegen Sie mehrere Zeilen mit derselben "
-"Art hinzu. Jeder Wert wird separat gespeichert, eine Zeile pro Wert."
+msgstr "Für Metadaten wie ALLOW-AXFR-FROM fügen Sie mehrere Zeilen mit derselben Art hinzu. Jeder Wert wird separat gespeichert, eine Zeile pro Wert."
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"
@@ -13250,7 +13246,7 @@ msgstr "erfordert"
 
 #: templates/modern/edit_zone_metadata.html:94
 msgid "Add metadata row"
-msgstr "Metadatenzeile hinzufuegen"
+msgstr "Metadatenzeile hinzufügen"
 
 #: templates/modern/edit_zone_metadata.html:97
 msgid "Save metadata"

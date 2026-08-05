@@ -1778,11 +1778,11 @@ msgstr "Neturite teisės redaguoti zonos metaduomenų."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."
-msgstr "Zonos metaduomenys sekmingai atnaujinti."
+msgstr "Zonos metaduomenys sėkmingai atnaujinti."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:176
 msgid "Failed to update zone metadata."
-msgstr "Nepavyko atnaujinti zonos metaduomenu."
+msgstr "Nepavyko atnaujinti zonos metaduomenų."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
@@ -9459,7 +9459,7 @@ msgstr "Rasti šie įspėjimai:"
 
 #: lib/Domain/Service/BulkRecordParser.php:36
 msgid "Empty line."
-msgstr "Tuscia eilute."
+msgstr "Tuščia eilutė."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
@@ -13006,7 +13006,7 @@ msgstr "reikalauja"
 
 #: templates/modern/edit_zone_metadata.html:94
 msgid "Add metadata row"
-msgstr "Prideti metaduomenu eilute"
+msgstr "Pridėti metaduomenų eilutę"
 
 #: templates/modern/edit_zone_metadata.html:97
 msgid "Save metadata"

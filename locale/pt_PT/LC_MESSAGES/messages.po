@@ -1789,7 +1789,7 @@ msgstr "Não tem permissão para ver os metadados da zona."
 
 #: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to edit zone metadata."
-msgstr "Nao tem permissao para editar os metadados da zona."
+msgstr "Não tem permissão para editar os metadados da zona."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."

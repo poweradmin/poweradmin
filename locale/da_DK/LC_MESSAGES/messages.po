@@ -1798,9 +1798,7 @@ msgstr "Zonemetadata"
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
-msgstr ""
-"Metadata slags %s accepterer kun en enkelt værdi. Tilføj kun en række til "
-"den slags."
+msgstr "Metadatatypen %s accepterer kun en enkelt værdi. Tilføj kun en række til denne type."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:432
 #, php-format
@@ -1816,9 +1814,7 @@ msgstr "Metadatatypen %s kan kun ændres af en administrator."
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr ""
-"Brugerdefinerede metadata slags gemt direkte i PowerDNS domainmetadata "
-"tabellen."
+msgstr "Brugerdefineret metadatatype gemt direkte i PowerDNS domainmetadata tabellen."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -12961,9 +12957,7 @@ msgstr "Flere værdier"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
-"For metadata som ALLOW-AXFR-FROM tilføjes flere rækker med samme slags. Hver "
-"værdi lagres separat, én række pr. værdi."
+msgstr "For metadata som ALLOW-AXFR-FROM tilføjes flere rækker med samme type. Hver værdi lagres separat, én række pr. værdi."
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"

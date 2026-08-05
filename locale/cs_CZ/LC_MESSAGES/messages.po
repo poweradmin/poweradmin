@@ -1767,16 +1767,16 @@ msgstr "Nemáte oprávnění upravovat metadata zóny."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."
-msgstr "Metadata zony byla uspesne aktualizovana."
+msgstr "Metadata zóny byla úspěšně aktualizována."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:176
 msgid "Failed to update zone metadata."
-msgstr "Aktualizace metadat zony se nezdarila."
+msgstr "Aktualizace metadat zóny se nezdařila."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
 msgid "Edit Zone Metadata"
-msgstr "Upravit metadata zony"
+msgstr "Upravit metadata zóny"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
@@ -9385,7 +9385,7 @@ msgstr "Byla nalezena následující varování:"
 
 #: lib/Domain/Service/BulkRecordParser.php:36
 msgid "Empty line."
-msgstr "Prazdny radek."
+msgstr "Prázdný řádek."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
@@ -12928,15 +12928,15 @@ msgstr "vyžaduje"
 
 #: templates/modern/edit_zone_metadata.html:94
 msgid "Add metadata row"
-msgstr "Pridat radek metadat"
+msgstr "Přidat řádek metadat"
 
 #: templates/modern/edit_zone_metadata.html:97
 msgid "Save metadata"
-msgstr "Ulozit metadata"
+msgstr "Uložit metadata"
 
 #: templates/modern/dnssec_ds_dnskey.html:30
 msgid "Back to zone"
-msgstr "Zpet na zonu"
+msgstr "Zpět na zónu"
 
 #: templates/modern/api_key_created.html:5
 msgid "API Key Created"

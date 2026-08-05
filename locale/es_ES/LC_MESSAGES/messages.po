@@ -9632,7 +9632,7 @@ msgstr "Se encontraron las siguientes advertencias:"
 
 #: lib/Domain/Service/BulkRecordParser.php:36
 msgid "Empty line."
-msgstr "Linea vacia."
+msgstr "Línea vacía."
 
 #: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"

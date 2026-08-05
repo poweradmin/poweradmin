@@ -1689,29 +1689,29 @@ msgstr "คุณไม่ได้รับอนุญาตให้ดู su
 
 #: lib/Application/Controller/EditZoneMetadataController.php:115
 msgid "You do not have the permission to view zone metadata."
-msgstr "คุณไม่ได้รับอนุญาตให้ดูเมทาดาทาของโซน"
+msgstr "คุณไม่ได้รับอนุญาตให้ดูเมตาดาต้าของโซน"
 
 #: lib/Domain/Service/Dns/DomainManager.php:793
 msgid "You do not have the permission to edit zone metadata."
-msgstr "คุณไม่มีสิทธิ์แก้ไขเมทาดาทาของโซน"
+msgstr "คุณไม่มีสิทธิ์แก้ไขเมตาดาต้าของโซน"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:171
 msgid "Zone metadata has been updated successfully."
-msgstr "ปรับปรุงเมทาดาทาของโซนเรียบร้อยแล้ว"
+msgstr "ปรับปรุงเมตาดาต้าของโซนเรียบร้อยแล้ว"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:176
 msgid "Failed to update zone metadata."
-msgstr "ล้มเหลวในการปรับปรุงเมทาดาทาของโซน"
+msgstr "ล้มเหลวในการปรับปรุงเมตาดาต้าของโซน"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
 msgid "Edit Zone Metadata"
-msgstr "แก้ไขเมทาดาทาของโซน"
+msgstr "แก้ไขเมตาดาต้าของโซน"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:198
 #: templates/modern/edit_zone_metadata.html:10
 msgid "Zone Metadata"
-msgstr "เมทาดาทาของโซน"
+msgstr "เมตาดาต้าของโซน"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:420
 #, php-format
@@ -1727,13 +1727,13 @@ msgstr "ค่าไม่ถูกต้องสำหรับ %s ค่า�
 #: lib/Application/Controller/EditZoneMetadataController.php:479
 #, php-format
 msgid "Metadata kind %s can only be changed by an administrator."
-msgstr "เมทาดาทาชนิด %s สามารถเปลี่ยนแปลงได้โดยผู้ดูแลระบบเท่านั้น."
+msgstr "ประเภทเมตาดาต้า %s สามารถเปลี่ยนแปลงได้โดยผู้ดูแลระบบเท่านั้น."
 
 #: lib/Application/Controller/EditZoneMetadataController.php:594
 #: templates/modern/edit_zone_metadata.html:143
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
-msgstr "ชนิดเมทาดาทาแบบกำหนดเองที่เก็บโดยตรงในตาราง domainmetadata ของ PowerDNS"
+msgstr "ประเภทเมตาดาต้าแบบกำหนดเองที่เก็บโดยตรงในตาราง domainmetadata ของ PowerDNS"
 
 #: lib/Application/Controller/EditZoneMetadataController.php:602
 #: templates/modern/pdns_status.html:407
@@ -11569,11 +11569,11 @@ msgstr ""
 
 #: templates/default/edit.html:215 templates/modern/edit.html:215
 msgid "Metadata"
-msgstr "ข้อมูลกำกับ"
+msgstr "เมตาดาต้า"
 
 #: templates/modern/edit.html:215 templates/modern/edit_zone_metadata.html:5
 msgid "View Metadata"
-msgstr "แสดงข้อมูลกำกับ"
+msgstr "แสดงเมตาดาต้า"
 
 #: templates/default/edit.html:231 templates/modern/edit.html:231
 msgid "No records match your filter criteria."
@@ -12316,7 +12316,7 @@ msgstr "ทำต่อไปโดยไม่มีSOA"
 
 #: templates/modern/edit_zone_metadata.html:5
 msgid "Edit Metadata"
-msgstr "แก้ไขข้อมูลกำกับ"
+msgstr "แก้ไขเมตาดาต้า"
 
 #: templates/modern/edit_zone_metadata.html:22
 msgid "Multiple values"
@@ -12326,9 +12326,7 @@ msgstr "ค่าหลายค่า"
 msgid ""
 "For metadata like ALLOW-AXFR-FROM, add multiple rows with the same kind. "
 "Each value is stored separately, one row per value."
-msgstr ""
-"สำหรับข้อมูลกำกับเช่น ALLOW-AXFR-FROM ให้เพิ่มหลายแถวโดยใช้ชนิดเดียวกัน "
-"แต่ละค่าจะถูกเก็บแยกกัน หนึ่งแถวต่อหนึ่งค่า"
+msgstr "สำหรับเมตาดาต้าเช่น ALLOW-AXFR-FROM ให้เพิ่มหลายแถวโดยใช้ชนิดเดียวกัน แต่ละค่าจะถูกเก็บแยกกัน หนึ่งแถวต่อหนึ่งค่า"
 
 #: templates/modern/edit_zone_metadata.html:28
 msgid "Multi value"
@@ -12348,11 +12346,11 @@ msgstr "ต้องการ"
 
 #: templates/modern/edit_zone_metadata.html:94
 msgid "Add metadata row"
-msgstr "เพิ่มแถวข้อมูลกำกับ"
+msgstr "เพิ่มแถวเมตาดาต้า"
 
 #: templates/modern/edit_zone_metadata.html:97
 msgid "Save metadata"
-msgstr "บันทึกข้อมูลกำกับ"
+msgstr "บันทึกเมตาดาต้า"
 
 #: templates/modern/dnssec_ds_dnskey.html:30
 msgid "Back to zone"
@@ -12466,11 +12464,7 @@ msgid ""
 "expire automatically - prune old rows manually if the table grows large. Use "
 "the time-window shortcuts to focus on recent activity, or export to CSV/JSON "
 "to feed external audit systems."
-msgstr ""
-"ทุกการเพิ่ม/แก้ไข/ลบบันทึก และการสร้าง/ลบโซน/แก้ไขข้อมูลกำกับ จะเก็บสถานะก่อน/หลังไว้ที่นี่ "
-"พร้อมกับผู้ใช้และเวลา บันทึกจะไม่หมดอายุโดยอัตโนมัติ - "
-"ให้ลบแถวเก่าด้วยตนเองหากตารางมีขนาดใหญ่ขึ้น ใช้ปุ่มลัดช่วงเวลาเพื่อดูกิจกรรมล่าสุด หรือส่งออกเป็น "
-"CSV/JSON เพื่อป้อนให้ระบบตรวจสอบภายนอก"
+msgstr "ทุกการเพิ่ม/แก้ไข/ลบบันทึก และการสร้าง/ลบโซน/แก้ไขเมตาดาต้า จะเก็บสถานะก่อน/หลังไว้ที่นี่ พร้อมกับผู้ใช้และเวลา บันทึกจะไม่หมดอายุโดยอัตโนมัติ - ให้ลบแถวเก่าด้วยตนเองหากตารางมีขนาดใหญ่ขึ้น ใช้ปุ่มลัดช่วงเวลาเพื่อดูกิจกรรมล่าสุด หรือส่งออกเป็น CSV/JSON เพื่อป้อนให้ระบบตรวจสอบภายนอก"
 
 #: templates/modern/list_record_changes.html:32
 msgid "All actions"
