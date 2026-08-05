@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<psalm
+        errorLevel="2"
+        phpVersion="8.1"
+        resolveFromConfigFile="true"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="https://getpsalm.org/schema/config"
+        xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <directory name="src"/>
+        <ignoreFiles>
+            <directory name="vendor"/>
+        </ignoreFiles>
+    </projectFiles>
+
+    <issueHandlers>
+        <StringIncrement>
+            <errorLevel type="suppress">
+                <directory name="src"/>
+            </errorLevel>
+        </StringIncrement>
+
+        <RedundantConditionGivenDocblockType>
+            <errorLevel type="suppress">
+                <directory name="src"/>
+            </errorLevel>
+        </RedundantConditionGivenDocblockType>
+
+        <DocblockTypeContradiction>
+            <errorLevel type="suppress">
+                <directory name="src"/>
+            </errorLevel>
+        </DocblockTypeContradiction>
+
+        <MissingClosureParamType>
+            <errorLevel type="suppress">
+                <directory name="src"/>
+            </errorLevel>
+        </MissingClosureParamType>
+    </issueHandlers>
+</psalm>

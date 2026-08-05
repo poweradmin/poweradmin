@@ -1,0 +1,81 @@
+parameters:
+	disallowedFunctionCalls:
+		-
+			function: 'md5()'
+			message: 'use hash() with at least SHA-256 for secure hash, or password_hash() for passwords'
+		-
+			function: 'sha1()'
+			message: 'use hash() with at least SHA-256 for secure hash, or password_hash() for passwords'
+		-
+			function: 'md5_file()'
+			message: 'use hash_file() with at least SHA-256 for secure hash'
+		-
+			function: 'sha1_file()'
+			message: 'use hash_file() with at least SHA-256 for secure hash'
+		-
+			function: 'hash()'
+			message: 'use hash() with at least SHA-256 for secure hash, or password_hash() for passwords'
+			allowExceptCaseInsensitiveParams:
+				1: 'md5'
+		-
+			function: 'hash()'
+			message: 'use hash() with at least SHA-256 for secure hash, or password_hash() for passwords'
+			allowExceptCaseInsensitiveParams:
+				1: 'sha1'
+		-
+			function: 'hash_file()'
+			message: 'use hash_file() with at least SHA-256 for secure hash, or password_hash() for passwords'
+			allowExceptCaseInsensitiveParams:
+				1: 'md5'
+		-
+			function: 'hash_file()'
+			message: 'use hash_file() with at least SHA-256 for secure hash, or password_hash() for passwords'
+			allowExceptCaseInsensitiveParams:
+				1: 'sha1'
+		-
+			function: 'hash_init()'
+			message: 'use hash_init() with at least SHA-256 for secure hash, or password_hash() for passwords'
+			allowExceptCaseInsensitiveParams:
+				1: 'md5'
+		-
+			function: 'hash_init()'
+			message: 'use hash_init() with at least SHA-256 for secure hash, or password_hash() for passwords'
+			allowExceptCaseInsensitiveParams:
+				1: 'sha1'
+		-
+			function: 'rand()'
+			message: 'it is not a cryptographically secure generator, use random_int() instead'
+		-
+			function: 'mt_rand()'
+			message: 'it is not a cryptographically secure generator, use random_int() instead'
+		-
+			function: 'lcg_value()'
+			message: 'it is not a cryptographically secure generator, use random_int() instead'
+		-
+			function: 'uniqid()'
+			message: 'it is not a cryptographically secure generator, use random_bytes() instead'
+		-
+			function: 'mysql_query()'
+			message: 'use PDO::prepare() with variable binding/parametrized queries to prevent SQL Injection vulnerability'
+		-
+			function: 'mysql_unbuffered_query()'
+			message: 'use PDO::prepare() with variable binding/parametrized queries to prevent SQL Injection vulnerability'
+		-
+			function: 'mysqli_query()'
+			message: 'use PDO::prepare() with variable binding/parametrized queries to prevent SQL Injection vulnerability'
+		-
+			function: 'mysqli_multi_query()'
+			message: 'use PDO::prepare() with variable binding/parametrized queries to prevent SQL Injection vulnerability'
+		-
+			function: 'mysqli_real_query()'
+			message: 'use PDO::prepare() with variable binding/parametrized queries to prevent SQL Injection vulnerability'
+	disallowedMethodCalls:
+		-
+			function: 'mysqli::query()'
+			message: 'use PDO::prepare() with variable binding/parametrized queries to prevent SQL Injection vulnerability'
+		-
+			function: 'mysqli::multi_query()'
+			message: 'use PDO::prepare() with variable binding/parametrized queries to prevent SQL Injection vulnerability'
+		-
+			function: 'mysqli::real_query()'
+			message: 'use PDO::prepare() with variable binding/parametrized queries to prevent SQL Injection vulnerability'

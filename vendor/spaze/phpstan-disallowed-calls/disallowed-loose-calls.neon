@@ -1,0 +1,12 @@
+parameters:
+	disallowedFunctionCalls:
+		-
+			function: 'in_array()'
+			message: 'set the third parameter $strict to `true` to also check the types to prevent type juggling bugs'
+			allowParamsAnywhere:
+				3: true
+		-
+			function: 'htmlspecialchars()'
+			message: 'set the $flags parameter to `ENT_QUOTES` to also convert single quotes to entities to prevent some HTML injection bugs'
+			allowParamFlagsAnywhere:
+				2: 3 # ENT_QUOTES; using ::constant(ENT_QUOTES) is discouraged as it may break when PHPStan updates nette/di

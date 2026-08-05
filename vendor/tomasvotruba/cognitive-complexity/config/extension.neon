@@ -1,0 +1,35 @@
+parametersSchema:
+    cognitive_complexity: structure([
+        class: int()
+        function: int()
+        dependency_tree: int()
+        dependency_tree_types: array()
+    ])
+
+# default parameters
+parameters:
+    cognitive_complexity:
+        class: 40
+        function: 9
+        dependency_tree: 150
+        dependency_tree_types: []
+
+services:
+    - TomasVotruba\CognitiveComplexity\DataCollector\CognitiveComplexityDataCollector
+    - TomasVotruba\CognitiveComplexity\AstCognitiveComplexityAnalyzer
+    - TomasVotruba\CognitiveComplexity\NodeTraverser\ComplexityNodeTraverserFactory
+    - TomasVotruba\CognitiveComplexity\NodeVisitor\NestingNodeVisitor
+    - TomasVotruba\CognitiveComplexity\NodeVisitor\ComplexityNodeVisitor
+    - TomasVotruba\CognitiveComplexity\NodeAnalyzer\ComplexityAffectingNodeFinder
+    - TomasVotruba\CognitiveComplexity\ClassReflectionParser
+
+    -
+        factory: TomasVotruba\CognitiveComplexity\Configuration
+        arguments:
+            - %cognitive_complexity%
+
+rules:
+    - TomasVotruba\CognitiveComplexity\Rules\ClassLikeCognitiveComplexityRule
+    - TomasVotruba\CognitiveComplexity\Rules\FunctionLikeCognitiveComplexityRule
+    - TomasVotruba\CognitiveComplexity\Rules\ClassDependencyTreeRule
+

@@ -1,0 +1,68 @@
+parameters:
+	disallowedFunctionCalls:
+		-
+			function: 'apache_setenv()'
+			message: 'might overwrite existing variables'
+		-
+			function: 'dl()'
+			message: 'removed from most SAPIs, might load untrusted code'
+		-
+			function: 'eval()'
+			message: 'eval is evil, please write more code and do not use eval()'
+		-
+			function: 'create_function()'
+			message: 'the function is about as evil as using eval()'
+			errorTip: 'create_function() has been deprecated as of PHP 7.2, and removed as of PHP 8.0'
+		-
+			function: 'extract()'
+			message: 'do not use extract() and especially not on untrusted data'
+		-
+			function: 'posix_getpwuid()'
+			message: 'might reveal system user information'
+		-
+			function: 'posix_kill()'
+			message: 'do not send signals to processes from the script'
+		-
+			function: 'posix_mkfifo()'
+			message: 'do not create named pipes in the script'
+		-
+			function: 'posix_mknod()'
+			message: 'do not create special files in the script'
+		-
+			function: 'highlight_file()'
+			message: 'might reveal source code or config files'
+		-
+			function: 'show_source()'
+			message: 'might reveal source code or config files (alias of highlight_file())'
+		-
+			function: 'pfsockopen()'
+			message: 'use fsockopen() to create non-persistent socket connections'
+		-
+			function: 'print_r()'
+			message: 'use some logger instead'
+			allowParamsAnywhere:
+				2: true
+		-
+			function: 'proc_nice()'
+			message: 'changes the priority of the current process'
+		-
+			function: 'putenv()'
+			message: 'might overwrite existing variables'
+		-
+			function: 'socket_create_listen()'
+			message: 'do not accept new socket connections in the PHP script'
+		-
+			function: 'socket_listen()'
+			message: 'do not accept new socket connections in the PHP script'
+		-
+			function: 'var_dump()'
+			message: 'use some logger instead'
+		-
+			function: 'var_export()'
+			message: 'use some logger instead'
+			allowParamsAnywhere:
+				2: true
+		-
+			function: 'phpinfo()'
+			message: 'might reveal session id or other tokens in cookies'
+			errorTip: 'see https://www.michalspacek.com/stealing-session-ids-with-phpinfo-and-how-to-stop-it and use e.g. spaze/phpinfo instead'

@@ -1,0 +1,22 @@
+{
+    "name": "tomasvotruba/cognitive-complexity",
+    "type": "phpstan-extension",
+    "description": "PHPStan rules to measure cognitive complexity of your classes and methods",
+    "license": "MIT",
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "phpstan/phpstan": "^2"
+    },
+    "autoload": {
+        "psr-4": {
+            "TomasVotruba\\CognitiveComplexity\\": "src"
+        }
+    },
+    "extra": {
+        "phpstan": {
+            "includes": [
+                "config/extension.neon"
+            ]
+        }
+    }
+}

@@ -1,0 +1,66 @@
+{
+	"name": "spaze/phpstan-disallowed-calls",
+	"type": "phpstan-extension",
+	"description": "PHPStan rules to detect disallowed method & function calls, constant, namespace, attribute, property & superglobal usages, with powerful rules to re-allow a call or a usage in places where it should be allowed.",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Michal Špaček",
+			"homepage": "https://www.michalspacek.cz",
+			"email": "mail@michalspacek.cz"
+		}
+	],
+	"keywords": [
+		"static analysis"
+	],
+	"extra": {
+		"phpstan": {
+			"includes": [
+				"extension.neon"
+			]
+		}
+	},
+	"require": {
+		"php": "^7.4 || ^8.0",
+		"phpstan/phpstan": "^1.12.6 || ^2.0"
+	},
+	"require-dev": {
+		"nette/neon": "^3.3.1",
+		"phpunit/phpunit": "^9.6 || ^10.1 || ^11.0 || ^12.0 || ^13.0",
+		"php-parallel-lint/php-parallel-lint": "^1.2",
+		"php-parallel-lint/php-console-highlighter": "^1.0",
+		"phpstan/phpstan-deprecation-rules": "^1.2 || ^2.0",
+		"shipmonk/dead-code-detector": "^1.1",
+		"spaze/coding-standard": "^1.8"
+	},
+	"autoload": {
+		"psr-4": {"Spaze\\PHPStan\\Rules\\Disallowed\\": "src"}
+	},
+	"autoload-dev": {
+		"classmap": ["tests"]
+	},
+	"scripts": {
+		"lint": "vendor/bin/parallel-lint --colors src/ tests/",
+		"lint-7.x": "vendor/bin/parallel-lint --colors src/ tests/ --exclude tests/src/TypesEverywhere.php --exclude tests/src/AttributesEverywhere.php --exclude tests/src/disallowed/functionCallsClassPatternParams.php --exclude tests/src/disallowed/functionCallsNamedParams.php --exclude tests/src/disallowed-allow/functionCallsNamedParams.php --exclude tests/src/disallowed/attributeUsages.php --exclude tests/src/disallowed-allow/attributeUsages.php --exclude tests/src/disallowed/constantDynamicUsages.php --exclude tests/src/disallowed-allow/constantDynamicUsages.php --exclude tests/src/AttributeClass.php --exclude tests/src/Bar.php --exclude tests/src/Enums.php --exclude tests/src/Functions.php --exclude tests/src/disallowed/controlStructures.php --exclude tests/src/disallowed-allow/controlStructures.php --exclude tests/src/disallowed/firstClassCallable.php --exclude tests/src/disallowed-allow/firstClassCallable.php --exclude tests/src/disallowed/callableParameters.php --exclude tests/src/disallowed-allow/callableParameters.php --exclude tests/src/FirstClassCallableParamsAnywhere.php --exclude tests/src/RoyaleAllowInFirstClassCallable.php --exclude tests/src/RoyaleExceptFirstClassCallable.php",
+		"lint-8.0": "vendor/bin/parallel-lint --colors src/ tests/ --exclude tests/src/TypesEverywhere.php --exclude tests/src/AttributesEverywhere.php --exclude tests/src/disallowed/constantDynamicUsages.php --exclude tests/src/disallowed-allow/constantDynamicUsages.php --exclude tests/src/Enums.php --exclude tests/src/disallowed/firstClassCallable.php --exclude tests/src/disallowed-allow/firstClassCallable.php --exclude tests/src/FirstClassCallableParamsAnywhere.php --exclude tests/src/RoyaleAllowInFirstClassCallable.php --exclude tests/src/RoyaleExceptFirstClassCallable.php",
+		"lint-8.1": "vendor/bin/parallel-lint --colors src/ tests/ --exclude tests/src/AttributesEverywhere.php --exclude tests/src/disallowed/constantDynamicUsages.php --exclude tests/src/disallowed-allow/constantDynamicUsages.php --exclude tests/src/disallowed/firstClassCallable.php --exclude tests/src/disallowed-allow/firstClassCallable.php",
+		"lint-8.2": "vendor/bin/parallel-lint --colors src/ tests/ --exclude tests/src/disallowed/constantDynamicUsages.php --exclude tests/src/disallowed-allow/constantDynamicUsages.php",
+		"lint-neon": "vendor/bin/neon-lint .",
+		"phpcs": "vendor/bin/phpcs src/ tests/ bin/",
+		"cs-fix": "vendor/bin/phpcbf src/ tests/ bin/",
+		"phpstan": "vendor/bin/phpstan --ansi analyse --configuration phpstan.neon",
+		"phpunit": "php -d zend.assertions=1 vendor/bin/phpunit --colors=always",
+		"test": [
+			"@lint",
+			"@lint-neon",
+			"@phpcs",
+			"@phpstan",
+			"@phpunit"
+		]
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	}
+}
