@@ -43,7 +43,7 @@
                         <input type="text" class="form-control form-control-sm" id="change_comment" name="change_comment"
                                value="{{ change_comment|default('') }}" maxlength="1000"{% if require_change_comment %} required{% endif %}>
                         <div class="invalid-feedback">{% trans %}Describe why you are making this change.{% endtrans %}</div>
-                        <small class="form-text text-muted">{% trans %}Shown in the change log next to every record added by this submission.{% endtrans %}</small>
+                        <small class="form-text text-muted">{% trans %}Recorded in the change log.{% endtrans %}</small>
                     </div>
 
                     <div class="d-flex justify-content-between">

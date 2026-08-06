@@ -42,6 +42,7 @@ use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeleteRecordsController extends BaseController
@@ -114,6 +115,11 @@ class DeleteRecordsController extends BaseController
         $deleted_count = 0;
         $affected_zones = [];
 
+        // One submission, one changeset, so a multi-record delete reads as a single
+        // action in the change log rather than N unrelated deletions.
+        $changeLogger = new RecordChangeLogger($this->db, $this->userContextService, $this->config);
+        $changeLogger->beginChangeset(null, trim((string)($this->request->getPostParam('change_comment') ?? '')));
+
         foreach ($record_ids as $record_id) {
             $record_info = $recordRepository->getRecordFromId($record_id);
             if ($record_info === null) {
@@ -184,6 +190,8 @@ class DeleteRecordsController extends BaseController
                 }
             }
         }
+
+        $changeLogger->endChangeset();
 
         // Update SOA serials and rectify zones
         $soaRecordManager = $this->createSOARecordManager();

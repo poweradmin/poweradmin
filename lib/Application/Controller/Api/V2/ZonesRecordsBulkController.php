@@ -150,6 +150,12 @@ class ZonesRecordsBulkController extends PublicApiController
                         type: 'object'
                     ),
                     description: 'Array of operations to perform'
+                ),
+                new OA\Property(
+                    property: 'comment',
+                    type: 'string',
+                    example: 'ticket-4821: move the web tier',
+                    description: 'Reason for this change, recorded in the change log.'
                 )
             ]
         )
@@ -260,6 +266,16 @@ class ZonesRecordsBulkController extends PublicApiController
             // Track if any non-SOA records were modified (for SOA serial update logic)
             $nonSOARecordModified = false;
 
+            // One request, one changeset, carrying the optional reason the caller gave.
+            $changeComment = trim((string)($input['comment'] ?? ''));
+            if ($changeComment === '' && $this->config->get('logging', 'require_change_comment', false)) {
+                if ($useTransaction) {
+                    $this->db->rollBack();
+                }
+                return $this->returnApiError("Field 'comment' is required: this installation requires a reason for every change", 400);
+            }
+            $this->changeLogger->beginChangeset($zoneId, $changeComment);
+
             try {
                 foreach ($input['operations'] as $index => $operation) {
                     $action = strtolower($operation['action'] ?? '');
@@ -325,6 +341,8 @@ class ZonesRecordsBulkController extends PublicApiController
                 }
 
                 throw $e;
+            } finally {
+                $this->changeLogger->endChangeset();
             }
         } catch (ApiErrorException $e) {
             // Client validation errors - return detailed error response with appropriate 4xx status code

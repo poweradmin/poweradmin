@@ -326,7 +326,7 @@ return [
 
         // Audit logging - tracks user, zone, and group operations
         'database_enabled' => false,               // Write audit events to database log tables (log_users, log_zones, log_groups, log_record_changes) (added in 3.2.0)
-        'require_change_comment' => false,         // Require a reason before applying a bulk record change (added in 4.5.0)
+        'require_change_comment' => false,         // Require a reason for bulk record changes (added in 4.5.0)
 
         // Per-request API audit logging (writes to log_api; requires database_enabled)
         'api_request_logging' => false,            // Log every public API request; permission violations (401/403) are logged regardless (added in 4.5.0)
