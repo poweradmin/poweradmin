@@ -45,6 +45,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -127,6 +128,14 @@ class BulkRecordAddController extends BaseController
         }
 
         $zone_id = (int)$this->getSafeRequestValue('id');
+
+        $change_comment = trim((string)($this->request->getPostParam('change_comment') ?? ''));
+        if ($change_comment === '' && $this->config->get('logging', 'require_change_comment', false)) {
+            $this->setMessage('bulk_record_add', 'error', _('Describe why you are making this change.'));
+            $this->showBulkRecordAdditionForm();
+            return;
+        }
+
         $records_text = $this->request->getPostParam('records');
         $lines = explode("\n", trim($records_text));
 
@@ -138,98 +147,107 @@ class BulkRecordAddController extends BaseController
             new \Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository($this->db)
         );
 
-        foreach ($lines as $line) {
-            $line = trim($line);
-            if (empty($line)) {
-                continue;
-            }
+        // One submission, one changeset: every record added below is grouped under a
+        // single entry in the change log carrying the reason the user gave.
+        $changeLogger = new RecordChangeLogger($this->db, $this->userContextService, $this->config);
+        $changeLogger->beginChangeset($zone_id, $change_comment);
 
-            $result = $parser->parseLine($line);
-            if (is_string($result)) {
-                $failed_records[] = $line . " - " . $result;
-                continue;
-            }
-
-            $name = DnsIdnService::toPunycode($result['name']);
-            $type = $result['type'];
-            $content = $result['content'];
-            $prio = $result['prio'];
-            $ttl = $result['ttl'];
-            $disabled = $result['disabled'];
-            $comment = $result['comment'];
-
-            // Convert IDN content to punycode after full content assembly
-            $content = DnsIdnService::convertContentToPunycode($type, $content);
-
-            // Normalize record name to full FQDN (always, regardless of display setting)
-            // This converts @ to zone apex and ensures proper zone suffix
-            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-            if ($zone_name === null) {
-                $failed_records[] = $line . " - " . _('Zone not found.');
-                continue;
-            }
-            $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
-
-            // Validate record type. Filter by the connected server's
-            // capabilities so bulk import matches the add/edit dropdowns -
-            // otherwise users would get the same SVCB/HTTPS/WALLET line
-            // accepted here and rejected by PowerDNS later.
-            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
-            $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
-            $caps = $this->getRecordTypeCapabilities();
-            $valid_types = $isReverseZone
-                ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $caps, false)
-                : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $caps, false);
-
-            if (!in_array($type, $valid_types)) {
-                $failed_records[] = $line . " - " . _('Invalid record type.');
-                continue;
-            }
-
-            // Apply the type-aware default when the bulk line omitted an explicit TTL.
-            if ($ttl === null) {
-                $ttl = $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
-            }
-
-            try {
-                // For CNAME, MX, SRV, and similar records, ensure content ends with a dot
-                if (in_array($type, ['CNAME', 'MX', 'SRV', 'NS']) && !empty($content) && !str_ends_with($content, '.')) {
-                    $content .= '.';
+        try {
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (empty($line)) {
+                    continue;
                 }
 
-                if (
-                    $this->recordManager->createRecord(
-                        $zone_id,
-                        $name,
-                        $type,
-                        $content,
-                        $ttl,
-                        $prio,
-                        $comment,
-                        $this->userContextService->getLoggedInUsername(),
-                        $this->ipAddressRetriever->getClientIp(),
-                        $disabled
-                    )
-                ) {
-                    $success_count++;
-
-                    // Log the record creation
-                    $this->auditLogger->logInfo(sprintf(
-                        'client_ip:%s user:%s operation:add_record name:%s type:%s content:%s ttl:%s prio:%s',
-                        $this->ipAddressRetriever->getClientIp(),
-                        $this->userContextService->getLoggedInUsername(),
-                        $name,
-                        $type,
-                        $content,
-                        $ttl,
-                        $prio
-                    ), $zone_id);
-                } else {
-                    $failed_records[] = $line . " - " . _('Record could not be added.');
+                $result = $parser->parseLine($line);
+                if (is_string($result)) {
+                    $failed_records[] = $line . " - " . $result;
+                    continue;
                 }
-            } catch (Exception $e) {
-                $failed_records[] = $line . " - " . $e->getMessage();
+
+                $name = DnsIdnService::toPunycode($result['name']);
+                $type = $result['type'];
+                $content = $result['content'];
+                $prio = $result['prio'];
+                $ttl = $result['ttl'];
+                $disabled = $result['disabled'];
+                $comment = $result['comment'];
+
+                // Convert IDN content to punycode after full content assembly
+                $content = DnsIdnService::convertContentToPunycode($type, $content);
+
+                // Normalize record name to full FQDN (always, regardless of display setting)
+                // This converts @ to zone apex and ensures proper zone suffix
+                $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+                if ($zone_name === null) {
+                    $failed_records[] = $line . " - " . _('Zone not found.');
+                    continue;
+                }
+                $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
+
+                // Validate record type. Filter by the connected server's
+                // capabilities so bulk import matches the add/edit dropdowns -
+                // otherwise users would get the same SVCB/HTTPS/WALLET line
+                // accepted here and rejected by PowerDNS later.
+                $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
+                $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
+                $caps = $this->getRecordTypeCapabilities();
+                $valid_types = $isReverseZone
+                    ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $caps, false)
+                    : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $caps, false);
+
+                if (!in_array($type, $valid_types)) {
+                    $failed_records[] = $line . " - " . _('Invalid record type.');
+                    continue;
+                }
+
+                // Apply the type-aware default when the bulk line omitted an explicit TTL.
+                if ($ttl === null) {
+                    $ttl = $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
+                }
+
+                try {
+                    // For CNAME, MX, SRV, and similar records, ensure content ends with a dot
+                    if (in_array($type, ['CNAME', 'MX', 'SRV', 'NS']) && !empty($content) && !str_ends_with($content, '.')) {
+                        $content .= '.';
+                    }
+
+                    if (
+                        $this->recordManager->createRecord(
+                            $zone_id,
+                            $name,
+                            $type,
+                            $content,
+                            $ttl,
+                            $prio,
+                            $comment,
+                            $this->userContextService->getLoggedInUsername(),
+                            $this->ipAddressRetriever->getClientIp(),
+                            $disabled
+                        )
+                    ) {
+                        $success_count++;
+
+                        // Log the record creation
+                        $this->auditLogger->logInfo(sprintf(
+                            'client_ip:%s user:%s operation:add_record name:%s type:%s content:%s ttl:%s prio:%s',
+                            $this->ipAddressRetriever->getClientIp(),
+                            $this->userContextService->getLoggedInUsername(),
+                            $name,
+                            $type,
+                            $content,
+                            $ttl,
+                            $prio
+                        ), $zone_id);
+                    } else {
+                        $failed_records[] = $line . " - " . _('Record could not be added.');
+                    }
+                } catch (Exception $e) {
+                    $failed_records[] = $line . " - " . $e->getMessage();
+                }
             }
+        } finally {
+            $changeLogger->endChangeset();
         }
 
         if (!$failed_records) {
@@ -255,6 +273,8 @@ class BulkRecordAddController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'zone_display_name' => DnsIdnService::toDisplay($zone_name),
             'failed_records' => $failed_records,
+            'change_comment' => (string)($this->request->getPostParam('change_comment') ?? ''),
+            'require_change_comment' => (bool)$this->config->get('logging', 'require_change_comment', false),
             'default_ttl' => $this->config->get('dns', 'ttl', 3600),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
             'is_reverse_zone' => $zone_name !== null && DnsHelper::isReverseZoneName($zone_name),

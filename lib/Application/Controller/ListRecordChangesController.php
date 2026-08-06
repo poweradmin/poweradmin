@@ -104,6 +104,11 @@ class ListRecordChangesController extends BaseController
             $filters['date_to'] = $dateTo . ' 23:59:59';
         }
 
+        $comment = $this->httpRequest->getQueryParam('comment');
+        if (is_string($comment) && trim($comment) !== '') {
+            $filters['comment'] = mb_substr(trim($comment), 0, 200);
+        }
+
         return $filters;
     }
 
@@ -117,7 +122,7 @@ class ListRecordChangesController extends BaseController
     private function buildUrlFilters(): array
     {
         $url = [];
-        foreach (['action', 'user', 'zone_id', 'window', 'date_from', 'date_to'] as $key) {
+        foreach (['action', 'user', 'zone_id', 'window', 'date_from', 'date_to', 'comment'] as $key) {
             $value = $this->httpRequest->getQueryParam($key);
             if (is_string($value) && $value !== '') {
                 $url[$key] = $value;
@@ -177,6 +182,7 @@ class ListRecordChangesController extends BaseController
             'window_filter' => htmlspecialchars((string) $this->httpRequest->getQueryParam('window', '')),
             'date_from' => htmlspecialchars((string) $this->httpRequest->getQueryParam('date_from', '')),
             'date_to' => htmlspecialchars((string) $this->httpRequest->getQueryParam('date_to', '')),
+            'comment_filter' => htmlspecialchars((string) $this->httpRequest->getQueryParam('comment', '')),
             'selected_page' => $selectedPage,
             'logs_per_page' => $logsPerPage,
             'pagination' => $this->createAndPresentPagination($totalLogs, $logsPerPage, $urlFilters),

@@ -52,6 +52,9 @@
                 <div class="col-md-2">
                     <input name="date_to" type="date" class="form-control form-control-sm" {% if date_to %}value="{{ date_to|slice(0, 10) }}"{% endif %} title="{% trans %}To{% endtrans %}">
                 </div>
+                <div class="col-md-2">
+                    <input name="comment" type="text" class="form-control form-control-sm" maxlength="200" placeholder="{% trans %}Reason{% endtrans %}" {% if comment_filter %}value="{{ comment_filter }}"{% endif %} title="{% trans %}Search the reason given for the change{% endtrans %}">
+                </div>
                 <div class="col-md-2 d-flex gap-1">
                     <button type="submit" class="btn btn-primary btn-sm" title="{% trans %}Search{% endtrans %}">
                         <i class="bi bi-search text-white"></i>
@@ -99,7 +102,7 @@
                         <tr class="table-danger">
                             <td rowspan="2" class="small">{{ macros.log_timestamp(row.created_at) }}</td>
                             <td rowspan="2"><span class="badge bg-primary">{{ row.action }}</span></td>
-                            <td rowspan="2" class="small">{{ row.username }}</td>
+                            <td rowspan="2" class="small">{{ row.username }}{% if row.changeset_comment %}<div class="text-muted fst-italic mt-1" title="{% trans %}Reason for this change{% endtrans %}"><i class="bi bi-chat-left-text me-1"></i>{{ row.changeset_comment }}</div>{% endif %}</td>
                             <td rowspan="2" class="small">{% if before.zone_name %}{{ before.zone_name }}{% else %}<span class="text-muted">{{ row.zone_id }}</span>{% endif %}</td>
                             <td class="small {% if 'name' in changed %}fw-bold{% endif %}">{{ before.name }}</td>
                             <td class="small {% if 'type' in changed %}fw-bold{% endif %}">{{ before.type }}</td>
@@ -118,7 +121,7 @@
                         <tr class="{{ rowClass }}">
                             <td class="small">{{ macros.log_timestamp(row.created_at) }}</td>
                             <td><span class="badge bg-warning text-dark">{{ row.action }}</span></td>
-                            <td class="small">{{ row.username }}</td>
+                            <td class="small">{{ row.username }}{% if row.changeset_comment %}<div class="text-muted fst-italic mt-1" title="{% trans %}Reason for this change{% endtrans %}"><i class="bi bi-chat-left-text me-1"></i>{{ row.changeset_comment }}</div>{% endif %}</td>
                             <td class="small">{% if before.name %}{{ before.name }}{% elseif after.name %}{{ after.name }}{% else %}{{ row.zone_id }}{% endif %}</td>
                             <td colspan="5" class="small font-monospace">
                                 <span class="text-danger">{% trans %}before{% endtrans %}:</span> {{ row.before_state }}<br>
@@ -131,7 +134,7 @@
                         <tr class="{{ rowClass }}">
                             <td class="small">{{ macros.log_timestamp(row.created_at) }}</td>
                             <td><span class="badge {% if 'create' in row.action %}bg-success{% elseif 'delete' in row.action %}bg-danger{% else %}bg-secondary{% endif %}">{{ row.action }}</span></td>
-                            <td class="small">{{ row.username }}</td>
+                            <td class="small">{{ row.username }}{% if row.changeset_comment %}<div class="text-muted fst-italic mt-1" title="{% trans %}Reason for this change{% endtrans %}"><i class="bi bi-chat-left-text me-1"></i>{{ row.changeset_comment }}</div>{% endif %}</td>
                             <td class="small">{% if snap.zone_name %}{{ snap.zone_name }}{% elseif snap.name %}{{ snap.name }}{% else %}<span class="text-muted">{{ row.zone_id }}</span>{% endif %}</td>
                             {% if row.action starts with 'zone_' %}
                                 <td colspan="5" class="small">

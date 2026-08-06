@@ -464,7 +464,8 @@ class RecordChangeLogger
     public function countFiltered(array $filters): int
     {
         [$where, $params] = $this->buildWhere($filters);
-        $sql = 'SELECT COUNT(*) AS total FROM log_record_changes' . $where;
+        $sql = 'SELECT COUNT(*) AS total FROM log_record_changes c
+                LEFT JOIN log_changesets cs ON cs.id = c.changeset_id' . $where;
         $stmt = $this->db->prepare($sql);
         foreach ($params as $key => $value) {
             $stmt->bindValue($key, $value[0], $value[1]);
@@ -476,10 +477,13 @@ class RecordChangeLogger
     public function getFiltered(array $filters, int $limit, int $offset): array
     {
         [$where, $params] = $this->buildWhere($filters);
-        $sql = 'SELECT id, zone_id, record_id, action, user_id, username, before_state, after_state, client_ip, created_at
-                FROM log_record_changes'
+        $sql = 'SELECT c.id, c.zone_id, c.changeset_id, c.record_id, c.action, c.user_id, c.username,
+                       c.before_state, c.after_state, c.client_ip, c.created_at,
+                       cs.comment AS changeset_comment
+                FROM log_record_changes c
+                LEFT JOIN log_changesets cs ON cs.id = c.changeset_id'
             . $where
-            . ' ORDER BY created_at DESC, id DESC LIMIT :limit OFFSET :offset';
+            . ' ORDER BY c.created_at DESC, c.id DESC LIMIT :limit OFFSET :offset';
 
         $stmt = $this->db->prepare($sql);
         foreach ($params as $key => $value) {
@@ -532,28 +536,33 @@ class RecordChangeLogger
         $params = [];
 
         if (!empty($filters['zone_id'])) {
-            $conditions[] = 'zone_id = :zone_id';
+            $conditions[] = 'c.zone_id = :zone_id';
             $params[':zone_id'] = [(int) $filters['zone_id'], PDO::PARAM_INT];
         }
 
         if (!empty($filters['action']) && in_array($filters['action'], $this->getDistinctActions(), true)) {
-            $conditions[] = 'action = :action';
+            $conditions[] = 'c.action = :action';
             $params[':action'] = [$filters['action'], PDO::PARAM_STR];
         }
 
         if (!empty($filters['user'])) {
-            $conditions[] = 'username = :username';
+            $conditions[] = 'c.username = :username';
             $params[':username'] = [$filters['user'], PDO::PARAM_STR];
         }
 
         if (!empty($filters['date_from'])) {
-            $conditions[] = 'created_at >= :date_from';
+            $conditions[] = 'c.created_at >= :date_from';
             $params[':date_from'] = [$filters['date_from'], PDO::PARAM_STR];
         }
 
         if (!empty($filters['date_to'])) {
-            $conditions[] = 'created_at <= :date_to';
+            $conditions[] = 'c.created_at <= :date_to';
             $params[':date_to'] = [$filters['date_to'], PDO::PARAM_STR];
+        }
+
+        if (isset($filters['comment']) && trim((string) $filters['comment']) !== '') {
+            $conditions[] = 'cs.comment LIKE :comment';
+            $params[':comment'] = ['%' . trim((string) $filters['comment']) . '%', PDO::PARAM_STR];
         }
 
         $where = $conditions === [] ? '' : ' WHERE ' . implode(' AND ', $conditions);

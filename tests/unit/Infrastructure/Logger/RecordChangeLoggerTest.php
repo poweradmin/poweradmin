@@ -18,6 +18,18 @@ class RecordChangeLoggerTest extends TestCase
         $this->db = new PDO('sqlite::memory:');
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->db->exec(
+            'CREATE TABLE log_changesets (
+                id INTEGER PRIMARY KEY,
+                zone_id INTEGER,
+                user_id INTEGER,
+                username VARCHAR(64) NOT NULL,
+                comment TEXT,
+                client_ip VARCHAR(64),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )'
+        );
+
+        $this->db->exec(
             'CREATE TABLE log_record_changes (
                 id INTEGER PRIMARY KEY,
                 zone_id INTEGER,

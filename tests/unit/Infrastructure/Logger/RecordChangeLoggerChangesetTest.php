@@ -226,6 +226,46 @@ class RecordChangeLoggerChangesetTest extends TestCase
         $this->assertSame([null], $this->changesetIds());
     }
 
+    public function testGetFilteredExposesTheChangesetComment(): void
+    {
+        $this->logger->beginChangeset(10, 'move web tier');
+        $this->logger->logRecordCreate($this->record(1, 'www.example.com', '192.0.2.1'), 10);
+        $this->logger->endChangeset();
+        $this->logger->logRecordCreate($this->record(2, 'lone.example.com', '192.0.2.9'), 10);
+
+        $rows = $this->logger->getFiltered([], 50, 0);
+        $byName = [];
+        foreach ($rows as $row) {
+            $byName[$row['after_state_decoded']['name']] = $row;
+        }
+
+        $this->assertSame('move web tier', $byName['www.example.com']['changeset_comment']);
+        $this->assertNotNull($byName['www.example.com']['changeset_id']);
+        // A change made outside a scope still comes back, just without a reason.
+        $this->assertNull($byName['lone.example.com']['changeset_comment']);
+        $this->assertNull($byName['lone.example.com']['changeset_id']);
+    }
+
+    public function testCommentFilterMatchesASubstring(): void
+    {
+        $this->logger->beginChangeset(10, 'migrating to the new range');
+        $this->logger->logRecordCreate($this->record(1, 'a.example.com', '192.0.2.1'), 10);
+        $this->logger->endChangeset();
+
+        $this->logger->beginChangeset(10, 'routine cleanup');
+        $this->logger->logRecordCreate($this->record(2, 'b.example.com', '192.0.2.2'), 10);
+        $this->logger->endChangeset();
+
+        $matched = $this->logger->getFiltered(['comment' => 'new range'], 50, 0);
+        $this->assertCount(1, $matched);
+        $this->assertSame('a.example.com', $matched[0]['after_state_decoded']['name']);
+        $this->assertSame(1, $this->logger->countFiltered(['comment' => 'new range']));
+
+        // A blank filter must not narrow anything.
+        $this->assertCount(2, $this->logger->getFiltered(['comment' => '   '], 50, 0));
+        $this->assertSame(2, $this->logger->countFiltered([]));
+    }
+
     public function testChangesetIsSkippedWhenDatabaseLoggingIsDisabled(): void
     {
         $config = $this->createMock(ConfigurationManager::class);
