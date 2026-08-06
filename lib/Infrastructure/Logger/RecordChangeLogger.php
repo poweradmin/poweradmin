@@ -50,6 +50,17 @@ class RecordChangeLogger
     private UserContextService $userContext;
     private ?ConfigurationManager $config;
 
+    // Changeset scope, shared across every instance for the life of the request.
+    // Write paths build their own logger (RecordManager, the v2 controllers), so an
+    // instance-local scope would never reach the object that does the writing. The
+    // row is only written once the first change actually lands, so a submission that
+    // turns out to be a no-op leaves no empty group behind. Nested begin/end calls
+    // join the outermost scope.
+    private static int $changesetDepth = 0;
+    private static ?int $changesetId = null;
+    private static ?int $changesetZoneId = null;
+    private static ?string $changesetComment = null;
+
     public function __construct(
         PDO $db,
         ?UserContextService $userContext = null,
@@ -58,6 +69,56 @@ class RecordChangeLogger
         $this->db = $db;
         $this->userContext = $userContext ?? new UserContextService();
         $this->config = $config;
+    }
+
+    /**
+     * Open a changeset scope. Every change logged until the matching endChangeset()
+     * is grouped under one row carrying the reason for the change. Nested calls join
+     * the outermost scope so a controller can wrap a service that also wraps.
+     */
+    public function beginChangeset(?int $zoneId = null, ?string $comment = null): void
+    {
+        if (self::$changesetDepth === 0) {
+            self::$changesetId = null;
+            self::$changesetZoneId = $zoneId;
+            self::$changesetComment = ($comment !== null && trim($comment) !== '') ? trim($comment) : null;
+        }
+        self::$changesetDepth++;
+    }
+
+    public function endChangeset(): void
+    {
+        if (self::$changesetDepth === 0) {
+            return;
+        }
+        self::$changesetDepth--;
+        if (self::$changesetDepth === 0) {
+            self::$changesetId = null;
+            self::$changesetZoneId = null;
+            self::$changesetComment = null;
+        }
+    }
+
+    /**
+     * Id of the changeset the current scope has materialized, or null when the scope
+     * is closed or nothing has been logged inside it yet.
+     */
+    public function currentChangesetId(): ?int
+    {
+        return self::$changesetId;
+    }
+
+    /**
+     * Drops any open scope. For tests and for error paths that unwind past an
+     * endChangeset() call; leaving a scope open would group the next unrelated
+     * change into it.
+     */
+    public static function resetChangesetScope(): void
+    {
+        self::$changesetDepth = 0;
+        self::$changesetId = null;
+        self::$changesetZoneId = null;
+        self::$changesetComment = null;
     }
 
     public function logRecordCreate(array $afterRecord, ?int $zoneId): void
@@ -157,17 +218,20 @@ class RecordChangeLogger
             return;
         }
 
-        $stmt = $this->db->prepare(
-            'INSERT INTO log_record_changes
-                (zone_id, record_id, action, user_id, username, before_state, after_state, client_ip)
-             VALUES
-                (:zone_id, :record_id, :action, :user_id, :username, :before_state, :after_state, :client_ip)'
-        );
-
         $userId = $this->userContext->getLoggedInUserId();
         $username = $this->userContext->getLoggedInUsername() ?? 'system';
 
+        $changesetId = $this->materializeChangeset($zoneId, $userId, $username);
+
+        $stmt = $this->db->prepare(
+            'INSERT INTO log_record_changes
+                (zone_id, changeset_id, record_id, action, user_id, username, before_state, after_state, client_ip)
+             VALUES
+                (:zone_id, :changeset_id, :record_id, :action, :user_id, :username, :before_state, :after_state, :client_ip)'
+        );
+
         $stmt->bindValue(':zone_id', $zoneId, $zoneId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindValue(':changeset_id', $changesetId, $changesetId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
         if ($recordId === null) {
             $stmt->bindValue(':record_id', null, PDO::PARAM_NULL);
         } elseif (is_int($recordId)) {
@@ -182,6 +246,42 @@ class RecordChangeLogger
         $stmt->bindValue(':after_state', $afterState, $afterState === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $stmt->bindValue(':client_ip', $this->getClientIp(), PDO::PARAM_STR);
         $stmt->execute();
+    }
+
+    /**
+     * Write the changeset row on first use inside an open scope, so a submission that
+     * produced no actual change leaves no empty group behind. Returns null when no
+     * scope is open.
+     */
+    private function materializeChangeset(?int $zoneId, ?int $userId, string $username): ?int
+    {
+        if (self::$changesetDepth === 0) {
+            return null;
+        }
+        if (self::$changesetId !== null) {
+            return self::$changesetId;
+        }
+
+        $changesetZoneId = self::$changesetZoneId ?? $zoneId;
+
+        $stmt = $this->db->prepare(
+            'INSERT INTO log_changesets (zone_id, user_id, username, comment, client_ip)
+             VALUES (:zone_id, :user_id, :username, :comment, :client_ip)'
+        );
+        $stmt->bindValue(':zone_id', $changesetZoneId, $changesetZoneId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, $userId === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindValue(':username', $username, PDO::PARAM_STR);
+        $stmt->bindValue(
+            ':comment',
+            self::$changesetComment,
+            self::$changesetComment === null ? PDO::PARAM_NULL : PDO::PARAM_STR
+        );
+        $stmt->bindValue(':client_ip', $this->getClientIp(), PDO::PARAM_STR);
+        $stmt->execute();
+
+        self::$changesetId = (int) $this->db->lastInsertId('log_changesets_id_seq');
+
+        return self::$changesetId;
     }
 
     private function getClientIp(): ?string

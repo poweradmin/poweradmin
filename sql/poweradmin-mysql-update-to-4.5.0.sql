@@ -3,9 +3,25 @@
 -- of record/zone mutations, enabling the diff-style change-log UI and email
 -- digest reports. The existing log_zones activity feed is unchanged.
 
+-- Groups the record changes made by one submission under a single row, so the
+-- change log can show "these six edits went together, and here is why".
+CREATE TABLE IF NOT EXISTS `log_changesets` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `zone_id` int(11) DEFAULT NULL,
+    `user_id` int(11) DEFAULT NULL,
+    `username` varchar(64) NOT NULL,
+    `comment` text DEFAULT NULL,
+    `client_ip` varchar(64) DEFAULT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    PRIMARY KEY (`id`),
+    KEY `idx_log_changesets_created_at` (`created_at`),
+    KEY `idx_log_changesets_zone_id` (`zone_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `log_record_changes` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `zone_id` int(11) DEFAULT NULL,
+    `changeset_id` int(11) DEFAULT NULL,
     `record_id` text DEFAULT NULL,
     `action` varchar(32) NOT NULL,
     `user_id` int(11) DEFAULT NULL,
@@ -17,7 +33,8 @@ CREATE TABLE IF NOT EXISTS `log_record_changes` (
     PRIMARY KEY (`id`),
     KEY `idx_log_record_changes_created_at` (`created_at`),
     KEY `idx_log_record_changes_zone_id` (`zone_id`),
-    KEY `idx_log_record_changes_action` (`action`)
+    KEY `idx_log_record_changes_action` (`action`),
+    KEY `idx_log_record_changes_changeset_id` (`changeset_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Mapping table for API-backed zones whose record IDs are encoded strings

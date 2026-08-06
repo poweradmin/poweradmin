@@ -899,6 +899,84 @@ class DatabaseStructureHelper
                 )
             ),
             array(
+                'table_name' => 'log_changesets',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array
+                    (
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'autoincrement' => 1,
+                        'type' => 'integer',
+                        'name' => 'id',
+                        'table' => 'log_changesets',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'zone_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'zone_id',
+                        'table' => 'log_changesets',
+                        'flags' => ''
+                    ),
+                    'user_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'user_id',
+                        'table' => 'log_changesets',
+                        'flags' => ''
+                    ),
+                    'username' => array(
+                        'notnull' => 1,
+                        'length' => 64,
+                        'type' => 'text',
+                        'name' => 'username',
+                        'table' => 'log_changesets',
+                        'flags' => 'not_null'
+                    ),
+                    'comment' => array(
+                        'notnull' => 0,
+                        'type' => 'text',
+                        'name' => 'comment',
+                        'table' => 'log_changesets',
+                        'flags' => ''
+                    ),
+                    'client_ip' => array(
+                        'notnull' => 0,
+                        'length' => 64,
+                        'type' => 'text',
+                        'name' => 'client_ip',
+                        'table' => 'log_changesets',
+                        'flags' => ''
+                    ),
+                    'created_at' => array(
+                        'notnull' => 0,
+                        'default' => 'current_timestamp',
+                        'type' => 'timestamp',
+                        'name' => 'created_at',
+                        'table' => 'log_changesets',
+                        'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'log_changesets_created_at_idx' => array(
+                        'fields' => array(
+                            'created_at' => array()
+                        )
+                    ),
+                    'log_changesets_zone_id_idx' => array(
+                        'fields' => array(
+                            'zone_id' => array()
+                        )
+                    )
+                )
+            ),
+            array(
                 'table_name' => 'log_record_changes',
                 'options' => array('type' => 'innodb'),
                 'fields' => array(
@@ -919,6 +997,15 @@ class DatabaseStructureHelper
                         'default' => null,
                         'type' => 'integer',
                         'name' => 'zone_id',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'changeset_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'changeset_id',
                         'table' => 'log_record_changes',
                         'flags' => ''
                     ),
@@ -1000,6 +1087,11 @@ class DatabaseStructureHelper
                     'log_record_changes_action_idx' => array(
                         'fields' => array(
                             'action' => array()
+                        )
+                    ),
+                    'log_record_changes_changeset_id_idx' => array(
+                        'fields' => array(
+                            'changeset_id' => array()
                         )
                     )
                 )

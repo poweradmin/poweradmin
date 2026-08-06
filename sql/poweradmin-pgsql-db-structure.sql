@@ -54,9 +54,26 @@ CREATE INDEX "idx_log_groups_group_id" ON "public"."log_groups" USING btree ("gr
 
 CREATE SEQUENCE log_record_changes_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
+CREATE SEQUENCE log_changesets_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."log_changesets" (
+                                       "id" integer DEFAULT nextval('log_changesets_id_seq') NOT NULL,
+                                       "zone_id" integer,
+                                       "user_id" integer,
+                                       "username" character varying(64) NOT NULL,
+                                       "comment" text,
+                                       "client_ip" character varying(64),
+                                       "created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                       CONSTRAINT "log_changesets_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+CREATE INDEX "idx_log_changesets_created_at" ON "public"."log_changesets" USING btree ("created_at");
+CREATE INDEX "idx_log_changesets_zone_id" ON "public"."log_changesets" USING btree ("zone_id");
+
 CREATE TABLE "public"."log_record_changes" (
                                        "id" integer DEFAULT nextval('log_record_changes_id_seq1') NOT NULL,
                                        "zone_id" integer,
+                                       "changeset_id" integer,
                                        "record_id" text,
                                        "action" character varying(32) NOT NULL,
                                        "user_id" integer,
@@ -71,6 +88,7 @@ CREATE TABLE "public"."log_record_changes" (
 CREATE INDEX "idx_log_record_changes_created_at" ON "public"."log_record_changes" USING btree ("created_at");
 CREATE INDEX "idx_log_record_changes_zone_id" ON "public"."log_record_changes" USING btree ("zone_id");
 CREATE INDEX "idx_log_record_changes_action" ON "public"."log_record_changes" USING btree ("action");
+CREATE INDEX "idx_log_record_changes_changeset_id" ON "public"."log_record_changes" USING btree ("changeset_id");
 
 
 CREATE SEQUENCE perm_items_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;

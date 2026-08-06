@@ -21,6 +21,7 @@ class RecordChangeLoggerTest extends TestCase
             'CREATE TABLE log_record_changes (
                 id INTEGER PRIMARY KEY,
                 zone_id INTEGER,
+                changeset_id INTEGER,
                 record_id TEXT,
                 action VARCHAR(32) NOT NULL,
                 user_id INTEGER,

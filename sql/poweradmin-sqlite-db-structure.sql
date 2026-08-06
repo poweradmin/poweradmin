@@ -18,9 +18,23 @@ CREATE TABLE log_groups (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, c
 CREATE INDEX idx_log_groups_group_id ON log_groups(group_id);
 
 
+CREATE TABLE log_changesets (
+    id integer PRIMARY KEY,
+    zone_id integer,
+    user_id integer,
+    username VARCHAR(64) NOT NULL,
+    comment TEXT,
+    client_ip VARCHAR(64),
+    created_at timestamp DEFAULT current_timestamp NOT NULL
+);
+
+CREATE INDEX idx_log_changesets_created_at ON log_changesets(created_at);
+CREATE INDEX idx_log_changesets_zone_id ON log_changesets(zone_id);
+
 CREATE TABLE log_record_changes (
     id integer PRIMARY KEY,
     zone_id integer,
+    changeset_id integer,
     record_id TEXT,
     action VARCHAR(32) NOT NULL,
     user_id integer,
@@ -34,6 +48,7 @@ CREATE TABLE log_record_changes (
 CREATE INDEX idx_log_record_changes_created_at ON log_record_changes(created_at);
 CREATE INDEX idx_log_record_changes_zone_id ON log_record_changes(zone_id);
 CREATE INDEX idx_log_record_changes_action ON log_record_changes(action);
+CREATE INDEX idx_log_record_changes_changeset_id ON log_record_changes(changeset_id);
 
 
 CREATE TABLE perm_items (id integer PRIMARY KEY, name VARCHAR(64) NOT NULL, descr VARCHAR(1024) NOT NULL);
