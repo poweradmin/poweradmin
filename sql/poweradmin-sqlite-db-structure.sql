@@ -28,9 +28,6 @@ CREATE TABLE log_changesets (
     created_at timestamp DEFAULT current_timestamp NOT NULL
 );
 
-CREATE INDEX idx_log_changesets_created_at ON log_changesets(created_at);
-CREATE INDEX idx_log_changesets_zone_id ON log_changesets(zone_id);
-
 CREATE TABLE log_record_changes (
     id integer PRIMARY KEY,
     zone_id integer,

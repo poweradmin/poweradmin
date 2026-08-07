@@ -15,9 +15,6 @@ CREATE TABLE IF NOT EXISTS log_changesets (
     created_at timestamp DEFAULT current_timestamp NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_log_changesets_created_at ON log_changesets(created_at);
-CREATE INDEX IF NOT EXISTS idx_log_changesets_zone_id ON log_changesets(zone_id);
-
 CREATE TABLE IF NOT EXISTS log_record_changes (
     id integer PRIMARY KEY,
     zone_id integer,

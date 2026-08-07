@@ -62,6 +62,16 @@
             </div>
             {% endif %}
 
+            <div class="mb-3">
+                <label for="change_comment" class="form-label">
+                    {% trans %}Reason for this change{% endtrans %}
+                    {% if not require_change_comment %}<small class="text-muted">({% trans %}optional{% endtrans %})</small>{% endif %}
+                </label>
+                <input type="text" class="form-control form-control-sm" id="change_comment" name="change_comment"
+                       value="{{ change_comment|default('') }}" maxlength="1000"{% if require_change_comment %} required{% endif %}>
+                <small class="form-text text-muted">{% trans %}Recorded in the change log.{% endtrans %}</small>
+            </div>
+
             {{ macros.delete_actions('Yes, delete these records'|trans, base_url_prefix ~ (zone_id ? '/zones/' ~ zone_id ~ '/edit' : '/search'), 'Cancel'|trans, confirm_name: 'confirm') }}
         </form>
     </div>

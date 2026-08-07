@@ -129,8 +129,8 @@ class BulkRecordAddController extends BaseController
 
         $zone_id = (int)$this->getSafeRequestValue('id');
 
-        $change_comment = trim((string)($this->request->getPostParam('change_comment') ?? ''));
-        if ($change_comment === '' && $this->config->get('logging', 'require_change_comment', false)) {
+        $change_comment = (string)($this->request->getPostParam('change_comment') ?? '');
+        if (trim($change_comment) === '' && RecordChangeLogger::changeCommentRequired()) {
             $this->setMessage('bulk_record_add', 'error', _('Describe why you are making this change.'));
             $this->showBulkRecordAdditionForm();
             return;
@@ -149,8 +149,7 @@ class BulkRecordAddController extends BaseController
 
         // One submission, one changeset: every record added below is grouped under a
         // single entry in the change log carrying the reason the user gave.
-        $changeLogger = new RecordChangeLogger($this->db, $this->userContextService, $this->config);
-        $changeLogger->beginChangeset($zone_id, $change_comment);
+        RecordChangeLogger::beginChangeset($zone_id, $change_comment);
 
         try {
             foreach ($lines as $line) {
@@ -247,7 +246,7 @@ class BulkRecordAddController extends BaseController
                 }
             }
         } finally {
-            $changeLogger->endChangeset();
+            RecordChangeLogger::endChangeset();
         }
 
         if (!$failed_records) {

@@ -67,9 +67,6 @@ CREATE TABLE "public"."log_changesets" (
                                        CONSTRAINT "log_changesets_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
-CREATE INDEX "idx_log_changesets_created_at" ON "public"."log_changesets" USING btree ("created_at");
-CREATE INDEX "idx_log_changesets_zone_id" ON "public"."log_changesets" USING btree ("zone_id");
-
 CREATE TABLE "public"."log_record_changes" (
                                        "id" integer DEFAULT nextval('log_record_changes_id_seq1') NOT NULL,
                                        "zone_id" integer,

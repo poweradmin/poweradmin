@@ -267,14 +267,14 @@ class ZonesRecordsBulkController extends PublicApiController
             $nonSOARecordModified = false;
 
             // One request, one changeset, carrying the optional reason the caller gave.
-            $changeComment = trim((string)($input['comment'] ?? ''));
-            if ($changeComment === '' && $this->config->get('logging', 'require_change_comment', false)) {
+            $changeComment = (string)($input['comment'] ?? '');
+            if (trim($changeComment) === '' && RecordChangeLogger::changeCommentRequired()) {
                 if ($useTransaction) {
                     $this->db->rollBack();
                 }
                 return $this->returnApiError("Field 'comment' is required: this installation requires a reason for every change", 400);
             }
-            $this->changeLogger->beginChangeset($zoneId, $changeComment);
+            RecordChangeLogger::beginChangeset($zoneId, $changeComment);
 
             try {
                 foreach ($input['operations'] as $index => $operation) {
@@ -342,7 +342,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
                 throw $e;
             } finally {
-                $this->changeLogger->endChangeset();
+                RecordChangeLogger::endChangeset();
             }
         } catch (ApiErrorException $e) {
             // Client validation errors - return detailed error response with appropriate 4xx status code

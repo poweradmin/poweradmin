@@ -18,9 +18,6 @@ CREATE TABLE IF NOT EXISTS "public"."log_changesets" (
     CONSTRAINT "log_changesets_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
-CREATE INDEX IF NOT EXISTS "idx_log_changesets_created_at" ON "public"."log_changesets" USING btree ("created_at");
-CREATE INDEX IF NOT EXISTS "idx_log_changesets_zone_id" ON "public"."log_changesets" USING btree ("zone_id");
-
 CREATE SEQUENCE IF NOT EXISTS log_record_changes_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
 CREATE TABLE IF NOT EXISTS "public"."log_record_changes" (

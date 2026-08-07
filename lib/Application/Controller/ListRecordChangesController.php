@@ -286,6 +286,8 @@ class ListRecordChangesController extends BaseController
             'username' => $log['username'] ?? '',
             'user_id' => $log['user_id'] ?? null,
             'zone_id' => $log['zone_id'] ?? null,
+            'changeset_id' => $log['changeset_id'] ?? null,
+            'change_reason' => $log['changeset_comment'] ?? null,
             'record_id' => $log['record_id'] ?? null,
             'client_ip' => $log['client_ip'] ?? null,
             'before_state' => $log['before_state'] ?? '',

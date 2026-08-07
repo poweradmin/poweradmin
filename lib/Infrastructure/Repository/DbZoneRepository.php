@@ -1074,8 +1074,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // Renaming the zone would leave every records.name under the old name, so it is
         // refused here exactly as it already is in API backend mode. A name equal to the
         // current one is dropped so clients that PUT the whole zone object back still work.
-        $nameWasNoOp = false;
-        if (isset($updates['name'])) {
+        $nameWasNoOp = isset($updates['name']);
+        if ($nameWasNoOp) {
             $currentName = $this->getDomainNameById($zoneId);
             if ($currentName !== null && $updates['name'] !== $currentName) {
                 throw new \InvalidArgumentException(
@@ -1083,7 +1083,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 );
             }
             unset($updates['name']);
-            $nameWasNoOp = true;
         }
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);

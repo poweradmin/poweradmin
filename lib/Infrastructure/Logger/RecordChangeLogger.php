@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+use InvalidArgumentException;
 use PDO;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -45,6 +46,9 @@ class RecordChangeLogger
     // somehow still exceeds this after field truncation, we fall back to a
     // minimal marker payload rather than emit invalid JSON.
     private const MAX_SNAPSHOT_LENGTH = 60000;
+
+    // Server-side cap for the changeset reason; the forms advertise the same limit.
+    private const MAX_COMMENT_LENGTH = 1000;
 
     private PDO $db;
     private UserContextService $userContext;
@@ -72,21 +76,50 @@ class RecordChangeLogger
     }
 
     /**
+     * Run $work with every change it logs grouped under one changeset carrying the
+     * given reason. Pass $zoneId only when the whole scope belongs to one zone; a
+     * cross-zone submission leaves it null and the per-change rows carry the truth.
+     *
+     * @throws InvalidArgumentException when the installation requires a reason and none was given
+     */
+    public static function withChangeset(?int $zoneId, ?string $comment, callable $work): mixed
+    {
+        self::beginChangeset($zoneId, $comment);
+        try {
+            return $work();
+        } finally {
+            self::endChangeset();
+        }
+    }
+
+    /**
      * Open a changeset scope. Every change logged until the matching endChangeset()
      * is grouped under one row carrying the reason for the change. Nested calls join
      * the outermost scope so a controller can wrap a service that also wraps.
+     *
+     * Prefer withChangeset(), which cannot leave a scope open if $work throws.
+     *
+     * @throws InvalidArgumentException when the installation requires a reason and none was given
      */
-    public function beginChangeset(?int $zoneId = null, ?string $comment = null): void
+    public static function beginChangeset(?int $zoneId = null, ?string $comment = null): void
     {
+        $comment = ($comment !== null && trim($comment) !== '') ? trim($comment) : null;
+
+        // Enforced here rather than per controller so every write path that opens a
+        // scope is covered, and a path that forgets to open one is a visible omission.
+        if ($comment === null && self::$changesetDepth === 0 && self::changeCommentRequired()) {
+            throw new InvalidArgumentException('A reason is required for this change.');
+        }
+
         if (self::$changesetDepth === 0) {
             self::$changesetId = null;
             self::$changesetZoneId = $zoneId;
-            self::$changesetComment = ($comment !== null && trim($comment) !== '') ? trim($comment) : null;
+            self::$changesetComment = $comment === null ? null : mb_substr($comment, 0, self::MAX_COMMENT_LENGTH);
         }
         self::$changesetDepth++;
     }
 
-    public function endChangeset(): void
+    public static function endChangeset(): void
     {
         if (self::$changesetDepth === 0) {
             return;
@@ -99,19 +132,14 @@ class RecordChangeLogger
         }
     }
 
-    /**
-     * Id of the changeset the current scope has materialized, or null when the scope
-     * is closed or nothing has been logged inside it yet.
-     */
-    public function currentChangesetId(): ?int
+    public static function changeCommentRequired(): bool
     {
-        return self::$changesetId;
+        return (bool) ConfigurationManager::getInstance()->get('logging', 'require_change_comment', false);
     }
 
     /**
-     * Drops any open scope. For tests and for error paths that unwind past an
-     * endChangeset() call; leaving a scope open would group the next unrelated
-     * change into it.
+     * Drops any open scope. Tests only - the static state would otherwise leak
+     * between them.
      */
     public static function resetChangesetScope(): void
     {
@@ -262,7 +290,7 @@ class RecordChangeLogger
             return self::$changesetId;
         }
 
-        $changesetZoneId = self::$changesetZoneId ?? $zoneId;
+        $changesetZoneId = self::$changesetZoneId;
 
         $stmt = $this->db->prepare(
             'INSERT INTO log_changesets (zone_id, user_id, username, comment, client_ip)
@@ -464,8 +492,11 @@ class RecordChangeLogger
     public function countFiltered(array $filters): int
     {
         [$where, $params] = $this->buildWhere($filters);
-        $sql = 'SELECT COUNT(*) AS total FROM log_record_changes c
-                LEFT JOIN log_changesets cs ON cs.id = c.changeset_id' . $where;
+        // Only the comment filter reads the changeset table. MySQL has no join
+        // elimination, so joining unconditionally would probe it once per counted row
+        // for a column the count never selects.
+        $join = isset($params[':comment']) ? ' JOIN log_changesets cs ON cs.id = c.changeset_id' : '';
+        $sql = 'SELECT COUNT(*) AS total FROM log_record_changes c' . $join . $where;
         $stmt = $this->db->prepare($sql);
         foreach ($params as $key => $value) {
             $stmt->bindValue($key, $value[0], $value[1]);

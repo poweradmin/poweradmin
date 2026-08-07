@@ -963,18 +963,6 @@ class DatabaseStructureHelper
                         'flags' => ''
                     )
                 ),
-                'indexes' => array(
-                    'log_changesets_created_at_idx' => array(
-                        'fields' => array(
-                            'created_at' => array()
-                        )
-                    ),
-                    'log_changesets_zone_id_idx' => array(
-                        'fields' => array(
-                            'zone_id' => array()
-                        )
-                    )
-                )
             ),
             array(
                 'table_name' => 'log_record_changes',

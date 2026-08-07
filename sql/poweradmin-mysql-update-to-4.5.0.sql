@@ -13,9 +13,7 @@ CREATE TABLE IF NOT EXISTS `log_changesets` (
     `comment` text DEFAULT NULL,
     `client_ip` varchar(64) DEFAULT NULL,
     `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-    PRIMARY KEY (`id`),
-    KEY `idx_log_changesets_created_at` (`created_at`),
-    KEY `idx_log_changesets_zone_id` (`zone_id`)
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `log_record_changes` (

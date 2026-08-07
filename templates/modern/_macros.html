@@ -11,6 +11,11 @@
 {{- value|format_datetime('medium', 'medium') -}}
 {% endmacro %}
 
+{# Reason a change was made, shown under the username in change-log rows. #}
+{% macro change_reason(comment) %}
+{%- if comment %}<div class="text-muted fst-italic mt-1" title="{% trans %}Reason for this change{% endtrans %}"><i class="bi bi-chat-left-text me-1"></i>{{ comment }}</div>{% endif -%}
+{% endmacro %}
+
 {# Confirm/cancel pair for delete confirmation pages. The confirm button
    submits the enclosing POST form; the cancel link navigates away. #}
 {% macro delete_actions(confirm_label, cancel_url, cancel_label, confirm_testid = '', cancel_testid = '', confirm_name = '') %}
