@@ -250,10 +250,9 @@ class ListRecordChangesController extends BaseController
             header('Content-Disposition: attachment; filename="' . $filename . '.csv"');
 
             $output = fopen('php://output', 'w');
-            fputcsv($output, [
-                'timestamp', 'action', 'username', 'user_id', 'zone_id',
-                'record_id', 'client_ip', 'before_state', 'after_state',
-            ]);
+            // Derived from the row builder so adding a field cannot silently shift
+            // every later column under the wrong heading.
+            fputcsv($output, array_keys($this->buildExportRow([])));
 
             $offset = 0;
             while (true) {
