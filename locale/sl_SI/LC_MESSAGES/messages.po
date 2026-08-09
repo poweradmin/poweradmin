@@ -15405,3 +15405,36 @@ msgstr "Vrsta metapodatkov po meri %s se mora začeti z %s, da jo API PowerDNS s
 #: lib/Application/Controller/EditZoneMetadataController.php
 msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
 msgstr "Vrsta metapodatkov %s učinkuje samo skupaj z %s. Dodajte tudi vrstico %s."
+
+#: templates/default/_macros.html
+#: templates/default/bulk_record_add.html
+#: templates/default/delete_records.html
+#: templates/modern/_macros.html
+#: templates/modern/bulk_record_add.html
+#: templates/modern/delete_records.html
+msgid "Reason for this change"
+msgstr "Razlog za to spremembo"
+
+#: lib/Application/Controller/BulkRecordAddController.php
+#: lib/Application/Controller/DeleteRecordsController.php
+#: templates/default/bulk_record_add.html
+#: templates/modern/bulk_record_add.html
+msgid "Describe why you are making this change."
+msgstr "Opišite, zakaj izvajate to spremembo."
+
+#: templates/default/bulk_record_add.html
+#: templates/default/delete_records.html
+#: templates/modern/bulk_record_add.html
+#: templates/modern/delete_records.html
+msgid "Recorded in the change log."
+msgstr "Zabeleži se v dnevniku sprememb."
+
+#: templates/default/list_record_changes.html
+#: templates/modern/list_record_changes.html
+msgid "Search the reason given for the change"
+msgstr "Iskanje po navedenem razlogu za spremembo"
+
+#: templates/default/list_record_changes.html
+#: templates/modern/list_record_changes.html
+msgid "Reason"
+msgstr "Razlog"

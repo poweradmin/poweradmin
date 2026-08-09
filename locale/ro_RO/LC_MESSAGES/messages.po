@@ -15842,3 +15842,36 @@ msgstr "Tipul de metadate personalizat %s trebuie să înceapă cu %s pentru a f
 #: lib/Application/Controller/EditZoneMetadataController.php
 msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
 msgstr "Tipul de metadate %s are efect doar împreună cu %s. Adăugați și un rând %s."
+
+#: templates/default/_macros.html
+#: templates/default/bulk_record_add.html
+#: templates/default/delete_records.html
+#: templates/modern/_macros.html
+#: templates/modern/bulk_record_add.html
+#: templates/modern/delete_records.html
+msgid "Reason for this change"
+msgstr "Motivul acestei modificări"
+
+#: lib/Application/Controller/BulkRecordAddController.php
+#: lib/Application/Controller/DeleteRecordsController.php
+#: templates/default/bulk_record_add.html
+#: templates/modern/bulk_record_add.html
+msgid "Describe why you are making this change."
+msgstr "Descrieți de ce efectuați această modificare."
+
+#: templates/default/bulk_record_add.html
+#: templates/default/delete_records.html
+#: templates/modern/bulk_record_add.html
+#: templates/modern/delete_records.html
+msgid "Recorded in the change log."
+msgstr "Se înregistrează în jurnalul de modificări."
+
+#: templates/default/list_record_changes.html
+#: templates/modern/list_record_changes.html
+msgid "Search the reason given for the change"
+msgstr "Caută în motivul indicat pentru modificare"
+
+#: templates/default/list_record_changes.html
+#: templates/modern/list_record_changes.html
+msgid "Reason"
+msgstr "Motiv"

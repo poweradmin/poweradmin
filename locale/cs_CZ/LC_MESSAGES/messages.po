@@ -15328,3 +15328,36 @@ msgstr "Vlastní typ metadat %s musí začínat na %s, aby jej API PowerDNS při
 #: lib/Application/Controller/EditZoneMetadataController.php
 msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
 msgstr "Typ metadat %s se projeví pouze společně s %s. Přidejte také řádek %s."
+
+#: templates/default/_macros.html
+#: templates/default/bulk_record_add.html
+#: templates/default/delete_records.html
+#: templates/modern/_macros.html
+#: templates/modern/bulk_record_add.html
+#: templates/modern/delete_records.html
+msgid "Reason for this change"
+msgstr "Důvod této změny"
+
+#: lib/Application/Controller/BulkRecordAddController.php
+#: lib/Application/Controller/DeleteRecordsController.php
+#: templates/default/bulk_record_add.html
+#: templates/modern/bulk_record_add.html
+msgid "Describe why you are making this change."
+msgstr "Popište, proč tuto změnu provádíte."
+
+#: templates/default/bulk_record_add.html
+#: templates/default/delete_records.html
+#: templates/modern/bulk_record_add.html
+#: templates/modern/delete_records.html
+msgid "Recorded in the change log."
+msgstr "Zaznamenává se v protokolu změn."
+
+#: templates/default/list_record_changes.html
+#: templates/modern/list_record_changes.html
+msgid "Search the reason given for the change"
+msgstr "Hledat v uvedeném důvodu změny"
+
+#: templates/default/list_record_changes.html
+#: templates/modern/list_record_changes.html
+msgid "Reason"
+msgstr "Důvod"

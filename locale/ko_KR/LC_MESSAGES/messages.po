@@ -15153,3 +15153,36 @@ msgstr "사용자 정의 메타데이터 종류 %s은(는) PowerDNS API에서 �
 #: lib/Application/Controller/EditZoneMetadataController.php
 msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
 msgstr "메타데이터 종류 %s은(는) %s과(와) 함께 사용할 때만 적용됩니다. %s 행도 추가하세요."
+
+#: templates/default/_macros.html
+#: templates/default/bulk_record_add.html
+#: templates/default/delete_records.html
+#: templates/modern/_macros.html
+#: templates/modern/bulk_record_add.html
+#: templates/modern/delete_records.html
+msgid "Reason for this change"
+msgstr "이 변경의 사유"
+
+#: lib/Application/Controller/BulkRecordAddController.php
+#: lib/Application/Controller/DeleteRecordsController.php
+#: templates/default/bulk_record_add.html
+#: templates/modern/bulk_record_add.html
+msgid "Describe why you are making this change."
+msgstr "이 변경을 수행하는 이유를 설명하세요."
+
+#: templates/default/bulk_record_add.html
+#: templates/default/delete_records.html
+#: templates/modern/bulk_record_add.html
+#: templates/modern/delete_records.html
+msgid "Recorded in the change log."
+msgstr "변경 로그에 기록됩니다."
+
+#: templates/default/list_record_changes.html
+#: templates/modern/list_record_changes.html
+msgid "Search the reason given for the change"
+msgstr "변경 사유 검색"
+
+#: templates/default/list_record_changes.html
+#: templates/modern/list_record_changes.html
+msgid "Reason"
+msgstr "사유"

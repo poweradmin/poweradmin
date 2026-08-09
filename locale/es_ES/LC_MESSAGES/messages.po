@@ -15669,3 +15669,36 @@ msgstr "El tipo de metadatos personalizado %s debe comenzar con %s para que la A
 #: lib/Application/Controller/EditZoneMetadataController.php
 msgid "Metadata kind %s only takes effect together with %s. Add a %s row as well."
 msgstr "El tipo de metadatos %s solo surte efecto junto con %s. Agregue también una fila %s."
+
+#: templates/default/_macros.html
+#: templates/default/bulk_record_add.html
+#: templates/default/delete_records.html
+#: templates/modern/_macros.html
+#: templates/modern/bulk_record_add.html
+#: templates/modern/delete_records.html
+msgid "Reason for this change"
+msgstr "Motivo de este cambio"
+
+#: lib/Application/Controller/BulkRecordAddController.php
+#: lib/Application/Controller/DeleteRecordsController.php
+#: templates/default/bulk_record_add.html
+#: templates/modern/bulk_record_add.html
+msgid "Describe why you are making this change."
+msgstr "Describa por qué realiza este cambio."
+
+#: templates/default/bulk_record_add.html
+#: templates/default/delete_records.html
+#: templates/modern/bulk_record_add.html
+#: templates/modern/delete_records.html
+msgid "Recorded in the change log."
+msgstr "Se registra en el historial de cambios."
+
+#: templates/default/list_record_changes.html
+#: templates/modern/list_record_changes.html
+msgid "Search the reason given for the change"
+msgstr "Buscar en el motivo indicado para el cambio"
+
+#: templates/default/list_record_changes.html
+#: templates/modern/list_record_changes.html
+msgid "Reason"
+msgstr "Motivo"
