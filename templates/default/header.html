@@ -30,7 +30,7 @@
     <script type="text/javascript" src="{{ base_url_prefix }}/assets/userSettings.js?time={{ file_version }}"></script>
     <script type="text/javascript" src="{{ base_url_prefix }}/assets/formBusy.js?time={{ file_version }}"></script>
 </head>
-<body{{ wide_layout ? ' class="layout-wide"' : '' }}>
+<body class="d-flex flex-column min-vh-100{{ wide_layout ? ' layout-wide' : '' }}">
 
 {% if current_page == 'mfa_verify' %}
 <!-- MFA Verification - Simplified header with no navigation -->
@@ -318,7 +318,7 @@
 {% endif %}
 {% endif %}
 
-<main class="container pb-3 flex-shrink-0">
+<main class="container pb-3 flex-grow-1">
 {% for message in (system_messages ?? [])|merge(script_messages ?? []) %}{% include 'message_alert.html' with {message: message} only %}{% endfor %}
 
 {% if api_error %}
