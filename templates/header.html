@@ -10,7 +10,7 @@
     <link id="theme-stylesheet" rel="stylesheet" href="style/{{ iface_style }}.css?time={{ file_version }}" type="text/css">
     <script type="text/javascript" src="assets/helper.js?time={{ file_version }}"></script>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <header class="mb-4" data-testid="site-header">
     <div class="container">
@@ -139,4 +139,4 @@
 {% endif %}
 {% endif %}
 
-<main class="container pb-3 flex-shrink-0">
+<main class="container pb-3 flex-grow-1">
