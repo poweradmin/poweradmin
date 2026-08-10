@@ -18,7 +18,7 @@
         }
     </style>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     {% if errors is not empty %}
         {%- set first_key = (errors|keys)|first -%}
         <p class="alert alert-danger">
@@ -49,7 +49,7 @@
             </div>
         </div>
     </header>
-    <main class="container pb-3 flex-shrink-0">
+    <main class="container pb-3 flex-grow-1">
         {% block content %}{% endblock %}
     </main>
 

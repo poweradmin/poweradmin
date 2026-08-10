@@ -25,7 +25,7 @@
     <script type="text/javascript" src="{{ base_url_prefix }}/assets/helper.js?time={{ file_version }}"></script>
     <script type="text/javascript" src="{{ base_url_prefix }}/assets/userSettings.js?time={{ file_version }}"></script>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 {% if current_page == 'mfa_verify' %}
 <!-- MFA Verification - Simplified header with no navigation -->
@@ -303,7 +303,7 @@
 {% endif %}
 {% endif %}
 
-<main class="container pb-3 flex-shrink-0">
+<main class="container pb-3 flex-grow-1">
 {% if system_messages is defined and system_messages %}
     {% for message in system_messages %}
     <div class="alert alert-{% if message.type == 'error' %}danger{% elseif message.type == 'warn' %}warning{% else %}{{ message.type }}{% endif %} bg-{% if message.type == 'error' %}danger{% elseif message.type == 'warn' %}warning{% else %}{{ message.type }}{% endif %} bg-opacity-10 py-2 border border-{% if message.type == 'error' %}danger{% elseif message.type == 'warn' %}warning{% else %}{{ message.type }}{% endif %} alert-dismissible small fade show" role="alert" data-testid="system-message">
