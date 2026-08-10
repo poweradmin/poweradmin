@@ -43,6 +43,9 @@ class UserAuthenticationService
     /**
      * Generate a random salt string.
      *
+     * Draws from random_int(): the installer builds the session encryption key
+     * with this, and mt_rand() would cap that key at its 32-bit seed.
+     *
      * @param int $len The length of the salt string (default is 5).
      * @return string The generated salt string.
      */
@@ -53,7 +56,7 @@ class UserAuthenticationService
         $salt = '';
 
         for ($i = 0; $i < $len; $i++) {
-            $salt .= $valid_characters[mt_rand(0, $valid_len)];
+            $salt .= $valid_characters[random_int(0, $valid_len)];
         }
 
         return $salt;
