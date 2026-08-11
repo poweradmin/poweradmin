@@ -805,9 +805,23 @@ input[type=number]::-webkit-outer-spin-button {
     justify-content: center !important;
 }
 
-/* Override bg-light class in dark mode */
-.bg-light {
+/* The theme is a stylesheet swap, not data-bs-theme, so Bootstrap's colour
+   utilities keep their light-mode values unless overridden here. */
+.text-body,
+.text-body-emphasis {
+    color: var(--text-light) !important;
+}
+
+.text-body-secondary,
+.text-body-tertiary {
+    color: var(--text-secondary) !important;
+}
+
+/* Text paired with bg-light has to follow it, or the badge goes dark on dark */
+.bg-light,
+.bg-light.text-dark {
     background-color: var(--bg-dark-secondary) !important;
+    color: var(--text-light) !important;
 }
 
 /* Fix alert text colors in dark mode */
