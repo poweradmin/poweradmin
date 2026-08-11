@@ -620,9 +620,15 @@ input[type=number]::-webkit-outer-spin-button {
     color: var(--text-light) !important;
 }
 
-/* Fix alert text colors in dark mode */
-.alert p.small,
-.alert .small {
+/* Alert content keeps the variant's own colour. The .card selectors match the
+   specificity of .card .card-body p above, which would otherwise win. */
+.alert p,
+.alert .small,
+.card .alert p,
+.card .alert .small,
+.alert-danger .text-danger,
+.alert-warning .text-warning,
+.alert-info .text-info {
     color: inherit !important;
 }
 
