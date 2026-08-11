@@ -603,21 +603,14 @@ input[type=number]::-webkit-outer-spin-button {
     justify-content: center !important;
 }
 
-/* The theme is a stylesheet swap, not data-bs-theme, so Bootstrap's colour
+/* The theme is a stylesheet swap, not data-bs-theme, so Bootstrap's color
    utilities keep their light-mode values unless overridden here. */
-.text-body,
-.text-body-emphasis {
+.text-body {
     color: var(--text-light) !important;
 }
 
-.text-body-secondary,
-.text-body-tertiary {
-    color: var(--text-secondary) !important;
-}
-
 /* Text paired with bg-light has to follow it, or the badge goes dark on dark */
-.bg-light,
-.bg-light.text-dark {
+.bg-light {
     background-color: var(--bg-dark-secondary) !important;
     color: var(--text-light) !important;
 }
