@@ -612,6 +612,11 @@ table tfoot tr td,
     border: none;
 }
 
+/* Bootstrap's dark-mode code colour; the light-mode pink is unreadable here */
+code {
+    color: #e685b5;
+}
+
 .card a {
     color: var(--text-secondary);
     background: var(--bg-dark-striped-odd);
@@ -846,6 +851,18 @@ input[type=number]::-webkit-outer-spin-button {
     background-color: #055160 !important;
     border-color: #087990 !important;
     color: #b6effb !important;
+}
+
+.alert-primary {
+    background-color: #084298 !important;
+    border-color: #0a58ca !important;
+    color: #cfe2ff !important;
+}
+
+.alert-secondary {
+    background-color: #41464b !important;
+    border-color: #4d5154 !important;
+    color: #e2e3e5 !important;
 }
 
 /* Zone log event column - prevent overflow from long entries */
