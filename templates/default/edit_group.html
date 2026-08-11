@@ -10,7 +10,7 @@
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                <strong><i class="bi bi-pencil-square me-2 text-dark"></i>{% trans %}Edit Group{% endtrans %}</strong>
+                <strong><i class="bi bi-pencil-square me-2"></i>{% trans %}Edit Group{% endtrans %}</strong>
                 <a href="{{ base_url_prefix }}/groups/{{ group.id }}/delete" class="btn btn-sm btn-outline-danger">
                     <i class="bi bi-trash me-1 text-danger"></i>{% trans %}Delete{% endtrans %}
                 </a>
@@ -67,7 +67,7 @@
                 <div class="card shadow-sm mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
                         <div>
-                            <strong><i class="bi bi-people me-2 text-dark"></i>{% trans %}Members{% endtrans %}</strong>
+                            <strong><i class="bi bi-people me-2"></i>{% trans %}Members{% endtrans %}</strong>
                             <span class="badge bg-info ms-2">{{ details.memberCount }}</span>
                         </div>
                         <a href="{{ base_url_prefix }}/groups/{{ group.id }}/members" class="btn btn-sm btn-outline-primary">
@@ -111,7 +111,7 @@
                 <div class="card shadow-sm mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
                         <div>
-                            <strong><i class="bi bi-hdd-stack me-2 text-dark"></i>{% trans %}Zones{% endtrans %}</strong>
+                            <strong><i class="bi bi-hdd-stack me-2"></i>{% trans %}Zones{% endtrans %}</strong>
                             <span class="badge bg-primary ms-2">{{ details.zoneCount }}</span>
                         </div>
                         <a href="{{ base_url_prefix }}/groups/{{ group.id }}/zones" class="btn btn-sm btn-outline-primary">
