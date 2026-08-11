@@ -59,6 +59,16 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     // Zone operations
     // ---------------------------------------------------------------
 
+    private static function parseMasters(string $masters): array
+    {
+        return array_values(
+            array_filter(
+                array_map('trim', explode(',', $masters)),
+                static fn(string $master): bool => $master !== ''
+            )
+        );
+    }
+    
     public function createZone(string $domain, string $type, string $slaveMaster = ''): int|false
     {
         $apiName = self::ensureTrailingDot($domain);
@@ -70,7 +80,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         ];
 
         if ($type === 'SLAVE' && $slaveMaster !== '') {
-            $zoneData['masters'] = [$slaveMaster];
+            $zoneData['masters'] = self::parseMasters($slaveMaster);
         }
 
         $result = $this->client->createZoneWithData($zoneData);
@@ -155,7 +165,10 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         }
 
         $apiName = self::ensureTrailingDot($zoneName);
-        $result = $this->client->updateZoneProperties($apiName, ['masters' => [$masterIp]]);
+        $result = $this->client->updateZoneProperties(
+            $apiName,
+            ['masters' => self::parseMasters($masterIp)]
+        );
 
         if ($result) {
             $stmt = $this->db->prepare("UPDATE zones SET zone_master = :master WHERE id = :id");
