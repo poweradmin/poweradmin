@@ -57,6 +57,11 @@ header .fs-4 {
     background-color: rgba(111, 66, 193, 0.1);
 }
 
+/* EXAMPLE: Use the full browser width instead of a fixed-width page */
+.container {
+    max-width: none;
+}
+
 /* EXAMPLE: Footer with subtle accent */
 footer {
     border-top: 2px solid #6f42c1;
