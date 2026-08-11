@@ -12,7 +12,6 @@
     --primary-blue: #0d6efd;
     --input-border: #495057;
     --card-shadow: rgba(0, 0, 0, 0.5);
-    --card-item-hover-bg: var(--bg-dark-hover);
     --sidebar-width: 280px;
     --sidebar-bg: #212529;
     --sidebar-border: #373b3e;
@@ -624,6 +623,11 @@ table tfoot tr td,
     background-color: var(--bg-dark-hover);
 }
 
+/* index.html declares this hover inline, which darkens the tile in dark mode */
+.card-item .card:hover {
+    background-color: var(--bg-dark-hover) !important;
+}
+
 /* Form validation styles */
 .form-control.is-valid, .was-validated .form-control:valid {
     border-color: inherit !important;
@@ -806,21 +810,14 @@ input[type=number]::-webkit-outer-spin-button {
     justify-content: center !important;
 }
 
-/* The theme is a stylesheet swap, not data-bs-theme, so Bootstrap's colour
+/* The theme is a stylesheet swap, not data-bs-theme, so Bootstrap's color
    utilities keep their light-mode values unless overridden here. */
-.text-body,
-.text-body-emphasis {
+.text-body {
     color: var(--text-light) !important;
 }
 
-.text-body-secondary,
-.text-body-tertiary {
-    color: var(--text-secondary) !important;
-}
-
 /* Text paired with bg-light has to follow it, or the badge goes dark on dark */
-.bg-light,
-.bg-light.text-dark {
+.bg-light {
     background-color: var(--bg-dark-secondary) !important;
     color: var(--text-light) !important;
 }
