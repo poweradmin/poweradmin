@@ -210,6 +210,7 @@ return array(
     'GuzzleHttp\\Handler\\CurlVersion' => $vendorDir . '/guzzlehttp/guzzle/src/Handler/CurlVersion.php',
     'GuzzleHttp\\Handler\\EasyHandle' => $vendorDir . '/guzzlehttp/guzzle/src/Handler/EasyHandle.php',
     'GuzzleHttp\\Handler\\HeaderProcessor' => $vendorDir . '/guzzlehttp/guzzle/src/Handler/HeaderProcessor.php',
+    'GuzzleHttp\\Handler\\HostValidator' => $vendorDir . '/guzzlehttp/guzzle/src/Handler/HostValidator.php',
     'GuzzleHttp\\Handler\\MockHandler' => $vendorDir . '/guzzlehttp/guzzle/src/Handler/MockHandler.php',
     'GuzzleHttp\\Handler\\Proxy' => $vendorDir . '/guzzlehttp/guzzle/src/Handler/Proxy.php',
     'GuzzleHttp\\Handler\\ProxyEnvironment' => $vendorDir . '/guzzlehttp/guzzle/src/Handler/ProxyEnvironment.php',
