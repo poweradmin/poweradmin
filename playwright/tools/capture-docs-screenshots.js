@@ -180,6 +180,22 @@ async function resolveIds(page) {
   return ids;
 }
 
+/**
+ * Close transient notices so they do not end up in the documentation. Only
+ * dismissible alerts are touched: the explanatory info boxes that belong to a
+ * page carry no close button and survive this.
+ */
+async function dismissNotices(page) {
+  const closers = page.locator('.alert .btn-close');
+  for (let i = await closers.count(); i > 0; i--) {
+    const closer = closers.first();
+    if (await closer.isVisible().catch(() => false)) {
+      await closer.click().catch(() => {});
+      await page.waitForTimeout(150);
+    }
+  }
+}
+
 async function capture(page, shot, ids) {
   const url = typeof shot.url === 'function' ? shot.url(ids) : shot.url;
 
@@ -200,6 +216,8 @@ async function capture(page, shot, ids) {
     await shot.prep(page);
     await page.waitForTimeout(800);
   }
+
+  await dismissNotices(page);
 
   const status = response ? response.status() : 0;
   const landed = new URL(page.url()).pathname;
