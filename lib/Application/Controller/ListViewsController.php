@@ -29,7 +29,8 @@ use Poweradmin\BaseController;
 /**
  * Lists PowerDNS views (5.0+) and the zones they contain. Also exposes inline
  * add/remove actions. The whole feature is admin-only and hidden when the
- * connected server pre-dates 5.0 (capability gate).
+ * connected server cannot serve views, whether through its version, its
+ * backend or its views setting (capability gate).
  */
 class ListViewsController extends BaseController
 {
@@ -48,8 +49,9 @@ class ListViewsController extends BaseController
             return;
         }
 
-        if (!$this->getPdnsCapabilities()->supportsViews()) {
-            $this->showError(_('Views require PowerDNS 5.0 or newer.'));
+        $viewsError = $this->getPdnsCapabilities()->viewsUnavailableMessage();
+        if ($viewsError !== null) {
+            $this->showError($viewsError);
             return;
         }
 

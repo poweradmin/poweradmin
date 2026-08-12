@@ -74,6 +74,107 @@ class PdnsCapabilitiesTest extends TestCase
         $this->assertTrue(PdnsCapabilities::fromVersion('5.0.0')->supportsViews());
     }
 
+    #[DataProvider('viewsReasonProvider')]
+    public function testViewsUnavailableReason(array $info, ?string $expected): void
+    {
+        $caps = PdnsCapabilities::fromServerInfo($info);
+        $this->assertSame($expected, $caps->viewsUnavailableReason());
+        $this->assertSame($expected === null, $caps->supportsViews());
+    }
+
+    public static function viewsReasonProvider(): array
+    {
+        return [
+            'lmdb with views=yes' => [['version' => '5.1.4', 'backends' => 'lmdb', 'views' => 'yes'], null],
+            'sql backend' => [
+                ['version' => '5.1.4', 'backends' => 'gmysql', 'views' => 'no'],
+                PdnsCapabilities::VIEWS_NEED_LMDB,
+            ],
+            'views disabled' => [
+                ['version' => '5.1.4', 'backends' => 'lmdb', 'views' => 'no'],
+                PdnsCapabilities::VIEWS_NEED_SETTING,
+            ],
+            'version is reported before the backend' => [
+                ['version' => '4.9.12', 'backends' => 'gmysql', 'views' => 'no'],
+                PdnsCapabilities::VIEWS_NEED_VERSION,
+            ],
+            // /config unreachable: no evidence against views, so nothing is hidden.
+            'settings unread' => [['version' => '5.1.4'], null],
+            'settings empty' => [['version' => '5.1.4', 'backends' => '', 'views' => ''], null],
+        ];
+    }
+
+    public function testViewsStayVisibleForAVersionOnlyCapabilitySet(): void
+    {
+        $this->assertTrue(PdnsCapabilities::fromVersion('5.1.4')->supportsViews());
+    }
+
+    public function testViewsUnavailableMessageNamesTheMissingPrerequisite(): void
+    {
+        $message = fn(array $info): ?string => PdnsCapabilities::fromServerInfo($info)->viewsUnavailableMessage();
+
+        $this->assertNull($message(['version' => '5.1.4', 'backends' => 'lmdb', 'views' => 'yes']));
+        $this->assertStringContainsString(
+            '5.0',
+            (string) $message(['version' => '4.9.12'])
+        );
+        $this->assertStringContainsString(
+            'LMDB',
+            (string) $message(['version' => '5.1.4', 'backends' => 'gmysql', 'views' => 'yes'])
+        );
+        $this->assertStringContainsString(
+            'views=yes',
+            (string) $message(['version' => '5.1.4', 'backends' => 'lmdb', 'views' => 'no'])
+        );
+    }
+
+    #[DataProvider('launchValueProvider')]
+    public function testLaunchListsAndInstanceSuffixesAreParsed(string $launch, bool $expected): void
+    {
+        $caps = PdnsCapabilities::fromServerInfo([
+            'version' => '5.1.4',
+            'backends' => $launch,
+            'views' => 'yes',
+        ]);
+        $this->assertSame($expected, $caps->supportsViews());
+    }
+
+    public static function launchValueProvider(): array
+    {
+        return [
+            'single' => ['lmdb', true],
+            'instance suffix' => ['lmdb:one', true],
+            'comma separated' => ['gmysql,lmdb', true],
+            'space separated' => ['gmysql lmdb', true],
+            'uppercase' => ['LMDB', true],
+            'sql only' => ['gmysql', false],
+            'lookalike' => ['lmdbx', false],
+        ];
+    }
+
+    #[DataProvider('viewsSettingProvider')]
+    public function testViewsSettingAcceptsPowerDnsBooleanSpellings(string $value, bool $expected): void
+    {
+        $caps = PdnsCapabilities::fromServerInfo([
+            'version' => '5.1.4',
+            'backends' => 'lmdb',
+            'views' => $value,
+        ]);
+        $this->assertSame($expected, $caps->supportsViews());
+    }
+
+    public static function viewsSettingProvider(): array
+    {
+        return [
+            'yes' => ['yes', true],
+            'true' => ['true', true],
+            'one' => ['1', true],
+            'padded' => [' yes ', true],
+            'no' => ['no', false],
+            'zero' => ['0', false],
+        ];
+    }
+
     #[DataProvider('recordTypeProvider')]
     public function testSupportsRecordType(string $version, string $type, bool $expected): void
     {

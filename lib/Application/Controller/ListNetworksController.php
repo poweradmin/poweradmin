@@ -29,7 +29,7 @@ use Poweradmin\BaseController;
 /**
  * Lists network -> view mappings (PowerDNS 5.0+) and exposes inline
  * add/edit/remove actions. Admin-only; hidden behind the supportsViews()
- * capability gate.
+ * capability gate, which covers the version, the backend and views=yes.
  */
 class ListNetworksController extends BaseController
 {
@@ -48,8 +48,9 @@ class ListNetworksController extends BaseController
             return;
         }
 
-        if (!$this->getPdnsCapabilities()->supportsViews()) {
-            $this->showError(_('Network views require PowerDNS 5.0 or newer.'));
+        $viewsError = $this->getPdnsCapabilities()->viewsUnavailableMessage();
+        if ($viewsError !== null) {
+            $this->showError($viewsError);
             return;
         }
 

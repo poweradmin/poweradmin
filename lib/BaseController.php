@@ -273,7 +273,7 @@ abstract class BaseController
     protected function getPdnsCapabilities(): PdnsCapabilities
     {
         $info = PdnsVersionService::getCachedInfo();
-        return PdnsCapabilities::fromVersion($info['version'] ?? null);
+        return PdnsCapabilities::fromServerInfo($info);
     }
 
     /**

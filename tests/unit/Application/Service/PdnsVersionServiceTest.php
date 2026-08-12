@@ -59,6 +59,54 @@ class PdnsVersionServiceTest extends TestCase
         $this->assertNotNull($service->getCached());
     }
 
+    public function testDetectCachesTheViewsPrerequisitesOnPowerDns5(): void
+    {
+        $this->mockClient->method('getServerInfo')->willReturn([
+            'version' => '5.1.4',
+            'daemon_type' => 'authoritative',
+            'id' => 'localhost',
+        ]);
+        $this->mockClient->expects($this->once())
+            ->method('getServerConfig')
+            ->willReturn(['launch' => 'lmdb', 'views' => 'yes', 'api' => 'yes']);
+
+        $info = (new PdnsVersionService($this->mockClient, $this->mockLogger))->detect();
+
+        $this->assertSame('lmdb', $info['backends']);
+        $this->assertSame('yes', $info['views']);
+    }
+
+    public function testDetectSkipsTheConfigCallBelowPowerDns5(): void
+    {
+        $this->mockClient->method('getServerInfo')->willReturn([
+            'version' => '4.9.12',
+            'daemon_type' => 'authoritative',
+            'id' => 'localhost',
+        ]);
+        // Views cannot exist before 5.0, so the extra round-trip is skipped.
+        $this->mockClient->expects($this->never())->method('getServerConfig');
+
+        $info = (new PdnsVersionService($this->mockClient, $this->mockLogger))->detect();
+
+        $this->assertArrayNotHasKey('backends', $info);
+    }
+
+    public function testDetectLeavesThePrerequisitesEmptyWhenConfigIsUnreadable(): void
+    {
+        $this->mockClient->method('getServerInfo')->willReturn([
+            'version' => '5.1.4',
+            'daemon_type' => 'authoritative',
+            'id' => 'localhost',
+        ]);
+        $this->mockClient->method('getServerConfig')->willReturn([]);
+
+        $info = (new PdnsVersionService($this->mockClient, $this->mockLogger))->detect();
+
+        // Empty reads as "not known", which leaves Views visible.
+        $this->assertSame('', $info['backends']);
+        $this->assertSame('', $info['views']);
+    }
+
     public function testDetectReturnsCachedResultWithinTtl(): void
     {
         // First call fetches from API.

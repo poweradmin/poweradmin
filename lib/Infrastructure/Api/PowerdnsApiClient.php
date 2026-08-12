@@ -693,6 +693,23 @@ class PowerdnsApiClient
     }
 
     /**
+     * getConfig() flattened to a name => value map for settings lookups.
+     *
+     * @return array<string, string>
+     */
+    public function getServerConfig(): array
+    {
+        $settings = [];
+        foreach ($this->getConfig() as $setting) {
+            if (is_array($setting) && isset($setting['name'])) {
+                $settings[(string) $setting['name']] = (string) ($setting['value'] ?? '');
+            }
+        }
+
+        return $settings;
+    }
+
+    /**
      * Get PowerDNS server metrics
      *
      * @return array

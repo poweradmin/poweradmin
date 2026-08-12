@@ -107,7 +107,7 @@ class PageRenderer
         $this->app->addTwigGlobal('csrf_token', $this->csrfTokenService->getToken());
         $this->app->addTwigGlobal('base_url_prefix', $this->config->get('interface', 'base_url_prefix', ''));
         $pdnsInfo = PdnsVersionService::getCachedInfo();
-        $this->app->addTwigGlobal('pdns_caps', PdnsCapabilities::fromVersion($pdnsInfo['version'] ?? null));
+        $this->app->addTwigGlobal('pdns_caps', PdnsCapabilities::fromServerInfo($pdnsInfo));
         $this->app->addTwigGlobal('pdns_server_info', $pdnsInfo);
         $this->app->addTwigGlobal('user_logged_in', $this->userContextService->isAuthenticated());
         $this->app->addTwigGlobal('file_version', $this->getAssetVersion());
