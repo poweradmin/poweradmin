@@ -180,11 +180,18 @@ docker run -d --name poweradmin -p 80:80 \
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
 | `PA_DNS_TTL` | Default TTL for new records (seconds) | `86400` | No |
+| `PA_DNS_TTL_REVERSE` | Default TTL for PTR records in reverse zones (seconds); unset falls back to `PA_DNS_TTL` | Empty | No |
 | `PA_DNS_SOA_REFRESH` | SOA refresh interval (seconds) | `28800` | No |
 | `PA_DNS_SOA_RETRY` | SOA retry interval (seconds) | `7200` | No |
 | `PA_DNS_SOA_EXPIRE` | SOA expire time (seconds) | `604800` | No |
 | `PA_DNS_SOA_MINIMUM` | SOA minimum TTL (seconds) | `86400` | No |
 | `PA_DNS_ZONE_TYPE_DEFAULT` | Default zone type: `MASTER` or `NATIVE` | `MASTER` | No |
+| `PA_DNS_SOA_EDIT` | SOA-EDIT metadata for new zones (e.g. `INCEPTION-INCREMENT`) | Empty | No |
+| `PA_DNS_SOA_EDIT_API` | SOA-EDIT-API metadata for new zones (e.g. `EPOCH`); `OFF` disables, empty uses the server default | Empty | No |
+| `PA_DNS_DEFAULT_ZONE_TEMPLATE` | Template pre-selected on the add-zone form, by id or name | Empty | No |
+| `PA_DNS_ZONE_OWNERSHIP_MODE` | Zone ownership model: `both`, `users_only` or `groups_only` | `both` | No |
+| `PA_DNS_SYNC_ZONE_OWNER_TO_ACCOUNT` | Mirror the oldest zone owner's username into the PowerDNS account field | `false` | No |
+| `PA_DNS_PARENT_ZONE_OWNERSHIP_CHECK` | Block creating a zone that overlaps a zone owned by another user | `true` | No |
 
 ### DNS Validation Settings
 
@@ -225,6 +232,9 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LOGGING_SYSLOG_ENABLED` | Enable logging authentication attempts to syslog | `false` | No |
 | `PA_LOGGING_SYSLOG_IDENTITY` | Syslog program identity | `poweradmin` | No |
 | `PA_LOGGING_SYSLOG_FACILITY` | Syslog facility (`LOG_USER`, `LOG_LOCAL0`-`LOG_LOCAL7`) | `LOG_USER` | No |
+| `PA_LOGGING_REQUIRE_CHANGE_COMMENT` | Require a reason for bulk record changes | `false` | No |
+| `PA_LOGGING_API_REQUEST_LOGGING` | Log every API request, not just 401/403 violations; both need `PA_LOGGING_DATABASE_ENABLED` | `false` | No |
+| `PA_LOGGING_API_LOG_RETENTION_DAYS` | Days to keep API log rows; `0` keeps them forever | `0` | No |
 
 ### Security Configuration
 
@@ -267,6 +277,9 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_MFA_EMAIL_ENABLED` | Enable email verification option | `true` | No |
 | `PA_MFA_RECOVERY_CODES` | Number of recovery codes to generate | `8` | No |
 | `PA_MFA_RECOVERY_CODE_LENGTH` | Length of recovery codes | `10` | No |
+| `PA_MFA_SKIP_FOR_EXTERNAL_AUTH` | Skip MFA enforcement for LDAP/OIDC/SAML logins, trusting the IdP to enforce it | `false` | No |
+| `PA_MFA_MAX_VERIFY_ATTEMPTS` | Failed second-factor guesses before the code is refused | `5` | No |
+| `PA_MFA_VERIFY_LOCKOUT_DURATION` | Minutes to refuse further attempts once the limit is hit | `15` | No |
 
 ### Password Reset
 
@@ -340,6 +353,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_THEME` | Theme name to use | `default` | No |
 | `PA_STYLE` | UI style: `light` or `dark` | `light` | No |
 | `PA_THEME_BASE_PATH` | Base path for theme templates | `templates` | No |
+| `PA_FAVICON_PATH` | Custom favicon path or URL; empty uses the bundled favicon.ico | Empty | No |
+| `PA_LOGO_PATH` | Custom header logo path or URL; empty uses the bundled assets/logo.png | Empty | No |
 | `PA_BASE_URL` | Base URL for SAML auto-generation and interface configuration | Empty | No |
 | `PA_BASE_URL_PREFIX` | Base URL prefix for subdirectory deployments | Empty | No |
 | `PA_APPLICATION_URL` | Full application URL for emails and absolute links | Auto-detect | No |
@@ -370,6 +385,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_DISPLAY_HOSTNAME_ONLY` | Display only hostname in zone edit | `false` | No |
 | `PA_ENABLE_CONSISTENCY_CHECKS` | Enable consistency checks page | `false` | No |
 | `PA_SHOW_FORWARD_ZONE_ASSOCIATIONS` | Show associated forward zones in reverse zone list | `true` | No |
+| `PA_SHOW_ZONE_RECORD_COUNT` | Show record count column in zone lists | `true` | No |
+| `PA_WIDE_LAYOUT` | Use full browser width instead of a fixed-width page | `false` | No |
 
 ### API Configuration
 
@@ -389,6 +406,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_PDNS_API_URL` | PowerDNS API URL (e.g., http://127.0.0.1:8081) | Empty | No |
 | `PA_PDNS_API_KEY` | PowerDNS API key | Empty | No |
 | `PA_PDNS_SERVER_NAME` | PowerDNS server name for API calls | `localhost` | No |
+| `PA_PDNS_API_TIMEOUT` | PowerDNS API request timeout in seconds | `10` | No |
 
 ### Modules
 
@@ -430,6 +448,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LDAP_FULLNAME_ATTRIBUTE` | LDAP attribute for full name (`displayName` for AD, `cn` for OpenLDAP) | `displayName` | No |
 | `PA_LDAP_EMAIL_ATTRIBUTE` | LDAP attribute for email address | `mail` | No |
 | `PA_LDAP_AUTO_PROVISION` | Create missing users on first successful LDAP login | `false` | No |
+| `PA_LDAP_ALLOW_SUPERUSER_PROVISIONING` | Let LDAP group mappings grant the superuser flag | `false` | No |
 | `PA_LDAP_DEFAULT_PERMISSION_TEMPLATE` | Template for auto-provisioned users when no mapping matches | `Guest` | No |
 | `PA_LDAP_GROUPS_ATTRIBUTE` | LDAP attribute holding group memberships | `memberOf` | No |
 | `PA_LDAP_PERMISSION_TEMPLATE_MAPPING` | LDAP group to permission template mapping (`group1:Template1,group2:Template2`) | Empty | No |
@@ -507,6 +526,7 @@ services:
 | `PA_OIDC_AUTO_PROVISION` | Automatically create user accounts from OIDC | `true` | No |
 | `PA_OIDC_LINK_BY_EMAIL` | Link OIDC accounts to existing users by email | `true` | No |
 | `PA_OIDC_SYNC_USER_INFO` | Sync user information from OIDC provider | `true` | No |
+| `PA_OIDC_ALLOW_SUPERUSER_PROVISIONING` | Let OIDC group mappings grant the superuser flag | `false` | No |
 | `PA_OIDC_DEFAULT_PERMISSION_TEMPLATE` | Default permission template for new OIDC users | Empty | No |
 | `PA_OIDC_PERMISSION_TEMPLATE_MAPPING` | Map OIDC groups to permission templates (format: `group1=Template1,group2=Template2` or `group1:Template1,group2:Template2`) | Empty | No |
 | `PA_OIDC_GROUP_MAPPING` | Map OIDC groups to Poweradmin groups (format: `group1=PaGroup1,group2=PaGroup2` or `group1:PaGroup1,group2:PaGroup2`) | Empty | No |
@@ -630,6 +650,7 @@ docker run -d \
 | `PA_SAML_AUTO_PROVISION` | Automatically create user accounts from SAML | `true` | No |
 | `PA_SAML_LINK_BY_EMAIL` | Link SAML accounts to existing users by email | `true` | No |
 | `PA_SAML_SYNC_USER_INFO` | Sync user information from SAML provider | `true` | No |
+| `PA_SAML_ALLOW_SUPERUSER_PROVISIONING` | Let SAML group mappings grant the superuser flag | `false` | No |
 | `PA_SAML_DEFAULT_PERMISSION_TEMPLATE` | Default permission template for new SAML users | Empty | No |
 | `PA_SAML_PERMISSION_TEMPLATE_MAPPING` | Map SAML groups to permission templates (format: `group1=Template1,group2=Template2` or `group1:Template1,group2:Template2`) | Empty | No |
 | `PA_SAML_GROUP_MAPPING` | Map SAML groups to Poweradmin groups (format: `group1=PaGroup1,group2=PaGroup2` or `group1:PaGroup1,group2:PaGroup2`) | Empty | No |
