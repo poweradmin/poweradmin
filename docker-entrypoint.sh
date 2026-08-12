@@ -731,6 +731,15 @@ generate_config() {
     dns_txt_auto_quote=$(to_php_bool "${PA_DNS_TXT_AUTO_QUOTE:-false}")
     local dns_prevent_duplicate_ptr
     dns_prevent_duplicate_ptr=$(to_php_bool "${PA_DNS_PREVENT_DUPLICATE_PTR:-true}")
+    local dns_sync_zone_owner_to_account
+    dns_sync_zone_owner_to_account=$(to_php_bool "${PA_DNS_SYNC_ZONE_OWNER_TO_ACCOUNT:-false}")
+
+    # null means "no template", which '' would not: the setting reads an empty string as a
+    # real value. The quotes therefore have to be conditional too.
+    local dns_default_zone_template="null"
+    if [ -n "${PA_DNS_DEFAULT_ZONE_TEMPLATE:-}" ]; then
+        dns_default_zone_template="'$(php_sq_escape "${PA_DNS_DEFAULT_ZONE_TEMPLATE}")'"
+    fi
 
     # Convert DNSSEC boolean values to lowercase
     local dnssec_enabled
@@ -1045,11 +1054,15 @@ return [
         'ns3' => '${DNS_NS3:-}',
         'ns4' => '${DNS_NS4:-}',
         'ttl' => ${PA_DNS_TTL:-86400},
+        'ttl_reverse' => ${PA_DNS_TTL_REVERSE:-null},
         'soa_refresh' => ${PA_DNS_SOA_REFRESH:-28800},
         'soa_retry' => ${PA_DNS_SOA_RETRY:-7200},
         'soa_expire' => ${PA_DNS_SOA_EXPIRE:-604800},
         'soa_minimum' => ${PA_DNS_SOA_MINIMUM:-86400},
         'zone_type_default' => '${PA_DNS_ZONE_TYPE_DEFAULT:-MASTER}',
+        'default_zone_template' => ${dns_default_zone_template},
+        'zone_ownership_mode' => '${PA_DNS_ZONE_OWNERSHIP_MODE:-both}',
+        'sync_zone_owner_to_account' => ${dns_sync_zone_owner_to_account},
         'strict_tld_check' => ${dns_strict_tld_check},
         'top_level_tld_check' => ${dns_top_level_tld_check},
         'third_level_check' => ${dns_third_level_check},
@@ -1140,6 +1153,8 @@ return [
         'theme' => '${PA_THEME:-default}',
         'style' => '${PA_STYLE:-light}',
         'theme_base_path' => '${PA_THEME_BASE_PATH:-templates}',
+        'favicon_path' => '${PA_FAVICON_PATH:-}',
+        'logo_path' => '${PA_LOGO_PATH:-}',
         'base_url_prefix' => '${PA_BASE_URL_PREFIX:-}',
         'application_url' => '${PA_APPLICATION_URL:-}',
         'show_record_id' => ${show_record_id},
@@ -1179,6 +1194,7 @@ return [
         'url' => '${PA_PDNS_API_URL:-}',
         'key' => '${pdns_api_key_esc}',
         'server_name' => '${PA_PDNS_SERVER_NAME:-localhost}',
+        'timeout' => ${PA_PDNS_API_TIMEOUT:-10},
         'webserver_username' => '${PA_PDNS_WEBSERVER_USERNAME:-}',
         'webserver_password' => '${pdns_webserver_password_esc}',
     ],
