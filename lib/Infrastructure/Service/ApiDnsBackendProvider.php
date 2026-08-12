@@ -541,13 +541,9 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     public function getZoneTypeById(int $domainId): string
     {
         // First check local cache
-        $stmt = $this->db->prepare("SELECT zone_type FROM zones WHERE id = :id OR domain_id = :id2");
-        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
-        $stmt->bindValue(':id2', $domainId, PDO::PARAM_INT);
-        $stmt->execute();
-        $type = $stmt->fetchColumn();
+        $type = $this->resolveCanonicalZoneRow($domainId)['zone_type'] ?? null;
 
-        if ($type !== false && $type !== null) {
+        if ($type !== null && $type !== '') {
             return $type;
         }
 
@@ -559,13 +555,9 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     public function getZoneMasterById(int $domainId): ?string
     {
         // First check local cache
-        $stmt = $this->db->prepare("SELECT zone_master, zone_type FROM zones WHERE id = :id OR domain_id = :id2");
-        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
-        $stmt->bindValue(':id2', $domainId, PDO::PARAM_INT);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $this->resolveCanonicalZoneRow($domainId);
 
-        if ($row !== false && strtoupper($row['zone_type'] ?? '') === 'SLAVE') {
+        if ($row !== null && strtoupper($row['zone_type'] ?? '') === 'SLAVE') {
             return $row['zone_master'] ?: null;
         }
 
@@ -1182,7 +1174,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     /**
      * Get zone name from the local zones table by Poweradmin zone ID.
-     * Looks up by both zones.id and zones.domain_id for compatibility.
+     * See resolveCanonicalZoneRow() for which row an ID resolves to.
      */
     private function getZoneNameByLocalId(int $id): ?string
     {
@@ -1194,15 +1186,15 @@ class ApiDnsBackendProvider implements DnsBackendProvider
      *
      * The ID reaching this class is domain_id for some installs and zones.id for others,
      * so both are matched. Placeholder ownership rows (zone_name IS NULL) are skipped and
-     * an id match wins over a domain_id match, otherwise a shared identifier can resolve
-     * to a different zone's row - which matters because callers write back to row['id'].
+     * an id match wins over a domain_id match, matching ApiZoneRepository::resolveCanonicalRow().
+     * Callers write the cache back to row['id'], so resolving before the write matters.
      *
-     * @return array{id: int|string, zone_name: string, zone_type: ?string}|null
+     * @return array{id: int|string, zone_name: string, zone_type: ?string, zone_master: ?string}|null
      */
     private function resolveCanonicalZoneRow(int $id): ?array
     {
         $stmt = $this->db->prepare(
-            "SELECT id, zone_name, zone_type
+            "SELECT id, zone_name, zone_type, zone_master
              FROM zones
              WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL
              ORDER BY CASE WHEN id = :pref THEN 0 ELSE 1 END
@@ -1214,7 +1206,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $row !== false && $row !== null ? $row : null;
+        return is_array($row) ? $row : null;
     }
 
     private static function ensureTrailingDot(string $name): string
@@ -1235,18 +1227,16 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     /**
      * Flatten the masters array PowerDNS returns back into the stored string form.
-     * The shape is only guaranteed on the getAllZoneKinds path, so guard it here too -
-     * a raw zone read hands us whatever the server put in the JSON.
-     *
-     * @param mixed $masters
+     * getAllZoneKinds() normalizes the shape for its callers, but a raw zone read hands
+     * us whatever the server put in the JSON, so guard it here.
      */
-    private static function formatMasters($masters): string
+    private static function formatMasters(mixed $masters): string
     {
         if (!is_array($masters)) {
             return '';
         }
 
-        return implode(',', array_map('strval', array_filter($masters, 'is_scalar')));
+        return implode(',', array_filter($masters, 'is_scalar'));
     }
 
     private static function contentMatchesApi(string $apiContent, string $dbFormattedContent): bool
