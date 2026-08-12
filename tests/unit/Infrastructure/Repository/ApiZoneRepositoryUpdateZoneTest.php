@@ -43,14 +43,31 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
         return (string) $this->db->query("SELECT zone_type FROM zones WHERE id = 1")->fetchColumn();
     }
 
-    public function testLocalCacheUpdatedWhenApiSucceeds(): void
+    public function testTypeUpdateIsDelegatedWithTheResolvedZoneId(): void
     {
+        // The row is id 1 / domain_id 10, and the provider is given the identifier the rest
+        // of the application uses, so its own lookup resolves back to this same row. The
+        // provider owns the cache write, which is covered in ApiDnsBackendProviderTest.
         $backend = $this->createMock(DnsBackendProvider::class);
-        $backend->method('updateZoneType')->willReturn(true);
+        $backend->expects($this->once())
+            ->method('updateZoneType')
+            ->with(10, 'MASTER')
+            ->willReturn(true);
         $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
 
         $this->assertTrue($repo->updateZone(1, ['type' => 'MASTER']));
-        $this->assertSame('MASTER', $this->zoneType());
+    }
+
+    public function testMasterUpdateIsDelegatedWithTheResolvedZoneId(): void
+    {
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->expects($this->once())
+            ->method('updateZoneMaster')
+            ->with(10, '192.0.2.1')
+            ->willReturn(true);
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
+
+        $this->assertTrue($repo->updateZone(1, ['master' => '192.0.2.1']));
     }
 
     public function testLocalCacheUntouchedWhenApiFails(): void
@@ -75,5 +92,42 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
 
         $this->assertFalse($repo->updateZone(1, ['type' => 'MASTER', 'master' => '192.0.2.1']));
         $this->assertSame('', (string) $this->db->query("SELECT zone_master FROM zones WHERE id = 1")->fetchColumn());
+    }
+
+    public function testCollidingIdentifierResolvesToTheDomainIdRow(): void
+    {
+        // On installs migrated from SQL mode the two id spaces overlap: 10 is this zone's
+        // domain_id and also the other zone's primary key. API mode hands out domain_id,
+        // so the domain_id match must win or the wrong zone gets updated.
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, owner, zone_templ_id)
+            VALUES (10, 77, 'other.example.com', 'NATIVE', '', 1, 0)");
+
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->expects($this->once())
+            ->method('updateZoneMaster')
+            ->with(10, '192.0.2.1')
+            ->willReturn(true);
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
+
+        $this->assertTrue($repo->updateZone(10, ['master' => '192.0.2.1']));
+    }
+
+    public function testSelfConsistentRowWinsOverACollidingDomainIdRow(): void
+    {
+        // A zone this application created has id = domain_id. That row must win over an
+        // unrelated row that merely carries the same value in its domain_id column.
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, owner, zone_templ_id)
+            VALUES (20, 20, 'self.example.com', 'NATIVE', '', 1, 0)");
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, owner, zone_templ_id)
+            VALUES (21, 20, 'shadow.example.com', 'NATIVE', '', 1, 0)");
+
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->expects($this->once())
+            ->method('updateZoneMaster')
+            ->with(20, '192.0.2.1')
+            ->willReturn(true);
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
+
+        $this->assertTrue($repo->updateZone(20, ['master' => '192.0.2.1']));
     }
 }
