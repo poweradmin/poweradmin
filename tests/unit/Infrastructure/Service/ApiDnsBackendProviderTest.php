@@ -114,6 +114,28 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertEquals(43, $result);
     }
 
+    public function testCreateSlaveZoneIncludesMultipleMasters(): void
+    {
+        $this->mockClient->expects($this->once())
+            ->method('createZoneWithData')
+            ->with([
+                'name' => 'slave.example.com.',
+                'kind' => 'SLAVE',
+                'nameservers' => [],
+                'masters' => ['192.0.2.1', '2001:db8::1'],
+            ])
+            ->willReturn(['name' => 'slave.example.com.']);
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetchColumn')->willReturn(43);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->createZone('slave.example.com', 'SLAVE', '192.0.2.1, 2001:db8::1');
+
+        $this->assertEquals(43, $result);
+    }
+
     public function testCreateZoneReturnsFalseOnApiFailure(): void
     {
         $this->mockClient->expects($this->once())
@@ -267,10 +289,10 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $this->mockClient->expects($this->once())
             ->method('updateZoneProperties')
-            ->with('slave.example.com.', ['masters' => ['10.0.0.1', '10.0.0.2']])
+            ->with('slave.example.com.', ['masters' => ['192.0.2.1', '2001:db8::1']])
             ->willReturn(true);
 
-        $this->assertTrue($this->provider->updateZoneMaster(1, '10.0.0.1, 10.0.0.2'));
+        $this->assertTrue($this->provider->updateZoneMaster(1, '192.0.2.1, 2001:db8::1'));
     }
 
     // ---------------------------------------------------------------
