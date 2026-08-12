@@ -746,7 +746,7 @@ generate_config() {
     # real value. The quotes therefore have to be conditional too.
     local dns_default_zone_template="null"
     if [ -n "${PA_DNS_DEFAULT_ZONE_TEMPLATE:-}" ]; then
-        dns_default_zone_template="'${PA_DNS_DEFAULT_ZONE_TEMPLATE}'"
+        dns_default_zone_template="'$(php_sq_escape "${PA_DNS_DEFAULT_ZONE_TEMPLATE}")'"
     fi
 
     # Convert DNSSEC boolean values to lowercase
