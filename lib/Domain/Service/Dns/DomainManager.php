@@ -782,31 +782,27 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
+     * Collapse a master list to the one spelling the DomainManager write paths store.
+     *
+     * The forms submit several masters as one comma-separated string, and the v2 API
+     * normalizes its own copy the same way, so agreeing on one spelling here stops a zone
+     * sync from rewriting the row purely over spacing. Returns null when the list does not
+     * validate, which lets addDomain() pass the original through - it does not validate its
+     * input today and must not start failing here.
+     */
+    private function normalizeMasterList(string $masters): ?string
+    {
+        $validation = $this->ipAddressValidator->validateMultipleIPs($masters);
+
+        return $validation->isValid() ? implode(',', $validation->getData()) : null;
+    }
+
+    /**
      * Change Slave Zone's Master IP Address
      *
      * @param int $zone_id Zone ID
      * @param string $ip_slave_master Master IP Address
      */
-    /**
-     * Collapse a master list to the one spelling every write path stores.
-     *
-     * The forms submit one comma-separated string and the v2 API already stores it this
-     * way, so normalizing here keeps both backends and all entry points on the same value
-     * and stops a zone sync from rewriting the row purely over spacing. Anything that does
-     * not validate is passed through untouched - this method must not add a failure path,
-     * since addDomain() does not validate its input today.
-     */
-    private function normalizeMasterList(string $masters): string
-    {
-        if (trim($masters) === '') {
-            return $masters;
-        }
-
-        $validation = $this->ipAddressValidator->validateMultipleIPs($masters);
-
-        return $validation->isValid() ? implode(',', $validation->getData()) : $masters;
-    }
-
     public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master): bool
     {
         if (!$this->userCanEditZoneMetadata($zone_id)) {
@@ -814,13 +810,13 @@ class DomainManager implements DomainManagerInterface
             return false;
         }
 
-        $validation = $this->ipAddressValidator->validateMultipleIPs($ip_slave_master);
-        if (!$validation->isValid()) {
+        $normalized = $this->normalizeMasterList($ip_slave_master);
+        if ($normalized === null) {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "changeZoneSlaveMaster", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
             return false;
         }
 
-        $ip_slave_master = implode(',', $validation->getData());
+        $ip_slave_master = $normalized;
 
         $beforeZone = $this->snapshotZoneMetadataForLog($zone_id);
 
