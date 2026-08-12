@@ -158,6 +158,30 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         );
     }
 
+    #[RunInSeparateProcess]
+    public function testAddDomainKeepsAnEmptyMasterForNonSlaveZones(): void
+    {
+        // MASTER/NATIVE zones pass '' here. Normalizing that to null would hand null to
+        // createZone(string $slaveMaster) and fatal on every non-slave zone creation.
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (203, 'zone_master_add')");
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (103, 'ZoneAdder')");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (103, 203)");
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (103, 'adder', 103)");
+        $_SESSION['userid'] = 103;
+
+        $backend = $this->dnsBackendStub(false);
+        $backend->expects($this->once())
+            ->method('createZone')
+            ->with('new.example.com', 'MASTER', '')
+            ->willReturn(false);
+
+        $domainManager = $this->makeDomainManager($backend);
+
+        $this->assertFalse(
+            $domainManager->addDomain($this->db, 'new.example.com', null, 'MASTER', '', 'none')
+        );
+    }
+
     private function seedZoneOwnedBy(int $userId): void
     {
         $stmt = $this->db->prepare(

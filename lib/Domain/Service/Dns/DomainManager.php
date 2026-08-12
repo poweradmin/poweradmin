@@ -178,7 +178,11 @@ class DomainManager implements DomainManagerInterface
     {
         $zone_master_add = $this->userHasPermission('zone_master_add');
         $zone_slave_add = $this->userHasPermission('zone_slave_add');
-        $slave_master = $this->normalizeMasterList($slave_master);
+        // Keeps the original string for MASTER/NATIVE zones, which pass '' here, and for
+        // anything that fails validation - addDomain has never validated this argument.
+        // Keeps the original string for MASTER/NATIVE zones, which pass '' here, and for
+        // anything that fails validation - addDomain has never validated this argument.
+        $slave_master = $this->normalizeMasterList($slave_master) ?? $slave_master;
 
         // TODO: make sure only one is possible if only one is enabled
         if ($zone_master_add || $zone_slave_add) {
