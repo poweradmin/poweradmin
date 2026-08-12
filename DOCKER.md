@@ -180,11 +180,15 @@ docker run -d --name poweradmin -p 80:80 \
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
 | `PA_DNS_TTL` | Default TTL for new records (seconds) | `86400` | No |
+| `PA_DNS_TTL_REVERSE` | Default TTL for PTR records in reverse zones (seconds); unset falls back to `PA_DNS_TTL` | Empty | No |
 | `PA_DNS_SOA_REFRESH` | SOA refresh interval (seconds) | `28800` | No |
 | `PA_DNS_SOA_RETRY` | SOA retry interval (seconds) | `7200` | No |
 | `PA_DNS_SOA_EXPIRE` | SOA expire time (seconds) | `604800` | No |
 | `PA_DNS_SOA_MINIMUM` | SOA minimum TTL (seconds) | `86400` | No |
 | `PA_DNS_ZONE_TYPE_DEFAULT` | Default zone type: `MASTER` or `NATIVE` | `MASTER` | No |
+| `PA_DNS_DEFAULT_ZONE_TEMPLATE` | Template pre-selected on the add-zone form, by id or name | Empty | No |
+| `PA_DNS_ZONE_OWNERSHIP_MODE` | Zone ownership model: `both`, `users_only` or `groups_only` | `both` | No |
+| `PA_DNS_SYNC_ZONE_OWNER_TO_ACCOUNT` | Mirror the oldest zone owner's username into the PowerDNS account field | `false` | No |
 
 ### DNS Validation Settings
 
@@ -340,6 +344,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_THEME` | Theme name to use | `default` | No |
 | `PA_STYLE` | UI style: `light` or `dark` | `light` | No |
 | `PA_THEME_BASE_PATH` | Base path for theme templates | `templates` | No |
+| `PA_FAVICON_PATH` | Custom favicon path or URL; empty uses the bundled favicon.ico | Empty | No |
+| `PA_LOGO_PATH` | Custom header logo path or URL; empty uses the bundled assets/logo.png | Empty | No |
 | `PA_BASE_URL` | Base URL for SAML auto-generation and interface configuration | Empty | No |
 | `PA_BASE_URL_PREFIX` | Base URL prefix for subdirectory deployments | Empty | No |
 | `PA_APPLICATION_URL` | Full application URL for emails and absolute links | Auto-detect | No |
@@ -386,6 +392,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_PDNS_API_URL` | PowerDNS API URL (e.g., http://127.0.0.1:8081) | Empty | No |
 | `PA_PDNS_API_KEY` | PowerDNS API key | Empty | No |
 | `PA_PDNS_SERVER_NAME` | PowerDNS server name for API calls | `localhost` | No |
+| `PA_PDNS_API_TIMEOUT` | PowerDNS API request timeout in seconds | `10` | No |
 
 ### Modules
 
