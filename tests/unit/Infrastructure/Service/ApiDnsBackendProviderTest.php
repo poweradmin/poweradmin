@@ -96,24 +96,17 @@ class ApiDnsBackendProviderTest extends TestCase
                 'name' => 'slave.example.com.',
                 'kind' => 'SLAVE',
                 'nameservers' => [],
-                'masters' => [
-                    '192.0.2.1',
-                    '2001:db8::1',
-                ],
+                'masters' => ['192.0.2.1', '2001:db8::1'],
             ])
             ->willReturn(['name' => 'slave.example.com.']);
-    
+
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
         $stmt->method('fetchColumn')->willReturn(43);
         $this->mockDb->method('prepare')->willReturn($stmt);
-    
-        $result = $this->provider->createZone(
-            'slave.example.com',
-            'SLAVE',
-            '192.0.2.1, 2001:db8::1'
-        );
-    
+
+        $result = $this->provider->createZone('slave.example.com', 'SLAVE', '192.0.2.1, 2001:db8::1');
+
         $this->assertEquals(43, $result);
     }
 
@@ -255,41 +248,25 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testUpdateZoneMasterHandlesMultipleMasters(): void
+    public function testUpdateZoneMasterSplitsCommaSeparatedMasters(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
         $stmt->method('fetchColumn')->willReturn('slave.example.com');
         $stmt->method('bindValue');
-    
+
         $stmtUpdate = $this->createMock(PDOStatement::class);
         $stmtUpdate->method('bindValue');
         $stmtUpdate->method('execute');
-    
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
-            $stmt,
-            $stmtUpdate
-        );
-    
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmt, $stmtUpdate);
+
         $this->mockClient->expects($this->once())
             ->method('updateZoneProperties')
-            ->with(
-                'slave.example.com.',
-                [
-                    'masters' => [
-                        '192.0.2.1',
-                        '2001:db8::1',
-                    ],
-                ]
-            )
+            ->with('slave.example.com.', ['masters' => ['192.0.2.1', '2001:db8::1']])
             ->willReturn(true);
-    
-        $result = $this->provider->updateZoneMaster(
-            1,
-            '192.0.2.1, 2001:db8::1'
-        );
-    
-        $this->assertTrue($result);
+
+        $this->assertTrue($this->provider->updateZoneMaster(1, '192.0.2.1, 2001:db8::1'));
     }
 
     // ---------------------------------------------------------------

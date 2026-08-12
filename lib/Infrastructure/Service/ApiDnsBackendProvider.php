@@ -59,16 +59,6 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     // Zone operations
     // ---------------------------------------------------------------
 
-    private static function parseMasters(string $masters): array
-    {
-        return array_values(
-            array_filter(
-                array_map('trim', explode(',', $masters)),
-                static fn(string $master): bool => $master !== ''
-            )
-        );
-    }
-    
     public function createZone(string $domain, string $type, string $slaveMaster = ''): int|false
     {
         $apiName = self::ensureTrailingDot($domain);
@@ -165,10 +155,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         }
 
         $apiName = self::ensureTrailingDot($zoneName);
-        $result = $this->client->updateZoneProperties(
-            $apiName,
-            ['masters' => self::parseMasters($masterIp)]
-        );
+        $result = $this->client->updateZoneProperties($apiName, ['masters' => self::parseMasters($masterIp)]);
 
         if ($result) {
             $stmt = $this->db->prepare("UPDATE zones SET zone_master = :master WHERE id = :id");
@@ -1130,6 +1117,17 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     private static function ensureTrailingDot(string $name): string
     {
         return str_ends_with($name, '.') ? $name : $name . '.';
+    }
+
+    /**
+     * Split a comma-separated list of master IPs into the array PowerDNS expects.
+     * The forms collect several masters as a single comma-separated string.
+     *
+     * @return string[]
+     */
+    private static function parseMasters(string $masters): array
+    {
+        return array_values(array_filter(array_map('trim', explode(',', $masters)), 'strlen'));
     }
 
     private static function contentMatchesApi(string $apiContent, string $dbFormattedContent): bool
