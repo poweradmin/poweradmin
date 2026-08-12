@@ -173,9 +173,9 @@ class DatabaseConsistencyService
             $allZones = $apiZones ?? $this->backendProvider->getZones();
             $slavesWithoutMaster = [];
             foreach ($allZones as $z) {
-                $kind = strtoupper($z['kind'] ?? $z['type'] ?? '');
+                $kind = strtoupper($z['type'] ?? '');
                 if ($kind === 'SLAVE') {
-                    $master = $z['masters'][0] ?? $z['master'] ?? '';
+                    $master = $z['master'] ?? '';
                     if (empty($master) || $master === '0.0.0.0') {
                         $slavesWithoutMaster[] = [
                             'id' => (int)($z['id'] ?? 0),
@@ -350,7 +350,7 @@ class DatabaseConsistencyService
             $allZones = $apiZones ?? $this->backendProvider->getZones();
             $zonesWithoutSOA = [];
             foreach ($allZones as $z) {
-                $kind = strtoupper($z['kind'] ?? $z['type'] ?? '');
+                $kind = strtoupper($z['type'] ?? '');
                 if ($kind === 'MASTER' || $kind === 'NATIVE') {
                     $zoneId = (int)($z['id'] ?? 0);
                     // Unsynced zones (id 0) have no local ID mapping, so the SOA
