@@ -49,7 +49,9 @@ RUN mkdir -p /db /app/inc \
     && chown -R www-data:www-data /db /app \
     && chmod -R 755 /db /app
 
-USER www-data
+# www-data is uid/gid 82 in the alpine base; the numeric form is used because a
+# user name may not resolve on the host (hadolint DL3066).
+USER 82:82
 
 EXPOSE 80
 
