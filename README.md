@@ -18,8 +18,10 @@
 - Zone metadata editor for PowerDNS `domainmetadata`, including multi-value metadata kinds
 - Native PowerDNS API backend mode - manage zones without direct access to the PowerDNS database
 - Version-aware interface that adapts record types, metadata kinds, and terminology to the connected PowerDNS version
+- Secondary zone import over AXFR, for taking over a domain hosted elsewhere
+- Record change log with before/after snapshots of every record and zone change
 - IPv6 support
-- Multi-language support (28 languages)
+- Multi-language support (43 languages, including right-to-left)
 - DNSSEC operations via PowerDNS API
 - Light and dark themes
 - Search functionality across zones and records
@@ -31,6 +33,7 @@
   - SAML and OIDC authentication
   - Multi-factor authentication (MFA/2FA) with TOTP
 - RESTful API with OpenAPI documentation (used by Terraform/OpenTofu provider)
+- API keys that can be made read-only, restricted to specific operations, or scoped to specific zones
 - Docker deployment with FrankenPHP
 
 ## Screenshots
