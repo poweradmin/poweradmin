@@ -187,7 +187,7 @@ EXPOSE 80 8080
 # Healthcheck reads the port from file written by entrypoint (healthcheck runs
 # as a separate process and does not inherit entrypoint's exported env vars)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -sf http://localhost:$(cat /tmp/.server_port 2>/dev/null || echo 80)/ -o /dev/null || exit 1
+    CMD ["/bin/sh", "-c", "curl -sf http://localhost:$(cat /tmp/.server_port 2>/dev/null || echo 80)/ -o /dev/null || exit 1"]
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
