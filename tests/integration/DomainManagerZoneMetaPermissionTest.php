@@ -140,6 +140,24 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         );
     }
 
+    #[RunInSeparateProcess]
+    public function testChangeZoneSlaveMasterNormalizesTheListBeforeStoringIt(): void
+    {
+        $_SESSION['userid'] = self::META_EDIT_OWN_USER_ID;
+
+        $backend = $this->dnsBackendStub(false);
+        $backend->expects($this->once())
+            ->method('updateZoneMaster')
+            ->with(self::ZONE_DOMAIN_ID, '192.0.2.10,2001:db8::1')
+            ->willReturn(true);
+
+        $domainManager = $this->makeDomainManager($backend);
+
+        $this->assertTrue(
+            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, ' 192.0.2.10 , 2001:db8::1 ')
+        );
+    }
+
     private function seedZoneOwnedBy(int $userId): void
     {
         $stmt = $this->db->prepare(
