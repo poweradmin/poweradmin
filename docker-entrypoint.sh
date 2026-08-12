@@ -1075,6 +1075,8 @@ generate_config() {
     local db_user_esc; db_user_esc=$(php_sq_escape "${DB_USER:-}")
     local db_name_esc; db_name_esc=$(php_sq_escape "${DB_NAME:-}")
     local db_host_esc; db_host_esc=$(php_sq_escape "${DB_HOST:-}")
+    local favicon_path_esc; favicon_path_esc=$(php_sq_escape "${PA_FAVICON_PATH:-}")
+    local logo_path_esc; logo_path_esc=$(php_sq_escape "${PA_LOGO_PATH:-}")
     local recaptcha_site_esc; recaptcha_site_esc=$(php_sq_escape "${PA_RECAPTCHA_SITE_KEY:-}")
     local recaptcha_secret_esc; recaptcha_secret_esc=$(php_sq_escape "${PA_RECAPTCHA_SECRET_KEY:-}")
     local smtp_password_esc; smtp_password_esc=$(php_sq_escape "${PA_SMTP_PASSWORD:-}")
@@ -1220,8 +1222,8 @@ return [
         'theme' => '${PA_THEME:-default}',
         'style' => '${PA_STYLE:-light}',
         'theme_base_path' => '${PA_THEME_BASE_PATH:-templates}',
-        'favicon_path' => '${PA_FAVICON_PATH:-}',
-        'logo_path' => '${PA_LOGO_PATH:-}',
+        'favicon_path' => '${favicon_path_esc}',
+        'logo_path' => '${logo_path_esc}',
         'base_url_prefix' => '${PA_BASE_URL_PREFIX:-}',
         'application_url' => '${PA_APPLICATION_URL:-}',
         'show_record_id' => ${show_record_id},
