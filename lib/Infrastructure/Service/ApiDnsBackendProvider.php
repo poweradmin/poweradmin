@@ -133,12 +133,12 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function updateZoneType(int $domainId, string $type): bool
     {
-        $zoneName = $this->getZoneNameByLocalId($domainId);
-        if ($zoneName === null) {
+        $zone = $this->resolveCanonicalZoneRow($domainId);
+        if ($zone === null) {
             return false;
         }
 
-        $apiName = self::ensureTrailingDot($zoneName);
+        $apiName = self::ensureTrailingDot($zone['zone_name']);
         $data = ['kind' => $type];
 
         if ($type !== 'SLAVE') {
@@ -150,7 +150,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         if ($result) {
             $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type WHERE id = :id");
             $stmt->bindValue(':type', strtoupper($type));
-            $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+            $stmt->bindValue(':id', (int)$zone['id'], PDO::PARAM_INT);
             $stmt->execute();
         }
 
@@ -159,18 +159,18 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function updateZoneMaster(int $domainId, string $masterIp): bool
     {
-        $zoneName = $this->getZoneNameByLocalId($domainId);
-        if ($zoneName === null) {
+        $zone = $this->resolveCanonicalZoneRow($domainId);
+        if ($zone === null) {
             return false;
         }
 
-        $apiName = self::ensureTrailingDot($zoneName);
+        $apiName = self::ensureTrailingDot($zone['zone_name']);
         $result = $this->client->updateZoneProperties($apiName, ['masters' => self::parseMasters($masterIp)]);
 
         if ($result) {
             $stmt = $this->db->prepare("UPDATE zones SET zone_master = :master WHERE id = :id");
             $stmt->bindValue(':master', $masterIp);
-            $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+            $stmt->bindValue(':id', (int)$zone['id'], PDO::PARAM_INT);
             $stmt->execute();
         }
 
@@ -179,26 +179,13 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function retrieveZone(int $domainId): bool
     {
-        // Skip placeholder ownership rows (zone_name IS NULL) and prefer the row
-        // whose id matches, so a shared identifier can't target the wrong zone.
-        $stmt = $this->db->prepare(
-            "SELECT zone_name, zone_type
-             FROM zones
-             WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL
-             ORDER BY CASE WHEN id = :pref THEN 0 ELSE 1 END
-             LIMIT 1"
-        );
-        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
-        $stmt->bindValue(':pref', $domainId, PDO::PARAM_INT);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $zone = $this->resolveCanonicalZoneRow($domainId);
 
-        if ($row === false || strtoupper($row['zone_type'] ?? '') !== 'SLAVE') {
+        if ($zone === null || strtoupper($zone['zone_type'] ?? '') !== 'SLAVE') {
             return false;
         }
 
-        return $this->client->retrieveZone(self::ensureTrailingDot($row['zone_name']));
+        return $this->client->retrieveZone(self::ensureTrailingDot($zone['zone_name']));
     }
 
     public function updateZoneAccount(int $domainId, string $account): bool
@@ -1199,13 +1186,35 @@ class ApiDnsBackendProvider implements DnsBackendProvider
      */
     private function getZoneNameByLocalId(int $id): ?string
     {
-        $stmt = $this->db->prepare("SELECT zone_name FROM zones WHERE id = :id OR domain_id = :did LIMIT 1");
+        return $this->resolveCanonicalZoneRow($id)['zone_name'] ?? null;
+    }
+
+    /**
+     * Resolve the zones row a Poweradmin zone ID refers to.
+     *
+     * The ID reaching this class is domain_id for some installs and zones.id for others,
+     * so both are matched. Placeholder ownership rows (zone_name IS NULL) are skipped and
+     * an id match wins over a domain_id match, otherwise a shared identifier can resolve
+     * to a different zone's row - which matters because callers write back to row['id'].
+     *
+     * @return array{id: int|string, zone_name: string, zone_type: ?string}|null
+     */
+    private function resolveCanonicalZoneRow(int $id): ?array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT id, zone_name, zone_type
+             FROM zones
+             WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL
+             ORDER BY CASE WHEN id = :pref THEN 0 ELSE 1 END
+             LIMIT 1"
+        );
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->bindValue(':did', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':pref', $id, PDO::PARAM_INT);
         $stmt->execute();
-        $name = $stmt->fetchColumn();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $name !== false && $name !== null ? $name : null;
+        return $row !== false && $row !== null ? $row : null;
     }
 
     private static function ensureTrailingDot(string $name): string
