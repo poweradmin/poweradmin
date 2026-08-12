@@ -325,6 +325,22 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertSame([1], $boundIds);
     }
 
+    public function testGetZoneByNameSurvivesAMastersFieldThatIsNotAnArray(): void
+    {
+        // The raw zone read is not shape-normalized the way getAllZoneKinds is, so a
+        // proxy flattening masters to a scalar used to be a TypeError inside implode().
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'SLAVE', 'masters' => '192.0.2.1']);
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'domain_id' => 1]);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->getZoneByName('slave.example.com');
+
+        $this->assertSame('', $result['master']);
+    }
+
     private function stubCanonicalRowLookup(array $row): PDOStatement
     {
         $stmt = $this->createMock(PDOStatement::class);

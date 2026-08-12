@@ -823,7 +823,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
             if ($kind !== null) {
                 $type = $kind['kind'];
-                $master = implode(',', $kind['masters']);
+                $master = self::formatMasters($kind['masters']);
             } else {
                 // Bulk kinds call failed - keep last-known values from cache so
                 // a transient API blip doesn't propagate empty values back into
@@ -862,7 +862,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             'id' => $id,
             'name' => $zoneName,
             'type' => strtoupper($zoneData['kind'] ?? ''),
-            'master' => implode(',', $zoneData['masters'] ?? []),
+            'master' => self::formatMasters($zoneData['masters'] ?? []),
             'dnssec' => $zoneData['dnssec'] ?? false,
         ];
     }
@@ -1231,6 +1231,22 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     private static function parseMasters(string $masters): array
     {
         return array_values(array_filter(array_map('trim', explode(',', $masters)), 'strlen'));
+    }
+
+    /**
+     * Flatten the masters array PowerDNS returns back into the stored string form.
+     * The shape is only guaranteed on the getAllZoneKinds path, so guard it here too -
+     * a raw zone read hands us whatever the server put in the JSON.
+     *
+     * @param mixed $masters
+     */
+    private static function formatMasters($masters): string
+    {
+        if (!is_array($masters)) {
+            return '';
+        }
+
+        return implode(',', array_map('strval', array_filter($masters, 'is_scalar')));
     }
 
     private static function contentMatchesApi(string $apiContent, string $dbFormattedContent): bool
