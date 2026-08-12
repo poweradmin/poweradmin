@@ -88,7 +88,7 @@ final class LazyServiceDumper implements DumperInterface
         $proxyClass = $this->getProxyClass($definition, $asGhostObject);
 
         if (!$asGhostObject) {
-            if ($definition->getClass() === $proxyClass) {
+            if (ltrim($definition->getClass(), '\\') === $proxyClass) {
                 return <<<EOF
                             if (true === \$lazyLoad) {
                                 $instantiation new \ReflectionClass('$proxyClass')->newLazyProxy(static fn () => $factoryCode);
@@ -149,19 +149,26 @@ final class LazyServiceDumper implements DumperInterface
             }
         }
 
-        if ($definition->getClass() === $proxyClass) {
+        if (ltrim($definition->getClass(), '\\') === $proxyClass) {
             return '';
         }
 
         $interfaces = [];
 
         if ($definition->hasTag('proxy')) {
-            foreach ($definition->getTag('proxy') as $tag) {
+            $tags = $definition->getTag('proxy');
+
+            foreach ($tags as $tag) {
                 if (!isset($tag['interface'])) {
                     throw new InvalidArgumentException(\sprintf('Invalid definition for service "%s": the "interface" attribute is missing on a "proxy" tag.', $id ?? $definition->getClass()));
                 }
-                if (!interface_exists($tag['interface']) && !class_exists($tag['interface'], false)) {
-                    throw new InvalidArgumentException(\sprintf('Invalid definition for service "%s": several "proxy" tags found but "%s" is not an interface.', $id ?? $definition->getClass(), $tag['interface']));
+                if (!interface_exists($tag['interface'])) {
+                    if (!class_exists($tag['interface'], false)) {
+                        throw new InvalidArgumentException(\sprintf('Invalid "proxy" tag for service "%s": "%s" is neither a class nor an interface.', $id ?? $definition->getClass(), $tag['interface']));
+                    }
+                    if (1 < \count($tags)) {
+                        throw new InvalidArgumentException(\sprintf('Invalid "proxy" tag for service "%s": several "proxy" tags found but "%s" is not an interface.', $id ?? $definition->getClass(), $tag['interface']));
+                    }
                 }
                 if ('object' !== $definition->getClass() && !is_a($class->name, $tag['interface'], true)) {
                     throw new InvalidArgumentException(\sprintf('Invalid "proxy" tag for service "%s": class "%s" doesn\'t implement "%s".', $id ?? $definition->getClass(), $definition->getClass(), $tag['interface']));
