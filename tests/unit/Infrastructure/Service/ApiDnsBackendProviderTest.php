@@ -171,7 +171,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // Mock getZoneNameByLocalId: SELECT zone_name FROM zones WHERE id = :id OR domain_id = :did
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
-        $stmt->method('fetchColumn')->willReturn('example.com');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmt->method('bindValue');
 
         // Second prepare for UPDATE zones SET zone_type
@@ -195,7 +195,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
-        $stmt->method('fetchColumn')->willReturn('example.com');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmt->method('bindValue');
 
         $stmtUpdate = $this->createMock(PDOStatement::class);
@@ -231,7 +231,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
-        $stmt->method('fetchColumn')->willReturn('slave.example.com');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'slave.example.com', 'zone_type' => 'SLAVE']);
         $stmt->method('bindValue');
 
         $stmtUpdate = $this->createMock(PDOStatement::class);
@@ -254,7 +254,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
-        $stmt->method('fetchColumn')->willReturn('slave.example.com');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'slave.example.com', 'zone_type' => 'SLAVE']);
         $stmt->method('bindValue');
 
         $stmtUpdate = $this->createMock(PDOStatement::class);
@@ -271,6 +271,65 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($this->provider->updateZoneMaster(1, '192.0.2.1, 2001:db8::1'));
     }
 
+    public function testUpdateZoneMasterCachesAgainstTheCanonicalRowNotThePassedId(): void
+    {
+        // API mode hands out domain_id, so the passed 10 must resolve to zones.id 1
+        // before the cache write - otherwise it lands on an unrelated zone's row.
+        $boundIds = [];
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
+            $this->stubCanonicalRowLookup(['id' => 1, 'zone_name' => 'slave.example.com', 'zone_type' => 'SLAVE']),
+            $this->captureBoundIds($boundIds)
+        );
+
+        $this->mockClient->method('updateZoneProperties')->willReturn(true);
+
+        $this->assertTrue($this->provider->updateZoneMaster(10, '192.0.2.1'));
+        $this->assertSame([1], $boundIds);
+    }
+
+    public function testUpdateZoneTypeCachesAgainstTheCanonicalRowNotThePassedId(): void
+    {
+        $boundIds = [];
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
+            $this->stubCanonicalRowLookup(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']),
+            $this->captureBoundIds($boundIds)
+        );
+
+        $this->mockClient->method('updateZoneProperties')->willReturn(true);
+
+        $this->assertTrue($this->provider->updateZoneType(10, 'NATIVE'));
+        $this->assertSame([1], $boundIds);
+    }
+
+    private function stubCanonicalRowLookup(array $row): PDOStatement
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('bindValue');
+        $stmt->method('fetch')->willReturn($row);
+
+        return $stmt;
+    }
+
+    /**
+     * @param list<mixed> $boundIds filled with every value bound to :id
+     */
+    private function captureBoundIds(array &$boundIds): PDOStatement
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('bindValue')->willReturnCallback(
+            function (string|int $param, mixed $value) use (&$boundIds): bool {
+                if ($param === ':id') {
+                    $boundIds[] = $value;
+                }
+                return true;
+            }
+        );
+
+        return $stmt;
+    }
+
     // ---------------------------------------------------------------
     // Record operations
     // ---------------------------------------------------------------
@@ -280,6 +339,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // Mock getZoneNameByLocalId
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmtZone->method('fetchColumn')->willReturn('example.com');
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
@@ -314,6 +374,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmtZone->method('fetchColumn')->willReturn('example.com');
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
@@ -358,6 +419,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmtZone->method('fetchColumn')->willReturn('example.com');
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
@@ -390,6 +452,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmtZone->method('fetchColumn')->willReturn('example.com');
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
@@ -422,6 +485,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmtZone->method('fetchColumn')->willReturn('example.com');
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
@@ -455,6 +519,7 @@ class ApiDnsBackendProviderTest extends TestCase
     {
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmtZone->method('fetchColumn')->willReturn('example.com');
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
@@ -826,6 +891,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // Mock getZoneNameByLocalId
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmtZone->method('fetchColumn')->willReturn('example.com');
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
@@ -856,6 +922,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // Mock getZoneNameByLocalId
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmtZone->method('fetchColumn')->willReturn('example.com');
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
@@ -879,6 +946,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // Mock getZoneNameByLocalId
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmtZone->method('fetchColumn')->willReturn('example.com');
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
@@ -905,6 +973,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // Mock getZoneNameByLocalId
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmtZone->method('fetchColumn')->willReturn('example.com');
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
@@ -924,6 +993,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // Mock getZoneNameByLocalId
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmtZone->method('fetchColumn')->willReturn('example.com');
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
@@ -944,6 +1014,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // Mock getZoneNameByLocalId
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $stmtZone->method('fetchColumn')->willReturn('example.com');
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
