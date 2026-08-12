@@ -68,7 +68,7 @@ services:
   # =============================================================================
 
   web-mysql:
-    image: nginx:latest@sha256:5a88c9c45479443d7be2eadc894b4ed0a9801bae03d97a5760ae13b5c2005942
+    image: nginx:latest@sha256:8541484afbc9c8a5a8a99b379568ebbc957f658583ec9448fc43104229c03cf8
     container_name: web-mysql
     networks:
       - internal
@@ -81,7 +81,7 @@ services:
       - app-mysql
 
   web-pgsql:
-    image: nginx:latest@sha256:5a88c9c45479443d7be2eadc894b4ed0a9801bae03d97a5760ae13b5c2005942
+    image: nginx:latest@sha256:8541484afbc9c8a5a8a99b379568ebbc957f658583ec9448fc43104229c03cf8
     container_name: web-pgsql
     networks:
       - internal
@@ -94,7 +94,7 @@ services:
       - app-pgsql
 
   web-sqlite:
-    image: nginx:latest@sha256:5a88c9c45479443d7be2eadc894b4ed0a9801bae03d97a5760ae13b5c2005942
+    image: nginx:latest@sha256:8541484afbc9c8a5a8a99b379568ebbc957f658583ec9448fc43104229c03cf8
     container_name: web-sqlite
     networks:
       - internal
@@ -228,7 +228,7 @@ services:
   # =============================================================================
 
   adminer:
-    image: adminer@sha256:494d4a9461105644222c938679fe58d5e3fd13fb228c76a426e81c16d4ffbaef
+    image: adminer@sha256:890cffec7caa20159fb6f68c1a521b2e5879f7314f4845d4ebca7cc1cf145971
     container_name: adminer
     networks:
       - internal
