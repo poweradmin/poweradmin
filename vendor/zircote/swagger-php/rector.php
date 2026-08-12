@@ -2,9 +2,6 @@
 
 use Rector\CodeQuality\Rector\Class_\CompleteDynamicPropertiesRector;
 use Rector\CodeQuality\Rector\For_\ForRepeatedCountToOwnVariableRector;
-use Rector\CodeQuality\Rector\If_\CombineIfRector;
-use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
-use Rector\CodeQuality\Rector\If_\ShortenElseIfRector;
 use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector;
@@ -24,8 +21,6 @@ return RectorConfig::configure()
     ->withSkipPath(__DIR__ . '/tests/Fixtures')
     ->withSkip([
         NewlineBeforeNewAssignSetRector::class,
-        CombineIfRector::class,
-        ExplicitBoolCompareRector::class,
         ForRepeatedCountToOwnVariableRector::class,
         ReadOnlyPropertyRector::class,
         RemoveAlwaysTrueIfConditionRector::class => [
@@ -34,9 +29,7 @@ return RectorConfig::configure()
         RemoveDeadInstanceOfRector::class => [
             __DIR__ . '/src/Processors/ExpandEnums.php',
         ],
-        ShortenElseIfRector::class,
         NewlineAfterStatementRector::class,
-        NullableCompareToNullRector::class,
         StringClassNameToClassConstantRector::class => [
             __DIR__ . '/src/Analysers/DocBlockParser.php',
             __DIR__ . '/src/Analysers/TypeResolverTrait.php',
@@ -46,10 +39,6 @@ return RectorConfig::configure()
             __DIR__ . '/tests/ContextTest.php',
             __DIR__ . '/tests/Utils/TokenScannerTest.php',
         ],
-        WrapEncapsedVariableInCurlyBracesRector::class => [
-            __DIR__ . '/src/Type/LegacyTypeResolver.php',
-        ],
-        EncapsedStringsToSprintfRector::class,
         ParamTypeByMethodCallTypeRector::class => [
             __DIR__ . '/src/Serializer.php',
         ],

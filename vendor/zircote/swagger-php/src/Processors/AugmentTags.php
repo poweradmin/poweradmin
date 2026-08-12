@@ -26,26 +26,6 @@ class AugmentTags
         $this->withDescription = $withDescription;
     }
 
-    /**
-     * Whitelist tags to keep even if not used. <code>*</code> may be used to keep all unused.
-     */
-    public function setWhitelist(array $whitelist): AugmentTags
-    {
-        $this->whitelist = $whitelist;
-
-        return $this;
-    }
-
-    /**
-     * Enables/disables generation of default tag descriptions.
-     */
-    public function setWithDescription(bool $withDescription): AugmentTags
-    {
-        $this->withDescription = $withDescription;
-
-        return $this;
-    }
-
     public function __invoke(Analysis $analysis): void
     {
         $operations = $analysis->getAnnotationsOfType(OA\Operation::class);
@@ -96,6 +76,26 @@ class AugmentTags
         $this->removeUnusedTags($usedTagNames, $declaredTags, $analysis);
     }
 
+    /**
+     * Whitelist tags to keep even if not used. <code>*</code> may be used to keep all unused.
+     */
+    public function setWhitelist(array $whitelist): AugmentTags
+    {
+        $this->whitelist = $whitelist;
+
+        return $this;
+    }
+
+    /**
+     * Enables/disables generation of default tag descriptions.
+     */
+    public function setWithDescription(bool $withDescription): AugmentTags
+    {
+        $this->withDescription = $withDescription;
+
+        return $this;
+    }
+
     private function removeUnusedTags(array $usedTagNames, array $declaredTags, Analysis $analysis): void
     {
         if (in_array('*', $this->whitelist)) {
@@ -108,7 +108,9 @@ class AugmentTags
                 if (false !== $index = array_search($tag, $analysis->openapi->tags, true)) {
                     $analysis->removeAnnotation($tag);
                     unset($analysis->openapi->tags[$index]);
-                    $analysis->openapi->tags = array_values($analysis->openapi->tags);
+                    if ($analysis->openapi->tags !== []) {
+                        $analysis->openapi->tags = array_values($analysis->openapi->tags);
+                    }
                 }
             }
         }
