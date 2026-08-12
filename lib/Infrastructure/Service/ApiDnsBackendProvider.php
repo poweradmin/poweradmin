@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -1102,26 +1103,14 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     /**
      * Resolve the zones row a Poweradmin zone ID refers to.
-     *
-     * The ID reaching this class is domain_id for some installs and zones.id for others,
-     * so both are matched. Placeholder ownership rows (zone_name IS NULL) are skipped and
-     * an id match wins over a domain_id match, matching ApiZoneRepository::resolveCanonicalRow().
      * Callers write the cache back to row['id'], so resolving before the write matters.
      *
      * @return array{id: int|string, zone_name: string, zone_type: ?string, zone_master: ?string}|null
      */
     private function resolveCanonicalZoneRow(int $id): ?array
     {
-        $stmt = $this->db->prepare(
-            "SELECT id, zone_name, zone_type, zone_master
-             FROM zones
-             WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL
-             ORDER BY CASE WHEN id = :pref THEN 0 ELSE 1 END
-             LIMIT 1"
-        );
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $id, PDO::PARAM_INT);
-        $stmt->bindValue(':pref', $id, PDO::PARAM_INT);
+        $stmt = $this->db->prepare(CanonicalZoneSql::selectByZoneId('id, zone_name, zone_type, zone_master'));
+        CanonicalZoneSql::bindZoneId($stmt, $id);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 

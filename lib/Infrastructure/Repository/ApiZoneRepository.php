@@ -29,6 +29,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 class ApiZoneRepository implements ZoneRepositoryInterface
@@ -267,19 +268,23 @@ class ApiZoneRepository implements ZoneRepositoryInterface
      */
     private function resolveCanonicalRow(int $zoneId): ?array
     {
-        $stmt = $this->db->prepare(
-            "SELECT id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id
-             FROM zones
-             WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL
-             ORDER BY CASE WHEN id = :pref THEN 0 ELSE 1 END
-             LIMIT 1"
-        );
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':pref', $zoneId, PDO::PARAM_INT);
+        $stmt = $this->db->prepare(CanonicalZoneSql::selectByZoneId(
+            'id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id'
+        ));
+        CanonicalZoneSql::bindZoneId($stmt, $zoneId);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row ?: null;
+    }
+
+    /**
+     * The identifier the rest of the application uses for a resolved row, matching what
+     * ApiDnsBackendProvider::getZones() emits. Handing this to the backend provider makes
+     * its own resolution land on the row this repository already picked.
+     */
+    private static function externalZoneId(array $canonical): int
+    {
+        return (int)($canonical['domain_id'] ?: $canonical['id']);
     }
 
     /**
@@ -803,22 +808,18 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         if ($canonical === null) {
             return false;
         }
-        $cid = (int)$canonical['id'];
+
+        // Resolve here and pass the resolved identifier down, so the provider's own lookup
+        // lands on this row. The provider mirrors the change into the local zones cache
+        // itself once PowerDNS accepts it, so this only relays the call and reports failure.
+        $externalId = self::externalZoneId($canonical);
 
         $success = true;
         if (isset($updates['type'])) {
-            $success = $this->backendProvider->updateZoneType($zoneId, $updates['type']);
-            $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type WHERE id = :id");
-            $stmt->bindValue(':type', $updates['type'], PDO::PARAM_STR);
-            $stmt->bindValue(':id', $cid, PDO::PARAM_INT);
-            $stmt->execute();
+            $success = $this->backendProvider->updateZoneType($externalId, $updates['type']);
         }
-        if (isset($updates['master'])) {
-            $success = $success && $this->backendProvider->updateZoneMaster($zoneId, $updates['master']);
-            $stmt = $this->db->prepare("UPDATE zones SET zone_master = :master WHERE id = :id");
-            $stmt->bindValue(':master', $updates['master'], PDO::PARAM_STR);
-            $stmt->bindValue(':id', $cid, PDO::PARAM_INT);
-            $stmt->execute();
+        if ($success && isset($updates['master'])) {
+            $success = $this->backendProvider->updateZoneMaster($externalId, $updates['master']);
         }
         return $success;
     }
