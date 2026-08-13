@@ -80,6 +80,16 @@
       "matchDatasources": [
         "packagist"
       ],
+      "matchPackageNames": [
+        "tomasvotruba/cognitive-complexity"
+      ],
+      "allowedVersions": "<1.2",
+      "description": "cognitive-complexity 1.2+ requires PHP 8.3+"
+    },
+    {
+      "matchDatasources": [
+        "packagist"
+      ],
       "allowedVersions": "<8.0",
       "description": "Symfony 8.0 requires PHP 8.4+",
       "matchPackageNames": [
