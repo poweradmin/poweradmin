@@ -55,7 +55,7 @@ AddDefaultCharset UTF-8
 </Files>
 
 # Security: Deny access to sensitive file types
-<Files ~ "\.(sql|md|log|yaml|yml)$">
+<Files ~ "\.(sql|sqlite|sqlite3|db|md|log|yaml|yml)$">
     Order Allow,Deny
     Deny from all
 </Files>
