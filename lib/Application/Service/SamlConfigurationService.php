@@ -275,13 +275,21 @@ class SamlConfigurationService extends LoggingService
             return $errors;
         }
 
+        if (!is_array($mapping)) {
+            return ["Invalid mapping: permission_template_mapping must be an array"];
+        }
+
         foreach ($mapping as $group => $template) {
-            if (empty($group) || empty($template)) {
-                $errors[] = "Invalid mapping: empty group or template name";
+            // PHP casts numeric array keys to int, so an IdP group id such as
+            // '1001' arrives here as an integer. UserProvisioningService casts
+            // it back the same way when matching.
+            if ((string)$group === '') {
+                $errors[] = "Invalid mapping: empty group name";
+                continue;
             }
 
-            if (!is_string($group) || !is_string($template)) {
-                $errors[] = "Invalid mapping: group and template names must be strings";
+            if (!is_string($template) || trim($template) === '') {
+                $errors[] = sprintf("Invalid mapping for group '%s': template name must be a non-empty string", (string)$group);
             }
         }
 
