@@ -11,29 +11,34 @@
 interface supports most of the features of PowerDNS. It can work directly against the PowerDNS database
 (with API-assisted DNSSEC) or run entirely through the PowerDNS API in API backend mode.
 
+![Zone editor with inline record management](https://docs.poweradmin.org/screenshots/zone-editor.png)
+
+```bash
+docker run -d --name poweradmin -p 8080:80 -e DB_TYPE=sqlite -e PA_CREATE_ADMIN=1 poweradmin/poweradmin:latest
+```
+
 ## Features
 
-- Supports all zone types (master, native, and slave)
-- Supermasters for automatic provisioning of slave zones
-- Zone templates for quick zone creation
-- Bulk operations for records and reverse DNS
-- Zone metadata editor for PowerDNS `domainmetadata`, including multi-value metadata kinds
+- All zone types (master, native, and slave), supermasters, and zone templates
 - Native PowerDNS API backend mode - manage zones without direct access to the PowerDNS database
+- DNSSEC operations, plus a zone metadata editor for PowerDNS `domainmetadata`
+- RESTful API with OpenAPI documentation (used by the Terraform/OpenTofu provider)
+- Bulk operations for records and reverse DNS, and search across zones and records
 - Version-aware interface that adapts record types, metadata kinds, and terminology to the connected PowerDNS version
-- IPv6 support
-- Multi-language support (28 languages)
-- DNSSEC operations via PowerDNS API
-- Light and dark themes
-- Search functionality across zones and records
-- User and permission management with role-based access
-- Ability to add reverse records
-- Authentication options:
-  - Local database authentication
-  - LDAP authentication with custom filter
-  - SAML and OIDC authentication
-  - Multi-factor authentication (MFA/2FA) with TOTP
-- RESTful API with OpenAPI documentation (used by Terraform/OpenTofu provider)
+- User and permission management with role-based access, plus LDAP, SAML, OIDC, and TOTP two-factor authentication
+- 28 languages, light and dark themes, and IPv6 support
 - Docker deployment with FrankenPHP
+
+[Full feature list](https://docs.poweradmin.org/getting-started/features/)
+
+## Automation
+
+Poweradmin's REST API is wrapped by ready-made integrations, so zones can be managed from infrastructure tooling rather than a browser:
+
+* [terraform-provider-poweradmin](https://github.com/poweradmin/terraform-provider-poweradmin) - Terraform/OpenTofu provider for zones and records
+* [external-dns-poweradmin-webhook](https://github.com/poweradmin/external-dns-poweradmin-webhook) - ExternalDNS webhook provider for Kubernetes
+* [cert-manager-webhook-poweradmin](https://github.com/poweradmin/cert-manager-webhook-poweradmin) - cert-manager solver for DNS-01 challenges
+* [certbot-dns-poweradmin](https://github.com/poweradmin/certbot-dns-poweradmin) - Certbot plugin for Let's Encrypt DNS-01 challenges
 
 ## Screenshots
 
@@ -48,10 +53,6 @@ interface supports most of the features of PowerDNS. It can work directly agains
 ### Zone Management
 
 ![Zone list with sorting and filtering](https://docs.poweradmin.org/screenshots/zone-list.png)
-
-### Zone Editor
-
-![Zone editor with inline record management](https://docs.poweradmin.org/screenshots/zone-editor.png)
 
 ### Zone Metadata Editor
 
@@ -195,13 +196,6 @@ JetBrains provides IDE licenses used for development of this project.
 * yBaca s.r.o.
 
 For feature sponsorship, to speed up development of specific features, or to discuss ideas and issues, please [contact me](https://github.com/edmondas). Donations via invoice are also possible for organizations within the EU.
-
-## Related Projects
-
-* [terraform-provider-poweradmin](https://github.com/poweradmin/terraform-provider-poweradmin) - Terraform/OpenTofu provider for managing DNS zones and records through Poweradmin
-* [certbot-dns-poweradmin](https://github.com/poweradmin/certbot-dns-poweradmin) - Certbot DNS plugin for Poweradmin to automate Let's Encrypt certificate issuance with DNS-01 challenge
-* [external-dns-poweradmin-webhook](https://github.com/poweradmin/external-dns-poweradmin-webhook) - ExternalDNS webhook provider for Poweradmin to synchronize Kubernetes DNS records
-* [cert-manager-webhook-poweradmin](https://github.com/poweradmin/cert-manager-webhook-poweradmin) - cert-manager webhook solver for Poweradmin to automate DNS-01 challenge validation
 
 ## Community Projects
 
