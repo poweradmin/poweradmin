@@ -1233,7 +1233,7 @@ return [
         'auto_provision' => ${oidc_auto_provision},
         'link_by_email' => ${oidc_link_by_email},
         'sync_user_info' => ${oidc_sync_user_info},
-        'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-}',
+        'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-Guest}',
         'permission_template_mapping' => ${oidc_permission_template_mapping},
         'group_mapping' => ${oidc_group_mapping},
         'providers' => [
@@ -1322,7 +1322,7 @@ EOF
         'auto_provision' => ${saml_auto_provision},
         'link_by_email' => ${saml_link_by_email},
         'sync_user_info' => ${saml_sync_user_info},
-        'default_permission_template' => '${PA_SAML_DEFAULT_PERMISSION_TEMPLATE:-}',
+        'default_permission_template' => '${PA_SAML_DEFAULT_PERMISSION_TEMPLATE:-Guest}',
         'permission_template_mapping' => ${saml_permission_template_mapping},
         'group_mapping' => ${saml_group_mapping},
 
