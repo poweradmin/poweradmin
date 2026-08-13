@@ -146,7 +146,7 @@ docker run -d --name poweradmin -p 80:80 \
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
-| `DB_TYPE` | Database type: `sqlite`, `mysql`, or `pgsql` | `sqlite` | No |
+| `DB_TYPE` | Database type: `sqlite`, `mysql`, or `pgsql` | none | **Yes** |
 | `DB_HOST` | Database host (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_PORT` | Database port (unused for SQLite) | Empty (uses default: 3306 for MySQL, 5432 for PostgreSQL) | No |
 | `DB_USER` | Database username (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
