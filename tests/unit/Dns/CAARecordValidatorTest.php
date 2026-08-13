@@ -215,4 +215,22 @@ class CAARecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
     }
+
+    /**
+     * The CAA wizard offers ";" as a pickable provider. Its label shipped as
+     * "Allow all CAs", the exact inverse of what the record does, so a user
+     * choosing it would have blocked issuance for the zone.
+     */
+    public function testShippedCaaProviderLabelForSemicolonDoesNotClaimToAllow()
+    {
+        $defaults = require dirname(__DIR__, 3) . '/config/settings.defaults.php';
+        $providers = $defaults['modules']['dns_wizards']['caa_providers'];
+
+        $this->assertArrayHasKey(';', $providers);
+
+        // Word boundary matters: "Disallow all CAs" contains "allow all" as a substring.
+        $label = $providers[';'];
+        $this->assertDoesNotMatchRegularExpression('/\ballow all\b/i', $label);
+        $this->assertStringContainsStringIgnoringCase('disallow', $label);
+    }
 }
