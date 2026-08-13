@@ -28,6 +28,13 @@
 </div>
 {% endif %}
 
+{% if sso_template_misconfigured %}
+<div class="alert alert-warning py-2" role="alert">
+    <i class="bi bi-exclamation-triangle me-1"></i>
+    {% trans %}SSO auto-provisioning is enabled but default_permission_template is empty, so login fails for any user who matches no group mapping. Set a default permission template, for example Guest.{% endtrans %}
+</div>
+{% endif %}
+
 {% if permissions['user_is_ueberuser'] %}
 {# The ueberuser dashboard has enough tiles to warrant grouped, collapsible sections. #}
 

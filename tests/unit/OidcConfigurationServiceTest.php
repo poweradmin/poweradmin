@@ -364,4 +364,100 @@ class OidcConfigurationServiceTest extends TestCase
 
         $this->assertNull($this->service->describeProviderConfigError('azure'));
     }
+
+    /**
+     * PHP casts numeric array keys to int, so a mapping keyed on numeric IdP
+     * group ids used to be rejected as "not a string". A non-empty error array
+     * blocks the auth flow, so this locked out a valid configuration.
+     */
+    public function testNumericGroupKeysAreValid(): void
+    {
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'permission_template_mapping', [], ['1001' => 'Editor', '1002' => 'Viewer']],
+            ]);
+
+        $this->assertSame([], $this->service->validatePermissionTemplateMapping());
+    }
+
+    public function testZeroGroupKeyIsValid(): void
+    {
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'permission_template_mapping', [], ['0' => 'Editor']],
+            ]);
+
+        $this->assertSame([], $this->service->validatePermissionTemplateMapping());
+    }
+
+    public function testEmptyTemplateNameIsRejectedOnce(): void
+    {
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'permission_template_mapping', [], ['admins' => '']],
+            ]);
+
+        $errors = $this->service->validatePermissionTemplateMapping();
+
+        $this->assertCount(1, $errors);
+        $this->assertStringContainsString('admins', $errors[0]);
+    }
+
+    public function testNonArrayMappingIsRejected(): void
+    {
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'permission_template_mapping', [], 'admins=Editor'],
+            ]);
+
+        $this->assertCount(1, $this->service->validatePermissionTemplateMapping());
+    }
+
+    public function testAutoProvisioningTemplateMissingWhenDefaultIsBlank(): void
+    {
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'enabled', false, true],
+                ['oidc', 'auto_provision', true, true],
+                ['oidc', 'default_permission_template', '', ''],
+            ]);
+
+        $this->assertTrue($this->service->isAutoProvisioningTemplateMissing());
+    }
+
+    public function testAutoProvisioningTemplateNotMissingWhenDefaultIsSet(): void
+    {
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'enabled', false, true],
+                ['oidc', 'auto_provision', true, true],
+                ['oidc', 'default_permission_template', '', 'Guest'],
+            ]);
+
+        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
+    }
+
+    public function testAutoProvisioningTemplateNotMissingWhenProvisioningIsOff(): void
+    {
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'enabled', false, true],
+                ['oidc', 'auto_provision', true, false],
+                ['oidc', 'default_permission_template', '', ''],
+            ]);
+
+        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
+    }
+
+    public function testAutoProvisioningTemplateNotMissingWhenOidcDisabled(): void
+    {
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'enabled', false, false],
+                ['oidc', 'auto_provision', true, true],
+                ['oidc', 'default_permission_template', '', ''],
+            ]);
+
+        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
+    }
 }

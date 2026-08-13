@@ -33,10 +33,14 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\PowerdnsStatusService;
+use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Module\ModuleRegistry;
 
 class IndexController extends BaseController
@@ -132,6 +136,9 @@ class IndexController extends BaseController
             && $this->config->get('security', 'password_reset.enabled', false)
             && empty($this->config->get('interface', 'application_url', ''));
 
+        $ssoTemplateMisconfigured = $permissions['user_is_ueberuser']
+            && $this->ssoProvisioningTemplateMissing();
+
         $dblogUse = $this->config->get('logging', 'database_enabled', false);
         $ifaceAddReverseRecord = $this->config->get('interface', 'add_reverse_record', true);
         $apiEnabled = $this->config->get('api', 'enabled', false);
@@ -177,7 +184,22 @@ class IndexController extends BaseController
             'has_administration' => $hasAdministration,
             'has_tools' => $hasTools,
             'password_reset_misconfigured' => $passwordResetMisconfigured,
+            'sso_template_misconfigured' => $ssoTemplateMisconfigured,
         ]);
+    }
+
+    /**
+     * Same silent-failure class as the password reset warning: SSO provisioning
+     * aborts for any user matching no group mapping when the fallback template
+     * is blank, and the login fails with a generic error.
+     */
+    private function ssoProvisioningTemplateMissing(): bool
+    {
+        $logHandler = LoggerHandlerFactory::create($this->config->getAll());
+        $logger = new Logger($logHandler, $this->config->get('logging', 'level', 'info'));
+
+        return (new OidcConfigurationService($this->config, $logger))->isAutoProvisioningTemplateMissing()
+            || (new SamlConfigurationService($this->config, $logger))->isAutoProvisioningTemplateMissing();
     }
 
     private function getDashboardStats(): array

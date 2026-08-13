@@ -15583,3 +15583,10 @@ msgstr "Zoeken in de opgegeven reden voor de wijziging"
 #: templates/modern/list_record_changes.html
 msgid "Reason"
 msgstr "Reden"
+
+#: templates/default/index.html:34 templates/modern/index.html:34
+msgid ""
+"SSO auto-provisioning is enabled but default_permission_template is "
+"empty, so login fails for any user who matches no group mapping. Set a "
+"default permission template, for example Guest."
+msgstr ""

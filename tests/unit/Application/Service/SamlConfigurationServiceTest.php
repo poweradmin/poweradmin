@@ -274,4 +274,78 @@ class SamlConfigurationServiceTest extends TestCase
         $this->assertTrue(openssl_x509_export($x509, $pem));
         return $pem;
     }
+
+    /**
+     * PHP casts numeric array keys to int, so a mapping keyed on numeric IdP
+     * group ids used to be rejected as "not a string". For SAML a non-empty
+     * error array hides every login button, so this locked users out.
+     */
+    public function testNumericGroupKeysAreValid(): void
+    {
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'permission_template_mapping', [], ['1001' => 'Editor', '1002' => 'Viewer']],
+            ]);
+
+        $this->assertSame([], $this->service->validatePermissionTemplateMapping());
+    }
+
+    public function testZeroGroupKeyIsValid(): void
+    {
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'permission_template_mapping', [], ['0' => 'Editor']],
+            ]);
+
+        $this->assertSame([], $this->service->validatePermissionTemplateMapping());
+    }
+
+    public function testEmptyTemplateNameIsRejectedOnce(): void
+    {
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'permission_template_mapping', [], ['admins' => '']],
+            ]);
+
+        $errors = $this->service->validatePermissionTemplateMapping();
+
+        $this->assertCount(1, $errors);
+        $this->assertStringContainsString('admins', $errors[0]);
+    }
+
+    public function testAutoProvisioningTemplateMissingWhenDefaultIsBlank(): void
+    {
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'enabled', false, true],
+                ['saml', 'auto_provision', true, true],
+                ['saml', 'default_permission_template', '', ''],
+            ]);
+
+        $this->assertTrue($this->service->isAutoProvisioningTemplateMissing());
+    }
+
+    public function testAutoProvisioningTemplateNotMissingWhenDefaultIsSet(): void
+    {
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'enabled', false, true],
+                ['saml', 'auto_provision', true, true],
+                ['saml', 'default_permission_template', '', 'Guest'],
+            ]);
+
+        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
+    }
+
+    public function testAutoProvisioningTemplateNotMissingWhenSamlDisabled(): void
+    {
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'enabled', false, false],
+                ['saml', 'auto_provision', true, true],
+                ['saml', 'default_permission_template', '', ''],
+            ]);
+
+        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
+    }
 }
