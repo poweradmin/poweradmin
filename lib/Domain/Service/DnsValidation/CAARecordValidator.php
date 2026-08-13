@@ -169,13 +169,11 @@ class CAARecordValidator implements DnsRecordValidatorInterface
 
         // Validate value according to tag type
         if ($tag === 'issue' || $tag === 'issuewild') {
-            // Per RFC 8659, value can be:
-            // 1. Empty string (allowing all CAs) - issue ";", issuewild ";"
-            // 2. A domain name (allowing specific CA)
-            // 3. ";" (allowing all CAs if the value is the empty string)
+            // Per RFC 8659 the value is either a CA's domain name, which authorises
+            // that CA, or ";", which authorises none. There is no value meaning
+            // "any CA" - that is expressed by having no CAA record at all.
 
             if ($value === ';') {
-                // Valid - allows all CAs
                 return ValidationResult::success(true);
             }
 
