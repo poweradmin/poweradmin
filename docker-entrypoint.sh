@@ -868,7 +868,7 @@ return [
         'auto_provision' => ${oidc_auto_provision},
         'link_by_email' => ${oidc_link_by_email},
         'sync_user_info' => ${oidc_sync_user_info},
-        'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-}',
+        'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-Guest}',
         'providers' => [
 EOF
 
@@ -955,7 +955,7 @@ EOF
         'auto_provision' => ${saml_auto_provision},
         'link_by_email' => ${saml_link_by_email},
         'sync_user_info' => ${saml_sync_user_info},
-        'default_permission_template' => '${PA_SAML_DEFAULT_PERMISSION_TEMPLATE:-}',
+        'default_permission_template' => '${PA_SAML_DEFAULT_PERMISSION_TEMPLATE:-Guest}',
 
         // Service Provider (SP) Settings - Your PowerAdmin instance
         'sp' => [
