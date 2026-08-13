@@ -116,7 +116,7 @@ RUN cat > /etc/caddy/Caddyfile <<'CADDYEOF'
     }
 
     # Security: Deny access to hidden files and sensitive file types
-    @hidden path .* *.sql *.md *.log *.yaml *.yml
+    @hidden path .* *.sql *.sqlite *.sqlite3 *.db *.md *.log *.yaml *.yml
     handle @hidden {
         respond "Forbidden" 403
     }
