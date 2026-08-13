@@ -20,6 +20,7 @@
     "release/4.3.x",
     "release/4.2.x"
   ],
+  "useBaseBranchConfig": "merge",
   "constraints": {
     "php": ">=8.2 <8.3"
   },
