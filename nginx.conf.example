@@ -67,7 +67,7 @@ server {
         deny all;
     }
 
-    location ~ \.(sql|md|log)$ {
+    location ~ \.(sql|sqlite|sqlite3|db|md|log)$ {
         deny all;
     }
 
@@ -145,7 +145,7 @@ server {
             deny all;
         }
 
-        location ~ ^/poweradmin/.*\.(sql|md|log)$ {
+        location ~ ^/poweradmin/.*\.(sql|sqlite|sqlite3|db|md|log)$ {
             deny all;
         }
     }
