@@ -886,7 +886,8 @@ return [
                 'ssl.com' => 'SSL.com',
                 'buypass.com' => 'Buypass',
                 'usertrust.com' => 'USERTrust (Sectigo)',
-                ';' => 'Allow all CAs (not recommended)',
+                // RFC 8659: ";" as the issuer domain forbids issuance by every CA
+                ';' => 'Disallow all CAs (no issuance permitted)',
             ],
         ],
         'secondary_zone_import' => [
