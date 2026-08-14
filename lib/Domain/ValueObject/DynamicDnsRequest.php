@@ -49,12 +49,7 @@ class DynamicDnsRequest
         $dualstackUpdate = $request->query->get('dualstack_update') === '1';
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
-        // The standard dyndns2 `myip` parameter carries either address family. Route an
-        // IPv6 value to the v6 slot so it isn't rejected as an invalid IPv4 (`dnserr`).
-        if ($ipv4 !== '' && $ipv4 !== 'whatismyip' && $ipv6 === '' && str_contains($ipv4, ':')) {
-            $ipv6 = $ipv4;
-            $ipv4 = '';
-        }
+        [$ipv4, $ipv6] = self::routeAddressFamilies($ipv4, $ipv6);
 
         if ($ipv4 === 'whatismyip' || $ipv6 === 'whatismyip') {
             $ipRetriever = new IpAddressRetriever($_SERVER);
@@ -79,6 +74,40 @@ class DynamicDnsRequest
             $dualstackUpdate,
             $userAgent
         );
+    }
+
+    /**
+     * Route each address in `myip` to the slot matching its family. The standard dyndns2
+     * `myip` parameter carries either family, and ddclient 3.11+ sends both as one
+     * comma-separated list - moving the whole value to the v6 slot discarded every IPv4
+     * address, which under `dualstack_update` then deleted the existing A records.
+     *
+     * An explicit `myip6` stays authoritative: v6 values in `myip` are dropped rather than
+     * merged into it.
+     *
+     * @return array{0: string, 1: string} the IPv4 and IPv6 slots
+     */
+    private static function routeAddressFamilies(string $ipv4, string $ipv6): array
+    {
+        if ($ipv4 === '' || $ipv4 === 'whatismyip') {
+            return [$ipv4, $ipv6];
+        }
+
+        $ipv4Parts = [];
+        $ipv6Parts = [];
+        foreach (explode(',', $ipv4) as $address) {
+            $address = trim($address);
+            if ($address === '') {
+                continue;
+            }
+            if (str_contains($address, ':')) {
+                $ipv6Parts[] = $address;
+            } else {
+                $ipv4Parts[] = $address;
+            }
+        }
+
+        return [implode(',', $ipv4Parts), $ipv6 === '' ? implode(',', $ipv6Parts) : $ipv6];
     }
 
     public function getUsername(): string
