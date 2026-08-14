@@ -219,6 +219,7 @@ class CatalogZoneServiceTest extends TestCase
     #[Test]
     public function eligibleMembersExcludeZonesAlreadyInACatalog(): void
     {
+        $this->withMetaEditLevel('all');
         $this->backend->method('getZonesByKind')->willReturnCallback(fn(string $kind): array => match ($kind) {
             'MASTER' => [
                 ['id' => 1, 'name' => 'free.example.com', 'catalog' => ''],
@@ -228,10 +229,49 @@ class CatalogZoneServiceTest extends TestCase
             default => [],
         });
 
-        $names = array_column($this->service->getEligibleMembers(), 'name');
+        $names = array_column($this->service->getEligibleMembers(1), 'name');
 
         // NATIVE and SLAVE are never offered: PowerDNS would accept them and never publish.
         $this->assertSame(['free.example.com', 'nested.example.com'], $names);
+    }
+
+    #[Test]
+    public function eligibleMembersAreLimitedToZonesTheUserMayChange(): void
+    {
+        // Offering more would leak names the ordinary zone list already hides, and
+        // every extra option would fail on submit.
+        $this->permissions->method('getZoneMetaEditPermissionLevel')->willReturn('own');
+        $this->permissions->method('userOwnsZone')->willReturnCallback(
+            fn(int $userId, int $zoneId): bool => $zoneId === 1
+        );
+        $this->backend->method('getZonesByKind')->willReturnCallback(fn(string $kind): array => match ($kind) {
+            'MASTER' => [
+                ['id' => 1, 'name' => 'mine.example.com', 'catalog' => ''],
+                ['id' => 2, 'name' => 'theirs.example.com', 'catalog' => ''],
+            ],
+            default => [],
+        });
+
+        $this->assertSame(['mine.example.com'], array_column($this->service->getEligibleMembers(1), 'name'));
+    }
+
+    #[Test]
+    public function manageableProducersAreLimitedButResolutionStillSeesThemAll(): void
+    {
+        $this->permissions->method('getZoneMetaEditPermissionLevel')->willReturn('own');
+        $this->permissions->method('userOwnsZone')->willReturnCallback(
+            fn(int $userId, int $zoneId): bool => $zoneId === 5
+        );
+        $this->producers([
+            ['id' => 5, 'name' => 'mine.example.com', 'catalog' => ''],
+            ['id' => 6, 'name' => 'theirs.example.com', 'catalog' => ''],
+        ]);
+
+        $this->assertSame(['mine.example.com'], array_column($this->service->getManageableProducers(1), 'name'));
+
+        // assign()/clear() resolve a catalog through this list, so filtering it would
+        // make an unmanageable producer look like it does not exist.
+        $this->assertCount(2, $this->service->getProducers());
     }
 
     #[Test]

@@ -105,7 +105,7 @@ class ZoneCatalogController extends BaseController
         $memberIds = array_column($members, 'id');
 
         $available = array_values(array_filter(
-            $this->catalogService->getEligibleMembers(),
+            $this->catalogService->getEligibleMembers($userId),
             fn(array $zone): bool => $zone['id'] !== $zoneId && !in_array($zone['id'], $memberIds, true)
         ));
 

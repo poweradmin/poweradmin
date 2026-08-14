@@ -90,7 +90,8 @@ class CatalogZoneService
     }
 
     /**
-     * Producer zones available as catalogs.
+     * Every producer zone. Used to resolve a catalog to its producer, so it must
+     * stay unfiltered even when the caller may not manage all of them.
      *
      * @return array<int, array{id: int, name: string, catalog: string}>
      */
@@ -99,6 +100,19 @@ class CatalogZoneService
         // A single request can ask for producers several times (render, then a
         // lookup on submit); one backend read is enough.
         return $this->producers ??= $this->backendProvider->getZonesByKind(ZoneType::PRODUCER);
+    }
+
+    /**
+     * Producers the user may actually publish through.
+     *
+     * Offering more than this would both leak zone names the user cannot otherwise
+     * see and present choices that fail on submit.
+     *
+     * @return array<int, array{id: int, name: string, catalog: string}>
+     */
+    public function getManageableProducers(int $userId): array
+    {
+        return $this->onlyManageable($userId, $this->getProducers());
     }
 
     /**
@@ -117,11 +131,12 @@ class CatalogZoneService
     }
 
     /**
-     * Zones that could be added to a catalog: publishable, and not already a member.
+     * Zones the user may add to a catalog: publishable, not already a member, and
+     * theirs to change.
      *
      * @return array<int, array{id: int, name: string, catalog: string}>
      */
-    public function getEligibleMembers(): array
+    public function getEligibleMembers(int $userId): array
     {
         $eligible = [];
         foreach (self::PUBLISHABLE_KINDS as $kind) {
@@ -132,9 +147,24 @@ class CatalogZoneService
             }
         }
 
+        $eligible = $this->onlyManageable($userId, $eligible);
         usort($eligible, fn(array $a, array $b): int => strcmp($a['name'], $b['name']));
 
         return $eligible;
+    }
+
+    /**
+     * @param array<int, array{id: int, name: string, catalog: string}> $zones
+     * @return array<int, array{id: int, name: string, catalog: string}>
+     */
+    private function onlyManageable(int $userId, array $zones): array
+    {
+        // Costs nothing for zone_meta_edit_others: canManageZone short-circuits
+        // before it ever asks about ownership.
+        return array_values(array_filter(
+            $zones,
+            fn(array $zone): bool => $this->canManageZone($userId, $zone['id'])
+        ));
     }
 
     /**

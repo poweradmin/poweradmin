@@ -424,7 +424,7 @@ class EditController extends BaseController
         $catalog_service = $this->createCatalogZoneService();
         $catalog_name = $catalog_selector_view ? $catalog_service->getCatalog($zone_id) : '';
         $catalog_producer = $catalog_name !== '' ? $catalog_service->getCatalogProducer($zone_id) : null;
-        $catalog_producers = $catalog_selector_view && $meta_edit ? $catalog_service->getProducers() : [];
+        $catalog_producers = $catalog_selector_view && $meta_edit ? $catalog_service->getManageableProducers($userId) : [];
 
         // Get zone templates
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
