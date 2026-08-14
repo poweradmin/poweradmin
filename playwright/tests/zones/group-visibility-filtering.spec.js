@@ -10,34 +10,22 @@ import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Group Visibility Filtering', () => {
+  // Compare the exact set of offered groups. data-groupname carries the name on its
+  // own, so this does not trip over the member-count badge or the description.
+  async function visibleGroupNames(page) {
+    await expect(page.locator('#group_list')).toBeVisible();
+    return (await page.locator('.group-item').evaluateAll(
+      items => items.map(item => item.dataset.groupname)
+    )).sort();
+  }
+
   test('non-admin user should only see own groups on add master zone page', async ({ page }) => {
-    // Manager belongs to "Zone Managers" and "Editors" only
+    // The fixture puts manager in Zone Managers and Editors, and nothing else.
     await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
     await page.goto('/zones/add/master');
     await page.waitForLoadState('networkidle');
 
-    const groupCheckboxes = page.locator('.group-checkbox');
-    const count = await groupCheckboxes.count();
-
-    if (count === 0) {
-      // Group ownership section may not be present - skip
-      return;
-    }
-
-    // Manager belongs to 2 groups: "Zone Managers" and "Editors"
-    expect(count).toBe(2);
-
-    // Verify the visible group names (labels include description text)
-    const allLabelText = await page.locator('.group-item').allTextContents();
-    const combinedText = allLabelText.join(' ');
-
-    expect(combinedText).toContain('Zone Managers');
-    expect(combinedText).toContain('Editors');
-
-    // Should NOT see other groups
-    expect(combinedText).not.toContain('Administrators');
-    expect(combinedText).not.toContain('Viewers');
-    expect(combinedText).not.toContain('Guests');
+    expect(await visibleGroupNames(page)).toEqual(['editors', 'zone managers']);
   });
 
   test('non-admin user should only see own groups on add slave zone page', async ({ page }) => {
@@ -45,23 +33,7 @@ test.describe('Group Visibility Filtering', () => {
     await page.goto('/zones/add/slave');
     await page.waitForLoadState('networkidle');
 
-    const groupCheckboxes = page.locator('.group-checkbox');
-    const count = await groupCheckboxes.count();
-
-    if (count === 0) {
-      return;
-    }
-
-    expect(count).toBe(2);
-
-    const allLabelText = await page.locator('.group-item').allTextContents();
-    const combinedText = allLabelText.join(' ');
-
-    expect(combinedText).toContain('Zone Managers');
-    expect(combinedText).toContain('Editors');
-    expect(combinedText).not.toContain('Administrators');
-    expect(combinedText).not.toContain('Viewers');
-    expect(combinedText).not.toContain('Guests');
+    expect(await visibleGroupNames(page)).toEqual(['editors', 'zone managers']);
   });
 
   test('admin user should see all groups on add master zone page', async ({ page }) => {
@@ -69,15 +41,10 @@ test.describe('Group Visibility Filtering', () => {
     await page.goto('/zones/add/master');
     await page.waitForLoadState('networkidle');
 
-    const groupCheckboxes = page.locator('.group-checkbox');
-    const count = await groupCheckboxes.count();
-
-    if (count === 0) {
-      return;
-    }
-
-    // Admin should see all 5 groups
-    expect(count).toBeGreaterThanOrEqual(5);
+    // Admin sees every seeded group, and may see extras left by other suites.
+    expect(await visibleGroupNames(page)).toEqual(
+      expect.arrayContaining(['administrators', 'editors', 'guests', 'viewers', 'zone managers'])
+    );
   });
 
   test('should display member count badges next to group names on add master zone page', async ({ page }) => {
@@ -86,15 +53,10 @@ test.describe('Group Visibility Filtering', () => {
     await page.waitForLoadState('networkidle');
 
     const groupItems = page.locator('.group-item');
-    const count = await groupItems.count();
-
-    if (count === 0) {
-      return;
-    }
+    await expect(groupItems).not.toHaveCount(0);
 
     // Each group label should contain a member count badge with "members" text
-    const firstLabel = groupItems.first().locator('label');
-    const badgeText = await firstLabel.locator('.badge').textContent();
+    const badgeText = await groupItems.first().locator('label .badge').textContent();
     expect(badgeText).toMatch(/\d+\s+members/i);
   });
 
@@ -104,14 +66,9 @@ test.describe('Group Visibility Filtering', () => {
     await page.waitForLoadState('networkidle');
 
     const groupItems = page.locator('.group-item');
-    const count = await groupItems.count();
+    await expect(groupItems).not.toHaveCount(0);
 
-    if (count === 0) {
-      return;
-    }
-
-    const firstLabel = groupItems.first().locator('label');
-    const badgeText = await firstLabel.locator('.badge').textContent();
+    const badgeText = await groupItems.first().locator('label .badge').textContent();
     expect(badgeText).toMatch(/\d+\s+members/i);
   });
 });

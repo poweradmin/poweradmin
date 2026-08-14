@@ -25,6 +25,30 @@ test.describe('Group CRUD Operations', () => {
     await page.waitForLoadState('domcontentloaded');
   }
 
+  // Several tests here create groups they cannot delete inline (the delete-page
+  // test stops at the confirmation on purpose). Sweep them so the seeded fixtures
+  // other specs assert against stay as the importer left them.
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+    for (const prefix of ['Test Group ', 'Edit Test ', 'Updated Edit Test ', 'Delete Test ', 'ToDelete ']) {
+      let guard = 0;
+      while (guard++ < 20) {
+        await page.goto('/groups');
+        const row = page.locator(`tr:has-text("${prefix}")`).first();
+        if (await row.count() === 0) {
+          break;
+        }
+        await row.locator('a[href*="/delete"]').first().click();
+        await page.locator('button[type="submit"]').first().click();
+        await page.waitForLoadState('domcontentloaded');
+      }
+    }
+
+    await page.close();
+  });
+
   test.describe('List Groups', () => {
     test('admin should access groups list page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
