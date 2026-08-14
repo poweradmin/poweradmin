@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,16 +26,20 @@ use Exception;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Error\ApiErrorException;
-use Poweradmin\Infrastructure\Api\HttpClient;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 class PowerdnsStatusService
 {
+    /** Bounds on the blocking autoprimary probes, which run serially on page load. */
+    private const PROBE_PORT = 53;
+    private const PROBE_TIMEOUT_SECONDS = 1;
+    private const PROBE_BUDGET_SECONDS = 3.0;
+
     private PowerdnsApiClient $apiClient;
     private bool $apiEnabled;
     private string $apiUrl;
-    private string $apiKey;
+    private int $requestTimeout;
     private string $displayName;
     private string $serverName;
     private string $webserverUsername;
@@ -47,16 +51,19 @@ class PowerdnsStatusService
         $this->logger = $logger ?? new NullLogger();
         $config = ConfigurationManager::getInstance();
         $this->apiUrl = $config->get('pdns_api', 'url', '');
-        $this->apiKey = $config->get('pdns_api', 'key', '');
         $this->displayName = $this->sanitizeDisplayName($config->get('pdns_api', 'display_name', 'PowerDNS'));
         $this->serverName = $config->get('pdns_api', 'server_name', 'localhost');
         $this->webserverUsername = $config->get('pdns_api', 'webserver_username', '');
         $this->webserverPassword = $config->get('pdns_api', 'webserver_password', '');
-        $this->apiEnabled = !empty($this->apiUrl) && !empty($this->apiKey);
+        $this->requestTimeout = (int)$config->get('pdns_api', 'timeout', 10);
 
-        if ($this->apiEnabled) {
-            $httpClient = new HttpClient($this->apiUrl, $this->apiKey);
-            $this->apiClient = new PowerdnsApiClient($httpClient, $this->serverName);
+        // The factory returns null on missing url/key, which is exactly the
+        // condition that leaves this service disabled.
+        $apiClient = DnsBackendProviderFactory::createApiClient($config, $this->logger);
+        $this->apiEnabled = $apiClient !== null;
+
+        if ($apiClient !== null) {
+            $this->apiClient = $apiClient;
         }
     }
 
@@ -79,9 +86,6 @@ class PowerdnsStatusService
             // Get server info first (for version and daemon_type)
             $serverInfo = $this->apiClient->getServerInfo();
 
-            // Get configuration data (for uptime and other metrics)
-            $configData = $this->apiClient->getConfig();
-
             // Get statistics metrics
             $metrics = [];
             $metricInfo = [];
@@ -99,29 +103,24 @@ class PowerdnsStatusService
                 }
 
                 // Try to fetch and parse raw Prometheus metrics if available
-                // Only do this if we have API URL configured (extract base URL)
                 if (!empty($this->apiUrl)) {
-                    $parsedUrl = parse_url($this->apiUrl);
-                    if (isset($parsedUrl['scheme'], $parsedUrl['host'])) {
-                        $port = isset($parsedUrl['port']) ? $parsedUrl['port'] : '8081';
-                        $metricsUrl = "{$parsedUrl['scheme']}://{$parsedUrl['host']}:{$port}/metrics";
+                    $metricsUrl = $this->buildMetricsUrl();
 
-                        // Fetch metrics in Prometheus format with optional Basic Auth
-                        // URL validation happens inside fetchMetricsWithAuth()
-                        $rawMetrics = $this->fetchMetricsWithAuth($metricsUrl);
-                        if ($rawMetrics !== false) {
-                            // Parse Prometheus-style metrics
-                            $prometheusMetrics = $this->parsePrometheusMetrics($rawMetrics);
-                            // Merge with existing metrics, with Prometheus metrics taking precedence
-                            $metrics = array_merge($metrics, $prometheusMetrics);
-                            // Store metric metadata for UI display
-                            $metricInfo = $this->getMetricInfo($rawMetrics);
-                        } else {
-                            // Log failure to fetch Prometheus metrics (may require Basic Auth)
-                            $message = 'Failed to fetch Prometheus metrics from {url}. If PowerDNS webserver-password is enabled, '
-                                . 'configure pdns_api.webserver_username and pdns_api.webserver_password in settings.';
-                            $this->logger->warning($message, ['url' => $metricsUrl]);
-                        }
+                    // Fetch metrics in Prometheus format with optional Basic Auth
+                    // URL validation happens inside fetchMetricsWithAuth()
+                    $rawMetrics = $this->fetchMetricsWithAuth($metricsUrl);
+                    if ($rawMetrics !== false) {
+                        // Parse Prometheus-style metrics
+                        $prometheusMetrics = $this->parsePrometheusMetrics($rawMetrics);
+                        // Merge with existing metrics, with Prometheus metrics taking precedence
+                        $metrics = array_merge($metrics, $prometheusMetrics);
+                        // Store metric metadata for UI display
+                        $metricInfo = $this->getMetricInfo($rawMetrics);
+                    } else {
+                        // Log failure to fetch Prometheus metrics (may require Basic Auth)
+                        $message = 'Failed to fetch Prometheus metrics from {url}. If PowerDNS webserver-password is enabled, '
+                            . 'configure pdns_api.webserver_username and pdns_api.webserver_password in settings.';
+                        $this->logger->warning($message, ['url' => $metricsUrl]);
                     }
                 }
             } catch (Exception $e) {
@@ -150,12 +149,6 @@ class PowerdnsStatusService
             // Add Prometheus metric info if available
             if (!empty($metricInfo)) {
                 $status['metric_info'] = $metricInfo;
-            }
-
-            // Add server metrics if available
-            if (isset($configData['uptime'])) {
-                $status['uptime'] = $this->formatUptime($configData['uptime']);
-                $status['uptime_seconds'] = $configData['uptime'];
             }
 
             // Use uptime from metrics if available
@@ -192,40 +185,50 @@ class PowerdnsStatusService
             return $results;
         }
 
-        try {
-            // Check each slave server
-            foreach ($slaveServers as $server) {
-                $results[$server] = [
-                    'ip' => $server,
-                    'status' => 'unknown',
-                    'lastChecked' => date('Y-m-d H:i:s'),
-                ];
+        $deadline = microtime(true) + self::PROBE_BUDGET_SECONDS;
 
-                // Basic connectivity check - try to connect to DNS port (53)
-                $errno = 0;
-                $errstr = '';
-                $timeout = 2; // 2 second timeout
-                $connection = @fsockopen($server, 53, $errno, $errstr, $timeout);
+        foreach ($slaveServers as $server) {
+            $results[$server] = ['ip' => $server, 'status' => 'skipped', 'lastChecked' => ''];
 
-                if (!$connection) {
-                    $results[$server]['status'] = 'unreachable';
-                    $results[$server]['error'] = "Cannot connect to DNS port: $errstr";
-                } else {
-                    fclose($connection);
-                    $results[$server]['status'] = 'ok';
-                }
+            // Probing is serial and blocking, so stop once the budget is spent;
+            // unreachable autoprimaries would otherwise stall the page.
+            if (microtime(true) >= $deadline) {
+                continue;
             }
 
-            return $results;
-        } catch (ApiErrorException $e) {
-            return [
-                'error' => $e->getMessage()
-            ];
-        } catch (Exception $e) {
-            return [
-                'error' => 'An unexpected error occurred: ' . $e->getMessage()
-            ];
+            $error = $this->probeHost($server);
+            $results[$server]['lastChecked'] = date('Y-m-d H:i:s');
+
+            if ($error === null) {
+                $results[$server]['status'] = 'ok';
+                continue;
+            }
+
+            $results[$server]['status'] = 'unreachable';
+            $results[$server]['error'] = "Cannot connect to DNS port: $error";
         }
+
+        return $results;
+    }
+
+    /**
+     * An autoprimary has to serve AXFR, which is TCP-only, so a TCP connect is a
+     * fair liveness proxy here even though it would not be for a resolver.
+     *
+     * @return string|null The connection error, or null when the host answered.
+     */
+    protected function probeHost(string $host): ?string
+    {
+        $errno = 0;
+        $errstr = '';
+        $connection = @fsockopen($host, self::PROBE_PORT, $errno, $errstr, self::PROBE_TIMEOUT_SECONDS);
+
+        if ($connection === false) {
+            return $errstr;
+        }
+
+        fclose($connection);
+        return null;
     }
 
     private function formatUptime(int $uptimeSeconds): string
@@ -466,6 +469,13 @@ class PowerdnsStatusService
      */
     private function isValidMetricsUrl(string $url): bool
     {
+        // The only legitimate target is the one buildMetricsUrl() derives from the
+        // configured API base. Everything below stays as defence in depth.
+        if ($url !== $this->buildMetricsUrl()) {
+            $this->logger->warning('PowerdnsStatusService: URL is not the configured metrics endpoint');
+            return false;
+        }
+
         // Validate URL format
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             $this->logger->warning('PowerdnsStatusService: Invalid URL format');
@@ -551,18 +561,26 @@ class PowerdnsStatusService
             return false;
         }
 
-        // If Basic Auth credentials are configured, use stream context
-        if (!empty($this->webserverUsername) && !empty($this->webserverPassword)) {
+        // Without an explicit timeout this falls back to default_socket_timeout,
+        // typically 60s, which stalls the page when the metrics port is firewalled.
+        $options = ['http' => ['method' => 'GET', 'timeout' => $this->requestTimeout]];
+
+        // PowerDNS webserver-password has no matching username, so the password
+        // alone is enough to warrant sending credentials.
+        if (!empty($this->webserverPassword)) {
             $auth = base64_encode($this->webserverUsername . ':' . $this->webserverPassword);
-            $context = stream_context_create([
-                'http' => [
-                    'header' => "Authorization: Basic $auth"
-                ]
-            ]);
-            return @file_get_contents($url, false, $context);
+            $options['http']['header'] = "Authorization: Basic $auth";
         }
 
-        // Fall back to simple file_get_contents without auth
-        return @file_get_contents($url);
+        return @file_get_contents($url, false, stream_context_create($options));
+    }
+
+    /**
+     * pdns_api.url is the PowerDNS webserver root, so appending to it preserves the
+     * scheme, an implicit port and any reverse-proxy path prefix.
+     */
+    private function buildMetricsUrl(): string
+    {
+        return rtrim($this->apiUrl, '/') . '/metrics';
     }
 }

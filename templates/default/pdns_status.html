@@ -9,14 +9,12 @@
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-server me-2"></i>{% trans %}PowerDNS Server Status{% endtrans %}</strong>
-        {% if server_status.running %}
-        <form method="POST" action="{{ base_url_prefix }}/tools/pdns-status?action=refresh">
+        <form method="POST" action="{{ base_url_prefix }}/tools/pdns-status">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <button type="submit" class="btn btn-primary btn-sm">
                 <i class="bi bi-arrow-clockwise me-1 text-white"></i>{% trans %}Refresh Status{% endtrans %}
             </button>
         </form>
-        {% endif %}
     </div>
     <div class="card-body">
         {% if not pdns_api_enabled %}
@@ -102,12 +100,6 @@
                     </div>
                     <div class="card-body">
                         <p class="small text-muted mb-3">{% trans %}Showing connectivity status for DNS servers listed in the supermasters table.{% endtrans %}</p>
-                        {% if slave_status.error is defined %}
-                        <div class="alert alert-danger">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            {{ slave_status.error }}
-                        </div>
-                        {% else %}
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -126,7 +118,7 @@
                                         {% elseif info.status == 'unreachable' %}
                                         <span class="badge bg-danger">{% trans %}Unreachable{% endtrans %}</span>
                                         {% else %}
-                                        <span class="badge bg-danger">{% trans %}Error{% endtrans %}</span>
+                                        <span class="badge bg-secondary">{% trans %}Not checked{% endtrans %}</span>
                                         {% endif %}
                                     </td>
                                     <td>{{ info.lastChecked }}</td>
@@ -143,7 +135,6 @@
                                 {% endfor %}
                             </tbody>
                         </table>
-                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -330,7 +321,7 @@
                                             <button class="btn btn-sm btn-outline-secondary me-2" id="viewToggle">
                                                 <i class="bi bi-grid-3x3 text-secondary"></i> {% trans %}Toggle View{% endtrans %}
                                             </button>
-                                            <form method="POST" action="{{ base_url_prefix }}/tools/pdns-status?action=refresh">
+                                            <form method="POST" action="{{ base_url_prefix }}/tools/pdns-status">
                                                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                                                 <button type="submit" class="btn btn-sm btn-primary">
                                                     <i class="bi bi-arrow-clockwise me-1 text-white"></i>{% trans %}Refresh{% endtrans %}
