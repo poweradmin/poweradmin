@@ -342,4 +342,32 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $this->assertEquals('badauth', $result);
     }
+
+    public function testProcessUpdateLeavesRecordsAloneWhenASuppliedFamilyIsMalformed(): void
+    {
+        // A malformed family used to reach updateZone as an empty address list, so
+        // dualstack_update deleted every record of that type and still answered 'good'.
+        $request = new DynamicDnsRequest(
+            'user',
+            'pass',
+            'test.example.com',
+            'garbage',
+            '2001:db8::1',
+            true,
+            'TestAgent/1.0'
+        );
+
+        $this->validationService->expects($this->once())
+            ->method('validateRequest')
+            ->with($request)
+            ->willReturn(ValidationResult::failure(['No valid IPv4 address in the supplied IP address list']));
+
+        $this->repository->expects($this->never())->method('deleteDnsRecord');
+        $this->repository->expects($this->never())->method('insertDnsRecord');
+        $this->repository->expects($this->never())->method('updateSOASerial');
+
+        $result = $this->service->processUpdate($request);
+
+        $this->assertEquals('dnserr', $result);
+    }
 }
