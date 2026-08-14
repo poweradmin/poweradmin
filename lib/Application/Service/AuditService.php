@@ -79,6 +79,29 @@ class AuditService
 
     // Zone ownership
 
+    /**
+     * Logged against the member zone: that is the zone whose stored catalog changed.
+     */
+    public function logZoneCatalogAssign(int $zoneId, string $zoneName, string $catalog): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:zone_catalog_assign zone:%s catalog:%s',
+            $this->getContext(),
+            $zoneName,
+            $catalog
+        ), $zoneId);
+    }
+
+    public function logZoneCatalogClear(int $zoneId, string $zoneName, string $catalog): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:zone_catalog_clear zone:%s catalog:%s',
+            $this->getContext(),
+            $zoneName,
+            $catalog
+        ), $zoneId);
+    }
+
     public function logZoneOwnerAdd(int $zoneId, string $zoneName, int $ownerId): void
     {
         $this->logger->logInfo(sprintf(

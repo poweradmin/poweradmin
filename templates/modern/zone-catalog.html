@@ -1,0 +1,77 @@
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Zones'|trans, url: base_url_prefix ~ '/zones/' ~ (is_reverse_zone ? 'reverse' : 'forward')},
+    {label: zone_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+    {label: 'Catalog Members'|trans},
+]) }}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            {{ macros.card_header('bi-collection', 'Catalog Members'|trans) }}
+            <div class="card-body">
+                <p class="small text-muted">{% trans %}Zones this producer publishes to its consumers.{% endtrans %}</p>
+
+                {% if members is empty %}
+                <p class="mb-0 text-muted">{% trans %}This catalog has no members yet.{% endtrans %}</p>
+                {% else %}
+                <ul class="list-group">
+                    {% for member in members %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <a href="{{ base_url_prefix }}/zones/{{ member['id'] }}/edit">{{ member['name'] }}</a>
+                            {% if not member['is_published'] %}
+                            <span class="badge bg-warning text-dark ms-1"
+                                  title="{% trans %}PowerDNS only publishes Primary and Producer zones from a catalog.{% endtrans %}">
+                                {% trans %}Not published{% endtrans %}
+                            </span>
+                            {% endif %}
+                        </div>
+                        {% if may_edit %}
+                        <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/catalog" class="d-inline">
+                            {{ macros.csrf_field() }}
+                            <input type="hidden" name="member_zone_id" value="{{ member['id'] }}">
+                            <button type="submit" name="remove_member" value="1" class="btn btn-outline-danger btn-sm"
+                                    data-testid="catalog-remove-member">
+                                <i class="bi bi-trash text-danger"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if may_edit %}
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            {{ macros.card_header('bi-plus-circle', 'Add Member'|trans) }}
+            <div class="card-body">
+                {% if available_zones is empty %}
+                <p class="mb-0 text-muted">{% trans %}No zones are available to add. Only Primary and Producer zones that are not already in a catalog can be members.{% endtrans %}</p>
+                {% else %}
+                <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/catalog">
+                    {{ macros.csrf_field() }}
+                    <div class="mb-3">
+                        <label for="member_zone_id" class="form-label">{% trans %}Zone{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="member_zone_id" name="member_zone_id"
+                                data-testid="catalog-member-select" required>
+                            {% for zone in available_zones %}
+                            <option value="{{ zone['id'] }}">{{ zone['name'] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" name="add_member" value="1" class="btn btn-primary btn-sm"
+                            data-testid="catalog-add-member">
+                        <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add{% endtrans %}
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>

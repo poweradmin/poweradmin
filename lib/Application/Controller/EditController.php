@@ -49,6 +49,7 @@ use Poweradmin\Domain\Model\RecordLog;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\Dns\DomainManager;
@@ -413,6 +414,13 @@ class EditController extends BaseController
         $slave_master = $this->zoneRepository->getDomainSlaveMaster($zone_id);
         $types = ZoneType::getTypes();
 
+        // Read after the record listing above: in API mode the zone body is already
+        // held, so the catalog read costs nothing extra here.
+        $catalog_supported = $this->getPdnsCapabilities()->supportsCatalogZones();
+        $catalog_service = $this->createCatalogZoneService();
+        $zone_catalog = $catalog_supported ? $catalog_service->getCatalog($zone_id) : '';
+        $catalog_producers = $catalog_supported && $meta_edit ? $catalog_service->getProducers() : [];
+
         // Get zone templates
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $zone_templates = $zone_templates->getListZoneTempl($userId);
@@ -501,6 +509,11 @@ class EditController extends BaseController
             // Catalog kinds are absent from $types, so the browser would preselect the
             // first option and one click would silently retype the zone.
             'zone_type_change_allowed' => in_array($domain_type, $types, true),
+            'catalog_members_view' => $catalog_supported && $domain_type === ZoneType::PRODUCER && $metadata_view,
+            'catalog_selector_view' => $catalog_supported && in_array($domain_type, CatalogZoneService::PUBLISHABLE_KINDS, true),
+            'catalog_edit_allowed' => $catalog_supported && $meta_edit,
+            'catalog_producers' => $catalog_producers,
+            'zone_catalog' => $zone_catalog,
             'zone_templates' => $zone_templates,
             'zone_template_id' => $zone_template_id,
             'zone_template_details' => $zone_template_details,
@@ -568,6 +581,30 @@ class EditController extends BaseController
         ]);
     }
 
+    /**
+     * Join or leave a catalog. The producer arrives as a zone id so the service can
+     * resolve its name and check rights on it, rather than trusting a posted name.
+     */
+    private function handleCatalogChange(int $zone_id): void
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        $catalogService = $this->createCatalogZoneService();
+        $producerId = $this->request->getPostParam('new_catalog', '');
+
+        if ($producerId === '' || $producerId === null) {
+            $done = $catalogService->clear($userId, $zone_id);
+            $message = $done ? _('The zone has been removed from the catalog.') : _('You do not have permission to edit this zone.');
+        } elseif (!is_numeric($producerId)) {
+            $done = false;
+            $message = _('Invalid or unexpected input given.');
+        } else {
+            $done = $catalogService->assign($userId, $zone_id, (int)$producerId);
+            $message = $done ? _('The catalog has been changed successfully.') : _('You do not have permission to edit this zone.');
+        }
+
+        $this->setMessage('edit', $done ? 'success' : 'error', $message);
+    }
+
     private function handleZoneMetadataPost(int $zone_id): void
     {
         $domainManager = $this->domainManager ??= $this->createDomainManager();
@@ -584,6 +621,11 @@ class EditController extends BaseController
             if ($domainManager->changeZoneSlaveMaster($zone_id, $this->request->getPostParam('new_master', ''))) {
                 $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
             }
+        }
+
+        if ($this->request->getPostParam('catalog_change') !== null) {
+            $this->validateCsrfToken();
+            $this->handleCatalogChange($zone_id);
         }
 
         if ($this->request->getPostParam('template_change') !== null) {

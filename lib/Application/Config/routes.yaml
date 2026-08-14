@@ -160,6 +160,13 @@ zone_ownership:
     id: '\d+'
   methods: [GET, POST]
 
+zone_catalog:
+  path: /zones/{id}/catalog
+  controller: Poweradmin\Application\Controller\ZoneCatalogController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
 zone_save_template:
   path: /zones/{id}/save-template
   controller: Poweradmin\Application\Controller\SaveZoneAsTemplateController::run

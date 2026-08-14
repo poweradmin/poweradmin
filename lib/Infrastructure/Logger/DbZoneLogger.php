@@ -188,6 +188,8 @@ class DbZoneLogger
             'edit_zone_comment',
             'edit_zone_metadata',
             'unlink_zone_template',
+            'zone_catalog_assign',
+            'zone_catalog_clear',
             'zone_group_add',
             'zone_group_remove',
             'zone_import',
