@@ -51,6 +51,7 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -555,6 +556,11 @@ abstract class BaseController
     protected function createDomainManager(): DomainManagerInterface
     {
         return $this->services()->domainManager();
+    }
+
+    protected function createCatalogZoneService(): CatalogZoneService
+    {
+        return $this->services()->catalogZoneService();
     }
 
     protected function getRepositoryFactory(?DnsBackendProvider $backendProvider = null): RepositoryFactory

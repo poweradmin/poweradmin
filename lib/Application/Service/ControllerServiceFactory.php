@@ -33,6 +33,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
@@ -64,6 +65,7 @@ class ControllerServiceFactory
 
     private ?DnsBackendProvider $dnsBackendProvider = null;
     private ?PermissionService $permissionService = null;
+    private ?CatalogZoneService $catalogZoneService = null;
     private ?UserPreferenceService $userPreferenceService = null;
     private ?RepositoryFactory $repositoryFactory = null;
     private ?SOARecordManagerInterface $soaRecordManager = null;
@@ -208,6 +210,11 @@ class ControllerServiceFactory
     public function domainManager(): DomainManagerInterface
     {
         return DnsServiceFactory::createDomainManager($this->db, $this->config, $this->dnsBackendProvider());
+    }
+
+    public function catalogZoneService(): CatalogZoneService
+    {
+        return $this->catalogZoneService ??= new CatalogZoneService($this->dnsBackendProvider(), $this->permissionService());
     }
 
     public function repositoryFactory(?DnsBackendProvider $backendProvider = null): RepositoryFactory
