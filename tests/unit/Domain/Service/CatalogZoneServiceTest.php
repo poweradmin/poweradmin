@@ -235,6 +235,16 @@ class CatalogZoneServiceTest extends TestCase
     }
 
     #[Test]
+    public function anEmptyProducerNameSelectsNoMembers(): void
+    {
+        // Guarded here so the two backends cannot disagree about what an empty
+        // catalog name matches.
+        $this->backend->expects($this->never())->method('getCatalogMembers');
+
+        $this->assertSame([], $this->service->getMembers(''));
+    }
+
+    #[Test]
     public function membersAreFlaggedWithWhetherPowerdnsPublishesThem(): void
     {
         $this->backend->method('getCatalogMembers')->willReturn([

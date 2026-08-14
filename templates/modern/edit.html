@@ -863,14 +863,17 @@
                     {% if catalog_selector_view %}
                     <div class="col-md-4">
                         <h6 class="text-muted mb-3">{% trans %}Catalog{% endtrans %}</h6>
-                        {% if catalog_edit_allowed %}
+                        {% if meta_edit %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
                             {{ macros.csrf_field() }}
                             <div class="input-group input-group-sm">
                                 <select class="form-select form-select-sm" name="new_catalog" data-testid="zone-catalog-select">
                                     <option value="">none</option>
+                                    {% if catalog_name and not catalog_producer_id %}
+                                    <option value="keep" selected>{{ catalog_name }} ({% trans %}not managed here{% endtrans %})</option>
+                                    {% endif %}
                                     {% for producer in catalog_producers %}
-                                    <option value="{{ producer['id'] }}" {% if producer['name'] == zone_catalog %}selected{% endif %}>{{ producer['name'] }}</option>
+                                    <option value="{{ producer['id'] }}" {% if producer['id'] == catalog_producer_id %}selected{% endif %}>{{ producer['name'] }}</option>
                                     {% endfor %}
                                 </select>
                                 <button class="btn btn-outline-secondary btn-sm" type="submit" name="catalog_change">
@@ -880,8 +883,8 @@
                         </form>
                         {% else %}
                         <p>
-                            {% if zone_catalog %}
-                            <span class="badge bg-info">{{ zone_catalog }}</span>
+                            {% if catalog_name %}
+                            <span class="badge bg-info">{{ catalog_name }}</span>
                             {% else %}
                             <span class="badge bg-secondary">none</span>
                             {% endif %}

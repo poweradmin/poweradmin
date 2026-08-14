@@ -390,15 +390,6 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertSame([['id' => 4, 'name' => 'member.example.com', 'kind' => 'MASTER']], $members);
     }
 
-    public function testGetCatalogMembersReturnsNothingForAnEmptyCatalog(): void
-    {
-        $this->mockClient->method('getAllZoneKinds')->willReturn([
-            'loose.example.com.' => ['kind' => 'MASTER', 'masters' => [], 'catalog' => ''],
-        ]);
-
-        $this->assertSame([], $this->provider->getCatalogMembers(''));
-    }
-
     public function testUpdateZoneTypeReturnsFalseWhenZoneNotFound(): void
     {
         $stmt = $this->createMock(PDOStatement::class);

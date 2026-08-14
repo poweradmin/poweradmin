@@ -207,37 +207,43 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function getCatalogMembers(string $catalogName): array
     {
-        $members = [];
-        foreach ($this->readZoneKinds() as $apiName => $kind) {
-            if ($kind['catalog'] !== $catalogName || $catalogName === '') {
-                continue;
-            }
-            $members[] = [
-                'id' => $this->localIdForZoneName(rtrim($apiName, '.')),
-                'name' => rtrim($apiName, '.'),
-                'kind' => $kind['kind'],
-            ];
-        }
-
-        usort($members, fn(array $a, array $b): int => strcmp($a['name'], $b['name']));
-
-        return $members;
+        return array_map(
+            fn(array $zone): array => ['id' => $zone['id'], 'name' => $zone['name'], 'kind' => $zone['kind']],
+            $this->zonesMatching(fn(array $zone): bool => $zone['catalog'] === $catalogName)
+        );
     }
 
     public function getZonesByKind(string $kind): array
     {
         $wanted = strtoupper($kind);
 
+        return array_map(
+            fn(array $zone): array => ['id' => $zone['id'], 'name' => $zone['name'], 'catalog' => $zone['catalog']],
+            $this->zonesMatching(fn(array $zone): bool => $zone['kind'] === $wanted)
+        );
+    }
+
+    /**
+     * Zones from the bulk list that satisfy $match, name-sorted.
+     *
+     * @param callable(array{id: int, name: string, kind: string, catalog: string}): bool $match
+     * @return array<int, array{id: int, name: string, kind: string, catalog: string}>
+     */
+    private function zonesMatching(callable $match): array
+    {
         $zones = [];
         foreach ($this->readZoneKinds() as $apiName => $entry) {
-            if ($entry['kind'] !== $wanted) {
-                continue;
-            }
-            $zones[] = [
-                'id' => $this->localIdForZoneName(rtrim($apiName, '.')),
-                'name' => rtrim($apiName, '.'),
+            $name = rtrim($apiName, '.');
+            $zone = [
+                'id' => $this->localIdForZoneName($name),
+                'name' => $name,
+                'kind' => $entry['kind'],
                 'catalog' => $entry['catalog'],
             ];
+
+            if ($match($zone)) {
+                $zones[] = $zone;
+            }
         }
 
         usort($zones, fn(array $a, array $b): int => strcmp($a['name'], $b['name']));

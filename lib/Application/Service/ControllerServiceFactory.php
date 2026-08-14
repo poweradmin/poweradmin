@@ -214,7 +214,12 @@ class ControllerServiceFactory
 
     public function catalogZoneService(): CatalogZoneService
     {
-        return $this->catalogZoneService ??= new CatalogZoneService($this->dnsBackendProvider(), $this->permissionService());
+        return $this->catalogZoneService ??= new CatalogZoneService(
+            $this->dnsBackendProvider(),
+            $this->permissionService(),
+            new AuditService($this->db),
+            $this->repositoryFactory()->createZoneRepository()
+        );
     }
 
     public function repositoryFactory(?DnsBackendProvider $backendProvider = null): RepositoryFactory

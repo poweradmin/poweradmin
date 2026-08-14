@@ -22,7 +22,9 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
 /**
@@ -44,10 +46,22 @@ class CatalogZoneService
     private DnsBackendProvider $backendProvider;
     private PermissionService $permissionService;
 
-    public function __construct(DnsBackendProvider $backendProvider, PermissionService $permissionService)
-    {
+    private ?AuditService $auditService;
+    private ?ZoneRepositoryInterface $zoneRepository;
+
+    /** @var array<int, array{id: int, name: string, catalog: string}>|null */
+    private ?array $producers = null;
+
+    public function __construct(
+        DnsBackendProvider $backendProvider,
+        PermissionService $permissionService,
+        ?AuditService $auditService = null,
+        ?ZoneRepositoryInterface $zoneRepository = null
+    ) {
         $this->backendProvider = $backendProvider;
         $this->permissionService = $permissionService;
+        $this->auditService = $auditService;
+        $this->zoneRepository = $zoneRepository;
     }
 
     /**
@@ -82,7 +96,24 @@ class CatalogZoneService
      */
     public function getProducers(): array
     {
-        return $this->backendProvider->getZonesByKind(ZoneType::PRODUCER);
+        // A single request can ask for producers several times (render, then a
+        // lookup on submit); one backend read is enough.
+        return $this->producers ??= $this->backendProvider->getZonesByKind(ZoneType::PRODUCER);
+    }
+
+    /**
+     * The producer whose catalog this zone is in, or null when it is not a member.
+     *
+     * Resolving to the producer's id here keeps name normalisation out of the
+     * templates, which cannot compare a stored catalog to a zone name safely.
+     *
+     * @return array{id: int, name: string, catalog: string}|null
+     */
+    public function getCatalogProducer(int $zoneId): ?array
+    {
+        $catalog = $this->getCatalog($zoneId);
+
+        return $catalog === '' ? null : $this->findProducer(fn(array $p): bool => $this->normalizeName($p['name']) === $catalog);
     }
 
     /**
@@ -113,8 +144,16 @@ class CatalogZoneService
      */
     public function getMembers(string $producerName): array
     {
+        $catalog = $this->normalizeName($producerName);
+
+        // Guarded here rather than in each provider, which would otherwise be free
+        // to disagree about what an empty catalog name selects.
+        if ($catalog === '') {
+            return [];
+        }
+
         $members = [];
-        foreach ($this->backendProvider->getCatalogMembers($this->normalizeName($producerName)) as $member) {
+        foreach ($this->backendProvider->getCatalogMembers($catalog) as $member) {
             $member['is_published'] = in_array($member['kind'], self::PUBLISHABLE_KINDS, true);
             $members[] = $member;
         }
@@ -135,7 +174,7 @@ class CatalogZoneService
      */
     public function assign(int $userId, int $memberZoneId, int $producerZoneId): bool
     {
-        $producer = $this->findProducerById($producerZoneId);
+        $producer = $this->findProducer(fn(array $p): bool => $p['id'] === $producerZoneId);
         if ($producer === null) {
             return false;
         }
@@ -144,7 +183,13 @@ class CatalogZoneService
             return false;
         }
 
-        return $this->backendProvider->updateZoneCatalog($memberZoneId, $producer['name']);
+        if (!$this->backendProvider->updateZoneCatalog($memberZoneId, $producer['name'])) {
+            return false;
+        }
+
+        $this->auditService?->logZoneCatalogAssign($memberZoneId, $this->zoneName($memberZoneId), $producer['name']);
+
+        return true;
     }
 
     /**
@@ -164,7 +209,7 @@ class CatalogZoneService
             return true;
         }
 
-        $producer = $this->findProducerByName($current);
+        $producer = $this->findProducer(fn(array $p): bool => $this->normalizeName($p['name']) === $current);
 
         // A catalog this install does not own the producer for can only be cleared
         // by someone who may edit any zone.
@@ -176,30 +221,31 @@ class CatalogZoneService
             return false;
         }
 
-        return $this->backendProvider->updateZoneCatalog($memberZoneId, '');
-    }
-
-    /**
-     * @return array{id: int, name: string, catalog: string}|null
-     */
-    private function findProducerById(int $producerZoneId): ?array
-    {
-        foreach ($this->getProducers() as $producer) {
-            if ($producer['id'] === $producerZoneId) {
-                return $producer;
-            }
+        if (!$this->backendProvider->updateZoneCatalog($memberZoneId, '')) {
+            return false;
         }
 
-        return null;
+        $this->auditService?->logZoneCatalogClear($memberZoneId, $this->zoneName($memberZoneId), $current);
+
+        return true;
     }
 
     /**
+     * Names are only needed for the audit trail, so a miss is not worth failing on.
+     */
+    private function zoneName(int $zoneId): string
+    {
+        return (string)$this->zoneRepository?->getDomainNameById($zoneId);
+    }
+
+    /**
+     * @param callable(array{id: int, name: string, catalog: string}): bool $match
      * @return array{id: int, name: string, catalog: string}|null
      */
-    private function findProducerByName(string $producerName): ?array
+    private function findProducer(callable $match): ?array
     {
         foreach ($this->getProducers() as $producer) {
-            if ($this->normalizeName($producer['name']) === $this->normalizeName($producerName)) {
+            if ($match($producer)) {
                 return $producer;
             }
         }

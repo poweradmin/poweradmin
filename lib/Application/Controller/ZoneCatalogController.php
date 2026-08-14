@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -42,7 +41,6 @@ class ZoneCatalogController extends BaseController
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
     private CatalogZoneService $catalogService;
-    private AuditService $auditService;
     private Request $request;
 
     public function __construct(array $request)
@@ -54,7 +52,6 @@ class ZoneCatalogController extends BaseController
         $this->zoneRepository = $this->createZoneRepository();
         $this->permissionService = $this->createPermissionService();
         $this->catalogService = $this->createCatalogZoneService();
-        $this->auditService = new AuditService($this->db);
     }
 
     public function run(): void
@@ -101,7 +98,7 @@ class ZoneCatalogController extends BaseController
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $this->handleFormSubmission($zoneId, $zoneName, $userId, $mayEdit);
+            $this->handleFormSubmission($zoneId, $userId, $mayEdit);
         }
 
         $members = $this->catalogService->getMembers($zoneName);
@@ -122,7 +119,7 @@ class ZoneCatalogController extends BaseController
         ]);
     }
 
-    private function handleFormSubmission(int $producerId, string $producerName, int $userId, bool $mayEdit): void
+    private function handleFormSubmission(int $producerId, int $userId, bool $mayEdit): void
     {
         if (!$mayEdit) {
             $this->setMessage('zone-catalog', 'error', _('You do not have permission to edit this zone.'));
@@ -135,32 +132,19 @@ class ZoneCatalogController extends BaseController
             return;
         }
         $memberId = (int)$memberId;
-        $memberName = (string)$this->zoneRepository->getDomainNameById($memberId);
 
+        // CatalogZoneService writes the audit entry, so both this page and the
+        // member-side selector log the same way.
         if ($this->request->getPostParam('add_member') !== null) {
             $done = $this->catalogService->assign($userId, $memberId, $producerId);
-            if ($done) {
-                // Logged against the member: its stored catalog is what changed.
-                $this->auditService->logZoneCatalogAssign($memberId, $memberName, $producerName);
-            }
-            $this->setMessage(
-                'zone-catalog',
-                $done ? 'success' : 'error',
-                $done ? _('The zone has been added to the catalog.') : _('You do not have permission to edit this zone.')
-            );
+            $message = $done ? _('The zone has been added to the catalog.') : _('You do not have permission to edit this zone.');
+        } elseif ($this->request->getPostParam('remove_member') !== null) {
+            $done = $this->catalogService->clear($userId, $memberId);
+            $message = $done ? _('The zone has been removed from the catalog.') : _('You do not have permission to edit this zone.');
+        } else {
             return;
         }
 
-        if ($this->request->getPostParam('remove_member') !== null) {
-            $done = $this->catalogService->clear($userId, $memberId);
-            if ($done) {
-                $this->auditService->logZoneCatalogClear($memberId, $memberName, $producerName);
-            }
-            $this->setMessage(
-                'zone-catalog',
-                $done ? 'success' : 'error',
-                $done ? _('The zone has been removed from the catalog.') : _('You do not have permission to edit this zone.')
-            );
-        }
+        $this->setMessage('zone-catalog', $done ? 'success' : 'error', $message);
     }
 }

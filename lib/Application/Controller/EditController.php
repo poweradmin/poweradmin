@@ -414,12 +414,17 @@ class EditController extends BaseController
         $slave_master = $this->zoneRepository->getDomainSlaveMaster($zone_id);
         $types = ZoneType::getTypes();
 
+        // Only zones PowerDNS would actually publish from a catalog get the selector,
+        // so nothing below runs for the kinds that would discard the result.
+        $catalog_selector_view = $this->getPdnsCapabilities()->supportsCatalogZones()
+            && in_array($domain_type, CatalogZoneService::PUBLISHABLE_KINDS, true);
+
         // Read after the record listing above: in API mode the zone body is already
         // held, so the catalog read costs nothing extra here.
-        $catalog_supported = $this->getPdnsCapabilities()->supportsCatalogZones();
         $catalog_service = $this->createCatalogZoneService();
-        $zone_catalog = $catalog_supported ? $catalog_service->getCatalog($zone_id) : '';
-        $catalog_producers = $catalog_supported && $meta_edit ? $catalog_service->getProducers() : [];
+        $catalog_name = $catalog_selector_view ? $catalog_service->getCatalog($zone_id) : '';
+        $catalog_producer = $catalog_name !== '' ? $catalog_service->getCatalogProducer($zone_id) : null;
+        $catalog_producers = $catalog_selector_view && $meta_edit ? $catalog_service->getProducers() : [];
 
         // Get zone templates
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
@@ -509,11 +514,14 @@ class EditController extends BaseController
             // Catalog kinds are absent from $types, so the browser would preselect the
             // first option and one click would silently retype the zone.
             'zone_type_change_allowed' => in_array($domain_type, $types, true),
-            'catalog_members_view' => $catalog_supported && $domain_type === ZoneType::PRODUCER && $metadata_view,
-            'catalog_selector_view' => $catalog_supported && in_array($domain_type, CatalogZoneService::PUBLISHABLE_KINDS, true),
-            'catalog_edit_allowed' => $catalog_supported && $meta_edit,
+            'catalog_members_view' => $domain_type === ZoneType::PRODUCER && $metadata_view
+                && $this->getPdnsCapabilities()->supportsCatalogZones(),
+            'catalog_selector_view' => $catalog_selector_view,
             'catalog_producers' => $catalog_producers,
-            'zone_catalog' => $zone_catalog,
+            'catalog_producer_id' => $catalog_producer['id'] ?? null,
+            // Non-empty with a null producer id means the zone is in a catalog whose
+            // producer this install does not manage. Shown so it is not silently lost.
+            'catalog_name' => $catalog_name,
             'zone_templates' => $zone_templates,
             'zone_template_id' => $zone_template_id,
             'zone_template_details' => $zone_template_details,
@@ -590,6 +598,12 @@ class EditController extends BaseController
         $userId = $this->userContextService->getLoggedInUserId();
         $catalogService = $this->createCatalogZoneService();
         $producerId = $this->request->getPostParam('new_catalog', '');
+
+        // The zone is in a catalog with no local producer; leave it as it is rather
+        // than clearing something the operator cannot see the whole of.
+        if ($producerId === 'keep') {
+            return;
+        }
 
         if ($producerId === '' || $producerId === null) {
             $done = $catalogService->clear($userId, $zone_id);
