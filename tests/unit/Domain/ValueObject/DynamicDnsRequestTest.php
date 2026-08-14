@@ -100,6 +100,98 @@ class DynamicDnsRequestTest extends TestCase
         $this->assertEquals('2001:db8::2', $dynamicDnsRequest->getIpv6());
     }
 
+    public function testFromHttpRequestSplitsBothFamiliesSentInMyip(): void
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'ddclient/3.11.2';
+
+        // ddclient 3.11+ sends both families as one comma-separated `myip` list.
+        $request = new Request([
+            'username' => 'testuser',
+            'password' => 'testpass',
+            'hostname' => 'test.example.com',
+            'myip' => '203.0.113.5,2001:db8::1',
+        ]);
+
+        $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
+
+        $this->assertEquals('203.0.113.5', $dynamicDnsRequest->getIpv4());
+        $this->assertEquals('2001:db8::1', $dynamicDnsRequest->getIpv6());
+    }
+
+    public function testFromHttpRequestSplitsBothFamiliesWithDualstackUpdate(): void
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'ddclient/3.11.2';
+
+        // The IPv4 address used to be discarded here, so dualstack_update deleted the A records.
+        $request = new Request([
+            'username' => 'testuser',
+            'password' => 'testpass',
+            'hostname' => 'test.example.com',
+            'myip' => '203.0.113.5,2001:db8::1',
+            'dualstack_update' => '1',
+        ]);
+
+        $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
+
+        $this->assertEquals('203.0.113.5', $dynamicDnsRequest->getIpv4());
+        $this->assertEquals('2001:db8::1', $dynamicDnsRequest->getIpv6());
+        $this->assertTrue($dynamicDnsRequest->isDualstackUpdate());
+    }
+
+    public function testFromHttpRequestKeepsMultipleAddressesOfTheSameFamilyInMyip(): void
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'TestAgent/1.0';
+
+        $request = new Request([
+            'username' => 'testuser',
+            'password' => 'testpass',
+            'hostname' => 'test.example.com',
+            'myip' => '203.0.113.5,203.0.113.6',
+        ]);
+
+        $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
+
+        $this->assertEquals('203.0.113.5,203.0.113.6', $dynamicDnsRequest->getIpv4());
+        $this->assertEquals('', $dynamicDnsRequest->getIpv6());
+    }
+
+    public function testFromHttpRequestTrimsWhitespaceAroundMyipElements(): void
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'TestAgent/1.0';
+
+        $request = new Request([
+            'username' => 'testuser',
+            'password' => 'testpass',
+            'hostname' => 'test.example.com',
+            'myip' => ' 203.0.113.5 , 2001:db8::1 ',
+        ]);
+
+        $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
+
+        $this->assertEquals('203.0.113.5', $dynamicDnsRequest->getIpv4());
+        $this->assertEquals('2001:db8::1', $dynamicDnsRequest->getIpv6());
+    }
+
+    public function testFromHttpRequestDropsIpv6InMyipWhenMyip6IsExplicit(): void
+    {
+        $_SERVER['HTTP_USER_AGENT'] = 'TestAgent/1.0';
+
+        // An explicit myip6 stays authoritative, so the v4 element is still routed
+        // but the v6 element in myip is discarded rather than merged.
+        $request = new Request([
+            'username' => 'testuser',
+            'password' => 'testpass',
+            'hostname' => 'test.example.com',
+            'myip' => '203.0.113.5,2001:db8::1',
+            'myip6' => '2001:db8::2',
+        ]);
+
+        $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
+
+        $this->assertEquals('203.0.113.5', $dynamicDnsRequest->getIpv4());
+        $this->assertEquals('2001:db8::2', $dynamicDnsRequest->getIpv6());
+    }
+
     public function testFromHttpRequestWithWhatIsMyIpv4(): void
     {
         $_SERVER['REMOTE_ADDR'] = '203.0.113.1';
