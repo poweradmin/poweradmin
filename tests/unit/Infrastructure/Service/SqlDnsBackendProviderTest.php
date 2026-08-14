@@ -218,6 +218,72 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function testUpdateZoneCatalogNormalizesToPowerdnsStoredForm(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with([':catalog' => 'producer.example.com', ':id' => 1]);
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->assertTrue($this->provider->updateZoneCatalog(1, 'producer.example.com'));
+    }
+
+    public function testUpdateZoneCatalogClearsWithEmptyStringNotNull(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->callback(function ($params) {
+                // NULL would leave a row PowerDNS still treats as unset differently
+                // from how its own tooling writes it.
+                $this->assertNotNull($params[':catalog']);
+                return $params[':catalog'] === '' && $params[':id'] === 1;
+            }));
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->assertTrue($this->provider->updateZoneCatalog(1, ''));
+    }
+
+    public function testGetCatalogMembersRunsOneQuery(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetchAll')->willReturn([
+            ['id' => '7', 'name' => 'member.example.com', 'type' => 'master'],
+        ]);
+
+        $this->mockDb->expects($this->once())->method('prepare')->willReturn($stmt);
+
+        $members = $this->provider->getCatalogMembers('producer.example.com');
+
+        $this->assertSame([['id' => 7, 'name' => 'member.example.com', 'kind' => 'MASTER']], $members);
+    }
+
+    public function testGetZoneCatalogNormalizesStoredValue(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetchColumn')->willReturn('Producer.Example.COM.');
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->assertSame('producer.example.com', $this->provider->getZoneCatalog(1));
+    }
+
+    public function testCatalogReadsDegradeOnPreCatalogSchema(): void
+    {
+        // domains.catalog only exists from PowerDNS 4.7; an older schema must not
+        // take the page down.
+        $this->mockDb->method('prepare')->willThrowException(new \PDOException('Unknown column'));
+
+        $this->assertSame([], $this->provider->getCatalogMembers('producer.example.com'));
+        $this->assertSame('', $this->provider->getZoneCatalog(1));
+        $this->assertFalse($this->provider->updateZoneCatalog(1, 'producer.example.com'));
+    }
+
     public function testUpdateZoneMasterSetsNewMaster(): void
     {
         $stmt = $this->createMock(PDOStatement::class);

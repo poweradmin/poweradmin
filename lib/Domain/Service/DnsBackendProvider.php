@@ -98,6 +98,43 @@ interface DnsBackendProvider
      */
     public function updateZoneAccount(int $domainId, string $account): bool;
 
+    /**
+     * Zones carrying the given catalog.
+     *
+     * PowerDNS only publishes a member whose kind is MASTER or PRODUCER and which
+     * has an enabled apex SOA, so the kind is returned for callers to flag the rest.
+     *
+     * @param string $catalogName Producer zone name, lowercase and without a trailing dot
+     * @return array<int, array{id: int, name: string, kind: string}>
+     */
+    public function getCatalogMembers(string $catalogName): array;
+
+    /**
+     * Zones of one kind, with the catalog each currently belongs to.
+     *
+     * @param string $kind A ZoneType constant
+     * @return array<int, array{id: int, name: string, catalog: string}>
+     */
+    public function getZonesByKind(string $kind): array;
+
+    /**
+     * Catalog the zone belongs to, lowercase and without a trailing dot, or '' when
+     * it is not a member.
+     *
+     * @param int $domainId Domain ID
+     * @return string
+     */
+    public function getZoneCatalog(int $domainId): string;
+
+    /**
+     * Join $catalogName, or leave the current catalog when it is ''.
+     *
+     * @param int $domainId Domain ID
+     * @param string $catalogName Producer zone name in canonical form, or '' to clear
+     * @return bool
+     */
+    public function updateZoneCatalog(int $domainId, string $catalogName): bool;
+
     // ---------------------------------------------------------------
     // Record operations
     // ---------------------------------------------------------------

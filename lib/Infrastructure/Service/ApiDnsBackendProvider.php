@@ -49,6 +49,9 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     private PDO $db;
     private LoggerInterface $logger;
 
+    /** @var array<string, int>|null Zone name to local id, resolved once per request. */
+    private ?array $localZoneIds = null;
+
     // $config is unused here but kept so both DnsBackendProvider implementations
     // are constructed alike; the API backend needs no table-name resolution.
     public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
@@ -200,6 +203,100 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         $apiName = self::ensureTrailingDot($zoneName);
 
         return $this->client->updateZoneProperties($apiName, ['account' => $account]);
+    }
+
+    public function getCatalogMembers(string $catalogName): array
+    {
+        $members = [];
+        foreach ($this->readZoneKinds() as $apiName => $kind) {
+            if ($kind['catalog'] !== $catalogName || $catalogName === '') {
+                continue;
+            }
+            $members[] = [
+                'id' => $this->localIdForZoneName(rtrim($apiName, '.')),
+                'name' => rtrim($apiName, '.'),
+                'kind' => $kind['kind'],
+            ];
+        }
+
+        usort($members, fn(array $a, array $b): int => strcmp($a['name'], $b['name']));
+
+        return $members;
+    }
+
+    public function getZonesByKind(string $kind): array
+    {
+        $wanted = strtoupper($kind);
+
+        $zones = [];
+        foreach ($this->readZoneKinds() as $apiName => $entry) {
+            if ($entry['kind'] !== $wanted) {
+                continue;
+            }
+            $zones[] = [
+                'id' => $this->localIdForZoneName(rtrim($apiName, '.')),
+                'name' => rtrim($apiName, '.'),
+                'catalog' => $entry['catalog'],
+            ];
+        }
+
+        usort($zones, fn(array $a, array $b): int => strcmp($a['name'], $b['name']));
+
+        return $zones;
+    }
+
+    public function getZoneCatalog(int $domainId): string
+    {
+        $zoneName = $this->getZoneNameByLocalId($domainId);
+        if ($zoneName === null) {
+            return '';
+        }
+
+        // Served from the zone body already held for the record listing on the
+        // edit page, so this costs nothing there.
+        $zoneData = $this->client->getZone(self::ensureTrailingDot($zoneName), false);
+
+        return PowerdnsApiClient::canonicalZoneName((string)($zoneData['catalog'] ?? ''));
+    }
+
+    public function updateZoneCatalog(int $domainId, string $catalogName): bool
+    {
+        $zoneName = $this->getZoneNameByLocalId($domainId);
+        if ($zoneName === null) {
+            return false;
+        }
+
+        // PowerDNS only reads this field when it is a JSON string; null is silently
+        // ignored and leaves the zone in its current catalog.
+        $value = $catalogName === '' ? '' : self::ensureTrailingDot($catalogName);
+
+        return $this->client->updateZoneProperties(self::ensureTrailingDot($zoneName), ['catalog' => $value]);
+    }
+
+    /**
+     * @return array<string, array{kind: string, masters: array<int, string>, catalog: string}>
+     */
+    private function readZoneKinds(): array
+    {
+        try {
+            return $this->client->getAllZoneKinds(false);
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to get zone kinds from API: {error}', ['error' => $e->getMessage()]);
+            return [];
+        }
+    }
+
+    private function localIdForZoneName(string $zoneName): int
+    {
+        if ($this->localZoneIds === null) {
+            $this->localZoneIds = [];
+            $stmt = $this->db->query("SELECT id, domain_id, zone_name FROM zones WHERE zone_name IS NOT NULL");
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $this->localZoneIds[$row['zone_name']] = (int)($row['domain_id'] ?: $row['id']);
+            }
+        }
+
+        return $this->localZoneIds[$zoneName] ?? 0;
     }
 
     // ---------------------------------------------------------------

@@ -328,6 +328,77 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function testUpdateZoneCatalogSendsTheDottedName(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('bindValue');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->mockClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('example.com.', ['catalog' => 'producer.example.com.'])
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->updateZoneCatalog(1, 'producer.example.com'));
+    }
+
+    public function testUpdateZoneCatalogClearsWithEmptyStringNotNull(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('bindValue');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        // PowerDNS reads this field only when it is a JSON string. A null is
+        // silently ignored, leaving the zone in its catalog while reporting success.
+        $this->mockClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('example.com.', $this->callback(function ($data) {
+                $this->assertArrayHasKey('catalog', $data);
+                $this->assertNotNull($data['catalog']);
+                return $data['catalog'] === '';
+            }))
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->updateZoneCatalog(1, ''));
+    }
+
+    public function testGetCatalogMembersUsesTheBulkListAndNeverReadsZonesIndividually(): void
+    {
+        // Reading catalog per zone would reintroduce the N+1 that #1387 removed.
+        $this->mockClient->expects($this->once())
+            ->method('getAllZoneKinds')
+            ->willReturn([
+                'member.example.com.' => ['kind' => 'MASTER', 'masters' => [], 'catalog' => 'producer.example.com'],
+                'other.example.com.' => ['kind' => 'MASTER', 'masters' => [], 'catalog' => 'elsewhere.example.com'],
+                'loose.example.com.' => ['kind' => 'NATIVE', 'masters' => [], 'catalog' => ''],
+            ]);
+        $this->mockClient->expects($this->never())->method('getZone');
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 4, 'domain_id' => 4, 'zone_name' => 'member.example.com'],
+            false
+        );
+        $this->mockDb->method('query')->willReturn($stmt);
+
+        $members = $this->provider->getCatalogMembers('producer.example.com');
+
+        $this->assertSame([['id' => 4, 'name' => 'member.example.com', 'kind' => 'MASTER']], $members);
+    }
+
+    public function testGetCatalogMembersReturnsNothingForAnEmptyCatalog(): void
+    {
+        $this->mockClient->method('getAllZoneKinds')->willReturn([
+            'loose.example.com.' => ['kind' => 'MASTER', 'masters' => [], 'catalog' => ''],
+        ]);
+
+        $this->assertSame([], $this->provider->getCatalogMembers(''));
+    }
+
     public function testUpdateZoneTypeReturnsFalseWhenZoneNotFound(): void
     {
         $stmt = $this->createMock(PDOStatement::class);

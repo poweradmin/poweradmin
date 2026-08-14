@@ -23,10 +23,12 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
+use PDOException;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -154,6 +156,99 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $stmt->execute([':account' => $account, ':id' => $domainId]);
 
         return true;
+    }
+
+    public function getCatalogMembers(string $catalogName): array
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        try {
+            $stmt = $this->db->prepare("SELECT id, name, type FROM $domainsTable WHERE catalog = :catalog ORDER BY name");
+            $stmt->execute([':catalog' => $catalogName]);
+        } catch (PDOException $e) {
+            return $this->reportMissingCatalogColumn($e, []);
+        }
+
+        $members = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $members[] = [
+                'id' => (int)$row['id'],
+                'name' => (string)$row['name'],
+                'kind' => strtoupper((string)$row['type']),
+            ];
+        }
+
+        return $members;
+    }
+
+    public function getZonesByKind(string $kind): array
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        try {
+            $stmt = $this->db->prepare("SELECT id, name, catalog FROM $domainsTable WHERE type = :kind ORDER BY name");
+            $stmt->execute([':kind' => strtoupper($kind)]);
+        } catch (PDOException $e) {
+            return $this->reportMissingCatalogColumn($e, []);
+        }
+
+        $zones = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $zones[] = [
+                'id' => (int)$row['id'],
+                'name' => (string)$row['name'],
+                'catalog' => PowerdnsApiClient::canonicalZoneName((string)($row['catalog'] ?? '')),
+            ];
+        }
+
+        return $zones;
+    }
+
+    public function getZoneCatalog(int $domainId): string
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        try {
+            $stmt = $this->db->prepare("SELECT catalog FROM $domainsTable WHERE id = :id");
+            $stmt->execute([':id' => $domainId]);
+        } catch (PDOException $e) {
+            return $this->reportMissingCatalogColumn($e, '');
+        }
+
+        return PowerdnsApiClient::canonicalZoneName((string)($stmt->fetchColumn() ?: ''));
+    }
+
+    public function updateZoneCatalog(int $domainId, string $catalogName): bool
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        try {
+            // Empty string, never NULL: that is what PowerDNS itself leaves behind
+            // when a zone is removed from a catalog.
+            $stmt = $this->db->prepare("UPDATE $domainsTable SET catalog = :catalog WHERE id = :id");
+            $stmt->execute([':catalog' => $catalogName, ':id' => $domainId]);
+        } catch (PDOException $e) {
+            return $this->reportMissingCatalogColumn($e, false);
+        }
+
+        return true;
+    }
+
+    /**
+     * domains.catalog only exists from PowerDNS 4.7. A 4.7+ API in front of an older
+     * schema is a misconfiguration that should degrade, not throw off the edit page.
+     *
+     * @template T
+     * @param T $empty
+     * @return T
+     */
+    private function reportMissingCatalogColumn(PDOException $e, mixed $empty): mixed
+    {
+        $this->logger->warning('Catalog column unavailable, is the PowerDNS schema older than 4.7? {error}', [
+            'error' => $e->getMessage(),
+        ]);
+
+        return $empty;
     }
 
     // ---------------------------------------------------------------

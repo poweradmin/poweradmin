@@ -515,6 +515,39 @@ class PowerdnsApiClientTest extends TestCase
         $this->apiClient->getAllZoneKinds();
     }
 
+    public function testGetAllZoneKindsReportsCatalogInPowerdnsStoredForm(): void
+    {
+        // PowerDNS returns the dotted form over the API but stores lowercase with no
+        // trailing dot, and matches members on an exact string compare.
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                ['name' => 'member.example.com.', 'kind' => 'Master', 'catalog' => 'Cat.Example.COM.'],
+            ]]);
+
+        $kinds = $this->apiClient->getAllZoneKinds();
+
+        $this->assertSame('cat.example.com', $kinds['member.example.com.']['catalog']);
+        $this->assertSame('MASTER', $kinds['member.example.com.']['kind'], 'kind stays uppercased');
+    }
+
+    public function testGetAllZoneKindsReportsEmptyCatalogForNonMembers(): void
+    {
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                ['name' => 'absent.example.com.', 'kind' => 'Native'],
+                ['name' => 'empty.example.com.', 'kind' => 'Native', 'catalog' => ''],
+                ['name' => 'root.example.com.', 'kind' => 'Native', 'catalog' => '.'],
+            ]]);
+
+        $kinds = $this->apiClient->getAllZoneKinds();
+
+        $this->assertSame('', $kinds['absent.example.com.']['catalog']);
+        $this->assertSame('', $kinds['empty.example.com.']['catalog']);
+        $this->assertSame('', $kinds['root.example.com.']['catalog']);
+    }
+
     public function testGetAllZoneStatsReportsNoRecordCount(): void
     {
         // PowerDNS's zone list carries no record count - callers must not expect one

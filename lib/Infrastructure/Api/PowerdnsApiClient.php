@@ -240,17 +240,18 @@ class PowerdnsApiClient
     }
 
     /**
-     * Get zone kind/masters for all zones in a single API call. Used to keep the
-     * local zones-table cache aligned with PowerDNS when zone kinds change
-     * outside Poweradmin (e.g. via pdnsutil set-kind).
+     * Get zone kind/masters/catalog for all zones in a single API call. Used to
+     * keep the local zones-table cache aligned with PowerDNS when zone kinds change
+     * outside Poweradmin (e.g. via pdnsutil set-kind), and to resolve catalog
+     * membership without a per-zone lookup.
      *
-     * Only kind/masters are read here, so the DNSSEC lookup is skipped by
+     * Only kind/masters/catalog are read here, so the DNSSEC lookup is skipped by
      * default. Callers that also read the zone list with DNSSEC state should
      * pass true so both reads share one response rather than fetching the
      * list under two different URLs.
      *
      * @param bool $withDnssec Match the endpoint a companion list call uses
-     * @return array<string, array{kind: string, masters: array<int, string>}>
+     * @return array<string, array{kind: string, masters: array<int, string>, catalog: string}>
      */
     public function getAllZoneKinds(bool $withDnssec = false): array
     {
@@ -262,13 +263,28 @@ class PowerdnsApiClient
                 $name = $zoneData['name'] ?? '';
                 $masters = $zoneData['masters'] ?? [];
                 $kinds[$name] = [
+                    // Kind is an enum PowerDNS spells inconsistently; catalog is a DNS
+                    // name and must keep its own case handling.
                     'kind' => strtoupper((string)($zoneData['kind'] ?? '')),
                     'masters' => is_array($masters) ? array_values(array_map('strval', $masters)) : [],
+                    'catalog' => self::canonicalZoneName((string)($zoneData['catalog'] ?? '')),
                 ];
             }
         }
 
         return $kinds;
+    }
+
+    /**
+     * The form PowerDNS itself stores in domains.catalog: lowercase, no trailing
+     * dot. Its member lookup is an exact string match, so anything else produces a
+     * zone that is accepted and then silently never published.
+     */
+    public static function canonicalZoneName(string $name): string
+    {
+        $trimmed = rtrim(trim($name), '.');
+
+        return $trimmed === '' ? '' : strtolower($trimmed);
     }
 
     /**
