@@ -776,7 +776,7 @@
                     <!-- Zone Type -->
                     <div class="col-md-4">
                         <h6 class="text-muted mb-3">{% trans %}Type{% endtrans %}</h6>
-                        {% if meta_edit %}
+                        {% if meta_edit and zone_type_change_allowed %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
                             {{ macros.csrf_field() }}
                             <div class="input-group input-group-sm">
@@ -799,8 +799,8 @@
                         {% endif %}
                     </div>
 
-                    <!-- Slave Master IP (only for SLAVE type) -->
-                    {% if domain_type == "SLAVE" %}
+                    <!-- Primary IP, for zone kinds that replicate from one -->
+                    {% if zone_replicates_from_primary %}
                     <div class="col-md-4">
                         <h6 class="text-muted mb-3">{% trans %}IP address of master NS{% endtrans %}</h6>
                         {% if meta_edit %}

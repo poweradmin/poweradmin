@@ -166,8 +166,8 @@ class DomainManager implements DomainManagerInterface
      * @param object $db Database connection
      * @param string $domain A domain name
      * @param int|null $owner Owner ID for domain (null if only groups are assigned)
-     * @param string $type Type of domain ['NATIVE','MASTER','SLAVE']
-     * @param string $slave_master Master server hostname for domain
+     * @param string $type Type of domain ['NATIVE','MASTER','SLAVE','PRODUCER','CONSUMER']
+     * @param string $slave_master Master server hostname, required for kinds that replicate from a primary
      * @param int|string $zone_template ID of zone template ['none' or int]
      * @param array $groupIds Group IDs to assign as zone owners
      * @param string|null $soaEditApi SOA-EDIT-API policy for the new zone; 'OFF' disables, null uses the dns.soa_edit_api config default
@@ -176,10 +176,15 @@ class DomainManager implements DomainManagerInterface
      */
     public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): bool
     {
+        // Last-resort guard: not every caller whitelists the kind, and an unknown
+        // string would otherwise be written straight into the zone type.
+        if (!in_array(strtoupper($type), ZoneType::getAllTypes(), true)) {
+            $this->messageService->addSystemError(_('Invalid or unexpected input given.'));
+            return false;
+        }
+
         $zone_master_add = $this->userHasPermission('zone_master_add');
         $zone_slave_add = $this->userHasPermission('zone_slave_add');
-        // Keeps the original string for MASTER/NATIVE zones, which pass '' here, and for
-        // anything that fails validation - addDomain has never validated this argument.
         // Keeps the original string for MASTER/NATIVE zones, which pass '' here, and for
         // anything that fails validation - addDomain has never validated this argument.
         $slave_master = $this->normalizeMasterList($slave_master) ?? $slave_master;
@@ -190,10 +195,13 @@ class DomainManager implements DomainManagerInterface
             $dns_hostmaster = $this->config->get('dns', 'hostmaster');
             $dns_ttl = $this->config->get('dns', 'ttl');
 
-            if (
-                ($domain && $zone_template) ||
-                ($type == "SLAVE" && $domain && $slave_master)
-            ) {
+            // A replicating kind is inert without a primary, so require one rather
+            // than letting the template slot alone satisfy the guard.
+            $hasRequiredArgs = ZoneType::replicatesFromPrimary($type)
+                ? (bool)($domain && $slave_master)
+                : (bool)($domain && $zone_template);
+
+            if ($hasRequiredArgs) {
                 // Create zone BEFORE starting the transaction. In API mode,
                 // createZone() polls the DB to discover the new domain ID.
                 // If called inside a transaction, snapshot isolation can hide
@@ -218,7 +226,7 @@ class DomainManager implements DomainManagerInterface
                     return false;
                 }
 
-                if ($type != "SLAVE") {
+                if (!ZoneType::replicatesFromPrimary($type)) {
                     $this->applySerialPolicy($domain_id, $domain, $soaEditApi);
                 }
 
@@ -268,8 +276,9 @@ class DomainManager implements DomainManagerInterface
                         $stmt->execute();
                     }
 
-                    if ($type == "SLAVE") {
-                        // Master IP is already set by backendProvider->createZone()
+                    if (ZoneType::replicatesFromPrimary($type)) {
+                        // Records arrive by transfer, so skip the apex SOA and any template
+                        // records. Master IP is already set by backendProvider->createZone().
                         $db->commit();
                         $this->captureChange(function () use ($domain_id, $domain, $type, $slave_master, $owner): void {
                             $this->changeLogger->logZoneCreate([

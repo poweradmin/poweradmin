@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -92,6 +92,38 @@ class ZoneManagementServiceTest extends TestCase
         $this->assertFalse($result['success']);
         $this->assertEquals('At least one user or group must be assigned as owner', $result['message']);
         $this->assertEquals(400, $result['status']);
+    }
+
+    /**
+     * Catalog kinds have no masters plumbing on the API path: createZone() only
+     * requires a primary when the type is literally SLAVE. Widening $validTypes
+     * without widening that guard would create masterless consumer zones.
+     */
+    #[Test]
+    public function testCreateZoneRejectsCatalogZoneKinds(): void
+    {
+        // Reach the type check: report the zone as absent and free of records.
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(false);
+        $stmt->method('fetchColumn')->willReturn(0);
+        $this->db->method('prepare')->willReturn($stmt);
+
+        foreach (['CONSUMER', 'PRODUCER'] as $type) {
+            $result = $this->service->createZone(
+                'catalog.example.com',
+                $type,
+                1,
+                '',
+                'none',
+                false,
+                []
+            );
+
+            $this->assertFalse($result['success'], "$type must be rejected");
+            $this->assertEquals(400, $result['status']);
+            $this->assertStringContainsString('Invalid zone type', $result['message']);
+        }
     }
 
     // ========== updateZone tests ==========

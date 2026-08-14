@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
@@ -45,6 +46,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class BulkRegistrationController extends BaseController
 {
+    /** Bulk creation only makes sense for locally served zones. */
+    private const AVAILABLE_ZONE_TYPES = [ZoneType::MASTER, ZoneType::NATIVE];
 
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
@@ -127,6 +130,13 @@ class BulkRegistrationController extends BaseController
         $domains = DomainHelper::getDomains($this->request->getPostParam('domains'));
         $dom_type = $this->request->getPostParam('dom_type');
         $zone_template = $this->request->getPostParam('zone_template');
+
+        // The dropdown only populates the form; the submit path must whitelist too.
+        if (!in_array($dom_type, self::AVAILABLE_ZONE_TYPES, true)) {
+            $this->setMessage('bulk_registration', 'error', _('Invalid or unexpected input given.'));
+            $this->showBulkRegistrationForm();
+            return;
+        }
 
         $rawOwner = $this->request->getPostParam('owner', '');
         if ($ownershipMode->isUserOwnerAllowed() && $rawOwner !== '' && $rawOwner !== null) {
@@ -259,7 +269,7 @@ class BulkRegistrationController extends BaseController
             'perm_view_others' => $this->hasPermission('user_view_others'),
             'perm_edit_others' => $this->hasPermission('user_edit_others'),
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'MASTER'),
-            'available_zone_types' => array("MASTER", "NATIVE"),
+            'available_zone_types' => self::AVAILABLE_ZONE_TYPES,
             'users' => $this->createUserRepository()->getUsersWithZoneCounts(),
             'zone_templates' => $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]),
             'failed_domains' => $failed_domains,

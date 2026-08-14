@@ -114,6 +114,49 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertEquals(43, $result);
     }
 
+    public function testCreateConsumerZoneIncludesMasters(): void
+    {
+        $this->mockClient->expects($this->once())
+            ->method('createZoneWithData')
+            ->with([
+                'name' => 'catalog.example.com.',
+                'kind' => 'CONSUMER',
+                'nameservers' => [],
+                'masters' => ['192.0.2.42'],
+            ])
+            ->willReturn(['name' => 'catalog.example.com.']);
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetchColumn')->willReturn(44);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->createZone('catalog.example.com', 'CONSUMER', '192.0.2.42');
+
+        $this->assertEquals(44, $result);
+    }
+
+    public function testCreateProducerZoneOmitsMasters(): void
+    {
+        $this->mockClient->expects($this->once())
+            ->method('createZoneWithData')
+            ->with([
+                'name' => 'catalog.example.com.',
+                'kind' => 'PRODUCER',
+                'nameservers' => [],
+            ])
+            ->willReturn(['name' => 'catalog.example.com.']);
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetchColumn')->willReturn(45);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->createZone('catalog.example.com', 'PRODUCER', '');
+
+        $this->assertEquals(45, $result);
+    }
+
     public function testCreateSlaveZoneIncludesMultipleMasters(): void
     {
         $this->mockClient->expects($this->once())
@@ -234,6 +277,53 @@ class ApiDnsBackendProviderTest extends TestCase
             ->willReturn(true);
 
         $result = $this->provider->updateZoneType(1, 'SLAVE');
+
+        $this->assertTrue($result);
+    }
+
+    public function testUpdateZoneTypeConsumerKeepsMasters(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'SLAVE']);
+        $stmt->method('bindValue');
+
+        $stmtUpdate = $this->createMock(PDOStatement::class);
+        $stmtUpdate->method('bindValue');
+        $stmtUpdate->method('execute');
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmt, $stmtUpdate);
+
+        // A consumer AXFRs its catalog from a primary; clearing masters would break replication.
+        $this->mockClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('example.com.', ['kind' => 'CONSUMER'])
+            ->willReturn(true);
+
+        $result = $this->provider->updateZoneType(1, 'CONSUMER');
+
+        $this->assertTrue($result);
+    }
+
+    public function testUpdateZoneTypeProducerClearsMasters(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $stmt->method('bindValue');
+
+        $stmtUpdate = $this->createMock(PDOStatement::class);
+        $stmtUpdate->method('bindValue');
+        $stmtUpdate->method('execute');
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmt, $stmtUpdate);
+
+        $this->mockClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('example.com.', ['kind' => 'PRODUCER', 'masters' => []])
+            ->willReturn(true);
+
+        $result = $this->provider->updateZoneType(1, 'PRODUCER');
 
         $this->assertTrue($result);
     }

@@ -497,6 +497,10 @@ class EditController extends BaseController
             'domain_type' => $domain_type,
             'slave_master' => $slave_master,
             'zone_types' => $types,
+            'zone_replicates_from_primary' => ZoneType::replicatesFromPrimary($domain_type),
+            // Catalog kinds are absent from $types, so the browser would preselect the
+            // first option and one click would silently retype the zone.
+            'zone_type_change_allowed' => in_array($domain_type, $types, true),
             'zone_templates' => $zone_templates,
             'zone_template_id' => $zone_template_id,
             'zone_template_details' => $zone_template_details,

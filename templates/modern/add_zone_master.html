@@ -41,6 +41,14 @@
                     <small class="text-muted">{% trans %}Zone type (usually NATIVE){% endtrans %}</small>
                 </div>
 
+                <div class="mb-3{% if not zone_replicates_from_primary %} d-none{% endif %}" id="masters_field">
+                    <label for="slave_master" class="form-label">{% trans %}IP address of master NS{% endtrans %} <span class="text-danger">*</span></label>
+                    <input data-testid="zone-master-input" class="form-control form-control-sm" type="text" id="slave_master" name="slave_master" value="{{ slave_master_value }}"{% if zone_replicates_from_primary %} required{% endif %}>
+                    <div class="invalid-feedback">{% trans %}Provide IP address{% endtrans %}</div>
+                    <small class="text-muted">{% trans %}IP address of the master name server (supports IPv4 and IPv6, multiple IPs separated by commas){% endtrans %}</small>
+                </div>
+
+                <div{% if zone_replicates_from_primary %} class="d-none"{% endif %} id="local_zone_fields">
                 {% if can_use_templates %}
                 <div class="mb-3">
                     <label for="zone_template" class="form-label">{% trans %}Template{% endtrans %}</label>
@@ -76,6 +84,7 @@
                     <small class="text-muted">{% trans %}Secure this zone with DNSSEC signing{% endtrans %}</small>
                 </div>
                 {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -190,6 +199,32 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Consumer zones take their catalog by transfer: show the primaries field and
+    // hide the settings that only apply to a locally served zone.
+    const domType = document.getElementById('dom_type');
+    const mastersField = document.getElementById('masters_field');
+    const mastersInput = document.getElementById('slave_master');
+
+    const localZoneFields = document.getElementById('local_zone_fields');
+
+    if (domType && mastersField && mastersInput) {
+        const replicatingKinds = {{ replicating_zone_types|json_encode|raw }};
+
+        const syncCatalogFields = function() {
+            const replicates = replicatingKinds.indexOf(domType.value) !== -1;
+            mastersField.classList.toggle('d-none', !replicates);
+            // required on a hidden input blocks checkValidity() with nothing to show
+            mastersInput.toggleAttribute('required', replicates);
+
+            if (localZoneFields) {
+                localZoneFields.classList.toggle('d-none', replicates);
+            }
+        };
+
+        domType.addEventListener('change', syncCatalogFields);
+        syncCatalogFields();
+    }
+
     // User selection indicator and auto-scroll
     const userList = document.getElementById('user_list');
     const selectedIndicator = document.getElementById('selected_user_indicator');

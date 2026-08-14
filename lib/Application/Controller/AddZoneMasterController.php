@@ -37,10 +37,12 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneValidationService;
@@ -57,6 +59,7 @@ class AddZoneMasterController extends BaseController
     private UserContextService $userContext;
     private IpAddressRetriever $ipAddressRetriever;
     private Request $request;
+    private IPAddressValidator $ipAddressValidator;
 
     /** @var array<int, string>|null */
     private ?array $soaEditApiChoices = null;
@@ -69,6 +72,7 @@ class AddZoneMasterController extends BaseController
         $this->userContext = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->request = new Request();
+        $this->ipAddressValidator = new IPAddressValidator();
     }
 
     public function run(): void
@@ -110,6 +114,30 @@ class AddZoneMasterController extends BaseController
             return _('Zone ownership mode is groups_only but you are not a member of any group. Ask an administrator to add you to a group before creating zones.');
         }
         return null;
+    }
+
+    /**
+     * Zone kinds this install may create.
+     *
+     * @return array<string>
+     */
+    private function getAvailableZoneTypes(): array
+    {
+        // A consumer replicates from a remote primary, which is what zone_slave_add governs.
+        return ZoneType::getCreatableTypes(
+            $this->supportsCatalogKinds(),
+            $this->hasPermission('zone_slave_add')
+        );
+    }
+
+    /**
+     * Catalog kinds need PowerDNS 4.7+, and an unknown version must count as
+     * unsupported: the 4.7 schema widened domains.type from VARCHAR(6) to
+     * VARCHAR(8), so writing PRODUCER/CONSUMER to an older one truncates it.
+     */
+    private function supportsCatalogKinds(): bool
+    {
+        return $this->getPdnsCapabilities()->supportsCatalogZones();
     }
 
     private function addZone(): void
@@ -156,9 +184,27 @@ class AddZoneMasterController extends BaseController
 
         $zone_name = DnsIdnService::toPunycode($raw_domain);
         $dom_type = $this->request->getPostParam('dom_type', '');
+
+        // The dropdown only populates the form; without this the submit path would
+        // accept any string, including kinds this server does not support.
+        if (!in_array($dom_type, $this->getAvailableZoneTypes(), true)) {
+            $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
+            $this->showForm();
+            return;
+        }
+
         $ownerInput = $this->request->getPostParam('owner');
         $owner = $ownershipMode->isUserOwnerAllowed() && !empty($ownerInput) ? (int)$ownerInput : null;
         $zone_template = $this->request->getPostParam('zone_template', 'none');
+
+        // A consumer takes its catalog by transfer, so it needs a primary and gets
+        // neither template records nor a serial policy.
+        $replicates = ZoneType::replicatesFromPrimary($dom_type);
+        $slave_master = $replicates ? trim((string)$this->request->getPostParam('slave_master', '')) : '';
+        if ($replicates) {
+            $zone_template = 'none';
+        }
+
         $soa_edit_api = $this->sanitizeSoaEditApiInput($this->request->getPostParam('soa_edit_api'));
         $groupsInput = $this->request->getPostParam('groups');
         $selected_groups = $ownershipMode->isGroupOwnerAllowed() && is_array($groupsInput) ?
@@ -223,21 +269,26 @@ class AddZoneMasterController extends BaseController
         } elseif (($overlapError = $this->getZoneOverlapError($zone_name)) !== null) {
             $this->setMessage('add_zone_master', 'error', $overlapError);
             $this->showForm();
-        } elseif ($this->createDomainManager()->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template, $selected_groups, $soa_edit_api)) {
+        } elseif ($replicates && !$this->ipAddressValidator->areMultipleValidIPs($slave_master)) {
+            $this->setMessage('add_zone_master', 'error', _('This is not a valid IPv4 or IPv6 address.'));
+            $this->showForm();
+        } elseif ($this->createDomainManager()->addDomain($this->db, $zone_name, $owner, $dom_type, $slave_master, $zone_template, $selected_groups, $soa_edit_api)) {
             $zone_id = $domainRepository->getZoneIdFromName($zone_name);
 
             $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
+                'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $this->userContext->getLoggedInUsername(),
                 $zone_name,
                 $dom_type,
-                $zone_template
+                $zone_template,
+                $slave_master !== '' ? ' zone_master:' . $slave_master : ''
             ), $zone_id);
 
             $dnssecMessageSet = false;
 
-            if ($pdnssec_use) {
+            // Signing a zone whose records arrive by transfer is meaningless.
+            if ($pdnssec_use && !$replicates) {
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
                 if ($this->request->getPostParam('dnssec') !== null && $dnssecProvider->isDnssecEnabled()) {
@@ -371,15 +422,9 @@ class AddZoneMasterController extends BaseController
             $owner_value = $_SESSION[SessionKeys::USERID];
         }
 
-        // Safely handle the domain type value. Catalog zone kinds (Producer/
-        // Consumer) only appear on PowerDNS 4.7+ - older servers reject them.
-        $valid_domain_types = array("MASTER", "NATIVE");
-        if ($this->getPdnsCapabilities()->supportsCatalogZones()) {
-            $valid_domain_types[] = "PRODUCER";
-            $valid_domain_types[] = "CONSUMER";
-        }
+        $valid_domain_types = $this->getAvailableZoneTypes();
         $domTypeInput = $this->request->getPostParam('dom_type');
-        $dom_type_value = $domTypeInput !== null && in_array($domTypeInput, $valid_domain_types) ?
+        $dom_type_value = $domTypeInput !== null && in_array($domTypeInput, $valid_domain_types, true) ?
             $domTypeInput : $this->config->get('dns', 'zone_type_default', 'NATIVE');
 
         $is_post_request = !empty($this->request->getPostParams());
@@ -426,6 +471,9 @@ class AddZoneMasterController extends BaseController
             'zone_template_value' => $zone_template_value,
             'owner_value' => $owner_value,
             'dom_type_value' => $dom_type_value,
+            'slave_master_value' => (string)$this->request->getPostParam('slave_master', ''),
+            'zone_replicates_from_primary' => ZoneType::replicatesFromPrimary($dom_type_value),
+            'replicating_zone_types' => ZoneType::getReplicatingTypes(),
             'is_post' => $is_post_request,
             'dnssec_checked' => $dnssec_checked,
             'all_groups' => $allGroups,

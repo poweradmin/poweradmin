@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\Zone;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -80,7 +81,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             'nameservers' => [],
         ];
 
-        if ($type === 'SLAVE' && $slaveMaster !== '') {
+        if (ZoneType::replicatesFromPrimary($type) && $slaveMaster !== '') {
             $zoneData['masters'] = self::parseMasters($slaveMaster);
         }
 
@@ -142,7 +143,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         $apiName = self::ensureTrailingDot($zone['zone_name']);
         $data = ['kind' => $type];
 
-        if ($type !== 'SLAVE') {
+        if (!ZoneType::replicatesFromPrimary($type)) {
             $data['masters'] = [];
         }
 

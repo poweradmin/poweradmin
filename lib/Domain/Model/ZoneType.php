@@ -35,6 +35,15 @@ class ZoneType
     public const PRODUCER = "PRODUCER";
 
     /**
+     * Kinds whose records arrive by transfer from a configured primary.
+     *
+     * Read by both isReadOnly() and replicatesFromPrimary(), which ask different
+     * questions but currently of the same set. Kept in one place so adding a kind
+     * cannot silently update one predicate and not the other.
+     */
+    private const REPLICATING_KINDS = [self::SLAVE, self::CONSUMER];
+
+    /**
      * Get an array of the available zone types.
      *
      * @return array The array of available zone types.
@@ -54,7 +63,59 @@ class ZoneType
      */
     public static function isReadOnly(?string $type): bool
     {
-        return in_array(strtoupper((string)$type), [self::SLAVE, self::CONSUMER], true);
+        return in_array(strtoupper((string)$type), self::REPLICATING_KINDS, true);
+    }
+
+    /**
+     * Secondary (Slave) and Consumer zones get their records by transfer from a
+     * configured primary, so they need masters set and must never be seeded locally.
+     * Kept separate from isReadOnly(), which answers whether records may be edited.
+     */
+    public static function replicatesFromPrimary(?string $type): bool
+    {
+        return in_array(strtoupper((string)$type), self::REPLICATING_KINDS, true);
+    }
+
+    /**
+     * Kinds that may be created, given what the connected server supports and
+     * whether the caller may add a zone that replicates from a remote primary.
+     *
+     * @return array<string>
+     */
+    public static function getCreatableTypes(bool $catalogSupported, bool $mayAddSecondary): array
+    {
+        $types = [self::MASTER, self::NATIVE];
+
+        if (!$catalogSupported) {
+            return $types;
+        }
+
+        $types[] = self::PRODUCER;
+
+        if ($mayAddSecondary) {
+            $types[] = self::CONSUMER;
+        }
+
+        return $types;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public static function getReplicatingTypes(): array
+    {
+        return self::REPLICATING_KINDS;
+    }
+
+    /**
+     * Every kind PowerDNS accepts. Used as a last-resort guard so an unvalidated
+     * caller cannot write an arbitrary string into the zone kind.
+     *
+     * @return array<string>
+     */
+    public static function getAllTypes(): array
+    {
+        return [self::MASTER, self::SLAVE, self::NATIVE, self::PRODUCER, self::CONSUMER];
     }
 
     /**

@@ -40,8 +40,8 @@ interface DnsBackendProvider
      * Create a new zone in the DNS backend.
      *
      * @param string $domain Zone name (without trailing dot)
-     * @param string $type Zone type: NATIVE, MASTER, or SLAVE
-     * @param string $slaveMaster Master IP for SLAVE zones
+     * @param string $type Zone type: NATIVE, MASTER, SLAVE, PRODUCER, or CONSUMER
+     * @param string $slaveMaster Master IP for kinds that replicate from a primary (SLAVE, CONSUMER)
      * @return int|false The new domain ID, or false on failure
      */
     public function createZone(string $domain, string $type, string $slaveMaster = ''): int|false;
@@ -59,7 +59,9 @@ interface DnsBackendProvider
     public function deleteZone(int $domainId, string $zoneName): bool;
 
     /**
-     * Change zone type (NATIVE, MASTER, SLAVE).
+     * Change zone type (NATIVE, MASTER, SLAVE, PRODUCER, CONSUMER).
+     *
+     * Masters are cleared unless the new kind replicates from a primary.
      *
      * @param int $domainId Domain ID
      * @param string $type New zone type

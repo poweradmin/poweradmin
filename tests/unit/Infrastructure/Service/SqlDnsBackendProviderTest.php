@@ -105,6 +105,38 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertEquals(43, $result);
     }
 
+    public function testCreateConsumerZoneSetsMaster(): void
+    {
+        $stmtInsert = $this->createMock(PDOStatement::class);
+        $stmtInsert->expects($this->once())->method('execute');
+        $stmtInsert->method('bindValue');
+
+        $stmtUpdate = $this->createMock(PDOStatement::class);
+        $stmtUpdate->expects($this->once())->method('execute');
+        $stmtUpdate->method('bindValue');
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmtInsert, $stmtUpdate);
+        $this->mockDb->method('lastInsertId')->willReturn('44');
+
+        $result = $this->provider->createZone('catalog.example.com', 'CONSUMER', '192.0.2.42');
+
+        $this->assertEquals(44, $result);
+    }
+
+    public function testCreateProducerZoneDoesNotSetMaster(): void
+    {
+        $stmtInsert = $this->createMock(PDOStatement::class);
+        $stmtInsert->expects($this->once())->method('execute');
+        $stmtInsert->method('bindValue');
+
+        $this->mockDb->expects($this->once())->method('prepare')->willReturn($stmtInsert);
+        $this->mockDb->method('lastInsertId')->willReturn('45');
+
+        $result = $this->provider->createZone('catalog.example.com', 'PRODUCER', '');
+
+        $this->assertEquals(45, $result);
+    }
+
     public function testDeleteZoneDeletesAllRelatedTables(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
@@ -148,6 +180,40 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->mockDb->method('prepare')->willReturn($stmt);
 
         $result = $this->provider->updateZoneType(1, 'SLAVE');
+
+        $this->assertTrue($result);
+    }
+
+    public function testUpdateZoneTypeConsumerDoesNotClearMaster(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->callback(function ($params) {
+                return $params[':type'] === 'CONSUMER'
+                    && !array_key_exists(':master', $params);
+            }));
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->updateZoneType(1, 'CONSUMER');
+
+        $this->assertTrue($result);
+    }
+
+    public function testUpdateZoneTypeProducerClearsMaster(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->callback(function ($params) {
+                return $params[':type'] === 'PRODUCER'
+                    && $params[':master'] === '';
+            }));
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->updateZoneType(1, 'PRODUCER');
 
         $this->assertTrue($result);
     }

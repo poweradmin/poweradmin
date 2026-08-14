@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
 use Poweradmin\Domain\Model\MetadataDefinitions;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -67,7 +68,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
         $domainId = (int)$this->db->lastInsertId('domains_id_seq');
 
-        if ($type === 'SLAVE' && $slaveMaster !== '') {
+        if (ZoneType::replicatesFromPrimary($type) && $slaveMaster !== '') {
             $stmt = $this->db->prepare("UPDATE $domainsTable SET master = :master WHERE id = :id");
             $stmt->bindValue(':master', $slaveMaster, PDO::PARAM_STR);
             $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
@@ -117,7 +118,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $params = [':type' => $type, ':id' => $domainId];
         $masterClause = '';
 
-        if ($type !== 'SLAVE') {
+        if (!ZoneType::replicatesFromPrimary($type)) {
             $masterClause = ', master = :master';
             $params[':master'] = '';
         }
