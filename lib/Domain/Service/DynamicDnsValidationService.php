@@ -93,6 +93,16 @@ class DynamicDnsValidationService
                 return ValidationResult::failure(['At least one valid IP address is required']);
             }
 
+            // A family that was supplied but parsed to nothing is a malformed request, not an
+            // omitted family - under dualstack_update its records would be deleted instead.
+            if ($ipv4String !== '' && !$ipList->hasIpv4Addresses()) {
+                return ValidationResult::failure(['No valid IPv4 address in the supplied IP address list']);
+            }
+
+            if ($ipv6String !== '' && !$ipList->hasIpv6Addresses()) {
+                return ValidationResult::failure(['No valid IPv6 address in the supplied IP address list']);
+            }
+
             return ValidationResult::success(null);
         } catch (\Exception $e) {
             return ValidationResult::failure(['Invalid IP addresses: ' . $e->getMessage()]);

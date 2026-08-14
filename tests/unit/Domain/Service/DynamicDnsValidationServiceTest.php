@@ -147,6 +147,41 @@ class DynamicDnsValidationServiceTest extends TestCase
         $this->assertContains('At least one valid IP address is required', $result->getErrors());
     }
 
+    public function testValidateIpAddressesRejectsMalformedIpv4BesideValidIpv6(): void
+    {
+        // Left unrejected, dualstack_update would delete every A record for the hostname.
+        $result = $this->validationService->validateIpAddresses('garbage', '2001:db8::1');
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testValidateIpAddressesRejectsMalformedIpv6BesideValidIpv4(): void
+    {
+        $result = $this->validationService->validateIpAddresses('192.168.1.1', 'garbage');
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testValidateIpAddressesMalformedFamilyErrorMapsToDnserr(): void
+    {
+        // DynamicDnsUpdateService::determineErrorCode() matches on 'IP address' to return dnserr.
+        $result = $this->validationService->validateIpAddresses('garbage', '2001:db8::1');
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('IP address', implode(' ', $result->getErrors()));
+    }
+
+    public function testValidateIpAddressesAcceptsOmittedIpv6(): void
+    {
+        // Single-stack clients omit the other family entirely; this must stay valid.
+        $result = $this->validationService->validateIpAddresses('192.168.1.1', '');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateIpAddressesAcceptsOmittedIpv4(): void
+    {
+        $result = $this->validationService->validateIpAddresses('', '2001:db8::1');
+        $this->assertTrue($result->isValid());
+    }
+
     public function testCreateValidatedHostname(): void
     {
         $hostname = $this->validationService->createValidatedHostname('example.com');
