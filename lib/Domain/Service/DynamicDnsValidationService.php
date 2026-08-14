@@ -106,10 +106,42 @@ class DynamicDnsValidationService
                 return ValidationResult::failure(['No valid IPv6 address in the supplied IP address list']);
             }
 
+            // The list is the complete record set: anything not in it is deleted. Dropping an
+            // unparseable entry would therefore remove the record the client meant to keep.
+            if ($this->hasUnparseableAddress($ipv4String) || $this->hasUnparseableAddress($ipv6String)) {
+                return ValidationResult::failure(['The supplied IP address list contains an invalid address']);
+            }
+
             return ValidationResult::success(null);
         } catch (\Exception $e) {
             return ValidationResult::failure(['Invalid IP addresses: ' . $e->getMessage()]);
         }
+    }
+
+    /**
+     * Whether any address in a comma-separated list fails to parse. Empty elements are
+     * skipped so a trailing comma stays acceptable.
+     */
+    private function hasUnparseableAddress(string $addressList): bool
+    {
+        if ($addressList === '') {
+            return false;
+        }
+
+        foreach (explode(',', $addressList) as $address) {
+            $address = trim($address);
+            if ($address === '') {
+                continue;
+            }
+            if (
+                !$this->ipValidator->isValidIPv4($address)
+                && !$this->ipValidator->isValidIPv6($address)
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function createValidatedHostname(string $hostname): HostnameValue

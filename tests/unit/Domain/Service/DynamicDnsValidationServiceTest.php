@@ -182,6 +182,48 @@ class DynamicDnsValidationServiceTest extends TestCase
         $this->assertTrue($result->isValid());
     }
 
+    public function testValidateIpAddressesRejectsInvalidElementBesideValidIpv4(): void
+    {
+        // The list is the complete record set, so silently dropping 'garbage' would delete
+        // whichever A record it was meant to keep.
+        $result = $this->validationService->validateIpAddresses('192.0.2.1,garbage', '');
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testValidateIpAddressesRejectsInvalidElementBesideValidIpv6(): void
+    {
+        $result = $this->validationService->validateIpAddresses('', '2001:db8::1,garbage');
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testValidateIpAddressesInvalidElementErrorMapsToDnserr(): void
+    {
+        $result = $this->validationService->validateIpAddresses('192.0.2.1,garbage', '');
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('IP address', implode(' ', $result->getErrors()));
+    }
+
+    public function testValidateIpAddressesAcceptsMultipleValidAddresses(): void
+    {
+        $result = $this->validationService->validateIpAddresses('192.0.2.1,192.0.2.2', '2001:db8::1,2001:db8::2');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateIpAddressesAcceptsTrailingCommaAndSpacing(): void
+    {
+        // A trailing comma or padded element is sloppy but not malformed.
+        $result = $this->validationService->validateIpAddresses(' 192.0.2.1 , 192.0.2.2 ,', '');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateIpAddressesAcceptsRepeatedAddress(): void
+    {
+        // The list is deduplicated, which must not be mistaken for a dropped invalid entry.
+        $result = $this->validationService->validateIpAddresses('192.0.2.1,192.0.2.1', '');
+        $this->assertTrue($result->isValid());
+    }
+
     public function testCreateValidatedHostname(): void
     {
         $hostname = $this->validationService->createValidatedHostname('example.com');
