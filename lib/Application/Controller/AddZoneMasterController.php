@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -105,6 +105,28 @@ class AddZoneMasterController extends BaseController
         return null;
     }
 
+    /**
+     * Zone kinds this install may create.
+     *
+     * Producer needs PowerDNS 4.7+, and an unknown version counts as unsupported:
+     * the 4.7 schema widened domains.type from VARCHAR(6) to VARCHAR(8), so an
+     * 8-character catalog kind would be truncated on an older one. Consumer is
+     * deliberately absent - this form collects no primaries, and addDomain() would
+     * seed the zone with an SOA and template records a consumer must not have.
+     *
+     * @return array<string>
+     */
+    private function getAvailableZoneTypes(): array
+    {
+        $types = array("MASTER", "NATIVE");
+
+        if ($this->getPdnsCapabilities()->supportsCatalogZones()) {
+            $types[] = "PRODUCER";
+        }
+
+        return $types;
+    }
+
     private function addZone(): void
     {
         $constraints = [
@@ -148,6 +170,15 @@ class AddZoneMasterController extends BaseController
 
         $zone_name = DnsIdnService::toPunycode($raw_domain);
         $dom_type = $_POST["dom_type"];
+
+        // The dropdown only populates the form; without this a crafted POST could
+        // still ask for a kind this server does not support.
+        if (!in_array($dom_type, $this->getAvailableZoneTypes(), true)) {
+            $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
+            $this->showForm();
+            return;
+        }
+
         $owner = $ownershipMode->isUserOwnerAllowed() && !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
         $zone_template = $_POST['zone_template'] ?? "none";
         $selected_groups = $ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups']) ?
@@ -329,14 +360,8 @@ class AddZoneMasterController extends BaseController
             $owner_value = $_SESSION['userid'];
         }
 
-        // Safely handle the domain type value. Catalog zone kinds (Producer/
-        // Consumer) only appear on PowerDNS 4.7+ - older servers reject them.
-        $valid_domain_types = array("MASTER", "NATIVE");
-        if ($this->getPdnsCapabilities()->supportsCatalogZones()) {
-            $valid_domain_types[] = "PRODUCER";
-            $valid_domain_types[] = "CONSUMER";
-        }
-        $dom_type_value = isset($_POST['dom_type']) && in_array($_POST['dom_type'], $valid_domain_types) ?
+        $valid_domain_types = $this->getAvailableZoneTypes();
+        $dom_type_value = isset($_POST['dom_type']) && in_array($_POST['dom_type'], $valid_domain_types, true) ?
             $_POST['dom_type'] : $this->config->get('dns', 'zone_type_default', 'NATIVE');
 
         $is_post_request = !empty($_POST);
