@@ -85,6 +85,16 @@
       "matchPackageNames": [
         "/^symfony//"
       ]
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "dunglas/frankenphp"
+      ],
+      "minimumReleaseAge": "3 days",
+      "description": "Base image - shorter hold so rebuilds land sooner"
     }
   ]
 }
