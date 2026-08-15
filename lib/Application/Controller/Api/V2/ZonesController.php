@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
@@ -399,6 +400,17 @@ class ZonesController extends PublicApiController
                     type: 'array',
                     items: new OA\Items(type: 'integer'),
                     example: [2, 5]
+                ),
+                new OA\Property(
+                    property: 'soa_edit_api',
+                    description: 'Per-zone SOA-EDIT-API serial policy. Omit to apply the dns.soa_edit_api default; '
+                        . 'send OFF to disable the policy for this zone. Values not offered by the server are '
+                        . 'rejected with 400 for every zone type, unlike the web form which ignores them. The '
+                        . 'available set is narrowed by the dns.soa_edit_api_options config list. A SLAVE zone '
+                        . 'takes its serial from the primary, so the accepted value is not applied there.',
+                    type: 'string',
+                    enum: [...MetadataDefinitions::DEFINITIONS['SOA-EDIT-API']['options'], MetadataDefinitions::SOA_EDIT_API_OFF],
+                    example: 'INCREASE'
                 )
             ]
         )
@@ -482,9 +494,10 @@ class ZonesController extends PublicApiController
             $enableDnssec = $this->inputBool($input, 'enable_dnssec', false);
             $description = $this->inputString($input, 'description', '');
             $account = $this->inputString($input, 'account', '');
+            $soaEditApi = $this->inputString($input, 'soa_edit_api', '');
             if (
                 $domain === null || $type === null || $slaveMaster === null || $enableDnssec === null
-                || $description === null || $account === null
+                || $description === null || $account === null || $soaEditApi === null
             ) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
@@ -493,6 +506,8 @@ class ZonesController extends PublicApiController
             if ($zoneTemplate !== 'none' && !is_numeric($zoneTemplate)) {
                 return $this->returnApiError('Template must be a numeric ID', 400);
             }
+            // An omitted field and an empty one both mean "apply the config default".
+            $soaEditApi = $soaEditApi === '' ? null : $soaEditApi;
 
             // Validate master servers format if provided
             if (!empty($slaveMaster)) {
@@ -540,7 +555,8 @@ class ZonesController extends PublicApiController
                 $zoneTemplate,
                 $enableDnssec,
                 $groupIds,
-                $userId
+                $userId,
+                $soaEditApi
             );
 
             if (!$result['success']) {

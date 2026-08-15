@@ -1382,6 +1382,30 @@ test_zone_templates() {
     local name_template_zone='{"name":"name-template-test.example.com","type":"MASTER","template":"blockTemplate"}'
     api_request_v2 "POST" "/zones" "$name_template_zone" 400 "Reject zone creation with string template name" || true
 
+    # Test 10c: soa_edit_api is validated, unlike the web form which ignores unknown values
+    local bad_soa_edit_api='{"name":"bad-soa-edit-api.example.com","type":"MASTER","soa_edit_api":"NOPE"}'
+    api_request_v2 "POST" "/zones" "$bad_soa_edit_api" 400 "Reject zone creation with unknown soa_edit_api" || true
+
+    local nonstring_soa_edit_api='{"name":"nonstring-soa-edit-api.example.com","type":"MASTER","soa_edit_api":5}'
+    api_request_v2 "POST" "/zones" "$nonstring_soa_edit_api" 400 "Reject non-string soa_edit_api" || true
+
+    # Test 10d: a valid choice is accepted and stored as zone metadata
+    local soa_edit_api_zone='{"name":"soa-edit-api-test.example.com","type":"MASTER","soa_edit_api":"INCREASE"}'
+    if api_request_v2 "POST" "/zones" "$soa_edit_api_zone" 201 "Create zone with soa_edit_api"; then
+        local soa_zone_id
+        soa_zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+        if [[ -n "$soa_zone_id" ]]; then
+            api_request_v2 "GET" "/zones/${soa_zone_id}/metadata/SOA-EDIT-API" "" 200 "Read back SOA-EDIT-API metadata" || true
+            if ! echo "$LAST_RESPONSE_BODY" | grep -q "INCREASE"; then
+                print_fail "soa_edit_api was not persisted as SOA-EDIT-API metadata"
+            fi
+        fi
+    fi
+
+    # Test 10e: OFF is a valid choice that disables the policy
+    local soa_off_zone='{"name":"soa-edit-api-off.example.com","type":"MASTER","soa_edit_api":"OFF"}'
+    api_request_v2 "POST" "/zones" "$soa_off_zone" 201 "Create zone with soa_edit_api=OFF" || true
+
     # Test 11: Duplicate template name
     if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
         local dup_data='{"name": "Updated API Test Template", "description": "Duplicate name test"}'
@@ -2215,6 +2239,8 @@ cleanup_existing_test_zones() {
         "template-zone-test.example.com"
         "bad-template-test.example.com"
         "name-template-test.example.com"
+        "soa-edit-api-test.example.com"
+        "soa-edit-api-off.example.com"
         "owner-test.example.com"
         "metadata-test.example.com"
         "disabled-test.example.com"

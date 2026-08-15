@@ -26,6 +26,7 @@ use Exception;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
+use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -72,6 +73,8 @@ class ZoneManagementService
      * @param string $zoneTemplate Zone template to use
      * @param bool $enableDnssec Whether to enable DNSSEC
      * @param array<int> $groupIds Optional list of group IDs to assign as owners
+     * @param int|null $actingUserId User performing the creation, used for the overlap check
+     * @param string|null $soaEditApi Per-zone SOA-EDIT-API choice; null applies the dns.soa_edit_api default
      * @return array Result array with success status and zone ID or error message
      */
     public function createZone(
@@ -82,7 +85,8 @@ class ZoneManagementService
         string $zoneTemplate = 'none',
         bool $enableDnssec = false,
         array $groupIds = [],
-        ?int $actingUserId = null
+        ?int $actingUserId = null,
+        ?string $soaEditApi = null
     ): array {
         if ($owner === null && empty($groupIds)) {
             return ['success' => false, 'message' => 'At least one user or group must be assigned as owner', 'status' => 400];
@@ -131,6 +135,19 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Master IP address is required for SLAVE zones', 'status' => 400];
         }
 
+        // applySerialPolicy() only logs and ignores an unoffered value, which would quietly
+        // create the zone with the wrong serial policy. Reject it here instead.
+        if ($soaEditApi !== null && $soaEditApi !== '') {
+            $soaEditApiChoices = MetadataDefinitions::getSoaEditApiChoices($this->config);
+            if (!in_array($soaEditApi, $soaEditApiChoices, true)) {
+                return [
+                    'success' => false,
+                    'message' => 'Invalid soa_edit_api value. Must be one of: ' . implode(', ', $soaEditApiChoices),
+                    'status' => 400
+                ];
+            }
+        }
+
         // Resolve zone template: accept both name and numeric ID
         if ($zoneTemplate !== 'none' && $zoneTemplate !== '') {
             if (is_numeric($zoneTemplate)) {
@@ -156,7 +173,7 @@ class ZoneManagementService
         );
 
         $domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config, $backendProvider);
-        $success = $domainManager->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds);
+        $success = $domainManager->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds, $soaEditApi);
 
         if (!$success) {
             return ['success' => false, 'message' => 'Failed to create zone', 'status' => 500];
