@@ -598,6 +598,82 @@ class DbUserRepositoryTest extends TestCase
         $this->assertEquals(10, $result);
     }
 
+    #[Test]
+    public function testGetTotalUserCountWithSearchUsesPreparedStatement(): void
+    {
+        // The unrestricted no-search path uses query(); a search must switch to prepare()
+        // so the term is bound rather than interpolated.
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchColumn')->willReturn(2);
+
+        $this->db->expects($this->never())->method('query');
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->stringContains('LOWER(users.username) LIKE LOWER(:search0)'))
+            ->willReturn($stmt);
+
+        $this->assertEquals(2, $this->repository->getTotalUserCount(null, 'alice'));
+    }
+
+    #[Test]
+    public function testGetTotalUserCountIgnoresBlankSearch(): void
+    {
+        // A whitespace-only term must not turn into a LIKE '%%' filter.
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetchColumn')->willReturn(7);
+
+        $this->db->expects($this->never())->method('prepare');
+        $this->db->expects($this->once())->method('query')->willReturn($stmt);
+
+        $this->assertEquals(7, $this->repository->getTotalUserCount(null, '   '));
+    }
+
+    #[Test]
+    public function testGetTotalUserCountCombinesRestrictionAndSearch(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchColumn')->willReturn(1);
+
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->logicalAnd(
+                $this->stringContains('AND users.id = :id'),
+                $this->stringContains(':search0')
+            ))
+            ->willReturn($stmt);
+
+        $this->assertEquals(1, $this->repository->getTotalUserCount(5, 'alice'));
+    }
+
+    #[Test]
+    public function testGetUserDetailListAppliesSearchFilter(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchAll')->willReturn([]);
+
+        $userQuery = null;
+        $this->db->method('prepare')->willReturnCallback(function (string $sql) use (&$userQuery, $stmt) {
+            $userQuery ??= $sql; // the list query runs before the group and MFA lookups
+            return $stmt;
+        });
+
+        $bound = [];
+        $stmt->method('bindValue')->willReturnCallback(function (string $param, $value) use (&$bound) {
+            $bound[$param] = $value;
+            return true;
+        });
+
+        $this->repository->getUserDetailList(false, null, null, null, null, '100% _admin');
+
+        $this->assertStringContainsString("LOWER(users.username) LIKE LOWER(:search0) ESCAPE '!'", (string)$userQuery);
+
+        // LIKE wildcards in the term must be escaped, not treated as wildcards.
+        $this->assertEquals('%100!% !_admin%', $bound[':search0'] ?? null);
+    }
+
     // ========== getUserZones tests ==========
 
     #[Test]

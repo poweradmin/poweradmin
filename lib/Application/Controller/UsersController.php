@@ -150,20 +150,28 @@ class UsersController extends BaseController
         // account when they lack the permission to view other users
         $userRepository = $this->createUserRepository();
         $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
-        $totalUsers = $userRepository->getTotalUserCount($restrictToUserId);
+        // ?search[]=x arrives as an array; treat anything non-string as no filter.
+        $searchParam = $this->request->getQueryParam('search', '');
+        $searchTerm = is_string($searchParam) ? trim($searchParam) : '';
+        $totalUsers = $userRepository->getTotalUserCount($restrictToUserId, $searchTerm);
         $offset = ($currentPage - 1) * $rowsPerPage;
         $users = $userRepository->getUserDetailList(
             $this->config->get('ldap', 'enabled', false),
             $restrictToUserId,
             null,
             $rowsPerPage,
-            $offset
+            $offset,
+            $searchTerm
         );
 
         // Create pagination
         $pagination = $paginationService->createPagination($totalUsers, $rowsPerPage, $currentPage);
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-        $paginationPresenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/users?start={PageNumber}');
+        $paginationUrl = $baseUrlPrefix . '/users?start={PageNumber}';
+        if ($searchTerm !== '') {
+            $paginationUrl .= '&search=' . urlencode($searchTerm);
+        }
+        $paginationPresenter = new PaginationPresenter($pagination, $paginationUrl);
 
         $this->render('users.html', [
             'permissions' => $permissions,
@@ -176,6 +184,7 @@ class UsersController extends BaseController
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
             'pagination' => $paginationPresenter->present(),
             'total_users' => $totalUsers,
+            'search_term' => $searchTerm,
             'rows_per_page' => $rowsPerPage,
             'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),

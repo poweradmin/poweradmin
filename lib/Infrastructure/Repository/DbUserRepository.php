@@ -330,6 +330,33 @@ class DbUserRepository implements UserRepository
     }
 
     /**
+     * Search predicate over the user columns shown in the list. LOWER() is applied on both
+     * sides because PostgreSQL LIKE is case-sensitive while MySQL's default collation is not.
+     * Each column gets its own placeholder: repeating one name breaks native prepares.
+     *
+     * @return array{0: string, 1: array<string, string>} WHERE fragment and its bindings
+     */
+    private function buildUserSearchFilter(?string $search): array
+    {
+        $search = $search === null ? '' : trim($search);
+        if ($search === '') {
+            return ['', []];
+        }
+
+        $pattern = '%' . DbCompat::escapeLike($search) . '%';
+        $clauses = [];
+        $bindings = [];
+
+        foreach (['users.username', 'users.fullname', 'users.email', 'users.description'] as $index => $column) {
+            $placeholder = ':search' . $index;
+            $clauses[] = "LOWER($column) LIKE LOWER($placeholder) ESCAPE '!'";
+            $bindings[$placeholder] = $pattern;
+        }
+
+        return [' AND (' . implode(' OR ', $clauses) . ')', $bindings];
+    }
+
+    /**
      * Get detailed user list with template, group, and MFA info
      *
      * @param bool $ldapUse Whether the LDAP column should be included
@@ -337,10 +364,13 @@ class DbUserRepository implements UserRepository
      * @param int|null $specific User ID to fetch (overrides the restriction)
      * @param int|null $limit Number of records to return (optional)
      * @param int|null $offset Starting offset (optional)
+     * @param string|null $search Filter on username, full name, email or description
      * @return array Array of user details
      */
-    public function getUserDetailList(bool $ldapUse, ?int $restrictToUserId, ?int $specific = null, ?int $limit = null, ?int $offset = null): array
+    public function getUserDetailList(bool $ldapUse, ?int $restrictToUserId, ?int $specific = null, ?int $limit = null, ?int $offset = null, ?string $search = null): array
     {
+        [$searchCondition, $searchBindings] = $this->buildUserSearchFilter($search);
+
         if ($specific) {
             $sql_add = "AND users.id = :specific";
         } elseif ($restrictToUserId === null) {
@@ -370,7 +400,7 @@ class DbUserRepository implements UserRepository
         FROM users
         LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
              AND perm_templ.template_type = 'user'
-        WHERE 1=1 " . $sql_add . "
+        WHERE 1=1 " . $sql_add . $searchCondition . "
         ORDER BY username";
 
         if ($limit !== null) {
@@ -383,6 +413,10 @@ class DbUserRepository implements UserRepository
             $stmt->bindValue(':specific', $specific, PDO::PARAM_INT);
         } elseif ($restrictToUserId !== null) {
             $stmt->bindValue(':userid', $restrictToUserId, PDO::PARAM_INT);
+        }
+
+        foreach ($searchBindings as $placeholder => $value) {
+            $stmt->bindValue($placeholder, $value, PDO::PARAM_STR);
         }
 
         if ($limit !== null) {
@@ -506,18 +540,32 @@ class DbUserRepository implements UserRepository
      * Get total count of users in the system
      *
      * @param int|null $restrictToUserId Count only this user (for users without view-others permission)
+     * @param string|null $search Filter on username, full name, email or description
      * @return int Total number of users
      */
-    public function getTotalUserCount(?int $restrictToUserId = null): int
+    public function getTotalUserCount(?int $restrictToUserId = null, ?string $search = null): int
     {
-        if ($restrictToUserId !== null) {
-            $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE id = :id");
-            $stmt->bindValue(':id', $restrictToUserId, PDO::PARAM_INT);
-            $stmt->execute();
+        [$searchCondition, $searchBindings] = $this->buildUserSearchFilter($search);
+
+        if ($restrictToUserId === null && $searchCondition === '') {
+            $stmt = $this->db->query("SELECT COUNT(*) FROM users");
             return (int)$stmt->fetchColumn();
         }
 
-        $stmt = $this->db->query("SELECT COUNT(*) FROM users");
+        $query = "SELECT COUNT(*) FROM users WHERE 1=1";
+        if ($restrictToUserId !== null) {
+            $query .= " AND users.id = :id";
+        }
+        $query .= $searchCondition;
+
+        $stmt = $this->db->prepare($query);
+        if ($restrictToUserId !== null) {
+            $stmt->bindValue(':id', $restrictToUserId, PDO::PARAM_INT);
+        }
+        foreach ($searchBindings as $placeholder => $value) {
+            $stmt->bindValue($placeholder, $value, PDO::PARAM_STR);
+        }
+        $stmt->execute();
         return (int)$stmt->fetchColumn();
     }
 

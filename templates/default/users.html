@@ -18,6 +18,34 @@
         </div>
     </div>
     <div class="card-body p-0">
+        <div class="px-3 pt-3">
+            <form method="get" action="{{ base_url_prefix }}/users">
+                <div class="d-flex align-items-center py-2 px-3 {% if search_term %}border-primary{% endif %} border rounded">
+                    <div class="me-2">
+                        <i class="bi bi-funnel{% if search_term %}-fill text-primary{% endif %} me-1"></i>
+                        <strong>{% trans %}Filter:{% endtrans %}</strong>
+                    </div>
+                    <div class="me-2" style="min-width: 260px;">
+                        <input type="text" class="form-control form-control-sm {% if search_term %}border-primary{% endif %}" id="search" name="search"
+                               value="{{ search_term }}" placeholder="{% trans %}Search users...{% endtrans %}">
+                    </div>
+                    <div class="ms-auto">
+                        <button type="submit" class="btn btn-primary btn-sm me-1">
+                            <i class="bi bi-funnel-fill me-1 text-white"></i>{% trans %}Apply{% endtrans %}
+                        </button>
+                        {% if search_term %}
+                        <a href="{{ base_url_prefix }}/users" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-x-circle me-1 text-primary"></i>{% trans %}Clear{% endtrans %}
+                        </a>
+                        {% else %}
+                        <a href="{{ base_url_prefix }}/users" class="btn btn-outline-secondary btn-sm disabled">
+                            <i class="bi bi-x-circle me-1 text-secondary"></i>{% trans %}Clear{% endtrans %}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
         <div class="d-flex justify-content-between align-items-center px-3 pt-3">
             <div>
                 {% if pagination %}
@@ -37,6 +65,7 @@
         <form method="post" action="{{ base_url_prefix }}/users" id="user-form">
             {{ macros.csrf_field() }}
             <div class="table-responsive">
+                {% set user_column_count = 6 + (show_user_access_templates ? 1 : 0) + (show_group_access_templates ? 1 : 0) + (mfa_enabled ? 1 : 0) %}
                 <table class="table table-striped table-hover table-sm mb-0">
                     <thead class="table-light">
                     <tr>
@@ -201,6 +230,10 @@
                         <td class="text-end"></td>
                     </tr>
                     {% endif %}
+                    {% else %}
+                    <tr>
+                        <td colspan="{{ user_column_count }}" class="text-center py-3">{% trans %}No results found{% endtrans %}</td>
+                    </tr>
                     {% endfor %}
                     </tbody>
                 </table>

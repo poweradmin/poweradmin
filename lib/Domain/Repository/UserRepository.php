@@ -125,17 +125,19 @@ interface UserRepository
      * @param int|null $specific User ID to fetch (overrides the restriction)
      * @param int|null $limit Number of records to return (optional)
      * @param int|null $offset Starting offset (optional)
+     * @param string|null $search Filter on username, full name, email or description
      * @return array Array of user details
      */
-    public function getUserDetailList(bool $ldapUse, ?int $restrictToUserId, ?int $specific = null, ?int $limit = null, ?int $offset = null): array;
+    public function getUserDetailList(bool $ldapUse, ?int $restrictToUserId, ?int $specific = null, ?int $limit = null, ?int $offset = null, ?string $search = null): array;
 
     /**
      * Get total count of users in the system
      *
      * @param int|null $restrictToUserId Count only this user (for users without view-others permission)
+     * @param string|null $search Filter on username, full name, email or description
      * @return int Total number of users
      */
-    public function getTotalUserCount(?int $restrictToUserId = null): int;
+    public function getTotalUserCount(?int $restrictToUserId = null, ?string $search = null): int;
 
     /**
      * Delete a user by ID
