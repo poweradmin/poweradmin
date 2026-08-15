@@ -61,7 +61,10 @@ class DynamicDnsAuthenticationService
             return null;
         }
 
-        $passwordValid = $this->userAuthService->verifyPassword($request->getPassword(), $user->getPassword());
+        // Provisioned users (LDAP/OIDC/SAML) have no local password hash. Verifying against an
+        // empty hash would throw, surfacing a 500 and skipping the attempt recording below.
+        $hash = $user->getPassword();
+        $passwordValid = $hash !== '' && $this->userAuthService->verifyPassword($request->getPassword(), $hash);
         $this->loginAttemptService?->recordAttempt($username, $clientIp, $passwordValid);
 
         return $passwordValid ? $user : null;

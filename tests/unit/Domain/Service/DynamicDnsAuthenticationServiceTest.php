@@ -250,6 +250,30 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
         $this->assertNull($service->authenticateUser($request, '198.51.100.4'));
     }
 
+    public function testAuthenticateUserRejectsEmptyPasswordHashAndStillRecordsTheAttempt(): void
+    {
+        // OIDC/SAML-provisioned users are stored with an empty hash. A real
+        // UserAuthenticationService throws on one, and an uncaught throw would also skip
+        // recordAttempt, leaving the account unable to ever lock out.
+        $loginAttempts = $this->createMock(LoginAttemptService::class);
+        $loginAttempts->method('isAccountLocked')->willReturn(false);
+        $loginAttempts->expects($this->once())
+            ->method('recordAttempt')
+            ->with('ssouser', '198.51.100.5', false);
+
+        $this->mockRepository->method('findUserByUsernameWithDynamicDnsPermissions')
+            ->willReturn(new User(789, '', false));
+
+        $service = new DynamicDnsAuthenticationService(
+            $this->mockRepository,
+            new UserAuthenticationService('bcrypt', 12),
+            $loginAttempts
+        );
+
+        $request = new DynamicDnsRequest('ssouser', 'anypass', 'example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $this->assertNull($service->authenticateUser($request, '198.51.100.5'));
+    }
+
     public function testAuthenticateUserWithLdap(): void
     {
         $request = new DynamicDnsRequest(
