@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,7 +49,10 @@ class DynamicDnsAuthenticationService
             return null;
         }
 
-        if (!$this->userAuthService->verifyPassword($request->getPassword(), $user->getPassword())) {
+        // Provisioned users (LDAP/OIDC/SAML) have no local password hash. Verifying against
+        // an empty hash throws, and dynamic_update.php has no catch, so it would be a 500.
+        $hash = $user->getPassword();
+        if ($hash === '' || !$this->userAuthService->verifyPassword($request->getPassword(), $hash)) {
             return null;
         }
 

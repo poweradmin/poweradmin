@@ -160,6 +160,26 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
         $this->assertFalse($this->authService->userCanUpdateZone($user, 3));
     }
 
+    public function testAuthenticateUserRejectsEmptyPasswordHashWithoutThrowing(): void
+    {
+        // OIDC/SAML-provisioned users are stored with an empty hash. A real
+        // UserAuthenticationService throws on one, and dynamic_update.php has no catch,
+        // so an unguarded call surfaces as a 500 instead of badauth.
+        $this->mockRepository->expects($this->once())
+            ->method('findUserByUsernameWithDynamicDnsPermissions')
+            ->with('ssouser')
+            ->willReturn(new User(789, '', false));
+
+        $service = new DynamicDnsAuthenticationService(
+            $this->mockRepository,
+            new UserAuthenticationService('bcrypt', 12)
+        );
+
+        $request = new DynamicDnsRequest('ssouser', 'anypass', 'example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+
+        $this->assertNull($service->authenticateUser($request));
+    }
+
     public function testAuthenticateUserWithLdap(): void
     {
         $request = new DynamicDnsRequest(
