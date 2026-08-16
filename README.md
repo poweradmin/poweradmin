@@ -93,7 +93,7 @@ docker run -d \
 * **Docker Hub**: `poweradmin/poweradmin`
 * **GitHub Container Registry**: `ghcr.io/poweradmin/poweradmin`
 * **Full documentation**: [DOCKER.md](DOCKER.md)
-* **Security with Docker Secrets**: [DOCKER-SECRETS.md](DOCKER-SECRETS.md)
+* **Security with Docker Secrets**: [Docker Secrets](https://docs.poweradmin.org/installation/docker-secrets/)
 
 Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets integration, FrankenPHP for enhanced performance.
 
