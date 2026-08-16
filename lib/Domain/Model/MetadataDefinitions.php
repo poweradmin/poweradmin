@@ -123,9 +123,9 @@ class MetadataDefinitions
         ],
         'TSIG-ALLOW-DNSUPDATE' => [
             'label' => 'TSIG-ALLOW-DNSUPDATE',
-            'multi' => false,
+            'multi' => true,
             'placeholder' => 'update-key-name',
-            'help' => 'TSIG key required for DNS updates.',
+            'help' => 'TSIG keys allowed for DNS updates. Add one key name per row.',
             'api_write' => true,
             'min_version' => '4.0.0',
         ],
