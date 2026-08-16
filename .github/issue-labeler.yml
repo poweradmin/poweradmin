@@ -14,7 +14,8 @@ security:
 
 # === DNS Core ===
 dns:
-  - '(dns\s|zone\s(?!template)|record\s(?!template)|nameserver|ns\srecord|a\srecord|aaaa\srecord|cname\srecord|mx\srecord|txt\srecord|srv\srecord|ptr\srecord|soa\srecord)'
+  # \bdns\b rather than "dns\s" so "PowerDNS " does not match every issue.
+  - '(\bdns\b|zone\s(?!template)|record\s(?!template)|nameserver|ns\srecord|a\srecord|aaaa\srecord|cname\srecord|mx\srecord|txt\srecord|srv\srecord|ptr\srecord|soa\srecord)'
 
 dnssec:
   - '(dnssec|ds\srecord|dnskey|nsec3?|rrsig|key.signing|zone.signing)'
@@ -42,10 +43,15 @@ validation:
 
 # === Infrastructure ===
 infra:
-  - '(docker|container|dockerfile|deployment|nginx|apache|caddy|frankenphp|ci/cd|github.actions|\.yml\sworkflow)'
+  # Word-bounded, and skipped when the term is part of a filename or path
+  # (docker.md, nginx.conf.example, docker-entrypoint.sh, vendor/...), so that
+  # citing a file as evidence does not label the issue.
+  - '(\b(docker|dockerfile|containers?|nginx|apache|caddy|frankenphp)\b(?!\.(md|ya?ml|conf|sh|php|json|lock|example)\b)(?![/\\]|-\w)|deployment|ci/cd|github.actions|\.yml\sworkflow)'
 
 installer:
-  - '(install(ation)?\s(wizard|process|step|page|screen|guide)|setup.wizard|first.time.setup|getting.started|install\.php|initial.config)'
+  # "installation guide" and "getting started" are documentation topics, not
+  # installer defects, so they are handled by the docs rule instead.
+  - '(install(ation)?\s(wizard|process|step|page|screen)|setup.wizard|first.time.setup|install\.php|initial.config)'
 
 # === Internationalization ===
 i18n:
@@ -57,4 +63,6 @@ docs:
 
 # === Dependencies ===
 dependencies:
-  - '(dependency|dependencies|composer\.(json|lock)|npm|package\.json|library.update|vendor)'
+  # \bvendor\b(?![/\\]) so citing a vendored path such as vendor/onelogin/...
+  # as evidence does not mark the issue as a dependency change.
+  - '(dependency|dependencies|composer\.(json|lock)|\bnpm\b|package\.json|library.update|\bvendor\b(?![/\\]))'
