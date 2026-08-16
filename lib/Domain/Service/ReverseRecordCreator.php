@@ -387,11 +387,11 @@ class ReverseRecordCreator
                 $fqdn_name,
                 $ttl,
                 $prio
-            ), $zone_id);
+            ), (int)$zone_rev_id);
 
             if ($this->config->get('dnssec', 'enabled')) {
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
-                $dnssecProvider->rectifyZone($zone_name);
+                $dnssecProvider->rectifyZone($this->domainRepository->getDomainNameById((int)$zone_rev_id));
             }
 
             return true;

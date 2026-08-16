@@ -631,7 +631,7 @@ class BatchReverseRecordCreator
                     $fqdn_name,
                     $ttl,
                     $prio
-                ), $zone_id);
+                ), $zone_rev_id);
 
                 $isDnssecEnabled = $this->config->get('dnssec', 'enabled');
 
