@@ -29,7 +29,8 @@ use Psr\Log\NullLogger;
  * Class ConfigurationManager
  *
  * This class is responsible for loading and accessing configuration values.
- * It combines legacy configuration, defaults, and the new settings structure.
+ * It layers config/settings.php (or PA_CONFIG_PATH) over config/settings.defaults.php.
+ * Legacy inc/config.inc.php support was removed in 4.1.0.
  */
 class ConfigurationManager implements ConfigurationInterface
 {
