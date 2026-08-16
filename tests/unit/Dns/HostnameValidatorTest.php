@@ -122,10 +122,10 @@ class HostnameValidatorTest extends TestCase
         $expected = "SUB.EXAMPLE.COM";
         $this->assertEquals($expected, $this->validator->normalizeRecordName($name, $zone));
 
-        // Test case: Name is @ sign (should be transformed)
+        // Test case: Name is @ sign, the origin marker, and resolves to the apex
         $name = "@";
         $zone = "example.com";
-        $expected = "@.example.com";
+        $expected = "example.com";
         $this->assertEquals($expected, $this->validator->normalizeRecordName($name, $zone));
 
         // Test case: Subdomain of zone

@@ -48,10 +48,10 @@ class DnsNameNormalizationTest extends TestCase
         $expected = "SUB.EXAMPLE.COM";
         $this->assertEquals($expected, $this->validator->normalizeRecordName($name, $zone));
 
-        // Test case 5: Name is @ sign
+        // Test case 5: Name is @ sign, the origin marker, and resolves to the apex
         $name = "@";
         $zone = "example.com";
-        $expected = "@.example.com";
+        $expected = "example.com";
         $this->assertEquals($expected, $this->validator->normalizeRecordName($name, $zone));
 
         // Test case 6: Subdomain of zone
@@ -160,5 +160,22 @@ class DnsNameNormalizationTest extends TestCase
             "host..example.com",
             $this->validator->normalizeRecordName("host..", "example.com")
         );
+    }
+
+    /**
+     * A single-record GET returns apex records as "@", so a client echoing that value
+     * back into an update must not rename the apex record to "@.example.com".
+     */
+    public function testApexMarkerResolvesToZone()
+    {
+        $zone = "example.com";
+
+        foreach (["@", "@.", ""] as $submitted) {
+            $this->assertEquals(
+                $zone,
+                $this->validator->normalizeRecordName($submitted, $zone),
+                sprintf('apex marker "%s" must resolve to the zone name', $submitted)
+            );
+        }
     }
 }

@@ -265,7 +265,9 @@ class HostnameValidator
             return $name === "" ? "." : $name . ".";
         }
 
-        if ($name === "") {
+        // "@" is the origin marker, never a literal label. Resolving it here keeps every
+        // write path from having to pre-expand it before normalizing.
+        if ($name === "" || $name === "@") {
             return $zone;
         }
 
