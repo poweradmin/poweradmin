@@ -2,7 +2,9 @@ name: Issue Labeler
 
 on:
   issues:
-    types: [opened, edited]
+    # Only on creation. Running on "edited" re-applies the keyword labels every
+    # time an issue is touched, undoing manual triage.
+    types: [opened]
 
 permissions:
   contents: read
