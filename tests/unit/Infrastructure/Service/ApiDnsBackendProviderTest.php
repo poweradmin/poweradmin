@@ -991,6 +991,43 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertFalse($result, 'editRecord should return false when encoded record content is not found in RRset');
     }
 
+    /**
+     * A rename moves the record between RRsets. If the encoded record is absent from the
+     * old RRset the remainder is empty, which previously emitted a DELETE for the whole
+     * old name/type RRset instead of failing.
+     */
+    #[DataProvider('staleRenameRRsetProvider')]
+    public function testEditRecordRenameFailsWhenEncodedRecordIsAbsent(array $rrsets): void
+    {
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
+
+        $this->mockClient->method('getZoneRrset')
+            ->with('example.com.')
+            ->willReturn(['rrsets' => $rrsets]);
+
+        $this->mockClient->expects($this->never())
+            ->method('patchZoneRRsets');
+
+        $result = $this->provider->editRecord($encodedId, 'web.example.com', 'A', '10.0.0.1', 3600, 0, 0);
+
+        $this->assertFalse($result);
+    }
+
+    public static function staleRenameRRsetProvider(): array
+    {
+        return [
+            'old RRset holds different content' => [[
+                [
+                    'name' => 'www.example.com.',
+                    'type' => 'A',
+                    'ttl' => 3600,
+                    'records' => [['content' => '10.0.0.99', 'disabled' => false]],
+                ],
+            ]],
+            'old RRset absent entirely' => [[]],
+        ];
+    }
+
     public function testEditRecordWithDisabledFlag(): void
     {
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);

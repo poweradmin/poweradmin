@@ -454,6 +454,13 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                 $remainingRecords[] = $r;
             }
 
+            if (!$found) {
+                $this->logger->error("editRecord: encoded record content not found in old RRset for '{name} {type}'", [
+                    'name' => $old['name'], 'type' => $old['type'],
+                ]);
+                return false;
+            }
+
             if (empty($remainingRecords)) {
                 $rrsets[] = [
                     'name' => self::ensureTrailingDot($old['name']),
