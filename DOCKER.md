@@ -235,7 +235,7 @@ docker run -d --name poweradmin -p 80:80 \
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
 | `PA_SESSION_KEY` | Custom session key (recommended for production) | Auto-generated | No |
-| `PA_PASSWORD_ENCRYPTION` | Password hashing algorithm (`md5`, `md5salt`, `bcrypt`, `argon2i`, `argon2id`) | `bcrypt` | No |
+| `PA_PASSWORD_ENCRYPTION` | Password hashing algorithm (`bcrypt`, `argon2i`, `argon2id`). `md5` and `md5salt` were removed in 4.3.0; existing hashes still verify at login and are upgraded | `bcrypt` | No |
 | `PA_PASSWORD_COST` | Cost factor for bcrypt hashing | `12` | No |
 | `PA_LOGIN_TOKEN_VALIDATION` | Enable token validation for login form | `true` | No |
 | `PA_GLOBAL_TOKEN_VALIDATION` | Enable token validation for all forms | `true` | No |
