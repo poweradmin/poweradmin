@@ -73,7 +73,7 @@ const ZONE = 'manager-zone.example.com';
 const SHOTS = [
   // Dashboard and zone lists
   { name: 'dashboard', url: '/' },
-  { name: 'zone-list-forward', url: '/zones/forward?letter=a' },
+  { name: 'zone-list', url: '/zones/forward?letter=a' },
   { name: 'zone-list-reverse', url: '/zones/reverse?letter=a' },
   { name: 'search', url: '/search' },
 
@@ -81,12 +81,12 @@ const SHOTS = [
   { name: 'zone-editor', url: ids => `/zones/${ids.zone}/edit`, full: true },
   { name: 'zone-metadata-editor', url: ids => `/zones/${ids.zone}/metadata`, full: true },
   { name: 'zone-ownership', url: ids => `/zones/${ids.zone}/ownership` },
-  { name: 'zone-add-master-form', url: '/zones/add/master', full: true },
+  { name: 'zone-add-master', url: '/zones/add/master', full: true },
   { name: 'zone-save-as-template', url: ids => `/zones/${ids.zone}/save-template` },
 
   // Bulk and batch
   { name: 'bulk-record-add', url: ids => `/zones/${ids.zone}/records/bulk`, full: true },
-  { name: 'batch-ptr', url: '/zones/batch-ptr', full: true },
+  { name: 'ptr-batch-interface', url: '/zones/batch-ptr', full: true },
   { name: 'bulk-registration', url: '/zones/bulk-registration', full: true },
 
   // Templates
@@ -257,6 +257,36 @@ async function capture(page, shot, ids) {
   return { name: shot.name, status: 'ok', file };
 }
 
+/**
+ * Shoot the login page from a fresh context, before any session exists.
+ *
+ * An instance still carrying the install/ directory refuses to render the form
+ * and shows an error instead, which is not a screenshot worth shipping, so bail
+ * out rather than overwrite a good capture with the error page.
+ */
+async function captureLogin(browser) {
+  const context = await browser.newContext({ viewport: VIEWPORT });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${BASE_URL}/login`, { waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(1200);
+
+    if (await page.locator('[data-testid="username-input"]').count() === 0) {
+      const banner = page.locator('.alert-danger').first();
+      const reason = await banner.count() > 0
+        ? (await banner.innerText()).trim().replace(/\s+/g, ' ').slice(0, 60)
+        : 'login form not rendered';
+      return { name: 'login', status: 'skipped', reason };
+    }
+
+    const file = path.join(OUT_DIR, 'login.png');
+    await page.screenshot({ path: file });
+    return { name: 'login', status: 'ok', file };
+  } finally {
+    await context.close();
+  }
+}
+
 async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
 
@@ -266,6 +296,17 @@ async function main() {
 
   const results = [];
   try {
+    // The login page has to be shot before authenticating: once a session
+    // exists /login redirects to the dashboard. Use a throwaway context so the
+    // main one stays signed in for everything else.
+    if (FILTER.length === 0 || FILTER.some(f => 'login'.includes(f))) {
+      results.push(await captureLogin(browser));
+      const last = results[results.length - 1];
+      console.log(
+        last.status === 'ok' ? `  ok       ${last.name}` : `  skipped  ${last.name} (${last.reason})`
+      );
+    }
+
     await login(page);
     const ids = await resolveIds(page);
     console.log(`Resolved ids: ${JSON.stringify(ids)}`);
