@@ -138,7 +138,7 @@ class SqlAuthenticator extends LoggingService
 
         $userAuthService = new UserAuthenticationService($passwordEncryption, $passwordCost);
 
-        if (!$userAuthService->verifyPassword($sessionPassword, $rowObj['password'])) {
+        if (!$userAuthService->verifyPassword($sessionPassword, (string)($rowObj['password'] ?? ''))) {
             $this->logWarning('Password verification failed for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
             $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             $this->handleFailedAuthentication(LoginFailureReason::WRONG_PASSWORD);
