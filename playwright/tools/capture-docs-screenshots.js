@@ -42,6 +42,18 @@
  * `interface.application_url` in the instance's settings file, then restart the
  * PHP container so opcache picks it up. Otherwise every shot carries the
  * devcontainer's own title and a dashboard warning banner.
+ *
+ * The devcontainer mounts the repository, so `install/` is present and the app
+ * refuses to render the login form while it exists. That blocks the whole run,
+ * not just the login shot, because everything after it needs the session. Move
+ * the directory aside first and put it back afterwards:
+ *
+ *   mv install install.capture-tmp
+ *   node playwright/tools/capture-docs-screenshots.js
+ *   mv install.capture-tmp install
+ *
+ * Use a trap or run the restore in the same command, so an interrupted capture
+ * cannot leave the working tree without its installer.
  */
 
 const fs = require('fs');
