@@ -227,9 +227,23 @@ class EditZoneMetadataController extends BaseController
         $rows = [];
         foreach ($apiMetadata as $entry) {
             $kind = $entry['kind'] ?? '';
+            
+            // SOA-EDIT-API is also exposed through the zone object and is
+            // handled separately below. Skip the metadata endpoint value
+            // to avoid displaying the same metadata twice.
+            if ($kind === 'SOA-EDIT-API') {
+                continue;
+            }
+            
             foreach (($entry['metadata'] ?? []) as $value) {
                 $rows[] = ['kind' => $kind, 'content' => (string) $value];
             }
+        }
+
+        // Use the zone object's soa_edit_api property as the canonical source.
+        $zoneData = $this->apiClient->getZone($apiName);
+        if ($zoneData !== null && !empty($zoneData['soa_edit_api'])) {
+            $rows[] = ['kind' => 'SOA-EDIT-API', 'content' => $zoneData['soa_edit_api']];
         }
 
         // SOA-EDIT-API is stored on the zone object, not in /metadata
