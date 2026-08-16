@@ -757,4 +757,55 @@ class DbUserRepositoryTest extends TestCase
 
         $this->assertFalse($result);
     }
+
+    /**
+     * @return array{0: bool, 1: string, 2: array} the result, the prepared SQL and the bound params
+     */
+    private function captureUpdateUser(int $userId, array $userData): array
+    {
+        $query = null;
+        $params = [];
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturnCallback(function ($executed) use (&$params) {
+            $params = $executed;
+            return true;
+        });
+
+        $this->db->method('prepare')->willReturnCallback(function ($prepared) use (&$query, $stmt) {
+            $query = $prepared;
+            return $stmt;
+        });
+
+        return [$this->repository->updateUser($userId, $userData), (string)$query, (array)$params];
+    }
+
+    #[Test]
+    public function testUpdateUserIgnoresEmptyPassword(): void
+    {
+        foreach (['', null] as $empty) {
+            [$result, $query, $params] = $this->captureUpdateUser(1, ['fullname' => 'Updated Name', 'password' => $empty]);
+
+            $this->assertTrue($result);
+            $this->assertStringNotContainsString('password', $query);
+            $this->assertArrayNotHasKey(':password', $params);
+        }
+    }
+
+    #[Test]
+    public function testUpdateUserWithOnlyEmptyPasswordMakesNoDatabaseCall(): void
+    {
+        $this->db->expects($this->never())->method('prepare');
+
+        $this->assertTrue($this->repository->updateUser(1, ['password' => '']));
+    }
+
+    #[Test]
+    public function testUpdateUserStillWritesNonEmptyPassword(): void
+    {
+        [$result, $query] = $this->captureUpdateUser(1, ['password' => 'hashed-value']);
+
+        $this->assertTrue($result);
+        $this->assertStringContainsString('password = :password', $query);
+    }
 }

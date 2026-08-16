@@ -825,6 +825,12 @@ class DbUserRepository implements UserRepository
 
         $allowedFields = ['username', 'password', 'fullname', 'email', 'description', 'active', 'perm_templ', 'use_ldap'];
 
+        // An empty password means "leave it unchanged"; callers only hash non-empty
+        // values, so storing it verbatim would replace the hash with an empty string.
+        if (array_key_exists('password', $userData) && (string)$userData['password'] === '') {
+            unset($userData['password']);
+        }
+
         foreach ($allowedFields as $field) {
             if (array_key_exists($field, $userData)) {
                 $setFields[] = "{$field} = :{$field}";

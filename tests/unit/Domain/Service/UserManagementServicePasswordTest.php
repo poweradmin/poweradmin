@@ -260,4 +260,72 @@ class UserManagementServicePasswordTest extends TestCase
         // Should succeed even for OIDC user since no password is being set
         $this->assertTrue($result['success']);
     }
+
+    /**
+     * An empty username skips the uniqueness check, so it must be rejected outright -
+     * writing it would leave an account that can never authenticate.
+     */
+    public function testEmptyUsernameIsRejected(): void
+    {
+        $userId = 8;
+
+        $this->userRepository->method('getUserById')
+            ->with($userId)
+            ->willReturn(['id' => $userId, 'username' => 'alice', 'email' => 'alice@example.com']);
+
+        $this->userRepository->expects($this->never())
+            ->method('updateUser');
+
+        $result = $this->userManagementService->updateUser($userId, ['username' => '']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(400, $result['status']);
+        $this->assertStringContainsString('cannot be empty', $result['message']);
+    }
+
+    public function testWhitespaceOnlyUsernameIsRejected(): void
+    {
+        $userId = 9;
+
+        $this->userRepository->method('getUserById')
+            ->with($userId)
+            ->willReturn(['id' => $userId, 'username' => 'alice', 'email' => 'alice@example.com']);
+
+        $this->userRepository->expects($this->never())
+            ->method('updateUser');
+
+        $result = $this->userManagementService->updateUser($userId, ['username' => '   ']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(400, $result['status']);
+        $this->assertStringContainsString('cannot be empty', $result['message']);
+    }
+
+    /**
+     * IdP-managed accounts legitimately carry an empty email, so a client echoing the
+     * current value back must still be able to update other fields.
+     */
+    public function testEmptyEmailIsAcceptedForExternallyManagedUser(): void
+    {
+        $userId = 10;
+        $userData = ['fullname' => 'Updated Name', 'email' => ''];
+
+        $this->userRepository->method('getUserById')
+            ->with($userId)
+            ->willReturn([
+                'id' => $userId,
+                'username' => 'oidc-user',
+                'email' => '',
+                'auth_method' => 'oidc'
+            ]);
+
+        $this->userRepository->expects($this->once())
+            ->method('updateUser')
+            ->with($userId, $userData)
+            ->willReturn(true);
+
+        $result = $this->userManagementService->updateUser($userId, $userData);
+
+        $this->assertTrue($result['success']);
+    }
 }

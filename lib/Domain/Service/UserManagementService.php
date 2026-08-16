@@ -292,6 +292,10 @@ class UserManagementService
             return $lengthError;
         }
 
+        if (($emptyError = $this->validateFieldsNotEmpty($userData)) !== null) {
+            return $emptyError;
+        }
+
         // Check if username already exists (exclude current user)
         if (!empty($userData['username'])) {
             $existingUser = $this->userRepository->getUserByUsername($userData['username']);
@@ -591,6 +595,28 @@ class UserManagementService
                     'status' => 400
                 ];
             }
+        }
+        return null;
+    }
+
+    /**
+     * Reject an empty username. The uniqueness check skips empty input, so writing one
+     * through would leave an account that can never authenticate.
+     * Email is deliberately not checked: IdP-managed accounts legitimately carry an
+     * empty address, and a client echoing that value back must not be rejected.
+     * An empty password means "leave unchanged" and is filtered by the repository.
+     *
+     * @param array $userData
+     * @return array|null
+     */
+    private function validateFieldsNotEmpty(array $userData): ?array
+    {
+        if (array_key_exists('username', $userData) && trim((string)$userData['username']) === '') {
+            return [
+                'success' => false,
+                'message' => 'Username cannot be empty',
+                'status' => 400
+            ];
         }
         return null;
     }
