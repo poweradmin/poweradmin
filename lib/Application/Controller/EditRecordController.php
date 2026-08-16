@@ -35,6 +35,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -189,6 +190,7 @@ class EditRecordController extends BaseController
             'iface_record_comments' => $iface_record_comments,
             'comment' => $recordComment ? $recordComment->getComment() : '',
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),
+            'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
             'display_hostname_only' => $display_hostname_only,
         ]);
     }
@@ -249,6 +251,8 @@ class EditRecordController extends BaseController
         }
 
         $this->createSOARecordManager()->updateSOASerial($zid);
+
+        $this->syncReverseRecord($zid, $old_record_info, $postData);
 
         $new_record_info = $recordRepository->getRecordFromId($rid);
         if ($new_record_info === null) {
@@ -342,5 +346,48 @@ class EditRecordController extends BaseController
         $this->redirect('/zones/' . $zid . '/edit');
 
         return true;
+    }
+
+    /**
+     * Move the automatically created PTR record along when an A/AAAA record changes.
+     * Without this the PTR keeps pointing at the old address and the new one has none.
+     */
+    private function syncReverseRecord(int $zid, array $oldRecord, array $postData): void
+    {
+        if ($this->request->getPostParam('update_ptr') === null) {
+            return;
+        }
+
+        $oldType = (string)($oldRecord['type'] ?? '');
+        $newType = (string)($postData['type'] ?? '');
+        if (!in_array($oldType, ['A', 'AAAA'], true) && !in_array($newType, ['A', 'AAAA'], true)) {
+            return;
+        }
+
+        $reverseRecordCreator = new ReverseRecordCreator(
+            $this->db,
+            $this->getConfig(),
+            $this->auditLogger,
+            $this->createDomainRepository(),
+            $this->createRecordManager(),
+            $this->recordCommentService,
+            $this->createDnsBackendProvider()
+        );
+
+        $result = $reverseRecordCreator->updateReverseRecord(
+            $oldType,
+            (string)($oldRecord['content'] ?? ''),
+            (string)($oldRecord['name'] ?? ''),
+            $newType,
+            (string)($postData['content'] ?? ''),
+            (string)($postData['name'] ?? ''),
+            $zid,
+            (int)($postData['ttl'] ?? 0),
+            (int)($postData['prio'] ?? 0)
+        );
+
+        if (isset($result['success']) && !$result['success']) {
+            $this->setMessage('edit', 'warning', _('The record was updated, but the PTR record could not be updated: ') . ($result['message'] ?? ''));
+        }
     }
 }

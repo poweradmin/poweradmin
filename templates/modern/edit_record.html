@@ -37,6 +37,9 @@
                             <th>{% trans %}Comment{% endtrans %}</th>
                         {% endif %}
                         <th>{% trans %}Disabled{% endtrans %}</th>
+                        {% if not is_reverse_zone and iface_add_reverse_record %}
+                            <th class="text-center">{% trans %}Update PTR{% endtrans %}</th>
+                        {% endif %}
                     </tr>
                     </thead>
                     <tbody>
@@ -109,6 +112,14 @@
                                 <label class="form-check-label visually-hidden" for="disabledCheckbox">{% trans %}Disabled{% endtrans %}</label>
                             </div>
                         </td>
+                        {% if not is_reverse_zone and iface_add_reverse_record %}
+                        <td class="text-center">
+                            <div class="form-check d-inline-block">
+                                <input class="form-check-input" type="checkbox" name="update_ptr" id="updatePtrCheckbox">
+                                <label class="form-check-label visually-hidden" for="updatePtrCheckbox">{% trans %}Update PTR{% endtrans %}</label>
+                            </div>
+                        </td>
+                        {% endif %}
                         {% endif %}
                     </tr>
                     </tbody>
