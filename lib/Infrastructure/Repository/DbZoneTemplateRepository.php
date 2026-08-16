@@ -226,6 +226,11 @@ class DbZoneTemplateRepository
             $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE zone_templ_id = :id");
             $stmt->execute([':id' => $id]);
 
+            // Unlink the zones that used it. Leaving the id behind re-links them to
+            // whichever template later reuses it (SQLite and MariaDB reuse ids).
+            $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE zone_templ_id = :id");
+            $stmt->execute([':id' => $id]);
+
             $this->db->commit();
             return true;
         } catch (Exception $e) {
