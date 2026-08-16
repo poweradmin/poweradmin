@@ -825,13 +825,6 @@ return [
                     'signatureAlgorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
                     'digestAlgorithm' => 'http://www.w3.org/2001/04/xmlenc#sha256',
                 ],
-
-                // Advanced settings (optional)
-                'settings' => [
-                    'compress_requests' => true,       // Compress SAML requests
-                    'compress_responses' => true,      // Compress SAML responses
-                    'allow_single_label_domains' => false, // Allow single-label domains
-                ],
             ],
             */
         ],
