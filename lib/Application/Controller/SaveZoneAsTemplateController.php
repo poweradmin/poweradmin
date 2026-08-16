@@ -137,7 +137,7 @@ class SaveZoneAsTemplateController extends BaseController
             'HOSTMASTER' => $this->config->get('dns', 'hostmaster', '') ?? '',
         ];
 
-        $zoneTemplate->addZoneTemplSaveAs(
+        $saved = $zoneTemplate->addZoneTemplSaveAs(
             $template_name,
             $description,
             $this->userContextService->getLoggedInUserId(),
@@ -145,6 +145,12 @@ class SaveZoneAsTemplateController extends BaseController
             $options,
             $zone_name
         );
+
+        // addZoneTemplSaveAs() reports its own reason, so only the success claim and
+        // the audit entry need suppressing here.
+        if (!$saved) {
+            return;
+        }
 
         $auditService = new AuditService($this->db);
         $auditService->logZoneTemplateAdd($template_name);

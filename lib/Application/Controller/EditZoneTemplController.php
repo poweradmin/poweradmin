@@ -226,15 +226,28 @@ class EditZoneTemplController extends BaseController
         $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
 
         $syncedZoneIds = [];
+        $failedZones = 0;
         foreach ($zones as $zone) {
             // PowerDNS record updates use domain_id; sync tracking uses Poweradmin zones.id.
-            $domainManager->updateZoneRecords($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone['domain_id'], $zone_templ_id);
-            $syncedZoneIds[] = $zone['zone_id'];
+            // Only mark a zone as synced once its records actually took, otherwise a
+            // failed zone is recorded as up to date and never retried.
+            if ($domainManager->updateZoneRecords($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone['domain_id'], $zone_templ_id)) {
+                $syncedZoneIds[] = $zone['zone_id'];
+            } else {
+                $failedZones++;
+            }
         }
 
         $syncService->markZonesAsSynced($syncedZoneIds, $zone_templ_id);
 
-        $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
+        if ($failedZones > 0) {
+            $this->setMessage('edit_zone_templ', 'warning', sprintf(
+                _('Zones have been updated, but %d could not be updated.'),
+                $failedZones
+            ));
+        } else {
+            $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
+        }
         $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
     }
 

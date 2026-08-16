@@ -923,12 +923,12 @@ class DomainManager implements DomainManagerInterface
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
      */
-    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): void
+    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): bool
     {
         // Secondary and Consumer zones replicate from a primary - applying a
         // template would write replicated records, so skip them entirely
         if (ZoneType::isReadOnly($this->domainRepository->getDomainType($zone_id))) {
-            return;
+            return true;
         }
 
         $perm_edit = Permission::getEditPermission($this->db);
@@ -943,6 +943,10 @@ class DomainManager implements DomainManagerInterface
 
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+
+        // Set when the previous template's records could not be removed, so the caller
+        // does not report success over a zone left holding records from both templates.
+        $templateRecordsRefused = false;
 
         $this->db->beginTransaction();
         try {
@@ -993,6 +997,7 @@ class DomainManager implements DomainManagerInterface
                         }
                     }
                 } else {
+                    $templateRecordsRefused = true;
                     $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
                 }
 
@@ -1171,11 +1176,14 @@ class DomainManager implements DomainManagerInterface
             if (!$isApiBackend || $this->db->inTransaction()) {
                 $this->db->commit();
             }
+
+            return !$templateRecordsRefused;
         } catch (\Exception $e) {
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
             }
             $this->messageService->addSystemError(sprintf(_('Failed to update zone records: %s'), $e->getMessage()));
+            return false;
         }
     }
 
