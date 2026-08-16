@@ -327,7 +327,7 @@ CREATE TABLE "public"."zone_templ_records" (
                                                "id" integer DEFAULT nextval('zone_templ_records_id_seq') NOT NULL,
                                                "zone_templ_id" integer,
                                                "name" character varying(255),
-                                               "type" character varying(6),
+                                               "type" character varying(10),
                                                "content" character varying(2048),
                                                "ttl" integer,
                                                "prio" integer,

@@ -524,7 +524,7 @@ class DatabaseStructureHelper
                     'type' => array
                     (
                         'notnull' => 1,
-                        'length' => 6,
+                        'length' => 10,
                         'fixed' => 0,
                         'default' => 0,
                         'type' => 'text',

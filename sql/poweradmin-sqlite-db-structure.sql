@@ -209,7 +209,7 @@ CREATE INDEX idx_zone_templ_owner ON zone_templ(owner);
 CREATE INDEX idx_zone_templ_created_by ON zone_templ(created_by);
 
 
-CREATE TABLE zone_templ_records (id integer PRIMARY KEY, zone_templ_id integer NOT NULL, name VARCHAR(255) NOT NULL, type VARCHAR(6) NOT NULL, content VARCHAR(2048) NOT NULL, ttl integer NOT NULL, prio integer NOT NULL);
+CREATE TABLE zone_templ_records (id integer PRIMARY KEY, zone_templ_id integer NOT NULL, name VARCHAR(255) NOT NULL, type VARCHAR(10) NOT NULL, content VARCHAR(2048) NOT NULL, ttl integer NOT NULL, prio integer NOT NULL);
 
 CREATE INDEX idx_zone_templ_records_zone_templ_id ON zone_templ_records(zone_templ_id);
 

@@ -673,15 +673,21 @@ class ZoneTemplate
         }
 
         $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([
-            ':zone_templ_id' => $zone_templ_id,
-            ':name' => $name,
-            ':type' => $type,
-            ':content' => $content,
-            ':ttl' => $ttl,
-            ':prio' => $prio
-        ]);
+
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([
+                ':zone_templ_id' => $zone_templ_id,
+                ':name' => $name,
+                ':type' => $type,
+                ':content' => $content,
+                ':ttl' => $ttl,
+                ':prio' => $prio
+            ]);
+        } catch (Exception $e) {
+            $this->messageService->addSystemError(_('Error adding zone template record: ') . $e->getMessage());
+            return false;
+        }
 
         return true;
     }

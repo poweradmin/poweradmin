@@ -219,3 +219,7 @@ WHERE name = 'zone_content_view_others';
 -- Index the API log timestamp so per-request logging (closes #1137) can prune
 -- old rows by retention date without a full scan.
 CREATE INDEX IF NOT EXISTS idx_log_api_created_at ON log_api(created_at);
+
+-- The template record type is widened to varchar(10) in the structure file so
+-- new installs match PowerDNS's own records.type. SQLite does not enforce
+-- VARCHAR lengths, so existing databases need no change here.

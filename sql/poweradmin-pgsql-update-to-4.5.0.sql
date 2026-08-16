@@ -216,3 +216,8 @@ WHERE "name" = 'zone_content_view_others';
 -- Index the API log timestamp so per-request logging (closes #1137) can prune
 -- old rows by retention date without a full scan.
 CREATE INDEX IF NOT EXISTS "idx_log_api_created_at" ON "public"."log_api" USING btree ("created_at");
+
+-- Widen the template record type to match PowerDNS's own records.type. Types
+-- longer than six characters (NSEC3PARAM, OPENPGPKEY, IPSECKEY, CDNSKEY,
+-- RESINFO) are offered in the UI but could not be stored as template records.
+ALTER TABLE "public"."zone_templ_records" ALTER COLUMN "type" TYPE character varying(10);
