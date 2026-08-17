@@ -111,10 +111,8 @@ class MfaSetupController extends BaseController
     }
 
     /**
-     * Whether email verification can actually be set up right now.
-     *
-     * Both conditions matter: the administrator can switch the method off, and
-     * it is equally unusable when no mail transport is configured.
+     * Whether email verification can actually be set up: enabled by the
+     * administrator, and with a mail transport configured.
      */
     private function isEmailMfaUsable(): bool
     {
@@ -123,12 +121,8 @@ class MfaSetupController extends BaseController
     }
 
     /**
-     * Whether the authenticator app method is offered.
-     *
-     * `mfa.app_enabled` is honoured only while email verification remains
-     * usable. Disabling both would leave an enforced user staring at a setup
-     * page with nothing to set up and no way to finish logging in, so the last
-     * remaining method always stays available.
+     * Whether the app method is offered. `mfa.app_enabled` is honoured only
+     * while email remains usable, so the last method is never withdrawn.
      */
     private function isAppMfaEnabled(): bool
     {
@@ -143,8 +137,7 @@ class MfaSetupController extends BaseController
     {
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
-        // Mirror of the guard in handleEmailSetup(): refuse the POST outright,
-        // not just hide the button.
+        // Mirrors handleEmailSetup(): refuse the POST, not just hide the button.
         if (!$this->isAppMfaEnabled()) {
             $this->addSystemMessage('error', _('Authenticator app method is not enabled on this system.'));
             $this->displayMfaSetup();
@@ -413,8 +406,7 @@ class MfaSetupController extends BaseController
         $mailServiceEnabled = $this->config->get('mail', 'enabled', false);
         // Check if email MFA is specifically enabled in security settings
         $emailMfaEnabled = $this->config->get('security', 'mfa.email_enabled', true);
-        // Resolved through the same helper the POST guard uses, so the button
-        // and the handler can never disagree about whether the app is offered.
+        // Same helper as the POST guard, so button and handler cannot disagree.
         $appMfaEnabled = $this->isAppMfaEnabled();
 
         // Check if MFA is enforced for this user

@@ -28,11 +28,8 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
 
 /**
- * Covers which second-factor methods the setup page offers.
- *
- * The point of interest is that `mfa.app_enabled` is deliberately not absolute:
- * it is ignored whenever email verification is unusable, so that turning both
- * methods off cannot leave an enforced user with nothing to set up.
+ * Covers which second-factor methods the setup page offers, in particular that
+ * `mfa.app_enabled` is ignored while email verification is unusable.
  */
 class MfaSetupControllerMethodToggleTest extends TestCase
 {
