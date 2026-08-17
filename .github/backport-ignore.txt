@@ -21,10 +21,6 @@ release/4.2.x::fix(auth): address review feedback for SSO template management
 # 4.2.x never had the api.log_requests setting, so there is nothing to remove.
 release/4.2.x::fix(docker): remove dead api.log_requests config from entrypoint
 
-# Master received this change inside "feat(docker): expose the 4.4.0 settings
-# as environment variables" (1523c1abe), so the subject never appears there.
-master::fix(docker): escape the default zone template name when generating config
-
 # The 4.2.x/4.3.x entrypoints do not generate favicon_path/logo_path at all,
 # so there is nothing to escape.
 release/4.3.x::fix(docker): escape the favicon and logo paths when generating config
