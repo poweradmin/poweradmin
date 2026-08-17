@@ -370,9 +370,10 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $labels = explode('.', $target);
         $labelCount = count($labels);
 
-        // FQDN must have at least 2 labels (e.g., "example.com", not single labels)
+        // HostnameValidator already rejected this when dns.top_level_tld_check
+        // is on, so reaching here means single-label names are permitted.
         if ($labelCount < 2) {
-            return ValidationResult::failure(_('CNAME target must be a fully qualified domain name (FQDN). Single-label names are not allowed.'));
+            return ValidationResult::success(true);
         }
 
         // Check if last label looks like a valid TLD
