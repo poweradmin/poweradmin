@@ -186,7 +186,6 @@ return [
         'avatar_gravatar_enabled' => false,   // Enable Gravatar integration (default: false)
         'avatar_priority' => 'oauth',         // Avatar priority when both enabled: 'oauth' or 'gravatar'
         'avatar_size' => 40,                  // Default avatar size in pixels
-        'avatar_cache_ttl' => 3600,           // Avatar cache TTL in seconds (1 hour)
     ],
 
     /**
