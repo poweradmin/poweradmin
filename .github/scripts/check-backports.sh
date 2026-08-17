@@ -6,7 +6,10 @@
 # purpose and would bury the signal.
 #
 # Commits are matched by subject, not by SHA or patch id: a backport is usually
-# adapted to the target branch, which changes both.
+# adapted to the target branch, which changes both. When the subject is absent,
+# the commit's watched-file diff is reverse-applied against the target tree as
+# a fallback; a clean reverse-apply means the change arrived inside a
+# differently-titled commit and is not flagged.
 #
 # Exit status is 1 when an unignored fix( commit is missing, 0 otherwise.
 # feat( commits are listed for information and never affect the exit status.
@@ -61,6 +64,18 @@ emit() {
     return 0
 }
 
+# Is the commit's watched-file diff already contained in the target tree?
+# A temp index seeded from the target ref lets 'git apply --cached' test the
+# reverse patch without touching the working tree.
+content_present() {
+    # $1 = commit sha, $2 = target ref
+    # shellcheck disable=SC2086
+    git diff --no-ext-diff "$1^" "$1" -- $WATCH_PATHS > "$TMPDIR_BP/patch.diff" 2>/dev/null || return 1
+    [ -s "$TMPDIR_BP/patch.diff" ] || return 1
+    GIT_INDEX_FILE="$TMPDIR_BP/index" git read-tree "$2" 2>/dev/null || return 1
+    GIT_INDEX_FILE="$TMPDIR_BP/index" git apply --cached --reverse --check "$TMPDIR_BP/patch.diff" >/dev/null 2>&1
+}
+
 missing_fixes=0
 total_fixes=0
 total_feats=0
@@ -85,6 +100,7 @@ while IFS= read -r pair; do
 
     fixes=""
     feats=""
+    absorbed=""
     : > "$TMPDIR_BP/seen.txt"
     while IFS='|' read -r sha date subject; do
         [ -n "${subject:-}" ] || continue
@@ -101,6 +117,12 @@ while IFS= read -r pair; do
         # the same subject can appear more than once on the source branch
         grep -Fqx -- "$subject" "$TMPDIR_BP/seen.txt" && continue
         printf '%s\n' "$subject" >> "$TMPDIR_BP/seen.txt"
+        # subject renamed but change already there (absorbed into another commit)?
+        if content_present "$sha" "$dst"; then
+            absorbed="${absorbed}| \`$sha\` | $date | $subject |
+"
+            continue
+        fi
 
         line="| \`$sha\` | $date | $subject |"
         if [ "$kind" = fix ]; then fixes="${fixes}${line}
@@ -110,10 +132,11 @@ while IFS= read -r pair; do
 
     n_fix=$(printf '%s' "$fixes" | grep -c . || true)
     n_feat=$(printf '%s' "$feats" | grep -c . || true)
+    n_absorbed=$(printf '%s' "$absorbed" | grep -c . || true)
     total_fixes=$((total_fixes + n_fix))
     total_feats=$((total_feats + n_feat))
 
-    if [ "$n_fix" -eq 0 ] && [ "$n_feat" -eq 0 ]; then
+    if [ "$n_fix" -eq 0 ] && [ "$n_feat" -eq 0 ] && [ "$n_absorbed" -eq 0 ]; then
         emit "### \`${src_name}\` -> \`${dst_name}\`: nothing outstanding"
         emit ""
         continue
@@ -136,6 +159,16 @@ while IFS= read -r pair; do
         emit "| commit | date | subject |"
         emit "| --- | --- | --- |"
         emit "$(printf '%s' "$feats")"
+        emit ""
+        emit "</details>"
+        emit ""
+    fi
+    if [ "$n_absorbed" -gt 0 ]; then
+        emit "<details><summary>${n_absorbed} commit(s) present under a different subject, informational</summary>"
+        emit ""
+        emit "| commit | date | subject |"
+        emit "| --- | --- | --- |"
+        emit "$(printf '%s' "$absorbed")"
         emit ""
         emit "</details>"
         emit ""
