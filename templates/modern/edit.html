@@ -305,10 +305,7 @@
             <div class="d-flex align-items-center">
                 <label for="rows-per-page" class="me-2 text-secondary small">{% trans %}Rows per page:{% endtrans %}</label>
                 <select id="rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="changeRowsPerPage(this.value)">
-                    <option value="10" {{ row_amount == 10 ? 'selected' : '' }}>10</option>
-                    <option value="20" {{ row_amount == 20 ? 'selected' : '' }}>20</option>
-                    <option value="50" {{ row_amount == 50 ? 'selected' : '' }}>50</option>
-                    <option value="100" {{ row_amount == 100 ? 'selected' : '' }}>100</option>
+                    {{ macros.rows_per_page_options(row_amount, rows_per_page_options) }}
                 </select>
             </div>
         </div>

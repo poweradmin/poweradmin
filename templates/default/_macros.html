@@ -51,3 +51,13 @@
     </ol>
 </nav>
 {% endmacro %}
+
+{# Page-size options. Includes the current value so a configured size outside the
+   presets stays selectable rather than silently resetting the dropdown. #}
+{% macro rows_per_page_options(current, options) %}
+{% set opts = options|default([10, 20, 50, 100]) %}
+{% if current is not null and current not in opts %}{% set opts = opts|merge([current]) %}{% endif %}
+{% for option in opts|sort %}
+                    <option value="{{ option }}" {{ current == option ? 'selected' : '' }}>{{ option }}</option>
+{% endfor %}
+{% endmacro %}
