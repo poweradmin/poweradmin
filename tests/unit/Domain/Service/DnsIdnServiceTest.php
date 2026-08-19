@@ -409,4 +409,22 @@ class DnsIdnServiceTest extends TestCase
             'LP with ASCII fqdn' => ['LP', '10 example.com.', '10 example.com.'],
         ];
     }
+
+    /**
+     * The zone letter index buckets by first letter. Punycode names all start with
+     * "x", so the initial has to come from the decoded form.
+     */
+    public function testGetFirstLetterUsesTheDecodedInitial(): void
+    {
+        $this->assertEquals('m', DnsIdnService::getFirstLetter('xn--mnchen-3ya.de'));
+        $this->assertEquals('e', DnsIdnService::getFirstLetter('example.com'));
+    }
+
+    public function testGetFirstLetterReturnsNonAsciiInitialForNonLatinScripts(): void
+    {
+        $punycode = DnsIdnService::toPunycode('привет.рф');
+
+        $this->assertStringStartsWith('xn--', $punycode);
+        $this->assertEquals('п', DnsIdnService::getFirstLetter($punycode));
+    }
 }

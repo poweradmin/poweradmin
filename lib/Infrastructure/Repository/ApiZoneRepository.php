@@ -53,10 +53,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
     {
-        $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->dbType) . "(z.zone_name, 1, 1)) AS letter
-                  FROM zones z";
         if (!$viewOthers) {
-            $query .= " WHERE (z.owner = :userId
+            $where = " WHERE (z.owner = :userId
                 OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :userId_own AND z_own.zone_name IS NULL)
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
@@ -67,22 +65,43 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             AND z.zone_name NOT LIKE '%.ip6.arpa'
             AND z.zone_name IS NOT NULL";
         } else {
-            $query .= " WHERE z.zone_name NOT LIKE '%.in-addr.arpa'
+            $where = " WHERE z.zone_name NOT LIKE '%.in-addr.arpa'
                          AND z.zone_name NOT LIKE '%.ip6.arpa'
                          AND z.zone_name IS NOT NULL";
         }
-        $query .= " ORDER BY letter";
+
+        $bind = function ($stmt) use ($viewOthers, $userId): void {
+            if (!$viewOthers) {
+                $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+                $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
+                $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
+            }
+        };
+
+        // IDN zones are excluded here so they do not all register as "x"; they are
+        // resolved to their decoded initial below.
+        $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->dbType) . "(z.zone_name, 1, 1)) AS letter
+                  FROM zones z" . $where . " AND z.zone_name NOT LIKE 'xn--%' ORDER BY letter";
         $stmt = $this->db->prepare($query);
-        if (!$viewOthers) {
-            $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-            $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
-            $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
-        }
+        $bind($stmt);
         $stmt->execute();
-        $letters = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-        return array_filter($letters, function ($letter) {
+
+        $letters = array_filter($stmt->fetchAll(PDO::FETCH_COLUMN, 0), function ($letter) {
             return ctype_alpha($letter) || is_numeric($letter);
         });
+
+        $idnStmt = $this->db->prepare("SELECT DISTINCT z.zone_name FROM zones z" . $where . " AND z.zone_name LIKE 'xn--%'");
+        $bind($idnStmt);
+        $idnStmt->execute();
+
+        foreach ($idnStmt->fetchAll(PDO::FETCH_COLUMN, 0) as $name) {
+            $letters[] = DnsIdnService::getFirstLetter($name);
+        }
+
+        $letters = array_values(array_unique(array_filter($letters, fn($letter) => $letter !== '')));
+        sort($letters, SORT_STRING);
+
+        return $letters;
     }
 
     public function getReverseZones(

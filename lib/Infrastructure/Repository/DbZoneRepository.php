@@ -59,23 +59,26 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->db_type) . "($domains_table.name, 1, 1)) AS letter FROM $domains_table";
+        $where = " WHERE $domains_table.name NOT LIKE '%.in-addr.arpa'"
+            . " AND $domains_table.name NOT LIKE '%.ip6.arpa'";
+        $join = '';
 
         if (!$viewOthers) {
-            $query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
-            $query .= " WHERE (zones.owner = :userId OR EXISTS (
+            $join = " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
+            $where = " WHERE (zones.owner = :userId OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
                 WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
-            ))";
-            $query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa'";
-            $query .= " AND $domains_table.name NOT LIKE '%.ip6.arpa'";
-        } else {
-            $query .= " WHERE $domains_table.name NOT LIKE '%.in-addr.arpa'";
-            $query .= " AND $domains_table.name NOT LIKE '%.ip6.arpa'";
+            ))"
+                . " AND $domains_table.name NOT LIKE '%.in-addr.arpa'"
+                . " AND $domains_table.name NOT LIKE '%.ip6.arpa'";
         }
 
-        $query .= " ORDER BY letter";
+        // IDN zones are excluded here so they do not all register as "x"; they are
+        // resolved to their decoded initial below.
+        $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->db_type) . "($domains_table.name, 1, 1)) AS letter"
+            . " FROM $domains_table" . $join . $where
+            . " AND $domains_table.name NOT LIKE 'xn--%' ORDER BY letter";
 
         $stmt = $this->db->prepare($query);
 
@@ -86,11 +89,29 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $stmt->execute();
 
-        $letters = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-
-        return array_filter($letters, function ($letter) {
+        $letters = array_filter($stmt->fetchAll(PDO::FETCH_COLUMN, 0), function ($letter) {
             return ctype_alpha($letter) || is_numeric($letter);
         });
+
+        // Punycode zones all start with "x", so their real initial has to come from the
+        // decoded name. Bounded to the IDN zones rather than scanning every domain.
+        $idnQuery = "SELECT DISTINCT $domains_table.name FROM $domains_table" . $join . $where
+            . " AND $domains_table.name LIKE 'xn--%'";
+        $idnStmt = $this->db->prepare($idnQuery);
+        if (!$viewOthers) {
+            $idnStmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+            $idnStmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
+        }
+        $idnStmt->execute();
+
+        foreach ($idnStmt->fetchAll(PDO::FETCH_COLUMN, 0) as $name) {
+            $letters[] = DnsIdnService::getFirstLetter($name);
+        }
+
+        $letters = array_values(array_unique(array_filter($letters, fn($letter) => $letter !== '')));
+        sort($letters, SORT_STRING);
+
+        return $letters;
     }
 
     /**

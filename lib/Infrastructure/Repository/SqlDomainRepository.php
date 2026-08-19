@@ -150,6 +150,60 @@ class SqlDomainRepository implements DomainRepositoryInterface
         return (bool)$stmt->fetch();
     }
 
+    /**
+     * SQL fragment restricting zones to a starting letter.
+     *
+     * Punycode zone names all begin with "x", so an IDN zone would only ever be
+     * reachable under that letter. Their decoded initials are resolved here and
+     * matched by name, keeping the comparison in step with the letter list.
+     */
+    private function buildLetterCondition(string $domains_table, string $db_type, string $letterstart, array &$params): string
+    {
+        if ($letterstart === 'all') {
+            return '';
+        }
+
+        if ($letterstart == 1) {
+            return " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
+        }
+
+        $condition = " AND (" . DbCompat::substr($db_type) . "($domains_table.name,1,1) = :letterstart";
+        $params[':letterstart'] = $letterstart;
+
+        $idnNames = $this->idnNamesForLetter($domains_table, $letterstart);
+        if ($idnNames !== []) {
+            $placeholders = [];
+            foreach (array_values($idnNames) as $index => $name) {
+                $placeholder = ":idnletter$index";
+                $placeholders[] = $placeholder;
+                $params[$placeholder] = $name;
+            }
+            $condition .= " OR $domains_table.name IN (" . implode(', ', $placeholders) . ")";
+        }
+
+        return $condition . ") ";
+    }
+
+    /**
+     * Punycode zone names whose decoded first letter matches, bounded to IDN zones.
+     *
+     * @return string[]
+     */
+    private function idnNamesForLetter(string $domains_table, string $letterstart): array
+    {
+        $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE name LIKE 'xn--%'");
+        $stmt->execute();
+
+        $matching = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN, 0) as $name) {
+            if (mb_strtolower(DnsIdnService::getFirstLetter($name), 'UTF-8') === mb_strtolower($letterstart, 'UTF-8')) {
+                $matching[] = $name;
+            }
+        }
+
+        return $matching;
+    }
+
     public function getZones(
         string $perm,
         int $userid = 0,
@@ -201,12 +255,8 @@ class SqlDomainRepository implements DomainRepositoryInterface
                 $params[':userid_group'] = $userid;
             }
 
-            if ($letterstart != 'all' && $letterstart != 1) {
-                $sql_add .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = :letterstart ";
-                $params[':letterstart'] = $letterstart;
-            } elseif ($letterstart == 1) {
-                $sql_add .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
-            }
+            $letterCondition = $this->buildLetterCondition($domains_table, $db_type, $letterstart, $params);
+            $sql_add .= $letterCondition;
 
             if ($excludeReverse) {
                 $sql_add .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
@@ -249,11 +299,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                     }
                 }
 
-                if ($letterstart != 'all' && $letterstart != 1) {
-                    $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = :letterstart";
-                } elseif ($letterstart == 1) {
-                    $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
-                }
+                $id_query .= $letterCondition;
 
                 if ($excludeReverse) {
                     $id_query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
@@ -305,11 +351,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                     }
                 }
 
-                if ($letterstart != 'all' && $letterstart != 1) {
-                    $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = :letterstart";
-                } elseif ($letterstart == 1) {
-                    $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
-                }
+                $id_query .= $letterCondition;
 
                 if ($excludeReverse) {
                     $id_query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
