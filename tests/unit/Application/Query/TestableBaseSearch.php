@@ -33,4 +33,14 @@ class TestableBaseSearch extends BaseSearch
     {
         return $this->buildSearchString($parameters);
     }
+
+    public function exposeIdnNamesMatching(string $table, string $column, string $query): array
+    {
+        return $this->idnNamesMatching($table, $column, $query);
+    }
+
+    public function exposeIdnNameCondition(string $table, string $column, string $query, string $prefix, array &$params): string
+    {
+        return $this->idnNameCondition($table, $column, $query, $prefix, $params);
+    }
 }

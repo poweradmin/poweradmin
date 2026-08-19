@@ -331,6 +331,7 @@ class RecordSearch extends BaseSearch
 
         // Build WHERE conditions
         $whereConditions = "($records_table.name LIKE :search_string1 OR $records_table.content LIKE :search_string2";
+        $whereConditions .= $this->idnNameCondition($records_table, "$records_table.name", (string)($parameters['query'] ?? ''), 'idnrec', $params);
 
         if ($reverse) {
             $whereConditions .= " OR $records_table.name LIKE :reverse_search_string1 OR $records_table.content LIKE :reverse_search_string2";
@@ -387,6 +388,7 @@ class RecordSearch extends BaseSearch
 
         // Build WHERE conditions
         $whereConditions = "($records_table.name LIKE :search_string1 OR $records_table.content LIKE :search_string2";
+        $whereConditions .= $this->idnNameCondition($records_table, "$records_table.name", (string)($parameters['query'] ?? ''), 'idnrec', $params);
 
         if ($reverse) {
             $whereConditions .= " OR $records_table.name LIKE :reverse_search_string1 OR $records_table.content LIKE :reverse_search_string2";

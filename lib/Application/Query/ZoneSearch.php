@@ -237,6 +237,7 @@ class ZoneSearch extends BaseSearch
 
         // Build WHERE conditions
         $whereConditions = "(($domains_table.name LIKE :search_string1";
+        $whereConditions .= $this->idnNameCondition($domains_table, "$domains_table.name", (string)($parameters['query'] ?? ''), 'idnzone', $params);
 
         if ($reverse) {
             $whereConditions .= " OR $domains_table.name LIKE :reverse_search_string";
@@ -281,6 +282,7 @@ class ZoneSearch extends BaseSearch
 
         // Build WHERE conditions
         $whereConditions = "(($domains_table.name LIKE :search_string1";
+        $whereConditions .= $this->idnNameCondition($domains_table, "$domains_table.name", (string)($parameters['query'] ?? ''), 'idnzone', $params);
 
         if ($reverse) {
             $whereConditions .= " OR $domains_table.name LIKE :reverse_search_string";
