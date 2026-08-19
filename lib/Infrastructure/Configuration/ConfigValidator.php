@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Configuration;
 
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Infrastructure\Logger\Logger;
 
 class ConfigValidator
 {
@@ -42,6 +43,7 @@ class ConfigValidator
         $this->validateIfaceRowAmount();
         $this->validateIfaceLang();
         $this->validateTheme();
+        $this->validateLoggingLevel();
         $this->validateSyslogUse();
         if ($this->getSetting('logging', 'syslog_enabled')) {
             $this->validateSyslogIdent();
@@ -73,6 +75,20 @@ class ConfigValidator
     private function getSetting(string $group, string $key, mixed $default = null): mixed
     {
         return $this->config[$group][$key] ?? $default;
+    }
+
+    private function validateLoggingLevel(): void
+    {
+        $logLevel = $this->getSetting('logging', 'level');
+        if ($logLevel === null) {
+            return;
+        }
+
+        $validLevels = Logger::levelNames();
+        if (!in_array($logLevel, $validLevels, true)) {
+            $validLevelsList = implode(', ', $validLevels);
+            $this->errors['logging.level'] = "level must be one of the following values: $validLevelsList";
+        }
     }
 
     private function validateSyslogUse(): void

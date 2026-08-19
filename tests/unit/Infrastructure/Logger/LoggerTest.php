@@ -171,6 +171,62 @@ class LoggerTest extends TestCase
         $warningLogger->warning('Warning message', ['level' => 'warning']);
     }
 
+    public function testUnknownConfiguredLevelFallsBackToInfo(): void
+    {
+        // 'warn' is not a PSR-3 level; it must not silence logging.
+        $typoLogger = new Logger($this->mockHandler, 'warn');
+
+        $this->mockHandler->expects($this->once())
+            ->method('handle');
+
+        $typoLogger->error('Error message', ['level' => 'error']);
+    }
+
+    public function testUnknownConfiguredLevelStillFiltersBelowInfo(): void
+    {
+        $typoLogger = new Logger($this->mockHandler, 'warn');
+
+        $this->mockHandler->expects($this->never())
+            ->method('handle');
+
+        $typoLogger->debug('Debug message', ['level' => 'debug']);
+    }
+
+    public function testUnknownConfiguredLevelRaisesNoPhpWarning(): void
+    {
+        $raised = [];
+        set_error_handler(function (int $errno, string $errstr) use (&$raised): bool {
+            $raised[] = $errstr;
+            return true;
+        });
+
+        try {
+            (new Logger($this->mockHandler, 'warn'))->error('Error message');
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame([], $raised);
+    }
+
+    public function testUnknownMessageLevelIsTreatedAsDebug(): void
+    {
+        $debugLogger = new Logger($this->mockHandler, 'debug');
+
+        $this->mockHandler->expects($this->once())
+            ->method('handle');
+
+        $debugLogger->log('warn', 'Warn message');
+    }
+
+    public function testLevelNamesCoversTheDocumentedVocabulary(): void
+    {
+        $this->assertSame(
+            ['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug'],
+            Logger::levelNames()
+        );
+    }
+
     public function testInterpolation(): void
     {
         $context = [
