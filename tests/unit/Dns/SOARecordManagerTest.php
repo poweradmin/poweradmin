@@ -85,6 +85,31 @@ class SOARecordManagerTest extends TestCase
             'Autoserial' => [0, 0],
             'Not date based serial' => [123456, 123457],
             'Reset serial at limit' => [1979999999, 1],
+            // A serial that is not a real date still runs through the date branch and
+            // keeps growing; it must not leave the 32-bit unsigned range.
+            'Wraps at the 32-bit ceiling' => [4294967295, 1],
+        ];
+    }
+
+    #[DataProvider('largeSerialProvider')]
+    public function testGetNextSerialStaysWithin32Bits($currentSerial): void
+    {
+        $next = $this->soaRecordManager->getNextSerial($currentSerial);
+
+        $this->assertLessThanOrEqual(
+            SOARecordManager::MAX_SERIAL,
+            (float)$next,
+            sprintf('serial %s produced %s, which exceeds the 32-bit unsigned range', $currentSerial, $next)
+        );
+    }
+
+    public static function largeSerialProvider(): array
+    {
+        return [
+            'signed 32-bit maximum' => [2147483647],
+            'just below the ceiling' => [4294967290],
+            'at the ceiling' => [4294967295],
+            'plausible future date serial' => [4294123100],
         ];
     }
 

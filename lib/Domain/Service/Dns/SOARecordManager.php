@@ -33,6 +33,9 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
  */
 class SOARecordManager implements SOARecordManagerInterface
 {
+    /** Zone serials are 32-bit unsigned values (RFC 1982). */
+    public const MAX_SERIAL = 4294967295;
+
     private PDO $db;
     private ConfigurationManager $config;
     private ?DnsBackendProvider $backendProvider;
@@ -214,7 +217,12 @@ class SOARecordManager implements SOARecordManagerInterface
         }
 
         // Create new serial out of existing/updated date and revision
-        return $today . str_pad((string)$revision, 2, "0", STR_PAD_LEFT);
+        $next = $today . str_pad((string)$revision, 2, "0", STR_PAD_LEFT);
+
+        // A serial above 1979999999 that is not a real date still lands in the branch
+        // above and keeps growing. DNS serials are 32-bit unsigned (RFC 1982), so wrap
+        // rather than hand PowerDNS a value it cannot store.
+        return (float)$next > self::MAX_SERIAL ? 1 : $next;
     }
 
     /**
