@@ -26,6 +26,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Application\Service\RecordCommentService;
@@ -134,17 +135,17 @@ class ZoneFileImportController extends BaseController
             return;
         }
 
-        // Convert IDN names
+        // Convert IDN names. isIdn() is only true for names that are already
+        // punycode, so gating on it skipped exactly the UTF-8 names needing conversion.
+        // toPunycode() is a no-op for ASCII and already-encoded input.
         $records = [];
         foreach ($parsed->getRecords() as $record) {
-            if (DnsIdnService::isIdn($record->name)) {
-                $record->name = DnsIdnService::toPunycode($record->name);
-            }
+            $record->name = DnsIdnService::toPunycode($record->name);
             $records[] = $record;
         }
 
         $origin = $parsed->getOrigin();
-        if ($origin !== null && DnsIdnService::isIdn($origin)) {
+        if ($origin !== null) {
             $origin = DnsIdnService::toPunycode($origin);
         }
 
@@ -271,7 +272,7 @@ class ZoneFileImportController extends BaseController
         $zoneName = $_POST['zone_name'] ?? $origin;
 
         // Handle IDN zone name
-        if ($zoneName && DnsIdnService::isIdn($zoneName)) {
+        if ($zoneName) {
             $zoneName = DnsIdnService::toPunycode($zoneName);
         }
 
@@ -327,12 +328,24 @@ class ZoneFileImportController extends BaseController
                 return;
             }
 
+            // This path calls addDomain() directly, which does not validate, so an
+            // unconvertible name would otherwise be stored raw and never resolve.
+            $hostnameValidator = new HostnameValidator($this->config);
+            if (!$hostnameValidator->isValid($zoneName)) {
+                $this->showError(_('This is an invalid zone name.'));
+                return;
+            }
+
             if ($domainRepository->domainExists($zoneName)) {
                 $this->showError(_('A zone with this name already exists.'));
                 return;
             }
 
-            $zoneType = $_POST['zone_type'] ?? 'MASTER';
+            $zoneType = strtoupper((string)($_POST['zone_type'] ?? 'MASTER'));
+            if (!in_array($zoneType, ['MASTER', 'SLAVE', 'NATIVE'], true)) {
+                $this->showError(_('Invalid zone type.'));
+                return;
+            }
             $ownershipMode = new ZoneOwnershipModeService($this->config);
             $noUserOwnerRequested = !empty($_POST['no_user_owner']);
             if (!$ownershipMode->isUserOwnerAllowed()) {
@@ -466,7 +479,7 @@ class ZoneFileImportController extends BaseController
             'fail_count' => $failCount,
             'skip_count' => $skipCount,
             'zone_id' => $zone_id,
-            'zone_name' => $zoneName ?: $origin,
+            'zone_name' => $zoneName,
         ]);
     }
 

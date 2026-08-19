@@ -324,9 +324,10 @@ class RecordSearch extends BaseSearch
      */
     private function buildWhereConditionsFetch(string $records_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, bool $iface_record_comments, array $parameters, string $permission_view, array &$params): string
     {
-        // Add main search parameters
+        // Add main search parameters. Content holds free text, so it takes the raw
+        // query; only the name column stores punycode.
         $params[':search_string1'] = $search_string;
-        $params[':search_string2'] = $search_string;
+        $params[':search_string2'] = $this->buildRawSearchString($parameters);
 
         // Build WHERE conditions
         $whereConditions = "($records_table.name LIKE :search_string1 OR $records_table.content LIKE :search_string2";
@@ -350,7 +351,7 @@ class RecordSearch extends BaseSearch
                     OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type))
                 AND c.comment LIKE :search_string_comment
             )";
-            $params[':search_string_comment'] = $search_string;
+            $params[':search_string_comment'] = $this->buildRawSearchString($parameters);
         }
 
         $whereConditions .= ')';
@@ -379,9 +380,10 @@ class RecordSearch extends BaseSearch
      */
     private function buildWhereConditionsCount(string $records_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, array $parameters, string $permission_view, array &$params): string
     {
-        // Add main search parameters
+        // Add main search parameters. Content holds free text, so it takes the raw
+        // query; only the name column stores punycode.
         $params[':search_string1'] = $search_string;
-        $params[':search_string2'] = $search_string;
+        $params[':search_string2'] = $this->buildRawSearchString($parameters);
 
         // Build WHERE conditions
         $whereConditions = "($records_table.name LIKE :search_string1 OR $records_table.content LIKE :search_string2";
@@ -405,7 +407,7 @@ class RecordSearch extends BaseSearch
                     OR (c.domain_id = $records_table.domain_id AND c.name = $records_table.name AND c.type = $records_table.type))
                 AND c.comment LIKE :search_string_comment
             )";
-            $params[':search_string_comment'] = $search_string;
+            $params[':search_string_comment'] = $this->buildRawSearchString($parameters);
         }
 
         $whereConditions .= ')';

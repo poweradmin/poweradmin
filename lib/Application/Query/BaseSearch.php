@@ -84,6 +84,17 @@ abstract class BaseSearch
     }
 
     /**
+     * The needle for free-text columns. Record content and comments hold whatever the
+     * user typed, so the punycoded form of the query cannot match them.
+     */
+    protected function buildRawSearchString(array $parameters): string
+    {
+        $needle = trim((string)($parameters['query'] ?? ''));
+        $wildcard = !empty($parameters['wildcard']);
+        return ($wildcard ? '%' : '') . $needle . ($wildcard ? '%' : '');
+    }
+
+    /**
      * Handles SQL mode for MySQL database connection by disabling 'ONLY_FULL_GROUP_BY' if needed.
      *
      * @return string The original SQL mode if modified, or an empty string if no change was needed or not using MySQL.

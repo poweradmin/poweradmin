@@ -247,7 +247,7 @@ class ZoneSearch extends BaseSearch
 
         if ($iface_zone_comments && $parameters['comments']) {
             $whereConditions .= " OR z.comment LIKE :search_string_comment";
-            $params[':search_string_comment'] = $search_string;
+            $params[':search_string_comment'] = $this->buildRawSearchString($parameters);
         }
 
         $whereConditions .= ')';
@@ -291,7 +291,7 @@ class ZoneSearch extends BaseSearch
 
         if ($parameters['comments']) {
             $whereConditions .= " OR z.comment LIKE :search_string_comment";
-            $params[':search_string_comment'] = $search_string;
+            $params[':search_string_comment'] = $this->buildRawSearchString($parameters);
         }
 
         $whereConditions .= ')';
