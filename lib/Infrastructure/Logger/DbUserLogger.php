@@ -57,7 +57,7 @@ class DbUserLogger
                     FROM log_users
                     WHERE log_users.event LIKE :search_by ESCAPE '!'
         ");
-        $name = "%'" . DbCompat::escapeLike($user) . "'%";
+        $name = "%user:" . DbCompat::escapeLike($user) . " %";
         $stmt->execute(['search_by' => $name]);
         return $stmt->fetch()['number_of_logs'];
     }
@@ -91,7 +91,7 @@ class DbUserLogger
             LIMIT :limit
             OFFSET :offset");
 
-        $user = "%'" . DbCompat::escapeLike($user) . "'%";
+        $user = "%user:" . DbCompat::escapeLike($user) . " %";
         $stmt->bindValue(':search_by', $user, PDO::PARAM_STR);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -203,8 +203,9 @@ class DbUserLogger
     private function buildFilterConditions(array $filters, array &$conditions, array &$params): void
     {
         if (!empty($filters['name'])) {
+            // Producers emit a bare "user:<name> "; quoting the value matched nothing.
             $conditions[] = "log_users.event LIKE :search_by ESCAPE '!'";
-            $params[':search_by'] = ["%'" . DbCompat::escapeLike($filters['name']) . "'%", PDO::PARAM_STR];
+            $params[':search_by'] = ["%user:" . DbCompat::escapeLike($filters['name']) . " %", PDO::PARAM_STR];
         }
 
         if (!empty($filters['event_type'])) {
@@ -218,8 +219,10 @@ class DbUserLogger
             ];
             $allowed = array_flip($this->getDistinctEventTypes());
             if (isset($allowed[$eventType])) {
+                // Anchor on the trailing space so add_zone_template does not also
+                // match add_zone_template_record, nor password_reset its _request sibling.
                 $conditions[] = "log_users.event LIKE :event_type";
-                $params[':event_type'] = [$exceptions[$eventType] ?? "%operation:$eventType%", PDO::PARAM_STR];
+                $params[':event_type'] = [$exceptions[$eventType] ?? "%operation:$eventType %", PDO::PARAM_STR];
             }
         }
 

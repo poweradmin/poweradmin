@@ -25,22 +25,26 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\UserContextService;
 
 class AuditService
 {
     private LegacyLogger $logger;
     private IpAddressRetriever $ipRetriever;
+    private UserContextService $userContext;
 
     public function __construct(PDO $db)
     {
         $this->logger = new LegacyLogger($db);
         $this->ipRetriever = new IpAddressRetriever($_SERVER);
+        $this->userContext = new UserContextService();
     }
 
     private function getContext(): string
     {
-        $username = $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown';
+        // API requests are stateless, so read the actor through UserContextService
+        // rather than the session, which would attribute every API call to "unknown".
+        $username = $this->userContext->getLoggedInUsername() ?? 'unknown';
         return sprintf(
             'client_ip:%s user:%s',
             $this->ipRetriever->getClientIp(),

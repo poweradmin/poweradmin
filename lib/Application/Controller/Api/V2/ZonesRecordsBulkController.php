@@ -50,7 +50,9 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -64,6 +66,8 @@ class ZonesRecordsBulkController extends PublicApiController
     private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
     private RecordChangeLogger $changeLogger;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
     private ReverseTtlResolver $reverseTtlResolver;
 
     public function __construct(array $request, array $pathParameters = [])
@@ -83,6 +87,8 @@ class ZonesRecordsBulkController extends PublicApiController
         $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
         $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
         $this->changeLogger = new RecordChangeLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     /**
@@ -327,6 +333,13 @@ class ZonesRecordsBulkController extends PublicApiController
                 if ($useTransaction) {
                     $this->db->commit();
                 }
+
+                $this->auditLogger->logInfo(sprintf(
+                    'client_ip:%s user:%s operation:api_bulk_records operations:%d',
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getAuthenticatedUsername(),
+                    count($results)
+                ), $zoneId);
 
                 // Any failed operation rethrows above, so reaching here means all succeeded
                 return $this->returnApiResponse($results, true, 'Bulk operations completed successfully', 200);

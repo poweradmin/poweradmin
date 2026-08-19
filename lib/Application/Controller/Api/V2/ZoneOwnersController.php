@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -45,6 +46,7 @@ class ZoneOwnersController extends PublicApiController
     private ZoneRepositoryInterface $zoneRepository;
     private UserRepository $userRepository;
     private ApiPermissionService $apiPermissionService;
+    private AuditService $auditService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -53,6 +55,15 @@ class ZoneOwnersController extends PublicApiController
         $this->zoneRepository = $this->createZoneRepository();
         $this->userRepository = $this->createUserRepository();
         $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->auditService = new AuditService($this->db);
+    }
+
+    /**
+     * Zone name for the audit entry; the mutation paths only check the id exists.
+     */
+    private function auditZoneName(int $zoneId): string
+    {
+        return $this->createDomainRepository()->getDomainNameById($zoneId) ?? '';
     }
 
     /**
@@ -268,6 +279,7 @@ class ZoneOwnersController extends PublicApiController
             }
 
             $this->zoneRepository->addOwnerToZone($zoneId, $userId);
+            $this->auditService->logZoneOwnerAdd($zoneId, $this->auditZoneName($zoneId), $userId);
 
             return $this->returnApiResponse(null, true, 'Owner added successfully', 201);
         } catch (Exception $e) {
@@ -288,6 +300,7 @@ class ZoneOwnersController extends PublicApiController
         $added = [];
         $skipped = [];
         $notFound = [];
+        $zoneName = $this->auditZoneName($zoneId);
 
         foreach ($userIds as $uid) {
             // Skip non-numeric ids; (int) would coerce an array/garbage value to 1.
@@ -307,6 +320,7 @@ class ZoneOwnersController extends PublicApiController
             }
 
             $this->zoneRepository->addOwnerToZone($zoneId, $userId);
+            $this->auditService->logZoneOwnerAdd($zoneId, $zoneName, $userId);
             $added[] = $userId;
         }
 
@@ -436,6 +450,8 @@ class ZoneOwnersController extends PublicApiController
             if (!$success) {
                 return $this->returnApiError('Owner not found for this zone', 404);
             }
+
+            $this->auditService->logZoneOwnerRemove($zoneId, $this->auditZoneName($zoneId), $userId);
 
             return $this->returnApiResponse(null, true, 'Owner removed successfully');
         } catch (Exception $e) {

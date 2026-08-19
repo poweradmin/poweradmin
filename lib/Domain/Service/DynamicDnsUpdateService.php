@@ -159,14 +159,20 @@ class DynamicDnsUpdateService
             return;
         }
         $clientIp = $this->ipRetriever?->getClientIp() ?? '';
-        $this->auditLogger->logNotice(sprintf(
+        $message = sprintf(
             'client_ip:%s user:%s operation:dynamic_dns_update hostname:%s zone_id:%d ip:%s',
             $clientIp,
             $username,
             $hostname->getValue(),
             $zoneId,
             $primaryIp
-        ));
+        );
+
+        $this->auditLogger->logNotice($message);
+
+        // logNotice() carries no zone id, so the entry above only reaches the user log.
+        // Repeat it against the zone so the change shows in that zone's history.
+        $this->auditLogger->logInfo($message, $zoneId);
     }
 
     /**

@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 class DbApiLogger
 {
@@ -136,8 +137,9 @@ class DbApiLogger
     private function buildFilterConditions(array $filters, array &$conditions, array &$params): void
     {
         if (!empty($filters['name'])) {
-            $conditions[] = "log_api.event LIKE :search_by";
-            $params[':search_by'] = ["%'" . $filters['name'] . "'%", PDO::PARAM_STR];
+            // Producers emit a bare "user:<name> "; quoting the value matched nothing.
+            $conditions[] = "log_api.event LIKE :search_by ESCAPE '!'";
+            $params[':search_by'] = ["%user:" . DbCompat::escapeLike($filters['name']) . " %", PDO::PARAM_STR];
         }
 
         if (!empty($filters['event_type'])) {

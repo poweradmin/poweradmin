@@ -38,7 +38,9 @@ use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -644,6 +646,17 @@ class ZoneMetadataController extends PublicApiController
                 ['id' => $zoneId, 'name' => $zoneName, 'metadata' => $before],
                 ['id' => $zoneId, 'name' => $zoneName, 'metadata' => $after]
             );
+
+            // The web path writes both logs; without this the zone's activity feed
+            // shows nothing for metadata changed through the API.
+            $kinds = array_unique(array_column($after, 'kind'));
+            (new LegacyLogger($this->db))->logInfo(sprintf(
+                'client_ip:%s user:%s operation:edit_zone_metadata zone:%s kinds:%s',
+                (new IpAddressRetriever($_SERVER))->getClientIp(),
+                $this->getAuthenticatedUsername(),
+                (string) $zoneName,
+                implode(',', $kinds)
+            ), $zoneId);
         } catch (\Throwable $e) {
             $this->logger->warning('Failed to write zone metadata edit log: {error}', ['error' => $e->getMessage()]);
         }
