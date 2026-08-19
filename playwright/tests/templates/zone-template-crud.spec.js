@@ -182,7 +182,9 @@ test.describe('Zone Template CRUD Operations', () => {
       await editLink.click();
       await page.waitForLoadState('networkidle');
 
-      const nameField = page.locator('input[name*="name"], input[name*="templ"]').first();
+      // The records table above this form has its own name inputs, so target the
+      // template name field directly rather than the first match on the page.
+      const nameField = page.locator('#templ_name');
       const value = await nameField.inputValue();
       expect(value.length).toBeGreaterThan(0);
     });
@@ -250,10 +252,12 @@ test.describe('Zone Template CRUD Operations', () => {
       await editLink.click();
       await page.waitForLoadState('networkidle');
 
-      const descField = page.locator('input[name*="descr"], textarea[name*="descr"]').first();
+      const descField = page.locator('#templ_descr');
       if (await descField.count() > 0) {
         await descField.fill(`Updated description ${Date.now()}`);
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+        // Save the template details, not the first submit on the page: that is
+        // "Update zones", which renders disabled when no zones use the template.
+        await page.locator('button[type="submit"][name="edit"]').click();
 
         // Auto-retrying assertion: the click navigation may still be in flight
         await expect(page.locator('body')).not.toContainText(/fatal|exception/i);

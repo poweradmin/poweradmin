@@ -168,9 +168,11 @@ test.describe('User Management Error Validation', () => {
     // Submit form
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-    // The duplicate must be rejected: exactly one admin row may exist afterwards
+    // The duplicate must be rejected: exactly one admin account may exist afterwards.
+    // Match the username input itself - every row carries a permission-template
+    // dropdown listing "Administrator", so a row-level text match hits all of them.
     await page.goto('/users');
-    await expect(page.locator('table tbody tr:has-text("admin")')).toHaveCount(1);
+    await expect(page.locator('input[name$="[username]"][value="admin"]')).toHaveCount(1);
   });
 
   test('should validate email format when creating user', async ({ page }) => {
