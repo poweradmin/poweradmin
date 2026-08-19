@@ -169,6 +169,51 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertSame($expectedRows, $rows);
     }
 
+    public function testLoadMetadataViaApiReturnsSoaEditApiOnlyOnce(): void
+    {
+        // PowerDNS reports SOA-EDIT-API both in /metadata and on the zone
+        // object; only the zone object copy may become a row.
+        $apiClient = $this->createMock(\Poweradmin\Infrastructure\Api\PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([
+            ['kind' => 'SOA-EDIT-API', 'metadata' => ['DEFAULT']],
+            ['kind' => 'ALLOW-AXFR-FROM', 'metadata' => ['192.0.2.10']],
+        ]);
+        $apiClient->method('getZone')->willReturn(['soa_edit_api' => 'DEFAULT']);
+
+        $controller = $this->controllerReflection->newInstanceWithoutConstructor();
+        $this->setProperty($controller, 'apiClient', $apiClient);
+
+        $rows = $this->invokePrivateMethod($controller, 'loadMetadataViaApi', ['example.com']);
+
+        $soaEditApiRows = array_filter($rows, fn($row) => $row['kind'] === 'SOA-EDIT-API');
+        $this->assertCount(1, $soaEditApiRows);
+        $this->assertContains(['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'], $rows);
+    }
+
+    public function testValidateMetadataRowsAcceptsMultipleTsigAllowDnsupdateValues(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+
+        $errors = $this->invokePrivateMethod($controller, 'validateMetadataRows', [[
+            ['kind' => 'TSIG-ALLOW-DNSUPDATE', 'content' => 'key-one'],
+            ['kind' => 'TSIG-ALLOW-DNSUPDATE', 'content' => 'key-two'],
+        ]]);
+
+        $this->assertSame([], $errors);
+    }
+
+    public function testValidateMetadataRowsRejectsDuplicateSingleValueKind(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+
+        $errors = $this->invokePrivateMethod($controller, 'validateMetadataRows', [[
+            ['kind' => 'SOA-EDIT-API', 'content' => 'DEFAULT'],
+            ['kind' => 'SOA-EDIT-API', 'content' => 'INCREASE'],
+        ]]);
+
+        $this->assertCount(1, $errors);
+    }
+
     private function createControllerWithConfig(array $overrides): EditZoneMetadataController
     {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
