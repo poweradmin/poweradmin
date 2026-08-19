@@ -104,6 +104,12 @@ class UserAuthenticationService
      */
     public function verifyPassword(string $password, string $hash): bool
     {
+        // Users provisioned by LDAP/OIDC/SAML have no local hash. That is a failed
+        // verification, not an unknown algorithm, so it must not throw.
+        if ($hash === '') {
+            return false;
+        }
+
         $hash_type = $this->identifyHashAlgorithm($hash);
 
         if ($hash_type === 'md5salt') {

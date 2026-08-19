@@ -361,4 +361,20 @@ class UserAuthenticationServiceTest extends TestCase
 
         $this->assertTrue($result, 'Password verification should be successful for a unicode password');
     }
+
+    /**
+     * LDAP/OIDC/SAML-provisioned accounts store an empty hash. That must read as a
+     * failed verification rather than throwing, which callers surface as a 500.
+     */
+    public function testVerifyPasswordReturnsFalseForEmptyHash(): void
+    {
+        $this->assertFalse($this->userAuthService->verifyPassword('any-password', ''));
+    }
+
+    public function testVerifyPasswordStillRejectsAnUnknownHashFormat(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->userAuthService->verifyPassword('any-password', 'not-a-recognised-hash');
+    }
 }
