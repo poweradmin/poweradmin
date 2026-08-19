@@ -467,7 +467,7 @@ class GroupsController extends PublicApiController
     #[OA\Delete(
         path: '/v2/groups/{id}',
         operationId: 'v2DeleteGroup',
-        description: 'Deletes a group',
+        description: 'Deletes a group. A group with members or zone ownerships is refused with 409 unless confirm=true is supplied, because deleting it removes those zone ownerships.',
         summary: 'Delete group',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['groups'],
@@ -478,6 +478,13 @@ class GroupsController extends PublicApiController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
+            ),
+            new OA\Parameter(
+                name: 'confirm',
+                description: 'Proceed even though the group has members or owns zones',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'boolean', default: false)
             )
         ]
     )]
@@ -494,6 +501,7 @@ class GroupsController extends PublicApiController
         )
     )]
     #[OA\Response(response: 404, description: 'Group not found')]
+    #[OA\Response(response: 409, description: 'Group has members or owns zones and confirm was not supplied')]
     private function deleteGroup(): JsonResponse
     {
         if (!$this->apiPermissionService->canManageGroups($this->authenticatedUserId)) {
@@ -502,6 +510,19 @@ class GroupsController extends PublicApiController
 
         try {
             $groupId = (int)$this->pathParameters['id'];
+            $details = $this->groupService->getGroupDetails($groupId);
+
+            // Deleting a group cascades away its zone ownerships, which would leave those
+            // zones without an owner. The web path confirms first; require the same here.
+            $confirmed = filter_var($this->request->query->get('confirm', 'false'), FILTER_VALIDATE_BOOLEAN);
+            if (!$confirmed && ($details['zoneCount'] > 0 || $details['memberCount'] > 0)) {
+                return $this->returnApiError(sprintf(
+                    'Group still has %d member(s) and owns %d zone(s). Deleting it removes those zone ownerships. Repeat with confirm=true to proceed.',
+                    $details['memberCount'],
+                    $details['zoneCount']
+                ), 409);
+            }
+
             $success = $this->groupService->deleteGroup($groupId);
 
             if (!$success) {
