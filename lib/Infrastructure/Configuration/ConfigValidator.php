@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
+use Poweradmin\Application\Service\PaginationService;
+
 class ConfigValidator
 {
     private array $config;
@@ -115,6 +117,13 @@ class ConfigValidator
         $rowsPerPage = $this->getSetting('interface', 'rows_per_page');
         if (!is_int($rowsPerPage) || $rowsPerPage <= 0) {
             $this->errors['interface.rows_per_page'] = 'rows_per_page must be a positive integer';
+        } elseif ($rowsPerPage < PaginationService::MIN_ROWS_PER_PAGE || $rowsPerPage > PaginationService::MAX_ROWS_PER_PAGE) {
+            // Reported rather than silently clamped, so a mistyped value is visible.
+            $this->errors['interface.rows_per_page'] = sprintf(
+                'rows_per_page must be between %d and %d',
+                PaginationService::MIN_ROWS_PER_PAGE,
+                PaginationService::MAX_ROWS_PER_PAGE
+            );
         }
     }
 

@@ -26,6 +26,7 @@ use InvalidArgumentException;
 use Exception;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserPreference;
 
@@ -145,7 +146,9 @@ class UserPreferencesController extends BaseController
 
     private function getAvailableRowsPerPageOptions(): array
     {
-        return [10, 20, 50, 100];
+        $configured = (int)$this->config->get('interface', 'rows_per_page', PaginationService::DEFAULT_ROWS_PER_PAGE);
+
+        return $this->createPaginationService()->getRowsPerPageOptions($configured);
     }
 
 

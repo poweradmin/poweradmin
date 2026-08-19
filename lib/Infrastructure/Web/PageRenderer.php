@@ -26,6 +26,7 @@ use Closure;
 use Poweradmin\AppManager;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
@@ -111,6 +112,11 @@ class PageRenderer
         $this->app->addTwigGlobal('pdns_server_info', $pdnsInfo);
         $this->app->addTwigGlobal('user_logged_in', $this->userContextService->isAuthenticated());
         $this->app->addTwigGlobal('file_version', $this->getAssetVersion());
+        // Page-size choices, so the dropdowns offer the configured value rather than
+        // a hardcoded list that silently excludes it.
+        $this->app->addTwigGlobal('rows_per_page_options', (new PaginationService())->getRowsPerPageOptions(
+            (int)$this->config->get('interface', 'rows_per_page', PaginationService::DEFAULT_ROWS_PER_PAGE)
+        ));
     }
 
     /**

@@ -35,6 +35,7 @@ use PDO;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\HybridPermissionService;
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
@@ -123,8 +124,8 @@ class SearchController extends BaseController
         $zones_rows_per_page = $this->request->getPostParam('zones_rows_per_page');
         if ($this->isPost() && $zones_rows_per_page !== null && is_numeric($zones_rows_per_page)) {
             $post_rows_per_page = (int)$zones_rows_per_page;
-            // Validate against allowed values
-            if (in_array($post_rows_per_page, [10, 20, 50, 100])) {
+            // Any value inside the supported range is accepted, not just the presets
+            if ($post_rows_per_page >= PaginationService::MIN_ROWS_PER_PAGE && $post_rows_per_page <= PaginationService::MAX_ROWS_PER_PAGE) {
                 $zone_rowamount = $post_rows_per_page;
             }
         }
@@ -135,8 +136,8 @@ class SearchController extends BaseController
         $records_rows_per_page = $this->request->getPostParam('records_rows_per_page');
         if ($this->isPost() && $records_rows_per_page !== null && is_numeric($records_rows_per_page)) {
             $post_rows_per_page = (int)$records_rows_per_page;
-            // Validate against allowed values
-            if (in_array($post_rows_per_page, [10, 20, 50, 100])) {
+            // Any value inside the supported range is accepted, not just the presets
+            if ($post_rows_per_page >= PaginationService::MIN_ROWS_PER_PAGE && $post_rows_per_page <= PaginationService::MAX_ROWS_PER_PAGE) {
                 $record_rowamount = $post_rows_per_page;
             }
         }
@@ -145,8 +146,8 @@ class SearchController extends BaseController
         $rows_per_page = $this->request->getPostParam('rows_per_page');
         if ($this->isPost() && $rows_per_page !== null && is_numeric($rows_per_page)) {
             $post_rows_per_page = (int)$rows_per_page;
-            // Validate against allowed values
-            if (in_array($post_rows_per_page, [10, 20, 50, 100])) {
+            // Any value inside the supported range is accepted, not just the presets
+            if ($post_rows_per_page >= PaginationService::MIN_ROWS_PER_PAGE && $post_rows_per_page <= PaginationService::MAX_ROWS_PER_PAGE) {
                 $zone_rowamount = $post_rows_per_page;
                 $record_rowamount = $post_rows_per_page;
             }
