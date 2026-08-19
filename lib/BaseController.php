@@ -829,7 +829,7 @@ abstract class BaseController
     /**
      * Adds a system-wide message that will be displayed on any page
      *
-     * @param string $type The type of message (error, warn, success, info)
+     * @param string $type The type of message (error, warning, success, info)
      * @param string $content The content of the message
      */
     public function addSystemMessage(string $type, string $content): void

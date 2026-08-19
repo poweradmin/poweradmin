@@ -1,4 +1,4 @@
-{% if message.type == 'error' %}
+{% if message.type in ['error', 'danger'] %}
     {% set color = 'danger' %}
     {% set icon = 'exclamation-triangle' %}
     {% set title = 'Error:'|trans %}
@@ -11,7 +11,8 @@
     {% set icon = 'check-circle' %}
     {% set title = 'Success:'|trans %}
 {% else %}
-    {% set color = message.type %}
+    {# An unknown type would otherwise become a CSS class that does not exist. #}
+    {% set color = message.type in ['info', 'primary', 'secondary', 'light', 'dark'] ? message.type : 'info' %}
     {% set icon = 'info-circle' %}
     {% set title = 'Info:'|trans %}
 {% endif %}

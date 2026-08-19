@@ -8,7 +8,7 @@
 {{ macros.breadcrumb(crumbs|merge([{label: 'Batch PTR Records'|trans}])) }}
 
 {% if message %}
-<div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+{% include 'message_alert.html' with {message: message} only %}
 {% endif %}
 
 <div class="row">

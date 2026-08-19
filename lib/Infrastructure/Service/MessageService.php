@@ -41,7 +41,7 @@ class MessageService
      * Prevents duplicate messages from being added
      *
      * @param string $script The script to set the message for
-     * @param string $type The type of message (error, warn, success, info)
+     * @param string $type The type of message (error, warning, success, info)
      * @param string $content The content of the message
      * @param string|null $recordName Optional record name for context
      */
