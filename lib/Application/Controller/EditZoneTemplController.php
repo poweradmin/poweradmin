@@ -242,7 +242,11 @@ class EditZoneTemplController extends BaseController
 
         if ($failedZones > 0) {
             $this->setMessage('edit_zone_templ', 'warning', sprintf(
-                _('Zones have been updated, but %d could not be updated.'),
+                ngettext(
+                    '%d zone could not be updated.',
+                    '%d zones could not be updated.',
+                    $failedZones
+                ),
                 $failedZones
             ));
         } else {
