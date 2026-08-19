@@ -40,11 +40,20 @@ function initializeTimezone(ConfigurationInterface $config): void
 /**
  * Initialize secure session configuration
  */
-function initializeSession(): void
+function initializeSession(ConfigurationInterface $config): void
 {
     if (!function_exists('session_start')) {
         require_once __DIR__ . '/../../Infrastructure/Service/MessageService.php';
         (new MessageService())->displayDirectSystemError("You have to install the PHP session extension!");
+    }
+
+    // PHP collects sessions after gc_maxlifetime, 1440s by default, which is shorter
+    // than the 1800s timeout shipped in interface.session_timeout. The session then
+    // vanished before the expiry check could report it and the user was returned to a
+    // login page with no explanation. Keep collection strictly behind our own timeout.
+    $sessionTimeout = (int)$config->get('interface', 'session_timeout', 1800);
+    if ($sessionTimeout > 0) {
+        ini_set('session.gc_maxlifetime', (string)($sessionTimeout + 300));
     }
 
     $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');

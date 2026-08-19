@@ -36,7 +36,7 @@ try {
     $configManager->initialize();
 
     initializeTimezone($configManager);
-    initializeSession();
+    initializeSession($configManager);
 
     // A v2 HEAD request is dispatched through the GET handler (see PublicApiController),
     // so buffer the response and drop its body: HEAD must return headers only. The
