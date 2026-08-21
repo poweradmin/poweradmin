@@ -174,22 +174,57 @@ class LoggerTest extends TestCase
     public function testUnknownConfiguredLevelFallsBackToInfo(): void
     {
         // 'warn' is not a PSR-3 level; it must not silence logging.
+        $captured = $this->captureHandledRecords();
         $typoLogger = new Logger($this->mockHandler, 'warn');
 
-        $this->mockHandler->expects($this->once())
-            ->method('handle');
+        $typoLogger->error('Error message');
 
-        $typoLogger->error('Error message', ['level' => 'error']);
+        $this->assertContains('Error message', array_column($captured->records, 'message'));
     }
 
     public function testUnknownConfiguredLevelStillFiltersBelowInfo(): void
     {
+        $captured = $this->captureHandledRecords();
         $typoLogger = new Logger($this->mockHandler, 'warn');
 
-        $this->mockHandler->expects($this->never())
-            ->method('handle');
+        $typoLogger->debug('Debug message');
 
-        $typoLogger->debug('Debug message', ['level' => 'debug']);
+        $this->assertNotContains('DEBUG', array_column($captured->records, 'level'));
+    }
+
+    public function testUnknownConfiguredLevelIsReported(): void
+    {
+        $captured = $this->captureHandledRecords();
+
+        new Logger($this->mockHandler, 'warn');
+
+        $this->assertCount(1, $captured->records);
+        $this->assertSame('WARNING', $captured->records[0]['level']);
+        $this->assertStringContainsString('warn', $captured->records[0]['message']);
+        $this->assertStringContainsString('falling back to info', $captured->records[0]['message']);
+    }
+
+    public function testKnownConfiguredLevelIsNotReported(): void
+    {
+        $captured = $this->captureHandledRecords();
+
+        new Logger($this->mockHandler, 'warning');
+
+        $this->assertSame([], $captured->records);
+    }
+
+    private function captureHandledRecords(): object
+    {
+        $sink = new class {
+            public array $records = [];
+        };
+
+        $this->mockHandler->method('handle')
+            ->willReturnCallback(function ($data) use ($sink) {
+                $sink->records[] = $data;
+            });
+
+        return $sink;
     }
 
     public function testUnknownConfiguredLevelRaisesNoPhpWarning(): void

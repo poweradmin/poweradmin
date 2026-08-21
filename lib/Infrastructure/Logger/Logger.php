@@ -60,6 +60,19 @@ class Logger extends AbstractLogger
     {
         $this->logHandler = $handler;
         $this->logLevel = $logLevel;
+
+        // Falling back silently would hide the typo; shouldLog() resolves the
+        // threshold to the default, so this record is emitted rather than gated out.
+        if (!isset(self::LEVELS[$logLevel])) {
+            $this->warning(
+                'Unrecognised logging.level {level}; falling back to {fallback}. Valid levels: {valid}',
+                [
+                    'level' => $logLevel,
+                    'fallback' => self::DEFAULT_LEVEL,
+                    'valid' => implode(', ', self::levelNames()),
+                ]
+            );
+        }
     }
 
     public function log($level, Stringable|string $message, array $context = []): void
