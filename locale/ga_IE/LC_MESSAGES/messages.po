@@ -3161,11 +3161,11 @@ msgstr[4] ""
 
 #: lib/Application/Controller/ListNetworksController.php:47
 msgid "You do not have permission to manage network views."
-msgstr "Níl cead agat radhairc líonra a bhainistiú."
+msgstr "Níl cead agat amhairc líonra a bhainistiú."
 
 #: lib/Application/Controller/ListNetworksController.php:59
 msgid "Network views are only available with the PowerDNS API backend."
-msgstr "Níl radhairc líonra ar fáil ach amháin le cúlchóras API PowerDNS."
+msgstr "Níl amhairc líonra ar fáil ach amháin le cúlchóras API PowerDNS."
 
 #: lib/Application/Controller/ListNetworksController.php:70
 msgid "Provide a valid CIDR (e.g. 192.168.0.0/16)."
@@ -3173,7 +3173,7 @@ msgstr "CIDR bailí a sholáthar (m.sh. 192.168.0.0/16)."
 
 #: lib/Application/Controller/ListNetworksController.php:73
 msgid "Provide a valid view name."
-msgstr "Tabhair ainm radhairc bailí."
+msgstr "Tabhair ainm amhairc bailí."
 
 #: lib/Application/Controller/ListNetworksController.php:79
 msgid "Network mapping saved."
@@ -3194,7 +3194,7 @@ msgstr "Theip ar mhapáil an líonra a bhaint."
 #: lib/Application/Controller/ListNetworksController.php:102
 #: templates/modern/list_networks.html:5
 msgid "Network views"
-msgstr "Radhairc líonra"
+msgstr "Amhairc líonra"
 
 #: lib/Application/Controller/DeletePermTemplController.php:63
 msgid "You do not have the permission to delete permission templates."
