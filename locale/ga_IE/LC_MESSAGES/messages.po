@@ -2736,31 +2736,31 @@ msgstr "Cruthaíodh an grúpa go rathúil."
 
 #: lib/Application/Controller/ListViewsController.php:48
 msgid "You do not have permission to manage PowerDNS views."
-msgstr "Níl cead agat tuairimí PowerDNS a bhainistiú."
+msgstr "Níl cead agat amhairc PowerDNS a bhainistiú."
 
 #: lib/Application/Controller/ListViewsController.php:60
 msgid "Views are only available with the PowerDNS API backend."
-msgstr "Níl tuairimí ar fáil ach amháin leis an gcúlchóras API PowerDNS."
+msgstr "Níl amhairc ar fáil ach amháin leis an gcúlchóras API PowerDNS."
 
 #: lib/Application/Controller/ListViewsController.php:71
 msgid "Provide a valid view name and zone identifier."
-msgstr "Tabhair ainm dearcadh bailí agus aitheantóir crios."
+msgstr "Tabhair ainm amhairc bailí agus aitheantóir crios."
 
 #: lib/Application/Controller/ListViewsController.php:77
 msgid "Zone assigned to view."
-msgstr "Sannadh an crios chuig an tuairim."
+msgstr "Sannadh an crios chuig an amharc."
 
 #: lib/Application/Controller/ListViewsController.php:77
 msgid "Failed to assign zone to view."
-msgstr "Theip ar an gcrios a shannadh chuig an tuairim."
+msgstr "Theip ar an gcrios a shannadh chuig an amharc."
 
 #: lib/Application/Controller/ListViewsController.php:84
 msgid "Zone removed from view."
-msgstr "Baineadh an crios den tuairim."
+msgstr "Baineadh an crios den amharc."
 
 #: lib/Application/Controller/ListViewsController.php:84
 msgid "Failed to remove zone from view."
-msgstr "Theip ar an gcrios a bhaint den tuairim."
+msgstr "Theip ar an gcrios a bhaint den amharc."
 
 #: lib/Application/Controller/ListNetworksController.php:90
 msgid "Unknown action."
@@ -2769,7 +2769,7 @@ msgstr "Gníomh anaithnid."
 #: lib/Application/Controller/ListViewsController.php:106
 #: templates/modern/list_views.html:2 templates/modern/list_views.html:5
 msgid "Views"
-msgstr "Tuairimí"
+msgstr "Amhairc"
 
 #: lib/Application/Controller/DnssecToggleKeyController.php:53
 msgid "Invalid key ID."
@@ -4052,19 +4052,19 @@ msgstr "Níl cead agat taifid SOA a scriosadh."
 
 #: lib/Domain/Service/PdnsCapabilities.php:163
 msgid "Views require PowerDNS 5.0 or newer."
-msgstr "Éilíonn tuairimí PowerDNS 5.0 nó níos nuaí."
+msgstr "Éilíonn amhairc PowerDNS 5.0 nó níos nuaí."
 
 #: lib/Domain/Service/PdnsCapabilities.php:164
 msgid ""
 "Views require the LMDB backend. The connected server runs a backend that "
 "does not implement them."
-msgstr "Éilíonn tuairimí an cúlchóras LMDB. Tá cúlchóras ar an bhfreastalaí ceangailte nach gcuireann i bhfeidhm iad."
+msgstr "Éilíonn amhairc an cúlchóras LMDB. Tá cúlchóras ar an bhfreastalaí ceangailte nach gcuireann i bhfeidhm iad."
 
 #: lib/Domain/Service/PdnsCapabilities.php:165
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr "Éilíonn tuairimí \"views=yes\" i pdns.conf. Tá siad díchumasaithe ar an bhfreastalaí ceangailte."
+msgstr "Éilíonn amhairc \"views=yes\" i pdns.conf. Tá siad díchumasaithe ar an bhfreastalaí ceangailte."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"
@@ -14219,7 +14219,7 @@ msgstr "Níl aon amharc cumraithe go fóill. Cuir leagan crios leis thíos."
 
 #: templates/default/list_views.html:34 templates/modern/list_views.html:34
 msgid "Remove from view"
-msgstr "Bain ó radharc"
+msgstr "Bain ón amharc"
 
 #: templates/default/list_views.html:48 templates/modern/list_views.html:48
 msgid "Assign zone to view"
