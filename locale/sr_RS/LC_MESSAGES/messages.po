@@ -3948,7 +3948,7 @@ msgstr "Прегледи захтевају LMDB позадину. Повеза�
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Прегледи захтевају \"views=yes\" у pdns.conf. Повезани сервер их има онемогућене."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

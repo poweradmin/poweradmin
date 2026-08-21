@@ -3968,7 +3968,7 @@ msgstr "Rodiniams reikia LMDB posistemės. Prijungtas serveris naudoja posistem�
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Rodiniams reikia \"views=yes\" pdns.conf faile. Prijungtame serveryje jie išjungti."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

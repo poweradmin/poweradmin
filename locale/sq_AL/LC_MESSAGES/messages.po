@@ -4001,7 +4001,7 @@ msgstr "Pamjet kërkojnë backend-in LMDB. Serveri i lidhur përdor një backend
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Pamjet kërkojnë \"views=yes\" në pdns.conf. Serveri i lidhur i ka të çaktivizuara."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

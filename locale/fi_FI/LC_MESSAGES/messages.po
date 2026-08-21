@@ -3910,7 +3910,7 @@ msgstr "Näkymät vaativat LMDB-taustajärjestelmän. Yhdistetty palvelin käytt
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Näkymät edellyttävät asetusta \"views=yes\" tiedostossa pdns.conf. Yhdistetyssä palvelimessa ne on poistettu käytöstä."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

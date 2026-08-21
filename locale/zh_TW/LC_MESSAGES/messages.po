@@ -3774,7 +3774,7 @@ msgstr "檢視需要 LMDB 後端。所連線的伺服器執行的後端不支援
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "檢視需要在 pdns.conf 中設定 \"views=yes\"。已連線的伺服器已將其停用。"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

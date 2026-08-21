@@ -3906,7 +3906,7 @@ msgstr "Pogledi zahtijevaju LMDB pozadinu. Povezani server koristi pozadinu koja
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Pogledi zahtijevaju \"views=yes\" u pdns.conf. Povezani server ih ima onemogućene."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

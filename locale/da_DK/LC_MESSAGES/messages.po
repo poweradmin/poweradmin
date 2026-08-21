@@ -3968,7 +3968,7 @@ msgstr "Visninger kræver LMDB-motoren. Den tilsluttede server kører en motor, 
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Visninger kræver \"views=yes\" i pdns.conf. Den tilsluttede server har dem deaktiveret."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

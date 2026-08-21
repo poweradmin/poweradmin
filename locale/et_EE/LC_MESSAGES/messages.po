@@ -3897,7 +3897,7 @@ msgstr "Vaated nõuavad LMDB taustaprogrammi. Ühendatud server kasutab taustapr
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Vaated nõuavad pdns.conf failis \"views=yes\". Ühendatud serveris on need keelatud."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

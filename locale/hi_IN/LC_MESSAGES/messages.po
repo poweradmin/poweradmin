@@ -3886,7 +3886,7 @@ msgstr "दृश्यों के लिए LMDB बैकेंड आवश
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "दृश्यों के लिए pdns.conf में \"views=yes\" आवश्यक है। जुड़े हुए सर्वर पर वे अक्षम हैं।"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

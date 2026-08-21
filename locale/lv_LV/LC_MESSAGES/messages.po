@@ -3925,7 +3925,7 @@ msgstr "Skatiem nepieciešama LMDB aizmugure. Pievienotais serveris darbojas ar 
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Skatiem nepieciešams \"views=yes\" pdns.conf failā. Pievienotajā serverī tie ir atspējoti."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

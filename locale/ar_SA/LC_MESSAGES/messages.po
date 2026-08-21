@@ -3931,7 +3931,7 @@ msgstr "تتطلب العروض الواجهة الخلفية LMDB. الخادم
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "تتطلب العروض \"views=yes\" في pdns.conf. الخادم المتصل معطّلة فيه."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

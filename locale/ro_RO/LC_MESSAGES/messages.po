@@ -4049,7 +4049,7 @@ msgstr "Vizualizările necesită backendul LMDB. Serverul conectat rulează un b
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Vizualizările necesită \"views=yes\" în pdns.conf. Serverul conectat le are dezactivate."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

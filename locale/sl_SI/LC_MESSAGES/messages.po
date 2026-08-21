@@ -3990,7 +3990,7 @@ msgstr "Pogledi zahtevajo zaledje LMDB. Povezani strežnik uporablja zaledje, ki
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Pogledi zahtevajo \"views=yes\" v pdns.conf. Na povezanem strežniku so onemogočeni."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

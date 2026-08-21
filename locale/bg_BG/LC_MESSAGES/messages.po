@@ -3992,7 +3992,7 @@ msgstr "Изгледите изискват LMDB бекенда. Свързан�
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Изгледите изискват \"views=yes\" в pdns.conf. Свързаният сървър ги е деактивирал."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

@@ -3908,7 +3908,7 @@ msgstr "نماها به backend نوع LMDB نیاز دارند. سرور متص
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "نماها به \"views=yes\" در pdns.conf نیاز دارند. سرور متصل آن‌ها را غیرفعال کرده است."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

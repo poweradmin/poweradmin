@@ -3921,7 +3921,7 @@ msgstr "ビューには LMDB バックエンドが必要です。接続中のサ
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "ビューには pdns.conf の \"views=yes\" が必要です。接続中のサーバーでは無効になっています。"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

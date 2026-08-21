@@ -3974,7 +3974,7 @@ msgstr "A nézetekhez LMDB háttér szükséges. A csatlakoztatott kiszolgáló 
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "A nézetekhez \"views=yes\" szükséges a pdns.conf fájlban. A csatlakoztatott kiszolgálón le vannak tiltva."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

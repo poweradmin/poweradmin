@@ -4055,7 +4055,7 @@ msgstr "Οι προβολές απαιτούν το σύστημα υποστή�
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Οι προβολές απαιτούν \"views=yes\" στο pdns.conf. Ο συνδεδεμένος διακομιστής τις έχει απενεργοποιημένες."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

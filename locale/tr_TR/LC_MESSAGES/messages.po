@@ -3944,7 +3944,7 @@ msgstr "Görünümler LMDB arka ucunu gerektirir. Bağlı sunucu bunları destek
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Görünümler pdns.conf dosyasında \"views=yes\" gerektirir. Bağlı sunucuda devre dışı bırakılmıştır."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

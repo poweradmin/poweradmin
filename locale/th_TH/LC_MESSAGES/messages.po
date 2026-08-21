@@ -3795,7 +3795,7 @@ msgstr "มุมมองต้องใช้แบ็คเอนต์ LMDB 
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "มุมมองต้องการ \"views=yes\" ใน pdns.conf เซิร์ฟเวอร์ที่เชื่อมต่ออยู่ปิดใช้งานไว้"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

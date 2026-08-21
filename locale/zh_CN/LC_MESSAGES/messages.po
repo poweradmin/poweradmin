@@ -3774,7 +3774,7 @@ msgstr "视图需要 LMDB 后端。所连接的服务器运行的后端不支持
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "视图需要在 pdns.conf 中设置 \"views=yes\"。已连接的服务器已将其禁用。"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

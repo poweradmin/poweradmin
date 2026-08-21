@@ -4024,7 +4024,7 @@ msgstr "Las vistas requieren el backend LMDB. El servidor conectado utiliza un b
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Las vistas requieren \"views=yes\" en pdns.conf. El servidor conectado las tiene deshabilitadas."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

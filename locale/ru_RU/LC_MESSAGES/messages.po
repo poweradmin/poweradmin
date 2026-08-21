@@ -3986,7 +3986,7 @@ msgstr "Представления требуют бэкенд LMDB. Подкл�
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "Представления требуют \"views=yes\" в pdns.conf. На подключённом сервере они отключены."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"

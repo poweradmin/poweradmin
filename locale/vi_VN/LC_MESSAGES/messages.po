@@ -3922,7 +3922,7 @@ msgstr "View yêu cầu backend LMDB. Máy chủ đang kết nối chạy một 
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr ""
+msgstr "View yêu cầu \"views=yes\" trong pdns.conf. Máy chủ đang kết nối đã tắt chúng."
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:153
 msgid "All zones have owners"
