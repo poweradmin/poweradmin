@@ -10,3 +10,9 @@ docker-entrypoint.sh
 Dockerfile
 DOCKER.md
 DOCKER-SECRETS.md
+
+.github/workflows/create-draft-release.yml
+.github/workflows/docker.yml
+# php.yml diverges on purpose (develop-only locale jobs); watched for the
+# shared summary and hardening steps, not for job parity.
+.github/workflows/php.yml

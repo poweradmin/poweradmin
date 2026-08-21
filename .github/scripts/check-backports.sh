@@ -25,9 +25,12 @@ die() { echo "backport-check: $*" >&2; exit 2; }
 
 cd "$(git rev-parse --show-toplevel)" || die "not inside a git repository"
 
-# source::target pairs, in the direction a change should travel
+# source::target pairs, in the direction a change should travel. master::develop
+# is here because CI and packaging fixes land on master first and never travel
+# back on their own.
 PAIRS="
 develop::master
+master::develop
 master::release/4.3.x
 master::release/4.2.x
 "
