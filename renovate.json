@@ -105,6 +105,13 @@
       ],
       "allowedVersions": "<9.0",
       "description": "google2fa v9 has breaking changes requiring code updates"
+    },
+    {
+      "description": "Group GitHub Actions updates into a single PR per branch",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "github actions"
     }
   ]
 }
