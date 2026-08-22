@@ -308,6 +308,15 @@ class ApiZoneRepository implements ZoneRepositoryInterface
      * zone happens to share the same identifier value. Returns null when no
      * zone matches.
      */
+    /**
+     * The canonical zone id: what API mode hands to callers, and the value extra
+     * ownership rows and zones_groups are keyed by. Not the canonical row's own id.
+     */
+    private static function canonicalIdOf(array $canonical): int
+    {
+        return (int)($canonical['domain_id'] ?: $canonical['id']);
+    }
+
     private function resolveCanonicalRow(int $zoneId): ?array
     {
         $stmt = $this->db->prepare(CanonicalZoneSql::selectByZoneId(
@@ -494,6 +503,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             return true;
         }
         $cid = (int)$canonical['id'];
+        $canonicalId = self::canonicalIdOf($canonical);
         $stmt = $this->db->prepare(
             "SELECT 1 FROM zones z
              WHERE z.id = :cid AND (
@@ -512,7 +522,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
              )"
         );
         $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
-        $stmt->bindValue(':cid_e', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
         $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
@@ -681,6 +691,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             return [];
         }
         $cid = (int)$canonical['id'];
+        $canonicalId = self::canonicalIdOf($canonical);
         $stmt = $this->db->prepare(
             "SELECT DISTINCT u.id, u.username, u.fullname
              FROM zones z
@@ -689,7 +700,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 OR (z.zone_name IS NULL AND z.domain_id = :cid_e)"
         );
         $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
-        $stmt->bindValue(':cid_e', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -761,6 +772,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             return false;
         }
         $cid = (int)$canonical['id'];
+        $canonicalId = self::canonicalIdOf($canonical);
         $stmt = $this->db->prepare(
             "SELECT 1 FROM zones z
              WHERE z.owner = :user_id
@@ -770,7 +782,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         );
         $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
-        $stmt->bindValue(':cid_e', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn() !== false;
     }
@@ -792,6 +804,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             return false;
         }
         $cid = (int)$canonical['id'];
+        $canonicalId = self::canonicalIdOf($canonical);
         $zoneName = $canonical['zone_name'] ?? null;
 
         if ($zoneName) {
@@ -811,7 +824,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 OR (zone_name IS NULL AND domain_id = :cid_e)"
         );
         $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
-        $stmt->bindValue(':cid_e', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
@@ -1013,25 +1026,26 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         if (!$accountSync->isEnabled()) {
             return;
         }
-        $accountSync->pushZoneAccount($cid, $this->getOldestOwnerUsername($cid));
+        $canonical = $this->resolveCanonicalRow($cid);
+        $accountSync->pushZoneAccount($cid, $canonical === null
+            ? null
+            : $this->getOldestOwnerUsername(self::canonicalIdOf($canonical)));
     }
 
     /**
      * Oldest owner across the canonical zone row and extra ownership rows
      */
-    private function getOldestOwnerUsername(int $cid): ?string
+    private function getOldestOwnerUsername(int $canonicalId): ?string
     {
         $stmt = $this->db->prepare(
             "SELECT u.username
              FROM zones z
              INNER JOIN users u ON z.owner = u.id
-             WHERE z.id = :cid
-                OR (z.zone_name IS NULL AND z.domain_id = :cid_e)
+             WHERE COALESCE(z.domain_id, z.id) = :canonical_id
              ORDER BY z.id
              LIMIT 1"
         );
-        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
-        $stmt->bindValue(':cid_e', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':canonical_id', $canonicalId, PDO::PARAM_INT);
         $stmt->execute();
         $username = $stmt->fetchColumn();
         return $username === false ? null : (string)$username;
