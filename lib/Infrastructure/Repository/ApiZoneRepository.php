@@ -59,7 +59,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
+                    WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :userId_group
                 ))
             AND z.zone_name NOT LIKE '%.in-addr.arpa'
             AND z.zone_name NOT LIKE '%.ip6.arpa'
@@ -143,7 +143,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     OR EXISTS (
                         SELECT 1 FROM zones_groups zg
                         INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                        WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
+                        WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :userId_group
                     ))";
                 $params[':userId'] = $userId;
                 $params[':userId_own'] = $userId;
@@ -184,7 +184,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
+                    WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :userId_group
                 ))";
             $params[':userId'] = $userId;
             $params[':userId_own'] = $userId;
@@ -385,7 +385,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     COUNT(DISTINCT CASE WHEN z.zone_name LIKE '%.ip6.arpa' THEN z.id END) AS count_ipv6
                   FROM zones z";
         if ($permType === 'own') {
-            $query .= " LEFT JOIN zones_groups zg ON zg.domain_id = z.id";
+            $query .= " LEFT JOIN zones_groups zg ON zg.domain_id = COALESCE(z.domain_id, z.id)";
         }
         $query .= " WHERE z.zone_name IS NOT NULL AND (z.zone_name LIKE '%.in-addr.arpa' OR z.zone_name LIKE '%.ip6.arpa')";
         if ($permType === 'own') {
@@ -394,7 +394,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg2
                     INNER JOIN user_group_members ugm ON zg2.group_id = ugm.group_id
-                    WHERE zg2.domain_id = z.id AND ugm.user_id = :user_id_group
+                    WHERE zg2.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :user_id_group
                 ))";
         }
         $stmt = $this->db->prepare($query);
@@ -433,7 +433,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = z.id AND ugm.user_id = :userId_group
+                    WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :userId_group
                 ))";
             $params[':userId'] = $userId;
             $params[':userId_own'] = $userId;
@@ -507,13 +507,12 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                  OR EXISTS (
                      SELECT 1 FROM zones_groups zg
                      INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                     WHERE zg.domain_id = :cid_g AND ugm.user_id = :userId_group
+                     WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :userId_group
                  )
              )"
         );
         $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
         $stmt->bindValue(':cid_e', $cid, PDO::PARAM_INT);
-        $stmt->bindValue(':cid_g', $cid, PDO::PARAM_INT);
         $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
@@ -913,7 +912,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = z.id AND ugm.user_id = :user_id_group
+                    WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :user_id_group
                 ))";
             $params[':user_id'] = $userId;
             $params[':user_id_own'] = $userId;
