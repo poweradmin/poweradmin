@@ -231,6 +231,54 @@ jobs:
           exit 1
         fi
 
+  vendor-check:
+    name: Vendor Integrity
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+      with:
+        php-version: '8.2'
+
+    # vendor/ is tracked in the repo as a no-dev, optimized tree. The optimized
+    # classmap also covers lib/, so adding a class there without regenerating
+    # leaves it stale.
+    - name: Verify vendor matches composer.lock and lib/
+      run: |
+        composer install --no-dev --prefer-dist --no-progress --no-scripts
+        composer dump-autoload --optimize
+        git checkout -- vendor/composer/installed.php
+        if ! git diff --quiet vendor/; then
+          git diff --stat vendor/
+          echo "::error::vendor/ is out of date. Run: composer install --no-dev --prefer-dist && composer dump-autoload --optimize --no-dev"
+          exit 1
+        fi
+
+  pin-check:
+    name: Digest Pin Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+    # Dependabot refreshes existing digest pins but never creates them, so an
+    # unpinned image or action would otherwise float unnoticed.
+    - name: Require digest-pinned base images and actions
+      run: |
+        fail=0
+        if grep -nE '^[[:space:]]*FROM' Dockerfile | grep -v '@sha256:'; then
+          echo "::error file=Dockerfile::FROM must be digest-pinned as image:tag@sha256:..."
+          fail=1
+        fi
+        if grep -rnE '^[[:space:]]*-?[[:space:]]*uses:' .github/workflows/ | grep -vE '@[0-9a-f]{40}'; then
+          echo "::error::Actions must be pinned to a full 40-character commit SHA"
+          fail=1
+        fi
+        exit $fail
+
   locale-check:
     name: Locale Empty Translation Check
     runs-on: ubuntu-latest
@@ -310,7 +358,7 @@ jobs:
   summary:
     name: Validation Summary
     runs-on: ubuntu-latest
-    needs: [syntax-check, security-audit, code-style, phpstan, unit-tests, compatibility, twig-csrf-check, locale-check]
+    needs: [syntax-check, security-audit, code-style, phpstan, unit-tests, compatibility, twig-csrf-check, vendor-check, pin-check, locale-check]
     if: always()
 
     steps:
@@ -324,6 +372,8 @@ jobs:
         UNIT_TESTS_RESULT: ${{ needs.unit-tests.result }}
         COMPATIBILITY_RESULT: ${{ needs.compatibility.result }}
         TWIG_CSRF_RESULT: ${{ needs.twig-csrf-check.result }}
+        VENDOR_RESULT: ${{ needs.vendor-check.result }}
+        PIN_RESULT: ${{ needs.pin-check.result }}
         LOCALE_RESULT: ${{ needs.locale-check.result }}
         WORKFLOW_NAME: ${{ github.workflow }}
         RUN_NUMBER: ${{ github.run_number }}
@@ -377,6 +427,18 @@ jobs:
           echo "- ❌ Twig CSRF Field Name Check" >> "$GITHUB_STEP_SUMMARY"
         fi
 
+        if [ "$VENDOR_RESULT" = "success" ]; then
+          echo "- ✅ Vendor Integrity" >> "$GITHUB_STEP_SUMMARY"
+        else
+          echo "- ❌ Vendor Integrity" >> "$GITHUB_STEP_SUMMARY"
+        fi
+
+        if [ "$PIN_RESULT" = "success" ]; then
+          echo "- ✅ Digest Pin Check" >> "$GITHUB_STEP_SUMMARY"
+        else
+          echo "- ❌ Digest Pin Check" >> "$GITHUB_STEP_SUMMARY"
+        fi
+
         if [ "$LOCALE_RESULT" = "success" ]; then
           echo "- ✅ Locale Empty Translation Check" >> "$GITHUB_STEP_SUMMARY"
         else
@@ -395,6 +457,8 @@ jobs:
         needs.unit-tests.result != 'success' ||
         needs.compatibility.result != 'success' ||
         needs.twig-csrf-check.result != 'success' ||
+        needs.vendor-check.result != 'success' ||
+        needs.pin-check.result != 'success' ||
         needs.locale-check.result != 'success'
       run: exit 1
 
