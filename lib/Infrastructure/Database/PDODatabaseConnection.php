@@ -209,6 +209,13 @@ class PDODatabaseConnection implements DatabaseConnection
         $options = [];
         $db_type = $credentials['db_type'];
 
+        // Set before the driver check: without it a host that drops packets holds the
+        // connect for the OS TCP timeout (~30s). Only callers that opt in pass it, so
+        // every existing connection keeps its current unbounded behaviour.
+        if (!empty($credentials['db_connect_timeout'])) {
+            $options[PDO::ATTR_TIMEOUT] = (int) $credentials['db_connect_timeout'];
+        }
+
         if (!in_array($db_type, ['mysql', 'mysqli'])) {
             return $options;
         }

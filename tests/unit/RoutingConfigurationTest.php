@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Integration test to verify routing configuration is valid and complete.
@@ -273,6 +274,26 @@ class RoutingConfigurationTest extends TestCase
                     "Controller class '{$className}' for route '{$name}' should exist"
                 );
             }
+        }
+    }
+
+    /**
+     * index.php skips session start for these paths before the router has run, so the
+     * literals in RequestContext are a second copy of what routes.yaml declares. Renaming
+     * a route without updating them would silently restore a session file per scrape.
+     */
+    public function testHealthProbePathsMatchTheDeclaredRoutes(): void
+    {
+        $routes = Yaml::parseFile(__DIR__ . '/../../lib/Application/Config/routes.yaml');
+
+        foreach (['api_health', 'ping'] as $name) {
+            $this->assertArrayHasKey($name, $routes, "Route $name is missing from routes.yaml");
+
+            $_SERVER['REQUEST_URI'] = $routes[$name]['path'];
+            $this->assertTrue(
+                \Poweradmin\Application\Http\RequestContext::isHealthProbeRequest(),
+                sprintf('%s is routed at %s but RequestContext does not treat it as a probe', $name, $routes[$name]['path'])
+            );
         }
     }
 }

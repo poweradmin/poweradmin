@@ -792,6 +792,19 @@ dnssec_key_toggle:
     key_id: '\d+'
   methods: [GET, POST]
 
+# Monitoring - unauthenticated and disabled by default.
+# Renaming either path also means updating RequestContext::isHealthProbeRequest(),
+# which skips session start for them before the router has run.
+api_health:
+  path: /api/health
+  controller: Poweradmin\Application\Controller\Api\HealthController::run
+  methods: [GET]
+
+ping:
+  path: /ping
+  controller: Poweradmin\Application\Controller\PingController::run
+  methods: [GET]
+
 # Static Assets
 static_assets:
   path: /{path}

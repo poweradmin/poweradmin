@@ -398,6 +398,34 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_API_DOCS_ENABLED` | Enable API documentation at /api/docs | `false` | No |
 | `PA_API_MAX_KEYS_PER_USER` | Maximum API keys per user (admins unlimited) | `5` | No |
 
+### Health Endpoints
+
+Both endpoints answer without a session and without an API key, so they are disabled by
+default. Restrict them at your reverse proxy when enabling them.
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_HEALTH_ENABLED` | Enable readiness endpoint at /api/health (database and PowerDNS API reachability) | `false` | No |
+| `PA_HEALTH_PING_ENABLED` | Enable liveness endpoint at /ping (returns `ok`, checks nothing else) | `false` | No |
+| `PA_HEALTH_DB_TIMEOUT` | Database connect timeout in seconds used by the health check | `2` | No |
+| `PA_HEALTH_PDNS_TIMEOUT` | PowerDNS API timeout in seconds used by the health check | `2` | No |
+
+The image's built-in `HEALTHCHECK` requests `/`, which succeeds even when the database is
+down. To have the container reflect real readiness, enable the endpoint and override the
+healthcheck:
+
+```yaml
+services:
+  poweradmin:
+    environment:
+      - PA_HEALTH_ENABLED=true
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+```
+
 ### PowerDNS API Integration
 
 | Variable | Description | Default | Required |

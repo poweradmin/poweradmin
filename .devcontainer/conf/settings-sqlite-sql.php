@@ -106,6 +106,14 @@ return [
     ],
 
     /**
+     * Health Check Settings
+     */
+    'health' => [
+        'enabled' => true,
+        'ping_enabled' => true,
+    ],
+
+    /**
      * PowerDNS API Settings
      */
     'pdns_api' => [

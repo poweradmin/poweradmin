@@ -409,6 +409,19 @@ return [
     ],
 
     /**
+     * Health Check Settings
+     *
+     * Both endpoints answer without a session and without an API key, so they are
+     * disabled by default. Restrict them at the reverse proxy when enabling.
+     */
+    'health' => [
+        'enabled' => false,                            // Enable unauthenticated health endpoint at /api/health (added in 4.5.0)
+        'ping_enabled' => false,                       // Enable unauthenticated liveness endpoint at /ping (added in 4.5.0)
+        'db_timeout' => 2,                             // Database connect timeout in seconds used by the health check (added in 4.5.0)
+        'pdns_timeout' => 2,                           // PowerDNS API timeout in seconds used by the health check (added in 4.5.0)
+    ],
+
+    /**
      * User Agreement Settings
      */
     'user_agreement' => [

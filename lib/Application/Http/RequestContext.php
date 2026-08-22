@@ -90,6 +90,21 @@ final class RequestContext
     }
 
     /**
+     * Whether the request targets one of the monitoring probes declared in
+     * routes.yaml, which are served without a session so a monitor scraping every
+     * few seconds does not leave a session file behind per request.
+     *
+     * Matched exactly rather than by pattern: an unanchored regex would also catch
+     * paths such as /zones/ping and silently deny them a session.
+     */
+    public static function isHealthProbeRequest(string $baseUrlPrefix = ''): bool
+    {
+        $prefix = rtrim($baseUrlPrefix, '/');
+
+        return in_array(self::path(), [$prefix . '/api/health', $prefix . '/ping'], true);
+    }
+
+    /**
      * Accept header of the current request.
      */
     private static function acceptHeader(): string

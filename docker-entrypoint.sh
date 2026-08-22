@@ -687,6 +687,10 @@ generate_config() {
     api_basic_auth_enabled=$(to_php_bool "${PA_API_BASIC_AUTH_ENABLED:-false}")
     local api_docs_enabled
     api_docs_enabled=$(to_php_bool "${PA_API_DOCS_ENABLED:-false}")
+    local health_enabled
+    health_enabled=$(to_php_bool "${PA_HEALTH_ENABLED:-false}")
+    local health_ping_enabled
+    health_ping_enabled=$(to_php_bool "${PA_HEALTH_PING_ENABLED:-false}")
     local ldap_enabled
     ldap_enabled=$(to_php_bool "${PA_LDAP_ENABLED:-false}")
 
@@ -1257,6 +1261,12 @@ return [
         'basic_auth_realm' => '${PA_API_BASIC_AUTH_REALM:-Poweradmin API}',
         'docs_enabled' => ${api_docs_enabled},
         'max_keys_per_user' => ${PA_API_MAX_KEYS_PER_USER:-5},
+    ],
+    'health' => [
+        'enabled' => ${health_enabled},
+        'ping_enabled' => ${health_ping_enabled},
+        'db_timeout' => ${PA_HEALTH_DB_TIMEOUT:-2},
+        'pdns_timeout' => ${PA_HEALTH_PDNS_TIMEOUT:-2},
     ],
     'user_agreement' => [
         'enabled' => ${user_agreement_enabled},

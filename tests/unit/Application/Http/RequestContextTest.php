@@ -473,4 +473,41 @@ class RequestContextTest extends TestCase
         ]);
         $this->assertFalse(RequestContext::expectsJsonOnError());
     }
+
+    public function testIsHealthProbeRequestMatchesOnlyTheExactPaths(): void
+    {
+        $this->setServerEnvironment(['REQUEST_URI' => '/ping']);
+        $this->assertTrue(RequestContext::isHealthProbeRequest());
+
+        $this->setServerEnvironment(['REQUEST_URI' => '/api/health?verbose=1']);
+        $this->assertTrue(RequestContext::isHealthProbeRequest());
+
+        $this->setServerEnvironment(['REQUEST_URI' => '/poweradmin/api/health']);
+        $this->assertTrue(RequestContext::isHealthProbeRequest('/poweradmin'));
+
+        $this->setServerEnvironment(['REQUEST_URI' => '/poweradmin/ping']);
+        $this->assertTrue(RequestContext::isHealthProbeRequest('/poweradmin'));
+
+        // A prefix configured with a trailing slash must not double it.
+        $this->assertTrue(RequestContext::isHealthProbeRequest('/poweradmin/'));
+    }
+
+    /**
+     * A near miss must keep its session - denying one to an ordinary page would
+     * break it, so the match is exact rather than a substring.
+     */
+    public function testIsHealthProbeRequestIgnoresLookalikePaths(): void
+    {
+        foreach (['/zones/ping', '/pinger', '/api/healthcheck', '/ping/', '/api/health/x'] as $path) {
+            $this->setServerEnvironment(['REQUEST_URI' => $path]);
+            $this->assertFalse(
+                RequestContext::isHealthProbeRequest(),
+                sprintf('%s must not be treated as a probe path', $path)
+            );
+        }
+
+        // Prefix deployments must not match the unprefixed path either.
+        $this->setServerEnvironment(['REQUEST_URI' => '/ping']);
+        $this->assertFalse(RequestContext::isHealthProbeRequest('/poweradmin'));
+    }
 }

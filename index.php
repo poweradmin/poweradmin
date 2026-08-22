@@ -36,7 +36,12 @@ try {
     $configManager->initialize();
 
     initializeTimezone($configManager);
-    initializeSession($configManager);
+
+    // The monitoring probes never read the session, and starting one per scrape
+    // would leave a session file behind on every request.
+    if (!RequestContext::isHealthProbeRequest((string) $configManager->get('interface', 'base_url_prefix', ''))) {
+        initializeSession($configManager);
+    }
 
     // A v2 HEAD request is dispatched through the GET handler (see PublicApiController),
     // so buffer the response and drop its body: HEAD must return headers only. The

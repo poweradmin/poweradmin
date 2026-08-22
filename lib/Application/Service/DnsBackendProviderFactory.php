@@ -89,8 +89,11 @@ class DnsBackendProviderFactory
         return $config->get('dns', 'backend') === 'api';
     }
 
-    public static function createApiClient(ConfigurationInterface $config, ?LoggerInterface $logger = null): ?PowerdnsApiClient
-    {
+    public static function createApiClient(
+        ConfigurationInterface $config,
+        ?LoggerInterface $logger = null,
+        ?int $timeout = null
+    ): ?PowerdnsApiClient {
         $pdnsApiUrl = $config->get('pdns_api', 'url');
         $pdnsApiKey = $config->get('pdns_api', 'key');
 
@@ -99,7 +102,9 @@ class DnsBackendProviderFactory
         }
 
         $logger = $logger ?? new NullLogger();
-        $timeout = (int) $config->get('pdns_api', 'timeout', 10);
+        // Overridable so a caller on a latency budget, such as the health check, is not
+        // held for the interactive pdns_api.timeout.
+        $timeout = $timeout ?? (int) $config->get('pdns_api', 'timeout', 10);
         $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey, $logger, $timeout);
         $serverName = $config->get('pdns_api', 'server_name') ?: 'localhost';
 
