@@ -130,3 +130,67 @@ jobs:
           exit 1
         fi
         echo "All locale files have complete translations."
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+      with:
+        php-version: '8.1'
+
+    # --locked audits composer.lock directly, so nothing is installed here.
+    - name: Security audit
+      run: composer audit --locked
+
+  vendor-check:
+    name: Vendor Integrity
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+      with:
+        php-version: '8.1'
+
+    # vendor/ is tracked in the repo as a no-dev, optimized tree. The optimized
+    # classmap also covers lib/, so adding a class there without regenerating
+    # leaves it stale.
+    - name: Verify vendor matches composer.lock and lib/
+      run: |
+        composer install --no-dev --prefer-dist --no-progress --no-scripts
+        composer dump-autoload --optimize
+        git checkout -- vendor/composer/installed.php
+        if ! git diff --quiet vendor/; then
+          git diff --stat vendor/
+          echo "::error::vendor/ is out of date. Run: composer install --no-dev --prefer-dist && composer dump-autoload --optimize --no-dev"
+          exit 1
+        fi
+
+  pin-check:
+    name: Digest Pin Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+    # Dependabot refreshes existing digest pins but never creates them, so an
+    # unpinned image or action would otherwise float unnoticed.
+    - name: Require digest-pinned base images and actions
+      run: |
+        fail=0
+        if grep -nE '^[[:space:]]*FROM' Dockerfile | grep -v '@sha256:'; then
+          echo "::error file=Dockerfile::FROM must be digest-pinned as image:tag@sha256:..."
+          fail=1
+        fi
+        if grep -rnE '^[[:space:]]*-?[[:space:]]*uses:' .github/workflows/ | grep -vE '@[0-9a-f]{40}'; then
+          echo "::error::Actions must be pinned to a full 40-character commit SHA"
+          fail=1
+        fi
+        exit $fail
