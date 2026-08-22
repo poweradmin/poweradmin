@@ -95,6 +95,13 @@
       ],
       "minimumReleaseAge": "3 days",
       "description": "Base image - shorter hold so rebuilds land sooner"
+    },
+    {
+      "description": "Group GitHub Actions updates into a single PR per branch",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "github actions"
     }
   ]
 }
