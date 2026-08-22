@@ -28,6 +28,9 @@ use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
+use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Throwable;
 
@@ -53,6 +56,8 @@ class HealthController
 
     private ?ConfigurationInterface $config = null;
 
+    private ?LoggerInterface $logger = null;
+
     /**
      * Resolved lazily so tests can substitute settings without a constructor
      * argument the router would have to supply.
@@ -66,6 +71,21 @@ class HealthController
         }
 
         return $this->config;
+    }
+
+    /**
+     * Built from configuration alone, so it still works while the database is down.
+     * Honours logging.type, which is 'null' by default: an operator who turned
+     * diagnostic logging off does not get a line per scrape.
+     */
+    protected function logger(): LoggerInterface
+    {
+        // Memoised so a request where both checks fail does not emit Logger's
+        // unrecognised-level warning twice.
+        return $this->logger ??= new Logger(
+            LoggerHandlerFactory::create($this->config()->getAll()),
+            (string) $this->config()->get('logging', 'level', 'info')
+        );
     }
 
     public function run(): void
@@ -113,7 +133,7 @@ class HealthController
             return self::STATUS_OK;
         } catch (Throwable $e) {
             // The message embeds the DSN, so it goes to the log and never to the caller.
-            error_log('Health check: database unreachable: ' . $e->getMessage());
+            $this->logger()->error('Health check: database unreachable: ' . $e->getMessage());
 
             return self::STATUS_DOWN;
         }
@@ -146,7 +166,7 @@ class HealthController
             // result is the only failure signal it offers.
             return $client->getServerInfo() === [] ? self::STATUS_DOWN : self::STATUS_OK;
         } catch (Throwable $e) {
-            error_log('Health check: PowerDNS API unreachable: ' . $e->getMessage());
+            $this->logger()->error('Health check: PowerDNS API unreachable: ' . $e->getMessage());
 
             return self::STATUS_DOWN;
         }

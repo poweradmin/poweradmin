@@ -22,7 +22,33 @@ class HealthControllerTest extends TestCase
             fn(string $group, string $key, mixed $default = null): mixed => $settings[$group][$key] ?? $default
         );
 
+        $config->method('getGroup')->willReturnCallback(
+            fn(string $group): array => $settings[$group] ?? []
+        );
+
+        $config->method('getAll')->willReturn($settings);
+
         return $config;
+    }
+
+    /**
+     * NativeLogHandler calls error_log() directly, so redirecting the ini
+     * destination is the only way to observe whether anything was emitted.
+     */
+    private function captureErrorLog(callable $emit): string
+    {
+        $file = (string)tempnam(sys_get_temp_dir(), 'pa-health-log');
+        $previous = (string)ini_get('error_log');
+        ini_set('error_log', $file);
+
+        try {
+            $emit();
+
+            return (string)file_get_contents($file);
+        } finally {
+            ini_set('error_log', $previous);
+            unlink($file);
+        }
     }
 
     public function testDisabledByDefaultAnswersNotFound(): void
@@ -137,5 +163,63 @@ class HealthControllerTest extends TestCase
             'no-store',
             (string)$controller->buildResponse()->headers->get('Cache-Control')
         );
+    }
+
+    /**
+     * An unknown database.type fails the real probe without touching the network,
+     * so the catch branch runs for real rather than through a stub.
+     *
+     * @param array<string, array<string, mixed>> $extra
+     */
+    private function controllerWithAFailingDatabase(array $extra = []): TestableHealthController
+    {
+        $controller = new TestableHealthController($this->config([
+            'health' => ['enabled' => true],
+            'database' => ['type' => 'no_such_driver'],
+        ] + $extra));
+        $controller->databaseResult = null;
+
+        return $controller;
+    }
+
+    /**
+     * logging.type is 'null' by default, so an operator who turned diagnostic
+     * logging off does not get a line for every failed scrape.
+     */
+    public function testCheckFailuresAreSilentWhileDiagnosticLoggingIsDisabled(): void
+    {
+        $controller = $this->controllerWithAFailingDatabase();
+
+        $emitted = $this->captureErrorLog(function () use ($controller) {
+            $response = $controller->buildResponse();
+
+            $this->assertSame(503, $response->getStatusCode());
+            $this->assertStringContainsString('"database":"down"', (string)$response->getContent());
+        });
+
+        $this->assertSame('', $emitted);
+    }
+
+    public function testCheckFailuresReachTheErrorLogWhenNativeLoggingIsConfigured(): void
+    {
+        $controller = $this->controllerWithAFailingDatabase(['logging' => ['type' => 'native']]);
+
+        $emitted = $this->captureErrorLog(fn() => $controller->buildResponse());
+
+        $this->assertStringContainsString('Health check: database unreachable', $emitted);
+        $this->assertStringContainsString('ERROR', $emitted);
+    }
+
+    /**
+     * The message embeds the DSN, so it must reach the log and never the caller.
+     */
+    public function testTheFailureReasonNeverReachesTheResponseBody(): void
+    {
+        $controller = $this->controllerWithAFailingDatabase();
+
+        $body = (string)$controller->buildResponse()->getContent();
+
+        $this->assertStringNotContainsString('no_such_driver', $body);
+        $this->assertStringNotContainsString('Unknown database type', $body);
     }
 }

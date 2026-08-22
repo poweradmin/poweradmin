@@ -8,13 +8,14 @@ use Poweradmin\Application\Controller\Api\HealthController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
- * Test double stubbing the database probe so the payload can be asserted on
- * without one. Leaving pdnsResult null runs the real check, which needs no
- * server while pdns_api is unconfigured.
+ * Test double stubbing the probes so the payload can be asserted on without a
+ * database or a PowerDNS server. Leaving either result null runs the real check:
+ * pdns_api needs no server while it is unconfigured, and an unknown db.type makes
+ * the database probe fail without touching the network.
  */
 class TestableHealthController extends HealthController
 {
-    public string $databaseResult = 'ok';
+    public ?string $databaseResult = 'ok';
     public ?string $pdnsResult = null;
 
     public function __construct(private readonly ConfigurationInterface $stubConfig)
@@ -28,7 +29,7 @@ class TestableHealthController extends HealthController
 
     protected function checkDatabase(): string
     {
-        return $this->databaseResult;
+        return $this->databaseResult ?? parent::checkDatabase();
     }
 
     protected function checkPowerdnsApi(): string
