@@ -358,6 +358,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_BASE_URL` | Base URL for SAML auto-generation and interface configuration | Empty | No |
 | `PA_BASE_URL_PREFIX` | Base URL prefix for subdirectory deployments | Empty | No |
 | `PA_APPLICATION_URL` | Full application URL for emails and absolute links | Auto-detect | No |
+| `PA_WEB_ENABLED` | Serve the web interface; `false` runs API-only (headless) | `true` | No |
 
 ### Interface UI Elements
 
@@ -1047,6 +1048,28 @@ docker run -d --name poweradmin-dev -p 8080:80 \
   -e PA_MAIL_ENABLED=false \
   poweradmin/poweradmin
 ```
+
+### Headless (API-Only) Example
+
+The web interface issues API keys, so bring it up once, create a key at
+**Settings -> API Keys**, then restart with `PA_WEB_ENABLED=false`. Only
+`/api/v2/*`, `/api/docs`, `/api/health` and `/ping` answer after that;
+every other path returns a JSON 404.
+
+```bash
+docker run -d --name poweradmin -p 8080:80 \
+  -e DB_TYPE=mysql \
+  -e DB_HOST=mysql.example.com \
+  -e DB_USER=poweradmin \
+  -e DB_PASS=secure_password \
+  -e DB_NAME=poweradmin \
+  -e PA_API_ENABLED=true \
+  -e PA_WEB_ENABLED=false \
+  poweradmin/poweradmin
+```
+
+Set `PA_WEB_ENABLED=true` and restart to get the interface back, for example to
+rotate a key.
 
 ### LDAP Integration Example
 

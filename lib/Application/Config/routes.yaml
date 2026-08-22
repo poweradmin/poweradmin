@@ -518,7 +518,9 @@ api_v1_gone:
   defaults:
     path: ''
 
-# API v2 Routes - RESTful with wrapped responses
+# API v2 Routes - RESTful with wrapped responses.
+# HeadlessRouteFilter::ALLOWED_PREFIXES decides which paths survive with the web
+# interface disabled; an API route added outside those prefixes 404s there.
 api_v2_zones:
   path: /api/v2/zones
   controller: Poweradmin\Application\Controller\Api\V2\ZonesController::run

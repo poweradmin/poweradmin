@@ -31,6 +31,14 @@ namespace Poweradmin\Application\Http;
  */
 final class RequestContext
 {
+    /**
+     * Paths of the unauthenticated monitoring probes, as declared in routes.yaml.
+     *
+     * Shared so the session skip below and HeadlessRouteFilter cannot drift apart
+     * from each other or from the routes themselves.
+     */
+    public const HEALTH_PROBE_PATHS = ['/api/health', '/ping'];
+
     private function __construct()
     {
     }
@@ -100,8 +108,9 @@ final class RequestContext
     public static function isHealthProbeRequest(string $baseUrlPrefix = ''): bool
     {
         $prefix = rtrim($baseUrlPrefix, '/');
+        $paths = array_map(static fn(string $path): string => $prefix . $path, self::HEALTH_PROBE_PATHS);
 
-        return in_array(self::path(), [$prefix . '/api/health', $prefix . '/ping'], true);
+        return in_array(self::path(), $paths, true);
     }
 
     /**

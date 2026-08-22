@@ -37,9 +37,12 @@ try {
 
     initializeTimezone($configManager);
 
-    // The monitoring probes never read the session, and starting one per scrape
-    // would leave a session file behind on every request.
-    if (!RequestContext::isHealthProbeRequest((string) $configManager->get('interface', 'base_url_prefix', ''))) {
+    // Neither a headless install nor the monitoring probes have any use for a session,
+    // and starting one per scrape would leave a session file behind on every request.
+    if (
+        $configManager->get('interface', 'web_enabled', true)
+        && !RequestContext::isHealthProbeRequest((string) $configManager->get('interface', 'base_url_prefix', ''))
+    ) {
         initializeSession($configManager);
     }
 

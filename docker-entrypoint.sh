@@ -695,6 +695,8 @@ generate_config() {
     ldap_enabled=$(to_php_bool "${PA_LDAP_ENABLED:-false}")
 
     # Convert interface boolean values to lowercase
+    local web_enabled
+    web_enabled=$(to_php_bool "${PA_WEB_ENABLED:-true}")
     local show_record_id
     show_record_id=$(to_php_bool "${PA_SHOW_RECORD_ID:-true}")
     local position_record_form_top
@@ -1230,6 +1232,7 @@ return [
         'logo_path' => '${logo_path_esc}',
         'base_url_prefix' => '${PA_BASE_URL_PREFIX:-}',
         'application_url' => '${PA_APPLICATION_URL:-}',
+        'web_enabled' => ${web_enabled},
         'show_record_id' => ${show_record_id},
         'show_add_record_form' => ${show_add_record_form},
         'show_record_edit_button' => ${show_record_edit_button},
@@ -1656,6 +1659,7 @@ print_config_summary() {
         log "Default Language: ${PA_DEFAULT_LANGUAGE:-en_EN}"
         log "Mail Enabled: ${PA_MAIL_ENABLED:-true}"
         log "API Enabled: ${PA_API_ENABLED:-false}"
+        log "Web Interface Enabled: ${PA_WEB_ENABLED:-true}"
         log "DNS Backend: ${PA_DNS_BACKEND:-sql}"
         log "LDAP Enabled: ${PA_LDAP_ENABLED:-false}"
         log "Timezone: ${PA_TIMEZONE:-UTC}"

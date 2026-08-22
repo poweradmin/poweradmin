@@ -52,6 +52,7 @@ class SymfonyRouter
     private array $routeParameters = [];
     private ?string $matchedRoute = null;
     private bool $routeFound = true;
+    private bool $webEnabled = true;
 
     public function __construct()
     {
@@ -88,6 +89,11 @@ class SymfonyRouter
             }
 
             $routes->add($routeDef['name'], $route);
+        }
+
+        $this->webEnabled = (bool) $config->get('interface', 'web_enabled', true);
+        if (!$this->webEnabled) {
+            HeadlessRouteFilter::apply($routes);
         }
 
         // Set up request context with subfolder support
@@ -142,8 +148,14 @@ class SymfonyRouter
             ];
         } catch (ResourceNotFoundException $e) {
             $this->routeFound = false;
+            // A headless install has no interface to render a 404 page with, and
+            // misses are most of its traffic, so answer without touching the database.
+            $notFound = $this->webEnabled
+                ? '\Poweradmin\Application\Controller\NotFoundController'
+                : '\Poweradmin\Application\Controller\Api\HeadlessNotFoundController';
+
             return [
-                'controller' => '\Poweradmin\Application\Controller\NotFoundController',
+                'controller' => $notFound,
                 'method' => 'run',
                 'parameters' => [],
                 'route' => '404'
