@@ -407,6 +407,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_PDNS_API_KEY` | PowerDNS API key | Empty | No |
 | `PA_PDNS_SERVER_NAME` | PowerDNS server name for API calls | `localhost` | No |
 | `PA_PDNS_API_TIMEOUT` | PowerDNS API request timeout in seconds | `10` | No |
+| `PA_PDNS_WEBSERVER_USERNAME` | PowerDNS webserver Basic Auth username (usually `#`) | Empty | No |
+| `PA_PDNS_WEBSERVER_PASSWORD` | PowerDNS webserver Basic Auth password, for the `/metrics` endpoint | Empty | No |
 
 ### Modules
 
