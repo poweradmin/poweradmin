@@ -18,7 +18,6 @@ phpunit.xml.dist export-ignore
 playwright.config.js export-ignore
 playwright/ export-ignore
 psalm.xml export-ignore
-renovate.json export-ignore
 test-results/ export-ignore
 tests/ export-ignore
 transifex.yml export-ignore
