@@ -296,4 +296,23 @@ class RoutingConfigurationTest extends TestCase
             );
         }
     }
+
+    /**
+     * BaseController connects to the database in its constructor, so a public route
+     * whose handler reads nothing would open a connection per request. These routes
+     * answer without one and must stay outside that hierarchy.
+     */
+    public function testDatabaseFreeControllersDoNotExtendBaseController(): void
+    {
+        foreach (['static_assets', 'ping', 'api_health', 'api_v1_gone'] as $name) {
+            $route = $this->routes->get($name);
+            $this->assertNotNull($route, "Route $name is missing from routes.yaml");
+
+            [$className] = explode('::', (string)$route->getDefault('_controller'));
+            $this->assertFalse(
+                is_subclass_of($className, \Poweradmin\BaseController::class),
+                sprintf('%s must not extend BaseController; it answers without a database', $className)
+            );
+        }
+    }
 }

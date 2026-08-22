@@ -3,24 +3,25 @@
 namespace Poweradmin\Tests\Unit\Api;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Controller\Api\V1GoneController;
 
 class V1GoneControllerTest extends TestCase
 {
-    private TestableV1GoneController $controller;
+    private V1GoneController $controller;
 
     protected function setUp(): void
     {
-        $this->controller = new TestableV1GoneController();
+        $this->controller = new V1GoneController();
     }
 
     public function testRespondsWithGone(): void
     {
-        $this->assertEquals(410, $this->controller->buildResponsePublic()->getStatusCode());
+        $this->assertEquals(410, $this->controller->buildResponse()->getStatusCode());
     }
 
     public function testPointsCallersAtTheSuccessorVersion(): void
     {
-        $response = $this->controller->buildResponsePublic();
+        $response = $this->controller->buildResponse();
 
         $this->assertEquals(
             '</api/v2/>; rel="successor-version"',
@@ -30,7 +31,7 @@ class V1GoneControllerTest extends TestCase
 
     public function testKeepsTheV1ErrorShapeSoOldClientsCanParseIt(): void
     {
-        $body = json_decode($this->controller->buildResponsePublic()->getContent(), true);
+        $body = json_decode($this->controller->buildResponse()->getContent(), true);
 
         $this->assertTrue($body['error']);
         $this->assertStringContainsString('/api/v2', $body['message']);

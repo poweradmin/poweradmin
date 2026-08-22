@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
-use Poweradmin\BaseController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -30,31 +29,21 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  *
  * Callers are unmigrated v1 clients, so the body keeps the v1 error shape
  * ({error, message}) that they already parse.
+ *
+ * Deliberately does not extend BaseController, whose constructor connects to the
+ * database unconditionally: /api/v1 is public, so that is a connection per request
+ * for a response that reads nothing.
  */
-class V1GoneController extends BaseController
+class V1GoneController
 {
     private const MESSAGE = 'API v1 was removed in Poweradmin 4.5.0. Use /api/v2 instead.';
-
-    public function __construct(array $request)
-    {
-        // A removed endpoint must answer identically with or without credentials
-        parent::__construct($request, false);
-    }
-
-    /**
-     * The endpoint is gone for every verb, so there is no form token to check.
-     */
-    protected function requiresCsrfValidation(): bool
-    {
-        return false;
-    }
 
     public function run(): void
     {
         $this->buildResponse()->send();
     }
 
-    protected function buildResponse(): JsonResponse
+    public function buildResponse(): JsonResponse
     {
         $response = new JsonResponse([
             'error' => true,
