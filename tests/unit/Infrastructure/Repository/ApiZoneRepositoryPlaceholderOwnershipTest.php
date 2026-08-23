@@ -108,6 +108,41 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
     }
 
     #[Test]
+    public function anAddedOwnerIsReadBack(): void
+    {
+        // The write and the read must agree on the key. Keying the insert on the
+        // canonical row's primary key instead left the new co-owner invisible.
+        $this->assertTrue($this->repository()->addOwnerToZone(4, 3));
+
+        $owners = array_column($this->repository()->getZoneOwners(4), 'username');
+        sort($owners);
+
+        $this->assertSame(['extra', 'primary', 'stranger'], $owners);
+        $this->assertTrue($this->repository()->isUserZoneOwner(4, 3));
+        $this->assertTrue($this->repository()->zoneExists(4, 3));
+    }
+
+    #[Test]
+    public function anAddedOwnerRowIsKeyedByTheCanonicalId(): void
+    {
+        $this->repository()->addOwnerToZone(4, 3);
+
+        $written = $this->db->query("SELECT domain_id FROM zones WHERE owner = 3 AND zone_name IS NULL")
+            ->fetchColumn();
+
+        $this->assertSame(2905, (int)$written);
+    }
+
+    #[Test]
+    public function anExtraOwnerCanBeRemoved(): void
+    {
+        $this->assertTrue($this->repository()->removeOwnerFromZone(4, 2));
+
+        $this->assertSame(['primary'], array_column($this->repository()->getZoneOwners(4), 'username'));
+        $this->assertFalse($this->repository()->isUserZoneOwner(4, 2));
+    }
+
+    #[Test]
     public function aZoneWithoutExtraOwnersListsOnlyItsOwn(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)

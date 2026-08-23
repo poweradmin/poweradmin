@@ -669,12 +669,13 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             return false;
         }
         $cid = (int)$canonical['id'];
+        $canonicalId = self::canonicalIdOf($canonical);
 
         $stmt = $this->db->prepare(
             "INSERT INTO zones (domain_id, owner, zone_templ_id)
              VALUES (:domain_id, :owner, :zone_templ_id)"
         );
-        $stmt->bindValue(':domain_id', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':domain_id', $canonicalId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zone_templ_id', (int)($canonical['zone_templ_id'] ?? 0), PDO::PARAM_INT);
         $stmt->execute();
@@ -693,13 +694,14 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             return false;
         }
         $cid = (int)$canonical['id'];
+        $canonicalId = self::canonicalIdOf($canonical);
 
         // First try to delete extra ownership rows (zone_name IS NULL) to preserve the canonical row
         $stmt = $this->db->prepare(
             "DELETE FROM zones
-             WHERE zone_name IS NULL AND domain_id = :cid AND owner = :owner"
+             WHERE zone_name IS NULL AND domain_id = :cid_e AND owner = :owner"
         );
-        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
