@@ -77,6 +77,7 @@ use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Enum\SortDirection;
+use Poweradmin\Domain\Enum\ZoneSaveOutcome;
 
 class EditController extends BaseController
 {
@@ -846,7 +847,17 @@ class EditController extends BaseController
             return;
         }
 
-        $this->finalizeSave($error, $serial_mismatch, $zone_id, $one_record_changed, $zone_name);
+        // Collapse the flags into one outcome here, where all of them are in
+        // scope; $error wins over a stale form, which wins over the record count.
+        $conflictResolution = $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins');
+        $outcome = match (true) {
+            $error => ZoneSaveOutcome::WRITE_FAILED,
+            $serial_mismatch && $conflictResolution === 'only_latest_version' => ZoneSaveOutcome::SERIAL_CONFLICT,
+            $one_record_changed => ZoneSaveOutcome::UPDATED,
+            default => ZoneSaveOutcome::NO_CHANGES,
+        };
+
+        $this->finalizeSave($outcome, $zone_id, $zone_name);
     }
 
 
@@ -924,37 +935,28 @@ class EditController extends BaseController
     }
 
     /**
-     * Finalize save
-     *
-     * @param bool $error
-     * @param bool $serial_mismatch
-     * @param int $zone_id
-     * @param bool $one_record_changed
-     * @param string $zone_name
-     * @return void
+     * Report the result of a zone-edit save, bumping the serial when one happened.
      */
-    public function finalizeSave(bool $error, bool $serial_mismatch, int $zone_id, bool $one_record_changed, string $zone_name): void
+    public function finalizeSave(ZoneSaveOutcome $outcome, int $zone_id, string $zone_name): void
     {
-        if ($error === false) {
-            $experimental_edit_conflict_resolution = $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins');
-            if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
-                $this->setMessage('edit', 'warning', (_('Request has expired, please try again.')));
-            } else {
-                $this->soaRecordManager->updateSOASerial($zone_id);
+        if (!$outcome->wasWritten()) {
+            match ($outcome) {
+                ZoneSaveOutcome::WRITE_FAILED => $this->setMessage('edit', 'error', _('Zone has not been updated successfully.')),
+                ZoneSaveOutcome::SERIAL_CONFLICT => $this->setMessage('edit', 'warning', _('Request has expired, please try again.')),
+                default => null,
+            };
+            return;
+        }
 
-                if ($one_record_changed) {
-                    $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
-                } else {
-                    $this->setMessage('edit', 'info', (_('Zone saved successfully. No record changes were made, but SOA serial was incremented.')));
-                }
+        $this->soaRecordManager->updateSOASerial($zone_id);
 
-                if ($this->config->get('dnssec', 'enabled', false)) {
-                    $dnssecProvider = $this->createDnssecProvider();
-                    $dnssecProvider->rectifyZone($zone_name);
-                }
-            }
-        } else {
-            $this->setMessage('edit', 'error', _('Zone has not been updated successfully.'));
+        match ($outcome) {
+            ZoneSaveOutcome::UPDATED => $this->setMessage('edit', 'success', _('Zone has been updated successfully.')),
+            default => $this->setMessage('edit', 'info', _('Zone saved successfully. No record changes were made, but SOA serial was incremented.')),
+        };
+
+        if ($this->config->get('dnssec', 'enabled', false)) {
+            $this->createDnssecProvider()->rectifyZone($zone_name);
         }
     }
 
