@@ -70,7 +70,7 @@ class MailService implements MailServiceInterface
         }
 
         // Determine which transport to use
-        $transportType = $this->config->get('mail', 'transport', 'smtp');
+        $transportType = $this->config->get('mail', 'transport', 'php');
 
         // check if email is multipart and generate boundary
         if ($plainBody !== '') {
@@ -355,7 +355,7 @@ class MailService implements MailServiceInterface
             return false;
         }
 
-        $transportType = $this->config->get('mail', 'transport', 'smtp');
+        $transportType = $this->config->get('mail', 'transport', 'php');
 
         // For SMTP transport, verify connection to mail server
         if ($transportType === 'smtp') {

@@ -25,7 +25,7 @@ class MailServiceTest extends TestCase
         // Configure mock to enable mail and use PHP transport
         $this->config->expects($this->any())->method('get')->willReturnMap([
             ['mail', 'enabled', false, true],
-            ['mail', 'transport', 'smtp', 'php'],
+            ['mail', 'transport', 'php', 'php'],
             ['mail', 'from', 'poweradmin@example.com', 'test@example.com'],
             ['mail', 'from_name', '', 'Test Name'],
             ['mail', 'return_path', 'poweradmin@example.com', 'test@example.com'],
