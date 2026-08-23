@@ -25,9 +25,11 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Enum\LoginAttemptStage;
 
 class LoginAttemptService
 {
+    /** Kept as string constants for callers; {@see LoginAttemptStage} owns the vocabulary. */
     public const STAGE_PASSWORD = 'password';
     public const STAGE_MFA = 'mfa';
 
@@ -341,7 +343,11 @@ class LoginAttemptService
      */
     private function stageLimits(string $attemptType): ?array
     {
-        if ($attemptType === self::STAGE_MFA) {
+        // An unrecognised stage is treated as the password stage, matching the
+        // default this method has always fallen through to.
+        $stage = LoginAttemptStage::tryFrom($attemptType) ?? LoginAttemptStage::PASSWORD;
+
+        if ($stage === LoginAttemptStage::MFA) {
             // Floors, not "off" switches. A misconfigured 0 must not read as
             // "unlimited guesses" on the one control standing between a known
             // password and the account.

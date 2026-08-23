@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Model;
 
 use DateTime;
 use InvalidArgumentException;
+use Poweradmin\Domain\Enum\MfaFactorType;
 
 class UserMfa
 {
@@ -199,12 +200,20 @@ class UserMfa
 
     public function setType(string $type): void
     {
-        if (!in_array($type, [self::TYPE_APP, self::TYPE_EMAIL])) {
+        if (!MfaFactorType::isValid($type)) {
             throw new InvalidArgumentException("Invalid MFA type: $type");
         }
 
         $this->type = $type;
         $this->updatedAt = new DateTime();
+    }
+
+    /**
+     * The configured factor as an enum, or null for a type this build no longer knows.
+     */
+    public function getFactorType(): ?MfaFactorType
+    {
+        return MfaFactorType::tryFrom($this->type);
     }
 
     public function getLastUsedAt(): ?DateTime
