@@ -22,11 +22,18 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Enum\AuthMethod;
+
 class UserContextService
 {
     // Auth methods delegated to an external IdP (shared by session auth_used and
     // users.auth_method values); everything else validates against the local database
-    public const EXTERNAL_AUTH_METHODS = ['ldap', 'oidc', 'saml'];
+    /** Derived from {@see AuthMethod::isExternal()}; do not list the cases again. */
+    public const EXTERNAL_AUTH_METHODS = [
+        AuthMethod::LDAP->value,
+        AuthMethod::OIDC->value,
+        AuthMethod::SAML->value,
+    ];
 
     // Request-scoped fallback for stateless API requests. Web UI requests use
     // session-backed values directly; API requests authenticate via API key /
@@ -66,6 +73,15 @@ class UserContextService
     public function getAuthMethod(): ?string
     {
         return $_SESSION[SessionKeys::AUTH_USED] ?? null;
+    }
+
+    /**
+     * The session's auth method as an enum. Unknown or absent reads as SQL.
+     * getAuthMethod() stays for Twig, which compares the raw string.
+     */
+    public function getAuthMethodEnum(): AuthMethod
+    {
+        return AuthMethod::fromDb($this->getAuthMethod());
     }
 
     public function getUserEmail(): ?string

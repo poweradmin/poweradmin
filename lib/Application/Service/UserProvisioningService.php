@@ -32,6 +32,7 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
  * User provisioning service for external authentication providers
@@ -40,10 +41,11 @@ use ReflectionClass;
 class UserProvisioningService extends LoggingService
 {
     // Authentication method constants
-    public const AUTH_METHOD_SQL = 'sql';
-    public const AUTH_METHOD_LDAP = 'ldap';
-    public const AUTH_METHOD_OIDC = 'oidc';
-    public const AUTH_METHOD_SAML = 'saml';
+    /** Aliases kept for callers; {@see AuthMethod} owns the vocabulary. */
+    public const AUTH_METHOD_SQL = AuthMethod::SQL->value;
+    public const AUTH_METHOD_LDAP = AuthMethod::LDAP->value;
+    public const AUTH_METHOD_OIDC = AuthMethod::OIDC->value;
+    public const AUTH_METHOD_SAML = AuthMethod::SAML->value;
 
     /** Methods with an identity link table; LDAP identity is the username itself. */
     private const LINKABLE_AUTH_METHODS = [self::AUTH_METHOD_OIDC, self::AUTH_METHOD_SAML];
