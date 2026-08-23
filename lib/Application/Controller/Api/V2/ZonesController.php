@@ -44,6 +44,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
+use Poweradmin\Domain\Enum\ZoneKind;
 
 class ZonesController extends PublicApiController
 {
@@ -762,7 +763,7 @@ class ZonesController extends PublicApiController
             // Validate zone type if provided
             if (isset($updates['type'])) {
                 $updates['type'] = strtoupper($updates['type']);
-                $validTypes = ['MASTER', 'SLAVE', 'NATIVE'];
+                $validTypes = ZoneKind::basicValues();
                 if (!in_array($updates['type'], $validTypes)) {
                     return $this->returnApiError('Invalid zone type. Must be one of: ' . implode(', ', $validTypes), 400);
                 }

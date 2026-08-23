@@ -35,6 +35,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Enum\ZoneKind;
 
 class ZoneFileImportController extends BaseController
 {
@@ -342,7 +343,7 @@ class ZoneFileImportController extends BaseController
             }
 
             $zoneType = strtoupper((string)($_POST['zone_type'] ?? 'MASTER'));
-            if (!in_array($zoneType, ['MASTER', 'SLAVE', 'NATIVE'], true)) {
+            if (!in_array($zoneType, ZoneKind::basicValues(), true)) {
                 $this->showError(_('Invalid zone type.'));
                 return;
             }

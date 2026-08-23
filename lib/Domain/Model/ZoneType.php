@@ -22,26 +22,19 @@
 
 namespace Poweradmin\Domain\Model;
 
+use Poweradmin\Domain\Enum\ZoneKind;
+
 /**
  * ZoneType class represents the different types of zones in a DNS system.
  */
 class ZoneType
 {
     // Visibility constants for the available zone types
-    public const MASTER = "MASTER";
-    public const SLAVE = "SLAVE";
-    public const NATIVE = "NATIVE";
-    public const CONSUMER = "CONSUMER";
-    public const PRODUCER = "PRODUCER";
-
-    /**
-     * Kinds whose records arrive by transfer from a configured primary.
-     *
-     * Read by both isReadOnly() and replicatesFromPrimary(), which ask different
-     * questions but currently of the same set. Kept in one place so adding a kind
-     * cannot silently update one predicate and not the other.
-     */
-    private const REPLICATING_KINDS = [self::SLAVE, self::CONSUMER];
+    public const MASTER = ZoneKind::MASTER->value;
+    public const SLAVE = ZoneKind::SLAVE->value;
+    public const NATIVE = ZoneKind::NATIVE->value;
+    public const CONSUMER = ZoneKind::CONSUMER->value;
+    public const PRODUCER = ZoneKind::PRODUCER->value;
 
     /**
      * Get an array of the available zone types.
@@ -50,11 +43,7 @@ class ZoneType
      */
     public static function getTypes(): array
     {
-        return [
-            self::MASTER,
-            self::SLAVE,
-            self::NATIVE,
-        ];
+        return ZoneKind::basicValues();
     }
 
     /**
@@ -63,7 +52,7 @@ class ZoneType
      */
     public static function isReadOnly(?string $type): bool
     {
-        return in_array(strtoupper((string)$type), self::REPLICATING_KINDS, true);
+        return ZoneKind::tryFromName($type)?->isReadOnly() ?? false;
     }
 
     /**
@@ -73,7 +62,7 @@ class ZoneType
      */
     public static function replicatesFromPrimary(?string $type): bool
     {
-        return in_array(strtoupper((string)$type), self::REPLICATING_KINDS, true);
+        return ZoneKind::tryFromName($type)?->replicatesFromPrimary() ?? false;
     }
 
     /**
@@ -84,19 +73,7 @@ class ZoneType
      */
     public static function getCreatableTypes(bool $catalogSupported, bool $mayAddSecondary): array
     {
-        $types = [self::MASTER, self::NATIVE];
-
-        if (!$catalogSupported) {
-            return $types;
-        }
-
-        $types[] = self::PRODUCER;
-
-        if ($mayAddSecondary) {
-            $types[] = self::CONSUMER;
-        }
-
-        return $types;
+        return ZoneKind::creatableValues($catalogSupported, $mayAddSecondary);
     }
 
     /**
@@ -104,7 +81,7 @@ class ZoneType
      */
     public static function getReplicatingTypes(): array
     {
-        return self::REPLICATING_KINDS;
+        return [ZoneKind::SLAVE->value, ZoneKind::CONSUMER->value];
     }
 
     /**
@@ -115,7 +92,7 @@ class ZoneType
      */
     public static function getAllTypes(): array
     {
-        return [self::MASTER, self::SLAVE, self::NATIVE, self::PRODUCER, self::CONSUMER];
+        return ZoneKind::values();
     }
 
     /**
@@ -125,6 +102,6 @@ class ZoneType
      */
     public static function notifies(?string $type): bool
     {
-        return in_array(strtoupper((string)$type), [self::MASTER, self::PRODUCER], true);
+        return ZoneKind::tryFromName($type)?->notifies() ?? false;
     }
 }

@@ -37,6 +37,7 @@ use PDO;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
+use Poweradmin\Domain\Enum\ZoneKind;
 
 /**
  * Service for managing DNS zones
@@ -121,7 +122,7 @@ class ZoneManagementService
         }
 
         // Validate zone type
-        $validTypes = ['MASTER', 'SLAVE', 'NATIVE'];
+        $validTypes = ZoneKind::basicValues();
         if (!in_array($type, $validTypes)) {
             return [
                 'success' => false,

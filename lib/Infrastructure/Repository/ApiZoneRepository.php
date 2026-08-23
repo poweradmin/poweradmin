@@ -35,6 +35,7 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
+use Poweradmin\Domain\Enum\ZoneKind;
 
 class ApiZoneRepository implements ZoneRepositoryInterface
 {
@@ -431,7 +432,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             $params[':userId_own'] = $userId;
             $params[':userId_group'] = $userId;
         }
-        if (isset($filters['type']) && in_array($filters['type'], ['MASTER', 'SLAVE', 'NATIVE'])) {
+        if (isset($filters['type']) && in_array($filters['type'], ZoneKind::basicValues(), true)) {
             $query .= " AND z.zone_type = :type";
             $params[':type'] = $filters['type'];
         }

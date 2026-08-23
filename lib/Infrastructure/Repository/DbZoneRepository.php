@@ -34,6 +34,7 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
+use Poweradmin\Domain\Enum\ZoneKind;
 
 class DbZoneRepository implements ZoneRepositoryInterface
 {
@@ -470,7 +471,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         }
 
         // Apply additional filters
-        if (isset($filters['type']) && in_array($filters['type'], ['MASTER', 'SLAVE', 'NATIVE'])) {
+        if (isset($filters['type']) && in_array($filters['type'], ZoneKind::basicValues(), true)) {
             $query .= " AND $domains_table.type = :type";
             $params[':type'] = $filters['type'];
         }
