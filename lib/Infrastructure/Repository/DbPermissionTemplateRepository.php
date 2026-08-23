@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Throwable;
+use Poweradmin\Domain\Enum\PermissionTemplateType;
 
 class DbPermissionTemplateRepository
 {
@@ -218,7 +219,7 @@ class DbPermissionTemplateRepository
      */
     public function listPermissionTemplates(?string $filter_type = null): array
     {
-        if ($filter_type !== null && in_array($filter_type, ['user', 'group'])) {
+        if ($filter_type !== null && PermissionTemplateType::isValid($filter_type)) {
             $query = "SELECT * FROM perm_templ WHERE template_type = :template_type ORDER BY name";
             $stmt = $this->db->prepare($query);
             $stmt->execute([':template_type' => $filter_type]);

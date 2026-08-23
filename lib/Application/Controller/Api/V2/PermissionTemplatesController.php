@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
+use Poweradmin\Domain\Enum\PermissionTemplateType;
 
 class PermissionTemplatesController extends PublicApiController
 {
@@ -292,7 +293,7 @@ class PermissionTemplatesController extends PublicApiController
             $templateType = $data['template_type'] ?? 'user';
 
             // Validate template_type if provided
-            if (!in_array($templateType, ['user', 'group'])) {
+            if (!is_string($templateType) || !PermissionTemplateType::isValid($templateType)) {
                 return $this->returnApiError('Invalid template_type. Must be either "user" or "group"', 400);
             }
 
@@ -414,7 +415,7 @@ class PermissionTemplatesController extends PublicApiController
             $templateType = $data['template_type'] ?? $existing['template_type'];
 
             // Validate template_type if provided
-            if (!in_array($templateType, ['user', 'group'])) {
+            if (!is_string($templateType) || !PermissionTemplateType::isValid($templateType)) {
                 return $this->returnApiError('Invalid template_type. Must be either "user" or "group"', 400);
             }
 

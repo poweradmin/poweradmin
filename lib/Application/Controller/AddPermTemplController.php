@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Enum\PermissionTemplateType;
 
 class AddPermTemplController extends BaseController
 {
@@ -122,7 +123,7 @@ class AddPermTemplController extends BaseController
             ],
             'array' => ['perm_id'],
             'in' => [
-                ['template_type', ['user', 'group']]
+                ['template_type', PermissionTemplateType::values()]
             ],
         ]);
 

@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Enum\PermissionTemplateType;
 
 class EditPermTemplController extends BaseController
 {
@@ -158,7 +159,7 @@ class EditPermTemplController extends BaseController
         $this->setRequestRules([
             'required' => ['templ_name', 'template_type'],
             'in' => [
-                ['template_type', ['user', 'group']]
+                ['template_type', PermissionTemplateType::values()]
             ],
         ]);
 

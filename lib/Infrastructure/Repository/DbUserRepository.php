@@ -28,6 +28,7 @@ use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Enum\PermissionTemplateType;
 
 class DbUserRepository implements UserRepository
 {
@@ -892,7 +893,7 @@ class DbUserRepository implements UserRepository
      */
     public function permissionTemplateExists(int $permTemplId, ?string $templateType = null): bool
     {
-        if ($templateType !== null && in_array($templateType, ['user', 'group'], true)) {
+        if ($templateType !== null && PermissionTemplateType::isValid($templateType)) {
             $stmt = $this->db->prepare(
                 "SELECT COUNT(*) FROM perm_templ WHERE id = :permTemplId AND template_type = :templateType"
             );
