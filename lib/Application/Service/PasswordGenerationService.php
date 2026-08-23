@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Random\Engine\Secure;
+use Random\Randomizer;
 
 class PasswordGenerationService
 {
@@ -101,8 +103,10 @@ class PasswordGenerationService
             $password .= $this->getRandomChar($charPool);
         }
 
-        // Shuffle the password to randomize the order of characters
-        return str_shuffle($password);
+        // The characters above are appended one per required class, always in the
+        // same order, so a guessable shuffle would give that order away.
+        // @phan-suppress-next-line PhanParamTooManyInternal - Phan 6.0.1 stubs shuffleBytes() as taking no arguments
+        return (new Randomizer(new Secure()))->shuffleBytes($password);
     }
 
     /**
