@@ -34,7 +34,7 @@ use Throwable;
  * the two fallible operations it performs, reading configuration and rendering
  * the 404 page, are individually guarded.
  */
-final class BootstrapErrorResponder
+final readonly class BootstrapErrorResponder
 {
     /**
      * @param ConfigurationInterface $config Configuration, which may itself be
@@ -43,8 +43,8 @@ final class BootstrapErrorResponder
      *                                       to NotFoundController
      */
     public function __construct(
-        private readonly ConfigurationInterface $config,
-        private readonly ?Closure $notFoundRenderer = null,
+        private ConfigurationInterface $config,
+        private ?Closure $notFoundRenderer = null,
     ) {
     }
 

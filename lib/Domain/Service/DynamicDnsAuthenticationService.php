@@ -28,12 +28,12 @@ use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 
-class DynamicDnsAuthenticationService
+readonly class DynamicDnsAuthenticationService
 {
     public function __construct(
-        private readonly DynamicDnsRepositoryInterface $repository,
-        private readonly UserAuthenticationService $userAuthService,
-        private readonly ?LoginAttemptService $loginAttemptService = null
+        private DynamicDnsRepositoryInterface $repository,
+        private UserAuthenticationService $userAuthService,
+        private ?LoginAttemptService $loginAttemptService = null
     ) {
     }
 

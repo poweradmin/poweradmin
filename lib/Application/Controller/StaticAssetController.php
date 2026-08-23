@@ -42,9 +42,9 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  * straight from disk, so the requests that reach this class are the ones for files
  * that do not exist - a database connection per 404 that nothing here needs.
  */
-class StaticAssetController
+readonly class StaticAssetController
 {
-    public function __construct(private readonly array $requestData)
+    public function __construct(private array $requestData)
     {
     }
 

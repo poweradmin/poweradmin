@@ -33,14 +33,14 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * chain (AppInitializer), the Twig translator (AppManager), and the page
  * chrome (PageRenderer) - they must all agree on the active locale.
  */
-class LocaleResolver
+readonly class LocaleResolver
 {
     private const DEFAULT_LOCALE = 'en_EN';
 
     public function __construct(
-        private readonly ConfigurationManager $config,
-        private readonly UserContextService $userContext,
-        private readonly Request $request
+        private ConfigurationManager $config,
+        private UserContextService $userContext,
+        private Request $request
     ) {
     }
 

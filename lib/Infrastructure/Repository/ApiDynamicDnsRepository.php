@@ -33,12 +33,12 @@ use Poweradmin\Domain\ValueObject\HostnameValue;
  * API-backend dynamic DNS repository.
  * Uses PowerDNS REST API for DNS operations, Poweradmin DB for user/zone queries.
  */
-class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
+readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $db,
-        private readonly SOARecordManagerInterface $soaRecordManager,
-        private readonly DnsBackendProvider $backendProvider
+        private PDO $db,
+        private SOARecordManagerInterface $soaRecordManager,
+        private DnsBackendProvider $backendProvider
     ) {
     }
 

@@ -31,13 +31,13 @@ use Poweradmin\Domain\ValueObject\HostnameValue;
 /**
  * SQL-backend dynamic DNS repository.
  */
-class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
+readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 {
     public function __construct(
-        private readonly PDO $db,
-        private readonly SOARecordManagerInterface $soaRecordManager,
-        private readonly string $recordsTable,
-        private readonly string $domainsTable
+        private PDO $db,
+        private SOARecordManagerInterface $soaRecordManager,
+        private string $recordsTable,
+        private string $domainsTable
     ) {
     }
 

@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\UserContextService;
 
-class PasswordChangeService
+readonly class PasswordChangeService
 {
     private const ERROR_MESSAGES = [
         'user_not_found' => 'User not found',
@@ -35,9 +35,9 @@ class PasswordChangeService
     ];
 
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly UserAuthenticationService $authService,
-        private readonly UserContextService $userContextService,
+        private UserRepository $userRepository,
+        private UserAuthenticationService $authService,
+        private UserContextService $userContextService,
     ) {
     }
 

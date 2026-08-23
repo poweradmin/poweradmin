@@ -32,11 +32,11 @@ use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
  * Every web and API create/update path goes through here, so the content rule cannot be
  * skipped by adding another controller.
  */
-class PermissionTemplateWriteService
+readonly class PermissionTemplateWriteService
 {
     public function __construct(
-        private readonly DbPermissionTemplateRepository $templateRepository,
-        private readonly UserRepository $userRepository
+        private DbPermissionTemplateRepository $templateRepository,
+        private UserRepository $userRepository
     ) {
     }
 

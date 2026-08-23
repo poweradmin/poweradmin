@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,14 +33,14 @@ use Poweradmin\Domain\ValueObject\IpAddressList;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
-class DynamicDnsUpdateService
+readonly class DynamicDnsUpdateService
 {
     public function __construct(
-        private readonly DynamicDnsValidationService $validationService,
-        private readonly DynamicDnsAuthenticationService $authService,
-        private readonly DynamicDnsRepositoryInterface $repository,
-        private readonly ?LegacyLogger $auditLogger = null,
-        private readonly ?IpAddressRetriever $ipRetriever = null
+        private DynamicDnsValidationService $validationService,
+        private DynamicDnsAuthenticationService $authService,
+        private DynamicDnsRepositoryInterface $repository,
+        private ?LegacyLogger $auditLogger = null,
+        private ?IpAddressRetriever $ipRetriever = null
     ) {
     }
 

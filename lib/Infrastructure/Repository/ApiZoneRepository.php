@@ -38,18 +38,18 @@ use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
-class ApiZoneRepository implements ZoneRepositoryInterface
+readonly class ApiZoneRepository implements ZoneRepositoryInterface
 {
     // Failing beats returning an empty set that reads as "this zone has none".
     private const METADATA_NOT_SUPPORTED = 'Zone metadata is not available through the API zone repository; use PowerdnsApiClient instead.';
 
-    private readonly TableNameService $tableNameService;
+    private TableNameService $tableNameService;
 
     public function __construct(
-        private readonly PDO $db,
-        private readonly DnsBackendProvider $backendProvider,
-        private readonly string $dbType,
-        private readonly ConfigurationInterface $config
+        private PDO $db,
+        private DnsBackendProvider $backendProvider,
+        private string $dbType,
+        private ConfigurationInterface $config
     ) {
         $this->tableNameService = new TableNameService($config);
     }

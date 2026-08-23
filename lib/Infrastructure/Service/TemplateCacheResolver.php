@@ -24,9 +24,9 @@ namespace Poweradmin\Infrastructure\Service;
 
 use Psr\Log\LoggerInterface;
 
-class TemplateCacheResolver
+readonly class TemplateCacheResolver
 {
-    public function __construct(private readonly LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
     }
 
