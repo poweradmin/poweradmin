@@ -131,7 +131,7 @@
                     <thead class="table-light">
                     <tr>
                         <th>
-                            {% if delete_permission == 'all' or delete_permission == 'own' or delete_permission == 'own_as_client' %}
+                            {% if delete_permission == 'all' or delete_permission == 'own' %}
                             <input type="checkbox" class="form-check-input" id="select_search_zones" onClick="toggleSearchZoneCheckboxes()"/>
                             {% endif %}
                         </th>
@@ -297,7 +297,7 @@
             </div>
             {% endif %}
 
-            {% if delete_permission == 'all' or delete_permission == 'own' or delete_permission == 'own_as_client' %}
+            {% if delete_permission == 'all' or delete_permission == 'own' %}
             {% if total_zones > 0 %}
             <div class="card-footer py-3">
                 <button type="button" name="commit" class="btn btn-danger btn-sm" id="delete-zones-button" disabled
