@@ -35,6 +35,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
+use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
 class DbZoneRepository implements ZoneRepositoryInterface
 {
@@ -314,8 +315,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
                     'count_records' => $row['count_records'] ?? 0,
-                    'is_disabled' => !empty($row['is_disabled'] ?? null),
-                    'is_missing_soa' => !empty($row['is_missing_soa'] ?? null),
+                    ...ZoneSoaHealth::fromBackend([
+                        'is_disabled' => !empty($row['is_disabled'] ?? null),
+                        'is_missing_soa' => !empty($row['is_missing_soa'] ?? null),
+                    ])->toZoneFields(),
                     'comment' => $row['comment'] ?? '',
                     'secured' => $row['secured'],
                     'owners' => [],

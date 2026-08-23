@@ -36,6 +36,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
 /**
  * API-backend domain repository.
@@ -214,8 +215,9 @@ class ApiDomainRepository implements DomainRepositoryInterface
                 'utf8_name' => $utf8Name,
                 'type' => $zone['type'] ?? 'NATIVE',
                 'count_records' => $countRecords,
-                'is_disabled' => $soaHealth['is_disabled'] ?? false,
-                'is_missing_soa' => $soaHealth['is_missing_soa'] ?? false,
+                // A failed lookup is UNKNOWN, not healthy; ?? false used to
+                // render an outage as a green badge.
+                ...ZoneSoaHealth::fromBackend($soaHealth)->toZoneFields(),
                 'comment' => $zone['comment'] ?? '',
                 'secured' => $zone['dnssec'] ?? $zone['secured'] ?? false,
                 'owners' => $zone['owners'] ?? [],

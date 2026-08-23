@@ -36,6 +36,7 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
+use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
 class ApiZoneRepository implements ZoneRepositoryInterface
 {
@@ -230,8 +231,9 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $kind,
                     'count_records' => $countRecords,
-                    'is_disabled' => $soaHealth['is_disabled'] ?? false,
-                    'is_missing_soa' => $soaHealth['is_missing_soa'] ?? false,
+                    // A failed lookup is UNKNOWN, not healthy; ?? false used to
+                    // render an outage as a green badge.
+                    ...ZoneSoaHealth::fromBackend($soaHealth)->toZoneFields(),
                     'comment' => $row['comment'] ?? '',
                     'secured' => $stats['dnssec'] ?? false,
                     'owners' => [],

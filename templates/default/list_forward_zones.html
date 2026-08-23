@@ -154,6 +154,8 @@
                             <span class="badge bg-danger ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}SOA record is disabled, the zone will not be served{% endtrans %}">{% trans %}Disabled{% endtrans %}</span>
                             {% elseif zone["is_missing_soa"]|default(false) %}
                             <span class="badge bg-warning text-dark ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}Zone has no SOA record{% endtrans %}"><i class="bi bi-exclamation-triangle-fill"></i> {% trans %}No SOA{% endtrans %}</span>
+                            {% elseif zone["soa_health"]|default('') == 'unknown' %}
+                            <span class="badge bg-secondary-subtle text-secondary-emphasis ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}The DNS server could not be reached, so this zone's SOA status is unknown{% endtrans %}"><i class="bi bi-question-circle"></i> {% trans %}Unknown{% endtrans %}</span>
                             {% endif %}
                         </td>
                         <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone_type_label(zone['type']) }}</span>{% if zone_is_read_only(zone['type']) %} <span class="badge bg-secondary-subtle text-secondary-emphasis" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}Records for this zone are replicated from its primary and cannot be edited here.{% endtrans %}">{% trans %}Read-only{% endtrans %}</span>{% endif %}</td>

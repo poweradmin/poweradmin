@@ -37,6 +37,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
+use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
 /**
  * SQL-backend domain repository.
@@ -471,8 +472,10 @@ class SqlDomainRepository implements DomainRepositoryInterface
             $ret[$domainName]["utf8_name"] = $utf8Name;
             $ret[$domainName]["type"] = $r["type"];
             $ret[$domainName]["count_records"] = $r["count_records"] ?? 0;
-            $ret[$domainName]["is_disabled"] = !empty($r["is_disabled"] ?? null);
-            $ret[$domainName]["is_missing_soa"] = !empty($r["is_missing_soa"] ?? null);
+            $ret[$domainName] = array_merge($ret[$domainName], ZoneSoaHealth::fromBackend([
+                'is_disabled' => !empty($r["is_disabled"] ?? null),
+                'is_missing_soa' => !empty($r["is_missing_soa"] ?? null),
+            ])->toZoneFields());
             $ret[$domainName]["comment"] = $r["comment"] ?? '';
 
             if ($r["username"] !== null) {
