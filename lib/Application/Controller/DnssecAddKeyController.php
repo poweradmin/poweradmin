@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Domain\Enum\DnssecKeyType;
 
 class DnssecAddKeyController extends BaseController
 {
@@ -96,7 +97,7 @@ class DnssecAddKeyController extends BaseController
         if ($this->request->getPostParam('key_type') !== null) {
             $key_type = $this->request->getPostParam('key_type');
 
-            if ($key_type != 'ksk' && $key_type != 'zsk' && $key_type != 'csk') {
+            if (!is_string($key_type) || !DnssecKeyType::isValid($key_type)) {
                 $this->showError(_('Invalid or unexpected input given.'));
             }
         }

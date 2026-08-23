@@ -30,6 +30,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Enum\DnssecKeyType;
 
 /**
  * Imports a PEM-encoded DNSSEC private key into a zone via the PowerDNS API.
@@ -96,7 +97,7 @@ class DnssecKeyImportController extends BaseController
         $algorithm = $this->getSafeRequestValue('algorithm');
         $privateKeyPem = (string) $this->request->getPostParam('private_key_pem', '');
 
-        if (!in_array($keyType, ['ksk', 'zsk', 'csk'], true)) {
+        if (!DnssecKeyType::isValid($keyType)) {
             $this->setMessage('dnssec', 'error', _('Invalid or unexpected input given.'));
             $this->redirect('/zones/' . $zoneId . '/dnssec');
             return;
