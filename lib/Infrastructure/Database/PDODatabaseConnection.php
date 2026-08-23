@@ -77,8 +77,8 @@ class PDODatabaseConnection implements DatabaseConnection
             $this->showErrorAndExit('No database type has been set. Please check your configuration file.');
         }
 
-        if (!in_array($db_type, ['mysql', 'mysqli', 'pgsql', 'sqlite'])) {
-            $this->showErrorAndExit('Unknown database type: "' . $db_type . '". Supported types are: mysql, mysqli, pgsql, and sqlite.');
+        if (!DbDriver::isValid($db_type)) {
+            $this->showErrorAndExit('Unknown database type: "' . $db_type . '". Supported types are: ' . implode(', ', DbDriver::values()) . '.');
         }
     }
 
@@ -109,7 +109,7 @@ class PDODatabaseConnection implements DatabaseConnection
 
         $dsn = "$db_type:host={$credentials['db_host']};port=$db_port;dbname={$credentials['db_name']}";
 
-        if (in_array($db_type, ['mysql', 'mysqli']) && $credentials['db_charset'] === 'utf8') {
+        if (DbDriver::tryFrom($db_type)?->isMysqlFamily() && $credentials['db_charset'] === 'utf8') {
             $dsn .= ';charset=utf8';
         }
 
@@ -216,7 +216,7 @@ class PDODatabaseConnection implements DatabaseConnection
             $options[PDO::ATTR_TIMEOUT] = (int) $credentials['db_connect_timeout'];
         }
 
-        if (!in_array($db_type, ['mysql', 'mysqli'])) {
+        if (!DbDriver::tryFrom($db_type)?->isMysqlFamily()) {
             return $options;
         }
 
