@@ -222,7 +222,7 @@ class SqlAuthenticator extends LoggingService
             $_SESSION[SessionKeys::EMAIL] = $rowObj['email'];
             $_SESSION[SessionKeys::AUTH_USED] = 'internal';
             $_SESSION[SessionKeys::AUTHENTICATED] = true;
-            $_SESSION[SessionKeys::MFA_REQUIRED] = false;
+            MfaSessionManager::setMfaNotRequired();
 
             if (isset($_POST['authenticate'])) {
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, true);

@@ -82,6 +82,7 @@ class MfaVerifyController extends BaseController
             if ($this->userContextService->hasSessionData(SessionKeys::MFA_REQUIRED)) {
                 $this->userContextService->unsetSessionData(SessionKeys::MFA_REQUIRED);
             }
+            $this->userContextService->unsetSessionData(SessionKeys::MFA_STATE);
 
             // If this is a logout request, do a proper logout
             if ($logout !== null) {

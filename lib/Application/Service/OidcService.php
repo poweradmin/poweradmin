@@ -407,7 +407,9 @@ class OidcService extends LoggingService
                     $this->setSessionValue('auth_used', 'oidc');
                     $this->setSessionValue('auth_method_used', 'oidc');
                     $this->setSessionValue('authenticated', true);
-                    $this->setSessionValue('mfa_required', false);
+                    // Clears any stale pending state from an abandoned MFA login,
+                    // which would otherwise bounce this session back to /mfa/verify.
+                    MfaSessionManager::setMfaNotRequired();
 
                     // Set OIDC-specific session variables for logout detection
                     $this->setSessionValue('oidc_authenticated', true);

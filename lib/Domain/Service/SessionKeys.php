@@ -57,6 +57,9 @@ final class SessionKeys
     public const EMAIL = 'email';
     public const LASTMOD = 'lastmod';
 
+    /** Authoritative MFA verification state; see {@see \Poweradmin\Domain\Enum\MfaSessionState}. */
+    public const MFA_STATE = 'mfa_state';
+
     // Pending identity (held during MFA verification, promoted on success)
     public const PENDING_USERID = 'pending_userid';
     public const PENDING_NAME = 'pending_name';

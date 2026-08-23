@@ -369,7 +369,9 @@ class SamlService extends LoggingService
                     $this->setSessionValue('auth_used', UserProvisioningService::AUTH_METHOD_SAML);
                     $this->setSessionValue('auth_method_used', UserProvisioningService::AUTH_METHOD_SAML);
                     $this->setSessionValue('authenticated', true);
-                    $this->setSessionValue('mfa_required', false);
+                    // Clears any stale pending state from an abandoned MFA login,
+                    // which would otherwise bounce this session back to /mfa/verify.
+                    MfaSessionManager::setMfaNotRequired();
 
                     // Set SAML-specific session variables for logout detection
                     $this->setSessionValue('saml_authenticated', true);

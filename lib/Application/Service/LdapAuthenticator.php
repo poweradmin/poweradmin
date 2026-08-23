@@ -347,7 +347,7 @@ class LdapAuthenticator extends LoggingService
             $this->userContextService->setSessionData(SessionKeys::EMAIL, $sessionEmail);
             $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'ldap');
             $this->userContextService->setSessionData(SessionKeys::AUTHENTICATED, true);
-            $this->userContextService->setSessionData(SessionKeys::MFA_REQUIRED, false);
+            MfaSessionManager::setMfaNotRequired();
 
             // Update LDAP authentication cache BEFORE redirect (so next page load uses cache)
             $this->updateAuthenticationCache($ipAddress);

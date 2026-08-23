@@ -34,6 +34,7 @@ class SessionService
     public function endSession(): void
     {
         // Explicitly clear MFA-related session variables
+        unset($_SESSION[SessionKeys::MFA_STATE]);
         if (isset($_SESSION[SessionKeys::MFA_REQUIRED])) {
             unset($_SESSION[SessionKeys::MFA_REQUIRED]);
         }

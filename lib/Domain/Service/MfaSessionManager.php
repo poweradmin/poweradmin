@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Poweradmin\Domain\Enum\MfaSessionState;
 
 /**
  * MfaSessionManager
@@ -53,6 +54,16 @@ class MfaSessionManager
      */
     public static function setMfaRequired(int $userId): void
     {
+        // SQL auth re-runs on every request, so this is called again long after
+        // the factor was accepted. Downgrading the same user's verified session
+        // back to pending would redirect it to /mfa/verify forever. A different
+        // user signing in on the same session must still be challenged.
+        $verifiedUserId = $_SESSION[SessionKeys::USERID] ?? null;
+        if (self::currentState() === MfaSessionState::VERIFIED && (int)$verifiedUserId === $userId) {
+            return;
+        }
+
+        $_SESSION[SessionKeys::MFA_STATE] = MfaSessionState::PENDING->value;
         $_SESSION[SessionKeys::MFA_STATUS] = 'required';
         $_SESSION[SessionKeys::AUTHENTICATED] = false;
         $_SESSION[SessionKeys::MFA_REQUIRED] = true;
@@ -72,6 +83,7 @@ class MfaSessionManager
      */
     public static function setMfaVerified(): void
     {
+        $_SESSION[SessionKeys::MFA_STATE] = MfaSessionState::VERIFIED->value;
         $_SESSION[SessionKeys::MFA_STATUS] = 'verified';
         $_SESSION[SessionKeys::AUTHENTICATED] = true;
         $_SESSION[SessionKeys::MFA_REQUIRED] = false;
@@ -95,27 +107,51 @@ class MfaSessionManager
      */
     public static function isMfaRequired(): bool
     {
-        // Special case: if we have a verification token, MFA is not required
+        return self::currentState()->blocksAccess();
+    }
+
+    /**
+     * The session's verification state.
+     *
+     * Sessions established before MFA_STATE existed are classified from the
+     * legacy slots, which is why that reconciliation is still here. Its
+     * "absent means not required" default is load-bearing: users who have no
+     * second factor never get any of these keys set.
+     */
+    public static function currentState(): MfaSessionState
+    {
+        $state = MfaSessionState::tryFromSession($_SESSION[SessionKeys::MFA_STATE] ?? null);
+        if ($state !== null) {
+            return $state;
+        }
+
         if (isset($_SESSION[SessionKeys::MFA_VERIFICATION_TOKEN])) {
-            // Verification token indicates MFA is already verified
-            return false;
+            return MfaSessionState::VERIFIED;
         }
 
-        // Check our simplified status flag first
-        if (isset($_SESSION[SessionKeys::MFA_STATUS]) && $_SESSION[SessionKeys::MFA_STATUS] === 'verified') {
-            return false;
+        if (($_SESSION[SessionKeys::MFA_STATUS] ?? null) === 'verified') {
+            return MfaSessionState::VERIFIED;
         }
 
-        // If authenticated explicitly true and mfa_required explicitly false, no need for MFA
         if (
-            isset($_SESSION[SessionKeys::AUTHENTICATED]) && $_SESSION[SessionKeys::AUTHENTICATED] === true &&
-            isset($_SESSION[SessionKeys::MFA_REQUIRED]) && $_SESSION[SessionKeys::MFA_REQUIRED] === false
+            ($_SESSION[SessionKeys::AUTHENTICATED] ?? null) === true &&
+            ($_SESSION[SessionKeys::MFA_REQUIRED] ?? null) === false
         ) {
-            return false;
+            return MfaSessionState::NOT_REQUIRED;
         }
 
-        // In all other cases, check if our main flag is set
-        return isset($_SESSION[SessionKeys::MFA_REQUIRED]) && $_SESSION[SessionKeys::MFA_REQUIRED] === true;
+        return ($_SESSION[SessionKeys::MFA_REQUIRED] ?? null) === true
+            ? MfaSessionState::PENDING
+            : MfaSessionState::NOT_REQUIRED;
+    }
+
+    /**
+     * Record that no second factor applies, so the four slots cannot disagree.
+     */
+    public static function setMfaNotRequired(): void
+    {
+        $_SESSION[SessionKeys::MFA_STATE] = MfaSessionState::NOT_REQUIRED->value;
+        $_SESSION[SessionKeys::MFA_REQUIRED] = false;
     }
 
     /**
@@ -125,6 +161,7 @@ class MfaSessionManager
      */
     public static function reset(): void
     {
+        unset($_SESSION[SessionKeys::MFA_STATE]);
         unset($_SESSION[SessionKeys::MFA_STATUS]);
         unset($_SESSION[SessionKeys::MFA_REQUIRED]);
         unset($_SESSION[SessionKeys::MFA_VERIFICATION_TOKEN]);
