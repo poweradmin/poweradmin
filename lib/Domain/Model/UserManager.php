@@ -34,6 +34,7 @@ use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class UserManager
 {
@@ -238,8 +239,8 @@ class UserManager
             // valid address. Only OIDC/SAML emails are IdP-managed; LDAP accounts
             // keep Poweradmin-maintained identity fields, so they are validated.
             $newAuthMethod = self::resolveAuthMethod((bool)$useLdap, $usercheck['auth_method'] ?? null);
-            $isIdpManagedEmail = in_array($newAuthMethod, ['oidc', 'saml'], true)
-                || ($newAuthMethod === 'ldap' && $this->config->get('ldap', 'sync_user_info', false));
+            $isIdpManagedEmail = AuthMethod::fromDb($newAuthMethod)
+                ->isIdpManaged((bool)$this->config->get('ldap', 'sync_user_info', false));
             $validation = new Validator($this->config);
             if (!$isIdpManagedEmail && !$validation->isValidEmail($email)) {
                 $this->messageService->addSystemError(_('Enter a valid email address.'));
@@ -352,15 +353,7 @@ class UserManager
      */
     private static function resolveAuthMethod(bool $useLdap, ?string $currentAuthMethod): string
     {
-        if ($useLdap) {
-            return 'ldap';
-        }
-
-        if (in_array($currentAuthMethod, ['oidc', 'saml'])) {
-            return $currentAuthMethod;
-        }
-
-        return 'sql';
+        return AuthMethod::resolve($useLdap, $currentAuthMethod)->value;
     }
 
     /**
@@ -552,11 +545,11 @@ class UserManager
 
         if ($ldap_use && isset($details['use_ldap']) && $details['use_ldap'] == 1) {
             $use_ldap = 1;
-            $auth_method = 'ldap';
+            $auth_method = AuthMethod::resolve(true, null)->value;
             $password_hash = 'LDAP_USER';
         } else {
             $use_ldap = 0;
-            $auth_method = 'sql';
+            $auth_method = AuthMethod::resolve(false, null)->value;
             $config = ConfigurationManager::getInstance();
             $config->initialize();
             $userAuthService = new UserAuthenticationService(

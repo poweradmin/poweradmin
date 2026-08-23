@@ -29,6 +29,7 @@ use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class DbUserRepository implements UserRepository
 {
@@ -771,7 +772,7 @@ class DbUserRepository implements UserRepository
             ':active' => (int)($userData['active'] ?? 1),
             ':perm_templ' => $permTemplId,
             ':use_ldap' => $useLdap,
-            ':auth_method' => $useLdap ? 'ldap' : 'sql'
+            ':auth_method' => AuthMethod::resolve((bool)$useLdap, null)->value
         ]);
 
         if ($result) {
@@ -849,16 +850,18 @@ class DbUserRepository implements UserRepository
         // when LDAP is being disabled.
         if (array_key_exists('use_ldap', $userData)) {
             $setFields[] = 'auth_method = :auth_method';
-            if ((int)$userData['use_ldap'] === 1) {
-                $params[':auth_method'] = 'ldap';
-            } else {
+            $useLdap = (int)$userData['use_ldap'] === 1;
+
+            // The current method is only needed to avoid downgrading an SSO
+            // account to sql when LDAP is switched off.
+            $currentAuthMethod = null;
+            if (!$useLdap) {
                 $currentStmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = :id');
                 $currentStmt->execute([':id' => $userId]);
                 $currentAuthMethod = (string)($currentStmt->fetchColumn() ?: 'sql');
-                $params[':auth_method'] = in_array($currentAuthMethod, ['oidc', 'saml'], true)
-                    ? $currentAuthMethod
-                    : 'sql';
             }
+
+            $params[':auth_method'] = AuthMethod::resolve($useLdap, $currentAuthMethod)->value;
         }
 
         if (empty($setFields)) {
