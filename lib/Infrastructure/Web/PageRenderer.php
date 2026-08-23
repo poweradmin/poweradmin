@@ -298,7 +298,10 @@ class PageRenderer
                 'api_enabled' => $this->config->get('api', 'enabled', false),
                 'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
                 'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
-                'api_docs_enabled' => $this->config->get('api', 'docs_enabled', false),
+                // Docs describe the API, so the nav link follows the API being
+                // enabled at all - otherwise it advertises an endpoint that 404s.
+                'api_docs_enabled' => $this->config->get('api', 'enabled', false)
+                    && $this->config->get('api', 'docs_enabled', false),
                 'module_nav_items' => $this->getModuleNavItems(),
                 'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
                 'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),

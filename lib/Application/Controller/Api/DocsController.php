@@ -53,9 +53,6 @@ class DocsController extends BaseController
     }
 
     /**
-     * Run the controller
-     */
-    /**
      * The docs page is read-only and is reachable without a session.
      */
     protected function requiresCsrfValidation(): bool
@@ -65,8 +62,9 @@ class DocsController extends BaseController
 
     public function run(): void
     {
-        // Check if API documentation is enabled
-        if (!$this->config->get('api', 'docs_enabled')) {
+        // Documentation describes the API, so it follows the API being enabled
+        // at all - not just its own toggle.
+        if (!$this->config->get('api', 'enabled', false) || !$this->config->get('api', 'docs_enabled', false)) {
             $response = new Response();
             $response->setStatusCode(404);
             $response->headers->set('Content-Type', 'text/html');
