@@ -46,26 +46,21 @@ class AvatarService
             return null;
         }
 
-        if ($priority === 'oauth') {
-            // Try OAuth first if enabled
-            if ($oauthEnabled && $oauthAvatarUrl && $this->isValidAvatarUrl($oauthAvatarUrl)) {
-                return $this->processAvatarUrl($oauthAvatarUrl, $size);
-            }
-            // Fallback to Gravatar if enabled
-            if ($gravatarEnabled && $email) {
-                return $this->getGravatarUrl($email, $size);
-            }
-        } elseif ($priority === 'gravatar') {
-            // Try Gravatar first if enabled
-            if ($gravatarEnabled && $email) {
-                $gravatarUrl = $this->getGravatarUrl($email, $size);
-                if ($gravatarUrl) {
-                    return $gravatarUrl;
-                }
-            }
-            // Fallback to OAuth if enabled
-            if ($oauthEnabled && $oauthAvatarUrl && $this->isValidAvatarUrl($oauthAvatarUrl)) {
-                return $this->processAvatarUrl($oauthAvatarUrl, $size);
+        $oauth = fn(): ?string => $oauthEnabled && $oauthAvatarUrl && $this->isValidAvatarUrl($oauthAvatarUrl)
+            ? $this->processAvatarUrl($oauthAvatarUrl, $size)
+            : null;
+        $gravatar = fn(): ?string => $gravatarEnabled && $email
+            ? $this->getGravatarUrl($email, $size)
+            : null;
+
+        // Only 'gravatar' reorders the providers, so an unrecognised
+        // avatar_priority falls back to OAuth-first instead of no avatar at all.
+        $providers = $priority === 'gravatar' ? [$gravatar, $oauth] : [$oauth, $gravatar];
+
+        foreach ($providers as $provider) {
+            $url = $provider();
+            if ($url !== null) {
+                return $url;
             }
         }
 
