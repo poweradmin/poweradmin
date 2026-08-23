@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Model;
 
 use DateTime;
 use JsonSerializable;
+use Poweradmin\Domain\Enum\ApiKeyStatus;
 
 /**
  * Class ApiKey
@@ -282,7 +283,20 @@ class ApiKey implements JsonSerializable
      */
     public function isValid(): bool
     {
-        return !$this->isDisabled() && !$this->hasExpired();
+        return $this->status()->isUsable();
+    }
+
+    /**
+     * Lifecycle state, derived from the disabled flag and the expiry date.
+     * Disabled wins when both apply, matching what the key list displays.
+     */
+    public function status(): ApiKeyStatus
+    {
+        if ($this->isDisabled()) {
+            return ApiKeyStatus::DISABLED;
+        }
+
+        return $this->hasExpired() ? ApiKeyStatus::EXPIRED : ApiKeyStatus::ACTIVE;
     }
 
     /**
@@ -412,6 +426,9 @@ class ApiKey implements JsonSerializable
             'lastUsedAt' => $this->lastUsedAt ? $this->lastUsedAt->format('Y-m-d H:i:s') : null,
             'disabled' => $this->disabled,
             'expiresAt' => $this->expiresAt ? $this->expiresAt->format('Y-m-d H:i:s') : null,
+            // The three booleans below are one three-valued fact; `status` is the
+            // one to read, they are kept for existing consumers.
+            'status' => $this->status()->value,
             'isExpired' => $this->hasExpired(),
             'isValid' => $this->isValid(),
             'creatorUsername' => $this->creatorUsername,
