@@ -413,15 +413,45 @@ class BootstrapErrorResponderTest extends TestCase
         $this->assertStringNotContainsString('#0 ', $log);
     }
 
-    public function testServerErrorIsLoggedWithItsStackTrace(): void
+    public function testServerErrorIsLoggedWithItsOriginRatherThanItsStackTrace(): void
     {
         $_SERVER['REQUEST_URI'] = '/api/v1/zones';
 
-        $this->capture(new Exception('database exploded'));
+        $exception = new Exception('database exploded');
+        $this->capture($exception);
 
         $log = $this->logContents();
         $this->assertStringContainsString('database exploded', $log);
-        $this->assertStringContainsString('#0 ', $log);
+        $this->assertStringContainsString(
+            'Exception in ' . $exception->getFile() . ':' . $exception->getLine(),
+            $log
+        );
+        $this->assertStringNotContainsString('#0 ', $log);
+    }
+
+    /**
+     * A trace prints call arguments, so logging one here would put every
+     * credential that reached this request into the error log.
+     */
+    public function testLoggedServerErrorDoesNotCarryCallArguments(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/api/v1/zones';
+
+        $ignoreArgs = (string) ini_get('zend.exception_ignore_args');
+        ini_set('zend.exception_ignore_args', '0');
+
+        try {
+            $this->capture($this->failingLogin('hunter2'));
+        } finally {
+            ini_set('zend.exception_ignore_args', $ignoreArgs);
+        }
+
+        $this->assertStringNotContainsString('hunter2', $this->logContents());
+    }
+
+    private function failingLogin(string $password): Throwable
+    {
+        return new Exception('authentication failed');
     }
 
     private function levelOne(): Throwable

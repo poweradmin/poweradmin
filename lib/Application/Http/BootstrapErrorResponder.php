@@ -62,7 +62,7 @@ final class BootstrapErrorResponder
 
     /**
      * 404 and 405 are routine routing outcomes rather than defects, so only a
-     * genuine failure is worth a stack trace at error level.
+     * genuine failure is worth recording where it came from.
      */
     private function log(Throwable $e): void
     {
@@ -72,7 +72,9 @@ final class BootstrapErrorResponder
             return;
         }
 
-        error_log($e->getTraceAsString());
+        // Origin rather than the trace. A trace prints call arguments, and this
+        // runs for every request, including the ones carrying a password.
+        error_log(sprintf('%s in %s:%d', $e::class, $e->getFile(), $e->getLine()));
     }
 
     private function respondJson(Throwable $e): void

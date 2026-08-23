@@ -88,7 +88,7 @@ class ForgotUsernameController extends BaseController
         } catch (\Exception $e) {
             $this->logger->error('Failed to initialize username recovery controller', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'origin' => $e->getFile() . ':' . $e->getLine()
             ]);
             throw $e; // Re-throw to let the application handle it
         }
@@ -229,7 +229,7 @@ class ForgotUsernameController extends BaseController
                 'email' => $email,
                 'ip' => $ipAddress,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'origin' => $e->getFile() . ':' . $e->getLine(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $this->showUsernameRecoveryForm('An unexpected error occurred. Please try again later.');

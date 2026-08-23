@@ -383,9 +383,9 @@ class UserProvisioningService extends LoggingService
 
             return $userId;
         } catch (\Exception $e) {
-            $this->logError('Error creating new OIDC user: {error}. Stack trace: {trace}', [
+            $this->logError('Error creating new OIDC user: {error} at {origin}', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'origin' => $e->getFile() . ':' . $e->getLine()
             ]);
             return null;
         }

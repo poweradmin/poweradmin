@@ -244,7 +244,7 @@ class ForgotPasswordController extends BaseController
                 'email' => $email,
                 'ip' => $ipAddress,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'origin' => $e->getFile() . ':' . $e->getLine(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $this->showPasswordResetForm('An unexpected error occurred. Please try again later.');
