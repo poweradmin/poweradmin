@@ -43,6 +43,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class EditUserController extends BaseController
 {
@@ -232,7 +233,7 @@ class EditUserController extends BaseController
         if ($auth['use_ldap']) {
             return true;
         }
-        if (in_array($user['auth_type'] ?? 'sql', UserContextService::EXTERNAL_AUTH_METHODS, true)) {
+        if (AuthMethod::fromDb($user['auth_type'] ?? null)->isExternal()) {
             return true;
         }
 
@@ -346,8 +347,7 @@ class EditUserController extends BaseController
      */
     public static function isIdpManaged(?string $currentAuthMethod, bool $ldapSynced = false): bool
     {
-        return in_array($currentAuthMethod, ['oidc', 'saml'], true)
-            || ($currentAuthMethod === 'ldap' && $ldapSynced);
+        return AuthMethod::fromDb($currentAuthMethod)->isIdpManaged($ldapSynced);
     }
 
     private function isLdapSyncEnabled(): bool
@@ -415,7 +415,7 @@ class EditUserController extends BaseController
         $permissions = $this->getUserPermissions($editId);
 
         // Check if password changes should be disabled for external auth users
-        $isExternalAuth = in_array($user['auth_type'] ?? 'sql', UserContextService::EXTERNAL_AUTH_METHODS, true);
+        $isExternalAuth = AuthMethod::fromDb($user['auth_type'] ?? null)->isExternal();
 
         // Fetch user's group memberships
         $groupMemberRepo = $this->createUserGroupMemberRepository();

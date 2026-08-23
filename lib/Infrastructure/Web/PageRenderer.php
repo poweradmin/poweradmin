@@ -38,6 +38,7 @@ use Poweradmin\Infrastructure\Utility\LanguageCode;
 use Poweradmin\Infrastructure\Service\StyleManager;
 use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Version;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
  * Renders the shared page chrome (header, footer, Twig globals) around
@@ -289,7 +290,7 @@ class PageRenderer
                 'session_key_error' => $perm_is_godlike && self::isWeakSessionKey($session_key) ? _('Default session encryption key is used, please set it in your configuration file.') : false,
                 'auth_used' => $this->userContextService->getAuthMethod() !== "ldap",  // Legacy variable for backward compatibility
                 'auth_method' => $this->userContextService->getAuthMethod() ?? 'internal',
-                'can_change_password' => !in_array($this->userContextService->getAuthMethod(), ['ldap', 'oidc', 'saml']),
+                'can_change_password' => AuthMethod::fromDb($this->userContextService->getAuthMethod())->allowsLocalPassword(),
                 'session_userid' => $this->userContextService->getLoggedInUserId() ?? 0,
                 'user_avatar_url' => $this->getUserAvatarUrl(),
                 'request' => $requestData,

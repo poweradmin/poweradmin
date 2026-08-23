@@ -27,6 +27,7 @@ use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class PasswordResetService
 {
@@ -88,9 +89,7 @@ class PasswordResetService
         }
 
         $authMethod = $user['auth_method'] ?? 'sql';
-        $blockedMethods = ['oidc', 'saml', 'ldap'];
-
-        if (in_array($authMethod, $blockedMethods, true)) {
+        if (AuthMethod::fromDb($authMethod)->isExternal()) {
             return [
                 'allowed' => false,
                 'auth_method' => $authMethod
@@ -170,7 +169,7 @@ class PasswordResetService
         // Check if user's authentication method allows password reset
         // OIDC, SAML, and LDAP users should only authenticate through their external providers
         $authMethod = $user['auth_method'] ?? 'sql';
-        if (in_array($authMethod, ['oidc', 'saml', 'ldap'], true)) {
+        if (AuthMethod::fromDb($authMethod)->isExternal()) {
             $this->logger->warning('Password reset blocked for external auth user', [
                 'email' => $email,
                 'auth_method' => $authMethod,
@@ -325,7 +324,7 @@ class PasswordResetService
         // External-auth users cannot reset their local password; their account
         // may have switched to OIDC/SAML/LDAP since the token was minted.
         $authMethod = $user['auth_method'] ?? 'sql';
-        if (in_array($authMethod, ['oidc', 'saml', 'ldap'], true)) {
+        if (AuthMethod::fromDb($authMethod)->isExternal()) {
             $this->logger->warning('Password reset token validation blocked for external auth user', [
                 'email' => $tokenData['email'],
                 'auth_method' => $authMethod,

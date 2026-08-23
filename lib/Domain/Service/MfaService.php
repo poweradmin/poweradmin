@@ -43,6 +43,7 @@ use RuntimeException;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class MfaService
 {
@@ -608,7 +609,7 @@ class MfaService
 
         // External IdP logins may be exempt - the IdP is trusted to enforce MFA itself
         if (
-            in_array($authMethod, UserContextService::EXTERNAL_AUTH_METHODS, true)
+            AuthMethod::fromDb($authMethod)->isExternal()
             && $this->configManager->get('security', 'mfa.skip_for_external_auth', false)
         ) {
             return false;

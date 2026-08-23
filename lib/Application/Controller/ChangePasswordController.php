@@ -45,6 +45,7 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class ChangePasswordController extends BaseController
 {
@@ -87,8 +88,7 @@ class ChangePasswordController extends BaseController
         $authUsed = $_SESSION[SessionKeys::AUTH_USED] ?? null;
 
         // Block external authentication users
-        $externalAuthMethods = ['ldap', 'oidc', 'saml'];
-        if (in_array($authUsed, $externalAuthMethods)) {
+        if (AuthMethod::fromDb($authUsed)->isExternal()) {
             $message = match ($authUsed) {
                 'ldap' => _('LDAP users cannot change their password here. Please contact your administrator.'),
                 'oidc', 'saml' => _('Users authenticated via Single Sign-On cannot change their password here. Please contact your administrator or change your password through your identity provider.'),

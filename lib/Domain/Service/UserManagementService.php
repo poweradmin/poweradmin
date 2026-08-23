@@ -26,6 +26,7 @@ use Exception;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Model\Pagination;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
  * Domain service for user management operations
@@ -355,9 +356,7 @@ class UserManagementService
             if (!empty($userData['password'])) {
                 $user = $this->userRepository->getUserById($userId);
                 $authMethod = $user['auth_method'] ?? 'sql';
-                $externalAuthMethods = ['oidc', 'saml', 'ldap'];
-
-                if (in_array($authMethod, $externalAuthMethods, true)) {
+                if (AuthMethod::fromDb($authMethod)->isExternal()) {
                     return [
                         'success' => false,
                         'message' => sprintf(

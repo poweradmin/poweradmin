@@ -42,6 +42,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Module\ModuleRegistry;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class IndexController extends BaseController
 {
@@ -114,7 +115,7 @@ class IndexController extends BaseController
                         !$permissions['user_edit_others'];
 
         // Determine if user can change password (internal auth only, not ldap/oidc/saml)
-        $canChangePassword = !in_array($this->userContextService->getAuthMethod(), ['ldap', 'oidc', 'saml']);
+        $canChangePassword = AuthMethod::fromDb($this->userContextService->getAuthMethod())->allowsLocalPassword();
 
         // Dashboard stats for admin users
         $dashboardStats = null;
