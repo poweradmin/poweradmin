@@ -348,7 +348,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LOGO_PATH` | Custom header logo path or URL; empty uses the bundled assets/logo.png | Empty | No |
 | `PA_BASE_URL` | Base URL for SAML auto-generation and interface configuration | Empty | No |
 | `PA_BASE_URL_PREFIX` | Base URL prefix for subdirectory deployments | Empty | No |
-| `PA_APPLICATION_URL` | Full application URL for emails and absolute links | Auto-detect | No |
+| `PA_APPLICATION_URL` | Full application URL for emails and absolute links. Required for OIDC, password reset and username recovery; these fail without it | Empty | Yes, for OIDC/SAML and email links |
 
 ### Interface UI Elements
 
