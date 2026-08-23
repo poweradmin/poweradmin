@@ -33,6 +33,7 @@ use Poweradmin\Infrastructure\Database\ZoneHealthSql;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
+use Poweradmin\Domain\Enum\ReverseZoneFilter;
 
 class DbZoneRepository implements ZoneRepositoryInterface
 {
@@ -185,19 +186,16 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 $params[':userId_group'] = $userId;
             }
 
-            // Add reverse zone type filter
-            $query .= " AND (";
-            if ($reverseType == 'all' || $reverseType == 'ipv4') {
-                $query .= "$domains_table.name LIKE '%.in-addr.arpa'";
-                if ($reverseType == 'all') {
-                    $query .= " OR ";
-                }
+            // Built from the enum so an unknown filter cannot emit an empty AND ()
+            $filter = ReverseZoneFilter::fromRequest($reverseType);
+            $clauses = [];
+            if ($filter->includesIpv4()) {
+                $clauses[] = "$domains_table.name LIKE '%.in-addr.arpa'";
             }
-
-            if ($reverseType == 'all' || $reverseType == 'ipv6') {
-                $query .= "$domains_table.name LIKE '%.ip6.arpa'";
+            if ($filter->includesIpv6()) {
+                $clauses[] = "$domains_table.name LIKE '%.ip6.arpa'";
             }
-            $query .= ")";
+            $query .= " AND (" . implode(' OR ', $clauses) . ")";
 
             $query .= ") AS distinct_domains";
 
@@ -251,19 +249,16 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $params[':userId_group'] = $userId;
         }
 
-        // Add reverse zone type filter at database level
-        $query .= " AND (";
-        if ($reverseType == 'all' || $reverseType == 'ipv4') {
-            $query .= "$domains_table.name LIKE '%.in-addr.arpa'";
-            if ($reverseType == 'all') {
-                $query .= " OR ";
-            }
+        // Built from the enum so an unknown filter cannot emit an empty AND ()
+        $filter = ReverseZoneFilter::fromRequest($reverseType);
+        $clauses = [];
+        if ($filter->includesIpv4()) {
+            $clauses[] = "$domains_table.name LIKE '%.in-addr.arpa'";
         }
-
-        if ($reverseType == 'all' || $reverseType == 'ipv6') {
-            $query .= "$domains_table.name LIKE '%.ip6.arpa'";
+        if ($filter->includesIpv6()) {
+            $clauses[] = "$domains_table.name LIKE '%.ip6.arpa'";
         }
-        $query .= ")";
+        $query .= " AND (" . implode(' OR ', $clauses) . ")";
 
         // GROUP BY only needed for non-count queries -
         // count queries are already handled and returned above

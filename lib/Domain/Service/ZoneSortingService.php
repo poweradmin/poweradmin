@@ -32,15 +32,11 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
+use Poweradmin\Domain\Enum\SortDirection;
+use Poweradmin\Domain\Enum\ReverseZoneFilter;
 
 class ZoneSortingService
 {
-    /**
-     * Accepted values for the reverse zone list filter. An unknown value reaches
-     * the repository query as an empty `AND ()` clause, so it must be rejected here.
-     */
-    private const REVERSE_ZONE_TYPES = ['all', 'ipv4', 'ipv6'];
-
     private ReverseZoneSorting $reverseZoneSorting;
     private UserContextService $userContextService;
 
@@ -99,11 +95,13 @@ class ZoneSortingService
 
     private function resolveSortDirection(string $key, string $sessionKey): ?string
     {
+        // tryFrom rather than fromRequest: null here means "nothing supplied",
+        // which the caller distinguishes from an explicit direction.
         foreach ([$_POST[$key] ?? null, $_GET[$key] ?? null] as $candidate) {
-            if ($candidate !== null && in_array(strtoupper($candidate), ['ASC', 'DESC'])) {
-                $value = strtoupper($candidate);
-                $this->userContextService->setSessionData($sessionKey, $value);
-                return $value;
+            $direction = is_string($candidate) ? SortDirection::tryFrom(strtoupper($candidate)) : null;
+            if ($direction !== null) {
+                $this->userContextService->setSessionData($sessionKey, $direction->value);
+                return $direction->value;
             }
         }
         return null;
@@ -152,18 +150,19 @@ class ZoneSortingService
      */
     public function getReverseZoneTypeFilter(): string
     {
-        // Compared against the allowlist rather than escaped: an array from
-        // `?reverse_type[]=` would make htmlspecialchars() throw a TypeError.
+        // tryFrom, not fromRequest: an unknown request value must leave a valid
+        // stored filter alone rather than resetting it to ALL.
         $requested = $_GET['reverse_type'] ?? null;
+        $filter = is_string($requested) ? ReverseZoneFilter::tryFrom($requested) : null;
 
-        if (in_array($requested, self::REVERSE_ZONE_TYPES, true)) {
-            $this->userContextService->setSessionData(SessionKeys::REVERSE_ZONE_TYPE, $requested);
-            return $requested;
+        if ($filter !== null) {
+            $this->userContextService->setSessionData(SessionKeys::REVERSE_ZONE_TYPE, $filter->value);
+            return $filter->value;
         }
 
         // Stored values predate this allowlist, so revalidate rather than trust the session.
-        $stored = $this->userContextService->getSessionData(SessionKeys::REVERSE_ZONE_TYPE);
-
-        return in_array($stored, self::REVERSE_ZONE_TYPES, true) ? $stored : 'all';
+        return ReverseZoneFilter::fromRequest(
+            $this->userContextService->getSessionData(SessionKeys::REVERSE_ZONE_TYPE)
+        )->value;
     }
 }

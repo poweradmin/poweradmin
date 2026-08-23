@@ -34,6 +34,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Domain\Enum\ReverseZoneFilter;
 
 class ApiZoneRepository implements ZoneRepositoryInterface
 {
@@ -150,17 +151,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 $params[':userId_group'] = $userId;
             }
 
-            $query .= " AND (";
-            if ($reverseType == 'all' || $reverseType == 'ipv4') {
-                $query .= "z.zone_name LIKE '%.in-addr.arpa'";
-                if ($reverseType == 'all') {
-                    $query .= " OR ";
-                }
-            }
-            if ($reverseType == 'all' || $reverseType == 'ipv6') {
-                $query .= "z.zone_name LIKE '%.ip6.arpa'";
-            }
-            $query .= ")) AS distinct_zones";
+            // Built from the enum so an unknown filter cannot emit an empty AND ()
+            $query .= " AND (" . $this->reverseZoneClause($reverseType) . ")) AS distinct_zones";
 
             $stmt = $this->db->prepare($query);
             foreach ($params as $param => $value) {
@@ -191,17 +183,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             $params[':userId_group'] = $userId;
         }
 
-        $query .= " AND (";
-        if ($reverseType == 'all' || $reverseType == 'ipv4') {
-            $query .= "z.zone_name LIKE '%.in-addr.arpa'";
-            if ($reverseType == 'all') {
-                $query .= " OR ";
-            }
-        }
-        if ($reverseType == 'all' || $reverseType == 'ipv6') {
-            $query .= "z.zone_name LIKE '%.ip6.arpa'";
-        }
-        $query .= ")";
+        // Built from the enum so an unknown filter cannot emit an empty AND ()
+        $query .= " AND (" . $this->reverseZoneClause($reverseType) . ")";
 
         // Sorting. The Type column is offered as sortable, so it needs its own
         // arm - without one it fell to the default and quietly sorted by name.
@@ -1049,5 +1032,24 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->execute();
         $username = $stmt->fetchColumn();
         return $username === false ? null : (string)$username;
+    }
+
+    /**
+     * OR-joined name predicates for the requested address family. Never empty:
+     * an unrecognised filter degrades to ALL rather than producing `AND ()`.
+     */
+    private function reverseZoneClause(string $reverseType): string
+    {
+        $filter = ReverseZoneFilter::fromRequest($reverseType);
+
+        $clauses = [];
+        if ($filter->includesIpv4()) {
+            $clauses[] = "z.zone_name LIKE '%.in-addr.arpa'";
+        }
+        if ($filter->includesIpv6()) {
+            $clauses[] = "z.zone_name LIKE '%.ip6.arpa'";
+        }
+
+        return implode(' OR ', $clauses);
     }
 }

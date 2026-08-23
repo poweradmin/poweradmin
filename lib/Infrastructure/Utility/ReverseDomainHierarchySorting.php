@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Utility;
 
+use Poweradmin\Domain\Enum\SortDirection;
+
 /**
  * Class ReverseDomainHierarchySorting
  *
@@ -45,11 +47,7 @@ class ReverseDomainHierarchySorting
      */
     public function getHierarchicalSortOrder(string $field, string $dbType, string $direction = 'ASC'): string
     {
-        // Normalize direction
-        $direction = strtoupper($direction);
-        if (!in_array($direction, ['ASC', 'DESC'])) {
-            $direction = 'ASC';
-        }
+        $direction = SortDirection::fromRequest($direction)->value;
 
         // Generate database-specific hierarchical sort
         return match ($dbType) {

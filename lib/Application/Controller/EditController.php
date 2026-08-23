@@ -76,6 +76,7 @@ use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Enum\SortDirection;
 
 class EditController extends BaseController
 {
@@ -720,7 +721,7 @@ class EditController extends BaseController
         $sortDirection = 'ASC';
 
         foreach ([$this->request->getQueryParams(), $this->request->getPostParams(), $_SESSION] as $source) {
-            if (isset($source[$name]) && in_array($source[$name], ['ASC', 'DESC'])) {
+            if (isset($source[$name]) && is_string($source[$name]) && SortDirection::isValid($source[$name])) {
                 $sortDirection = $source[$name];
                 $_SESSION[$name] = $source[$name];
                 break;

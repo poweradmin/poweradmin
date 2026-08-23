@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Utility;
 
+use Poweradmin\Domain\Enum\SortDirection;
+
 /**
  * Class ReverseDomainNaturalSorting
  *
@@ -43,11 +45,7 @@ class ReverseDomainNaturalSorting
      */
     public function getNaturalSortOrder(string $field, string $dbType, string $direction = 'ASC'): string
     {
-        // Normalize direction
-        $direction = strtoupper($direction);
-        if (!in_array($direction, ['ASC', 'DESC'])) {
-            $direction = 'ASC';
-        }
+        $direction = SortDirection::fromRequest($direction)->value;
 
         // Generate database-specific natural sort
         return match ($dbType) {
