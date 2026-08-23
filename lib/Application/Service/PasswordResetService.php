@@ -348,7 +348,7 @@ class PasswordResetService
      * @param string $newPassword
      * @return bool
      */
-    public function resetPassword(string $token, string $newPassword): bool
+    public function resetPassword(string $token, #[\SensitiveParameter] string $newPassword): bool
     {
         if (!$this->isEnabled()) {
             return false;

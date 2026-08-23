@@ -202,7 +202,7 @@ class DatabaseHelper
         }
     }
 
-    public function createAdministratorUser($pa_pass): void
+    public function createAdministratorUser(#[\SensitiveParameter] $pa_pass): void
     {
         // Create permission templates
         $templates = [

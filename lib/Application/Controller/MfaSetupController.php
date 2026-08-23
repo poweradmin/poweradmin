@@ -432,7 +432,7 @@ class MfaSetupController extends BaseController
         ]);
     }
 
-    private function displayAppVerification(string $secret): void
+    private function displayAppVerification(#[\SensitiveParameter] string $secret): void
     {
         // Get the user's email or username for the authenticator app
         $email = $this->userContextService->getUserEmail() ?? '';

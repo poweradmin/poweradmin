@@ -102,7 +102,7 @@ class EmailTemplateService
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function renderNewAccountEmail(string $username, string $password, string $fullname = ''): array
+    public function renderNewAccountEmail(string $username, #[\SensitiveParameter] string $password, string $fullname = ''): array
     {
         $greeting = empty($fullname) ? 'Hello' : "Hello $fullname";
 

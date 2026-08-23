@@ -28,12 +28,12 @@ class PasswordEncryptionService
     private const IV_LENGTH = 16;
     private string $session_key;
 
-    public function __construct(string $session_key)
+    public function __construct(#[\SensitiveParameter] string $session_key)
     {
         $this->session_key = $session_key;
     }
 
-    public function encrypt(string $password): string
+    public function encrypt(#[\SensitiveParameter] string $password): string
     {
         if (empty($password)) {
             return '';
@@ -45,7 +45,7 @@ class PasswordEncryptionService
         return openssl_encrypt($password, self::ALGORITHM, $key, 0, $iv) . ':' . base64_encode($iv);
     }
 
-    public function decrypt(string $password): string
+    public function decrypt(#[\SensitiveParameter] string $password): string
     {
         // Malformed or tampered input decrypts to an empty string.
         if (empty($password) || !str_contains($password, ':')) {

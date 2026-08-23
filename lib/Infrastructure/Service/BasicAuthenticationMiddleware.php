@@ -141,7 +141,7 @@ class BasicAuthenticationMiddleware
      * @param string $password The password
      * @return int User ID if authentication succeeded, 0 otherwise
      */
-    private function authenticateAndGetUserId(string $username, string $password): int
+    private function authenticateAndGetUserId(string $username, #[\SensitiveParameter] string $password): int
     {
         // Check if user exists
         if (!UserEntity::exists($this->db, $username)) {
@@ -210,7 +210,7 @@ class BasicAuthenticationMiddleware
      * @param string $password The password
      * @return bool True if authentication succeeded, false otherwise
      */
-    private function sqlAuthenticatorApiAuth(User $userModel, string $password): bool
+    private function sqlAuthenticatorApiAuth(User $userModel, #[\SensitiveParameter] string $password): bool
     {
         $hashedPassword = $userModel->getHashedPassword();
 
@@ -238,7 +238,7 @@ class BasicAuthenticationMiddleware
      * @param string $password The password
      * @return bool True if authentication succeeded, false otherwise
      */
-    private function ldapAuthenticatorApiAuth(int $userId, string $username, string $password): bool
+    private function ldapAuthenticatorApiAuth(int $userId, string $username, #[\SensitiveParameter] string $password): bool
     {
         // Get LDAP connection settings from config
         $ldapUri = $this->config->get('ldap', 'uri', '');

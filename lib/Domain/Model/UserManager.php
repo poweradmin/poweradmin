@@ -222,7 +222,7 @@ class UserManager
      *
      * @return boolean true if succesful, false otherwise
      */
-    public function editUser(int $id, string $user, string $fullname, string $email, string $perm_templ, string $description, int $active, string $user_password, $useLdap): bool
+    public function editUser(int $id, string $user, string $fullname, string $email, string $perm_templ, string $description, int $active, #[\SensitiveParameter] string $user_password, $useLdap): bool
     {
         $perm_edit_own = $this->hasPermission('user_edit_own');
         $perm_edit_others = $this->hasPermission('user_edit_others');

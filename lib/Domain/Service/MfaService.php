@@ -183,7 +183,7 @@ class MfaService
      * @param string|null $secret The secret key to check
      * @return bool True if the secret is valid, false otherwise
      */
-    public function isValidTotpSecret(?string $secret): bool
+    public function isValidTotpSecret(#[\SensitiveParameter] ?string $secret): bool
     {
         if ($secret === null || empty($secret)) {
             return false;
@@ -260,7 +260,7 @@ class MfaService
      * @param string $code The verification code to check
      * @return bool True if the code is valid, false otherwise
      */
-    public function verifyCode(int $userId, string $code): bool
+    public function verifyCode(int $userId, #[\SensitiveParameter] string $code): bool
     {
         $userMfa = $this->userMfaRepository->findByUserId($userId);
 
@@ -404,7 +404,7 @@ class MfaService
     /**
      * Generate a QR code SVG for MFA setup
      */
-    public function generateQrCodeSvg(string $email, string $secret): string
+    public function generateQrCodeSvg(string $email, #[\SensitiveParameter] string $secret): string
     {
         // Get the application name from configuration to use as the issuer
         $appName = $this->configManager->get('interface', 'title', 'Poweradmin');
