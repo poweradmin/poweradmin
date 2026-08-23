@@ -51,6 +51,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Enum\AccessScope;
 
 class AddRecordController extends BaseController
 {
@@ -127,7 +128,7 @@ class AddRecordController extends BaseController
 
         $this->checkCondition(ZoneType::isReadOnly($zone_type)
             || $perm_edit == "none"
-            || ($perm_edit == "own" || $perm_edit == "own_as_client")
+            || AccessScope::fromString($perm_edit)->isOwnedOnly()
             && !$user_is_zone_owner, _("You do not have the permission to add a record to this zone."));
 
         if ($this->isPost()) {

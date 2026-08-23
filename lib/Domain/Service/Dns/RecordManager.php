@@ -44,6 +44,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
+use Poweradmin\Domain\Enum\AccessScope;
 
 /**
  * Service class for managing DNS records
@@ -177,7 +178,7 @@ class RecordManager implements RecordManagerInterface
 
         [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
             throw new Exception(_("You do not have the permission to add a record to this zone."));
         }
 
@@ -281,7 +282,7 @@ class RecordManager implements RecordManagerInterface
 
         [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
             throw new Exception(_("You do not have the permission to add a record to this zone."));
         }
 
@@ -421,7 +422,7 @@ class RecordManager implements RecordManagerInterface
 
         $dns_ttl = $this->config->get('dns', 'ttl');
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
             $this->messageService->addSystemError(_("You do not have permission to edit this record."));
         } else {
             // Now validate the input with normalized name using the validation service
@@ -510,7 +511,7 @@ class RecordManager implements RecordManagerInterface
             return false;
         }
 
-        if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
+        if ($perm_edit == "all" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "1")) {
             $zone = $this->domainRepository->getDomainNameById($record['zid']);
             $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
             if (Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)) {
@@ -594,7 +595,7 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this comment."));
 
             return false;

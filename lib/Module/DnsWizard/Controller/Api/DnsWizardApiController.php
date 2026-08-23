@@ -34,6 +34,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Service\SessionKeys;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Poweradmin\Domain\Enum\AccessScope;
 
 /**
  * DNS Wizard Internal API Controller
@@ -353,7 +354,7 @@ class DnsWizardApiController extends InternalApiController
             if (
                 ZoneType::isReadOnly($zone_type)
                 || $perm_edit == "none"
-                || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)
+                || (AccessScope::fromString($perm_edit)->isOwnedOnly() && !$user_is_zone_owner)
             ) {
                 return $this->returnApiError('You do not have permission to add records to this zone', 403);
             }

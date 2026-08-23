@@ -40,6 +40,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Enum\AccessScope;
 
 class EditCommentController extends BaseController
 {
@@ -92,7 +93,7 @@ class EditCommentController extends BaseController
                    ($is_admin ||
                     ($perm_edit != "none" &&
                      ($perm_edit == "all" ||
-                      (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner))));
+                      (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner))));
 
         // For the form, we need to know if editing is disabled
         $perm_edit_comment = !$can_edit;

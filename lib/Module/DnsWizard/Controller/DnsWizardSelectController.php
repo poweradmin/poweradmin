@@ -29,6 +29,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Enum\AccessScope;
 
 /**
  * DNS Wizard Selection Controller
@@ -77,7 +78,7 @@ class DnsWizardSelectController extends BaseController
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && !$user_is_zone_owner)) {
             $this->showError(_('You do not have permission to add records to this zone.'));
         }
 
