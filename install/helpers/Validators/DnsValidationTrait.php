@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,10 +30,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 trait DnsValidationTrait
 {
-    private static function getDnsHostnameRegex(): string
-    {
-        return '/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z0-9-]{1,63})*\.?$/';
-    }
+    private const DNS_HOSTNAME_REGEX = '/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z0-9-]{1,63})*\.?$/';
 
     public function getDnsValidationConstraints(): array
     {
@@ -41,32 +38,32 @@ trait DnsValidationTrait
             'dns_hostmaster' => [
                 new Assert\NotBlank(),
                 new Length(max: 255, maxMessage: 'The hostmaster hostname cannot be longer than {{ limit }} characters'),
-                new Regex(pattern: self::getDnsHostnameRegex(), message: 'The hostmaster must be a valid hostname'),
+                new Regex(pattern: self::DNS_HOSTNAME_REGEX, message: 'The hostmaster must be a valid hostname'),
                 new Callback([$this, 'validateHostname'])
             ],
             'dns_ns1' => [
                 new Assert\NotBlank(),
                 new Length(max: 255, maxMessage: 'The 1st nameserver hostname cannot be longer than {{ limit }} characters'),
-                new Regex(pattern: self::getDnsHostnameRegex(), message: 'The 1st nameserver must be a valid hostname'),
+                new Regex(pattern: self::DNS_HOSTNAME_REGEX, message: 'The 1st nameserver must be a valid hostname'),
                 new Callback([$this, 'validateNameserver'])
             ],
             'dns_ns2' => [
                 new Assert\NotBlank(),
                 new Length(max: 255, maxMessage: 'The 2nd nameserver hostname cannot be longer than {{ limit }} characters'),
-                new Regex(pattern: self::getDnsHostnameRegex(), message: 'The 2nd nameserver must be a valid hostname'),
+                new Regex(pattern: self::DNS_HOSTNAME_REGEX, message: 'The 2nd nameserver must be a valid hostname'),
                 new Callback([$this, 'validateNameserver'])
             ],
             'dns_ns3' => [
                 new Assert\Optional([
                     new Length(max: 255, maxMessage: 'The 3rd nameserver hostname cannot be longer than {{ limit }} characters'),
-                    new Regex(pattern: self::getDnsHostnameRegex(), message: 'The 3rd nameserver must be a valid hostname'),
+                    new Regex(pattern: self::DNS_HOSTNAME_REGEX, message: 'The 3rd nameserver must be a valid hostname'),
                     new Callback([$this, 'validateNameserver'])
                 ])
             ],
             'dns_ns4' => [
                 new Assert\Optional([
                     new Length(max: 255, maxMessage: 'The 4th nameserver hostname cannot be longer than {{ limit }} characters'),
-                    new Regex(pattern: self::getDnsHostnameRegex(), message: 'The 4th nameserver must be a valid hostname'),
+                    new Regex(pattern: self::DNS_HOSTNAME_REGEX, message: 'The 4th nameserver must be a valid hostname'),
                     new Callback([$this, 'validateNameserver'])
                 ])
             ],
