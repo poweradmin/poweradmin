@@ -53,7 +53,6 @@ class MfaSessionManager
      */
     public static function setMfaRequired(int $userId): void
     {
-        $_SESSION[SessionKeys::USER_ID] = $userId;
         $_SESSION[SessionKeys::MFA_STATUS] = 'required';
         $_SESSION[SessionKeys::AUTHENTICATED] = false;
         $_SESSION[SessionKeys::MFA_REQUIRED] = true;
