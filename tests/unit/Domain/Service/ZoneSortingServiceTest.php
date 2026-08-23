@@ -222,4 +222,30 @@ class ZoneSortingServiceTest extends TestCase
     {
         $this->assertSame('all', $this->service->getReverseZoneTypeFilter());
     }
+
+    #[Test]
+    public function getReverseZoneTypeFilterRejectsUnknownRequestValue(): void
+    {
+        $_GET['reverse_type'] = 'bogus';
+
+        $this->assertSame('all', $this->service->getReverseZoneTypeFilter());
+        $this->assertArrayNotHasKey(SessionKeys::REVERSE_ZONE_TYPE, $_SESSION);
+    }
+
+    #[Test]
+    public function getReverseZoneTypeFilterKeepsStoredValueWhenRequestValueIsInvalid(): void
+    {
+        $_SESSION[SessionKeys::REVERSE_ZONE_TYPE] = 'ipv6';
+        $_GET['reverse_type'] = 'bogus';
+
+        $this->assertSame('ipv6', $this->service->getReverseZoneTypeFilter());
+    }
+
+    #[Test]
+    public function getReverseZoneTypeFilterDiscardsUnknownStoredValue(): void
+    {
+        $_SESSION[SessionKeys::REVERSE_ZONE_TYPE] = 'bogus';
+
+        $this->assertSame('all', $this->service->getReverseZoneTypeFilter());
+    }
 }

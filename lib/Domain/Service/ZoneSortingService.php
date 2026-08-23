@@ -35,6 +35,12 @@ use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 
 class ZoneSortingService
 {
+    /**
+     * Accepted values for the reverse zone list filter. An unknown value reaches
+     * the repository query as an empty `AND ()` clause, so it must be rejected here.
+     */
+    private const REVERSE_ZONE_TYPES = ['all', 'ipv4', 'ipv6'];
+
     private ReverseZoneSorting $reverseZoneSorting;
     private UserContextService $userContextService;
 
@@ -146,12 +152,18 @@ class ZoneSortingService
      */
     public function getReverseZoneTypeFilter(): string
     {
-        if (isset($_GET['reverse_type'])) {
-            $reverse_zone_type = htmlspecialchars($_GET['reverse_type']);
-            $this->userContextService->setSessionData(SessionKeys::REVERSE_ZONE_TYPE, $reverse_zone_type);
-            return $reverse_zone_type;
+        // Compared against the allowlist rather than escaped: an array from
+        // `?reverse_type[]=` would make htmlspecialchars() throw a TypeError.
+        $requested = $_GET['reverse_type'] ?? null;
+
+        if (in_array($requested, self::REVERSE_ZONE_TYPES, true)) {
+            $this->userContextService->setSessionData(SessionKeys::REVERSE_ZONE_TYPE, $requested);
+            return $requested;
         }
 
-        return $this->userContextService->getSessionData(SessionKeys::REVERSE_ZONE_TYPE) ?? 'all';
+        // Stored values predate this allowlist, so revalidate rather than trust the session.
+        $stored = $this->userContextService->getSessionData(SessionKeys::REVERSE_ZONE_TYPE);
+
+        return in_array($stored, self::REVERSE_ZONE_TYPES, true) ? $stored : 'all';
     }
 }
