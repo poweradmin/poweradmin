@@ -22,12 +22,12 @@
 
 namespace Poweradmin\Domain\Model;
 
-class User
+readonly class User
 {
     public function __construct(
-        private readonly int $id,
-        #[\SensitiveParameter] private readonly string $password,
-        private readonly bool $useLdap
+        private int $id,
+        #[\SensitiveParameter] private string $password,
+        private bool $useLdap
     ) {
     }
 

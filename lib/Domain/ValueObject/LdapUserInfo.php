@@ -25,14 +25,14 @@ namespace Poweradmin\Domain\ValueObject;
 /**
  * Value object representing user information read from an LDAP entry
  */
-class LdapUserInfo implements UserInfoInterface
+readonly class LdapUserInfo implements UserInfoInterface
 {
     public function __construct(
-        private readonly string $username,
-        private readonly string $email = '',
-        private readonly string $displayName = '',
-        private readonly array $groups = [],
-        private readonly string $subject = ''
+        private string $username,
+        private string $email = '',
+        private string $displayName = '',
+        private array $groups = [],
+        private string $subject = ''
     ) {
     }
 

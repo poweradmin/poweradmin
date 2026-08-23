@@ -37,7 +37,7 @@ namespace Poweradmin\Domain\Service;
  * the API, and there an unknown value means "leave the feature visible". See
  * viewsUnavailableReason().
  */
-final class PdnsCapabilities
+final readonly class PdnsCapabilities
 {
     /** Reasons Views and Networks cannot be used. @see viewsUnavailableReason() */
     public const VIEWS_NEED_VERSION = 'version';

@@ -32,7 +32,7 @@ namespace Poweradmin\Domain\Model;
  *
  * @package Poweradmin\Domain\Model
  */
-final class ApiKeyScope
+final readonly class ApiKeyScope
 {
     public const OP_VIEW = 'view';
     public const OP_CREATE = 'create';
@@ -47,9 +47,9 @@ final class ApiKeyScope
      * @param bool $isReadonly When true, only view (GET) requests are allowed
      */
     public function __construct(
-        private readonly ?array $zoneIds,
-        private readonly ?array $operations,
-        private readonly bool $isReadonly
+        private ?array $zoneIds,
+        private ?array $operations,
+        private bool $isReadonly
     ) {
     }
 
