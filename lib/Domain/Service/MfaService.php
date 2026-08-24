@@ -267,6 +267,13 @@ class MfaService
      */
     public function verifyCode(int $userId, string $code): bool
     {
+        // A recovery code is the documented way back into a locked account, so it is
+        // checked before the gate; 10 random characters need no brute-force ceiling.
+        if ($this->consumeRecoveryCode($userId, $code)) {
+            $this->recordVerificationOutcome($userId, true);
+            return true;
+        }
+
         if ($this->isVerificationLocked($userId)) {
             $this->logger->warning('Verification refused - too many failed attempts for user ID: {userId}', ['userId' => $userId]);
             return false;
@@ -332,6 +339,28 @@ class MfaService
         $this->userMfaRepository->save($userMfa);
     }
 
+    /**
+     * Consume the supplied code if it is one of the user's recovery codes.
+     */
+    private function consumeRecoveryCode(int $userId, string $code): bool
+    {
+        $userMfa = $this->userMfaRepository->findByUserId($userId);
+
+        if (!$userMfa || !$userMfa->getSecret()) {
+            return false;
+        }
+
+        if (!$userMfa->validateRecoveryCode($code)) {
+            return false;
+        }
+
+        $this->logger->info('Valid recovery code used by user ID: {userId}', ['userId' => $userId]);
+        // Recovery code is removed from the list in validateRecoveryCode
+        $this->userMfaRepository->save($userMfa);
+
+        return true;
+    }
+
     private function checkCode(int $userId, string $code): bool
     {
         $userMfa = $this->userMfaRepository->findByUserId($userId);
@@ -351,14 +380,6 @@ class MfaService
         }
 
         $this->logger->debug('Verifying code for user ID: {userId}, type: {type}', ['userId' => $userId, 'type' => $mfaType]);
-
-        // First, check if the code matches a recovery code
-        if ($userMfa->validateRecoveryCode($code)) {
-            $this->logger->info('Valid recovery code used by user ID: {userId}', ['userId' => $userId]);
-            // Recovery code is removed from the list in validateRecoveryCode
-            $this->userMfaRepository->save($userMfa);
-            return true;
-        }
 
         // For email type, verify with direct comparison
         if ($mfaType === UserMfa::TYPE_EMAIL) {
