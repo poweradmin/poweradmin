@@ -651,4 +651,67 @@ class MfaServiceTest extends TestCase
         $result = $this->service->verifyCode($userId, '123456');
         $this->assertFalse($result);
     }
+
+    #[Test]
+    public function aRecoveryCodeStillWorksWhileTheSecondFactorIsLockedOut(): void
+    {
+        $userId = 1;
+        $userMfa = UserMfa::create(
+            $userId,
+            true,
+            'JBSWY3DPEHPK3PXP',
+            json_encode(['recovery-one', 'recovery-two']),
+            UserMfa::TYPE_APP,
+            json_encode(['failed_attempts' => 0, 'locked_until' => time() + 900])
+        );
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+
+        // The printed recovery code is the only way back in, so the lockout must
+        // not swallow it.
+        $this->assertTrue($this->service->verifyCode($userId, 'recovery-one'));
+    }
+
+    #[Test]
+    public function aWrongCodeIsStillRefusedWhileLockedOut(): void
+    {
+        $userId = 1;
+        $userMfa = UserMfa::create(
+            $userId,
+            true,
+            'JBSWY3DPEHPK3PXP',
+            json_encode(['recovery-one']),
+            UserMfa::TYPE_APP,
+            json_encode(['failed_attempts' => 0, 'locked_until' => time() + 900])
+        );
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+
+        $this->assertFalse($this->service->verifyCode($userId, '123456'));
+    }
+
+    #[Test]
+    public function aSpentRecoveryCodeIsNotAcceptedTwice(): void
+    {
+        $userId = 1;
+        $userMfa = UserMfa::create(
+            $userId,
+            true,
+            'JBSWY3DPEHPK3PXP',
+            json_encode(['recovery-one']),
+            UserMfa::TYPE_APP,
+            json_encode(['locked_until' => time() + 900])
+        );
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+
+        $this->assertTrue($this->service->verifyCode($userId, 'recovery-one'));
+        $this->assertFalse($this->service->verifyCode($userId, 'recovery-one'));
+    }
 }
