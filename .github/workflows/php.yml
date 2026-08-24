@@ -221,6 +221,14 @@ jobs:
     - name: Fix vendor binary permissions
       run: chmod +x vendor/bin/*
 
+    # All four matrix jobs re-download the same pinned phan phar otherwise.
+    # Keyed on composer.json so a phan version bump invalidates it.
+    - name: Cache phan phar
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: .phan/phan.phar
+        key: ${{ runner.os }}-phan-${{ hashFiles('composer.json') }}
+
     - name: Check PHP ${{ matrix.php-version }} compatibility
       run: composer compat:${{ matrix.php-version }}
 
