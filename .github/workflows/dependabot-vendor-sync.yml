@@ -1,0 +1,191 @@
+name: dependabot vendor sync
+
+# vendor/ is tracked as a no-dev optimized tree, but dependabot only ever edits
+# composer.json and composer.lock. Every composer PR it opens therefore fails the
+# Vendor Integrity gate until someone regenerates vendor/ and pushes it. This job
+# does that regeneration on the open PRs so they can merge on their own.
+#
+# The push must not use GITHUB_TOKEN: pushes made with it do not start new
+# workflow runs, so the PR head would move to a commit that never reports the
+# required checks and the PR would hang forever. A GitHub App installation token
+# does trigger runs, which is why one is minted here.
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: 'Only sweep this PR number (blank sweeps all open composer PRs)'
+        type: string
+        default: ''
+      dry_run:
+        description: 'Report what would change without pushing'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# A second sweep pushing the same branches would race the first.
+concurrency:
+  group: dependabot-vendor-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Regenerate vendor (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.repository == 'poweradmin/poweradmin'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # release/3.x pins its Vendor Integrity gate to 8.1; every other branch
+          # uses 8.2. Generating on the wrong one can produce a tree the gate
+          # rejects, so each is swept separately.
+          - php: '8.2'
+            scope: 'others'
+          - php: '8.1'
+            scope: 'release-3x'
+
+    steps:
+      - name: Check app credentials
+        id: creds
+        env:
+          APP_ID: ${{ secrets.VENDOR_SYNC_APP_ID }}
+        run: |
+          if [ -z "${APP_ID}" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::VENDOR_SYNC_APP_ID is not set; nothing to do until the app is installed."
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Mint app token
+        id: token
+        if: steps.creds.outputs.configured == 'true'
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.VENDOR_SYNC_APP_ID }}
+          private-key: ${{ secrets.VENDOR_SYNC_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.creds.outputs.configured == 'true'
+        with:
+          token: ${{ steps.token.outputs.token }}
+          fetch-depth: 0
+
+      - name: Setup PHP
+        if: steps.creds.outputs.configured == 'true'
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      - name: Regenerate vendor on open dependabot composer PRs
+        if: steps.creds.outputs.configured == 'true'
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+          SCOPE: ${{ matrix.scope }}
+          ONLY_PR: ${{ inputs.pr }}
+          DRY_RUN: ${{ inputs.dry_run || false }}
+        run: |
+          set -euo pipefail
+
+          THREE_X_PREFIX="dependabot/composer/release/3.x/"
+
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" \
+            --jq '.[]
+                  | select(.user.login == "dependabot[bot]")
+                  | select(.head.repo.full_name == "'"${GITHUB_REPOSITORY}"'")
+                  | select(.head.ref | startswith("dependabot/composer/"))
+                  | [.number, .head.ref, .base.ref] | @tsv' > prs.tsv
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          touched=0
+          skipped=0
+          failed=0
+          summary=""
+
+          while IFS=$'\t' read -r num ref base; do
+            [ -n "${num:-}" ] || continue
+
+            # Split the work so each PR is generated on the PHP version its own
+            # branch's gate uses.
+            case "$ref" in
+              "${THREE_X_PREFIX}"*) want="release-3x" ;;
+              *) want="others" ;;
+            esac
+            [ "$want" = "$SCOPE" ] || continue
+
+            if [ -n "$ONLY_PR" ] && [ "$ONLY_PR" != "$num" ]; then
+              continue
+            fi
+
+            echo "::group::PR #${num} (${base}) ${ref}"
+
+            if ! git fetch --quiet origin "${ref}"; then
+              echo "::warning::could not fetch ${ref}"
+              failed=$((failed + 1))
+              echo "::endgroup::"
+              continue
+            fi
+            git checkout --quiet -B "sync/${num}" "origin/${ref}"
+            git clean -ffdq vendor/ || true
+            git checkout --quiet -- vendor/ || true
+
+            composer install --no-dev --prefer-dist --no-progress --no-scripts
+            composer dump-autoload --optimize
+
+            # installed.php records the repo's own commit SHA, so it can never
+            # match. The gate discards it before diffing; do the same here.
+            git checkout --quiet -- vendor/composer/installed.php || true
+
+            if git diff --quiet vendor/; then
+              echo "vendor already matches composer.lock, nothing to do"
+              skipped=$((skipped + 1))
+              summary="${summary}- #${num} (${base}): already in sync\n"
+              echo "::endgroup::"
+              continue
+            fi
+
+            git diff --stat vendor/ | tail -5
+            git add vendor/
+            git commit -q -m "chore(deps): optimize vendor for production"
+
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "dry run, not pushing"
+              summary="${summary}- #${num} (${base}): would regenerate\n"
+              echo "::endgroup::"
+              continue
+            fi
+
+            if git push --quiet origin "HEAD:${ref}"; then
+              touched=$((touched + 1))
+              summary="${summary}- #${num} (${base}): vendor regenerated\n"
+            else
+              failed=$((failed + 1))
+              echo "::error::push to ${ref} failed"
+              summary="${summary}- #${num} (${base}): PUSH FAILED\n"
+            fi
+            echo "::endgroup::"
+          done < prs.tsv
+
+          {
+            echo "### Vendor sync (PHP ${{ matrix.php }})"
+            echo ""
+            if [ -z "$summary" ]; then
+              echo "No open dependabot composer PRs in scope."
+            else
+              printf "%b" "$summary"
+              echo ""
+              echo "Regenerated: ${touched} | already in sync: ${skipped} | failed: ${failed}"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # A push failure leaves the PR red, which is the state this job exists
+          # to clear, so surface it rather than reporting success.
+          [ "$failed" -eq 0 ]
