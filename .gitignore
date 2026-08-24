@@ -74,6 +74,7 @@ locale/**/*.po.backup.*
 
 # PHP tools
 /.php-cs-fixer.cache
+/.phpstan-cache/
 .phan/phan.phar
 .phpdoc/phpDocumentor.phar
 

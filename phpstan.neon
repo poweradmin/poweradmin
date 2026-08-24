@@ -4,6 +4,9 @@ includes:
   - vendor/spaze/phpstan-disallowed-calls/extension.neon
 
 parameters:
+  # Pinned so CI can persist the result cache between runs; PHPStan
+  # invalidates entries itself by file/config/version hash.
+  tmpDir: .phpstan-cache
   excludePaths:
     - vendor
   # Global helpers loaded via require_once in entry points; lets targeted

@@ -141,6 +141,14 @@ jobs:
     - name: Fix vendor binary permissions
       run: chmod +x vendor/bin/*
 
+    - name: Cache PHPStan result cache
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: .phpstan-cache
+        key: ${{ runner.os }}-phpstan-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-phpstan-
+
     - name: Run PHPStan analysis
       run: composer analyse:phpstan
 
