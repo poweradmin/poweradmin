@@ -105,7 +105,7 @@
         "! grep -rnE 'zg[0-9]*\\.domain_id *(= *z[0-9_]*\\.id\\b|IN *\\( *z[0-9_]*\\.id)' lib/ || (echo 'ERROR: match zones_groups.domain_id against COALESCE(z.domain_id, z.id); zones.id and zones.domain_id overlap, see CanonicalZoneSql' && false)"
     ],
     "lint:sensitive-params": [
-        "! grep -rnE '\\??string \\$(password|passwd|newPassword|oldPassword|user_password|plainPassword|currentPassword|paPass|pa_pass|dbPass)\\b' lib/ install/ --include='*.php' | grep -vE ':[0-9]+:[[:space:]]*\\*' | grep -v 'SensitiveParameter' || (echo 'ERROR: annotate the parameter above with #[\\SensitiveParameter]; the attribute does not inherit, so every frame carrying a password needs its own' && false)"
+        "! grep -rnE '\\??string \\$(password|passwd|newPassword|oldPassword|user_password|plainPassword|currentPassword|paPass|pa_pass|dbPass|secret)\\b' lib/ install/ --include='*.php' | grep -vE ':[0-9]+:[[:space:]]*\\*' | grep -v 'SensitiveParameter' || (echo 'ERROR: annotate the parameter above with #[\\SensitiveParameter]; the attribute does not inherit, so every frame carrying a password needs its own' && false)"
     ],
     "lint:error-traces": [
         "! grep -rnE 'getTrace(AsString)?\\(\\)' lib/ install/ index.php dynamic_update.php --include='*.php' | grep -vE ':[0-9]+:[[:space:]]*\\*' | grep -v 'BootstrapErrorResponder.php' || (echo 'ERROR: a stack trace prints call arguments, including passwords. Log the file and line instead of the trace. The only permitted traces live in BootstrapErrorResponder, gated behind misc.display_errors' && false)"

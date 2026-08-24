@@ -363,9 +363,9 @@ class UserProvisioningService extends LoggingService
             ]);
 
             if (!$success) {
-                $errorInfo = $stmt->errorInfo();
+                $errorInfo = implode(' - ', $stmt->errorInfo());
                 $this->logError('Database INSERT failed. PDO Error: {error}', ['error' => $errorInfo]);
-                throw new \RuntimeException('Failed to insert user. PDO Error: ' . implode(' - ', $errorInfo));
+                throw new \RuntimeException('Failed to insert user. PDO Error: ' . $errorInfo);
             }
 
             $userId = (int)$this->db->lastInsertId('users_id_seq');
@@ -383,7 +383,8 @@ class UserProvisioningService extends LoggingService
 
             return $userId;
         } catch (\Exception $e) {
-            $this->logError('Error creating new OIDC user: {error} at {origin}', [
+            $this->logError('Error creating new {method} user: {error} at {origin}', [
+                'method' => strtoupper($authMethod),
                 'error' => $e->getMessage(),
                 'origin' => $e->getFile() . ':' . $e->getLine()
             ]);
