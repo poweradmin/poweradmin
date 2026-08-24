@@ -107,13 +107,17 @@
     "lint:sensitive-params": [
         "! grep -rnE '\\??string \\$(password|passwd|newPassword|oldPassword|user_password|plainPassword|currentPassword|paPass|pa_pass|dbPass)\\b' lib/ install/ --include='*.php' | grep -vE ':[0-9]+:[[:space:]]*\\*' | grep -v 'SensitiveParameter' || (echo 'ERROR: annotate the parameter above with #[\\SensitiveParameter]; the attribute does not inherit, so every frame carrying a password needs its own' && false)"
     ],
+    "lint:error-traces": [
+        "! grep -rnE 'getTrace(AsString)?\\(\\)' lib/ install/ index.php dynamic_update.php --include='*.php' | grep -vE ':[0-9]+:[[:space:]]*\\*' | grep -v 'BootstrapErrorResponder.php' || (echo 'ERROR: a stack trace prints call arguments, including passwords. Log the file and line instead of the trace. The only permitted traces live in BootstrapErrorResponder, gated behind misc.display_errors' && false)"
+    ],
     "analyse:all": [
         "@check:all",
         "@analyse:phpstan",
         "@lint:twig",
         "@lint:themes",
         "@lint:zone-ids",
-        "@lint:sensitive-params"
+        "@lint:sensitive-params",
+        "@lint:error-traces"
     ],
 
     "locale:check": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -q 'fatal error'; then echo \"FAIL: $f\"; failed=1; fi; done; exit $failed",
