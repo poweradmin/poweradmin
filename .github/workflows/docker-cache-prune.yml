@@ -1,0 +1,91 @@
+name: docker cache prune
+
+# The GHA cache index goes on referencing blobs long after the storage backend
+# has collected them, and buildx treats the resulting 404 as a fatal build
+# error rather than a cache miss. The whole buildkit set is dropped together:
+# aged blobs alone would leave the index pointing at entries that are gone,
+# which is the same breakage this job exists to prevent.
+on:
+  schedule:
+    - cron: '0 5 * * 0'
+  workflow_dispatch:
+    inputs:
+      max_age_days:
+        description: 'Prune once the oldest buildkit blob is older than this many days'
+        default: '60'
+      dry_run:
+        description: 'List what would be deleted without deleting it'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  prune:
+    name: Prune aged buildkit caches
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Prune buildkit cache entries
+      env:
+        GH_TOKEN: ${{ github.token }}
+        MAX_AGE_DAYS: ${{ inputs.max_age_days || '60' }}
+        DRY_RUN: ${{ inputs.dry_run || false }}
+      run: |
+        set -euo pipefail
+
+        gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/caches?per_page=100" \
+          --jq '.actions_caches[] | [.id, .key, .created_at] | @tsv' > caches.tsv
+
+        # last_accessed_at is bumped by every run that consults the cache, so a
+        # year-old entry still reads as fresh. Only created_at shows real age.
+        cutoff=$(date -u -d "${MAX_AGE_DAYS} days ago" +%s)
+
+        stale=0
+        echo "::group::Aged buildkit blobs"
+        while IFS=$'\t' read -r id key created; do
+          case "$key" in buildkit-blob-*) ;; *) continue ;; esac
+          if [ "$(date -u -d "$created" +%s)" -lt "$cutoff" ]; then
+            stale=$((stale + 1))
+            echo "${key} (created ${created})"
+          fi
+        done < caches.tsv
+        echo "::endgroup::"
+
+        if [ "$stale" -eq 0 ]; then
+          echo "No buildkit blob older than ${MAX_AGE_DAYS} days. Nothing to prune."
+          exit 0
+        fi
+
+        grep -E $'\t'"(buildkit-blob-|index-buildkit-)" caches.tsv > targets.tsv || true
+        total=$(wc -l < targets.tsv | tr -d ' ')
+        echo "${stale} aged blob(s) found. Dropping the whole buildkit set: ${total} entries."
+        echo "The next Docker build repopulates the cache and will be slow."
+
+        if [ "$DRY_RUN" = "true" ]; then
+          echo "::group::Would delete"
+          cut -f2 targets.tsv
+          echo "::endgroup::"
+          exit 0
+        fi
+
+        deleted=0
+        failed=0
+        while IFS=$'\t' read -r id key created; do
+          if gh api -X DELETE "repos/${GITHUB_REPOSITORY}/actions/caches/${id}" --silent 2>/dev/null; then
+            deleted=$((deleted + 1))
+          else
+            failed=$((failed + 1))
+            echo "could not delete ${key} (id ${id})"
+          fi
+        done < targets.tsv
+
+        {
+          echo "### Docker cache prune"
+          echo ""
+          echo "- Aged blobs (older than ${MAX_AGE_DAYS} days): ${stale}"
+          echo "- Entries deleted: ${deleted}"
+          echo "- Entries that could not be deleted: ${failed}"
+        } >> "$GITHUB_STEP_SUMMARY"
