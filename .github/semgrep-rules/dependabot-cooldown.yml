@@ -1,0 +1,62 @@
+# Local copy of the registry rule
+# package_managers.dependabot.dependabot-missing-cooldown, which hardcodes a
+# 7-day floor. The docker entries take patch updates only, which is where base
+# image fixes land, so 3 days is the floor we want. The registry rule is
+# excluded in .github/workflows/semgrep.yml so the two do not both report.
+#
+# Derived from https://semgrep.dev/r/package_managers.dependabot.dependabot-missing-cooldown.dependabot-missing-cooldown
+# Semgrep Rules License v1.0, https://semgrep.dev/legal/rules-license
+rules:
+  - id: dependabot-cooldown-too-short
+    pattern-either:
+      - patterns:
+          - pattern-inside: |
+              updates:
+                ...
+          - pattern: |
+              - package-ecosystem: $ECOSYSTEM
+                ...
+          - pattern-not: |
+              - package-ecosystem: $ECOSYSTEM
+                ...
+                cooldown:
+                  ...
+                ...
+      - patterns:
+          - pattern-inside: |
+              updates:
+                ...
+          - pattern-regex: default-days\s*:\s*(?P<DAYS>\d+)
+          - metavariable-comparison:
+              metavariable: $DAYS
+              comparison: int($DAYS) < 3
+          - focus-metavariable: $DAYS
+      - patterns:
+          - pattern-inside: |
+              updates:
+                ...
+          - pattern: |
+              cooldown:
+                default-days: $DAYS
+          - metavariable-regex:
+              metavariable: $DAYS
+              regex: ^\D
+          - focus-metavariable: $DAYS
+    message: >-
+      This package-ecosystem entry sets no cooldown, or one shorter than 3 days.
+      Newly published packages can be malicious or unstable. Add a cooldown block
+      with default-days of at least 3.
+    languages:
+      - yaml
+    severity: WARNING
+    paths:
+      include:
+        - "**/.github/dependabot.yml"
+        - "**/.github/dependabot.yaml"
+    metadata:
+      category: security
+      technology:
+        - dependabot
+      cwe:
+        - "CWE-829: Inclusion of Functionality from Untrusted Control Sphere"
+      confidence: HIGH
