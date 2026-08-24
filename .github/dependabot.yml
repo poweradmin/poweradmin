@@ -20,10 +20,8 @@ updates:
       prefix: "chore(deps)"
       prefix-development: "chore(deps-dev)"
     groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
+      composer:
+        patterns: ["*"]
     ignore:
       - dependency-name: "phpunit/phpunit"
         versions: [">=12.0"]
@@ -96,10 +94,8 @@ updates:
       prefix: "chore(deps)"
       prefix-development: "chore(deps-dev)"
     groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
+      composer:
+        patterns: ["*"]
     ignore:
       - dependency-name: "phpunit/phpunit"
         versions: [">=12.0"]
@@ -168,10 +164,8 @@ updates:
       prefix: "chore(deps)"
       prefix-development: "chore(deps-dev)"
     groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
+      composer:
+        patterns: ["*"]
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major", "version-update:semver-minor"]
@@ -223,10 +217,8 @@ updates:
       prefix: "chore(deps)"
       prefix-development: "chore(deps-dev)"
     groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
+      composer:
+        patterns: ["*"]
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major", "version-update:semver-minor"]
@@ -278,10 +270,8 @@ updates:
       prefix: "chore(deps)"
       prefix-development: "chore(deps-dev)"
     groups:
-      production-dependencies:
-        dependency-type: "production"
-      development-dependencies:
-        dependency-type: "development"
+      composer:
+        patterns: ["*"]
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major", "version-update:semver-minor"]
