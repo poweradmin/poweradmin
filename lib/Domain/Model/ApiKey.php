@@ -438,4 +438,9 @@ class ApiKey implements JsonSerializable
             'zoneIds' => $this->zoneIds,
         ];
     }
+
+    public function phpstanCacheProbe(): int
+    {
+        return "definitely not an int";
+    }
 }
