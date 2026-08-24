@@ -143,6 +143,26 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
     }
 
     #[Test]
+    public function deletingAZoneAlsoRemovesItsGroupOwnership(): void
+    {
+        // zones_groups is keyed by the canonical zone id, so cleaning up by the
+        // canonical row's own primary key would leave the row orphaned.
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (2905, 9)");
+
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('deleteZone')->willReturn(true);
+        $repository = new ApiZoneRepository(
+            $this->db,
+            $backend,
+            'sqlite',
+            $this->createMock(ConfigurationManager::class)
+        );
+
+        $this->assertTrue($repository->deleteZone(4));
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones_groups")->fetchColumn());
+    }
+
+    #[Test]
     public function aZoneWithoutExtraOwnersListsOnlyItsOwn(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
