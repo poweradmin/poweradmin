@@ -568,7 +568,7 @@ class UserProvisioningService extends LoggingService
         // Check if user's groups match any configured mappings
         foreach ($permissionTemplateMapping as $groupName => $templateName) {
             $this->logInfo('Checking if group {groupName} is in user groups', ['groupName' => $groupName]);
-            if (in_array($groupName, $groups, true)) {
+            if ($this->groupMatches((string)$groupName, $groups)) {
                 $this->logInfo('Found matching group: {group}', ['group' => $groupName]);
                 $templateId = $this->findPermissionTemplateByName($templateName);
                 if ($templateId) {
@@ -957,7 +957,7 @@ class UserProvisioningService extends LoggingService
         $targetGroupIds = [];
         $targetGroupNames = [];
         foreach ($groupMapping as $externalGroupName => $mappedValue) {
-            if (!in_array($externalGroupName, $externalGroups, true)) {
+            if (!$this->groupMatches((string)$externalGroupName, $externalGroups)) {
                 continue;
             }
             foreach ($this->normalizeMappedGroupNames($mappedValue) as $poweradminGroupName) {
@@ -1026,6 +1026,17 @@ class UserProvisioningService extends LoggingService
      * @param mixed $value Raw mapping value from configuration
      * @return string[] Non-empty Poweradmin group names
      */
+    /**
+     * Whether a permission_template_mapping / group_mapping key names one of the
+     * user's external groups. PHP casts a numeric array key to int, so an IdP
+     * group id such as '1001' arrives here as an integer and must be compared as
+     * a string against the claim values.
+     */
+    private function groupMatches(string $configKey, array $groups): bool
+    {
+        return in_array($configKey, $groups, true);
+    }
+
     private function normalizeMappedGroupNames(mixed $value): array
     {
         if (is_string($value)) {

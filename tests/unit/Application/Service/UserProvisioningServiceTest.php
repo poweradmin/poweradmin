@@ -488,4 +488,19 @@ class UserProvisioningServiceTest extends TestCase
 
         $this->assertSame(['lab1'], $invoker(['lab1', 42, ['nested'], new \stdClass()]));
     }
+
+    public function testGroupMatchesComparesNumericConfigKeysAsStrings(): void
+    {
+        $invoker = $this->getPrivateMethodInvoker('groupMatches');
+
+        // PHP stores a numeric mapping key as an int, while the IdP claim yields
+        // strings - which is why a strict in_array never matched an Entra/Keycloak
+        // group id.
+        $mapping = ['1001' => 'Operator'];
+        $this->assertSame(1001, array_key_first($mapping));
+
+        $this->assertTrue($invoker(array_key_first($mapping), ['1001', 'other']));
+        $this->assertTrue($invoker('DnsAdmins', ['DnsAdmins']));
+        $this->assertFalse($invoker('1002', ['1001']));
+    }
 }
