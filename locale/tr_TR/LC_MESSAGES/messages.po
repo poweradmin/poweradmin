@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-09 10:51+0300\n"
+"POT-Creation-Date: 2026-08-25 09:23+0300\n"
 "PO-Revision-Date: 2025-06-05 21:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -31,7 +31,7 @@ msgstr ""
 msgid "DNS wizards are not enabled."
 msgstr "DNS sihirbazları etkinleştirilmedi."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:47
+#: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid zone ID."
 msgstr "Geçersiz zon kimliği."
 
@@ -336,7 +336,7 @@ msgstr ""
 "emin olun."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:634
+#: templates/modern/edit.html:93 templates/modern/edit.html:645
 msgid "Invalid hostname format"
 msgstr "Geçersiz sunucu adı formatı"
 
@@ -1260,19 +1260,19 @@ msgstr "Bölge oluşturulamadı."
 msgid "Failed to retrieve created zone."
 msgstr "Oluşturulan bölge alınamadı."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:39
+#: lib/Module/CsvExport/Controller/CsvExportController.php:40
 msgid "You need to be logged in to export zone data."
 msgstr "Zon verilerini dışa aktarmak için giriş yapmanız gerekir."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:56
+#: lib/Module/CsvExport/Controller/CsvExportController.php:57
 msgid "You do not have permission to export this zone."
 msgstr "Bu zonu dışa aktarma izniniz yok."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Application/Controller/DnssecToggleKeyController.php:79
 msgid "There is no zone with this ID."
 msgstr "Bu ID'ye sahip zon yok."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:72
+#: lib/Module/CsvExport/Controller/CsvExportController.php:73
 msgid "This zone does not have any records to export."
 msgstr "Bu zonun dışa aktarılacak kaydı yok."
 
@@ -1306,15 +1306,7 @@ msgstr "%s sunucusu kullanılarak RDAP bilgisi alınamadı"
 msgid "Invalid CSRF token."
 msgstr "Geçersiz CSRF jetonu."
 
-#: lib/BaseController.php:543
-msgid ""
-"The <a href=\"install/\">install/</a> directory exists, you must remove it "
-"first before proceeding."
-msgstr ""
-"<a href=\"install/\">install/</a> dizini mevcut, devam etmeden önce onu "
-"kaldırmalısınız."
-
-#: lib/BaseController.php:575
+#: lib/BaseController.php:523
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1322,21 +1314,38 @@ msgstr ""
 "Varsayılan oturum şifreleme anahtarı kullanılıyor, lütfen yapılandırma "
 "dosyanızda ayarlayın."
 
-#: lib/BaseController.php:712
+#: lib/BaseController.php:527
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/BaseController.php:565
+msgid ""
+"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"first before proceeding."
+msgstr ""
+"<a href=\"install/\">install/</a> dizini mevcut, devam etmeden önce onu "
+"kaldırmalısınız."
+
+#: lib/BaseController.php:734
 #, php-format
 msgid "The %s field is required."
 msgstr "%s alanı zorunludur."
 
-#: lib/BaseController.php:720
+#: lib/BaseController.php:742
 #, php-format
 msgid "The %s field must be a number."
 msgstr "%s alanı bir sayı olmalıdır."
 
-#: lib/Application/Presenter/PaginationPresenter.php:52
+#: lib/Application/Presenter/PaginationPresenter.php:56
 msgid "Previous"
 msgstr "Önceki"
 
-#: lib/Application/Presenter/PaginationPresenter.php:79
+#: lib/Application/Presenter/PaginationPresenter.php:83
 msgid "Next"
 msgstr "Sonraki"
 
@@ -1348,49 +1357,58 @@ msgstr "Şu harfle başlayan alanları göster"
 msgid "Show all"
 msgstr "Tümünü göster"
 
-#: lib/Application/Controller/DeleteRecordsController.php:77
+#: lib/Application/Controller/DeleteRecordsController.php:81
 msgid "No records selected for deletion."
 msgstr "Silme için seçilen kayıt yok."
 
-#: lib/Application/Controller/DeleteRecordsController.php:193
+#: lib/Application/Controller/DeleteRecordsController.php:197
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr "Kayıt başarıyla silindi. İlgili PTR kayıtları da kaldırıldı."
 
-#: lib/Application/Controller/DeleteRecordsController.php:195
+#: lib/Application/Controller/DeleteRecordsController.php:199
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
 msgstr "%d kayıt başarıyla silindi. İlgili PTR kayıtları da kaldırıldı."
 
-#: lib/Application/Controller/DeleteRecordsController.php:198
+#: lib/Application/Controller/DeleteRecordsController.php:202
 msgid "No records could be deleted. Please check permissions."
 msgstr "Hiçbir kayıt silinemedi. Lütfen izinleri kontrol edin."
 
-#: lib/Application/Controller/DeleteRecordsController.php:264
+#: lib/Application/Controller/DeleteRecordsController.php:268
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr "Silme için geçerli kayıt seçilmedi veya bunları silme yetkiniz yok."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:72
+#: lib/Application/Controller/DnssecToggleKeyController.php:48
 msgid "Invalid or unexpected input given."
 msgstr "Geçersiz veya beklenmeyen girdi verildi."
 
-#: lib/Domain/Model/UserManager.php:332
+#: lib/Domain/Model/UserManager.php:375
 msgid "You do not have the permission to delete this user."
 msgstr "Bu kullanıcıyı silme yetkiniz yok."
 
-#: lib/Application/Controller/DeleteUserController.php:74
+#: lib/Application/Controller/DeleteUserController.php:78
 msgid "You do not have permission to delete a superuser account."
 msgstr "Süper kullanıcı hesabını silme izniniz yok."
 
-#: lib/Application/Controller/EditUserController.php:441
+#: lib/Application/Controller/EditUserController.php:498
 msgid "User does not exist."
 msgstr "Kullanıcı mevcut değil."
 
-#: lib/Application/Controller/DeleteUserController.php:109
+#: lib/Application/Controller/DeleteUserController.php:113
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"Form, alan sayısı için sunucu sınırını aştığından kullanıcı silinmedi. "
+"Yöneticinizden PHP \"max_input_vars\" ayarını artırmasını isteyin."
+
+#: lib/Application/Controller/DeleteUserController.php:135
 msgid "The user has been deleted successfully."
 msgstr "Kullanıcı başarıyla silindi."
 
@@ -1402,7 +1420,7 @@ msgstr "Zon yorumları özelliği yapılandırmada devre dışı."
 msgid "You do not have the permission to view this comment."
 msgstr "Bu yorumu görüntüleme yetkiniz yok."
 
-#: lib/Domain/Service/Dns/RecordManager.php:487
+#: lib/Domain/Service/Dns/RecordManager.php:504
 msgid "You do not have the permission to edit this comment."
 msgstr "Bu yorumu düzenleme yetkiniz yok."
 
@@ -1418,7 +1436,7 @@ msgstr "Geçersiz kayıt ID'si."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Bu bölgedeki kayıtları silme izniniz bulunmamaktadır."
 
-#: lib/Application/Controller/EditRecordController.php:198
+#: lib/Domain/Service/Dns/RecordManager.php:416
 msgid "Record not found."
 msgstr "Kayıt bulunamadı."
 
@@ -1481,7 +1499,7 @@ msgid ""
 "found."
 msgstr "Kayıt başarıyla silindi. Eşleşen A/AAAA kaydı bulunamadı."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:72
 msgid "The record has been deleted successfully."
 msgstr "Kayıt başarıyla silindi."
 
@@ -1547,32 +1565,32 @@ msgstr "Grup Üyelerini Yönet"
 msgid "Invalid action."
 msgstr "Geçersiz işlem."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:193
+#: lib/Application/Controller/ManageGroupMembersController.php:213
 msgid "Please select at least one user."
 msgstr "Lütfen en az bir kullanıcı seçin."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:139
+#: lib/Application/Controller/ManageGroupMembersController.php:159
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
 msgstr[0] "%d kullanıcı gruba eklendi."
 msgstr[1] "%d kullanıcı gruba eklendi."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:172
+#: lib/Application/Controller/ManageGroupMembersController.php:192
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
 msgstr[0] "%d kullanıcı eklenemedi."
 msgstr[1] "%d kullanıcı eklenemedi."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:221
+#: lib/Application/Controller/ManageGroupMembersController.php:238
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
 msgstr[0] "%d kullanıcı gruptan kaldırıldı."
 msgstr[1] "%d kullanıcı gruptan kaldırıldı."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:254
+#: lib/Application/Controller/ManageGroupMembersController.php:271
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
@@ -1603,7 +1621,7 @@ msgstr "Doğrulama kodu gerekli."
 msgid "MFA has been enabled successfully."
 msgstr "MFA başarıyla etkinleştirildi."
 
-#: lib/Application/Controller/MfaVerifyController.php:262
+#: lib/Application/Controller/MfaVerifyController.php:266
 msgid "Invalid verification code. Please try again."
 msgstr "Geçersiz doğrulama kodu. Lütfen tekrar deneyin."
 
@@ -1728,28 +1746,28 @@ msgstr "Bu alana kayıt ekleme yetkiniz bulunmuyor."
 msgid "Please provide at least one record."
 msgstr "Lütfen en az bir kayıt sağlayın."
 
-#: lib/Application/Controller/BulkRecordAddController.php:141
+#: lib/Application/Controller/BulkRecordAddController.php:143
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Geçersiz format. En az şunlar bekleniyor: ad,tip,içerik"
 
-#: lib/Application/Controller/BulkRecordAddController.php:194
+#: lib/Application/Controller/BulkRecordAddController.php:196
 msgid "Invalid record type."
 msgstr "Geçersiz kayıt tipi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:231
+#: lib/Application/Controller/BulkRecordAddController.php:233
 msgid "Record could not be added."
 msgstr "Kayıt eklenemedi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/BulkRecordAddController.php:241
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d kayıt başarıyla eklendi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
+#: lib/Application/Controller/BulkRecordAddController.php:244
 msgid "Some record(s) could not be added."
 msgstr "Bazı kayıtlar eklenemedi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:275
+#: lib/Application/Controller/BulkRecordAddController.php:277
 msgid "Zone ID is required."
 msgstr "Zon kimliği gereklidir."
 
@@ -1757,24 +1775,42 @@ msgstr "Zon kimliği gereklidir."
 msgid "You do not have the permission to edit permission templates."
 msgstr "İzin şablonlarını düzenleme yetkiniz yok."
 
-#: lib/Application/Controller/EditPermTemplController.php:54
+#: lib/Application/Controller/EditPermTemplController.php:56
 msgid "Edit Permission Template"
 msgstr "Yetki Şablonunu Düzenle"
 
-#: lib/Application/Controller/EditPermTemplController.php:78
+#: lib/Application/Controller/EditPermTemplController.php:103
 msgid "The permission template has been updated successfully."
 msgstr "İzin şablonu başarıyla güncellendi."
+
+#: lib/Application/Controller/EditPermTemplController.php:151
+#, auto-english-fallback
+msgid ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Application/Controller/AddPermTemplController.php:127
+#, auto-english-fallback
+msgid ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
+msgstr ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
 
 #: lib/Application/Controller/ListGroupsController.php:55
 #: templates/modern/manage_group_members.html:4
 msgid "Groups"
 msgstr "Gruplar"
 
-#: lib/Application/Controller/SearchController.php:47
+#: lib/Application/Controller/SearchController.php:52
 msgid "You do not have the permission to perform searches."
 msgstr "Arama yapma izniniz yok."
 
-#: lib/Application/Controller/SearchController.php:51
+#: lib/Application/Controller/SearchController.php:56
 #: templates/modern/header.html:97 templates/modern/list_log_groups.html:22
 msgid "Search"
 msgstr "Arama"
@@ -1795,16 +1831,16 @@ msgstr "Üye gruptan başarıyla çıkarıldı."
 msgid "User was not a member of this group."
 msgstr "Kullanıcı bu grubun üyesi değildi."
 
-#: lib/Domain/Model/UserManager.php:995
+#: lib/Domain/Model/UserManager.php:1199
 msgid "You do not have the permission to add a new user."
 msgstr "Yeni kullanıcı ekleme yetkiniz yok."
 
 #: lib/Application/Controller/AddUserController.php:92
-#: templates/modern/add_user.html:13 templates/modern/add_user.html:112
+#: templates/modern/add_user.html:13 templates/modern/add_user.html:113
 msgid "Add User"
 msgstr "Kullanıcı Ekle"
 
-#: lib/Application/Controller/EditUserController.php:237
+#: lib/Application/Controller/EditUserController.php:284
 msgid "Invalid permission template: must be a user template"
 msgstr "Geçersiz izin şablonu: kullanıcı şablonu olmalıdır"
 
@@ -1833,15 +1869,15 @@ msgstr "Güvenlik nedeniyle bir şifre oluşturuldu ancak gösterilmiyor."
 msgid "Please fill in all required fields correctly."
 msgstr "Lütfen tüm zorunlu alanları doğru biçimde doldurun."
 
-#: lib/Domain/Service/Dns/RecordManager.php:433
+#: lib/Domain/Service/Dns/RecordManager.php:450
 msgid "You do not have the permission to delete this record."
 msgstr "Bu kaydı silme yetkiniz yok."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:78
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
 msgid "The record could not be deleted."
 msgstr "Kayıt silinemedi."
 
-#: lib/Application/Controller/ListLogZonesController.php:59
+#: lib/Application/Controller/ListLogZonesController.php:63
 #: templates/default/index.html:235 templates/default/index.html:239
 msgid "Zone Logs"
 msgstr "Zon Kayıtları"
@@ -1858,18 +1894,22 @@ msgstr "Sayfa numarası en az 1 olmalıdır."
 msgid "Page number exceeds available pages."
 msgstr "Sayfa numarası mevcut sayfaları aşıyor."
 
-#: lib/Application/Controller/UsersController.php:51
+#: lib/Application/Controller/UsersController.php:52
 msgid "You do not have permission to view the users list."
 msgstr "Kullanıcı listesini görüntüleme yetkiniz yok."
 
-#: lib/Application/Controller/UsersController.php:58
+#: lib/Application/Controller/UsersController.php:59
 #: templates/modern/list_perm_templ.html:4
 msgid "Users"
 msgstr "Kullanıcılar"
 
-#: lib/Application/Controller/UsersController.php:78
+#: lib/Application/Controller/UsersController.php:92
 msgid "User details updated"
 msgstr "Kullanıcı bilgileri güncellendi"
+
+#: lib/Application/Controller/EditUserController.php:223
+msgid "You do not have permission to edit a superuser account."
+msgstr "Süper kullanıcı hesabını düzenleme izniniz yok."
 
 #: lib/Application/Controller/EditZoneTemplController.php:59
 msgid "No template ID provided."
@@ -1899,7 +1939,7 @@ msgstr "Zonlar başarıyla güncellendi."
 msgid "You do not have permission to create new zone templates."
 msgstr "Yeni zon şablonları oluşturma izniniz yok."
 
-#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:208 lib/Domain/Model/ZoneTemplate.php:990
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Bu adda bir bölge şablonu zaten mevcut, lütfen başka bir tane seçin."
 
@@ -1982,35 +2022,35 @@ msgstr "Bölgeyi Düzenle"
 msgid "You do not have permission to access this zone."
 msgstr "Bu bölgeye erişim izniniz bulunmamaktadır."
 
-#: lib/Domain/Repository/DomainRepository.php:531
+#: lib/Domain/Repository/DomainRepository.php:533
 msgid "You do not have the permission to view this zone."
 msgstr "Bu zonu görüntüleme yetkiniz yok."
 
-#: lib/Application/Controller/EditController.php:269
+#: lib/Application/Controller/EditController.php:274
 msgid "Zone type has been changed successfully."
 msgstr "Bölge türü başarıyla değiştirildi."
 
-#: lib/Application/Controller/EditController.php:276
+#: lib/Application/Controller/EditController.php:281
 msgid "Slave master has been changed successfully."
 msgstr "Slave master başarıyla değiştirildi."
 
-#: lib/Application/Controller/EditController.php:296
+#: lib/Application/Controller/EditController.php:301
 msgid "Zone template has been changed successfully."
 msgstr "Bölge şablonu başarıyla değiştirildi."
 
-#: lib/Application/Controller/EditController.php:308
+#: lib/Application/Controller/EditController.php:313
 msgid "DNSSEC is not enabled on the server."
 msgstr "Sunucuda DNSSEC etkinleştirilmemiş."
 
-#: lib/Application/Controller/EditController.php:311
+#: lib/Application/Controller/EditController.php:316
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zon zaten DNSSEC ile imzalanmış."
 
-#: lib/Application/Controller/EditController.php:333
+#: lib/Application/Controller/EditController.php:338
 msgid "Zone has been signed successfully."
 msgstr "Zon başarıyla imzalandı."
 
-#: lib/Application/Controller/EditController.php:337
+#: lib/Application/Controller/EditController.php:342
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2018,7 +2058,7 @@ msgstr ""
 "Zon imzalama başarıyla istendi, ancak doğrulama başarısız. DNSSEC "
 "anahtarlarını denetleyin."
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:346
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2026,32 +2066,42 @@ msgstr ""
 "Bölge imzalanamadı. Bölge doğrulaması başarılı, ancak PowerDNS API'si hata "
 "döndürdü. Ayrıntılar için PowerDNS günlüklerini kontrol edin."
 
-#: lib/Application/Controller/DnssecController.php:94
+#: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Zon şu anda DNSSEC ile imzalanmamış."
 
-#: lib/Application/Controller/DnssecController.php:104
+#: lib/Application/Controller/DnssecController.php:103
 msgid "Zone has been unsigned successfully."
 msgstr "Zon başarıyla imzasız hale getirildi."
 
-#: lib/Application/Controller/DnssecController.php:109
+#: lib/Application/Controller/DnssecController.php:108
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "Zon imza kaldırma başarıyla istendi, ancak doğrulama başarısız."
 
-#: lib/Application/Controller/DnssecController.php:113
+#: lib/Application/Controller/DnssecController.php:112
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Zon imzası kaldırılamadı. Ayrıntılar için PowerDNS günlüklerini denetleyin."
 
-#: lib/Application/Controller/EditController.php:734
+#: lib/Application/Controller/EditController.php:674
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"Form, alan sayısı için sunucu sınırını aştığından bazı kayıtlar "
+"kaydedilmedi. Yöneticinizden PHP \"max_input_vars\" ayarını artırmasını "
+"isteyin."
+
+#: lib/Application/Controller/EditController.php:774
 msgid "Request has expired, please try again."
 msgstr "İstek süresi doldu, lütfen tekrar deneyin."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:779
 msgid "Zone has been updated successfully."
 msgstr "Zon başarıyla güncellendi."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:781
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2059,11 +2109,11 @@ msgstr ""
 "Zon başarıyla kaydedildi. Kayıt değişikliği yapılmadı, ancak SOA seri "
 "numarası artırıldı."
 
-#: lib/Application/Controller/EditController.php:750
+#: lib/Application/Controller/EditController.php:790
 msgid "Zone has not been updated successfully."
 msgstr "Zon başarıyla güncellenmedi."
 
-#: lib/Application/Controller/EditController.php:778
+#: lib/Application/Controller/EditController.php:818
 msgid "Please provide all required fields."
 msgstr "Lütfen tüm zorunlu alanları sağlayın."
 
@@ -2095,7 +2145,7 @@ msgstr "MFA kaydı bulunamadı. Lütfen yöneticiyle iletişime geçin."
 msgid "An error occurred. Please try again."
 msgstr "Bir hata oluştu. Lütfen tekrar deneyin."
 
-#: lib/Application/Controller/MfaVerifyController.php:285
+#: lib/Application/Controller/MfaVerifyController.php:289
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2103,15 +2153,15 @@ msgstr ""
 "Mail servisi devre dışı olduğu için e-posta doğrulaması mevcut değil. Lütfen "
 "kurtarma kodu kullanın."
 
-#: lib/Application/Controller/MfaVerifyController.php:295
+#: lib/Application/Controller/MfaVerifyController.php:299
 msgid "A new verification code has been sent to your email."
 msgstr "E-postanıza yeni bir doğrulama kodu gönderildi."
 
-#: lib/Application/Controller/MfaVerifyController.php:301
+#: lib/Application/Controller/MfaVerifyController.php:305
 msgid "Please use a recovery code instead."
 msgstr "Lütfen bunun yerine kurtarma kodu kullanın."
 
-#: lib/Application/Controller/MfaVerifyController.php:306
+#: lib/Application/Controller/MfaVerifyController.php:310
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2127,26 +2177,26 @@ msgstr "Bu alana kayıt ekleme yetkiniz bulunmuyor."
 msgid "Record successfully added."
 msgstr "Kayıt başarıyla eklendi."
 
-#: lib/Application/Controller/AddRecordController.php:422
+#: lib/Application/Controller/AddRecordController.php:434
 msgid "No records were provided."
 msgstr "Kayıt sağlanmadı."
 
-#: lib/Application/Controller/AddRecordController.php:478
+#: lib/Application/Controller/AddRecordController.php:500
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d kayıt başarıyla eklendi."
 
-#: lib/Application/Controller/AddRecordController.php:480
+#: lib/Application/Controller/AddRecordController.php:502
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d eşleşen kayıt da oluşturuldu."
 
-#: lib/Application/Controller/AddRecordController.php:483
+#: lib/Application/Controller/AddRecordController.php:505
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d kayıt eklenemedi."
 
-#: lib/Application/Controller/AddRecordController.php:488
+#: lib/Application/Controller/AddRecordController.php:510
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2154,7 +2204,7 @@ msgstr ""
 "Bazı kayıtlar eklenemedi. Zaten mevcut olabilirler veya geçersiz veri "
 "içerebilirler."
 
-#: lib/Application/Controller/AddRecordController.php:514
+#: lib/Application/Controller/AddRecordController.php:540
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Hiçbir kayıt eklenemedi. Geçersiz veri içerebilirler."
 
@@ -2162,17 +2212,17 @@ msgstr "Hiçbir kayıt eklenemedi. Geçersiz veri içerebilirler."
 msgid "No zone selected for deletion."
 msgstr "Silme için seçilen zon yok."
 
+#: lib/Domain/Service/Dns/DomainManager.php:539
+msgid "You do not have the permission to delete a zone."
+msgstr "Zon silme yetkiniz yok."
+
 #: lib/Application/Controller/DeleteDomainController.php:138
 msgid "Zone has been deleted successfully."
 msgstr "Zon başarıyla silindi."
 
-#: lib/Application/Controller/DeleteDomainsController.php:153
+#: lib/Application/Controller/DeleteDomainsController.php:167
 msgid "Zones have been deleted successfully."
 msgstr "Zonlar başarıyla silindi."
-
-#: lib/Domain/Service/Dns/DomainManager.php:529
-msgid "You do not have the permission to delete a zone."
-msgstr "Zon silme yetkiniz yok."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:80
 msgid "You do not have the permission to edit zone template records."
@@ -2182,7 +2232,7 @@ msgstr "Zon şablonu kayıtlarını düzenleme yetkiniz yok."
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC kimlik doğrulama etkin değil"
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:390
 msgid "Authentication failed: "
 msgstr "Kimlik doğrulama başarısız: "
 
@@ -2218,7 +2268,15 @@ msgstr "Ana zon ekleme yetkiniz yok."
 msgid "Add Primary Zone"
 msgstr "Birincil Bölge Ekle"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:117
+#: lib/Application/Controller/AddZoneSlaveController.php:106
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr ""
+"CIDR notasyonuyla bir ağ (örneğin 192.168.1.0/24 veya 2001:db8::/48) ya da "
+"in-addr.arpa veya ip6.arpa ile biten bir ters zon adı girin."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:134
 msgid "At least one user or group must be selected as owner."
 msgstr "Sahip olarak en az bir kullanıcı veya grup seçilmelidir."
 
@@ -2226,7 +2284,7 @@ msgstr "Sahip olarak en az bir kullanıcı veya grup seçilmelidir."
 msgid "There is already a zone with this name."
 msgstr "Bu adda zaten bir zon var."
 
-#: lib/Application/Controller/AddZoneMasterController.php:171
+#: lib/Application/Controller/AddZoneMasterController.php:187
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2234,7 +2292,7 @@ msgstr ""
 "Bölge başarıyla oluşturuldu, ancak doğrulama hataları nedeniyle DNSSEC "
 "imzalaması atlandı:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:183
+#: lib/Application/Controller/AddZoneMasterController.php:199
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2243,11 +2301,11 @@ msgstr ""
 "doğrulaması başarılı, ancak PowerDNS API'si hata döndürdü. Ayrıntılar için "
 "PowerDNS günlüklerini kontrol edin."
 
-#: lib/Application/Controller/AddZoneMasterController.php:189
+#: lib/Application/Controller/AddZoneMasterController.php:205
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Bölge başarıyla oluşturuldu ve DNSSEC ile imzalandı."
 
-#: lib/Application/Controller/AddZoneMasterController.php:192
+#: lib/Application/Controller/AddZoneMasterController.php:208
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2255,7 +2313,7 @@ msgstr ""
 "Bölge oluşturuldu ve imzalama istendi, ancak doğrulama başarısız oldu. "
 "DNSSEC anahtarlarını kontrol edin."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:156
+#: lib/Application/Controller/AddZoneSlaveController.php:173
 msgid "Zone has been added successfully."
 msgstr "Zon başarıyla eklendi."
 
@@ -2301,27 +2359,27 @@ msgstr "Geçersiz izin şablonu: grup şablonu olmalıdır"
 msgid "Group has been created successfully."
 msgstr "Grup başarıyla oluşturuldu."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:54
+#: lib/Application/Controller/DnssecToggleKeyController.php:62
 msgid "Invalid key ID."
 msgstr "Geçersiz anahtar kimliği."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:64
+#: lib/Application/Controller/DnssecToggleKeyController.php:72
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Bu bölge için DNSSEC yönetme izniniz bulunmamaktadır."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:89
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC anahtarı bulunamadı veya artık mevcut değil."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:106
+#: lib/Application/Controller/DnssecDeleteKeyController.php:105
 msgid "Zone key has been deleted successfully."
 msgstr "Zon anahtarı başarıyla silindi."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:115
+#: lib/Application/Controller/DnssecDeleteKeyController.php:114
 msgid "Failed to delete the zone key."
 msgstr "Zon anahtarı silinemedi."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:122
+#: lib/Application/Controller/DnssecDeleteKeyController.php:121
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "DNSSEC anahtarı silinirken hata oluştu: "
 
@@ -2366,49 +2424,54 @@ msgstr "Bölge sahipliğini yönetme izniniz yok."
 msgid "Manage Group Zones"
 msgstr "Grup Bölgelerini Yönet"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:206
+#: lib/Application/Controller/ManageGroupZonesController.php:226
 msgid "Please select at least one zone."
 msgstr "Lütfen en az bir bölge seçin."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:139
+#: lib/Application/Controller/ManageGroupZonesController.php:159
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
 msgstr[0] "%d alan gruba eklendi."
 msgstr[1] "%d alan gruba eklendi."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:185
+#: lib/Application/Controller/ManageGroupZonesController.php:205
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
 msgstr[0] "%d alan eklenemedi."
 msgstr[1] "%d alan eklenemedi."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:231
+#: lib/Application/Controller/ManageGroupZonesController.php:248
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
 msgstr[0] "%d alan gruptan kaldırıldı."
 msgstr[1] "%d alan gruptan kaldırıldı."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:277
+#: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
 msgstr[0] "%d alan kaldırılamadı."
 msgstr[1] "%d alan kaldırılamadı."
 
-#: lib/Application/Controller/AddPermTemplController.php:50
+#: lib/Application/Controller/AddPermTemplController.php:52
 msgid "You do not have the permission to add permission templates."
 msgstr "İzin şablonları ekleme yetkiniz yok."
 
-#: lib/Application/Controller/AddPermTemplController.php:54
+#: lib/Application/Controller/AddPermTemplController.php:56
 msgid "Add Permission Template"
 msgstr "Yetki Şablonu Ekle"
 
-#: lib/Application/Controller/AddPermTemplController.php:73
+#: lib/Application/Controller/AddPermTemplController.php:88
 msgid "The permission template has been added successfully."
 msgstr "İzin şablonu başarıyla eklendi."
+
+#: lib/Application/Controller/AddPermTemplController.php:128
+#, auto-english-fallback
+msgid "The permission template could not be added."
+msgstr "The permission template could not be added."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:34
 msgid "Not available for anonymous users."
@@ -2476,11 +2539,11 @@ msgstr "Varsayılan SOA kaydı oluşturulamadı"
 msgid "Invalid check type"
 msgstr "Geçersiz kontrol türü"
 
-#: lib/Application/Controller/LogoutController.php:115
+#: lib/Application/Controller/LogoutController.php:104
 msgid "You have logged out."
 msgstr "Çıkış yaptınız."
 
-#: lib/Domain/Model/ZoneTemplate.php:178 lib/Domain/Model/ZoneTemplate.php:619
+#: lib/Domain/Model/ZoneTemplate.php:205 lib/Domain/Model/ZoneTemplate.php:741
 msgid "You do not have the permission to add a zone template."
 msgstr "Zon şablonu ekleme yetkiniz yok."
 
@@ -2496,7 +2559,7 @@ msgstr "Zon şablonu başarıyla eklendi."
 msgid "Dashboard"
 msgstr "Pano"
 
-#: lib/Application/Controller/EditUserController.php:342
+#: lib/Application/Controller/EditUserController.php:399
 msgid "You do not have permission to manage group memberships."
 msgstr "Grup üyeliklerini yönetme izniniz yok."
 
@@ -2524,11 +2587,11 @@ msgstr "Geçersiz sunucu adı."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Bu geçerli bir IPv4 veya IPv6 adresi değil."
 
-#: lib/Domain/Model/ZoneTemplate.php:278 lib/Domain/Model/ZoneTemplate.php:316
+#: lib/Domain/Model/ZoneTemplate.php:305 lib/Domain/Model/ZoneTemplate.php:343
 msgid "You do not have the permission to delete zone templates."
 msgstr "Zon şablonlarını silme yetkiniz yok."
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:90
+#: lib/Application/Controller/DeleteZoneTemplController.php:92
 msgid "Zone template has been deleted successfully."
 msgstr "Zon şablonu başarıyla silindi."
 
@@ -2594,26 +2657,22 @@ msgstr "Kullanıcı başarıyla güncellendi."
 msgid "The user could not be updated."
 msgstr "Kullanıcı güncellenemedi."
 
-#: lib/Domain/Model/UserManager.php:512 lib/Domain/Model/UserManager.php:975
+#: lib/Domain/Model/UserManager.php:571 lib/Domain/Model/UserManager.php:1179
 msgid "You do not have the permission to edit this user."
 msgstr "Bu kullanıcıyı düzenleme yetkiniz yok."
 
-#: lib/Application/Controller/EditUserController.php:212
-msgid "You do not have permission to edit a superuser account."
-msgstr "Süper kullanıcı hesabını düzenleme izniniz yok."
-
-#: lib/Application/Controller/EditUserController.php:350
+#: lib/Application/Controller/EditUserController.php:407
 msgid "Please select at least one group."
 msgstr "Lütfen en az bir grup seçin."
 
-#: lib/Application/Controller/EditUserController.php:391
+#: lib/Application/Controller/EditUserController.php:448
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
 msgstr[0] "Kullanıcı %d gruba başarıyla eklendi."
 msgstr[1] "Kullanıcı %d gruba başarıyla eklendi."
 
-#: lib/Application/Controller/EditUserController.php:423
+#: lib/Application/Controller/EditUserController.php:480
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
@@ -2625,7 +2684,7 @@ msgstr[1] "Kullanıcı %d gruba eklenemedi (zaten üye veya gruplar bulunamadı)
 msgid "You do not have the permission to delete permission templates."
 msgstr "İzin şablonlarını silme yetkiniz yok."
 
-#: lib/Application/Controller/DeletePermTemplController.php:69
+#: lib/Application/Controller/DeletePermTemplController.php:71
 msgid "The permission template has been deleted successfully."
 msgstr "İzin şablonu başarıyla silindi."
 
@@ -2728,40 +2787,40 @@ msgstr ""
 msgid "Change Password"
 msgstr "Şifre Değiştir"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:116
+#: lib/Application/Controller/DnssecAddKeyController.php:115
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "ECDSA P-256 algoritması 256 bit kullanmalıdır"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:119
+#: lib/Application/Controller/DnssecAddKeyController.php:118
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "ECDSA P-384 algoritması 384 bit kullanmalıdır"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:125
+#: lib/Application/Controller/DnssecAddKeyController.php:124
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519 algoritması 256 bit kullanmalıdır"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:130
+#: lib/Application/Controller/DnssecAddKeyController.php:129
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "ED448 algoritması 456 bit kullanmalıdır (bu arayüzde desteklenmiyor)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:137
+#: lib/Application/Controller/DnssecAddKeyController.php:136
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "RSA algoritmaları yeterli güvenlik için 1024 veya 2048 bit kullanmalıdır"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:158
+#: lib/Application/Controller/DnssecAddKeyController.php:157
 msgid "Zone key has been added successfully."
 msgstr "Zon anahtarı başarıyla eklendi."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:162
+#: lib/Application/Controller/DnssecAddKeyController.php:161
 msgid "Failed to add new DNSSEC key."
 msgstr "Yeni DNSSEC anahtarı eklenemedi."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:166
+#: lib/Application/Controller/DnssecAddKeyController.php:165
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "DNSSEC anahtarı eklenirken hata oluştu: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:170
+#: lib/Application/Controller/DnssecAddKeyController.php:169
 msgid "Please select both algorithm and bits"
 msgstr "Lütfen hem algoritma hem de bit seçin"
 
@@ -2782,19 +2841,19 @@ msgstr "Grup başarıyla güncellendi."
 msgid "You do not have the permission to delete a supermaster."
 msgstr "Supermaster silme yetkiniz yok."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:80
+#: lib/Application/Controller/DeleteSupermasterController.php:82
 msgid "Invalid IP address."
 msgstr "Geçersiz IP adresi."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:85
+#: lib/Application/Controller/DeleteSupermasterController.php:87
 msgid "Invalid NS name."
 msgstr "Geçersiz NS adı."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:91
+#: lib/Application/Controller/DeleteSupermasterController.php:93
 msgid "Super master does not exist."
 msgstr "Super master mevcut değil."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:95
+#: lib/Application/Controller/DeleteSupermasterController.php:97
 msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster başarıyla silindi."
 
@@ -2836,7 +2895,7 @@ msgstr "Grup başarıyla çıkarıldı."
 msgid "Page Not Found"
 msgstr "Sayfa Bulunamadı"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:80
+#: lib/Application/Controller/DnssecToggleKeyController.php:88
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
@@ -2844,28 +2903,28 @@ msgstr ""
 "DNSSEC işlevselliği kullanılamıyor. Lütfen PowerDNS API yapılandırmasını "
 "kontrol edin."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:100
+#: lib/Application/Controller/DnssecToggleKeyController.php:108
 msgid "Zone key has been successfully deactivated."
 msgstr "Zon anahtarı başarıyla devre dışı bırakıldı."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:101
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
 msgid "Failed to deactivate zone key."
 msgstr "Zon anahtarı devre dışı bırakılamadı."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:104
+#: lib/Application/Controller/DnssecToggleKeyController.php:112
 msgid "Zone key has been successfully activated."
 msgstr "Zon anahtarı başarıyla etkinleştirildi."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:105
+#: lib/Application/Controller/DnssecToggleKeyController.php:113
 msgid "Failed to activate zone key."
 msgstr "Zon anahtarı etkinleştirilemedi."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:116
+#: lib/Application/Controller/DnssecToggleKeyController.php:124
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr ""
 "DNSSEC anahtarı değiştirilirken bir hata oluştu. Lütfen tekrar deneyin."
 
-#: lib/Application/Service/LdapAuthenticator.php:93
+#: lib/Application/Service/LdapAuthenticator.php:96
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Hesap geçici olarak kilitli. Lütfen daha sonra tekrar deneyin."
 
@@ -2885,11 +2944,11 @@ msgstr "Oturum süresi doldu, lütfen tekrar giriş yapın."
 msgid "Failed to update password"
 msgstr "Şifre güncellenemedi"
 
-#: lib/Application/Service/OidcService.php:182
+#: lib/Application/Service/OidcService.php:183
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Kimlik doğrulama başarısız: Geçersiz durum parametresi"
 
-#: lib/Application/Service/OidcService.php:203
+#: lib/Application/Service/OidcService.php:204
 msgid "Authentication failed: No authorization code"
 msgstr "Kimlik doğrulama başarısız: Yetkilendirme kodu yok"
 
@@ -2897,29 +2956,29 @@ msgstr "Kimlik doğrulama başarısız: Yetkilendirme kodu yok"
 msgid "Authentication failed: Invalid session"
 msgstr "Kimlik doğrulama başarısız: Geçersiz oturum"
 
-#: lib/Application/Service/SamlService.php:346
+#: lib/Application/Service/SamlService.php:350
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Kimlik doğrulama başarısız: Kullanıcı hesabı oluşturulamadı veya "
 "güncellenemedi"
 
-#: lib/Application/Service/LdapAuthenticator.php:237
+#: lib/Application/Service/LdapAuthenticator.php:241
 msgid "LDAP Authentication failed!"
 msgstr "LDAP kimlik doğrulaması başarısız!"
 
-#: lib/Application/Service/LdapAuthenticator.php:142
+#: lib/Application/Service/LdapAuthenticator.php:145
 msgid "Failed to connect to LDAP server!"
 msgstr "LDAP sunucusuna bağlanılamadı!"
 
-#: lib/Application/Service/LdapAuthenticator.php:158
+#: lib/Application/Service/LdapAuthenticator.php:161
 msgid "Failed to bind to LDAP server!"
 msgstr "LDAP sunucusuna bağlanamadı!"
 
-#: lib/Application/Service/LdapAuthenticator.php:186
+#: lib/Application/Service/LdapAuthenticator.php:189
 msgid "Failed to search LDAP."
 msgstr "LDAP araması başarısız."
 
-#: lib/Application/Service/LdapAuthenticator.php:203
+#: lib/Application/Service/LdapAuthenticator.php:206
 msgid "Failed to authenticate against LDAP."
 msgstr "LDAP ile kimlik doğrulama başarısız."
 
@@ -2927,25 +2986,25 @@ msgstr "LDAP ile kimlik doğrulama başarısız."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Kimlik doğrulama başarısız: Geçersiz SAML yanıtı"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:422
+#: lib/Application/Query/RecordSearch.php:230 templates/modern/edit.html:422
 #: templates/modern/users.html:185
 msgid "Yes"
 msgstr "Evet"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:422
+#: lib/Application/Query/RecordSearch.php:230 templates/modern/edit.html:422
 #: templates/modern/users.html:187
 msgid "No"
 msgstr "Hayır"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:254
 msgid "This template is assigned to at least one user and one group."
 msgstr "Bu şablon en az bir kullanıcıya ve bir gruba atanmış."
 
-#: lib/Domain/Model/UserManager.php:377
+#: lib/Domain/Model/UserManager.php:420
 msgid "This template is assigned to at least one user."
 msgstr "Bu şablon en az bir kullanıcıya atanmış."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:258
 msgid "This template is assigned to at least one group."
 msgstr "Bu şablon en az bir gruba atanmış."
 
@@ -2974,37 +3033,66 @@ msgstr ""
 msgid "This is an invalid zone name."
 msgstr "Bu geçersiz bir zon adı."
 
-#: lib/Domain/Model/UserManager.php:1007
+#: lib/Domain/Model/UserManager.php:1211
 msgid "Enter a valid email address."
 msgstr "Geçerli bir e-posta adresi girin."
 
-#: lib/Domain/Model/UserManager.php:999
+#: lib/Domain/Model/UserManager.php:1203
 msgid "Username exist already, please choose another one."
 msgstr "Kullanıcı adı zaten mevcut, lütfen başka bir tane seçin."
 
-#: lib/Domain/Model/UserManager.php:1003
+#: lib/Domain/Model/UserManager.php:1215
+msgid "Email address already exists, please choose another one."
+msgstr "E-posta adresi zaten mevcut, lütfen başka bir tane seçin."
+
+#: lib/Domain/Model/UserManager.php:981
+#, auto-english-fallback
+msgid ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+msgstr ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+
+#: lib/Domain/Model/UserManager.php:985
+#, auto-english-fallback
+msgid ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Domain/Model/UserManager.php:1207
 msgid "Enter a valid user name."
 msgstr "Geçerli bir kullanıcı adı girin."
 
-#: lib/Domain/Model/ZoneTemplate.php:205 lib/Domain/Model/ZoneTemplate.php:675
+#: lib/Domain/Model/ZoneTemplate.php:232 lib/Domain/Model/ZoneTemplate.php:814
 msgid "Error creating zone template: "
 msgstr "Zon şablonu oluşturma hatası: "
 
-#: lib/Domain/Model/ZoneTemplate.php:241
+#: lib/Domain/Model/ZoneTemplate.php:268
 msgid "Error adding default SOA record to template: "
 msgstr "Şablona varsayılan SOA kaydı ekleme hatası: "
 
-#: lib/Domain/Model/ZoneTemplate.php:300
+#: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error deleting zone template: "
 msgstr "Zon şablonu silme hatası: "
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:351
 msgid "Error deleting user zone templates: "
 msgstr "Kullanıcı zon şablonları silme hatası: "
 
-#: lib/Domain/Model/ZoneTemplate.php:442
+#: lib/Domain/Model/ZoneTemplate.php:469
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Bu zon şablonuna kayıt ekleme yetkiniz yok."
+
+#: lib/Domain/Model/ZoneTemplate.php:474 lib/Domain/Model/ZoneTemplate.php:591
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to add this record type to a zone template."
+msgstr ""
+"You do not have the permission to add this record type to a zone template."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
@@ -3014,51 +3102,74 @@ msgstr "İçerik alanınız geçerli bir değere sahip değil."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV kayıtları için öncelik 0 ile 65535 arasında bir sayı olmalıdır."
 
-#: lib/Domain/Service/Dns/RecordManager.php:338
+#: lib/Domain/Service/Dns/RecordManager.php:351
 msgid "You do not have the permission to edit this record."
 msgstr "Bu kaydı düzenleme yetkiniz yok."
 
-#: lib/Domain/Model/ZoneTemplate.php:534
+#: lib/Domain/Model/ZoneTemplate.php:581 lib/Domain/Model/ZoneTemplate.php:665
+msgid "The record does not belong to this zone template."
+msgstr "Kayıt bu zon şablonuna ait değil."
+
+#: lib/Domain/Model/ZoneTemplate.php:643
 msgid "Error updating zone template record: "
 msgstr "Zon şablonu kaydı güncelleme hatası: "
 
-#: lib/Domain/Model/ZoneTemplate.php:557
+#: lib/Domain/Model/ZoneTemplate.php:671
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+msgstr ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+
+#: lib/Domain/Model/ZoneTemplate.php:680
 msgid "Error deleting zone template record: "
 msgstr "Zon şablonu kaydı silme hatası: "
 
-#: lib/Domain/Model/ZoneTemplate.php:580
+#: lib/Domain/Model/ZoneTemplate.php:702
 msgid "Error checking template ownership: "
 msgstr "Şablon sahipliği kontrol hatası: "
 
-#: lib/Domain/Model/ZoneTemplate.php:728 lib/Domain/Model/ZoneTemplate.php:776
+#: lib/Domain/Model/ZoneTemplate.php:806
+#, auto-english-fallback
+#, php-format
+msgid ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+msgstr ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+
+#: lib/Domain/Model/ZoneTemplate.php:867 lib/Domain/Model/ZoneTemplate.php:915
 msgid "Error retrieving zones using template: "
 msgstr "Şablon kullanan zonları alma hatası: "
 
-#: lib/Domain/Model/ZoneTemplate.php:830
+#: lib/Domain/Model/ZoneTemplate.php:969
 msgid "Failed to get list of zones using template: "
 msgstr "Şablon kullanan zon listesi alınamadı: "
 
-#: lib/Domain/Model/ZoneTemplate.php:848
+#: lib/Domain/Model/ZoneTemplate.php:987
 msgid "You do not have the permission to edit a zone template."
 msgstr "Zon şablonu düzenleme yetkiniz yok."
 
-#: lib/Domain/Model/ZoneTemplate.php:892
+#: lib/Domain/Model/ZoneTemplate.php:1031
 msgid "Error unlinking zone from template: "
 msgstr "Zonu şablondan ayırma hatası: "
 
-#: lib/Domain/Model/ZoneTemplate.php:920
+#: lib/Domain/Model/ZoneTemplate.php:1059
 msgid "Error retrieving zones: "
 msgstr "Zonları alma hatası: "
 
-#: lib/Domain/Model/ZoneTemplate.php:939
+#: lib/Domain/Model/ZoneTemplate.php:1078
 msgid "Error checking template name existence: "
 msgstr "Şablon adı varlığı kontrol hatası: "
 
-#: lib/Domain/Model/ZoneTemplate.php:960
+#: lib/Domain/Model/ZoneTemplate.php:1099
 msgid "Error looking up template by name: "
 msgstr "Şablon ada göre aranırken hata oluştu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:983
+#: lib/Domain/Model/ZoneTemplate.php:1122
 msgid "Error checking template existence: "
 msgstr "Şablon varlığı kontrol hatası: "
 
@@ -5517,7 +5628,7 @@ msgstr ""
 "sahip. \"all\" mevcut olduğunda \"redirect\" değiştiricisi yok sayılacaktır "
 "(RFC 7208 Bölüm 6.1)."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:180
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:207
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
@@ -5525,26 +5636,26 @@ msgstr ""
 "Öncelik alanı için geçersiz değer. CNAME kayıtları 0 öncelik değerine sahip "
 "olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:235
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr "Bu geçerli bir CNAME değil. Bu isimde zaten bir kayıt var."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:233
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:260
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr "Bu geçerli bir CNAME değil. Kayda bir MX veya NS kaydı atadınız mı?"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:250
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:277
 msgid "Empty CNAME records are not allowed."
 msgstr "Boş CNAME kayıtlarına izin verilmez."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:279
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:306
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
 msgstr "Bu geçerli bir kayıt değil. Bu adla zaten bir CNAME mevcut."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:334
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
@@ -5552,7 +5663,7 @@ msgstr ""
 "CNAME hedefi tam nitelikli domain adı (FQDN) olmalıdır. Tek etiketli adlara "
 "izin verilmez."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:321
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:348
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
@@ -6657,40 +6768,40 @@ msgstr ""
 "Bilinmeyen etiket \"%s\" için kritik bayrağı ayarlanmış. Bu sertifika verme "
 "başarısızlıklarına neden olabilir."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
 msgstr "Boş değere izin verilmez. Tüm CA'lara izin vermek için \";\" kullanın."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:204
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."
 msgstr "Issue etiketinde geçersiz CA domain'i."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:216
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:214
 msgid "Issue tag parameters must be in key=value format."
 msgstr "Issue etiketi parametreleri key=value formatında olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:221
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:219
 msgid "accounturi parameter cannot be empty."
 msgstr "accounturi parametresi boş olamaz."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:230
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:228
 msgid "Empty validation method specified."
 msgstr "Boş doğrulama yöntemi belirtilmiş."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:238
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:236
 msgid "Invalid CA domain in issuewild tag."
 msgstr "Issuewild etiketinde geçersiz CA domain'i."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:249
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "CAA iodef değeri %s, %s veya %s ile başlayan bir URL olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:260
 msgid "contactemail value must be a valid email address."
 msgstr "contactemail değeri geçerli bir e-posta adresi olmalıdır."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:273
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:271
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
@@ -6702,17 +6813,17 @@ msgstr ""
 msgid "Value must be enclosed in double quotes."
 msgstr "Değer çift tırnak içine alınmalıdır."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:311
 msgid "Backslashes must precede all quotes (\") in value content."
 msgstr ""
 "Değer içeriğindeki tüm tırnak işaretlerinin (\") önünde ters eğik çizgi "
 "bulunmalıdır."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:319
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:317
 msgid "CAA property value exceeds maximum length of 512 characters."
 msgstr "CAA özellik değeri maksimum 512 karakter uzunluğunu aşıyor."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:325
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:323
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "CAA özellik değeri NUL (0) karakterleri içeremez."
 
@@ -8607,23 +8718,23 @@ msgstr "NS kaydı ekleme yetkiniz yok."
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Bu hostname, tip ve içerikle bir kayıt zaten mevcut."
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:335
 msgid "You do not have the permission to edit this SOA record."
 msgstr "Bu SOA kaydını düzenlemek için izniniz yok."
 
-#: lib/Domain/Service/Dns/RecordManager.php:327
+#: lib/Domain/Service/Dns/RecordManager.php:340
 msgid "You do not have the permission to edit this NS record."
 msgstr "Bu NS kaydını düzenlemek için izniniz yok."
 
-#: lib/Domain/Service/Dns/RecordManager.php:409
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have the permission to delete SOA records."
 msgstr "SOA kayıtlarını silme yetkiniz yok."
 
-#: lib/Domain/Service/Dns/RecordManager.php:422
+#: lib/Domain/Service/Dns/RecordManager.php:439
 msgid "You do not have the permission to delete NS records."
 msgstr "NS kayıtlarını silme yetkiniz yok."
 
-#: lib/Domain/Service/Dns/DomainManager.php:464
+#: lib/Domain/Service/Dns/DomainManager.php:466
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Fonksiyon %s %s'ye geçersiz argüman(lar) verildi"
@@ -8642,9 +8753,14 @@ msgstr "Bölge oluşturulamadı: %s"
 msgid "Invalid argument(s) given to function %s"
 msgstr "Fonksiyon %s'ye geçersiz argüman(lar) verildi"
 
-#: lib/Domain/Service/Dns/DomainManager.php:427
+#: lib/Domain/Service/Dns/DomainManager.php:429
 msgid "The selected user already owns the zone."
 msgstr "Seçilen kullanıcı zaten zonun sahibidir."
+
+#: lib/Domain/Service/Dns/DomainManager.php:461
+#, auto-english-fallback
+msgid "There must be at least one owner for a zone."
+msgstr "There must be at least one owner for a zone."
 
 #: lib/Module/Rdap/templates/rdap.html:3
 msgid "Home"
@@ -8722,11 +8838,11 @@ msgstr "Kopyalandı!"
 msgid "DNSSEC"
 msgstr "DNSSEC"
 
-#: templates/modern/dnssec_edit_key.html:138
+#: templates/modern/dnssec_edit_key.html:140
 msgid "Deactivate key"
 msgstr "Anahtarı devre dışı bırak"
 
-#: templates/modern/dnssec_edit_key.html:140
+#: templates/modern/dnssec_edit_key.html:142
 msgid "Activate key"
 msgstr "Anahtarı etkinleştir"
 
@@ -8959,7 +9075,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Kaydı güncelle"
 
-#: templates/modern/edit.html:517 templates/modern/users.html:211
+#: templates/modern/edit.html:522 templates/modern/users.html:211
 msgid "Reset"
 msgstr "Sıfırla"
 
@@ -9102,7 +9218,7 @@ msgstr "Hesap"
 msgid "Select the account that will own this supermaster"
 msgstr "Bu süper master'ın sahibi olacak hesabı seçin"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:514
+#: templates/modern/edit.html:190 templates/modern/edit.html:519
 msgid "Save changes"
 msgstr "Değişiklikleri kaydet"
 
@@ -9247,11 +9363,11 @@ msgstr "Grup Yönetimi"
 msgid "Add group"
 msgstr "Grup ekle"
 
-#: templates/modern/edit_user.html:259 templates/modern/add_user.html:189
+#: templates/modern/edit_user.html:259 templates/modern/add_user.html:190
 msgid "No groups found"
 msgstr "Grup bulunamadı"
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:99
 msgid "Search groups..."
 msgstr "Grupları ara..."
 
@@ -9698,7 +9814,7 @@ msgstr "Veritabanını Kontrol Et"
 msgid "Check DB"
 msgstr "VT Kontrol"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:502
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:504
 msgid "Edit comment"
 msgstr "Yorumu düzenle"
 
@@ -9788,25 +9904,29 @@ msgid ""
 msgstr ""
 "Şablonları kolay tanımlamak için açıklayıcı adlar ve açıklamalar kullanın"
 
-#: templates/modern/list_log_zones.html:11 templates/modern/header.html:154
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:556
+msgid "Logs"
+msgstr "Kayıtlar"
+
+#: templates/modern/list_log_zones.html:15 templates/modern/header.html:154
 msgid "Zone logs"
 msgstr "Zon kayıtları"
 
-#: templates/modern/list_log_zones.html:17
+#: templates/modern/list_log_zones.html:22
 msgid "Zone Change Logs"
 msgstr "Zon Değişiklik Kayıtları"
 
-#: templates/modern/list_log_zones.html:25
+#: templates/modern/list_log_groups.html:31
+msgid "Total logs"
+msgstr "Toplam kayıt"
+
+#: templates/modern/list_log_zones.html:38
 msgid "Search logs by domain"
 msgstr "Domain'e göre kayıtları ara"
 
 #: templates/modern/list_log_groups.html:25
 msgid "Clear"
 msgstr "Temizle"
-
-#: templates/modern/list_log_groups.html:31
-msgid "Total logs"
-msgstr "Toplam kayıt"
 
 #: templates/modern/list_log_groups.html:46
 msgid "Id"
@@ -9816,15 +9936,15 @@ msgstr "Kimlik"
 msgid "Event"
 msgstr "Olay"
 
-#: templates/modern/list_log_zones.html:69
+#: templates/modern/list_log_zones.html:83
 msgid "Details"
 msgstr "Detaylar"
 
-#: templates/modern/list_log_zones.html:86
+#: templates/modern/list_log_zones.html:100
 msgid "Log Details"
 msgstr "Kayıt Detayları"
 
-#: templates/modern/list_log_zones.html:93
+#: templates/modern/list_log_zones.html:107
 msgid "Close"
 msgstr "Kapat"
 
@@ -9859,6 +9979,11 @@ msgstr "Format: ad,tip,içerik,öncelik,ttl,yorum (satır başına bir kayıt)"
 #: templates/modern/bulk_record_add.html:46
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Örnek: www,A,192.168.1.1,0,3600,web sunucu"
+
+#: templates/modern/bulk_record_add.html:47
+#, auto-english-fallback
+msgid "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:48
 msgid "Comment is optional"
@@ -9985,23 +10110,23 @@ msgstr "Yeni sahip ekle"
 msgid "Owner to be added"
 msgstr "Eklenecek sahip"
 
-#: templates/default/delete_user.html:82 templates/modern/delete_user.html:82
+#: templates/default/delete_user.html:95 templates/modern/delete_user.html:95
 msgid "Delete: The zone will be completely removed from the system"
 msgstr "Sil: Zon sistemden tamamen kaldırılacak"
 
-#: templates/default/delete_user.html:83 templates/modern/delete_user.html:83
+#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
 msgid "Leave: The zone will remain in the system but without an owner"
 msgstr "Bırak: Zon sistemde kalacak ancak sahibi olmayacak"
 
-#: templates/default/delete_user.html:84 templates/modern/delete_user.html:84
+#: templates/default/delete_user.html:97 templates/modern/delete_user.html:97
 msgid "Add new owner: Transfer ownership to another user"
 msgstr "Yeni sahip ekle: Sahipliği başka bir kullanıcıya transfer et"
 
-#: templates/default/delete_user.html:93 templates/modern/delete_user.html:93
+#: templates/default/delete_user.html:106 templates/modern/delete_user.html:106
 msgid "Yes, delete this user"
 msgstr "Evet, bu kullanıcıyı sil"
 
-#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
+#: templates/default/delete_user.html:109 templates/modern/delete_user.html:109
 msgid "No, keep this user"
 msgstr "Hayır, bu kullanıcıyı tut"
 
@@ -10215,15 +10340,15 @@ msgstr "Şifre Onayla"
 msgid "Passwords do not match"
 msgstr "Şifreler eşleşmiyor"
 
-#: templates/modern/add_user.html:133
+#: templates/modern/add_user.html:134
 msgid "Password Requirements"
 msgstr "Şifre Gereksinimleri"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "Minimum length"
 msgstr "Minimum uzunluk"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "characters"
 msgstr "karakter"
 
@@ -10406,6 +10531,10 @@ msgstr "Kullanıcıyı düzenle"
 msgid "Username"
 msgstr "Kullanıcı adı"
 
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Kullanıcı adınız yalnızca bir yönetici tarafından değiştirilebilir"
+
 #: templates/modern/edit_user.html:32 templates/modern/add_user.html:22
 msgid "Provide user name"
 msgstr "Kullanıcı adı sağlayın"
@@ -10430,11 +10559,11 @@ msgstr "E-posta adresi"
 msgid "Provide email"
 msgstr "E-posta sağlayın"
 
-#: templates/default/edit_user.html:58 templates/modern/edit_user.html:58
+#: templates/default/edit_user.html:61 templates/modern/edit_user.html:58
 msgid "Leave empty to keep current password"
 msgstr "Mevcut şifreyi korumak için boş bırakın"
 
-#: templates/default/edit_user.html:74
+#: templates/default/edit_user.html:77
 msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
@@ -10442,32 +10571,71 @@ msgstr ""
 "Bu şablondan gelen izinler bu kullanıcı için tüm sistemde global olarak "
 "uygulanacak"
 
-#: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
+#: templates/modern/edit_user.html:81 templates/modern/add_user.html:89
 msgid "Optional information about this user"
 msgstr "Bu kullanıcı hakkında isteğe bağlı bilgi"
 
-#: templates/modern/users.html:49 templates/modern/add_user.html:94
+#: templates/modern/users.html:49 templates/modern/add_user.html:95
 #: install/templates/step2.html.twig:116
 msgid "Enabled"
 msgstr "Etkin"
 
-#: templates/modern/edit_user.html:101 templates/modern/add_user.html:103
+#: templates/modern/edit_user.html:101 templates/modern/add_user.html:104
 msgid "LDAP Authentication"
 msgstr "LDAP Kimlik Doğrulama"
 
-#: templates/modern/edit_user.html:103 templates/modern/add_user.html:105
+# OBSOLETE: msgid "About Bulk Registration"
+# OBSOLETE: msgstr "Toplu Kayıt Hakkında"
+# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Bu araç aynı anda birden fazla DNS zonu oluşturmanıza olanak sağlar."
+# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
+# OBSOLETE: msgstr "Domainler alanına her satıra bir domain adı girin"
+# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
+# OBSOLETE: msgstr "Tüm zonlara standart kayıtlar uygulamak için bir zon şablonu seçin"
+# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
+# OBSOLETE: msgstr "Seçilen sahip oluşturulan tüm zonlara tam erişime sahip olacaktır"
+# OBSOLETE: msgid "How It Works"
+# OBSOLETE: msgstr "Nasıl Çalışır"
+# OBSOLETE: msgid ""
+# OBSOLETE: "The system will attempt to create each zone with the same settings. "
+# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
+# OBSOLETE: "again."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Sistem her zonu aynı ayarlarla oluşturmaya çalışacaktır. Başarısız "
+# OBSOLETE: "domainler gösterilecek, böylece sorunları düzelterek tekrar "
+# OBSOLETE: "deneyebilirsiniz."
+# OBSOLETE: msgid "Tips & Recommendations"
+# OBSOLETE: msgstr "İpuçları ve Öneriler"
+# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
+# OBSOLETE: msgstr "Çoğu standart kurulum için NATIVE zon tipini kullanın"
+# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Tüm zonlar için standart kayıtlara ihtiyaç duyuyorsanız önce bir şablon "
+# OBSOLETE: "oluşturun"
+# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
+# OBSOLETE: msgstr "Elektronik tablodan domain listesini kopyalayıp yapıştırabilirsiniz"
+# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Domain adlarının geçerli DNS adlandırma kurallarına uyduğundan emin olun"
+#: templates/default/edit_user.html:107
+msgid "Authentication settings can only be changed by an administrator"
+msgstr ""
+"Kimlik doğrulama ayarları yalnızca bir yönetici tarafından değiştirilebilir"
+
+#: templates/modern/edit_user.html:103 templates/modern/add_user.html:106
 msgid "Use external LDAP directory for authentication"
 msgstr "Kimlik doğrulama için harici LDAP dizini kullan"
 
-#: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
+#: templates/default/edit_user.html:124 templates/modern/edit_user.html:117
 msgid "Back to Home"
 msgstr "Ana Sayfaya Dön"
 
-#: templates/default/edit_user.html:121 templates/modern/edit_user.html:121
+#: templates/default/edit_user.html:128 templates/modern/edit_user.html:121
 msgid "Back to Users"
 msgstr "Kullanıcılara Dön"
 
-#: templates/modern/edit_user.html:135 templates/modern/add_user.html:128
+#: templates/modern/edit_user.html:135 templates/modern/add_user.html:129
 msgid "Account Information"
 msgstr "Hesap Bilgileri"
 
@@ -10491,53 +10659,53 @@ msgstr "Özel karakterler içermelidir"
 msgid "No specific password requirements"
 msgstr "Belirli şifre gereksinimi yok"
 
-#: templates/modern/add_user.html:160 templates/modern/edit_perm_templ.html:151
+#: templates/modern/add_user.html:161 templates/modern/edit_perm_templ.html:151
 msgid "User Permissions"
 msgstr "Kullanıcı İzinleri"
 
-#: templates/default/edit_user.html:175 templates/modern/edit_user.html:172
+#: templates/default/edit_user.html:182 templates/modern/edit_user.html:172
 msgid "This user has been assigned the access template"
 msgstr "Bu kullanıcıya erişim şablonu atanmış"
 
-#: templates/default/edit_user.html:184 templates/modern/edit_user.html:181
+#: templates/default/edit_user.html:191 templates/modern/edit_user.html:181
 msgid "Based on this template, this user has the following permissions"
 msgstr "Bu şablona dayalı olarak, bu kullanıcı aşağıdaki izinlere sahiptir"
 
-#: templates/default/edit_user.html:187 templates/modern/edit_user.html:184
+#: templates/default/edit_user.html:194 templates/modern/edit_user.html:184
 msgid "No permissions are assigned to this template"
 msgstr "Bu şablona hiçbir izin atanmamış"
 
-#: templates/modern/edit_user.html:202 templates/modern/add_user.html:172
+#: templates/modern/edit_user.html:202 templates/modern/add_user.html:173
 msgid "Group Memberships"
 msgstr "Grup Üyelikleri"
 
-#: templates/default/edit_user.html:209 templates/modern/edit_user.html:206
+#: templates/default/edit_user.html:216 templates/modern/edit_user.html:206
 msgid "Current Memberships"
 msgstr "Mevcut Üyelikler"
 
-#: templates/default/edit_user.html:224 templates/modern/edit_user.html:221
+#: templates/default/edit_user.html:231 templates/modern/edit_user.html:221
 msgid "View group details"
 msgstr "Grup detaylarını görüntüle"
 
-#: templates/default/edit_user.html:238 templates/modern/edit_user.html:235
+#: templates/default/edit_user.html:245 templates/modern/edit_user.html:235
 msgid "This user is not a member of any groups."
 msgstr "Bu kullanıcı herhangi bir grubun üyesi değil."
 
-#: templates/modern/edit_user.html:241 templates/modern/add_user.html:175
+#: templates/modern/edit_user.html:241 templates/modern/add_user.html:176
 msgid "Add to Groups"
 msgstr "Gruplara Ekle"
 
-#: templates/default/edit_user.html:245 templates/modern/edit_user.html:242
+#: templates/default/edit_user.html:252 templates/modern/edit_user.html:242
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr ""
 "Bir veya daha fazla grup seçin ve \"Seçili Grupları Ekle\" düğmesine "
 "tıklayın."
 
-#: templates/modern/edit_user.html:250 templates/modern/add_user.html:180
+#: templates/modern/edit_user.html:250 templates/modern/add_user.html:181
 msgid "Search available groups..."
 msgstr "Mevcut grupları ara..."
 
-#: templates/modern/edit_user.html:251 templates/modern/add_user.html:181
+#: templates/modern/edit_user.html:251 templates/modern/add_user.html:182
 msgid "Clear search"
 msgstr "Aramayı temizle"
 
@@ -10545,7 +10713,7 @@ msgstr "Aramayı temizle"
 msgid "Select All"
 msgstr "Tümünü Seç"
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:103
 msgid "Clear All"
 msgstr "Tümünü Temizle"
 
@@ -10553,7 +10721,7 @@ msgstr "Tümünü Temizle"
 msgid "selected"
 msgstr "seçili"
 
-#: templates/default/edit_user.html:283 templates/modern/edit_user.html:280
+#: templates/default/edit_user.html:290 templates/modern/edit_user.html:280
 msgid "Add Selected Groups"
 msgstr "Seçili Grupları Ekle"
 
@@ -10561,7 +10729,7 @@ msgstr "Seçili Grupları Ekle"
 msgid "Confirm Removal"
 msgstr "Çıkarma Onayı"
 
-#: templates/default/edit_user.html:311 templates/modern/edit_user.html:308
+#: templates/default/edit_user.html:318 templates/modern/edit_user.html:308
 msgid "Are you sure you want to remove this user from the group"
 msgstr "Bu kullanıcıyı gruptan çıkarmak istediğinizden emin misiniz"
 
@@ -10997,7 +11165,7 @@ msgstr ""
 msgid "Ownership"
 msgstr "Sahiplik"
 
-#: templates/modern/add_zone_slave.html:49
+#: templates/modern/add_zone_slave.html:54
 msgid "User Owner"
 msgstr "Kullanıcı Sahibi"
 
@@ -11013,7 +11181,7 @@ msgstr "Kullanıcı Sahibi Ekle"
 msgid "Search users..."
 msgstr "Kullanıcıları ara..."
 
-#: templates/modern/add_zone_slave.html:76
+#: templates/modern/add_zone_slave.html:81
 msgid "You"
 msgstr "Siz"
 
@@ -11021,7 +11189,7 @@ msgstr "Siz"
 msgid "Add Owner"
 msgstr "Sahip Ekle"
 
-#: templates/modern/add_zone_slave.html:90
+#: templates/modern/add_zone_slave.html:95
 msgid "Group Ownership"
 msgstr "Grup Sahipliği"
 
@@ -11069,11 +11237,11 @@ msgstr "Bu şablon şu anda şunlara atanmış:"
 msgid "users"
 msgstr "kullanıcı"
 
-#: templates/modern/delete_zone_templ.html:35
+#: templates/modern/delete_zone_templ.html:37
 msgid "Yes, delete this template"
 msgstr "Evet, bu şablonu sil"
 
-#: templates/modern/delete_zone_templ.html:38
+#: templates/modern/delete_zone_templ.html:41
 msgid "No, keep this template"
 msgstr "Hayır, bu şablonu tut"
 
@@ -11138,72 +11306,72 @@ msgstr "Anahtarı kaybederseniz, yeniden oluşturmanız gerekecektir."
 msgid "Edit"
 msgstr "Düzenle"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:565
+#: templates/modern/edit.html:25 templates/modern/edit.html:576
 msgid "Add new record"
 msgstr "Yeni kayıt ekle"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:569
+#: templates/modern/edit.html:203 templates/modern/edit.html:580
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr ""
 "DMARC, SPF, DKIM, CAA, TLSA ve SRV kayıtları için yönlendirmeli sihirbazlar"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:575
+#: templates/modern/edit.html:35 templates/modern/edit.html:586
 msgid "Multi-record mode"
 msgstr "Çoklu kayıt kipi"
 
-#: templates/modern/edit.html:523 templates/modern/edit.html:578
+#: templates/modern/edit.html:529 templates/modern/edit.html:589
 msgid "Bulk add"
 msgstr "Toplu ekleme"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:590
+#: templates/modern/edit.html:50 templates/modern/edit.html:601
 msgid "Failed to add"
 msgstr "Ekleme başarısız"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:590
+#: templates/modern/edit.html:50 templates/modern/edit.html:601
 msgid "record(s). Please check the record format."
 msgstr "kayıt(lar). Lütfen kayıt formatını kontrol edin."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:592
+#: templates/modern/edit.html:52 templates/modern/edit.html:603
 msgid "Failed to add records. Please check the record format."
 msgstr "Kayıt ekleme başarısız. Lütfen kayıt formatını kontrol edin."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:595
+#: templates/modern/edit.html:55 templates/modern/edit.html:606
 msgid "Content validation failed:"
 msgstr "İçerik doğrulama başarısız:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:595
+#: templates/modern/edit.html:55 templates/modern/edit.html:606
 msgid "Invalid value for record type"
 msgstr "Kayıt tipi için geçersiz değer"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:597
+#: templates/modern/edit.html:57 templates/modern/edit.html:608
 msgid "Please provide all required information."
 msgstr "Lütfen tüm gerekli bilgileri sağlayın."
 
-#: templates/modern/edit.html:620 templates/modern/add_record.html:72
+#: templates/modern/edit.html:631 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "PTR Ekle"
 
-#: templates/modern/edit.html:623 templates/modern/add_record.html:75
+#: templates/modern/edit.html:634 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "A/AAAA Ekle"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:662
+#: templates/modern/edit.html:121 templates/modern/edit.html:673
 msgid "This record already exists"
 msgstr "Bu kayıt zaten mevcut"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:674
+#: templates/modern/edit.html:133 templates/modern/edit.html:685
 msgid "Invalid priority"
 msgstr "Geçersiz öncelik"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:681
+#: templates/modern/edit.html:140 templates/modern/edit.html:692
 msgid "Invalid TTL value"
 msgstr "Geçersiz TTL değeri"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:683
+#: templates/modern/edit.html:142 templates/modern/edit.html:694
 msgid "Provide TTL"
 msgstr "TTL sağlayın"
 
-#: templates/modern/edit.html:709 templates/modern/add_record.html:207
+#: templates/modern/edit.html:720 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11255,51 +11423,51 @@ msgstr "/"
 msgid "total records"
 msgstr "toplam kayıt"
 
-#: templates/default/edit.html:485 templates/modern/edit.html:485
+#: templates/default/edit.html:487 templates/modern/edit.html:487
 msgid "Edit selected"
 msgstr "Seçileni düzenle"
 
-#: templates/modern/edit.html:489 templates/modern/search.html:486
+#: templates/modern/edit.html:491 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Kayıt(ları) sil"
 
-#: templates/modern/edit.html:497 templates/modern/search.html:93
+#: templates/modern/edit.html:499 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Yorumlar"
 
-#: templates/default/edit.html:527 templates/modern/edit.html:527
+#: templates/default/edit.html:533 templates/modern/edit.html:533
 msgid "Import"
 msgstr "İçe Aktar"
 
-#: templates/default/edit.html:533 templates/modern/edit.html:533
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Export"
 msgstr "Dışa Aktar"
 
-#: templates/default/edit.html:544 templates/modern/edit.html:544
+#: templates/default/edit.html:550 templates/modern/edit.html:550
 msgid "Generate PTR"
 msgstr "PTR Oluştur"
 
-#: templates/modern/edit.html:723 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:734 templates/modern/add_zone_master.html:25
 msgid "Zone Configuration"
 msgstr "Bölge Yapılandırması"
 
-#: templates/modern/edit.html:763 templates/modern/edit.html:792
+#: templates/modern/edit.html:774 templates/modern/edit.html:803
 msgid "Change"
 msgstr "Değiştir"
 
-#: templates/modern/edit.html:756 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:767 templates/modern/add_zone_slave.html:40
 msgid "IP address of master NS"
 msgstr "Ana NS'nin IP adresi"
 
-#: templates/default/edit.html:813 templates/modern/edit.html:813
+#: templates/default/edit.html:824 templates/modern/edit.html:824
 msgid "Manage DNSSEC"
 msgstr "DNSSEC Yönet"
 
-#: templates/default/edit.html:820 templates/modern/edit.html:820
+#: templates/default/edit.html:831 templates/modern/edit.html:831
 msgid "Sign zone"
 msgstr "Zonu imzala"
 
-#: templates/default/edit.html:824 templates/modern/edit.html:824
+#: templates/default/edit.html:835 templates/modern/edit.html:835
 msgid "Not signed"
 msgstr "İmzalanmamış"
 
@@ -11384,11 +11552,11 @@ msgstr "Karşılık gelen PTR kaydını da sil (varsa)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Karşılık gelen A/AAAA kaydını da sil (varsa)"
 
-#: templates/modern/delete_zone_templ_record.html:59
+#: templates/modern/delete_zone_templ_record.html:61
 msgid "Yes, delete this record"
 msgstr "Evet, bu kaydı sil"
 
-#: templates/modern/delete_zone_templ_record.html:62
+#: templates/modern/delete_zone_templ_record.html:65
 msgid "No, keep this record"
 msgstr "Hayır, bu kaydı tut"
 
@@ -11576,11 +11744,15 @@ msgstr "Şifreyi e-postayla gönder"
 msgid "Send login credentials to user's email address"
 msgstr "Giriş bilgilerini kullanıcının e-posta adresine gönder"
 
-#: templates/modern/add_user.html:81
+#: templates/modern/add_user.html:72 templates/modern/add_group.html:35
+msgid "Select a template..."
+msgstr "Bir şablon seçin..."
+
+#: templates/modern/add_user.html:82
 msgid "Select permissions for this user"
 msgstr "Bu kullanıcı için izinleri seçin"
 
-#: templates/default/add_user.html:162 templates/modern/add_user.html:162
+#: templates/default/add_user.html:163 templates/modern/add_user.html:163
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -11590,7 +11762,7 @@ msgstr ""
 "alacaklardır. Bu izinleri daha sonra kullanıcıyı düzenleyerek "
 "değiştirebilirsiniz."
 
-#: templates/default/add_user.html:176 templates/modern/add_user.html:176
+#: templates/default/add_user.html:177 templates/modern/add_user.html:177
 msgid "Select groups to add the new user to upon creation."
 msgstr "Oluşturulduğunda yeni kullanıcının ekleneceği grupları seçin."
 
@@ -11598,55 +11770,63 @@ msgstr "Oluşturulduğunda yeni kullanıcının ekleneceği grupları seçin."
 msgid "Zone name"
 msgstr "Zon adı"
 
-#: templates/modern/add_zone_slave.html:30
+#: templates/modern/add_zone_slave.html:31
 msgid "Provide zone name"
 msgstr "Zon adı sağlayın"
 
-#: templates/modern/add_zone_slave.html:31
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr ""
+"Bir ağ (örn. 192.168.1.0/24 veya 2001:db8::/48) ya da bir ters zon adı (örn. "
+"1.168.192.in-addr.arpa) girin."
+
+#: templates/modern/add_zone_slave.html:35
 msgid "Example: example.com"
 msgstr "Örnek: example.com"
 
-#: templates/modern/add_zone_master.html:46
+#: templates/modern/add_zone_master.html:51
 msgid "Zone type (usually NATIVE)"
 msgstr "Zon tipi (genellikle NATIVE)"
 
-#: templates/modern/add_zone_master.html:58
+#: templates/modern/add_zone_master.html:63
 msgid "Optional: Apply predefined records from a template"
 msgstr "İsteğe bağlı: Şablondan önceden tanımlanmış kayıtları uygula"
 
-#: templates/modern/add_zone_master.html:66
+#: templates/modern/add_zone_master.html:71
 msgid "Enable DNSSEC"
 msgstr "DNSSEC'i etkinleştir"
 
-#: templates/modern/add_zone_master.html:68
+#: templates/modern/add_zone_master.html:73
 msgid "Secure this zone with DNSSEC signing"
 msgstr "Bu zonu DNSSEC imzalama ile güvenli hale getir"
 
-#: templates/modern/add_zone_slave.html:54
+#: templates/modern/add_zone_slave.html:59
 msgid "Selected:"
 msgstr "Seçili:"
 
-#: templates/modern/add_zone_slave.html:59
+#: templates/modern/add_zone_slave.html:64
 msgid "No user owner"
 msgstr "Kullanıcı sahibi yok"
 
-#: templates/modern/add_zone_slave.html:60
+#: templates/modern/add_zone_slave.html:65
 msgid "Zone will be owned only by groups"
 msgstr "Bölge sadece gruplara ait olacak"
 
-#: templates/modern/add_zone_slave.html:82
+#: templates/modern/add_zone_slave.html:87
 msgid "Optional: Select a user responsible for this zone"
 msgstr "İsteğe bağlı: Bu bölgeden sorumlu bir kullanıcı seçin"
 
-#: templates/modern/add_zone_slave.html:105
+#: templates/modern/add_zone_slave.html:110
 msgid "members"
 msgstr "üyeler"
 
-#: templates/modern/add_zone_slave.html:111
+#: templates/modern/add_zone_slave.html:116
 msgid "Optional: Select one or more groups"
 msgstr "İsteğe bağlı: Bir veya daha fazla grup seçin"
 
-#: templates/modern/add_zone_slave.html:126
+#: templates/modern/add_zone_slave.html:131
 msgid "Add zone"
 msgstr "Zon ekle"
 
@@ -11952,12 +12132,10 @@ msgid "Add Zones"
 msgstr "Zonları Ekle"
 
 #: templates/modern/bulk_registration.html:99
-#, auto-english-fallback
 msgid "After Creation"
 msgstr "Oluşturduktan Sonra"
 
 #: templates/modern/bulk_registration.html:104
-#, auto-english-fallback
 msgid "Assign zones to a group"
 msgstr "Bölgeleri bir gruba ata"
 
@@ -11966,15 +12144,14 @@ msgid ""
 "Bulk registration assigns ownership to a single user. To share access with a "
 "group, open the group and add the newly created zones."
 msgstr ""
-"Toplu kayıt, sahipliği tek bir kullanıcıya atar. Bir grupla erişim paylaşmak için grubu açın ve yeni oluşturulan bölgeleri ekleyin."
+"Toplu kayıt, sahipliği tek bir kullanıcıya atar. Bir grupla erişim paylaşmak "
+"için grubu açın ve yeni oluşturulan bölgeleri ekleyin."
 
 #: templates/modern/bulk_registration.html:107
-#, auto-english-fallback
 msgid "Manage groups"
 msgstr "Grupları yönet"
 
 #: templates/modern/bulk_registration.html:112
-#, auto-english-fallback
 msgid "Change zone owner"
 msgstr "Bölge sahibini değiştir"
 
@@ -11983,10 +12160,10 @@ msgid ""
 "You can transfer zone ownership to another user from the user list at any "
 "time."
 msgstr ""
-"Bölge sahipliğini istediğiniz zaman kullanıcı listesinden başka bir kullanıcıya devredebilirsiniz."
+"Bölge sahipliğini istediğiniz zaman kullanıcı listesinden başka bir "
+"kullanıcıya devredebilirsiniz."
 
 #: templates/modern/bulk_registration.html:115
-#, auto-english-fallback
 msgid "Manage users"
 msgstr "Kullanıcıları yönet"
 
@@ -12408,15 +12585,15 @@ msgstr ""
 msgid "Zones found"
 msgstr "Bulunan zonlar"
 
-#: templates/default/search.html:316 templates/modern/search.html:316
+#: templates/default/search.html:318 templates/modern/search.html:316
 msgid "Records found"
 msgstr "Bulunan kayıtlar"
 
-#: templates/default/search.html:501 templates/modern/search.html:501
+#: templates/default/search.html:504 templates/modern/search.html:501
 msgid "Try different search terms or filters"
 msgstr "Farklı arama terimleri veya filtreleri deneyin"
 
-#: templates/default/search.html:664 templates/modern/search.html:675
+#: templates/default/search.html:667 templates/modern/search.html:675
 msgid "Confirm Zone Deletion"
 msgstr "Bölge Silme Onayı"
 
@@ -12424,15 +12601,15 @@ msgstr "Bölge Silme Onayı"
 msgid "Are you sure you want to delete"
 msgstr "Silmek istediğinizden emin misiniz"
 
-#: templates/default/search.html:669 templates/modern/search.html:680
+#: templates/default/search.html:672 templates/modern/search.html:680
 msgid "selected zone(s)?"
 msgstr "seçili bölge(ler)?"
 
-#: templates/default/search.html:690 templates/modern/search.html:701
+#: templates/default/search.html:693 templates/modern/search.html:701
 msgid "Confirm Record Deletion"
 msgstr "Kayıt Silme Onayı"
 
-#: templates/default/search.html:695 templates/modern/search.html:706
+#: templates/default/search.html:698 templates/modern/search.html:706
 msgid "selected record(s)?"
 msgstr "seçili kayıt(lar)?"
 
@@ -12480,11 +12657,11 @@ msgstr "Supermaster'ı silmek üzeresiniz"
 msgid "Supermaster Details"
 msgstr "Supermaster Detayları"
 
-#: templates/modern/delete_supermaster.html:53
+#: templates/modern/delete_supermaster.html:57
 msgid "Yes, delete this supermaster"
 msgstr "Evet, bu supermaster'ı sil"
 
-#: templates/modern/delete_supermaster.html:56
+#: templates/modern/delete_supermaster.html:61
 msgid "No, keep this supermaster"
 msgstr "Hayır, bu supermaster'ı tut"
 
@@ -12500,15 +12677,15 @@ msgstr "Kullanıcı Etkinlik Logları"
 msgid "Search logs by user"
 msgstr "Kullanıcıya göre log ara"
 
-#: templates/modern/add_zone_slave.html:24
+#: templates/modern/add_zone_slave.html:25
 msgid "Slave Zone Configuration"
 msgstr "Slave Bölge Yapılandırması"
 
-#: templates/modern/add_zone_slave.html:37
+#: templates/modern/add_zone_slave.html:42
 msgid "Provide IP address"
 msgstr "IP adresi sağlayın"
 
-#: templates/modern/add_zone_slave.html:38
+#: templates/modern/add_zone_slave.html:43
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
@@ -12913,11 +13090,11 @@ msgstr "Seçilenleri Ekle"
 msgid "Are you sure you want to remove"
 msgstr "Çıkarmak istediğinizden emin misiniz"
 
-#: templates/modern/manage_group_zones.html:211
+#: templates/modern/manage_group_zones.html:216
 msgid "zone(s) from this group?"
 msgstr "bu gruptan bölge(ler)?"
 
-#: templates/modern/manage_group_zones.html:212
+#: templates/modern/manage_group_zones.html:217
 msgid "The zones will remain in the system."
 msgstr "Bölgeler sistemde kalacak."
 
@@ -13066,10 +13243,6 @@ msgstr ""
 #: templates/modern/dnssec_delete_key.html:39
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Bir DNSSEC anahtarını silmek üzeresiniz (ID"
-
-#: templates/default/add_group.html:35 templates/modern/add_group.html:35
-msgid "Select a template..."
-msgstr "Bir şablon seçin..."
 
 #: templates/modern/add_group.html:45
 msgid ""
@@ -13386,6 +13559,11 @@ msgstr ""
 #: lib/Module/Rdap/templates/rdap.html:35
 msgid "RDAP results for"
 msgstr "Şunun için RDAP sonuçları:"
+
+#: lib/Module/Rdap/templates/rdap.html:46
+#, auto-english-fallback
+msgid "Please enter a domain name to perform an RDAP lookup."
+msgstr "Please enter a domain name to perform an RDAP lookup."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -13889,6 +14067,15 @@ msgstr ""
 "Veritabanı bağlantısını yapılandırın, yönetici hesabı oluşturun ve "
 "yapılandırma dosyası oluşturun."
 
+#: install/templates/step3.html.twig:28
+#, auto-english-fallback
+msgid ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+msgstr ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+
 #: install/helpers/InstallStepHandler.php:170
 msgid "Missing PowerDNS tables:"
 msgstr "Eksik PowerDNS tabloları:"
@@ -14027,98 +14214,13 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS veritabanına bağlanılamıyor \"%s\": %s"
 
-# OBSOLETE: msgid "About Bulk Registration"
-# OBSOLETE: msgstr "Toplu Kayıt Hakkında"
-
-# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Bu araç aynı anda birden fazla DNS zonu oluşturmanıza olanak sağlar."
-
-# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
-# OBSOLETE: msgstr "Domainler alanına her satıra bir domain adı girin"
-
-# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
-# OBSOLETE: msgstr "Tüm zonlara standart kayıtlar uygulamak için bir zon şablonu seçin"
-
-# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
-# OBSOLETE: msgstr "Seçilen sahip oluşturulan tüm zonlara tam erişime sahip olacaktır"
-
-# OBSOLETE: msgid "How It Works"
-# OBSOLETE: msgstr "Nasıl Çalışır"
-
+#: install/helpers/LocaleHandler.php:89
 #, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "The system will attempt to create each zone with the same settings. "
-# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
-# OBSOLETE: "again."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Sistem her zonu aynı ayarlarla oluşturmaya çalışacaktır. Başarısız "
-# OBSOLETE: "domainler gösterilecek, böylece sorunları düzelterek tekrar "
-# OBSOLETE: "deneyebilirsiniz."
-
-# OBSOLETE: msgid "Tips & Recommendations"
-# OBSOLETE: msgstr "İpuçları ve Öneriler"
-
-# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
-# OBSOLETE: msgstr "Çoğu standart kurulum için NATIVE zon tipini kullanın"
-
-# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Tüm zonlar için standart kayıtlara ihtiyaç duyuyorsanız önce bir şablon "
-# OBSOLETE: "oluşturun"
-
-# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
-# OBSOLETE: msgstr "Elektronik tablodan domain listesini kopyalayıp yapıştırabilirsiniz"
-
-# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Domain adlarının geçerli DNS adlandırma kurallarına uyduğundan emin olun"
-
-
-
-
-#: templates/default/edit_user.html:107
-msgid "Authentication settings can only be changed by an administrator"
-msgstr "Kimlik doğrulama ayarları yalnızca bir yönetici tarafından değiştirilebilir"
-
-#: lib/Domain/Model/UserManager.php:1113
-msgid "Email address already exists, please choose another one."
-msgstr "E-posta adresi zaten mevcut, lütfen başka bir tane seçin."
-
-#: templates/modern/add_zone_slave.html:33
 msgid ""
-"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
-"name (e.g. 1.168.192.in-addr.arpa)."
-msgstr "Bir ağ (örn. 192.168.1.0/24 veya 2001:db8::/48) ya da bir ters zon adı (örn. 1.168.192.in-addr.arpa) girin."
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
+msgstr ""
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:106
-msgid ""
-"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
-"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
-msgstr "CIDR notasyonuyla bir ağ (örneğin 192.168.1.0/24 veya 2001:db8::/48) ya da in-addr.arpa veya ip6.arpa ile biten bir ters zon adı girin."
 
-#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:556
-msgid "Logs"
-msgstr "Kayıtlar"
-
-#: lib/Application/Controller/EditController.php:662
-msgid ""
-"Some records were not saved because the form exceeded the server limit on "
-"the number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "Form, alan sayısı için sunucu sınırını aştığından bazı kayıtlar kaydedilmedi. Yöneticinizden PHP \"max_input_vars\" ayarını artırmasını isteyin."
-
-#: lib/Domain/Model/ZoneTemplate.php:516 lib/Domain/Model/ZoneTemplate.php:578
-msgid "The record does not belong to this zone template."
-msgstr "Kayıt bu zon şablonuna ait değil."
-
-#: templates/default/edit_user.html:33
-msgid "Your username can only be changed by an administrator"
-msgstr "Kullanıcı adınız yalnızca bir yönetici tarafından değiştirilebilir"
-
-#: lib/Application/Controller/DeleteUserController.php:129
-msgid ""
-"The user was not deleted because the form exceeded the server limit on the "
-"number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "Form, alan sayısı için sunucu sınırını aştığından kullanıcı silinmedi. Yöneticinizden PHP \"max_input_vars\" ayarını artırmasını isteyin."

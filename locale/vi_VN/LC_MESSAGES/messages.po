@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-09 10:51+0300\n"
+"POT-Creation-Date: 2026-08-25 09:23+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "DNS wizards are not enabled."
 msgstr "Trình hướng dẫn DNS chưa được bật."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:47
+#: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid zone ID."
 msgstr "ID vùng không hợp lệ."
 
@@ -333,7 +333,7 @@ msgstr ""
 "hoàn chỉnh."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:634
+#: templates/modern/edit.html:93 templates/modern/edit.html:645
 msgid "Invalid hostname format"
 msgstr "Định dạng tên máy chủ không hợp lệ"
 
@@ -1255,19 +1255,19 @@ msgstr "Không thể tạo vùng."
 msgid "Failed to retrieve created zone."
 msgstr "Không thể truy xuất vùng đã tạo."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:39
+#: lib/Module/CsvExport/Controller/CsvExportController.php:40
 msgid "You need to be logged in to export zone data."
 msgstr "Bạn cần đăng nhập để xuất dữ liệu vùng."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:56
+#: lib/Module/CsvExport/Controller/CsvExportController.php:57
 msgid "You do not have permission to export this zone."
 msgstr "Bạn không có quyền xuất vùng này."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Application/Controller/DnssecToggleKeyController.php:79
 msgid "There is no zone with this ID."
 msgstr "Không có vùng nào với ID này."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:72
+#: lib/Module/CsvExport/Controller/CsvExportController.php:73
 msgid "This zone does not have any records to export."
 msgstr "Vùng này không có bản ghi nào để xuất."
 
@@ -1301,15 +1301,7 @@ msgstr "Không thể truy xuất thông tin RDAP từ máy chủ %s"
 msgid "Invalid CSRF token."
 msgstr "Token CSRF không hợp lệ."
 
-#: lib/BaseController.php:543
-msgid ""
-"The <a href=\"install/\">install/</a> directory exists, you must remove it "
-"first before proceeding."
-msgstr ""
-"Thư mục <a href=\"install/\">install/</a> vẫn tồn tại, bạn phải xóa nó trước "
-"khi tiếp tục."
-
-#: lib/BaseController.php:575
+#: lib/BaseController.php:523
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1317,21 +1309,38 @@ msgstr ""
 "Khóa mã hóa phiên mặc định đang được sử dụng, vui lòng thiết lập khóa trong "
 "tệp cấu hình của bạn."
 
-#: lib/BaseController.php:712
+#: lib/BaseController.php:527
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/BaseController.php:565
+msgid ""
+"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"first before proceeding."
+msgstr ""
+"Thư mục <a href=\"install/\">install/</a> vẫn tồn tại, bạn phải xóa nó trước "
+"khi tiếp tục."
+
+#: lib/BaseController.php:734
 #, php-format
 msgid "The %s field is required."
 msgstr "Trường %s là bắt buộc."
 
-#: lib/BaseController.php:720
+#: lib/BaseController.php:742
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Trường %s phải là một số."
 
-#: lib/Application/Presenter/PaginationPresenter.php:52
+#: lib/Application/Presenter/PaginationPresenter.php:56
 msgid "Previous"
 msgstr "Trước"
 
-#: lib/Application/Presenter/PaginationPresenter.php:79
+#: lib/Application/Presenter/PaginationPresenter.php:83
 msgid "Next"
 msgstr "Tiếp"
 
@@ -1343,18 +1352,18 @@ msgstr "Hiển thị các vùng bắt đầu bằng"
 msgid "Show all"
 msgstr "Hiển thị tất cả"
 
-#: lib/Application/Controller/DeleteRecordsController.php:77
+#: lib/Application/Controller/DeleteRecordsController.php:81
 msgid "No records selected for deletion."
 msgstr "Không có bản ghi nào được chọn để xóa."
 
-#: lib/Application/Controller/DeleteRecordsController.php:193
+#: lib/Application/Controller/DeleteRecordsController.php:197
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr ""
 "Bản ghi đã được xóa thành công. Các bản ghi PTR tương ứng cũng đã được xóa."
 
-#: lib/Application/Controller/DeleteRecordsController.php:195
+#: lib/Application/Controller/DeleteRecordsController.php:199
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1363,34 +1372,43 @@ msgstr ""
 "%d bản ghi đã được xóa thành công. Các bản ghi PTR tương ứng cũng đã được "
 "xóa."
 
-#: lib/Application/Controller/DeleteRecordsController.php:198
+#: lib/Application/Controller/DeleteRecordsController.php:202
 msgid "No records could be deleted. Please check permissions."
 msgstr "Không thể xóa bản ghi nào. Vui lòng kiểm tra quyền hạn."
 
-#: lib/Application/Controller/DeleteRecordsController.php:264
+#: lib/Application/Controller/DeleteRecordsController.php:268
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
 "Không có bản ghi hợp lệ nào được chọn để xóa hoặc bạn không có quyền xóa "
 "chúng."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:72
+#: lib/Application/Controller/DnssecToggleKeyController.php:48
 msgid "Invalid or unexpected input given."
 msgstr "Dữ liệu đầu vào không hợp lệ hoặc không mong đợi."
 
-#: lib/Domain/Model/UserManager.php:332
+#: lib/Domain/Model/UserManager.php:375
 msgid "You do not have the permission to delete this user."
 msgstr "Bạn không có quyền xóa người dùng này."
 
-#: lib/Application/Controller/DeleteUserController.php:74
+#: lib/Application/Controller/DeleteUserController.php:78
 msgid "You do not have permission to delete a superuser account."
 msgstr "Bạn không có quyền xóa tài khoản quản trị viên cao cấp."
 
-#: lib/Application/Controller/EditUserController.php:441
+#: lib/Application/Controller/EditUserController.php:498
 msgid "User does not exist."
 msgstr "Người dùng không tồn tại."
 
-#: lib/Application/Controller/DeleteUserController.php:109
+#: lib/Application/Controller/DeleteUserController.php:113
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"Người dùng không bị xóa vì biểu mẫu đã vượt quá giới hạn số trường của máy "
+"chủ. Hãy yêu cầu quản trị viên tăng cài đặt PHP \"max_input_vars\"."
+
+#: lib/Application/Controller/DeleteUserController.php:135
 msgid "The user has been deleted successfully."
 msgstr "Người dùng đã được xóa thành công."
 
@@ -1402,7 +1420,7 @@ msgstr "Tính năng bình luận vùng đã bị tắt trong cấu hình."
 msgid "You do not have the permission to view this comment."
 msgstr "Bạn không có quyền xem bình luận này."
 
-#: lib/Domain/Service/Dns/RecordManager.php:487
+#: lib/Domain/Service/Dns/RecordManager.php:504
 msgid "You do not have the permission to edit this comment."
 msgstr "Bạn không có quyền chỉnh sửa bình luận này."
 
@@ -1418,7 +1436,7 @@ msgstr "ID bản ghi không hợp lệ."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Bạn không có quyền xóa bản ghi trong vùng này."
 
-#: lib/Application/Controller/EditRecordController.php:198
+#: lib/Domain/Service/Dns/RecordManager.php:416
 msgid "Record not found."
 msgstr "Không tìm thấy bản ghi."
 
@@ -1482,7 +1500,7 @@ msgid ""
 "found."
 msgstr "Bản ghi đã được xóa thành công. Không tìm thấy bản ghi A/AAAA phù hợp."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:72
 msgid "The record has been deleted successfully."
 msgstr "Bản ghi đã được xóa thành công."
 
@@ -1548,29 +1566,29 @@ msgstr "Quản lý thành viên nhóm"
 msgid "Invalid action."
 msgstr "Hành động không hợp lệ."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:193
+#: lib/Application/Controller/ManageGroupMembersController.php:213
 msgid "Please select at least one user."
 msgstr "Vui lòng chọn ít nhất một người dùng."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:139
+#: lib/Application/Controller/ManageGroupMembersController.php:159
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
 msgstr[0] "%d người dùng đã được thêm vào nhóm."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:172
+#: lib/Application/Controller/ManageGroupMembersController.php:192
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
 msgstr[0] "%d người dùng không thể được thêm."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:221
+#: lib/Application/Controller/ManageGroupMembersController.php:238
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
 msgstr[0] "%d người dùng đã được xóa khỏi nhóm."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:254
+#: lib/Application/Controller/ManageGroupMembersController.php:271
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
@@ -1600,7 +1618,7 @@ msgstr "Mã xác minh là bắt buộc."
 msgid "MFA has been enabled successfully."
 msgstr "MFA đã được bật thành công."
 
-#: lib/Application/Controller/MfaVerifyController.php:262
+#: lib/Application/Controller/MfaVerifyController.php:266
 msgid "Invalid verification code. Please try again."
 msgstr "Mã xác minh không hợp lệ. Vui lòng thử lại."
 
@@ -1722,28 +1740,28 @@ msgstr "Bạn không có quyền thêm bản ghi vào vùng này."
 msgid "Please provide at least one record."
 msgstr "Vui lòng cung cấp ít nhất một bản ghi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:141
+#: lib/Application/Controller/BulkRecordAddController.php:143
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Định dạng không hợp lệ. Yêu cầu tối thiểu: tên,loại,nội dung"
 
-#: lib/Application/Controller/BulkRecordAddController.php:194
+#: lib/Application/Controller/BulkRecordAddController.php:196
 msgid "Invalid record type."
 msgstr "Loại bản ghi không hợp lệ."
 
-#: lib/Application/Controller/BulkRecordAddController.php:231
+#: lib/Application/Controller/BulkRecordAddController.php:233
 msgid "Record could not be added."
 msgstr "Không thể thêm bản ghi."
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/BulkRecordAddController.php:241
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d bản ghi đã được thêm thành công."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
+#: lib/Application/Controller/BulkRecordAddController.php:244
 msgid "Some record(s) could not be added."
 msgstr "Một số bản ghi không thể được thêm."
 
-#: lib/Application/Controller/BulkRecordAddController.php:275
+#: lib/Application/Controller/BulkRecordAddController.php:277
 msgid "Zone ID is required."
 msgstr "ID vùng là bắt buộc."
 
@@ -1751,24 +1769,42 @@ msgstr "ID vùng là bắt buộc."
 msgid "You do not have the permission to edit permission templates."
 msgstr "Bạn không có quyền chỉnh sửa mẫu quyền hạn."
 
-#: lib/Application/Controller/EditPermTemplController.php:54
+#: lib/Application/Controller/EditPermTemplController.php:56
 msgid "Edit Permission Template"
 msgstr "Sửa mẫu quyền"
 
-#: lib/Application/Controller/EditPermTemplController.php:78
+#: lib/Application/Controller/EditPermTemplController.php:103
 msgid "The permission template has been updated successfully."
 msgstr "Mẫu quyền hạn đã được cập nhật thành công."
+
+#: lib/Application/Controller/EditPermTemplController.php:151
+#, auto-english-fallback
+msgid ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Application/Controller/AddPermTemplController.php:127
+#, auto-english-fallback
+msgid ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
+msgstr ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
 
 #: lib/Application/Controller/ListGroupsController.php:55
 #: templates/modern/manage_group_members.html:4
 msgid "Groups"
 msgstr "DNSSEC validation thất bại."
 
-#: lib/Application/Controller/SearchController.php:47
+#: lib/Application/Controller/SearchController.php:52
 msgid "You do not have the permission to perform searches."
 msgstr "Bạn không có quyền thực hiện tìm kiếm."
 
-#: lib/Application/Controller/SearchController.php:51
+#: lib/Application/Controller/SearchController.php:56
 #: templates/modern/header.html:97 templates/modern/list_log_groups.html:22
 msgid "Search"
 msgstr "Metric không khả dụng."
@@ -1789,16 +1825,16 @@ msgstr "Thành viên đã được xóa khỏi nhóm thành công."
 msgid "User was not a member of this group."
 msgstr "Người dùng không phải là thành viên của nhóm này."
 
-#: lib/Domain/Model/UserManager.php:995
+#: lib/Domain/Model/UserManager.php:1199
 msgid "You do not have the permission to add a new user."
 msgstr "Bạn không có quyền thêm người dùng mới."
 
 #: lib/Application/Controller/AddUserController.php:92
-#: templates/modern/add_user.html:13 templates/modern/add_user.html:112
+#: templates/modern/add_user.html:13 templates/modern/add_user.html:113
 msgid "Add User"
 msgstr "Thêm người dùng"
 
-#: lib/Application/Controller/EditUserController.php:237
+#: lib/Application/Controller/EditUserController.php:284
 msgid "Invalid permission template: must be a user template"
 msgstr "Mẫu quyền hạn không hợp lệ: phải là mẫu người dùng"
 
@@ -1827,15 +1863,15 @@ msgstr "Mật khẩu đã được tạo nhưng không hiển thị vì lý do b
 msgid "Please fill in all required fields correctly."
 msgstr "Vui lòng điền đúng tất cả các trường bắt buộc."
 
-#: lib/Domain/Service/Dns/RecordManager.php:433
+#: lib/Domain/Service/Dns/RecordManager.php:450
 msgid "You do not have the permission to delete this record."
 msgstr "Bạn không có quyền xóa bản ghi này."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:78
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
 msgid "The record could not be deleted."
 msgstr "Không thể xóa bản ghi."
 
-#: lib/Application/Controller/ListLogZonesController.php:59
+#: lib/Application/Controller/ListLogZonesController.php:63
 #: templates/default/index.html:235 templates/default/index.html:239
 msgid "Zone Logs"
 msgstr "Không tương thích phiên bản."
@@ -1852,18 +1888,22 @@ msgstr "Số trang phải ít nhất là 1."
 msgid "Page number exceeds available pages."
 msgstr "Số trang vượt quá số trang có sẵn."
 
-#: lib/Application/Controller/UsersController.php:51
+#: lib/Application/Controller/UsersController.php:52
 msgid "You do not have permission to view the users list."
 msgstr "Bạn không có quyền xem danh sách người dùng."
 
-#: lib/Application/Controller/UsersController.php:58
+#: lib/Application/Controller/UsersController.php:59
 #: templates/modern/list_perm_templ.html:4
 msgid "Users"
 msgstr "Tải module thất bại."
 
-#: lib/Application/Controller/UsersController.php:78
+#: lib/Application/Controller/UsersController.php:92
 msgid "User details updated"
 msgstr "Chi tiết người dùng đã được cập nhật"
+
+#: lib/Application/Controller/EditUserController.php:223
+msgid "You do not have permission to edit a superuser account."
+msgstr "Bạn không có quyền chỉnh sửa tài khoản quản trị viên cao cấp."
 
 #: lib/Application/Controller/EditZoneTemplController.php:59
 msgid "No template ID provided."
@@ -1893,7 +1933,7 @@ msgstr "Các vùng đã được cập nhật thành công."
 msgid "You do not have permission to create new zone templates."
 msgstr "Bạn không có quyền tạo mẫu vùng mới."
 
-#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:208 lib/Domain/Model/ZoneTemplate.php:990
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Mẫu vùng với tên này đã tồn tại, vui lòng chọn tên khác."
 
@@ -1974,42 +2014,42 @@ msgstr "Sửa vùng"
 msgid "You do not have permission to access this zone."
 msgstr "Bạn không có quyền truy cập vùng này."
 
-#: lib/Domain/Repository/DomainRepository.php:531
+#: lib/Domain/Repository/DomainRepository.php:533
 msgid "You do not have the permission to view this zone."
 msgstr "Bạn không có quyền xem vùng này."
 
-#: lib/Application/Controller/EditController.php:269
+#: lib/Application/Controller/EditController.php:274
 msgid "Zone type has been changed successfully."
 msgstr "Loại vùng đã được thay đổi thành công."
 
-#: lib/Application/Controller/EditController.php:276
+#: lib/Application/Controller/EditController.php:281
 msgid "Slave master has been changed successfully."
 msgstr "Master của slave đã được thay đổi thành công."
 
-#: lib/Application/Controller/EditController.php:296
+#: lib/Application/Controller/EditController.php:301
 msgid "Zone template has been changed successfully."
 msgstr "Mẫu vùng đã được thay đổi thành công."
 
-#: lib/Application/Controller/EditController.php:308
+#: lib/Application/Controller/EditController.php:313
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC chưa được bật trên máy chủ."
 
-#: lib/Application/Controller/EditController.php:311
+#: lib/Application/Controller/EditController.php:316
 msgid "Zone is already signed with DNSSEC."
 msgstr "Vùng đã được ký bằng DNSSEC rồi."
 
-#: lib/Application/Controller/EditController.php:333
+#: lib/Application/Controller/EditController.php:338
 msgid "Zone has been signed successfully."
 msgstr "Vùng đã được ký thành công."
 
-#: lib/Application/Controller/EditController.php:337
+#: lib/Application/Controller/EditController.php:342
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr ""
 "Yêu cầu ký vùng thành công, nhưng xác minh thất bại. Kiểm tra khóa DNSSEC."
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:346
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2017,31 +2057,40 @@ msgstr ""
 "Không thể ký vùng. Xác thực vùng đã thành công, nhưng API PowerDNS trả về "
 "lỗi. Kiểm tra nhật ký PowerDNS để biết chi tiết."
 
-#: lib/Application/Controller/DnssecController.php:94
+#: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Vùng hiện chưa được ký bằng DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:104
+#: lib/Application/Controller/DnssecController.php:103
 msgid "Zone has been unsigned successfully."
 msgstr "Vùng đã được hủy ký thành công."
 
-#: lib/Application/Controller/DnssecController.php:109
+#: lib/Application/Controller/DnssecController.php:108
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "Yêu cầu hủy ký vùng thành công, nhưng xác minh thất bại."
 
-#: lib/Application/Controller/DnssecController.php:113
+#: lib/Application/Controller/DnssecController.php:112
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Không thể hủy ký vùng. Kiểm tra nhật ký PowerDNS để biết chi tiết."
 
-#: lib/Application/Controller/EditController.php:734
+#: lib/Application/Controller/EditController.php:674
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"Một số bản ghi không được lưu vì biểu mẫu đã vượt quá giới hạn số trường của "
+"máy chủ. Hãy yêu cầu quản trị viên tăng cài đặt PHP \"max_input_vars\"."
+
+#: lib/Application/Controller/EditController.php:774
 msgid "Request has expired, please try again."
 msgstr "Yêu cầu đã hết hạn, vui lòng thử lại."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:779
 msgid "Zone has been updated successfully."
 msgstr "Vùng đã được cập nhật thành công."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:781
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2049,11 +2098,11 @@ msgstr ""
 "Vùng đã được lưu thành công. Không có thay đổi bản ghi nào được thực hiện, "
 "nhưng số serial SOA đã được tăng."
 
-#: lib/Application/Controller/EditController.php:750
+#: lib/Application/Controller/EditController.php:790
 msgid "Zone has not been updated successfully."
 msgstr "Vùng chưa được cập nhật thành công."
 
-#: lib/Application/Controller/EditController.php:778
+#: lib/Application/Controller/EditController.php:818
 msgid "Please provide all required fields."
 msgstr "Vui lòng cung cấp tất cả các trường bắt buộc."
 
@@ -2085,7 +2134,7 @@ msgstr "Không tìm thấy bản ghi MFA. Vui lòng liên hệ quản trị viê
 msgid "An error occurred. Please try again."
 msgstr "Đã xảy ra lỗi. Vui lòng thử lại."
 
-#: lib/Application/Controller/MfaVerifyController.php:285
+#: lib/Application/Controller/MfaVerifyController.php:289
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2093,15 +2142,15 @@ msgstr ""
 "Xác minh qua email không khả dụng vì dịch vụ thư đã bị tắt. Vui lòng sử dụng "
 "mã khôi phục."
 
-#: lib/Application/Controller/MfaVerifyController.php:295
+#: lib/Application/Controller/MfaVerifyController.php:299
 msgid "A new verification code has been sent to your email."
 msgstr "Mã xác minh mới đã được gửi đến email của bạn."
 
-#: lib/Application/Controller/MfaVerifyController.php:301
+#: lib/Application/Controller/MfaVerifyController.php:305
 msgid "Please use a recovery code instead."
 msgstr "Vui lòng sử dụng mã khôi phục thay thế."
 
-#: lib/Application/Controller/MfaVerifyController.php:306
+#: lib/Application/Controller/MfaVerifyController.php:310
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2117,26 +2166,26 @@ msgstr "Bạn không có quyền thêm bản ghi vào vùng này."
 msgid "Record successfully added."
 msgstr "Bản ghi đã được thêm thành công."
 
-#: lib/Application/Controller/AddRecordController.php:422
+#: lib/Application/Controller/AddRecordController.php:434
 msgid "No records were provided."
 msgstr "Không có bản ghi nào được cung cấp."
 
-#: lib/Application/Controller/AddRecordController.php:478
+#: lib/Application/Controller/AddRecordController.php:500
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d bản ghi đã được thêm thành công."
 
-#: lib/Application/Controller/AddRecordController.php:480
+#: lib/Application/Controller/AddRecordController.php:502
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d bản ghi khớp cũng đã được tạo."
 
-#: lib/Application/Controller/AddRecordController.php:483
+#: lib/Application/Controller/AddRecordController.php:505
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d bản ghi thêm thất bại."
 
-#: lib/Application/Controller/AddRecordController.php:488
+#: lib/Application/Controller/AddRecordController.php:510
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2144,7 +2193,7 @@ msgstr ""
 "Một số bản ghi không thể được thêm. Chúng có thể đã tồn tại hoặc chứa dữ "
 "liệu không hợp lệ."
 
-#: lib/Application/Controller/AddRecordController.php:514
+#: lib/Application/Controller/AddRecordController.php:540
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Không thể thêm bất kỳ bản ghi nào. Chúng có thể chứa dữ liệu không hợp lệ."
@@ -2153,17 +2202,17 @@ msgstr ""
 msgid "No zone selected for deletion."
 msgstr "Không có vùng nào được chọn để xóa."
 
+#: lib/Domain/Service/Dns/DomainManager.php:539
+msgid "You do not have the permission to delete a zone."
+msgstr "Bạn không có quyền xóa vùng."
+
 #: lib/Application/Controller/DeleteDomainController.php:138
 msgid "Zone has been deleted successfully."
 msgstr "Vùng đã được xóa thành công."
 
-#: lib/Application/Controller/DeleteDomainsController.php:153
+#: lib/Application/Controller/DeleteDomainsController.php:167
 msgid "Zones have been deleted successfully."
 msgstr "Các vùng đã được xóa thành công."
-
-#: lib/Domain/Service/Dns/DomainManager.php:529
-msgid "You do not have the permission to delete a zone."
-msgstr "Bạn không có quyền xóa vùng."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:80
 msgid "You do not have the permission to edit zone template records."
@@ -2173,7 +2222,7 @@ msgstr "Bạn không có quyền chỉnh sửa bản ghi mẫu vùng."
 msgid "OIDC authentication is not enabled"
 msgstr "Xác thực OIDC chưa được bật"
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:390
 msgid "Authentication failed: "
 msgstr "Xác thực thất bại: "
 
@@ -2209,7 +2258,15 @@ msgstr "Bạn không có quyền thêm vùng master."
 msgid "Add Primary Zone"
 msgstr "Thêm vùng chính"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:117
+#: lib/Application/Controller/AddZoneSlaveController.php:106
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr ""
+"Nhập một mạng theo ký hiệu CIDR (ví dụ 192.168.1.0/24 hoặc 2001:db8::/48) "
+"hoặc tên vùng đảo ngược kết thúc bằng in-addr.arpa hoặc ip6.arpa."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:134
 msgid "At least one user or group must be selected as owner."
 msgstr "Phải chọn ít nhất một người dùng hoặc nhóm làm chủ sở hữu."
 
@@ -2217,14 +2274,14 @@ msgstr "Phải chọn ít nhất một người dùng hoặc nhóm làm chủ s�
 msgid "There is already a zone with this name."
 msgstr "Đã tồn tại một vùng với tên này."
 
-#: lib/Application/Controller/AddZoneMasterController.php:171
+#: lib/Application/Controller/AddZoneMasterController.php:187
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
 "Vùng đã được tạo thành công, nhưng ký DNSSEC đã bị bỏ qua do lỗi xác thực:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:183
+#: lib/Application/Controller/AddZoneMasterController.php:199
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2233,11 +2290,11 @@ msgstr ""
 "công, nhưng API PowerDNS trả về lỗi. Kiểm tra nhật ký PowerDNS để biết chi "
 "tiết."
 
-#: lib/Application/Controller/AddZoneMasterController.php:189
+#: lib/Application/Controller/AddZoneMasterController.php:205
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Vùng đã được tạo và ký bằng DNSSEC thành công."
 
-#: lib/Application/Controller/AddZoneMasterController.php:192
+#: lib/Application/Controller/AddZoneMasterController.php:208
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2245,7 +2302,7 @@ msgstr ""
 "Vùng đã được tạo và yêu cầu ký đã được gửi, nhưng xác minh thất bại. Kiểm "
 "tra khóa DNSSEC."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:156
+#: lib/Application/Controller/AddZoneSlaveController.php:173
 msgid "Zone has been added successfully."
 msgstr "Vùng đã được thêm thành công."
 
@@ -2291,27 +2348,27 @@ msgstr "Mẫu quyền hạn không hợp lệ: phải là mẫu nhóm"
 msgid "Group has been created successfully."
 msgstr "Nhóm đã được tạo thành công."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:54
+#: lib/Application/Controller/DnssecToggleKeyController.php:62
 msgid "Invalid key ID."
 msgstr "ID khóa không hợp lệ."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:64
+#: lib/Application/Controller/DnssecToggleKeyController.php:72
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Bạn không có quyền quản lý DNSSEC cho vùng này."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:89
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
 msgid "DNSSEC key not found or no longer exists."
 msgstr "Không tìm thấy khóa DNSSEC hoặc khóa không còn tồn tại."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:106
+#: lib/Application/Controller/DnssecDeleteKeyController.php:105
 msgid "Zone key has been deleted successfully."
 msgstr "Khóa vùng đã được xóa thành công."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:115
+#: lib/Application/Controller/DnssecDeleteKeyController.php:114
 msgid "Failed to delete the zone key."
 msgstr "Không thể xóa khóa vùng."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:122
+#: lib/Application/Controller/DnssecDeleteKeyController.php:121
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Đã xảy ra lỗi khi xóa khóa DNSSEC: "
 
@@ -2356,45 +2413,50 @@ msgstr "Bạn không có quyền quản lý quyền sở hữu vùng."
 msgid "Manage Group Zones"
 msgstr "Quản lý vùng của nhóm"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:206
+#: lib/Application/Controller/ManageGroupZonesController.php:226
 msgid "Please select at least one zone."
 msgstr "Vui lòng chọn ít nhất một vùng."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:139
+#: lib/Application/Controller/ManageGroupZonesController.php:159
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
 msgstr[0] "%d vùng đã được thêm vào nhóm."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:185
+#: lib/Application/Controller/ManageGroupZonesController.php:205
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
 msgstr[0] "%d vùng không thể được thêm."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:231
+#: lib/Application/Controller/ManageGroupZonesController.php:248
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
 msgstr[0] "%d vùng đã được xóa khỏi nhóm."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:277
+#: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
 msgstr[0] "%d vùng không thể được xóa."
 
-#: lib/Application/Controller/AddPermTemplController.php:50
+#: lib/Application/Controller/AddPermTemplController.php:52
 msgid "You do not have the permission to add permission templates."
 msgstr "Bạn không có quyền thêm mẫu quyền hạn."
 
-#: lib/Application/Controller/AddPermTemplController.php:54
+#: lib/Application/Controller/AddPermTemplController.php:56
 msgid "Add Permission Template"
 msgstr "Thêm mẫu quyền"
 
-#: lib/Application/Controller/AddPermTemplController.php:73
+#: lib/Application/Controller/AddPermTemplController.php:88
 msgid "The permission template has been added successfully."
 msgstr "Mẫu quyền hạn đã được thêm thành công."
+
+#: lib/Application/Controller/AddPermTemplController.php:128
+#, auto-english-fallback
+msgid "The permission template could not be added."
+msgstr "The permission template could not be added."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:34
 msgid "Not available for anonymous users."
@@ -2462,11 +2524,11 @@ msgstr "Không thể tạo bản ghi SOA mặc định"
 msgid "Invalid check type"
 msgstr "Loại kiểm tra không hợp lệ"
 
-#: lib/Application/Controller/LogoutController.php:115
+#: lib/Application/Controller/LogoutController.php:104
 msgid "You have logged out."
 msgstr "Bạn đã đăng xuất."
 
-#: lib/Domain/Model/ZoneTemplate.php:178 lib/Domain/Model/ZoneTemplate.php:619
+#: lib/Domain/Model/ZoneTemplate.php:205 lib/Domain/Model/ZoneTemplate.php:741
 msgid "You do not have the permission to add a zone template."
 msgstr "Bạn không có quyền thêm mẫu vùng."
 
@@ -2482,7 +2544,7 @@ msgstr "Mẫu vùng đã được thêm thành công."
 msgid "Dashboard"
 msgstr "Bảng điều khiển"
 
-#: lib/Application/Controller/EditUserController.php:342
+#: lib/Application/Controller/EditUserController.php:399
 msgid "You do not have permission to manage group memberships."
 msgstr "Bạn không có quyền quản lý thành viên nhóm."
 
@@ -2510,11 +2572,11 @@ msgstr "Tên máy chủ không hợp lệ."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Đây không phải là địa chỉ IPv4 hoặc IPv6 hợp lệ."
 
-#: lib/Domain/Model/ZoneTemplate.php:278 lib/Domain/Model/ZoneTemplate.php:316
+#: lib/Domain/Model/ZoneTemplate.php:305 lib/Domain/Model/ZoneTemplate.php:343
 msgid "You do not have the permission to delete zone templates."
 msgstr "Bạn không có quyền xóa mẫu vùng."
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:90
+#: lib/Application/Controller/DeleteZoneTemplController.php:92
 msgid "Zone template has been deleted successfully."
 msgstr "Mẫu vùng đã được xóa thành công."
 
@@ -2580,25 +2642,21 @@ msgstr "Người dùng đã được cập nhật thành công."
 msgid "The user could not be updated."
 msgstr "Không thể cập nhật người dùng."
 
-#: lib/Domain/Model/UserManager.php:512 lib/Domain/Model/UserManager.php:975
+#: lib/Domain/Model/UserManager.php:571 lib/Domain/Model/UserManager.php:1179
 msgid "You do not have the permission to edit this user."
 msgstr "Bạn không có quyền chỉnh sửa người dùng này."
 
-#: lib/Application/Controller/EditUserController.php:212
-msgid "You do not have permission to edit a superuser account."
-msgstr "Bạn không có quyền chỉnh sửa tài khoản quản trị viên cao cấp."
-
-#: lib/Application/Controller/EditUserController.php:350
+#: lib/Application/Controller/EditUserController.php:407
 msgid "Please select at least one group."
 msgstr "Vui lòng chọn ít nhất một nhóm."
 
-#: lib/Application/Controller/EditUserController.php:391
+#: lib/Application/Controller/EditUserController.php:448
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
 msgstr[0] "Người dùng đã được thêm vào %d nhóm thành công."
 
-#: lib/Application/Controller/EditUserController.php:423
+#: lib/Application/Controller/EditUserController.php:480
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
@@ -2611,7 +2669,7 @@ msgstr[0] ""
 msgid "You do not have the permission to delete permission templates."
 msgstr "Bạn không có quyền xóa mẫu quyền hạn."
 
-#: lib/Application/Controller/DeletePermTemplController.php:69
+#: lib/Application/Controller/DeletePermTemplController.php:71
 msgid "The permission template has been deleted successfully."
 msgstr "Mẫu quyền hạn đã được xóa thành công."
 
@@ -2714,41 +2772,41 @@ msgstr ""
 msgid "Change Password"
 msgstr "Đổi mật khẩu"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:116
+#: lib/Application/Controller/DnssecAddKeyController.php:115
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "Thuật toán ECDSA P-256 phải sử dụng 256 bit"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:119
+#: lib/Application/Controller/DnssecAddKeyController.php:118
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "Thuật toán ECDSA P-384 phải sử dụng 384 bit"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:125
+#: lib/Application/Controller/DnssecAddKeyController.php:124
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "Thuật toán ED25519 phải sử dụng 256 bit"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:130
+#: lib/Application/Controller/DnssecAddKeyController.php:129
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr ""
 "Thuật toán ED448 phải sử dụng 456 bit (không được hỗ trợ trong giao diện này)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:137
+#: lib/Application/Controller/DnssecAddKeyController.php:136
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "Thuật toán RSA nên sử dụng 1024 hoặc 2048 bit để đảm bảo an ninh đầy đủ"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:158
+#: lib/Application/Controller/DnssecAddKeyController.php:157
 msgid "Zone key has been added successfully."
 msgstr "Khóa vùng đã được thêm thành công."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:162
+#: lib/Application/Controller/DnssecAddKeyController.php:161
 msgid "Failed to add new DNSSEC key."
 msgstr "Không thể thêm khóa DNSSEC mới."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:166
+#: lib/Application/Controller/DnssecAddKeyController.php:165
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Đã xảy ra lỗi khi thêm khóa DNSSEC: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:170
+#: lib/Application/Controller/DnssecAddKeyController.php:169
 msgid "Please select both algorithm and bits"
 msgstr "Vui lòng chọn cả thuật toán và số bit"
 
@@ -2769,19 +2827,19 @@ msgstr "Nhóm đã được cập nhật thành công."
 msgid "You do not have the permission to delete a supermaster."
 msgstr "Bạn không có quyền xóa supermaster."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:80
+#: lib/Application/Controller/DeleteSupermasterController.php:82
 msgid "Invalid IP address."
 msgstr "Địa chỉ IP không hợp lệ."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:85
+#: lib/Application/Controller/DeleteSupermasterController.php:87
 msgid "Invalid NS name."
 msgstr "Tên NS không hợp lệ."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:91
+#: lib/Application/Controller/DeleteSupermasterController.php:93
 msgid "Super master does not exist."
 msgstr "Supermaster không tồn tại."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:95
+#: lib/Application/Controller/DeleteSupermasterController.php:97
 msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster đã được xóa thành công."
 
@@ -2823,34 +2881,34 @@ msgstr "Nhóm đã được xóa thành công."
 msgid "Page Not Found"
 msgstr "Không tìm thấy trang"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:80
+#: lib/Application/Controller/DnssecToggleKeyController.php:88
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr ""
 "Chức năng DNSSEC không khả dụng. Vui lòng kiểm tra cấu hình API PowerDNS."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:100
+#: lib/Application/Controller/DnssecToggleKeyController.php:108
 msgid "Zone key has been successfully deactivated."
 msgstr "Khóa vùng đã được hủy kích hoạt thành công."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:101
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
 msgid "Failed to deactivate zone key."
 msgstr "Không thể hủy kích hoạt khóa vùng."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:104
+#: lib/Application/Controller/DnssecToggleKeyController.php:112
 msgid "Zone key has been successfully activated."
 msgstr "Khóa vùng đã được kích hoạt thành công."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:105
+#: lib/Application/Controller/DnssecToggleKeyController.php:113
 msgid "Failed to activate zone key."
 msgstr "Không thể kích hoạt khóa vùng."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:116
+#: lib/Application/Controller/DnssecToggleKeyController.php:124
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Đã xảy ra lỗi khi chuyển đổi khóa DNSSEC. Vui lòng thử lại."
 
-#: lib/Application/Service/LdapAuthenticator.php:93
+#: lib/Application/Service/LdapAuthenticator.php:96
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Tài khoản tạm thời bị khóa. Vui lòng thử lại sau."
 
@@ -2870,11 +2928,11 @@ msgstr "Phiên đã hết hạn, vui lòng đăng nhập lại."
 msgid "Failed to update password"
 msgstr "Không thể cập nhật mật khẩu"
 
-#: lib/Application/Service/OidcService.php:182
+#: lib/Application/Service/OidcService.php:183
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Xác thực thất bại: Tham số state không hợp lệ"
 
-#: lib/Application/Service/OidcService.php:203
+#: lib/Application/Service/OidcService.php:204
 msgid "Authentication failed: No authorization code"
 msgstr "Xác thực thất bại: Không có mã ủy quyền"
 
@@ -2882,27 +2940,27 @@ msgstr "Xác thực thất bại: Không có mã ủy quyền"
 msgid "Authentication failed: Invalid session"
 msgstr "Xác thực thất bại: Phiên không hợp lệ"
 
-#: lib/Application/Service/SamlService.php:346
+#: lib/Application/Service/SamlService.php:350
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Xác thực thất bại: Không thể tạo hoặc cập nhật tài khoản người dùng"
 
-#: lib/Application/Service/LdapAuthenticator.php:237
+#: lib/Application/Service/LdapAuthenticator.php:241
 msgid "LDAP Authentication failed!"
 msgstr "Xác thực LDAP thất bại!"
 
-#: lib/Application/Service/LdapAuthenticator.php:142
+#: lib/Application/Service/LdapAuthenticator.php:145
 msgid "Failed to connect to LDAP server!"
 msgstr "Không thể kết nối đến máy chủ LDAP!"
 
-#: lib/Application/Service/LdapAuthenticator.php:158
+#: lib/Application/Service/LdapAuthenticator.php:161
 msgid "Failed to bind to LDAP server!"
 msgstr "Không thể liên kết đến máy chủ LDAP!"
 
-#: lib/Application/Service/LdapAuthenticator.php:186
+#: lib/Application/Service/LdapAuthenticator.php:189
 msgid "Failed to search LDAP."
 msgstr "Không thể tìm kiếm LDAP."
 
-#: lib/Application/Service/LdapAuthenticator.php:203
+#: lib/Application/Service/LdapAuthenticator.php:206
 msgid "Failed to authenticate against LDAP."
 msgstr "Không thể xác thực với LDAP."
 
@@ -2910,25 +2968,25 @@ msgstr "Không thể xác thực với LDAP."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Xác thực thất bại: Phản hồi SAML không hợp lệ"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:422
+#: lib/Application/Query/RecordSearch.php:230 templates/modern/edit.html:422
 #: templates/modern/users.html:185
 msgid "Yes"
 msgstr "Có"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:422
+#: lib/Application/Query/RecordSearch.php:230 templates/modern/edit.html:422
 #: templates/modern/users.html:187
 msgid "No"
 msgstr "Không"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:254
 msgid "This template is assigned to at least one user and one group."
 msgstr "Mẫu này đã được gán cho ít nhất một người dùng và một nhóm."
 
-#: lib/Domain/Model/UserManager.php:377
+#: lib/Domain/Model/UserManager.php:420
 msgid "This template is assigned to at least one user."
 msgstr "Mẫu này đã được gán cho ít nhất một người dùng."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:258
 msgid "This template is assigned to at least one group."
 msgstr "Mẫu này đã được gán cho ít nhất một nhóm."
 
@@ -2957,37 +3015,66 @@ msgstr ""
 msgid "This is an invalid zone name."
 msgstr "Đây là tên vùng không hợp lệ."
 
-#: lib/Domain/Model/UserManager.php:1007
+#: lib/Domain/Model/UserManager.php:1211
 msgid "Enter a valid email address."
 msgstr "Nhập địa chỉ email hợp lệ."
 
-#: lib/Domain/Model/UserManager.php:999
+#: lib/Domain/Model/UserManager.php:1203
 msgid "Username exist already, please choose another one."
 msgstr "Tên người dùng đã tồn tại, vui lòng chọn tên khác."
 
-#: lib/Domain/Model/UserManager.php:1003
+#: lib/Domain/Model/UserManager.php:1215
+msgid "Email address already exists, please choose another one."
+msgstr "Địa chỉ email đã tồn tại, vui lòng chọn địa chỉ khác."
+
+#: lib/Domain/Model/UserManager.php:981
+#, auto-english-fallback
+msgid ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+msgstr ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+
+#: lib/Domain/Model/UserManager.php:985
+#, auto-english-fallback
+msgid ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Domain/Model/UserManager.php:1207
 msgid "Enter a valid user name."
 msgstr "Nhập tên người dùng hợp lệ."
 
-#: lib/Domain/Model/ZoneTemplate.php:205 lib/Domain/Model/ZoneTemplate.php:675
+#: lib/Domain/Model/ZoneTemplate.php:232 lib/Domain/Model/ZoneTemplate.php:814
 msgid "Error creating zone template: "
 msgstr "Lỗi khi tạo mẫu vùng: "
 
-#: lib/Domain/Model/ZoneTemplate.php:241
+#: lib/Domain/Model/ZoneTemplate.php:268
 msgid "Error adding default SOA record to template: "
 msgstr "Lỗi khi thêm bản ghi SOA mặc định vào mẫu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:300
+#: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error deleting zone template: "
 msgstr "Lỗi khi xóa mẫu vùng: "
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:351
 msgid "Error deleting user zone templates: "
 msgstr "Lỗi khi xóa mẫu vùng của người dùng: "
 
-#: lib/Domain/Model/ZoneTemplate.php:442
+#: lib/Domain/Model/ZoneTemplate.php:469
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Bạn không có quyền thêm bản ghi vào mẫu vùng này."
+
+#: lib/Domain/Model/ZoneTemplate.php:474 lib/Domain/Model/ZoneTemplate.php:591
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to add this record type to a zone template."
+msgstr ""
+"You do not have the permission to add this record type to a zone template."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
@@ -2997,51 +3084,74 @@ msgstr "Trường nội dung của bạn không có giá trị hợp lệ."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Mức ưu tiên cho bản ghi MX/SRV phải là số từ 0 đến 65535."
 
-#: lib/Domain/Service/Dns/RecordManager.php:338
+#: lib/Domain/Service/Dns/RecordManager.php:351
 msgid "You do not have the permission to edit this record."
 msgstr "Bạn không có quyền chỉnh sửa bản ghi này."
 
-#: lib/Domain/Model/ZoneTemplate.php:534
+#: lib/Domain/Model/ZoneTemplate.php:581 lib/Domain/Model/ZoneTemplate.php:665
+msgid "The record does not belong to this zone template."
+msgstr "Bản ghi không thuộc về mẫu vùng này."
+
+#: lib/Domain/Model/ZoneTemplate.php:643
 msgid "Error updating zone template record: "
 msgstr "Lỗi khi cập nhật bản ghi mẫu vùng: "
 
-#: lib/Domain/Model/ZoneTemplate.php:557
+#: lib/Domain/Model/ZoneTemplate.php:671
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+msgstr ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+
+#: lib/Domain/Model/ZoneTemplate.php:680
 msgid "Error deleting zone template record: "
 msgstr "Lỗi khi xóa bản ghi mẫu vùng: "
 
-#: lib/Domain/Model/ZoneTemplate.php:580
+#: lib/Domain/Model/ZoneTemplate.php:702
 msgid "Error checking template ownership: "
 msgstr "Lỗi khi kiểm tra quyền sở hữu mẫu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:728 lib/Domain/Model/ZoneTemplate.php:776
+#: lib/Domain/Model/ZoneTemplate.php:806
+#, auto-english-fallback
+#, php-format
+msgid ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+msgstr ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+
+#: lib/Domain/Model/ZoneTemplate.php:867 lib/Domain/Model/ZoneTemplate.php:915
 msgid "Error retrieving zones using template: "
 msgstr "Lỗi khi truy xuất vùng sử dụng mẫu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:830
+#: lib/Domain/Model/ZoneTemplate.php:969
 msgid "Failed to get list of zones using template: "
 msgstr "Không thể lấy danh sách vùng sử dụng mẫu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:848
+#: lib/Domain/Model/ZoneTemplate.php:987
 msgid "You do not have the permission to edit a zone template."
 msgstr "Bạn không có quyền chỉnh sửa mẫu vùng."
 
-#: lib/Domain/Model/ZoneTemplate.php:892
+#: lib/Domain/Model/ZoneTemplate.php:1031
 msgid "Error unlinking zone from template: "
 msgstr "Lỗi khi hủy liên kết vùng khỏi mẫu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:920
+#: lib/Domain/Model/ZoneTemplate.php:1059
 msgid "Error retrieving zones: "
 msgstr "Lỗi khi truy xuất vùng: "
 
-#: lib/Domain/Model/ZoneTemplate.php:939
+#: lib/Domain/Model/ZoneTemplate.php:1078
 msgid "Error checking template name existence: "
 msgstr "Lỗi khi kiểm tra tên mẫu đã tồn tại: "
 
-#: lib/Domain/Model/ZoneTemplate.php:960
+#: lib/Domain/Model/ZoneTemplate.php:1099
 msgid "Error looking up template by name: "
 msgstr "Lỗi khi tìm kiếm mẫu theo tên: "
 
-#: lib/Domain/Model/ZoneTemplate.php:983
+#: lib/Domain/Model/ZoneTemplate.php:1122
 msgid "Error checking template existence: "
 msgstr "Lỗi khi kiểm tra mẫu tồn tại: "
 
@@ -5381,7 +5491,9 @@ msgstr "Nội dung bản ghi CAA phải ở định dạng: flags tag value."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
-msgstr "Tìm thấy bộ điều chỉnh %s trùng lặp. Mỗi bộ điều chỉnh chỉ được xuất hiện nhiều nhất một lần."
+msgstr ""
+"Tìm thấy bộ điều chỉnh %s trùng lặp. Mỗi bộ điều chỉnh chỉ được xuất hiện "
+"nhiều nhất một lần."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
@@ -5458,7 +5570,7 @@ msgstr ""
 "SHA-256 (matching type 1) được khuyến nghị hơn Full (matching type 0) để cải "
 "thiện hiệu suất và quyền riêng tư."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:180
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:207
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
@@ -5466,32 +5578,32 @@ msgstr ""
 "SHA-512 (matching type 2) cung cấp bảo mật tốt hơn SHA-256 nhưng có kích "
 "thước bản ghi lớn hơn."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:235
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr ""
 "Loại chứng chỉ 0 (PKIX-TA) đang được dùng. Hãy đảm bảo chứng chỉ đáng tin "
 "cậy."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:233
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:260
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr ""
 "Loại chứng chỉ 1 (PKIX-EE) đang được dùng. Hãy đảm bảo chứng chỉ end-entity "
 "khớp."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:250
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:277
 msgid "Empty CNAME records are not allowed."
 msgstr ""
 "Loại chứng chỉ 255 (Private) đang được dùng. Hãy đảm bảo cấu hình tùy chỉnh "
 "của bạn chính xác."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:279
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:306
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
 msgstr "Loại chứng chỉ không xác định. RFC 6698 chỉ định các loại 0-3 và 255."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:334
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
@@ -5499,7 +5611,7 @@ msgstr ""
 "Nội dung bản ghi TLSA phải ở định dạng: usage selector matchingtype "
 "certificatedata."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:321
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:348
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
@@ -6537,42 +6649,42 @@ msgstr ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
 msgstr ""
 "Mục tiêu SRV không hợp lệ. Phải là tên miền đầy đủ hợp lệ hoặc '.' cho dịch "
 "vụ không khả dụng."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:204
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."
 msgstr "Bản ghi SRV phải có định dạng _service._proto.name."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:216
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:214
 msgid "Issue tag parameters must be in key=value format."
 msgstr "Cổng SRV không hợp lệ. Phải nằm trong khoảng từ 0 đến 65535."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:221
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:219
 msgid "accounturi parameter cannot be empty."
 msgstr "Trọng số SRV không hợp lệ. Phải nằm trong khoảng từ 0 đến 65535."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:230
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:228
 msgid "Empty validation method specified."
 msgstr "Ưu tiên SRV không hợp lệ. Phải nằm trong khoảng từ 0 đến 65535."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:238
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:236
 msgid "Invalid CA domain in issuewild tag."
 msgstr "Tên dịch vụ SRV không hợp lệ. Phải bắt đầu bằng gạch dưới."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:249
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "Giá trị iodef CAA phải là URL bắt đầu bằng %s, %s, hoặc %s."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:260
 msgid "contactemail value must be a valid email address."
 msgstr "Bản ghi SRV với mục tiêu '.' chỉ ra dịch vụ rõ ràng không khả dụng."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:273
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:271
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
@@ -6582,17 +6694,17 @@ msgstr "Bản ghi SRV nên có bản ghi A/AAAA tương ứng cho mục tiêu."
 msgid "Value must be enclosed in double quotes."
 msgstr "Nhiều bản ghi SRV với cùng ưu tiên sử dụng trọng số để cân bằng tải."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:311
 msgid "Backslashes must precede all quotes (\") in value content."
 msgstr ""
 "Trọng số SRV bằng 0 có nghĩa là máy chủ không được chọn trừ khi tất cả các "
 "máy chủ khác không khả dụng."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:319
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:317
 msgid "CAA property value exceeds maximum length of 512 characters."
 msgstr "Nội dung TXT không hợp lệ. Chứa ký tự không được phép."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:325
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:323
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "Chuỗi TXT quá dài. Các phần riêng lẻ không được vượt quá 255 ký tự."
 
@@ -6800,7 +6912,8 @@ msgstr "Khóa tham số SVCB không xác định: \"%s\"."
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "Khóa tham số SVCB trùng lặp: \"%s\". Mỗi khóa chỉ được xuất hiện một lần."
+msgstr ""
+"Khóa tham số SVCB trùng lặp: \"%s\". Mỗi khóa chỉ được xuất hiện một lần."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid ""
@@ -8016,7 +8129,8 @@ msgstr "Schema xác thực không hợp lệ."
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "%s (thuật toán %d) là thuật toán BẮT BUỘC phải triển khai theo RFC 8624."
+msgstr ""
+"%s (thuật toán %d) là thuật toán BẮT BUỘC phải triển khai theo RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
@@ -8208,23 +8322,23 @@ msgstr "OAuth state tham số không hợp lệ."
 msgid "A record with this hostname, type, and content already exists."
 msgstr "OAuth authorization code không hợp lệ."
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:335
 msgid "You do not have the permission to edit this SOA record."
 msgstr "OAuth access token không hợp lệ."
 
-#: lib/Domain/Service/Dns/RecordManager.php:327
+#: lib/Domain/Service/Dns/RecordManager.php:340
 msgid "You do not have the permission to edit this NS record."
 msgstr "OAuth refresh token không hợp lệ."
 
-#: lib/Domain/Service/Dns/RecordManager.php:409
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have the permission to delete SOA records."
 msgstr "OAuth token hết hạn."
 
-#: lib/Domain/Service/Dns/RecordManager.php:422
+#: lib/Domain/Service/Dns/RecordManager.php:439
 msgid "You do not have the permission to delete NS records."
 msgstr "OAuth token bị thu hồi."
 
-#: lib/Domain/Service/Dns/DomainManager.php:464
+#: lib/Domain/Service/Dns/DomainManager.php:466
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Đối số không hợp lệ được truyền cho hàm %s %s"
@@ -8243,9 +8357,14 @@ msgstr "Không thể tạo vùng: %s"
 msgid "Invalid argument(s) given to function %s"
 msgstr "Đối số không hợp lệ được truyền cho hàm %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:427
+#: lib/Domain/Service/Dns/DomainManager.php:429
 msgid "The selected user already owns the zone."
 msgstr "Máy chủ OAuth authorization không khả dụng."
+
+#: lib/Domain/Service/Dns/DomainManager.php:461
+#, auto-english-fallback
+msgid "There must be at least one owner for a zone."
+msgstr "There must be at least one owner for a zone."
 
 #: lib/Module/Rdap/templates/rdap.html:3
 msgid "Home"
@@ -8321,11 +8440,11 @@ msgstr "JWT token chưa hợp lệ (nbf claim)."
 msgid "DNSSEC"
 msgstr "DNSSEC"
 
-#: templates/modern/dnssec_edit_key.html:138
+#: templates/modern/dnssec_edit_key.html:140
 msgid "Deactivate key"
 msgstr "JWT subject không hợp lệ."
 
-#: templates/modern/dnssec_edit_key.html:140
+#: templates/modern/dnssec_edit_key.html:142
 msgid "Activate key"
 msgstr "JWT algorithm không được hỗ trợ."
 
@@ -8546,7 +8665,7 @@ msgstr "Kết nối RabbitMQ thất bại."
 msgid "Update record"
 msgstr "RabbitMQ channel không hợp lệ."
 
-#: templates/modern/edit.html:517 templates/modern/users.html:211
+#: templates/modern/edit.html:522 templates/modern/users.html:211
 msgid "Reset"
 msgstr "RabbitMQ queue không tồn tại."
 
@@ -8688,7 +8807,7 @@ msgstr "Từ chối người nhận SMTP."
 msgid "Select the account that will own this supermaster"
 msgstr "Từ chối người gửi SMTP."
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:514
+#: templates/modern/edit.html:190 templates/modern/edit.html:519
 msgid "Save changes"
 msgstr "Kích thước tin nhắn SMTP vượt quá giới hạn."
 
@@ -8825,11 +8944,11 @@ msgstr "Zone DNS không tồn tại."
 msgid "Add group"
 msgstr "Cập nhật DNS thất bại."
 
-#: templates/modern/edit_user.html:259 templates/modern/add_user.html:189
+#: templates/modern/edit_user.html:259 templates/modern/add_user.html:190
 msgid "No groups found"
 msgstr "Chuyển giao zone DNS thất bại."
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:99
 msgid "Search groups..."
 msgstr "Tìm kiếm nhóm..."
 
@@ -9272,7 +9391,7 @@ msgstr "Mở rộng service thất bại."
 msgid "Check DB"
 msgstr "Cập nhật service thất bại."
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:502
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:504
 msgid "Edit comment"
 msgstr "Cấu hình mạng không hợp lệ."
 
@@ -9357,25 +9476,29 @@ msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
 msgstr "Kết nối VPN thất bại."
 
-#: templates/modern/list_log_zones.html:11 templates/modern/header.html:154
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:556
+msgid "Logs"
+msgstr "Nhật ký"
+
+#: templates/modern/list_log_zones.html:15 templates/modern/header.html:154
 msgid "Zone logs"
 msgstr "Tunnel VPN không hoạt động."
 
-#: templates/modern/list_log_zones.html:17
+#: templates/modern/list_log_zones.html:22
 msgid "Zone Change Logs"
 msgstr "Chứng chỉ VPN không hợp lệ."
 
-#: templates/modern/list_log_zones.html:25
+#: templates/modern/list_log_groups.html:31
+msgid "Total logs"
+msgstr "Cấu hình WireGuard không hợp lệ."
+
+#: templates/modern/list_log_zones.html:38
 msgid "Search logs by domain"
 msgstr "Cấu hình IPSec không hợp lệ."
 
 #: templates/modern/list_log_groups.html:25
 msgid "Clear"
 msgstr "Handshake IPSec thất bại."
-
-#: templates/modern/list_log_groups.html:31
-msgid "Total logs"
-msgstr "Cấu hình WireGuard không hợp lệ."
 
 #: templates/modern/list_log_groups.html:46
 msgid "Id"
@@ -9385,15 +9508,15 @@ msgstr "Id"
 msgid "Event"
 msgstr "Khóa WireGuard không hợp lệ."
 
-#: templates/modern/list_log_zones.html:69
+#: templates/modern/list_log_zones.html:83
 msgid "Details"
 msgstr "Chi tiết"
 
-#: templates/modern/list_log_zones.html:86
+#: templates/modern/list_log_zones.html:100
 msgid "Log Details"
 msgstr "Chi tiết nhật ký"
 
-#: templates/modern/list_log_zones.html:93
+#: templates/modern/list_log_zones.html:107
 msgid "Close"
 msgstr "Đóng"
 
@@ -9429,6 +9552,11 @@ msgstr ""
 #: templates/modern/bulk_record_add.html:46
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Ví dụ: www,A,192.168.1.1,0,3600,web server"
+
+#: templates/modern/bulk_record_add.html:47
+#, auto-english-fallback
+msgid "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:48
 msgid "Comment is optional"
@@ -9555,23 +9683,23 @@ msgstr "Thêm chủ sở hữu mới"
 msgid "Owner to be added"
 msgstr "Chủ sở hữu sẽ được thêm"
 
-#: templates/default/delete_user.html:82 templates/modern/delete_user.html:82
+#: templates/default/delete_user.html:95 templates/modern/delete_user.html:95
 msgid "Delete: The zone will be completely removed from the system"
 msgstr "Xóa: Vùng sẽ được gỡ bỏ hoàn toàn khỏi hệ thống"
 
-#: templates/default/delete_user.html:83 templates/modern/delete_user.html:83
+#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
 msgid "Leave: The zone will remain in the system but without an owner"
 msgstr "Giữ lại: Vùng sẽ vẫn còn trong hệ thống nhưng không có chủ sở hữu"
 
-#: templates/default/delete_user.html:84 templates/modern/delete_user.html:84
+#: templates/default/delete_user.html:97 templates/modern/delete_user.html:97
 msgid "Add new owner: Transfer ownership to another user"
 msgstr "Thêm chủ sở hữu mới: Chuyển quyền sở hữu cho người dùng khác"
 
-#: templates/default/delete_user.html:93 templates/modern/delete_user.html:93
+#: templates/default/delete_user.html:106 templates/modern/delete_user.html:106
 msgid "Yes, delete this user"
 msgstr "Có, xóa người dùng này"
 
-#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
+#: templates/default/delete_user.html:109 templates/modern/delete_user.html:109
 msgid "No, keep this user"
 msgstr "Không, giữ người dùng này"
 
@@ -9786,15 +9914,15 @@ msgstr "Xác nhận mật khẩu"
 msgid "Passwords do not match"
 msgstr "Mật khẩu không khớp"
 
-#: templates/modern/add_user.html:133
+#: templates/modern/add_user.html:134
 msgid "Password Requirements"
 msgstr "Yêu cầu mật khẩu"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "Minimum length"
 msgstr "Độ dài tối thiểu"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "characters"
 msgstr "ký tự"
 
@@ -9976,6 +10104,10 @@ msgstr "Sửa người dùng"
 msgid "Username"
 msgstr "Tên người dùng"
 
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Tên người dùng của bạn chỉ có thể được thay đổi bởi quản trị viên"
+
 #: templates/modern/edit_user.html:32 templates/modern/add_user.html:22
 msgid "Provide user name"
 msgstr "Cung cấp tên người dùng"
@@ -10000,11 +10132,11 @@ msgstr "Địa chỉ email"
 msgid "Provide email"
 msgstr "Cung cấp email"
 
-#: templates/default/edit_user.html:58 templates/modern/edit_user.html:58
+#: templates/default/edit_user.html:61 templates/modern/edit_user.html:58
 msgid "Leave empty to keep current password"
 msgstr "Để trống để giữ mật khẩu hiện tại"
 
-#: templates/default/edit_user.html:74
+#: templates/default/edit_user.html:77
 msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
@@ -10012,32 +10144,67 @@ msgstr ""
 "Quyền hạn từ mẫu này sẽ áp dụng toàn cục trên toàn bộ hệ thống cho người "
 "dùng này"
 
-#: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
+#: templates/modern/edit_user.html:81 templates/modern/add_user.html:89
 msgid "Optional information about this user"
 msgstr "Thông tin tùy chọn về người dùng này"
 
-#: templates/modern/users.html:49 templates/modern/add_user.html:94
+#: templates/modern/users.html:49 templates/modern/add_user.html:95
 #: install/templates/step2.html.twig:116
 msgid "Enabled"
 msgstr "Đã kích hoạt"
 
-#: templates/modern/edit_user.html:101 templates/modern/add_user.html:103
+#: templates/modern/edit_user.html:101 templates/modern/add_user.html:104
 msgid "LDAP Authentication"
 msgstr "Xác thực LDAP"
 
-#: templates/modern/edit_user.html:103 templates/modern/add_user.html:105
+# OBSOLETE: msgid "About Bulk Registration"
+# OBSOLETE: msgstr "Giới thiệu về đăng ký hàng loạt"
+# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
+# OBSOLETE: msgstr "Công cụ này cho phép bạn tạo nhiều vùng DNS cùng một lúc."
+# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
+# OBSOLETE: msgstr "Nhập một tên miền mỗi dòng trong trường Tên miền"
+# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
+# OBSOLETE: msgstr "Chọn một mẫu vùng để áp dụng bản ghi chuẩn cho tất cả các vùng"
+# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Chủ sở hữu được chọn sẽ có quyền truy cập đầy đủ vào tất cả các vùng được "
+# OBSOLETE: "tạo"
+# OBSOLETE: msgid "How It Works"
+# OBSOLETE: msgstr "Cách thức hoạt động"
+# OBSOLETE: msgid ""
+# OBSOLETE: "The system will attempt to create each zone with the same settings. "
+# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
+# OBSOLETE: "again."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Hệ thống sẽ cố gắng tạo mỗi vùng với các cài đặt giống nhau. Các tên miền "
+# OBSOLETE: "thất bại sẽ được hiển thị để bạn có thể sửa lỗi và thử lại."
+# OBSOLETE: msgid "Tips & Recommendations"
+# OBSOLETE: msgstr "Mẹo và khuyến nghị"
+# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
+# OBSOLETE: msgstr "Sử dụng loại vùng NATIVE cho hầu hết các thiết lập chuẩn"
+# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
+# OBSOLETE: msgstr "Tạo mẫu trước nếu bạn cần bản ghi chuẩn cho tất cả các vùng"
+# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
+# OBSOLETE: msgstr "Bạn có thể sao chép và dán danh sách tên miền từ bảng tính"
+# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
+# OBSOLETE: msgstr "Đảm bảo tên miền tuân theo quy ước đặt tên DNS hợp lệ"
+#: templates/default/edit_user.html:107
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Cài đặt xác thực chỉ có thể được thay đổi bởi quản trị viên"
+
+#: templates/modern/edit_user.html:103 templates/modern/add_user.html:106
 msgid "Use external LDAP directory for authentication"
 msgstr "Sử dụng thư mục LDAP bên ngoài để xác thực"
 
-#: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
+#: templates/default/edit_user.html:124 templates/modern/edit_user.html:117
 msgid "Back to Home"
 msgstr "Quay lại trang chủ"
 
-#: templates/default/edit_user.html:121 templates/modern/edit_user.html:121
+#: templates/default/edit_user.html:128 templates/modern/edit_user.html:121
 msgid "Back to Users"
 msgstr "Quay lại danh sách người dùng"
 
-#: templates/modern/edit_user.html:135 templates/modern/add_user.html:128
+#: templates/modern/edit_user.html:135 templates/modern/add_user.html:129
 msgid "Account Information"
 msgstr "Thông tin tài khoản"
 
@@ -10061,51 +10228,51 @@ msgstr "Phải chứa ký tự đặc biệt"
 msgid "No specific password requirements"
 msgstr "Không có yêu cầu mật khẩu cụ thể"
 
-#: templates/modern/add_user.html:160 templates/modern/edit_perm_templ.html:151
+#: templates/modern/add_user.html:161 templates/modern/edit_perm_templ.html:151
 msgid "User Permissions"
 msgstr "Quyền hạn người dùng"
 
-#: templates/default/edit_user.html:175 templates/modern/edit_user.html:172
+#: templates/default/edit_user.html:182 templates/modern/edit_user.html:172
 msgid "This user has been assigned the access template"
 msgstr "Người dùng này đã được gán mẫu truy cập"
 
-#: templates/default/edit_user.html:184 templates/modern/edit_user.html:181
+#: templates/default/edit_user.html:191 templates/modern/edit_user.html:181
 msgid "Based on this template, this user has the following permissions"
 msgstr "Dựa trên mẫu này, người dùng này có các quyền hạn sau"
 
-#: templates/default/edit_user.html:187 templates/modern/edit_user.html:184
+#: templates/default/edit_user.html:194 templates/modern/edit_user.html:184
 msgid "No permissions are assigned to this template"
 msgstr "Không có quyền hạn nào được gán cho mẫu này"
 
-#: templates/modern/edit_user.html:202 templates/modern/add_user.html:172
+#: templates/modern/edit_user.html:202 templates/modern/add_user.html:173
 msgid "Group Memberships"
 msgstr "Thành viên nhóm"
 
-#: templates/default/edit_user.html:209 templates/modern/edit_user.html:206
+#: templates/default/edit_user.html:216 templates/modern/edit_user.html:206
 msgid "Current Memberships"
 msgstr "Thành viên hiện tại"
 
-#: templates/default/edit_user.html:224 templates/modern/edit_user.html:221
+#: templates/default/edit_user.html:231 templates/modern/edit_user.html:221
 msgid "View group details"
 msgstr "Xem chi tiết nhóm"
 
-#: templates/default/edit_user.html:238 templates/modern/edit_user.html:235
+#: templates/default/edit_user.html:245 templates/modern/edit_user.html:235
 msgid "This user is not a member of any groups."
 msgstr "Người dùng này không phải là thành viên của bất kỳ nhóm nào."
 
-#: templates/modern/edit_user.html:241 templates/modern/add_user.html:175
+#: templates/modern/edit_user.html:241 templates/modern/add_user.html:176
 msgid "Add to Groups"
 msgstr "Thêm vào nhóm"
 
-#: templates/default/edit_user.html:245 templates/modern/edit_user.html:242
+#: templates/default/edit_user.html:252 templates/modern/edit_user.html:242
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr "Chọn một hoặc nhiều nhóm và nhấp vào nút \"Thêm các nhóm đã chọn\"."
 
-#: templates/modern/edit_user.html:250 templates/modern/add_user.html:180
+#: templates/modern/edit_user.html:250 templates/modern/add_user.html:181
 msgid "Search available groups..."
 msgstr "Tìm kiếm các nhóm có sẵn..."
 
-#: templates/modern/edit_user.html:251 templates/modern/add_user.html:181
+#: templates/modern/edit_user.html:251 templates/modern/add_user.html:182
 msgid "Clear search"
 msgstr "Xóa tìm kiếm"
 
@@ -10113,7 +10280,7 @@ msgstr "Xóa tìm kiếm"
 msgid "Select All"
 msgstr "Chọn tất cả"
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:103
 msgid "Clear All"
 msgstr "Bỏ chọn tất cả"
 
@@ -10121,7 +10288,7 @@ msgstr "Bỏ chọn tất cả"
 msgid "selected"
 msgstr "đã chọn"
 
-#: templates/default/edit_user.html:283 templates/modern/edit_user.html:280
+#: templates/default/edit_user.html:290 templates/modern/edit_user.html:280
 msgid "Add Selected Groups"
 msgstr "Thêm các nhóm đã chọn"
 
@@ -10129,7 +10296,7 @@ msgstr "Thêm các nhóm đã chọn"
 msgid "Confirm Removal"
 msgstr "Xác nhận xóa"
 
-#: templates/default/edit_user.html:311 templates/modern/edit_user.html:308
+#: templates/default/edit_user.html:318 templates/modern/edit_user.html:308
 msgid "Are you sure you want to remove this user from the group"
 msgstr "Bạn có chắc chắn muốn xóa người dùng này khỏi nhóm"
 
@@ -10564,7 +10731,7 @@ msgstr ""
 msgid "Ownership"
 msgstr "Quyền sở hữu"
 
-#: templates/modern/add_zone_slave.html:49
+#: templates/modern/add_zone_slave.html:54
 msgid "User Owner"
 msgstr "Chủ sở hữu người dùng"
 
@@ -10580,7 +10747,7 @@ msgstr "Thêm chủ sở hữu người dùng"
 msgid "Search users..."
 msgstr "Tìm kiếm người dùng..."
 
-#: templates/modern/add_zone_slave.html:76
+#: templates/modern/add_zone_slave.html:81
 msgid "You"
 msgstr "Bạn"
 
@@ -10588,7 +10755,7 @@ msgstr "Bạn"
 msgid "Add Owner"
 msgstr "Thêm chủ sở hữu"
 
-#: templates/modern/add_zone_slave.html:90
+#: templates/modern/add_zone_slave.html:95
 msgid "Group Ownership"
 msgstr "Quyền sở hữu nhóm"
 
@@ -10636,11 +10803,11 @@ msgstr "Mẫu này hiện được gán cho"
 msgid "users"
 msgstr "người dùng"
 
-#: templates/modern/delete_zone_templ.html:35
+#: templates/modern/delete_zone_templ.html:37
 msgid "Yes, delete this template"
 msgstr "Có, xóa mẫu này"
 
-#: templates/modern/delete_zone_templ.html:38
+#: templates/modern/delete_zone_templ.html:41
 msgid "No, keep this template"
 msgstr "Không, giữ mẫu này"
 
@@ -10704,71 +10871,71 @@ msgstr "Nếu bạn mất khóa, bạn sẽ cần tạo lại nó."
 msgid "Edit"
 msgstr "Tên chung chứng chỉ SSL/TLS không khớp."
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:565
+#: templates/modern/edit.html:25 templates/modern/edit.html:576
 msgid "Add new record"
 msgstr "Thêm bản ghi mới"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:569
+#: templates/modern/edit.html:203 templates/modern/edit.html:580
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Trình hướng dẫn cho DMARC, SPF, DKIM, CAA, TLSA và SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:575
+#: templates/modern/edit.html:35 templates/modern/edit.html:586
 msgid "Multi-record mode"
 msgstr "Chế độ nhiều bản ghi"
 
-#: templates/modern/edit.html:523 templates/modern/edit.html:578
+#: templates/modern/edit.html:529 templates/modern/edit.html:589
 msgid "Bulk add"
 msgstr "Thêm hàng loạt"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:590
+#: templates/modern/edit.html:50 templates/modern/edit.html:601
 msgid "Failed to add"
 msgstr "Không thêm được"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:590
+#: templates/modern/edit.html:50 templates/modern/edit.html:601
 msgid "record(s). Please check the record format."
 msgstr "(các) bản ghi. Vui lòng kiểm tra định dạng bản ghi."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:592
+#: templates/modern/edit.html:52 templates/modern/edit.html:603
 msgid "Failed to add records. Please check the record format."
 msgstr "Không thêm được bản ghi. Vui lòng kiểm tra định dạng bản ghi."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:595
+#: templates/modern/edit.html:55 templates/modern/edit.html:606
 msgid "Content validation failed:"
 msgstr "Xác thực nội dung thất bại:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:595
+#: templates/modern/edit.html:55 templates/modern/edit.html:606
 msgid "Invalid value for record type"
 msgstr "Giá trị không hợp lệ cho loại bản ghi"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:597
+#: templates/modern/edit.html:57 templates/modern/edit.html:608
 msgid "Please provide all required information."
 msgstr "Vui lòng cung cấp tất cả thông tin bắt buộc."
 
-#: templates/modern/edit.html:620 templates/modern/add_record.html:72
+#: templates/modern/edit.html:631 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Thêm PTR"
 
-#: templates/modern/edit.html:623 templates/modern/add_record.html:75
+#: templates/modern/edit.html:634 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Thêm A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:662
+#: templates/modern/edit.html:121 templates/modern/edit.html:673
 msgid "This record already exists"
 msgstr "Bản ghi này đã tồn tại"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:674
+#: templates/modern/edit.html:133 templates/modern/edit.html:685
 msgid "Invalid priority"
 msgstr "Độ ưu tiên không hợp lệ"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:681
+#: templates/modern/edit.html:140 templates/modern/edit.html:692
 msgid "Invalid TTL value"
 msgstr "Giá trị TTL không hợp lệ"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:683
+#: templates/modern/edit.html:142 templates/modern/edit.html:694
 msgid "Provide TTL"
 msgstr "Cung cấp TTL"
 
-#: templates/modern/edit.html:709 templates/modern/add_record.html:207
+#: templates/modern/edit.html:720 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -10820,51 +10987,51 @@ msgstr "trong số"
 msgid "total records"
 msgstr "tổng số bản ghi"
 
-#: templates/default/edit.html:485 templates/modern/edit.html:485
+#: templates/default/edit.html:487 templates/modern/edit.html:487
 msgid "Edit selected"
 msgstr "Sửa đã chọn"
 
-#: templates/modern/edit.html:489 templates/modern/search.html:486
+#: templates/modern/edit.html:491 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Xóa (các) bản ghi"
 
-#: templates/modern/edit.html:497 templates/modern/search.html:93
+#: templates/modern/edit.html:499 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Ghi chú"
 
-#: templates/default/edit.html:527 templates/modern/edit.html:527
+#: templates/default/edit.html:533 templates/modern/edit.html:533
 msgid "Import"
 msgstr "Nhập"
 
-#: templates/default/edit.html:533 templates/modern/edit.html:533
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Export"
 msgstr "Xuất"
 
-#: templates/default/edit.html:544 templates/modern/edit.html:544
+#: templates/default/edit.html:550 templates/modern/edit.html:550
 msgid "Generate PTR"
 msgstr "Tạo PTR"
 
-#: templates/modern/edit.html:723 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:734 templates/modern/add_zone_master.html:25
 msgid "Zone Configuration"
 msgstr "Cấu hình vùng"
 
-#: templates/modern/edit.html:763 templates/modern/edit.html:792
+#: templates/modern/edit.html:774 templates/modern/edit.html:803
 msgid "Change"
 msgstr "Thay đổi"
 
-#: templates/modern/edit.html:756 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:767 templates/modern/add_zone_slave.html:40
 msgid "IP address of master NS"
 msgstr "Địa chỉ IP của NS master"
 
-#: templates/default/edit.html:813 templates/modern/edit.html:813
+#: templates/default/edit.html:824 templates/modern/edit.html:824
 msgid "Manage DNSSEC"
 msgstr "Quản lý DNSSEC"
 
-#: templates/default/edit.html:820 templates/modern/edit.html:820
+#: templates/default/edit.html:831 templates/modern/edit.html:831
 msgid "Sign zone"
 msgstr "Ký vùng"
 
-#: templates/default/edit.html:824 templates/modern/edit.html:824
+#: templates/default/edit.html:835 templates/modern/edit.html:835
 msgid "Not signed"
 msgstr "Chưa ký"
 
@@ -10948,11 +11115,11 @@ msgstr "Cũng xóa bản ghi PTR tương ứng (nếu tồn tại)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Cũng xóa bản ghi A/AAAA tương ứng (nếu tồn tại)"
 
-#: templates/modern/delete_zone_templ_record.html:59
+#: templates/modern/delete_zone_templ_record.html:61
 msgid "Yes, delete this record"
 msgstr "Có, xóa bản ghi này"
 
-#: templates/modern/delete_zone_templ_record.html:62
+#: templates/modern/delete_zone_templ_record.html:65
 msgid "No, keep this record"
 msgstr "Không, giữ bản ghi này"
 
@@ -11140,11 +11307,15 @@ msgstr "Gửi mật khẩu qua email"
 msgid "Send login credentials to user's email address"
 msgstr "Gửi thông tin đăng nhập đến địa chỉ email của người dùng"
 
-#: templates/modern/add_user.html:81
+#: templates/modern/add_user.html:72 templates/modern/add_group.html:35
+msgid "Select a template..."
+msgstr "Chọn một mẫu..."
+
+#: templates/modern/add_user.html:82
 msgid "Select permissions for this user"
 msgstr "Chọn quyền hạn cho người dùng này"
 
-#: templates/default/add_user.html:162 templates/modern/add_user.html:162
+#: templates/default/add_user.html:163 templates/modern/add_user.html:163
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -11153,7 +11324,7 @@ msgstr ""
 "Khi tạo người dùng mới, họ sẽ nhận quyền hạn dựa trên mẫu đã chọn. Bạn có "
 "thể sửa đổi các quyền hạn này sau bằng cách chỉnh sửa người dùng."
 
-#: templates/default/add_user.html:176 templates/modern/add_user.html:176
+#: templates/default/add_user.html:177 templates/modern/add_user.html:177
 msgid "Select groups to add the new user to upon creation."
 msgstr "Chọn các nhóm để thêm người dùng mới vào khi tạo."
 
@@ -11161,55 +11332,63 @@ msgstr "Chọn các nhóm để thêm người dùng mới vào khi tạo."
 msgid "Zone name"
 msgstr "Tên vùng"
 
-#: templates/modern/add_zone_slave.html:30
+#: templates/modern/add_zone_slave.html:31
 msgid "Provide zone name"
 msgstr "Cung cấp tên vùng"
 
-#: templates/modern/add_zone_slave.html:31
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr ""
+"Nhập một mạng (ví dụ: 192.168.1.0/24 hoặc 2001:db8::/48) hoặc tên vùng đảo "
+"ngược (ví dụ: 1.168.192.in-addr.arpa)."
+
+#: templates/modern/add_zone_slave.html:35
 msgid "Example: example.com"
 msgstr "Ví dụ: example.com"
 
-#: templates/modern/add_zone_master.html:46
+#: templates/modern/add_zone_master.html:51
 msgid "Zone type (usually NATIVE)"
 msgstr "Loại vùng (thường là NATIVE)"
 
-#: templates/modern/add_zone_master.html:58
+#: templates/modern/add_zone_master.html:63
 msgid "Optional: Apply predefined records from a template"
 msgstr "Tùy chọn: Áp dụng bản ghi được định nghĩa trước từ một mẫu"
 
-#: templates/modern/add_zone_master.html:66
+#: templates/modern/add_zone_master.html:71
 msgid "Enable DNSSEC"
 msgstr "Kích hoạt DNSSEC"
 
-#: templates/modern/add_zone_master.html:68
+#: templates/modern/add_zone_master.html:73
 msgid "Secure this zone with DNSSEC signing"
 msgstr "Bảo mật vùng này bằng ký DNSSEC"
 
-#: templates/modern/add_zone_slave.html:54
+#: templates/modern/add_zone_slave.html:59
 msgid "Selected:"
 msgstr "Đã chọn:"
 
-#: templates/modern/add_zone_slave.html:59
+#: templates/modern/add_zone_slave.html:64
 msgid "No user owner"
 msgstr "Không có chủ sở hữu người dùng"
 
-#: templates/modern/add_zone_slave.html:60
+#: templates/modern/add_zone_slave.html:65
 msgid "Zone will be owned only by groups"
 msgstr "Vùng sẽ chỉ thuộc sở hữu của các nhóm"
 
-#: templates/modern/add_zone_slave.html:82
+#: templates/modern/add_zone_slave.html:87
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Tùy chọn: Chọn một người dùng chịu trách nhiệm cho vùng này"
 
-#: templates/modern/add_zone_slave.html:105
+#: templates/modern/add_zone_slave.html:110
 msgid "members"
 msgstr "thành viên"
 
-#: templates/modern/add_zone_slave.html:111
+#: templates/modern/add_zone_slave.html:116
 msgid "Optional: Select one or more groups"
 msgstr "Tùy chọn: Chọn một hoặc nhiều nhóm"
 
-#: templates/modern/add_zone_slave.html:126
+#: templates/modern/add_zone_slave.html:131
 msgid "Add zone"
 msgstr "Thêm vùng"
 
@@ -11513,12 +11692,10 @@ msgid "Add Zones"
 msgstr "Thêm vùng"
 
 #: templates/modern/bulk_registration.html:99
-#, auto-english-fallback
 msgid "After Creation"
 msgstr "Sau khi tạo"
 
 #: templates/modern/bulk_registration.html:104
-#, auto-english-fallback
 msgid "Assign zones to a group"
 msgstr "Gán vùng cho một nhóm"
 
@@ -11527,15 +11704,14 @@ msgid ""
 "Bulk registration assigns ownership to a single user. To share access with a "
 "group, open the group and add the newly created zones."
 msgstr ""
-"Đăng ký hàng loạt sẽ gán quyền sở hữu cho một người dùng duy nhất. Để chia sẻ quyền truy cập với một nhóm, mở nhóm và thêm các vùng vừa tạo."
+"Đăng ký hàng loạt sẽ gán quyền sở hữu cho một người dùng duy nhất. Để chia "
+"sẻ quyền truy cập với một nhóm, mở nhóm và thêm các vùng vừa tạo."
 
 #: templates/modern/bulk_registration.html:107
-#, auto-english-fallback
 msgid "Manage groups"
 msgstr "Quản lý nhóm"
 
 #: templates/modern/bulk_registration.html:112
-#, auto-english-fallback
 msgid "Change zone owner"
 msgstr "Thay đổi chủ sở hữu vùng"
 
@@ -11544,10 +11720,10 @@ msgid ""
 "You can transfer zone ownership to another user from the user list at any "
 "time."
 msgstr ""
-"Bạn có thể chuyển quyền sở hữu vùng cho người dùng khác từ danh sách người dùng bất cứ lúc nào."
+"Bạn có thể chuyển quyền sở hữu vùng cho người dùng khác từ danh sách người "
+"dùng bất cứ lúc nào."
 
 #: templates/modern/bulk_registration.html:115
-#, auto-english-fallback
 msgid "Manage users"
 msgstr "Quản lý người dùng"
 
@@ -11962,15 +12138,15 @@ msgstr ""
 msgid "Zones found"
 msgstr "Vùng tìm thấy"
 
-#: templates/default/search.html:316 templates/modern/search.html:316
+#: templates/default/search.html:318 templates/modern/search.html:316
 msgid "Records found"
 msgstr "Bản ghi tìm thấy"
 
-#: templates/default/search.html:501 templates/modern/search.html:501
+#: templates/default/search.html:504 templates/modern/search.html:501
 msgid "Try different search terms or filters"
 msgstr "Thử các thuật ngữ tìm kiếm hoặc bộ lọc khác"
 
-#: templates/default/search.html:664 templates/modern/search.html:675
+#: templates/default/search.html:667 templates/modern/search.html:675
 msgid "Confirm Zone Deletion"
 msgstr "Xác nhận xóa vùng"
 
@@ -11978,15 +12154,15 @@ msgstr "Xác nhận xóa vùng"
 msgid "Are you sure you want to delete"
 msgstr "Bạn có chắc chắn muốn xóa"
 
-#: templates/default/search.html:669 templates/modern/search.html:680
+#: templates/default/search.html:672 templates/modern/search.html:680
 msgid "selected zone(s)?"
 msgstr "(các) vùng đã chọn?"
 
-#: templates/default/search.html:690 templates/modern/search.html:701
+#: templates/default/search.html:693 templates/modern/search.html:701
 msgid "Confirm Record Deletion"
 msgstr "Xác nhận xóa bản ghi"
 
-#: templates/default/search.html:695 templates/modern/search.html:706
+#: templates/default/search.html:698 templates/modern/search.html:706
 msgid "selected record(s)?"
 msgstr "(các) bản ghi đã chọn?"
 
@@ -12034,11 +12210,11 @@ msgstr "Bạn sắp xóa supermaster"
 msgid "Supermaster Details"
 msgstr "Chi tiết Supermaster"
 
-#: templates/modern/delete_supermaster.html:53
+#: templates/modern/delete_supermaster.html:57
 msgid "Yes, delete this supermaster"
 msgstr "Có, xóa supermaster này"
 
-#: templates/modern/delete_supermaster.html:56
+#: templates/modern/delete_supermaster.html:61
 msgid "No, keep this supermaster"
 msgstr "Không, giữ supermaster này"
 
@@ -12054,15 +12230,15 @@ msgstr "Nhật ký hoạt động người dùng"
 msgid "Search logs by user"
 msgstr "Tìm kiếm nhật ký theo người dùng"
 
-#: templates/modern/add_zone_slave.html:24
+#: templates/modern/add_zone_slave.html:25
 msgid "Slave Zone Configuration"
 msgstr "Cấu hình vùng Slave"
 
-#: templates/modern/add_zone_slave.html:37
+#: templates/modern/add_zone_slave.html:42
 msgid "Provide IP address"
 msgstr "Cung cấp địa chỉ IP"
 
-#: templates/modern/add_zone_slave.html:38
+#: templates/modern/add_zone_slave.html:43
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
@@ -12465,11 +12641,11 @@ msgstr "Thêm đã chọn"
 msgid "Are you sure you want to remove"
 msgstr "Bạn có chắc chắn muốn xóa"
 
-#: templates/modern/manage_group_zones.html:211
+#: templates/modern/manage_group_zones.html:216
 msgid "zone(s) from this group?"
 msgstr "(các) vùng khỏi nhóm này?"
 
-#: templates/modern/manage_group_zones.html:212
+#: templates/modern/manage_group_zones.html:217
 msgid "The zones will remain in the system."
 msgstr "Các vùng sẽ vẫn còn trong hệ thống."
 
@@ -12619,10 +12795,6 @@ msgstr ""
 #: templates/modern/dnssec_delete_key.html:39
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Bạn sắp xóa một khóa DNSSEC (ID"
-
-#: templates/default/add_group.html:35 templates/modern/add_group.html:35
-msgid "Select a template..."
-msgstr "Chọn một mẫu..."
 
 #: templates/modern/add_group.html:45
 msgid ""
@@ -12939,6 +13111,11 @@ msgstr "Nhập tên miền (ví dụ: example.com) để tra cứu thông tin RD
 #: lib/Module/Rdap/templates/rdap.html:35
 msgid "RDAP results for"
 msgstr "Kết quả RDAP cho"
+
+#: lib/Module/Rdap/templates/rdap.html:46
+#, auto-english-fallback
+msgid "Please enter a domain name to perform an RDAP lookup."
+msgstr "Please enter a domain name to perform an RDAP lookup."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -13438,6 +13615,15 @@ msgstr ""
 "Cấu hình kết nối cơ sở dữ liệu, tạo tài khoản quản trị viên và tạo tệp cấu "
 "hình."
 
+#: install/templates/step3.html.twig:28
+#, auto-english-fallback
+msgid ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+msgstr ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+
 #: install/helpers/InstallStepHandler.php:170
 msgid "Missing PowerDNS tables:"
 msgstr "Thiếu bảng PowerDNS:"
@@ -13569,95 +13755,13 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Không thể kết nối với cơ sở dữ liệu PowerDNS \"%s\": %s"
 
-# OBSOLETE: msgid "About Bulk Registration"
-# OBSOLETE: msgstr "Giới thiệu về đăng ký hàng loạt"
-
-# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
-# OBSOLETE: msgstr "Công cụ này cho phép bạn tạo nhiều vùng DNS cùng một lúc."
-
-# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
-# OBSOLETE: msgstr "Nhập một tên miền mỗi dòng trong trường Tên miền"
-
-# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
-# OBSOLETE: msgstr "Chọn một mẫu vùng để áp dụng bản ghi chuẩn cho tất cả các vùng"
-
-# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Chủ sở hữu được chọn sẽ có quyền truy cập đầy đủ vào tất cả các vùng được "
-# OBSOLETE: "tạo"
-
-# OBSOLETE: msgid "How It Works"
-# OBSOLETE: msgstr "Cách thức hoạt động"
-
+#: install/helpers/LocaleHandler.php:89
 #, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "The system will attempt to create each zone with the same settings. "
-# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
-# OBSOLETE: "again."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Hệ thống sẽ cố gắng tạo mỗi vùng với các cài đặt giống nhau. Các tên miền "
-# OBSOLETE: "thất bại sẽ được hiển thị để bạn có thể sửa lỗi và thử lại."
-
-# OBSOLETE: msgid "Tips & Recommendations"
-# OBSOLETE: msgstr "Mẹo và khuyến nghị"
-
-# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
-# OBSOLETE: msgstr "Sử dụng loại vùng NATIVE cho hầu hết các thiết lập chuẩn"
-
-# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
-# OBSOLETE: msgstr "Tạo mẫu trước nếu bạn cần bản ghi chuẩn cho tất cả các vùng"
-
-# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
-# OBSOLETE: msgstr "Bạn có thể sao chép và dán danh sách tên miền từ bảng tính"
-
-# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
-# OBSOLETE: msgstr "Đảm bảo tên miền tuân theo quy ước đặt tên DNS hợp lệ"
-
-
-
-
-#: templates/default/edit_user.html:107
-msgid "Authentication settings can only be changed by an administrator"
-msgstr "Cài đặt xác thực chỉ có thể được thay đổi bởi quản trị viên"
-
-#: lib/Domain/Model/UserManager.php:1113
-msgid "Email address already exists, please choose another one."
-msgstr "Địa chỉ email đã tồn tại, vui lòng chọn địa chỉ khác."
-
-#: templates/modern/add_zone_slave.html:33
 msgid ""
-"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
-"name (e.g. 1.168.192.in-addr.arpa)."
-msgstr "Nhập một mạng (ví dụ: 192.168.1.0/24 hoặc 2001:db8::/48) hoặc tên vùng đảo ngược (ví dụ: 1.168.192.in-addr.arpa)."
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
+msgstr ""
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:106
-msgid ""
-"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
-"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
-msgstr "Nhập một mạng theo ký hiệu CIDR (ví dụ 192.168.1.0/24 hoặc 2001:db8::/48) hoặc tên vùng đảo ngược kết thúc bằng in-addr.arpa hoặc ip6.arpa."
 
-#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:556
-msgid "Logs"
-msgstr "Nhật ký"
-
-#: lib/Application/Controller/EditController.php:662
-msgid ""
-"Some records were not saved because the form exceeded the server limit on "
-"the number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "Một số bản ghi không được lưu vì biểu mẫu đã vượt quá giới hạn số trường của máy chủ. Hãy yêu cầu quản trị viên tăng cài đặt PHP \"max_input_vars\"."
-
-#: lib/Domain/Model/ZoneTemplate.php:516 lib/Domain/Model/ZoneTemplate.php:578
-msgid "The record does not belong to this zone template."
-msgstr "Bản ghi không thuộc về mẫu vùng này."
-
-#: templates/default/edit_user.html:33
-msgid "Your username can only be changed by an administrator"
-msgstr "Tên người dùng của bạn chỉ có thể được thay đổi bởi quản trị viên"
-
-#: lib/Application/Controller/DeleteUserController.php:129
-msgid ""
-"The user was not deleted because the form exceeded the server limit on the "
-"number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "Người dùng không bị xóa vì biểu mẫu đã vượt quá giới hạn số trường của máy chủ. Hãy yêu cầu quản trị viên tăng cài đặt PHP \"max_input_vars\"."

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-09 10:51+0300\n"
+"POT-Creation-Date: 2026-08-25 09:23+0300\n"
 "PO-Revision-Date: 2025-06-02 07:22+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "DNS wizards are not enabled."
 msgstr "Průvodci DNS nejsou povoleni."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:47
+#: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid zone ID."
 msgstr "Neplatné ID zóny."
 
@@ -333,7 +333,7 @@ msgstr ""
 "celý certifikát."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:634
+#: templates/modern/edit.html:93 templates/modern/edit.html:645
 msgid "Invalid hostname format"
 msgstr "Neplatný formát názvu hostitele"
 
@@ -1256,19 +1256,19 @@ msgstr "Nepodařilo se vytvořit zónu."
 msgid "Failed to retrieve created zone."
 msgstr "Nepodařilo se načíst vytvořenou zónu."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:39
+#: lib/Module/CsvExport/Controller/CsvExportController.php:40
 msgid "You need to be logged in to export zone data."
 msgstr "Musíte být přihlášeni pro export dat zóny."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:56
+#: lib/Module/CsvExport/Controller/CsvExportController.php:57
 msgid "You do not have permission to export this zone."
 msgstr "Nemáte oprávnění exportovat tuto zónu."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Application/Controller/DnssecToggleKeyController.php:79
 msgid "There is no zone with this ID."
 msgstr "Neexistuje zóna s tímto ID."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:72
+#: lib/Module/CsvExport/Controller/CsvExportController.php:73
 msgid "This zone does not have any records to export."
 msgstr "Tato zóna nemá žádné záznamy k exportu."
 
@@ -1302,15 +1302,7 @@ msgstr "Nepodařilo se získat RDAP informace pomocí serveru %s"
 msgid "Invalid CSRF token."
 msgstr "Neplatný CSRF token."
 
-#: lib/BaseController.php:543
-msgid ""
-"The <a href=\"install/\">install/</a> directory exists, you must remove it "
-"first before proceeding."
-msgstr ""
-"Adresář <a href=\"install/\">install/</a> existuje, musíte jej nejprve "
-"odstranit před pokračováním."
-
-#: lib/BaseController.php:575
+#: lib/BaseController.php:523
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1318,21 +1310,38 @@ msgstr ""
 "Používá se výchozí šifrovací klíč relace, nastavte jej prosím v "
 "konfiguračním souboru."
 
-#: lib/BaseController.php:712
+#: lib/BaseController.php:527
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/BaseController.php:565
+msgid ""
+"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"first before proceeding."
+msgstr ""
+"Adresář <a href=\"install/\">install/</a> existuje, musíte jej nejprve "
+"odstranit před pokračováním."
+
+#: lib/BaseController.php:734
 #, php-format
 msgid "The %s field is required."
 msgstr "Pole %s je povinné."
 
-#: lib/BaseController.php:720
+#: lib/BaseController.php:742
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Pole %s musí být číslo."
 
-#: lib/Application/Presenter/PaginationPresenter.php:52
+#: lib/Application/Presenter/PaginationPresenter.php:56
 msgid "Previous"
 msgstr "Předchozí"
 
-#: lib/Application/Presenter/PaginationPresenter.php:79
+#: lib/Application/Presenter/PaginationPresenter.php:83
 msgid "Next"
 msgstr "Další"
 
@@ -1344,11 +1353,11 @@ msgstr "Zobrazit zóny začínající na"
 msgid "Show all"
 msgstr "Zobrazit vše"
 
-#: lib/Application/Controller/DeleteRecordsController.php:77
+#: lib/Application/Controller/DeleteRecordsController.php:81
 msgid "No records selected for deletion."
 msgstr "Žádné záznamy nebyly vybrány ke smazání."
 
-#: lib/Application/Controller/DeleteRecordsController.php:193
+#: lib/Application/Controller/DeleteRecordsController.php:197
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
@@ -1356,7 +1365,7 @@ msgstr ""
 "Záznam byl úspěšně smazán. Veškeré odpovídající PTR záznamy byly také "
 "odstraněny."
 
-#: lib/Application/Controller/DeleteRecordsController.php:195
+#: lib/Application/Controller/DeleteRecordsController.php:199
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1365,34 +1374,43 @@ msgstr ""
 "%d záznamů bylo úspěšně smazáno. Veškeré odpovídající PTR záznamy byly také "
 "odstraněny."
 
-#: lib/Application/Controller/DeleteRecordsController.php:198
+#: lib/Application/Controller/DeleteRecordsController.php:202
 msgid "No records could be deleted. Please check permissions."
 msgstr "Žádné záznamy nebylo možné smazat. Zkontrolujte oprávnění."
 
-#: lib/Application/Controller/DeleteRecordsController.php:264
+#: lib/Application/Controller/DeleteRecordsController.php:268
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
 "Žádné platné záznamy nebyly vybrány ke smazání nebo nemáte oprávnění je "
 "smazat."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:72
+#: lib/Application/Controller/DnssecToggleKeyController.php:48
 msgid "Invalid or unexpected input given."
 msgstr "Neplatný nebo neočekávaný vstup."
 
-#: lib/Domain/Model/UserManager.php:332
+#: lib/Domain/Model/UserManager.php:375
 msgid "You do not have the permission to delete this user."
 msgstr "Nemáte oprávnění smazat tohoto uživatele."
 
-#: lib/Application/Controller/DeleteUserController.php:74
+#: lib/Application/Controller/DeleteUserController.php:78
 msgid "You do not have permission to delete a superuser account."
 msgstr "Nemáte oprávnění smazat účet superuživatele."
 
-#: lib/Application/Controller/EditUserController.php:441
+#: lib/Application/Controller/EditUserController.php:498
 msgid "User does not exist."
 msgstr "Uživatel neexistuje."
 
-#: lib/Application/Controller/DeleteUserController.php:109
+#: lib/Application/Controller/DeleteUserController.php:113
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"Uživatel nebyl smazán, protože formulář překročil serverový limit počtu "
+"polí. Požádejte administrátora o zvýšení nastavení PHP \"max_input_vars\"."
+
+#: lib/Application/Controller/DeleteUserController.php:135
 msgid "The user has been deleted successfully."
 msgstr "Uživatel byl úspěšně smazán."
 
@@ -1404,7 +1422,7 @@ msgstr "Funkce komentářů zón je v konfiguraci zakázána."
 msgid "You do not have the permission to view this comment."
 msgstr "Nemáte oprávnění zobrazit tento komentář."
 
-#: lib/Domain/Service/Dns/RecordManager.php:487
+#: lib/Domain/Service/Dns/RecordManager.php:504
 msgid "You do not have the permission to edit this comment."
 msgstr "Nemáte oprávnění upravit tento komentář."
 
@@ -1420,7 +1438,7 @@ msgstr "Neplatné ID záznamu."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Nemáte oprávnění mazat záznamy v této zóně."
 
-#: lib/Application/Controller/EditRecordController.php:198
+#: lib/Domain/Service/Dns/RecordManager.php:416
 msgid "Record not found."
 msgstr "Záznam nebyl nalezen."
 
@@ -1486,7 +1504,7 @@ msgid ""
 msgstr ""
 "Záznam byl úspěšně odstraněn. Nebyl nalezen odpovídající A/AAAA záznam."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:72
 msgid "The record has been deleted successfully."
 msgstr "Záznam byl úspěšně smazán."
 
@@ -1552,11 +1570,11 @@ msgstr "Spravovat členy skupiny"
 msgid "Invalid action."
 msgstr "Neplatná akce."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:193
+#: lib/Application/Controller/ManageGroupMembersController.php:213
 msgid "Please select at least one user."
 msgstr "Vyberte prosím alespoň jednoho uživatele."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:139
+#: lib/Application/Controller/ManageGroupMembersController.php:159
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
@@ -1564,7 +1582,7 @@ msgstr[0] "%d uživatel přidán do skupiny."
 msgstr[1] "%d uživatelé přidáni do skupiny."
 msgstr[2] "%d uživatelů přidáno do skupiny."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:172
+#: lib/Application/Controller/ManageGroupMembersController.php:192
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
@@ -1572,7 +1590,7 @@ msgstr[0] "%d uživatele nebylo možné přidat."
 msgstr[1] "%d uživatele nebylo možné přidat."
 msgstr[2] "%d uživatelů nebylo možné přidat."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:221
+#: lib/Application/Controller/ManageGroupMembersController.php:238
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
@@ -1580,7 +1598,7 @@ msgstr[0] "%d uživatel odebrán ze skupiny."
 msgstr[1] "%d uživatelé odebráni ze skupiny."
 msgstr[2] "%d uživatelů odebráno ze skupiny."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:254
+#: lib/Application/Controller/ManageGroupMembersController.php:271
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
@@ -1612,7 +1630,7 @@ msgstr "Ověřovací kód je povinný."
 msgid "MFA has been enabled successfully."
 msgstr "MFA bylo úspěšně povoleno."
 
-#: lib/Application/Controller/MfaVerifyController.php:262
+#: lib/Application/Controller/MfaVerifyController.php:266
 msgid "Invalid verification code. Please try again."
 msgstr "Neplatný ověřovací kód. Zkuste to znovu."
 
@@ -1734,28 +1752,28 @@ msgstr "Nemáte oprávnění přidávat záznamy do této zóny."
 msgid "Please provide at least one record."
 msgstr "Zadejte prosím alespoň jeden záznam."
 
-#: lib/Application/Controller/BulkRecordAddController.php:141
+#: lib/Application/Controller/BulkRecordAddController.php:143
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Neplatný formát. Očekáváno minimálně: název,typ,obsah"
 
-#: lib/Application/Controller/BulkRecordAddController.php:194
+#: lib/Application/Controller/BulkRecordAddController.php:196
 msgid "Invalid record type."
 msgstr "Neplatný typ záznamu."
 
-#: lib/Application/Controller/BulkRecordAddController.php:231
+#: lib/Application/Controller/BulkRecordAddController.php:233
 msgid "Record could not be added."
 msgstr "Záznam nemohl být přidán."
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/BulkRecordAddController.php:241
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d záznam(y) byly úspěšně přidány."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
+#: lib/Application/Controller/BulkRecordAddController.php:244
 msgid "Some record(s) could not be added."
 msgstr "Některé záznamy nemohly být přidány."
 
-#: lib/Application/Controller/BulkRecordAddController.php:275
+#: lib/Application/Controller/BulkRecordAddController.php:277
 msgid "Zone ID is required."
 msgstr "ID zóny je povinné."
 
@@ -1763,24 +1781,42 @@ msgstr "ID zóny je povinné."
 msgid "You do not have the permission to edit permission templates."
 msgstr "Nemáte oprávnění upravovat šablony oprávnění."
 
-#: lib/Application/Controller/EditPermTemplController.php:54
+#: lib/Application/Controller/EditPermTemplController.php:56
 msgid "Edit Permission Template"
 msgstr "Upravit šablonu oprávnění"
 
-#: lib/Application/Controller/EditPermTemplController.php:78
+#: lib/Application/Controller/EditPermTemplController.php:103
 msgid "The permission template has been updated successfully."
 msgstr "Šablona oprávnění byla úspěšně aktualizována."
+
+#: lib/Application/Controller/EditPermTemplController.php:151
+#, auto-english-fallback
+msgid ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Application/Controller/AddPermTemplController.php:127
+#, auto-english-fallback
+msgid ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
+msgstr ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
 
 #: lib/Application/Controller/ListGroupsController.php:55
 #: templates/modern/manage_group_members.html:4
 msgid "Groups"
 msgstr "Skupiny"
 
-#: lib/Application/Controller/SearchController.php:47
+#: lib/Application/Controller/SearchController.php:52
 msgid "You do not have the permission to perform searches."
 msgstr "Nemáte oprávnění provádět vyhledávání."
 
-#: lib/Application/Controller/SearchController.php:51
+#: lib/Application/Controller/SearchController.php:56
 #: templates/modern/header.html:97 templates/modern/list_log_groups.html:22
 msgid "Search"
 msgstr "Hledat"
@@ -1801,16 +1837,16 @@ msgstr "Člen byl úspěšně odebrán ze skupiny."
 msgid "User was not a member of this group."
 msgstr "Uživatel nebyl členem této skupiny."
 
-#: lib/Domain/Model/UserManager.php:995
+#: lib/Domain/Model/UserManager.php:1199
 msgid "You do not have the permission to add a new user."
 msgstr "Nemáte oprávnění přidat nového uživatele."
 
 #: lib/Application/Controller/AddUserController.php:92
-#: templates/modern/add_user.html:13 templates/modern/add_user.html:112
+#: templates/modern/add_user.html:13 templates/modern/add_user.html:113
 msgid "Add User"
 msgstr "Přidat uživatele"
 
-#: lib/Application/Controller/EditUserController.php:237
+#: lib/Application/Controller/EditUserController.php:284
 msgid "Invalid permission template: must be a user template"
 msgstr "Neplatná šablona oprávnění: musí být šablona uživatele"
 
@@ -1839,15 +1875,15 @@ msgstr "Heslo bylo vygenerováno, ale ze bezpečnostních důvodů není zobraze
 msgid "Please fill in all required fields correctly."
 msgstr "Vyplňte prosím všechna povinná pole správně."
 
-#: lib/Domain/Service/Dns/RecordManager.php:433
+#: lib/Domain/Service/Dns/RecordManager.php:450
 msgid "You do not have the permission to delete this record."
 msgstr "Nemáte oprávnění smazat tento záznam."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:78
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
 msgid "The record could not be deleted."
 msgstr "Záznam nemohl být smazán."
 
-#: lib/Application/Controller/ListLogZonesController.php:59
+#: lib/Application/Controller/ListLogZonesController.php:63
 #: templates/default/index.html:235 templates/default/index.html:239
 msgid "Zone Logs"
 msgstr "Protokoly zón"
@@ -1864,18 +1900,22 @@ msgstr "Číslo stránky musí být alespoň 1."
 msgid "Page number exceeds available pages."
 msgstr "Číslo stránky překračuje počet dostupných stránek."
 
-#: lib/Application/Controller/UsersController.php:51
+#: lib/Application/Controller/UsersController.php:52
 msgid "You do not have permission to view the users list."
 msgstr "Nemáte oprávnění zobrazit seznam uživatelů."
 
-#: lib/Application/Controller/UsersController.php:58
+#: lib/Application/Controller/UsersController.php:59
 #: templates/modern/list_perm_templ.html:4
 msgid "Users"
 msgstr "Uživatelé"
 
-#: lib/Application/Controller/UsersController.php:78
+#: lib/Application/Controller/UsersController.php:92
 msgid "User details updated"
 msgstr "Údaje uživatele aktualizovány"
+
+#: lib/Application/Controller/EditUserController.php:223
+msgid "You do not have permission to edit a superuser account."
+msgstr "Nemáte oprávnění upravovat účet superuživatele."
 
 #: lib/Application/Controller/EditZoneTemplController.php:59
 msgid "No template ID provided."
@@ -1905,7 +1945,7 @@ msgstr "Zóny byly úspěšně aktualizovány."
 msgid "You do not have permission to create new zone templates."
 msgstr "Nemáte oprávnění vytvářet nové šablony zón."
 
-#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:208 lib/Domain/Model/ZoneTemplate.php:990
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Šablona zóny s tímto názvem již existuje, vyberte prosím jinou."
 
@@ -1990,35 +2030,35 @@ msgstr "Upravit zónu"
 msgid "You do not have permission to access this zone."
 msgstr "Nemáte oprávnění přistupovat k této zóně."
 
-#: lib/Domain/Repository/DomainRepository.php:531
+#: lib/Domain/Repository/DomainRepository.php:533
 msgid "You do not have the permission to view this zone."
 msgstr "Nemáte oprávnění zobrazit tuto zónu."
 
-#: lib/Application/Controller/EditController.php:269
+#: lib/Application/Controller/EditController.php:274
 msgid "Zone type has been changed successfully."
 msgstr "Typ zóny byl úspěšně změněn."
 
-#: lib/Application/Controller/EditController.php:276
+#: lib/Application/Controller/EditController.php:281
 msgid "Slave master has been changed successfully."
 msgstr "Master server slave zóny byl úspěšně změněn."
 
-#: lib/Application/Controller/EditController.php:296
+#: lib/Application/Controller/EditController.php:301
 msgid "Zone template has been changed successfully."
 msgstr "Šablona zóny byla úspěšně změněna."
 
-#: lib/Application/Controller/EditController.php:308
+#: lib/Application/Controller/EditController.php:313
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC není na serveru povoleno."
 
-#: lib/Application/Controller/EditController.php:311
+#: lib/Application/Controller/EditController.php:316
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zóna je již podepsána pomocí DNSSEC."
 
-#: lib/Application/Controller/EditController.php:333
+#: lib/Application/Controller/EditController.php:338
 msgid "Zone has been signed successfully."
 msgstr "Zóna byla úspěšně podepsána."
 
-#: lib/Application/Controller/EditController.php:337
+#: lib/Application/Controller/EditController.php:342
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2026,7 +2066,7 @@ msgstr ""
 "Podepsání zóny bylo úspěšně požadováno, ale ověření selhalo. Zkontrolujte "
 "DNSSEC klíče."
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:346
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2034,31 +2074,41 @@ msgstr ""
 "Podepsání zóny se nezdařilo. Ověření zóny proběhlo úspěšně, ale PowerDNS API "
 "vrátilo chybu. Zkontrolujte logy PowerDNS pro podrobnosti."
 
-#: lib/Application/Controller/DnssecController.php:94
+#: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Zóna není v současnosti podepsána pomocí DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:104
+#: lib/Application/Controller/DnssecController.php:103
 msgid "Zone has been unsigned successfully."
 msgstr "Zóna byla úspěšně odpodepsána."
 
-#: lib/Application/Controller/DnssecController.php:109
+#: lib/Application/Controller/DnssecController.php:108
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "Odpodepsání zóny bylo úspěšně požadováno, ale ověření selhalo."
 
-#: lib/Application/Controller/DnssecController.php:113
+#: lib/Application/Controller/DnssecController.php:112
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Nepodařilo se odpodepsat zónu. Zkontrolujte logy PowerDNS pro detaily."
 
-#: lib/Application/Controller/EditController.php:734
+#: lib/Application/Controller/EditController.php:674
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"Některé záznamy nebyly uloženy, protože formulář překročil serverový limit "
+"počtu polí. Požádejte administrátora o zvýšení nastavení PHP "
+"\"max_input_vars\"."
+
+#: lib/Application/Controller/EditController.php:774
 msgid "Request has expired, please try again."
 msgstr "Požadavek vypršel, zkuste to znovu."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:779
 msgid "Zone has been updated successfully."
 msgstr "Zóna byla úspěšně aktualizována."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:781
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2066,11 +2116,11 @@ msgstr ""
 "Zóna byla úspěšně uložena. Nebyly provedeny žádné změny záznamů, ale sériové "
 "číslo SOA bylo zvýšeno."
 
-#: lib/Application/Controller/EditController.php:750
+#: lib/Application/Controller/EditController.php:790
 msgid "Zone has not been updated successfully."
 msgstr "Zóna nebyla úspěšně aktualizována."
 
-#: lib/Application/Controller/EditController.php:778
+#: lib/Application/Controller/EditController.php:818
 msgid "Please provide all required fields."
 msgstr "Zadejte prosím všechna povinná pole."
 
@@ -2102,7 +2152,7 @@ msgstr "Nebyl nalezen MFA záznam. Kontaktujte administrátora."
 msgid "An error occurred. Please try again."
 msgstr "Došlo k chybě. Zkuste to znovu."
 
-#: lib/Application/Controller/MfaVerifyController.php:285
+#: lib/Application/Controller/MfaVerifyController.php:289
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2110,15 +2160,15 @@ msgstr ""
 "Ověření e-mailem není k dispozici, protože poštovní služba je zakázána. "
 "Použijte prosím obnovovací kód."
 
-#: lib/Application/Controller/MfaVerifyController.php:295
+#: lib/Application/Controller/MfaVerifyController.php:299
 msgid "A new verification code has been sent to your email."
 msgstr "Nový ověřovací kód byl odeslán na váš e-mail."
 
-#: lib/Application/Controller/MfaVerifyController.php:301
+#: lib/Application/Controller/MfaVerifyController.php:305
 msgid "Please use a recovery code instead."
 msgstr "Použijte prosím místo toho obnovovací kód."
 
-#: lib/Application/Controller/MfaVerifyController.php:306
+#: lib/Application/Controller/MfaVerifyController.php:310
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2134,26 +2184,26 @@ msgstr "Nemáte oprávnění přidat záznam do této zóny."
 msgid "Record successfully added."
 msgstr "Záznam byl úspěšně přidán."
 
-#: lib/Application/Controller/AddRecordController.php:422
+#: lib/Application/Controller/AddRecordController.php:434
 msgid "No records were provided."
 msgstr "Nebyly poskytnuty žádné záznamy."
 
-#: lib/Application/Controller/AddRecordController.php:478
+#: lib/Application/Controller/AddRecordController.php:500
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d záznam(y) byly úspěšně přidány."
 
-#: lib/Application/Controller/AddRecordController.php:480
+#: lib/Application/Controller/AddRecordController.php:502
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Bylo také vytvořeno %d odpovídajících záznamů."
 
-#: lib/Application/Controller/AddRecordController.php:483
+#: lib/Application/Controller/AddRecordController.php:505
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d záznam(y) se nepodařilo přidat."
 
-#: lib/Application/Controller/AddRecordController.php:488
+#: lib/Application/Controller/AddRecordController.php:510
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2161,7 +2211,7 @@ msgstr ""
 "Některé záznamy nemohly být přidány. Možná již existují nebo obsahují "
 "neplatná data."
 
-#: lib/Application/Controller/AddRecordController.php:514
+#: lib/Application/Controller/AddRecordController.php:540
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Nepodařilo se přidat žádné záznamy. Možná obsahují neplatná data."
 
@@ -2169,17 +2219,17 @@ msgstr "Nepodařilo se přidat žádné záznamy. Možná obsahují neplatná da
 msgid "No zone selected for deletion."
 msgstr "Nebyla vybrána žádná zóna k mazání."
 
+#: lib/Domain/Service/Dns/DomainManager.php:539
+msgid "You do not have the permission to delete a zone."
+msgstr "Nemáte oprávnění smazat zónu."
+
 #: lib/Application/Controller/DeleteDomainController.php:138
 msgid "Zone has been deleted successfully."
 msgstr "Zóna byla úspěšně smazána."
 
-#: lib/Application/Controller/DeleteDomainsController.php:153
+#: lib/Application/Controller/DeleteDomainsController.php:167
 msgid "Zones have been deleted successfully."
 msgstr "Zóny byly úspěšně smazány."
-
-#: lib/Domain/Service/Dns/DomainManager.php:529
-msgid "You do not have the permission to delete a zone."
-msgstr "Nemáte oprávnění smazat zónu."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:80
 msgid "You do not have the permission to edit zone template records."
@@ -2189,7 +2239,7 @@ msgstr "Nemáte oprávnění upravovat záznamy šablon zón."
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC ověření není povoleno"
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:390
 msgid "Authentication failed: "
 msgstr "Ověření selhalo: "
 
@@ -2225,7 +2275,15 @@ msgstr "Nemáte oprávnění přidat hlavní zónu."
 msgid "Add Primary Zone"
 msgstr "Přidat primární zónu"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:117
+#: lib/Application/Controller/AddZoneSlaveController.php:106
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr ""
+"Zadejte síť v zápisu CIDR (například 192.168.1.0/24 nebo 2001:db8::/48) nebo "
+"název reverzní zóny končící na in-addr.arpa nebo ip6.arpa."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:134
 msgid "At least one user or group must be selected as owner."
 msgstr "Alespoň jeden uživatel nebo skupina musí být vybrán jako vlastník."
 
@@ -2233,7 +2291,7 @@ msgstr "Alespoň jeden uživatel nebo skupina musí být vybrán jako vlastník.
 msgid "There is already a zone with this name."
 msgstr "Zóna s tímto názvem již existuje."
 
-#: lib/Application/Controller/AddZoneMasterController.php:171
+#: lib/Application/Controller/AddZoneMasterController.php:187
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2241,7 +2299,7 @@ msgstr ""
 "Zóna byla úspěšně vytvořena, ale podepsání DNSSEC bylo přeskočeno kvůli "
 "chybám ověření:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:183
+#: lib/Application/Controller/AddZoneMasterController.php:199
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2250,11 +2308,11 @@ msgstr ""
 "zóny proběhlo úspěšně, ale PowerDNS API vrátilo chybu. Zkontrolujte logy "
 "PowerDNS pro podrobnosti."
 
-#: lib/Application/Controller/AddZoneMasterController.php:189
+#: lib/Application/Controller/AddZoneMasterController.php:205
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zóna byla úspěšně vytvořena a podepsána pomocí DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:192
+#: lib/Application/Controller/AddZoneMasterController.php:208
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2262,7 +2320,7 @@ msgstr ""
 "Zóna byla vytvořena a podepsání bylo vyžádáno, ale ověření se nezdařilo. "
 "Zkontrolujte klíče DNSSEC."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:156
+#: lib/Application/Controller/AddZoneSlaveController.php:173
 msgid "Zone has been added successfully."
 msgstr "Zóna byla úspěšně přidána."
 
@@ -2308,27 +2366,27 @@ msgstr "Neplatná šablona oprávnění: musí být šablona skupiny"
 msgid "Group has been created successfully."
 msgstr "Skupina byla úspěšně vytvořena."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:54
+#: lib/Application/Controller/DnssecToggleKeyController.php:62
 msgid "Invalid key ID."
 msgstr "Neplatné ID klíče."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:64
+#: lib/Application/Controller/DnssecToggleKeyController.php:72
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Nemáte oprávnění spravovat DNSSEC pro tuto zónu."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:89
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
 msgid "DNSSEC key not found or no longer exists."
 msgstr "Klíč DNSSEC nebyl nalezen nebo již neexistuje."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:106
+#: lib/Application/Controller/DnssecDeleteKeyController.php:105
 msgid "Zone key has been deleted successfully."
 msgstr "Klíč zóny byl úspěšně smazán."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:115
+#: lib/Application/Controller/DnssecDeleteKeyController.php:114
 msgid "Failed to delete the zone key."
 msgstr "Nepodařilo se smazat klíč zóny."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:122
+#: lib/Application/Controller/DnssecDeleteKeyController.php:121
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Při mazání DNSSEC klíče došlo k chybě: "
 
@@ -2373,11 +2431,11 @@ msgstr "Nemáte oprávnění spravovat vlastnictví zón."
 msgid "Manage Group Zones"
 msgstr "Spravovat zóny skupiny"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:206
+#: lib/Application/Controller/ManageGroupZonesController.php:226
 msgid "Please select at least one zone."
 msgstr "Vyberte prosím alespoň jednu zónu."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:139
+#: lib/Application/Controller/ManageGroupZonesController.php:159
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
@@ -2385,7 +2443,7 @@ msgstr[0] "%d zóna přidána do skupiny."
 msgstr[1] "%d zóny přidány do skupiny."
 msgstr[2] "%d zón přidáno do skupiny."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:185
+#: lib/Application/Controller/ManageGroupZonesController.php:205
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
@@ -2393,7 +2451,7 @@ msgstr[0] "%d zónu nebylo možné přidat."
 msgstr[1] "%d zóny nebylo možné přidat."
 msgstr[2] "%d zón nebylo možné přidat."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:231
+#: lib/Application/Controller/ManageGroupZonesController.php:248
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
@@ -2401,7 +2459,7 @@ msgstr[0] "%d zóna odebrána ze skupiny."
 msgstr[1] "%d zóny odebrány ze skupiny."
 msgstr[2] "%d zón odebráno ze skupiny."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:277
+#: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2409,17 +2467,22 @@ msgstr[0] "%d zónu nebylo možné odebrat."
 msgstr[1] "%d zóny nebylo možné odebrat."
 msgstr[2] "%d zón nebylo možné odebrat."
 
-#: lib/Application/Controller/AddPermTemplController.php:50
+#: lib/Application/Controller/AddPermTemplController.php:52
 msgid "You do not have the permission to add permission templates."
 msgstr "Nemáte oprávnění přidávat šablony oprávnění."
 
-#: lib/Application/Controller/AddPermTemplController.php:54
+#: lib/Application/Controller/AddPermTemplController.php:56
 msgid "Add Permission Template"
 msgstr "Přidat šablonu oprávnění"
 
-#: lib/Application/Controller/AddPermTemplController.php:73
+#: lib/Application/Controller/AddPermTemplController.php:88
 msgid "The permission template has been added successfully."
 msgstr "Šablona oprávnění byla úspěšně přidána."
+
+#: lib/Application/Controller/AddPermTemplController.php:128
+#, auto-english-fallback
+msgid "The permission template could not be added."
+msgstr "The permission template could not be added."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:34
 msgid "Not available for anonymous users."
@@ -2487,11 +2550,11 @@ msgstr "Nepodařilo se vytvořit výchozí SOA záznam"
 msgid "Invalid check type"
 msgstr "Neplatný typ kontroly"
 
-#: lib/Application/Controller/LogoutController.php:115
+#: lib/Application/Controller/LogoutController.php:104
 msgid "You have logged out."
 msgstr "Byli jste odhlášeni."
 
-#: lib/Domain/Model/ZoneTemplate.php:178 lib/Domain/Model/ZoneTemplate.php:619
+#: lib/Domain/Model/ZoneTemplate.php:205 lib/Domain/Model/ZoneTemplate.php:741
 msgid "You do not have the permission to add a zone template."
 msgstr "Nemáte oprávnění přidat šablonu zóny."
 
@@ -2507,7 +2570,7 @@ msgstr "Šablona zóny byla úspěšně přidána."
 msgid "Dashboard"
 msgstr "Přehled"
 
-#: lib/Application/Controller/EditUserController.php:342
+#: lib/Application/Controller/EditUserController.php:399
 msgid "You do not have permission to manage group memberships."
 msgstr "Nemáte oprávnění spravovat členství ve skupinách."
 
@@ -2535,11 +2598,11 @@ msgstr "Neplatné jméno hostitele."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Toto není platná IPv4 nebo IPv6 adresa."
 
-#: lib/Domain/Model/ZoneTemplate.php:278 lib/Domain/Model/ZoneTemplate.php:316
+#: lib/Domain/Model/ZoneTemplate.php:305 lib/Domain/Model/ZoneTemplate.php:343
 msgid "You do not have the permission to delete zone templates."
 msgstr "Nemáte oprávnění mazat šablony zón."
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:90
+#: lib/Application/Controller/DeleteZoneTemplController.php:92
 msgid "Zone template has been deleted successfully."
 msgstr "Šablona zóny byla úspěšně smazána."
 
@@ -2605,19 +2668,15 @@ msgstr "Uživatel byl úspěšně aktualizován."
 msgid "The user could not be updated."
 msgstr "Uživatel nemohl být aktualizován."
 
-#: lib/Domain/Model/UserManager.php:512 lib/Domain/Model/UserManager.php:975
+#: lib/Domain/Model/UserManager.php:571 lib/Domain/Model/UserManager.php:1179
 msgid "You do not have the permission to edit this user."
 msgstr "Nemáte oprávnění upravovat tohoto uživatele."
 
-#: lib/Application/Controller/EditUserController.php:212
-msgid "You do not have permission to edit a superuser account."
-msgstr "Nemáte oprávnění upravovat účet superuživatele."
-
-#: lib/Application/Controller/EditUserController.php:350
+#: lib/Application/Controller/EditUserController.php:407
 msgid "Please select at least one group."
 msgstr "Vyberte prosím alespoň jednu skupinu."
 
-#: lib/Application/Controller/EditUserController.php:391
+#: lib/Application/Controller/EditUserController.php:448
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
@@ -2625,7 +2684,7 @@ msgstr[0] "Uživatel úspěšně přidán do %d skupiny."
 msgstr[1] "Uživatel úspěšně přidán do %d skupin."
 msgstr[2] "Uživatel úspěšně přidán do %d skupin."
 
-#: lib/Application/Controller/EditUserController.php:423
+#: lib/Application/Controller/EditUserController.php:480
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
@@ -2644,7 +2703,7 @@ msgstr[2] ""
 msgid "You do not have the permission to delete permission templates."
 msgstr "Nemáte oprávnění mazat šablony oprávnění."
 
-#: lib/Application/Controller/DeletePermTemplController.php:69
+#: lib/Application/Controller/DeletePermTemplController.php:71
 msgid "The permission template has been deleted successfully."
 msgstr "Šablona oprávnění byla úspěšně smazána."
 
@@ -2746,41 +2805,41 @@ msgstr ""
 msgid "Change Password"
 msgstr "Změnit heslo"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:116
+#: lib/Application/Controller/DnssecAddKeyController.php:115
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "Algoritmus ECDSA P-256 musí používat 256 bitů"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:119
+#: lib/Application/Controller/DnssecAddKeyController.php:118
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "Algoritmus ECDSA P-384 musí používat 384 bitů"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:125
+#: lib/Application/Controller/DnssecAddKeyController.php:124
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "Algoritmus ED25519 musí používat 256 bitů"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:130
+#: lib/Application/Controller/DnssecAddKeyController.php:129
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "Algoritmus ED448 musí používat 456 bitů (nepodporováno v tomto UI)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:137
+#: lib/Application/Controller/DnssecAddKeyController.php:136
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "RSA algoritmy by měly používat 1024 nebo 2048 bitů pro odpovídající "
 "bezpečnost"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:158
+#: lib/Application/Controller/DnssecAddKeyController.php:157
 msgid "Zone key has been added successfully."
 msgstr "Klíč zóny byl úspěšně přidán."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:162
+#: lib/Application/Controller/DnssecAddKeyController.php:161
 msgid "Failed to add new DNSSEC key."
 msgstr "Nepodařilo se přidat nový DNSSEC klíč."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:166
+#: lib/Application/Controller/DnssecAddKeyController.php:165
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Při přidávání DNSSEC klíče došlo k chybě: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:170
+#: lib/Application/Controller/DnssecAddKeyController.php:169
 msgid "Please select both algorithm and bits"
 msgstr "Vyberte prosím algoritmus i bity"
 
@@ -2801,19 +2860,19 @@ msgstr "Skupina byla úspěšně aktualizována."
 msgid "You do not have the permission to delete a supermaster."
 msgstr "Nemáte oprávnění smazat supermaster."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:80
+#: lib/Application/Controller/DeleteSupermasterController.php:82
 msgid "Invalid IP address."
 msgstr "Neplatná IP adresa."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:85
+#: lib/Application/Controller/DeleteSupermasterController.php:87
 msgid "Invalid NS name."
 msgstr "Neplatné NS jméno."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:91
+#: lib/Application/Controller/DeleteSupermasterController.php:93
 msgid "Super master does not exist."
 msgstr "Super master neexistuje."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:95
+#: lib/Application/Controller/DeleteSupermasterController.php:97
 msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster byl úspěšně smazán."
 
@@ -2855,34 +2914,34 @@ msgstr "Skupina byla úspěšně odebrána."
 msgid "Page Not Found"
 msgstr "Stránka nenalezena"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:80
+#: lib/Application/Controller/DnssecToggleKeyController.php:88
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr ""
 "Funkce DNSSEC není dostupná. Zkontrolujte prosím konfiguraci PowerDNS API."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:100
+#: lib/Application/Controller/DnssecToggleKeyController.php:108
 msgid "Zone key has been successfully deactivated."
 msgstr "Klíč zóny byl úspěšně deaktivován."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:101
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
 msgid "Failed to deactivate zone key."
 msgstr "Nepodařilo se deaktivovat klíč zóny."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:104
+#: lib/Application/Controller/DnssecToggleKeyController.php:112
 msgid "Zone key has been successfully activated."
 msgstr "Klíč zóny byl úspěšně aktivován."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:105
+#: lib/Application/Controller/DnssecToggleKeyController.php:113
 msgid "Failed to activate zone key."
 msgstr "Nepodařilo se aktivovat klíč zóny."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:116
+#: lib/Application/Controller/DnssecToggleKeyController.php:124
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Při přepínání klíče DNSSEC došlo k chybě. Zkuste to prosím znovu."
 
-#: lib/Application/Service/LdapAuthenticator.php:93
+#: lib/Application/Service/LdapAuthenticator.php:96
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Účet je dočasně uzamčen. Zkuste to prosím později."
 
@@ -2902,11 +2961,11 @@ msgstr "Relace vypršela, přihlaste se prosím znovu."
 msgid "Failed to update password"
 msgstr "Nepodařilo se aktualizovat heslo"
 
-#: lib/Application/Service/OidcService.php:182
+#: lib/Application/Service/OidcService.php:183
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Ověření selhalo: Neplatný parametr stavu"
 
-#: lib/Application/Service/OidcService.php:203
+#: lib/Application/Service/OidcService.php:204
 msgid "Authentication failed: No authorization code"
 msgstr "Ověření selhalo: Žádný autorizační kód"
 
@@ -2914,27 +2973,27 @@ msgstr "Ověření selhalo: Žádný autorizační kód"
 msgid "Authentication failed: Invalid session"
 msgstr "Ověření selhalo: Neplatná relace"
 
-#: lib/Application/Service/SamlService.php:346
+#: lib/Application/Service/SamlService.php:350
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Ověření selhalo: Nelze vytvořit nebo aktualizovat uživatelský účet"
 
-#: lib/Application/Service/LdapAuthenticator.php:237
+#: lib/Application/Service/LdapAuthenticator.php:241
 msgid "LDAP Authentication failed!"
 msgstr "LDAP ověření selhalo!"
 
-#: lib/Application/Service/LdapAuthenticator.php:142
+#: lib/Application/Service/LdapAuthenticator.php:145
 msgid "Failed to connect to LDAP server!"
 msgstr "Nepodařilo se připojit k LDAP serveru!"
 
-#: lib/Application/Service/LdapAuthenticator.php:158
+#: lib/Application/Service/LdapAuthenticator.php:161
 msgid "Failed to bind to LDAP server!"
 msgstr "Nepodařilo se navazat k LDAP serveru!"
 
-#: lib/Application/Service/LdapAuthenticator.php:186
+#: lib/Application/Service/LdapAuthenticator.php:189
 msgid "Failed to search LDAP."
 msgstr "Nepodařilo se vyhledávat v LDAP."
 
-#: lib/Application/Service/LdapAuthenticator.php:203
+#: lib/Application/Service/LdapAuthenticator.php:206
 msgid "Failed to authenticate against LDAP."
 msgstr "Nepodařilo se ověřit proti LDAP."
 
@@ -2942,25 +3001,25 @@ msgstr "Nepodařilo se ověřit proti LDAP."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Ověření se nezdařilo: Neplatná odpověď SAML"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:422
+#: lib/Application/Query/RecordSearch.php:230 templates/modern/edit.html:422
 #: templates/modern/users.html:185
 msgid "Yes"
 msgstr "Ano"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:422
+#: lib/Application/Query/RecordSearch.php:230 templates/modern/edit.html:422
 #: templates/modern/users.html:187
 msgid "No"
 msgstr "Ne"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:254
 msgid "This template is assigned to at least one user and one group."
 msgstr "Tato šablona je přiřazena alespoň jednomu uživateli a jedné skupině."
 
-#: lib/Domain/Model/UserManager.php:377
+#: lib/Domain/Model/UserManager.php:420
 msgid "This template is assigned to at least one user."
 msgstr "Tato šablona je přiřazena alespoň jednomu uživateli."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:258
 msgid "This template is assigned to at least one group."
 msgstr "Tato šablona je přiřazena alespoň jedné skupině."
 
@@ -2989,37 +3048,66 @@ msgstr ""
 msgid "This is an invalid zone name."
 msgstr "Toto je neplatný název zóny."
 
-#: lib/Domain/Model/UserManager.php:1007
+#: lib/Domain/Model/UserManager.php:1211
 msgid "Enter a valid email address."
 msgstr "Zadejte platnou e-mailovou adresu."
 
-#: lib/Domain/Model/UserManager.php:999
+#: lib/Domain/Model/UserManager.php:1203
 msgid "Username exist already, please choose another one."
 msgstr "Uživatelské jméno již existuje, vyberte prosím jiné."
 
-#: lib/Domain/Model/UserManager.php:1003
+#: lib/Domain/Model/UserManager.php:1215
+msgid "Email address already exists, please choose another one."
+msgstr "E-mailová adresa již existuje, vyberte prosím jinou."
+
+#: lib/Domain/Model/UserManager.php:981
+#, auto-english-fallback
+msgid ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+msgstr ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+
+#: lib/Domain/Model/UserManager.php:985
+#, auto-english-fallback
+msgid ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Domain/Model/UserManager.php:1207
 msgid "Enter a valid user name."
 msgstr "Zadejte platné uživatelské jméno."
 
-#: lib/Domain/Model/ZoneTemplate.php:205 lib/Domain/Model/ZoneTemplate.php:675
+#: lib/Domain/Model/ZoneTemplate.php:232 lib/Domain/Model/ZoneTemplate.php:814
 msgid "Error creating zone template: "
 msgstr "Chyba při vytváření šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:241
+#: lib/Domain/Model/ZoneTemplate.php:268
 msgid "Error adding default SOA record to template: "
 msgstr "Chyba při přidávání výchozího SOA záznamu do šablony: "
 
-#: lib/Domain/Model/ZoneTemplate.php:300
+#: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error deleting zone template: "
 msgstr "Chyba při mazání šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:351
 msgid "Error deleting user zone templates: "
 msgstr "Chyba při mazání uživatelských šablon zón: "
 
-#: lib/Domain/Model/ZoneTemplate.php:442
+#: lib/Domain/Model/ZoneTemplate.php:469
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Nemáte oprávnění přidat záznam do této šablony zóny."
+
+#: lib/Domain/Model/ZoneTemplate.php:474 lib/Domain/Model/ZoneTemplate.php:591
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to add this record type to a zone template."
+msgstr ""
+"You do not have the permission to add this record type to a zone template."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
@@ -3029,51 +3117,74 @@ msgstr "Vaše pole obsahu nemá platnou hodnotu."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Priorita pro MX/SRV záznamy musí být číslo mezi 0 a 65535."
 
-#: lib/Domain/Service/Dns/RecordManager.php:338
+#: lib/Domain/Service/Dns/RecordManager.php:351
 msgid "You do not have the permission to edit this record."
 msgstr "Nemáte oprávnění upravit tento záznam."
 
-#: lib/Domain/Model/ZoneTemplate.php:534
+#: lib/Domain/Model/ZoneTemplate.php:581 lib/Domain/Model/ZoneTemplate.php:665
+msgid "The record does not belong to this zone template."
+msgstr "Tento záznam nepatří do této šablony zóny."
+
+#: lib/Domain/Model/ZoneTemplate.php:643
 msgid "Error updating zone template record: "
 msgstr "Chyba při aktualizaci záznamu šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:557
+#: lib/Domain/Model/ZoneTemplate.php:671
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+msgstr ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+
+#: lib/Domain/Model/ZoneTemplate.php:680
 msgid "Error deleting zone template record: "
 msgstr "Chyba při mazání záznamu šablony zóny: "
 
-#: lib/Domain/Model/ZoneTemplate.php:580
+#: lib/Domain/Model/ZoneTemplate.php:702
 msgid "Error checking template ownership: "
 msgstr "Chyba při kontrole vlastnictví šablony: "
 
-#: lib/Domain/Model/ZoneTemplate.php:728 lib/Domain/Model/ZoneTemplate.php:776
+#: lib/Domain/Model/ZoneTemplate.php:806
+#, auto-english-fallback
+#, php-format
+msgid ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+msgstr ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+
+#: lib/Domain/Model/ZoneTemplate.php:867 lib/Domain/Model/ZoneTemplate.php:915
 msgid "Error retrieving zones using template: "
 msgstr "Chyba při získávání zón používajících šablonu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:830
+#: lib/Domain/Model/ZoneTemplate.php:969
 msgid "Failed to get list of zones using template: "
 msgstr "Nepodařilo se získat seznam zón používajících šablonu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:848
+#: lib/Domain/Model/ZoneTemplate.php:987
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nemáte oprávnění upravovat šablonu zóny."
 
-#: lib/Domain/Model/ZoneTemplate.php:892
+#: lib/Domain/Model/ZoneTemplate.php:1031
 msgid "Error unlinking zone from template: "
 msgstr "Chyba při odpojování zóny od šablony: "
 
-#: lib/Domain/Model/ZoneTemplate.php:920
+#: lib/Domain/Model/ZoneTemplate.php:1059
 msgid "Error retrieving zones: "
 msgstr "Chyba při získávání zón: "
 
-#: lib/Domain/Model/ZoneTemplate.php:939
+#: lib/Domain/Model/ZoneTemplate.php:1078
 msgid "Error checking template name existence: "
 msgstr "Chyba při kontrole existence názvu šablony: "
 
-#: lib/Domain/Model/ZoneTemplate.php:960
+#: lib/Domain/Model/ZoneTemplate.php:1099
 msgid "Error looking up template by name: "
 msgstr "Chyba při vyhledávání šablony podle názvu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:983
+#: lib/Domain/Model/ZoneTemplate.php:1122
 msgid "Error checking template existence: "
 msgstr "Chyba při kontrole existence šablony: "
 
@@ -5508,34 +5619,34 @@ msgstr ""
 "Modifikátor \"redirect\" bude ignorován, když je přítomen \"all\" (RFC 7208 "
 "Sekce 6.1)."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:180
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:207
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
 msgstr ""
 "Neplatná hodnota pole priority. CNAME záznamy musí mít hodnotu priority 0."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:235
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr "Toto není platný CNAME. Již existuje záznam s tímto názvem."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:233
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:260
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr ""
 "Toto není platný záznam CNAME. Přiřadili jste k záznamu záznam MX nebo NS?"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:250
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:277
 msgid "Empty CNAME records are not allowed."
 msgstr "Prázdné CNAME záznamy nejsou povoleny."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:279
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:306
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
 msgstr "Toto není platný záznam. Již existuje CNAME s tímto názvem."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:334
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
@@ -5543,7 +5654,7 @@ msgstr ""
 "Cíl CNAME musí být plně kvalifikované doménové jméno (FQDN). Názvy s jednou "
 "značkou nejsou povoleny."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:321
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:348
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
@@ -6642,40 +6753,40 @@ msgstr ""
 "Kritický příznak nastaven pro neznámý tag \"%s\". Toto může způsobit selhání "
 "vydávání certifikátů."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
 msgstr "Prázdná hodnota není povolena. Použijte \";\" pro povolení všech CA."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:204
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."
 msgstr "Neplatná CA doména v issue tagu."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:216
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:214
 msgid "Issue tag parameters must be in key=value format."
 msgstr "Parametry issue tagu musí být ve formátu klíč=hodnota."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:221
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:219
 msgid "accounturi parameter cannot be empty."
 msgstr "Parametr accounturi nemůže být prázdný."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:230
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:228
 msgid "Empty validation method specified."
 msgstr "Specifikována prázdná metoda validace."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:238
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:236
 msgid "Invalid CA domain in issuewild tag."
 msgstr "Neplatná CA doména v issuewild tagu."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:249
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "Hodnota CAA iodef musí být URL začínající na %s, %s nebo %s."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:260
 msgid "contactemail value must be a valid email address."
 msgstr "Hodnota contactemail musí být platná e-mailová adresa."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:273
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:271
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
@@ -6687,15 +6798,15 @@ msgstr ""
 msgid "Value must be enclosed in double quotes."
 msgstr "Hodnota musí být uzavřena v dvojitých uvozovkách."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:311
 msgid "Backslashes must precede all quotes (\") in value content."
 msgstr "Zpětná lomítka musí předcházet všem uvozovkám (\") v obsahu hodnoty."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:319
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:317
 msgid "CAA property value exceeds maximum length of 512 characters."
 msgstr "Hodnota CAA vlastnosti překračuje maximální délku 512 znaků."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:325
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:323
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "Hodnota CAA vlastnosti nemůže obsahovat NUL (0) znaky."
 
@@ -8569,23 +8680,23 @@ msgstr "Nemáte oprávnění přidat NS záznam."
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Záznam s tímto hostname, typem a obsahem již existuje."
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:335
 msgid "You do not have the permission to edit this SOA record."
 msgstr "Nemáte oprávnění upravit tento SOA záznam."
 
-#: lib/Domain/Service/Dns/RecordManager.php:327
+#: lib/Domain/Service/Dns/RecordManager.php:340
 msgid "You do not have the permission to edit this NS record."
 msgstr "Nemáte oprávnění upravit tento NS záznam."
 
-#: lib/Domain/Service/Dns/RecordManager.php:409
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have the permission to delete SOA records."
 msgstr "Nemáte oprávnění mazat SOA záznamy."
 
-#: lib/Domain/Service/Dns/RecordManager.php:422
+#: lib/Domain/Service/Dns/RecordManager.php:439
 msgid "You do not have the permission to delete NS records."
 msgstr "Nemáte oprávnění mazat NS záznamy."
 
-#: lib/Domain/Service/Dns/DomainManager.php:464
+#: lib/Domain/Service/Dns/DomainManager.php:466
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Neplatný argument(y) předané funkci %s %s"
@@ -8604,9 +8715,14 @@ msgstr "Nepodařilo se vytvořit zónu: %s"
 msgid "Invalid argument(s) given to function %s"
 msgstr "Neplatný argument(y) předané funkci %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:427
+#: lib/Domain/Service/Dns/DomainManager.php:429
 msgid "The selected user already owns the zone."
 msgstr "Vybraný uživatel již vlastní zónu."
+
+#: lib/Domain/Service/Dns/DomainManager.php:461
+#, auto-english-fallback
+msgid "There must be at least one owner for a zone."
+msgstr "There must be at least one owner for a zone."
 
 #: lib/Module/Rdap/templates/rdap.html:3
 msgid "Home"
@@ -8684,11 +8800,11 @@ msgstr "Zkopírováno!"
 msgid "DNSSEC"
 msgstr "DNSSEC"
 
-#: templates/modern/dnssec_edit_key.html:138
+#: templates/modern/dnssec_edit_key.html:140
 msgid "Deactivate key"
 msgstr "Deaktivovat klíč"
 
-#: templates/modern/dnssec_edit_key.html:140
+#: templates/modern/dnssec_edit_key.html:142
 msgid "Activate key"
 msgstr "Aktivovat klíč"
 
@@ -8921,7 +9037,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Aktualizovat záznam"
 
-#: templates/modern/edit.html:517 templates/modern/users.html:211
+#: templates/modern/edit.html:522 templates/modern/users.html:211
 msgid "Reset"
 msgstr "Resetovat"
 
@@ -9063,7 +9179,7 @@ msgstr "Účet"
 msgid "Select the account that will own this supermaster"
 msgstr "Vyberte účet, který bude vlastnit tento supermaster"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:514
+#: templates/modern/edit.html:190 templates/modern/edit.html:519
 msgid "Save changes"
 msgstr "Uložit změny"
 
@@ -9204,11 +9320,11 @@ msgstr "Správa skupin"
 msgid "Add group"
 msgstr "Přidat skupinu"
 
-#: templates/modern/edit_user.html:259 templates/modern/add_user.html:189
+#: templates/modern/edit_user.html:259 templates/modern/add_user.html:190
 msgid "No groups found"
 msgstr "Nebyly nalezeny žádné skupiny"
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:99
 msgid "Search groups..."
 msgstr "Hledat skupiny..."
 
@@ -9656,7 +9772,7 @@ msgstr "Zkontrolovat databázi"
 msgid "Check DB"
 msgstr "Zkontrolovat DB"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:502
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:504
 msgid "Edit comment"
 msgstr "Upravit komentář"
 
@@ -9745,25 +9861,29 @@ msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
 msgstr "Používejte popisné názvy a popisy pro snadnou identifikaci šablon"
 
-#: templates/modern/list_log_zones.html:11 templates/modern/header.html:154
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:556
+msgid "Logs"
+msgstr "Protokoly"
+
+#: templates/modern/list_log_zones.html:15 templates/modern/header.html:154
 msgid "Zone logs"
 msgstr "Protokoly zón"
 
-#: templates/modern/list_log_zones.html:17
+#: templates/modern/list_log_zones.html:22
 msgid "Zone Change Logs"
 msgstr "Protokoly změn zón"
 
-#: templates/modern/list_log_zones.html:25
+#: templates/modern/list_log_groups.html:31
+msgid "Total logs"
+msgstr "Celkem protokolů"
+
+#: templates/modern/list_log_zones.html:38
 msgid "Search logs by domain"
 msgstr "Hledat protokoly podle domény"
 
 #: templates/modern/list_log_groups.html:25
 msgid "Clear"
 msgstr "Vymazat"
-
-#: templates/modern/list_log_groups.html:31
-msgid "Total logs"
-msgstr "Celkem protokolů"
 
 #: templates/modern/list_log_groups.html:46
 msgid "Id"
@@ -9773,15 +9893,15 @@ msgstr "ID"
 msgid "Event"
 msgstr "Událost"
 
-#: templates/modern/list_log_zones.html:69
+#: templates/modern/list_log_zones.html:83
 msgid "Details"
 msgstr "Podrobnosti"
 
-#: templates/modern/list_log_zones.html:86
+#: templates/modern/list_log_zones.html:100
 msgid "Log Details"
 msgstr "Podrobnosti protokolu"
 
-#: templates/modern/list_log_zones.html:93
+#: templates/modern/list_log_zones.html:107
 msgid "Close"
 msgstr "Zavřít"
 
@@ -9816,6 +9936,11 @@ msgstr "Formát: název,typ,obsah,priorita,ttl,komentář (jeden záznam na řá
 #: templates/modern/bulk_record_add.html:46
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Příklad: www,A,192.168.1.1,0,3600,webový server"
+
+#: templates/modern/bulk_record_add.html:47
+#, auto-english-fallback
+msgid "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:48
 msgid "Comment is optional"
@@ -9941,23 +10066,23 @@ msgstr "Přidat nového vlastníka"
 msgid "Owner to be added"
 msgstr "Vlastník k přidání"
 
-#: templates/default/delete_user.html:82 templates/modern/delete_user.html:82
+#: templates/default/delete_user.html:95 templates/modern/delete_user.html:95
 msgid "Delete: The zone will be completely removed from the system"
 msgstr "Smazat: Zóna bude úplně odstraněna ze systému"
 
-#: templates/default/delete_user.html:83 templates/modern/delete_user.html:83
+#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
 msgid "Leave: The zone will remain in the system but without an owner"
 msgstr "Ponechat: Zóna zůstane v systému, ale bez vlastníka"
 
-#: templates/default/delete_user.html:84 templates/modern/delete_user.html:84
+#: templates/default/delete_user.html:97 templates/modern/delete_user.html:97
 msgid "Add new owner: Transfer ownership to another user"
 msgstr "Přidat nového vlastníka: Převést vlastnictví na jiného uživatele"
 
-#: templates/default/delete_user.html:93 templates/modern/delete_user.html:93
+#: templates/default/delete_user.html:106 templates/modern/delete_user.html:106
 msgid "Yes, delete this user"
 msgstr "Ano, smazat tohoto uživatele"
 
-#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
+#: templates/default/delete_user.html:109 templates/modern/delete_user.html:109
 msgid "No, keep this user"
 msgstr "Ne, ponechat tohoto uživatele"
 
@@ -10168,15 +10293,15 @@ msgstr "Potvrdit heslo"
 msgid "Passwords do not match"
 msgstr "Hesla se neshodují"
 
-#: templates/modern/add_user.html:133
+#: templates/modern/add_user.html:134
 msgid "Password Requirements"
 msgstr "Požadavky na heslo"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "Minimum length"
 msgstr "Minimální délka"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "characters"
 msgstr "znaků"
 
@@ -10359,6 +10484,10 @@ msgstr "Upravit uživatele"
 msgid "Username"
 msgstr "Uživatelské jméno"
 
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Vaše uživatelské jméno může změnit pouze administrátor"
+
 #: templates/modern/edit_user.html:32 templates/modern/add_user.html:22
 msgid "Provide user name"
 msgstr "Zadejte uživatelské jméno"
@@ -10383,11 +10512,11 @@ msgstr "E-mailová adresa"
 msgid "Provide email"
 msgstr "Zadejte e-mail"
 
-#: templates/default/edit_user.html:58 templates/modern/edit_user.html:58
+#: templates/default/edit_user.html:61 templates/modern/edit_user.html:58
 msgid "Leave empty to keep current password"
 msgstr "Ponechte prázdné pro zachování současného hesla"
 
-#: templates/default/edit_user.html:74
+#: templates/default/edit_user.html:77
 msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
@@ -10395,32 +10524,70 @@ msgstr ""
 "Oprávnění z této šablony se uplatní globálně v celém systému pro tohoto "
 "uživatele"
 
-#: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
+#: templates/modern/edit_user.html:81 templates/modern/add_user.html:89
 msgid "Optional information about this user"
 msgstr "Volitelné informace o tomto uživateli"
 
-#: templates/modern/users.html:49 templates/modern/add_user.html:94
+#: templates/modern/users.html:49 templates/modern/add_user.html:95
 #: install/templates/step2.html.twig:116
 msgid "Enabled"
 msgstr "Povoleno"
 
-#: templates/modern/edit_user.html:101 templates/modern/add_user.html:103
+#: templates/modern/edit_user.html:101 templates/modern/add_user.html:104
 msgid "LDAP Authentication"
 msgstr "LDAP autentizace"
 
-#: templates/modern/edit_user.html:103 templates/modern/add_user.html:105
+# OBSOLETE: msgid "About Bulk Registration"
+# OBSOLETE: msgstr "O hromadné registraci"
+# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
+# OBSOLETE: msgstr "Tento nástroj umožňuje vytvořit více DNS zón najednou."
+# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
+# OBSOLETE: msgstr "Zadejte jeden název domény na řádek do pole Domény"
+# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Vyberte šablonu zóny pro aplikaci standardních záznamů na všechny zóny"
+# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
+# OBSOLETE: msgstr "Vybraný vlastník bude mít plný přístup ke všem vytvořeným zónám"
+# OBSOLETE: msgid "How It Works"
+# OBSOLETE: msgstr "Jak to funguje"
+# OBSOLETE: msgid ""
+# OBSOLETE: "The system will attempt to create each zone with the same settings. "
+# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
+# OBSOLETE: "again."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Systém se pokusí vytvořit každou zónu se stejnými nastaveními. Neúspěšné "
+# OBSOLETE: "domény budou zobrazeny, abyste mohli opravit případné problémy a zkusit "
+# OBSOLETE: "to znovu."
+# OBSOLETE: msgid "Tips & Recommendations"
+# OBSOLETE: msgstr "Tipy a doporučení"
+# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
+# OBSOLETE: msgstr "Používejte typ zóny NATIVE pro většinu standardních nastavení"
+# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Nejprve vytvořte šablonu, pokud potřebujete standardní záznamy pro "
+# OBSOLETE: "všechny zóny"
+# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
+# OBSOLETE: msgstr "Můžete zkopírovat a vložit seznam domén z tabulky"
+# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Ujistěte se, že názvy domén dodržují platné konvence pojmenovávání DNS"
+#: templates/default/edit_user.html:107
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Nastavení ověřování může změnit pouze administrátor"
+
+#: templates/modern/edit_user.html:103 templates/modern/add_user.html:106
 msgid "Use external LDAP directory for authentication"
 msgstr "Použít externí LDAP adresář pro autentizaci"
 
-#: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
+#: templates/default/edit_user.html:124 templates/modern/edit_user.html:117
 msgid "Back to Home"
 msgstr "Zpět na domovskou stránku"
 
-#: templates/default/edit_user.html:121 templates/modern/edit_user.html:121
+#: templates/default/edit_user.html:128 templates/modern/edit_user.html:121
 msgid "Back to Users"
 msgstr "Zpět k uživatelům"
 
-#: templates/modern/edit_user.html:135 templates/modern/add_user.html:128
+#: templates/modern/edit_user.html:135 templates/modern/add_user.html:129
 msgid "Account Information"
 msgstr "Informace o účtu"
 
@@ -10444,53 +10611,53 @@ msgstr "Musí obsahovat speciální znaky"
 msgid "No specific password requirements"
 msgstr "Žádné specifické požadavky na heslo"
 
-#: templates/modern/add_user.html:160 templates/modern/edit_perm_templ.html:151
+#: templates/modern/add_user.html:161 templates/modern/edit_perm_templ.html:151
 msgid "User Permissions"
 msgstr "Oprávnění uživatele"
 
-#: templates/default/edit_user.html:175 templates/modern/edit_user.html:172
+#: templates/default/edit_user.html:182 templates/modern/edit_user.html:172
 msgid "This user has been assigned the access template"
 msgstr "Tomuto uživateli byla přiřazena šablona přístupu"
 
-#: templates/default/edit_user.html:184 templates/modern/edit_user.html:181
+#: templates/default/edit_user.html:191 templates/modern/edit_user.html:181
 msgid "Based on this template, this user has the following permissions"
 msgstr "Na základě této šablony má tento uživatel následující oprávnění"
 
-#: templates/default/edit_user.html:187 templates/modern/edit_user.html:184
+#: templates/default/edit_user.html:194 templates/modern/edit_user.html:184
 msgid "No permissions are assigned to this template"
 msgstr "Této šabloně nejsou přiřazena žádná oprávnění"
 
-#: templates/modern/edit_user.html:202 templates/modern/add_user.html:172
+#: templates/modern/edit_user.html:202 templates/modern/add_user.html:173
 msgid "Group Memberships"
 msgstr "Členství ve skupinách"
 
-#: templates/default/edit_user.html:209 templates/modern/edit_user.html:206
+#: templates/default/edit_user.html:216 templates/modern/edit_user.html:206
 msgid "Current Memberships"
 msgstr "Aktuální členství"
 
-#: templates/default/edit_user.html:224 templates/modern/edit_user.html:221
+#: templates/default/edit_user.html:231 templates/modern/edit_user.html:221
 msgid "View group details"
 msgstr "Zobrazit podrobnosti skupiny"
 
-#: templates/default/edit_user.html:238 templates/modern/edit_user.html:235
+#: templates/default/edit_user.html:245 templates/modern/edit_user.html:235
 msgid "This user is not a member of any groups."
 msgstr "Tento uživatel není členem žádné skupiny."
 
-#: templates/modern/edit_user.html:241 templates/modern/add_user.html:175
+#: templates/modern/edit_user.html:241 templates/modern/add_user.html:176
 msgid "Add to Groups"
 msgstr "Přidat do skupin"
 
-#: templates/default/edit_user.html:245 templates/modern/edit_user.html:242
+#: templates/default/edit_user.html:252 templates/modern/edit_user.html:242
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr ""
 "Vyberte jednu nebo více skupin a klikněte na tlačítko \"Přidat vybrané "
 "skupiny\"."
 
-#: templates/modern/edit_user.html:250 templates/modern/add_user.html:180
+#: templates/modern/edit_user.html:250 templates/modern/add_user.html:181
 msgid "Search available groups..."
 msgstr "Hledat dostupné skupiny..."
 
-#: templates/modern/edit_user.html:251 templates/modern/add_user.html:181
+#: templates/modern/edit_user.html:251 templates/modern/add_user.html:182
 msgid "Clear search"
 msgstr "Vymazat hledání"
 
@@ -10498,7 +10665,7 @@ msgstr "Vymazat hledání"
 msgid "Select All"
 msgstr "Vybrat vše"
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:103
 msgid "Clear All"
 msgstr "Vymazat vše"
 
@@ -10506,7 +10673,7 @@ msgstr "Vymazat vše"
 msgid "selected"
 msgstr "vybráno"
 
-#: templates/default/edit_user.html:283 templates/modern/edit_user.html:280
+#: templates/default/edit_user.html:290 templates/modern/edit_user.html:280
 msgid "Add Selected Groups"
 msgstr "Přidat vybrané skupiny"
 
@@ -10514,7 +10681,7 @@ msgstr "Přidat vybrané skupiny"
 msgid "Confirm Removal"
 msgstr "Potvrdit odebrání"
 
-#: templates/default/edit_user.html:311 templates/modern/edit_user.html:308
+#: templates/default/edit_user.html:318 templates/modern/edit_user.html:308
 msgid "Are you sure you want to remove this user from the group"
 msgstr "Opravdu chcete odebrat tohoto uživatele ze skupiny"
 
@@ -10951,7 +11118,7 @@ msgstr ""
 msgid "Ownership"
 msgstr "Vlastnictví"
 
-#: templates/modern/add_zone_slave.html:49
+#: templates/modern/add_zone_slave.html:54
 msgid "User Owner"
 msgstr "Vlastník – uživatel"
 
@@ -10967,7 +11134,7 @@ msgstr "Přidat vlastníka – uživatele"
 msgid "Search users..."
 msgstr "Hledat uživatele..."
 
-#: templates/modern/add_zone_slave.html:76
+#: templates/modern/add_zone_slave.html:81
 msgid "You"
 msgstr "Vy"
 
@@ -10975,7 +11142,7 @@ msgstr "Vy"
 msgid "Add Owner"
 msgstr "Přidat vlastníka"
 
-#: templates/modern/add_zone_slave.html:90
+#: templates/modern/add_zone_slave.html:95
 msgid "Group Ownership"
 msgstr "Vlastnictví skupiny"
 
@@ -11023,11 +11190,11 @@ msgstr "Tato šablona je aktuálně přiřazena"
 msgid "users"
 msgstr "uživatelům"
 
-#: templates/modern/delete_zone_templ.html:35
+#: templates/modern/delete_zone_templ.html:37
 msgid "Yes, delete this template"
 msgstr "Ano, smazat tuto šablonu"
 
-#: templates/modern/delete_zone_templ.html:38
+#: templates/modern/delete_zone_templ.html:41
 msgid "No, keep this template"
 msgstr "Ne, ponechat tuto šablonu"
 
@@ -11091,71 +11258,71 @@ msgstr "Pokud klíč ztratíte, budete ho muset obnovit."
 msgid "Edit"
 msgstr "Upravit"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:565
+#: templates/modern/edit.html:25 templates/modern/edit.html:576
 msgid "Add new record"
 msgstr "Přidat nový záznam"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:569
+#: templates/modern/edit.html:203 templates/modern/edit.html:580
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Průvodci pro záznamy DMARC, SPF, DKIM, CAA, TLSA a SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:575
+#: templates/modern/edit.html:35 templates/modern/edit.html:586
 msgid "Multi-record mode"
 msgstr "Režim více záznamů"
 
-#: templates/modern/edit.html:523 templates/modern/edit.html:578
+#: templates/modern/edit.html:529 templates/modern/edit.html:589
 msgid "Bulk add"
 msgstr "Hromadné přidání"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:590
+#: templates/modern/edit.html:50 templates/modern/edit.html:601
 msgid "Failed to add"
 msgstr "Nepodařilo se přidat"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:590
+#: templates/modern/edit.html:50 templates/modern/edit.html:601
 msgid "record(s). Please check the record format."
 msgstr "záznam(y). Zkontrolujte prosím formát záznamu."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:592
+#: templates/modern/edit.html:52 templates/modern/edit.html:603
 msgid "Failed to add records. Please check the record format."
 msgstr "Nepodařilo se přidat záznamy. Zkontrolujte prosím formát záznamu."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:595
+#: templates/modern/edit.html:55 templates/modern/edit.html:606
 msgid "Content validation failed:"
 msgstr "Ověření obsahu selhalo:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:595
+#: templates/modern/edit.html:55 templates/modern/edit.html:606
 msgid "Invalid value for record type"
 msgstr "Neplatná hodnota pro typ záznamu"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:597
+#: templates/modern/edit.html:57 templates/modern/edit.html:608
 msgid "Please provide all required information."
 msgstr "Zadejte prosím všechny požadované informace."
 
-#: templates/modern/edit.html:620 templates/modern/add_record.html:72
+#: templates/modern/edit.html:631 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Přidat PTR"
 
-#: templates/modern/edit.html:623 templates/modern/add_record.html:75
+#: templates/modern/edit.html:634 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Přidat A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:662
+#: templates/modern/edit.html:121 templates/modern/edit.html:673
 msgid "This record already exists"
 msgstr "Tento záznam již existuje"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:674
+#: templates/modern/edit.html:133 templates/modern/edit.html:685
 msgid "Invalid priority"
 msgstr "Neplatná priorita"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:681
+#: templates/modern/edit.html:140 templates/modern/edit.html:692
 msgid "Invalid TTL value"
 msgstr "Neplatná hodnota TTL"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:683
+#: templates/modern/edit.html:142 templates/modern/edit.html:694
 msgid "Provide TTL"
 msgstr "Zadejte TTL"
 
-#: templates/modern/edit.html:709 templates/modern/add_record.html:207
+#: templates/modern/edit.html:720 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11207,51 +11374,51 @@ msgstr "z"
 msgid "total records"
 msgstr "celkem záznamů"
 
-#: templates/default/edit.html:485 templates/modern/edit.html:485
+#: templates/default/edit.html:487 templates/modern/edit.html:487
 msgid "Edit selected"
 msgstr "Upravit vybrané"
 
-#: templates/modern/edit.html:489 templates/modern/search.html:486
+#: templates/modern/edit.html:491 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Smazat záznam(y)"
 
-#: templates/modern/edit.html:497 templates/modern/search.html:93
+#: templates/modern/edit.html:499 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentáře"
 
-#: templates/default/edit.html:527 templates/modern/edit.html:527
+#: templates/default/edit.html:533 templates/modern/edit.html:533
 msgid "Import"
 msgstr "Import"
 
-#: templates/default/edit.html:533 templates/modern/edit.html:533
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Export"
 msgstr "Export"
 
-#: templates/default/edit.html:544 templates/modern/edit.html:544
+#: templates/default/edit.html:550 templates/modern/edit.html:550
 msgid "Generate PTR"
 msgstr "Generovat PTR"
 
-#: templates/modern/edit.html:723 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:734 templates/modern/add_zone_master.html:25
 msgid "Zone Configuration"
 msgstr "Konfigurace zóny"
 
-#: templates/modern/edit.html:763 templates/modern/edit.html:792
+#: templates/modern/edit.html:774 templates/modern/edit.html:803
 msgid "Change"
 msgstr "Změnit"
 
-#: templates/modern/edit.html:756 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:767 templates/modern/add_zone_slave.html:40
 msgid "IP address of master NS"
 msgstr "IP adresa hlavního NS"
 
-#: templates/default/edit.html:813 templates/modern/edit.html:813
+#: templates/default/edit.html:824 templates/modern/edit.html:824
 msgid "Manage DNSSEC"
 msgstr "Spravovat DNSSEC"
 
-#: templates/default/edit.html:820 templates/modern/edit.html:820
+#: templates/default/edit.html:831 templates/modern/edit.html:831
 msgid "Sign zone"
 msgstr "Podepsat zónu"
 
-#: templates/default/edit.html:824 templates/modern/edit.html:824
+#: templates/default/edit.html:835 templates/modern/edit.html:835
 msgid "Not signed"
 msgstr "Nepodepsáno"
 
@@ -11335,11 +11502,11 @@ msgstr "Také smazat odpovídající PTR záznam (pokud existuje)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Také odstranit odpovídající A/AAAA záznam (pokud existuje)"
 
-#: templates/modern/delete_zone_templ_record.html:59
+#: templates/modern/delete_zone_templ_record.html:61
 msgid "Yes, delete this record"
 msgstr "Ano, smazat tento záznam"
 
-#: templates/modern/delete_zone_templ_record.html:62
+#: templates/modern/delete_zone_templ_record.html:65
 msgid "No, keep this record"
 msgstr "Ne, ponechat tento záznam"
 
@@ -11527,11 +11694,15 @@ msgstr "Odeslat heslo e-mailem"
 msgid "Send login credentials to user's email address"
 msgstr "Odeslat přihlašovací údaje na e-mailovou adresu uživatele"
 
-#: templates/modern/add_user.html:81
+#: templates/modern/add_user.html:72 templates/modern/add_group.html:35
+msgid "Select a template..."
+msgstr "Vyberte šablonu..."
+
+#: templates/modern/add_user.html:82
 msgid "Select permissions for this user"
 msgstr "Vyberte oprávnění pro tohoto uživatele"
 
-#: templates/default/add_user.html:162 templates/modern/add_user.html:162
+#: templates/default/add_user.html:163 templates/modern/add_user.html:163
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -11540,7 +11711,7 @@ msgstr ""
 "Při vytváření nového uživatele získá oprávnění na základě vybrané šablony. "
 "Tato oprávnění můžete později upravit editací uživatele."
 
-#: templates/default/add_user.html:176 templates/modern/add_user.html:176
+#: templates/default/add_user.html:177 templates/modern/add_user.html:177
 msgid "Select groups to add the new user to upon creation."
 msgstr "Vyberte skupiny, do kterých má být nový uživatel přidán po vytvoření."
 
@@ -11548,55 +11719,63 @@ msgstr "Vyberte skupiny, do kterých má být nový uživatel přidán po vytvo�
 msgid "Zone name"
 msgstr "Název zóny"
 
-#: templates/modern/add_zone_slave.html:30
+#: templates/modern/add_zone_slave.html:31
 msgid "Provide zone name"
 msgstr "Zadejte název zóny"
 
-#: templates/modern/add_zone_slave.html:31
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr ""
+"Zadejte síť (např. 192.168.1.0/24 nebo 2001:db8::/48) nebo název reverzní "
+"zóny (např. 1.168.192.in-addr.arpa)."
+
+#: templates/modern/add_zone_slave.html:35
 msgid "Example: example.com"
 msgstr "Příklad: example.com"
 
-#: templates/modern/add_zone_master.html:46
+#: templates/modern/add_zone_master.html:51
 msgid "Zone type (usually NATIVE)"
 msgstr "Typ zóny (obvykle NATIVE)"
 
-#: templates/modern/add_zone_master.html:58
+#: templates/modern/add_zone_master.html:63
 msgid "Optional: Apply predefined records from a template"
 msgstr "Volitelné: Aplikovat předdefinované záznamy ze šablony"
 
-#: templates/modern/add_zone_master.html:66
+#: templates/modern/add_zone_master.html:71
 msgid "Enable DNSSEC"
 msgstr "Povolit DNSSEC"
 
-#: templates/modern/add_zone_master.html:68
+#: templates/modern/add_zone_master.html:73
 msgid "Secure this zone with DNSSEC signing"
 msgstr "Zabezpečit tuto zónu pomocí DNSSEC podpisu"
 
-#: templates/modern/add_zone_slave.html:54
+#: templates/modern/add_zone_slave.html:59
 msgid "Selected:"
 msgstr "Vybráno:"
 
-#: templates/modern/add_zone_slave.html:59
+#: templates/modern/add_zone_slave.html:64
 msgid "No user owner"
 msgstr "Žádný vlastník – uživatel"
 
-#: templates/modern/add_zone_slave.html:60
+#: templates/modern/add_zone_slave.html:65
 msgid "Zone will be owned only by groups"
 msgstr "Zóna bude vlastněna pouze skupinami"
 
-#: templates/modern/add_zone_slave.html:82
+#: templates/modern/add_zone_slave.html:87
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Volitelné: Vyberte uživatele zodpovědného za tuto zónu"
 
-#: templates/modern/add_zone_slave.html:105
+#: templates/modern/add_zone_slave.html:110
 msgid "members"
 msgstr "členů"
 
-#: templates/modern/add_zone_slave.html:111
+#: templates/modern/add_zone_slave.html:116
 msgid "Optional: Select one or more groups"
 msgstr "Volitelné: Vyberte jednu nebo více skupin"
 
-#: templates/modern/add_zone_slave.html:126
+#: templates/modern/add_zone_slave.html:131
 msgid "Add zone"
 msgstr "Přidat zónu"
 
@@ -11901,12 +12080,10 @@ msgid "Add Zones"
 msgstr "Přidat zóny"
 
 #: templates/modern/bulk_registration.html:99
-#, auto-english-fallback
 msgid "After Creation"
 msgstr "Po vytvoření"
 
 #: templates/modern/bulk_registration.html:104
-#, auto-english-fallback
 msgid "Assign zones to a group"
 msgstr "Přiřadit zóny ke skupině"
 
@@ -11915,15 +12092,14 @@ msgid ""
 "Bulk registration assigns ownership to a single user. To share access with a "
 "group, open the group and add the newly created zones."
 msgstr ""
-"Hromadná registrace přiřadí vlastnictví jednomu uživateli. Pro sdílení přístupu se skupinou otevřete skupinu a přidejte nově vytvořené zóny."
+"Hromadná registrace přiřadí vlastnictví jednomu uživateli. Pro sdílení "
+"přístupu se skupinou otevřete skupinu a přidejte nově vytvořené zóny."
 
 #: templates/modern/bulk_registration.html:107
-#, auto-english-fallback
 msgid "Manage groups"
 msgstr "Spravovat skupiny"
 
 #: templates/modern/bulk_registration.html:112
-#, auto-english-fallback
 msgid "Change zone owner"
 msgstr "Změnit vlastníka zóny"
 
@@ -11932,10 +12108,10 @@ msgid ""
 "You can transfer zone ownership to another user from the user list at any "
 "time."
 msgstr ""
-"Vlastnictví zóny můžete kdykoli převést na jiného uživatele ze seznamu uživatelů."
+"Vlastnictví zóny můžete kdykoli převést na jiného uživatele ze seznamu "
+"uživatelů."
 
 #: templates/modern/bulk_registration.html:115
-#, auto-english-fallback
 msgid "Manage users"
 msgstr "Spravovat uživatele"
 
@@ -12352,15 +12528,15 @@ msgstr ""
 msgid "Zones found"
 msgstr "Nalezené zóny"
 
-#: templates/default/search.html:316 templates/modern/search.html:316
+#: templates/default/search.html:318 templates/modern/search.html:316
 msgid "Records found"
 msgstr "Nalezené záznamy"
 
-#: templates/default/search.html:501 templates/modern/search.html:501
+#: templates/default/search.html:504 templates/modern/search.html:501
 msgid "Try different search terms or filters"
 msgstr "Zkuste jiné vyhledávací termíny nebo filtry"
 
-#: templates/default/search.html:664 templates/modern/search.html:675
+#: templates/default/search.html:667 templates/modern/search.html:675
 msgid "Confirm Zone Deletion"
 msgstr "Potvrzení smazání zóny"
 
@@ -12368,15 +12544,15 @@ msgstr "Potvrzení smazání zóny"
 msgid "Are you sure you want to delete"
 msgstr "Opravdu chcete smazat"
 
-#: templates/default/search.html:669 templates/modern/search.html:680
+#: templates/default/search.html:672 templates/modern/search.html:680
 msgid "selected zone(s)?"
 msgstr "vybrané zóny?"
 
-#: templates/default/search.html:690 templates/modern/search.html:701
+#: templates/default/search.html:693 templates/modern/search.html:701
 msgid "Confirm Record Deletion"
 msgstr "Potvrzení smazání záznamu"
 
-#: templates/default/search.html:695 templates/modern/search.html:706
+#: templates/default/search.html:698 templates/modern/search.html:706
 msgid "selected record(s)?"
 msgstr "vybrané záznamy?"
 
@@ -12424,11 +12600,11 @@ msgstr "Chystáte se smazat supermaster"
 msgid "Supermaster Details"
 msgstr "Podrobnosti supermastera"
 
-#: templates/modern/delete_supermaster.html:53
+#: templates/modern/delete_supermaster.html:57
 msgid "Yes, delete this supermaster"
 msgstr "Ano, smazat tento supermaster"
 
-#: templates/modern/delete_supermaster.html:56
+#: templates/modern/delete_supermaster.html:61
 msgid "No, keep this supermaster"
 msgstr "Ne, ponechat tento supermaster"
 
@@ -12444,15 +12620,15 @@ msgstr "Protokoly aktivity uživatelů"
 msgid "Search logs by user"
 msgstr "Hledat protokoly podle uživatele"
 
-#: templates/modern/add_zone_slave.html:24
+#: templates/modern/add_zone_slave.html:25
 msgid "Slave Zone Configuration"
 msgstr "Konfigurace slave zóny"
 
-#: templates/modern/add_zone_slave.html:37
+#: templates/modern/add_zone_slave.html:42
 msgid "Provide IP address"
 msgstr "Zadejte IP adresu"
 
-#: templates/modern/add_zone_slave.html:38
+#: templates/modern/add_zone_slave.html:43
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
@@ -12807,7 +12983,8 @@ msgstr "Přidat záznam do zóny"
 
 #: templates/default/add_record.html:41 templates/modern/add_record.html:41
 msgid "Record could not be added. Please check the record data and try again."
-msgstr "Záznam se nepodařilo přidat. Zkontrolujte data záznamu a zkuste to znovu."
+msgstr ""
+"Záznam se nepodařilo přidat. Zkontrolujte data záznamu a zkuste to znovu."
 
 #: templates/default/add_record.html:46 templates/modern/add_record.html:46
 msgid "Create a new DNS record in this zone"
@@ -12857,11 +13034,11 @@ msgstr "Přidat vybrané"
 msgid "Are you sure you want to remove"
 msgstr "Opravdu chcete odebrat"
 
-#: templates/modern/manage_group_zones.html:211
+#: templates/modern/manage_group_zones.html:216
 msgid "zone(s) from this group?"
 msgstr "zóny z této skupiny?"
 
-#: templates/modern/manage_group_zones.html:212
+#: templates/modern/manage_group_zones.html:217
 msgid "The zones will remain in the system."
 msgstr "Zóny zůstanou v systému."
 
@@ -13010,10 +13187,6 @@ msgstr ""
 #: templates/modern/dnssec_delete_key.html:39
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Chystáte se smazat DNSSEC klíč (ID"
-
-#: templates/default/add_group.html:35 templates/modern/add_group.html:35
-msgid "Select a template..."
-msgstr "Vyberte šablonu..."
 
 #: templates/modern/add_group.html:45
 msgid ""
@@ -13331,6 +13504,11 @@ msgstr ""
 #: lib/Module/Rdap/templates/rdap.html:35
 msgid "RDAP results for"
 msgstr "RDAP výsledky pro"
+
+#: lib/Module/Rdap/templates/rdap.html:46
+#, auto-english-fallback
+msgid "Please enter a domain name to perform an RDAP lookup."
+msgstr "Please enter a domain name to perform an RDAP lookup."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -13834,6 +14012,15 @@ msgstr ""
 "Nastavte připojení k databázi, vytvořte administrátorský účet a vygenerujte "
 "konfigurační soubor."
 
+#: install/templates/step3.html.twig:28
+#, auto-english-fallback
+msgid ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+msgstr ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+
 #: install/helpers/InstallStepHandler.php:170
 msgid "Missing PowerDNS tables:"
 msgstr "Chybějící PowerDNS tabulky:"
@@ -13966,98 +14153,13 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nelze se připojit k databázi PowerDNS \"%s\": %s"
 
-# OBSOLETE: msgid "About Bulk Registration"
-# OBSOLETE: msgstr "O hromadné registraci"
-
-# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
-# OBSOLETE: msgstr "Tento nástroj umožňuje vytvořit více DNS zón najednou."
-
-# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
-# OBSOLETE: msgstr "Zadejte jeden název domény na řádek do pole Domény"
-
-# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Vyberte šablonu zóny pro aplikaci standardních záznamů na všechny zóny"
-
-# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
-# OBSOLETE: msgstr "Vybraný vlastník bude mít plný přístup ke všem vytvořeným zónám"
-
-# OBSOLETE: msgid "How It Works"
-# OBSOLETE: msgstr "Jak to funguje"
-
+#: install/helpers/LocaleHandler.php:89
 #, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "The system will attempt to create each zone with the same settings. "
-# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
-# OBSOLETE: "again."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Systém se pokusí vytvořit každou zónu se stejnými nastaveními. Neúspěšné "
-# OBSOLETE: "domény budou zobrazeny, abyste mohli opravit případné problémy a zkusit "
-# OBSOLETE: "to znovu."
-
-# OBSOLETE: msgid "Tips & Recommendations"
-# OBSOLETE: msgstr "Tipy a doporučení"
-
-# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
-# OBSOLETE: msgstr "Používejte typ zóny NATIVE pro většinu standardních nastavení"
-
-# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nejprve vytvořte šablonu, pokud potřebujete standardní záznamy pro "
-# OBSOLETE: "všechny zóny"
-
-# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
-# OBSOLETE: msgstr "Můžete zkopírovat a vložit seznam domén z tabulky"
-
-# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ujistěte se, že názvy domén dodržují platné konvence pojmenovávání DNS"
-
-
-
-
-#: templates/default/edit_user.html:107
-msgid "Authentication settings can only be changed by an administrator"
-msgstr "Nastavení ověřování může změnit pouze administrátor"
-
-#: lib/Domain/Model/UserManager.php:1113
-msgid "Email address already exists, please choose another one."
-msgstr "E-mailová adresa již existuje, vyberte prosím jinou."
-
-#: templates/modern/add_zone_slave.html:33
 msgid ""
-"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
-"name (e.g. 1.168.192.in-addr.arpa)."
-msgstr "Zadejte síť (např. 192.168.1.0/24 nebo 2001:db8::/48) nebo název reverzní zóny (např. 1.168.192.in-addr.arpa)."
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
+msgstr ""
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:106
-msgid ""
-"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
-"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
-msgstr "Zadejte síť v zápisu CIDR (například 192.168.1.0/24 nebo 2001:db8::/48) nebo název reverzní zóny končící na in-addr.arpa nebo ip6.arpa."
 
-#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:556
-msgid "Logs"
-msgstr "Protokoly"
-
-#: lib/Application/Controller/EditController.php:662
-msgid ""
-"Some records were not saved because the form exceeded the server limit on "
-"the number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "Některé záznamy nebyly uloženy, protože formulář překročil serverový limit počtu polí. Požádejte administrátora o zvýšení nastavení PHP \"max_input_vars\"."
-
-#: lib/Domain/Model/ZoneTemplate.php:516 lib/Domain/Model/ZoneTemplate.php:578
-msgid "The record does not belong to this zone template."
-msgstr "Tento záznam nepatří do této šablony zóny."
-
-#: templates/default/edit_user.html:33
-msgid "Your username can only be changed by an administrator"
-msgstr "Vaše uživatelské jméno může změnit pouze administrátor"
-
-#: lib/Application/Controller/DeleteUserController.php:129
-msgid ""
-"The user was not deleted because the form exceeded the server limit on the "
-"number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "Uživatel nebyl smazán, protože formulář překročil serverový limit počtu polí. Požádejte administrátora o zvýšení nastavení PHP \"max_input_vars\"."

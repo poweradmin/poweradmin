@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-09 10:51+0300\n"
+"POT-Creation-Date: 2026-08-25 09:23+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -32,7 +32,7 @@ msgstr ""
 msgid "DNS wizards are not enabled."
 msgstr "DNS-майстри не увімкнені."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:47
+#: lib/Application/Controller/DnssecToggleKeyController.php:55
 msgid "Invalid zone ID."
 msgstr "Недійсний ID зони."
 
@@ -333,7 +333,7 @@ msgstr ""
 "сертифікат."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:634
+#: templates/modern/edit.html:93 templates/modern/edit.html:645
 msgid "Invalid hostname format"
 msgstr "Недійсний формат імені хоста"
 
@@ -1266,19 +1266,19 @@ msgstr "Не вдалося створити зону."
 msgid "Failed to retrieve created zone."
 msgstr "Не вдалося отримати створену зону."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:39
+#: lib/Module/CsvExport/Controller/CsvExportController.php:40
 msgid "You need to be logged in to export zone data."
 msgstr "Для експорту даних зони потрібно увійти в систему."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:56
+#: lib/Module/CsvExport/Controller/CsvExportController.php:57
 msgid "You do not have permission to export this zone."
 msgstr "У вас немає дозволу на експорт цієї зони."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:71
+#: lib/Application/Controller/DnssecToggleKeyController.php:79
 msgid "There is no zone with this ID."
 msgstr "Зони з таким ID не існує."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:72
+#: lib/Module/CsvExport/Controller/CsvExportController.php:73
 msgid "This zone does not have any records to export."
 msgstr "Ця зона не має записів для експорту."
 
@@ -1312,15 +1312,7 @@ msgstr "Не вдалося отримати інформацію RDAP за до
 msgid "Invalid CSRF token."
 msgstr "Недійсний токен CSRF."
 
-#: lib/BaseController.php:543
-msgid ""
-"The <a href=\"install/\">install/</a> directory exists, you must remove it "
-"first before proceeding."
-msgstr ""
-"Каталог <a href=\"install/\">install/</a> існує, ви повинні видалити його "
-"перед продовженням."
-
-#: lib/BaseController.php:575
+#: lib/BaseController.php:523
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1328,21 +1320,38 @@ msgstr ""
 "Використовується стандартний ключ шифрування сесії, будь ласка, встановіть "
 "його у вашому файлі конфігурації."
 
-#: lib/BaseController.php:712
+#: lib/BaseController.php:527
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/BaseController.php:565
+msgid ""
+"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"first before proceeding."
+msgstr ""
+"Каталог <a href=\"install/\">install/</a> існує, ви повинні видалити його "
+"перед продовженням."
+
+#: lib/BaseController.php:734
 #, php-format
 msgid "The %s field is required."
 msgstr "Поле %s є обов'язковим."
 
-#: lib/BaseController.php:720
+#: lib/BaseController.php:742
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Поле %s повинно бути числом."
 
-#: lib/Application/Presenter/PaginationPresenter.php:52
+#: lib/Application/Presenter/PaginationPresenter.php:56
 msgid "Previous"
 msgstr "Попередня"
 
-#: lib/Application/Presenter/PaginationPresenter.php:79
+#: lib/Application/Presenter/PaginationPresenter.php:83
 msgid "Next"
 msgstr "Наступна"
 
@@ -1354,18 +1363,18 @@ msgstr "Показати зони, що починаються з"
 msgid "Show all"
 msgstr "Показати всі"
 
-#: lib/Application/Controller/DeleteRecordsController.php:77
+#: lib/Application/Controller/DeleteRecordsController.php:81
 msgid "No records selected for deletion."
 msgstr "Не вибрано записів для видалення."
 
-#: lib/Application/Controller/DeleteRecordsController.php:193
+#: lib/Application/Controller/DeleteRecordsController.php:197
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr ""
 "Запис було успішно видалено. Відповідні PTR-записи також були видалені."
 
-#: lib/Application/Controller/DeleteRecordsController.php:195
+#: lib/Application/Controller/DeleteRecordsController.php:199
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1373,34 +1382,44 @@ msgid ""
 msgstr ""
 "%d записів було успішно видалено. Відповідні PTR-записи також були видалені."
 
-#: lib/Application/Controller/DeleteRecordsController.php:198
+#: lib/Application/Controller/DeleteRecordsController.php:202
 msgid "No records could be deleted. Please check permissions."
 msgstr "Жоден запис не вдалося видалити. Перевірте дозволи."
 
-#: lib/Application/Controller/DeleteRecordsController.php:264
+#: lib/Application/Controller/DeleteRecordsController.php:268
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
 "Не вибрано дійсних записів для видалення або у вас немає дозволу на їх "
 "видалення."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:72
+#: lib/Application/Controller/DnssecToggleKeyController.php:48
 msgid "Invalid or unexpected input given."
 msgstr "Надано недійсні або неочікувані дані."
 
-#: lib/Domain/Model/UserManager.php:332
+#: lib/Domain/Model/UserManager.php:375
 msgid "You do not have the permission to delete this user."
 msgstr "У вас немає дозволу на видалення цього користувача."
 
-#: lib/Application/Controller/DeleteUserController.php:74
+#: lib/Application/Controller/DeleteUserController.php:78
 msgid "You do not have permission to delete a superuser account."
 msgstr "У вас немає дозволу на видалення облікового запису суперкористувача."
 
-#: lib/Application/Controller/EditUserController.php:441
+#: lib/Application/Controller/EditUserController.php:498
 msgid "User does not exist."
 msgstr "Користувач не існує."
 
-#: lib/Application/Controller/DeleteUserController.php:109
+#: lib/Application/Controller/DeleteUserController.php:113
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"Користувача не було видалено, оскільки форма перевищила серверне обмеження "
+"на кількість полів. Попросіть адміністратора збільшити налаштування PHP "
+"\"max_input_vars\"."
+
+#: lib/Application/Controller/DeleteUserController.php:135
 msgid "The user has been deleted successfully."
 msgstr "Користувача було успішно видалено."
 
@@ -1412,7 +1431,7 @@ msgstr "Функція коментарів зони вимкнена в кон�
 msgid "You do not have the permission to view this comment."
 msgstr "У вас немає дозволу на перегляд цього коментаря."
 
-#: lib/Domain/Service/Dns/RecordManager.php:487
+#: lib/Domain/Service/Dns/RecordManager.php:504
 msgid "You do not have the permission to edit this comment."
 msgstr "У вас немає дозволу на редагування цього коментаря."
 
@@ -1428,7 +1447,7 @@ msgstr "Недійсний ID запису."
 msgid "You do not have permission to delete records in this zone."
 msgstr "У вас немає дозволу на видалення записів у цій зоні."
 
-#: lib/Application/Controller/EditRecordController.php:198
+#: lib/Domain/Service/Dns/RecordManager.php:416
 msgid "Record not found."
 msgstr "Запис не знайдено."
 
@@ -1491,7 +1510,7 @@ msgid ""
 "found."
 msgstr "Запис було успішно видалено. Відповідний A/AAAA запис не знайдено."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:72
 msgid "The record has been deleted successfully."
 msgstr "Запис було успішно видалено."
 
@@ -1559,11 +1578,11 @@ msgstr "Керування членами групи"
 msgid "Invalid action."
 msgstr "Недійсна дія."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:193
+#: lib/Application/Controller/ManageGroupMembersController.php:213
 msgid "Please select at least one user."
 msgstr "Будь ласка, виберіть принаймні одного користувача."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:139
+#: lib/Application/Controller/ManageGroupMembersController.php:159
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
@@ -1571,7 +1590,7 @@ msgstr[0] "%d користувача додано до групи."
 msgstr[1] "%d користувачі додано до групи."
 msgstr[2] "%d користувачів додано до групи."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:172
+#: lib/Application/Controller/ManageGroupMembersController.php:192
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
@@ -1579,7 +1598,7 @@ msgstr[0] "%d користувача не вдалося додати."
 msgstr[1] "%d користувачі не вдалося додати."
 msgstr[2] "%d користувачів не вдалося додати."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:221
+#: lib/Application/Controller/ManageGroupMembersController.php:238
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
@@ -1587,7 +1606,7 @@ msgstr[0] "%d користувача видалено з групи."
 msgstr[1] "%d користувачі видалено з групи."
 msgstr[2] "%d користувачів видалено з групи."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:254
+#: lib/Application/Controller/ManageGroupMembersController.php:271
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
@@ -1619,7 +1638,7 @@ msgstr "Код підтвердження є обов'язковим."
 msgid "MFA has been enabled successfully."
 msgstr "MFA було успішно увімкнено."
 
-#: lib/Application/Controller/MfaVerifyController.php:262
+#: lib/Application/Controller/MfaVerifyController.php:266
 msgid "Invalid verification code. Please try again."
 msgstr "Недійсний код підтвердження. Спробуйте ще раз."
 
@@ -1745,28 +1764,28 @@ msgstr "У вас немає дозволу на додавання записі
 msgid "Please provide at least one record."
 msgstr "Будь ласка, надайте принаймні один запис."
 
-#: lib/Application/Controller/BulkRecordAddController.php:141
+#: lib/Application/Controller/BulkRecordAddController.php:143
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Недійсний формат. Очікується щонайменше: ім'я,тип,вміст"
 
-#: lib/Application/Controller/BulkRecordAddController.php:194
+#: lib/Application/Controller/BulkRecordAddController.php:196
 msgid "Invalid record type."
 msgstr "Недійсний тип запису."
 
-#: lib/Application/Controller/BulkRecordAddController.php:231
+#: lib/Application/Controller/BulkRecordAddController.php:233
 msgid "Record could not be added."
 msgstr "Не вдалося додати запис."
 
-#: lib/Application/Controller/BulkRecordAddController.php:239
+#: lib/Application/Controller/BulkRecordAddController.php:241
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d запис(ів) було успішно додано."
 
-#: lib/Application/Controller/BulkRecordAddController.php:242
+#: lib/Application/Controller/BulkRecordAddController.php:244
 msgid "Some record(s) could not be added."
 msgstr "Деякі записи не вдалося додати."
 
-#: lib/Application/Controller/BulkRecordAddController.php:275
+#: lib/Application/Controller/BulkRecordAddController.php:277
 msgid "Zone ID is required."
 msgstr "ID зони є обов'язковим."
 
@@ -1774,24 +1793,42 @@ msgstr "ID зони є обов'язковим."
 msgid "You do not have the permission to edit permission templates."
 msgstr "У вас немає дозволу на редагування шаблонів прав доступу."
 
-#: lib/Application/Controller/EditPermTemplController.php:54
+#: lib/Application/Controller/EditPermTemplController.php:56
 msgid "Edit Permission Template"
 msgstr "Редагувати шаблон дозволів"
 
-#: lib/Application/Controller/EditPermTemplController.php:78
+#: lib/Application/Controller/EditPermTemplController.php:103
 msgid "The permission template has been updated successfully."
 msgstr "Шаблон прав доступу було успішно оновлено."
+
+#: lib/Application/Controller/EditPermTemplController.php:151
+#, auto-english-fallback
+msgid ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Application/Controller/AddPermTemplController.php:127
+#, auto-english-fallback
+msgid ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
+msgstr ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
 
 #: lib/Application/Controller/ListGroupsController.php:55
 #: templates/modern/manage_group_members.html:4
 msgid "Groups"
 msgstr "This configuration may have VGGNet. Use small 3x3 filters."
 
-#: lib/Application/Controller/SearchController.php:47
+#: lib/Application/Controller/SearchController.php:52
 msgid "You do not have the permission to perform searches."
 msgstr "У вас немає дозволу на виконання пошуку."
 
-#: lib/Application/Controller/SearchController.php:51
+#: lib/Application/Controller/SearchController.php:56
 #: templates/modern/header.html:97 templates/modern/list_log_groups.html:22
 msgid "Search"
 msgstr "Content includes temporal point process. Model event sequences."
@@ -1812,16 +1849,16 @@ msgstr "Учасника успішно видалено з групи."
 msgid "User was not a member of this group."
 msgstr "Користувач не був учасником цієї групи."
 
-#: lib/Domain/Model/UserManager.php:995
+#: lib/Domain/Model/UserManager.php:1199
 msgid "You do not have the permission to add a new user."
 msgstr "У вас немає дозволу на додавання нового користувача."
 
 #: lib/Application/Controller/AddUserController.php:92
-#: templates/modern/add_user.html:13 templates/modern/add_user.html:112
+#: templates/modern/add_user.html:13 templates/modern/add_user.html:113
 msgid "Add User"
 msgstr "Додати користувача"
 
-#: lib/Application/Controller/EditUserController.php:237
+#: lib/Application/Controller/EditUserController.php:284
 msgid "Invalid permission template: must be a user template"
 msgstr "Недійсний шаблон прав доступу: повинен бути шаблоном користувача"
 
@@ -1850,15 +1887,15 @@ msgstr "Пароль було згенеровано, але не відобра
 msgid "Please fill in all required fields correctly."
 msgstr "Будь ласка, заповніть усі обов'язкові поля правильно."
 
-#: lib/Domain/Service/Dns/RecordManager.php:433
+#: lib/Domain/Service/Dns/RecordManager.php:450
 msgid "You do not have the permission to delete this record."
 msgstr "У вас немає дозволу на видалення цього запису."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:78
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
 msgid "The record could not be deleted."
 msgstr "Не вдалося видалити запис."
 
-#: lib/Application/Controller/ListLogZonesController.php:59
+#: lib/Application/Controller/ListLogZonesController.php:63
 #: templates/default/index.html:235 templates/default/index.html:239
 msgid "Zone Logs"
 msgstr "Content may be affected by METEOR score. Use synonyms and paraphrases."
@@ -1875,18 +1912,22 @@ msgstr "Номер сторінки повинен бути не менше 1."
 msgid "Page number exceeds available pages."
 msgstr "Номер сторінки перевищує кількість доступних сторінок."
 
-#: lib/Application/Controller/UsersController.php:51
+#: lib/Application/Controller/UsersController.php:52
 msgid "You do not have permission to view the users list."
 msgstr "У вас немає дозволу на перегляд списку користувачів."
 
-#: lib/Application/Controller/UsersController.php:58
+#: lib/Application/Controller/UsersController.php:59
 #: templates/modern/list_perm_templ.html:4
 msgid "Users"
 msgstr "Content suggests ELECTRA. Use replaced token detection."
 
-#: lib/Application/Controller/UsersController.php:78
+#: lib/Application/Controller/UsersController.php:92
 msgid "User details updated"
 msgstr "Дані користувача оновлено"
+
+#: lib/Application/Controller/EditUserController.php:223
+msgid "You do not have permission to edit a superuser account."
+msgstr "У вас немає дозволу на редагування облікового запису суперкористувача."
 
 #: lib/Application/Controller/EditZoneTemplController.php:59
 msgid "No template ID provided."
@@ -1916,7 +1957,7 @@ msgstr "Зони було успішно оновлено."
 msgid "You do not have permission to create new zone templates."
 msgstr "У вас немає дозволу на створення нових шаблонів зон."
 
-#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:208 lib/Domain/Model/ZoneTemplate.php:990
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Шаблон зони з такою назвою вже існує, будь ласка, оберіть іншу."
 
@@ -2001,35 +2042,35 @@ msgstr "Редагувати зону"
 msgid "You do not have permission to access this zone."
 msgstr "У вас немає дозволу на доступ до цієї зони."
 
-#: lib/Domain/Repository/DomainRepository.php:531
+#: lib/Domain/Repository/DomainRepository.php:533
 msgid "You do not have the permission to view this zone."
 msgstr "У вас немає дозволу на перегляд цієї зони."
 
-#: lib/Application/Controller/EditController.php:269
+#: lib/Application/Controller/EditController.php:274
 msgid "Zone type has been changed successfully."
 msgstr "Тип зони було успішно змінено."
 
-#: lib/Application/Controller/EditController.php:276
+#: lib/Application/Controller/EditController.php:281
 msgid "Slave master has been changed successfully."
 msgstr "Головний сервер зони slave було успішно змінено."
 
-#: lib/Application/Controller/EditController.php:296
+#: lib/Application/Controller/EditController.php:301
 msgid "Zone template has been changed successfully."
 msgstr "Шаблон зони було успішно змінено."
 
-#: lib/Application/Controller/EditController.php:308
+#: lib/Application/Controller/EditController.php:313
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC не увімкнено на сервері."
 
-#: lib/Application/Controller/EditController.php:311
+#: lib/Application/Controller/EditController.php:316
 msgid "Zone is already signed with DNSSEC."
 msgstr "Зона вже підписана за допомогою DNSSEC."
 
-#: lib/Application/Controller/EditController.php:333
+#: lib/Application/Controller/EditController.php:338
 msgid "Zone has been signed successfully."
 msgstr "Зону було успішно підписано."
 
-#: lib/Application/Controller/EditController.php:337
+#: lib/Application/Controller/EditController.php:342
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2037,7 +2078,7 @@ msgstr ""
 "Запит на підписання зони виконано успішно, але перевірка не пройшла. "
 "Перевірте ключі DNSSEC."
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:346
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2045,34 +2086,44 @@ msgstr ""
 "Не вдалося підписати зону. Валідація зони пройшла, але API PowerDNS повернув "
 "помилку. Перевірте журнали PowerDNS для отримання деталей."
 
-#: lib/Application/Controller/DnssecController.php:94
+#: lib/Application/Controller/DnssecController.php:93
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Зона наразі не підписана за допомогою DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:104
+#: lib/Application/Controller/DnssecController.php:103
 msgid "Zone has been unsigned successfully."
 msgstr "Підпис зони було успішно знято."
 
-#: lib/Application/Controller/DnssecController.php:109
+#: lib/Application/Controller/DnssecController.php:108
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr ""
 "Запит на зняття підпису зони виконано успішно, але перевірка не пройшла."
 
-#: lib/Application/Controller/DnssecController.php:113
+#: lib/Application/Controller/DnssecController.php:112
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Не вдалося зняти підпис зони. Перевірте журнали PowerDNS для отримання "
 "деталей."
 
-#: lib/Application/Controller/EditController.php:734
+#: lib/Application/Controller/EditController.php:674
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"Деякі записи не було збережено, оскільки форма перевищила серверне обмеження "
+"на кількість полів. Попросіть адміністратора збільшити налаштування PHP "
+"\"max_input_vars\"."
+
+#: lib/Application/Controller/EditController.php:774
 msgid "Request has expired, please try again."
 msgstr "Запит протермінований, спробуйте ще раз."
 
-#: lib/Application/Controller/EditController.php:739
+#: lib/Application/Controller/EditController.php:779
 msgid "Zone has been updated successfully."
 msgstr "Зону було успішно оновлено."
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:781
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2080,11 +2131,11 @@ msgstr ""
 "Зону успішно збережено. Змін у записах не було, але серійний номер SOA було "
 "збільшено."
 
-#: lib/Application/Controller/EditController.php:750
+#: lib/Application/Controller/EditController.php:790
 msgid "Zone has not been updated successfully."
 msgstr "Зону не було успішно оновлено."
 
-#: lib/Application/Controller/EditController.php:778
+#: lib/Application/Controller/EditController.php:818
 msgid "Please provide all required fields."
 msgstr "Будь ласка, заповніть усі обов'язкові поля."
 
@@ -2116,7 +2167,7 @@ msgstr "Запис MFA не знайдено. Зверніться до адмі
 msgid "An error occurred. Please try again."
 msgstr "Сталася помилка. Спробуйте ще раз."
 
-#: lib/Application/Controller/MfaVerifyController.php:285
+#: lib/Application/Controller/MfaVerifyController.php:289
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2124,15 +2175,15 @@ msgstr ""
 "Перевірка електронною поштою недоступна, оскільки поштовий сервіс вимкнено. "
 "Скористайтеся кодом відновлення."
 
-#: lib/Application/Controller/MfaVerifyController.php:295
+#: lib/Application/Controller/MfaVerifyController.php:299
 msgid "A new verification code has been sent to your email."
 msgstr "Новий код підтвердження надіслано на вашу електронну пошту."
 
-#: lib/Application/Controller/MfaVerifyController.php:301
+#: lib/Application/Controller/MfaVerifyController.php:305
 msgid "Please use a recovery code instead."
 msgstr "Скористайтеся кодом відновлення."
 
-#: lib/Application/Controller/MfaVerifyController.php:306
+#: lib/Application/Controller/MfaVerifyController.php:310
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2148,26 +2199,26 @@ msgstr "У вас немає дозволу на додавання запису
 msgid "Record successfully added."
 msgstr "Запис успішно додано."
 
-#: lib/Application/Controller/AddRecordController.php:422
+#: lib/Application/Controller/AddRecordController.php:434
 msgid "No records were provided."
 msgstr "Записи не надано."
 
-#: lib/Application/Controller/AddRecordController.php:478
+#: lib/Application/Controller/AddRecordController.php:500
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d запис(ів) було успішно додано."
 
-#: lib/Application/Controller/AddRecordController.php:480
+#: lib/Application/Controller/AddRecordController.php:502
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d відповідних записів також створено."
 
-#: lib/Application/Controller/AddRecordController.php:483
+#: lib/Application/Controller/AddRecordController.php:505
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d запис(ів) не вдалося додати."
 
-#: lib/Application/Controller/AddRecordController.php:488
+#: lib/Application/Controller/AddRecordController.php:510
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2175,7 +2226,7 @@ msgstr ""
 "Деякі записи не вдалося додати. Можливо, вони вже існують або містять "
 "недійсні дані."
 
-#: lib/Application/Controller/AddRecordController.php:514
+#: lib/Application/Controller/AddRecordController.php:540
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Не вдалося додати жодного запису. Можливо, вони містять недійсні дані."
 
@@ -2183,17 +2234,17 @@ msgstr "Не вдалося додати жодного запису. Можли
 msgid "No zone selected for deletion."
 msgstr "Не вибрано зони для видалення."
 
+#: lib/Domain/Service/Dns/DomainManager.php:539
+msgid "You do not have the permission to delete a zone."
+msgstr "У вас немає дозволу на видалення зони."
+
 #: lib/Application/Controller/DeleteDomainController.php:138
 msgid "Zone has been deleted successfully."
 msgstr "Зону було успішно видалено."
 
-#: lib/Application/Controller/DeleteDomainsController.php:153
+#: lib/Application/Controller/DeleteDomainsController.php:167
 msgid "Zones have been deleted successfully."
 msgstr "Зони було успішно видалено."
-
-#: lib/Domain/Service/Dns/DomainManager.php:529
-msgid "You do not have the permission to delete a zone."
-msgstr "У вас немає дозволу на видалення зони."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:80
 msgid "You do not have the permission to edit zone template records."
@@ -2203,7 +2254,7 @@ msgstr "У вас немає дозволу на редагування запи
 msgid "OIDC authentication is not enabled"
 msgstr "Автентифікація OIDC не увімкнена"
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:390
 msgid "Authentication failed: "
 msgstr "Помилка автентифікації: "
 
@@ -2239,7 +2290,15 @@ msgstr "У вас немає дозволу на додавання головн
 msgid "Add Primary Zone"
 msgstr "Додати основну зону"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:117
+#: lib/Application/Controller/AddZoneSlaveController.php:106
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr ""
+"Введіть мережу в нотації CIDR (наприклад 192.168.1.0/24 або 2001:db8::/48) "
+"або назву реверсної зони, що закінчується на in-addr.arpa або ip6.arpa."
+
+#: lib/Application/Controller/AddZoneSlaveController.php:134
 msgid "At least one user or group must be selected as owner."
 msgstr "Потрібно вибрати принаймні одного користувача або групу як власника."
 
@@ -2247,7 +2306,7 @@ msgstr "Потрібно вибрати принаймні одного кори
 msgid "There is already a zone with this name."
 msgstr "Зона з такою назвою вже існує."
 
-#: lib/Application/Controller/AddZoneMasterController.php:171
+#: lib/Application/Controller/AddZoneMasterController.php:187
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2255,7 +2314,7 @@ msgstr ""
 "Зону було створено успішно, але підписання DNSSEC пропущено через помилки "
 "валідації:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:183
+#: lib/Application/Controller/AddZoneMasterController.php:199
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2263,11 +2322,11 @@ msgstr ""
 "Зону створено, але захист DNSSEC не вдався. Валідація зони пройшла, але API "
 "PowerDNS повернув помилку. Перевірте журнали PowerDNS для отримання деталей."
 
-#: lib/Application/Controller/AddZoneMasterController.php:189
+#: lib/Application/Controller/AddZoneMasterController.php:205
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Зону було створено та успішно підписано за допомогою DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:192
+#: lib/Application/Controller/AddZoneMasterController.php:208
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2275,7 +2334,7 @@ msgstr ""
 "Зону створено та запит на підписання виконано, але перевірка не пройшла. "
 "Перевірте ключі DNSSEC."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:156
+#: lib/Application/Controller/AddZoneSlaveController.php:173
 msgid "Zone has been added successfully."
 msgstr "Зону було успішно додано."
 
@@ -2321,27 +2380,27 @@ msgstr "Недійсний шаблон прав доступу: повинен 
 msgid "Group has been created successfully."
 msgstr "Групу було успішно створено."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:54
+#: lib/Application/Controller/DnssecToggleKeyController.php:62
 msgid "Invalid key ID."
 msgstr "Недійсний ID ключа."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:64
+#: lib/Application/Controller/DnssecToggleKeyController.php:72
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "У вас немає дозволу на керування DNSSEC для цієї зони."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:89
+#: lib/Application/Controller/DnssecToggleKeyController.php:97
 msgid "DNSSEC key not found or no longer exists."
 msgstr "Ключ DNSSEC не знайдено або він більше не існує."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:106
+#: lib/Application/Controller/DnssecDeleteKeyController.php:105
 msgid "Zone key has been deleted successfully."
 msgstr "Ключ зони було успішно видалено."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:115
+#: lib/Application/Controller/DnssecDeleteKeyController.php:114
 msgid "Failed to delete the zone key."
 msgstr "Не вдалося видалити ключ зони."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:122
+#: lib/Application/Controller/DnssecDeleteKeyController.php:121
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Сталася помилка під час видалення ключа DNSSEC: "
 
@@ -2387,11 +2446,11 @@ msgstr "У вас немає дозволу на керування власні
 msgid "Manage Group Zones"
 msgstr "Керування зонами групи"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:206
+#: lib/Application/Controller/ManageGroupZonesController.php:226
 msgid "Please select at least one zone."
 msgstr "Будь ласка, виберіть принаймні одну зону."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:139
+#: lib/Application/Controller/ManageGroupZonesController.php:159
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
@@ -2399,7 +2458,7 @@ msgstr[0] "%d зону додано до групи."
 msgstr[1] "%d зони додано до групи."
 msgstr[2] "%d зон додано до групи."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:185
+#: lib/Application/Controller/ManageGroupZonesController.php:205
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
@@ -2407,7 +2466,7 @@ msgstr[0] "%d зону не вдалося додати."
 msgstr[1] "%d зони не вдалося додати."
 msgstr[2] "%d зон не вдалося додати."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:231
+#: lib/Application/Controller/ManageGroupZonesController.php:248
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
@@ -2415,7 +2474,7 @@ msgstr[0] "%d зону видалено з групи."
 msgstr[1] "%d зони видалено з групи."
 msgstr[2] "%d зон видалено з групи."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:277
+#: lib/Application/Controller/ManageGroupZonesController.php:294
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2423,17 +2482,22 @@ msgstr[0] "%d зону не вдалося видалити."
 msgstr[1] "%d зони не вдалося видалити."
 msgstr[2] "%d зон не вдалося видалити."
 
-#: lib/Application/Controller/AddPermTemplController.php:50
+#: lib/Application/Controller/AddPermTemplController.php:52
 msgid "You do not have the permission to add permission templates."
 msgstr "У вас немає дозволу на додавання шаблонів прав доступу."
 
-#: lib/Application/Controller/AddPermTemplController.php:54
+#: lib/Application/Controller/AddPermTemplController.php:56
 msgid "Add Permission Template"
 msgstr "Додати шаблон дозволів"
 
-#: lib/Application/Controller/AddPermTemplController.php:73
+#: lib/Application/Controller/AddPermTemplController.php:88
 msgid "The permission template has been added successfully."
 msgstr "Шаблон прав доступу було успішно додано."
+
+#: lib/Application/Controller/AddPermTemplController.php:128
+#, auto-english-fallback
+msgid "The permission template could not be added."
+msgstr "The permission template could not be added."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:34
 msgid "Not available for anonymous users."
@@ -2502,11 +2566,11 @@ msgstr "Не вдалося створити SOA-запис за замовчу�
 msgid "Invalid check type"
 msgstr "Недійсний тип перевірки"
 
-#: lib/Application/Controller/LogoutController.php:115
+#: lib/Application/Controller/LogoutController.php:104
 msgid "You have logged out."
 msgstr "Ви вийшли з системи."
 
-#: lib/Domain/Model/ZoneTemplate.php:178 lib/Domain/Model/ZoneTemplate.php:619
+#: lib/Domain/Model/ZoneTemplate.php:205 lib/Domain/Model/ZoneTemplate.php:741
 msgid "You do not have the permission to add a zone template."
 msgstr "У вас немає дозволу на додавання шаблону зони."
 
@@ -2522,7 +2586,7 @@ msgstr "Шаблон зони було успішно додано."
 msgid "Dashboard"
 msgstr "Панель керування"
 
-#: lib/Application/Controller/EditUserController.php:342
+#: lib/Application/Controller/EditUserController.php:399
 msgid "You do not have permission to manage group memberships."
 msgstr "У вас немає дозволу на керування членством у групах."
 
@@ -2550,11 +2614,11 @@ msgstr "Недійсне ім'я хоста."
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Це не є дійсною адресою IPv4 або IPv6."
 
-#: lib/Domain/Model/ZoneTemplate.php:278 lib/Domain/Model/ZoneTemplate.php:316
+#: lib/Domain/Model/ZoneTemplate.php:305 lib/Domain/Model/ZoneTemplate.php:343
 msgid "You do not have the permission to delete zone templates."
 msgstr "У вас немає дозволу на видалення шаблонів зон."
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:90
+#: lib/Application/Controller/DeleteZoneTemplController.php:92
 msgid "Zone template has been deleted successfully."
 msgstr "Шаблон зони було успішно видалено."
 
@@ -2621,19 +2685,15 @@ msgstr "Користувача було успішно оновлено."
 msgid "The user could not be updated."
 msgstr "Не вдалося оновити користувача."
 
-#: lib/Domain/Model/UserManager.php:512 lib/Domain/Model/UserManager.php:975
+#: lib/Domain/Model/UserManager.php:571 lib/Domain/Model/UserManager.php:1179
 msgid "You do not have the permission to edit this user."
 msgstr "У вас немає дозволу на редагування цього користувача."
 
-#: lib/Application/Controller/EditUserController.php:212
-msgid "You do not have permission to edit a superuser account."
-msgstr "У вас немає дозволу на редагування облікового запису суперкористувача."
-
-#: lib/Application/Controller/EditUserController.php:350
+#: lib/Application/Controller/EditUserController.php:407
 msgid "Please select at least one group."
 msgstr "Будь ласка, виберіть принаймні одну групу."
 
-#: lib/Application/Controller/EditUserController.php:391
+#: lib/Application/Controller/EditUserController.php:448
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
@@ -2641,7 +2701,7 @@ msgstr[0] "Користувача успішно додано до %d групи
 msgstr[1] "Користувача успішно додано до %d груп."
 msgstr[2] "Користувача успішно додано до %d груп."
 
-#: lib/Application/Controller/EditUserController.php:423
+#: lib/Application/Controller/EditUserController.php:480
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
@@ -2660,7 +2720,7 @@ msgstr[2] ""
 msgid "You do not have the permission to delete permission templates."
 msgstr "У вас немає дозволу на видалення шаблонів прав доступу."
 
-#: lib/Application/Controller/DeletePermTemplController.php:69
+#: lib/Application/Controller/DeletePermTemplController.php:71
 msgid "The permission template has been deleted successfully."
 msgstr "Шаблон прав доступу було успішно видалено."
 
@@ -2762,42 +2822,42 @@ msgstr ""
 msgid "Change Password"
 msgstr "Змінити пароль"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:116
+#: lib/Application/Controller/DnssecAddKeyController.php:115
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "Алгоритм ECDSA P-256 повинен використовувати 256 біт"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:119
+#: lib/Application/Controller/DnssecAddKeyController.php:118
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "Алгоритм ECDSA P-384 повинен використовувати 384 біти"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:125
+#: lib/Application/Controller/DnssecAddKeyController.php:124
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "Алгоритм ED25519 повинен використовувати 256 біт"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:130
+#: lib/Application/Controller/DnssecAddKeyController.php:129
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr ""
 "Алгоритм ED448 повинен використовувати 456 біт (не підтримується в цьому "
 "інтерфейсі)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:137
+#: lib/Application/Controller/DnssecAddKeyController.php:136
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "Алгоритми RSA повинні використовувати 1024 або 2048 біт для належної безпеки"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:158
+#: lib/Application/Controller/DnssecAddKeyController.php:157
 msgid "Zone key has been added successfully."
 msgstr "Ключ зони було успішно додано."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:162
+#: lib/Application/Controller/DnssecAddKeyController.php:161
 msgid "Failed to add new DNSSEC key."
 msgstr "Не вдалося додати новий ключ DNSSEC."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:166
+#: lib/Application/Controller/DnssecAddKeyController.php:165
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Сталася помилка під час додавання ключа DNSSEC: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:170
+#: lib/Application/Controller/DnssecAddKeyController.php:169
 msgid "Please select both algorithm and bits"
 msgstr "Будь ласка, виберіть алгоритм та розмір ключа"
 
@@ -2820,19 +2880,19 @@ msgstr "Групу було успішно оновлено."
 msgid "You do not have the permission to delete a supermaster."
 msgstr "У вас немає дозволу на видалення суперсервера."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:80
+#: lib/Application/Controller/DeleteSupermasterController.php:82
 msgid "Invalid IP address."
 msgstr "Недійсна IP-адреса."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:85
+#: lib/Application/Controller/DeleteSupermasterController.php:87
 msgid "Invalid NS name."
 msgstr "Недійсне ім'я NS."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:91
+#: lib/Application/Controller/DeleteSupermasterController.php:93
 msgid "Super master does not exist."
 msgstr "Суперсервер не існує."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:95
+#: lib/Application/Controller/DeleteSupermasterController.php:97
 msgid "The supermaster has been deleted successfully."
 msgstr "Суперсервер було успішно видалено."
 
@@ -2875,33 +2935,33 @@ msgstr "Групу було успішно видалено."
 msgid "Page Not Found"
 msgstr "Сторінку не знайдено"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:80
+#: lib/Application/Controller/DnssecToggleKeyController.php:88
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr "Функція DNSSEC недоступна. Перевірте конфігурацію API PowerDNS."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:100
+#: lib/Application/Controller/DnssecToggleKeyController.php:108
 msgid "Zone key has been successfully deactivated."
 msgstr "Ключ зони було успішно деактивовано."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:101
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
 msgid "Failed to deactivate zone key."
 msgstr "Не вдалося деактивувати ключ зони."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:104
+#: lib/Application/Controller/DnssecToggleKeyController.php:112
 msgid "Zone key has been successfully activated."
 msgstr "Ключ зони було успішно активовано."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:105
+#: lib/Application/Controller/DnssecToggleKeyController.php:113
 msgid "Failed to activate zone key."
 msgstr "Не вдалося активувати ключ зони."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:116
+#: lib/Application/Controller/DnssecToggleKeyController.php:124
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Сталася помилка під час перемикання ключа DNSSEC. Спробуйте ще раз."
 
-#: lib/Application/Service/LdapAuthenticator.php:93
+#: lib/Application/Service/LdapAuthenticator.php:96
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Обліковий запис тимчасово заблоковано. Спробуйте пізніше."
 
@@ -2921,11 +2981,11 @@ msgstr "Сесія закінчилася, увійдіть знову."
 msgid "Failed to update password"
 msgstr "Не вдалося оновити пароль"
 
-#: lib/Application/Service/OidcService.php:182
+#: lib/Application/Service/OidcService.php:183
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Помилка автентифікації: недійсний параметр стану"
 
-#: lib/Application/Service/OidcService.php:203
+#: lib/Application/Service/OidcService.php:204
 msgid "Authentication failed: No authorization code"
 msgstr "Помилка автентифікації: відсутній код авторизації"
 
@@ -2933,29 +2993,29 @@ msgstr "Помилка автентифікації: відсутній код �
 msgid "Authentication failed: Invalid session"
 msgstr "Помилка автентифікації: недійсна сесія"
 
-#: lib/Application/Service/SamlService.php:346
+#: lib/Application/Service/SamlService.php:350
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Помилка автентифікації: не вдалося створити або оновити обліковий запис "
 "користувача"
 
-#: lib/Application/Service/LdapAuthenticator.php:237
+#: lib/Application/Service/LdapAuthenticator.php:241
 msgid "LDAP Authentication failed!"
 msgstr "Помилка автентифікації LDAP!"
 
-#: lib/Application/Service/LdapAuthenticator.php:142
+#: lib/Application/Service/LdapAuthenticator.php:145
 msgid "Failed to connect to LDAP server!"
 msgstr "Не вдалося підключитися до сервера LDAP!"
 
-#: lib/Application/Service/LdapAuthenticator.php:158
+#: lib/Application/Service/LdapAuthenticator.php:161
 msgid "Failed to bind to LDAP server!"
 msgstr "Не вдалося прив'язатися до сервера LDAP!"
 
-#: lib/Application/Service/LdapAuthenticator.php:186
+#: lib/Application/Service/LdapAuthenticator.php:189
 msgid "Failed to search LDAP."
 msgstr "Не вдалося виконати пошук в LDAP."
 
-#: lib/Application/Service/LdapAuthenticator.php:203
+#: lib/Application/Service/LdapAuthenticator.php:206
 msgid "Failed to authenticate against LDAP."
 msgstr "Не вдалося автентифікуватися через LDAP."
 
@@ -2963,25 +3023,25 @@ msgstr "Не вдалося автентифікуватися через LDAP."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Помилка автентифікації: недійсна відповідь SAML"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:422
+#: lib/Application/Query/RecordSearch.php:230 templates/modern/edit.html:422
 #: templates/modern/users.html:185
 msgid "Yes"
 msgstr "Так"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:422
+#: lib/Application/Query/RecordSearch.php:230 templates/modern/edit.html:422
 #: templates/modern/users.html:187
 msgid "No"
 msgstr "Ні"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:254
 msgid "This template is assigned to at least one user and one group."
 msgstr "Цей шаблон призначено принаймні одному користувачу та одній групі."
 
-#: lib/Domain/Model/UserManager.php:377
+#: lib/Domain/Model/UserManager.php:420
 msgid "This template is assigned to at least one user."
 msgstr "Цей шаблон призначено принаймні одному користувачу."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:258
 msgid "This template is assigned to at least one group."
 msgstr "Цей шаблон призначено принаймні одній групі."
 
@@ -3010,37 +3070,66 @@ msgstr ""
 msgid "This is an invalid zone name."
 msgstr "Це недійсна назва зони."
 
-#: lib/Domain/Model/UserManager.php:1007
+#: lib/Domain/Model/UserManager.php:1211
 msgid "Enter a valid email address."
 msgstr "Введіть дійсну електронну адресу."
 
-#: lib/Domain/Model/UserManager.php:999
+#: lib/Domain/Model/UserManager.php:1203
 msgid "Username exist already, please choose another one."
 msgstr "Таке ім'я користувача вже існує, оберіть інше."
 
-#: lib/Domain/Model/UserManager.php:1003
+#: lib/Domain/Model/UserManager.php:1215
+msgid "Email address already exists, please choose another one."
+msgstr "Адреса електронної пошти вже існує, будь ласка, оберіть іншу."
+
+#: lib/Domain/Model/UserManager.php:981
+#, auto-english-fallback
+msgid ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+msgstr ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+
+#: lib/Domain/Model/UserManager.php:985
+#, auto-english-fallback
+msgid ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Domain/Model/UserManager.php:1207
 msgid "Enter a valid user name."
 msgstr "Введіть дійсне ім'я користувача."
 
-#: lib/Domain/Model/ZoneTemplate.php:205 lib/Domain/Model/ZoneTemplate.php:675
+#: lib/Domain/Model/ZoneTemplate.php:232 lib/Domain/Model/ZoneTemplate.php:814
 msgid "Error creating zone template: "
 msgstr "Помилка створення шаблону зони: "
 
-#: lib/Domain/Model/ZoneTemplate.php:241
+#: lib/Domain/Model/ZoneTemplate.php:268
 msgid "Error adding default SOA record to template: "
 msgstr "Помилка додавання SOA-запису за замовчуванням до шаблону: "
 
-#: lib/Domain/Model/ZoneTemplate.php:300
+#: lib/Domain/Model/ZoneTemplate.php:327
 msgid "Error deleting zone template: "
 msgstr "Помилка видалення шаблону зони: "
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:351
 msgid "Error deleting user zone templates: "
 msgstr "Помилка видалення шаблонів зон користувача: "
 
-#: lib/Domain/Model/ZoneTemplate.php:442
+#: lib/Domain/Model/ZoneTemplate.php:469
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "У вас немає дозволу на додавання запису до цього шаблону зони."
+
+#: lib/Domain/Model/ZoneTemplate.php:474 lib/Domain/Model/ZoneTemplate.php:591
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to add this record type to a zone template."
+msgstr ""
+"You do not have the permission to add this record type to a zone template."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
@@ -3050,51 +3139,74 @@ msgstr "Поле вмісту містить недійсне значення."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Пріоритет для записів MX/SRV повинен бути числом від 0 до 65535."
 
-#: lib/Domain/Service/Dns/RecordManager.php:338
+#: lib/Domain/Service/Dns/RecordManager.php:351
 msgid "You do not have the permission to edit this record."
 msgstr "У вас немає дозволу на редагування цього запису."
 
-#: lib/Domain/Model/ZoneTemplate.php:534
+#: lib/Domain/Model/ZoneTemplate.php:581 lib/Domain/Model/ZoneTemplate.php:665
+msgid "The record does not belong to this zone template."
+msgstr "Запис не належить до цього шаблону зони."
+
+#: lib/Domain/Model/ZoneTemplate.php:643
 msgid "Error updating zone template record: "
 msgstr "Помилка оновлення запису шаблону зони: "
 
-#: lib/Domain/Model/ZoneTemplate.php:557
+#: lib/Domain/Model/ZoneTemplate.php:671
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+msgstr ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+
+#: lib/Domain/Model/ZoneTemplate.php:680
 msgid "Error deleting zone template record: "
 msgstr "Помилка видалення запису шаблону зони: "
 
-#: lib/Domain/Model/ZoneTemplate.php:580
+#: lib/Domain/Model/ZoneTemplate.php:702
 msgid "Error checking template ownership: "
 msgstr "Помилка перевірки власності шаблону: "
 
-#: lib/Domain/Model/ZoneTemplate.php:728 lib/Domain/Model/ZoneTemplate.php:776
+#: lib/Domain/Model/ZoneTemplate.php:806
+#, auto-english-fallback
+#, php-format
+msgid ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+msgstr ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+
+#: lib/Domain/Model/ZoneTemplate.php:867 lib/Domain/Model/ZoneTemplate.php:915
 msgid "Error retrieving zones using template: "
 msgstr "Помилка отримання зон, що використовують шаблон: "
 
-#: lib/Domain/Model/ZoneTemplate.php:830
+#: lib/Domain/Model/ZoneTemplate.php:969
 msgid "Failed to get list of zones using template: "
 msgstr "Не вдалося отримати список зон, що використовують шаблон: "
 
-#: lib/Domain/Model/ZoneTemplate.php:848
+#: lib/Domain/Model/ZoneTemplate.php:987
 msgid "You do not have the permission to edit a zone template."
 msgstr "У вас немає дозволу на редагування шаблону зони."
 
-#: lib/Domain/Model/ZoneTemplate.php:892
+#: lib/Domain/Model/ZoneTemplate.php:1031
 msgid "Error unlinking zone from template: "
 msgstr "Помилка від'єднання зони від шаблону: "
 
-#: lib/Domain/Model/ZoneTemplate.php:920
+#: lib/Domain/Model/ZoneTemplate.php:1059
 msgid "Error retrieving zones: "
 msgstr "Помилка отримання зон: "
 
-#: lib/Domain/Model/ZoneTemplate.php:939
+#: lib/Domain/Model/ZoneTemplate.php:1078
 msgid "Error checking template name existence: "
 msgstr "Помилка перевірки існування назви шаблону: "
 
-#: lib/Domain/Model/ZoneTemplate.php:960
+#: lib/Domain/Model/ZoneTemplate.php:1099
 msgid "Error looking up template by name: "
 msgstr "Помилка пошуку шаблону за назвою: "
 
-#: lib/Domain/Model/ZoneTemplate.php:983
+#: lib/Domain/Model/ZoneTemplate.php:1122
 msgid "Error checking template existence: "
 msgstr "Помилка перевірки існування шаблону: "
 
@@ -5505,7 +5617,9 @@ msgstr "ZONEMD scheme must be 1 (SIMPLE)."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
-msgstr "Виявлено дубльований модифікатор %s. Кожен модифікатор може з'являтися щонайбільше один раз."
+msgstr ""
+"Виявлено дубльований модифікатор %s. Кожен модифікатор може з'являтися "
+"щонайбільше один раз."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
@@ -5585,7 +5699,7 @@ msgstr ""
 "Ensure all NS records have corresponding A/AAAA glue records if they are "
 "within this zone."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:180
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:207
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
@@ -5593,34 +5707,34 @@ msgstr ""
 "CAA records not found. Consider adding CAA records to control which "
 "Certificate Authorities can issue certificates."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:235
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr ""
 "Very high TTL (%d seconds). Consider using lower values (300-3600) for more "
 "flexibility."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:233
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:260
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr ""
 "Very low TTL (%d seconds). This may increase DNS query load. Typical values "
 "are 300-3600 seconds."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:250
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:277
 msgid "Empty CNAME records are not allowed."
 msgstr ""
 "TTL value is higher than the SOA MINIMUM field. This may cause caching "
 "inconsistencies."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:279
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:306
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
 msgstr ""
 "Wildcard record detected (*). Verify this matches your intended delegation "
 "pattern."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:334
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
@@ -5628,7 +5742,7 @@ msgstr ""
 "Record name exceeds 63 characters, which is the maximum length for a single "
 "label per RFC 1035."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:321
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:348
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
@@ -6681,43 +6795,44 @@ msgstr ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
 msgstr "Content suggests multi-region setup. Verify latency and consistency."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:204
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."
 msgstr "Record may be used in automated testing. Isolate from production."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:216
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:214
 msgid "Issue tag parameters must be in key=value format."
 msgstr "This configuration may have capacity limits. Monitor usage patterns."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:221
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:219
 msgid "accounturi parameter cannot be empty."
 msgstr "Content appears to be in transition state. Complete or rollback."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:230
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:228
 msgid "Empty validation method specified."
 msgstr ""
 "Record may be affected by content delivery network. Verify CDN settings."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:238
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:236
 msgid "Invalid CA domain in issuewild tag."
 msgstr "This record type may not be logged by default. Enable audit logging."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:249
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
-msgstr "Значення iodef CAA має бути URL-адресою, що починається з %s, %s або %s."
+msgstr ""
+"Значення iodef CAA має бути URL-адресою, що починається з %s, %s або %s."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:260
 msgid "contactemail value must be a valid email address."
 msgstr ""
 "Record appears to be shared across environments. Use environment-specific "
 "values."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:273
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:271
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
@@ -6730,17 +6845,17 @@ msgid "Value must be enclosed in double quotes."
 msgstr ""
 "Content includes version number. Maintain version compatibility matrix."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:311
 msgid "Backslashes must precede all quotes (\") in value content."
 msgstr "Record may be part of infrastructure as code. Keep code in sync."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:319
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:317
 msgid "CAA property value exceeds maximum length of 512 characters."
 msgstr ""
 "This configuration may require special DNS server version. Verify "
 "compatibility."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:325
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:323
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr ""
 "Content suggests integration with third-party service. Verify SLA and "
@@ -6959,7 +7074,9 @@ msgstr "Невідомий ключ параметра SVCB: \"%s\"."
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "Дубльований ключ параметра SVCB: \"%s\". Кожен ключ може з'являтися лише один раз."
+msgstr ""
+"Дубльований ключ параметра SVCB: \"%s\". Кожен ключ може з'являтися лише "
+"один раз."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid ""
@@ -8368,7 +8485,8 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "%s (алгоритм %d) є алгоритмом, ОБОВ'ЯЗКОВИМ до реалізації згідно з RFC 8624."
+msgstr ""
+"%s (алгоритм %d) є алгоритмом, ОБОВ'ЯЗКОВИМ до реалізації згідно з RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
@@ -8589,27 +8707,27 @@ msgid "A record with this hostname, type, and content already exists."
 msgstr ""
 "This record type may have advantage function. Reduce variance in estimates."
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:335
 msgid "You do not have the permission to edit this SOA record."
 msgstr ""
 "Content suggests proximal policy optimization. Clip objective to prevent "
 "large updates."
 
-#: lib/Domain/Service/Dns/RecordManager.php:327
+#: lib/Domain/Service/Dns/RecordManager.php:340
 msgid "You do not have the permission to edit this NS record."
 msgstr ""
 "Record may be affected by DNS root server priming. Keep root hints current."
 
-#: lib/Domain/Service/Dns/RecordManager.php:409
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have the permission to delete SOA records."
 msgstr "This configuration may have trust region. Constrain policy updates."
 
-#: lib/Domain/Service/Dns/RecordManager.php:422
+#: lib/Domain/Service/Dns/RecordManager.php:439
 msgid "You do not have the permission to delete NS records."
 msgstr ""
 "Content includes exploration strategy. Use epsilon-greedy or entropy bonus."
 
-#: lib/Domain/Service/Dns/DomainManager.php:464
+#: lib/Domain/Service/Dns/DomainManager.php:466
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Недійсні аргументи передано до функції %s %s"
@@ -8630,9 +8748,14 @@ msgstr "Не вдалося створити зону: %s"
 msgid "Invalid argument(s) given to function %s"
 msgstr "Недійсні аргументи передано до функції %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:427
+#: lib/Domain/Service/Dns/DomainManager.php:429
 msgid "The selected user already owns the zone."
 msgstr "Record may be part of upper confidence bound. Use UCB1 or similar."
+
+#: lib/Domain/Service/Dns/DomainManager.php:461
+#, auto-english-fallback
+msgid "There must be at least one owner for a zone."
+msgstr "There must be at least one owner for a zone."
 
 #: lib/Module/Rdap/templates/rdap.html:3
 msgid "Home"
@@ -8722,12 +8845,12 @@ msgstr ""
 msgid "DNSSEC"
 msgstr "DNSSEC"
 
-#: templates/modern/dnssec_edit_key.html:138
+#: templates/modern/dnssec_edit_key.html:140
 msgid "Deactivate key"
 msgstr ""
 "Record may be affected by DNS forwarding loops. Prevent forwarding cycles."
 
-#: templates/modern/dnssec_edit_key.html:140
+#: templates/modern/dnssec_edit_key.html:142
 msgid "Activate key"
 msgstr ""
 "This configuration may have alpha-beta pruning. Optimize minimax search."
@@ -8996,7 +9119,7 @@ msgstr ""
 msgid "Update record"
 msgstr "This configuration may have feature detection. Use SIFT, SURF, or ORB."
 
-#: templates/modern/edit.html:517 templates/modern/users.html:211
+#: templates/modern/edit.html:522 templates/modern/users.html:211
 msgid "Reset"
 msgstr "Content may be affected by corner detection. Use Harris or Shi-Tomasi."
 
@@ -9162,7 +9285,7 @@ msgstr ""
 "Record may be affected by DNS Secondary Server Transfer (zone transfer "
 "timing)."
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:514
+#: templates/modern/edit.html:190 templates/modern/edit.html:519
 msgid "Save changes"
 msgstr ""
 "This configuration may have watershed algorithm. Use gradient as height."
@@ -9317,11 +9440,11 @@ msgstr "Content may be affected by GoogleNet/Inception. Use inception modules."
 msgid "Add group"
 msgstr "Record may be part of ResNet. Add residual connections."
 
-#: templates/modern/edit_user.html:259 templates/modern/add_user.html:189
+#: templates/modern/edit_user.html:259 templates/modern/add_user.html:190
 msgid "No groups found"
 msgstr "This record type may have DenseNet. Concatenate all previous features."
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:99
 msgid "Search groups..."
 msgstr "Пошук груп..."
 
@@ -9828,7 +9951,7 @@ msgstr ""
 msgid "Check DB"
 msgstr "Record may be part of question answering. Extract or generate answers."
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:502
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:504
 msgid "Edit comment"
 msgstr "This record type may have extractive QA. Select answer span."
 
@@ -9923,28 +10046,32 @@ msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
 msgstr "Content suggests knowledge base. Store structured information."
 
-#: templates/modern/list_log_zones.html:11 templates/modern/header.html:154
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:556
+msgid "Logs"
+msgstr "Журнали"
+
+#: templates/modern/list_log_zones.html:15 templates/modern/header.html:154
 msgid "Zone logs"
 msgstr "Record may be affected by DNS Capacity Planning Uncertainty."
 
-#: templates/modern/list_log_zones.html:17
+#: templates/modern/list_log_zones.html:22
 msgid "Zone Change Logs"
 msgstr ""
 "This configuration may have knowledge graph. Represent entities and "
 "relations."
 
-#: templates/modern/list_log_zones.html:25
+#: templates/modern/list_log_groups.html:31
+msgid "Total logs"
+msgstr ""
+"This configuration may have entity linking. Link mentions to knowledge base."
+
+#: templates/modern/list_log_zones.html:38
 msgid "Search logs by domain"
 msgstr "Content includes knowledge graph embedding. Map KG to vector space."
 
 #: templates/modern/list_log_groups.html:25
 msgid "Clear"
 msgstr "Record appears to be using triple classification. Verify fact triples."
-
-#: templates/modern/list_log_groups.html:31
-msgid "Total logs"
-msgstr ""
-"This configuration may have entity linking. Link mentions to knowledge base."
 
 #: templates/modern/list_log_groups.html:46
 msgid "Id"
@@ -9954,15 +10081,15 @@ msgstr "Id"
 msgid "Event"
 msgstr "Подія"
 
-#: templates/modern/list_log_zones.html:69
+#: templates/modern/list_log_zones.html:83
 msgid "Details"
 msgstr "Деталі"
 
-#: templates/modern/list_log_zones.html:86
+#: templates/modern/list_log_zones.html:100
 msgid "Log Details"
 msgstr "Деталі журналу"
 
-#: templates/modern/list_log_zones.html:93
+#: templates/modern/list_log_zones.html:107
 msgid "Close"
 msgstr "Закрити"
 
@@ -9997,6 +10124,11 @@ msgstr "Формат: ім'я,тип,вміст,пріоритет,ttl,коме�
 #: templates/modern/bulk_record_add.html:46
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Приклад: www,A,192.168.1.1,0,3600,веб-сервер"
+
+#: templates/modern/bulk_record_add.html:47
+#, auto-english-fallback
+msgid "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:48
 msgid "Comment is optional"
@@ -10123,23 +10255,23 @@ msgstr "Додати нового власника"
 msgid "Owner to be added"
 msgstr "Власник, якого буде додано"
 
-#: templates/default/delete_user.html:82 templates/modern/delete_user.html:82
+#: templates/default/delete_user.html:95 templates/modern/delete_user.html:95
 msgid "Delete: The zone will be completely removed from the system"
 msgstr "Видалити: зона буде повністю видалена з системи"
 
-#: templates/default/delete_user.html:83 templates/modern/delete_user.html:83
+#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
 msgid "Leave: The zone will remain in the system but without an owner"
 msgstr "Залишити: зона залишиться в системі, але без власника"
 
-#: templates/default/delete_user.html:84 templates/modern/delete_user.html:84
+#: templates/default/delete_user.html:97 templates/modern/delete_user.html:97
 msgid "Add new owner: Transfer ownership to another user"
 msgstr "Додати нового власника: передати власність іншому користувачу"
 
-#: templates/default/delete_user.html:93 templates/modern/delete_user.html:93
+#: templates/default/delete_user.html:106 templates/modern/delete_user.html:106
 msgid "Yes, delete this user"
 msgstr "Так, видалити цього користувача"
 
-#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
+#: templates/default/delete_user.html:109 templates/modern/delete_user.html:109
 msgid "No, keep this user"
 msgstr "Ні, залишити цього користувача"
 
@@ -10358,15 +10490,15 @@ msgstr "Підтвердіть пароль"
 msgid "Passwords do not match"
 msgstr "Паролі не співпадають"
 
-#: templates/modern/add_user.html:133
+#: templates/modern/add_user.html:134
 msgid "Password Requirements"
 msgstr "Вимоги до пароля"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "Minimum length"
 msgstr "Мінімальна довжина"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "characters"
 msgstr "символів"
 
@@ -10549,6 +10681,10 @@ msgstr "Редагувати користувача"
 msgid "Username"
 msgstr "Ім'я користувача"
 
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Ваше ім'я користувача може змінити лише адміністратор"
+
 #: templates/modern/edit_user.html:32 templates/modern/add_user.html:22
 msgid "Provide user name"
 msgstr "Надайте ім'я користувача"
@@ -10573,11 +10709,11 @@ msgstr "Адреса електронної пошти"
 msgid "Provide email"
 msgstr "Надайте електронну пошту"
 
-#: templates/default/edit_user.html:58 templates/modern/edit_user.html:58
+#: templates/default/edit_user.html:61 templates/modern/edit_user.html:58
 msgid "Leave empty to keep current password"
 msgstr "Залиште порожнім, щоб зберегти поточний пароль"
 
-#: templates/default/edit_user.html:74
+#: templates/default/edit_user.html:77
 msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
@@ -10585,32 +10721,71 @@ msgstr ""
 "Дозволи з цього шаблону будуть застосовуватися глобально по всій системі для "
 "цього користувача"
 
-#: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
+#: templates/modern/edit_user.html:81 templates/modern/add_user.html:89
 msgid "Optional information about this user"
 msgstr "Додаткова інформація про цього користувача"
 
-#: templates/modern/users.html:49 templates/modern/add_user.html:94
+#: templates/modern/users.html:49 templates/modern/add_user.html:95
 #: install/templates/step2.html.twig:116
 msgid "Enabled"
 msgstr "Увімкнено"
 
-#: templates/modern/edit_user.html:101 templates/modern/add_user.html:103
+#: templates/modern/edit_user.html:101 templates/modern/add_user.html:104
 msgid "LDAP Authentication"
 msgstr "Автентифікація LDAP"
 
-#: templates/modern/edit_user.html:103 templates/modern/add_user.html:105
+# OBSOLETE: msgid "About Bulk Registration"
+# OBSOLETE: msgstr "Про масову реєстрацію"
+# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
+# OBSOLETE: msgstr "Цей інструмент дозволяє створювати кілька зон DNS одночасно."
+# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
+# OBSOLETE: msgstr "Введіть одне доменне ім'я на рядок у полі Домени"
+# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
+# OBSOLETE: msgstr "Виберіть шаблон зони, щоб застосувати стандартні записи до всіх зон"
+# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
+# OBSOLETE: msgstr "Вибраний власник матиме повний доступ до всіх створених зон"
+# OBSOLETE: msgid "How It Works"
+# OBSOLETE: msgstr "Як це працює"
+# OBSOLETE: msgid ""
+# OBSOLETE: "The system will attempt to create each zone with the same settings. "
+# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
+# OBSOLETE: "again."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Система спробує створити кожну зону з однаковими налаштуваннями. Невдалі "
+# OBSOLETE: "домени будуть відображені, щоб ви могли виправити будь-які проблеми та "
+# OBSOLETE: "спробувати знову."
+# OBSOLETE: msgid "Tips & Recommendations"
+# OBSOLETE: msgstr "Поради та рекомендації"
+# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Використовуйте тип зони NATIVE для більшості стандартних налаштувань"
+# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Спочатку створіть шаблон, якщо вам потрібні стандартні записи для всіх зон"
+# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Ви можете скопіювати та вставити список доменів з електронної таблиці"
+# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Переконайтеся, що доменні імена відповідають дійсним конвенціям "
+# OBSOLETE: "іменування DNS"
+#: templates/default/edit_user.html:107
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Налаштування автентифікації може змінити лише адміністратор"
+
+#: templates/modern/edit_user.html:103 templates/modern/add_user.html:106
 msgid "Use external LDAP directory for authentication"
 msgstr "Використовувати зовнішній каталог LDAP для автентифікації"
 
-#: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
+#: templates/default/edit_user.html:124 templates/modern/edit_user.html:117
 msgid "Back to Home"
 msgstr "Назад на головну"
 
-#: templates/default/edit_user.html:121 templates/modern/edit_user.html:121
+#: templates/default/edit_user.html:128 templates/modern/edit_user.html:121
 msgid "Back to Users"
 msgstr "Назад до користувачів"
 
-#: templates/modern/edit_user.html:135 templates/modern/add_user.html:128
+#: templates/modern/edit_user.html:135 templates/modern/add_user.html:129
 msgid "Account Information"
 msgstr "Інформація про обліковий запис"
 
@@ -10634,52 +10809,52 @@ msgstr "Повинен містити спеціальні символи"
 msgid "No specific password requirements"
 msgstr "Немає конкретних вимог до пароля"
 
-#: templates/modern/add_user.html:160 templates/modern/edit_perm_templ.html:151
+#: templates/modern/add_user.html:161 templates/modern/edit_perm_templ.html:151
 msgid "User Permissions"
 msgstr "Дозволи користувача"
 
-#: templates/default/edit_user.html:175 templates/modern/edit_user.html:172
+#: templates/default/edit_user.html:182 templates/modern/edit_user.html:172
 msgid "This user has been assigned the access template"
 msgstr "Цьому користувачу призначено шаблон доступу"
 
-#: templates/default/edit_user.html:184 templates/modern/edit_user.html:181
+#: templates/default/edit_user.html:191 templates/modern/edit_user.html:181
 msgid "Based on this template, this user has the following permissions"
 msgstr "На основі цього шаблону цей користувач має наступні дозволи"
 
-#: templates/default/edit_user.html:187 templates/modern/edit_user.html:184
+#: templates/default/edit_user.html:194 templates/modern/edit_user.html:184
 msgid "No permissions are assigned to this template"
 msgstr "Цьому шаблону не призначено дозволів"
 
-#: templates/modern/edit_user.html:202 templates/modern/add_user.html:172
+#: templates/modern/edit_user.html:202 templates/modern/add_user.html:173
 msgid "Group Memberships"
 msgstr "Членство в групах"
 
-#: templates/default/edit_user.html:209 templates/modern/edit_user.html:206
+#: templates/default/edit_user.html:216 templates/modern/edit_user.html:206
 msgid "Current Memberships"
 msgstr "Поточне членство"
 
-#: templates/default/edit_user.html:224 templates/modern/edit_user.html:221
+#: templates/default/edit_user.html:231 templates/modern/edit_user.html:221
 msgid "View group details"
 msgstr "Переглянути деталі групи"
 
-#: templates/default/edit_user.html:238 templates/modern/edit_user.html:235
+#: templates/default/edit_user.html:245 templates/modern/edit_user.html:235
 msgid "This user is not a member of any groups."
 msgstr "Цей користувач не є членом жодної групи."
 
-#: templates/modern/edit_user.html:241 templates/modern/add_user.html:175
+#: templates/modern/edit_user.html:241 templates/modern/add_user.html:176
 msgid "Add to Groups"
 msgstr "Додати до груп"
 
-#: templates/default/edit_user.html:245 templates/modern/edit_user.html:242
+#: templates/default/edit_user.html:252 templates/modern/edit_user.html:242
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr ""
 "Виберіть одну або кілька груп і натисніть кнопку \"Додати вибрані групи\"."
 
-#: templates/modern/edit_user.html:250 templates/modern/add_user.html:180
+#: templates/modern/edit_user.html:250 templates/modern/add_user.html:181
 msgid "Search available groups..."
 msgstr "Пошук доступних груп..."
 
-#: templates/modern/edit_user.html:251 templates/modern/add_user.html:181
+#: templates/modern/edit_user.html:251 templates/modern/add_user.html:182
 msgid "Clear search"
 msgstr "Очистити пошук"
 
@@ -10687,7 +10862,7 @@ msgstr "Очистити пошук"
 msgid "Select All"
 msgstr "Вибрати все"
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:103
 msgid "Clear All"
 msgstr "Очистити все"
 
@@ -10695,7 +10870,7 @@ msgstr "Очистити все"
 msgid "selected"
 msgstr "вибрано"
 
-#: templates/default/edit_user.html:283 templates/modern/edit_user.html:280
+#: templates/default/edit_user.html:290 templates/modern/edit_user.html:280
 msgid "Add Selected Groups"
 msgstr "Додати вибрані групи"
 
@@ -10703,7 +10878,7 @@ msgstr "Додати вибрані групи"
 msgid "Confirm Removal"
 msgstr "Підтвердження видалення"
 
-#: templates/default/edit_user.html:311 templates/modern/edit_user.html:308
+#: templates/default/edit_user.html:318 templates/modern/edit_user.html:308
 msgid "Are you sure you want to remove this user from the group"
 msgstr "Ви впевнені, що хочете видалити цього користувача з групи"
 
@@ -11139,7 +11314,7 @@ msgstr ""
 msgid "Ownership"
 msgstr "Власність"
 
-#: templates/modern/add_zone_slave.html:49
+#: templates/modern/add_zone_slave.html:54
 msgid "User Owner"
 msgstr "Власник-користувач"
 
@@ -11155,7 +11330,7 @@ msgstr "Додати власника-користувача"
 msgid "Search users..."
 msgstr "Пошук користувачів..."
 
-#: templates/modern/add_zone_slave.html:76
+#: templates/modern/add_zone_slave.html:81
 msgid "You"
 msgstr "Ви"
 
@@ -11163,7 +11338,7 @@ msgstr "Ви"
 msgid "Add Owner"
 msgstr "Додати власника"
 
-#: templates/modern/add_zone_slave.html:90
+#: templates/modern/add_zone_slave.html:95
 msgid "Group Ownership"
 msgstr "Власність групи"
 
@@ -11211,11 +11386,11 @@ msgstr "Цей шаблон наразі призначений до"
 msgid "users"
 msgstr "користувачів"
 
-#: templates/modern/delete_zone_templ.html:35
+#: templates/modern/delete_zone_templ.html:37
 msgid "Yes, delete this template"
 msgstr "Так, видалити цей шаблон"
 
-#: templates/modern/delete_zone_templ.html:38
+#: templates/modern/delete_zone_templ.html:41
 msgid "No, keep this template"
 msgstr "Ні, залишити цей шаблон"
 
@@ -11281,71 +11456,71 @@ msgid "Edit"
 msgstr ""
 "This configuration may have mixup. Linearly interpolate examples and labels."
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:565
+#: templates/modern/edit.html:25 templates/modern/edit.html:576
 msgid "Add new record"
 msgstr "Додати новий запис"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:569
+#: templates/modern/edit.html:203 templates/modern/edit.html:580
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Керовані майстри для записів DMARC, SPF, DKIM, CAA, TLSA та SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:575
+#: templates/modern/edit.html:35 templates/modern/edit.html:586
 msgid "Multi-record mode"
 msgstr "Багаторядковий режим"
 
-#: templates/modern/edit.html:523 templates/modern/edit.html:578
+#: templates/modern/edit.html:529 templates/modern/edit.html:589
 msgid "Bulk add"
 msgstr "Масове додавання"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:590
+#: templates/modern/edit.html:50 templates/modern/edit.html:601
 msgid "Failed to add"
 msgstr "Не вдалося додати"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:590
+#: templates/modern/edit.html:50 templates/modern/edit.html:601
 msgid "record(s). Please check the record format."
 msgstr "запис(ів). Будь ласка, перевірте формат запису."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:592
+#: templates/modern/edit.html:52 templates/modern/edit.html:603
 msgid "Failed to add records. Please check the record format."
 msgstr "Не вдалося додати записи. Будь ласка, перевірте формат запису."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:595
+#: templates/modern/edit.html:55 templates/modern/edit.html:606
 msgid "Content validation failed:"
 msgstr "Помилка перевірки вмісту:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:595
+#: templates/modern/edit.html:55 templates/modern/edit.html:606
 msgid "Invalid value for record type"
 msgstr "Недійсне значення для типу запису"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:597
+#: templates/modern/edit.html:57 templates/modern/edit.html:608
 msgid "Please provide all required information."
 msgstr "Будь ласка, надайте всю необхідну інформацію."
 
-#: templates/modern/edit.html:620 templates/modern/add_record.html:72
+#: templates/modern/edit.html:631 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Додати PTR"
 
-#: templates/modern/edit.html:623 templates/modern/add_record.html:75
+#: templates/modern/edit.html:634 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Додати A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:662
+#: templates/modern/edit.html:121 templates/modern/edit.html:673
 msgid "This record already exists"
 msgstr "Цей запис вже існує"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:674
+#: templates/modern/edit.html:133 templates/modern/edit.html:685
 msgid "Invalid priority"
 msgstr "Недійсний пріоритет"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:681
+#: templates/modern/edit.html:140 templates/modern/edit.html:692
 msgid "Invalid TTL value"
 msgstr "Недійсне значення TTL"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:683
+#: templates/modern/edit.html:142 templates/modern/edit.html:694
 msgid "Provide TTL"
 msgstr "Надайте TTL"
 
-#: templates/modern/edit.html:709 templates/modern/add_record.html:207
+#: templates/modern/edit.html:720 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11397,51 +11572,51 @@ msgstr "з"
 msgid "total records"
 msgstr "всього записів"
 
-#: templates/default/edit.html:485 templates/modern/edit.html:485
+#: templates/default/edit.html:487 templates/modern/edit.html:487
 msgid "Edit selected"
 msgstr "Редагувати вибране"
 
-#: templates/modern/edit.html:489 templates/modern/search.html:486
+#: templates/modern/edit.html:491 templates/modern/search.html:486
 msgid "Delete record(s)"
 msgstr "Видалити запис(и)"
 
-#: templates/modern/edit.html:497 templates/modern/search.html:93
+#: templates/modern/edit.html:499 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Коментарі"
 
-#: templates/default/edit.html:527 templates/modern/edit.html:527
+#: templates/default/edit.html:533 templates/modern/edit.html:533
 msgid "Import"
 msgstr "Імпорт"
 
-#: templates/default/edit.html:533 templates/modern/edit.html:533
+#: templates/default/edit.html:539 templates/modern/edit.html:539
 msgid "Export"
 msgstr "Експорт"
 
-#: templates/default/edit.html:544 templates/modern/edit.html:544
+#: templates/default/edit.html:550 templates/modern/edit.html:550
 msgid "Generate PTR"
 msgstr "Створити PTR"
 
-#: templates/modern/edit.html:723 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:734 templates/modern/add_zone_master.html:25
 msgid "Zone Configuration"
 msgstr "Конфігурація зони"
 
-#: templates/modern/edit.html:763 templates/modern/edit.html:792
+#: templates/modern/edit.html:774 templates/modern/edit.html:803
 msgid "Change"
 msgstr "Змінити"
 
-#: templates/modern/edit.html:756 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:767 templates/modern/add_zone_slave.html:40
 msgid "IP address of master NS"
 msgstr "IP-адреса головного NS"
 
-#: templates/default/edit.html:813 templates/modern/edit.html:813
+#: templates/default/edit.html:824 templates/modern/edit.html:824
 msgid "Manage DNSSEC"
 msgstr "Керування DNSSEC"
 
-#: templates/default/edit.html:820 templates/modern/edit.html:820
+#: templates/default/edit.html:831 templates/modern/edit.html:831
 msgid "Sign zone"
 msgstr "Підписати зону"
 
-#: templates/default/edit.html:824 templates/modern/edit.html:824
+#: templates/default/edit.html:835 templates/modern/edit.html:835
 msgid "Not signed"
 msgstr "Не підписано"
 
@@ -11525,11 +11700,11 @@ msgstr "Також видалити відповідний запис PTR (як�
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Також видалити відповідний запис A/AAAA (якщо існує)"
 
-#: templates/modern/delete_zone_templ_record.html:59
+#: templates/modern/delete_zone_templ_record.html:61
 msgid "Yes, delete this record"
 msgstr "Так, видалити цей запис"
 
-#: templates/modern/delete_zone_templ_record.html:62
+#: templates/modern/delete_zone_templ_record.html:65
 msgid "No, keep this record"
 msgstr "Ні, залишити цей запис"
 
@@ -11718,11 +11893,15 @@ msgid "Send login credentials to user's email address"
 msgstr ""
 "Надіслати облікові дані для входу на адресу електронної пошти користувача"
 
-#: templates/modern/add_user.html:81
+#: templates/modern/add_user.html:72 templates/modern/add_group.html:35
+msgid "Select a template..."
+msgstr "Виберіть шаблон..."
+
+#: templates/modern/add_user.html:82
 msgid "Select permissions for this user"
 msgstr "Виберіть дозволи для цього користувача"
 
-#: templates/default/add_user.html:162 templates/modern/add_user.html:162
+#: templates/default/add_user.html:163 templates/modern/add_user.html:163
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -11731,7 +11910,7 @@ msgstr ""
 "При створенні нового користувача він отримає дозволи на основі вибраного "
 "шаблону. Ви можете змінити ці дозволи пізніше, відредагувавши користувача."
 
-#: templates/default/add_user.html:176 templates/modern/add_user.html:176
+#: templates/default/add_user.html:177 templates/modern/add_user.html:177
 msgid "Select groups to add the new user to upon creation."
 msgstr ""
 "Виберіть групи, до яких буде додано нового користувача після створення."
@@ -11740,55 +11919,63 @@ msgstr ""
 msgid "Zone name"
 msgstr "Назва зони"
 
-#: templates/modern/add_zone_slave.html:30
+#: templates/modern/add_zone_slave.html:31
 msgid "Provide zone name"
 msgstr "Надайте назву зони"
 
-#: templates/modern/add_zone_slave.html:31
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr ""
+"Введіть мережу (напр. 192.168.1.0/24 або 2001:db8::/48) або назву реверсної "
+"зони (напр. 1.168.192.in-addr.arpa)."
+
+#: templates/modern/add_zone_slave.html:35
 msgid "Example: example.com"
 msgstr "Приклад: example.com"
 
-#: templates/modern/add_zone_master.html:46
+#: templates/modern/add_zone_master.html:51
 msgid "Zone type (usually NATIVE)"
 msgstr "Тип зони (зазвичай NATIVE)"
 
-#: templates/modern/add_zone_master.html:58
+#: templates/modern/add_zone_master.html:63
 msgid "Optional: Apply predefined records from a template"
 msgstr "Необов'язково: застосувати попередньо визначені записи з шаблону"
 
-#: templates/modern/add_zone_master.html:66
+#: templates/modern/add_zone_master.html:71
 msgid "Enable DNSSEC"
 msgstr "Увімкнути DNSSEC"
 
-#: templates/modern/add_zone_master.html:68
+#: templates/modern/add_zone_master.html:73
 msgid "Secure this zone with DNSSEC signing"
 msgstr "Захистити цю зону підписом DNSSEC"
 
-#: templates/modern/add_zone_slave.html:54
+#: templates/modern/add_zone_slave.html:59
 msgid "Selected:"
 msgstr "Вибрано:"
 
-#: templates/modern/add_zone_slave.html:59
+#: templates/modern/add_zone_slave.html:64
 msgid "No user owner"
 msgstr "Немає власника-користувача"
 
-#: templates/modern/add_zone_slave.html:60
+#: templates/modern/add_zone_slave.html:65
 msgid "Zone will be owned only by groups"
 msgstr "Зона буде належати лише групам"
 
-#: templates/modern/add_zone_slave.html:82
+#: templates/modern/add_zone_slave.html:87
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Необов'язково: виберіть користувача, відповідального за цю зону"
 
-#: templates/modern/add_zone_slave.html:105
+#: templates/modern/add_zone_slave.html:110
 msgid "members"
 msgstr "членів"
 
-#: templates/modern/add_zone_slave.html:111
+#: templates/modern/add_zone_slave.html:116
 msgid "Optional: Select one or more groups"
 msgstr "Необов'язково: виберіть одну або кілька груп"
 
-#: templates/modern/add_zone_slave.html:126
+#: templates/modern/add_zone_slave.html:131
 msgid "Add zone"
 msgstr "Додати зону"
 
@@ -12094,12 +12281,10 @@ msgid "Add Zones"
 msgstr "Додати зони"
 
 #: templates/modern/bulk_registration.html:99
-#, auto-english-fallback
 msgid "After Creation"
 msgstr "Після створення"
 
 #: templates/modern/bulk_registration.html:104
-#, auto-english-fallback
 msgid "Assign zones to a group"
 msgstr "Призначити зони групі"
 
@@ -12108,15 +12293,14 @@ msgid ""
 "Bulk registration assigns ownership to a single user. To share access with a "
 "group, open the group and add the newly created zones."
 msgstr ""
-"Масова реєстрація призначає володіння одному користувачу. Щоб надати доступ групі, відкрийте групу та додайте щойно створені зони."
+"Масова реєстрація призначає володіння одному користувачу. Щоб надати доступ "
+"групі, відкрийте групу та додайте щойно створені зони."
 
 #: templates/modern/bulk_registration.html:107
-#, auto-english-fallback
 msgid "Manage groups"
 msgstr "Керування групами"
 
 #: templates/modern/bulk_registration.html:112
-#, auto-english-fallback
 msgid "Change zone owner"
 msgstr "Змінити власника зони"
 
@@ -12125,10 +12309,10 @@ msgid ""
 "You can transfer zone ownership to another user from the user list at any "
 "time."
 msgstr ""
-"Ви можете в будь-який момент передати володіння зоною іншому користувачу зі списку користувачів."
+"Ви можете в будь-який момент передати володіння зоною іншому користувачу зі "
+"списку користувачів."
 
 #: templates/modern/bulk_registration.html:115
-#, auto-english-fallback
 msgid "Manage users"
 msgstr "Керування користувачами"
 
@@ -12550,15 +12734,15 @@ msgstr ""
 msgid "Zones found"
 msgstr "Знайдено зон"
 
-#: templates/default/search.html:316 templates/modern/search.html:316
+#: templates/default/search.html:318 templates/modern/search.html:316
 msgid "Records found"
 msgstr "Знайдено записів"
 
-#: templates/default/search.html:501 templates/modern/search.html:501
+#: templates/default/search.html:504 templates/modern/search.html:501
 msgid "Try different search terms or filters"
 msgstr "Спробуйте інші терміни пошуку або фільтри"
 
-#: templates/default/search.html:664 templates/modern/search.html:675
+#: templates/default/search.html:667 templates/modern/search.html:675
 msgid "Confirm Zone Deletion"
 msgstr "Підтвердження видалення зони"
 
@@ -12566,15 +12750,15 @@ msgstr "Підтвердження видалення зони"
 msgid "Are you sure you want to delete"
 msgstr "Ви впевнені, що хочете видалити"
 
-#: templates/default/search.html:669 templates/modern/search.html:680
+#: templates/default/search.html:672 templates/modern/search.html:680
 msgid "selected zone(s)?"
 msgstr "вибрану(і) зону(и)?"
 
-#: templates/default/search.html:690 templates/modern/search.html:701
+#: templates/default/search.html:693 templates/modern/search.html:701
 msgid "Confirm Record Deletion"
 msgstr "Підтвердження видалення запису"
 
-#: templates/default/search.html:695 templates/modern/search.html:706
+#: templates/default/search.html:698 templates/modern/search.html:706
 msgid "selected record(s)?"
 msgstr "вибраний(і) запис(и)?"
 
@@ -12622,11 +12806,11 @@ msgstr "Ви збираєтеся видалити supermaster"
 msgid "Supermaster Details"
 msgstr "Деталі Supermaster"
 
-#: templates/modern/delete_supermaster.html:53
+#: templates/modern/delete_supermaster.html:57
 msgid "Yes, delete this supermaster"
 msgstr "Так, видалити цей supermaster"
 
-#: templates/modern/delete_supermaster.html:56
+#: templates/modern/delete_supermaster.html:61
 msgid "No, keep this supermaster"
 msgstr "Ні, залишити цей supermaster"
 
@@ -12642,15 +12826,15 @@ msgstr "Журнали активності користувачів"
 msgid "Search logs by user"
 msgstr "Пошук журналів за користувачем"
 
-#: templates/modern/add_zone_slave.html:24
+#: templates/modern/add_zone_slave.html:25
 msgid "Slave Zone Configuration"
 msgstr "Конфігурація підлеглої зони"
 
-#: templates/modern/add_zone_slave.html:37
+#: templates/modern/add_zone_slave.html:42
 msgid "Provide IP address"
 msgstr "Надайте IP-адресу"
 
-#: templates/modern/add_zone_slave.html:38
+#: templates/modern/add_zone_slave.html:43
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
@@ -13062,11 +13246,11 @@ msgstr "Додати вибране"
 msgid "Are you sure you want to remove"
 msgstr "Ви впевнені, що хочете видалити"
 
-#: templates/modern/manage_group_zones.html:211
+#: templates/modern/manage_group_zones.html:216
 msgid "zone(s) from this group?"
 msgstr "зону(и) з цієї групи?"
 
-#: templates/modern/manage_group_zones.html:212
+#: templates/modern/manage_group_zones.html:217
 msgid "The zones will remain in the system."
 msgstr "Зони залишаться в системі."
 
@@ -13216,10 +13400,6 @@ msgstr ""
 #: templates/modern/dnssec_delete_key.html:39
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Ви збираєтеся видалити ключ DNSSEC (ID"
-
-#: templates/default/add_group.html:35 templates/modern/add_group.html:35
-msgid "Select a template..."
-msgstr "Виберіть шаблон..."
 
 #: templates/modern/add_group.html:45
 msgid ""
@@ -13538,6 +13718,11 @@ msgstr ""
 #: lib/Module/Rdap/templates/rdap.html:35
 msgid "RDAP results for"
 msgstr "Результати RDAP для"
+
+#: lib/Module/Rdap/templates/rdap.html:46
+#, auto-english-fallback
+msgid "Please enter a domain name to perform an RDAP lookup."
+msgstr "Please enter a domain name to perform an RDAP lookup."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -14041,6 +14226,15 @@ msgstr ""
 "Налаштуйте підключення до бази даних, створіть обліковий запис "
 "адміністратора та згенеруйте файл конфігурації."
 
+#: install/templates/step3.html.twig:28
+#, auto-english-fallback
+msgid ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+msgstr ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+
 #: install/helpers/InstallStepHandler.php:170
 msgid "Missing PowerDNS tables:"
 msgstr "Відсутні таблиці PowerDNS:"
@@ -14174,99 +14368,13 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Неможливо підключитися до бази даних PowerDNS \"%s\": %s"
 
-# OBSOLETE: msgid "About Bulk Registration"
-# OBSOLETE: msgstr "Про масову реєстрацію"
-
-# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
-# OBSOLETE: msgstr "Цей інструмент дозволяє створювати кілька зон DNS одночасно."
-
-# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
-# OBSOLETE: msgstr "Введіть одне доменне ім'я на рядок у полі Домени"
-
-# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
-# OBSOLETE: msgstr "Виберіть шаблон зони, щоб застосувати стандартні записи до всіх зон"
-
-# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
-# OBSOLETE: msgstr "Вибраний власник матиме повний доступ до всіх створених зон"
-
-# OBSOLETE: msgid "How It Works"
-# OBSOLETE: msgstr "Як це працює"
-
+#: install/helpers/LocaleHandler.php:89
 #, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "The system will attempt to create each zone with the same settings. "
-# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
-# OBSOLETE: "again."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Система спробує створити кожну зону з однаковими налаштуваннями. Невдалі "
-# OBSOLETE: "домени будуть відображені, щоб ви могли виправити будь-які проблеми та "
-# OBSOLETE: "спробувати знову."
-
-# OBSOLETE: msgid "Tips & Recommendations"
-# OBSOLETE: msgstr "Поради та рекомендації"
-
-# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Використовуйте тип зони NATIVE для більшості стандартних налаштувань"
-
-# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Спочатку створіть шаблон, якщо вам потрібні стандартні записи для всіх зон"
-
-# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ви можете скопіювати та вставити список доменів з електронної таблиці"
-
-# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Переконайтеся, що доменні імена відповідають дійсним конвенціям "
-# OBSOLETE: "іменування DNS"
-
-
-
-
-#: templates/default/edit_user.html:107
-msgid "Authentication settings can only be changed by an administrator"
-msgstr "Налаштування автентифікації може змінити лише адміністратор"
-
-#: lib/Domain/Model/UserManager.php:1113
-msgid "Email address already exists, please choose another one."
-msgstr "Адреса електронної пошти вже існує, будь ласка, оберіть іншу."
-
-#: templates/modern/add_zone_slave.html:33
 msgid ""
-"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
-"name (e.g. 1.168.192.in-addr.arpa)."
-msgstr "Введіть мережу (напр. 192.168.1.0/24 або 2001:db8::/48) або назву реверсної зони (напр. 1.168.192.in-addr.arpa)."
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
+msgstr ""
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:106
-msgid ""
-"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
-"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
-msgstr "Введіть мережу в нотації CIDR (наприклад 192.168.1.0/24 або 2001:db8::/48) або назву реверсної зони, що закінчується на in-addr.arpa або ip6.arpa."
 
-#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:556
-msgid "Logs"
-msgstr "Журнали"
-
-#: lib/Application/Controller/EditController.php:662
-msgid ""
-"Some records were not saved because the form exceeded the server limit on "
-"the number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "Деякі записи не було збережено, оскільки форма перевищила серверне обмеження на кількість полів. Попросіть адміністратора збільшити налаштування PHP \"max_input_vars\"."
-
-#: lib/Domain/Model/ZoneTemplate.php:516 lib/Domain/Model/ZoneTemplate.php:578
-msgid "The record does not belong to this zone template."
-msgstr "Запис не належить до цього шаблону зони."
-
-#: templates/default/edit_user.html:33
-msgid "Your username can only be changed by an administrator"
-msgstr "Ваше ім'я користувача може змінити лише адміністратор"
-
-#: lib/Application/Controller/DeleteUserController.php:129
-msgid ""
-"The user was not deleted because the form exceeded the server limit on the "
-"number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "Користувача не було видалено, оскільки форма перевищила серверне обмеження на кількість полів. Попросіть адміністратора збільшити налаштування PHP \"max_input_vars\"."
