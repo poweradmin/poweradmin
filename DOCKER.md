@@ -20,6 +20,23 @@ Poweradmin official Docker images are available at:
 - **`v*`** - Specific, immutable version tags (e.g., `v4.2.5`, `v4.3.4`)
 - **`4`**, **`4.2`**, **`4.3`** - Semver aliases that track the newest patch in that series
 
+### Moving the `stable` tag to a new release line
+
+The `stable` tag is produced by a single rule in `.github/workflows/docker.yml`
+on the release branch that currently holds it, matched on that line's tag prefix.
+It only fires on a tag push, and a tag push runs the workflow file as it exists
+at that tag's commit, so the rule lives on that branch and nowhere else. A patch
+tag on the old line would otherwise move `stable` backwards.
+
+When the stable line changes:
+
+1. Remove the `stable` entry from the outgoing branch's `docker.yml` tag list.
+2. Add it to the incoming release branch, with that line's own version prefix.
+3. Run the **Docker Retag** workflow (`workflow_dispatch`) with `source_tag` set
+   to the new stable version and `target_tag` set to `stable`, so the pointer
+   moves without waiting for the next tag build.
+4. Update the `stable` entry in the tag list above to name the new line.
+
 For production deployments, use the `stable` tag or pin a specific version tag (e.g., `v4.3.4`). The `lts` tag covers the 3.x line with bug fixes and security updates only. The `latest` and `dev` tags track in-development branches and should not be used in production.
 
 ## Quick Start
