@@ -1,23 +1,18 @@
 name: Docker arm64 Trial
 
-# Dispatch-only trial of native arm64 runners instead of QEMU emulation.
-# Publishes to a scratch tag, so the real image tags are untouched.
-# Delete this file once docker.yml adopts the matrix.
+# Throwaway measurement: how long does release/3.x's Dockerfile take to build on a
+# NATIVE arm64 runner instead of under QEMU? 3.x compiles PHP extensions from source
+# (docker-php-ext-install) rather than using the prebuilt installer the 4.x branches use,
+# so its native time is the last unknown before promoting the matrix to the other branches.
+#
+# Builds only - nothing is pushed and no cache is used, so the number is a true cold build.
+# Delete this file once the number is recorded.
 on:
   workflow_dispatch:
-    inputs:
-      no_cache:
-        description: 'Build without layer cache'
-        type: boolean
-        default: false
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref_name }}
+  group: ${{ github.workflow }}
   cancel-in-progress: true
-
-env:
-  IMAGE: ghcr.io/poweradmin/poweradmin
-  TRIAL_TAG: arm64-trial
 
 jobs:
   build:
@@ -33,96 +28,21 @@ jobs:
     timeout-minutes: 60
     permissions:
       contents: read
-      packages: write
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Prepare platform slug
-        env:
-          PLATFORM: ${{ matrix.platform }}
-        run: echo "PLATFORM_PAIR=${PLATFORM//\//-}" >> "$GITHUB_ENV"
+        with:
+          ref: release/3.x
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push by digest
-        id: build
+      # No cache and no push: measure a genuine cold build of 3.x's Dockerfile.
+      - name: Build (measurement only)
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
         with:
           context: .
           file: ./Dockerfile
           platforms: ${{ matrix.platform }}
-          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=registry,ref=${{ env.IMAGE }}:buildcache-trial-${{ env.PLATFORM_PAIR }}
-          cache-to: type=registry,ref=${{ env.IMAGE }}:buildcache-trial-${{ env.PLATFORM_PAIR }},mode=max,ignore-error=true
-          no-cache: ${{ inputs.no_cache == true }}
-
-      - name: Export digest
-        env:
-          DIGEST: ${{ steps.build.outputs.digest }}
-        run: |
-          mkdir -p /tmp/digests
-          touch "/tmp/digests/${DIGEST#sha256:}"
-
-      - name: Upload digest
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: digests-${{ env.PLATFORM_PAIR }}
-          path: /tmp/digests/*
-          if-no-files-found: error
-          retention-days: 1
-
-  merge:
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - name: Download digests
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
-        with:
-          path: /tmp/digests
-          pattern: digests-*
-          merge-multiple: true
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create manifest list and push
-        working-directory: /tmp/digests
-        run: |
-          refs=""
-          for d in *; do
-            refs="$refs ${IMAGE}@sha256:$d"
-          done
-          echo "Merging:$refs"
-          # shellcheck disable=SC2086
-          docker buildx imagetools create -t "${IMAGE}:${TRIAL_TAG}" $refs
-
-      - name: Inspect merged manifest
-        run: |
-          docker buildx imagetools inspect "${IMAGE}:${TRIAL_TAG}"
-          digest=$(docker buildx imagetools inspect "${IMAGE}:${TRIAL_TAG}" --format '{{json .Manifest.Digest}}' | tr -d '"')
-          {
-            echo "### arm64 trial result"
-            echo "- Tag: \`${IMAGE}:${TRIAL_TAG}\`"
-            echo "- Manifest digest: \`${digest}\`"
-          } >> "$GITHUB_STEP_SUMMARY"
+          outputs: type=cacheonly
+          no-cache: true
