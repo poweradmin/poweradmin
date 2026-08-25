@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-06-01 22:34+0300\n"
+"POT-Creation-Date: 2026-08-25 09:23+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "DNS wizards are not enabled."
 msgstr "DNSウィザードが有効になっていません。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:48
+#: lib/Application/Controller/DnssecToggleKeyController.php:56
 msgid "Invalid zone ID."
 msgstr "無効なゾーンIDです。"
 
@@ -328,7 +328,7 @@ msgstr ""
 "ださい。"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:647
+#: templates/modern/edit.html:93 templates/modern/edit.html:658
 msgid "Invalid hostname format"
 msgstr "ホスト名の形式が無効です"
 
@@ -1261,7 +1261,7 @@ msgstr "ゾーンデータをエクスポートするにはログインが必要
 msgid "You do not have permission to export this zone."
 msgstr "このゾーンをエクスポートする権限がありません。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:72
+#: lib/Application/Controller/DnssecToggleKeyController.php:80
 msgid "There is no zone with this ID."
 msgstr "このIDのゾーンは存在しません。"
 
@@ -1299,15 +1299,7 @@ msgstr "サーバー %s を使用してRDAP情報の取得に失敗しました"
 msgid "Invalid CSRF token."
 msgstr "無効なCSRFトークンです。"
 
-#: lib/BaseController.php:592
-msgid ""
-"The <a href=\"install/\">install/</a> directory exists, you must remove it "
-"first before proceeding."
-msgstr ""
-"<a href=\"install/\">install/</a>ディレクトリが存在します。続行する前に削除す"
-"る必要があります。first before proceeding."
-
-#: lib/BaseController.php:649
+#: lib/BaseController.php:572
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1315,12 +1307,29 @@ msgstr ""
 "デフォルトのセッション暗号化キーが使用されています。設定ファイルで設定してく"
 "ださい。"
 
-#: lib/BaseController.php:788
+#: lib/BaseController.php:576
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/BaseController.php:614
+msgid ""
+"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"first before proceeding."
+msgstr ""
+"<a href=\"install/\">install/</a>ディレクトリが存在します。続行する前に削除す"
+"る必要があります。first before proceeding."
+
+#: lib/BaseController.php:810
 #, php-format
 msgid "The %s field is required."
 msgstr "%sフィールドは必須です。"
 
-#: lib/BaseController.php:796
+#: lib/BaseController.php:818
 #, php-format
 msgid "The %s field must be a number."
 msgstr "%sフィールドは数値である必要があります。"
@@ -1341,17 +1350,17 @@ msgstr "次で始まるゾーンを表示"
 msgid "Show all"
 msgstr "すべて表示"
 
-#: lib/Application/Controller/DeleteRecordsController.php:81
+#: lib/Application/Controller/DeleteRecordsController.php:85
 msgid "No records selected for deletion."
 msgstr "削除するレコードが選択されていません。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:202
+#: lib/Application/Controller/DeleteRecordsController.php:206
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr "レコードが正常に削除されました。対応するPTRレコードも削除されました。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:204
+#: lib/Application/Controller/DeleteRecordsController.php:208
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1359,32 +1368,41 @@ msgid ""
 msgstr ""
 "%d件のレコードが正常に削除されました。対応するPTRレコードも削除されました。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:207
+#: lib/Application/Controller/DeleteRecordsController.php:211
 msgid "No records could be deleted. Please check permissions."
 msgstr "レコードを削除できませんでした。権限を確認してください。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:276
+#: lib/Application/Controller/DeleteRecordsController.php:280
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr "削除する有効なレコードが選択されていないか、削除権限がありません。"
 
-#: lib/Application/Controller/ZoneOwnershipController.php:74
+#: lib/Application/Controller/DnssecToggleKeyController.php:49
 msgid "Invalid or unexpected input given."
 msgstr "無効または予期しない入力が提供されました。"
 
-#: lib/Domain/Model/UserManager.php:340
+#: lib/Domain/Model/UserManager.php:369
 msgid "You do not have the permission to delete this user."
 msgstr "このユーザーを削除する権限がありません。"
 
-#: lib/Application/Controller/DeleteUserController.php:76
+#: lib/Application/Controller/DeleteUserController.php:80
 msgid "You do not have permission to delete a superuser account."
 msgstr "スーパーユーザーアカウントを削除する権限がありません。"
 
-#: lib/Application/Controller/EditUserController.php:473
+#: lib/Application/Controller/EditUserController.php:530
 msgid "User does not exist."
 msgstr "ユーザーが存在しません。"
 
-#: lib/Application/Controller/DeleteUserController.php:111
+#: lib/Application/Controller/DeleteUserController.php:115
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"フォームがサーバーのフィールド数上限を超えたため、ユーザーは削除されませんで"
+"した。管理者に PHP の \"max_input_vars\" 設定を増やすよう依頼してください。"
+
+#: lib/Application/Controller/DeleteUserController.php:137
 msgid "The user has been deleted successfully."
 msgstr "ユーザーが正常に削除されました。"
 
@@ -1396,7 +1414,7 @@ msgstr "ゾーンコメント機能は設定で無効になっています。"
 msgid "You do not have the permission to view this comment."
 msgstr "このコメントを表示する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:455
+#: lib/Domain/Service/Dns/RecordManager.php:495
 msgid "You do not have the permission to edit this comment."
 msgstr "このコメントを編集する権限がありません。"
 
@@ -1412,7 +1430,7 @@ msgstr "無効なレコードIDです。"
 msgid "You do not have permission to delete records in this zone."
 msgstr "このゾーンのレコードを削除する権限がありません。"
 
-#: lib/Application/Controller/EditRecordController.php:205
+#: lib/Domain/Service/Dns/RecordManager.php:413
 msgid "Record not found."
 msgstr "レコードが見つかりません。"
 
@@ -1479,7 +1497,7 @@ msgstr ""
 "レコードが正常に削除されました。対応するA/AAAAレコードは見つかりませんでし"
 "た。"
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:72
 msgid "The record has been deleted successfully."
 msgstr "レコードが正常に削除されました。"
 
@@ -1516,24 +1534,24 @@ msgstr "グループが正常に削除されました。"
 msgid "Group not found."
 msgstr "グループが見つかりません。"
 
-#: lib/Application/Controller/UserPreferencesController.php:42
+#: lib/Application/Controller/UserPreferencesController.php:43
 #: templates/modern/user_preferences.html:4
 msgid "User Preferences"
 msgstr "ユーザー設定"
 
-#: lib/Application/Controller/UserPreferencesController.php:100
+#: lib/Application/Controller/UserPreferencesController.php:109
 msgid "Preferences saved successfully."
 msgstr "設定が正常に保存されました。"
 
-#: lib/Application/Controller/UserPreferencesController.php:108
+#: lib/Application/Controller/UserPreferencesController.php:117
 msgid "Failed to update preferences. Please try again."
 msgstr "設定の更新に失敗しました。もう一度お試しください。"
 
-#: lib/Application/Controller/UserPreferencesController.php:123
+#: lib/Application/Controller/UserPreferencesController.php:132
 msgid "Top"
 msgstr "上部"
 
-#: lib/Application/Controller/UserPreferencesController.php:124
+#: lib/Application/Controller/UserPreferencesController.php:133
 msgid "Bottom"
 msgstr "下部"
 
@@ -1549,29 +1567,29 @@ msgstr "グループメンバーの管理"
 msgid "Invalid action."
 msgstr "無効な操作です。"
 
-#: lib/Application/Controller/ManageGroupMembersController.php:197
+#: lib/Application/Controller/ManageGroupMembersController.php:217
 msgid "Please select at least one user."
 msgstr "少なくとも1人のユーザーを選択してください。"
 
-#: lib/Application/Controller/ManageGroupMembersController.php:149
+#: lib/Application/Controller/ManageGroupMembersController.php:169
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
 msgstr[0] "%d人のユーザーをグループに追加しました。"
 
-#: lib/Application/Controller/ManageGroupMembersController.php:176
+#: lib/Application/Controller/ManageGroupMembersController.php:196
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
 msgstr[0] "%d人のユーザーを追加できませんでした。"
 
-#: lib/Application/Controller/ManageGroupMembersController.php:225
+#: lib/Application/Controller/ManageGroupMembersController.php:242
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
 msgstr[0] "%d人のユーザーをグループから削除しました。"
 
-#: lib/Application/Controller/ManageGroupMembersController.php:252
+#: lib/Application/Controller/ManageGroupMembersController.php:269
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
@@ -1601,7 +1619,7 @@ msgstr "確認コードが必要です。"
 msgid "MFA has been enabled successfully."
 msgstr "多要素認証が正常に有効になりました。"
 
-#: lib/Application/Controller/MfaVerifyController.php:274
+#: lib/Application/Controller/MfaVerifyController.php:278
 msgid "Invalid verification code. Please try again."
 msgstr "無効な確認コードです。もう一度お試しください。"
 
@@ -1689,25 +1707,25 @@ msgstr "ゾーンメタデータを表示する権限がありません。"
 msgid "You do not have the permission to edit zone metadata."
 msgstr "ゾーンメタデータを編集する権限がありません。"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:150
+#: lib/Application/Controller/EditZoneMetadataController.php:163
 msgid "Zone metadata has been updated successfully."
 msgstr "ゾーンメタデータが正常に更新されました。"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:155
+#: lib/Application/Controller/EditZoneMetadataController.php:168
 msgid "Failed to update zone metadata."
 msgstr "ゾーンメタデータの更新に失敗しました。"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:190
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr "ゾーンメタデータの編集"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:177
+#: lib/Application/Controller/EditZoneMetadataController.php:190
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "ゾーンメタデータ"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:381
+#: lib/Application/Controller/EditZoneMetadataController.php:402
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
@@ -1715,28 +1733,34 @@ msgstr ""
 "メタデータ種類 %s は単一の値のみ受け付けます。この種類には1行のみ追加してくだ"
 "さい。"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:469
+#: lib/Application/Controller/EditZoneMetadataController.php:449
+#, auto-english-fallback
+#, php-format
+msgid "Metadata kind %s can only be changed by an administrator."
+msgstr "Metadata kind %s can only be changed by an administrator."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:539
 #: templates/modern/edit_zone_metadata.html:153
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
 msgstr ""
 "PowerDNS の domainmetadata テーブルに直接格納されるカスタムメタデータ種類。"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:477
+#: lib/Application/Controller/EditZoneMetadataController.php:547
 #: templates/modern/pdns_status.html:412
 msgid "Value"
 msgstr "値"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:515
+#: lib/Application/Controller/EditZoneMetadataController.php:585
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "カスタム"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:520
+#: lib/Application/Controller/EditZoneMetadataController.php:590
 msgid "Multi"
 msgstr "複数"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:521
+#: lib/Application/Controller/EditZoneMetadataController.php:591
 msgid "Single"
 msgstr "単一"
 
@@ -1823,13 +1847,31 @@ msgstr "ゾーンIDが必要です。"
 msgid "You do not have the permission to edit permission templates."
 msgstr "権限テンプレートを編集する権限がありません。"
 
-#: lib/Application/Controller/EditPermTemplController.php:63
+#: lib/Application/Controller/EditPermTemplController.php:65
 msgid "Edit Permission Template"
 msgstr "権限テンプレートを編集"
 
-#: lib/Application/Controller/EditPermTemplController.php:96
+#: lib/Application/Controller/EditPermTemplController.php:120
 msgid "The permission template has been updated successfully."
 msgstr "権限テンプレートが正常に更新されました。"
+
+#: lib/Application/Controller/EditPermTemplController.php:170
+#, auto-english-fallback
+msgid ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Application/Controller/AddPermTemplController.php:146
+#, auto-english-fallback
+msgid ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
+msgstr ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
 
 #: lib/Application/Controller/ListGroupsController.php:60
 #: templates/modern/manage_group_members.html:4
@@ -1861,37 +1903,42 @@ msgstr "メンバーがグループから正常に削除されました。"
 msgid "User was not a member of this group."
 msgstr "ユーザーはこのグループのメンバーではありませんでした。"
 
-#: lib/Domain/Model/UserManager.php:1050
+#: lib/Domain/Model/UserManager.php:1194
 msgid "You do not have the permission to add a new user."
 msgstr "新しいユーザーを追加する権限がありません。"
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:13 templates/modern/add_user.html:112
+#: templates/modern/add_user.html:13 templates/modern/add_user.html:113
 msgid "Add User"
 msgstr "ユーザーを追加"
 
-#: lib/Application/Controller/EditUserController.php:274
+#: lib/Application/Controller/AddUserController.php:125
+#, auto-english-fallback
+msgid "No non-superuser permission template is available to assign."
+msgstr "No non-superuser permission template is available to assign."
+
+#: lib/Application/Controller/EditUserController.php:321
 msgid "Invalid permission template: must be a user template"
 msgstr "無効な権限テンプレート: ユーザーテンプレートである必要があります"
 
-#: lib/Application/Controller/AddUserController.php:144
+#: lib/Application/Controller/AddUserController.php:150
 msgid "The user has been created successfully."
 msgstr "ユーザーが正常に作成されました。"
 
-#: lib/Application/Controller/AddUserController.php:159
+#: lib/Application/Controller/AddUserController.php:165
 #, php-format
 msgid "Generated password: %s"
 msgstr "生成されたパスワード：%s"
 
-#: lib/Application/Controller/AddUserController.php:175
+#: lib/Application/Controller/AddUserController.php:181
 msgid "Login details have been sent to the user via email."
 msgstr "ログイン詳細がメールでユーザーに送信されました。"
 
-#: lib/Application/Controller/AddUserController.php:177
+#: lib/Application/Controller/AddUserController.php:183
 msgid "NOTE: Failed to send login details via email."
 msgstr "注意：メールでのログイン詳細の送信に失敗しました。"
 
-#: lib/Application/Controller/AddUserController.php:183
+#: lib/Application/Controller/AddUserController.php:189
 msgid "A password was generated but is not displayed for security reasons."
 msgstr "パスワードが生成されましたが、セキュリティ上の理由で表示されません。"
 
@@ -1899,31 +1946,35 @@ msgstr "パスワードが生成されましたが、セキュリティ上の理
 msgid "Please fill in all required fields correctly."
 msgstr "すべての必須フィールドを正しく入力してください。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:396
+#: lib/Domain/Service/Dns/RecordManager.php:436
 msgid "You do not have the permission to delete this record."
 msgstr "このレコードを削除する権限がありません。"
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:78
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
 msgid "The record could not be deleted."
 msgstr "レコードを削除できませんでした。"
 
-#: lib/Application/Controller/ListLogZonesController.php:63
-#: templates/default/index.html:219 templates/modern/index.html:219
+#: lib/Application/Controller/ListLogZonesController.php:64
+#: templates/default/index.html:222 templates/modern/index.html:222
 msgid "Zone Logs"
 msgstr "ゾーンログ"
 
-#: lib/Application/Controller/UsersController.php:51
+#: lib/Application/Controller/UsersController.php:52
 msgid "You do not have permission to view the users list."
 msgstr "ユーザーリストを表示する権限がありません。"
 
-#: lib/Application/Controller/UsersController.php:58
+#: lib/Application/Controller/UsersController.php:59
 #: templates/modern/list_perm_templ.html:4
 msgid "Users"
 msgstr "ユーザー"
 
-#: lib/Application/Controller/UsersController.php:78
+#: lib/Application/Controller/UsersController.php:92
 msgid "User details updated"
 msgstr "ユーザー詳細が更新されました"
+
+#: lib/Application/Controller/EditUserController.php:253
+msgid "You do not have permission to edit a superuser account."
+msgstr "スーパーユーザーアカウントを編集する権限がありません。"
 
 #: lib/Application/Controller/EditZoneTemplController.php:60
 msgid "No template ID provided."
@@ -1953,7 +2004,7 @@ msgstr "ゾーンが正常に更新されました。"
 msgid "You do not have permission to create new zone templates."
 msgstr "新しいゾーンテンプレートを作成する権限がありません。"
 
-#: lib/Domain/Model/ZoneTemplate.php:189 lib/Domain/Model/ZoneTemplate.php:934
+#: lib/Domain/Model/ZoneTemplate.php:216 lib/Domain/Model/ZoneTemplate.php:1073
 msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
 "この名前のゾーンテンプレートは既に存在します。別の名前を選択してください。"
@@ -1987,7 +2038,7 @@ msgid "You do not have permission to view this zone."
 msgstr "このゾーンを表示する権限がありません。"
 
 #: lib/Application/Controller/ListLogUsersController.php:62
-#: templates/default/index.html:229 templates/modern/index.html:229
+#: templates/default/index.html:232 templates/modern/index.html:232
 msgid "User Logs"
 msgstr "ユーザーログ"
 
@@ -2039,31 +2090,31 @@ msgstr "このゾーンにアクセスする権限がありません。"
 msgid "You do not have the permission to view this zone."
 msgstr "このゾーンを表示する権限がありません。"
 
-#: lib/Application/Controller/EditController.php:275
+#: lib/Application/Controller/EditController.php:284
 msgid "Zone type has been changed successfully."
 msgstr "ゾーンタイプが正常に変更されました。"
 
-#: lib/Application/Controller/EditController.php:283
+#: lib/Application/Controller/EditController.php:292
 msgid "Slave master has been changed successfully."
 msgstr "スレーブマスターが正常に変更されました。"
 
-#: lib/Application/Controller/EditController.php:304
+#: lib/Application/Controller/EditController.php:313
 msgid "Zone template has been changed successfully."
 msgstr "ゾーンテンプレートが正常に変更されました。"
 
-#: lib/Application/Controller/EditController.php:316
+#: lib/Application/Controller/EditController.php:325
 msgid "DNSSEC is not enabled on the server."
 msgstr "サーバーでDNSSECが有効になっていません。"
 
-#: lib/Application/Controller/EditController.php:319
+#: lib/Application/Controller/EditController.php:328
 msgid "Zone is already signed with DNSSEC."
 msgstr "ゾーンは既にDNSSECで署名されています。"
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:350
 msgid "Zone has been signed successfully."
 msgstr "ゾーンが正常に署名されました。"
 
-#: lib/Application/Controller/EditController.php:346
+#: lib/Application/Controller/EditController.php:355
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2071,7 +2122,7 @@ msgstr ""
 "ゾーン署名の要求は成功しましたが、検証に失敗しました。DNSSECキーを確認してく"
 "ださい。"
 
-#: lib/Application/Controller/EditController.php:350
+#: lib/Application/Controller/EditController.php:359
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2097,15 +2148,25 @@ msgstr ""
 "ゾーンの署名解除に失敗しました。詳細についてはPowerDNSログを確認してくださ"
 "い。"
 
-#: lib/Application/Controller/EditController.php:736
+#: lib/Application/Controller/EditController.php:660
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"フォームがサーバーのフィールド数上限を超えたため、一部のレコードは保存されま"
+"せんでした。管理者に PHP の \"max_input_vars\" 設定を増やすよう依頼してくださ"
+"い。"
+
+#: lib/Application/Controller/EditController.php:768
 msgid "Request has expired, please try again."
 msgstr "リクエストが期限切れです。もう一度お試しください。"
 
-#: lib/Application/Controller/EditController.php:741
+#: lib/Application/Controller/EditController.php:773
 msgid "Zone has been updated successfully."
 msgstr "ゾーンが正常に更新されました。"
 
-#: lib/Application/Controller/EditController.php:743
+#: lib/Application/Controller/EditController.php:775
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2113,11 +2174,11 @@ msgstr ""
 "ゾーンは正常に保存されました。レコードの変更はありませんでしたが、SOAシリアル"
 "が増加しました。"
 
-#: lib/Application/Controller/EditController.php:752
+#: lib/Application/Controller/EditController.php:784
 msgid "Zone has not been updated successfully."
 msgstr "ゾーンが正常に更新されませんでした。"
 
-#: lib/Application/Controller/EditController.php:780
+#: lib/Application/Controller/EditController.php:812
 msgid "Please provide all required fields."
 msgstr "すべての必須フィールドを入力してください。"
 
@@ -2149,7 +2210,7 @@ msgstr "多要素認証レコードが見つかりません。管理者にお問
 msgid "An error occurred. Please try again."
 msgstr "エラーが発生しました。もう一度お試しください。"
 
-#: lib/Application/Controller/MfaVerifyController.php:297
+#: lib/Application/Controller/MfaVerifyController.php:301
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2157,15 +2218,15 @@ msgstr ""
 "メールサービスが無効になっているため、メール認証は利用できません。復旧コード"
 "を使用してください。"
 
-#: lib/Application/Controller/MfaVerifyController.php:307
+#: lib/Application/Controller/MfaVerifyController.php:311
 msgid "A new verification code has been sent to your email."
 msgstr "新しい確認コードがメールに送信されました。"
 
-#: lib/Application/Controller/MfaVerifyController.php:313
+#: lib/Application/Controller/MfaVerifyController.php:317
 msgid "Please use a recovery code instead."
 msgstr "代わりに復旧コードを使用してください。"
 
-#: lib/Application/Controller/MfaVerifyController.php:318
+#: lib/Application/Controller/MfaVerifyController.php:322
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2173,7 +2234,7 @@ msgstr ""
 "メールに確認コードを送信できませんでした。代わりに復旧コードを使用してくださ"
 "い。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:216
+#: lib/Domain/Service/Dns/RecordManager.php:229
 msgid "You do not have the permission to add a record to this zone."
 msgstr "このゾーンにレコードを追加する権限がありません。"
 
@@ -2181,26 +2242,26 @@ msgstr "このゾーンにレコードを追加する権限がありません。
 msgid "Record successfully added."
 msgstr "レコードが正常に追加されました。"
 
-#: lib/Application/Controller/AddRecordController.php:429
+#: lib/Application/Controller/AddRecordController.php:441
 msgid "No records were provided."
 msgstr "レコードが提供されていません。"
 
-#: lib/Application/Controller/AddRecordController.php:483
+#: lib/Application/Controller/AddRecordController.php:505
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d件のレコードが正常に追加されました。"
 
-#: lib/Application/Controller/AddRecordController.php:485
+#: lib/Application/Controller/AddRecordController.php:507
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d件の一致するレコードも作成されました。"
 
-#: lib/Application/Controller/AddRecordController.php:488
+#: lib/Application/Controller/AddRecordController.php:510
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d件のレコードの追加に失敗しました。"
 
-#: lib/Application/Controller/AddRecordController.php:493
+#: lib/Application/Controller/AddRecordController.php:515
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2208,7 +2269,7 @@ msgstr ""
 "一部のレコードを追加できませんでした。既に存在するか、無効なデータが含まれて"
 "いる可能性があります。"
 
-#: lib/Application/Controller/AddRecordController.php:519
+#: lib/Application/Controller/AddRecordController.php:545
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "レコードの追加に失敗しました。無効なデータが含まれている可能性があります。"
@@ -2217,17 +2278,17 @@ msgstr ""
 msgid "No zone selected for deletion."
 msgstr "削除するゾーンが選択されていません。"
 
+#: lib/Domain/Service/Dns/DomainManager.php:679
+msgid "You do not have the permission to delete a zone."
+msgstr "ゾーンを削除する権限がありません。"
+
 #: lib/Application/Controller/DeleteDomainController.php:141
 msgid "Zone has been deleted successfully."
 msgstr "ゾーンが正常に削除されました。"
 
-#: lib/Application/Controller/DeleteDomainsController.php:156
+#: lib/Application/Controller/DeleteDomainsController.php:170
 msgid "Zones have been deleted successfully."
 msgstr "ゾーンが正常に削除されました。"
-
-#: lib/Domain/Service/Dns/DomainManager.php:671
-msgid "You do not have the permission to delete a zone."
-msgstr "ゾーンを削除する権限がありません。"
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:80
 msgid "You do not have the permission to edit zone template records."
@@ -2237,7 +2298,7 @@ msgstr "ゾーンテンプレートレコードを編集する権限がありま
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC認証が有効になっていません"
 
-#: lib/Application/Service/SamlService.php:387
+#: lib/Application/Service/SamlService.php:391
 msgid "Authentication failed: "
 msgstr "認証に失敗しました: "
 
@@ -2262,7 +2323,7 @@ msgid "Failed to initiate OIDC authentication: "
 msgstr "OIDC認証の開始に失敗しました: "
 
 #: lib/Application/Controller/ListLogGroupsController.php:67
-#: templates/default/index.html:239 templates/modern/index.html:239
+#: templates/default/index.html:242 templates/modern/index.html:242
 msgid "Group Logs"
 msgstr "グループログ"
 
@@ -2274,7 +2335,15 @@ msgstr "マスターゾーンを追加する権限がありません。"
 msgid "Add Primary Zone"
 msgstr "プライマリゾーンを追加"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:122
+#: lib/Application/Controller/AddZoneSlaveController.php:111
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr ""
+"CIDR表記のネットワーク（例: 192.168.1.0/24 または 2001:db8::/48）、または in-"
+"addr.arpa もしくは ip6.arpa で終わる逆引きゾーン名を入力してください。"
+
+#: lib/Application/Controller/AddZoneSlaveController.php:139
 msgid "At least one user or group must be selected as owner."
 msgstr ""
 "所有者として少なくとも1人のユーザーまたは1つのグループを選択する必要がありま"
@@ -2284,7 +2353,7 @@ msgstr ""
 msgid "There is already a zone with this name."
 msgstr "この名前のゾーンは既に存在します。"
 
-#: lib/Application/Controller/AddZoneMasterController.php:174
+#: lib/Application/Controller/AddZoneMasterController.php:190
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2292,7 +2361,7 @@ msgstr ""
 "ゾーンは正常に作成されましたが、検証エラーのためDNSSEC署名がスキップされまし"
 "た:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:186
+#: lib/Application/Controller/AddZoneMasterController.php:202
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2301,11 +2370,11 @@ msgstr ""
 "ましたが、PowerDNS APIがエラーを返しました。詳細はPowerDNSログを確認してくだ"
 "さい。"
 
-#: lib/Application/Controller/AddZoneMasterController.php:192
+#: lib/Application/Controller/AddZoneMasterController.php:208
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "ゾーンが正常に作成され、DNSSECで署名されました。"
 
-#: lib/Application/Controller/AddZoneMasterController.php:196
+#: lib/Application/Controller/AddZoneMasterController.php:212
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2313,7 +2382,7 @@ msgstr ""
 "ゾーンは作成され、署名が要求されましたが、検証に失敗しました。DNSSECキーを確"
 "認してください。"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:161
+#: lib/Application/Controller/AddZoneSlaveController.php:178
 msgid "Zone has been added successfully."
 msgstr "ゾーンが正常に追加されました。"
 
@@ -2359,15 +2428,15 @@ msgstr "無効な権限テンプレート: グループテンプレートであ�
 msgid "Group has been created successfully."
 msgstr "グループが正常に作成されました。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:55
+#: lib/Application/Controller/DnssecToggleKeyController.php:63
 msgid "Invalid key ID."
 msgstr "無効なキーIDです。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:65
+#: lib/Application/Controller/DnssecToggleKeyController.php:73
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "このゾーンのDNSSECを管理する権限がありません。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:90
+#: lib/Application/Controller/DnssecToggleKeyController.php:98
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSECキーが見つからないか、既に存在しません。"
 
@@ -2424,45 +2493,50 @@ msgstr "ゾーンの所有権を管理する権限がありません。"
 msgid "Manage Group Zones"
 msgstr "グループゾーンの管理"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:214
+#: lib/Application/Controller/ManageGroupZonesController.php:234
 msgid "Please select at least one zone."
 msgstr "少なくとも1つのゾーンを選択してください。"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:149
+#: lib/Application/Controller/ManageGroupZonesController.php:169
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
 msgstr[0] "%d個のゾーンをグループに追加しました。"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:193
+#: lib/Application/Controller/ManageGroupZonesController.php:213
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
 msgstr[0] "%d個のゾーンを追加できませんでした。"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:238
+#: lib/Application/Controller/ManageGroupZonesController.php:255
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
 msgstr[0] "%d個のゾーンをグループから削除しました。"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:282
+#: lib/Application/Controller/ManageGroupZonesController.php:299
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
 msgstr[0] "%d個のゾーンを削除できませんでした。"
 
-#: lib/Application/Controller/AddPermTemplController.php:59
+#: lib/Application/Controller/AddPermTemplController.php:61
 msgid "You do not have the permission to add permission templates."
 msgstr "権限テンプレートを追加する権限がありません。"
 
-#: lib/Application/Controller/AddPermTemplController.php:63
+#: lib/Application/Controller/AddPermTemplController.php:65
 msgid "Add Permission Template"
 msgstr "権限テンプレートを追加"
 
-#: lib/Application/Controller/AddPermTemplController.php:90
+#: lib/Application/Controller/AddPermTemplController.php:105
 msgid "The permission template has been added successfully."
 msgstr "権限テンプレートが正常に追加されました。"
+
+#: lib/Application/Controller/AddPermTemplController.php:147
+#, auto-english-fallback
+msgid "The permission template could not be added."
+msgstr "The permission template could not be added."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:35
 msgid "Not available for anonymous users."
@@ -2485,7 +2559,9 @@ msgstr "データベース整合性チェックが無効になっています。
 msgid ""
 "Database consistency checks are not available when using the PowerDNS API "
 "backend."
-msgstr "PowerDNS API バックエンドを使用している場合、データベース整合性チェックは利用できません。"
+msgstr ""
+"PowerDNS API バックエンドを使用している場合、データベース整合性チェックは利用"
+"できません。"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:90
 #: templates/modern/database_consistency.html:30
@@ -2536,11 +2612,11 @@ msgstr "デフォルトSOAレコードの作成に失敗しました"
 msgid "Invalid check type"
 msgstr "無効なチェックタイプです"
 
-#: lib/Application/Controller/LogoutController.php:131
+#: lib/Application/Controller/LogoutController.php:120
 msgid "You have logged out."
 msgstr "ログアウトしました。"
 
-#: lib/Domain/Model/ZoneTemplate.php:186 lib/Domain/Model/ZoneTemplate.php:626
+#: lib/Domain/Model/ZoneTemplate.php:213 lib/Domain/Model/ZoneTemplate.php:748
 msgid "You do not have the permission to add a zone template."
 msgstr "ゾーンテンプレートを追加する権限がありません。"
 
@@ -2556,7 +2632,7 @@ msgstr "ゾーンテンプレートが正常に追加されました。"
 msgid "Dashboard"
 msgstr "ダッシュボード"
 
-#: lib/Application/Controller/EditUserController.php:381
+#: lib/Application/Controller/EditUserController.php:438
 msgid "You do not have permission to manage group memberships."
 msgstr "グループメンバーシップを管理する権限がありません。"
 
@@ -2584,11 +2660,11 @@ msgstr "無効なホスト名です。"
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "これは有効なIPv4またはIPv6アドレスではありません。"
 
-#: lib/Domain/Model/ZoneTemplate.php:286 lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:313 lib/Domain/Model/ZoneTemplate.php:351
 msgid "You do not have the permission to delete zone templates."
 msgstr "ゾーンテンプレートを削除する権限がありません。"
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:93
+#: lib/Application/Controller/DeleteZoneTemplController.php:95
 msgid "Zone template has been deleted successfully."
 msgstr "ゾーンテンプレートが正常に削除されました。"
 
@@ -2654,25 +2730,21 @@ msgstr "ユーザーが正常に更新されました。"
 msgid "The user could not be updated."
 msgstr "ユーザーを更新できませんでした。"
 
-#: lib/Domain/Model/UserManager.php:510 lib/Domain/Model/UserManager.php:1030
+#: lib/Domain/Model/UserManager.php:555 lib/Domain/Model/UserManager.php:1174
 msgid "You do not have the permission to edit this user."
 msgstr "このユーザーを編集する権限がありません。"
 
-#: lib/Application/Controller/EditUserController.php:242
-msgid "You do not have permission to edit a superuser account."
-msgstr "スーパーユーザーアカウントを編集する権限がありません。"
-
-#: lib/Application/Controller/EditUserController.php:389
+#: lib/Application/Controller/EditUserController.php:446
 msgid "Please select at least one group."
 msgstr "少なくとも1つのグループを選択してください。"
 
-#: lib/Application/Controller/EditUserController.php:430
+#: lib/Application/Controller/EditUserController.php:487
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
 msgstr[0] "ユーザーを%d個のグループに正常に追加しました。"
 
-#: lib/Application/Controller/EditUserController.php:455
+#: lib/Application/Controller/EditUserController.php:512
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
@@ -2685,11 +2757,11 @@ msgstr[0] ""
 msgid "You do not have the permission to delete permission templates."
 msgstr "権限テンプレートを削除する権限がありません。"
 
-#: lib/Application/Controller/DeletePermTemplController.php:88
+#: lib/Application/Controller/DeletePermTemplController.php:90
 msgid "The permission template has been deleted successfully."
 msgstr "権限テンプレートが正常に削除されました。"
 
-#: lib/Application/Controller/DeletePermTemplController.php:90
+#: lib/Application/Controller/DeletePermTemplController.php:92
 msgid "The permission template could not be deleted."
 msgstr "権限テンプレートを削除できませんでした。"
 
@@ -2844,24 +2916,24 @@ msgstr "グループが正常に更新されました。"
 msgid "You do not have the permission to delete a supermaster."
 msgstr "スーパーマスターを削除する権限がありません。"
 
-#: lib/Application/Controller/DeleteSupermasterController.php:80
+#: lib/Application/Controller/DeleteSupermasterController.php:82
 msgid "Invalid IP address."
 msgstr "無効なIPアドレスです。"
 
-#: lib/Application/Controller/DeleteSupermasterController.php:85
+#: lib/Application/Controller/DeleteSupermasterController.php:87
 msgid "Invalid NS name."
 msgstr "無効なNS名です。"
 
-#: lib/Application/Controller/DeleteSupermasterController.php:91
+#: lib/Application/Controller/DeleteSupermasterController.php:93
 msgid "Super master does not exist."
 msgstr "スーパーマスターが存在しません。"
 
-#: lib/Application/Controller/DeleteSupermasterController.php:95
+#: lib/Application/Controller/DeleteSupermasterController.php:97
 msgid "The supermaster has been deleted successfully."
 msgstr "スーパーマスターが正常に削除されました。"
 
 #: lib/Application/Controller/BulkRegistrationController.php:67
-#: templates/modern/index.html:150 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:443 templates/modern/bulk_registration.html:23
 msgid "Bulk Registration"
 msgstr "一括登録"
 
@@ -2898,43 +2970,43 @@ msgstr "グループが正常に削除されました。"
 msgid "Page Not Found"
 msgstr "ページが見つかりません"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:81
+#: lib/Application/Controller/DnssecToggleKeyController.php:89
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr "DNSSEC機能が利用できません。PowerDNS API構成を確認してください。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:101
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
 msgid "Zone key has been successfully deactivated."
 msgstr "ゾーンキーが正常に無効化されました。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:102
+#: lib/Application/Controller/DnssecToggleKeyController.php:110
 msgid "Failed to deactivate zone key."
 msgstr "ゾーンキーの無効化に失敗しました。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:105
+#: lib/Application/Controller/DnssecToggleKeyController.php:113
 msgid "Zone key has been successfully activated."
 msgstr "ゾーンキーが正常に有効化されました。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:106
+#: lib/Application/Controller/DnssecToggleKeyController.php:114
 msgid "Failed to activate zone key."
 msgstr "ゾーンキーの有効化に失敗しました。"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:119
+#: lib/Application/Controller/DnssecToggleKeyController.php:127
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "DNSSECキーの切り替え中にエラーが発生しました。もう一度お試しください。"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:435
+#: lib/Application/Query/RecordSearch.php:229 templates/modern/edit.html:435
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "はい"
 
-#: lib/Application/Query/RecordSearch.php:226 templates/modern/edit.html:435
+#: lib/Application/Query/RecordSearch.php:229 templates/modern/edit.html:435
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "いいえ"
 
-#: lib/Application/Service/LdapAuthenticator.php:92
+#: lib/Application/Service/LdapAuthenticator.php:95
 msgid "Account is temporarily locked. Please try again later."
 msgstr "アカウントが一時的にロックされています。後でもう一度お試しください。"
 
@@ -2954,11 +3026,11 @@ msgstr "セッションが期限切れです。再度ログインしてくださ
 msgid "Failed to update password"
 msgstr "パスワードの更新に失敗しました"
 
-#: lib/Application/Service/OidcService.php:183
+#: lib/Application/Service/OidcService.php:184
 msgid "Authentication failed: Invalid state parameter"
 msgstr "認証に失敗しました: 無効な状態パラメーター"
 
-#: lib/Application/Service/OidcService.php:204
+#: lib/Application/Service/OidcService.php:205
 msgid "Authentication failed: No authorization code"
 msgstr "認証に失敗しました: 認証コードがありません"
 
@@ -2966,27 +3038,27 @@ msgstr "認証に失敗しました: 認証コードがありません"
 msgid "Authentication failed: Invalid session"
 msgstr "認証に失敗しました: 無効なセッション"
 
-#: lib/Application/Service/SamlService.php:347
+#: lib/Application/Service/SamlService.php:351
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "認証に失敗しました: ユーザーアカウントを作成または更新できません"
 
-#: lib/Application/Service/LdapAuthenticator.php:236
+#: lib/Application/Service/LdapAuthenticator.php:240
 msgid "LDAP Authentication failed!"
 msgstr "LDAP認証に失敗しました！"
 
-#: lib/Application/Service/LdapAuthenticator.php:141
+#: lib/Application/Service/LdapAuthenticator.php:144
 msgid "Failed to connect to LDAP server!"
 msgstr "LDAPサーバーへの接続に失敗しました！"
 
-#: lib/Application/Service/LdapAuthenticator.php:157
+#: lib/Application/Service/LdapAuthenticator.php:160
 msgid "Failed to bind to LDAP server!"
 msgstr "LDAPサーバーへのバインドに失敗しました！"
 
-#: lib/Application/Service/LdapAuthenticator.php:185
+#: lib/Application/Service/LdapAuthenticator.php:188
 msgid "Failed to search LDAP."
 msgstr "LDAP検索に失敗しました。"
 
-#: lib/Application/Service/LdapAuthenticator.php:202
+#: lib/Application/Service/LdapAuthenticator.php:205
 msgid "Failed to authenticate against LDAP."
 msgstr "LDAPに対する認証に失敗しました。"
 
@@ -2998,17 +3070,17 @@ msgstr "認証に失敗しました: 無効なSAML応答"
 msgid "This is an invalid zone name."
 msgstr "これは無効なゾーン名です。"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:254
 msgid "This template is assigned to at least one user and one group."
 msgstr ""
 "このテンプレートは少なくとも1人のユーザーと1つのグループに割り当てられていま"
 "す。"
 
-#: lib/Domain/Model/UserManager.php:385
+#: lib/Domain/Model/UserManager.php:414
 msgid "This template is assigned to at least one user."
 msgstr "このテンプレートは少なくとも1人のユーザーに割り当てられています。"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:258
 msgid "This template is assigned to at least one group."
 msgstr "このテンプレートは少なくとも1つのグループに割り当てられています。"
 
@@ -3033,37 +3105,66 @@ msgstr ""
 "データベースエラー: ユーザー認証を検証できません。データベース構成を確認して"
 "ください。"
 
-#: lib/Domain/Model/UserManager.php:1062
+#: lib/Domain/Model/UserManager.php:1206
 msgid "Enter a valid email address."
 msgstr "有効なメールアドレスを入力してください。"
 
-#: lib/Domain/Model/UserManager.php:1054
+#: lib/Domain/Model/UserManager.php:1198
 msgid "Username exist already, please choose another one."
 msgstr "ユーザー名は既に存在します。別のものを選択してください。"
 
-#: lib/Domain/Model/UserManager.php:1058
+#: lib/Domain/Model/UserManager.php:1210
+msgid "Email address already exists, please choose another one."
+msgstr "メールアドレスは既に存在します。別のものを選択してください。"
+
+#: lib/Domain/Model/UserManager.php:985
+#, auto-english-fallback
+msgid ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+msgstr ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+
+#: lib/Domain/Model/UserManager.php:989
+#, auto-english-fallback
+msgid ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Domain/Model/UserManager.php:1202
 msgid "Enter a valid user name."
 msgstr "有効なユーザー名を入力してください。"
 
-#: lib/Domain/Model/ZoneTemplate.php:213 lib/Domain/Model/ZoneTemplate.php:682
+#: lib/Domain/Model/ZoneTemplate.php:240 lib/Domain/Model/ZoneTemplate.php:821
 msgid "Error creating zone template: "
 msgstr "ゾーンテンプレートの作成エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:249
+#: lib/Domain/Model/ZoneTemplate.php:276
 msgid "Error adding default SOA record to template: "
 msgstr "テンプレートへのデフォルトSOAレコード追加エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:335
 msgid "Error deleting zone template: "
 msgstr "ゾーンテンプレートの削除エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:332
+#: lib/Domain/Model/ZoneTemplate.php:359
 msgid "Error deleting user zone templates: "
 msgstr "ユーザーゾーンテンプレートの削除エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:449
+#: lib/Domain/Model/ZoneTemplate.php:476
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "このゾーンテンプレートにレコードを追加する権限がありません。"
+
+#: lib/Domain/Model/ZoneTemplate.php:481 lib/Domain/Model/ZoneTemplate.php:598
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to add this record type to a zone template."
+msgstr ""
+"You do not have the permission to add this record type to a zone template."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
@@ -3073,51 +3174,74 @@ msgstr "コンテンツフィールドに有効な値がありません。"
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRVレコードの優先度は0から65535の間の数値である必要があります。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:318
+#: lib/Domain/Service/Dns/RecordManager.php:349
 msgid "You do not have the permission to edit this record."
 msgstr "このレコードを編集する権限がありません。"
 
-#: lib/Domain/Model/ZoneTemplate.php:541
+#: lib/Domain/Model/ZoneTemplate.php:588 lib/Domain/Model/ZoneTemplate.php:672
+msgid "The record does not belong to this zone template."
+msgstr "このレコードはこのゾーンテンプレートに属していません。"
+
+#: lib/Domain/Model/ZoneTemplate.php:650
 msgid "Error updating zone template record: "
 msgstr "ゾーンテンプレートレコードの更新エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:564
+#: lib/Domain/Model/ZoneTemplate.php:678
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+msgstr ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+
+#: lib/Domain/Model/ZoneTemplate.php:687
 msgid "Error deleting zone template record: "
 msgstr "ゾーンテンプレートレコードの削除エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:587
+#: lib/Domain/Model/ZoneTemplate.php:709
 msgid "Error checking template ownership: "
 msgstr "テンプレート所有権の確認エラー："
 
 #: lib/Domain/Model/ZoneTemplate.php:813
+#, auto-english-fallback
+#, php-format
+msgid ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+msgstr ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+
+#: lib/Domain/Model/ZoneTemplate.php:952
 msgid "Error retrieving zones using template: "
 msgstr "テンプレートを使用するゾーンの取得エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:869 lib/Domain/Model/ZoneTemplate.php:913
+#: lib/Domain/Model/ZoneTemplate.php:1052
 msgid "Failed to get list of zones using template: "
 msgstr "テンプレートを使用するゾーンのリスト取得に失敗しました："
 
-#: lib/Domain/Model/ZoneTemplate.php:931
+#: lib/Domain/Model/ZoneTemplate.php:1070
 msgid "You do not have the permission to edit a zone template."
 msgstr "ゾーンテンプレートを編集する権限がありません。"
 
-#: lib/Domain/Model/ZoneTemplate.php:975
+#: lib/Domain/Model/ZoneTemplate.php:1114
 msgid "Error unlinking zone from template: "
 msgstr "テンプレートからのゾーン解除エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:1024
+#: lib/Domain/Model/ZoneTemplate.php:1163
 msgid "Error retrieving zones: "
 msgstr "ゾーンの取得エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:1043
+#: lib/Domain/Model/ZoneTemplate.php:1182
 msgid "Error checking template name existence: "
 msgstr "テンプレート名の存在確認エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:1064
+#: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Error looking up template by name: "
 msgstr "テンプレート名による検索エラー: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1087
+#: lib/Domain/Model/ZoneTemplate.php:1226
 msgid "Error checking template existence: "
 msgstr "テンプレートの存在確認エラー："
 
@@ -5580,7 +5704,7 @@ msgstr ""
 "SPFレコードに「all」メカニズムと「redirect」修飾子の両方があります。「all」が"
 "存在する場合、「redirect」修飾子は無視されます（RFC 7208セクション6.1）。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:189
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
@@ -5588,28 +5712,28 @@ msgstr ""
 "優先度フィールドの値が無効です。CNAMEレコードは優先度値0である必要がありま"
 "す。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:228
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr "これは有効なCNAMEではありません。この名前のレコードが既に存在します。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:290
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr ""
 "これは有効なCNAMEではありません。MXまたはNSレコードをこのレコードに割り当てま"
 "したか？"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:280
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
 msgid "Empty CNAME records are not allowed."
 msgstr "空のCNAMEレコードは許可されていません。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:320
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
 msgstr "これは有効なレコードではありません。この名前のCNAMEが既に存在します。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:348
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:375
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
@@ -5617,7 +5741,7 @@ msgstr ""
 "CNAMEターゲットは完全修飾ドメイン名（FQDN）である必要があります。単一ラベル名"
 "は許可されていません。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:362
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
@@ -6720,41 +6844,41 @@ msgstr ""
 "未知のタグ「%s」にクリティカルフラグが設定されています。これは証明書発行の失"
 "敗を引き起こす可能性があります。"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
 msgstr ""
 "空の値は許可されていません。すべてのCAを許可するには「;」を使用してください。"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:204
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."
 msgstr "issueタグで無効なCAドメインです。"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:216
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:214
 msgid "Issue tag parameters must be in key=value format."
 msgstr "issueタグパラメータはkey=value形式である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:221
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:219
 msgid "accounturi parameter cannot be empty."
 msgstr "accounturiパラメータは空にできません。"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:230
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:228
 msgid "Empty validation method specified."
 msgstr "空の検証方法が指定されています。"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:238
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:236
 msgid "Invalid CA domain in issuewild tag."
 msgstr "issuewildタグで無効なCAドメインです。"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:249
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "CAA iodef値は%s、%s、または%sで始まるURLである必要があります。"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:260
 msgid "contactemail value must be a valid email address."
 msgstr "contactemail値は有効なメールアドレスである必要があります。"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:273
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:271
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
@@ -6766,15 +6890,15 @@ msgstr ""
 msgid "Value must be enclosed in double quotes."
 msgstr "値は二重引用符で囲む必要があります。"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:311
 msgid "Backslashes must precede all quotes (\") in value content."
 msgstr "値の内容ではすべての引用符（\"）の前にバックスラッシュが必要です。"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:319
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:317
 msgid "CAA property value exceeds maximum length of 512 characters."
 msgstr "CAAプロパティ値が最大長512文字を超えています。"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:325
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:323
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "CAAプロパティ値はNUL（0）文字を含むことはできません。"
 
@@ -8679,41 +8803,56 @@ msgstr ""
 "逆引きレコードが追加されました。警告: %sのPTRレコードが既に存在し、%sを指して"
 "います。同じIPに対して複数のPTRレコードを持つことは推奨されません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:208
+#: lib/Domain/Service/Dns/RecordManager.php:215
 msgid "You do not have the permission to add SOA record."
 msgstr "SOAレコードを追加する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:212
+#: lib/Domain/Service/Dns/RecordManager.php:219
 msgid "You do not have the permission to add NS record."
 msgstr "NSレコードを追加する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:257
+#: lib/Domain/Service/Dns/RecordManager.php:225
+#, auto-english-fallback
+msgid "You do not have the permission to add LUA record."
+msgstr "You do not have the permission to add LUA record."
+
+#: lib/Domain/Service/Dns/RecordManager.php:270
 msgid "A record with this hostname, type, and content already exists."
 msgstr "このホスト名、タイプ、内容のレコードが既に存在します。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:164
+#: lib/Domain/Service/Dns/RecordManager.php:171
 msgid "Failed to add record to DNS backend."
 msgstr "DNSバックエンドへのレコードの追加に失敗しました。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:302
+#: lib/Domain/Service/Dns/RecordManager.php:328
 msgid "You do not have the permission to edit this SOA record."
 msgstr "このSOAレコードを編集する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:307
+#: lib/Domain/Service/Dns/RecordManager.php:333
 msgid "You do not have the permission to edit this NS record."
 msgstr "このNSレコードを編集する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:356
+#: lib/Domain/Service/Dns/RecordManager.php:338
+#, auto-english-fallback
+msgid "You do not have the permission to edit this LUA record."
+msgstr "You do not have the permission to edit this LUA record."
+
+#: lib/Domain/Service/Dns/RecordManager.php:387
 msgid "Failed to update record in DNS backend."
 msgstr "DNSバックエンドのレコードの更新に失敗しました。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:385
+#: lib/Domain/Service/Dns/RecordManager.php:420
 msgid "You do not have the permission to delete SOA records."
 msgstr "SOAレコードを削除する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:390
+#: lib/Domain/Service/Dns/RecordManager.php:425
 msgid "You do not have the permission to delete NS records."
 msgstr "NSレコードを削除する権限がありません。"
+
+#: lib/Domain/Service/Dns/RecordManager.php:430
+#, auto-english-fallback
+msgid "You do not have the permission to delete LUA records."
+msgstr "You do not have the permission to delete LUA records."
 
 #: lib/Domain/Service/Dns/DomainManager.php:591
 #, php-format
@@ -8776,6 +8915,12 @@ msgstr "選択されたユーザーは既にゾーンを所有しています。
 #: lib/Domain/Service/Dns/DomainManager.php:586
 msgid "There must be at least one owner for a zone."
 msgstr "ゾーンには少なくとも1人のオーナーが必要です。"
+
+#: lib/Domain/Service/Dns/DomainManager.php:825
+#, auto-english-fallback
+#, php-format
+msgid "Failed to update zone records: %s"
+msgstr "Failed to update zone records: %s"
 
 #: lib/Module/Rdap/templates/rdap.html:3
 msgid "Home"
@@ -8853,11 +8998,11 @@ msgstr "コピーしました！"
 msgid "DNSSEC"
 msgstr "DNSSEC"
 
-#: templates/modern/dnssec_edit_key.html:138
+#: templates/modern/dnssec_edit_key.html:140
 msgid "Deactivate key"
 msgstr "キーを無効化"
 
-#: templates/modern/dnssec_edit_key.html:140
+#: templates/modern/dnssec_edit_key.html:142
 msgid "Activate key"
 msgstr "キーを有効化"
 
@@ -9090,7 +9235,7 @@ msgstr ""
 msgid "Update record"
 msgstr "レコードを更新"
 
-#: templates/modern/edit.html:530 templates/modern/users.html:219
+#: templates/modern/edit.html:535 templates/modern/users.html:219
 msgid "Reset"
 msgstr "リセット"
 
@@ -9232,7 +9377,7 @@ msgstr "アカウント"
 msgid "Select the account that will own this supermaster"
 msgstr "このスーパーマスターを所有するアカウントを選択してください"
 
-#: templates/modern/edit.html:190 templates/modern/edit.html:527
+#: templates/modern/edit.html:190 templates/modern/edit.html:532
 msgid "Save changes"
 msgstr "変更を保存"
 
@@ -9376,11 +9521,11 @@ msgstr "グループ管理"
 msgid "Add group"
 msgstr "グループを追加"
 
-#: templates/modern/edit_user.html:262 templates/modern/add_user.html:189
+#: templates/modern/edit_user.html:262 templates/modern/add_user.html:190
 msgid "No groups found"
 msgstr "グループが見つかりません"
 
-#: templates/modern/add_zone_slave.html:95
+#: templates/modern/add_zone_slave.html:99
 msgid "Search groups..."
 msgstr "グループを検索..."
 
@@ -9613,15 +9758,15 @@ msgstr "ユーザー"
 msgid "groups"
 msgstr "グループ"
 
-#: templates/default/index.html:22 templates/modern/index.html:22
+#: templates/default/index.html:25 templates/modern/index.html:25
 msgid "DNS Management"
 msgstr "DNS管理"
 
-#: templates/modern/index.html:35 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:38 templates/modern/pdns_status.html:173
 msgid "Online"
 msgstr "オンライン"
 
-#: templates/modern/index.html:37 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:40 templates/modern/pdns_status.html:175
 msgid "Offline"
 msgstr "オフライン"
 
@@ -9629,31 +9774,31 @@ msgstr "オフライン"
 msgid "Templates"
 msgstr "テンプレート"
 
-#: templates/default/index.html:109 templates/modern/index.html:109
+#: templates/default/index.html:112 templates/modern/index.html:112
 msgid "Zone Operations"
 msgstr "ゾーン操作"
 
-#: templates/default/index.html:120 templates/modern/index.html:120
+#: templates/modern/index.html:123 templates/modern/index.html:413
 msgid "Master Zone"
 msgstr "マスターゾーン"
 
-#: templates/default/index.html:130 templates/modern/index.html:130
+#: templates/modern/index.html:133 templates/modern/index.html:423
 msgid "Slave Zone"
 msgstr "スレーブゾーン"
 
-#: templates/default/index.html:140 templates/modern/index.html:140
+#: templates/modern/index.html:143 templates/modern/index.html:433
 msgid "Supermaster"
 msgstr "スーパーマスター"
 
-#: templates/default/index.html:160 templates/modern/index.html:160
+#: templates/modern/index.html:163 templates/modern/index.html:453
 msgid "PTR Records"
 msgstr "PTRレコード"
 
-#: templates/default/index.html:178 templates/modern/index.html:178
+#: templates/default/index.html:181 templates/modern/index.html:181
 msgid "Administration"
 msgstr "管理"
 
-#: templates/modern/index.html:209 templates/modern/header.html:259
+#: templates/modern/index.html:473 templates/modern/header.html:259
 msgid "Access"
 msgstr "アクセス"
 
@@ -9661,12 +9806,12 @@ msgstr "アクセス"
 msgid "Tools"
 msgstr "ツール"
 
-#: templates/default/index.html:268 templates/modern/index.html:268
+#: templates/default/index.html:271 templates/modern/index.html:271
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "データベース"
 
-#: templates/default/index.html:315 templates/modern/index.html:315
+#: templates/modern/index.html:318 templates/modern/index.html:505
 msgid "My Profile"
 msgstr "マイプロフィール"
 
@@ -9675,7 +9820,7 @@ msgstr "マイプロフィール"
 msgid "Password"
 msgstr "パスワード"
 
-#: templates/modern/index.html:334 templates/modern/header.html:372
+#: templates/modern/index.html:524 templates/modern/header.html:372
 msgid "Preferences"
 msgstr "設定"
 
@@ -9683,7 +9828,7 @@ msgstr "設定"
 msgid "Logout"
 msgstr "ログアウト"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:515
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:517
 msgid "Edit comment"
 msgstr "コメントを編集"
 
@@ -9842,23 +9987,27 @@ msgstr "ログの詳細"
 msgid "Close"
 msgstr "閉じる"
 
-#: templates/modern/list_log_groups.html:202
+#: templates/modern/list_log_groups.html:203
 msgid "Copied"
 msgstr "コピーしました"
 
-#: templates/modern/list_log_groups.html:210
+#: templates/modern/list_log_groups.html:211
 msgid "No logs found"
 msgstr "ログが見つかりません"
 
-#: templates/modern/list_log_groups.html:211
+#: templates/modern/list_log_groups.html:212
 msgid "Try different search criteria or check back later"
 msgstr "異なる検索条件を試すか、後でもう一度確認してください"
 
-#: templates/modern/list_log_zones.html:11 templates/modern/header.html:184
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:569
+msgid "Logs"
+msgstr "ログ"
+
+#: templates/modern/list_log_zones.html:15 templates/modern/header.html:184
 msgid "Zone logs"
 msgstr "ゾーンログ"
 
-#: templates/modern/list_log_zones.html:17
+#: templates/modern/list_log_zones.html:22
 msgid "Zone Change Logs"
 msgstr "ゾーン変更ログ"
 
@@ -9866,7 +10015,7 @@ msgstr "ゾーン変更ログ"
 msgid "Domain name"
 msgstr "ドメイン名"
 
-#: templates/modern/list_log_zones.html:33
+#: templates/modern/list_log_zones.html:43
 msgid "All operations"
 msgstr "すべての操作"
 
@@ -9893,6 +10042,11 @@ msgstr "形式：name,type,content,priority,ttl,comment（1行に1レコード�
 #: templates/modern/bulk_record_add.html:46
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "例：www,A,192.168.1.1,0,3600,web server"
+
+#: templates/modern/bulk_record_add.html:47
+#, auto-english-fallback
+msgid "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:48
 msgid "Comment is optional"
@@ -10023,23 +10177,23 @@ msgstr "新しい所有者を追加"
 msgid "Owner to be added"
 msgstr "追加する所有者"
 
-#: templates/default/delete_user.html:82 templates/modern/delete_user.html:82
+#: templates/default/delete_user.html:95 templates/modern/delete_user.html:95
 msgid "Delete: The zone will be completely removed from the system"
 msgstr "削除：ゾーンはシステムから完全に削除されます"
 
-#: templates/default/delete_user.html:83 templates/modern/delete_user.html:83
+#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
 msgid "Leave: The zone will remain in the system but without an owner"
 msgstr "残す：ゾーンはシステムに残りますが所有者はいません"
 
-#: templates/default/delete_user.html:84 templates/modern/delete_user.html:84
+#: templates/default/delete_user.html:97 templates/modern/delete_user.html:97
 msgid "Add new owner: Transfer ownership to another user"
 msgstr "新しい所有者を追加：所有権を別のユーザーに移転"
 
-#: templates/default/delete_user.html:93 templates/modern/delete_user.html:93
+#: templates/default/delete_user.html:106 templates/modern/delete_user.html:106
 msgid "Yes, delete this user"
 msgstr "はい、このユーザーを削除します"
 
-#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
+#: templates/default/delete_user.html:109 templates/modern/delete_user.html:109
 msgid "No, keep this user"
 msgstr "いいえ、このユーザーを保持します"
 
@@ -10244,15 +10398,15 @@ msgstr "パスワードを確認"
 msgid "Passwords do not match"
 msgstr "パスワードが一致しません"
 
-#: templates/modern/add_user.html:133
+#: templates/modern/add_user.html:134
 msgid "Password Requirements"
 msgstr "パスワード要件"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "Minimum length"
 msgstr "最小長"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "characters"
 msgstr "文字"
 
@@ -10445,6 +10599,10 @@ msgstr "ユーザーを編集"
 msgid "Username"
 msgstr "ユーザー名"
 
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "ユーザー名は管理者のみが変更できます"
+
 #: templates/modern/edit_user.html:32 templates/modern/add_user.html:22
 msgid "Provide user name"
 msgstr "ユーザー名を入力してください"
@@ -10469,11 +10627,11 @@ msgstr "メールアドレス"
 msgid "Provide email"
 msgstr "メールアドレスを入力してください"
 
-#: templates/default/edit_user.html:58 templates/modern/edit_user.html:58
+#: templates/default/edit_user.html:61 templates/modern/edit_user.html:58
 msgid "Leave empty to keep current password"
 msgstr "現在のパスワードを保持するには空のままにしてください"
 
-#: templates/default/edit_user.html:74
+#: templates/default/edit_user.html:77
 msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
@@ -10481,32 +10639,36 @@ msgstr ""
 "このテンプレートの権限は、このユーザーのシステム全体にグローバルに適用されま"
 "す"
 
-#: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
+#: templates/modern/edit_user.html:81 templates/modern/add_user.html:89
 msgid "Optional information about this user"
 msgstr "このユーザーに関するオプション情報"
 
-#: templates/modern/users.html:49 templates/modern/add_user.html:94
+#: templates/modern/users.html:49 templates/modern/add_user.html:95
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "有効"
 
-#: templates/modern/edit_user.html:101 templates/modern/add_user.html:103
+#: templates/modern/edit_user.html:101 templates/modern/add_user.html:104
 msgid "LDAP Authentication"
 msgstr "LDAP認証"
 
-#: templates/modern/edit_user.html:103 templates/modern/add_user.html:105
+#: templates/default/edit_user.html:107
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "認証設定は管理者のみが変更できます"
+
+#: templates/modern/edit_user.html:103 templates/modern/add_user.html:106
 msgid "Use external LDAP directory for authentication"
 msgstr "認証に外部LDAPディレクトリを使用"
 
-#: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
+#: templates/default/edit_user.html:124 templates/modern/edit_user.html:117
 msgid "Back to Home"
 msgstr "ホームに戻る"
 
-#: templates/default/edit_user.html:121 templates/modern/edit_user.html:121
+#: templates/default/edit_user.html:128 templates/modern/edit_user.html:121
 msgid "Back to Users"
 msgstr "ユーザーに戻る"
 
-#: templates/modern/edit_user.html:135 templates/modern/add_user.html:128
+#: templates/modern/edit_user.html:135 templates/modern/add_user.html:129
 msgid "Account Information"
 msgstr "アカウント情報"
 
@@ -10530,52 +10692,52 @@ msgstr "特殊文字を含む必要があります"
 msgid "No specific password requirements"
 msgstr "特定のパスワード要件はありません"
 
-#: templates/modern/add_user.html:160 templates/modern/edit_perm_templ.html:155
+#: templates/modern/add_user.html:161 templates/modern/edit_perm_templ.html:155
 msgid "User Permissions"
 msgstr "ユーザー権限"
 
-#: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
+#: templates/default/edit_user.html:183 templates/modern/edit_user.html:173
 msgid "This user has been assigned the access template"
 msgstr "このユーザーにアクセステンプレートが割り当てられました"
 
-#: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
+#: templates/default/edit_user.html:192 templates/modern/edit_user.html:182
 msgid "Based on this template, this user has the following permissions"
 msgstr "このテンプレートに基づき、このユーザーには以下の権限があります"
 
-#: templates/default/edit_user.html:188 templates/modern/edit_user.html:185
+#: templates/default/edit_user.html:195 templates/modern/edit_user.html:185
 msgid "No permissions are assigned to this template"
 msgstr "このテンプレートには権限が割り当てられていません"
 
-#: templates/modern/edit_user.html:205 templates/modern/add_user.html:172
+#: templates/modern/edit_user.html:205 templates/modern/add_user.html:173
 msgid "Group Memberships"
 msgstr "グループメンバーシップ"
 
-#: templates/default/edit_user.html:212 templates/modern/edit_user.html:209
+#: templates/default/edit_user.html:219 templates/modern/edit_user.html:209
 msgid "Current Memberships"
 msgstr "現在のメンバーシップ"
 
-#: templates/default/edit_user.html:227 templates/modern/edit_user.html:224
+#: templates/default/edit_user.html:234 templates/modern/edit_user.html:224
 msgid "View group details"
 msgstr "グループの詳細を表示"
 
-#: templates/default/edit_user.html:241 templates/modern/edit_user.html:238
+#: templates/default/edit_user.html:248 templates/modern/edit_user.html:238
 msgid "This user is not a member of any groups."
 msgstr "このユーザーはどのグループのメンバーでもありません。"
 
-#: templates/modern/edit_user.html:244 templates/modern/add_user.html:175
+#: templates/modern/edit_user.html:244 templates/modern/add_user.html:176
 msgid "Add to Groups"
 msgstr "グループに追加"
 
-#: templates/default/edit_user.html:248 templates/modern/edit_user.html:245
+#: templates/default/edit_user.html:255 templates/modern/edit_user.html:245
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr ""
 "1つ以上のグループを選択し、\"選択したグループを追加\"ボタンをクリックします。"
 
-#: templates/modern/edit_user.html:253 templates/modern/add_user.html:180
+#: templates/modern/edit_user.html:253 templates/modern/add_user.html:181
 msgid "Search available groups..."
 msgstr "利用可能なグループを検索..."
 
-#: templates/modern/edit_user.html:254 templates/modern/add_user.html:181
+#: templates/modern/edit_user.html:254 templates/modern/add_user.html:182
 msgid "Clear search"
 msgstr "検索をクリア"
 
@@ -10583,7 +10745,7 @@ msgstr "検索をクリア"
 msgid "Select All"
 msgstr "すべて選択"
 
-#: templates/modern/add_zone_slave.html:99
+#: templates/modern/add_zone_slave.html:103
 msgid "Clear All"
 msgstr "すべてクリア"
 
@@ -10591,7 +10753,7 @@ msgstr "すべてクリア"
 msgid "selected"
 msgstr "選択済み"
 
-#: templates/default/edit_user.html:286 templates/modern/edit_user.html:283
+#: templates/default/edit_user.html:293 templates/modern/edit_user.html:283
 msgid "Add Selected Groups"
 msgstr "選択したグループを追加"
 
@@ -10599,7 +10761,7 @@ msgstr "選択したグループを追加"
 msgid "Confirm Removal"
 msgstr "削除の確認"
 
-#: templates/default/edit_user.html:316 templates/modern/edit_user.html:313
+#: templates/default/edit_user.html:323 templates/modern/edit_user.html:313
 msgid "Are you sure you want to remove this user from the group"
 msgstr "このユーザーをグループから削除してもよろしいですか"
 
@@ -11034,7 +11196,7 @@ msgstr ""
 msgid "Ownership"
 msgstr "所有権"
 
-#: templates/modern/add_zone_slave.html:50
+#: templates/modern/add_zone_slave.html:54
 msgid "User Owner"
 msgstr "ユーザー所有者"
 
@@ -11050,7 +11212,7 @@ msgstr "ユーザー所有者を追加"
 msgid "Search users..."
 msgstr "ユーザーを検索..."
 
-#: templates/modern/add_zone_slave.html:77
+#: templates/modern/add_zone_slave.html:81
 msgid "You"
 msgstr "あなた"
 
@@ -11058,7 +11220,7 @@ msgstr "あなた"
 msgid "Add Owner"
 msgstr "所有者を追加"
 
-#: templates/modern/add_zone_slave.html:91
+#: templates/modern/add_zone_slave.html:95
 msgid "Group Ownership"
 msgstr "グループ所有権"
 
@@ -11102,11 +11264,11 @@ msgstr "アクセステンプレートを削除しようとしています"
 msgid "This template is currently assigned to"
 msgstr "このテンプレートは現在次に割り当てられています："
 
-#: templates/modern/delete_zone_templ.html:35
+#: templates/modern/delete_zone_templ.html:37
 msgid "Yes, delete this template"
 msgstr "はい、このテンプレートを削除します"
 
-#: templates/modern/delete_zone_templ.html:38
+#: templates/modern/delete_zone_templ.html:41
 msgid "No, keep this template"
 msgstr "いいえ、このテンプレートを保持します"
 
@@ -11170,71 +11332,71 @@ msgstr "キーを紛失した場合は、再生成する必要があります。
 msgid "Edit"
 msgstr "編集"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:578
+#: templates/modern/edit.html:25 templates/modern/edit.html:589
 msgid "Add new record"
 msgstr "新しいレコードを追加"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:582
+#: templates/modern/edit.html:203 templates/modern/edit.html:593
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "DMARC、SPF、DKIM、CAA、TLSA、SRVレコード用のガイド付きウィザード"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:588
+#: templates/modern/edit.html:35 templates/modern/edit.html:599
 msgid "Multi-record mode"
 msgstr "マルチレコードモード"
 
-#: templates/modern/edit.html:536 templates/modern/edit.html:591
+#: templates/modern/edit.html:542 templates/modern/edit.html:602
 msgid "Bulk add"
 msgstr "一括追加"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:603
+#: templates/modern/edit.html:50 templates/modern/edit.html:614
 msgid "Failed to add"
 msgstr "追加に失敗しました"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:603
+#: templates/modern/edit.html:50 templates/modern/edit.html:614
 msgid "record(s). Please check the record format."
 msgstr "レコード。レコード形式を確認してください。"
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:605
+#: templates/modern/edit.html:52 templates/modern/edit.html:616
 msgid "Failed to add records. Please check the record format."
 msgstr "レコードの追加に失敗しました。レコード形式を確認してください。"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:608
+#: templates/modern/edit.html:55 templates/modern/edit.html:619
 msgid "Content validation failed:"
 msgstr "内容の検証に失敗しました："
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:608
+#: templates/modern/edit.html:55 templates/modern/edit.html:619
 msgid "Invalid value for record type"
 msgstr "レコードタイプの値が無効です"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:610
+#: templates/modern/edit.html:57 templates/modern/edit.html:621
 msgid "Please provide all required information."
 msgstr "必要な情報をすべて入力してください。"
 
-#: templates/modern/edit.html:633 templates/modern/add_record.html:72
+#: templates/modern/edit.html:644 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "PTRを追加"
 
-#: templates/modern/edit.html:636 templates/modern/add_record.html:75
+#: templates/modern/edit.html:647 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "A/AAAAを追加"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:675
+#: templates/modern/edit.html:121 templates/modern/edit.html:686
 msgid "This record already exists"
 msgstr "このレコードは既に存在します"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:687
+#: templates/modern/edit.html:133 templates/modern/edit.html:698
 msgid "Invalid priority"
 msgstr "優先度が無効です"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:694
+#: templates/modern/edit.html:140 templates/modern/edit.html:705
 msgid "Invalid TTL value"
 msgstr "TTL値が無効です"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:696
+#: templates/modern/edit.html:142 templates/modern/edit.html:707
 msgid "Provide TTL"
 msgstr "TTLを入力してください"
 
-#: templates/modern/edit.html:722 templates/modern/add_record.html:207
+#: templates/modern/edit.html:733 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11294,47 +11456,47 @@ msgstr "/"
 msgid "total records"
 msgstr "レコードの合計"
 
-#: templates/default/edit.html:498 templates/modern/edit.html:498
+#: templates/default/edit.html:500 templates/modern/edit.html:500
 msgid "Edit selected"
 msgstr "選択項目を編集"
 
-#: templates/modern/edit.html:502 templates/modern/search.html:489
+#: templates/modern/edit.html:504 templates/modern/search.html:489
 msgid "Delete record(s)"
 msgstr "レコードを削除"
 
-#: templates/modern/edit.html:510 templates/modern/search.html:93
+#: templates/modern/edit.html:512 templates/modern/search.html:93
 msgid "Comments"
 msgstr "コメント"
 
-#: templates/default/edit.html:540 templates/modern/edit.html:540
+#: templates/default/edit.html:546 templates/modern/edit.html:546
 msgid "Import"
 msgstr "インポート"
 
-#: templates/default/edit.html:557 templates/modern/edit.html:557
+#: templates/default/edit.html:563 templates/modern/edit.html:563
 msgid "Generate PTR"
 msgstr "PTRを生成"
 
-#: templates/modern/edit.html:736 templates/modern/add_zone_master.html:25
+#: templates/modern/edit.html:747 templates/modern/add_zone_master.html:25
 msgid "Zone Configuration"
 msgstr "ゾーン構成"
 
-#: templates/modern/edit.html:778 templates/modern/edit.html:807
+#: templates/modern/edit.html:789 templates/modern/edit.html:818
 msgid "Change"
 msgstr "変更"
 
-#: templates/modern/edit.html:771 templates/modern/add_zone_slave.html:36
+#: templates/modern/edit.html:782 templates/modern/add_zone_slave.html:40
 msgid "IP address of master NS"
 msgstr "マスターNSのIPアドレス"
 
-#: templates/default/edit.html:828 templates/modern/edit.html:828
+#: templates/default/edit.html:839 templates/modern/edit.html:839
 msgid "Manage DNSSEC"
 msgstr "DNSSECを管理"
 
-#: templates/default/edit.html:835 templates/modern/edit.html:835
+#: templates/default/edit.html:846 templates/modern/edit.html:846
 msgid "Sign zone"
 msgstr "ゾーンの署名"
 
-#: templates/default/edit.html:839 templates/modern/edit.html:839
+#: templates/default/edit.html:850 templates/modern/edit.html:850
 msgid "Not signed"
 msgstr "署名なし"
 
@@ -11419,11 +11581,11 @@ msgstr "対応するPTRレコードも削除（存在する場合）"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "対応するA/AAAAレコードも削除する（存在する場合）"
 
-#: templates/modern/delete_zone_templ_record.html:59
+#: templates/modern/delete_zone_templ_record.html:61
 msgid "Yes, delete this record"
 msgstr "はい、このレコードを削除します"
 
-#: templates/modern/delete_zone_templ_record.html:62
+#: templates/modern/delete_zone_templ_record.html:65
 msgid "No, keep this record"
 msgstr "いいえ、このレコードを保持します"
 
@@ -11610,11 +11772,15 @@ msgstr "パスワードをメールで送信"
 msgid "Send login credentials to user's email address"
 msgstr "ログイン認証情報をユーザーのメールアドレスに送信"
 
-#: templates/modern/add_user.html:81
+#: templates/modern/add_user.html:72 templates/modern/add_group.html:35
+msgid "Select a template..."
+msgstr "テンプレートを選択..."
+
+#: templates/modern/add_user.html:82
 msgid "Select permissions for this user"
 msgstr "このユーザーの権限を選択してください"
 
-#: templates/default/add_user.html:162 templates/modern/add_user.html:162
+#: templates/default/add_user.html:163 templates/modern/add_user.html:163
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -11623,7 +11789,7 @@ msgstr ""
 "新しいユーザーを作成すると、選択したテンプレートに基づいて権限が付与されま"
 "す。これらの権限は後でユーザーを編集することで変更できます。"
 
-#: templates/default/add_user.html:176 templates/modern/add_user.html:176
+#: templates/default/add_user.html:177 templates/modern/add_user.html:177
 msgid "Select groups to add the new user to upon creation."
 msgstr "作成時に新しいユーザーを追加するグループを選択します。"
 
@@ -11635,51 +11801,59 @@ msgstr "ゾーン名"
 msgid "Provide zone name"
 msgstr "ゾーン名を入力"
 
-#: templates/modern/add_zone_slave.html:32
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr ""
+"ネットワーク（例: 192.168.1.0/24 または 2001:db8::/48）または逆引きゾーン名"
+"（例: 1.168.192.in-addr.arpa）を入力してください。"
+
+#: templates/modern/add_zone_slave.html:35
 msgid "Example: example.com"
 msgstr "例：example.com"
 
-#: templates/modern/add_zone_master.html:47
+#: templates/modern/add_zone_master.html:51
 msgid "Zone type (usually NATIVE)"
 msgstr "ゾーンタイプ（通常はNATIVE）"
 
-#: templates/modern/add_zone_master.html:59
+#: templates/modern/add_zone_master.html:63
 msgid "Optional: Apply predefined records from a template"
 msgstr "任意：テンプレートから事前定義されたレコードを適用"
 
-#: templates/modern/add_zone_master.html:67
+#: templates/modern/add_zone_master.html:71
 msgid "Enable DNSSEC"
 msgstr "DNSSECを有効化"
 
-#: templates/modern/add_zone_master.html:69
+#: templates/modern/add_zone_master.html:73
 msgid "Secure this zone with DNSSEC signing"
 msgstr "DNSSEC署名でこのゾーンを保護"
 
-#: templates/modern/add_zone_slave.html:55
+#: templates/modern/add_zone_slave.html:59
 msgid "Selected:"
 msgstr "選択済み:"
 
-#: templates/modern/add_zone_slave.html:60
+#: templates/modern/add_zone_slave.html:64
 msgid "No user owner"
 msgstr "ユーザー所有者なし"
 
-#: templates/modern/add_zone_slave.html:61
+#: templates/modern/add_zone_slave.html:65
 msgid "Zone will be owned only by groups"
 msgstr "ゾーンはグループのみが所有します"
 
-#: templates/modern/add_zone_slave.html:83
+#: templates/modern/add_zone_slave.html:87
 msgid "Optional: Select a user responsible for this zone"
 msgstr "オプション: このゾーンの責任者となるユーザーを選択"
 
-#: templates/modern/add_zone_slave.html:106
+#: templates/modern/add_zone_slave.html:110
 msgid "members"
 msgstr "メンバー"
 
-#: templates/modern/add_zone_slave.html:112
+#: templates/modern/add_zone_slave.html:116
 msgid "Optional: Select one or more groups"
 msgstr "オプション: 1つ以上のグループを選択"
 
-#: templates/modern/add_zone_slave.html:127
+#: templates/modern/add_zone_slave.html:131
 msgid "Add zone"
 msgstr "ゾーンを追加"
 
@@ -12402,43 +12576,43 @@ msgstr "保存ボタン"
 msgid "Edit Zone View"
 msgstr "ゾーン編集ビュー"
 
-#: templates/modern/user_preferences.html:93
+#: templates/modern/user_preferences.html:94
 msgid "Show record ID"
 msgstr "レコードIDを表示"
 
-#: templates/modern/user_preferences.html:94
+#: templates/modern/user_preferences.html:95
 msgid "Display record ID column in edit view"
 msgstr "編集ビューでレコードID列を表示"
 
-#: templates/modern/user_preferences.html:101
+#: templates/modern/user_preferences.html:103
 msgid "Show add record form"
 msgstr "レコード追加フォームを表示"
 
-#: templates/modern/user_preferences.html:102
+#: templates/modern/user_preferences.html:104
 msgid "Display inline add record form in edit view"
 msgstr "編集ビューでインラインレコード追加フォームを表示"
 
-#: templates/modern/user_preferences.html:109
+#: templates/modern/user_preferences.html:111
 msgid "Show edit buttons"
 msgstr "編集ボタンを表示"
 
-#: templates/modern/user_preferences.html:110
+#: templates/modern/user_preferences.html:112
 msgid "Display individual edit button per record"
 msgstr "レコードごとに個別の編集ボタンを表示"
 
-#: templates/modern/user_preferences.html:117
+#: templates/modern/user_preferences.html:119
 msgid "Show delete buttons"
 msgstr "削除ボタンを表示"
 
-#: templates/modern/user_preferences.html:118
+#: templates/modern/user_preferences.html:120
 msgid "Display individual delete button per record"
 msgstr "レコードごとに個別の削除ボタンを表示"
 
-#: templates/modern/user_preferences.html:133
+#: templates/modern/user_preferences.html:135
 msgid "Save Preferences"
 msgstr "設定を保存"
 
-#: templates/modern/user_preferences.html:139
+#: templates/modern/user_preferences.html:141
 msgid "Changes will be applied after saving"
 msgstr "保存後に変更が適用されます"
 
@@ -12544,11 +12718,11 @@ msgstr "スーパーマスターの削除を実行しようとしています"
 msgid "Supermaster Details"
 msgstr "スーパーマスターの詳細"
 
-#: templates/modern/delete_supermaster.html:53
+#: templates/modern/delete_supermaster.html:57
 msgid "Yes, delete this supermaster"
 msgstr "はい、このスーパーマスターを削除します"
 
-#: templates/modern/delete_supermaster.html:56
+#: templates/modern/delete_supermaster.html:61
 msgid "No, keep this supermaster"
 msgstr "いいえ、このスーパーマスターを保持します"
 
@@ -12564,11 +12738,11 @@ msgstr "ユーザーアクティビティログ"
 msgid "Slave Zone Configuration"
 msgstr "スレーブゾーン構成"
 
-#: templates/modern/add_zone_slave.html:38
+#: templates/modern/add_zone_slave.html:42
 msgid "Provide IP address"
 msgstr "IPアドレスを入力"
 
-#: templates/modern/add_zone_slave.html:39
+#: templates/modern/add_zone_slave.html:43
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
@@ -12968,11 +13142,11 @@ msgstr "選択項目を追加"
 msgid "Are you sure you want to remove"
 msgstr "削除してもよろしいですか"
 
-#: templates/modern/manage_group_zones.html:211
+#: templates/modern/manage_group_zones.html:216
 msgid "zone(s) from this group?"
 msgstr "このグループからゾーン?"
 
-#: templates/modern/manage_group_zones.html:212
+#: templates/modern/manage_group_zones.html:217
 msgid "The zones will remain in the system."
 msgstr "ゾーンはシステムに残ります。"
 
@@ -13145,10 +13319,6 @@ msgstr ""
 #: templates/modern/dnssec_delete_key.html:39
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "DNSSECキーの削除を実行しようとしています（ID："
-
-#: templates/default/add_group.html:35 templates/modern/add_group.html:35
-msgid "Select a template..."
-msgstr "テンプレートを選択..."
 
 #: templates/modern/add_group.html:45
 msgid ""
@@ -13433,6 +13603,11 @@ msgstr "RDAP情報を検索するドメイン名（例：example.com）を入力
 #: lib/Module/Rdap/templates/rdap.html:35
 msgid "RDAP results for"
 msgstr "のRDAP結果"
+
+#: lib/Module/Rdap/templates/rdap.html:46
+#, auto-english-fallback
+msgid "Please enter a domain name to perform an RDAP lookup."
+msgstr "Please enter a domain name to perform an RDAP lookup."
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -14008,6 +14183,15 @@ msgstr ""
 "データベース接続を設定し、管理者アカウントを作成し、設定ファイルを生成しま"
 "す。"
 
+#: install/templates/step3.html.twig:28
+#, auto-english-fallback
+msgid ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+msgstr ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+
 #: install/helpers/InstallStepHandler.php:176
 msgid "Missing PowerDNS tables:"
 msgstr "PowerDNSテーブルが不足："
@@ -14152,50 +14336,13 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNSデータベース\"%s\"に接続できません: %s"
 
-
-
-#: templates/default/edit_user.html:107
-msgid "Authentication settings can only be changed by an administrator"
-msgstr "認証設定は管理者のみが変更できます"
-
-#: lib/Domain/Model/UserManager.php:1108
-msgid "Email address already exists, please choose another one."
-msgstr "メールアドレスは既に存在します。別のものを選択してください。"
-
-#: templates/modern/add_zone_slave.html:33
+#: install/helpers/LocaleHandler.php:89
+#, auto-english-fallback
 msgid ""
-"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
-"name (e.g. 1.168.192.in-addr.arpa)."
-msgstr "ネットワーク（例: 192.168.1.0/24 または 2001:db8::/48）または逆引きゾーン名（例: 1.168.192.in-addr.arpa）を入力してください。"
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
+msgstr ""
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:111
-msgid ""
-"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
-"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
-msgstr "CIDR表記のネットワーク（例: 192.168.1.0/24 または 2001:db8::/48）、または in-addr.arpa もしくは ip6.arpa で終わる逆引きゾーン名を入力してください。"
 
-#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:569
-msgid "Logs"
-msgstr "ログ"
-
-#: lib/Application/Controller/EditController.php:660
-msgid ""
-"Some records were not saved because the form exceeded the server limit on "
-"the number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "フォームがサーバーのフィールド数上限を超えたため、一部のレコードは保存されませんでした。管理者に PHP の \"max_input_vars\" 設定を増やすよう依頼してください。"
-
-#: lib/Domain/Model/ZoneTemplate.php:523 lib/Domain/Model/ZoneTemplate.php:585
-msgid "The record does not belong to this zone template."
-msgstr "このレコードはこのゾーンテンプレートに属していません。"
-
-#: templates/default/edit_user.html:33
-msgid "Your username can only be changed by an administrator"
-msgstr "ユーザー名は管理者のみが変更できます"
-
-#: lib/Application/Controller/DeleteUserController.php:129
-msgid ""
-"The user was not deleted because the form exceeded the server limit on the "
-"number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "フォームがサーバーのフィールド数上限を超えたため、ユーザーは削除されませんでした。管理者に PHP の \"max_input_vars\" 設定を増やすよう依頼してください。"
