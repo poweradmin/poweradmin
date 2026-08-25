@@ -15,6 +15,10 @@ on:
         description: 'Stop after this many deletions (GITHUB_TOKEN is rate limited)'
         type: string
         default: '900'
+      grace_hours:
+        description: 'Never touch versions newer than this, so in-flight builds are safe'
+        type: string
+        default: '24'
 
 permissions:
   packages: write
@@ -37,6 +41,7 @@ jobs:
         GH_TOKEN: ${{ github.token }}
         DRY_RUN: ${{ inputs.dry_run || false }}
         MAX_DELETIONS: ${{ inputs.max_deletions || '900' }}
+        GRACE_HOURS: ${{ inputs.grace_hours || '24' }}
         PKG: poweradmin
         OWNER: poweradmin
       run: |
@@ -44,7 +49,7 @@ jobs:
 
         gh api --paginate \
           "/orgs/${OWNER}/packages/container/${PKG}/versions?per_page=100" \
-          --jq '.[] | [.id, .name, ((.metadata.container.tags // []) | join(","))] | @tsv' \
+          --jq '.[] | [.id, .name, ((.metadata.container.tags // []) | join(",")), .updated_at] | @tsv' \
           > versions.tsv
 
         total=$(wc -l < versions.tsv | tr -d ' ')
@@ -57,7 +62,7 @@ jobs:
         # unreferenced, so a single failure aborts before anything is deleted.
         : > referenced.txt
         tag_count=0
-        while IFS=$'\t' read -r id digest tags; do
+        while IFS=$'\t' read -r id digest tags updated; do
           [ -n "$tags" ] || continue
           tag_count=$((tag_count + 1))
           echo "$digest" >> referenced.txt
@@ -74,14 +79,23 @@ jobs:
         ref_count=$(wc -l < referenced.txt | tr -d ' ')
         echo "Tags: ${tag_count}. Digests referenced by them: ${ref_count}"
 
+        # A build pushes its manifests before the merge job tags them, so anything
+        # recent may belong to a run still in progress.
+        cutoff=$(date -u -d "${GRACE_HOURS} hours ago" +%s)
+
         : > orphans.tsv
-        while IFS=$'\t' read -r id digest tags; do
+        skipped_recent=0
+        while IFS=$'\t' read -r id digest tags updated; do
           [ -z "$tags" ] || continue
+          if [ "$(date -u -d "$updated" +%s)" -ge "$cutoff" ]; then
+            skipped_recent=$((skipped_recent + 1))
+            continue
+          fi
           grep -qxF "$digest" referenced.txt || printf '%s\t%s\n' "$id" "$digest" >> orphans.tsv
         done < versions.tsv
 
         orphans=$(wc -l < orphans.tsv | tr -d ' ')
-        echo "Unreferenced untagged versions: ${orphans}"
+        echo "Unreferenced untagged versions: ${orphans} (skipped ${skipped_recent} newer than ${GRACE_HOURS}h)"
 
         if [ "$orphans" -eq 0 ]; then
           echo "Nothing to prune."
@@ -124,6 +138,7 @@ jobs:
           echo "- Package versions scanned: ${total}"
           echo "- Tags: ${tag_count} (referencing ${ref_count} digests, all preserved)"
           echo "- Unreferenced untagged versions found: ${orphans}"
+          echo "- Skipped as newer than ${GRACE_HOURS}h: ${skipped_recent}"
           echo "- Deleted this run: ${deleted} (cap ${MAX_DELETIONS})"
           echo "- Failed: ${failed}"
           echo "- Still to clear: ${remaining}"
