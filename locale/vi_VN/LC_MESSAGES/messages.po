@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-19 18:33+0300\n"
+"POT-Creation-Date: 2026-08-25 09:24+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -26,7 +26,7 @@ msgstr ""
 "Không tìm thấy tệp cấu hình tại %s. Vui lòng chạy trình cài đặt tại install/ "
 "để tạo một tệp, hoặc tạo tệp cấu hình theo cách thủ công."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:58
+#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:59
 msgid "DNS wizards are not enabled."
 msgstr "Trình hướng dẫn DNS chưa được bật."
 
@@ -42,19 +42,19 @@ msgstr "Không tìm thấy vùng."
 msgid "You do not have permission to add records to this zone."
 msgstr "Bạn không có quyền thêm bản ghi vào vùng này."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:116
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:117
 msgid "Invalid wizard type."
 msgstr "Loại trình hướng dẫn không hợp lệ."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:202
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
 msgid "Validation failed:"
 msgstr "Xác thực thất bại:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:226
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
 msgid "Failed to generate record:"
 msgstr "Không thể tạo bản ghi:"
 
-#: lib/Application/Controller/AddRecordController.php:196
+#: lib/Application/Controller/AddRecordController.php:197
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
@@ -62,11 +62,11 @@ msgstr ""
 "Bản ghi này không hợp lệ và không thể được thêm. Nó có thể đã tồn tại hoặc "
 "chứa dữ liệu không hợp lệ."
 
-#: lib/Application/Controller/AddRecordController.php:276
+#: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Bản ghi đã được thêm thành công."
 
-#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:405
+#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:406
 msgid "Record created successfully"
 msgstr "Bản ghi đã được tạo thành công"
 
@@ -1283,32 +1283,32 @@ msgstr "Phải chọn ít nhất một người dùng hoặc nhóm làm chủ s�
 msgid "Email Previews"
 msgstr "Xem trước email"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:73
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:74
 msgid "You do not have permission to import zones."
 msgstr "Bạn không có quyền nhập vùng."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:113
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:114
 msgid "Please select a valid zone file to upload."
 msgstr "Vui lòng chọn một tệp vùng hợp lệ để tải lên."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:119
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:120
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
 msgstr "Kích thước tệp vượt quá kích thước tối đa cho phép là %s."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:125
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:126
 msgid "The uploaded file is empty or could not be read."
 msgstr "Tệp đã tải lên trống hoặc không thể đọc được."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:134
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:135
 msgid "No valid records found in the uploaded file."
 msgstr "Không tìm thấy bản ghi hợp lệ nào trong tệp đã tải lên."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:300
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:301
 msgid "You do not have permission to modify this zone."
 msgstr "Bạn không có quyền chỉnh sửa vùng này."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:239
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:240
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
@@ -1316,7 +1316,7 @@ msgstr ""
 "Không thể nhập vùng mới: zone_ownership_mode là groups_only nhưng không có "
 "nhóm nào. Vui lòng tạo nhóm trước."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:242
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
@@ -1325,43 +1325,43 @@ msgstr ""
 "phải là thành viên của bất kỳ nhóm nào. Hãy yêu cầu quản trị viên thêm bạn "
 "vào một nhóm trước."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:258
 msgid "Import session expired. Please upload the file again."
 msgstr "Phiên nhập đã hết hạn. Vui lòng tải lên tệp lại."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:264
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:265
 msgid "Invalid import data. Please upload the file again."
 msgstr "Dữ liệu nhập không hợp lệ. Vui lòng tải lên tệp lại."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:291
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:292
 msgid "The selected zone does not exist."
 msgstr "Vùng đã chọn không tồn tại."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:306
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
 msgid "You cannot import records into a read-only zone."
 msgstr "Bạn không thể nhập bản ghi vào một vùng chỉ đọc."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:322
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:323
 msgid "You do not have permission to add zones."
 msgstr "Bạn không có quyền thêm vùng."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:327
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:328
 msgid "Zone name is required."
 msgstr "Tên vùng là bắt buộc."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:143
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:144
 msgid "This is an invalid zone name."
 msgstr "Đây là tên vùng không hợp lệ."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:340
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
 msgid "A zone with this name already exists."
 msgstr "Một vùng với tên này đã tồn tại."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:346
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Loại vùng không hợp lệ."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:379
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:380
 msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
@@ -1369,11 +1369,11 @@ msgstr ""
 "Không thể tạo vùng mới qua nhập: chọn ít nhất một nhóm hoặc bỏ chọn \"Không "
 "có người dùng sở hữu\"."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:388
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
 msgid "Failed to create zone."
 msgstr "Không thể tạo vùng."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:394
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
 msgid "Failed to retrieve created zone."
 msgstr "Không thể truy xuất vùng đã tạo."
 
@@ -1487,7 +1487,7 @@ msgstr ""
 msgid "Invalid or unexpected input given."
 msgstr "Dữ liệu đầu vào không hợp lệ hoặc không mong đợi."
 
-#: lib/Domain/Model/UserManager.php:179
+#: lib/Domain/Model/UserManager.php:180
 msgid "You do not have the permission to delete this user."
 msgstr "Bạn không có quyền xóa người dùng này."
 
@@ -1512,19 +1512,19 @@ msgstr ""
 msgid "The user has been deleted successfully."
 msgstr "Người dùng đã được xóa thành công."
 
-#: lib/Application/Controller/EditCommentController.php:60
+#: lib/Application/Controller/EditCommentController.php:61
 msgid "Zone comments feature is disabled in configuration."
 msgstr "Tính năng bình luận vùng đã bị tắt trong cấu hình."
 
-#: lib/Application/Controller/EditCommentController.php:74
+#: lib/Application/Controller/EditCommentController.php:75
 msgid "You do not have the permission to view this comment."
 msgstr "Bạn không có quyền xem bình luận này."
 
-#: lib/Domain/Service/Dns/RecordManager.php:598
+#: lib/Domain/Service/Dns/RecordManager.php:599
 msgid "You do not have the permission to edit this comment."
 msgstr "Bạn không có quyền chỉnh sửa bình luận này."
 
-#: lib/Application/Controller/EditCommentController.php:113
+#: lib/Application/Controller/EditCommentController.php:114
 msgid "The comment has been updated successfully."
 msgstr "Bình luận đã được cập nhật thành công."
 
@@ -1536,7 +1536,7 @@ msgstr "ID bản ghi không hợp lệ."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Bạn không có quyền xóa bản ghi trong vùng này."
 
-#: lib/Domain/Service/Dns/RecordManager.php:502
+#: lib/Domain/Service/Dns/RecordManager.php:503
 msgid "Record not found."
 msgstr "Không tìm thấy bản ghi."
 
@@ -1572,7 +1572,7 @@ msgstr "Bản ghi đã được xóa thành công. Không tìm thấy bản ghi 
 msgid "The record has been deleted successfully."
 msgstr "Bản ghi đã được xóa thành công."
 
-#: lib/Domain/Service/Dns/RecordManager.php:509
+#: lib/Domain/Service/Dns/RecordManager.php:510
 msgid "You cannot delete records from a read-only zone."
 msgstr "Bạn không thể xóa bản ghi khỏi một vùng chỉ đọc."
 
@@ -1694,7 +1694,7 @@ msgstr "Mã xác minh là bắt buộc."
 msgid "MFA has been enabled successfully."
 msgstr "MFA đã được bật thành công."
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:316
 msgid "Invalid verification code. Please try again."
 msgstr "Mã xác minh không hợp lệ. Vui lòng thử lại."
 
@@ -1932,7 +1932,7 @@ msgstr "Loại bản ghi không hợp lệ."
 msgid "Record could not be added."
 msgstr "Không thể thêm bản ghi."
 
-#: lib/Application/Controller/AddRecordController.php:530
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d bản ghi đã được thêm thành công."
@@ -1949,23 +1949,23 @@ msgstr "ID vùng là bắt buộc."
 msgid "You do not have the permission to edit permission templates."
 msgstr "Bạn không có quyền chỉnh sửa mẫu quyền hạn."
 
-#: lib/Application/Controller/EditPermTemplController.php:67
+#: lib/Application/Controller/EditPermTemplController.php:68
 #: templates/modern/edit_perm_templ.html:17
 msgid "Edit Permission Template"
 msgstr "Sửa mẫu quyền"
 
-#: lib/Application/Controller/EditPermTemplController.php:126
+#: lib/Application/Controller/EditPermTemplController.php:127
 msgid "The permission template has been updated successfully."
 msgstr "Mẫu quyền hạn đã được cập nhật thành công."
 
-#: lib/Application/Controller/AddPermTemplController.php:141
+#: lib/Application/Controller/AddPermTemplController.php:142
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
 msgstr ""
 "Việc cấp quyền quản trị viên trong mẫu quyền hạn yêu cầu quyền quản trị viên."
 
-#: lib/Application/Controller/EditPermTemplController.php:179
+#: lib/Application/Controller/EditPermTemplController.php:180
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
@@ -1973,7 +1973,7 @@ msgstr ""
 "Việc chỉnh sửa mẫu quyền hạn có quyền quản trị viên yêu cầu quyền quản trị "
 "viên."
 
-#: lib/Application/Controller/EditPermTemplController.php:180
+#: lib/Application/Controller/EditPermTemplController.php:181
 msgid "The permission template could not be updated."
 msgstr "Không thể cập nhật mẫu quyền hạn."
 
@@ -2024,7 +2024,7 @@ msgstr "Thành viên đã được xóa khỏi nhóm thành công."
 msgid "User was not a member of this group."
 msgstr "Người dùng không phải là thành viên của nhóm này."
 
-#: lib/Domain/Model/UserManager.php:522
+#: lib/Domain/Model/UserManager.php:515
 msgid "You do not have the permission to add a new user."
 msgstr "Bạn không có quyền thêm người dùng mới."
 
@@ -2037,7 +2037,7 @@ msgstr "Thêm người dùng"
 msgid "No non-superuser permission template is available to assign."
 msgstr "Không có mẫu quyền hạn nào không phải superuser để gán."
 
-#: lib/Application/Controller/EditUserController.php:305
+#: lib/Application/Controller/EditUserController.php:306
 msgid "Invalid permission template: must be a user template"
 msgstr "Mẫu quyền hạn không hợp lệ: phải là mẫu người dùng"
 
@@ -2066,7 +2066,7 @@ msgstr "Mật khẩu đã được tạo nhưng không hiển thị vì lý do b
 msgid "Please fill in all required fields correctly."
 msgstr "Vui lòng điền đúng tất cả các trường bắt buộc."
 
-#: lib/Domain/Service/Dns/RecordManager.php:535
+#: lib/Domain/Service/Dns/RecordManager.php:536
 msgid "You do not have the permission to delete this record."
 msgstr "Bạn không có quyền xóa bản ghi này."
 
@@ -2096,7 +2096,7 @@ msgstr "Chỉ vùng Producer mới công bố danh mục."
 msgid "You do not have permission to access this zone."
 msgstr "Bạn không có quyền truy cập vùng này."
 
-#: lib/Application/Controller/EditController.php:616
+#: lib/Application/Controller/EditController.php:618
 msgid "You do not have permission to edit this zone."
 msgstr "Bạn không có quyền chỉnh sửa vùng này."
 
@@ -2104,7 +2104,7 @@ msgstr "Bạn không có quyền chỉnh sửa vùng này."
 msgid "The zone has been added to the catalog."
 msgstr "Vùng đã được thêm vào danh mục."
 
-#: lib/Application/Controller/EditController.php:610
+#: lib/Application/Controller/EditController.php:612
 msgid "The zone has been removed from the catalog."
 msgstr "Vùng đã được xóa khỏi danh mục."
 
@@ -2121,7 +2121,7 @@ msgstr "Người dùng"
 msgid "User details updated"
 msgstr "Chi tiết người dùng đã được cập nhật"
 
-#: lib/Application/Controller/EditUserController.php:263
+#: lib/Application/Controller/EditUserController.php:264
 msgid "You do not have permission to edit a superuser account."
 msgstr "Bạn không có quyền chỉnh sửa tài khoản quản trị viên cao cấp."
 
@@ -2187,7 +2187,7 @@ msgstr "ID mẫu không hợp lệ."
 msgid "Template does not exist."
 msgstr "Mẫu không tồn tại."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:516
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
 msgid "You do not have permission to view this zone."
 msgstr "Bạn không có quyền xem vùng này."
 
@@ -2241,7 +2241,7 @@ msgstr "Sửa vùng"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Bạn không có quyền quản lý DNSSEC cho vùng này."
 
-#: lib/Application/Controller/EditController.php:334
+#: lib/Application/Controller/EditController.php:336
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC chưa được bật trên máy chủ."
 
@@ -2250,22 +2250,22 @@ msgstr "DNSSEC chưa được bật trên máy chủ."
 msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
 msgstr "Vùng này đã ký sẵn; các khóa DNSSEC được quản lý tại máy chủ primary."
 
-#: lib/Application/Controller/EditController.php:339
+#: lib/Application/Controller/EditController.php:341
 msgid "Zone is already signed with DNSSEC."
 msgstr "Vùng đã được ký bằng DNSSEC rồi."
 
-#: lib/Application/Controller/EditController.php:361
+#: lib/Application/Controller/EditController.php:363
 msgid "Zone has been signed successfully."
 msgstr "Vùng đã được ký thành công."
 
-#: lib/Application/Controller/EditController.php:366
+#: lib/Application/Controller/EditController.php:368
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr ""
 "Yêu cầu ký vùng thành công, nhưng xác minh thất bại. Kiểm tra khóa DNSSEC."
 
-#: lib/Application/Controller/EditController.php:370
+#: lib/Application/Controller/EditController.php:372
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2289,23 +2289,23 @@ msgstr "Yêu cầu hủy ký vùng thành công, nhưng xác minh thất bại."
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Không thể hủy ký vùng. Kiểm tra nhật ký PowerDNS để biết chi tiết."
 
-#: lib/Application/Controller/EditController.php:616
+#: lib/Application/Controller/EditController.php:618
 msgid "The catalog has been changed successfully."
 msgstr "Danh mục đã được thay đổi thành công."
 
-#: lib/Application/Controller/EditController.php:629
+#: lib/Application/Controller/EditController.php:631
 msgid "Zone type has been changed successfully."
 msgstr "Loại vùng đã được thay đổi thành công."
 
-#: lib/Application/Controller/EditController.php:636
+#: lib/Application/Controller/EditController.php:638
 msgid "Slave master has been changed successfully."
 msgstr "Master của slave đã được thay đổi thành công."
 
-#: lib/Application/Controller/EditController.php:650
+#: lib/Application/Controller/EditController.php:652
 msgid "You cannot apply a template to a read-only zone."
 msgstr "Bạn không thể áp dụng mẫu cho một vùng chỉ đọc."
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:669
 msgid "Zone template has been changed successfully."
 msgstr "Mẫu vùng đã được thay đổi thành công."
 
@@ -2313,7 +2313,7 @@ msgstr "Mẫu vùng đã được thay đổi thành công."
 msgid "You cannot edit records in a read-only zone."
 msgstr "Bạn không thể chỉnh sửa bản ghi trong một vùng chỉ đọc."
 
-#: lib/Application/Controller/EditController.php:833
+#: lib/Application/Controller/EditController.php:835
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2322,15 +2322,19 @@ msgstr ""
 "Một số bản ghi không được lưu vì biểu mẫu đã vượt quá giới hạn số trường của "
 "máy chủ. Hãy yêu cầu quản trị viên tăng cài đặt PHP \"max_input_vars\"."
 
-#: lib/Application/Controller/EditController.php:940
+#: lib/Application/Controller/EditController.php:944
+msgid "Zone has not been updated successfully."
+msgstr "Vùng chưa được cập nhật thành công."
+
+#: lib/Application/Controller/EditController.php:945
 msgid "Request has expired, please try again."
 msgstr "Yêu cầu đã hết hạn, vui lòng thử lại."
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:954
 msgid "Zone has been updated successfully."
 msgstr "Vùng đã được cập nhật thành công."
 
-#: lib/Application/Controller/EditController.php:947
+#: lib/Application/Controller/EditController.php:955
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2338,47 +2342,43 @@ msgstr ""
 "Vùng đã được lưu thành công. Không có thay đổi bản ghi nào được thực hiện, "
 "nhưng số serial SOA đã được tăng."
 
-#: lib/Application/Controller/EditController.php:956
-msgid "Zone has not been updated successfully."
-msgstr "Vùng chưa được cập nhật thành công."
-
-#: lib/Application/Controller/EditController.php:984
+#: lib/Application/Controller/EditController.php:987
 msgid "Please provide all required fields."
 msgstr "Vui lòng cung cấp tất cả các trường bắt buộc."
 
-#: lib/Application/Controller/AddRecordController.php:260
+#: lib/Application/Controller/AddRecordController.php:261
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Bản ghi đã được thêm thành công. Bản ghi PTR phù hợp cũng đã được tạo."
 
-#: lib/Application/Controller/AddRecordController.php:265
+#: lib/Application/Controller/AddRecordController.php:266
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Bản ghi đã được thêm thành công, nhưng tạo bản ghi PTR thất bại: "
 
-#: lib/Application/Controller/AddRecordController.php:269
+#: lib/Application/Controller/AddRecordController.php:270
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Bản ghi đã được thêm thành công, nhưng tạo bản ghi PTR thất bại."
 
-#: lib/Application/Controller/AddRecordController.php:273
+#: lib/Application/Controller/AddRecordController.php:274
 msgid "Record successfully added. A matching A record was also created."
 msgstr "Bản ghi đã được thêm thành công. Bản ghi A phù hợp cũng đã được tạo."
 
-#: lib/Application/Controller/MfaVerifyController.php:145
+#: lib/Application/Controller/MfaVerifyController.php:146
 msgid "Invalid security token. Please try again."
 msgstr "Token bảo mật không hợp lệ. Vui lòng thử lại."
 
-#: lib/Application/Controller/MfaVerifyController.php:314
+#: lib/Application/Controller/MfaVerifyController.php:315
 msgid "Too many failed attempts. Please try again later."
 msgstr "Quá nhiều lần thử thất bại. Vui lòng thử lại sau."
 
-#: lib/Application/Controller/MfaVerifyController.php:162
+#: lib/Application/Controller/MfaVerifyController.php:163
 msgid "No MFA record found. Please contact administrator."
 msgstr "Không tìm thấy bản ghi MFA. Vui lòng liên hệ quản trị viên."
 
-#: lib/Application/Controller/MfaVerifyController.php:167
+#: lib/Application/Controller/MfaVerifyController.php:168
 msgid "An error occurred. Please try again."
 msgstr "Đã xảy ra lỗi. Vui lòng thử lại."
 
-#: lib/Application/Controller/MfaVerifyController.php:387
+#: lib/Application/Controller/MfaVerifyController.php:388
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2386,15 +2386,15 @@ msgstr ""
 "Xác minh qua email không khả dụng vì dịch vụ thư đã bị tắt. Vui lòng sử dụng "
 "mã khôi phục."
 
-#: lib/Application/Controller/MfaVerifyController.php:397
+#: lib/Application/Controller/MfaVerifyController.php:398
 msgid "A new verification code has been sent to your email."
 msgstr "Mã xác minh mới đã được gửi đến email của bạn."
 
-#: lib/Application/Controller/MfaVerifyController.php:403
+#: lib/Application/Controller/MfaVerifyController.php:404
 msgid "Please use a recovery code instead."
 msgstr "Vui lòng sử dụng mã khôi phục thay thế."
 
-#: lib/Application/Controller/MfaVerifyController.php:408
+#: lib/Application/Controller/MfaVerifyController.php:409
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2402,29 +2402,29 @@ msgstr ""
 "Không thể gửi mã xác minh đến email của bạn. Vui lòng sử dụng mã khôi phục "
 "thay thế."
 
-#: lib/Domain/Service/Dns/RecordManager.php:285
+#: lib/Domain/Service/Dns/RecordManager.php:286
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Bạn không có quyền thêm bản ghi vào vùng này."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "Bản ghi đã được thêm thành công."
 
-#: lib/Application/Controller/AddRecordController.php:463
+#: lib/Application/Controller/AddRecordController.php:464
 msgid "No records were provided."
 msgstr "Không có bản ghi nào được cung cấp."
 
-#: lib/Application/Controller/AddRecordController.php:532
+#: lib/Application/Controller/AddRecordController.php:533
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d bản ghi trùng khớp cũng đã được tạo."
 
-#: lib/Application/Controller/AddRecordController.php:535
+#: lib/Application/Controller/AddRecordController.php:536
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d bản ghi thêm thất bại."
 
-#: lib/Application/Controller/AddRecordController.php:540
+#: lib/Application/Controller/AddRecordController.php:541
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2432,7 +2432,7 @@ msgstr ""
 "Một số bản ghi không thể được thêm. Chúng có thể đã tồn tại hoặc chứa dữ "
 "liệu không hợp lệ."
 
-#: lib/Application/Controller/AddRecordController.php:570
+#: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Không thể thêm bất kỳ bản ghi nào. Chúng có thể chứa dữ liệu không hợp lệ."
@@ -2461,7 +2461,7 @@ msgstr "Bạn không có quyền chỉnh sửa bản ghi mẫu vùng."
 msgid "OIDC authentication is not enabled"
 msgstr "Xác thực OIDC chưa được bật"
 
-#: lib/Application/Service/SamlService.php:418
+#: lib/Application/Service/SamlService.php:420
 msgid "Authentication failed: "
 msgstr "Xác thực thất bại: "
 
@@ -2774,20 +2774,20 @@ msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
 msgstr[0] "%d vùng không thể được xóa."
 
-#: lib/Application/Controller/AddPermTemplController.php:63
+#: lib/Application/Controller/AddPermTemplController.php:64
 msgid "You do not have the permission to add permission templates."
 msgstr "Bạn không có quyền thêm mẫu quyền hạn."
 
-#: lib/Application/Controller/AddPermTemplController.php:67
+#: lib/Application/Controller/AddPermTemplController.php:68
 #: templates/modern/list_perm_templ.html:9
 msgid "Add permission template"
 msgstr "Thêm mẫu quyền hạn"
 
-#: lib/Application/Controller/AddPermTemplController.php:99
+#: lib/Application/Controller/AddPermTemplController.php:100
 msgid "The permission template has been added successfully."
 msgstr "Mẫu quyền hạn đã được thêm thành công."
 
-#: lib/Application/Controller/AddPermTemplController.php:142
+#: lib/Application/Controller/AddPermTemplController.php:143
 msgid "The permission template could not be added."
 msgstr "Không thể thêm mẫu quyền hạn."
 
@@ -2886,7 +2886,7 @@ msgstr "Thêm mẫu vùng"
 msgid "Zone template has been added successfully."
 msgstr "Mẫu vùng đã được thêm thành công."
 
-#: lib/Application/Controller/IndexController.php:65
+#: lib/Application/Controller/IndexController.php:66
 msgid "Dashboard"
 msgstr "Bảng điều khiển"
 
@@ -2969,24 +2969,24 @@ msgstr "Bạn không có quyền thêm supermaster mới."
 msgid "The supermaster has been added successfully."
 msgstr "Supermaster đã được thêm thành công."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:79
+#: lib/Application/Controller/DnssecKeyImportController.php:80
 msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr "Nhập khóa PEM yêu cầu PowerDNS 4.7 trở lên."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:113
+#: lib/Application/Controller/DnssecKeyImportController.php:114
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr "Cung cấp khóa riêng được mã hóa PEM (phải chứa các dấu BEGIN/END)."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:121
+#: lib/Application/Controller/DnssecKeyImportController.php:122
 msgid "PEM key imported successfully."
 msgstr "Đã nhập khóa PEM thành công."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:124
+#: lib/Application/Controller/DnssecKeyImportController.php:125
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
 msgstr "Không thể nhập khóa PEM. Máy chủ PowerDNS có thể đã từ chối định dạng."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:128
+#: lib/Application/Controller/DnssecKeyImportController.php:129
 msgid "An error occurred while importing the PEM key: "
 msgstr "Đã xảy ra lỗi khi nhập khóa PEM: "
 
@@ -2994,24 +2994,24 @@ msgstr "Đã xảy ra lỗi khi nhập khóa PEM: "
 msgid "You do not have the permission to add records to zone templates."
 msgstr "Bạn không có quyền thêm bản ghi vào mẫu vùng."
 
-#: lib/Application/Controller/EditUserController.php:83
+#: lib/Application/Controller/EditUserController.php:84
 #: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Sửa người dùng"
 
-#: lib/Application/Controller/EditUserController.php:165
+#: lib/Application/Controller/EditUserController.php:166
 msgid "Your profile has been updated successfully."
 msgstr "Hồ sơ của bạn đã được cập nhật thành công."
 
-#: lib/Application/Controller/EditUserController.php:169
+#: lib/Application/Controller/EditUserController.php:170
 msgid "The user has been updated successfully."
 msgstr "Người dùng đã được cập nhật thành công."
 
-#: lib/Application/Controller/EditUserController.php:173
+#: lib/Application/Controller/EditUserController.php:174
 msgid "The user could not be updated."
 msgstr "Không thể cập nhật người dùng."
 
-#: lib/Domain/Model/UserManager.php:340 lib/Domain/Model/UserManager.php:502
+#: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Bạn không có quyền chỉnh sửa người dùng này."
 
@@ -3135,7 +3135,7 @@ msgstr "Đăng xuất hoàn tất (có cảnh báo): "
 msgid "You do not have permission to view this record."
 msgstr "Bạn không có quyền xem bản ghi này."
 
-#: lib/Domain/Service/Dns/RecordManager.php:425
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have permission to edit this record."
 msgstr "Bạn không có quyền chỉnh sửa bản ghi này."
 
@@ -3178,41 +3178,41 @@ msgstr ""
 msgid "Change password"
 msgstr "Đổi mật khẩu"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:132
+#: lib/Application/Controller/DnssecAddKeyController.php:133
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "Thuật toán ECDSA P-256 phải sử dụng 256 bit"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:135
+#: lib/Application/Controller/DnssecAddKeyController.php:136
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "Thuật toán ECDSA P-384 phải sử dụng 384 bit"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:141
+#: lib/Application/Controller/DnssecAddKeyController.php:142
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "Thuật toán ED25519 phải sử dụng 256 bit"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:146
+#: lib/Application/Controller/DnssecAddKeyController.php:147
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr ""
 "Thuật toán ED448 phải sử dụng 456 bit (không được hỗ trợ trong giao diện này)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:153
+#: lib/Application/Controller/DnssecAddKeyController.php:154
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "Thuật toán RSA nên sử dụng 1024 hoặc 2048 bit để đảm bảo an ninh đầy đủ"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:175
+#: lib/Application/Controller/DnssecAddKeyController.php:176
 msgid "Zone key has been added successfully."
 msgstr "Khóa vùng đã được thêm thành công."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:179
+#: lib/Application/Controller/DnssecAddKeyController.php:180
 msgid "Failed to add new DNSSEC key."
 msgstr "Không thể thêm khóa DNSSEC mới."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:183
+#: lib/Application/Controller/DnssecAddKeyController.php:184
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Đã xảy ra lỗi khi thêm khóa DNSSEC: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:187
+#: lib/Application/Controller/DnssecAddKeyController.php:188
 msgid "Please select both algorithm and bits"
 msgstr "Vui lòng chọn cả thuật toán và số bit"
 
@@ -3460,7 +3460,7 @@ msgstr "Xác thực thất bại: Không có mã ủy quyền"
 msgid "Authentication failed: Invalid session"
 msgstr "Xác thực thất bại: Phiên không hợp lệ"
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Xác thực thất bại: Không thể tạo hoặc cập nhật tài khoản người dùng"
 
@@ -3488,15 +3488,15 @@ msgstr "Không thể xác thực với LDAP."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Xác thực thất bại: Phản hồi SAML không hợp lệ"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:307
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:308
 msgid "This template is assigned to at least one user and one group."
 msgstr "Mẫu này đã được gán cho ít nhất một người dùng và một nhóm."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:309
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:310
 msgid "This template is assigned to at least one user."
 msgstr "Mẫu này đã được gán cho ít nhất một người dùng."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:311
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:312
 msgid "This template is assigned to at least one group."
 msgstr "Mẫu này đã được gán cho ít nhất một nhóm."
 
@@ -3688,18 +3688,27 @@ msgstr ""
 "Đang hiển thị trạng thái kết nối của các supermaster được cấu hình trong "
 "bảng dưới đây."
 
-#: lib/Infrastructure/Web/PageRenderer.php:249
-msgid ""
-"The install/ directory exists, you must remove it first before proceeding."
-msgstr "Thư mục install/ tồn tại, bạn phải xóa nó trước khi tiếp tục."
-
-#: lib/Infrastructure/Web/PageRenderer.php:289
+#: lib/Infrastructure/Web/PageRenderer.php:132
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
 "Khóa mã hóa phiên mặc định đang được sử dụng, vui lòng thiết lập khóa trong "
 "tệp cấu hình của bạn."
+
+#: lib/Infrastructure/Web/PageRenderer.php:136
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/Infrastructure/Web/PageRenderer.php:253
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr "Thư mục install/ tồn tại, bạn phải xóa nó trước khi tiếp tục."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:166
 #: templates/default/login.html:139 templates/modern/login.html:139
@@ -3722,11 +3731,11 @@ msgstr ""
 "Lỗi cơ sở dữ liệu: Không thể xác minh xác thực người dùng. Vui lòng kiểm tra "
 "cấu hình cơ sở dữ liệu."
 
-#: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
+#: lib/Domain/Model/UserManager.php:80 lib/Domain/Model/UserManager.php:91
 msgid "You do not have the permission to change the permission template."
 msgstr "Bạn không có quyền thay đổi mẫu quyền hạn."
 
-#: lib/Domain/Model/UserManager.php:87
+#: lib/Domain/Model/UserManager.php:88
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
@@ -3734,26 +3743,26 @@ msgstr ""
 "Việc thay đổi mẫu quyền hạn của chính bạn yêu cầu quyền chỉnh sửa người dùng "
 "khác."
 
-#: lib/Domain/Model/UserManager.php:89
+#: lib/Domain/Model/UserManager.php:90
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
 msgstr ""
 "Việc gán mẫu quyền hạn có quyền quản trị viên yêu cầu quyền quản trị viên."
 
-#: lib/Domain/Model/UserManager.php:534
+#: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Nhập địa chỉ email hợp lệ."
 
-#: lib/Domain/Model/UserManager.php:526
+#: lib/Domain/Model/UserManager.php:519
 msgid "Username exist already, please choose another one."
 msgstr "Tên người dùng đã tồn tại, vui lòng chọn tên khác."
 
-#: lib/Domain/Model/UserManager.php:538
+#: lib/Domain/Model/UserManager.php:531
 msgid "Email address already exists, please choose another one."
 msgstr "Địa chỉ email đã tồn tại, vui lòng chọn địa chỉ khác."
 
-#: lib/Domain/Model/UserManager.php:530
+#: lib/Domain/Model/UserManager.php:523
 msgid "Enter a valid user name."
 msgstr "Nhập tên người dùng hợp lệ."
 
@@ -3916,55 +3925,59 @@ msgstr "View yêu cầu PowerDNS 5.0 trở lên."
 msgid ""
 "Views require the LMDB backend. The connected server runs a backend that "
 "does not implement them."
-msgstr "View yêu cầu backend LMDB. Máy chủ đang kết nối chạy một backend không hỗ trợ chúng."
+msgstr ""
+"View yêu cầu backend LMDB. Máy chủ đang kết nối chạy một backend không hỗ "
+"trợ chúng."
 
 #: lib/Domain/Service/PdnsCapabilities.php:165
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr "View yêu cầu \"views=yes\" trong pdns.conf. Máy chủ đang kết nối đã tắt chúng."
+msgstr ""
+"View yêu cầu \"views=yes\" trong pdns.conf. Máy chủ đang kết nối đã tắt "
+"chúng."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:153
+#: lib/Domain/Service/DatabaseConsistencyService.php:154
 msgid "All zones have owners"
 msgstr "Tất cả vùng đều có chủ sở hữu"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:160
+#: lib/Domain/Service/DatabaseConsistencyService.php:161
 #, php-format
 msgid "%d zones found without owners"
 msgstr "Tìm thấy %d vùng không có chủ sở hữu"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:211
+#: lib/Domain/Service/DatabaseConsistencyService.php:212
 msgid "All slave zones have master IP addresses"
 msgstr "Tất cả vùng slave đều có địa chỉ IP master"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:218
+#: lib/Domain/Service/DatabaseConsistencyService.php:219
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "Tìm thấy %d vùng slave không có địa chỉ IP master"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:263
+#: lib/Domain/Service/DatabaseConsistencyService.php:264
 msgid "All records belong to existing zones"
 msgstr "Tất cả bản ghi đều thuộc về các vùng hiện có"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:270
+#: lib/Domain/Service/DatabaseConsistencyService.php:271
 #, php-format
 msgid "%d orphaned records found"
 msgstr "Tìm thấy %d bản ghi mồ côi"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:330
+#: lib/Domain/Service/DatabaseConsistencyService.php:331
 msgid "No duplicate SOA records found"
 msgstr "Không tìm thấy bản ghi SOA trùng lặp"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:337
+#: lib/Domain/Service/DatabaseConsistencyService.php:338
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d vùng có bản ghi SOA trùng lặp"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:397
+#: lib/Domain/Service/DatabaseConsistencyService.php:398
 msgid "All zones have SOA records"
 msgstr "Tất cả vùng đều có bản ghi SOA"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:404
+#: lib/Domain/Service/DatabaseConsistencyService.php:405
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "Tìm thấy %d vùng không có bản ghi SOA"
@@ -8880,7 +8893,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:335
 msgid "Invalid value for the port field of the SRV record. Must be 0-65535."
-msgstr "Giá trị không hợp lệ cho trường port của bản ghi SRV. Phải nằm trong khoảng 0-65535."
+msgstr ""
+"Giá trị không hợp lệ cho trường port của bản ghi SRV. Phải nằm trong khoảng "
+"0-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:344
 #, php-format
@@ -9476,15 +9491,15 @@ msgstr "Đã bỏ qua việc cập nhật PTR: loại bản ghi không phải A 
 msgid "Stale PTR record removed."
 msgstr "Đã xóa bản ghi PTR cũ."
 
-#: lib/Domain/Service/Dns/RecordManager.php:321
+#: lib/Domain/Service/Dns/RecordManager.php:322
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Đã tồn tại một bản ghi với tên máy chủ, loại và nội dung này."
 
-#: lib/Domain/Service/Dns/RecordManager.php:222
+#: lib/Domain/Service/Dns/RecordManager.php:223
 msgid "Failed to add record to DNS backend."
 msgstr "Không thể thêm bản ghi vào backend DNS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:458
+#: lib/Domain/Service/Dns/RecordManager.php:459
 msgid "Failed to update record in DNS backend."
 msgstr "Không thể cập nhật bản ghi trong backend DNS."
 
@@ -9774,7 +9789,7 @@ msgstr "Thông tin khóa API"
 msgid "Created by"
 msgstr "Tạo bởi"
 
-#: templates/modern/api_keys.html:48
+#: templates/modern/pdns_status.html:176 templates/modern/api_keys.html:48
 msgid "Unknown"
 msgstr "Không xác định"
 
@@ -10339,7 +10354,7 @@ msgstr "Loại bỏ"
 msgid "and"
 msgstr "và"
 
-#: templates/modern/list_forward_zones.html:189
+#: templates/modern/list_forward_zones.html:191
 msgid "more..."
 msgstr "nữa..."
 
@@ -11259,7 +11274,14 @@ msgstr "Vùng không có bản ghi SOA"
 msgid "No SOA"
 msgstr "Không có SOA"
 
-#: templates/modern/list_forward_zones.html:159
+#: templates/modern/list_forward_zones.html:158
+#, auto-english-fallback
+msgid ""
+"The DNS server could not be reached, so this zone's SOA status is unknown"
+msgstr ""
+"The DNS server could not be reached, so this zone's SOA status is unknown"
+
+#: templates/modern/list_forward_zones.html:161
 msgid ""
 "Records for this zone are replicated from its primary and cannot be edited "
 "here."
@@ -11267,15 +11289,15 @@ msgstr ""
 "Các bản ghi của vùng này được sao chép từ máy chủ primary và không thể chỉnh "
 "sửa tại đây."
 
-#: templates/modern/list_reverse_zones.html:243
+#: templates/modern/list_reverse_zones.html:245
 msgid "-"
 msgstr "-"
 
-#: templates/modern/list_forward_zones.html:207
+#: templates/modern/list_forward_zones.html:209
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY đang chờ: số sê-ri %serial% chưa được xác nhận"
 
-#: templates/modern/list_forward_zones.html:209
+#: templates/modern/list_forward_zones.html:211
 msgid "NOTIFY sent at serial %serial%"
 msgstr "NOTIFY đã gửi ở số sê-ri %serial%"
 
@@ -11392,7 +11414,9 @@ msgstr "Thêm thành viên"
 msgid ""
 "No zones are available to add. Only Primary and Producer zones that are not "
 "already in a catalog can be members."
-msgstr "Không có vùng nào để thêm. Chỉ các vùng Primary và Producer chưa thuộc danh mục nào mới có thể làm thành viên."
+msgstr ""
+"Không có vùng nào để thêm. Chỉ các vùng Primary và Producer chưa thuộc danh "
+"mục nào mới có thể làm thành viên."
 
 #: templates/modern/list_views.html:64
 msgid "Add"
@@ -12410,7 +12434,7 @@ msgstr "Tổng số vùng:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Không có vùng chuyển tiếp nào để hiển thị trong danh sách này."
 
-#: templates/modern/list_forward_zones.html:235
+#: templates/modern/list_forward_zones.html:237
 msgid "PTR"
 msgstr "PTR"
 
@@ -13360,7 +13384,8 @@ msgstr "Dễ sử dụng"
 msgid ""
 "Authenticator app verification is not available because it has been disabled "
 "by the administrator."
-msgstr "Xác minh bằng ứng dụng xác thực không khả dụng vì đã bị quản trị viên tắt."
+msgstr ""
+"Xác minh bằng ứng dụng xác thực không khả dụng vì đã bị quản trị viên tắt."
 
 #: templates/default/mfa_setup.html:84 templates/modern/mfa_setup.html:84
 msgid "Set up app authentication"
@@ -13435,7 +13460,7 @@ msgstr "Lỗi:"
 msgid "Success:"
 msgstr "Thành công:"
 
-#: templates/modern/message_alert.html:16
+#: templates/modern/message_alert.html:17
 msgid "Info:"
 msgstr "Thông tin:"
 
@@ -15421,30 +15446,5 @@ msgid ""
 msgstr ""
 "Không thể thiết lập locale. Locale đã chọn có thể không được hỗ trợ trên hệ "
 "thống này. Vui lòng liên hệ quản trị viên của bạn."
-
-# OBSOLETE: msgid "Network views require PowerDNS 5.0 or newer."
-# OBSOLETE: msgstr "View mạng yêu cầu PowerDNS 5.0 trở lên."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger "
-# OBSOLETE: "is recommended."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "HMAC-MD5 được coi là yếu theo tiêu chuẩn hiện đại. Khuyến nghị sử dụng "
-# OBSOLETE: "HMAC-SHA256 hoặc mạnh hơn."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "CNAME target must be a fully qualified domain name (FQDN). Single-label "
-# OBSOLETE: "names are not allowed."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Đích CNAME phải là tên miền đầy đủ (FQDN). Không cho phép tên chỉ có một "
-# OBSOLETE: "nhãn."
-
-# OBSOLETE: msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Giá trị không hợp lệ cho trường port của bản ghi SRV. Phải từ 1-65535."
-
-# OBSOLETE: msgid "Error"
-# OBSOLETE: msgstr "Lỗi"
-
 
 

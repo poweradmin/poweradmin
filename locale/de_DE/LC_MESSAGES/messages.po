@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-19 18:33+0300\n"
+"POT-Creation-Date: 2026-08-25 09:24+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -27,7 +27,7 @@ msgstr ""
 "unter install/ aus, um eine zu erstellen, oder erstellen Sie die "
 "Konfigurationsdatei manuell."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:58
+#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:59
 msgid "DNS wizards are not enabled."
 msgstr "DNS-Assistenten sind nicht aktiviert."
 
@@ -43,19 +43,19 @@ msgstr "Zone nicht gefunden."
 msgid "You do not have permission to add records to this zone."
 msgstr "Sie haben keine Berechtigung, Einträge zu dieser Zone hinzuzufügen."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:116
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:117
 msgid "Invalid wizard type."
 msgstr "Ungültiger Assistententyp."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:202
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
 msgid "Validation failed:"
 msgstr "Validierung fehlgeschlagen:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:226
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
 msgid "Failed to generate record:"
 msgstr "Eintrag konnte nicht generiert werden:"
 
-#: lib/Application/Controller/AddRecordController.php:196
+#: lib/Application/Controller/AddRecordController.php:197
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
@@ -63,11 +63,11 @@ msgstr ""
 "Dieser Eintrag war nicht gültig und konnte nicht hinzugefügt werden. Er "
 "existiert möglicherweise bereits oder enthält ungültige Daten."
 
-#: lib/Application/Controller/AddRecordController.php:276
+#: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Der Eintrag wurde erfolgreich hinzugefügt."
 
-#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:405
+#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:406
 msgid "Record created successfully"
 msgstr "Eintrag erfolgreich erstellt"
 
@@ -1310,32 +1310,32 @@ msgstr ""
 msgid "Email Previews"
 msgstr "E-Mail-Vorschauen"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:73
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:74
 msgid "You do not have permission to import zones."
 msgstr "Sie haben keine Berechtigung, Zonen zu importieren."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:113
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:114
 msgid "Please select a valid zone file to upload."
 msgstr "Bitte wählen Sie eine gültige Zonendatei zum Hochladen aus."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:119
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:120
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
 msgstr "Die Dateigröße überschreitet die maximal zulässige Größe von %s."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:125
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:126
 msgid "The uploaded file is empty or could not be read."
 msgstr "Die hochgeladene Datei ist leer oder konnte nicht gelesen werden."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:134
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:135
 msgid "No valid records found in the uploaded file."
 msgstr "Keine gültigen Einträge in der hochgeladenen Datei gefunden."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:300
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:301
 msgid "You do not have permission to modify this zone."
 msgstr "Sie haben keine Berechtigung, diese Zone zu ändern."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:239
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:240
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
@@ -1343,7 +1343,7 @@ msgstr ""
 "Neue Zone kann nicht importiert werden: zone_ownership_mode ist groups_only, "
 "aber es gibt keine Gruppen. Erstellen Sie zuerst eine Gruppe."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:242
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
@@ -1352,43 +1352,43 @@ msgstr ""
 "und Sie sind in keiner Gruppe. Bitten Sie einen Administrator, Sie zuerst "
 "einer Gruppe hinzuzufügen."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:258
 msgid "Import session expired. Please upload the file again."
 msgstr "Import-Sitzung abgelaufen. Bitte laden Sie die Datei erneut hoch."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:264
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:265
 msgid "Invalid import data. Please upload the file again."
 msgstr "Ungültige Importdaten. Bitte laden Sie die Datei erneut hoch."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:291
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:292
 msgid "The selected zone does not exist."
 msgstr "Die ausgewählte Zone existiert nicht."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:306
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
 msgid "You cannot import records into a read-only zone."
 msgstr "Sie können in eine schreibgeschützte Zone keine Einträge importieren."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:322
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:323
 msgid "You do not have permission to add zones."
 msgstr "Sie haben keine Berechtigung, Zonen hinzuzufügen."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:327
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:328
 msgid "Zone name is required."
 msgstr "Zonenname ist erforderlich."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:143
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:144
 msgid "This is an invalid zone name."
 msgstr "Dies ist ein ungültiger Zonenname."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:340
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
 msgid "A zone with this name already exists."
 msgstr "Eine Zone mit diesem Namen existiert bereits."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:346
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Ungültiger Zonentyp."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:379
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:380
 msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
@@ -1396,11 +1396,11 @@ msgstr ""
 "Neue Zone kann nicht per Import erstellt werden: Wählen Sie mindestens eine "
 "Gruppe aus oder lassen Sie \"Kein Benutzer-Eigentümer\" deaktiviert."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:388
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
 msgid "Failed to create zone."
 msgstr "Zone konnte nicht erstellt werden."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:394
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
 msgid "Failed to retrieve created zone."
 msgstr "Erstellte Zone konnte nicht abgerufen werden."
 
@@ -1517,7 +1517,7 @@ msgstr ""
 msgid "Invalid or unexpected input given."
 msgstr "Ungültige oder unerwartete Eingabe."
 
-#: lib/Domain/Model/UserManager.php:179
+#: lib/Domain/Model/UserManager.php:180
 msgid "You do not have the permission to delete this user."
 msgstr "Sie haben nicht die Berechtigung, diesen Benutzer zu löschen."
 
@@ -1543,19 +1543,19 @@ msgstr ""
 msgid "The user has been deleted successfully."
 msgstr "Der Benutzer wurde erfolgreich gelöscht."
 
-#: lib/Application/Controller/EditCommentController.php:60
+#: lib/Application/Controller/EditCommentController.php:61
 msgid "Zone comments feature is disabled in configuration."
 msgstr "Die Zone-Kommentare-Funktion ist in der Konfiguration deaktiviert."
 
-#: lib/Application/Controller/EditCommentController.php:74
+#: lib/Application/Controller/EditCommentController.php:75
 msgid "You do not have the permission to view this comment."
 msgstr "Sie haben nicht die Berechtigung, diesen Kommentar anzusehen."
 
-#: lib/Domain/Service/Dns/RecordManager.php:598
+#: lib/Domain/Service/Dns/RecordManager.php:599
 msgid "You do not have the permission to edit this comment."
 msgstr "Sie haben nicht die Berechtigung, diesen Kommentar zu bearbeiten."
 
-#: lib/Application/Controller/EditCommentController.php:113
+#: lib/Application/Controller/EditCommentController.php:114
 msgid "The comment has been updated successfully."
 msgstr "Der Kommentar wurde erfolgreich aktualisiert."
 
@@ -1567,7 +1567,7 @@ msgstr "Ungültige Datensatz-ID."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Sie haben keine Berechtigung, Datensätze in dieser Zone zu löschen."
 
-#: lib/Domain/Service/Dns/RecordManager.php:502
+#: lib/Domain/Service/Dns/RecordManager.php:503
 msgid "Record not found."
 msgstr "Eintrag nicht gefunden."
 
@@ -1612,7 +1612,7 @@ msgstr ""
 msgid "The record has been deleted successfully."
 msgstr "Der Eintrag wurde erfolgreich gelöscht."
 
-#: lib/Domain/Service/Dns/RecordManager.php:509
+#: lib/Domain/Service/Dns/RecordManager.php:510
 msgid "You cannot delete records from a read-only zone."
 msgstr "Sie können aus einer schreibgeschützten Zone keine Einträge löschen."
 
@@ -1740,7 +1740,7 @@ msgstr "Verifizierungscode ist erforderlich."
 msgid "MFA has been enabled successfully."
 msgstr "MFA wurde erfolgreich aktiviert."
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:316
 msgid "Invalid verification code. Please try again."
 msgstr "Ungültiger Verifizierungscode. Bitte versuchen Sie es erneut."
 
@@ -1986,7 +1986,7 @@ msgstr "Ungültiger Eintragstyp."
 msgid "Record could not be added."
 msgstr "Eintrag konnte nicht hinzugefügt werden."
 
-#: lib/Application/Controller/AddRecordController.php:530
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d Eintrag/Einträge wurden erfolgreich hinzugefügt."
@@ -2003,16 +2003,16 @@ msgstr "Zonen-ID ist erforderlich."
 msgid "You do not have the permission to edit permission templates."
 msgstr "Sie haben nicht die Berechtigung, Berechtigungsvorlagen zu bearbeiten."
 
-#: lib/Application/Controller/EditPermTemplController.php:67
+#: lib/Application/Controller/EditPermTemplController.php:68
 #: templates/modern/edit_perm_templ.html:17
 msgid "Edit Permission Template"
 msgstr "Berechtigungsvorlage bearbeiten"
 
-#: lib/Application/Controller/EditPermTemplController.php:126
+#: lib/Application/Controller/EditPermTemplController.php:127
 msgid "The permission template has been updated successfully."
 msgstr "Die Berechtigungsvorlage wurde erfolgreich aktualisiert."
 
-#: lib/Application/Controller/AddPermTemplController.php:141
+#: lib/Application/Controller/AddPermTemplController.php:142
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
@@ -2020,7 +2020,7 @@ msgstr ""
 "Das Vergeben von Administratorrechten in einer Berechtigungsvorlage "
 "erfordert Administratorrechte."
 
-#: lib/Application/Controller/EditPermTemplController.php:179
+#: lib/Application/Controller/EditPermTemplController.php:180
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
@@ -2028,7 +2028,7 @@ msgstr ""
 "Das Bearbeiten einer Berechtigungsvorlage mit Administratorrechten erfordert "
 "Administratorrechte."
 
-#: lib/Application/Controller/EditPermTemplController.php:180
+#: lib/Application/Controller/EditPermTemplController.php:181
 msgid "The permission template could not be updated."
 msgstr "Die Berechtigungsvorlage konnte nicht aktualisiert werden."
 
@@ -2079,7 +2079,7 @@ msgstr "Mitglied erfolgreich aus der Gruppe entfernt."
 msgid "User was not a member of this group."
 msgstr "Benutzer war kein Mitglied dieser Gruppe."
 
-#: lib/Domain/Model/UserManager.php:522
+#: lib/Domain/Model/UserManager.php:515
 msgid "You do not have the permission to add a new user."
 msgstr "Sie haben nicht die Berechtigung, einen neuen Benutzer hinzuzufügen."
 
@@ -2094,7 +2094,7 @@ msgstr ""
 "Es ist keine Berechtigungsvorlage ohne Superuser-Rechte zur Zuweisung "
 "verfügbar."
 
-#: lib/Application/Controller/EditUserController.php:305
+#: lib/Application/Controller/EditUserController.php:306
 msgid "Invalid permission template: must be a user template"
 msgstr "Ungültige Berechtigungsvorlage: muss eine Benutzervorlage sein"
 
@@ -2125,7 +2125,7 @@ msgstr ""
 msgid "Please fill in all required fields correctly."
 msgstr "Bitte füllen Sie alle erforderlichen Felder korrekt aus."
 
-#: lib/Domain/Service/Dns/RecordManager.php:535
+#: lib/Domain/Service/Dns/RecordManager.php:536
 msgid "You do not have the permission to delete this record."
 msgstr "Sie haben nicht die Berechtigung, diesen Eintrag zu löschen."
 
@@ -2155,7 +2155,7 @@ msgstr "Nur Producer-Zonen veröffentlichen einen Katalog."
 msgid "You do not have permission to access this zone."
 msgstr "Sie haben keine Berechtigung, auf diese Zone zuzugreifen."
 
-#: lib/Application/Controller/EditController.php:616
+#: lib/Application/Controller/EditController.php:618
 msgid "You do not have permission to edit this zone."
 msgstr "Sie haben keine Berechtigung, diese Zone zu bearbeiten."
 
@@ -2163,7 +2163,7 @@ msgstr "Sie haben keine Berechtigung, diese Zone zu bearbeiten."
 msgid "The zone has been added to the catalog."
 msgstr "Die Zone wurde zum Katalog hinzugefügt."
 
-#: lib/Application/Controller/EditController.php:610
+#: lib/Application/Controller/EditController.php:612
 msgid "The zone has been removed from the catalog."
 msgstr "Die Zone wurde aus dem Katalog entfernt."
 
@@ -2180,7 +2180,7 @@ msgstr "Benutzer"
 msgid "User details updated"
 msgstr "Benutzerdetails aktualisiert"
 
-#: lib/Application/Controller/EditUserController.php:263
+#: lib/Application/Controller/EditUserController.php:264
 msgid "You do not have permission to edit a superuser account."
 msgstr "Sie haben keine Berechtigung, ein Superuser-Konto zu bearbeiten."
 
@@ -2251,7 +2251,7 @@ msgstr "Ungültige Vorlagen-ID."
 msgid "Template does not exist."
 msgstr "Vorlage existiert nicht."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:516
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
 msgid "You do not have permission to view this zone."
 msgstr "Sie haben keine Berechtigung, diese Zone anzuzeigen."
 
@@ -2307,7 +2307,7 @@ msgstr "Zone bearbeiten"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Sie haben keine Berechtigung, DNSSEC für diese Zone zu verwalten."
 
-#: lib/Application/Controller/EditController.php:334
+#: lib/Application/Controller/EditController.php:336
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC ist auf dem Server nicht aktiviert."
 
@@ -2318,15 +2318,15 @@ msgstr ""
 "Diese Zone ist presigned; DNSSEC-Schlüssel werden auf dem primären Server "
 "verwaltet."
 
-#: lib/Application/Controller/EditController.php:339
+#: lib/Application/Controller/EditController.php:341
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zone ist bereits mit DNSSEC signiert."
 
-#: lib/Application/Controller/EditController.php:361
+#: lib/Application/Controller/EditController.php:363
 msgid "Zone has been signed successfully."
 msgstr "Zone wurde erfolgreich signiert."
 
-#: lib/Application/Controller/EditController.php:366
+#: lib/Application/Controller/EditController.php:368
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2334,7 +2334,7 @@ msgstr ""
 "Zonensignierung erfolgreich angefordert, aber Verifizierung fehlgeschlagen. "
 "Überprüfen Sie die DNSSEC-Schlüssel."
 
-#: lib/Application/Controller/EditController.php:370
+#: lib/Application/Controller/EditController.php:372
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2363,23 +2363,23 @@ msgstr ""
 "Fehler beim Aufheben der Zonensignierung. Überprüfen Sie die PowerDNS-Logs "
 "für Details."
 
-#: lib/Application/Controller/EditController.php:616
+#: lib/Application/Controller/EditController.php:618
 msgid "The catalog has been changed successfully."
 msgstr "Der Katalog wurde erfolgreich geändert."
 
-#: lib/Application/Controller/EditController.php:629
+#: lib/Application/Controller/EditController.php:631
 msgid "Zone type has been changed successfully."
 msgstr "Zonentyp wurde erfolgreich geändert."
 
-#: lib/Application/Controller/EditController.php:636
+#: lib/Application/Controller/EditController.php:638
 msgid "Slave master has been changed successfully."
 msgstr "Slave-Master wurde erfolgreich geändert."
 
-#: lib/Application/Controller/EditController.php:650
+#: lib/Application/Controller/EditController.php:652
 msgid "You cannot apply a template to a read-only zone."
 msgstr "Sie können auf eine schreibgeschützte Zone keine Vorlage anwenden."
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:669
 msgid "Zone template has been changed successfully."
 msgstr "Zonenvorlage wurde erfolgreich geändert."
 
@@ -2387,7 +2387,7 @@ msgstr "Zonenvorlage wurde erfolgreich geändert."
 msgid "You cannot edit records in a read-only zone."
 msgstr "Sie können Einträge in einer schreibgeschützten Zone nicht bearbeiten."
 
-#: lib/Application/Controller/EditController.php:833
+#: lib/Application/Controller/EditController.php:835
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2397,15 +2397,19 @@ msgstr ""
 "für die Anzahl der Felder überschritten hat. Bitten Sie Ihren Administrator, "
 "die PHP-Einstellung \"max_input_vars\" zu erhöhen."
 
-#: lib/Application/Controller/EditController.php:940
+#: lib/Application/Controller/EditController.php:944
+msgid "Zone has not been updated successfully."
+msgstr "Zone wurde nicht erfolgreich aktualisiert."
+
+#: lib/Application/Controller/EditController.php:945
 msgid "Request has expired, please try again."
 msgstr "Anfrage ist abgelaufen, bitte versuchen Sie es erneut."
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:954
 msgid "Zone has been updated successfully."
 msgstr "Zone wurde erfolgreich aktualisiert."
 
-#: lib/Application/Controller/EditController.php:947
+#: lib/Application/Controller/EditController.php:955
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2413,55 +2417,51 @@ msgstr ""
 "Zone erfolgreich gespeichert. Es wurden keine Datensatzänderungen "
 "vorgenommen, aber die SOA-Seriennummer wurde erhöht."
 
-#: lib/Application/Controller/EditController.php:956
-msgid "Zone has not been updated successfully."
-msgstr "Zone wurde nicht erfolgreich aktualisiert."
-
-#: lib/Application/Controller/EditController.php:984
+#: lib/Application/Controller/EditController.php:987
 msgid "Please provide all required fields."
 msgstr "Bitte geben Sie alle erforderlichen Felder an."
 
-#: lib/Application/Controller/AddRecordController.php:260
+#: lib/Application/Controller/AddRecordController.php:261
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr ""
 "Eintrag erfolgreich hinzugefügt. Ein entsprechender PTR-Eintrag wurde "
 "ebenfalls erstellt."
 
-#: lib/Application/Controller/AddRecordController.php:265
+#: lib/Application/Controller/AddRecordController.php:266
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr ""
 "Eintrag erfolgreich hinzugefügt, aber PTR-Eintrag-Erstellung fehlgeschlagen: "
 
-#: lib/Application/Controller/AddRecordController.php:269
+#: lib/Application/Controller/AddRecordController.php:270
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr ""
 "Der Eintrag wurde erfolgreich hinzugefügt, aber die PTR-Eintrag-Erstellung "
 "fehlgeschlagen."
 
-#: lib/Application/Controller/AddRecordController.php:273
+#: lib/Application/Controller/AddRecordController.php:274
 msgid "Record successfully added. A matching A record was also created."
 msgstr ""
 "Eintrag erfolgreich hinzugefügt. Ein entsprechender A-Eintrag wurde "
 "ebenfalls erstellt."
 
-#: lib/Application/Controller/MfaVerifyController.php:145
+#: lib/Application/Controller/MfaVerifyController.php:146
 msgid "Invalid security token. Please try again."
 msgstr "Ungültiger Sicherheitstoken. Bitte versuchen Sie es erneut."
 
-#: lib/Application/Controller/MfaVerifyController.php:314
+#: lib/Application/Controller/MfaVerifyController.php:315
 msgid "Too many failed attempts. Please try again later."
 msgstr ""
 "Zu viele fehlgeschlagene Versuche. Bitte versuchen Sie es später erneut."
 
-#: lib/Application/Controller/MfaVerifyController.php:162
+#: lib/Application/Controller/MfaVerifyController.php:163
 msgid "No MFA record found. Please contact administrator."
 msgstr "Kein MFA-Eintrag gefunden. Bitte kontaktieren Sie den Administrator."
 
-#: lib/Application/Controller/MfaVerifyController.php:167
+#: lib/Application/Controller/MfaVerifyController.php:168
 msgid "An error occurred. Please try again."
 msgstr "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
 
-#: lib/Application/Controller/MfaVerifyController.php:387
+#: lib/Application/Controller/MfaVerifyController.php:388
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2469,15 +2469,15 @@ msgstr ""
 "E-Mail-Verifizierung ist nicht verfügbar, da der Mail-Service deaktiviert "
 "ist. Bitte verwenden Sie einen Wiederherstellungscode."
 
-#: lib/Application/Controller/MfaVerifyController.php:397
+#: lib/Application/Controller/MfaVerifyController.php:398
 msgid "A new verification code has been sent to your email."
 msgstr "Ein neuer Verifizierungscode wurde an Ihre E-Mail gesendet."
 
-#: lib/Application/Controller/MfaVerifyController.php:403
+#: lib/Application/Controller/MfaVerifyController.php:404
 msgid "Please use a recovery code instead."
 msgstr "Bitte verwenden Sie stattdessen einen Wiederherstellungscode."
 
-#: lib/Application/Controller/MfaVerifyController.php:408
+#: lib/Application/Controller/MfaVerifyController.php:409
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2485,30 +2485,30 @@ msgstr ""
 "Verifizierungscode konnte nicht an Ihre E-Mail gesendet werden. Bitte "
 "verwenden Sie stattdessen einen Wiederherstellungscode."
 
-#: lib/Domain/Service/Dns/RecordManager.php:285
+#: lib/Domain/Service/Dns/RecordManager.php:286
 msgid "You do not have the permission to add a record to this zone."
 msgstr ""
 "Sie haben keine Berechtigung, einen Eintrag zu dieser Zone hinzuzufügen."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "Eintrag erfolgreich hinzugefügt."
 
-#: lib/Application/Controller/AddRecordController.php:463
+#: lib/Application/Controller/AddRecordController.php:464
 msgid "No records were provided."
 msgstr "Keine Einträge wurden bereitgestellt."
 
-#: lib/Application/Controller/AddRecordController.php:532
+#: lib/Application/Controller/AddRecordController.php:533
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d passende(r) Eintrag/Einträge wurde(n) ebenfalls erstellt."
 
-#: lib/Application/Controller/AddRecordController.php:535
+#: lib/Application/Controller/AddRecordController.php:536
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d Eintrag/Einträge konnten nicht hinzugefügt werden."
 
-#: lib/Application/Controller/AddRecordController.php:540
+#: lib/Application/Controller/AddRecordController.php:541
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2516,7 +2516,7 @@ msgstr ""
 "Einige Einträge konnten nicht hinzugefügt werden. Sie existieren "
 "möglicherweise bereits oder enthalten ungültige Daten."
 
-#: lib/Application/Controller/AddRecordController.php:570
+#: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Fehler beim Hinzufügen von Einträgen. Sie enthalten möglicherweise ungültige "
@@ -2547,7 +2547,7 @@ msgstr ""
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC-Authentifizierung ist nicht aktiviert"
 
-#: lib/Application/Service/SamlService.php:418
+#: lib/Application/Service/SamlService.php:420
 msgid "Authentication failed: "
 msgstr "Authentifizierung fehlgeschlagen: "
 
@@ -2867,20 +2867,20 @@ msgid_plural "%d zones could not be removed."
 msgstr[0] "%d Zone konnte nicht entfernt werden."
 msgstr[1] "%d Zonen konnten nicht entfernt werden."
 
-#: lib/Application/Controller/AddPermTemplController.php:63
+#: lib/Application/Controller/AddPermTemplController.php:64
 msgid "You do not have the permission to add permission templates."
 msgstr "Sie haben nicht die Berechtigung, Berechtigungsvorlagen hinzuzufügen."
 
-#: lib/Application/Controller/AddPermTemplController.php:67
+#: lib/Application/Controller/AddPermTemplController.php:68
 #: templates/modern/list_perm_templ.html:9
 msgid "Add permission template"
 msgstr "Berechtigungsvorlage hinzufügen"
 
-#: lib/Application/Controller/AddPermTemplController.php:99
+#: lib/Application/Controller/AddPermTemplController.php:100
 msgid "The permission template has been added successfully."
 msgstr "Die Berechtigungsvorlage wurde erfolgreich hinzugefügt."
 
-#: lib/Application/Controller/AddPermTemplController.php:142
+#: lib/Application/Controller/AddPermTemplController.php:143
 msgid "The permission template could not be added."
 msgstr "Die Berechtigungsvorlage konnte nicht hinzugefügt werden."
 
@@ -2979,7 +2979,7 @@ msgstr "Neue Zonenvorlage"
 msgid "Zone template has been added successfully."
 msgstr "Zonenvorlage wurde erfolgreich hinzugefügt."
 
-#: lib/Application/Controller/IndexController.php:65
+#: lib/Application/Controller/IndexController.php:66
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -3065,28 +3065,28 @@ msgstr ""
 msgid "The supermaster has been added successfully."
 msgstr "Der Supermaster wurde erfolgreich hinzugefügt."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:79
+#: lib/Application/Controller/DnssecKeyImportController.php:80
 msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr "PEM-Schlüsselimport erfordert PowerDNS 4.7 oder neuer."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:113
+#: lib/Application/Controller/DnssecKeyImportController.php:114
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr ""
 "Bitte einen PEM-kodierten privaten Schlüssel angeben (muss BEGIN/END-"
 "Markierungen enthalten)."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:121
+#: lib/Application/Controller/DnssecKeyImportController.php:122
 msgid "PEM key imported successfully."
 msgstr "PEM-Schlüssel erfolgreich importiert."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:124
+#: lib/Application/Controller/DnssecKeyImportController.php:125
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
 msgstr ""
 "Import des PEM-Schlüssels fehlgeschlagen. Der PowerDNS-Server hat das Format "
 "möglicherweise abgelehnt."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:128
+#: lib/Application/Controller/DnssecKeyImportController.php:129
 msgid "An error occurred while importing the PEM key: "
 msgstr "Beim Import des PEM-Schlüssels ist ein Fehler aufgetreten: "
 
@@ -3095,24 +3095,24 @@ msgid "You do not have the permission to add records to zone templates."
 msgstr ""
 "Sie haben nicht die Berechtigung, Einträge zu Zonen-Vorlagen hinzuzufügen."
 
-#: lib/Application/Controller/EditUserController.php:83
+#: lib/Application/Controller/EditUserController.php:84
 #: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Benutzer bearbeiten"
 
-#: lib/Application/Controller/EditUserController.php:165
+#: lib/Application/Controller/EditUserController.php:166
 msgid "Your profile has been updated successfully."
 msgstr "Ihr Profil wurde erfolgreich aktualisiert."
 
-#: lib/Application/Controller/EditUserController.php:169
+#: lib/Application/Controller/EditUserController.php:170
 msgid "The user has been updated successfully."
 msgstr "Der Benutzer wurde erfolgreich aktualisiert."
 
-#: lib/Application/Controller/EditUserController.php:173
+#: lib/Application/Controller/EditUserController.php:174
 msgid "The user could not be updated."
 msgstr "Der Benutzer konnte nicht aktualisiert werden."
 
-#: lib/Domain/Model/UserManager.php:340 lib/Domain/Model/UserManager.php:502
+#: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Sie haben nicht die Berechtigung, diesen Benutzer zu bearbeiten."
 
@@ -3244,7 +3244,7 @@ msgstr "Abmeldung abgeschlossen (mit Warnungen): "
 msgid "You do not have permission to view this record."
 msgstr "Sie haben keine Berechtigung, diesen Datensatz anzuzeigen."
 
-#: lib/Domain/Service/Dns/RecordManager.php:425
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have permission to edit this record."
 msgstr "Sie haben keine Berechtigung, diesen Datensatz zu bearbeiten."
 
@@ -3254,7 +3254,9 @@ msgstr "Der Eintrag wurde erfolgreich aktualisiert."
 
 #: lib/Application/Controller/EditRecordController.php:390
 msgid "The record was updated, but the PTR record could not be updated: "
-msgstr "Der Eintrag wurde aktualisiert, aber der PTR-Eintrag konnte nicht aktualisiert werden: "
+msgstr ""
+"Der Eintrag wurde aktualisiert, aber der PTR-Eintrag konnte nicht "
+"aktualisiert werden: "
 
 #: lib/Application/Controller/ChangePasswordController.php:93
 msgid ""
@@ -3287,43 +3289,43 @@ msgstr ""
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:132
+#: lib/Application/Controller/DnssecAddKeyController.php:133
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "ECDSA P-256-Algorithmus muss 256 Bits verwenden"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:135
+#: lib/Application/Controller/DnssecAddKeyController.php:136
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "ECDSA P-384-Algorithmus muss 384 Bits verwenden"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:141
+#: lib/Application/Controller/DnssecAddKeyController.php:142
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519-Algorithmus muss 256 Bits verwenden"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:146
+#: lib/Application/Controller/DnssecAddKeyController.php:147
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr ""
 "ED448-Algorithmus muss 456 Bits verwenden (nicht unterstützt in dieser "
 "Benutzeroberfläche)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:153
+#: lib/Application/Controller/DnssecAddKeyController.php:154
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "RSA-Algorithmen sollten 1024 oder 2048 Bits für angemessene Sicherheit "
 "verwenden"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:175
+#: lib/Application/Controller/DnssecAddKeyController.php:176
 msgid "Zone key has been added successfully."
 msgstr "Zone-Schlüssel wurde erfolgreich hinzugefügt."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:179
+#: lib/Application/Controller/DnssecAddKeyController.php:180
 msgid "Failed to add new DNSSEC key."
 msgstr "Neuer DNSSEC-Schlüssel konnte nicht hinzugefügt werden."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:183
+#: lib/Application/Controller/DnssecAddKeyController.php:184
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Ein Fehler ist beim Hinzufügen des DNSSEC-Schlüssels aufgetreten: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:187
+#: lib/Application/Controller/DnssecAddKeyController.php:188
 msgid "Please select both algorithm and bits"
 msgstr "Bitte wählen Sie sowohl Algorithmus als auch Bits aus"
 
@@ -3585,7 +3587,7 @@ msgstr "Authentifizierung fehlgeschlagen: Kein Autorisierungscode"
 msgid "Authentication failed: Invalid session"
 msgstr "Authentifizierung fehlgeschlagen: Ungültige Sitzung"
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Authentifizierung fehlgeschlagen: Benutzerkonto kann nicht erstellt oder "
@@ -3615,16 +3617,16 @@ msgstr "Authentifizierung gegenüber LDAP fehlgeschlagen."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Authentifizierung fehlgeschlagen: Ungültige SAML-Antwort"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:307
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:308
 msgid "This template is assigned to at least one user and one group."
 msgstr ""
 "Diese Vorlage ist mindestens einem Benutzer und einer Gruppe zugewiesen."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:309
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:310
 msgid "This template is assigned to at least one user."
 msgstr "Diese Vorlage ist mindestens einem Benutzer zugewiesen."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:311
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:312
 msgid "This template is assigned to at least one group."
 msgstr "Diese Vorlage ist mindestens einer Gruppe zugewiesen."
 
@@ -3811,20 +3813,29 @@ msgid ""
 "below."
 msgstr "Verbindungsstatus der unten konfigurierten Supermaster."
 
-#: lib/Infrastructure/Web/PageRenderer.php:249
-msgid ""
-"The install/ directory exists, you must remove it first before proceeding."
-msgstr ""
-"Das Verzeichnis install/ existiert, Sie müssen es zuerst entfernen, bevor "
-"Sie fortfahren."
-
-#: lib/Infrastructure/Web/PageRenderer.php:289
+#: lib/Infrastructure/Web/PageRenderer.php:132
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
 "Der Standard-Verschlüsselungsschlüssel für Sitzungen wird verwendet, bitte "
 "stellen Sie ihn in Ihrer Konfigurationsdatei ein."
+
+#: lib/Infrastructure/Web/PageRenderer.php:136
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/Infrastructure/Web/PageRenderer.php:253
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr ""
+"Das Verzeichnis install/ existiert, Sie müssen es zuerst entfernen, bevor "
+"Sie fortfahren."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:166
 #: templates/default/login.html:139 templates/modern/login.html:139
@@ -3847,11 +3858,11 @@ msgstr ""
 "Datenbankfehler: Benutzerauthentifizierung konnte nicht überprüft werden. "
 "Bitte überprüfen Sie Ihre Datenbankkonfiguration."
 
-#: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
+#: lib/Domain/Model/UserManager.php:80 lib/Domain/Model/UserManager.php:91
 msgid "You do not have the permission to change the permission template."
 msgstr "Sie haben keine Berechtigung, die Berechtigungsvorlage zu ändern."
 
-#: lib/Domain/Model/UserManager.php:87
+#: lib/Domain/Model/UserManager.php:88
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
@@ -3859,7 +3870,7 @@ msgstr ""
 "Das Ändern Ihrer eigenen Berechtigungsvorlage erfordert die Berechtigung, "
 "andere Benutzer zu bearbeiten."
 
-#: lib/Domain/Model/UserManager.php:89
+#: lib/Domain/Model/UserManager.php:90
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
@@ -3867,19 +3878,19 @@ msgstr ""
 "Das Zuweisen einer Berechtigungsvorlage mit Administratorrechten erfordert "
 "Administratorrechte."
 
-#: lib/Domain/Model/UserManager.php:534
+#: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Geben Sie eine gültige E-Mail-Adresse ein."
 
-#: lib/Domain/Model/UserManager.php:526
+#: lib/Domain/Model/UserManager.php:519
 msgid "Username exist already, please choose another one."
 msgstr "Benutzername existiert bereits, bitte wählen Sie einen anderen."
 
-#: lib/Domain/Model/UserManager.php:538
+#: lib/Domain/Model/UserManager.php:531
 msgid "Email address already exists, please choose another one."
 msgstr "Die E-Mail-Adresse existiert bereits, bitte wählen Sie eine andere."
 
-#: lib/Domain/Model/UserManager.php:530
+#: lib/Domain/Model/UserManager.php:523
 msgid "Enter a valid user name."
 msgstr "Geben Sie einen gültigen Benutzernamen ein."
 
@@ -4050,55 +4061,59 @@ msgstr "Views erfordern PowerDNS 5.0 oder neuer."
 msgid ""
 "Views require the LMDB backend. The connected server runs a backend that "
 "does not implement them."
-msgstr "Views erfordern das LMDB-Backend. Der verbundene Server verwendet ein Backend, das sie nicht implementiert."
+msgstr ""
+"Views erfordern das LMDB-Backend. Der verbundene Server verwendet ein "
+"Backend, das sie nicht implementiert."
 
 #: lib/Domain/Service/PdnsCapabilities.php:165
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr "Views erfordern \"views=yes\" in pdns.conf. Auf dem verbundenen Server sind sie deaktiviert."
+msgstr ""
+"Views erfordern \"views=yes\" in pdns.conf. Auf dem verbundenen Server sind "
+"sie deaktiviert."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:153
+#: lib/Domain/Service/DatabaseConsistencyService.php:154
 msgid "All zones have owners"
 msgstr "Alle Zonen haben Besitzer"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:160
+#: lib/Domain/Service/DatabaseConsistencyService.php:161
 #, php-format
 msgid "%d zones found without owners"
 msgstr "%d Zonen ohne Besitzer gefunden"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:211
+#: lib/Domain/Service/DatabaseConsistencyService.php:212
 msgid "All slave zones have master IP addresses"
 msgstr "Alle Slave-Zonen haben Master-IP-Adressen"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:218
+#: lib/Domain/Service/DatabaseConsistencyService.php:219
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "%d Slave-Zonen ohne Master-IP-Adressen gefunden"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:263
+#: lib/Domain/Service/DatabaseConsistencyService.php:264
 msgid "All records belong to existing zones"
 msgstr "Alle Einträge gehören zu bestehenden Zonen"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:270
+#: lib/Domain/Service/DatabaseConsistencyService.php:271
 #, php-format
 msgid "%d orphaned records found"
 msgstr "%d verwaiste Einträge gefunden"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:330
+#: lib/Domain/Service/DatabaseConsistencyService.php:331
 msgid "No duplicate SOA records found"
 msgstr "Keine doppelten SOA-Einträge gefunden"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:337
+#: lib/Domain/Service/DatabaseConsistencyService.php:338
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d Zonen haben doppelte SOA-Einträge"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:397
+#: lib/Domain/Service/DatabaseConsistencyService.php:398
 msgid "All zones have SOA records"
 msgstr "Alle Zonen haben SOA-Einträge"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:404
+#: lib/Domain/Service/DatabaseConsistencyService.php:405
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "%d Zonen ohne SOA-Einträge gefunden"
@@ -9780,15 +9795,15 @@ msgstr "PTR-Aktualisierung übersprungen: Eintragstyp ist nicht A oder AAAA."
 msgid "Stale PTR record removed."
 msgstr "Veralteter PTR-Eintrag entfernt."
 
-#: lib/Domain/Service/Dns/RecordManager.php:321
+#: lib/Domain/Service/Dns/RecordManager.php:322
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Ein Eintrag mit diesem Hostnamen, Typ und Inhalt existiert bereits."
 
-#: lib/Domain/Service/Dns/RecordManager.php:222
+#: lib/Domain/Service/Dns/RecordManager.php:223
 msgid "Failed to add record to DNS backend."
 msgstr "Eintrag konnte nicht zum DNS-Backend hinzugefügt werden."
 
-#: lib/Domain/Service/Dns/RecordManager.php:458
+#: lib/Domain/Service/Dns/RecordManager.php:459
 msgid "Failed to update record in DNS backend."
 msgstr "Eintrag konnte im DNS-Backend nicht aktualisiert werden."
 
@@ -10084,7 +10099,7 @@ msgstr "API-Schlüssel-Informationen"
 msgid "Created by"
 msgstr "Erstellt von"
 
-#: templates/modern/api_keys.html:48
+#: templates/modern/pdns_status.html:176 templates/modern/api_keys.html:48
 msgid "Unknown"
 msgstr "Unbekannt"
 
@@ -10660,7 +10675,7 @@ msgstr "Entfernen"
 msgid "and"
 msgstr "und"
 
-#: templates/modern/list_forward_zones.html:189
+#: templates/modern/list_forward_zones.html:191
 msgid "more..."
 msgstr "mehr..."
 
@@ -11593,7 +11608,14 @@ msgstr "Zone hat keinen SOA-Eintrag"
 msgid "No SOA"
 msgstr "Kein SOA"
 
-#: templates/modern/list_forward_zones.html:159
+#: templates/modern/list_forward_zones.html:158
+#, auto-english-fallback
+msgid ""
+"The DNS server could not be reached, so this zone's SOA status is unknown"
+msgstr ""
+"The DNS server could not be reached, so this zone's SOA status is unknown"
+
+#: templates/modern/list_forward_zones.html:161
 msgid ""
 "Records for this zone are replicated from its primary and cannot be edited "
 "here."
@@ -11601,15 +11623,15 @@ msgstr ""
 "Einträge dieser Zone werden von ihrem primären Server repliziert und können "
 "hier nicht bearbeitet werden."
 
-#: templates/modern/list_reverse_zones.html:243
+#: templates/modern/list_reverse_zones.html:245
 msgid "-"
 msgstr "-"
 
-#: templates/modern/list_forward_zones.html:207
+#: templates/modern/list_forward_zones.html:209
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY ausstehend: Seriennummer %serial% noch nicht bestätigt"
 
-#: templates/modern/list_forward_zones.html:209
+#: templates/modern/list_forward_zones.html:211
 msgid "NOTIFY sent at serial %serial%"
 msgstr "NOTIFY bei Seriennummer %serial% gesendet"
 
@@ -11713,7 +11735,9 @@ msgstr "Dieser Katalog hat noch keine Mitglieder."
 
 #: templates/default/zone-catalog.html:25 templates/modern/zone-catalog.html:25
 msgid "PowerDNS only publishes Primary and Producer zones from a catalog."
-msgstr "PowerDNS veröffentlicht aus einem Katalog nur primäre Zonen und Producer-Zonen."
+msgstr ""
+"PowerDNS veröffentlicht aus einem Katalog nur primäre Zonen und Producer-"
+"Zonen."
 
 #: templates/default/zone-catalog.html:26 templates/modern/zone-catalog.html:26
 msgid "Not published"
@@ -11727,7 +11751,9 @@ msgstr "Mitglied hinzufügen"
 msgid ""
 "No zones are available to add. Only Primary and Producer zones that are not "
 "already in a catalog can be members."
-msgstr "Es sind keine Zonen zum Hinzufügen verfügbar. Nur primäre Zonen und Producer-Zonen, die noch in keinem Katalog sind, können Mitglieder sein."
+msgstr ""
+"Es sind keine Zonen zum Hinzufügen verfügbar. Nur primäre Zonen und Producer-"
+"Zonen, die noch in keinem Katalog sind, können Mitglieder sein."
 
 #: templates/modern/list_views.html:64
 msgid "Add"
@@ -12761,7 +12787,7 @@ msgid "There are no forward zones to show in this listing."
 msgstr ""
 "Es gibt keine DNS-Zonen, die in dieser Auflistung angezeigt werden können."
 
-#: templates/modern/list_forward_zones.html:235
+#: templates/modern/list_forward_zones.html:237
 msgid "PTR"
 msgstr "PTR"
 
@@ -13731,7 +13757,9 @@ msgstr "Einfach zu benutzen"
 msgid ""
 "Authenticator app verification is not available because it has been disabled "
 "by the administrator."
-msgstr "Die Überprüfung per Authenticator-App ist nicht verfügbar, da sie vom Administrator deaktiviert wurde."
+msgstr ""
+"Die Überprüfung per Authenticator-App ist nicht verfügbar, da sie vom "
+"Administrator deaktiviert wurde."
 
 #: templates/default/mfa_setup.html:84 templates/modern/mfa_setup.html:84
 msgid "Set up app authentication"
@@ -13810,7 +13838,7 @@ msgstr "Fehler:"
 msgid "Success:"
 msgstr "Erfolg:"
 
-#: templates/modern/message_alert.html:16
+#: templates/modern/message_alert.html:17
 msgid "Info:"
 msgstr "Information:"
 
@@ -15846,30 +15874,5 @@ msgstr ""
 "Die Locale konnte nicht gesetzt werden. Die ausgewählte Locale wird auf "
 "diesem System möglicherweise nicht unterstützt. Bitte wenden Sie sich an "
 "Ihren Administrator."
-
-# OBSOLETE: msgid "Network views require PowerDNS 5.0 or newer."
-# OBSOLETE: msgstr "Netzwerk-Views erfordern PowerDNS 5.0 oder neuer."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger "
-# OBSOLETE: "is recommended."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "HMAC-MD5 gilt nach modernen Standards als schwach. HMAC-SHA256 oder "
-# OBSOLETE: "stärker wird empfohlen."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "CNAME target must be a fully qualified domain name (FQDN). Single-label "
-# OBSOLETE: "names are not allowed."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Das CNAME-Ziel muss ein vollständig qualifizierter Domainname (FQDN) "
-# OBSOLETE: "sein. Einlabelige Namen sind nicht erlaubt."
-
-# OBSOLETE: msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ungültiger Wert für das Port-Feld des SRV-Eintrags. Muss 1-65535 sein."
-
-# OBSOLETE: msgid "Error"
-# OBSOLETE: msgstr "Fehler"
-
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-19 18:33+0300\n"
+"POT-Creation-Date: 2026-08-25 09:24+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -26,7 +26,7 @@ msgstr ""
 "%s पर कोई कॉन्फ़िगरेशन फ़ाइल नहीं मिली। कृपया एक बनाने के लिए install/ पर इंस्टॉलर "
 "चलाएँ, या कॉन्फ़िगरेशन फ़ाइल मैन्युअल रूप से बनाएँ।"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:58
+#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:59
 msgid "DNS wizards are not enabled."
 msgstr "DNS विज़ार्ड सक्षम नहीं हैं।"
 
@@ -42,19 +42,19 @@ msgstr "ज़ोन नहीं मिला।"
 msgid "You do not have permission to add records to this zone."
 msgstr "आपको इस ज़ोन में रिकॉर्ड जोड़ने की अनुमति नहीं है।"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:116
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:117
 msgid "Invalid wizard type."
 msgstr "अमान्य विज़ार्ड प्रकार।"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:202
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
 msgid "Validation failed:"
 msgstr "सत्यापन विफल रहा:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:226
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
 msgid "Failed to generate record:"
 msgstr "रिकॉर्ड उत्पन्न करने में विफल:"
 
-#: lib/Application/Controller/AddRecordController.php:196
+#: lib/Application/Controller/AddRecordController.php:197
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
@@ -62,11 +62,11 @@ msgstr ""
 "यह रिकॉर्ड मान्य नहीं था और इसे जोड़ा नहीं जा सकता था। यह पहले से ही मौजूद हो सकता है "
 "या अवैध डेटा हो सकता है।"
 
-#: lib/Application/Controller/AddRecordController.php:276
+#: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा गया था।"
 
-#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:405
+#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:406
 msgid "Record created successfully"
 msgstr "रिकॉर्ड सफलतापूर्वक बनाया गया"
 
@@ -1271,32 +1271,32 @@ msgstr "कम से कम एक उपयोगकर्ता या सम
 msgid "Email Previews"
 msgstr "ईमेल पूर्वावलोकन"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:73
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:74
 msgid "You do not have permission to import zones."
 msgstr "आपको ज़ोन आयात करने की अनुमति नहीं है।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:113
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:114
 msgid "Please select a valid zone file to upload."
 msgstr "कृपया अपलोड करने के लिए एक वैध ज़ोन फ़ाइल का चयन करें।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:119
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:120
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
 msgstr "फ़ाइल का आकार %s के अधिकतम अनुमत आकार से अधिक है।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:125
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:126
 msgid "The uploaded file is empty or could not be read."
 msgstr "अपलोड की गई फ़ाइल खाली है या नहीं पढ़ी जा सकती है।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:134
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:135
 msgid "No valid records found in the uploaded file."
 msgstr "अपलोड की गई फ़ाइल में कोई वैध रिकॉर्ड नहीं मिला।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:300
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:301
 msgid "You do not have permission to modify this zone."
 msgstr "आपको इस ज़ोन को संशोधित करने की अनुमति नहीं है।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:239
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:240
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
@@ -1304,7 +1304,7 @@ msgstr ""
 "नया ज़ोन आयात नहीं किया जा सकता: zone_ownership_mode groups_only है लेकिन कोई "
 "समूह मौजूद नहीं है। पहले एक समूह बनाएं।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:242
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
@@ -1312,43 +1312,43 @@ msgstr ""
 "नया ज़ोन आयात नहीं किया जा सकता: zone_ownership_mode groups_only है और आप किसी "
 "भी समूह के सदस्य नहीं हैं। किसी प्रशासक से कहें कि वह पहले आपको एक समूह में जोड़ दे।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:258
 msgid "Import session expired. Please upload the file again."
 msgstr "आयात सत्र समाप्त हो गया। फिर से फ़ाइल अपलोड करें।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:264
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:265
 msgid "Invalid import data. Please upload the file again."
 msgstr "अमान्य आयात डेटा। फिर से फ़ाइल अपलोड करें।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:291
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:292
 msgid "The selected zone does not exist."
 msgstr "चयनित ज़ोन मौजूद नहीं है।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:306
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
 msgid "You cannot import records into a read-only zone."
 msgstr "आप केवल-पढ़ने के लिए ज़ोन में रिकॉर्ड आयात नहीं कर सकते।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:322
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:323
 msgid "You do not have permission to add zones."
 msgstr "आपको ज़ोन जोड़ने की अनुमति नहीं है।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:327
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:328
 msgid "Zone name is required."
 msgstr "ज़ोन नाम की आवश्यकता है।"
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:143
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:144
 msgid "This is an invalid zone name."
 msgstr "यह एक अमान्य ज़ोन नाम है।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:340
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
 msgid "A zone with this name already exists."
 msgstr "इस नाम का ज़ोन पहले से मौजूद है।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:346
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "अमान्य ज़ोन प्रकार।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:379
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:380
 msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
@@ -1356,11 +1356,11 @@ msgstr ""
 "आयात के माध्यम से नया ज़ोन नहीं बनाया जा सकता: कम से कम एक समूह का चयन करें, या \"कोई "
 "उपयोगकर्ता मालिक\" को अनचेक छोड़ दें।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:388
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
 msgid "Failed to create zone."
 msgstr "ज़ोन बनाने में विफल रहा।"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:394
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
 msgid "Failed to retrieve created zone."
 msgstr "बनाए गए ज़ोन को पुनः प्राप्त करने में विफल रहा।"
 
@@ -1469,7 +1469,7 @@ msgstr "हटाने के लिए कोई मान्य रिकॉ�
 msgid "Invalid or unexpected input given."
 msgstr "अमान्य या अप्रत्याशित इनपुट दिया गया।"
 
-#: lib/Domain/Model/UserManager.php:179
+#: lib/Domain/Model/UserManager.php:180
 msgid "You do not have the permission to delete this user."
 msgstr "आपको इस उपयोगकर्ता को हटाने की अनुमति नहीं है।"
 
@@ -1494,19 +1494,19 @@ msgstr ""
 msgid "The user has been deleted successfully."
 msgstr "उपयोगकर्ता को सफलतापूर्वक हटा दिया गया है।"
 
-#: lib/Application/Controller/EditCommentController.php:60
+#: lib/Application/Controller/EditCommentController.php:61
 msgid "Zone comments feature is disabled in configuration."
 msgstr "ज़ोन टिप्पणियों की सुविधा विन्यास में अक्षम है।"
 
-#: lib/Application/Controller/EditCommentController.php:74
+#: lib/Application/Controller/EditCommentController.php:75
 msgid "You do not have the permission to view this comment."
 msgstr "आपको इस टिप्पणी को देखने की अनुमति नहीं है।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:598
+#: lib/Domain/Service/Dns/RecordManager.php:599
 msgid "You do not have the permission to edit this comment."
 msgstr "आपको इस टिप्पणी को संपादित करने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/EditCommentController.php:113
+#: lib/Application/Controller/EditCommentController.php:114
 msgid "The comment has been updated successfully."
 msgstr "टिप्पणी को सफलतापूर्वक अद्यतन किया गया है।"
 
@@ -1518,7 +1518,7 @@ msgstr "अमान्य रिकॉर्ड ID।"
 msgid "You do not have permission to delete records in this zone."
 msgstr "आपको इस ज़ोन में रिकॉर्ड हटाने की अनुमति नहीं है।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:502
+#: lib/Domain/Service/Dns/RecordManager.php:503
 msgid "Record not found."
 msgstr "रिकॉर्ड नहीं मिला।"
 
@@ -1554,7 +1554,7 @@ msgstr "रिकॉर्ड सफलतापूर्वक हटा दि
 msgid "The record has been deleted successfully."
 msgstr "रिकॉर्ड सफलतापूर्वक हटा दिया गया है।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:509
+#: lib/Domain/Service/Dns/RecordManager.php:510
 msgid "You cannot delete records from a read-only zone."
 msgstr "आप केवल-पढ़ने के लिए ज़ोन से रिकॉर्ड हटा नहीं सकते।"
 
@@ -1680,7 +1680,7 @@ msgstr "सत्यापन कोड की आवश्यकता है�
 msgid "MFA has been enabled successfully."
 msgstr "MFA को सफलतापूर्वक सक्षम किया गया है।"
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:316
 msgid "Invalid verification code. Please try again."
 msgstr "अमान्य सत्यापन कोड। फिर से प्रयास करें।"
 
@@ -1911,7 +1911,7 @@ msgstr "अमान्य रिकॉर्ड प्रकार।"
 msgid "Record could not be added."
 msgstr "रिकॉर्ड जोड़ा नहीं जा सकता।"
 
-#: lib/Application/Controller/AddRecordController.php:530
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d रिकॉर्ड सफलतापूर्वक जोड़ा गया है।"
@@ -1928,29 +1928,29 @@ msgstr "ज़ोन आईडी की आवश्यकता है।"
 msgid "You do not have the permission to edit permission templates."
 msgstr "आपको अनुमति टेम्पलेट संपादित करने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/EditPermTemplController.php:67
+#: lib/Application/Controller/EditPermTemplController.php:68
 #: templates/modern/edit_perm_templ.html:17
 msgid "Edit Permission Template"
 msgstr "अनुमति टेम्पलेट संपादित करें"
 
-#: lib/Application/Controller/EditPermTemplController.php:126
+#: lib/Application/Controller/EditPermTemplController.php:127
 msgid "The permission template has been updated successfully."
 msgstr "अनुमति टेम्पलेट सफलतापूर्वक अद्यतन किया गया है।"
 
-#: lib/Application/Controller/AddPermTemplController.php:141
+#: lib/Application/Controller/AddPermTemplController.php:142
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
 msgstr "अनुमति टेम्पलेट में प्रशासक अधिकार देने के लिए प्रशासक अधिकार आवश्यक हैं।"
 
-#: lib/Application/Controller/EditPermTemplController.php:179
+#: lib/Application/Controller/EditPermTemplController.php:180
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
 msgstr ""
 "प्रशासक अधिकारों वाले अनुमति टेम्पलेट को संपादित करने के लिए प्रशासक अधिकार आवश्यक हैं।"
 
-#: lib/Application/Controller/EditPermTemplController.php:180
+#: lib/Application/Controller/EditPermTemplController.php:181
 msgid "The permission template could not be updated."
 msgstr "अनुमति टेम्पलेट अद्यतन नहीं किया जा सका।"
 
@@ -2001,7 +2001,7 @@ msgstr "सदस्य को सफलतापूर्वक समूह �
 msgid "User was not a member of this group."
 msgstr "उपयोगकर्ता इस समूह का सदस्य नहीं था।"
 
-#: lib/Domain/Model/UserManager.php:522
+#: lib/Domain/Model/UserManager.php:515
 msgid "You do not have the permission to add a new user."
 msgstr "आपके पास एक नया उपयोगकर्ता जोड़ने की अनुमति नहीं है।"
 
@@ -2014,7 +2014,7 @@ msgstr "उपयोगकर्ता जोड़ें"
 msgid "No non-superuser permission template is available to assign."
 msgstr "असाइन करने के लिए कोई गैर-सुपरयूज़र अनुमति टेम्पलेट उपलब्ध नहीं है।"
 
-#: lib/Application/Controller/EditUserController.php:305
+#: lib/Application/Controller/EditUserController.php:306
 msgid "Invalid permission template: must be a user template"
 msgstr "अमान्य अनुमति टेम्पलेट: एक उपयोगकर्ता टेम्पलेट होना चाहिए"
 
@@ -2043,7 +2043,7 @@ msgstr "एक पासवर्ड उत्पन्न किया गय�
 msgid "Please fill in all required fields correctly."
 msgstr "कृपया सभी आवश्यक फ़ील्ड को सही ढंग से भरें।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:535
+#: lib/Domain/Service/Dns/RecordManager.php:536
 msgid "You do not have the permission to delete this record."
 msgstr "आपको इस रिकॉर्ड को हटाने की अनुमति नहीं है।"
 
@@ -2073,7 +2073,7 @@ msgstr "केवल निर्माता ज़ोन ही कैटल�
 msgid "You do not have permission to access this zone."
 msgstr "आपको इस ज़ोन तक पहुंचने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/EditController.php:616
+#: lib/Application/Controller/EditController.php:618
 msgid "You do not have permission to edit this zone."
 msgstr "आपके पास इस ज़ोन को संपादित करने की अनुमति नहीं है।"
 
@@ -2081,7 +2081,7 @@ msgstr "आपके पास इस ज़ोन को संपादित 
 msgid "The zone has been added to the catalog."
 msgstr "ज़ोन कैटलॉग में जोड़ दिया गया है।"
 
-#: lib/Application/Controller/EditController.php:610
+#: lib/Application/Controller/EditController.php:612
 msgid "The zone has been removed from the catalog."
 msgstr "ज़ोन कैटलॉग से हटा दिया गया है।"
 
@@ -2098,7 +2098,7 @@ msgstr "उपयोगकर्ता"
 msgid "User details updated"
 msgstr "उपयोगकर्ता विवरण अद्यतन किए गए"
 
-#: lib/Application/Controller/EditUserController.php:263
+#: lib/Application/Controller/EditUserController.php:264
 msgid "You do not have permission to edit a superuser account."
 msgstr "आपको सुपरयूज़र खाता संपादित करने की अनुमति नहीं है।"
 
@@ -2165,7 +2165,7 @@ msgstr "अमान्य टेम्पलेट ID।"
 msgid "Template does not exist."
 msgstr "टेम्पलेट मौजूद नहीं है।"
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:516
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
 msgid "You do not have permission to view this zone."
 msgstr "आपको इस ज़ोन को देखने की अनुमति नहीं है।"
 
@@ -2221,7 +2221,7 @@ msgstr "एडिट ज़ोन"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "आपको इस ज़ोन के लिए DNSSEC का प्रबंधन करने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/EditController.php:334
+#: lib/Application/Controller/EditController.php:336
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC सर्वर पर सक्षम नहीं है।"
 
@@ -2230,15 +2230,15 @@ msgstr "DNSSEC सर्वर पर सक्षम नहीं है।"
 msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
 msgstr "यह ज़ोन पूर्व-हस्ताक्षरित है; DNSSEC कुंजियाँ प्राथमिक सर्वर पर प्रबंधित की जाती हैं।"
 
-#: lib/Application/Controller/EditController.php:339
+#: lib/Application/Controller/EditController.php:341
 msgid "Zone is already signed with DNSSEC."
 msgstr "ज़ोन पहले से ही DNSSEC के साथ हस्ताक्षरित है।"
 
-#: lib/Application/Controller/EditController.php:361
+#: lib/Application/Controller/EditController.php:363
 msgid "Zone has been signed successfully."
 msgstr "ज़ोन पर सफलतापूर्वक हस्ताक्षर किए गए हैं।"
 
-#: lib/Application/Controller/EditController.php:366
+#: lib/Application/Controller/EditController.php:368
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2246,7 +2246,7 @@ msgstr ""
 "ज़ोन पर हस्ताक्षर करने का अनुरोध सफलतापूर्वक किया गया, लेकिन सत्यापन विफल रहा। DNSSEC "
 "कुंजियों की जाँच करें।"
 
-#: lib/Application/Controller/EditController.php:370
+#: lib/Application/Controller/EditController.php:372
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2270,23 +2270,23 @@ msgstr "ज़ोन से हस्ताक्षर हटाने का �
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "ज़ोन से हस्ताक्षर हटाने में विफल रहा। विवरण के लिए PowerDNS लॉग की जाँच करें।"
 
-#: lib/Application/Controller/EditController.php:616
+#: lib/Application/Controller/EditController.php:618
 msgid "The catalog has been changed successfully."
 msgstr "कैटलॉग सफलतापूर्वक बदल दिया गया है।"
 
-#: lib/Application/Controller/EditController.php:629
+#: lib/Application/Controller/EditController.php:631
 msgid "Zone type has been changed successfully."
 msgstr "ज़ोन प्रकार को सफलतापूर्वक बदल दिया गया है।"
 
-#: lib/Application/Controller/EditController.php:636
+#: lib/Application/Controller/EditController.php:638
 msgid "Slave master has been changed successfully."
 msgstr "स्लेव मास्टर सफलतापूर्वक बदल दिया गया है।"
 
-#: lib/Application/Controller/EditController.php:650
+#: lib/Application/Controller/EditController.php:652
 msgid "You cannot apply a template to a read-only zone."
 msgstr "आप केवल-पढ़ने के लिए ज़ोन पर टेम्पलेट लागू नहीं कर सकते।"
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:669
 msgid "Zone template has been changed successfully."
 msgstr "ज़ोन टेम्पलेट सफलतापूर्वक बदल गया है।"
 
@@ -2294,7 +2294,7 @@ msgstr "ज़ोन टेम्पलेट सफलतापूर्वक 
 msgid "You cannot edit records in a read-only zone."
 msgstr "आप केवल-पढ़ने के लिए ज़ोन में रिकॉर्ड संपादित नहीं कर सकते।"
 
-#: lib/Application/Controller/EditController.php:833
+#: lib/Application/Controller/EditController.php:835
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2303,15 +2303,19 @@ msgstr ""
 "कुछ रिकॉर्ड सहेजे नहीं गए क्योंकि फ़ॉर्म ने फ़ील्ड की संख्या पर सर्वर सीमा को पार कर दिया। "
 "अपने व्यवस्थापक से PHP \"max_input_vars\" सेटिंग बढ़ाने के लिए कहें।"
 
-#: lib/Application/Controller/EditController.php:940
+#: lib/Application/Controller/EditController.php:944
+msgid "Zone has not been updated successfully."
+msgstr "ज़ोन सफलतापूर्वक अद्यतन नहीं किया गया है।"
+
+#: lib/Application/Controller/EditController.php:945
 msgid "Request has expired, please try again."
 msgstr "अनुरोध समाप्त हो गया है, कृपया फिर से प्रयास करें।"
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:954
 msgid "Zone has been updated successfully."
 msgstr "ज़ोन सफलतापूर्वक अद्यतन किया गया है।"
 
-#: lib/Application/Controller/EditController.php:947
+#: lib/Application/Controller/EditController.php:955
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2319,62 +2323,58 @@ msgstr ""
 "ज़ोन सफलतापूर्वक सहेजा गया। कोई रिकॉर्ड परिवर्तन नहीं किया गया, लेकिन SOA सीरियल में "
 "वृद्धि हुई।"
 
-#: lib/Application/Controller/EditController.php:956
-msgid "Zone has not been updated successfully."
-msgstr "ज़ोन सफलतापूर्वक अद्यतन नहीं किया गया है।"
-
-#: lib/Application/Controller/EditController.php:984
+#: lib/Application/Controller/EditController.php:987
 msgid "Please provide all required fields."
 msgstr "कृपया सभी आवश्यक फ़ील्ड प्रदान करें।"
 
-#: lib/Application/Controller/AddRecordController.php:260
+#: lib/Application/Controller/AddRecordController.php:261
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा गया। एक मिलान करने वाला PTR रिकॉर्ड भी बनाया गया।"
 
-#: lib/Application/Controller/AddRecordController.php:265
+#: lib/Application/Controller/AddRecordController.php:266
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा गया, लेकिन PTR रिकॉर्ड निर्माण विफल रहा: "
 
-#: lib/Application/Controller/AddRecordController.php:269
+#: lib/Application/Controller/AddRecordController.php:270
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा गया था, लेकिन PTR रिकॉर्ड निर्माण विफल रहा।"
 
-#: lib/Application/Controller/AddRecordController.php:273
+#: lib/Application/Controller/AddRecordController.php:274
 msgid "Record successfully added. A matching A record was also created."
 msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा गया। एक मिलान करने वाला A रिकॉर्ड भी बनाया गया।"
 
-#: lib/Application/Controller/MfaVerifyController.php:145
+#: lib/Application/Controller/MfaVerifyController.php:146
 msgid "Invalid security token. Please try again."
 msgstr "अमान्य सुरक्षा टोकन। कृपया फिर से प्रयास करें।"
 
-#: lib/Application/Controller/MfaVerifyController.php:314
+#: lib/Application/Controller/MfaVerifyController.php:315
 msgid "Too many failed attempts. Please try again later."
 msgstr "बहुत अधिक विफल प्रयास। कृपया बाद में पुनः प्रयास करें।"
 
-#: lib/Application/Controller/MfaVerifyController.php:162
+#: lib/Application/Controller/MfaVerifyController.php:163
 msgid "No MFA record found. Please contact administrator."
 msgstr "कोई MFA रिकॉर्ड नहीं मिला। कृपया व्यवस्थापक से संपर्क करें।"
 
-#: lib/Application/Controller/MfaVerifyController.php:167
+#: lib/Application/Controller/MfaVerifyController.php:168
 msgid "An error occurred. Please try again."
 msgstr "एक त्रुटि हुई। फिर से प्रयास करें।"
 
-#: lib/Application/Controller/MfaVerifyController.php:387
+#: lib/Application/Controller/MfaVerifyController.php:388
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
 msgstr ""
 "ईमेल सत्यापन उपलब्ध नहीं है क्योंकि मेल सेवा अक्षम है। कृपया पुनर्प्राप्ति कोड का उपयोग करें।"
 
-#: lib/Application/Controller/MfaVerifyController.php:397
+#: lib/Application/Controller/MfaVerifyController.php:398
 msgid "A new verification code has been sent to your email."
 msgstr "एक नया सत्यापन कोड आपके ईमेल पर भेजा गया है।"
 
-#: lib/Application/Controller/MfaVerifyController.php:403
+#: lib/Application/Controller/MfaVerifyController.php:404
 msgid "Please use a recovery code instead."
 msgstr "कृपया इसके बजाय पुनर्प्राप्ति कोड का उपयोग करें।"
 
-#: lib/Application/Controller/MfaVerifyController.php:408
+#: lib/Application/Controller/MfaVerifyController.php:409
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2382,36 +2382,36 @@ msgstr ""
 "आपके ईमेल पर सत्यापन कोड नहीं भेजा जा सका। कृपया इसके बजाय पुनर्प्राप्ति कोड का उपयोग "
 "करें।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:285
+#: lib/Domain/Service/Dns/RecordManager.php:286
 msgid "You do not have the permission to add a record to this zone."
 msgstr "आपको इस ज़ोन में रिकॉर्ड जोड़ने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा गया।"
 
-#: lib/Application/Controller/AddRecordController.php:463
+#: lib/Application/Controller/AddRecordController.php:464
 msgid "No records were provided."
 msgstr "कोई रिकॉर्ड प्रदान नहीं किया गया था।"
 
-#: lib/Application/Controller/AddRecordController.php:532
+#: lib/Application/Controller/AddRecordController.php:533
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d मिलान रिकॉर्ड भी बनाया गया था।"
 
-#: lib/Application/Controller/AddRecordController.php:535
+#: lib/Application/Controller/AddRecordController.php:536
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d रिकॉर्ड जोड़ने में विफल रहे।"
 
-#: lib/Application/Controller/AddRecordController.php:540
+#: lib/Application/Controller/AddRecordController.php:541
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr ""
 "कुछ रिकॉर्ड नहीं जोड़ा जा सकता है। वे पहले से ही मौजूद हो सकते हैं या अवैध डेटा हो सकते हैं।"
 
-#: lib/Application/Controller/AddRecordController.php:570
+#: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "किसी भी रिकॉर्ड को जोड़ने में विफल रहा। उनमें अमान्य डेटा हो सकता है।"
 
@@ -2439,7 +2439,7 @@ msgstr "आपके पास ज़ोन टेम्पलेट रिक�
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC प्रमाणीकरण सक्षम नहीं है"
 
-#: lib/Application/Service/SamlService.php:418
+#: lib/Application/Service/SamlService.php:420
 msgid "Authentication failed: "
 msgstr "प्रमाणीकरण विफल रहा: "
 
@@ -2754,20 +2754,20 @@ msgid_plural "%d zones could not be removed."
 msgstr[0] "%d क्षेत्र को हटाया नहीं जा सकता।"
 msgstr[1] "%d क्षेत्र हटाया नहीं जा सकता।"
 
-#: lib/Application/Controller/AddPermTemplController.php:63
+#: lib/Application/Controller/AddPermTemplController.php:64
 msgid "You do not have the permission to add permission templates."
 msgstr "आपको अनुमति टेम्पलेट जोड़ने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/AddPermTemplController.php:67
+#: lib/Application/Controller/AddPermTemplController.php:68
 #: templates/modern/list_perm_templ.html:9
 msgid "Add permission template"
 msgstr "अनुमति टेम्पलेट जोड़ें"
 
-#: lib/Application/Controller/AddPermTemplController.php:99
+#: lib/Application/Controller/AddPermTemplController.php:100
 msgid "The permission template has been added successfully."
 msgstr "अनुमति टेम्पलेट सफलतापूर्वक जोड़ा गया है।"
 
-#: lib/Application/Controller/AddPermTemplController.php:142
+#: lib/Application/Controller/AddPermTemplController.php:143
 msgid "The permission template could not be added."
 msgstr "अनुमति टेम्पलेट जोड़ा नहीं जा सका।"
 
@@ -2864,7 +2864,7 @@ msgstr "ज़ोन टेम्पलेट जोड़ें"
 msgid "Zone template has been added successfully."
 msgstr "ज़ोन टेम्पलेट सफलतापूर्वक जोड़ा गया है।"
 
-#: lib/Application/Controller/IndexController.php:65
+#: lib/Application/Controller/IndexController.php:66
 msgid "Dashboard"
 msgstr "डैशबोर्ड"
 
@@ -2947,26 +2947,26 @@ msgstr "आपको एक नया supermaster जोड़ने की अ�
 msgid "The supermaster has been added successfully."
 msgstr "supermaster को सफलतापूर्वक जोड़ा गया है।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:79
+#: lib/Application/Controller/DnssecKeyImportController.php:80
 msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr "PEM कुंजी आयात PowerDNS 4.7 या नए की आवश्यकता है।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:113
+#: lib/Application/Controller/DnssecKeyImportController.php:114
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr "एक PEM-encoded निजी कुंजी प्रदान करें (इसमें BEGIN/END मार्कर होने चाहिए)।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:121
+#: lib/Application/Controller/DnssecKeyImportController.php:122
 msgid "PEM key imported successfully."
 msgstr "PEM कुंजी सफलतापूर्वक आयात किया।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:124
+#: lib/Application/Controller/DnssecKeyImportController.php:125
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
 msgstr ""
 "PEM कुंजी आयात करने में विफल रहा। संभव है कि PowerDNS सर्वर ने प्रारूप को अस्वीकार कर "
 "दिया हो।"
 
-#: lib/Application/Controller/DnssecKeyImportController.php:128
+#: lib/Application/Controller/DnssecKeyImportController.php:129
 msgid "An error occurred while importing the PEM key: "
 msgstr "PEM कुंजी आयात करते समय एक त्रुटि हुई: "
 
@@ -2974,24 +2974,24 @@ msgstr "PEM कुंजी आयात करते समय एक त्र
 msgid "You do not have the permission to add records to zone templates."
 msgstr "आपको ज़ोन टेम्प्लेट में रिकॉर्ड जोड़ने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/EditUserController.php:83
+#: lib/Application/Controller/EditUserController.php:84
 #: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "उपयोगकर्ता संपादित करें"
 
-#: lib/Application/Controller/EditUserController.php:165
+#: lib/Application/Controller/EditUserController.php:166
 msgid "Your profile has been updated successfully."
 msgstr "आपकी प्रोफ़ाइल को सफलतापूर्वक अपडेट किया गया है।"
 
-#: lib/Application/Controller/EditUserController.php:169
+#: lib/Application/Controller/EditUserController.php:170
 msgid "The user has been updated successfully."
 msgstr "उपयोगकर्ता को सफलतापूर्वक अद्यतन किया गया है।"
 
-#: lib/Application/Controller/EditUserController.php:173
+#: lib/Application/Controller/EditUserController.php:174
 msgid "The user could not be updated."
 msgstr "उपयोगकर्ता को अद्यतन नहीं किया जा सकता है।"
 
-#: lib/Domain/Model/UserManager.php:340 lib/Domain/Model/UserManager.php:502
+#: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "आपके पास इस उपयोगकर्ता को संपादित करने की अनुमति नहीं है।"
 
@@ -3115,7 +3115,7 @@ msgstr "लॉगआउट पूरा हुआ (चेतावनियो�
 msgid "You do not have permission to view this record."
 msgstr "आपको इस रिकॉर्ड को देखने की अनुमति नहीं है।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:425
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have permission to edit this record."
 msgstr "आपको इस रिकॉर्ड को संपादित करने की अनुमति नहीं है।"
 
@@ -3156,40 +3156,40 @@ msgstr ""
 msgid "Change password"
 msgstr "पासवर्ड बदलें"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:132
+#: lib/Application/Controller/DnssecAddKeyController.php:133
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "ECDSA P-256 एल्गोरिथ्म को 256 बिट्स का उपयोग करना चाहिए"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:135
+#: lib/Application/Controller/DnssecAddKeyController.php:136
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "ECDSA P-384 एल्गोरिथ्म को 384 बिट्स का उपयोग करना चाहिए"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:141
+#: lib/Application/Controller/DnssecAddKeyController.php:142
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519 एल्गोरिथ्म को 256 बिट्स का उपयोग करना चाहिए"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:146
+#: lib/Application/Controller/DnssecAddKeyController.php:147
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "ED448 एल्गोरिथ्म को 456 बिट्स का उपयोग करना चाहिए (इस UI में समर्थित नहीं)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:153
+#: lib/Application/Controller/DnssecAddKeyController.php:154
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "RSA एल्गोरिदम को पर्याप्त सुरक्षा के लिए 1024 या 2048 बिट्स का उपयोग करना चाहिए"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:175
+#: lib/Application/Controller/DnssecAddKeyController.php:176
 msgid "Zone key has been added successfully."
 msgstr "ज़ोन कुंजी को सफलतापूर्वक जोड़ा गया है।"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:179
+#: lib/Application/Controller/DnssecAddKeyController.php:180
 msgid "Failed to add new DNSSEC key."
 msgstr "नई DNSSEC कुंजी जोड़ने में विफल रहा।"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:183
+#: lib/Application/Controller/DnssecAddKeyController.php:184
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "DNSSEC कुंजी जोड़ते समय एक त्रुटि हुई: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:187
+#: lib/Application/Controller/DnssecAddKeyController.php:188
 msgid "Please select both algorithm and bits"
 msgstr "कृपया एल्गोरिदम और बिट्स दोनों का चयन करें"
 
@@ -3431,7 +3431,7 @@ msgstr "प्रमाणीकरण विफल रहा: कोई प्�
 msgid "Authentication failed: Invalid session"
 msgstr "प्रमाणीकरण विफल रहा: अवैध सत्र"
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "प्रमाणीकरण विफल रहा: उपयोगकर्ता खाता बनाने या अद्यतन करने में असमर्थ"
 
@@ -3459,15 +3459,15 @@ msgstr "LDAP से प्रमाणीकरण करने में वि
 msgid "Authentication failed: Invalid SAML response"
 msgstr "प्रमाणीकरण विफल रहा: अवैध SAML प्रतिक्रिया"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:307
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:308
 msgid "This template is assigned to at least one user and one group."
 msgstr "यह टेम्पलेट कम से कम एक उपयोगकर्ता और एक समूह को सौंपा गया है।"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:309
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:310
 msgid "This template is assigned to at least one user."
 msgstr "यह टेम्पलेट कम से कम एक उपयोगकर्ता को सौंपा गया है।"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:311
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:312
 msgid "This template is assigned to at least one group."
 msgstr "यह टेम्पलेट कम से कम एक समूह को सौंपा गया है।"
 
@@ -3654,18 +3654,27 @@ msgid ""
 msgstr ""
 "नीचे तालिका में कॉन्फ़िगर किए गए supermasters के लिए कनेक्टिविटी की स्थिति दिखा रहा है।"
 
-#: lib/Infrastructure/Web/PageRenderer.php:249
-msgid ""
-"The install/ directory exists, you must remove it first before proceeding."
-msgstr "install/ निर्देशिका मौजूद है, आगे बढ़ने से पहले आपको इसे हटाना होगा।"
-
-#: lib/Infrastructure/Web/PageRenderer.php:289
+#: lib/Infrastructure/Web/PageRenderer.php:132
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
 "डिफ़ॉल्ट सत्र एन्क्रिप्शन कुंजी का उपयोग किया जाता है, कृपया इसे अपनी कॉन्फ़िगरेशन फ़ाइल में "
 "सेट करें।"
+
+#: lib/Infrastructure/Web/PageRenderer.php:136
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/Infrastructure/Web/PageRenderer.php:253
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr "install/ निर्देशिका मौजूद है, आगे बढ़ने से पहले आपको इसे हटाना होगा।"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:166
 #: templates/default/login.html:139 templates/modern/login.html:139
@@ -3688,11 +3697,11 @@ msgstr ""
 "डेटाबेस त्रुटि: उपयोगकर्ता प्रमाणीकरण को सत्यापित करने में असमर्थ। कृपया अपने डेटाबेस "
 "विन्यास की जांच करें।"
 
-#: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
+#: lib/Domain/Model/UserManager.php:80 lib/Domain/Model/UserManager.php:91
 msgid "You do not have the permission to change the permission template."
 msgstr "आपको अनुमति टेम्पलेट बदलने की अनुमति नहीं है।"
 
-#: lib/Domain/Model/UserManager.php:87
+#: lib/Domain/Model/UserManager.php:88
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
@@ -3700,25 +3709,25 @@ msgstr ""
 "अपना स्वयं का अनुमति टेम्पलेट बदलने के लिए अन्य उपयोगकर्ताओं को संपादित करने की अनुमति "
 "आवश्यक है।"
 
-#: lib/Domain/Model/UserManager.php:89
+#: lib/Domain/Model/UserManager.php:90
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
 msgstr "प्रशासक अधिकारों वाला अनुमति टेम्पलेट असाइन करने के लिए प्रशासक अधिकार आवश्यक हैं।"
 
-#: lib/Domain/Model/UserManager.php:534
+#: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "एक वैध ईमेल पता दर्ज करें।"
 
-#: lib/Domain/Model/UserManager.php:526
+#: lib/Domain/Model/UserManager.php:519
 msgid "Username exist already, please choose another one."
 msgstr "उपयोगकर्ता नाम पहले से ही मौजूद है, कृपया दूसरा चुनें।"
 
-#: lib/Domain/Model/UserManager.php:538
+#: lib/Domain/Model/UserManager.php:531
 msgid "Email address already exists, please choose another one."
 msgstr "ईमेल पता पहले से मौजूद है, कृपया दूसरा चुनें।"
 
-#: lib/Domain/Model/UserManager.php:530
+#: lib/Domain/Model/UserManager.php:523
 msgid "Enter a valid user name."
 msgstr "एक वैध उपयोगकर्ता नाम दर्ज करें।"
 
@@ -3880,7 +3889,9 @@ msgstr "दृश्य PowerDNS 5.0 या नए की आवश्यकत�
 msgid ""
 "Views require the LMDB backend. The connected server runs a backend that "
 "does not implement them."
-msgstr "दृश्यों के लिए LMDB बैकेंड आवश्यक है। जुड़ा हुआ सर्वर ऐसा बैकेंड चला रहा है जो इन्हें लागू नहीं करता।"
+msgstr ""
+"दृश्यों के लिए LMDB बैकेंड आवश्यक है। जुड़ा हुआ सर्वर ऐसा बैकेंड चला रहा है जो इन्हें लागू नहीं "
+"करता।"
 
 #: lib/Domain/Service/PdnsCapabilities.php:165
 msgid ""
@@ -3888,47 +3899,47 @@ msgid ""
 "disabled."
 msgstr "दृश्यों के लिए pdns.conf में \"views=yes\" आवश्यक है। जुड़े हुए सर्वर पर वे अक्षम हैं।"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:153
+#: lib/Domain/Service/DatabaseConsistencyService.php:154
 msgid "All zones have owners"
 msgstr "सभी ज़ोनों में मालिक हैं"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:160
+#: lib/Domain/Service/DatabaseConsistencyService.php:161
 #, php-format
 msgid "%d zones found without owners"
 msgstr "%d ज़ोन मालिकों के बिना पाया"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:211
+#: lib/Domain/Service/DatabaseConsistencyService.php:212
 msgid "All slave zones have master IP addresses"
 msgstr "सभी स्लेव ज़ोन में मास्टर IP पते हैं"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:218
+#: lib/Domain/Service/DatabaseConsistencyService.php:219
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "%d दास ज़ोन मास्टर IP पते के बिना पाया"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:263
+#: lib/Domain/Service/DatabaseConsistencyService.php:264
 msgid "All records belong to existing zones"
 msgstr "सभी रिकॉर्ड मौजूदा ज़ोनों से संबंधित हैं"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:270
+#: lib/Domain/Service/DatabaseConsistencyService.php:271
 #, php-format
 msgid "%d orphaned records found"
 msgstr "%d अनाथ रिकॉर्ड पाया"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:330
+#: lib/Domain/Service/DatabaseConsistencyService.php:331
 msgid "No duplicate SOA records found"
 msgstr "कोई डुप्लिकेट SOA रिकॉर्ड नहीं मिला"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:337
+#: lib/Domain/Service/DatabaseConsistencyService.php:338
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d ज़ोनों में डुप्लिकेट SOA रिकॉर्ड हैं"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:397
+#: lib/Domain/Service/DatabaseConsistencyService.php:398
 msgid "All zones have SOA records"
 msgstr "सभी ज़ोनों में SOA रिकॉर्ड हैं"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:404
+#: lib/Domain/Service/DatabaseConsistencyService.php:405
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "%d ज़ोन SOA रिकॉर्ड के बिना पाया"
@@ -9346,15 +9357,15 @@ msgstr "PTR अद्यतन छोड़ दिया: रिकॉर्ड 
 msgid "Stale PTR record removed."
 msgstr "पुराना PTR रिकॉर्ड हटा दिया गया।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:321
+#: lib/Domain/Service/Dns/RecordManager.php:322
 msgid "A record with this hostname, type, and content already exists."
 msgstr "इस होस्टनाम, प्रकार और सामग्री के साथ पहले से ही एक रिकॉर्ड मौजूद है।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:222
+#: lib/Domain/Service/Dns/RecordManager.php:223
 msgid "Failed to add record to DNS backend."
 msgstr "DNS बैकेंड में रिकॉर्ड जोड़ने में विफल रहा।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:458
+#: lib/Domain/Service/Dns/RecordManager.php:459
 msgid "Failed to update record in DNS backend."
 msgstr "DNS बैकेंड में रिकॉर्ड अद्यतन करने में विफल रहा।"
 
@@ -9645,7 +9656,7 @@ msgstr "API कुंजी जानकारी"
 msgid "Created by"
 msgstr "द्वारा निर्मित"
 
-#: templates/modern/api_keys.html:48
+#: templates/modern/pdns_status.html:176 templates/modern/api_keys.html:48
 msgid "Unknown"
 msgstr "अज्ञात"
 
@@ -10210,7 +10221,7 @@ msgstr "निकालें"
 msgid "and"
 msgstr "और"
 
-#: templates/modern/list_forward_zones.html:189
+#: templates/modern/list_forward_zones.html:191
 msgid "more..."
 msgstr "अधिक..."
 
@@ -11113,22 +11124,29 @@ msgstr "ज़ोन में कोई SOA रिकॉर्ड नहीं 
 msgid "No SOA"
 msgstr "कोई SOA नहीं"
 
-#: templates/modern/list_forward_zones.html:159
+#: templates/modern/list_forward_zones.html:158
+#, auto-english-fallback
+msgid ""
+"The DNS server could not be reached, so this zone's SOA status is unknown"
+msgstr ""
+"The DNS server could not be reached, so this zone's SOA status is unknown"
+
+#: templates/modern/list_forward_zones.html:161
 msgid ""
 "Records for this zone are replicated from its primary and cannot be edited "
 "here."
 msgstr ""
 "इस ज़ोन के रिकॉर्ड इसके प्राथमिक सर्वर से प्रतिकृत होते हैं और यहाँ संपादित नहीं किए जा सकते।"
 
-#: templates/modern/list_reverse_zones.html:243
+#: templates/modern/list_reverse_zones.html:245
 msgid "-"
 msgstr "-"
 
-#: templates/modern/list_forward_zones.html:207
+#: templates/modern/list_forward_zones.html:209
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY लंबित: सीरियल %serial% की अभी पुष्टि नहीं हुई"
 
-#: templates/modern/list_forward_zones.html:209
+#: templates/modern/list_forward_zones.html:211
 msgid "NOTIFY sent at serial %serial%"
 msgstr "सीरियल %serial% पर NOTIFY भेजा गया"
 
@@ -11245,7 +11263,9 @@ msgstr "सदस्य जोड़ें"
 msgid ""
 "No zones are available to add. Only Primary and Producer zones that are not "
 "already in a catalog can be members."
-msgstr "जोड़ने के लिए कोई ज़ोन उपलब्ध नहीं है। केवल वे प्राथमिक और निर्माता ज़ोन सदस्य बन सकते हैं जो पहले से किसी कैटलॉग में नहीं हैं।"
+msgstr ""
+"जोड़ने के लिए कोई ज़ोन उपलब्ध नहीं है। केवल वे प्राथमिक और निर्माता ज़ोन सदस्य बन सकते हैं "
+"जो पहले से किसी कैटलॉग में नहीं हैं।"
 
 #: templates/modern/list_views.html:64
 msgid "Add"
@@ -12255,7 +12275,7 @@ msgstr "ज़ोन की कुल संख्या:"
 msgid "There are no forward zones to show in this listing."
 msgstr "इस सूची में दिखाने के लिए कोई फॉरवर्ड ज़ोन नहीं हैं।"
 
-#: templates/modern/list_forward_zones.html:235
+#: templates/modern/list_forward_zones.html:237
 msgid "PTR"
 msgstr "PTR"
 
@@ -13204,7 +13224,8 @@ msgstr "उपयोग में आसान"
 msgid ""
 "Authenticator app verification is not available because it has been disabled "
 "by the administrator."
-msgstr "प्रमाणीकरणकर्ता ऐप सत्यापन उपलब्ध नहीं है क्योंकि यह व्यवस्थापक द्वारा अक्षम किया गया है।"
+msgstr ""
+"प्रमाणीकरणकर्ता ऐप सत्यापन उपलब्ध नहीं है क्योंकि यह व्यवस्थापक द्वारा अक्षम किया गया है।"
 
 #: templates/default/mfa_setup.html:84 templates/modern/mfa_setup.html:84
 msgid "Set up app authentication"
@@ -13276,7 +13297,7 @@ msgstr "त्रुटि:"
 msgid "Success:"
 msgstr "सफलता:"
 
-#: templates/modern/message_alert.html:16
+#: templates/modern/message_alert.html:17
 msgid "Info:"
 msgstr "सूचना:"
 
@@ -15235,29 +15256,5 @@ msgid ""
 msgstr ""
 "लोकेल सेट करने में विफल। चयनित लोकेल इस सिस्टम पर समर्थित नहीं हो सकता है। कृपया अपने "
 "प्रशासक से संपर्क करें।"
-
-# OBSOLETE: msgid "Network views require PowerDNS 5.0 or newer."
-# OBSOLETE: msgstr "नेटवर्क दृश्यों के लिए PowerDNS 5.0 या नया आवश्यक है।"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger "
-# OBSOLETE: "is recommended."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "HMAC-MD5 को आधुनिक मानकों द्वारा कमजोर माना जाता है। HMAC-SHA256 या मजबूत "
-# OBSOLETE: "अनुशंसित है।"
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "CNAME target must be a fully qualified domain name (FQDN). Single-label "
-# OBSOLETE: "names are not allowed."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "CNAME लक्ष्य एक पूरी तरह से योग्य डोमेन नाम (FQDN) होना चाहिए। एकल लेबल नामों की "
-# OBSOLETE: "अनुमति नहीं है।"
-
-# OBSOLETE: msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-# OBSOLETE: msgstr "SRV रिकॉर्ड के port क्षेत्र के लिए अमान्य मूल्य। 1-65535 होना चाहिए।"
-
-# OBSOLETE: msgid "Error"
-# OBSOLETE: msgstr "त्रुटि"
-
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-19 18:33+0300\n"
+"POT-Creation-Date: 2026-08-25 09:24+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -27,7 +27,7 @@ msgstr ""
 "Níor aimsíodh comhad cumraíochta ag %s. Rith an suiteálaí ag install/ chun "
 "ceann a chruthú, nó cruthaigh an comhad cumraíochta de láimh."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:58
+#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:59
 msgid "DNS wizards are not enabled."
 msgstr "Níl draoithe DNS cumasaithe."
 
@@ -43,19 +43,19 @@ msgstr "Níor aimsíodh an crios."
 msgid "You do not have permission to add records to this zone."
 msgstr "Níl cead agat taifid a chur leis an gcrios seo."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:116
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:117
 msgid "Invalid wizard type."
 msgstr "Cineál draoi neamhbhailí."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:202
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
 msgid "Validation failed:"
 msgstr "Theip ar bhailíochtú:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:226
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
 msgid "Failed to generate record:"
 msgstr "Theip ar an taifead a ghiniúint:"
 
-#: lib/Application/Controller/AddRecordController.php:196
+#: lib/Application/Controller/AddRecordController.php:197
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
@@ -63,11 +63,11 @@ msgstr ""
 "Ní raibh an taifead bailí agus ní fhéadfaí é a chur leis. Féadfaidh sé a "
 "bheith ann cheana féin nó sonraí neamhbhailí a bheith ann."
 
-#: lib/Application/Controller/AddRecordController.php:276
+#: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Cuireadh an taifead leis go rathúil."
 
-#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:405
+#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:406
 msgid "Record created successfully"
 msgstr "Cruthaíodh an taifead go rathúil"
 
@@ -1320,32 +1320,32 @@ msgstr ""
 msgid "Email Previews"
 msgstr "Réamhamhairc Ríomhphoist"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:73
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:74
 msgid "You do not have permission to import zones."
 msgstr "Níl cead agat criosanna a allmhairiú."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:113
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:114
 msgid "Please select a valid zone file to upload."
 msgstr "Roghnaigh comhad crios bailí le huaslódáil."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:119
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:120
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
 msgstr "Sáraíonn méid an chomhaid an méid uasta ceadaithe de %s."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:125
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:126
 msgid "The uploaded file is empty or could not be read."
 msgstr "Tá an comhad a uaslódáladh folamh nó níorbh fhéidir é a léamh."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:134
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:135
 msgid "No valid records found in the uploaded file."
 msgstr "Níl taifid bhailí le fáil sa chomhad uaslódáilte."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:300
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:301
 msgid "You do not have permission to modify this zone."
 msgstr "Níl cead agat an crios seo a mhodhnú."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:239
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:240
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
@@ -1353,7 +1353,7 @@ msgstr ""
 "Ní féidir crios nua a iompórtáil: is é zone_ownership_mode groups_only ach "
 "níl aon ghrúpaí ann. Cruthaigh grúpa ar dtús."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:242
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
@@ -1361,43 +1361,43 @@ msgstr ""
 "Ní féidir crios nua a iompórtáil: is é zone_ownership_mode groups_only agus "
 "níl tú i do bhall d'aon ghrúpa. Iarr ar riarthóir tú a chur le grúpa ar dtús."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:258
 msgid "Import session expired. Please upload the file again."
 msgstr "Chuaigh an seisiún iompórtála in éag. Uaslódáil an comhad arís."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:264
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:265
 msgid "Invalid import data. Please upload the file again."
 msgstr "Sonraí iompórtála neamhbhailí. Uaslódáil an comhad arís."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:291
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:292
 msgid "The selected zone does not exist."
 msgstr "Níl an crios roghnaithe ann."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:306
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
 msgid "You cannot import records into a read-only zone."
 msgstr "Ní féidir leat taifid a iompórtáil isteach i gcrios inléite amháin."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:322
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:323
 msgid "You do not have permission to add zones."
 msgstr "Níl cead agat criosanna a chur leis."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:327
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:328
 msgid "Zone name is required."
 msgstr "Tá ainm Crios ag teastáil."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:143
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:144
 msgid "This is an invalid zone name."
 msgstr "Is ainm crios neamhbhailí é seo."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:340
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
 msgid "A zone with this name already exists."
 msgstr "Tá crios leis an ainm seo ann cheana féin."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:346
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Cineál crios neamhbhailí."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:379
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:380
 msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
@@ -1405,11 +1405,11 @@ msgstr ""
 "Ní féidir crios nua a chruthú trí iompórtáil: roghnaigh grúpa amháin ar a "
 "laghad, nó fág \"Gan úinéir úsáideora\" gan tic."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:388
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
 msgid "Failed to create zone."
 msgstr "Theip ar an gcrios a chruthú."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:394
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
 msgid "Failed to retrieve created zone."
 msgstr "Theip ar an gcrios a cruthaíodh a aisghabháil."
 
@@ -1524,7 +1524,7 @@ msgstr ""
 msgid "Invalid or unexpected input given."
 msgstr "Tugadh ionchur neamhbhailí nó gan choinne."
 
-#: lib/Domain/Model/UserManager.php:179
+#: lib/Domain/Model/UserManager.php:180
 msgid "You do not have the permission to delete this user."
 msgstr "Níl cead agat an t-úsáideoir seo a scriosadh."
 
@@ -1550,19 +1550,19 @@ msgstr ""
 msgid "The user has been deleted successfully."
 msgstr "Scriosadh an t-úsáideoir go rathúil."
 
-#: lib/Application/Controller/EditCommentController.php:60
+#: lib/Application/Controller/EditCommentController.php:61
 msgid "Zone comments feature is disabled in configuration."
 msgstr "Tá gné na dtráchtanna crios díchumasaithe sa chumraíocht."
 
-#: lib/Application/Controller/EditCommentController.php:74
+#: lib/Application/Controller/EditCommentController.php:75
 msgid "You do not have the permission to view this comment."
 msgstr "Níl cead agat féachaint ar an trácht seo."
 
-#: lib/Domain/Service/Dns/RecordManager.php:598
+#: lib/Domain/Service/Dns/RecordManager.php:599
 msgid "You do not have the permission to edit this comment."
 msgstr "Níl cead agat an trácht seo a chur in eagar."
 
-#: lib/Application/Controller/EditCommentController.php:113
+#: lib/Application/Controller/EditCommentController.php:114
 msgid "The comment has been updated successfully."
 msgstr "Nuashonraíodh an trácht go rathúil."
 
@@ -1574,7 +1574,7 @@ msgstr "ID taifead neamhbhailí."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Níl cead agat taifid a scriosadh sa chrios seo."
 
-#: lib/Domain/Service/Dns/RecordManager.php:502
+#: lib/Domain/Service/Dns/RecordManager.php:503
 msgid "Record not found."
 msgstr "Níor aimsíodh an taifead."
 
@@ -1613,7 +1613,7 @@ msgstr "Scriosadh an taifead go rathúil. Ní bhfuarthas aon taifead A/AAAA."
 msgid "The record has been deleted successfully."
 msgstr "Scriosadh an taifead go rathúil."
 
-#: lib/Domain/Service/Dns/RecordManager.php:509
+#: lib/Domain/Service/Dns/RecordManager.php:510
 msgid "You cannot delete records from a read-only zone."
 msgstr "Ní féidir leat taifid a scriosadh ó chrios inléite amháin."
 
@@ -1751,7 +1751,7 @@ msgstr "Tá cód fíorúcháin ag teastáil."
 msgid "MFA has been enabled successfully."
 msgstr "Tá MFA cumasaithe go rathúil."
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:316
 msgid "Invalid verification code. Please try again."
 msgstr "Cód fíoraithe neamhbhailí. Déan iarracht arís."
 
@@ -1991,7 +1991,7 @@ msgstr "Cineál taifead neamhbhailí."
 msgid "Record could not be added."
 msgstr "Níorbh fhéidir taifead a chur leis."
 
-#: lib/Application/Controller/AddRecordController.php:530
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "Cuireadh %d taifead leis go rathúil."
@@ -2008,16 +2008,16 @@ msgstr "Tá ID Crios ag teastáil."
 msgid "You do not have the permission to edit permission templates."
 msgstr "Níl cead agat teimpléid ceadanna a chur in eagar."
 
-#: lib/Application/Controller/EditPermTemplController.php:67
+#: lib/Application/Controller/EditPermTemplController.php:68
 #: templates/modern/edit_perm_templ.html:17
 msgid "Edit Permission Template"
 msgstr "Cuir Teimpléad Ceadanna in Eagar"
 
-#: lib/Application/Controller/EditPermTemplController.php:126
+#: lib/Application/Controller/EditPermTemplController.php:127
 msgid "The permission template has been updated successfully."
 msgstr "Tá an teimpléad cead tugtha cothrom le dáta go rathúil."
 
-#: lib/Application/Controller/AddPermTemplController.php:141
+#: lib/Application/Controller/AddPermTemplController.php:142
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
@@ -2025,7 +2025,7 @@ msgstr ""
 "Teastaíonn cearta riarthóra chun cearta riarthóra a bhronnadh i dteimpléad "
 "ceadanna."
 
-#: lib/Application/Controller/EditPermTemplController.php:179
+#: lib/Application/Controller/EditPermTemplController.php:180
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
@@ -2033,7 +2033,7 @@ msgstr ""
 "Teastaíonn cearta riarthóra chun teimpléad ceadanna a bhfuil cearta "
 "riarthóra aige a chur in eagar."
 
-#: lib/Application/Controller/EditPermTemplController.php:180
+#: lib/Application/Controller/EditPermTemplController.php:181
 msgid "The permission template could not be updated."
 msgstr "Níorbh fhéidir an teimpléad ceadanna a nuashonrú."
 
@@ -2084,7 +2084,7 @@ msgstr "Baineadh an comhalta den ghrúpa go rathúil."
 msgid "User was not a member of this group."
 msgstr "Ní raibh úsáideoir ina bhall den ghrúpa seo."
 
-#: lib/Domain/Model/UserManager.php:522
+#: lib/Domain/Model/UserManager.php:515
 msgid "You do not have the permission to add a new user."
 msgstr "Níl an cead agat úsáideoir nua a chur leis."
 
@@ -2098,7 +2098,7 @@ msgid "No non-superuser permission template is available to assign."
 msgstr ""
 "Níl teimpléad ceadanna ar fáil le sannadh nach bhfuil cearta superuser aige."
 
-#: lib/Application/Controller/EditUserController.php:305
+#: lib/Application/Controller/EditUserController.php:306
 msgid "Invalid permission template: must be a user template"
 msgstr "Teimpléad cead neamhbhailí: ní mór a bheith ina teimpléad úsáideora"
 
@@ -2127,7 +2127,7 @@ msgstr "Gineadh focal faire ach níl sé ar taispeáint ar chúiseanna slándál
 msgid "Please fill in all required fields correctly."
 msgstr "Líon isteach gach réimse is gá i gceart."
 
-#: lib/Domain/Service/Dns/RecordManager.php:535
+#: lib/Domain/Service/Dns/RecordManager.php:536
 msgid "You do not have the permission to delete this record."
 msgstr "Níl cead agat an taifead seo a scriosadh."
 
@@ -2157,7 +2157,7 @@ msgstr "Ní fhoilsíonn ach criosanna táirgeora catalóg."
 msgid "You do not have permission to access this zone."
 msgstr "Níl cead agat an crios seo a rochtain."
 
-#: lib/Application/Controller/EditController.php:616
+#: lib/Application/Controller/EditController.php:618
 msgid "You do not have permission to edit this zone."
 msgstr "Níl cead agat an crios seo a chur in eagar."
 
@@ -2165,7 +2165,7 @@ msgstr "Níl cead agat an crios seo a chur in eagar."
 msgid "The zone has been added to the catalog."
 msgstr "Cuireadh an crios leis an gcatalóg."
 
-#: lib/Application/Controller/EditController.php:610
+#: lib/Application/Controller/EditController.php:612
 msgid "The zone has been removed from the catalog."
 msgstr "Baineadh an crios den chatalóg."
 
@@ -2182,7 +2182,7 @@ msgstr "Úsáideoirí"
 msgid "User details updated"
 msgstr "Sonraí úsáideora cothrom le dáta"
 
-#: lib/Application/Controller/EditUserController.php:263
+#: lib/Application/Controller/EditUserController.php:264
 msgid "You do not have permission to edit a superuser account."
 msgstr "Níl cead agat cuntas superuser a chur in eagar."
 
@@ -2252,7 +2252,7 @@ msgstr "ID teimpléid neamhbhailí."
 msgid "Template does not exist."
 msgstr "Níl Teimpléad ann."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:516
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
 msgid "You do not have permission to view this zone."
 msgstr "Níl cead agat an crios seo a fheiceáil."
 
@@ -2314,7 +2314,7 @@ msgstr "Cuir crios in eagar"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Níl cead agat DNSSEC a bhainistiú don chrios seo."
 
-#: lib/Application/Controller/EditController.php:334
+#: lib/Application/Controller/EditController.php:336
 msgid "DNSSEC is not enabled on the server."
 msgstr "Níl DNSSEC cumasaithe ar an bhfreastalaí."
 
@@ -2325,15 +2325,15 @@ msgstr ""
 "Tá an crios seo réamhshínithe; déantar eochracha DNSSEC a bhainistiú ag an "
 "bpríomhfhreastalaí."
 
-#: lib/Application/Controller/EditController.php:339
+#: lib/Application/Controller/EditController.php:341
 msgid "Zone is already signed with DNSSEC."
 msgstr "Tá Crios sínithe cheana féin le DNSSEC."
 
-#: lib/Application/Controller/EditController.php:361
+#: lib/Application/Controller/EditController.php:363
 msgid "Zone has been signed successfully."
 msgstr "Tá Crios sínithe go rathúil."
 
-#: lib/Application/Controller/EditController.php:366
+#: lib/Application/Controller/EditController.php:368
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2341,7 +2341,7 @@ msgstr ""
 "Iarradh síniú an chreasa go rathúil, ach theip ar an bhfíorú. Seiceáil na "
 "heochracha DNSSEC."
 
-#: lib/Application/Controller/EditController.php:370
+#: lib/Application/Controller/EditController.php:372
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2368,23 +2368,23 @@ msgstr ""
 "Theip ar an síniú a bhaint den chrios. Seiceáil logaí PowerDNS le haghaidh "
 "sonraí."
 
-#: lib/Application/Controller/EditController.php:616
+#: lib/Application/Controller/EditController.php:618
 msgid "The catalog has been changed successfully."
 msgstr "Athraíodh an chatalóg go rathúil."
 
-#: lib/Application/Controller/EditController.php:629
+#: lib/Application/Controller/EditController.php:631
 msgid "Zone type has been changed successfully."
 msgstr "Tá cineál Crios athraithe go rathúil."
 
-#: lib/Application/Controller/EditController.php:636
+#: lib/Application/Controller/EditController.php:638
 msgid "Slave master has been changed successfully."
 msgstr "Athraíodh máistir an sclábhaí go rathúil."
 
-#: lib/Application/Controller/EditController.php:650
+#: lib/Application/Controller/EditController.php:652
 msgid "You cannot apply a template to a read-only zone."
 msgstr "Ní féidir leat teimpléad a chur i bhfeidhm ar chrios inléite amháin."
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:669
 msgid "Zone template has been changed successfully."
 msgstr "Tá teimpléad Crios athraithe go rathúil."
 
@@ -2392,7 +2392,7 @@ msgstr "Tá teimpléad Crios athraithe go rathúil."
 msgid "You cannot edit records in a read-only zone."
 msgstr "Ní féidir leat taifid a chur in eagar i gcrios inléite amháin."
 
-#: lib/Application/Controller/EditController.php:833
+#: lib/Application/Controller/EditController.php:835
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2402,15 +2402,19 @@ msgstr ""
 "fhreastalaí ar líon na réimsí. Iarr ar do riarthóir an socrú PHP "
 "\"max_input_vars\" a mhéadú."
 
-#: lib/Application/Controller/EditController.php:940
+#: lib/Application/Controller/EditController.php:944
+msgid "Zone has not been updated successfully."
+msgstr "Níor nuashonraíodh an crios go rathúil."
+
+#: lib/Application/Controller/EditController.php:945
 msgid "Request has expired, please try again."
 msgstr "Tá iarratas imithe in éag, déan iarracht arís."
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:954
 msgid "Zone has been updated successfully."
 msgstr "Tá Crios tugtha cothrom le dáta go rathúil."
 
-#: lib/Application/Controller/EditController.php:947
+#: lib/Application/Controller/EditController.php:955
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2418,53 +2422,49 @@ msgstr ""
 "Sábháladh an crios go rathúil. Ní dhearnadh aon athrú ar na taifid, ach "
 "méadaíodh an tsraithuimhir SOA."
 
-#: lib/Application/Controller/EditController.php:956
-msgid "Zone has not been updated successfully."
-msgstr "Níor nuashonraíodh an crios go rathúil."
-
-#: lib/Application/Controller/EditController.php:984
+#: lib/Application/Controller/EditController.php:987
 msgid "Please provide all required fields."
 msgstr "Tabhair gach réimse is gá."
 
-#: lib/Application/Controller/AddRecordController.php:260
+#: lib/Application/Controller/AddRecordController.php:261
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr ""
 "Cuireadh an taifead leis go rathúil. Cruthaíodh taifead PTR comhoiriúnach "
 "freisin."
 
-#: lib/Application/Controller/AddRecordController.php:265
+#: lib/Application/Controller/AddRecordController.php:266
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr ""
 "Cuireadh an taifead leis go rathúil, ach theip ar chruthú an taifid PTR: "
 
-#: lib/Application/Controller/AddRecordController.php:269
+#: lib/Application/Controller/AddRecordController.php:270
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Cuireadh leis an taifead go rathúil, ach theip ar chruthú taifead PTR."
 
-#: lib/Application/Controller/AddRecordController.php:273
+#: lib/Application/Controller/AddRecordController.php:274
 msgid "Record successfully added. A matching A record was also created."
 msgstr ""
 "Cuireadh an taifead leis go rathúil. Cruthaíodh taifead A comhoiriúnach "
 "freisin."
 
-#: lib/Application/Controller/MfaVerifyController.php:145
+#: lib/Application/Controller/MfaVerifyController.php:146
 msgid "Invalid security token. Please try again."
 msgstr "Comhartha slándála neamhbhailí. Déan iarracht arís."
 
-#: lib/Application/Controller/MfaVerifyController.php:314
+#: lib/Application/Controller/MfaVerifyController.php:315
 msgid "Too many failed attempts. Please try again later."
 msgstr ""
 "An iomarca iarrachtaí teipthe. Bain triail eile as ar ball le do thoil."
 
-#: lib/Application/Controller/MfaVerifyController.php:162
+#: lib/Application/Controller/MfaVerifyController.php:163
 msgid "No MFA record found. Please contact administrator."
 msgstr "Níl taifead MFA le fáil. Téigh i dteagmháil le riarthóir."
 
-#: lib/Application/Controller/MfaVerifyController.php:167
+#: lib/Application/Controller/MfaVerifyController.php:168
 msgid "An error occurred. Please try again."
 msgstr "Tharla earráid. Déan iarracht arís."
 
-#: lib/Application/Controller/MfaVerifyController.php:387
+#: lib/Application/Controller/MfaVerifyController.php:388
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2472,15 +2472,15 @@ msgstr ""
 "Níl fíorú ríomhphoist ar fáil toisc go bhfuil an tseirbhís ríomhphoist "
 "díchumasaithe. Bain úsáid as cód aisghabhála."
 
-#: lib/Application/Controller/MfaVerifyController.php:397
+#: lib/Application/Controller/MfaVerifyController.php:398
 msgid "A new verification code has been sent to your email."
 msgstr "Tá cód fíorú nua curtha chuig do r-phost."
 
-#: lib/Application/Controller/MfaVerifyController.php:403
+#: lib/Application/Controller/MfaVerifyController.php:404
 msgid "Please use a recovery code instead."
 msgstr "Bain úsáid as cód aisghabhála ina ionad sin."
 
-#: lib/Application/Controller/MfaVerifyController.php:408
+#: lib/Application/Controller/MfaVerifyController.php:409
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2488,29 +2488,29 @@ msgstr ""
 "Níorbh fhéidir cód fíoraithe a sheoladh chuig do ríomhphost. Bain úsáid as "
 "cód aisghabhála ina ionad sin."
 
-#: lib/Domain/Service/Dns/RecordManager.php:285
+#: lib/Domain/Service/Dns/RecordManager.php:286
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Níl cead agat taifead a chur leis an gcrios seo."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "Cuireadh an taifead leis go rathúil."
 
-#: lib/Application/Controller/AddRecordController.php:463
+#: lib/Application/Controller/AddRecordController.php:464
 msgid "No records were provided."
 msgstr "Níor soláthraíodh aon taifid."
 
-#: lib/Application/Controller/AddRecordController.php:532
+#: lib/Application/Controller/AddRecordController.php:533
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Cruthaíodh %d taifead comhoiriúnach freisin."
 
-#: lib/Application/Controller/AddRecordController.php:535
+#: lib/Application/Controller/AddRecordController.php:536
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Theip ar %d taifead a chur leis."
 
-#: lib/Application/Controller/AddRecordController.php:540
+#: lib/Application/Controller/AddRecordController.php:541
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2518,7 +2518,7 @@ msgstr ""
 "Níorbh fhéidir roinnt taifead a chur leis. Féadfaidh siad a bheith ann "
 "cheana féin nó sonraí neamhbhailí a bheith iontu."
 
-#: lib/Application/Controller/AddRecordController.php:570
+#: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Theip ar aon taifead a chur leis. Seans go bhfuil sonraí neamhbhailí iontu."
@@ -2547,7 +2547,7 @@ msgstr "Níl cead agat taifid teimpléad crios a chur in eagar."
 msgid "OIDC authentication is not enabled"
 msgstr "Níl an fíordheimhniú OIDC cumasaithe"
 
-#: lib/Application/Service/SamlService.php:418
+#: lib/Application/Service/SamlService.php:420
 msgid "Authentication failed: "
 msgstr "Theip ar an bhfíordheimhniú: "
 
@@ -2877,20 +2877,20 @@ msgstr[2] "Ní fhéadfaí criosanna %d a bhaint."
 msgstr[3] "Ní fhéadfaí criosanna %d a bhaint."
 msgstr[4] "Ní fhéadfaí criosanna %d a bhaint."
 
-#: lib/Application/Controller/AddPermTemplController.php:63
+#: lib/Application/Controller/AddPermTemplController.php:64
 msgid "You do not have the permission to add permission templates."
 msgstr "Níl cead agat teimpléid cead a chur leis."
 
-#: lib/Application/Controller/AddPermTemplController.php:67
+#: lib/Application/Controller/AddPermTemplController.php:68
 #: templates/modern/list_perm_templ.html:9
 msgid "Add permission template"
 msgstr "Cuir teimpléad ceadanna leis"
 
-#: lib/Application/Controller/AddPermTemplController.php:99
+#: lib/Application/Controller/AddPermTemplController.php:100
 msgid "The permission template has been added successfully."
 msgstr "Tá an teimpléad cead curtha leis go rathúil."
 
-#: lib/Application/Controller/AddPermTemplController.php:142
+#: lib/Application/Controller/AddPermTemplController.php:143
 msgid "The permission template could not be added."
 msgstr "Níorbh fhéidir an teimpléad ceadanna a chur leis."
 
@@ -2989,7 +2989,7 @@ msgstr "Cuir teimpléad crios"
 msgid "Zone template has been added successfully."
 msgstr "Tá teimpléad Crios curtha leis go rathúil."
 
-#: lib/Application/Controller/IndexController.php:65
+#: lib/Application/Controller/IndexController.php:66
 msgid "Dashboard"
 msgstr "Deais"
 
@@ -3074,28 +3074,28 @@ msgstr "Níl cead agat supermaster nua a chur leis."
 msgid "The supermaster has been added successfully."
 msgstr "Tá an supermaster curtha leis go rathúil."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:79
+#: lib/Application/Controller/DnssecKeyImportController.php:80
 msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr "Éilíonn allmhairiú eochair PEM PowerDNS 4.7 nó níos nuaí."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:113
+#: lib/Application/Controller/DnssecKeyImportController.php:114
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr ""
 "Cuir eochair phríobháideach ionchódaithe le PEM ar fáil (ní mór marcóirí "
 "BEGIN/END a bheith inti)."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:121
+#: lib/Application/Controller/DnssecKeyImportController.php:122
 msgid "PEM key imported successfully."
 msgstr "Iompórtáladh an eochair PEM go rathúil."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:124
+#: lib/Application/Controller/DnssecKeyImportController.php:125
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
 msgstr ""
 "Theip ar an eochair PEM a iompórtáil. Seans gur dhiúltaigh an freastalaí "
 "PowerDNS don fhormáid."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:128
+#: lib/Application/Controller/DnssecKeyImportController.php:129
 msgid "An error occurred while importing the PEM key: "
 msgstr "Tharla earráid agus an eochair PEM á hiompórtáil: "
 
@@ -3103,24 +3103,24 @@ msgstr "Tharla earráid agus an eochair PEM á hiompórtáil: "
 msgid "You do not have the permission to add records to zone templates."
 msgstr "Níl cead agat taifid a chur le teimpléid crios."
 
-#: lib/Application/Controller/EditUserController.php:83
+#: lib/Application/Controller/EditUserController.php:84
 #: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Cuir Úsáideoir in Eagar"
 
-#: lib/Application/Controller/EditUserController.php:165
+#: lib/Application/Controller/EditUserController.php:166
 msgid "Your profile has been updated successfully."
 msgstr "Nuashonraíodh do phróifíl go rathúil."
 
-#: lib/Application/Controller/EditUserController.php:169
+#: lib/Application/Controller/EditUserController.php:170
 msgid "The user has been updated successfully."
 msgstr "Nuashonraíodh an t-úsáideoir go rathúil."
 
-#: lib/Application/Controller/EditUserController.php:173
+#: lib/Application/Controller/EditUserController.php:174
 msgid "The user could not be updated."
 msgstr "Ní fhéadfaí an t-úsáideoir a nuashonrú."
 
-#: lib/Domain/Model/UserManager.php:340 lib/Domain/Model/UserManager.php:502
+#: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Níl cead agat an t-úsáideoir seo a chur in eagar."
 
@@ -3260,7 +3260,7 @@ msgstr "Logáil amach críochnaithe (le rabhaidh): "
 msgid "You do not have permission to view this record."
 msgstr "Níl cead agat an taifead seo a fheiceáil."
 
-#: lib/Domain/Service/Dns/RecordManager.php:425
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have permission to edit this record."
 msgstr "Níl cead agat an taifead seo a chur in eagar."
 
@@ -3303,43 +3303,43 @@ msgstr ""
 msgid "Change password"
 msgstr "Athraigh pasfhocal"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:132
+#: lib/Application/Controller/DnssecAddKeyController.php:133
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "Ní mór don algartam ECDSA P-256 256 giotán a úsáid"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:135
+#: lib/Application/Controller/DnssecAddKeyController.php:136
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "Ní mór don algartam ECDSA P-384 384 giotán a úsáid"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:141
+#: lib/Application/Controller/DnssecAddKeyController.php:142
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "Ní mór don algartam ED25519 256 giotán a úsáid"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:146
+#: lib/Application/Controller/DnssecAddKeyController.php:147
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr ""
 "Ní mór don algartam ED448 456 giotán a úsáid (gan tacaíocht sa chomhéadan "
 "seo)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:153
+#: lib/Application/Controller/DnssecAddKeyController.php:154
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "Ba chóir d'algartaim RSA 1024 nó 2048 giotán a úsáid le haghaidh slándála "
 "leordhóthanaí"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:175
+#: lib/Application/Controller/DnssecAddKeyController.php:176
 msgid "Zone key has been added successfully."
 msgstr "Tá eochair Crios curtha leis go rathúil."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:179
+#: lib/Application/Controller/DnssecAddKeyController.php:180
 msgid "Failed to add new DNSSEC key."
 msgstr "Theip ar eochair DNSSEC nua a chur leis."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:183
+#: lib/Application/Controller/DnssecAddKeyController.php:184
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Tharla earráid agus an eochair DNSSEC á cur leis: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:187
+#: lib/Application/Controller/DnssecAddKeyController.php:188
 msgid "Please select both algorithm and bits"
 msgstr "Roghnaigh algartam agus giotáin araon"
 
@@ -3592,7 +3592,7 @@ msgstr "Theip ar an bhfíordheimhniú: Níl aon chód údaraithe ann"
 msgid "Authentication failed: Invalid session"
 msgstr "Theip ar fhíordheimhniú: Seisiún neamhbhailí"
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
 "Theip ar an bhfíordheimhniú: Ní féidir cuntas úsáideora a chruthú ná a "
@@ -3622,17 +3622,17 @@ msgstr "Theip ar fhíordheimhniú i gcoinne LDAP."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Theip ar an bhfíordheimhniú: Freagra SAML neamhbhailí"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:307
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:308
 msgid "This template is assigned to at least one user and one group."
 msgstr ""
 "Sanntar an teimpléad seo d'úsáideoir amháin ar a laghad agus do ghrúpa "
 "amháin."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:309
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:310
 msgid "This template is assigned to at least one user."
 msgstr "Sanntar an teimpléad seo d'úsáideoir amháin ar a laghad."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:311
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:312
 msgid "This template is assigned to at least one group."
 msgstr "Sanntar an teimpléad seo do ghrúpa amháin ar a laghad."
 
@@ -3823,20 +3823,29 @@ msgid ""
 msgstr ""
 "Ag taispeáint stádas nascachta do na supermasters cumraithe sa tábla thíos."
 
-#: lib/Infrastructure/Web/PageRenderer.php:249
-msgid ""
-"The install/ directory exists, you must remove it first before proceeding."
-msgstr ""
-"Tá an chomhadlann install/ ann, caithfidh tú é a bhaint ar dtús sula leanann "
-"tú ar aghaidh."
-
-#: lib/Infrastructure/Web/PageRenderer.php:289
+#: lib/Infrastructure/Web/PageRenderer.php:132
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
 "Tá an eochair criptithe seisiúin réamhshocraithe in úsáid, socraigh i do "
 "chomhad cumraíochta í le do thoil."
+
+#: lib/Infrastructure/Web/PageRenderer.php:136
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/Infrastructure/Web/PageRenderer.php:253
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr ""
+"Tá an chomhadlann install/ ann, caithfidh tú é a bhaint ar dtús sula leanann "
+"tú ar aghaidh."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:166
 #: templates/default/login.html:139 templates/modern/login.html:139
@@ -3859,11 +3868,11 @@ msgstr ""
 "Earráid Bunachar Sonraí: Ní féidir fíordheimhniú úsáideora a fhíorú. "
 "Seiceáil do chumraíocht bunachar sonraí."
 
-#: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
+#: lib/Domain/Model/UserManager.php:80 lib/Domain/Model/UserManager.php:91
 msgid "You do not have the permission to change the permission template."
 msgstr "Níl cead agat an teimpléad ceadanna a athrú."
 
-#: lib/Domain/Model/UserManager.php:87
+#: lib/Domain/Model/UserManager.php:88
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
@@ -3871,7 +3880,7 @@ msgstr ""
 "Teastaíonn cead úsáideoirí eile a chur in eagar chun do theimpléad ceadanna "
 "féin a athrú."
 
-#: lib/Domain/Model/UserManager.php:89
+#: lib/Domain/Model/UserManager.php:90
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
@@ -3879,20 +3888,20 @@ msgstr ""
 "Teastaíonn cearta riarthóra chun teimpléad ceadanna a bhfuil cearta "
 "riarthóra aige a shannadh."
 
-#: lib/Domain/Model/UserManager.php:534
+#: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Cuir isteach seoladh ríomhphoist bailí."
 
-#: lib/Domain/Model/UserManager.php:526
+#: lib/Domain/Model/UserManager.php:519
 msgid "Username exist already, please choose another one."
 msgstr "Ainm Úsáideora ann cheana féin, roghnaigh ceann eile."
 
-#: lib/Domain/Model/UserManager.php:538
+#: lib/Domain/Model/UserManager.php:531
 msgid "Email address already exists, please choose another one."
 msgstr ""
 "Tá an seoladh ríomhphoist ann cheana, roghnaigh ceann eile le do thoil."
 
-#: lib/Domain/Model/UserManager.php:530
+#: lib/Domain/Model/UserManager.php:523
 msgid "Enter a valid user name."
 msgstr "Cuir isteach ainm úsáideora bailí."
 
@@ -4058,55 +4067,59 @@ msgstr "Éilíonn amhairc PowerDNS 5.0 nó níos nuaí."
 msgid ""
 "Views require the LMDB backend. The connected server runs a backend that "
 "does not implement them."
-msgstr "Éilíonn amhairc an cúlchóras LMDB. Tá cúlchóras ar an bhfreastalaí ceangailte nach gcuireann i bhfeidhm iad."
+msgstr ""
+"Éilíonn amhairc an cúlchóras LMDB. Tá cúlchóras ar an bhfreastalaí "
+"ceangailte nach gcuireann i bhfeidhm iad."
 
 #: lib/Domain/Service/PdnsCapabilities.php:165
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr "Éilíonn amhairc \"views=yes\" i pdns.conf. Tá siad díchumasaithe ar an bhfreastalaí ceangailte."
+msgstr ""
+"Éilíonn amhairc \"views=yes\" i pdns.conf. Tá siad díchumasaithe ar an "
+"bhfreastalaí ceangailte."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:153
+#: lib/Domain/Service/DatabaseConsistencyService.php:154
 msgid "All zones have owners"
 msgstr "Tá úinéirí ag gach crios"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:160
+#: lib/Domain/Service/DatabaseConsistencyService.php:161
 #, php-format
 msgid "%d zones found without owners"
 msgstr "Fuarthas %d crios gan úinéirí"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:211
+#: lib/Domain/Service/DatabaseConsistencyService.php:212
 msgid "All slave zones have master IP addresses"
 msgstr "Tá seoltaí IP máistir ag gach crios daor"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:218
+#: lib/Domain/Service/DatabaseConsistencyService.php:219
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "Fuarthas %d crios daor gan seoltaí IP máistir"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:263
+#: lib/Domain/Service/DatabaseConsistencyService.php:264
 msgid "All records belong to existing zones"
 msgstr "Baineann gach taifead le criosanna atá ann cheana"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:270
+#: lib/Domain/Service/DatabaseConsistencyService.php:271
 #, php-format
 msgid "%d orphaned records found"
 msgstr "Fuarthas %d taifead dílleachta"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:330
+#: lib/Domain/Service/DatabaseConsistencyService.php:331
 msgid "No duplicate SOA records found"
 msgstr "Níl aon taifid SOA dúblach le fáil"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:337
+#: lib/Domain/Service/DatabaseConsistencyService.php:338
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "Tá taifid SOA dhúblacha i %d crios"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:397
+#: lib/Domain/Service/DatabaseConsistencyService.php:398
 msgid "All zones have SOA records"
 msgstr "Tá taifid SOA ag gach crios"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:404
+#: lib/Domain/Service/DatabaseConsistencyService.php:405
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "Fuarthas %d crios gan taifid SOA"
@@ -9236,7 +9249,8 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:335
 msgid "Invalid value for the port field of the SRV record. Must be 0-65535."
-msgstr "Luach neamhbhailí do réimse poirt an taifid SRV. Ní mór dó a bheith 0-65535."
+msgstr ""
+"Luach neamhbhailí do réimse poirt an taifid SRV. Ní mór dó a bheith 0-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:344
 #, php-format
@@ -9848,16 +9862,16 @@ msgstr "Scipeáladh an nuashonrú PTR: níl an cineál taifid A nó AAAA."
 msgid "Stale PTR record removed."
 msgstr "Baineadh an taifead PTR atá as dáta."
 
-#: lib/Domain/Service/Dns/RecordManager.php:321
+#: lib/Domain/Service/Dns/RecordManager.php:322
 msgid "A record with this hostname, type, and content already exists."
 msgstr ""
 "Tá taifead leis an óstainm, an cineál agus an t-ábhar seo ann cheana féin."
 
-#: lib/Domain/Service/Dns/RecordManager.php:222
+#: lib/Domain/Service/Dns/RecordManager.php:223
 msgid "Failed to add record to DNS backend."
 msgstr "Theip ar thaifead a chur leis an gcúlchóras DNS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:458
+#: lib/Domain/Service/Dns/RecordManager.php:459
 msgid "Failed to update record in DNS backend."
 msgstr "Theip ar thaifead a nuashonrú sa chúlchóras DNS."
 
@@ -10149,7 +10163,7 @@ msgstr "Eolas faoin Eochair API"
 msgid "Created by"
 msgstr "Cruthaithe ag"
 
-#: templates/modern/api_keys.html:48
+#: templates/modern/pdns_status.html:176 templates/modern/api_keys.html:48
 msgid "Unknown"
 msgstr "Anaithnid"
 
@@ -10724,7 +10738,7 @@ msgstr "Bain"
 msgid "and"
 msgstr "agus"
 
-#: templates/modern/list_forward_zones.html:189
+#: templates/modern/list_forward_zones.html:191
 msgid "more..."
 msgstr "níos mó..."
 
@@ -11665,7 +11679,14 @@ msgstr "Níl aon taifead SOA ag an gcrios"
 msgid "No SOA"
 msgstr "Gan SOA"
 
-#: templates/modern/list_forward_zones.html:159
+#: templates/modern/list_forward_zones.html:158
+#, auto-english-fallback
+msgid ""
+"The DNS server could not be reached, so this zone's SOA status is unknown"
+msgstr ""
+"The DNS server could not be reached, so this zone's SOA status is unknown"
+
+#: templates/modern/list_forward_zones.html:161
 msgid ""
 "Records for this zone are replicated from its primary and cannot be edited "
 "here."
@@ -11673,15 +11694,15 @@ msgstr ""
 "Déantar taifid an chreasa seo a mhacasamhlú óna phríomhfhreastalaí agus ní "
 "féidir iad a chur in eagar anseo."
 
-#: templates/modern/list_reverse_zones.html:243
+#: templates/modern/list_reverse_zones.html:245
 msgid "-"
 msgstr "-"
 
-#: templates/modern/list_forward_zones.html:207
+#: templates/modern/list_forward_zones.html:209
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY ar feitheamh: níl sraithuimhir %serial% admhaithe go fóill"
 
-#: templates/modern/list_forward_zones.html:209
+#: templates/modern/list_forward_zones.html:211
 msgid "NOTIFY sent at serial %serial%"
 msgstr "NOTIFY seolta ag sraithuimhir %serial%"
 
@@ -11786,7 +11807,8 @@ msgstr "Níl aon bhall sa chatalóg seo go fóill."
 
 #: templates/default/zone-catalog.html:25 templates/modern/zone-catalog.html:25
 msgid "PowerDNS only publishes Primary and Producer zones from a catalog."
-msgstr "Ní fhoilsíonn PowerDNS ach criosanna Príomhúla agus Táirgeora ó chatalóg."
+msgstr ""
+"Ní fhoilsíonn PowerDNS ach criosanna Príomhúla agus Táirgeora ó chatalóg."
 
 #: templates/default/zone-catalog.html:26 templates/modern/zone-catalog.html:26
 msgid "Not published"
@@ -11800,7 +11822,9 @@ msgstr "Cuir Ball Leis"
 msgid ""
 "No zones are available to add. Only Primary and Producer zones that are not "
 "already in a catalog can be members."
-msgstr "Níl aon chrios ar fáil le cur leis. Ní féidir a bheith ina mbaill ach criosanna Príomhúla agus Táirgeora nach bhfuil i gcatalóg cheana féin."
+msgstr ""
+"Níl aon chrios ar fáil le cur leis. Ní féidir a bheith ina mbaill ach "
+"criosanna Príomhúla agus Táirgeora nach bhfuil i gcatalóg cheana féin."
 
 #: templates/modern/list_views.html:64
 msgid "Add"
@@ -12831,7 +12855,7 @@ msgstr "Líon iomlán na gcriosanna:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Níl aon chriosanna ar aghaidh a thaispeáint sa liosta seo."
 
-#: templates/modern/list_forward_zones.html:235
+#: templates/modern/list_forward_zones.html:237
 msgid "PTR"
 msgstr "PTR"
 
@@ -13800,7 +13824,9 @@ msgstr "Éasca le húsáid"
 msgid ""
 "Authenticator app verification is not available because it has been disabled "
 "by the administrator."
-msgstr "Níl fíorú na haipe fíordheimhnithe ar fáil toisc gur dhíchumasaigh an riarthóir é."
+msgstr ""
+"Níl fíorú na haipe fíordheimhnithe ar fáil toisc gur dhíchumasaigh an "
+"riarthóir é."
 
 #: templates/default/mfa_setup.html:84 templates/modern/mfa_setup.html:84
 msgid "Set up app authentication"
@@ -13876,7 +13902,7 @@ msgstr "Earráid:"
 msgid "Success:"
 msgstr "Rath:"
 
-#: templates/modern/message_alert.html:16
+#: templates/modern/message_alert.html:17
 msgid "Info:"
 msgstr "Eolas:"
 
@@ -15912,31 +15938,5 @@ msgid ""
 msgstr ""
 "Theip ar shocrú an locale. Seans nach bhfuil tacaíocht ar an gcóras seo don "
 "locale roghnaithe. Déan teagmháil le do riarthóir."
-
-# OBSOLETE: msgid "Network views require PowerDNS 5.0 or newer."
-# OBSOLETE: msgstr "Éilíonn radhairc líonra PowerDNS 5.0 nó níos nuaí."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger "
-# OBSOLETE: "is recommended."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Meastar go bhfuil HMAC-MD5 lag de réir caighdeán nua-aimseartha. Moltar "
-# OBSOLETE: "HMAC-SHA256 nó algartam níos láidre."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "CNAME target must be a fully qualified domain name (FQDN). Single-label "
-# OBSOLETE: "names are not allowed."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Ní mór go mbeadh an sprioc CNAME ina ainm fearainn láncháilithe (FQDN). "
-# OBSOLETE: "Ní cheadaítear ainmneacha aon-lipéad."
-
-# OBSOLETE: msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Luach neamhbhailí do réimse poirt an taifid SRV. Ní mór dó a bheith "
-# OBSOLETE: "1-65535."
-
-# OBSOLETE: msgid "Error"
-# OBSOLETE: msgstr "Earráid"
-
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-19 18:33+0300\n"
+"POT-Creation-Date: 2026-08-25 09:24+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Serbian\n"
@@ -27,7 +27,7 @@ msgstr ""
 "Ниједна конфигурациона датотека није пронађена на %s. Покрените инсталер у "
 "install/ да бисте је креирали или креирајте конфигурациону датотеку ручно."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:58
+#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:59
 msgid "DNS wizards are not enabled."
 msgstr "DNS чаробњаци нису омогућени."
 
@@ -43,19 +43,19 @@ msgstr "Зона није пронађена."
 msgid "You do not have permission to add records to this zone."
 msgstr "Немате дозволу за додавање записа у ову зону."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:116
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:117
 msgid "Invalid wizard type."
 msgstr "Неважећи тип чаробњака."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:202
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
 msgid "Validation failed:"
 msgstr "Провера није успела:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:226
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
 msgid "Failed to generate record:"
 msgstr "Неуспешно генерисање записа:"
 
-#: lib/Application/Controller/AddRecordController.php:196
+#: lib/Application/Controller/AddRecordController.php:197
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
@@ -63,11 +63,11 @@ msgstr ""
 "Овај запис није био важећи и није могао бити додат. Можда већ постоји или "
 "садржи неважеће податке."
 
-#: lib/Application/Controller/AddRecordController.php:276
+#: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "Запис је успешно додат."
 
-#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:405
+#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:406
 msgid "Record created successfully"
 msgstr "Запис успешно креиран"
 
@@ -1282,32 +1282,32 @@ msgstr "Мора бити изабран бар један корисник ил
 msgid "Email Previews"
 msgstr "Прегледи имејла"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:73
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:74
 msgid "You do not have permission to import zones."
 msgstr "Немате дозволу за увоз зона."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:113
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:114
 msgid "Please select a valid zone file to upload."
 msgstr "Изаберите важећу датотеку зоне за отпремање."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:119
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:120
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
 msgstr "Величина датотеке прелази максимално дозвољену %s."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:125
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:126
 msgid "The uploaded file is empty or could not be read."
 msgstr "Отпремљена датотека је празна или се не може прочитати."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:134
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:135
 msgid "No valid records found in the uploaded file."
 msgstr "У отпремљеној датотеци нема важећих записа."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:300
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:301
 msgid "You do not have permission to modify this zone."
 msgstr "Немате дозволу за измену ове зоне."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:239
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:240
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
@@ -1315,7 +1315,7 @@ msgstr ""
 "Није могуће увезти нову зону: zone_ownership_mode је groups_only, али нема "
 "група. Прво направите групу."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:242
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
@@ -1323,43 +1323,43 @@ msgstr ""
 "Није могуће увезти нову зону: zone_ownership_mode је groups_only, а ви нисте "
 "члан ниједне групе. Замолите администратора да вас прво дода у групу."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:258
 msgid "Import session expired. Please upload the file again."
 msgstr "Сесија увоза је истекла. Поново отпремите датотеку."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:264
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:265
 msgid "Invalid import data. Please upload the file again."
 msgstr "Неважећи подаци за увоз. Поново отпремите датотеку."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:291
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:292
 msgid "The selected zone does not exist."
 msgstr "Изабрана зона не постоји."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:306
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
 msgid "You cannot import records into a read-only zone."
 msgstr "Не можете увозити записе у зону само за читање."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:322
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:323
 msgid "You do not have permission to add zones."
 msgstr "Немате дозволу за додавање зона."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:327
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:328
 msgid "Zone name is required."
 msgstr "Име зоне је обавезно."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:143
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:144
 msgid "This is an invalid zone name."
 msgstr "Ово је неважеће име зоне."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:340
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
 msgid "A zone with this name already exists."
 msgstr "Зона са овим именом већ постоји."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:346
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Неважећи тип зоне."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:379
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:380
 msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
@@ -1367,11 +1367,11 @@ msgstr ""
 "Није могуће направити нову зону увозом: изаберите бар једну групу или "
 "оставите \"Нема корисника-власника\" необележено."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:388
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
 msgid "Failed to create zone."
 msgstr "Неуспешно креирање зоне."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:394
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
 msgid "Failed to retrieve created zone."
 msgstr "Неуспешно преузимање креиране зоне."
 
@@ -1483,7 +1483,7 @@ msgstr "Нема изабраних важећих записа или нема�
 msgid "Invalid or unexpected input given."
 msgstr "Дат је неважећи или неочекивани унос."
 
-#: lib/Domain/Model/UserManager.php:179
+#: lib/Domain/Model/UserManager.php:180
 msgid "You do not have the permission to delete this user."
 msgstr "Немате дозволу за брисање овог корисника."
 
@@ -1509,19 +1509,19 @@ msgstr ""
 msgid "The user has been deleted successfully."
 msgstr "Корисник је успешно обрисан."
 
-#: lib/Application/Controller/EditCommentController.php:60
+#: lib/Application/Controller/EditCommentController.php:61
 msgid "Zone comments feature is disabled in configuration."
 msgstr "Функција коментара зоне је онемогућена у конфигурацији."
 
-#: lib/Application/Controller/EditCommentController.php:74
+#: lib/Application/Controller/EditCommentController.php:75
 msgid "You do not have the permission to view this comment."
 msgstr "Немате дозволу за преглед овог коментара."
 
-#: lib/Domain/Service/Dns/RecordManager.php:598
+#: lib/Domain/Service/Dns/RecordManager.php:599
 msgid "You do not have the permission to edit this comment."
 msgstr "Немате дозволу за уређивање овог коментара."
 
-#: lib/Application/Controller/EditCommentController.php:113
+#: lib/Application/Controller/EditCommentController.php:114
 msgid "The comment has been updated successfully."
 msgstr "Коментар је успешно ажуриран."
 
@@ -1533,7 +1533,7 @@ msgstr "Неважећи ИД записа."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Немате дозволу за брисање записа у овој зони."
 
-#: lib/Domain/Service/Dns/RecordManager.php:502
+#: lib/Domain/Service/Dns/RecordManager.php:503
 msgid "Record not found."
 msgstr "Запис није пронађен."
 
@@ -1569,7 +1569,7 @@ msgstr "Запис успешно обрисан. Није пронађен од
 msgid "The record has been deleted successfully."
 msgstr "Запис је успешно обрисан."
 
-#: lib/Domain/Service/Dns/RecordManager.php:509
+#: lib/Domain/Service/Dns/RecordManager.php:510
 msgid "You cannot delete records from a read-only zone."
 msgstr "Не можете брисати записе из зоне само за читање."
 
@@ -1681,7 +1681,8 @@ msgstr "Подешавање MFA"
 
 #: lib/Application/Controller/MfaSetupController.php:142
 msgid "Authenticator app method is not enabled on this system."
-msgstr "Метода са апликацијом за аутентификацију није омогућена на овом систему."
+msgstr ""
+"Метода са апликацијом за аутентификацију није омогућена на овом систему."
 
 #: lib/Application/Controller/MfaSetupController.php:245
 msgid "Failed to create MFA record."
@@ -1699,7 +1700,7 @@ msgstr "Код за потврду је обавезан."
 msgid "MFA has been enabled successfully."
 msgstr "MFA је успешно омогућен."
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:316
 msgid "Invalid verification code. Please try again."
 msgstr "Неважећи код за верификацију. Покушајте поново."
 
@@ -1930,7 +1931,7 @@ msgstr "Неважећи тип записа."
 msgid "Record could not be added."
 msgstr "Запис није могао бити додат."
 
-#: lib/Application/Controller/AddRecordController.php:530
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d записа је успешно додато."
@@ -1947,16 +1948,16 @@ msgstr "ИД зоне је обавезан."
 msgid "You do not have the permission to edit permission templates."
 msgstr "Немате дозволу за уређивање шаблона дозвола."
 
-#: lib/Application/Controller/EditPermTemplController.php:67
+#: lib/Application/Controller/EditPermTemplController.php:68
 #: templates/modern/edit_perm_templ.html:17
 msgid "Edit Permission Template"
 msgstr "Уреди шаблон дозвола"
 
-#: lib/Application/Controller/EditPermTemplController.php:126
+#: lib/Application/Controller/EditPermTemplController.php:127
 msgid "The permission template has been updated successfully."
 msgstr "Шаблон дозвола је успешно ажуриран."
 
-#: lib/Application/Controller/AddPermTemplController.php:141
+#: lib/Application/Controller/AddPermTemplController.php:142
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
@@ -1964,7 +1965,7 @@ msgstr ""
 "Додељивање администраторских права у шаблону дозвола захтева "
 "администраторска права."
 
-#: lib/Application/Controller/EditPermTemplController.php:179
+#: lib/Application/Controller/EditPermTemplController.php:180
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
@@ -1972,7 +1973,7 @@ msgstr ""
 "Уређивање шаблона дозвола са администраторским правима захтева "
 "администраторска права."
 
-#: lib/Application/Controller/EditPermTemplController.php:180
+#: lib/Application/Controller/EditPermTemplController.php:181
 msgid "The permission template could not be updated."
 msgstr "Шаблон дозвола није могао да се ажурира."
 
@@ -2023,7 +2024,7 @@ msgstr "Члан је успешно уклоњен из групе."
 msgid "User was not a member of this group."
 msgstr "Корисник није био члан ове групе."
 
-#: lib/Domain/Model/UserManager.php:522
+#: lib/Domain/Model/UserManager.php:515
 msgid "You do not have the permission to add a new user."
 msgstr "Немате дозволу за додавање новог корисника."
 
@@ -2038,7 +2039,7 @@ msgstr ""
 "Није доступан ниједан шаблон дозвола без суперкорисничких права за "
 "додељивање."
 
-#: lib/Application/Controller/EditUserController.php:305
+#: lib/Application/Controller/EditUserController.php:306
 msgid "Invalid permission template: must be a user template"
 msgstr "Неважећи шаблон дозвола: мора бити кориснички шаблон"
 
@@ -2067,7 +2068,7 @@ msgstr "Лозинка је генерисана али се не приказу
 msgid "Please fill in all required fields correctly."
 msgstr "Попуните исправно сва обавезна поља."
 
-#: lib/Domain/Service/Dns/RecordManager.php:535
+#: lib/Domain/Service/Dns/RecordManager.php:536
 msgid "You do not have the permission to delete this record."
 msgstr "Немате дозволу за брисање овог записа."
 
@@ -2097,7 +2098,7 @@ msgstr "Каталог објављују само зоне типа Producer."
 msgid "You do not have permission to access this zone."
 msgstr "Немате дозволу за приступ овој зони."
 
-#: lib/Application/Controller/EditController.php:616
+#: lib/Application/Controller/EditController.php:618
 msgid "You do not have permission to edit this zone."
 msgstr "Немате дозволу за уређивање ове зоне."
 
@@ -2105,7 +2106,7 @@ msgstr "Немате дозволу за уређивање ове зоне."
 msgid "The zone has been added to the catalog."
 msgstr "Зона је додата у каталог."
 
-#: lib/Application/Controller/EditController.php:610
+#: lib/Application/Controller/EditController.php:612
 msgid "The zone has been removed from the catalog."
 msgstr "Зона је уклоњена из каталога."
 
@@ -2122,7 +2123,7 @@ msgstr "Корисници"
 msgid "User details updated"
 msgstr "Подаци корисника ажурирани"
 
-#: lib/Application/Controller/EditUserController.php:263
+#: lib/Application/Controller/EditUserController.php:264
 msgid "You do not have permission to edit a superuser account."
 msgstr "Немате дозволу за уређивање суперкорисничког налога."
 
@@ -2190,7 +2191,7 @@ msgstr "Неважећи ИД шаблона."
 msgid "Template does not exist."
 msgstr "Шаблон не постоји."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:516
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
 msgid "You do not have permission to view this zone."
 msgstr "Немате дозволу за преглед ове зоне."
 
@@ -2248,7 +2249,7 @@ msgstr "Уреди зону"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Немате дозволу за управљање DNSSEC-ом за ову зону."
 
-#: lib/Application/Controller/EditController.php:334
+#: lib/Application/Controller/EditController.php:336
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC није омогућен на серверу."
 
@@ -2259,15 +2260,15 @@ msgstr ""
 "Ова зона је претходно потписана; DNSSEC кључевима се управља на примарном "
 "серверу."
 
-#: lib/Application/Controller/EditController.php:339
+#: lib/Application/Controller/EditController.php:341
 msgid "Zone is already signed with DNSSEC."
 msgstr "Зона је већ потписана DNSSEC-ом."
 
-#: lib/Application/Controller/EditController.php:361
+#: lib/Application/Controller/EditController.php:363
 msgid "Zone has been signed successfully."
 msgstr "Зона је успешно потписана."
 
-#: lib/Application/Controller/EditController.php:366
+#: lib/Application/Controller/EditController.php:368
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2275,7 +2276,7 @@ msgstr ""
 "Захтев за потписивање зоне успешан, али провера није успела. Проверите "
 "DNSSEC кључеве."
 
-#: lib/Application/Controller/EditController.php:370
+#: lib/Application/Controller/EditController.php:372
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2299,23 +2300,23 @@ msgstr "Захтев за уклањање потписа успешан, али
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Неуспешно уклањање потписа зоне. Проверите PowerDNS дневнике."
 
-#: lib/Application/Controller/EditController.php:616
+#: lib/Application/Controller/EditController.php:618
 msgid "The catalog has been changed successfully."
 msgstr "Каталог је успешно измењен."
 
-#: lib/Application/Controller/EditController.php:629
+#: lib/Application/Controller/EditController.php:631
 msgid "Zone type has been changed successfully."
 msgstr "Тип зоне је успешно промењен."
 
-#: lib/Application/Controller/EditController.php:636
+#: lib/Application/Controller/EditController.php:638
 msgid "Slave master has been changed successfully."
 msgstr "Главни секундарне зоне је успешно промењен."
 
-#: lib/Application/Controller/EditController.php:650
+#: lib/Application/Controller/EditController.php:652
 msgid "You cannot apply a template to a read-only zone."
 msgstr "Не можете применити шаблон на зону само за читање."
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:669
 msgid "Zone template has been changed successfully."
 msgstr "Шаблон зоне је успешно промењен."
 
@@ -2323,7 +2324,7 @@ msgstr "Шаблон зоне је успешно промењен."
 msgid "You cannot edit records in a read-only zone."
 msgstr "Не можете уређивати записе у зони само за читање."
 
-#: lib/Application/Controller/EditController.php:833
+#: lib/Application/Controller/EditController.php:835
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2333,15 +2334,19 @@ msgstr ""
 "број поља. Затражите од администратора да повећа PHP \"max_input_vars\" "
 "подешавање."
 
-#: lib/Application/Controller/EditController.php:940
+#: lib/Application/Controller/EditController.php:944
+msgid "Zone has not been updated successfully."
+msgstr "Зона није успешно ажурирана."
+
+#: lib/Application/Controller/EditController.php:945
 msgid "Request has expired, please try again."
 msgstr "Захтев је истекао, покушајте поново."
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:954
 msgid "Zone has been updated successfully."
 msgstr "Зона је успешно ажурирана."
 
-#: lib/Application/Controller/EditController.php:947
+#: lib/Application/Controller/EditController.php:955
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2349,47 +2354,43 @@ msgstr ""
 "Зона успешно сачувана. Није било промена записа, али је SOA серијски број "
 "повећан."
 
-#: lib/Application/Controller/EditController.php:956
-msgid "Zone has not been updated successfully."
-msgstr "Зона није успешно ажурирана."
-
-#: lib/Application/Controller/EditController.php:984
+#: lib/Application/Controller/EditController.php:987
 msgid "Please provide all required fields."
 msgstr "Попуните сва обавезна поља."
 
-#: lib/Application/Controller/AddRecordController.php:260
+#: lib/Application/Controller/AddRecordController.php:261
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "Запис успешно додат. Креиран је и одговарајући PTR запис."
 
-#: lib/Application/Controller/AddRecordController.php:265
+#: lib/Application/Controller/AddRecordController.php:266
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Запис успешно додат, али креирање PTR записа није успело: "
 
-#: lib/Application/Controller/AddRecordController.php:269
+#: lib/Application/Controller/AddRecordController.php:270
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Запис је успешно додат, али креирање PTR записа није успело."
 
-#: lib/Application/Controller/AddRecordController.php:273
+#: lib/Application/Controller/AddRecordController.php:274
 msgid "Record successfully added. A matching A record was also created."
 msgstr "Запис успешно додат. Креиран је и одговарајући A запис."
 
-#: lib/Application/Controller/MfaVerifyController.php:145
+#: lib/Application/Controller/MfaVerifyController.php:146
 msgid "Invalid security token. Please try again."
 msgstr "Неважећи безбедносни токен. Покушајте поново."
 
-#: lib/Application/Controller/MfaVerifyController.php:314
+#: lib/Application/Controller/MfaVerifyController.php:315
 msgid "Too many failed attempts. Please try again later."
 msgstr "Превише неуспешних покушаја. Покушајте поново касније."
 
-#: lib/Application/Controller/MfaVerifyController.php:162
+#: lib/Application/Controller/MfaVerifyController.php:163
 msgid "No MFA record found. Please contact administrator."
 msgstr "Није пронађен MFA запис. Контактирајте администратора."
 
-#: lib/Application/Controller/MfaVerifyController.php:167
+#: lib/Application/Controller/MfaVerifyController.php:168
 msgid "An error occurred. Please try again."
 msgstr "Дошло је до грешке. Покушајте поново."
 
-#: lib/Application/Controller/MfaVerifyController.php:387
+#: lib/Application/Controller/MfaVerifyController.php:388
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2397,15 +2398,15 @@ msgstr ""
 "Провера имејла није доступна јер је услуга е-поште онемогућена. Користите "
 "код за опоравак."
 
-#: lib/Application/Controller/MfaVerifyController.php:397
+#: lib/Application/Controller/MfaVerifyController.php:398
 msgid "A new verification code has been sent to your email."
 msgstr "Нови код за верификацију послат је на ваш имејл."
 
-#: lib/Application/Controller/MfaVerifyController.php:403
+#: lib/Application/Controller/MfaVerifyController.php:404
 msgid "Please use a recovery code instead."
 msgstr "Молимо користите код за опоравак."
 
-#: lib/Application/Controller/MfaVerifyController.php:408
+#: lib/Application/Controller/MfaVerifyController.php:409
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2413,29 +2414,29 @@ msgstr ""
 "Није могуће послати верификациони код на вашу имејл адресу. Уместо тога "
 "користите код за опоравак."
 
-#: lib/Domain/Service/Dns/RecordManager.php:285
+#: lib/Domain/Service/Dns/RecordManager.php:286
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Немате дозволу за додавање записа у ову зону."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "Запис успешно додат."
 
-#: lib/Application/Controller/AddRecordController.php:463
+#: lib/Application/Controller/AddRecordController.php:464
 msgid "No records were provided."
 msgstr "Нема унесених записа."
 
-#: lib/Application/Controller/AddRecordController.php:532
+#: lib/Application/Controller/AddRecordController.php:533
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Креирано је и %d подударних записа."
 
-#: lib/Application/Controller/AddRecordController.php:535
+#: lib/Application/Controller/AddRecordController.php:536
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d записа није додато."
 
-#: lib/Application/Controller/AddRecordController.php:540
+#: lib/Application/Controller/AddRecordController.php:541
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2443,7 +2444,7 @@ msgstr ""
 "Неки записи нису могли бити додати. Можда већ постоје или садрже неважеће "
 "податке."
 
-#: lib/Application/Controller/AddRecordController.php:570
+#: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Ниједан запис није додат. Могу садржати неважеће податке."
 
@@ -2471,7 +2472,7 @@ msgstr "Немате дозволу за уређивање записа шаб�
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC аутентификација није омогућена"
 
-#: lib/Application/Service/SamlService.php:418
+#: lib/Application/Service/SamlService.php:420
 msgid "Authentication failed: "
 msgstr "Аутентификација није успела: "
 
@@ -2792,20 +2793,20 @@ msgstr[0] "%d зона није могла бити уклоњена."
 msgstr[1] "%d зоне нису могле бити уклоњене."
 msgstr[2] "%d зона није могло бити уклоњено."
 
-#: lib/Application/Controller/AddPermTemplController.php:63
+#: lib/Application/Controller/AddPermTemplController.php:64
 msgid "You do not have the permission to add permission templates."
 msgstr "Немате дозволу за додавање шаблона дозвола."
 
-#: lib/Application/Controller/AddPermTemplController.php:67
+#: lib/Application/Controller/AddPermTemplController.php:68
 #: templates/modern/list_perm_templ.html:9
 msgid "Add permission template"
 msgstr "Додај шаблон дозвола"
 
-#: lib/Application/Controller/AddPermTemplController.php:99
+#: lib/Application/Controller/AddPermTemplController.php:100
 msgid "The permission template has been added successfully."
 msgstr "Шаблон дозвола је успешно додат."
 
-#: lib/Application/Controller/AddPermTemplController.php:142
+#: lib/Application/Controller/AddPermTemplController.php:143
 msgid "The permission template could not be added."
 msgstr "Шаблон дозвола није могао да се дода."
 
@@ -2903,7 +2904,7 @@ msgstr "Додај шаблон зоне"
 msgid "Zone template has been added successfully."
 msgstr "Шаблон зоне је успешно додат."
 
-#: lib/Application/Controller/IndexController.php:65
+#: lib/Application/Controller/IndexController.php:66
 msgid "Dashboard"
 msgstr "Контролна табла"
 
@@ -2987,25 +2988,25 @@ msgstr "Немате дозволу за додавање новог supermaster
 msgid "The supermaster has been added successfully."
 msgstr "Supermaster сервер је успешно додат."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:79
+#: lib/Application/Controller/DnssecKeyImportController.php:80
 msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr "Увоз PEM кључа захтева PowerDNS 4.7 или новији."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:113
+#: lib/Application/Controller/DnssecKeyImportController.php:114
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr ""
 "Наведите приватни кључ кодиран PEM-ом (мора садржати BEGIN/END ознаке)."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:121
+#: lib/Application/Controller/DnssecKeyImportController.php:122
 msgid "PEM key imported successfully."
 msgstr "PEM кључ успешно увезен."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:124
+#: lib/Application/Controller/DnssecKeyImportController.php:125
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
 msgstr "Увоз PEM кључа није успео. PowerDNS сервер је можда одбио формат."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:128
+#: lib/Application/Controller/DnssecKeyImportController.php:129
 msgid "An error occurred while importing the PEM key: "
 msgstr "Дошло је до грешке приликом увоза PEM кључа: "
 
@@ -3013,24 +3014,24 @@ msgstr "Дошло је до грешке приликом увоза PEM кљу
 msgid "You do not have the permission to add records to zone templates."
 msgstr "Немате дозволу за додавање записа у шаблоне зона."
 
-#: lib/Application/Controller/EditUserController.php:83
+#: lib/Application/Controller/EditUserController.php:84
 #: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Уреди корисника"
 
-#: lib/Application/Controller/EditUserController.php:165
+#: lib/Application/Controller/EditUserController.php:166
 msgid "Your profile has been updated successfully."
 msgstr "Ваш профил је успешно ажуриран."
 
-#: lib/Application/Controller/EditUserController.php:169
+#: lib/Application/Controller/EditUserController.php:170
 msgid "The user has been updated successfully."
 msgstr "Корисник је успешно ажуриран."
 
-#: lib/Application/Controller/EditUserController.php:173
+#: lib/Application/Controller/EditUserController.php:174
 msgid "The user could not be updated."
 msgstr "Корисник није могао бити ажуриран."
 
-#: lib/Domain/Model/UserManager.php:340 lib/Domain/Model/UserManager.php:502
+#: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Немате дозволу за уређивање овог корисника."
 
@@ -3162,7 +3163,7 @@ msgstr "Одјава је завршена (са упозорењима): "
 msgid "You do not have permission to view this record."
 msgstr "Немате дозволу за преглед овог записа."
 
-#: lib/Domain/Service/Dns/RecordManager.php:425
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have permission to edit this record."
 msgstr "Немате дозволу за уређивање овог записа."
 
@@ -3204,40 +3205,40 @@ msgstr ""
 msgid "Change password"
 msgstr "Промени лозинку"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:132
+#: lib/Application/Controller/DnssecAddKeyController.php:133
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "ECDSA P-256 алгоритам мора користити 256 битова"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:135
+#: lib/Application/Controller/DnssecAddKeyController.php:136
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "ECDSA P-384 алгоритам мора користити 384 бита"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:141
+#: lib/Application/Controller/DnssecAddKeyController.php:142
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "ED25519 алгоритам мора користити 256 битова"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:146
+#: lib/Application/Controller/DnssecAddKeyController.php:147
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "ED448 алгоритам мора користити 456 битова (није подржано у UI)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:153
+#: lib/Application/Controller/DnssecAddKeyController.php:154
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "RSA алгоритми треба да користе 1024 или 2048 битова за довољну сигурност"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:175
+#: lib/Application/Controller/DnssecAddKeyController.php:176
 msgid "Zone key has been added successfully."
 msgstr "Кључ зоне је успешно додат."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:179
+#: lib/Application/Controller/DnssecAddKeyController.php:180
 msgid "Failed to add new DNSSEC key."
 msgstr "Неуспешно додавање новог DNSSEC кључа."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:183
+#: lib/Application/Controller/DnssecAddKeyController.php:184
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Дошло је до грешке при додавању DNSSEC кључа: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:187
+#: lib/Application/Controller/DnssecAddKeyController.php:188
 msgid "Please select both algorithm and bits"
 msgstr "Изаберите и алгоритам и битове"
 
@@ -3488,7 +3489,7 @@ msgstr "Аутентификација није успела: Нема ауто�
 msgid "Authentication failed: Invalid session"
 msgstr "Аутентификација није успела: Неважећа сесија"
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Аутентификација није успела: Не може се креирати или ажурирати налог"
 
@@ -3516,15 +3517,15 @@ msgstr "Неуспешна аутентификација преко LDAP-а."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Аутентификација није успела: Неважећи SAML одговор"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:307
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:308
 msgid "This template is assigned to at least one user and one group."
 msgstr "Овај шаблон је додељен најмање једном кориснику и једној групи."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:309
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:310
 msgid "This template is assigned to at least one user."
 msgstr "Овај шаблон је додељен најмање једном кориснику."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:311
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:312
 msgid "This template is assigned to at least one group."
 msgstr "Овај шаблон је додељен најмање једној групи."
 
@@ -3713,18 +3714,27 @@ msgstr ""
 "Приказује се статус повезивости за supermaster сервере подешене у табели "
 "испод."
 
-#: lib/Infrastructure/Web/PageRenderer.php:249
+#: lib/Infrastructure/Web/PageRenderer.php:132
+msgid ""
+"Default session encryption key is used, please set it in your configuration "
+"file."
+msgstr "Користи се подразумевани кључ сесије, подесите га у конфигурацији."
+
+#: lib/Infrastructure/Web/PageRenderer.php:136
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/Infrastructure/Web/PageRenderer.php:253
 msgid ""
 "The install/ directory exists, you must remove it first before proceeding."
 msgstr ""
 "Директоријум install/ постоји, морате га прво уклонити пре него што "
 "наставите."
-
-#: lib/Infrastructure/Web/PageRenderer.php:289
-msgid ""
-"Default session encryption key is used, please set it in your configuration "
-"file."
-msgstr "Користи се подразумевани кључ сесије, подесите га у конфигурацији."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:166
 #: templates/default/login.html:139 templates/modern/login.html:139
@@ -3747,11 +3757,11 @@ msgstr ""
 "Грешка базе података: није могуће проверити аутентификацију корисника. "
 "Проверите конфигурацију базе података."
 
-#: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
+#: lib/Domain/Model/UserManager.php:80 lib/Domain/Model/UserManager.php:91
 msgid "You do not have the permission to change the permission template."
 msgstr "Немате дозволу за промену шаблона дозвола."
 
-#: lib/Domain/Model/UserManager.php:87
+#: lib/Domain/Model/UserManager.php:88
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
@@ -3759,7 +3769,7 @@ msgstr ""
 "Промена сопственог шаблона дозвола захтева дозволу за уређивање других "
 "корисника."
 
-#: lib/Domain/Model/UserManager.php:89
+#: lib/Domain/Model/UserManager.php:90
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
@@ -3767,19 +3777,19 @@ msgstr ""
 "Додељивање шаблона дозвола са администраторским правима захтева "
 "администраторска права."
 
-#: lib/Domain/Model/UserManager.php:534
+#: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Унесите важећу имејл адресу."
 
-#: lib/Domain/Model/UserManager.php:526
+#: lib/Domain/Model/UserManager.php:519
 msgid "Username exist already, please choose another one."
 msgstr "Корисничко име већ постоји, изаберите друго."
 
-#: lib/Domain/Model/UserManager.php:538
+#: lib/Domain/Model/UserManager.php:531
 msgid "Email address already exists, please choose another one."
 msgstr "Имејл адреса већ постоји, изаберите другу."
 
-#: lib/Domain/Model/UserManager.php:530
+#: lib/Domain/Model/UserManager.php:523
 msgid "Enter a valid user name."
 msgstr "Унесите важеће корисничко име."
 
@@ -3942,55 +3952,59 @@ msgstr "Прегледи захтевају PowerDNS 5.0 или новији."
 msgid ""
 "Views require the LMDB backend. The connected server runs a backend that "
 "does not implement them."
-msgstr "Прегледи захтевају LMDB позадину. Повезани сервер користи позадину која их не подржава."
+msgstr ""
+"Прегледи захтевају LMDB позадину. Повезани сервер користи позадину која их "
+"не подржава."
 
 #: lib/Domain/Service/PdnsCapabilities.php:165
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr "Прегледи захтевају \"views=yes\" у pdns.conf. Повезани сервер их има онемогућене."
+msgstr ""
+"Прегледи захтевају \"views=yes\" у pdns.conf. Повезани сервер их има "
+"онемогућене."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:153
+#: lib/Domain/Service/DatabaseConsistencyService.php:154
 msgid "All zones have owners"
 msgstr "Све зоне имају власнике"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:160
+#: lib/Domain/Service/DatabaseConsistencyService.php:161
 #, php-format
 msgid "%d zones found without owners"
 msgstr "Пронађено %d зона без власника"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:211
+#: lib/Domain/Service/DatabaseConsistencyService.php:212
 msgid "All slave zones have master IP addresses"
 msgstr "Све секундарне зоне имају IP адресе главних"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:218
+#: lib/Domain/Service/DatabaseConsistencyService.php:219
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "Пронађено %d секундарних зона без IP адреса главних"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:263
+#: lib/Domain/Service/DatabaseConsistencyService.php:264
 msgid "All records belong to existing zones"
 msgstr "Сви записи припадају постојећим зонама"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:270
+#: lib/Domain/Service/DatabaseConsistencyService.php:271
 #, php-format
 msgid "%d orphaned records found"
 msgstr "Пронађено %d записа сирочади"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:330
+#: lib/Domain/Service/DatabaseConsistencyService.php:331
 msgid "No duplicate SOA records found"
 msgstr "Нема пронађених дуплираних SOA записа"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:337
+#: lib/Domain/Service/DatabaseConsistencyService.php:338
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d зона има дуплиране SOA записе"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:397
+#: lib/Domain/Service/DatabaseConsistencyService.php:398
 msgid "All zones have SOA records"
 msgstr "Све зоне имају SOA записе"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:404
+#: lib/Domain/Service/DatabaseConsistencyService.php:405
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "Пронађено %d зона без SOA записа"
@@ -9361,15 +9375,15 @@ msgstr "Ажурирање PTR записа је прескочено: тип з
 msgid "Stale PTR record removed."
 msgstr "Застарели PTR запис је уклоњен."
 
-#: lib/Domain/Service/Dns/RecordManager.php:321
+#: lib/Domain/Service/Dns/RecordManager.php:322
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Запис са овим именом хоста, типом и садржајем већ постоји."
 
-#: lib/Domain/Service/Dns/RecordManager.php:222
+#: lib/Domain/Service/Dns/RecordManager.php:223
 msgid "Failed to add record to DNS backend."
 msgstr "Неуспешно додавање записа у DNS позадину."
 
-#: lib/Domain/Service/Dns/RecordManager.php:458
+#: lib/Domain/Service/Dns/RecordManager.php:459
 msgid "Failed to update record in DNS backend."
 msgstr "Неуспешно ажурирање записа у DNS позадини."
 
@@ -9661,7 +9675,7 @@ msgstr "Информације о API кључу"
 msgid "Created by"
 msgstr "Креирао"
 
-#: templates/modern/api_keys.html:48
+#: templates/modern/pdns_status.html:176 templates/modern/api_keys.html:48
 msgid "Unknown"
 msgstr "Непознато"
 
@@ -10223,7 +10237,7 @@ msgstr "Уклони"
 msgid "and"
 msgstr "и"
 
-#: templates/modern/list_forward_zones.html:189
+#: templates/modern/list_forward_zones.html:191
 msgid "more..."
 msgstr "још..."
 
@@ -11129,7 +11143,14 @@ msgstr "Зона нема SOA запис"
 msgid "No SOA"
 msgstr "Без SOA"
 
-#: templates/modern/list_forward_zones.html:159
+#: templates/modern/list_forward_zones.html:158
+#, auto-english-fallback
+msgid ""
+"The DNS server could not be reached, so this zone's SOA status is unknown"
+msgstr ""
+"The DNS server could not be reached, so this zone's SOA status is unknown"
+
+#: templates/modern/list_forward_zones.html:161
 msgid ""
 "Records for this zone are replicated from its primary and cannot be edited "
 "here."
@@ -11137,15 +11158,15 @@ msgstr ""
 "Записи ове зоне се реплицирају са њеног примарног сервера и не могу се "
 "уређивати овде."
 
-#: templates/modern/list_reverse_zones.html:243
+#: templates/modern/list_reverse_zones.html:245
 msgid "-"
 msgstr "-"
 
-#: templates/modern/list_forward_zones.html:207
+#: templates/modern/list_forward_zones.html:209
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY на чекању: серијски број %serial% још није потврђен"
 
-#: templates/modern/list_forward_zones.html:209
+#: templates/modern/list_forward_zones.html:211
 msgid "NOTIFY sent at serial %serial%"
 msgstr "NOTIFY послат при серијском броју %serial%"
 
@@ -11262,7 +11283,9 @@ msgstr "Додај члана"
 msgid ""
 "No zones are available to add. Only Primary and Producer zones that are not "
 "already in a catalog can be members."
-msgstr "Нема доступних зона за додавање. Чланови могу бити само зоне типа Primary и Producer које већ нису у каталогу."
+msgstr ""
+"Нема доступних зона за додавање. Чланови могу бити само зоне типа Primary и "
+"Producer које већ нису у каталогу."
 
 #: templates/modern/list_views.html:64
 msgid "Add"
@@ -12275,7 +12298,7 @@ msgstr "Укупан број зона:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Нема директних зона за приказ у овом списку."
 
-#: templates/modern/list_forward_zones.html:235
+#: templates/modern/list_forward_zones.html:237
 msgid "PTR"
 msgstr "PTR"
 
@@ -13227,7 +13250,9 @@ msgstr "Лако за употребу"
 msgid ""
 "Authenticator app verification is not available because it has been disabled "
 "by the administrator."
-msgstr "Провера помоћу апликације за аутентификацију није доступна јер ју је администратор онемогућио."
+msgstr ""
+"Провера помоћу апликације за аутентификацију није доступна јер ју је "
+"администратор онемогућио."
 
 #: templates/default/mfa_setup.html:84 templates/modern/mfa_setup.html:84
 msgid "Set up app authentication"
@@ -13303,7 +13328,7 @@ msgstr "Грешка:"
 msgid "Success:"
 msgstr "Успех:"
 
-#: templates/modern/message_alert.html:16
+#: templates/modern/message_alert.html:17
 msgid "Info:"
 msgstr "Информација:"
 
@@ -15288,29 +15313,5 @@ msgid ""
 msgstr ""
 "Постављање локализације није успело. Изабрана локализација можда није "
 "подржана на овом систему. Обратите се администратору."
-
-# OBSOLETE: msgid "Network views require PowerDNS 5.0 or newer."
-# OBSOLETE: msgstr "Мрежни прегледи захтевају PowerDNS 5.0 или новији."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger "
-# OBSOLETE: "is recommended."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "HMAC-MD5 се сматра слабим по савременим стандардима. Препоручује се HMAC-"
-# OBSOLETE: "SHA256 или јачи."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "CNAME target must be a fully qualified domain name (FQDN). Single-label "
-# OBSOLETE: "names are not allowed."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "CNAME циљ мора бити потпуно квалификовано име домена (FQDN). Имена са "
-# OBSOLETE: "једном ознаком нису дозвољена."
-
-# OBSOLETE: msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-# OBSOLETE: msgstr "Неважећа вредност за порт SRV записа. Мора бити 1-65535."
-
-# OBSOLETE: msgid "Error"
-# OBSOLETE: msgstr "Грешка"
-
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-19 18:33+0300\n"
+"POT-Creation-Date: 2026-08-25 09:24+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Hungarian\n"
@@ -27,7 +27,7 @@ msgstr ""
 "könyvtárban egy létrehozásához, vagy hozza létre a konfigurációs fájlt "
 "kézzel."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:58
+#: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:59
 msgid "DNS wizards are not enabled."
 msgstr "A DNS varázslók nincsenek engedélyezve."
 
@@ -43,19 +43,19 @@ msgstr "Zóna nem található."
 msgid "You do not have permission to add records to this zone."
 msgstr "Nincs jogosultsága rekordok hozzáadására ehhez a zónához."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:116
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:117
 msgid "Invalid wizard type."
 msgstr "Érvénytelen varázsló típus."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:202
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
 msgid "Validation failed:"
 msgstr "Érvényesítés sikertelen:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:226
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
 msgid "Failed to generate record:"
 msgstr "Rekord generálás sikertelen:"
 
-#: lib/Application/Controller/AddRecordController.php:196
+#: lib/Application/Controller/AddRecordController.php:197
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
@@ -63,11 +63,11 @@ msgstr ""
 "A rekord érvénytelen volt, ezért nem sikerült hozzáadni. Lehet, hogy már "
 "létezik, vagy érvénytelen adatokat tartalmaz."
 
-#: lib/Application/Controller/AddRecordController.php:276
+#: lib/Application/Controller/AddRecordController.php:277
 msgid "The record was successfully added."
 msgstr "A rekord sikeresen hozzáadva."
 
-#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:405
+#: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php:406
 msgid "Record created successfully"
 msgstr "Rekord sikeresen létrehozva"
 
@@ -1294,32 +1294,32 @@ msgstr "Legalább egy felhasználót vagy csoportot kell választani."
 msgid "Email Previews"
 msgstr "E-mail előnézetek"
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:73
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:74
 msgid "You do not have permission to import zones."
 msgstr "Nincs jogosultsága zónák importálására."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:113
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:114
 msgid "Please select a valid zone file to upload."
 msgstr "Válasszon érvényes zóna fájlt a feltöltéshez."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:119
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:120
 #, php-format
 msgid "File size exceeds the maximum allowed size of %s."
 msgstr "A fájl mérete meghaladja a megengedett %s-t."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:125
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:126
 msgid "The uploaded file is empty or could not be read."
 msgstr "A feltöltött fájl üres vagy nem olvasható."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:134
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:135
 msgid "No valid records found in the uploaded file."
 msgstr "Nincsenek érvényes rekordok a feltöltött fájlban."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:300
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:301
 msgid "You do not have permission to modify this zone."
 msgstr "Nincs jogosultsága a zóna módosítására."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:239
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:240
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
 "exist. Create a group first."
@@ -1327,7 +1327,7 @@ msgstr ""
 "Új zóna nem importálható: a zone_ownership_mode groups_only, de nincsenek "
 "csoportok. Először hozzon létre egy csoportot."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:241
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:242
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only and you are not "
 "a member of any group. Ask an administrator to add you to a group first."
@@ -1336,43 +1336,43 @@ msgstr ""
 "csoportnak sem tagja. Kérjen meg egy adminisztrátort, hogy először adja Önt "
 "egy csoporthoz."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:257
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:258
 msgid "Import session expired. Please upload the file again."
 msgstr "Az import munkamenet lejárt. Töltse fel újra."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:264
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:265
 msgid "Invalid import data. Please upload the file again."
 msgstr "Érvénytelen import adat. Töltse fel újra a fájlt."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:291
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:292
 msgid "The selected zone does not exist."
 msgstr "A kijelölt zóna nem létezik."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:306
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:307
 msgid "You cannot import records into a read-only zone."
 msgstr "Csak olvasható zónába nem importálhat rekordokat."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:322
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:323
 msgid "You do not have permission to add zones."
 msgstr "Nincs jogosultsága zónák hozzáadására."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:327
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:328
 msgid "Zone name is required."
 msgstr "A zóna neve kötelező."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:143
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:144
 msgid "This is an invalid zone name."
 msgstr "Ez egy érvénytelen zónanév."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:340
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:341
 msgid "A zone with this name already exists."
 msgstr "Ilyen nevű zóna már létezik."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:346
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:347
 msgid "Invalid zone type."
 msgstr "Érvénytelen zónatípus."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:379
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:380
 msgid ""
 "Cannot create a new zone via import: select at least one group, or leave "
 "\"No user owner\" unchecked."
@@ -1380,11 +1380,11 @@ msgstr ""
 "Új zóna nem hozható létre importálással: válasszon ki legalább egy "
 "csoportot, vagy hagyja a \"Nincs felhasználó-tulajdonos\" jelölést üresen."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:388
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:389
 msgid "Failed to create zone."
 msgstr "Nem sikerült létrehozni a zónát."
 
-#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:394
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:395
 msgid "Failed to retrieve created zone."
 msgstr "Nem sikerült lekérni a létrehozott zónát."
 
@@ -1499,7 +1499,7 @@ msgstr ""
 msgid "Invalid or unexpected input given."
 msgstr "Érvénytelen vagy váratlan bemenet."
 
-#: lib/Domain/Model/UserManager.php:179
+#: lib/Domain/Model/UserManager.php:180
 msgid "You do not have the permission to delete this user."
 msgstr "Nincs jogosultsága a felhasználó törlésére."
 
@@ -1525,19 +1525,19 @@ msgstr ""
 msgid "The user has been deleted successfully."
 msgstr "A felhasználó sikeresen törölve."
 
-#: lib/Application/Controller/EditCommentController.php:60
+#: lib/Application/Controller/EditCommentController.php:61
 msgid "Zone comments feature is disabled in configuration."
 msgstr "A zóna megjegyzések funkció ki van kapcsolva."
 
-#: lib/Application/Controller/EditCommentController.php:74
+#: lib/Application/Controller/EditCommentController.php:75
 msgid "You do not have the permission to view this comment."
 msgstr "Nincs jogosultsága a megjegyzés megtekintésére."
 
-#: lib/Domain/Service/Dns/RecordManager.php:598
+#: lib/Domain/Service/Dns/RecordManager.php:599
 msgid "You do not have the permission to edit this comment."
 msgstr "Nincs jogosultsága a megjegyzés szerkesztésére."
 
-#: lib/Application/Controller/EditCommentController.php:113
+#: lib/Application/Controller/EditCommentController.php:114
 msgid "The comment has been updated successfully."
 msgstr "A megjegyzés sikeresen frissítve."
 
@@ -1549,7 +1549,7 @@ msgstr "Érvénytelen rekord azonosító."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Nincs jogosultsága rekordok törlésére ebben a zónában."
 
-#: lib/Domain/Service/Dns/RecordManager.php:502
+#: lib/Domain/Service/Dns/RecordManager.php:503
 msgid "Record not found."
 msgstr "Rekord nem található."
 
@@ -1588,7 +1588,7 @@ msgstr ""
 msgid "The record has been deleted successfully."
 msgstr "A rekord sikeresen törölve."
 
-#: lib/Domain/Service/Dns/RecordManager.php:509
+#: lib/Domain/Service/Dns/RecordManager.php:510
 msgid "You cannot delete records from a read-only zone."
 msgstr "Csak olvasható zónából nem törölhet rekordokat."
 
@@ -1714,7 +1714,7 @@ msgstr "Az ellenőrző kód kötelező."
 msgid "MFA has been enabled successfully."
 msgstr "Az MFA sikeresen engedélyezve."
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:316
 msgid "Invalid verification code. Please try again."
 msgstr "Érvénytelen ellenőrző kód. Próbálja újra."
 
@@ -1950,7 +1950,7 @@ msgstr "Érvénytelen rekord típus."
 msgid "Record could not be added."
 msgstr "A rekord nem adható hozzá."
 
-#: lib/Application/Controller/AddRecordController.php:530
+#: lib/Application/Controller/AddRecordController.php:531
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d rekord sikeresen hozzáadva."
@@ -1967,16 +1967,16 @@ msgstr "A zóna azonosító kötelező."
 msgid "You do not have the permission to edit permission templates."
 msgstr "Nincs jogosultsága engedély sablonok szerkesztésére."
 
-#: lib/Application/Controller/EditPermTemplController.php:67
+#: lib/Application/Controller/EditPermTemplController.php:68
 #: templates/modern/edit_perm_templ.html:17
 msgid "Edit Permission Template"
 msgstr "Engedély sablon szerkesztése"
 
-#: lib/Application/Controller/EditPermTemplController.php:126
+#: lib/Application/Controller/EditPermTemplController.php:127
 msgid "The permission template has been updated successfully."
 msgstr "Az engedély sablon sikeresen frissítve."
 
-#: lib/Application/Controller/AddPermTemplController.php:141
+#: lib/Application/Controller/AddPermTemplController.php:142
 msgid ""
 "Granting administrator rights in a permission template requires "
 "administrator rights."
@@ -1984,7 +1984,7 @@ msgstr ""
 "Rendszergazdai jogok megadása egy engedélysablonban rendszergazdai "
 "jogosultságot igényel."
 
-#: lib/Application/Controller/EditPermTemplController.php:179
+#: lib/Application/Controller/EditPermTemplController.php:180
 msgid ""
 "Editing a permission template with administrator rights requires "
 "administrator rights."
@@ -1992,7 +1992,7 @@ msgstr ""
 "Rendszergazdai jogokkal rendelkező engedélysablon szerkesztése "
 "rendszergazdai jogosultságot igényel."
 
-#: lib/Application/Controller/EditPermTemplController.php:180
+#: lib/Application/Controller/EditPermTemplController.php:181
 msgid "The permission template could not be updated."
 msgstr "Az engedélysablont nem sikerült frissíteni."
 
@@ -2043,7 +2043,7 @@ msgstr "A tag sikeresen eltávolítva a csoportból."
 msgid "User was not a member of this group."
 msgstr "A felhasználó nem volt a csoport tagja."
 
-#: lib/Domain/Model/UserManager.php:522
+#: lib/Domain/Model/UserManager.php:515
 msgid "You do not have the permission to add a new user."
 msgstr "Nincs jogosultsága új felhasználó hozzáadására."
 
@@ -2056,7 +2056,7 @@ msgstr "Felhasználó hozzáadása"
 msgid "No non-superuser permission template is available to assign."
 msgstr "Nincs hozzárendelhető, rendszergazdai jogok nélküli engedélysablon."
 
-#: lib/Application/Controller/EditUserController.php:305
+#: lib/Application/Controller/EditUserController.php:306
 msgid "Invalid permission template: must be a user template"
 msgstr "Érvénytelen engedély sablon: felhasználói sablon kell legyen"
 
@@ -2086,7 +2086,7 @@ msgstr "Jelszó generálva, biztonsági okokból nem jelenik meg."
 msgid "Please fill in all required fields correctly."
 msgstr "Töltse ki helyesen az összes kötelező mezőt."
 
-#: lib/Domain/Service/Dns/RecordManager.php:535
+#: lib/Domain/Service/Dns/RecordManager.php:536
 msgid "You do not have the permission to delete this record."
 msgstr "Nincs jogosultsága a rekord törlésére."
 
@@ -2116,7 +2116,7 @@ msgstr "Katalógust csak a Producer zónák tesznek közzé."
 msgid "You do not have permission to access this zone."
 msgstr "Nincs jogosultsága a zóna eléréséhez."
 
-#: lib/Application/Controller/EditController.php:616
+#: lib/Application/Controller/EditController.php:618
 msgid "You do not have permission to edit this zone."
 msgstr "Nincs jogosultsága ennek a zónának a szerkesztésére."
 
@@ -2124,7 +2124,7 @@ msgstr "Nincs jogosultsága ennek a zónának a szerkesztésére."
 msgid "The zone has been added to the catalog."
 msgstr "A zóna hozzá lett adva a katalógushoz."
 
-#: lib/Application/Controller/EditController.php:610
+#: lib/Application/Controller/EditController.php:612
 msgid "The zone has been removed from the catalog."
 msgstr "A zóna el lett távolítva a katalógusból."
 
@@ -2141,7 +2141,7 @@ msgstr "Felhasználók"
 msgid "User details updated"
 msgstr "Felhasználói adatok frissítve"
 
-#: lib/Application/Controller/EditUserController.php:263
+#: lib/Application/Controller/EditUserController.php:264
 msgid "You do not have permission to edit a superuser account."
 msgstr "Nincs jogosultsága szuperuser fiók szerkesztésére."
 
@@ -2208,7 +2208,7 @@ msgstr "Érvénytelen sablon azonosító."
 msgid "Template does not exist."
 msgstr "A sablon nem létezik."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:516
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:519
 msgid "You do not have permission to view this zone."
 msgstr "Nincs jogosultsága a zóna megtekintésére."
 
@@ -2264,7 +2264,7 @@ msgstr "Zóna szerkesztése"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Nincs jogosultsága DNSSEC kezelésre ehhez a zónához."
 
-#: lib/Application/Controller/EditController.php:334
+#: lib/Application/Controller/EditController.php:336
 msgid "DNSSEC is not enabled on the server."
 msgstr "A DNSSEC nincs engedélyezve a szerveren."
 
@@ -2274,15 +2274,15 @@ msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
 msgstr ""
 "Ez a zóna előre aláírt; a DNSSEC kulcsokat az elsődleges szerveren kezelik."
 
-#: lib/Application/Controller/EditController.php:339
+#: lib/Application/Controller/EditController.php:341
 msgid "Zone is already signed with DNSSEC."
 msgstr "A zóna már alá van írva DNSSEC-kel."
 
-#: lib/Application/Controller/EditController.php:361
+#: lib/Application/Controller/EditController.php:363
 msgid "Zone has been signed successfully."
 msgstr "A zóna sikeresen alá lett írva."
 
-#: lib/Application/Controller/EditController.php:366
+#: lib/Application/Controller/EditController.php:368
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2290,7 +2290,7 @@ msgstr ""
 "Zóna aláírása kérve, de az ellenőrzés sikertelen. Ellenőrizze a DNSSEC "
 "kulcsokat."
 
-#: lib/Application/Controller/EditController.php:370
+#: lib/Application/Controller/EditController.php:372
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2314,23 +2314,23 @@ msgstr "Aláírás eltávolítás kérve, de ellenőrzés sikertelen."
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "A zóna aláírás eltávolítás sikertelen. Ellenőrizze a PowerDNS logokat."
 
-#: lib/Application/Controller/EditController.php:616
+#: lib/Application/Controller/EditController.php:618
 msgid "The catalog has been changed successfully."
 msgstr "A katalógus módosítása sikeresen megtörtént."
 
-#: lib/Application/Controller/EditController.php:629
+#: lib/Application/Controller/EditController.php:631
 msgid "Zone type has been changed successfully."
 msgstr "A zóna típusa sikeresen módosítva."
 
-#: lib/Application/Controller/EditController.php:636
+#: lib/Application/Controller/EditController.php:638
 msgid "Slave master has been changed successfully."
 msgstr "A másodlagos elsődleges sikeresen módosítva."
 
-#: lib/Application/Controller/EditController.php:650
+#: lib/Application/Controller/EditController.php:652
 msgid "You cannot apply a template to a read-only zone."
 msgstr "Csak olvasható zónára nem alkalmazhat sablont."
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:669
 msgid "Zone template has been changed successfully."
 msgstr "A zóna sablon sikeresen módosítva."
 
@@ -2338,7 +2338,7 @@ msgstr "A zóna sablon sikeresen módosítva."
 msgid "You cannot edit records in a read-only zone."
 msgstr "Csak olvasható zónában nem szerkeszthet rekordokat."
 
-#: lib/Application/Controller/EditController.php:833
+#: lib/Application/Controller/EditController.php:835
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2348,15 +2348,19 @@ msgstr ""
 "vonatkozó szerverkorlátot. Kérje meg a rendszergazdát, hogy növelje a PHP "
 "\"max_input_vars\" beállítást."
 
-#: lib/Application/Controller/EditController.php:940
+#: lib/Application/Controller/EditController.php:944
+msgid "Zone has not been updated successfully."
+msgstr "A zóna nem lett sikeresen frissítve."
+
+#: lib/Application/Controller/EditController.php:945
 msgid "Request has expired, please try again."
 msgstr "A kérés lejárt, próbálja újra."
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:954
 msgid "Zone has been updated successfully."
 msgstr "A zóna sikeresen frissítve."
 
-#: lib/Application/Controller/EditController.php:947
+#: lib/Application/Controller/EditController.php:955
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2364,48 +2368,44 @@ msgstr ""
 "A zóna sikeresen mentve. A rekordok nem változtak, de a SOA sorozatszám "
 "növelve lett."
 
-#: lib/Application/Controller/EditController.php:956
-msgid "Zone has not been updated successfully."
-msgstr "A zóna nem lett sikeresen frissítve."
-
-#: lib/Application/Controller/EditController.php:984
+#: lib/Application/Controller/EditController.php:987
 msgid "Please provide all required fields."
 msgstr "Töltse ki az összes kötelező mezőt."
 
-#: lib/Application/Controller/AddRecordController.php:260
+#: lib/Application/Controller/AddRecordController.php:261
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "A rekord sikeresen hozzáadva. A hozzá tartozó PTR rekord is létrejött."
 
-#: lib/Application/Controller/AddRecordController.php:265
+#: lib/Application/Controller/AddRecordController.php:266
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Rekord hozzáadva, de PTR létrehozás sikertelen: "
 
-#: lib/Application/Controller/AddRecordController.php:269
+#: lib/Application/Controller/AddRecordController.php:270
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr ""
 "A rekord sikeresen hozzáadva, de a PTR rekord létrehozása nem sikerült."
 
-#: lib/Application/Controller/AddRecordController.php:273
+#: lib/Application/Controller/AddRecordController.php:274
 msgid "Record successfully added. A matching A record was also created."
 msgstr "A rekord sikeresen hozzáadva. A hozzá tartozó A rekord is létrejött."
 
-#: lib/Application/Controller/MfaVerifyController.php:145
+#: lib/Application/Controller/MfaVerifyController.php:146
 msgid "Invalid security token. Please try again."
 msgstr "Érvénytelen biztonsági token. Próbálja újra."
 
-#: lib/Application/Controller/MfaVerifyController.php:314
+#: lib/Application/Controller/MfaVerifyController.php:315
 msgid "Too many failed attempts. Please try again later."
 msgstr "Túl sok sikertelen próbálkozás. Kérjük, próbálja újra később."
 
-#: lib/Application/Controller/MfaVerifyController.php:162
+#: lib/Application/Controller/MfaVerifyController.php:163
 msgid "No MFA record found. Please contact administrator."
 msgstr "Nem található MFA rekord. Lépjen kapcsolatba az adminisztrátorral."
 
-#: lib/Application/Controller/MfaVerifyController.php:167
+#: lib/Application/Controller/MfaVerifyController.php:168
 msgid "An error occurred. Please try again."
 msgstr "Hiba történt. Kérjük próbálja újra."
 
-#: lib/Application/Controller/MfaVerifyController.php:387
+#: lib/Application/Controller/MfaVerifyController.php:388
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2413,15 +2413,15 @@ msgstr ""
 "Az e-mailes ellenőrzés nem érhető el, mert a levelezési szolgáltatás ki van "
 "kapcsolva. Használjon helyreállítási kódot."
 
-#: lib/Application/Controller/MfaVerifyController.php:397
+#: lib/Application/Controller/MfaVerifyController.php:398
 msgid "A new verification code has been sent to your email."
 msgstr "Új ellenőrző kódot küldtünk az e-mailjére."
 
-#: lib/Application/Controller/MfaVerifyController.php:403
+#: lib/Application/Controller/MfaVerifyController.php:404
 msgid "Please use a recovery code instead."
 msgstr "Kérjük használjon helyreállítási kódot."
 
-#: lib/Application/Controller/MfaVerifyController.php:408
+#: lib/Application/Controller/MfaVerifyController.php:409
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2429,29 +2429,29 @@ msgstr ""
 "Nem sikerült elküldeni az ellenőrző kódot az e-mail címére. Használjon "
 "helyette helyreállítási kódot."
 
-#: lib/Domain/Service/Dns/RecordManager.php:285
+#: lib/Domain/Service/Dns/RecordManager.php:286
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Nincs jogosultsága rekord hozzáadására ebben a zónában."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:258
 msgid "Record successfully added."
 msgstr "Rekord sikeresen hozzáadva."
 
-#: lib/Application/Controller/AddRecordController.php:463
+#: lib/Application/Controller/AddRecordController.php:464
 msgid "No records were provided."
 msgstr "Nem adtak meg rekordokat."
 
-#: lib/Application/Controller/AddRecordController.php:532
+#: lib/Application/Controller/AddRecordController.php:533
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d egyező rekord is létrejött."
 
-#: lib/Application/Controller/AddRecordController.php:535
+#: lib/Application/Controller/AddRecordController.php:536
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d rekord hozzáadása sikertelen."
 
-#: lib/Application/Controller/AddRecordController.php:540
+#: lib/Application/Controller/AddRecordController.php:541
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2459,7 +2459,7 @@ msgstr ""
 "Néhány rekordot nem sikerült hozzáadni. Lehet, hogy már léteznek, vagy "
 "érvénytelen adatokat tartalmaznak."
 
-#: lib/Application/Controller/AddRecordController.php:570
+#: lib/Application/Controller/AddRecordController.php:571
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Egyetlen rekord sem lett hozzáadva. Érvénytelen adatok lehetnek."
 
@@ -2487,7 +2487,7 @@ msgstr "Nincs jogosultsága a zóna sablon rekordok szerkesztésére."
 msgid "OIDC authentication is not enabled"
 msgstr "Az OIDC hitelesítés nincs engedélyezve"
 
-#: lib/Application/Service/SamlService.php:418
+#: lib/Application/Service/SamlService.php:420
 msgid "Authentication failed: "
 msgstr "A hitelesítés sikertelen: "
 
@@ -2806,20 +2806,20 @@ msgid_plural "%d zones could not be removed."
 msgstr[0] "%d zóna eltávolítása sikertelen."
 msgstr[1] "%d zóna eltávolítása sikertelen."
 
-#: lib/Application/Controller/AddPermTemplController.php:63
+#: lib/Application/Controller/AddPermTemplController.php:64
 msgid "You do not have the permission to add permission templates."
 msgstr "Nincs jogosultsága engedély sablon hozzáadására."
 
-#: lib/Application/Controller/AddPermTemplController.php:67
+#: lib/Application/Controller/AddPermTemplController.php:68
 #: templates/modern/list_perm_templ.html:9
 msgid "Add permission template"
 msgstr "Engedélysablon hozzáadása"
 
-#: lib/Application/Controller/AddPermTemplController.php:99
+#: lib/Application/Controller/AddPermTemplController.php:100
 msgid "The permission template has been added successfully."
 msgstr "Az engedély sablon sikeresen hozzáadva."
 
-#: lib/Application/Controller/AddPermTemplController.php:142
+#: lib/Application/Controller/AddPermTemplController.php:143
 msgid "The permission template could not be added."
 msgstr "Az engedélysablont nem sikerült hozzáadni."
 
@@ -2917,7 +2917,7 @@ msgstr "zóna sablon hozzáadása"
 msgid "Zone template has been added successfully."
 msgstr "A zóna sablon sikeresen hozzáadva."
 
-#: lib/Application/Controller/IndexController.php:65
+#: lib/Application/Controller/IndexController.php:66
 msgid "Dashboard"
 msgstr "Irányítópult"
 
@@ -3002,28 +3002,28 @@ msgstr "Nincs jogosultsága új supermaster hozzáadására."
 msgid "The supermaster has been added successfully."
 msgstr "A supermaster sikeresen hozzáadva."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:79
+#: lib/Application/Controller/DnssecKeyImportController.php:80
 msgid "PEM key import requires PowerDNS 4.7 or newer."
 msgstr "A PEM kulcs importálásához PowerDNS 4.7 vagy újabb szükséges."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:113
+#: lib/Application/Controller/DnssecKeyImportController.php:114
 msgid "Provide a PEM-encoded private key (must contain BEGIN/END markers)."
 msgstr ""
 "Adjon meg egy PEM-kódolású privát kulcsot (BEGIN/END jelölőket tartalmaznia "
 "kell)."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:121
+#: lib/Application/Controller/DnssecKeyImportController.php:122
 msgid "PEM key imported successfully."
 msgstr "PEM kulcs sikeresen importálva."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:124
+#: lib/Application/Controller/DnssecKeyImportController.php:125
 msgid ""
 "Failed to import PEM key. The PowerDNS server may have rejected the format."
 msgstr ""
 "A PEM kulcs importálása nem sikerült. A PowerDNS kiszolgáló elutasíthatta a "
 "formátumot."
 
-#: lib/Application/Controller/DnssecKeyImportController.php:128
+#: lib/Application/Controller/DnssecKeyImportController.php:129
 msgid "An error occurred while importing the PEM key: "
 msgstr "Hiba történt a PEM kulcs importálásakor: "
 
@@ -3031,24 +3031,24 @@ msgstr "Hiba történt a PEM kulcs importálásakor: "
 msgid "You do not have the permission to add records to zone templates."
 msgstr "Nincs jogosultsága rekordok hozzáadására zóna sablonokhoz."
 
-#: lib/Application/Controller/EditUserController.php:83
+#: lib/Application/Controller/EditUserController.php:84
 #: templates/modern/edit_user.html:7 templates/modern/edit_user.html:15
 msgid "Edit User"
 msgstr "Felhasználó szerkesztése"
 
-#: lib/Application/Controller/EditUserController.php:165
+#: lib/Application/Controller/EditUserController.php:166
 msgid "Your profile has been updated successfully."
 msgstr "A profilja sikeresen frissítve."
 
-#: lib/Application/Controller/EditUserController.php:169
+#: lib/Application/Controller/EditUserController.php:170
 msgid "The user has been updated successfully."
 msgstr "A felhasználó sikeresen frissítve."
 
-#: lib/Application/Controller/EditUserController.php:173
+#: lib/Application/Controller/EditUserController.php:174
 msgid "The user could not be updated."
 msgstr "A felhasználó nem frissíthető."
 
-#: lib/Domain/Model/UserManager.php:340 lib/Domain/Model/UserManager.php:502
+#: lib/Domain/Model/UserManager.php:341 lib/Domain/Model/UserManager.php:495
 msgid "You do not have the permission to edit this user."
 msgstr "Nincs jogosultsága a felhasználó szerkesztésére."
 
@@ -3177,7 +3177,7 @@ msgstr "Kijelentkezés befejezve (figyelmeztetésekkel): "
 msgid "You do not have permission to view this record."
 msgstr "Nincs jogosultsága a rekord megtekintésére."
 
-#: lib/Domain/Service/Dns/RecordManager.php:425
+#: lib/Domain/Service/Dns/RecordManager.php:426
 msgid "You do not have permission to edit this record."
 msgstr "Nincs jogosultsága a rekord szerkesztésére."
 
@@ -3220,41 +3220,41 @@ msgstr ""
 msgid "Change password"
 msgstr "Jelszó módosítása"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:132
+#: lib/Application/Controller/DnssecAddKeyController.php:133
 msgid "ECDSA P-256 algorithm must use 256 bits"
 msgstr "Az ECDSA P-256 algoritmus 256 bitet kell használjon"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:135
+#: lib/Application/Controller/DnssecAddKeyController.php:136
 msgid "ECDSA P-384 algorithm must use 384 bits"
 msgstr "Az ECDSA P-384 algoritmus 384 bitet kell használjon"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:141
+#: lib/Application/Controller/DnssecAddKeyController.php:142
 msgid "ED25519 algorithm must use 256 bits"
 msgstr "Az ED25519 algoritmus 256 bitet kell használjon"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:146
+#: lib/Application/Controller/DnssecAddKeyController.php:147
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
 msgstr "Az ED448 algoritmus 456 bitet használ (nem támogatott UI-ban)"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:153
+#: lib/Application/Controller/DnssecAddKeyController.php:154
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
 msgstr ""
 "Az RSA algoritmusoknak 1024 vagy 2048 bitet kell használniuk a megfelelő "
 "biztonság érdekében"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:175
+#: lib/Application/Controller/DnssecAddKeyController.php:176
 msgid "Zone key has been added successfully."
 msgstr "A zóna kulcs sikeresen hozzáadva."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:179
+#: lib/Application/Controller/DnssecAddKeyController.php:180
 msgid "Failed to add new DNSSEC key."
 msgstr "Nem sikerült új DNSSEC kulcsot hozzáadni."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:183
+#: lib/Application/Controller/DnssecAddKeyController.php:184
 msgid "An error occurred while adding the DNSSEC key: "
 msgstr "Hiba történt a DNSSEC kulcs hozzáadása során: "
 
-#: lib/Application/Controller/DnssecAddKeyController.php:187
+#: lib/Application/Controller/DnssecAddKeyController.php:188
 msgid "Please select both algorithm and bits"
 msgstr "Válasszon algoritmust és biteket"
 
@@ -3508,7 +3508,7 @@ msgstr "Hitelesítés sikertelen: Nincs jogosultsági kód"
 msgid "Authentication failed: Invalid session"
 msgstr "Hitelesítés sikertelen: Érvénytelen munkamenet"
 
-#: lib/Application/Service/SamlService.php:386
+#: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Hitelesítés sikertelen: fiók létrehozása/frissítése nem lehetséges"
 
@@ -3536,15 +3536,15 @@ msgstr "Nem sikerült LDAP-pal hitelesíteni."
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Hitelesítés sikertelen: Érvénytelen SAML válasz"
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:307
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:308
 msgid "This template is assigned to at least one user and one group."
 msgstr "Ez a sablon legalább egy felhasználóhoz és egy csoporthoz rendelt."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:309
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:310
 msgid "This template is assigned to at least one user."
 msgstr "Ez a sablon legalább egy felhasználóhoz van rendelve."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:311
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:312
 msgid "This template is assigned to at least one group."
 msgstr "Ez a sablon legalább egy csoporthoz van rendelve."
 
@@ -3734,19 +3734,28 @@ msgid ""
 msgstr ""
 "Az alábbi táblázatban beállított supermaster kiszolgálók kapcsolati állapota."
 
-#: lib/Infrastructure/Web/PageRenderer.php:249
-msgid ""
-"The install/ directory exists, you must remove it first before proceeding."
-msgstr ""
-"Az install/ könyvtár létezik, a folytatás előtt előbb el kell távolítania."
-
-#: lib/Infrastructure/Web/PageRenderer.php:289
+#: lib/Infrastructure/Web/PageRenderer.php:132
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
 "Az alapértelmezett munkamenet-titkosítási kulcs van használatban, kérjük, "
 "állítsa be a konfigurációs fájlban."
+
+#: lib/Infrastructure/Web/PageRenderer.php:136
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/Infrastructure/Web/PageRenderer.php:253
+msgid ""
+"The install/ directory exists, you must remove it first before proceeding."
+msgstr ""
+"Az install/ könyvtár létezik, a folytatás előtt előbb el kell távolítania."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:166
 #: templates/default/login.html:139 templates/modern/login.html:139
@@ -3769,11 +3778,11 @@ msgstr ""
 "Adatbázishiba: a felhasználó hitelesítése nem ellenőrizhető. Ellenőrizze az "
 "adatbázis beállításait."
 
-#: lib/Domain/Model/UserManager.php:79 lib/Domain/Model/UserManager.php:90
+#: lib/Domain/Model/UserManager.php:80 lib/Domain/Model/UserManager.php:91
 msgid "You do not have the permission to change the permission template."
 msgstr "Nincs jogosultsága az engedélysablon megváltoztatására."
 
-#: lib/Domain/Model/UserManager.php:87
+#: lib/Domain/Model/UserManager.php:88
 msgid ""
 "Changing your own permission template requires the permission to edit other "
 "users."
@@ -3781,7 +3790,7 @@ msgstr ""
 "A saját engedélysablon megváltoztatásához más felhasználók szerkesztésére "
 "vonatkozó jogosultság szükséges."
 
-#: lib/Domain/Model/UserManager.php:89
+#: lib/Domain/Model/UserManager.php:90
 msgid ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
@@ -3789,19 +3798,19 @@ msgstr ""
 "Rendszergazdai jogokkal rendelkező engedélysablon hozzárendelése "
 "rendszergazdai jogosultságot igényel."
 
-#: lib/Domain/Model/UserManager.php:534
+#: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Adjon meg érvényes e-mail címet."
 
-#: lib/Domain/Model/UserManager.php:526
+#: lib/Domain/Model/UserManager.php:519
 msgid "Username exist already, please choose another one."
 msgstr "A felhasználónév már létezik, válasszon másikat."
 
-#: lib/Domain/Model/UserManager.php:538
+#: lib/Domain/Model/UserManager.php:531
 msgid "Email address already exists, please choose another one."
 msgstr "Az e-mail cím már létezik, válasszon másikat."
 
-#: lib/Domain/Model/UserManager.php:530
+#: lib/Domain/Model/UserManager.php:523
 msgid "Enter a valid user name."
 msgstr "Adjon meg érvényes felhasználónevet."
 
@@ -3968,55 +3977,59 @@ msgstr "A nézetekhez PowerDNS 5.0 vagy újabb szükséges."
 msgid ""
 "Views require the LMDB backend. The connected server runs a backend that "
 "does not implement them."
-msgstr "A nézetekhez LMDB háttér szükséges. A csatlakoztatott kiszolgáló olyan hátteret futtat, amely nem valósítja meg őket."
+msgstr ""
+"A nézetekhez LMDB háttér szükséges. A csatlakoztatott kiszolgáló olyan "
+"hátteret futtat, amely nem valósítja meg őket."
 
 #: lib/Domain/Service/PdnsCapabilities.php:165
 msgid ""
 "Views require \"views=yes\" in pdns.conf. The connected server has them "
 "disabled."
-msgstr "A nézetekhez \"views=yes\" szükséges a pdns.conf fájlban. A csatlakoztatott kiszolgálón le vannak tiltva."
+msgstr ""
+"A nézetekhez \"views=yes\" szükséges a pdns.conf fájlban. A csatlakoztatott "
+"kiszolgálón le vannak tiltva."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:153
+#: lib/Domain/Service/DatabaseConsistencyService.php:154
 msgid "All zones have owners"
 msgstr "Minden zónának van tulajdonosa"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:160
+#: lib/Domain/Service/DatabaseConsistencyService.php:161
 #, php-format
 msgid "%d zones found without owners"
 msgstr "%d zóna található tulajdonos nélkül"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:211
+#: lib/Domain/Service/DatabaseConsistencyService.php:212
 msgid "All slave zones have master IP addresses"
 msgstr "Minden másodlagos zónának van elsődleges IP címe"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:218
+#: lib/Domain/Service/DatabaseConsistencyService.php:219
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "%d másodlagos zóna található elsődleges IP cím nélkül"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:263
+#: lib/Domain/Service/DatabaseConsistencyService.php:264
 msgid "All records belong to existing zones"
 msgstr "Minden rekord létező zónához tartozik"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:270
+#: lib/Domain/Service/DatabaseConsistencyService.php:271
 #, php-format
 msgid "%d orphaned records found"
 msgstr "%d árva rekord található"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:330
+#: lib/Domain/Service/DatabaseConsistencyService.php:331
 msgid "No duplicate SOA records found"
 msgstr "Nincs duplikált SOA rekord"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:337
+#: lib/Domain/Service/DatabaseConsistencyService.php:338
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d zónának duplikált SOA rekordja van"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:397
+#: lib/Domain/Service/DatabaseConsistencyService.php:398
 msgid "All zones have SOA records"
 msgstr "Minden zónának van SOA rekordja"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:404
+#: lib/Domain/Service/DatabaseConsistencyService.php:405
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "%d zóna található SOA rekord nélkül"
@@ -9090,7 +9103,9 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:335
 msgid "Invalid value for the port field of the SRV record. Must be 0-65535."
-msgstr "Érvénytelen érték az SRV rekord port mezőjében. 0 és 65535 között kell lennie."
+msgstr ""
+"Érvénytelen érték az SRV rekord port mezőjében. 0 és 65535 között kell "
+"lennie."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:344
 #, php-format
@@ -9690,15 +9705,15 @@ msgstr "A PTR frissítése kimaradt: a rekordtípus nem A vagy AAAA."
 msgid "Stale PTR record removed."
 msgstr "Az elavult PTR rekord eltávolítva."
 
-#: lib/Domain/Service/Dns/RecordManager.php:321
+#: lib/Domain/Service/Dns/RecordManager.php:322
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Már létezik ezzel a hostnévvel, típussal és tartalommal rekord."
 
-#: lib/Domain/Service/Dns/RecordManager.php:222
+#: lib/Domain/Service/Dns/RecordManager.php:223
 msgid "Failed to add record to DNS backend."
 msgstr "Nem sikerült hozzáadni a DNS backendhez."
 
-#: lib/Domain/Service/Dns/RecordManager.php:458
+#: lib/Domain/Service/Dns/RecordManager.php:459
 msgid "Failed to update record in DNS backend."
 msgstr "Nem sikerült frissíteni a rekordot a DNS backendben."
 
@@ -9989,7 +10004,7 @@ msgstr "API-kulcs információk"
 msgid "Created by"
 msgstr "Létrehozta"
 
-#: templates/modern/api_keys.html:48
+#: templates/modern/pdns_status.html:176 templates/modern/api_keys.html:48
 msgid "Unknown"
 msgstr "Ismeretlen"
 
@@ -10558,7 +10573,7 @@ msgstr "Eltávolítás"
 msgid "and"
 msgstr "és"
 
-#: templates/modern/list_forward_zones.html:189
+#: templates/modern/list_forward_zones.html:191
 msgid "more..."
 msgstr "több..."
 
@@ -11473,7 +11488,14 @@ msgstr "A zónának nincs SOA rekordja"
 msgid "No SOA"
 msgstr "Nincs SOA"
 
-#: templates/modern/list_forward_zones.html:159
+#: templates/modern/list_forward_zones.html:158
+#, auto-english-fallback
+msgid ""
+"The DNS server could not be reached, so this zone's SOA status is unknown"
+msgstr ""
+"The DNS server could not be reached, so this zone's SOA status is unknown"
+
+#: templates/modern/list_forward_zones.html:161
 msgid ""
 "Records for this zone are replicated from its primary and cannot be edited "
 "here."
@@ -11481,15 +11503,15 @@ msgstr ""
 "Ennek a zónának a rekordjai az elsődleges szerveréről vannak replikálva, és "
 "itt nem szerkeszthetők."
 
-#: templates/modern/list_reverse_zones.html:243
+#: templates/modern/list_reverse_zones.html:245
 msgid "-"
 msgstr "-"
 
-#: templates/modern/list_forward_zones.html:207
+#: templates/modern/list_forward_zones.html:209
 msgid "NOTIFY pending: serial %serial% not yet acknowledged"
 msgstr "NOTIFY folyamatban: a %serial% sorszám még nincs visszaigazolva"
 
-#: templates/modern/list_forward_zones.html:209
+#: templates/modern/list_forward_zones.html:211
 msgid "NOTIFY sent at serial %serial%"
 msgstr "NOTIFY elküldve a %serial% sorszámnál"
 
@@ -11593,7 +11615,8 @@ msgstr "Ennek a katalógusnak még nincsenek tagjai."
 
 #: templates/default/zone-catalog.html:25 templates/modern/zone-catalog.html:25
 msgid "PowerDNS only publishes Primary and Producer zones from a catalog."
-msgstr "A PowerDNS csak a Primary és Producer zónákat teszi közzé a katalógusból."
+msgstr ""
+"A PowerDNS csak a Primary és Producer zónákat teszi közzé a katalógusból."
 
 #: templates/default/zone-catalog.html:26 templates/modern/zone-catalog.html:26
 msgid "Not published"
@@ -11607,7 +11630,9 @@ msgstr "Tag hozzáadása"
 msgid ""
 "No zones are available to add. Only Primary and Producer zones that are not "
 "already in a catalog can be members."
-msgstr "Nincs hozzáadható zóna. Csak olyan Primary és Producer zónák lehetnek tagok, amelyek még nincsenek katalógusban."
+msgstr ""
+"Nincs hozzáadható zóna. Csak olyan Primary és Producer zónák lehetnek tagok, "
+"amelyek még nincsenek katalógusban."
 
 #: templates/modern/list_views.html:64
 msgid "Add"
@@ -12628,7 +12653,7 @@ msgstr "Zónák teljes száma:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Nincsenek forward zónák a listában."
 
-#: templates/modern/list_forward_zones.html:235
+#: templates/modern/list_forward_zones.html:237
 msgid "PTR"
 msgstr "PTR"
 
@@ -13582,7 +13607,9 @@ msgstr "Könnyen használható"
 msgid ""
 "Authenticator app verification is not available because it has been disabled "
 "by the administrator."
-msgstr "A hitelesítő alkalmazással történő ellenőrzés nem érhető el, mert a rendszergazda letiltotta."
+msgstr ""
+"A hitelesítő alkalmazással történő ellenőrzés nem érhető el, mert a "
+"rendszergazda letiltotta."
 
 #: templates/default/mfa_setup.html:84 templates/modern/mfa_setup.html:84
 msgid "Set up app authentication"
@@ -13658,7 +13685,7 @@ msgstr "Hiba:"
 msgid "Success:"
 msgstr "Siker:"
 
-#: templates/modern/message_alert.html:16
+#: templates/modern/message_alert.html:17
 msgid "Info:"
 msgstr "Információ:"
 
@@ -15670,31 +15697,5 @@ msgstr ""
 "A területi beállítás alkalmazása nem sikerült. A kiválasztott területi "
 "beállítást ez a rendszer valószínűleg nem támogatja. Kérjük, vegye fel a "
 "kapcsolatot a rendszergazdával."
-
-# OBSOLETE: msgid "Network views require PowerDNS 5.0 or newer."
-# OBSOLETE: msgstr "A hálózati nézetekhez PowerDNS 5.0 vagy újabb szükséges."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger "
-# OBSOLETE: "is recommended."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "A HMAC-MD5 a mai szabványok szerint gyengének számít. HMAC-SHA256 vagy "
-# OBSOLETE: "erősebb algoritmus ajánlott."
-
-# OBSOLETE: msgid ""
-# OBSOLETE: "CNAME target must be a fully qualified domain name (FQDN). Single-label "
-# OBSOLETE: "names are not allowed."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "A CNAME céljának teljesen minősített domainnévnek (FQDN) kell lennie. Az "
-# OBSOLETE: "egycímkés nevek nem megengedettek."
-
-# OBSOLETE: msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Érvénytelen érték az SRV rekord port mezőjében. Az értéknek 1 és 65535 "
-# OBSOLETE: "között kell lennie."
-
-# OBSOLETE: msgid "Error"
-# OBSOLETE: msgstr "Hiba"
-
 
 
