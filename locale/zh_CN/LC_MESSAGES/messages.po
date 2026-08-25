@@ -2919,7 +2919,7 @@ msgstr "密码必须至少 6 个字符,包含至少一个大写字母、一个�
 
 #: install/templates/step3.html.twig:113
 msgid "The default username is \"admin\"."
-msgstr ""
+msgstr "默认用户名是 \"admin\"。"
 
 #: install/helpers/InstallStepHandler.php:64
 msgid "An error occurred while rendering the template."

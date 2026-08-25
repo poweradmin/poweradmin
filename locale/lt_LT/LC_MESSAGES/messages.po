@@ -3036,7 +3036,7 @@ msgstr ""
 
 #: install/templates/step3.html.twig:113
 msgid "The default username is \"admin\"."
-msgstr ""
+msgstr "Numatytasis naudotojo vardas yra \"admin\"."
 
 #: install/helpers/InstallStepHandler.php:64
 msgid "An error occurred while rendering the template."
