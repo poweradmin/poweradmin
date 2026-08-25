@@ -321,4 +321,47 @@ class UserProvisioningServiceTest extends TestCase
             'SAML user should be detected as SAML regardless of provider ID conflicts'
         );
     }
+
+    /**
+     * A numeric mapping key is stored by PHP as an int, so it must still match
+     * the string the identity provider sends.
+     */
+    public function testGroupMatchesComparesNumericConfigKeysAsStrings(): void
+    {
+        $groupMatches = $this->getPrivateMethodInvoker('groupMatches');
+
+        $this->assertTrue(
+            $groupMatches('1001', ['1001', 'other']),
+            'A numeric group id must match the string claim value'
+        );
+        $this->assertFalse(
+            $groupMatches('1001', ['1002']),
+            'A non-matching numeric group id must not match'
+        );
+    }
+
+    /**
+     * Some providers emit the groups claim as JSON numbers rather than strings.
+     */
+    public function testGroupMatchesAcceptsIntegerClaimValues(): void
+    {
+        $groupMatches = $this->getPrivateMethodInvoker('groupMatches');
+
+        $this->assertTrue(
+            $groupMatches('1001', [1001]),
+            'An integer claim value must match a numeric mapping key'
+        );
+    }
+
+    /**
+     * Ordinary string keys are the common case and must be unaffected.
+     */
+    public function testGroupMatchesStillComparesStringKeysExactly(): void
+    {
+        $groupMatches = $this->getPrivateMethodInvoker('groupMatches');
+
+        $this->assertTrue($groupMatches('dns-admins', ['dns-admins']));
+        $this->assertFalse($groupMatches('dns-admins', ['DNS-Admins']));
+        $this->assertFalse($groupMatches('dns-admins', [['nested']]));
+    }
 }
