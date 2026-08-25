@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-09 10:57+0300\n"
+"POT-Creation-Date: 2026-08-25 09:23+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Latvian\n"
@@ -31,7 +31,7 @@ msgstr ""
 msgid "DNS wizards are not enabled."
 msgstr "DNS vedņi nav iespējoti."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:48
+#: lib/Application/Controller/DnssecToggleKeyController.php:56
 msgid "Invalid zone ID."
 msgstr "Nederīgs zonas ID."
 
@@ -55,14 +55,14 @@ msgstr "Validācija neizdevās:"
 msgid "Failed to generate record:"
 msgstr "Neizdevās ģenerēt ierakstu:"
 
-#: lib/Application/Controller/AddRecordController.php:184
+#: lib/Application/Controller/AddRecordController.php:189
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
 msgstr ""
 "Šis ieraksts nebija derīgs un netika pievienots. Iespējams, tas jau pastāv."
 
-#: lib/Application/Controller/AddRecordController.php:260
+#: lib/Application/Controller/AddRecordController.php:268
 msgid "The record was successfully added."
 msgstr "Ieraksts veiksmīgi pievienots."
 
@@ -315,7 +315,7 @@ msgstr ""
 "sertifikātu."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:673
+#: templates/modern/edit.html:93 templates/modern/edit.html:679
 msgid "Invalid hostname format"
 msgstr "Nederīgs resursdatora formāts"
 
@@ -1214,19 +1214,19 @@ msgstr "Neizdevās izveidot zonu."
 msgid "Failed to retrieve created zone."
 msgstr "Neizdevās iegūt izveidoto zonu."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:38
+#: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."
 msgstr "Lai eksportētu zonas datus, jābūt pieslēgtam."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:55
+#: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
 msgstr "Jums nav atļaujas eksportēt šo zonu."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:72
+#: lib/Application/Controller/DnssecToggleKeyController.php:80
 msgid "There is no zone with this ID."
 msgstr "Nav zonas ar šo ID."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:71
+#: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."
 msgstr "Šai zonai nav ierakstu eksportēšanai."
 
@@ -1256,29 +1256,38 @@ msgstr "RDAP"
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Neizdevās iegūt RDAP informāciju no servera %s"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:135
+#: lib/Infrastructure/Service/SessionAuthenticator.php:136
 msgid "Invalid CSRF token."
 msgstr "Nederīgs CSRF marķieris."
 
-#: lib/BaseController.php:651
+#: lib/BaseController.php:674
+msgid ""
+"Default session encryption key is used, please set it in your configuration "
+"file."
+msgstr "Tiek izmantota noklusējuma sesijas atslēga, iestatiet konfigurācijā."
+
+#: lib/BaseController.php:678
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/BaseController.php:720
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr ""
 "<a href=\"install/\">install/</a> eksistē, noņemiet to pirms turpināšanas."
 
-#: lib/BaseController.php:708
-msgid ""
-"Default session encryption key is used, please set it in your configuration "
-"file."
-msgstr "Tiek izmantota noklusējuma sesijas atslēga, iestatiet konfigurācijā."
-
-#: lib/BaseController.php:852
+#: lib/BaseController.php:921
 #, php-format
 msgid "The %s field is required."
 msgstr "Lauks %s ir nepieciešams."
 
-#: lib/BaseController.php:860
+#: lib/BaseController.php:929
 #, php-format
 msgid "The %s field must be a number."
 msgstr "%s laukam jābūt skaitlim."
@@ -1299,17 +1308,17 @@ msgstr "Rādīt zonas, kas sākas ar"
 msgid "Show all"
 msgstr "Rādīt visu"
 
-#: lib/Application/Controller/DeleteRecordsController.php:81
+#: lib/Application/Controller/DeleteRecordsController.php:85
 msgid "No records selected for deletion."
 msgstr "Nav atlasītu ierakstu dzēšanai."
 
-#: lib/Application/Controller/DeleteRecordsController.php:202
+#: lib/Application/Controller/DeleteRecordsController.php:206
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr "Ieraksts veiksmīgi dzēsts. Visi atbilstošie PTR ieraksti arī noņemti."
 
-#: lib/Application/Controller/DeleteRecordsController.php:204
+#: lib/Application/Controller/DeleteRecordsController.php:208
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1317,32 +1326,42 @@ msgid ""
 msgstr ""
 "%d ieraksti veiksmīgi dzēsti. Visi atbilstošie PTR ieraksti arī noņemti."
 
-#: lib/Application/Controller/DeleteRecordsController.php:207
+#: lib/Application/Controller/DeleteRecordsController.php:211
 msgid "No records could be deleted. Please check permissions."
 msgstr "Nevarēja dzēst ierakstus. Pārbaudiet atļaujas."
 
-#: lib/Application/Controller/DeleteRecordsController.php:276
+#: lib/Application/Controller/DeleteRecordsController.php:279
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr "Nav atlasītu derīgu ierakstu vai jums nav atļaujas tos dzēst."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:75
+#: lib/Application/Controller/DnssecToggleKeyController.php:49
 msgid "Invalid or unexpected input given."
 msgstr "Norādīts nederīgs vai negaidīts ievades dati."
 
-#: lib/Domain/Model/UserManager.php:339
+#: lib/Domain/Model/UserManager.php:376
 msgid "You do not have the permission to delete this user."
 msgstr "Jums nav atļaujas dzēst šo lietotāju."
 
-#: lib/Application/Controller/DeleteUserController.php:77
+#: lib/Application/Controller/DeleteUserController.php:81
 msgid "You do not have permission to delete a superuser account."
 msgstr "Jums nav atļaujas dzēst superusera kontu."
 
-#: lib/Application/Controller/EditUserController.php:473
+#: lib/Application/Controller/EditUserController.php:594
 msgid "User does not exist."
 msgstr "Lietotājs neeksistē."
 
-#: lib/Application/Controller/DeleteUserController.php:112
+#: lib/Application/Controller/DeleteUserController.php:116
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"Lietotājs netika dzēsts, jo forma pārsniedza servera lauku skaita "
+"ierobežojumu. Lūdziet administratoram palielināt PHP \"max_input_vars\" "
+"iestatījumu."
+
+#: lib/Application/Controller/DeleteUserController.php:138
 msgid "The user has been deleted successfully."
 msgstr "Lietotājs veiksmīgi dzēsts."
 
@@ -1354,7 +1373,7 @@ msgstr "Zonas komentāru funkcija ir atspējota konfigurācijā."
 msgid "You do not have the permission to view this comment."
 msgstr "Jums nav atļaujas skatīt šo komentāru."
 
-#: lib/Domain/Service/Dns/RecordManager.php:455
+#: lib/Domain/Service/Dns/RecordManager.php:495
 msgid "You do not have the permission to edit this comment."
 msgstr "Jums nav atļaujas rediģēt šo komentāru."
 
@@ -1370,7 +1389,7 @@ msgstr "Nederīgs ieraksta ID."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Jums nav atļaujas dzēst ierakstus šajā zonā."
 
-#: lib/Application/Controller/EditRecordController.php:206
+#: lib/Domain/Service/Dns/RecordManager.php:413
 msgid "Record not found."
 msgstr "Ieraksts nav atrasts."
 
@@ -1426,7 +1445,7 @@ msgid ""
 "found."
 msgstr "Ieraksts veiksmīgi dzēsts. Atbilstošais A/AAAA netika atrasts."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:72
 msgid "The record has been deleted successfully."
 msgstr "Ieraksts veiksmīgi dzēsts."
 
@@ -1463,24 +1482,24 @@ msgstr "Grupa veiksmīgi dzēsta."
 msgid "Group not found."
 msgstr "Grupa nav atrasta."
 
-#: lib/Application/Controller/UserPreferencesController.php:42
+#: lib/Application/Controller/UserPreferencesController.php:43
 #: templates/modern/user_preferences.html:4
 msgid "User Preferences"
 msgstr "Lietotāja preferences"
 
-#: lib/Application/Controller/UserPreferencesController.php:101
+#: lib/Application/Controller/UserPreferencesController.php:126
 msgid "Preferences saved successfully."
 msgstr "Preferences veiksmīgi saglabātas."
 
-#: lib/Application/Controller/UserPreferencesController.php:109
+#: lib/Application/Controller/UserPreferencesController.php:134
 msgid "Failed to update preferences. Please try again."
 msgstr "Neizdevās atjaunināt preferences. Mēģiniet vēlreiz."
 
-#: lib/Application/Controller/UserPreferencesController.php:124
+#: lib/Application/Controller/UserPreferencesController.php:149
 msgid "Top"
 msgstr "Augša"
 
-#: lib/Application/Controller/UserPreferencesController.php:125
+#: lib/Application/Controller/UserPreferencesController.php:150
 msgid "Bottom"
 msgstr "Apakša"
 
@@ -1496,11 +1515,11 @@ msgstr "Pārvaldīt grupas dalībniekus"
 msgid "Invalid action."
 msgstr "Nederīga darbība."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:197
+#: lib/Application/Controller/ManageGroupMembersController.php:217
 msgid "Please select at least one user."
 msgstr "Atlasiet vismaz vienu lietotāju."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:149
+#: lib/Application/Controller/ManageGroupMembersController.php:169
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
@@ -1508,7 +1527,7 @@ msgstr[0] "%d user added to group."
 msgstr[1] "%d users added to group."
 msgstr[2] "%d users added to group."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:176
+#: lib/Application/Controller/ManageGroupMembersController.php:196
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
@@ -1516,7 +1535,7 @@ msgstr[0] "%d user could not be added."
 msgstr[1] "%d users could not be added."
 msgstr[2] "%d users could not be added."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:225
+#: lib/Application/Controller/ManageGroupMembersController.php:242
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
@@ -1524,7 +1543,7 @@ msgstr[0] "%d user removed from group."
 msgstr[1] "%d users removed from group."
 msgstr[2] "%d users removed from group."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:252
+#: lib/Application/Controller/ManageGroupMembersController.php:269
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
@@ -1556,7 +1575,7 @@ msgstr "Pārbaudes kods ir nepieciešams."
 msgid "MFA has been enabled successfully."
 msgstr "MFA ir veiksmīgi iespējots."
 
-#: lib/Application/Controller/MfaVerifyController.php:274
+#: lib/Application/Controller/MfaVerifyController.php:278
 msgid "Invalid verification code. Please try again."
 msgstr "Nederīgs pārbaudes kods. Mēģiniet vēlreiz."
 
@@ -1612,20 +1631,20 @@ msgstr "MFA jābūt iespējotam, lai pārģenerētu kodus."
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "Atkopšanas kodi ir pārģenerēti. Glabājiet tos drošā vietā."
 
-#: lib/Application/Controller/ListLogApiController.php:51
-#: templates/modern/list_log_api.html:4 templates/modern/header.html:323
+#: lib/Application/Controller/ListLogApiController.php:52
+#: templates/modern/list_log_api.html:4 templates/modern/header.html:324
 msgid "API Logs"
 msgstr "API žurnāli"
 
-#: lib/Application/Controller/ListLogUsersController.php:93
+#: lib/Application/Controller/ListLogUsersController.php:94
 msgid "Invalid page number."
 msgstr "Nederīgs lapas numurs."
 
-#: lib/Application/Controller/ListLogUsersController.php:95
+#: lib/Application/Controller/ListLogUsersController.php:96
 msgid "Page number must be at least 1."
 msgstr "Lapas numuram jābūt vismaz 1."
 
-#: lib/Application/Controller/ListLogUsersController.php:114
+#: lib/Application/Controller/ListLogUsersController.php:115
 msgid "Page number exceeds available pages."
 msgstr "Lapas numurs pārsniedz pieejamās lapas."
 
@@ -1641,52 +1660,58 @@ msgstr "Jums nav atļaujas skatīt zonas metadatus."
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Jums nav atļaujas rediģēt zonas metadatus."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:151
+#: lib/Application/Controller/EditZoneMetadataController.php:164
 msgid "Zone metadata has been updated successfully."
 msgstr "Zonas metadati veiksmīgi atjaunināti."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:156
+#: lib/Application/Controller/EditZoneMetadataController.php:169
 msgid "Failed to update zone metadata."
 msgstr "Neizdevās atjaunināt zonas metadatus."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:178
+#: lib/Application/Controller/EditZoneMetadataController.php:191
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr "Rediģēt zonas metadatus"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:178
+#: lib/Application/Controller/EditZoneMetadataController.php:191
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "Zonas metadati"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:382
+#: lib/Application/Controller/EditZoneMetadataController.php:406
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
 msgstr ""
 "Metadatu veids %s pieņem tikai vienu vērtību. Pievienojiet tikai vienu rindu."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:476
+#: lib/Application/Controller/EditZoneMetadataController.php:453
+#, auto-english-fallback
+#, php-format
+msgid "Metadata kind %s can only be changed by an administrator."
+msgstr "Metadata kind %s can only be changed by an administrator."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:558
 #: templates/modern/edit_zone_metadata.html:155
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
 msgstr "Pielāgots metadatu veids, kas glabājas PowerDNS domainmetadata tabulā."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:484
-#: templates/modern/pdns_status.html:412
+#: lib/Application/Controller/EditZoneMetadataController.php:566
+#: templates/modern/pdns_status.html:403
 msgid "Value"
 msgstr "Vērtība"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:538
+#: lib/Application/Controller/EditZoneMetadataController.php:620
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "Pielāgots"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:543
+#: lib/Application/Controller/EditZoneMetadataController.php:625
 msgid "Multi"
 msgstr "Vairāki"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:544
+#: lib/Application/Controller/EditZoneMetadataController.php:626
 msgid "Single"
 msgstr "Viens"
 
@@ -1740,7 +1765,7 @@ msgstr "iespējots"
 msgid "API key %s successfully."
 msgstr "API atslēga %s veiksmīgi."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:108
+#: lib/Application/Controller/BatchPtrRecordController.php:111
 msgid "You do not have the permission to add records to this zone."
 msgstr "Jums nav atļaujas pievienot ierakstus šai zonai."
 
@@ -1773,25 +1798,43 @@ msgstr "Zonas ID ir nepieciešams."
 msgid "You do not have the permission to edit permission templates."
 msgstr "Jums nav atļaujas rediģēt atļauju veidnes."
 
-#: lib/Application/Controller/EditPermTemplController.php:63
+#: lib/Application/Controller/EditPermTemplController.php:65
 msgid "Edit Permission Template"
 msgstr "Rediģēt atļauju veidni"
 
-#: lib/Application/Controller/EditPermTemplController.php:96
+#: lib/Application/Controller/EditPermTemplController.php:120
 msgid "The permission template has been updated successfully."
 msgstr "Atļauju veidne veiksmīgi atjaunināta."
+
+#: lib/Application/Controller/EditPermTemplController.php:170
+#, auto-english-fallback
+msgid ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Application/Controller/AddPermTemplController.php:146
+#, auto-english-fallback
+msgid ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
+msgstr ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
 
 #: lib/Application/Controller/ListGroupsController.php:60
 #: templates/modern/manage_group_members.html:4
 msgid "Groups"
 msgstr "Grupas"
 
-#: lib/Application/Controller/SearchController.php:45
+#: lib/Application/Controller/SearchController.php:50
 msgid "You do not have the permission to perform searches."
 msgstr "Jums nav atļaujas veikt meklēšanas."
 
-#: lib/Application/Controller/SearchController.php:49
-#: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
+#: lib/Application/Controller/SearchController.php:54
+#: templates/modern/header.html:128 templates/modern/list_log_groups.html:44
 msgid "Search"
 msgstr "Meklēt"
 
@@ -1811,37 +1854,42 @@ msgstr "Dalībnieks veiksmīgi noņemts no grupas."
 msgid "User was not a member of this group."
 msgstr "Lietotājs nebija šīs grupas dalībnieks."
 
-#: lib/Domain/Model/UserManager.php:1003
+#: lib/Domain/Model/UserManager.php:1204
 msgid "You do not have the permission to add a new user."
 msgstr "Jums nav atļaujas pievienot jaunu lietotāju."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:13 templates/modern/add_user.html:112
+#: templates/modern/add_user.html:13 templates/modern/add_user.html:113
 msgid "Add User"
 msgstr "Pievienot lietotāju"
 
-#: lib/Application/Controller/EditUserController.php:274
+#: lib/Application/Controller/AddUserController.php:125
+#, auto-english-fallback
+msgid "No non-superuser permission template is available to assign."
+msgstr "No non-superuser permission template is available to assign."
+
+#: lib/Application/Controller/EditUserController.php:310
 msgid "Invalid permission template: must be a user template"
 msgstr "Nederīga atļauju veidne: jābūt lietotāja veidnei"
 
-#: lib/Application/Controller/AddUserController.php:144
+#: lib/Application/Controller/AddUserController.php:150
 msgid "The user has been created successfully."
 msgstr "Lietotājs veiksmīgi izveidots."
 
-#: lib/Application/Controller/AddUserController.php:159
+#: lib/Application/Controller/AddUserController.php:165
 #, php-format
 msgid "Generated password: %s"
 msgstr "Ģenerēta parole: %s"
 
-#: lib/Application/Controller/AddUserController.php:175
+#: lib/Application/Controller/AddUserController.php:181
 msgid "Login details have been sent to the user via email."
 msgstr "Pieteikšanās dati nosūtīti lietotājam pa e-pastu."
 
-#: lib/Application/Controller/AddUserController.php:177
+#: lib/Application/Controller/AddUserController.php:183
 msgid "NOTE: Failed to send login details via email."
 msgstr "PIEZĪME: Neizdevās nosūtīt pieteikšanās datus pa e-pastu."
 
-#: lib/Application/Controller/AddUserController.php:183
+#: lib/Application/Controller/AddUserController.php:189
 msgid "A password was generated but is not displayed for security reasons."
 msgstr "Parole tika ģenerēta, bet drošības apsvērumu dēļ netiek rādīta."
 
@@ -1849,31 +1897,35 @@ msgstr "Parole tika ģenerēta, bet drošības apsvērumu dēļ netiek rādīta.
 msgid "Please fill in all required fields correctly."
 msgstr "Aizpildiet visus nepieciešamos laukus pareizi."
 
-#: lib/Domain/Service/Dns/RecordManager.php:396
+#: lib/Domain/Service/Dns/RecordManager.php:436
 msgid "You do not have the permission to delete this record."
 msgstr "Jums nav atļaujas dzēst šo ierakstu."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:78
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
 msgid "The record could not be deleted."
 msgstr "Ierakstu nevarēja dzēst."
 
-#: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:248 templates/modern/index.html:248
+#: lib/Application/Controller/ListLogZonesController.php:74
+#: templates/default/index.html:258 templates/modern/index.html:258
 msgid "Zone Logs"
 msgstr "Zonas žurnāli"
 
-#: lib/Application/Controller/UsersController.php:51
+#: lib/Application/Controller/UsersController.php:52
 msgid "You do not have permission to view the users list."
 msgstr "Jums nav atļaujas skatīt lietotāju sarakstu."
 
-#: lib/Application/Controller/UsersController.php:58
+#: lib/Application/Controller/UsersController.php:59
 #: templates/modern/list_perm_templ.html:4
 msgid "Users"
 msgstr "Lietotāji"
 
-#: lib/Application/Controller/UsersController.php:78
+#: lib/Application/Controller/UsersController.php:92
 msgid "User details updated"
 msgstr "Lietotāja dati atjaunināti"
+
+#: lib/Application/Controller/EditUserController.php:268
+msgid "You do not have permission to edit a superuser account."
+msgstr "Jums nav atļaujas rediģēt superusera kontu."
 
 #: lib/Application/Controller/EditZoneTemplController.php:60
 msgid "No template ID provided."
@@ -1903,7 +1955,7 @@ msgstr "Zonas veiksmīgi atjauninātas."
 msgid "You do not have permission to create new zone templates."
 msgstr "Jums nav atļaujas izveidot jaunas zonu veidnes."
 
-#: lib/Domain/Model/ZoneTemplate.php:317 lib/Domain/Model/ZoneTemplate.php:1062
+#: lib/Domain/Model/ZoneTemplate.php:344 lib/Domain/Model/ZoneTemplate.php:1220
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Zonas veidne ar šo nosaukumu jau eksistē, izvēlieties citu."
 
@@ -1935,8 +1987,8 @@ msgstr "Veidne neeksistē."
 msgid "You do not have permission to view this zone."
 msgstr "Jums nav atļaujas skatīt šo zonu."
 
-#: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:258 templates/modern/index.html:258
+#: lib/Application/Controller/ListLogUsersController.php:62
+#: templates/default/index.html:268 templates/modern/index.html:268
 msgid "User Logs"
 msgstr "Lietotāja žurnāli"
 
@@ -1988,41 +2040,41 @@ msgstr "Rediģēt zonu"
 msgid "You do not have permission to access this zone."
 msgstr "Jums nav atļaujas piekļūt šai zonai."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:434
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:466
 msgid "You do not have the permission to view this zone."
 msgstr "Jums nav atļaujas skatīt šo zonu."
 
-#: lib/Application/Controller/EditController.php:276
+#: lib/Application/Controller/EditController.php:292
 msgid "Zone type has been changed successfully."
 msgstr "Zonas veids veiksmīgi mainīts."
 
-#: lib/Application/Controller/EditController.php:284
+#: lib/Application/Controller/EditController.php:300
 msgid "Slave master has been changed successfully."
 msgstr "Sekundārās zonas galvenais veiksmīgi mainīts."
 
-#: lib/Application/Controller/EditController.php:305
+#: lib/Application/Controller/EditController.php:321
 msgid "Zone template has been changed successfully."
 msgstr "Zonas veidne veiksmīgi mainīta."
 
-#: lib/Application/Controller/EditController.php:317
+#: lib/Application/Controller/EditController.php:333
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC nav iespējots serverī."
 
-#: lib/Application/Controller/EditController.php:320
+#: lib/Application/Controller/EditController.php:336
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zona jau ir parakstīta ar DNSSEC."
 
-#: lib/Application/Controller/EditController.php:342
+#: lib/Application/Controller/EditController.php:358
 msgid "Zone has been signed successfully."
 msgstr "Zona veiksmīgi parakstīta."
 
-#: lib/Application/Controller/EditController.php:347
+#: lib/Application/Controller/EditController.php:363
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr "Zonas parakstīšana veiksmīga, bet pārbaude neizdevās."
 
-#: lib/Application/Controller/EditController.php:351
+#: lib/Application/Controller/EditController.php:367
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2044,15 +2096,25 @@ msgstr "Paraksta noņemšana veiksmīga, bet pārbaude neizdevās."
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Neizdevās noņemt zonas parakstu. Pārbaudiet PowerDNS žurnālus."
 
-#: lib/Application/Controller/EditController.php:738
+#: lib/Application/Controller/EditController.php:671
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"Daži ieraksti netika saglabāti, jo forma pārsniedza servera lauku skaita "
+"ierobežojumu. Lūdziet administratoram palielināt PHP \"max_input_vars\" "
+"iestatījumu."
+
+#: lib/Application/Controller/EditController.php:779
 msgid "Request has expired, please try again."
 msgstr "Pieprasījums ir beidzies, mēģiniet vēlreiz."
 
-#: lib/Application/Controller/EditController.php:743
+#: lib/Application/Controller/EditController.php:784
 msgid "Zone has been updated successfully."
 msgstr "Zona veiksmīgi atjaunināta."
 
-#: lib/Application/Controller/EditController.php:745
+#: lib/Application/Controller/EditController.php:786
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2060,28 +2122,28 @@ msgstr ""
 "Zona veiksmīgi saglabāta. Bez ierakstu izmaiņām, bet SOA sērijas numurs "
 "palielināts."
 
-#: lib/Application/Controller/EditController.php:754
+#: lib/Application/Controller/EditController.php:795
 msgid "Zone has not been updated successfully."
 msgstr "Zona netika veiksmīgi atjaunināta."
 
-#: lib/Application/Controller/EditController.php:782
+#: lib/Application/Controller/EditController.php:823
 msgid "Please provide all required fields."
 msgstr "Lūdzu, aizpildiet visus nepieciešamos laukus."
 
-#: lib/Application/Controller/AddRecordController.php:244
+#: lib/Application/Controller/AddRecordController.php:252
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr ""
 "Ieraksts veiksmīgi pievienots. Tika izveidots arī atbilstošs PTR ieraksts."
 
-#: lib/Application/Controller/AddRecordController.php:249
+#: lib/Application/Controller/AddRecordController.php:257
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Ieraksts pievienots, bet PTR ieraksta izveide neizdevās: "
 
-#: lib/Application/Controller/AddRecordController.php:253
+#: lib/Application/Controller/AddRecordController.php:261
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Ieraksts veiksmīgi pievienots, bet PTR izveide neizdevās."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:265
 msgid "Record successfully added. A matching A record was also created."
 msgstr ""
 "Ieraksts veiksmīgi pievienots. Tika izveidots arī atbilstošs A ieraksts."
@@ -2098,7 +2160,7 @@ msgstr "MFA ieraksts nav atrasts. Sazinieties ar administratoru."
 msgid "An error occurred. Please try again."
 msgstr "Radās kļūda. Lūdzu, mēģiniet vēlreiz."
 
-#: lib/Application/Controller/MfaVerifyController.php:297
+#: lib/Application/Controller/MfaVerifyController.php:301
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2106,48 +2168,48 @@ msgstr ""
 "E-pasta pārbaude nav pieejama - pasts ir atspējots. Izmantojiet atkopšanas "
 "kodu."
 
-#: lib/Application/Controller/MfaVerifyController.php:307
+#: lib/Application/Controller/MfaVerifyController.php:311
 msgid "A new verification code has been sent to your email."
 msgstr "Jauns pārbaudes kods nosūtīts uz jūsu e-pastu."
 
-#: lib/Application/Controller/MfaVerifyController.php:313
+#: lib/Application/Controller/MfaVerifyController.php:317
 msgid "Please use a recovery code instead."
 msgstr "Lūdzu, izmantojiet atkopšanas kodu."
 
-#: lib/Application/Controller/MfaVerifyController.php:318
+#: lib/Application/Controller/MfaVerifyController.php:322
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
 msgstr "Nevarēja nosūtīt kodu uz e-pastu. Izmantojiet atkopšanas kodu."
 
-#: lib/Domain/Service/Dns/RecordManager.php:216
+#: lib/Domain/Service/Dns/RecordManager.php:229
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Jums nav atļaujas pievienot ierakstu šai zonai."
 
-#: lib/Application/Controller/AddRecordController.php:241
+#: lib/Application/Controller/AddRecordController.php:249
 msgid "Record successfully added."
 msgstr "Ieraksts veiksmīgi pievienots."
 
-#: lib/Application/Controller/AddRecordController.php:433
+#: lib/Application/Controller/AddRecordController.php:456
 msgid "No records were provided."
 msgstr "Netika sniegti ieraksti."
 
-#: lib/Application/Controller/AddRecordController.php:487
+#: lib/Application/Controller/AddRecordController.php:522
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d ieraksti veiksmīgi pievienoti."
 
-#: lib/Application/Controller/AddRecordController.php:489
+#: lib/Application/Controller/AddRecordController.php:524
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "Tika izveidoti arī %d atbilstoši ieraksti."
 
-#: lib/Application/Controller/AddRecordController.php:492
+#: lib/Application/Controller/AddRecordController.php:527
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "Neizdevās pievienot %d ierakstus."
 
-#: lib/Application/Controller/AddRecordController.php:497
+#: lib/Application/Controller/AddRecordController.php:532
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2155,7 +2217,7 @@ msgstr ""
 "Dažus ierakstus nevarēja pievienot. Iespējams, tie jau eksistē vai ir "
 "nederīgi."
 
-#: lib/Application/Controller/AddRecordController.php:523
+#: lib/Application/Controller/AddRecordController.php:562
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Netika pievienoti ieraksti. Tie var saturēt nederīgus datus."
 
@@ -2163,17 +2225,17 @@ msgstr "Netika pievienoti ieraksti. Tie var saturēt nederīgus datus."
 msgid "No zone selected for deletion."
 msgstr "Neviena zona nav atlasīta dzēšanai."
 
+#: lib/Domain/Service/Dns/DomainManager.php:690
+msgid "You do not have the permission to delete a zone."
+msgstr "Jums nav atļaujas dzēst zonu."
+
 #: lib/Application/Controller/DeleteDomainController.php:141
 msgid "Zone has been deleted successfully."
 msgstr "Zona veiksmīgi dzēsta."
 
-#: lib/Application/Controller/DeleteDomainsController.php:156
+#: lib/Application/Controller/DeleteDomainsController.php:170
 msgid "Zones have been deleted successfully."
 msgstr "Zonas veiksmīgi dzēstas."
-
-#: lib/Domain/Service/Dns/DomainManager.php:671
-msgid "You do not have the permission to delete a zone."
-msgstr "Jums nav atļaujas dzēst zonu."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:80
 msgid "You do not have the permission to edit zone template records."
@@ -2183,7 +2245,7 @@ msgstr "Jums nav atļaujas rediģēt zonas veidnes ierakstus."
 msgid "OIDC authentication is not enabled"
 msgstr "OIDC autentifikācija nav iespējota"
 
-#: lib/Application/Service/SamlService.php:387
+#: lib/Application/Service/SamlService.php:421
 msgid "Authentication failed: "
 msgstr "Autentifikācija neizdevās: "
 
@@ -2207,12 +2269,12 @@ msgstr "Nav konfigurētu OIDC sniedzēju"
 msgid "Failed to initiate OIDC authentication: "
 msgstr "Neizdevās sākt OIDC autentifikāciju: "
 
-#: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:268 templates/modern/index.html:268
+#: lib/Application/Controller/ListLogGroupsController.php:67
+#: templates/default/index.html:278 templates/modern/index.html:278
 msgid "Group Logs"
 msgstr "Grupas žurnāli"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:65
+#: lib/Application/Controller/DnssecToggleKeyController.php:73
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Jums nav atļaujas pārvaldīt DNSSEC šai zonai."
 
@@ -2232,7 +2294,7 @@ msgstr ""
 "Nevarēja izgūt PEM atslēgu. Serveris, iespējams, neizpauž šīs atslēgas "
 "privāto atslēgas materiālu."
 
-#: lib/Domain/Service/Dns/DomainManager.php:309
+#: lib/Domain/Service/Dns/DomainManager.php:316
 msgid "You do not have the permission to add a master zone."
 msgstr "Jums nav atļaujas pievienot galveno zonu."
 
@@ -2256,6 +2318,14 @@ msgstr ""
 "Zonas īpašumtiesību režīms ir groups_only, un jūs neesat nevienas grupas "
 "dalībnieks. Pirms zonu izveides lūdziet administratoram pievienot jūs grupai."
 
+#: lib/Application/Controller/AddZoneSlaveController.php:138
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr ""
+"Ievadiet tīklu CIDR pierakstā (piemēram, 192.168.1.0/24 vai 2001:db8::/48) "
+"vai reversās zonas nosaukumu, kas beidzas ar in-addr.arpa vai ip6.arpa."
+
 #: lib/Application/Controller/BulkRegistrationController.php:171
 msgid "At least one user or group must be selected as owner."
 msgstr "Jāatlasa vismaz viens lietotājs vai grupa kā īpašnieks."
@@ -2268,47 +2338,47 @@ msgstr "Jums nav atļaujas izveidot zonas citiem lietotājiem."
 msgid "There is already a zone with this name."
 msgstr "Zona ar šādu nosaukumu jau eksistē."
 
-#: lib/Application/Controller/AddZoneMasterController.php:221
+#: lib/Application/Controller/AddZoneMasterController.php:268
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
 "Zona veiksmīgi izveidota, bet DNSSEC parakstīšana izlaista validācijas dēļ:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:233
+#: lib/Application/Controller/AddZoneMasterController.php:280
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
 msgstr "Zona izveidota, bet DNSSEC neizdevās. Skatiet PowerDNS žurnālus."
 
-#: lib/Application/Controller/AddZoneMasterController.php:239
+#: lib/Application/Controller/AddZoneMasterController.php:286
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zona veiksmīgi izveidota un parakstīta ar DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:243
+#: lib/Application/Controller/AddZoneMasterController.php:290
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
 msgstr "Zona izveidota un parakstīšana pieprasīta, bet pārbaude neizdevās."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:208
+#: lib/Application/Controller/AddZoneSlaveController.php:224
 msgid "Zone has been added successfully."
 msgstr "Zona veiksmīgi pievienota."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:72
+#: lib/Application/Controller/BatchPtrRecordController.php:75
 msgid "Batch PTR record creation is not enabled."
 msgstr "Pakešu PTR ieraksta izveide nav iespējota."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:79
+#: lib/Application/Controller/BatchPtrRecordController.php:82
 msgid "You do not have permission to edit DNS records."
 msgstr "Jums nav atļaujas rediģēt DNS ierakstus."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:84
-#: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:177
+#: lib/Application/Controller/BatchPtrRecordController.php:87
+#: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:178
 msgid "Batch PTR Records"
 msgstr "Pakešu PTR ieraksti"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:99
+#: lib/Application/Controller/BatchPtrRecordController.php:102
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Pakešu PTR izveide nav pieejama reversām zonām."
 
@@ -2378,11 +2448,11 @@ msgstr "Nezināma darbība."
 msgid "Views"
 msgstr "Skati"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:55
+#: lib/Application/Controller/DnssecToggleKeyController.php:63
 msgid "Invalid key ID."
 msgstr "Nederīgs atslēgas ID."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:90
+#: lib/Application/Controller/DnssecToggleKeyController.php:98
 msgid "DNSSEC key not found or no longer exists."
 msgstr "DNSSEC atslēga nav atrasta vai vairs nav."
 
@@ -2418,16 +2488,16 @@ msgstr "Nederīgs SAML sniedzējs"
 msgid "SAML authentication failed: "
 msgstr "SAML autentifikācija neizdevās: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:59
+#: lib/Application/Controller/ListForwardZonesController.php:60
 msgid "You do not have sufficient permissions to view this page."
 msgstr "Jums nav pietiekamu atļauju, lai skatītu šo lapu."
 
-#: lib/Application/Controller/ListReverseZonesController.php:80
+#: lib/Application/Controller/ListReverseZonesController.php:81
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
 msgstr "Reversās zonas"
 
-#: lib/Application/Controller/ListForwardZonesController.php:213
+#: lib/Application/Controller/ListForwardZonesController.php:229
 msgid "You do not have the permission to see any zones."
 msgstr "Jums nav atļaujas redzēt zonas."
 
@@ -2439,11 +2509,11 @@ msgstr "Jums nav atļaujas pārvaldīt zonas īpašumtiesības."
 msgid "Manage Group Zones"
 msgstr "Pārvaldīt grupas zonas"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:214
+#: lib/Application/Controller/ManageGroupZonesController.php:234
 msgid "Please select at least one zone."
 msgstr "Atlasiet vismaz vienu zonu."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:149
+#: lib/Application/Controller/ManageGroupZonesController.php:169
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
@@ -2451,7 +2521,7 @@ msgstr[0] "%d zone added to group."
 msgstr[1] "%d zones added to group."
 msgstr[2] "%d zones added to group."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:193
+#: lib/Application/Controller/ManageGroupZonesController.php:213
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
@@ -2459,7 +2529,7 @@ msgstr[0] "%d zone could not be added."
 msgstr[1] "%d zones could not be added."
 msgstr[2] "%d zones could not be added."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:238
+#: lib/Application/Controller/ManageGroupZonesController.php:255
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
@@ -2467,7 +2537,7 @@ msgstr[0] "%d zone removed from group."
 msgstr[1] "%d zones removed from group."
 msgstr[2] "%d zones removed from group."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:282
+#: lib/Application/Controller/ManageGroupZonesController.php:299
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
@@ -2475,89 +2545,102 @@ msgstr[0] "%d zone could not be removed."
 msgstr[1] "%d zones could not be removed."
 msgstr[2] "%d zones could not be removed."
 
-#: lib/Application/Controller/AddPermTemplController.php:59
+#: lib/Application/Controller/AddPermTemplController.php:61
 msgid "You do not have the permission to add permission templates."
 msgstr "Jums nav atļaujas pievienot atļauju veidnes."
 
-#: lib/Application/Controller/AddPermTemplController.php:63
+#: lib/Application/Controller/AddPermTemplController.php:65
 msgid "Add Permission Template"
 msgstr "Pievienot atļauju veidni"
 
-#: lib/Application/Controller/AddPermTemplController.php:90
+#: lib/Application/Controller/AddPermTemplController.php:105
 msgid "The permission template has been added successfully."
 msgstr "Atļauju veidne veiksmīgi pievienota."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:34
+#: lib/Application/Controller/AddPermTemplController.php:147
+#, auto-english-fallback
+msgid "The permission template could not be added."
+msgstr "The permission template could not be added."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:35
 msgid "Not available for anonymous users."
 msgstr "Nav pieejams anonīmiem lietotājiem."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:38
+#: lib/Application/Controller/DatabaseConsistencyController.php:39
 msgid "You do not have the permission to view this page."
 msgstr "Jums nav atļaujas skatīt šo lapu."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:42
-#: templates/default/header.html:234 templates/modern/header.html:337
+#: lib/Application/Controller/DatabaseConsistencyController.php:43
+#: templates/default/header.html:235 templates/modern/header.html:338
 msgid "Database Consistency"
 msgstr "Datubāzes konsekvence"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:46
+#: lib/Application/Controller/DatabaseConsistencyController.php:47
 msgid "Database consistency checks are disabled."
 msgstr "Datubāzes konsekvences pārbaudes ir atspējotas."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:82
+#: lib/Application/Controller/DatabaseConsistencyController.php:54
+msgid ""
+"Database consistency checks are not available when using the PowerDNS API "
+"backend."
+msgstr ""
+"Datubāzes konsistences pārbaudes nav pieejamas, izmantojot PowerDNS API "
+"aizmuguri."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:90
 #: templates/modern/database_consistency.html:30
 msgid "Database Consistency Check"
 msgstr "Datubāzes konsekvences pārbaude"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:101
+#: lib/Application/Controller/DatabaseConsistencyController.php:109
 msgid "Zone owner assigned successfully"
 msgstr "Zonas īpašnieks veiksmīgi piešķirts"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:101
+#: lib/Application/Controller/DatabaseConsistencyController.php:109
 msgid "Failed to assign zone owner"
 msgstr "Neizdevās piešķirt zonas īpašnieku"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:108
+#: lib/Application/Controller/DatabaseConsistencyController.php:116
 msgid "Slave zone deleted successfully"
 msgstr "Sekundārā zona veiksmīgi dzēsta"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:108
+#: lib/Application/Controller/DatabaseConsistencyController.php:116
 msgid "Failed to delete slave zone"
 msgstr "Neizdevās dzēst sekundāro zonu"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:115
+#: lib/Application/Controller/DatabaseConsistencyController.php:123
 msgid "Orphaned record deleted successfully"
 msgstr "Bāreņa ieraksts veiksmīgi dzēsts"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:115
+#: lib/Application/Controller/DatabaseConsistencyController.php:123
 msgid "Failed to delete orphaned record"
 msgstr "Neizdevās dzēst bāreņa ierakstu"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:122
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Duplicate SOA records fixed successfully"
 msgstr "Dublētie SOA ieraksti veiksmīgi izlaboti"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:122
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Failed to fix duplicate SOA records"
 msgstr "Neizdevās labot dublētos SOA ierakstus"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:137
 msgid "Default SOA record created successfully"
 msgstr "Noklusējuma SOA ieraksts veiksmīgi izveidots"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:137
 msgid "Failed to create default SOA record"
 msgstr "Neizdevās izveidot noklusējuma SOA ierakstu"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:134
+#: lib/Application/Controller/DatabaseConsistencyController.php:142
 msgid "Invalid check type"
 msgstr "Nederīgs pārbaudes veids"
 
-#: lib/Application/Controller/LogoutController.php:131
+#: lib/Application/Controller/LogoutController.php:120
 msgid "You have logged out."
 msgstr "Jūs esat izgājis."
 
-#: lib/Domain/Model/ZoneTemplate.php:314 lib/Domain/Model/ZoneTemplate.php:754
+#: lib/Domain/Model/ZoneTemplate.php:341 lib/Domain/Model/ZoneTemplate.php:895
 msgid "You do not have the permission to add a zone template."
 msgstr "Jums nav atļaujas pievienot zonas veidni."
 
@@ -2573,7 +2656,7 @@ msgstr "Zonas veidne veiksmīgi pievienota."
 msgid "Dashboard"
 msgstr "Informācijas panelis"
 
-#: lib/Application/Controller/EditUserController.php:381
+#: lib/Application/Controller/EditUserController.php:502
 msgid "You do not have permission to manage group memberships."
 msgstr "Jums nav atļaujas pārvaldīt grupas dalības."
 
@@ -2593,19 +2676,19 @@ msgstr "Jums nav atļaujas pievienot sekundāro zonu."
 msgid "Add Secondary Zone"
 msgstr "Pievienot sekundāro zonu"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:315
+#: lib/Domain/Service/Dns/SupermasterManager.php:318
 msgid "Invalid hostname."
 msgstr "Nederīgs resursdatora nosaukums."
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:309
+#: lib/Domain/Service/Dns/SupermasterManager.php:312
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Šī nav derīga IPv4 vai IPv6 adrese."
 
-#: lib/Domain/Model/ZoneTemplate.php:414 lib/Domain/Model/ZoneTemplate.php:452
+#: lib/Domain/Model/ZoneTemplate.php:442 lib/Domain/Model/ZoneTemplate.php:480
 msgid "You do not have the permission to delete zone templates."
 msgstr "Jums nav atļaujas dzēst zonu veidnes."
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:93
+#: lib/Application/Controller/DeleteZoneTemplController.php:95
 msgid "Zone template has been deleted successfully."
 msgstr "Zonas veidne veiksmīgi dzēsta."
 
@@ -2613,7 +2696,7 @@ msgstr "Zonas veidne veiksmīgi dzēsta."
 msgid "You do not have the permission to edit a supermaster."
 msgstr "Jums nav atļaujas rediģēt galveno."
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:327
+#: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
 msgstr "Galvenais, ko mēģināt rediģēt, neeksistē."
 
@@ -2637,23 +2720,23 @@ msgstr "Zona veiksmīgi noņemta no grupas."
 msgid "Zone was not owned by this group."
 msgstr "Zona nepiederēja šai grupai."
 
-#: lib/Application/Controller/ListForwardZonesController.php:63
+#: lib/Application/Controller/ListForwardZonesController.php:64
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Turpzonas"
 
-#: lib/Application/Controller/ListForwardZonesController.php:82
+#: lib/Application/Controller/ListForwardZonesController.php:83
 msgid "You do not have permission to sync zones from PowerDNS."
 msgstr "Jums nav atļaujas sinhronizēt zonas no PowerDNS."
 
-#: lib/Application/Controller/ListForwardZonesController.php:93
+#: lib/Application/Controller/ListForwardZonesController.php:94
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 msgstr ""
 "Zonas sinhronizētas no PowerDNS: %d pievienotas, %d atjauninātas, %d "
 "noņemtas."
 
-#: lib/Application/Controller/ListForwardZonesController.php:101
+#: lib/Application/Controller/ListForwardZonesController.php:102
 #, php-format
 msgid "Zone sync failed: %s"
 msgstr "Zonas sinhronizācija neizdevās: %s"
@@ -2693,36 +2776,32 @@ msgstr "Importējot PEM atslēgu, radās kļūda: "
 msgid "You do not have the permission to add records to zone templates."
 msgstr "Jums nav atļaujas pievienot ierakstus zonu veidnēm."
 
-#: lib/Application/Controller/EditUserController.php:85
+#: lib/Application/Controller/EditUserController.php:88
 #: templates/default/edit_user.html:22 templates/modern/edit_user.html:22
 msgid "Edit User"
 msgstr "Rediģēt lietotāju"
 
-#: lib/Application/Controller/EditUserController.php:167
+#: lib/Application/Controller/EditUserController.php:170
 msgid "Your profile has been updated successfully."
 msgstr "Jūsu profils veiksmīgi atjaunināts."
 
-#: lib/Application/Controller/EditUserController.php:171
+#: lib/Application/Controller/EditUserController.php:174
 msgid "The user has been updated successfully."
 msgstr "Lietotājs veiksmīgi atjaunināts."
 
-#: lib/Application/Controller/EditUserController.php:175
+#: lib/Application/Controller/EditUserController.php:178
 msgid "The user could not be updated."
 msgstr "Lietotāju nevarēja atjaunināt."
 
-#: lib/Domain/Model/UserManager.php:509 lib/Domain/Model/UserManager.php:983
+#: lib/Domain/Model/UserManager.php:565 lib/Domain/Model/UserManager.php:1184
 msgid "You do not have the permission to edit this user."
 msgstr "Jums nav atļaujas rediģēt šo lietotāju."
 
-#: lib/Application/Controller/EditUserController.php:242
-msgid "You do not have permission to edit a superuser account."
-msgstr "Jums nav atļaujas rediģēt superusera kontu."
-
-#: lib/Application/Controller/EditUserController.php:389
+#: lib/Application/Controller/EditUserController.php:510
 msgid "Please select at least one group."
 msgstr "Atlasiet vismaz vienu grupu."
 
-#: lib/Application/Controller/EditUserController.php:430
+#: lib/Application/Controller/EditUserController.php:551
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
@@ -2730,7 +2809,7 @@ msgstr[0] "User added to %d group successfully."
 msgstr[1] "User added to %d groups successfully."
 msgstr[2] "User added to %d groups successfully."
 
-#: lib/Application/Controller/EditUserController.php:455
+#: lib/Application/Controller/EditUserController.php:576
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
@@ -2787,11 +2866,11 @@ msgstr "Tīkla skati"
 msgid "You do not have the permission to delete permission templates."
 msgstr "Jums nav atļaujas dzēst atļauju veidnes."
 
-#: lib/Application/Controller/DeletePermTemplController.php:88
+#: lib/Application/Controller/DeletePermTemplController.php:90
 msgid "The permission template has been deleted successfully."
 msgstr "Atļauju veidne veiksmīgi dzēsta."
 
-#: lib/Application/Controller/DeletePermTemplController.php:90
+#: lib/Application/Controller/DeletePermTemplController.php:92
 msgid "The permission template could not be deleted."
 msgstr "Atļauju veidni nevarēja dzēst."
 
@@ -2933,24 +3012,24 @@ msgstr "Grupa veiksmīgi atjaunināta."
 msgid "You do not have the permission to delete a supermaster."
 msgstr "Jums nav atļaujas dzēst galveno."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:80
+#: lib/Application/Controller/DeleteSupermasterController.php:82
 msgid "Invalid IP address."
 msgstr "Nederīga IP adrese."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:85
+#: lib/Application/Controller/DeleteSupermasterController.php:87
 msgid "Invalid NS name."
 msgstr "Nederīgs NS vārds."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:91
+#: lib/Application/Controller/DeleteSupermasterController.php:93
 msgid "Super master does not exist."
 msgstr "Galvenais neeksistē."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:95
+#: lib/Application/Controller/DeleteSupermasterController.php:97
 msgid "The supermaster has been deleted successfully."
 msgstr "Galvenais veiksmīgi dzēsts."
 
 #: lib/Application/Controller/BulkRegistrationController.php:69
-#: templates/modern/index.html:179 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:479 templates/modern/bulk_registration.html:26
 msgid "Bulk Registration"
 msgstr "Masveida reģistrācija"
 
@@ -3077,56 +3156,56 @@ msgstr ""
 msgid "Page Not Found"
 msgstr "Lapa nav atrasta"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:81
+#: lib/Application/Controller/DnssecToggleKeyController.php:89
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr ""
 "DNSSEC funkcionalitāte nav pieejama. Pārbaudiet PowerDNS API konfigurāciju."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:101
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
 msgid "Zone key has been successfully deactivated."
 msgstr "Zonas atslēga veiksmīgi deaktivizēta."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:102
+#: lib/Application/Controller/DnssecToggleKeyController.php:110
 msgid "Failed to deactivate zone key."
 msgstr "Neizdevās deaktivizēt zonas atslēgu."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:105
+#: lib/Application/Controller/DnssecToggleKeyController.php:113
 msgid "Zone key has been successfully activated."
 msgstr "Zonas atslēga veiksmīgi aktivizēta."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:106
+#: lib/Application/Controller/DnssecToggleKeyController.php:114
 msgid "Failed to activate zone key."
 msgstr "Neizdevās aktivizēt zonas atslēgu."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:119
+#: lib/Application/Controller/DnssecToggleKeyController.php:127
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr "Kļūda, pārslēdzot DNSSEC atslēgu. Mēģiniet vēlreiz."
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:438
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Jā"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:438
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Nē"
 
-#: lib/Application/Service/LdapAuthenticator.php:92
+#: lib/Application/Service/LdapAuthenticator.php:102
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Konts ir īslaicīgi bloķēts. Mēģiniet vēlāk."
 
-#: lib/Application/Service/SqlAuthenticator.php:135
+#: lib/Application/Service/SqlAuthenticator.php:142
 msgid "The user account is disabled."
 msgstr "Lietotāja konts ir atspējots."
 
-#: lib/Application/Service/SqlAuthenticator.php:216
+#: lib/Application/Service/SqlAuthenticator.php:223
 msgid "Authentication failed!"
 msgstr "Autentifikācija neizdevās!"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:192
+#: lib/Infrastructure/Service/SessionAuthenticator.php:193
 msgid "Session expired, please login again."
 msgstr "Sesija beigusies, pieslēdzieties vēlreiz."
 
@@ -3134,43 +3213,43 @@ msgstr "Sesija beigusies, pieslēdzieties vēlreiz."
 msgid "Failed to update password"
 msgstr "Neizdevās atjaunināt paroli"
 
-#: lib/Application/Service/OidcService.php:183
+#: lib/Application/Service/OidcService.php:214
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Autentifikācija neizdevās: Nederīgs state parametrs"
 
-#: lib/Application/Service/OidcService.php:204
+#: lib/Application/Service/OidcService.php:235
 msgid "Authentication failed: No authorization code"
 msgstr "Autentifikācija neizdevās: Nav autorizācijas koda"
 
-#: lib/Application/Service/SamlService.php:188
+#: lib/Application/Service/SamlService.php:218
 msgid "Authentication failed: Invalid session"
 msgstr "Autentifikācija neizdevās: Nederīga sesija"
 
-#: lib/Application/Service/SamlService.php:347
+#: lib/Application/Service/SamlService.php:381
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Autentifikācija neizdevās: Nevar izveidot vai atjaunināt kontu"
 
-#: lib/Application/Service/LdapAuthenticator.php:236
+#: lib/Application/Service/LdapAuthenticator.php:249
 msgid "LDAP Authentication failed!"
 msgstr "LDAP autentifikācija neizdevās!"
 
-#: lib/Application/Service/LdapAuthenticator.php:141
+#: lib/Application/Service/LdapAuthenticator.php:151
 msgid "Failed to connect to LDAP server!"
 msgstr "Neizdevās pieslēgties LDAP serverim!"
 
-#: lib/Application/Service/LdapAuthenticator.php:157
+#: lib/Application/Service/LdapAuthenticator.php:167
 msgid "Failed to bind to LDAP server!"
 msgstr "Neizdevās pieslēgties LDAP serverim!"
 
-#: lib/Application/Service/LdapAuthenticator.php:185
+#: lib/Application/Service/LdapAuthenticator.php:195
 msgid "Failed to search LDAP."
 msgstr "LDAP meklēšana neizdevās."
 
-#: lib/Application/Service/LdapAuthenticator.php:202
+#: lib/Application/Service/LdapAuthenticator.php:212
 msgid "Failed to authenticate against LDAP."
 msgstr "Neizdevās autentificēties LDAP."
 
-#: lib/Application/Service/SamlService.php:246
+#: lib/Application/Service/SamlService.php:276
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Autentifikācija neizdevās: Nederīga SAML atbilde"
 
@@ -3178,15 +3257,15 @@ msgstr "Autentifikācija neizdevās: Nederīga SAML atbilde"
 msgid "This is an invalid zone name."
 msgstr "Šis ir nederīgs zonas nosaukums."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:254
 msgid "This template is assigned to at least one user and one group."
 msgstr "Šī veidne ir piešķirta vismaz vienam lietotājam un vienai grupai."
 
-#: lib/Domain/Model/UserManager.php:384
+#: lib/Domain/Model/UserManager.php:421
 msgid "This template is assigned to at least one user."
 msgstr "Šī veidne ir piešķirta vismaz vienam lietotājam."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:258
 msgid "This template is assigned to at least one group."
 msgstr "Šī veidne ir piešķirta vismaz vienai grupai."
 
@@ -3359,73 +3438,102 @@ msgstr "Nē, saglabāt šo autoprimary"
 msgid "No, keep this supermaster"
 msgstr "Nē, paturēt šo galveno"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:154
+#: lib/Infrastructure/Service/SessionAuthenticator.php:155
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "reCAPTCHA pārbaude neizdevās. Mēģiniet vēlreiz."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:177
+#: lib/Infrastructure/Service/SessionAuthenticator.php:178
 msgid "An empty password is not allowed"
 msgstr "Tukša parole nav atļauta"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:220
+#: lib/Infrastructure/Service/SessionAuthenticator.php:221
 msgid "LDAP authentication is disabled"
 msgstr "LDAP autentifikācija ir atspējota"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:406
+#: lib/Infrastructure/Service/SessionAuthenticator.php:409
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
 msgstr ""
 "Datubāzes kļūda: nevar pārbaudīt autentifikāciju. Pārbaudiet konfigurāciju."
 
-#: lib/Domain/Model/UserManager.php:1015
+#: lib/Domain/Model/UserManager.php:1216
 msgid "Enter a valid email address."
 msgstr "Ievadiet derīgu e-pasta adresi."
 
-#: lib/Domain/Model/UserManager.php:1007
+#: lib/Domain/Model/UserManager.php:1208
 msgid "Username exist already, please choose another one."
 msgstr "Lietotājvārds jau eksistē, izvēlieties citu."
 
-#: lib/Domain/Model/UserManager.php:1011
+#: lib/Domain/Model/UserManager.php:1220
+msgid "Email address already exists, please choose another one."
+msgstr "E-pasta adrese jau eksistē, izvēlieties citu."
+
+#: lib/Domain/Model/UserManager.php:995
+#, auto-english-fallback
+msgid ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+msgstr ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+
+#: lib/Domain/Model/UserManager.php:999
+#, auto-english-fallback
+msgid ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Domain/Model/UserManager.php:1212
 msgid "Enter a valid user name."
 msgstr "Ievadiet derīgu lietotājvārdu."
 
-#: lib/Domain/Model/ZoneTemplate.php:257
+#: lib/Domain/Model/ZoneTemplate.php:284
 msgid "Zone template not found."
 msgstr "Zonas veidne nav atrasta."
 
-#: lib/Domain/Model/ZoneTemplate.php:261
+#: lib/Domain/Model/ZoneTemplate.php:288
 msgid "Only global zone templates can be set as the default."
 msgstr "Kā noklusētās var iestatīt tikai globālas zonas veidnes."
 
-#: lib/Domain/Model/ZoneTemplate.php:277
+#: lib/Domain/Model/ZoneTemplate.php:304
 msgid "Error setting default zone template: "
 msgstr "Kļūda, iestatot noklusēto zonas veidni: "
 
-#: lib/Domain/Model/ZoneTemplate.php:296
+#: lib/Domain/Model/ZoneTemplate.php:323
 msgid "Error clearing default zone template: "
 msgstr "Kļūda, notīrot noklusēto zonas veidni: "
 
-#: lib/Domain/Model/ZoneTemplate.php:341 lib/Domain/Model/ZoneTemplate.php:810
+#: lib/Domain/Model/ZoneTemplate.php:369 lib/Domain/Model/ZoneTemplate.php:968
 msgid "Error creating zone template: "
 msgstr "Kļūda, veidojot zonas veidni: "
 
-#: lib/Domain/Model/ZoneTemplate.php:377
+#: lib/Domain/Model/ZoneTemplate.php:405
 msgid "Error adding default SOA record to template: "
 msgstr "Kļūda, pievienojot noklusējuma SOA ierakstu veidnei: "
 
-#: lib/Domain/Model/ZoneTemplate.php:436
+#: lib/Domain/Model/ZoneTemplate.php:464
 msgid "Error deleting zone template: "
 msgstr "Kļūda, dzēšot zonas veidni: "
 
-#: lib/Domain/Model/ZoneTemplate.php:460
+#: lib/Domain/Model/ZoneTemplate.php:488
 msgid "Error deleting user zone templates: "
 msgstr "Kļūda, dzēšot lietotāja zonu veidnes: "
 
-#: lib/Domain/Model/ZoneTemplate.php:577
+#: lib/Domain/Model/ZoneTemplate.php:605
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Jums nav atļaujas pievienot ierakstu šai zonas veidnei."
+
+#: lib/Domain/Model/ZoneTemplate.php:610 lib/Domain/Model/ZoneTemplate.php:745
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to add this record type to a zone template."
+msgstr ""
+"You do not have the permission to add this record type to a zone template."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
@@ -3435,95 +3543,118 @@ msgstr "Satura laukam nav derīgas vērtības."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV prioritātei jābūt skaitlim 0-65535."
 
-#: lib/Domain/Service/Dns/RecordManager.php:318
+#: lib/Domain/Service/Dns/RecordManager.php:349
 msgid "You do not have the permission to edit this record."
 msgstr "Jums nav atļaujas rediģēt šo ierakstu."
 
-#: lib/Domain/Model/ZoneTemplate.php:669
+#: lib/Domain/Model/ZoneTemplate.php:735 lib/Domain/Model/ZoneTemplate.php:819
+msgid "The record does not belong to this zone template."
+msgstr "Ieraksts nepieder šai zonas veidnei."
+
+#: lib/Domain/Model/ZoneTemplate.php:797
 msgid "Error updating zone template record: "
 msgstr "Kļūda, atjauninot zonas veidnes ierakstu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:692
+#: lib/Domain/Model/ZoneTemplate.php:825
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+msgstr ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+
+#: lib/Domain/Model/ZoneTemplate.php:834
 msgid "Error deleting zone template record: "
 msgstr "Kļūda, dzēšot zonas veidnes ierakstu: "
 
-#: lib/Domain/Model/ZoneTemplate.php:715
+#: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error checking template ownership: "
 msgstr "Kļūda, pārbaudot veidnes īpašumtiesības: "
 
-#: lib/Domain/Model/ZoneTemplate.php:941
+#: lib/Domain/Model/ZoneTemplate.php:960
+#, auto-english-fallback
+#, php-format
+msgid ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+msgstr ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+
+#: lib/Domain/Model/ZoneTemplate.php:1099
 msgid "Error retrieving zones using template: "
 msgstr "Kļūda, iegūstot zonas, kas izmanto veidni: "
 
-#: lib/Domain/Model/ZoneTemplate.php:997 lib/Domain/Model/ZoneTemplate.php:1041
+#: lib/Domain/Model/ZoneTemplate.php:1199
 msgid "Failed to get list of zones using template: "
 msgstr "Neizdevās iegūt zonu sarakstu, kas izmanto veidni: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1059
+#: lib/Domain/Model/ZoneTemplate.php:1217
 msgid "You do not have the permission to edit a zone template."
 msgstr "Jums nav atļaujas rediģēt zonas veidni."
 
-#: lib/Domain/Model/ZoneTemplate.php:1107
+#: lib/Domain/Model/ZoneTemplate.php:1265
 msgid "Error unlinking zone from template: "
 msgstr "Kļūda, atsaistot zonu no veidnes: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1156
+#: lib/Domain/Model/ZoneTemplate.php:1314
 msgid "Error retrieving zones: "
 msgstr "Kļūda zonu iegūšanā: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1175
+#: lib/Domain/Model/ZoneTemplate.php:1333
 msgid "Error checking template name existence: "
 msgstr "Kļūda, pārbaudot veidnes nosaukuma eksistenci: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1196
+#: lib/Domain/Model/ZoneTemplate.php:1354
 msgid "Error looking up template by name: "
 msgstr "Kļūda, meklējot veidni pēc nosaukuma: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:1377
 msgid "Error checking template existence: "
 msgstr "Kļūda, pārbaudot veidnes eksistenci: "
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:122
+#: lib/Domain/Service/DatabaseConsistencyService.php:123
 msgid "All zones have owners"
 msgstr "Visām zonām ir īpašnieki"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:129
+#: lib/Domain/Service/DatabaseConsistencyService.php:130
 #, php-format
 msgid "%d zones found without owners"
 msgstr "Atrastas %d zonas bez īpašniekiem"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:180
+#: lib/Domain/Service/DatabaseConsistencyService.php:181
 msgid "All slave zones have master IP addresses"
 msgstr "Visām sekundārām zonām ir galvenās IP adreses"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:187
+#: lib/Domain/Service/DatabaseConsistencyService.php:188
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "Atrastas %d sekundārās zonas bez galvenajām IP adresēm"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:232
+#: lib/Domain/Service/DatabaseConsistencyService.php:233
 msgid "All records belong to existing zones"
 msgstr "Visi ieraksti pieder esošām zonām"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:239
+#: lib/Domain/Service/DatabaseConsistencyService.php:240
 #, php-format
 msgid "%d orphaned records found"
 msgstr "Atrasti %d bāreņu ieraksti"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:294
+#: lib/Domain/Service/DatabaseConsistencyService.php:295
 msgid "No duplicate SOA records found"
 msgstr "Nav atrastu dublikātu SOA ierakstu"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:301
+#: lib/Domain/Service/DatabaseConsistencyService.php:302
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d zonām ir dublēti SOA ieraksti"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:355
+#: lib/Domain/Service/DatabaseConsistencyService.php:356
 msgid "All zones have SOA records"
 msgstr "Visām zonām ir SOA ieraksti"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:362
+#: lib/Domain/Service/DatabaseConsistencyService.php:363
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "Atrastas %d zonas bez SOA ierakstiem"
@@ -5512,38 +5643,38 @@ msgid ""
 "Section 6.1)."
 msgstr "SPF \"all\" + \"redirect\" - redirect tiek ignorēts."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:189
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
 msgstr "CNAME ierakstiem jābūt prioritātei 0."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:228
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr "Šis nav derīgs CNAME. Jau pastāv ieraksts ar šo nosaukumu."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:290
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr "Šis nav derīgs CNAME. Vai piešķirāt MX vai NS?"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:280
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
 msgid "Empty CNAME records are not allowed."
 msgstr "Tukši CNAME ieraksti nav atļauti."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:320
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
 msgstr "Šis nav derīgs ieraksts. Jau pastāv CNAME ar šo nosaukumu."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:348
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:375
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
 msgstr "CNAME mērķim jābūt FQDN. Vienas iezīmes vārdi nav atļauti."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:362
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
@@ -6454,40 +6585,40 @@ msgid ""
 msgstr ""
 "Kritisks karodziņš nezināmam tagam \"%s\". Var izraisīt sertifikāta kļūdas."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
 msgstr "Tukša vērtība nav atļauta. Izmantojiet \";\" visām CA."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:204
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."
 msgstr "Nederīgs CA domēns issue tagā."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:216
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:214
 msgid "Issue tag parameters must be in key=value format."
 msgstr "Issue taga parametriem jābūt key=value formātā."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:221
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:219
 msgid "accounturi parameter cannot be empty."
 msgstr "accounturi parametrs nedrīkst būt tukšs."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:230
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:228
 msgid "Empty validation method specified."
 msgstr "Norādīta tukša validācijas metode."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:238
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:236
 msgid "Invalid CA domain in issuewild tag."
 msgstr "Nederīgs CA domēns issuewild tagā."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:249
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "CAA iodef vērtībai jābūt URL, kas sākas ar %s, %s vai %s."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:260
 msgid "contactemail value must be a valid email address."
 msgstr "contactemail vērtībai jābūt derīgai e-pasta adresei."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:273
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:271
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
@@ -6497,15 +6628,15 @@ msgstr "contactphone drīkst saturēt tikai ciparus, atstarpes un pieturzīmes."
 msgid "Value must be enclosed in double quotes."
 msgstr "Vērtībai jābūt dubultpēdiņās."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:311
 msgid "Backslashes must precede all quotes (\") in value content."
 msgstr "Vērtības saturā pirms visām pēdiņām jābūt atpakaļ slīpsvītrai."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:319
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:317
 msgid "CAA property value exceeds maximum length of 512 characters."
 msgstr "CAA vērtība pārsniedz 512 rakstzīmes."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:325
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:323
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "CAA īpašuma vērtība nedrīkst saturēt NUL (0) rakstzīmes."
 
@@ -8087,11 +8218,11 @@ msgstr "Tika atrasti šādi brīdinājumi:"
 msgid "Empty line."
 msgstr "Tukša rinda."
 
-#: lib/Domain/Service/BulkRecordParser.php:42
+#: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Nederīgs formāts. Nepieciešams: nosaukums,veids,saturs"
 
-#: lib/Domain/Service/BulkRecordParser.php:88
+#: lib/Domain/Service/BulkRecordParser.php:90
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
@@ -8118,103 +8249,124 @@ msgid ""
 "to: %s. Having multiple PTR records for the same IP is not recommended."
 msgstr "Reversais ieraksts pievienots. PTR %s jau eksistē → %s."
 
-#: lib/Domain/Service/Dns/RecordManager.php:208
+#: lib/Domain/Service/Dns/RecordManager.php:215
 msgid "You do not have the permission to add SOA record."
 msgstr "Jums nav atļaujas pievienot SOA ierakstu."
 
-#: lib/Domain/Service/Dns/RecordManager.php:212
+#: lib/Domain/Service/Dns/RecordManager.php:219
 msgid "You do not have the permission to add NS record."
 msgstr "Jums nav atļaujas pievienot NS ierakstu."
 
-#: lib/Domain/Service/Dns/RecordManager.php:257
+#: lib/Domain/Service/Dns/RecordManager.php:225
+#, auto-english-fallback
+msgid "You do not have the permission to add LUA record."
+msgstr "You do not have the permission to add LUA record."
+
+#: lib/Domain/Service/Dns/RecordManager.php:270
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Ieraksts ar šo resursdatoru, veidu un saturu jau pastāv."
 
-#: lib/Domain/Service/Dns/RecordManager.php:164
+#: lib/Domain/Service/Dns/RecordManager.php:171
 msgid "Failed to add record to DNS backend."
 msgstr "Neizdevās pievienot ierakstu DNS aizmugurei."
 
-#: lib/Domain/Service/Dns/RecordManager.php:302
+#: lib/Domain/Service/Dns/RecordManager.php:328
 msgid "You do not have the permission to edit this SOA record."
 msgstr "Jums nav atļaujas rediģēt šo SOA ierakstu."
 
-#: lib/Domain/Service/Dns/RecordManager.php:307
+#: lib/Domain/Service/Dns/RecordManager.php:333
 msgid "You do not have the permission to edit this NS record."
 msgstr "Jums nav atļaujas rediģēt šo NS ierakstu."
 
-#: lib/Domain/Service/Dns/RecordManager.php:356
+#: lib/Domain/Service/Dns/RecordManager.php:338
+#, auto-english-fallback
+msgid "You do not have the permission to edit this LUA record."
+msgstr "You do not have the permission to edit this LUA record."
+
+#: lib/Domain/Service/Dns/RecordManager.php:387
 msgid "Failed to update record in DNS backend."
 msgstr "Neizdevās atjaunināt ierakstu DNS aizmugurē."
 
-#: lib/Domain/Service/Dns/RecordManager.php:385
+#: lib/Domain/Service/Dns/RecordManager.php:420
 msgid "You do not have the permission to delete SOA records."
 msgstr "Jums nav atļaujas dzēst SOA ierakstus."
 
-#: lib/Domain/Service/Dns/RecordManager.php:390
+#: lib/Domain/Service/Dns/RecordManager.php:425
 msgid "You do not have the permission to delete NS records."
 msgstr "Jums nav atļaujas dzēst NS ierakstus."
 
-#: lib/Domain/Service/Dns/DomainManager.php:591
+#: lib/Domain/Service/Dns/RecordManager.php:430
+#, auto-english-fallback
+msgid "You do not have the permission to delete LUA records."
+msgstr "You do not have the permission to delete LUA records."
+
+#: lib/Domain/Service/Dns/DomainManager.php:602
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Nederīgi argumenti funkcijai %s %s"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:336
+#: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "Jau pastāv galvenais ar šo IP un resursdatoru."
 
-#: lib/Domain/Service/Dns/DomainManager.php:132
+#: lib/Domain/Service/Dns/DomainManager.php:133
 msgid "Failed to create zone in DNS backend."
 msgstr "Neizdevās izveidot zonu DNS aizmugurē."
 
-#: lib/Domain/Service/Dns/DomainManager.php:301
+#: lib/Domain/Service/Dns/DomainManager.php:308
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "Neizdevās izveidot zonu: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:213
+#: lib/Domain/Service/Dns/DomainManager.php:220
 msgid "Failed to create SOA record for zone."
 msgstr "Neizdevās izveidot SOA ierakstu zonai."
 
-#: lib/Domain/Service/Dns/DomainManager.php:260
+#: lib/Domain/Service/Dns/DomainManager.php:267
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "Neizdevās izveidot %s ierakstu zonai."
 
-#: lib/Domain/Service/Dns/DomainManager.php:305
+#: lib/Domain/Service/Dns/DomainManager.php:312
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Nederīgi argumenti funkcijai %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:409
+#: lib/Domain/Service/Dns/DomainManager.php:416
 msgid "Failed to delete zone from DNS backend."
 msgstr "Neizdevās dzēst zonu no DNS aizmugures."
 
-#: lib/Domain/Service/Dns/DomainManager.php:375
+#: lib/Domain/Service/Dns/DomainManager.php:382
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "Neizdevās iztīrīt zonas metadatus: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:455
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "Neizdevās dzēst zonas metadatus: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:502
+#: lib/Domain/Service/Dns/DomainManager.php:509
 msgid "Failed to update zone type in DNS backend."
 msgstr "Neizdevās atjaunināt zonas veidu DNS aizmugurē."
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:529
 msgid "Failed to update zone master in DNS backend."
 msgstr "Neizdevās atjaunināt zonas galveno DNS aizmugurē."
 
-#: lib/Domain/Service/Dns/DomainManager.php:553
+#: lib/Domain/Service/Dns/DomainManager.php:562
 msgid "The selected user already owns the zone."
 msgstr "Atlasītais lietotājs jau ir zonas īpašnieks."
 
-#: lib/Domain/Service/Dns/DomainManager.php:586
+#: lib/Domain/Service/Dns/DomainManager.php:597
 msgid "There must be at least one owner for a zone."
 msgstr "Jābūt vismaz vienam zonas īpašniekam."
+
+#: lib/Domain/Service/Dns/DomainManager.php:836
+#, auto-english-fallback
+#, php-format
+msgid "Failed to update zone records: %s"
+msgstr "Failed to update zone records: %s"
 
 #: lib/Module/Rdap/templates/rdap.html:3
 msgid "Home"
@@ -8290,11 +8442,11 @@ msgstr "Nokopēts!"
 msgid "DNSSEC"
 msgstr "DNSSEC"
 
-#: templates/modern/dnssec_edit_key.html:138
+#: templates/modern/dnssec_edit_key.html:140
 msgid "Deactivate key"
 msgstr "Deaktivizēt atslēgu"
 
-#: templates/modern/dnssec_edit_key.html:140
+#: templates/modern/dnssec_edit_key.html:142
 msgid "Activate key"
 msgstr "Aktivizēt atslēgu"
 
@@ -8634,7 +8786,7 @@ msgstr "Ievadiet resursdatoru, kā tas parādās NS ierakstā"
 msgid "Provide host name"
 msgstr "Norādiet resursdatora vārdu"
 
-#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:359
+#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:360
 msgid "Account"
 msgstr "Konts"
 
@@ -8833,15 +8985,15 @@ msgstr "Nosūtīt atiestatīšanas saiti"
 msgid "Group Management"
 msgstr "Grupu pārvaldība"
 
-#: templates/modern/header.html:240 templates/modern/add_group.html:5
+#: templates/modern/header.html:241 templates/modern/add_group.html:5
 msgid "Add group"
 msgstr "Pievienot grupu"
 
-#: templates/modern/edit_user.html:262 templates/modern/add_user.html:189
+#: templates/modern/edit_user.html:269 templates/modern/add_user.html:190
 msgid "No groups found"
 msgstr "Nav atrastu grupu"
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:103
 msgid "Search groups..."
 msgstr "Meklēt grupas..."
 
@@ -8849,7 +9001,7 @@ msgstr "Meklēt grupas..."
 msgid "Members"
 msgstr "Dalībnieki"
 
-#: templates/modern/header.html:137
+#: templates/modern/header.html:138
 msgid "Zones"
 msgstr "Zonas"
 
@@ -8938,7 +9090,7 @@ msgstr "Pārvaldīt"
 msgid "No members in this group yet."
 msgstr "Šajā grupā vēl nav dalībnieku."
 
-#: templates/modern/edit_group.html:138 templates/modern/edit_user.html:228
+#: templates/modern/edit_group.html:138 templates/modern/edit_user.html:235
 msgid "Remove from group"
 msgstr "Noņemt no grupas"
 
@@ -8950,7 +9102,7 @@ msgstr "Noņemt"
 msgid "and"
 msgstr "un"
 
-#: templates/modern/list_forward_zones.html:180
+#: templates/modern/list_forward_zones.html:197
 msgid "more..."
 msgstr "vairāk..."
 
@@ -9083,47 +9235,57 @@ msgstr ""
 msgid "PowerDNS version unknown"
 msgstr "PowerDNS versija nezināma"
 
-#: templates/default/index.html:33 templates/modern/index.html:33
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr ""
+"Paroles atiestatīšana ir iespējota, bet interface.application_url nav "
+"konfigurēts, tāpēc atiestatīšanas e-pasti netiek sūtīti. Iestatiet "
+"application_url uz jūsu publisko bāzes URL."
+
+#: templates/default/index.html:43 templates/modern/index.html:43
 msgid "DNS Management"
 msgstr "DNS pārvaldība"
 
-#: templates/modern/index.html:46 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:56 templates/modern/pdns_status.html:164
 msgid "Online"
 msgstr "Tiešsaiste"
 
-#: templates/modern/index.html:48 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:58 templates/modern/pdns_status.html:166
 msgid "Offline"
 msgstr "Bezsaiste"
 
-#: templates/modern/header.html:259 templates/modern/header.html:284
+#: templates/modern/header.html:260 templates/modern/header.html:285
 msgid "Templates"
 msgstr "Veidnes"
 
-#: templates/default/index.html:119 templates/modern/index.html:119
+#: templates/default/index.html:129 templates/modern/index.html:129
 msgid "Networks"
 msgstr "Tīkli"
 
-#: templates/default/index.html:138 templates/modern/index.html:138
+#: templates/default/index.html:148 templates/modern/index.html:148
 msgid "Zone Operations"
 msgstr "Zonas darbības"
 
-#: templates/default/index.html:149 templates/modern/index.html:149
+#: templates/modern/index.html:159 templates/modern/index.html:449
 msgid "Master Zone"
 msgstr "Galvenā zona"
 
-#: templates/default/index.html:159 templates/modern/index.html:159
+#: templates/modern/index.html:169 templates/modern/index.html:459
 msgid "Slave Zone"
 msgstr "Sekundārā zona"
 
-#: templates/default/index.html:189 templates/modern/index.html:189
+#: templates/modern/index.html:199 templates/modern/index.html:489
 msgid "PTR Records"
 msgstr "PTR ieraksti"
 
-#: templates/default/index.html:207 templates/modern/index.html:207
+#: templates/default/index.html:217 templates/modern/index.html:217
 msgid "Administration"
 msgstr "Administrācija"
 
-#: templates/modern/index.html:238 templates/modern/header.html:259
+#: templates/modern/index.html:509 templates/modern/header.html:260
 msgid "Access"
 msgstr "Piekļuve"
 
@@ -9131,12 +9293,12 @@ msgstr "Piekļuve"
 msgid "Tools"
 msgstr "Rīki"
 
-#: templates/default/index.html:297 templates/modern/index.html:297
+#: templates/default/index.html:307 templates/modern/index.html:307
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Datubāze"
 
-#: templates/default/index.html:344 templates/modern/index.html:344
+#: templates/modern/index.html:354 templates/modern/index.html:541
 msgid "My Profile"
 msgstr "Mans profils"
 
@@ -9145,15 +9307,15 @@ msgstr "Mans profils"
 msgid "Password"
 msgstr "Parole"
 
-#: templates/modern/index.html:363 templates/modern/header.html:372
+#: templates/modern/index.html:560 templates/modern/header.html:373
 msgid "Preferences"
 msgstr "Preferences"
 
-#: templates/modern/header.html:436
+#: templates/modern/header.html:437
 msgid "Logout"
 msgstr "Iziet"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:541
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:538
 msgid "Edit comment"
 msgstr "Rediģēt komentāru"
 
@@ -9161,7 +9323,7 @@ msgstr "Rediģēt komentāru"
 msgid "Edit comment in zone"
 msgstr "Rediģēt komentāru zonā"
 
-#: templates/modern/add_zone_templ.html:12 templates/modern/header.html:271
+#: templates/modern/add_zone_templ.html:12 templates/modern/header.html:272
 msgid "Add template"
 msgstr "pievienot veidni"
 
@@ -9185,7 +9347,7 @@ msgstr "Globāla veidne"
 msgid "Make this template available to all users"
 msgstr "Padarīt šo veidni pieejamu visiem lietotājiem"
 
-#: templates/modern/list_zone_templ.html:13 templates/modern/header.html:296
+#: templates/modern/list_zone_templ.html:13 templates/modern/header.html:297
 msgid "Add zone template"
 msgstr "pievienot zonas veidni"
 
@@ -9306,27 +9468,31 @@ msgstr "Žurnāla detaļas"
 msgid "Close"
 msgstr "Aizvērt"
 
-#: templates/modern/list_log_groups.html:202
+#: templates/modern/list_log_groups.html:203
 msgid "Copied"
 msgstr "Nokopēts"
 
-#: templates/modern/list_log_groups.html:210
+#: templates/modern/list_log_groups.html:211
 msgid "No logs found"
 msgstr "Nav atrastu žurnālu"
 
-#: templates/modern/list_log_groups.html:211
+#: templates/modern/list_log_groups.html:212
 msgid "Try different search criteria or check back later"
 msgstr "Mēģiniet citus kritērijus vai pārbaudiet vēlāk"
 
-#: templates/modern/list_log_zones.html:11 templates/modern/header.html:184
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:590
+msgid "Logs"
+msgstr "Žurnāli"
+
+#: templates/modern/list_log_zones.html:15 templates/modern/header.html:185
 msgid "Zone logs"
 msgstr "zonas žurnāli"
 
-#: templates/modern/list_log_zones.html:17
+#: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Tiek rādīti žurnāli zonām, kas jums pieder."
 
-#: templates/modern/list_log_zones.html:23
+#: templates/modern/list_log_zones.html:28
 msgid "Zone Change Logs"
 msgstr "Zonas izmaiņu žurnāli"
 
@@ -9334,7 +9500,7 @@ msgstr "Zonas izmaiņu žurnāli"
 msgid "Domain name"
 msgstr "Domēna vārds"
 
-#: templates/modern/list_log_zones.html:42
+#: templates/modern/list_log_zones.html:49
 msgid "All operations"
 msgstr "Visas darbības"
 
@@ -9363,6 +9529,11 @@ msgstr ""
 #: templates/modern/bulk_record_add.html:46
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Piemērs: www,A,192.168.1.1,0,3600,web server"
+
+#: templates/modern/bulk_record_add.html:47
+#, auto-english-fallback
+msgid "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:48
 msgid "Comment is optional"
@@ -9491,27 +9662,27 @@ msgstr "Pievienot jaunu īpašnieku"
 msgid "Owner to be added"
 msgstr "Pievienojamais īpašnieks"
 
-#: templates/default/delete_user.html:82 templates/modern/delete_user.html:82
+#: templates/default/delete_user.html:95 templates/modern/delete_user.html:95
 msgid "Delete: The zone will be completely removed from the system"
 msgstr "Dzēst: Zona tiks pilnībā noņemta no sistēmas"
 
-#: templates/default/delete_user.html:83 templates/modern/delete_user.html:83
+#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
 msgid "Leave: The zone will remain in the system but without an owner"
 msgstr "Atstāt: Zona paliks sistēmā, bet bez īpašnieka"
 
-#: templates/default/delete_user.html:84 templates/modern/delete_user.html:84
+#: templates/default/delete_user.html:97 templates/modern/delete_user.html:97
 msgid "Add new owner: Transfer ownership to another user"
 msgstr "Pievienot jaunu īpašnieku: Nodot citam lietotājam"
 
-#: templates/default/delete_user.html:93 templates/modern/delete_user.html:93
+#: templates/default/delete_user.html:106 templates/modern/delete_user.html:106
 msgid "Yes, delete this user"
 msgstr "Jā, dzēst šo lietotāju"
 
-#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
+#: templates/default/delete_user.html:109 templates/modern/delete_user.html:109
 msgid "No, keep this user"
 msgstr "Nē, paturēt šo lietotāju"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:237
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
 msgstr "Saglabāt kā veidni"
 
@@ -9702,15 +9873,15 @@ msgstr "Apstiprināt paroli"
 msgid "Passwords do not match"
 msgstr "Paroles nesakrīt"
 
-#: templates/modern/add_user.html:133
+#: templates/modern/add_user.html:134
 msgid "Password Requirements"
 msgstr "Paroles prasības"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "Minimum length"
 msgstr "Minimālais garums"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "characters"
 msgstr "rakstzīmes"
 
@@ -9730,11 +9901,11 @@ msgstr "Vismaz viens skaitlis"
 msgid "At least one special character"
 msgstr "Vismaz viens speciāls simbols"
 
-#: templates/modern/add_zone_master.html:11 templates/modern/header.html:156
+#: templates/modern/add_zone_master.html:11 templates/modern/header.html:157
 msgid "Add master zone"
 msgstr "Pievienot galveno zonu"
 
-#: templates/modern/add_zone_slave.html:11 templates/modern/header.html:163
+#: templates/modern/add_zone_slave.html:11 templates/modern/header.html:164
 msgid "Add slave zone"
 msgstr "Pievienot sekundāro zonu"
 
@@ -9766,7 +9937,7 @@ msgstr "IPv4 reversās zonas:"
 msgid "IPv6 reverse zones:"
 msgstr "IPv6 reversās zonas:"
 
-#: templates/modern/search.html:123 templates/modern/search.html:319
+#: templates/modern/search.html:123 templates/modern/search.html:321
 msgid "Rows per page:"
 msgstr "Rindas lapā:"
 
@@ -9778,39 +9949,43 @@ msgstr "Šajā sarakstā nav reverso zonu."
 msgid "Owner"
 msgstr "Īpašnieks"
 
-#: templates/modern/list_forward_zones.html:97
+#: templates/modern/list_perm_templ.html:75
+msgid "Group"
+msgstr "Grupa"
+
+#: templates/modern/list_forward_zones.html:111
 msgid "Full name"
 msgstr "Pilns vārds"
 
-#: templates/modern/list_reverse_zones.html:127
+#: templates/modern/list_reverse_zones.html:141
 msgid "Associated Forward Zones"
 msgstr "Saistītās turpzonas"
 
-#: templates/modern/list_forward_zones.html:101
+#: templates/modern/list_forward_zones.html:115
 msgid "Serial"
 msgstr "Sērijas"
 
-#: templates/modern/bulk_registration.html:79
+#: templates/modern/bulk_registration.html:44
 msgid "Template"
 msgstr "Veidne"
 
-#: templates/modern/list_forward_zones.html:131
+#: templates/modern/list_forward_zones.html:145
 msgid "SOA record is disabled, the zone will not be served"
 msgstr "SOA ieraksts ir atspējots, zona netiks apkalpota"
 
-#: templates/modern/list_forward_zones.html:133
+#: templates/modern/list_forward_zones.html:147
 msgid "Zone has no SOA record"
 msgstr "Zonai nav SOA ieraksta"
 
-#: templates/modern/list_forward_zones.html:133
+#: templates/modern/list_forward_zones.html:147
 msgid "No SOA"
 msgstr "Nav SOA"
 
-#: templates/modern/list_reverse_zones.html:233
+#: templates/modern/list_reverse_zones.html:252
 msgid "-"
 msgstr "-"
 
-#: templates/modern/search.html:303
+#: templates/modern/search.html:305
 msgid "Delete zone(s)"
 msgstr "Dzēst zonu(as)"
 
@@ -9896,7 +10071,7 @@ msgid ""
 "provides strong security with better performance."
 msgstr "Mūsdienīgām izvietošanām ECDSA (13) nodrošina drošību un veiktspēju."
 
-#: templates/modern/edit_user.html:5 templates/modern/header.html:366
+#: templates/modern/edit_user.html:5 templates/modern/header.html:367
 msgid "Edit profile"
 msgstr "Rediģēt profilu"
 
@@ -9909,6 +10084,10 @@ msgstr "Rediģēt lietotāju"
 msgid "Username"
 msgstr "Lietotājvārds"
 
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Jūsu lietotājvārdu var mainīt tikai administrators"
+
 #: templates/modern/edit_user.html:32 templates/modern/add_user.html:22
 msgid "Provide user name"
 msgstr "Norādiet lietotājvārdu"
@@ -9917,11 +10096,11 @@ msgstr "Norādiet lietotājvārdu"
 msgid "Fullname"
 msgstr "Pilns vārds"
 
-#: templates/modern/edit_user.html:38 templates/modern/add_user.html:28
+#: templates/modern/edit_user.html:41 templates/modern/add_user.html:28
 msgid "User's full name for identification"
 msgstr "Lietotāja pilns vārds identifikācijai"
 
-#: templates/modern/edit_user.html:39 templates/modern/add_user.html:29
+#: templates/modern/edit_user.html:43 templates/modern/add_user.html:29
 msgid "Provide full name"
 msgstr "Norādiet pilnu vārdu"
 
@@ -9929,46 +10108,77 @@ msgstr "Norādiet pilnu vārdu"
 msgid "Email address"
 msgstr "e-pasta adrese"
 
-#: templates/modern/edit_user.html:45 templates/modern/add_user.html:35
+#: templates/modern/edit_user.html:52 templates/modern/add_user.html:35
 msgid "Provide email"
 msgstr "Norādīt e-pastu"
 
-#: templates/default/edit_user.html:58 templates/modern/edit_user.html:58
+#: templates/default/edit_user.html:68 templates/modern/edit_user.html:65
 msgid "Leave empty to keep current password"
 msgstr "Atstājiet tukšu, lai paturētu pašreizējo paroli"
 
-#: templates/default/edit_user.html:74
+#: templates/default/edit_user.html:84
 msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
 msgstr "Veidnes atļaujas darbosies globāli šim lietotājam"
 
-#: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
+#: templates/modern/edit_user.html:88 templates/modern/add_user.html:89
 msgid "Optional information about this user"
 msgstr "Neobligāta informācija par lietotāju"
 
-#: templates/modern/users.html:49 templates/modern/add_user.html:94
+#: templates/modern/users.html:49 templates/modern/add_user.html:95
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Iespējots"
 
-#: templates/modern/edit_user.html:101 templates/modern/add_user.html:103
+#: templates/modern/edit_user.html:108 templates/modern/add_user.html:104
 msgid "LDAP Authentication"
 msgstr "LDAP autentifikācija"
 
-#: templates/modern/edit_user.html:103 templates/modern/add_user.html:105
+# OBSOLETE: msgid "About Bulk Registration"
+# OBSOLETE: msgstr "Par masveida reģistrāciju"
+# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
+# OBSOLETE: msgstr "Šis rīks ļauj izveidot vairākas DNS zonas uzreiz."
+# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
+# OBSOLETE: msgstr "Ievadiet vienu domēna vārdu rindā laukā Domēni"
+# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
+# OBSOLETE: msgstr "Atlasiet zonas veidni standarta ierakstu piemērošanai"
+# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
+# OBSOLETE: msgstr "Izvēlētajam īpašniekam būs pilna piekļuve visām izveidotajām zonām"
+# OBSOLETE: msgid "How It Works"
+# OBSOLETE: msgstr "Kā tas darbojas"
+# OBSOLETE: msgid ""
+# OBSOLETE: "The system will attempt to create each zone with the same settings. "
+# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
+# OBSOLETE: "again."
+# OBSOLETE: msgstr "Sistēma mēģinās izveidot katru zonu. Neveiksmīgas tiks parādītas."
+# OBSOLETE: msgid "Tips & Recommendations"
+# OBSOLETE: msgstr "Padomi un ieteikumi"
+# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
+# OBSOLETE: msgstr "Lielākajai daļai standarta iestatījumu izmantojiet NATIVE"
+# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
+# OBSOLETE: msgstr "Vispirms izveidojiet veidni, ja nepieciešami standarta ieraksti"
+# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
+# OBSOLETE: msgstr "Jūs varat kopēt un ielīmēt domēnu sarakstu no izklājlapas"
+# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
+# OBSOLETE: msgstr "Pārliecinieties, ka domēnu nosaukumi atbilst DNS konvencijām"
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Autentifikācijas iestatījumus var mainīt tikai administrators"
+
+#: templates/modern/edit_user.html:110 templates/modern/add_user.html:106
 msgid "Use external LDAP directory for authentication"
 msgstr "Izmantot ārējo LDAP direktoriju autentifikācijai"
 
-#: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
+#: templates/default/edit_user.html:131 templates/modern/edit_user.html:124
 msgid "Back to Home"
 msgstr "Atpakaļ uz sākumu"
 
-#: templates/default/edit_user.html:121 templates/modern/edit_user.html:121
+#: templates/default/edit_user.html:135 templates/modern/edit_user.html:128
 msgid "Back to Users"
 msgstr "Atpakaļ uz lietotājiem"
 
-#: templates/modern/edit_user.html:135 templates/modern/add_user.html:128
+#: templates/modern/edit_user.html:142 templates/modern/add_user.html:129
 msgid "Account Information"
 msgstr "Konta informācija"
 
@@ -9992,53 +10202,53 @@ msgstr "Jāietver speciāli simboli"
 msgid "No specific password requirements"
 msgstr "Nav īpašu paroles prasību"
 
-#: templates/modern/add_user.html:160 templates/modern/edit_perm_templ.html:155
+#: templates/modern/add_user.html:161 templates/modern/edit_perm_templ.html:155
 msgid "User Permissions"
 msgstr "Lietotāja atļaujas"
 
-#: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
+#: templates/default/edit_user.html:190 templates/modern/edit_user.html:180
 msgid "This user has been assigned the access template"
 msgstr "Šim lietotājam ir piešķirta piekļuves veidne"
 
-#: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
+#: templates/default/edit_user.html:199 templates/modern/edit_user.html:189
 msgid "Based on this template, this user has the following permissions"
 msgstr "Pamatojoties uz šo veidni, lietotājam ir šādas atļaujas"
 
-#: templates/default/edit_user.html:188 templates/modern/edit_user.html:185
+#: templates/default/edit_user.html:202 templates/modern/edit_user.html:192
 msgid "No permissions are assigned to this template"
 msgstr "Šai veidnei nav piešķirtas atļaujas"
 
-#: templates/modern/edit_user.html:205 templates/modern/add_user.html:172
+#: templates/modern/edit_user.html:212 templates/modern/add_user.html:173
 msgid "Group Memberships"
 msgstr "Grupu dalības"
 
-#: templates/default/edit_user.html:212 templates/modern/edit_user.html:209
+#: templates/default/edit_user.html:226 templates/modern/edit_user.html:216
 msgid "Current Memberships"
 msgstr "Pašreizējās dalības"
 
-#: templates/default/edit_user.html:227 templates/modern/edit_user.html:224
+#: templates/default/edit_user.html:241 templates/modern/edit_user.html:231
 msgid "View group details"
 msgstr "Skatīt grupas detaļas"
 
-#: templates/default/edit_user.html:241 templates/modern/edit_user.html:238
+#: templates/default/edit_user.html:255 templates/modern/edit_user.html:245
 msgid "This user is not a member of any groups."
 msgstr "Šis lietotājs nav nevienas grupas dalībnieks."
 
-#: templates/modern/edit_user.html:244 templates/modern/add_user.html:175
+#: templates/modern/edit_user.html:251 templates/modern/add_user.html:176
 msgid "Add to Groups"
 msgstr "Pievienot grupām"
 
-#: templates/default/edit_user.html:248 templates/modern/edit_user.html:245
+#: templates/default/edit_user.html:262 templates/modern/edit_user.html:252
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr ""
 "Atlasiet vienu vai vairākas grupas un noklikšķiniet \"Pievienot atlasītās "
 "grupas\"."
 
-#: templates/modern/edit_user.html:253 templates/modern/add_user.html:180
+#: templates/modern/edit_user.html:260 templates/modern/add_user.html:181
 msgid "Search available groups..."
 msgstr "Meklēt pieejamās grupas..."
 
-#: templates/modern/edit_user.html:254 templates/modern/add_user.html:181
+#: templates/modern/edit_user.html:261 templates/modern/add_user.html:182
 msgid "Clear search"
 msgstr "Notīrīt meklēšanu"
 
@@ -10046,7 +10256,7 @@ msgstr "Notīrīt meklēšanu"
 msgid "Select All"
 msgstr "Atlasīt visu"
 
-#: templates/modern/add_zone_slave.html:102
+#: templates/modern/add_zone_slave.html:107
 msgid "Clear All"
 msgstr "Notīrīt visu"
 
@@ -10054,7 +10264,7 @@ msgstr "Notīrīt visu"
 msgid "selected"
 msgstr "atlasīts"
 
-#: templates/default/edit_user.html:286 templates/modern/edit_user.html:283
+#: templates/default/edit_user.html:300 templates/modern/edit_user.html:290
 msgid "Add Selected Groups"
 msgstr "Pievienot atlasītās grupas"
 
@@ -10062,7 +10272,7 @@ msgstr "Pievienot atlasītās grupas"
 msgid "Confirm Removal"
 msgstr "Apstiprināt noņemšanu"
 
-#: templates/default/edit_user.html:316 templates/modern/edit_user.html:313
+#: templates/default/edit_user.html:330 templates/modern/edit_user.html:320
 msgid "Are you sure you want to remove this user from the group"
 msgstr "Vai tiešām vēlaties noņemt šo lietotāju no grupas"
 
@@ -10349,7 +10559,9 @@ msgid "Create PTRs only for existing A/AAAA records in forward zone"
 msgstr "Izveidot PTR tikai esošiem A/AAAA ierakstiem turpzonā"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
+msgid ""
+"When checked, PTR records will only be created for IPs that have "
+"corresponding A/AAAA records in the specified domain"
 msgstr "Kad atzīmēts, PTR tiks izveidoti tikai IP ar A/AAAA ierakstiem."
 
 #: templates/modern/batch_ptr_record.html:114
@@ -10381,7 +10593,9 @@ msgid "Matching only"
 msgstr "Tikai saskaņošana"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
+msgid ""
+"Creates PTR records only for IPs that have existing A/AAAA records in the "
+"forward zone"
 msgstr "Veido PTR ierakstus tikai tiem IP, kuriem ir A/AAAA ieraksti turpzonā"
 
 #: templates/modern/batch_ptr_record.html:147
@@ -10427,8 +10641,11 @@ msgstr ""
 "zonas"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
-msgstr "Izmantojiet \"Create PTRs only for existing A/AAAA records\" PTR aizpildei"
+msgid ""
+"Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
+"on your forward zone"
+msgstr ""
+"Izmantojiet \"Create PTRs only for existing A/AAAA records\" PTR aizpildei"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""
@@ -10444,11 +10661,11 @@ msgid ""
 "forward records (disabled when using matching mode)"
 msgstr "Atzīmējiet \"Create forward A/AAAA\" automātiskai izveidei."
 
-#: templates/modern/zone-ownership.html:6 templates/modern/edit.html:223
+#: templates/modern/bulk_registration.html:79
 msgid "Ownership"
 msgstr "Īpašumtiesības"
 
-#: templates/modern/add_zone_slave.html:50
+#: templates/modern/add_zone_slave.html:55
 msgid "User Owner"
 msgstr "Lietotājs-īpašnieks"
 
@@ -10464,7 +10681,7 @@ msgstr "Pievienot lietotāju-īpašnieku"
 msgid "Search users..."
 msgstr "Meklēt lietotājus..."
 
-#: templates/modern/add_zone_slave.html:79
+#: templates/modern/add_zone_slave.html:84
 msgid "You"
 msgstr "Jūs"
 
@@ -10472,7 +10689,7 @@ msgstr "Jūs"
 msgid "Add Owner"
 msgstr "Pievienot īpašnieku"
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:99
 msgid "Group Ownership"
 msgstr "Grupas īpašumtiesības"
 
@@ -10514,11 +10731,11 @@ msgstr "Jūs gatavojaties dzēst piekļuves veidni"
 msgid "This template is currently assigned to"
 msgstr "Šī veidne šobrīd ir piešķirta"
 
-#: templates/modern/delete_zone_templ.html:35
+#: templates/modern/delete_zone_templ.html:37
 msgid "Yes, delete this template"
 msgstr "Jā, dzēst šo veidni"
 
-#: templates/modern/delete_zone_templ.html:38
+#: templates/modern/delete_zone_templ.html:41
 msgid "No, keep this template"
 msgstr "Nē, paturēt šo veidni"
 
@@ -10576,71 +10793,71 @@ msgstr "Ja zaudēsiet atslēgu, tā būs jāpārģenerē."
 msgid "Edit"
 msgstr "Rediģēt"
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:604
+#: templates/modern/edit.html:25 templates/modern/edit.html:610
 msgid "Add new record"
 msgstr "Pievienot jaunu ierakstu"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:608
+#: templates/modern/edit.html:203 templates/modern/edit.html:614
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Vadītie vedņi DMARC, SPF, DKIM, CAA, TLSA un SRV ierakstiem"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:614
+#: templates/modern/edit.html:35 templates/modern/edit.html:620
 msgid "Multi-record mode"
 msgstr "Vairāku ierakstu režīms"
 
-#: templates/modern/edit.html:562 templates/modern/edit.html:617
+#: templates/modern/edit.html:563 templates/modern/edit.html:623
 msgid "Bulk add"
 msgstr "Pievienot kopā"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:629
+#: templates/modern/edit.html:50 templates/modern/edit.html:635
 msgid "Failed to add"
 msgstr "Neizdevās pievienot"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:629
+#: templates/modern/edit.html:50 templates/modern/edit.html:635
 msgid "record(s). Please check the record format."
 msgstr "ieraksti. Pārbaudiet ieraksta formātu."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:631
+#: templates/modern/edit.html:52 templates/modern/edit.html:637
 msgid "Failed to add records. Please check the record format."
 msgstr "Neizdevās pievienot ierakstus. Pārbaudiet formātu."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:634
+#: templates/modern/edit.html:55 templates/modern/edit.html:640
 msgid "Content validation failed:"
 msgstr "Satura validācija neizdevās:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:634
+#: templates/modern/edit.html:55 templates/modern/edit.html:640
 msgid "Invalid value for record type"
 msgstr "Nederīga vērtība ieraksta veidam"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:636
+#: templates/modern/edit.html:57 templates/modern/edit.html:642
 msgid "Please provide all required information."
 msgstr "Lūdzu, sniedziet visu nepieciešamo informāciju."
 
-#: templates/modern/edit.html:659 templates/modern/add_record.html:72
+#: templates/modern/edit.html:665 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Pievienot PTR"
 
-#: templates/modern/edit.html:662 templates/modern/add_record.html:75
+#: templates/modern/edit.html:668 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Pievienot A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:701
+#: templates/modern/edit.html:121 templates/modern/edit.html:707
 msgid "This record already exists"
 msgstr "Šis ieraksts jau pastāv"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:713
+#: templates/modern/edit.html:133 templates/modern/edit.html:719
 msgid "Invalid priority"
 msgstr "Nederīga prioritāte"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:720
+#: templates/modern/edit.html:140 templates/modern/edit.html:726
 msgid "Invalid TTL value"
 msgstr "Nederīga TTL vērtība"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:722
+#: templates/modern/edit.html:142 templates/modern/edit.html:728
 msgid "Provide TTL"
 msgstr "Norādiet TTL"
 
-#: templates/modern/edit.html:748 templates/modern/add_record.html:207
+#: templates/modern/edit.html:754 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -10658,95 +10875,91 @@ msgstr "Metadati"
 msgid "View Metadata"
 msgstr "Skatīt metadatus"
 
-#: templates/default/edit.html:232 templates/modern/edit.html:232
-msgid "Logs"
-msgstr "Žurnāli"
-
-#: templates/default/edit.html:248 templates/modern/edit.html:248
+#: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "Neviens ieraksts neatbilst filtrēšanas kritērijiem."
 
-#: templates/default/edit.html:256 templates/modern/edit.html:256
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "This zone does not have any records."
 msgstr "Šajā zonā nav ierakstu."
 
-#: templates/default/edit.html:268 templates/modern/edit.html:268
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "Filter:"
 msgstr "Filtrs:"
 
-#: templates/default/edit.html:274 templates/modern/edit.html:274
+#: templates/default/edit.html:269 templates/modern/edit.html:269
 msgid "Search by name or content"
 msgstr "Meklēt pēc nosaukuma vai satura"
 
-#: templates/default/edit.html:280 templates/modern/edit.html:280
+#: templates/default/edit.html:275 templates/modern/edit.html:275
 msgid "All Types"
 msgstr "Visi veidi"
 
-#: templates/default/edit.html:290 templates/modern/edit.html:290
+#: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
 msgstr "Filtrēt pēc satura"
 
-#: templates/default/edit.html:296 templates/modern/edit.html:296
+#: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
 msgstr "Lietot"
 
-#: templates/default/edit.html:332 templates/modern/edit.html:332
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "Showing"
 msgstr "Rāda"
 
-#: templates/default/edit.html:332 templates/modern/edit.html:332
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "of"
 msgstr "no"
 
-#: templates/default/edit.html:332 templates/modern/edit.html:332
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "total records"
 msgstr "total records"
 
-#: templates/default/edit.html:410 templates/modern/edit.html:410
+#: templates/default/edit.html:405 templates/modern/edit.html:405
 msgid "Last modified"
 msgstr "Pēdējoreiz mainīts"
 
-#: templates/default/edit.html:524 templates/modern/edit.html:524
+#: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
 msgstr "Rediģēt atlasīto"
 
-#: templates/modern/edit.html:528 templates/modern/search.html:486
+#: templates/modern/edit.html:525 templates/modern/search.html:489
 msgid "Delete record(s)"
 msgstr "Dzēst ieraksu(s)"
 
-#: templates/modern/edit.html:536 templates/modern/search.html:93
+#: templates/modern/edit.html:533 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentāri"
 
-#: templates/default/edit.html:566 templates/modern/edit.html:566
+#: templates/default/edit.html:567 templates/modern/edit.html:567
 msgid "Import"
 msgstr "Importēt"
 
-#: templates/default/edit.html:583 templates/modern/edit.html:583
+#: templates/default/edit.html:584 templates/modern/edit.html:584
 msgid "Generate PTR"
 msgstr "Ģenerēt PTR"
 
-#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:768 templates/modern/add_zone_master.html:25
 msgid "Zone Configuration"
 msgstr "Zonas konfigurācija"
 
-#: templates/modern/edit.html:804 templates/modern/edit.html:833
+#: templates/modern/edit.html:810 templates/modern/edit.html:839
 msgid "Change"
 msgstr "Mainīt"
 
-#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:803 templates/modern/add_zone_slave.html:40
 msgid "IP address of master NS"
 msgstr "Galvenā NS IP adrese"
 
-#: templates/default/edit.html:854 templates/modern/edit.html:854
+#: templates/default/edit.html:860 templates/modern/edit.html:860
 msgid "Manage DNSSEC"
 msgstr "Pārvaldīt DNSSEC"
 
-#: templates/default/edit.html:861 templates/modern/edit.html:861
+#: templates/default/edit.html:867 templates/modern/edit.html:867
 msgid "Sign zone"
 msgstr "Parakstīt zonu"
 
-#: templates/default/edit.html:865 templates/modern/edit.html:865
+#: templates/default/edit.html:871 templates/modern/edit.html:871
 msgid "Not signed"
 msgstr "Nav parakstīts"
 
@@ -10754,7 +10967,7 @@ msgstr "Nav parakstīts"
 msgid "User Management"
 msgstr "Lietotāju pārvaldība"
 
-#: templates/modern/add_user.html:5 templates/modern/header.html:209
+#: templates/modern/add_user.html:5 templates/modern/header.html:210
 msgid "Add user"
 msgstr "Pievienot lietotāju"
 
@@ -10807,7 +11020,7 @@ msgstr "Zonu kopējais skaits:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Šajā sarakstā nav turpzonu."
 
-#: templates/modern/list_forward_zones.html:212
+#: templates/modern/list_forward_zones.html:231
 msgid "PTR"
 msgstr "PTR"
 
@@ -10839,11 +11052,11 @@ msgstr "Dzēst arī atbilstošo PTR ierakstu (ja eksistē)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Dzēst arī atbilstošo A/AAAA ierakstu (ja eksistē)"
 
-#: templates/modern/delete_zone_templ_record.html:59
+#: templates/modern/delete_zone_templ_record.html:61
 msgid "Yes, delete this record"
 msgstr "Jā, dzēst šo ierakstu"
 
-#: templates/modern/delete_zone_templ_record.html:62
+#: templates/modern/delete_zone_templ_record.html:65
 msgid "No, keep this record"
 msgstr "Nē, paturēt šo ierakstu"
 
@@ -11027,18 +11240,22 @@ msgstr "Nosūtīt paroli pa e-pastu"
 msgid "Send login credentials to user's email address"
 msgstr "Nosūtīt pieteikšanās datus uz lietotāja e-pastu"
 
-#: templates/modern/add_user.html:81
+#: templates/modern/add_user.html:72 templates/modern/add_group.html:35
+msgid "Select a template..."
+msgstr "Atlasiet veidni..."
+
+#: templates/modern/add_user.html:82
 msgid "Select permissions for this user"
 msgstr "Atlasiet atļaujas šim lietotājam"
 
-#: templates/default/add_user.html:162 templates/modern/add_user.html:162
+#: templates/default/add_user.html:163 templates/modern/add_user.html:163
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
 "user."
 msgstr "Izveidojot jaunu lietotāju, tas saņem veidnes atļaujas."
 
-#: templates/default/add_user.html:176 templates/modern/add_user.html:176
+#: templates/default/add_user.html:177 templates/modern/add_user.html:177
 msgid "Select groups to add the new user to upon creation."
 msgstr "Atlasiet grupas jaunajam lietotājam."
 
@@ -11046,15 +11263,23 @@ msgstr "Atlasiet grupas jaunajam lietotājam."
 msgid "Zone name"
 msgstr "zonas nosaukums"
 
-#: templates/modern/add_zone_slave.html:30
+#: templates/modern/add_zone_slave.html:31
 msgid "Provide zone name"
 msgstr "Norādiet zonas nosaukumu"
 
-#: templates/modern/add_zone_slave.html:31
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr ""
+"Ievadiet tīklu (piem., 192.168.1.0/24 vai 2001:db8::/48) vai reversās zonas "
+"nosaukumu (piem., 1.168.192.in-addr.arpa)."
+
+#: templates/modern/add_zone_slave.html:35
 msgid "Example: example.com"
 msgstr "Piemērs: example.com"
 
-#: templates/modern/add_zone_master.html:46
+#: templates/modern/add_zone_master.html:51
 msgid "Zone type (usually NATIVE)"
 msgstr "Zonas veids (parasti NATIVE)"
 
@@ -11062,43 +11287,43 @@ msgstr "Zonas veids (parasti NATIVE)"
 msgid "default"
 msgstr "noklusētais"
 
-#: templates/modern/add_zone_master.html:58
+#: templates/modern/add_zone_master.html:63
 msgid "Optional: Apply predefined records from a template"
 msgstr "Neobligāti: Piemērot iepriekšnoteiktus ierakstus"
 
-#: templates/modern/add_zone_master.html:66
+#: templates/modern/add_zone_master.html:71
 msgid "Enable DNSSEC"
 msgstr "Iespējot DNSSEC"
 
-#: templates/modern/add_zone_master.html:68
+#: templates/modern/add_zone_master.html:73
 msgid "Secure this zone with DNSSEC signing"
 msgstr "Aizsargāt zonu ar DNSSEC parakstīšanu"
 
-#: templates/modern/add_zone_slave.html:55
+#: templates/modern/add_zone_slave.html:60
 msgid "Selected:"
 msgstr "Atlasīts:"
 
-#: templates/modern/add_zone_slave.html:61
+#: templates/modern/add_zone_slave.html:66
 msgid "No user owner"
 msgstr "Bez lietotāja īpašnieka"
 
-#: templates/modern/add_zone_slave.html:62
+#: templates/modern/add_zone_slave.html:67
 msgid "Zone will be owned only by groups"
 msgstr "Zona piederēs tikai grupām"
 
-#: templates/modern/add_zone_slave.html:85
+#: templates/modern/add_zone_slave.html:90
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Neobligāti: Atlasiet par zonu atbildīgo lietotāju"
 
-#: templates/modern/add_zone_slave.html:109
+#: templates/modern/add_zone_slave.html:114
 msgid "members"
 msgstr "dalībnieki"
 
-#: templates/modern/add_zone_slave.html:115
+#: templates/modern/add_zone_slave.html:120
 msgid "Optional: Select one or more groups"
 msgstr "Neobligāti: Atlasiet vienu vai vairākas grupas"
 
-#: templates/modern/add_zone_slave.html:130
+#: templates/modern/add_zone_slave.html:135
 msgid "Add zone"
 msgstr "Pievienot zonu"
 
@@ -11122,7 +11347,7 @@ msgstr "Saistītās zonas"
 msgid "Sync Status"
 msgstr "Sinhr. statuss"
 
-#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:500
+#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:503
 msgid "No results found"
 msgstr "Nav atrastu rezultātu"
 
@@ -11187,7 +11412,7 @@ msgid ""
 "use \"Update Zones\" button when editing templates to apply changes."
 msgstr "Veidnes maiņa saglabā manuālos papildinājumus."
 
-#: templates/modern/change_password.html:49 templates/modern/header.html:378
+#: templates/modern/change_password.html:49 templates/modern/header.html:379
 msgid "Change password"
 msgstr "Mainīt paroli"
 
@@ -11239,7 +11464,7 @@ msgstr "Iekļaujiet burtu, ciparu un simbolu kombināciju"
 msgid "Consider using a password manager"
 msgstr "Apsveriet paroles pārvaldnieka izmantošanu"
 
-#: templates/modern/header.html:385
+#: templates/modern/header.html:386
 msgid "Multi-Factor Authentication"
 msgstr "Daudzfaktoru autentifikācija"
 
@@ -11429,55 +11654,33 @@ msgstr ""
 msgid "API Key:"
 msgstr "API atslēga:"
 
-#: templates/modern/header.html:170
+#: templates/modern/header.html:171
 msgid "Bulk registration"
 msgstr "masveida reģistrācija"
+
+#: templates/modern/bulk_registration.html:30
+msgid "Zone Type"
+msgstr "Zonas veids"
+
+#: templates/modern/bulk_registration.html:54
+msgid "Domains"
+msgstr "Domēni"
+
+#: templates/modern/bulk_registration.html:56
+msgid "Provide a domain name(s)"
+msgstr "Norādiet domēna vārdu(s)"
+
+#: templates/modern/bulk_registration.html:57
+msgid "Type one domain per line"
+msgstr "Viens domēns rindā"
+
+#: templates/modern/bulk_registration.html:63
+msgid "Add Zones"
+msgstr "Pievienot zonas"
 
 #: lib/Module/ZoneImportExport/templates/import.html:138
 msgid "Group ownership"
 msgstr "Grupas īpašumtiesības"
-
-#: templates/modern/bulk_registration.html:65
-msgid "Zone Type"
-msgstr "Zonas veids"
-
-#: templates/modern/bulk_registration.html:89
-msgid "Domains"
-msgstr "Domēni"
-
-#: templates/modern/bulk_registration.html:91
-msgid "Provide a domain name(s)"
-msgstr "Norādiet domēna vārdu(s)"
-
-#: templates/modern/bulk_registration.html:92
-msgid "Type one domain per line"
-msgstr "Viens domēns rindā"
-
-#: templates/modern/bulk_registration.html:98
-msgid "Add Zones"
-msgstr "Pievienot zonas"
-
-#: templates/modern/bulk_registration.html:115
-#, auto-english-fallback
-msgid "After Creation"
-msgstr "Pēc izveides"
-
-#: templates/modern/bulk_registration.html:120
-#, auto-english-fallback
-msgid "Change zone owner"
-msgstr "Mainīt zonas īpašnieku"
-
-#: templates/modern/bulk_registration.html:121
-msgid ""
-"You can transfer zone ownership to another user from the user list at any "
-"time."
-msgstr ""
-"Jūs jebkurā laikā varat nodot zonas īpašumtiesības citam lietotājam no lietotāju saraksta."
-
-#: templates/modern/bulk_registration.html:123
-#, auto-english-fallback
-msgid "Manage users"
-msgstr "Pārvaldīt lietotājus"
 
 #: templates/modern/user_agreement.html:13
 msgid "User Agreement"
@@ -11770,82 +11973,106 @@ msgid "Items per page"
 msgstr "Elementi lapā"
 
 #: templates/modern/user_preferences.html:36
+msgid "Timezone"
+msgstr "Laika josla"
+
+#: templates/modern/user_preferences.html:46
+msgid "Region"
+msgstr "Reģions"
+
+#: templates/modern/user_preferences.html:48
+msgid "Inherit global setting"
+msgstr "Mantot globālo iestatījumu"
+
+#: templates/modern/user_preferences.html:55
+msgid "City"
+msgstr "Pilsēta"
+
+#: templates/modern/user_preferences.html:64
+msgid ""
+"Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
+"the global server timezone."
+msgstr ""
+"Izmanto laika zīmogiem e-pastos, kas jums tiek sūtīti (piem., MFA kodi). "
+"Tukšs manto globālo servera laika joslu."
+
+#: templates/modern/user_preferences.html:95
 msgid "Zone Options"
 msgstr "Zonas opcijas"
 
-#: templates/modern/user_preferences.html:42
+#: templates/modern/user_preferences.html:101
 msgid "Zone serial numbers"
 msgstr "Zonas sērijas numuri"
 
-#: templates/modern/user_preferences.html:43
+#: templates/modern/user_preferences.html:102
 msgid "Display serial numbers in zone lists"
 msgstr "Rādīt sērijas numurus zonu sarakstos"
 
-#: templates/modern/user_preferences.html:51
+#: templates/modern/user_preferences.html:110
 msgid "Display template information in zone lists"
 msgstr "Rādīt veidnes informāciju zonu sarakstos"
 
-#: templates/modern/user_preferences.html:64
+#: templates/modern/user_preferences.html:123
 msgid "Interface Behavior"
 msgstr "Saskarnes darbība"
 
-#: templates/modern/user_preferences.html:69
+#: templates/modern/user_preferences.html:128
 msgid "Record form"
 msgstr "Ieraksta veidlapa"
 
-#: templates/modern/user_preferences.html:78
+#: templates/modern/user_preferences.html:137
 msgid "Save buttons"
 msgstr "Saglabāšanas pogas"
 
-#: templates/modern/user_preferences.html:88
+#: templates/modern/user_preferences.html:147
 msgid "Edit Zone View"
 msgstr "Rediģēt zonas skatu"
 
-#: templates/modern/user_preferences.html:93
+#: templates/modern/user_preferences.html:153
 msgid "Show record ID"
 msgstr "Rādīt ieraksta ID"
 
-#: templates/modern/user_preferences.html:94
+#: templates/modern/user_preferences.html:154
 msgid "Display record ID column in edit view"
 msgstr "Rādīt ieraksta ID kolonnu rediģēšanā"
 
-#: templates/modern/user_preferences.html:101
+#: templates/modern/user_preferences.html:162
 msgid "Show add record form"
 msgstr "Rādīt pievienošanas veidlapu"
 
-#: templates/modern/user_preferences.html:102
+#: templates/modern/user_preferences.html:163
 msgid "Display inline add record form in edit view"
 msgstr "Rādīt iebūvētu ieraksta pievienošanas veidlapu"
 
-#: templates/modern/user_preferences.html:109
+#: templates/modern/user_preferences.html:170
 msgid "Show edit buttons"
 msgstr "Rādīt rediģēšanas pogas"
 
-#: templates/modern/user_preferences.html:110
+#: templates/modern/user_preferences.html:171
 msgid "Display individual edit button per record"
 msgstr "Rādīt individuālu rediģēšanas pogu katram ierakstam"
 
-#: templates/modern/user_preferences.html:117
+#: templates/modern/user_preferences.html:178
 msgid "Show delete buttons"
 msgstr "Rādīt dzēšanas pogas"
 
-#: templates/modern/user_preferences.html:118
+#: templates/modern/user_preferences.html:179
 msgid "Display individual delete button per record"
 msgstr "Rādīt individuālu dzēšanas pogu katram ierakstam"
 
-#: templates/modern/user_preferences.html:125
+#: templates/modern/user_preferences.html:186
 msgid "Hostname-only display"
 msgstr "Rādīt tikai resursdatora vārdu"
 
-#: templates/modern/user_preferences.html:126
+#: templates/modern/user_preferences.html:187
 msgid "Strip zone suffix from record names in edit view"
 msgstr "Noņemt zonas piedēkli no ierakstu nosaukumiem rediģēšanas skatā"
 
-#: templates/modern/user_preferences.html:141
+#: templates/modern/user_preferences.html:202
 msgid "Save Preferences"
 msgstr "Saglabāt preferences"
 
-#: templates/modern/user_preferences.html:147
+#: templates/modern/user_preferences.html:208
 msgid "Changes will be applied after saving"
 msgstr "Izmaiņas tiks piemērotas pēc saglabāšanas"
 
@@ -11878,31 +12105,31 @@ msgstr "Filtra sintakse: type:txt content:spf."
 msgid "Zones found"
 msgstr "Atrastas zonas"
 
-#: templates/default/search.html:316 templates/modern/search.html:316
+#: templates/default/search.html:318 templates/modern/search.html:318
 msgid "Records found"
 msgstr "Atrasti ieraksti"
 
-#: templates/default/search.html:501 templates/modern/search.html:501
+#: templates/default/search.html:504 templates/modern/search.html:504
 msgid "Try different search terms or filters"
 msgstr "Mēģiniet citus meklēšanas vārdus vai filtrus"
 
-#: templates/default/search.html:664 templates/modern/search.html:675
+#: templates/default/search.html:667 templates/modern/search.html:678
 msgid "Confirm Zone Deletion"
 msgstr "Apstiprināt zonas dzēšanu"
 
-#: templates/modern/search.html:680 templates/modern/search.html:706
+#: templates/modern/search.html:683 templates/modern/search.html:709
 msgid "Are you sure you want to delete"
 msgstr "Vai tiešām vēlaties dzēst"
 
-#: templates/default/search.html:669 templates/modern/search.html:680
+#: templates/default/search.html:672 templates/modern/search.html:683
 msgid "selected zone(s)?"
 msgstr "atlasīto zonu(as)?"
 
-#: templates/default/search.html:690 templates/modern/search.html:701
+#: templates/default/search.html:693 templates/modern/search.html:704
 msgid "Confirm Record Deletion"
 msgstr "Apstiprināt ieraksta dzēšanu"
 
-#: templates/default/search.html:695 templates/modern/search.html:706
+#: templates/default/search.html:698 templates/modern/search.html:709
 msgid "selected record(s)?"
 msgstr "atlasītos ierakstus?"
 
@@ -11934,7 +12161,7 @@ msgstr "Jā, dzēst šīs zonas"
 msgid "No, keep these zones"
 msgstr "Nē, paturēt šīs zonas"
 
-#: templates/modern/list_log_users.html:5 templates/modern/header.html:216
+#: templates/modern/list_log_users.html:5 templates/modern/header.html:217
 msgid "User logs"
 msgstr "lietotāja žurnāli"
 
@@ -11942,15 +12169,15 @@ msgstr "lietotāja žurnāli"
 msgid "User Activity Logs"
 msgstr "Lietotāja aktivitāšu žurnāli"
 
-#: templates/modern/add_zone_slave.html:24
+#: templates/modern/add_zone_slave.html:25
 msgid "Slave Zone Configuration"
 msgstr "Sekundārās zonas konfigurācija"
 
-#: templates/modern/add_zone_slave.html:37
+#: templates/modern/add_zone_slave.html:42
 msgid "Provide IP address"
 msgstr "Norādiet IP adresi"
 
-#: templates/modern/add_zone_slave.html:38
+#: templates/modern/add_zone_slave.html:43
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
@@ -12101,183 +12328,184 @@ msgstr "Šie priekšskatījumi atspoguļo reālās veidnes ražošanā"
 msgid "PowerDNS Server Status"
 msgstr "PowerDNS servera statuss"
 
-#: templates/default/pdns_status.html:16 templates/modern/pdns_status.html:17
+#: templates/default/pdns_status.html:15 templates/modern/pdns_status.html:16
 msgid "Refresh Status"
 msgstr "Atsvaidzināt statusu"
 
-#: templates/default/pdns_status.html:25 templates/modern/pdns_status.html:26
+#: templates/default/pdns_status.html:23 templates/modern/pdns_status.html:24
 msgid ""
 "PowerDNS API is not configured. Please configure the PowerDNS API URL and "
 "key in your settings."
 msgstr "PowerDNS API nav konfigurēts. Konfigurējiet URL un atslēgu."
 
-#: templates/default/pdns_status.html:32 templates/modern/pdns_status.html:33
+#: templates/default/pdns_status.html:30 templates/modern/pdns_status.html:31
 msgid "Server Running"
 msgstr "Serveris darbojas"
 
-#: templates/default/pdns_status.html:37 templates/modern/pdns_status.html:38
+#: templates/default/pdns_status.html:35 templates/modern/pdns_status.html:36
 msgid "Server Not Running"
 msgstr "Serveris nedarbojas"
 
-#: templates/default/pdns_status.html:51 templates/modern/pdns_status.html:52
+#: templates/default/pdns_status.html:49 templates/modern/pdns_status.html:50
 msgid "Server Information"
 msgstr "Servera informācija"
 
-#: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:59
+#: templates/default/pdns_status.html:56 templates/modern/pdns_status.html:57
 msgid "PDNS Server"
 msgstr "PDNS serveris"
 
-#: templates/default/pdns_status.html:62 templates/modern/pdns_status.html:63
+#: templates/default/pdns_status.html:60 templates/modern/pdns_status.html:61
 msgid "Server Name"
 msgstr "Servera nosaukums"
 
-#: templates/default/pdns_status.html:67 templates/modern/pdns_status.html:68
+#: templates/default/pdns_status.html:65 templates/modern/pdns_status.html:66
 msgid "Server ID"
 msgstr "Servera ID"
 
-#: templates/default/pdns_status.html:72 templates/modern/pdns_status.html:73
+#: templates/default/pdns_status.html:70 templates/modern/pdns_status.html:71
 msgid "PowerDNS Version"
 msgstr "PowerDNS versija"
 
-#: templates/default/pdns_status.html:76 templates/modern/pdns_status.html:77
+#: templates/default/pdns_status.html:74 templates/modern/pdns_status.html:75
 msgid "Daemon Type"
 msgstr "Dēmona veids"
 
-#: templates/modern/pdns_status.html:82 templates/modern/pdns_status.html:183
+#: templates/modern/pdns_status.html:80 templates/modern/pdns_status.html:174
 msgid "Uptime"
 msgstr "Darbības laiks"
 
-#: templates/default/pdns_status.html:90 templates/modern/pdns_status.html:91
+#: templates/default/pdns_status.html:88 templates/modern/pdns_status.html:89
 msgid "Server information is not available."
 msgstr "Servera informācija nav pieejama."
 
-#: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:102
+#: templates/default/pdns_status.html:99 templates/modern/pdns_status.html:100
 msgid "Slave Servers"
 msgstr "Sekundārie serveri"
 
-#: templates/default/pdns_status.html:104 templates/modern/pdns_status.html:105
+#: templates/default/pdns_status.html:102 templates/modern/pdns_status.html:103
 msgid ""
 "Showing connectivity status for DNS servers listed in the supermasters table."
 msgstr "Rāda DNS serveru savienojamības statusu no supermaster tabulas."
 
-#: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:115
+#: templates/default/pdns_status.html:106 templates/modern/pdns_status.html:107
 msgid "Server IP"
 msgstr "Servera IP"
 
-#: templates/default/pdns_status.html:116 templates/modern/pdns_status.html:117
+#: templates/default/pdns_status.html:108 templates/modern/pdns_status.html:109
 msgid "Last Checked"
 msgstr "Pēdējoreiz pārbaudīts"
 
-#: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:126
+#: templates/default/pdns_status.html:117 templates/modern/pdns_status.html:118
 #: install/templates/step2.html.twig:18
 msgid "OK"
 msgstr "Labi"
 
-#: templates/default/pdns_status.html:127 templates/modern/pdns_status.html:128
+#: templates/default/pdns_status.html:119 templates/modern/pdns_status.html:120
 msgid "Unreachable"
 msgstr "Nesasniedzams"
 
-#: templates/default/pdns_status.html:129 templates/modern/pdns_status.html:130
-msgid "Error"
-msgstr "Kļūda"
+#: templates/default/pdns_status.html:121 templates/modern/pdns_status.html:122
+#, auto-english-fallback
+msgid "Not checked"
+msgstr "Not checked"
 
-#: templates/default/pdns_status.html:160 templates/modern/pdns_status.html:161
+#: templates/default/pdns_status.html:151 templates/modern/pdns_status.html:152
 msgid "Server Statistics"
 msgstr "Servera statistika"
 
-#: templates/default/pdns_status.html:170 templates/modern/pdns_status.html:171
+#: templates/default/pdns_status.html:161 templates/modern/pdns_status.html:162
 msgid "Server Health"
 msgstr "Servera stāvoklis"
 
-#: templates/modern/pdns_status.html:190 templates/modern/api_keys.html:53
+#: templates/modern/pdns_status.html:181 templates/modern/api_keys.html:53
 msgid "Unknown"
 msgstr "Nezināms"
 
-#: templates/default/pdns_status.html:198 templates/modern/pdns_status.html:199
+#: templates/default/pdns_status.html:189 templates/modern/pdns_status.html:190
 msgid "Latency"
 msgstr "Aizture"
 
-#: templates/default/pdns_status.html:208 templates/modern/pdns_status.html:209
+#: templates/default/pdns_status.html:199 templates/modern/pdns_status.html:200
 msgid "CPU Usage"
 msgstr "CPU lietojums"
 
-#: templates/default/pdns_status.html:223 templates/modern/pdns_status.html:224
+#: templates/default/pdns_status.html:214 templates/modern/pdns_status.html:215
 msgid "Query Statistics"
 msgstr "Pieprasījumu statistika"
 
-#: templates/default/pdns_status.html:243 templates/modern/pdns_status.html:244
+#: templates/default/pdns_status.html:234 templates/modern/pdns_status.html:235
 msgid "UDP Queries"
 msgstr "UDP pieprasījumi"
 
-#: templates/default/pdns_status.html:260 templates/modern/pdns_status.html:261
+#: templates/default/pdns_status.html:251 templates/modern/pdns_status.html:252
 msgid "TCP Queries"
 msgstr "TCP pieprasījumi"
 
-#: templates/default/pdns_status.html:279 templates/modern/pdns_status.html:280
+#: templates/default/pdns_status.html:270 templates/modern/pdns_status.html:271
 msgid "Cache Hits"
 msgstr "Kešatmiņas trāpījumi"
 
-#: templates/default/pdns_status.html:296 templates/modern/pdns_status.html:297
+#: templates/default/pdns_status.html:287 templates/modern/pdns_status.html:288
 msgid "Cache Misses"
 msgstr "Kešatmiņas kļūmes"
 
-#: templates/default/pdns_status.html:331 templates/modern/pdns_status.html:332
+#: templates/default/pdns_status.html:322 templates/modern/pdns_status.html:323
 msgid "Toggle View"
 msgstr "Pārslēgt skatu"
 
-#: templates/default/pdns_status.html:336 templates/modern/pdns_status.html:337
+#: templates/default/pdns_status.html:327 templates/modern/pdns_status.html:328
 msgid "Refresh"
 msgstr "Atsvaidzināt"
 
-#: templates/modern/pdns_status.html:442
+#: templates/modern/pdns_status.html:433
 msgid "Bytes"
 msgstr "Baiti"
 
-#: templates/default/pdns_status.html:410 templates/modern/pdns_status.html:411
+#: templates/default/pdns_status.html:401 templates/modern/pdns_status.html:402
 msgid "Metric"
 msgstr "Metrika"
 
-#: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
+#: templates/default/pdns_status.html:456 templates/modern/pdns_status.html:457
 msgid "No detailed metrics available."
 msgstr "Nav pieejamu detalizētu rādītāju."
 
-#: templates/default/header.html:104 templates/modern/header.html:144
+#: templates/default/header.html:105 templates/modern/header.html:145
 msgid "Forward zones"
 msgstr "turpzonas"
 
-#: templates/default/header.html:105 templates/modern/header.html:149
+#: templates/default/header.html:106 templates/modern/header.html:150
 msgid "Reverse zones"
 msgstr "reversās zonas"
 
-#: templates/default/header.html:144 templates/modern/header.html:203
+#: templates/default/header.html:145 templates/modern/header.html:204
 msgid "List users"
 msgstr "Lietotāju saraksts"
 
-#: templates/default/header.html:165 templates/modern/header.html:235
+#: templates/default/header.html:166 templates/modern/header.html:236
 msgid "List groups"
 msgstr "Grupu saraksts"
 
-#: templates/modern/header.html:246 templates/modern/list_log_groups.html:5
+#: templates/modern/header.html:247 templates/modern/list_log_groups.html:5
 msgid "Group logs"
 msgstr "grupas žurnāli"
 
-#: templates/default/header.html:185 templates/modern/header.html:265
+#: templates/default/header.html:186 templates/modern/header.html:266
 msgid "List templates"
 msgstr "Veidņu saraksts"
 
-#: templates/default/header.html:202 templates/modern/header.html:290
+#: templates/default/header.html:203 templates/modern/header.html:291
 msgid "List zone templates"
 msgstr "Zonu veidņu saraksts"
 
-#: templates/default/header.html:229 templates/modern/header.html:330
+#: templates/default/header.html:230 templates/modern/header.html:331
 msgid "API Documentation"
 msgstr "API dokumentācija"
 
-#: templates/default/header.html:322 templates/modern/header.html:491
+#: templates/default/header.html:323 templates/modern/header.html:492
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:326 templates/modern/header.html:495
+#: templates/default/header.html:327 templates/modern/header.html:496
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -12285,7 +12513,7 @@ msgstr ""
 "Pārbaudiet, vai pdns_api.key failā config/settings.php sakrīt ar PowerDNS "
 "konfigurēto API atslēgu.configured in PowerDNS."
 
-#: templates/default/header.html:328 templates/modern/header.html:497
+#: templates/default/header.html:329 templates/modern/header.html:498
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -12293,7 +12521,7 @@ msgstr ""
 "Pārbaudiet, vai pdns_api.server_name sakrīt ar to, ko ziņo PowerDNS "
 "(noklusējums 'localhost').'localhost')."
 
-#: templates/default/header.html:330 templates/modern/header.html:499
+#: templates/default/header.html:331 templates/modern/header.html:500
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -12305,7 +12533,7 @@ msgstr ""
 "after importing zones directly into the PowerDNS database is a single "
 "malformed record that fails zone serialization."
 
-#: templates/default/header.html:332 templates/modern/header.html:501
+#: templates/default/header.html:333 templates/modern/header.html:502
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -12407,11 +12635,11 @@ msgstr "Pievienot atlasītos"
 msgid "Are you sure you want to remove"
 msgstr "Vai tiešām vēlaties noņemt"
 
-#: templates/modern/manage_group_zones.html:211
+#: templates/modern/manage_group_zones.html:216
 msgid "zone(s) from this group?"
 msgstr "zonu/as no šīs grupas?"
 
-#: templates/modern/manage_group_zones.html:212
+#: templates/modern/manage_group_zones.html:217
 msgid "The zones will remain in the system."
 msgstr "Zonas paliks sistēmā."
 
@@ -12570,10 +12798,6 @@ msgstr "Aktīvas atslēgas dzēšana ietekmēs zonas drošību."
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Jūs gatavojaties dzēst DNSSEC atslēgu (ID"
 
-#: templates/default/add_group.html:35 templates/modern/add_group.html:35
-msgid "Select a template..."
-msgstr "Atlasiet veidni..."
-
 #: templates/modern/add_group.html:45
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
@@ -12623,10 +12847,6 @@ msgstr "pievienot piekļuves veidni"
 #: templates/modern/list_perm_templ.html:75
 msgid "User"
 msgstr "Lietotājs"
-
-#: templates/modern/list_perm_templ.html:75
-msgid "Group"
-msgstr "Grupa"
 
 #: templates/modern/list_perm_templ.html:41
 msgid "No access templates found"
@@ -12851,6 +13071,11 @@ msgstr "Ievadiet domēnu (piem., example.com) RDAP informācijai"
 msgid "RDAP results for"
 msgstr "RDAP rezultāti"
 
+#: lib/Module/Rdap/templates/rdap.html:46
+#, auto-english-fallback
+msgid "Please enter a domain name to perform an RDAP lookup."
+msgstr "Please enter a domain name to perform an RDAP lookup."
+
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
 msgstr "Izveidot ierobežotu tiesību lietotāju"
@@ -12915,7 +13140,7 @@ msgstr ""
 msgid "Continue to step"
 msgstr "Turpināt uz soli"
 
-#: install/templates/base.html.twig:37
+#: install/templates/base.html.twig:38
 msgid "Installation step"
 msgstr "Instalācijas solis"
 
@@ -13426,6 +13651,15 @@ msgstr ""
 "Konfigurējiet datubāzes savienojumu, izveidojiet administratora kontu un "
 "ģenerējiet konfigurācijas failu."
 
+#: install/templates/step3.html.twig:28
+#, auto-english-fallback
+msgid ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+msgstr ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+
 #: install/helpers/InstallStepHandler.php:176
 msgid "Missing PowerDNS tables:"
 msgstr "Trūkst PowerDNS tabulu:"
@@ -13566,121 +13800,33 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nevar izveidot savienojumu ar PowerDNS datubāzi \"%s\": %s"
 
-# OBSOLETE: msgid "About Bulk Registration"
-# OBSOLETE: msgstr "Par masveida reģistrāciju"
+#: install/helpers/LocaleHandler.php:90
+#, auto-english-fallback
+msgid ""
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
+msgstr ""
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
 
-# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
-# OBSOLETE: msgstr "Šis rīks ļauj izveidot vairākas DNS zonas uzreiz."
+# OBSOLETE: msgid "After Creation"
+# OBSOLETE: msgstr "Pēc izveides"
 
-# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
-# OBSOLETE: msgstr "Ievadiet vienu domēna vārdu rindā laukā Domēni"
-
-# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
-# OBSOLETE: msgstr "Atlasiet zonas veidni standarta ierakstu piemērošanai"
-
-# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
-# OBSOLETE: msgstr "Izvēlētajam īpašniekam būs pilna piekļuve visām izveidotajām zonām"
-
-# OBSOLETE: msgid "How It Works"
-# OBSOLETE: msgstr "Kā tas darbojas"
+# OBSOLETE: msgid "Change zone owner"
+# OBSOLETE: msgstr "Mainīt zonas īpašnieku"
 
 # OBSOLETE: msgid ""
-# OBSOLETE: "The system will attempt to create each zone with the same settings. "
-# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
-# OBSOLETE: "again."
-# OBSOLETE: msgstr "Sistēma mēģinās izveidot katru zonu. Neveiksmīgas tiks parādītas."
+# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
+# OBSOLETE: "time."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Jūs jebkurā laikā varat nodot zonas īpašumtiesības citam lietotājam no "
+# OBSOLETE: "lietotāju saraksta."
 
-# OBSOLETE: msgid "Tips & Recommendations"
-# OBSOLETE: msgstr "Padomi un ieteikumi"
+# OBSOLETE: msgid "Manage users"
+# OBSOLETE: msgstr "Pārvaldīt lietotājus"
 
-# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
-# OBSOLETE: msgstr "Lielākajai daļai standarta iestatījumu izmantojiet NATIVE"
-
-# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
-# OBSOLETE: msgstr "Vispirms izveidojiet veidni, ja nepieciešami standarta ieraksti"
-
-# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
-# OBSOLETE: msgstr "Jūs varat kopēt un ielīmēt domēnu sarakstu no izklājlapas"
-
-# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
-# OBSOLETE: msgstr "Pārliecinieties, ka domēnu nosaukumi atbilst DNS konvencijām"
+# OBSOLETE: msgid "Error"
+# OBSOLETE: msgstr "Kļūda"
 
 
 
-
-#: templates/default/edit_user.html:114
-msgid "Authentication settings can only be changed by an administrator"
-msgstr "Autentifikācijas iestatījumus var mainīt tikai administrators"
-
-#: lib/Domain/Model/UserManager.php:1118
-msgid "Email address already exists, please choose another one."
-msgstr "E-pasta adrese jau eksistē, izvēlieties citu."
-
-#: templates/modern/add_zone_slave.html:33
-msgid ""
-"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
-"name (e.g. 1.168.192.in-addr.arpa)."
-msgstr "Ievadiet tīklu (piem., 192.168.1.0/24 vai 2001:db8::/48) vai reversās zonas nosaukumu (piem., 1.168.192.in-addr.arpa)."
-
-#: lib/Application/Controller/AddZoneSlaveController.php:138
-msgid ""
-"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
-"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
-msgstr "Ievadiet tīklu CIDR pierakstā (piemēram, 192.168.1.0/24 vai 2001:db8::/48) vai reversās zonas nosaukumu, kas beidzas ar in-addr.arpa vai ip6.arpa."
-
-#: lib/Application/Controller/EditController.php:671
-msgid ""
-"Some records were not saved because the form exceeded the server limit on "
-"the number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "Daži ieraksti netika saglabāti, jo forma pārsniedza servera lauku skaita ierobežojumu. Lūdziet administratoram palielināt PHP \"max_input_vars\" iestatījumu."
-
-#: lib/Domain/Model/ZoneTemplate.php:670 lib/Domain/Model/ZoneTemplate.php:732
-msgid "The record does not belong to this zone template."
-msgstr "Ieraksts nepieder šai zonas veidnei."
-
-#: templates/default/edit_user.html:33
-msgid "Your username can only be changed by an administrator"
-msgstr "Jūsu lietotājvārdu var mainīt tikai administrators"
-
-#: templates/modern/user_preferences.html:55
-msgid "City"
-msgstr "Pilsēta"
-
-#: lib/Application/Controller/DatabaseConsistencyController.php:54
-msgid ""
-"Database consistency checks are not available when using the PowerDNS API "
-"backend."
-msgstr "Datubāzes konsistences pārbaudes nav pieejamas, izmantojot PowerDNS API aizmuguri."
-
-#: templates/modern/user_preferences.html:48
-msgid "Inherit global setting"
-msgstr "Mantot globālo iestatījumu"
-
-#: templates/default/index.html:27 templates/modern/index.html:27
-msgid ""
-"Password reset is enabled but interface.application_url is not configured, "
-"so reset emails are not being sent. Set application_url to your public base "
-"URL."
-msgstr "Paroles atiestatīšana ir iespējota, bet interface.application_url nav konfigurēts, tāpēc atiestatīšanas e-pasti netiek sūtīti. Iestatiet application_url uz jūsu publisko bāzes URL."
-
-#: templates/modern/user_preferences.html:46
-msgid "Region"
-msgstr "Reģions"
-
-#: templates/modern/user_preferences.html:36
-msgid "Timezone"
-msgstr "Laika josla"
-
-#: templates/modern/user_preferences.html:64
-msgid ""
-"Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
-"the global server timezone."
-msgstr "Izmanto laika zīmogiem e-pastos, kas jums tiek sūtīti (piem., MFA kodi). Tukšs manto globālo servera laika joslu."
-
-#: lib/Application/Controller/DeleteUserController.php:129
-msgid ""
-"The user was not deleted because the form exceeded the server limit on the "
-"number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "Lietotājs netika dzēsts, jo forma pārsniedza servera lauku skaita ierobežojumu. Lūdziet administratoram palielināt PHP \"max_input_vars\" iestatījumu."

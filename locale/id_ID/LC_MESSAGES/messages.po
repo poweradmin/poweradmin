@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.3.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-05-09 10:57+0300\n"
+"POT-Creation-Date: 2026-08-25 09:23+0300\n"
 "PO-Revision-Date: 2026-02-14 19:18+0200\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "DNS wizards are not enabled."
 msgstr "Wizard DNS tidak diaktifkan."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:48
+#: lib/Application/Controller/DnssecToggleKeyController.php:56
 msgid "Invalid zone ID."
 msgstr "ID zona tidak valid."
 
@@ -54,7 +54,7 @@ msgstr "Validasi gagal:"
 msgid "Failed to generate record:"
 msgstr "Gagal menghasilkan rekaman:"
 
-#: lib/Application/Controller/AddRecordController.php:184
+#: lib/Application/Controller/AddRecordController.php:189
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
@@ -62,7 +62,7 @@ msgstr ""
 "Rekaman ini tidak valid dan tidak dapat ditambahkan. Mungkin sudah ada atau "
 "berisi data yang tidak valid."
 
-#: lib/Application/Controller/AddRecordController.php:260
+#: lib/Application/Controller/AddRecordController.php:268
 msgid "The record was successfully added."
 msgstr "Rekaman berhasil ditambahkan."
 
@@ -333,7 +333,7 @@ msgstr ""
 "sertifikat lengkap."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:93 templates/modern/edit.html:673
+#: templates/modern/edit.html:93 templates/modern/edit.html:679
 msgid "Invalid hostname format"
 msgstr "Format nama host tidak valid"
 
@@ -1304,19 +1304,19 @@ msgstr "Gagal membuat zona."
 msgid "Failed to retrieve created zone."
 msgstr "Gagal mengambil zona yang dibuat."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:38
+#: lib/Module/CsvExport/Controller/CsvExportController.php:39
 msgid "You need to be logged in to export zone data."
 msgstr "Anda harus masuk untuk mengekspor data zona."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:55
+#: lib/Module/CsvExport/Controller/CsvExportController.php:56
 msgid "You do not have permission to export this zone."
 msgstr "Anda tidak memiliki izin untuk mengekspor zona ini."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:72
+#: lib/Application/Controller/DnssecToggleKeyController.php:80
 msgid "There is no zone with this ID."
 msgstr "Tidak ada zona dengan ID ini."
 
-#: lib/Module/CsvExport/Controller/CsvExportController.php:71
+#: lib/Module/CsvExport/Controller/CsvExportController.php:72
 msgid "This zone does not have any records to export."
 msgstr "Zona ini tidak memiliki rekaman untuk diekspor."
 
@@ -1346,19 +1346,11 @@ msgstr "RDAP"
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Gagal mengambil informasi RDAP menggunakan server %s"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:135
+#: lib/Infrastructure/Service/SessionAuthenticator.php:136
 msgid "Invalid CSRF token."
 msgstr "Token CSRF tidak valid."
 
-#: lib/BaseController.php:651
-msgid ""
-"The <a href=\"install/\">install/</a> directory exists, you must remove it "
-"first before proceeding."
-msgstr ""
-"Direktori <a href=\"install/\">install/</a> masih ada, Anda harus "
-"menghapusnya terlebih dahulu sebelum melanjutkan."
-
-#: lib/BaseController.php:708
+#: lib/BaseController.php:674
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -1366,12 +1358,29 @@ msgstr ""
 "Kunci enkripsi sesi default sedang digunakan, silakan atur di file "
 "konfigurasi Anda."
 
-#: lib/BaseController.php:852
+#: lib/BaseController.php:678
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/BaseController.php:720
+msgid ""
+"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"first before proceeding."
+msgstr ""
+"Direktori <a href=\"install/\">install/</a> masih ada, Anda harus "
+"menghapusnya terlebih dahulu sebelum melanjutkan."
+
+#: lib/BaseController.php:921
 #, php-format
 msgid "The %s field is required."
 msgstr "Kolom %s wajib diisi."
 
-#: lib/BaseController.php:860
+#: lib/BaseController.php:929
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Kolom %s harus berupa angka."
@@ -1392,18 +1401,18 @@ msgstr "Tampilkan zona yang dimulai dengan"
 msgid "Show all"
 msgstr "Tampilkan semua"
 
-#: lib/Application/Controller/DeleteRecordsController.php:81
+#: lib/Application/Controller/DeleteRecordsController.php:85
 msgid "No records selected for deletion."
 msgstr "Tidak ada rekaman yang dipilih untuk dihapus."
 
-#: lib/Application/Controller/DeleteRecordsController.php:202
+#: lib/Application/Controller/DeleteRecordsController.php:206
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr ""
 "Rekaman telah berhasil dihapus. Rekaman PTR yang terkait juga telah dihapus."
 
-#: lib/Application/Controller/DeleteRecordsController.php:204
+#: lib/Application/Controller/DeleteRecordsController.php:208
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -1412,34 +1421,44 @@ msgstr ""
 "%d rekaman telah berhasil dihapus. Rekaman PTR yang terkait juga telah "
 "dihapus."
 
-#: lib/Application/Controller/DeleteRecordsController.php:207
+#: lib/Application/Controller/DeleteRecordsController.php:211
 msgid "No records could be deleted. Please check permissions."
 msgstr "Tidak ada rekaman yang dapat dihapus. Silakan periksa izin akses."
 
-#: lib/Application/Controller/DeleteRecordsController.php:276
+#: lib/Application/Controller/DeleteRecordsController.php:279
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
 "Tidak ada rekaman valid yang dipilih untuk dihapus atau Anda tidak memiliki "
 "izin untuk menghapusnya."
 
-#: lib/Application/Controller/ZoneOwnershipController.php:75
+#: lib/Application/Controller/DnssecToggleKeyController.php:49
 msgid "Invalid or unexpected input given."
 msgstr "Input yang diberikan tidak valid atau tidak sesuai."
 
-#: lib/Domain/Model/UserManager.php:339
+#: lib/Domain/Model/UserManager.php:376
 msgid "You do not have the permission to delete this user."
 msgstr "Anda tidak memiliki izin untuk menghapus pengguna ini."
 
-#: lib/Application/Controller/DeleteUserController.php:77
+#: lib/Application/Controller/DeleteUserController.php:81
 msgid "You do not have permission to delete a superuser account."
 msgstr "Anda tidak memiliki izin untuk menghapus akun superuser."
 
-#: lib/Application/Controller/EditUserController.php:473
+#: lib/Application/Controller/EditUserController.php:594
 msgid "User does not exist."
 msgstr "Pengguna tidak ditemukan."
 
-#: lib/Application/Controller/DeleteUserController.php:112
+#: lib/Application/Controller/DeleteUserController.php:116
+msgid ""
+"The user was not deleted because the form exceeded the server limit on the "
+"number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"Pengguna tidak dihapus karena formulir melebihi batas server untuk jumlah "
+"bidang. Minta administrator Anda untuk menaikkan pengaturan PHP "
+"\"max_input_vars\"."
+
+#: lib/Application/Controller/DeleteUserController.php:138
 msgid "The user has been deleted successfully."
 msgstr "Pengguna telah berhasil dihapus."
 
@@ -1451,7 +1470,7 @@ msgstr "Fitur komentar zona dinonaktifkan dalam konfigurasi."
 msgid "You do not have the permission to view this comment."
 msgstr "Anda tidak memiliki izin untuk melihat komentar ini."
 
-#: lib/Domain/Service/Dns/RecordManager.php:455
+#: lib/Domain/Service/Dns/RecordManager.php:495
 msgid "You do not have the permission to edit this comment."
 msgstr "Anda tidak memiliki izin untuk mengedit komentar ini."
 
@@ -1467,7 +1486,7 @@ msgstr "ID rekaman tidak valid."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Anda tidak memiliki izin untuk menghapus rekaman di zona ini."
 
-#: lib/Application/Controller/EditRecordController.php:206
+#: lib/Domain/Service/Dns/RecordManager.php:413
 msgid "Record not found."
 msgstr "Rekaman tidak ditemukan."
 
@@ -1534,7 +1553,7 @@ msgid ""
 msgstr ""
 "Rekaman telah berhasil dihapus. Tidak ditemukan rekaman A/AAAA yang cocok."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:72
 msgid "The record has been deleted successfully."
 msgstr "Rekaman telah berhasil dihapus."
 
@@ -1571,24 +1590,24 @@ msgstr "Grup telah berhasil dihapus."
 msgid "Group not found."
 msgstr "Grup tidak ditemukan."
 
-#: lib/Application/Controller/UserPreferencesController.php:42
+#: lib/Application/Controller/UserPreferencesController.php:43
 #: templates/modern/user_preferences.html:4
 msgid "User Preferences"
 msgstr "Preferensi Pengguna"
 
-#: lib/Application/Controller/UserPreferencesController.php:101
+#: lib/Application/Controller/UserPreferencesController.php:126
 msgid "Preferences saved successfully."
 msgstr "Preferensi berhasil disimpan."
 
-#: lib/Application/Controller/UserPreferencesController.php:109
+#: lib/Application/Controller/UserPreferencesController.php:134
 msgid "Failed to update preferences. Please try again."
 msgstr "Gagal memperbarui preferensi. Silakan coba lagi."
 
-#: lib/Application/Controller/UserPreferencesController.php:124
+#: lib/Application/Controller/UserPreferencesController.php:149
 msgid "Top"
 msgstr "Atas"
 
-#: lib/Application/Controller/UserPreferencesController.php:125
+#: lib/Application/Controller/UserPreferencesController.php:150
 msgid "Bottom"
 msgstr "Bawah"
 
@@ -1604,32 +1623,32 @@ msgstr "Kelola Anggota Grup"
 msgid "Invalid action."
 msgstr "Tindakan tidak valid."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:197
+#: lib/Application/Controller/ManageGroupMembersController.php:217
 msgid "Please select at least one user."
 msgstr "Silakan pilih setidaknya satu pengguna."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:149
+#: lib/Application/Controller/ManageGroupMembersController.php:169
 #, php-format
 msgid "%d user added to group."
 msgid_plural "%d users added to group."
 msgstr[0] "%d pengguna ditambahkan ke grup."
 msgstr[1] "%d users added to group."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:176
+#: lib/Application/Controller/ManageGroupMembersController.php:196
 #, php-format
 msgid "%d user could not be added."
 msgid_plural "%d users could not be added."
 msgstr[0] "%d pengguna tidak dapat ditambahkan."
 msgstr[1] "%d users could not be added."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:225
+#: lib/Application/Controller/ManageGroupMembersController.php:242
 #, php-format
 msgid "%d user removed from group."
 msgid_plural "%d users removed from group."
 msgstr[0] "%d pengguna dihapus dari grup."
 msgstr[1] "%d users removed from group."
 
-#: lib/Application/Controller/ManageGroupMembersController.php:252
+#: lib/Application/Controller/ManageGroupMembersController.php:269
 #, php-format
 msgid "%d user could not be removed."
 msgid_plural "%d users could not be removed."
@@ -1660,7 +1679,7 @@ msgstr "Kode verifikasi diperlukan."
 msgid "MFA has been enabled successfully."
 msgstr "MFA telah berhasil diaktifkan."
 
-#: lib/Application/Controller/MfaVerifyController.php:274
+#: lib/Application/Controller/MfaVerifyController.php:278
 msgid "Invalid verification code. Please try again."
 msgstr "Kode verifikasi tidak valid. Silakan coba lagi."
 
@@ -1720,20 +1739,20 @@ msgstr "MFA harus diaktifkan untuk membuat ulang kode pemulihan."
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr "Kode pemulihan telah dibuat ulang. Silakan simpan di tempat yang aman."
 
-#: lib/Application/Controller/ListLogApiController.php:51
-#: templates/modern/list_log_api.html:4 templates/modern/header.html:323
+#: lib/Application/Controller/ListLogApiController.php:52
+#: templates/modern/list_log_api.html:4 templates/modern/header.html:324
 msgid "API Logs"
 msgstr "Log API"
 
-#: lib/Application/Controller/ListLogUsersController.php:93
+#: lib/Application/Controller/ListLogUsersController.php:94
 msgid "Invalid page number."
 msgstr "Nomor halaman tidak valid."
 
-#: lib/Application/Controller/ListLogUsersController.php:95
+#: lib/Application/Controller/ListLogUsersController.php:96
 msgid "Page number must be at least 1."
 msgstr "Nomor halaman harus minimal 1."
 
-#: lib/Application/Controller/ListLogUsersController.php:114
+#: lib/Application/Controller/ListLogUsersController.php:115
 msgid "Page number exceeds available pages."
 msgstr "Nomor halaman melebihi halaman yang tersedia."
 
@@ -1749,25 +1768,25 @@ msgstr "Anda tidak memiliki izin untuk melihat metadata zona."
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Anda tidak memiliki izin untuk mengedit metadata zona."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:151
+#: lib/Application/Controller/EditZoneMetadataController.php:164
 msgid "Zone metadata has been updated successfully."
 msgstr "Metadata zona berhasil diperbarui."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:156
+#: lib/Application/Controller/EditZoneMetadataController.php:169
 msgid "Failed to update zone metadata."
 msgstr "Gagal memperbarui metadata zona."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:178
+#: lib/Application/Controller/EditZoneMetadataController.php:191
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Edit Zone Metadata"
 msgstr "Edit metadata zona"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:178
+#: lib/Application/Controller/EditZoneMetadataController.php:191
 #: templates/modern/edit_zone_metadata.html:24
 msgid "Zone Metadata"
 msgstr "Metadata Zona"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:382
+#: lib/Application/Controller/EditZoneMetadataController.php:406
 #, php-format
 msgid ""
 "Metadata kind %s accepts only a single value. Add only one row for this kind."
@@ -1775,7 +1794,13 @@ msgstr ""
 "Jenis metadata %s hanya menerima satu nilai. Tambahkan hanya satu baris "
 "untuk jenis ini."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:476
+#: lib/Application/Controller/EditZoneMetadataController.php:453
+#, auto-english-fallback
+#, php-format
+msgid "Metadata kind %s can only be changed by an administrator."
+msgstr "Metadata kind %s can only be changed by an administrator."
+
+#: lib/Application/Controller/EditZoneMetadataController.php:558
 #: templates/modern/edit_zone_metadata.html:155
 msgid ""
 "Custom metadata kind stored directly in the PowerDNS domainmetadata table."
@@ -1783,21 +1808,21 @@ msgstr ""
 "Jenis metadata kustom yang disimpan langsung di tabel domainmetadata "
 "PowerDNS."
 
-#: lib/Application/Controller/EditZoneMetadataController.php:484
-#: templates/modern/pdns_status.html:412
+#: lib/Application/Controller/EditZoneMetadataController.php:566
+#: templates/modern/pdns_status.html:403
 msgid "Value"
 msgstr "Nilai"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:538
+#: lib/Application/Controller/EditZoneMetadataController.php:620
 #: templates/modern/email_previews.html:47
 msgid "Custom"
 msgstr "Kustom"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:543
+#: lib/Application/Controller/EditZoneMetadataController.php:625
 msgid "Multi"
 msgstr "Multi"
 
-#: lib/Application/Controller/EditZoneMetadataController.php:544
+#: lib/Application/Controller/EditZoneMetadataController.php:626
 msgid "Single"
 msgstr "Tunggal"
 
@@ -1853,7 +1878,7 @@ msgstr "diaktifkan"
 msgid "API key %s successfully."
 msgstr "Kunci API %s berhasil."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:108
+#: lib/Application/Controller/BatchPtrRecordController.php:111
 msgid "You do not have the permission to add records to this zone."
 msgstr "Anda tidak memiliki izin untuk menambahkan rekaman ke zona ini."
 
@@ -1886,25 +1911,43 @@ msgstr "ID zona diperlukan."
 msgid "You do not have the permission to edit permission templates."
 msgstr "Anda tidak memiliki izin untuk mengedit template izin."
 
-#: lib/Application/Controller/EditPermTemplController.php:63
+#: lib/Application/Controller/EditPermTemplController.php:65
 msgid "Edit Permission Template"
 msgstr "Edit Templat Izin"
 
-#: lib/Application/Controller/EditPermTemplController.php:96
+#: lib/Application/Controller/EditPermTemplController.php:120
 msgid "The permission template has been updated successfully."
 msgstr "Template izin telah berhasil diperbarui."
+
+#: lib/Application/Controller/EditPermTemplController.php:170
+#, auto-english-fallback
+msgid ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Application/Controller/AddPermTemplController.php:146
+#, auto-english-fallback
+msgid ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
+msgstr ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
 
 #: lib/Application/Controller/ListGroupsController.php:60
 #: templates/modern/manage_group_members.html:4
 msgid "Groups"
 msgstr "Hapus pencarian tersimpan"
 
-#: lib/Application/Controller/SearchController.php:45
+#: lib/Application/Controller/SearchController.php:50
 msgid "You do not have the permission to perform searches."
 msgstr "Anda tidak memiliki izin untuk melakukan pencarian."
 
-#: lib/Application/Controller/SearchController.php:49
-#: templates/modern/header.html:127 templates/modern/list_log_groups.html:44
+#: lib/Application/Controller/SearchController.php:54
+#: templates/modern/header.html:128 templates/modern/list_log_groups.html:44
 msgid "Search"
 msgstr "Sehat"
 
@@ -1924,37 +1967,42 @@ msgstr "Anggota berhasil dihapus dari grup."
 msgid "User was not a member of this group."
 msgstr "Pengguna bukan anggota grup ini."
 
-#: lib/Domain/Model/UserManager.php:1003
+#: lib/Domain/Model/UserManager.php:1204
 msgid "You do not have the permission to add a new user."
 msgstr "Anda tidak memiliki izin untuk menambahkan pengguna baru."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:13 templates/modern/add_user.html:112
+#: templates/modern/add_user.html:13 templates/modern/add_user.html:113
 msgid "Add User"
 msgstr "Tambah Pengguna"
 
-#: lib/Application/Controller/EditUserController.php:274
+#: lib/Application/Controller/AddUserController.php:125
+#, auto-english-fallback
+msgid "No non-superuser permission template is available to assign."
+msgstr "No non-superuser permission template is available to assign."
+
+#: lib/Application/Controller/EditUserController.php:310
 msgid "Invalid permission template: must be a user template"
 msgstr "Template izin tidak valid: harus berupa template pengguna"
 
-#: lib/Application/Controller/AddUserController.php:144
+#: lib/Application/Controller/AddUserController.php:150
 msgid "The user has been created successfully."
 msgstr "Pengguna telah berhasil dibuat."
 
-#: lib/Application/Controller/AddUserController.php:159
+#: lib/Application/Controller/AddUserController.php:165
 #, php-format
 msgid "Generated password: %s"
 msgstr "Kata sandi yang dihasilkan: %s"
 
-#: lib/Application/Controller/AddUserController.php:175
+#: lib/Application/Controller/AddUserController.php:181
 msgid "Login details have been sent to the user via email."
 msgstr "Detail login telah dikirim ke pengguna melalui email."
 
-#: lib/Application/Controller/AddUserController.php:177
+#: lib/Application/Controller/AddUserController.php:183
 msgid "NOTE: Failed to send login details via email."
 msgstr "CATATAN: Gagal mengirim detail login melalui email."
 
-#: lib/Application/Controller/AddUserController.php:183
+#: lib/Application/Controller/AddUserController.php:189
 msgid "A password was generated but is not displayed for security reasons."
 msgstr ""
 "Kata sandi telah dihasilkan tetapi tidak ditampilkan karena alasan keamanan."
@@ -1963,31 +2011,35 @@ msgstr ""
 msgid "Please fill in all required fields correctly."
 msgstr "Silakan isi semua kolom yang diperlukan dengan benar."
 
-#: lib/Domain/Service/Dns/RecordManager.php:396
+#: lib/Domain/Service/Dns/RecordManager.php:436
 msgid "You do not have the permission to delete this record."
 msgstr "Anda tidak memiliki izin untuk menghapus rekaman ini."
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:78
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:75
 msgid "The record could not be deleted."
 msgstr "Rekaman tidak dapat dihapus."
 
-#: lib/Application/Controller/ListLogZonesController.php:72
-#: templates/default/index.html:248 templates/modern/index.html:248
+#: lib/Application/Controller/ListLogZonesController.php:74
+#: templates/default/index.html:258 templates/modern/index.html:258
 msgid "Zone Logs"
 msgstr "Zone dimodifikasi"
 
-#: lib/Application/Controller/UsersController.php:51
+#: lib/Application/Controller/UsersController.php:52
 msgid "You do not have permission to view the users list."
 msgstr "Anda tidak memiliki izin untuk melihat daftar pengguna."
 
-#: lib/Application/Controller/UsersController.php:58
+#: lib/Application/Controller/UsersController.php:59
 #: templates/modern/list_perm_templ.html:4
 msgid "Users"
 msgstr "Zone diekspor"
 
-#: lib/Application/Controller/UsersController.php:78
+#: lib/Application/Controller/UsersController.php:92
 msgid "User details updated"
 msgstr "Detail pengguna diperbarui"
+
+#: lib/Application/Controller/EditUserController.php:268
+msgid "You do not have permission to edit a superuser account."
+msgstr "Anda tidak memiliki izin untuk mengedit akun superuser."
 
 #: lib/Application/Controller/EditZoneTemplController.php:60
 msgid "No template ID provided."
@@ -2017,7 +2069,7 @@ msgstr "Zona telah berhasil diperbarui."
 msgid "You do not have permission to create new zone templates."
 msgstr "Anda tidak memiliki izin untuk membuat template zona baru."
 
-#: lib/Domain/Model/ZoneTemplate.php:317 lib/Domain/Model/ZoneTemplate.php:1062
+#: lib/Domain/Model/ZoneTemplate.php:344 lib/Domain/Model/ZoneTemplate.php:1220
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Template zona dengan nama ini sudah ada, silakan pilih nama lain."
 
@@ -2049,8 +2101,8 @@ msgstr "Template tidak ditemukan."
 msgid "You do not have permission to view this zone."
 msgstr "Anda tidak memiliki izin untuk melihat zona ini."
 
-#: lib/Application/Controller/ListLogUsersController.php:61
-#: templates/default/index.html:258 templates/modern/index.html:258
+#: lib/Application/Controller/ListLogUsersController.php:62
+#: templates/default/index.html:268 templates/modern/index.html:268
 msgid "User Logs"
 msgstr "DNSSEC enabled"
 
@@ -2100,35 +2152,35 @@ msgstr "Edit Zona"
 msgid "You do not have permission to access this zone."
 msgstr "Anda tidak memiliki izin untuk mengakses zona ini."
 
-#: lib/Infrastructure/Repository/SqlDomainRepository.php:434
+#: lib/Infrastructure/Repository/SqlDomainRepository.php:466
 msgid "You do not have the permission to view this zone."
 msgstr "Anda tidak memiliki izin untuk melihat zona ini."
 
-#: lib/Application/Controller/EditController.php:276
+#: lib/Application/Controller/EditController.php:292
 msgid "Zone type has been changed successfully."
 msgstr "Tipe zona telah berhasil diubah."
 
-#: lib/Application/Controller/EditController.php:284
+#: lib/Application/Controller/EditController.php:300
 msgid "Slave master has been changed successfully."
 msgstr "Master slave telah berhasil diubah."
 
-#: lib/Application/Controller/EditController.php:305
+#: lib/Application/Controller/EditController.php:321
 msgid "Zone template has been changed successfully."
 msgstr "Template zona telah berhasil diubah."
 
-#: lib/Application/Controller/EditController.php:317
+#: lib/Application/Controller/EditController.php:333
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC tidak diaktifkan pada server."
 
-#: lib/Application/Controller/EditController.php:320
+#: lib/Application/Controller/EditController.php:336
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zona sudah ditandatangani dengan DNSSEC."
 
-#: lib/Application/Controller/EditController.php:342
+#: lib/Application/Controller/EditController.php:358
 msgid "Zone has been signed successfully."
 msgstr "Zona telah berhasil ditandatangani."
 
-#: lib/Application/Controller/EditController.php:347
+#: lib/Application/Controller/EditController.php:363
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2136,7 +2188,7 @@ msgstr ""
 "Penandatanganan zona berhasil diminta, tetapi verifikasi gagal. Periksa "
 "kunci DNSSEC."
 
-#: lib/Application/Controller/EditController.php:351
+#: lib/Application/Controller/EditController.php:367
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2162,15 +2214,25 @@ msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Gagal menghapus tanda tangan zona. Periksa log PowerDNS untuk detailnya."
 
-#: lib/Application/Controller/EditController.php:738
+#: lib/Application/Controller/EditController.php:671
+msgid ""
+"Some records were not saved because the form exceeded the server limit on "
+"the number of fields. Ask your administrator to increase the PHP "
+"\"max_input_vars\" setting."
+msgstr ""
+"Beberapa rekaman tidak disimpan karena formulir melebihi batas server untuk "
+"jumlah bidang. Minta administrator Anda untuk menaikkan pengaturan PHP "
+"\"max_input_vars\"."
+
+#: lib/Application/Controller/EditController.php:779
 msgid "Request has expired, please try again."
 msgstr "Permintaan telah kedaluwarsa, silakan coba lagi."
 
-#: lib/Application/Controller/EditController.php:743
+#: lib/Application/Controller/EditController.php:784
 msgid "Zone has been updated successfully."
 msgstr "Zona telah berhasil diperbarui."
 
-#: lib/Application/Controller/EditController.php:745
+#: lib/Application/Controller/EditController.php:786
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2178,28 +2240,28 @@ msgstr ""
 "Zona berhasil disimpan. Tidak ada perubahan rekaman, tetapi serial SOA telah "
 "dinaikkan."
 
-#: lib/Application/Controller/EditController.php:754
+#: lib/Application/Controller/EditController.php:795
 msgid "Zone has not been updated successfully."
 msgstr "Zona gagal diperbarui."
 
-#: lib/Application/Controller/EditController.php:782
+#: lib/Application/Controller/EditController.php:823
 msgid "Please provide all required fields."
 msgstr "Silakan isi semua kolom yang diperlukan."
 
-#: lib/Application/Controller/AddRecordController.php:244
+#: lib/Application/Controller/AddRecordController.php:252
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr ""
 "Rekaman berhasil ditambahkan. Rekaman PTR yang cocok juga telah dibuat."
 
-#: lib/Application/Controller/AddRecordController.php:249
+#: lib/Application/Controller/AddRecordController.php:257
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Rekaman berhasil ditambahkan, tetapi pembuatan rekaman PTR gagal: "
 
-#: lib/Application/Controller/AddRecordController.php:253
+#: lib/Application/Controller/AddRecordController.php:261
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Rekaman berhasil ditambahkan, tetapi pembuatan rekaman PTR gagal."
 
-#: lib/Application/Controller/AddRecordController.php:257
+#: lib/Application/Controller/AddRecordController.php:265
 msgid "Record successfully added. A matching A record was also created."
 msgstr "Rekaman berhasil ditambahkan. Rekaman A yang cocok juga telah dibuat."
 
@@ -2215,7 +2277,7 @@ msgstr "Catatan MFA tidak ditemukan. Silakan hubungi administrator."
 msgid "An error occurred. Please try again."
 msgstr "Terjadi kesalahan. Silakan coba lagi."
 
-#: lib/Application/Controller/MfaVerifyController.php:297
+#: lib/Application/Controller/MfaVerifyController.php:301
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2223,15 +2285,15 @@ msgstr ""
 "Verifikasi email tidak tersedia karena layanan email dinonaktifkan. Silakan "
 "gunakan kode pemulihan."
 
-#: lib/Application/Controller/MfaVerifyController.php:307
+#: lib/Application/Controller/MfaVerifyController.php:311
 msgid "A new verification code has been sent to your email."
 msgstr "Kode verifikasi baru telah dikirim ke email Anda."
 
-#: lib/Application/Controller/MfaVerifyController.php:313
+#: lib/Application/Controller/MfaVerifyController.php:317
 msgid "Please use a recovery code instead."
 msgstr "Silakan gunakan kode pemulihan sebagai gantinya."
 
-#: lib/Application/Controller/MfaVerifyController.php:318
+#: lib/Application/Controller/MfaVerifyController.php:322
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2239,34 +2301,34 @@ msgstr ""
 "Tidak dapat mengirim kode verifikasi ke email Anda. Silakan gunakan kode "
 "pemulihan sebagai gantinya."
 
-#: lib/Domain/Service/Dns/RecordManager.php:216
+#: lib/Domain/Service/Dns/RecordManager.php:229
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Anda tidak memiliki izin untuk menambahkan rekaman ke zona ini."
 
-#: lib/Application/Controller/AddRecordController.php:241
+#: lib/Application/Controller/AddRecordController.php:249
 msgid "Record successfully added."
 msgstr "Rekaman berhasil ditambahkan."
 
-#: lib/Application/Controller/AddRecordController.php:433
+#: lib/Application/Controller/AddRecordController.php:456
 msgid "No records were provided."
 msgstr "Tidak ada rekaman yang diberikan."
 
-#: lib/Application/Controller/AddRecordController.php:487
+#: lib/Application/Controller/AddRecordController.php:522
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d rekaman berhasil ditambahkan."
 
-#: lib/Application/Controller/AddRecordController.php:489
+#: lib/Application/Controller/AddRecordController.php:524
 #, php-format
 msgid "%d matching record(s) were also created."
 msgstr "%d catatan yang cocok juga dibuat."
 
-#: lib/Application/Controller/AddRecordController.php:492
+#: lib/Application/Controller/AddRecordController.php:527
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d rekaman gagal ditambahkan."
 
-#: lib/Application/Controller/AddRecordController.php:497
+#: lib/Application/Controller/AddRecordController.php:532
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -2274,7 +2336,7 @@ msgstr ""
 "Beberapa rekaman tidak dapat ditambahkan. Mungkin sudah ada atau berisi data "
 "yang tidak valid."
 
-#: lib/Application/Controller/AddRecordController.php:523
+#: lib/Application/Controller/AddRecordController.php:562
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "Gagal menambahkan rekaman apa pun. Data mungkin tidak valid."
 
@@ -2282,17 +2344,17 @@ msgstr "Gagal menambahkan rekaman apa pun. Data mungkin tidak valid."
 msgid "No zone selected for deletion."
 msgstr "Tidak ada zona yang dipilih untuk dihapus."
 
+#: lib/Domain/Service/Dns/DomainManager.php:690
+msgid "You do not have the permission to delete a zone."
+msgstr "Anda tidak memiliki izin untuk menghapus zona."
+
 #: lib/Application/Controller/DeleteDomainController.php:141
 msgid "Zone has been deleted successfully."
 msgstr "Zona telah berhasil dihapus."
 
-#: lib/Application/Controller/DeleteDomainsController.php:156
+#: lib/Application/Controller/DeleteDomainsController.php:170
 msgid "Zones have been deleted successfully."
 msgstr "Zona telah berhasil dihapus."
-
-#: lib/Domain/Service/Dns/DomainManager.php:671
-msgid "You do not have the permission to delete a zone."
-msgstr "Anda tidak memiliki izin untuk menghapus zona."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:80
 msgid "You do not have the permission to edit zone template records."
@@ -2302,7 +2364,7 @@ msgstr "Anda tidak memiliki izin untuk mengedit rekaman template zona."
 msgid "OIDC authentication is not enabled"
 msgstr "Autentikasi OIDC tidak diaktifkan"
 
-#: lib/Application/Service/SamlService.php:387
+#: lib/Application/Service/SamlService.php:421
 msgid "Authentication failed: "
 msgstr "Autentikasi gagal: "
 
@@ -2326,12 +2388,12 @@ msgstr "Tidak ada penyedia OIDC yang dikonfigurasi"
 msgid "Failed to initiate OIDC authentication: "
 msgstr "Gagal memulai autentikasi OIDC: "
 
-#: lib/Application/Controller/ListLogGroupsController.php:66
-#: templates/default/index.html:268 templates/modern/index.html:268
+#: lib/Application/Controller/ListLogGroupsController.php:67
+#: templates/default/index.html:278 templates/modern/index.html:278
 msgid "Group Logs"
 msgstr "Log Grup"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:65
+#: lib/Application/Controller/DnssecToggleKeyController.php:73
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Anda tidak memiliki izin untuk mengelola DNSSEC pada zona ini."
 
@@ -2351,7 +2413,7 @@ msgstr ""
 "Tidak dapat mengambil kunci PEM. Server mungkin tidak mengekspos materi "
 "kunci pribadi untuk kunci ini."
 
-#: lib/Domain/Service/Dns/DomainManager.php:309
+#: lib/Domain/Service/Dns/DomainManager.php:316
 msgid "You do not have the permission to add a master zone."
 msgstr "Anda tidak memiliki izin untuk menambahkan zona master."
 
@@ -2375,6 +2437,15 @@ msgstr ""
 "Mode kepemilikan zona adalah groups_only tetapi Anda bukan anggota grup mana "
 "pun. Minta administrator untuk menambahkan Anda ke grup sebelum membuat zona."
 
+#: lib/Application/Controller/AddZoneSlaveController.php:138
+msgid ""
+"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
+"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
+msgstr ""
+"Masukkan jaringan dalam notasi CIDR (misalnya 192.168.1.0/24 atau "
+"2001:db8::/48) atau nama zona reverse yang diakhiri dengan in-addr.arpa atau "
+"ip6.arpa."
+
 #: lib/Application/Controller/BulkRegistrationController.php:171
 msgid "At least one user or group must be selected as owner."
 msgstr "Setidaknya satu pengguna atau grup harus dipilih sebagai pemilik."
@@ -2387,7 +2458,7 @@ msgstr "Anda tidak memiliki izin untuk membuat zona untuk pengguna lain."
 msgid "There is already a zone with this name."
 msgstr "Sudah ada zona dengan nama ini."
 
-#: lib/Application/Controller/AddZoneMasterController.php:221
+#: lib/Application/Controller/AddZoneMasterController.php:268
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2395,7 +2466,7 @@ msgstr ""
 "Zona berhasil dibuat, tetapi penandatanganan DNSSEC dilewati karena "
 "kesalahan validasi:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:233
+#: lib/Application/Controller/AddZoneMasterController.php:280
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2404,11 +2475,11 @@ msgstr ""
 "berhasil, tetapi API PowerDNS mengembalikan kesalahan. Periksa log PowerDNS "
 "untuk detailnya."
 
-#: lib/Application/Controller/AddZoneMasterController.php:239
+#: lib/Application/Controller/AddZoneMasterController.php:286
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Zona telah berhasil dibuat dan ditandatangani dengan DNSSEC."
 
-#: lib/Application/Controller/AddZoneMasterController.php:243
+#: lib/Application/Controller/AddZoneMasterController.php:290
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2416,24 +2487,24 @@ msgstr ""
 "Zona berhasil dibuat dan penandatanganan diminta, tetapi verifikasi gagal. "
 "Periksa kunci DNSSEC."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:208
+#: lib/Application/Controller/AddZoneSlaveController.php:224
 msgid "Zone has been added successfully."
 msgstr "Zona telah berhasil ditambahkan."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:72
+#: lib/Application/Controller/BatchPtrRecordController.php:75
 msgid "Batch PTR record creation is not enabled."
 msgstr "Pembuatan rekaman PTR secara batch tidak diaktifkan."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:79
+#: lib/Application/Controller/BatchPtrRecordController.php:82
 msgid "You do not have permission to edit DNS records."
 msgstr "Anda tidak memiliki izin untuk mengedit rekaman DNS."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:84
-#: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:177
+#: lib/Application/Controller/BatchPtrRecordController.php:87
+#: templates/modern/batch_ptr_record.html:32 templates/modern/header.html:178
 msgid "Batch PTR Records"
 msgstr "Zone modified"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:99
+#: lib/Application/Controller/BatchPtrRecordController.php:102
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Pembuatan rekaman PTR secara batch tidak tersedia untuk zona reverse."
 
@@ -2503,11 +2574,11 @@ msgstr "Aksi tidak diketahui."
 msgid "Views"
 msgstr "View"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:55
+#: lib/Application/Controller/DnssecToggleKeyController.php:63
 msgid "Invalid key ID."
 msgstr "ID kunci tidak valid."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:90
+#: lib/Application/Controller/DnssecToggleKeyController.php:98
 msgid "DNSSEC key not found or no longer exists."
 msgstr "Kunci DNSSEC tidak ditemukan atau sudah tidak ada."
 
@@ -2543,16 +2614,16 @@ msgstr "Penyedia SAML tidak valid"
 msgid "SAML authentication failed: "
 msgstr "Autentikasi SAML gagal: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:59
+#: lib/Application/Controller/ListForwardZonesController.php:60
 msgid "You do not have sufficient permissions to view this page."
 msgstr "Anda tidak memiliki izin yang cukup untuk melihat halaman ini."
 
-#: lib/Application/Controller/ListReverseZonesController.php:80
+#: lib/Application/Controller/ListReverseZonesController.php:81
 #: templates/modern/dnssec_delete_key.html:6
 msgid "Reverse Zones"
 msgstr "Pilih semua zone"
 
-#: lib/Application/Controller/ListForwardZonesController.php:213
+#: lib/Application/Controller/ListForwardZonesController.php:229
 msgid "You do not have the permission to see any zones."
 msgstr "Anda tidak memiliki izin untuk melihat zona apa pun."
 
@@ -2564,121 +2635,134 @@ msgstr "Anda tidak memiliki izin untuk mengelola kepemilikan zona."
 msgid "Manage Group Zones"
 msgstr "Kelola Zona Grup"
 
-#: lib/Application/Controller/ManageGroupZonesController.php:214
+#: lib/Application/Controller/ManageGroupZonesController.php:234
 msgid "Please select at least one zone."
 msgstr "Silakan pilih setidaknya satu zona."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:149
+#: lib/Application/Controller/ManageGroupZonesController.php:169
 #, php-format
 msgid "%d zone added to group."
 msgid_plural "%d zones added to group."
 msgstr[0] "%d zona ditambahkan ke grup."
 msgstr[1] "%d zones added to group."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:193
+#: lib/Application/Controller/ManageGroupZonesController.php:213
 #, php-format
 msgid "%d zone could not be added."
 msgid_plural "%d zones could not be added."
 msgstr[0] "%d zona tidak dapat ditambahkan."
 msgstr[1] "%d zones could not be added."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:238
+#: lib/Application/Controller/ManageGroupZonesController.php:255
 #, php-format
 msgid "%d zone removed from group."
 msgid_plural "%d zones removed from group."
 msgstr[0] "%d zona dihapus dari grup."
 msgstr[1] "%d zones removed from group."
 
-#: lib/Application/Controller/ManageGroupZonesController.php:282
+#: lib/Application/Controller/ManageGroupZonesController.php:299
 #, php-format
 msgid "%d zone could not be removed."
 msgid_plural "%d zones could not be removed."
 msgstr[0] "%d zona tidak dapat dihapus."
 msgstr[1] "%d zones could not be removed."
 
-#: lib/Application/Controller/AddPermTemplController.php:59
+#: lib/Application/Controller/AddPermTemplController.php:61
 msgid "You do not have the permission to add permission templates."
 msgstr "Anda tidak memiliki izin untuk menambahkan template izin."
 
-#: lib/Application/Controller/AddPermTemplController.php:63
+#: lib/Application/Controller/AddPermTemplController.php:65
 msgid "Add Permission Template"
 msgstr "Tambah Templat Izin"
 
-#: lib/Application/Controller/AddPermTemplController.php:90
+#: lib/Application/Controller/AddPermTemplController.php:105
 msgid "The permission template has been added successfully."
 msgstr "Template izin telah berhasil ditambahkan."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:34
+#: lib/Application/Controller/AddPermTemplController.php:147
+#, auto-english-fallback
+msgid "The permission template could not be added."
+msgstr "The permission template could not be added."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:35
 msgid "Not available for anonymous users."
 msgstr "Tidak tersedia untuk pengguna anonim."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:38
+#: lib/Application/Controller/DatabaseConsistencyController.php:39
 msgid "You do not have the permission to view this page."
 msgstr "Anda tidak memiliki izin untuk melihat halaman ini."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:42
-#: templates/default/header.html:234 templates/modern/header.html:337
+#: lib/Application/Controller/DatabaseConsistencyController.php:43
+#: templates/default/header.html:235 templates/modern/header.html:338
 msgid "Database Consistency"
 msgstr "Activity date"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:46
+#: lib/Application/Controller/DatabaseConsistencyController.php:47
 msgid "Database consistency checks are disabled."
 msgstr "Pemeriksaan konsistensi basis data dinonaktifkan."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:82
+#: lib/Application/Controller/DatabaseConsistencyController.php:54
+msgid ""
+"Database consistency checks are not available when using the PowerDNS API "
+"backend."
+msgstr ""
+"Pemeriksaan konsistensi basis data tidak tersedia saat menggunakan backend "
+"PowerDNS API."
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:90
 #: templates/modern/database_consistency.html:30
 msgid "Database Consistency Check"
 msgstr "Pemeriksaan Konsistensi Basis Data"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:101
+#: lib/Application/Controller/DatabaseConsistencyController.php:109
 msgid "Zone owner assigned successfully"
 msgstr "Pemilik zona berhasil ditetapkan"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:101
+#: lib/Application/Controller/DatabaseConsistencyController.php:109
 msgid "Failed to assign zone owner"
 msgstr "Gagal menetapkan pemilik zona"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:108
+#: lib/Application/Controller/DatabaseConsistencyController.php:116
 msgid "Slave zone deleted successfully"
 msgstr "Zona slave berhasil dihapus"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:108
+#: lib/Application/Controller/DatabaseConsistencyController.php:116
 msgid "Failed to delete slave zone"
 msgstr "Gagal menghapus zona slave"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:115
+#: lib/Application/Controller/DatabaseConsistencyController.php:123
 msgid "Orphaned record deleted successfully"
 msgstr "Rekaman yatim berhasil dihapus"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:115
+#: lib/Application/Controller/DatabaseConsistencyController.php:123
 msgid "Failed to delete orphaned record"
 msgstr "Gagal menghapus rekaman yatim"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:122
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Duplicate SOA records fixed successfully"
 msgstr "Rekaman SOA duplikat berhasil diperbaiki"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:122
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Failed to fix duplicate SOA records"
 msgstr "Gagal memperbaiki rekaman SOA duplikat"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:137
 msgid "Default SOA record created successfully"
 msgstr "Rekaman SOA default berhasil dibuat"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:137
 msgid "Failed to create default SOA record"
 msgstr "Gagal membuat rekaman SOA default"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:134
+#: lib/Application/Controller/DatabaseConsistencyController.php:142
 msgid "Invalid check type"
 msgstr "Jenis pemeriksaan tidak valid"
 
-#: lib/Application/Controller/LogoutController.php:131
+#: lib/Application/Controller/LogoutController.php:120
 msgid "You have logged out."
 msgstr "Anda telah keluar."
 
-#: lib/Domain/Model/ZoneTemplate.php:314 lib/Domain/Model/ZoneTemplate.php:754
+#: lib/Domain/Model/ZoneTemplate.php:341 lib/Domain/Model/ZoneTemplate.php:895
 msgid "You do not have the permission to add a zone template."
 msgstr "Anda tidak memiliki izin untuk menambahkan template zona."
 
@@ -2694,7 +2778,7 @@ msgstr "Template zona telah berhasil ditambahkan."
 msgid "Dashboard"
 msgstr "Dasbor"
 
-#: lib/Application/Controller/EditUserController.php:381
+#: lib/Application/Controller/EditUserController.php:502
 msgid "You do not have permission to manage group memberships."
 msgstr "Anda tidak memiliki izin untuk mengelola keanggotaan grup."
 
@@ -2714,19 +2798,19 @@ msgstr "Anda tidak memiliki izin untuk menambahkan zona slave."
 msgid "Add Secondary Zone"
 msgstr "Tambah Zona Sekunder"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:315
+#: lib/Domain/Service/Dns/SupermasterManager.php:318
 msgid "Invalid hostname."
 msgstr "Nama host tidak valid."
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:309
+#: lib/Domain/Service/Dns/SupermasterManager.php:312
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Ini bukan alamat IPv4 atau IPv6 yang valid."
 
-#: lib/Domain/Model/ZoneTemplate.php:414 lib/Domain/Model/ZoneTemplate.php:452
+#: lib/Domain/Model/ZoneTemplate.php:442 lib/Domain/Model/ZoneTemplate.php:480
 msgid "You do not have the permission to delete zone templates."
 msgstr "Anda tidak memiliki izin untuk menghapus template zona."
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:93
+#: lib/Application/Controller/DeleteZoneTemplController.php:95
 msgid "Zone template has been deleted successfully."
 msgstr "Template zona telah berhasil dihapus."
 
@@ -2734,7 +2818,7 @@ msgstr "Template zona telah berhasil dihapus."
 msgid "You do not have the permission to edit a supermaster."
 msgstr "Anda tidak memiliki izin untuk mengedit supermaster."
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:327
+#: lib/Domain/Service/Dns/SupermasterManager.php:330
 msgid "The supermaster you are trying to edit does not exist."
 msgstr "Supermaster yang ingin Anda edit tidak ditemukan."
 
@@ -2758,22 +2842,22 @@ msgstr "Zona berhasil dihapus dari grup."
 msgid "Zone was not owned by this group."
 msgstr "Zona bukan milik grup ini."
 
-#: lib/Application/Controller/ListForwardZonesController.php:63
+#: lib/Application/Controller/ListForwardZonesController.php:64
 #: templates/modern/dnssec_delete_key.html:8
 msgid "Forward Zones"
 msgstr "Deselect all zones"
 
-#: lib/Application/Controller/ListForwardZonesController.php:82
+#: lib/Application/Controller/ListForwardZonesController.php:83
 msgid "You do not have permission to sync zones from PowerDNS."
 msgstr "Anda tidak memiliki izin untuk menyinkronkan zona dari PowerDNS."
 
-#: lib/Application/Controller/ListForwardZonesController.php:93
+#: lib/Application/Controller/ListForwardZonesController.php:94
 #, php-format
 msgid "Zones synced from PowerDNS: %d added, %d updated, %d removed."
 msgstr ""
 "Zona disinkronkan dari PowerDNS: %d ditambahkan, %d diperbarui, %d dihapus."
 
-#: lib/Application/Controller/ListForwardZonesController.php:101
+#: lib/Application/Controller/ListForwardZonesController.php:102
 #, php-format
 msgid "Zone sync failed: %s"
 msgstr "Sinkronisasi zona gagal: %s"
@@ -2813,43 +2897,39 @@ msgstr "Terjadi kesalahan saat mengimpor kunci PEM: "
 msgid "You do not have the permission to add records to zone templates."
 msgstr "Anda tidak memiliki izin untuk menambahkan rekaman ke template zona."
 
-#: lib/Application/Controller/EditUserController.php:85
+#: lib/Application/Controller/EditUserController.php:88
 #: templates/default/edit_user.html:22 templates/modern/edit_user.html:22
 msgid "Edit User"
 msgstr "Edit Pengguna"
 
-#: lib/Application/Controller/EditUserController.php:167
+#: lib/Application/Controller/EditUserController.php:170
 msgid "Your profile has been updated successfully."
 msgstr "Profil Anda telah berhasil diperbarui."
 
-#: lib/Application/Controller/EditUserController.php:171
+#: lib/Application/Controller/EditUserController.php:174
 msgid "The user has been updated successfully."
 msgstr "Pengguna telah berhasil diperbarui."
 
-#: lib/Application/Controller/EditUserController.php:175
+#: lib/Application/Controller/EditUserController.php:178
 msgid "The user could not be updated."
 msgstr "Pengguna tidak dapat diperbarui."
 
-#: lib/Domain/Model/UserManager.php:509 lib/Domain/Model/UserManager.php:983
+#: lib/Domain/Model/UserManager.php:565 lib/Domain/Model/UserManager.php:1184
 msgid "You do not have the permission to edit this user."
 msgstr "Anda tidak memiliki izin untuk mengedit pengguna ini."
 
-#: lib/Application/Controller/EditUserController.php:242
-msgid "You do not have permission to edit a superuser account."
-msgstr "Anda tidak memiliki izin untuk mengedit akun superuser."
-
-#: lib/Application/Controller/EditUserController.php:389
+#: lib/Application/Controller/EditUserController.php:510
 msgid "Please select at least one group."
 msgstr "Silakan pilih setidaknya satu grup."
 
-#: lib/Application/Controller/EditUserController.php:430
+#: lib/Application/Controller/EditUserController.php:551
 #, php-format
 msgid "User added to %d group successfully."
 msgid_plural "User added to %d groups successfully."
 msgstr[0] "Pengguna berhasil ditambahkan ke %d grup."
 msgstr[1] "User added to %d groups successfully."
 
-#: lib/Application/Controller/EditUserController.php:455
+#: lib/Application/Controller/EditUserController.php:576
 #, php-format
 msgid "Failed to add user to %d group (already a member or group not found)."
 msgid_plural ""
@@ -2905,11 +2985,11 @@ msgstr "View jaringan"
 msgid "You do not have the permission to delete permission templates."
 msgstr "Anda tidak memiliki izin untuk menghapus template izin."
 
-#: lib/Application/Controller/DeletePermTemplController.php:88
+#: lib/Application/Controller/DeletePermTemplController.php:90
 msgid "The permission template has been deleted successfully."
 msgstr "Template izin telah berhasil dihapus."
 
-#: lib/Application/Controller/DeletePermTemplController.php:90
+#: lib/Application/Controller/DeletePermTemplController.php:92
 msgid "The permission template could not be deleted."
 msgstr "Template izin tidak dapat dihapus."
 
@@ -3063,24 +3143,24 @@ msgstr "Grup telah berhasil diperbarui."
 msgid "You do not have the permission to delete a supermaster."
 msgstr "Anda tidak memiliki izin untuk menghapus supermaster."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:80
+#: lib/Application/Controller/DeleteSupermasterController.php:82
 msgid "Invalid IP address."
 msgstr "Alamat IP tidak valid."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:85
+#: lib/Application/Controller/DeleteSupermasterController.php:87
 msgid "Invalid NS name."
 msgstr "Nama NS tidak valid."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:91
+#: lib/Application/Controller/DeleteSupermasterController.php:93
 msgid "Super master does not exist."
 msgstr "Super master tidak ditemukan."
 
-#: lib/Application/Controller/DeleteSupermasterController.php:95
+#: lib/Application/Controller/DeleteSupermasterController.php:97
 msgid "The supermaster has been deleted successfully."
 msgstr "Supermaster telah berhasil dihapus."
 
 #: lib/Application/Controller/BulkRegistrationController.php:69
-#: templates/modern/index.html:179 templates/modern/bulk_registration.html:23
+#: templates/modern/index.html:479 templates/modern/bulk_registration.html:26
 msgid "Bulk Registration"
 msgstr "Record modified"
 
@@ -3209,57 +3289,57 @@ msgstr ""
 msgid "Page Not Found"
 msgstr "Halaman Tidak Ditemukan"
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:81
+#: lib/Application/Controller/DnssecToggleKeyController.php:89
 msgid ""
 "DNSSEC functionality is not available. Please check PowerDNS API "
 "configuration."
 msgstr ""
 "Fungsi DNSSEC tidak tersedia. Silakan periksa konfigurasi API PowerDNS."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:101
+#: lib/Application/Controller/DnssecToggleKeyController.php:109
 msgid "Zone key has been successfully deactivated."
 msgstr "Kunci zona telah berhasil dinonaktifkan."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:102
+#: lib/Application/Controller/DnssecToggleKeyController.php:110
 msgid "Failed to deactivate zone key."
 msgstr "Gagal menonaktifkan kunci zona."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:105
+#: lib/Application/Controller/DnssecToggleKeyController.php:113
 msgid "Zone key has been successfully activated."
 msgstr "Kunci zona telah berhasil diaktifkan."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:106
+#: lib/Application/Controller/DnssecToggleKeyController.php:114
 msgid "Failed to activate zone key."
 msgstr "Gagal mengaktifkan kunci zona."
 
-#: lib/Application/Controller/DnssecToggleKeyController.php:119
+#: lib/Application/Controller/DnssecToggleKeyController.php:127
 msgid "An error occurred while toggling the DNSSEC key. Please try again."
 msgstr ""
 "Terjadi kesalahan saat mengubah status kunci DNSSEC. Silakan coba lagi."
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:438
 #: templates/modern/users.html:193
 msgid "Yes"
 msgstr "Ya"
 
-#: lib/Application/Query/RecordSearch.php:225 templates/modern/edit.html:443
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:438
 #: templates/modern/users.html:195
 msgid "No"
 msgstr "Tidak"
 
-#: lib/Application/Service/LdapAuthenticator.php:92
+#: lib/Application/Service/LdapAuthenticator.php:102
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Akun dikunci sementara. Silakan coba lagi nanti."
 
-#: lib/Application/Service/SqlAuthenticator.php:135
+#: lib/Application/Service/SqlAuthenticator.php:142
 msgid "The user account is disabled."
 msgstr "Akun pengguna ini dinonaktifkan."
 
-#: lib/Application/Service/SqlAuthenticator.php:216
+#: lib/Application/Service/SqlAuthenticator.php:223
 msgid "Authentication failed!"
 msgstr "Autentikasi gagal!"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:192
+#: lib/Infrastructure/Service/SessionAuthenticator.php:193
 msgid "Session expired, please login again."
 msgstr "Sesi kedaluwarsa, silakan masuk kembali."
 
@@ -3267,43 +3347,43 @@ msgstr "Sesi kedaluwarsa, silakan masuk kembali."
 msgid "Failed to update password"
 msgstr "Gagal memperbarui kata sandi"
 
-#: lib/Application/Service/OidcService.php:183
+#: lib/Application/Service/OidcService.php:214
 msgid "Authentication failed: Invalid state parameter"
 msgstr "Autentikasi gagal: Parameter state tidak valid"
 
-#: lib/Application/Service/OidcService.php:204
+#: lib/Application/Service/OidcService.php:235
 msgid "Authentication failed: No authorization code"
 msgstr "Autentikasi gagal: Tidak ada kode otorisasi"
 
-#: lib/Application/Service/SamlService.php:188
+#: lib/Application/Service/SamlService.php:218
 msgid "Authentication failed: Invalid session"
 msgstr "Autentikasi gagal: Sesi tidak valid"
 
-#: lib/Application/Service/SamlService.php:347
+#: lib/Application/Service/SamlService.php:381
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Autentikasi gagal: Tidak dapat membuat atau memperbarui akun pengguna"
 
-#: lib/Application/Service/LdapAuthenticator.php:236
+#: lib/Application/Service/LdapAuthenticator.php:249
 msgid "LDAP Authentication failed!"
 msgstr "Autentikasi LDAP gagal!"
 
-#: lib/Application/Service/LdapAuthenticator.php:141
+#: lib/Application/Service/LdapAuthenticator.php:151
 msgid "Failed to connect to LDAP server!"
 msgstr "Gagal terhubung ke server LDAP!"
 
-#: lib/Application/Service/LdapAuthenticator.php:157
+#: lib/Application/Service/LdapAuthenticator.php:167
 msgid "Failed to bind to LDAP server!"
 msgstr "Gagal melakukan bind ke server LDAP!"
 
-#: lib/Application/Service/LdapAuthenticator.php:185
+#: lib/Application/Service/LdapAuthenticator.php:195
 msgid "Failed to search LDAP."
 msgstr "Gagal mencari di LDAP."
 
-#: lib/Application/Service/LdapAuthenticator.php:202
+#: lib/Application/Service/LdapAuthenticator.php:212
 msgid "Failed to authenticate against LDAP."
 msgstr "Gagal mengautentikasi terhadap LDAP."
 
-#: lib/Application/Service/SamlService.php:246
+#: lib/Application/Service/SamlService.php:276
 msgid "Authentication failed: Invalid SAML response"
 msgstr "Autentikasi gagal: Respons SAML tidak valid"
 
@@ -3311,15 +3391,15 @@ msgstr "Autentikasi gagal: Respons SAML tidak valid"
 msgid "This is an invalid zone name."
 msgstr "Ini bukan nama zona yang valid."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:251
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:254
 msgid "This template is assigned to at least one user and one group."
 msgstr "Template ini ditetapkan ke setidaknya satu pengguna dan satu grup."
 
-#: lib/Domain/Model/UserManager.php:384
+#: lib/Domain/Model/UserManager.php:421
 msgid "This template is assigned to at least one user."
 msgstr "Template ini ditetapkan ke setidaknya satu pengguna."
 
-#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:255
+#: lib/Infrastructure/Repository/DbPermissionTemplateRepository.php:258
 msgid "This template is assigned to at least one group."
 msgstr "Template ini ditetapkan ke setidaknya satu grup."
 
@@ -3492,20 +3572,20 @@ msgstr "Tidak, simpan autoprimary ini"
 msgid "No, keep this supermaster"
 msgstr "Tidak, pertahankan supermaster ini"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:154
+#: lib/Infrastructure/Service/SessionAuthenticator.php:155
 #: templates/default/login.html:139 templates/modern/login.html:138
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "Verifikasi reCAPTCHA gagal. Silakan coba lagi."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:177
+#: lib/Infrastructure/Service/SessionAuthenticator.php:178
 msgid "An empty password is not allowed"
 msgstr "Kata sandi kosong tidak diperbolehkan"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:220
+#: lib/Infrastructure/Service/SessionAuthenticator.php:221
 msgid "LDAP authentication is disabled"
 msgstr "Autentikasi LDAP dinonaktifkan"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:406
+#: lib/Infrastructure/Service/SessionAuthenticator.php:409
 msgid ""
 "Database error: Unable to verify user authentication. Please check your "
 "database configuration."
@@ -3513,54 +3593,83 @@ msgstr ""
 "Kesalahan basis data: Tidak dapat memverifikasi autentikasi pengguna. "
 "Silakan periksa konfigurasi basis data Anda."
 
-#: lib/Domain/Model/UserManager.php:1015
+#: lib/Domain/Model/UserManager.php:1216
 msgid "Enter a valid email address."
 msgstr "Masukkan alamat email yang valid."
 
-#: lib/Domain/Model/UserManager.php:1007
+#: lib/Domain/Model/UserManager.php:1208
 msgid "Username exist already, please choose another one."
 msgstr "Nama pengguna sudah ada, silakan pilih yang lain."
 
-#: lib/Domain/Model/UserManager.php:1011
+#: lib/Domain/Model/UserManager.php:1220
+msgid "Email address already exists, please choose another one."
+msgstr "Alamat email sudah ada, silakan pilih yang lain."
+
+#: lib/Domain/Model/UserManager.php:995
+#, auto-english-fallback
+msgid ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+msgstr ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+
+#: lib/Domain/Model/UserManager.php:999
+#, auto-english-fallback
+msgid ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Domain/Model/UserManager.php:1212
 msgid "Enter a valid user name."
 msgstr "Masukkan nama pengguna yang valid."
 
-#: lib/Domain/Model/ZoneTemplate.php:257
+#: lib/Domain/Model/ZoneTemplate.php:284
 msgid "Zone template not found."
 msgstr "Templat zona tidak ditemukan."
 
-#: lib/Domain/Model/ZoneTemplate.php:261
+#: lib/Domain/Model/ZoneTemplate.php:288
 msgid "Only global zone templates can be set as the default."
 msgstr "Hanya templat zona global yang dapat ditetapkan sebagai default."
 
-#: lib/Domain/Model/ZoneTemplate.php:277
+#: lib/Domain/Model/ZoneTemplate.php:304
 msgid "Error setting default zone template: "
 msgstr "Galat menetapkan templat zona default: "
 
-#: lib/Domain/Model/ZoneTemplate.php:296
+#: lib/Domain/Model/ZoneTemplate.php:323
 msgid "Error clearing default zone template: "
 msgstr "Galat menghapus templat zona default: "
 
-#: lib/Domain/Model/ZoneTemplate.php:341 lib/Domain/Model/ZoneTemplate.php:810
+#: lib/Domain/Model/ZoneTemplate.php:369 lib/Domain/Model/ZoneTemplate.php:968
 msgid "Error creating zone template: "
 msgstr "Kesalahan membuat template zona: "
 
-#: lib/Domain/Model/ZoneTemplate.php:377
+#: lib/Domain/Model/ZoneTemplate.php:405
 msgid "Error adding default SOA record to template: "
 msgstr "Kesalahan menambahkan rekaman SOA default ke template: "
 
-#: lib/Domain/Model/ZoneTemplate.php:436
+#: lib/Domain/Model/ZoneTemplate.php:464
 msgid "Error deleting zone template: "
 msgstr "Kesalahan menghapus template zona: "
 
-#: lib/Domain/Model/ZoneTemplate.php:460
+#: lib/Domain/Model/ZoneTemplate.php:488
 msgid "Error deleting user zone templates: "
 msgstr "Kesalahan menghapus template zona pengguna: "
 
-#: lib/Domain/Model/ZoneTemplate.php:577
+#: lib/Domain/Model/ZoneTemplate.php:605
 msgid "You do not have the permission to add a record to this zone template."
 msgstr ""
 "Anda tidak memiliki izin untuk menambahkan rekaman ke template zona ini."
+
+#: lib/Domain/Model/ZoneTemplate.php:610 lib/Domain/Model/ZoneTemplate.php:745
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to add this record type to a zone template."
+msgstr ""
+"You do not have the permission to add this record type to a zone template."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
@@ -3570,95 +3679,118 @@ msgstr "Kolom konten Anda tidak memiliki nilai yang valid."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Prioritas untuk rekaman MX/SRV harus berupa angka antara 0 dan 65535."
 
-#: lib/Domain/Service/Dns/RecordManager.php:318
+#: lib/Domain/Service/Dns/RecordManager.php:349
 msgid "You do not have the permission to edit this record."
 msgstr "Anda tidak memiliki izin untuk mengedit rekaman ini."
 
-#: lib/Domain/Model/ZoneTemplate.php:669
+#: lib/Domain/Model/ZoneTemplate.php:735 lib/Domain/Model/ZoneTemplate.php:819
+msgid "The record does not belong to this zone template."
+msgstr "Rekaman tidak termasuk dalam template zona ini."
+
+#: lib/Domain/Model/ZoneTemplate.php:797
 msgid "Error updating zone template record: "
 msgstr "Kesalahan memperbarui rekaman template zona: "
 
-#: lib/Domain/Model/ZoneTemplate.php:692
+#: lib/Domain/Model/ZoneTemplate.php:825
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+msgstr ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+
+#: lib/Domain/Model/ZoneTemplate.php:834
 msgid "Error deleting zone template record: "
 msgstr "Kesalahan menghapus rekaman template zona: "
 
-#: lib/Domain/Model/ZoneTemplate.php:715
+#: lib/Domain/Model/ZoneTemplate.php:856
 msgid "Error checking template ownership: "
 msgstr "Kesalahan memeriksa kepemilikan template: "
 
-#: lib/Domain/Model/ZoneTemplate.php:941
+#: lib/Domain/Model/ZoneTemplate.php:960
+#, auto-english-fallback
+#, php-format
+msgid ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+msgstr ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+
+#: lib/Domain/Model/ZoneTemplate.php:1099
 msgid "Error retrieving zones using template: "
 msgstr "Kesalahan mengambil zona yang menggunakan template: "
 
-#: lib/Domain/Model/ZoneTemplate.php:997 lib/Domain/Model/ZoneTemplate.php:1041
+#: lib/Domain/Model/ZoneTemplate.php:1199
 msgid "Failed to get list of zones using template: "
 msgstr "Gagal mendapatkan daftar zona yang menggunakan template: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1059
+#: lib/Domain/Model/ZoneTemplate.php:1217
 msgid "You do not have the permission to edit a zone template."
 msgstr "Anda tidak memiliki izin untuk mengedit template zona."
 
-#: lib/Domain/Model/ZoneTemplate.php:1107
+#: lib/Domain/Model/ZoneTemplate.php:1265
 msgid "Error unlinking zone from template: "
 msgstr "Kesalahan memutuskan tautan zona dari template: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1156
+#: lib/Domain/Model/ZoneTemplate.php:1314
 msgid "Error retrieving zones: "
 msgstr "Kesalahan mengambil zona: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1175
+#: lib/Domain/Model/ZoneTemplate.php:1333
 msgid "Error checking template name existence: "
 msgstr "Kesalahan memeriksa keberadaan nama template: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1196
+#: lib/Domain/Model/ZoneTemplate.php:1354
 msgid "Error looking up template by name: "
 msgstr "Kesalahan mencari templat berdasarkan nama: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:1377
 msgid "Error checking template existence: "
 msgstr "Kesalahan memeriksa keberadaan template: "
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:122
+#: lib/Domain/Service/DatabaseConsistencyService.php:123
 msgid "All zones have owners"
 msgstr "Semua zona memiliki pemilik"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:129
+#: lib/Domain/Service/DatabaseConsistencyService.php:130
 #, php-format
 msgid "%d zones found without owners"
 msgstr "%d zona ditemukan tanpa pemilik"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:180
+#: lib/Domain/Service/DatabaseConsistencyService.php:181
 msgid "All slave zones have master IP addresses"
 msgstr "Semua zona slave memiliki alamat IP master"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:187
+#: lib/Domain/Service/DatabaseConsistencyService.php:188
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "%d zona slave ditemukan tanpa alamat IP master"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:232
+#: lib/Domain/Service/DatabaseConsistencyService.php:233
 msgid "All records belong to existing zones"
 msgstr "Semua rekaman milik zona yang ada"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:239
+#: lib/Domain/Service/DatabaseConsistencyService.php:240
 #, php-format
 msgid "%d orphaned records found"
 msgstr "%d rekaman yatim ditemukan"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:294
+#: lib/Domain/Service/DatabaseConsistencyService.php:295
 msgid "No duplicate SOA records found"
 msgstr "Tidak ditemukan rekaman SOA duplikat"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:301
+#: lib/Domain/Service/DatabaseConsistencyService.php:302
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d zona memiliki rekaman SOA duplikat"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:355
+#: lib/Domain/Service/DatabaseConsistencyService.php:356
 msgid "All zones have SOA records"
 msgstr "Semua zona memiliki rekaman SOA"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:362
+#: lib/Domain/Service/DatabaseConsistencyService.php:363
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "%d zona ditemukan tanpa rekaman SOA"
@@ -5524,12 +5656,16 @@ msgstr "Nameserver utama"
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:207
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr "Kunci parameter HTTPS tidak dikenal: \"%s\". Lihat RFC 9460 untuk kunci yang valid."
+msgstr ""
+"Kunci parameter HTTPS tidak dikenal: \"%s\". Lihat RFC 9460 untuk kunci yang "
+"valid."
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:212
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
-msgstr "Kunci parameter HTTPS duplikat: \"%s\". Setiap kunci hanya boleh muncul sekali."
+msgstr ""
+"Kunci parameter HTTPS duplikat: \"%s\". Setiap kunci hanya boleh muncul "
+"sekali."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
@@ -5918,7 +6054,8 @@ msgstr "SSHFP record fingerprint type is mandatory."
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
-msgstr "Modifier %s duplikat ditemukan. Setiap modifier hanya boleh muncul sekali."
+msgstr ""
+"Modifier %s duplikat ditemukan. Setiap modifier hanya boleh muncul sekali."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
@@ -5985,38 +6122,38 @@ msgid ""
 "Section 6.1)."
 msgstr "TLSA record matching type is mandatory."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:189
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:216
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
 msgstr "Matching type TLSA record wajib diisi."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:228
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:255
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr "TLSA record matching type must be between 0 and 255."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:290
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr "Matching type TLSA record harus antara 0 dan 255."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:280
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
 msgid "Empty CNAME records are not allowed."
 msgstr "TLSA record certificate data is mandatory."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:320
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:347
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
 msgstr "Data certificate TLSA record wajib diisi."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:348
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:375
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
 msgstr "DS record key tag is mandatory."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:362
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
@@ -6930,40 +7067,40 @@ msgstr ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
 msgstr "TTL harus minimal %d detik."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:204
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."
 msgstr "Priority must be a number between 0 and 65535."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:216
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:214
 msgid "Issue tag parameters must be in key=value format."
 msgstr "Prioritas harus berupa angka antara 0 dan 65535."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:221
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:219
 msgid "accounturi parameter cannot be empty."
 msgstr "Priority is only applicable for MX and SRV records."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:230
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:228
 msgid "Empty validation method specified."
 msgstr "Prioritas hanya berlaku untuk record MX dan SRV."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:238
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:236
 msgid "Invalid CA domain in issuewild tag."
 msgstr "Record type is not supported."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:249
 #, php-format
 msgid "CAA iodef value must be a URL starting with %s, %s, or %s."
 msgstr "Nilai iodef CAA harus berupa URL yang diawali dengan %s, %s, atau %s."
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:260
 msgid "contactemail value must be a valid email address."
 msgstr "Reverse zone"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:273
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:271
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
@@ -6973,15 +7110,15 @@ msgstr "Reverse zone"
 msgid "Value must be enclosed in double quotes."
 msgstr "Add reverse record"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:311
 msgid "Backslashes must precede all quotes (\") in value content."
 msgstr "Tambah reverse record"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:319
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:317
 msgid "CAA property value exceeds maximum length of 512 characters."
 msgstr "Add reverse records for A/AAAA records in this zone"
 
-#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:325
+#: lib/Domain/Service/DnsValidation/CAARecordValidator.php:323
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "Tambah reverse record untuk record A/AAAA di zone ini"
 
@@ -7174,7 +7311,9 @@ msgstr "Kunci parameter SVCB tidak dikenal: \"%s\"."
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr "Kunci parameter SVCB duplikat: \"%s\". Setiap kunci hanya boleh muncul sekali."
+msgstr ""
+"Kunci parameter SVCB duplikat: \"%s\". Setiap kunci hanya boleh muncul "
+"sekali."
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:109
 msgid ""
@@ -8392,7 +8531,8 @@ msgstr "SOA-EDIT-DNSUPDATE"
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "%s (algoritma %d) adalah algoritma yang WAJIB diterapkan menurut RFC 8624."
+msgstr ""
+"%s (algoritma %d) adalah algoritma yang WAJIB diterapkan menurut RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
@@ -8502,7 +8642,9 @@ msgstr "GSS-ACCEPTOR-PRINCIPAL"
 #: lib/Domain/Service/ZoneValidationService.php:109
 #, php-format
 msgid "Zone has %d SOA records. Only one SOA record is allowed per zone."
-msgstr "Zona memiliki %d rekaman SOA. Hanya satu rekaman SOA yang diperbolehkan per zona."
+msgstr ""
+"Zona memiliki %d rekaman SOA. Hanya satu rekaman SOA yang diperbolehkan per "
+"zona."
 
 #: lib/Domain/Service/ZoneValidationService.php:110
 msgid "Remove duplicate SOA records, keeping only one."
@@ -8511,7 +8653,9 @@ msgstr "IXFR"
 #: lib/Domain/Service/ZoneValidationService.php:121
 #, php-format
 msgid "SOA record not at apex. Found at \"%s\" but zone is \"%s\"."
-msgstr "Rekaman SOA tidak berada di apex. Ditemukan pada \"%s\" tetapi zona adalah \"%s\"."
+msgstr ""
+"Rekaman SOA tidak berada di apex. Ditemukan pada \"%s\" tetapi zona adalah "
+"\"%s\"."
 
 #: lib/Domain/Service/ZoneValidationService.php:122
 msgid "Move the SOA record to the zone apex."
@@ -8553,11 +8697,11 @@ msgstr "Ekspor zone"
 msgid "Empty line."
 msgstr "Baris kosong."
 
-#: lib/Domain/Service/BulkRecordParser.php:42
+#: lib/Domain/Service/BulkRecordParser.php:44
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Format tidak valid. Minimal diperlukan: nama,tipe,konten"
 
-#: lib/Domain/Service/BulkRecordParser.php:88
+#: lib/Domain/Service/BulkRecordParser.php:90
 msgid ""
 "Invalid SRV format. Use: name,SRV,\"weight port target\",priority,ttl or "
 "name,SRV,target,weight,port,ttl"
@@ -8588,103 +8732,124 @@ msgstr ""
 "Reverse record added. Warning: A PTR record for %s already exists pointing "
 "to: %s. Having multiple PTR records for the same IP is not recommended."
 
-#: lib/Domain/Service/Dns/RecordManager.php:208
+#: lib/Domain/Service/Dns/RecordManager.php:215
 msgid "You do not have the permission to add SOA record."
 msgstr "Import zone from file"
 
-#: lib/Domain/Service/Dns/RecordManager.php:212
+#: lib/Domain/Service/Dns/RecordManager.php:219
 msgid "You do not have the permission to add NS record."
 msgstr "Impor zone dari file"
 
-#: lib/Domain/Service/Dns/RecordManager.php:257
+#: lib/Domain/Service/Dns/RecordManager.php:225
+#, auto-english-fallback
+msgid "You do not have the permission to add LUA record."
+msgstr "You do not have the permission to add LUA record."
+
+#: lib/Domain/Service/Dns/RecordManager.php:270
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Import zone from AXFR"
 
-#: lib/Domain/Service/Dns/RecordManager.php:164
+#: lib/Domain/Service/Dns/RecordManager.php:171
 msgid "Failed to add record to DNS backend."
 msgstr "Gagal menambahkan rekaman ke backend DNS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:302
+#: lib/Domain/Service/Dns/RecordManager.php:328
 msgid "You do not have the permission to edit this SOA record."
 msgstr "Impor zone dari AXFR"
 
-#: lib/Domain/Service/Dns/RecordManager.php:307
+#: lib/Domain/Service/Dns/RecordManager.php:333
 msgid "You do not have the permission to edit this NS record."
 msgstr "Zone file"
 
-#: lib/Domain/Service/Dns/RecordManager.php:356
+#: lib/Domain/Service/Dns/RecordManager.php:338
+#, auto-english-fallback
+msgid "You do not have the permission to edit this LUA record."
+msgstr "You do not have the permission to edit this LUA record."
+
+#: lib/Domain/Service/Dns/RecordManager.php:387
 msgid "Failed to update record in DNS backend."
 msgstr "Gagal memperbarui rekaman di backend DNS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:385
+#: lib/Domain/Service/Dns/RecordManager.php:420
 msgid "You do not have the permission to delete SOA records."
 msgstr "File zone"
 
-#: lib/Domain/Service/Dns/RecordManager.php:390
+#: lib/Domain/Service/Dns/RecordManager.php:425
 msgid "You do not have the permission to delete NS records."
 msgstr "Select zone file to import"
 
-#: lib/Domain/Service/Dns/DomainManager.php:591
+#: lib/Domain/Service/Dns/RecordManager.php:430
+#, auto-english-fallback
+msgid "You do not have the permission to delete LUA records."
+msgstr "You do not have the permission to delete LUA records."
+
+#: lib/Domain/Service/Dns/DomainManager.php:602
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Argumen tidak valid diberikan ke fungsi %s %s"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:336
+#: lib/Domain/Service/Dns/SupermasterManager.php:339
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "Zone imported successfully."
 
-#: lib/Domain/Service/Dns/DomainManager.php:132
+#: lib/Domain/Service/Dns/DomainManager.php:133
 msgid "Failed to create zone in DNS backend."
 msgstr "Gagal membuat zona di backend DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:301
+#: lib/Domain/Service/Dns/DomainManager.php:308
 #, php-format
 msgid "Failed to create zone: %s"
 msgstr "Gagal membuat zona: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:213
+#: lib/Domain/Service/Dns/DomainManager.php:220
 msgid "Failed to create SOA record for zone."
 msgstr "Gagal membuat rekaman SOA untuk zona."
 
-#: lib/Domain/Service/Dns/DomainManager.php:260
+#: lib/Domain/Service/Dns/DomainManager.php:267
 #, php-format
 msgid "Failed to create %s record for zone."
 msgstr "Gagal membuat rekaman %s untuk zona."
 
-#: lib/Domain/Service/Dns/DomainManager.php:305
+#: lib/Domain/Service/Dns/DomainManager.php:312
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Argumen tidak valid diberikan ke fungsi %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:409
+#: lib/Domain/Service/Dns/DomainManager.php:416
 msgid "Failed to delete zone from DNS backend."
 msgstr "Gagal menghapus zona dari backend DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:375
+#: lib/Domain/Service/Dns/DomainManager.php:382
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "Gagal membersihkan metadata zona: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:448
+#: lib/Domain/Service/Dns/DomainManager.php:455
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "Gagal menghapus metadata zona: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:502
+#: lib/Domain/Service/Dns/DomainManager.php:509
 msgid "Failed to update zone type in DNS backend."
 msgstr "Gagal memperbarui tipe zona di backend DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:529
 msgid "Failed to update zone master in DNS backend."
 msgstr "Gagal memperbarui master zona di backend DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:553
+#: lib/Domain/Service/Dns/DomainManager.php:562
 msgid "The selected user already owns the zone."
 msgstr "Failed to import zone."
 
-#: lib/Domain/Service/Dns/DomainManager.php:586
+#: lib/Domain/Service/Dns/DomainManager.php:597
 msgid "There must be at least one owner for a zone."
 msgstr "Harus ada setidaknya satu pemilik untuk sebuah zona."
+
+#: lib/Domain/Service/Dns/DomainManager.php:836
+#, auto-english-fallback
+#, php-format
+msgid "Failed to update zone records: %s"
+msgstr "Failed to update zone records: %s"
 
 #: lib/Module/Rdap/templates/rdap.html:3
 msgid "Home"
@@ -8760,11 +8925,11 @@ msgstr "Select all zones"
 msgid "DNSSEC"
 msgstr "DNSSEC"
 
-#: templates/modern/dnssec_edit_key.html:138
+#: templates/modern/dnssec_edit_key.html:140
 msgid "Deactivate key"
 msgstr "Batalkan pilihan semua zone"
 
-#: templates/modern/dnssec_edit_key.html:140
+#: templates/modern/dnssec_edit_key.html:142
 msgid "Activate key"
 msgstr "Delete selected zones"
 
@@ -9104,7 +9269,7 @@ msgstr "Zone yang baru dimodifikasi"
 msgid "Provide host name"
 msgstr "Favorite zones"
 
-#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:359
+#: templates/modern/delete_supermaster.html:36 templates/modern/header.html:360
 msgid "Account"
 msgstr "Zone favorit"
 
@@ -9301,15 +9466,15 @@ msgstr "Delete saved search"
 msgid "Group Management"
 msgstr "Search saved successfully."
 
-#: templates/modern/header.html:240 templates/modern/add_group.html:5
+#: templates/modern/header.html:241 templates/modern/add_group.html:5
 msgid "Add group"
 msgstr "Pencarian berhasil disimpan."
 
-#: templates/modern/edit_user.html:262 templates/modern/add_user.html:189
+#: templates/modern/edit_user.html:269 templates/modern/add_user.html:190
 msgid "No groups found"
 msgstr "Failed to save search."
 
-#: templates/modern/add_zone_slave.html:98
+#: templates/modern/add_zone_slave.html:103
 msgid "Search groups..."
 msgstr "Cari grup..."
 
@@ -9317,7 +9482,7 @@ msgstr "Cari grup..."
 msgid "Members"
 msgstr "Gagal menyimpan pencarian."
 
-#: templates/modern/header.html:137
+#: templates/modern/header.html:138
 msgid "Zones"
 msgstr "Search deleted successfully."
 
@@ -9406,7 +9571,7 @@ msgstr "Missing SOA record."
 msgid "No members in this group yet."
 msgstr "SOA record tidak ada."
 
-#: templates/modern/edit_group.html:138 templates/modern/edit_user.html:228
+#: templates/modern/edit_group.html:138 templates/modern/edit_user.html:235
 msgid "Remove from group"
 msgstr "Missing NS records."
 
@@ -9418,7 +9583,7 @@ msgstr "Konfigurasi MX tidak valid."
 msgid "and"
 msgstr "NS record tidak ada."
 
-#: templates/modern/list_forward_zones.html:180
+#: templates/modern/list_forward_zones.html:197
 msgid "more..."
 msgstr "SOA serial is not incremented."
 
@@ -9551,47 +9716,57 @@ msgstr ""
 msgid "PowerDNS version unknown"
 msgstr "Versi PowerDNS tidak diketahui"
 
-#: templates/default/index.html:33 templates/modern/index.html:33
+#: templates/default/index.html:27 templates/modern/index.html:27
+msgid ""
+"Password reset is enabled but interface.application_url is not configured, "
+"so reset emails are not being sent. Set application_url to your public base "
+"URL."
+msgstr ""
+"Atur ulang kata sandi diaktifkan tetapi interface.application_url tidak "
+"dikonfigurasi, sehingga email atur ulang tidak dikirim. Setel "
+"application_url ke URL dasar publik Anda."
+
+#: templates/default/index.html:43 templates/modern/index.html:43
 msgid "DNS Management"
 msgstr "Manajemen DNS"
 
-#: templates/modern/index.html:46 templates/modern/pdns_status.html:173
+#: templates/modern/index.html:56 templates/modern/pdns_status.html:164
 msgid "Online"
 msgstr "Masalah berhasil diperbaiki."
 
-#: templates/modern/index.html:48 templates/modern/pdns_status.html:175
+#: templates/modern/index.html:58 templates/modern/pdns_status.html:166
 msgid "Offline"
 msgstr "Failed to fix some issues."
 
-#: templates/modern/header.html:259 templates/modern/header.html:284
+#: templates/modern/header.html:260 templates/modern/header.html:285
 msgid "Templates"
 msgstr "Run health check"
 
-#: templates/default/index.html:119 templates/modern/index.html:119
+#: templates/default/index.html:129 templates/modern/index.html:129
 msgid "Networks"
 msgstr "Jaringan"
 
-#: templates/default/index.html:138 templates/modern/index.html:138
+#: templates/default/index.html:148 templates/modern/index.html:148
 msgid "Zone Operations"
 msgstr "Operasi Zona"
 
-#: templates/default/index.html:149 templates/modern/index.html:149
+#: templates/modern/index.html:159 templates/modern/index.html:449
 msgid "Master Zone"
 msgstr "Belum pernah diperiksa"
 
-#: templates/default/index.html:159 templates/modern/index.html:159
+#: templates/modern/index.html:169 templates/modern/index.html:459
 msgid "Slave Zone"
 msgstr "Log aktivitas"
 
-#: templates/default/index.html:189 templates/modern/index.html:189
+#: templates/modern/index.html:199 templates/modern/index.html:489
 msgid "PTR Records"
 msgstr "Zone created"
 
-#: templates/default/index.html:207 templates/modern/index.html:207
+#: templates/default/index.html:217 templates/modern/index.html:217
 msgid "Administration"
 msgstr "Administrasi"
 
-#: templates/modern/index.html:238 templates/modern/header.html:259
+#: templates/modern/index.html:509 templates/modern/header.html:260
 msgid "Access"
 msgstr "Owner changed"
 
@@ -9599,12 +9774,12 @@ msgstr "Owner changed"
 msgid "Tools"
 msgstr "Alat"
 
-#: templates/default/index.html:297 templates/modern/index.html:297
+#: templates/default/index.html:307 templates/modern/index.html:307
 #: install/templates/step4.html.twig:159
 msgid "Database"
 msgstr "Basis Data"
 
-#: templates/default/index.html:344 templates/modern/index.html:344
+#: templates/modern/index.html:354 templates/modern/index.html:541
 msgid "My Profile"
 msgstr "Kesehatan zone"
 
@@ -9613,15 +9788,15 @@ msgstr "Kesehatan zone"
 msgid "Password"
 msgstr "DNSSEC dinonaktifkan"
 
-#: templates/modern/index.html:363 templates/modern/header.html:372
+#: templates/modern/index.html:560 templates/modern/header.html:373
 msgid "Preferences"
 msgstr "DNSSEC key deleted"
 
-#: templates/modern/header.html:436
+#: templates/modern/header.html:437
 msgid "Logout"
 msgstr "Template applied"
 
-#: templates/modern/edit_comment.html:18 templates/modern/edit.html:541
+#: templates/modern/edit_comment.html:18 templates/modern/edit.html:538
 msgid "Edit comment"
 msgstr "Activity details"
 
@@ -9629,7 +9804,7 @@ msgstr "Activity details"
 msgid "Edit comment in zone"
 msgstr "Detail aktivitas"
 
-#: templates/modern/add_zone_templ.html:12 templates/modern/header.html:271
+#: templates/modern/add_zone_templ.html:12 templates/modern/header.html:272
 msgid "Add template"
 msgstr "Performed by"
 
@@ -9653,7 +9828,7 @@ msgstr "Filter by date"
 msgid "Make this template available to all users"
 msgstr "Filter berdasarkan tanggal"
 
-#: templates/modern/list_zone_templ.html:13 templates/modern/header.html:296
+#: templates/modern/list_zone_templ.html:13 templates/modern/header.html:297
 msgid "Add zone template"
 msgstr "Filter by type"
 
@@ -9774,27 +9949,31 @@ msgstr "Detail Log"
 msgid "Close"
 msgstr "Tutup"
 
-#: templates/modern/list_log_groups.html:202
+#: templates/modern/list_log_groups.html:203
 msgid "Copied"
 msgstr "Disalin"
 
-#: templates/modern/list_log_groups.html:210
+#: templates/modern/list_log_groups.html:211
 msgid "No logs found"
 msgstr "Log tidak ditemukan"
 
-#: templates/modern/list_log_groups.html:211
+#: templates/modern/list_log_groups.html:212
 msgid "Try different search criteria or check back later"
 msgstr "Coba kriteria pencarian yang berbeda atau periksa kembali nanti"
 
-#: templates/modern/list_log_zones.html:11 templates/modern/header.html:184
+#: templates/modern/list_log_zones.html:13 templates/modern/edit.html:590
+msgid "Logs"
+msgstr "Log"
+
+#: templates/modern/list_log_zones.html:15 templates/modern/header.html:185
 msgid "Zone logs"
 msgstr "Activity log cleared successfully."
 
-#: templates/modern/list_log_zones.html:17
+#: templates/modern/list_log_zones.html:22
 msgid "Showing logs for zones you own."
 msgstr "Menampilkan log untuk zona yang Anda miliki."
 
-#: templates/modern/list_log_zones.html:23
+#: templates/modern/list_log_zones.html:28
 msgid "Zone Change Logs"
 msgstr "Log aktivitas berhasil dihapus."
 
@@ -9802,7 +9981,7 @@ msgstr "Log aktivitas berhasil dihapus."
 msgid "Domain name"
 msgstr "Nama domain"
 
-#: templates/modern/list_log_zones.html:42
+#: templates/modern/list_log_zones.html:49
 msgid "All operations"
 msgstr "Semua operasi"
 
@@ -9829,6 +10008,11 @@ msgstr "Format: nama,tipe,konten,prioritas,ttl,komentar (satu rekod per baris)"
 #: templates/modern/bulk_record_add.html:46
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
 msgstr "Contoh: www,A,192.168.1.1,0,3600,web server"
+
+#: templates/modern/bulk_record_add.html:47
+#, auto-english-fallback
+msgid "Priority and TTL are optional (defaults: priority=0, ttl="
+msgstr "Priority and TTL are optional (defaults: priority=0, ttl="
 
 #: templates/modern/bulk_record_add.html:48
 msgid "Comment is optional"
@@ -9958,27 +10142,27 @@ msgstr "Tambah pemilik baru"
 msgid "Owner to be added"
 msgstr "Pemilik yang akan ditambahkan"
 
-#: templates/default/delete_user.html:82 templates/modern/delete_user.html:82
+#: templates/default/delete_user.html:95 templates/modern/delete_user.html:95
 msgid "Delete: The zone will be completely removed from the system"
 msgstr "Hapus: Zona akan dihapus sepenuhnya dari sistem"
 
-#: templates/default/delete_user.html:83 templates/modern/delete_user.html:83
+#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
 msgid "Leave: The zone will remain in the system but without an owner"
 msgstr "Tinggalkan: Zona akan tetap berada di sistem tetapi tanpa pemilik"
 
-#: templates/default/delete_user.html:84 templates/modern/delete_user.html:84
+#: templates/default/delete_user.html:97 templates/modern/delete_user.html:97
 msgid "Add new owner: Transfer ownership to another user"
 msgstr "Tambah pemilik baru: Transfer kepemilikan ke pengguna lain"
 
-#: templates/default/delete_user.html:93 templates/modern/delete_user.html:93
+#: templates/default/delete_user.html:106 templates/modern/delete_user.html:106
 msgid "Yes, delete this user"
 msgstr "Ya, hapus pengguna ini"
 
-#: templates/default/delete_user.html:96 templates/modern/delete_user.html:96
+#: templates/default/delete_user.html:109 templates/modern/delete_user.html:109
 msgid "No, keep this user"
 msgstr "Tidak, pertahankan pengguna ini"
 
-#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:237
+#: templates/modern/save-zone-template.html:6 templates/modern/edit.html:232
 msgid "Save as Template"
 msgstr "Simpan sebagai Templat"
 
@@ -10190,15 +10374,15 @@ msgstr "Konfirmasi Kata Sandi"
 msgid "Passwords do not match"
 msgstr "Kata sandi tidak cocok"
 
-#: templates/modern/add_user.html:133
+#: templates/modern/add_user.html:134
 msgid "Password Requirements"
 msgstr "Persyaratan Kata Sandi"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "Minimum length"
 msgstr "Panjang minimum"
 
-#: templates/modern/add_user.html:137 templates/modern/change_password.html:79
+#: templates/modern/add_user.html:138 templates/modern/change_password.html:79
 msgid "characters"
 msgstr "karakter"
 
@@ -10218,11 +10402,11 @@ msgstr "Setidaknya satu angka"
 msgid "At least one special character"
 msgstr "Setidaknya satu karakter khusus"
 
-#: templates/modern/add_zone_master.html:11 templates/modern/header.html:156
+#: templates/modern/add_zone_master.html:11 templates/modern/header.html:157
 msgid "Add master zone"
 msgstr "Aktivitas zone"
 
-#: templates/modern/add_zone_slave.html:11 templates/modern/header.html:163
+#: templates/modern/add_zone_slave.html:11 templates/modern/header.html:164
 msgid "Add slave zone"
 msgstr "Tampilkan aktivitas"
 
@@ -10254,7 +10438,7 @@ msgstr "Zona reverse IPv4:"
 msgid "IPv6 reverse zones:"
 msgstr "Zona reverse IPv6:"
 
-#: templates/modern/search.html:123 templates/modern/search.html:319
+#: templates/modern/search.html:123 templates/modern/search.html:321
 msgid "Rows per page:"
 msgstr "Baris per halaman:"
 
@@ -10266,39 +10450,43 @@ msgstr "Tidak ada zona reverse yang ditampilkan dalam daftar ini."
 msgid "Owner"
 msgstr "Pemilik"
 
-#: templates/modern/list_forward_zones.html:97
+#: templates/modern/list_perm_templ.html:75
+msgid "Group"
+msgstr "Grup"
+
+#: templates/modern/list_forward_zones.html:111
 msgid "Full name"
 msgstr "Nama lengkap"
 
-#: templates/modern/list_reverse_zones.html:127
+#: templates/modern/list_reverse_zones.html:141
 msgid "Associated Forward Zones"
 msgstr "Zona Forward Terkait"
 
-#: templates/modern/list_forward_zones.html:101
+#: templates/modern/list_forward_zones.html:115
 msgid "Serial"
 msgstr "Serial"
 
-#: templates/modern/bulk_registration.html:79
+#: templates/modern/bulk_registration.html:44
 msgid "Template"
 msgstr "Templat"
 
-#: templates/modern/list_forward_zones.html:131
+#: templates/modern/list_forward_zones.html:145
 msgid "SOA record is disabled, the zone will not be served"
 msgstr "Catatan SOA dinonaktifkan, zona tidak akan dilayani"
 
-#: templates/modern/list_forward_zones.html:133
+#: templates/modern/list_forward_zones.html:147
 msgid "Zone has no SOA record"
 msgstr "Zona tidak memiliki catatan SOA"
 
-#: templates/modern/list_forward_zones.html:133
+#: templates/modern/list_forward_zones.html:147
 msgid "No SOA"
 msgstr "Tanpa SOA"
 
-#: templates/modern/list_reverse_zones.html:233
+#: templates/modern/list_reverse_zones.html:252
 msgid "-"
 msgstr "-"
 
-#: templates/modern/search.html:303
+#: templates/modern/search.html:305
 msgid "Delete zone(s)"
 msgstr "Hapus zona"
 
@@ -10388,7 +10576,7 @@ msgstr ""
 "Untuk deployment modern, ECDSA (algoritma 13, ECDSAP256SHA256) dengan 256 "
 "bit memberikan keamanan yang kuat dengan kinerja yang lebih baik."
 
-#: templates/modern/edit_user.html:5 templates/modern/header.html:366
+#: templates/modern/edit_user.html:5 templates/modern/header.html:367
 msgid "Edit profile"
 msgstr "Status kesehatan"
 
@@ -10401,6 +10589,10 @@ msgstr "Edit pengguna"
 msgid "Username"
 msgstr "Nama pengguna"
 
+#: templates/default/edit_user.html:33
+msgid "Your username can only be changed by an administrator"
+msgstr "Nama pengguna Anda hanya dapat diubah oleh administrator"
+
 #: templates/modern/edit_user.html:32 templates/modern/add_user.html:22
 msgid "Provide user name"
 msgstr "Berikan nama pengguna"
@@ -10409,11 +10601,11 @@ msgstr "Berikan nama pengguna"
 msgid "Fullname"
 msgstr "Nama lengkap"
 
-#: templates/modern/edit_user.html:38 templates/modern/add_user.html:28
+#: templates/modern/edit_user.html:41 templates/modern/add_user.html:28
 msgid "User's full name for identification"
 msgstr "Nama lengkap pengguna untuk identifikasi"
 
-#: templates/modern/edit_user.html:39 templates/modern/add_user.html:29
+#: templates/modern/edit_user.html:43 templates/modern/add_user.html:29
 msgid "Provide full name"
 msgstr "Berikan nama lengkap"
 
@@ -10421,15 +10613,15 @@ msgstr "Berikan nama lengkap"
 msgid "Email address"
 msgstr "Alamat email"
 
-#: templates/modern/edit_user.html:45 templates/modern/add_user.html:35
+#: templates/modern/edit_user.html:52 templates/modern/add_user.html:35
 msgid "Provide email"
 msgstr "Berikan email"
 
-#: templates/default/edit_user.html:58 templates/modern/edit_user.html:58
+#: templates/default/edit_user.html:68 templates/modern/edit_user.html:65
 msgid "Leave empty to keep current password"
 msgstr "Biarkan kosong untuk mempertahankan kata sandi saat ini"
 
-#: templates/default/edit_user.html:74
+#: templates/default/edit_user.html:84
 msgid ""
 "Permissions from this template will apply globally across the entire system "
 "for this user"
@@ -10437,32 +10629,69 @@ msgstr ""
 "Izin dari templat ini akan berlaku secara global di seluruh sistem untuk "
 "pengguna ini"
 
-#: templates/modern/edit_user.html:81 templates/modern/add_user.html:88
+#: templates/modern/edit_user.html:88 templates/modern/add_user.html:89
 msgid "Optional information about this user"
 msgstr "Informasi opsional tentang pengguna ini"
 
-#: templates/modern/users.html:49 templates/modern/add_user.html:94
+#: templates/modern/users.html:49 templates/modern/add_user.html:95
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Diaktifkan"
 
-#: templates/modern/edit_user.html:101 templates/modern/add_user.html:103
+#: templates/modern/edit_user.html:108 templates/modern/add_user.html:104
 msgid "LDAP Authentication"
 msgstr "Autentikasi LDAP"
 
-#: templates/modern/edit_user.html:103 templates/modern/add_user.html:105
+# OBSOLETE: msgid "About Bulk Registration"
+# OBSOLETE: msgstr "Tentang Registrasi Massal"
+# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
+# OBSOLETE: msgstr "Alat ini memungkinkan Anda membuat beberapa zona DNS sekaligus."
+# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
+# OBSOLETE: msgstr "Masukkan satu nama domain per baris di bidang Domain"
+# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
+# OBSOLETE: msgstr "Pilih templat zona untuk menerapkan rekod standar ke semua zona"
+# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Pemilik yang dipilih akan memiliki akses penuh ke semua zona yang dibuat"
+# OBSOLETE: msgid "How It Works"
+# OBSOLETE: msgstr "Cara Kerjanya"
+# OBSOLETE: msgid ""
+# OBSOLETE: "The system will attempt to create each zone with the same settings. "
+# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
+# OBSOLETE: "again."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Sistem akan mencoba membuat setiap zona dengan pengaturan yang sama. "
+# OBSOLETE: "Domain yang gagal akan ditampilkan sehingga Anda dapat memperbaiki "
+# OBSOLETE: "masalah dan mencoba lagi."
+# OBSOLETE: msgid "Tips & Recommendations"
+# OBSOLETE: msgstr "Tips & Rekomendasi"
+# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
+# OBSOLETE: msgstr "Gunakan tipe zona NATIVE untuk sebagian besar pengaturan standar"
+# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Buat templat terlebih dahulu jika Anda memerlukan rekod standar untuk "
+# OBSOLETE: "semua zona"
+# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
+# OBSOLETE: msgstr "Anda dapat menyalin dan menempel daftar domain dari spreadsheet"
+# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
+# OBSOLETE: msgstr "Pastikan nama domain mengikuti konvensi penamaan DNS yang valid"
+#: templates/default/edit_user.html:114
+msgid "Authentication settings can only be changed by an administrator"
+msgstr "Pengaturan autentikasi hanya dapat diubah oleh administrator"
+
+#: templates/modern/edit_user.html:110 templates/modern/add_user.html:106
 msgid "Use external LDAP directory for authentication"
 msgstr "Gunakan direktori LDAP eksternal untuk autentikasi"
 
-#: templates/default/edit_user.html:117 templates/modern/edit_user.html:117
+#: templates/default/edit_user.html:131 templates/modern/edit_user.html:124
 msgid "Back to Home"
 msgstr "Kembali ke Beranda"
 
-#: templates/default/edit_user.html:121 templates/modern/edit_user.html:121
+#: templates/default/edit_user.html:135 templates/modern/edit_user.html:128
 msgid "Back to Users"
 msgstr "Kembali ke Pengguna"
 
-#: templates/modern/edit_user.html:135 templates/modern/add_user.html:128
+#: templates/modern/edit_user.html:142 templates/modern/add_user.html:129
 msgid "Account Information"
 msgstr "Informasi Akun"
 
@@ -10486,52 +10715,52 @@ msgstr "Harus berisi karakter khusus"
 msgid "No specific password requirements"
 msgstr "Tidak ada persyaratan kata sandi khusus"
 
-#: templates/modern/add_user.html:160 templates/modern/edit_perm_templ.html:155
+#: templates/modern/add_user.html:161 templates/modern/edit_perm_templ.html:155
 msgid "User Permissions"
 msgstr "Izin Pengguna"
 
-#: templates/default/edit_user.html:176 templates/modern/edit_user.html:173
+#: templates/default/edit_user.html:190 templates/modern/edit_user.html:180
 msgid "This user has been assigned the access template"
 msgstr "Pengguna ini telah ditugaskan templat akses"
 
-#: templates/default/edit_user.html:185 templates/modern/edit_user.html:182
+#: templates/default/edit_user.html:199 templates/modern/edit_user.html:189
 msgid "Based on this template, this user has the following permissions"
 msgstr "Berdasarkan templat ini, pengguna ini memiliki izin berikut"
 
-#: templates/default/edit_user.html:188 templates/modern/edit_user.html:185
+#: templates/default/edit_user.html:202 templates/modern/edit_user.html:192
 msgid "No permissions are assigned to this template"
 msgstr "Tidak ada izin yang ditetapkan untuk templat ini"
 
-#: templates/modern/edit_user.html:205 templates/modern/add_user.html:172
+#: templates/modern/edit_user.html:212 templates/modern/add_user.html:173
 msgid "Group Memberships"
 msgstr "Keanggotaan Grup"
 
-#: templates/default/edit_user.html:212 templates/modern/edit_user.html:209
+#: templates/default/edit_user.html:226 templates/modern/edit_user.html:216
 msgid "Current Memberships"
 msgstr "Keanggotaan Saat Ini"
 
-#: templates/default/edit_user.html:227 templates/modern/edit_user.html:224
+#: templates/default/edit_user.html:241 templates/modern/edit_user.html:231
 msgid "View group details"
 msgstr "Lihat detail grup"
 
-#: templates/default/edit_user.html:241 templates/modern/edit_user.html:238
+#: templates/default/edit_user.html:255 templates/modern/edit_user.html:245
 msgid "This user is not a member of any groups."
 msgstr "Pengguna ini bukan anggota dari grup mana pun."
 
-#: templates/modern/edit_user.html:244 templates/modern/add_user.html:175
+#: templates/modern/edit_user.html:251 templates/modern/add_user.html:176
 msgid "Add to Groups"
 msgstr "Tambahkan ke Grup"
 
-#: templates/default/edit_user.html:248 templates/modern/edit_user.html:245
+#: templates/default/edit_user.html:262 templates/modern/edit_user.html:252
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr ""
 "Pilih satu atau lebih grup dan klik tombol \"Tambah Grup yang Dipilih\"."
 
-#: templates/modern/edit_user.html:253 templates/modern/add_user.html:180
+#: templates/modern/edit_user.html:260 templates/modern/add_user.html:181
 msgid "Search available groups..."
 msgstr "Cari grup yang tersedia..."
 
-#: templates/modern/edit_user.html:254 templates/modern/add_user.html:181
+#: templates/modern/edit_user.html:261 templates/modern/add_user.html:182
 msgid "Clear search"
 msgstr "Hapus pencarian"
 
@@ -10539,7 +10768,7 @@ msgstr "Hapus pencarian"
 msgid "Select All"
 msgstr "Pilih Semua"
 
-#: templates/modern/add_zone_slave.html:102
+#: templates/modern/add_zone_slave.html:107
 msgid "Clear All"
 msgstr "Hapus Semua"
 
@@ -10547,7 +10776,7 @@ msgstr "Hapus Semua"
 msgid "selected"
 msgstr "dipilih"
 
-#: templates/default/edit_user.html:286 templates/modern/edit_user.html:283
+#: templates/default/edit_user.html:300 templates/modern/edit_user.html:290
 msgid "Add Selected Groups"
 msgstr "Tambah Grup yang Dipilih"
 
@@ -10555,7 +10784,7 @@ msgstr "Tambah Grup yang Dipilih"
 msgid "Confirm Removal"
 msgstr "Konfirmasi Penghapusan"
 
-#: templates/default/edit_user.html:316 templates/modern/edit_user.html:313
+#: templates/default/edit_user.html:330 templates/modern/edit_user.html:320
 msgid "Are you sure you want to remove this user from the group"
 msgstr "Apakah Anda yakin ingin menghapus pengguna ini dari grup"
 
@@ -10855,8 +11084,12 @@ msgid "Create PTRs only for existing A/AAAA records in forward zone"
 msgstr "Buat PTR hanya untuk rekod A/AAAA yang ada di zona forward"
 
 #: templates/modern/batch_ptr_record.html:108
-msgid "When checked, PTR records will only be created for IPs that have corresponding A/AAAA records in the specified domain"
-msgstr "Jika dicentang, rekod PTR hanya akan dibuat untuk IP yang memiliki rekod A/AAAA terkait di domain yang ditentukan"
+msgid ""
+"When checked, PTR records will only be created for IPs that have "
+"corresponding A/AAAA records in the specified domain"
+msgstr ""
+"Jika dicentang, rekod PTR hanya akan dibuat untuk IP yang memiliki rekod A/"
+"AAAA terkait di domain yang ditentukan"
 
 #: templates/modern/batch_ptr_record.html:114
 msgid "Create PTR Records"
@@ -10887,8 +11120,12 @@ msgid "Matching only"
 msgstr "Hanya yang cocok"
 
 #: templates/modern/batch_ptr_record.html:145
-msgid "Creates PTR records only for IPs that have existing A/AAAA records in the forward zone"
-msgstr "Membuat rekod PTR hanya untuk IP yang memiliki rekod A/AAAA yang ada di zona forward"
+msgid ""
+"Creates PTR records only for IPs that have existing A/AAAA records in the "
+"forward zone"
+msgstr ""
+"Membuat rekod PTR hanya untuk IP yang memiliki rekod A/AAAA yang ada di zona "
+"forward"
 
 #: templates/modern/batch_ptr_record.html:147
 msgid "For IPv4, supported networks are:"
@@ -10939,8 +11176,12 @@ msgstr ""
 "reverse yang ada"
 
 #: templates/modern/batch_ptr_record.html:184
-msgid "Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based on your forward zone"
-msgstr "Gunakan \"Buat PTR hanya untuk rekod A/AAAA yang ada\" untuk mengisi PTR berdasarkan zona forward Anda"
+msgid ""
+"Use \"Create PTRs only for existing A/AAAA records\" to populate PTRs based "
+"on your forward zone"
+msgstr ""
+"Gunakan \"Buat PTR hanya untuk rekod A/AAAA yang ada\" untuk mengisi PTR "
+"berdasarkan zona forward Anda"
 
 #: templates/modern/batch_ptr_record.html:185
 msgid ""
@@ -10958,11 +11199,11 @@ msgstr ""
 "Centang \"Buat rekod A/AAAA forward\" untuk secara otomatis membuat rekod "
 "forward yang cocok (dinonaktifkan saat menggunakan mode pencocokan)"
 
-#: templates/modern/zone-ownership.html:6 templates/modern/edit.html:223
+#: templates/modern/bulk_registration.html:79
 msgid "Ownership"
 msgstr "Kepemilikan"
 
-#: templates/modern/add_zone_slave.html:50
+#: templates/modern/add_zone_slave.html:55
 msgid "User Owner"
 msgstr "Pemilik Pengguna"
 
@@ -10978,7 +11219,7 @@ msgstr "Tambah Pemilik Pengguna"
 msgid "Search users..."
 msgstr "Cari pengguna..."
 
-#: templates/modern/add_zone_slave.html:79
+#: templates/modern/add_zone_slave.html:84
 msgid "You"
 msgstr "Anda"
 
@@ -10986,7 +11227,7 @@ msgstr "Anda"
 msgid "Add Owner"
 msgstr "Tambah Pemilik"
 
-#: templates/modern/add_zone_slave.html:94
+#: templates/modern/add_zone_slave.html:99
 msgid "Group Ownership"
 msgstr "Kepemilikan Grup"
 
@@ -11030,11 +11271,11 @@ msgstr "Anda akan menghapus templat akses"
 msgid "This template is currently assigned to"
 msgstr "Templat ini saat ini ditugaskan untuk"
 
-#: templates/modern/delete_zone_templ.html:35
+#: templates/modern/delete_zone_templ.html:37
 msgid "Yes, delete this template"
 msgstr "Ya, hapus templat ini"
 
-#: templates/modern/delete_zone_templ.html:38
+#: templates/modern/delete_zone_templ.html:41
 msgid "No, keep this template"
 msgstr "Tidak, pertahankan templat ini"
 
@@ -11099,71 +11340,71 @@ msgstr "Jika Anda kehilangan kunci, Anda perlu meregenerasinya."
 msgid "Edit"
 msgstr "No saved searches found."
 
-#: templates/modern/edit.html:25 templates/modern/edit.html:604
+#: templates/modern/edit.html:25 templates/modern/edit.html:610
 msgid "Add new record"
 msgstr "Tambah rekod baru"
 
-#: templates/modern/edit.html:203 templates/modern/edit.html:608
+#: templates/modern/edit.html:203 templates/modern/edit.html:614
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Wizard terpandu untuk rekod DMARC, SPF, DKIM, CAA, TLSA, dan SRV"
 
-#: templates/modern/edit.html:35 templates/modern/edit.html:614
+#: templates/modern/edit.html:35 templates/modern/edit.html:620
 msgid "Multi-record mode"
 msgstr "Mode multi-rekod"
 
-#: templates/modern/edit.html:562 templates/modern/edit.html:617
+#: templates/modern/edit.html:563 templates/modern/edit.html:623
 msgid "Bulk add"
 msgstr "Tambah massal"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:629
+#: templates/modern/edit.html:50 templates/modern/edit.html:635
 msgid "Failed to add"
 msgstr "Gagal menambahkan"
 
-#: templates/modern/edit.html:50 templates/modern/edit.html:629
+#: templates/modern/edit.html:50 templates/modern/edit.html:635
 msgid "record(s). Please check the record format."
 msgstr "rekod. Silakan periksa format rekod."
 
-#: templates/modern/edit.html:52 templates/modern/edit.html:631
+#: templates/modern/edit.html:52 templates/modern/edit.html:637
 msgid "Failed to add records. Please check the record format."
 msgstr "Gagal menambahkan rekod. Silakan periksa format rekod."
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:634
+#: templates/modern/edit.html:55 templates/modern/edit.html:640
 msgid "Content validation failed:"
 msgstr "Validasi konten gagal:"
 
-#: templates/modern/edit.html:55 templates/modern/edit.html:634
+#: templates/modern/edit.html:55 templates/modern/edit.html:640
 msgid "Invalid value for record type"
 msgstr "Nilai tidak valid untuk tipe rekod"
 
-#: templates/modern/edit.html:57 templates/modern/edit.html:636
+#: templates/modern/edit.html:57 templates/modern/edit.html:642
 msgid "Please provide all required information."
 msgstr "Silakan berikan semua informasi yang diperlukan."
 
-#: templates/modern/edit.html:659 templates/modern/add_record.html:72
+#: templates/modern/edit.html:665 templates/modern/add_record.html:72
 msgid "Add PTR"
 msgstr "Tambah PTR"
 
-#: templates/modern/edit.html:662 templates/modern/add_record.html:75
+#: templates/modern/edit.html:668 templates/modern/add_record.html:75
 msgid "Add A/AAAA"
 msgstr "Tambah A/AAAA"
 
-#: templates/modern/edit.html:121 templates/modern/edit.html:701
+#: templates/modern/edit.html:121 templates/modern/edit.html:707
 msgid "This record already exists"
 msgstr "Rekod ini sudah ada"
 
-#: templates/modern/edit.html:133 templates/modern/edit.html:713
+#: templates/modern/edit.html:133 templates/modern/edit.html:719
 msgid "Invalid priority"
 msgstr "Prioritas tidak valid"
 
-#: templates/modern/edit.html:140 templates/modern/edit.html:720
+#: templates/modern/edit.html:140 templates/modern/edit.html:726
 msgid "Invalid TTL value"
 msgstr "Nilai TTL tidak valid"
 
-#: templates/modern/edit.html:142 templates/modern/edit.html:722
+#: templates/modern/edit.html:142 templates/modern/edit.html:728
 msgid "Provide TTL"
 msgstr "Berikan TTL"
 
-#: templates/modern/edit.html:748 templates/modern/add_record.html:207
+#: templates/modern/edit.html:754 templates/modern/add_record.html:207
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -11183,95 +11424,91 @@ msgstr "Metadata"
 msgid "View Metadata"
 msgstr "Lihat Metadata"
 
-#: templates/default/edit.html:232 templates/modern/edit.html:232
-msgid "Logs"
-msgstr "Log"
-
-#: templates/default/edit.html:248 templates/modern/edit.html:248
+#: templates/default/edit.html:243 templates/modern/edit.html:243
 msgid "No records match your filter criteria."
 msgstr "Tidak ada rekod yang cocok dengan kriteria filter Anda."
 
-#: templates/default/edit.html:256 templates/modern/edit.html:256
+#: templates/default/edit.html:251 templates/modern/edit.html:251
 msgid "This zone does not have any records."
 msgstr "Zona ini tidak memiliki rekod."
 
-#: templates/default/edit.html:268 templates/modern/edit.html:268
+#: templates/default/edit.html:263 templates/modern/edit.html:263
 msgid "Filter:"
 msgstr "Filter:"
 
-#: templates/default/edit.html:274 templates/modern/edit.html:274
+#: templates/default/edit.html:269 templates/modern/edit.html:269
 msgid "Search by name or content"
 msgstr "Cari berdasarkan nama atau konten"
 
-#: templates/default/edit.html:280 templates/modern/edit.html:280
+#: templates/default/edit.html:275 templates/modern/edit.html:275
 msgid "All Types"
 msgstr "Semua Tipe"
 
-#: templates/default/edit.html:290 templates/modern/edit.html:290
+#: templates/default/edit.html:285 templates/modern/edit.html:285
 msgid "Filter by content"
 msgstr "Filter berdasarkan konten"
 
-#: templates/default/edit.html:296 templates/modern/edit.html:296
+#: templates/default/edit.html:291 templates/modern/edit.html:291
 msgid "Apply"
 msgstr "Terapkan"
 
-#: templates/default/edit.html:332 templates/modern/edit.html:332
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "Showing"
 msgstr "Menampilkan"
 
-#: templates/default/edit.html:332 templates/modern/edit.html:332
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "of"
 msgstr "dari"
 
-#: templates/default/edit.html:332 templates/modern/edit.html:332
+#: templates/default/edit.html:327 templates/modern/edit.html:327
 msgid "total records"
 msgstr "total rekod"
 
-#: templates/default/edit.html:410 templates/modern/edit.html:410
+#: templates/default/edit.html:405 templates/modern/edit.html:405
 msgid "Last modified"
 msgstr "Terakhir diubah"
 
-#: templates/default/edit.html:524 templates/modern/edit.html:524
+#: templates/default/edit.html:521 templates/modern/edit.html:521
 msgid "Edit selected"
 msgstr "Edit yang dipilih"
 
-#: templates/modern/edit.html:528 templates/modern/search.html:486
+#: templates/modern/edit.html:525 templates/modern/search.html:489
 msgid "Delete record(s)"
 msgstr "Hapus rekod"
 
-#: templates/modern/edit.html:536 templates/modern/search.html:93
+#: templates/modern/edit.html:533 templates/modern/search.html:93
 msgid "Comments"
 msgstr "Komentar"
 
-#: templates/default/edit.html:566 templates/modern/edit.html:566
+#: templates/default/edit.html:567 templates/modern/edit.html:567
 msgid "Import"
 msgstr "Impor"
 
-#: templates/default/edit.html:583 templates/modern/edit.html:583
+#: templates/default/edit.html:584 templates/modern/edit.html:584
 msgid "Generate PTR"
 msgstr "Buat PTR"
 
-#: templates/modern/edit.html:762 templates/modern/add_zone_master.html:24
+#: templates/modern/edit.html:768 templates/modern/add_zone_master.html:25
 msgid "Zone Configuration"
 msgstr "Konfigurasi Zona"
 
-#: templates/modern/edit.html:804 templates/modern/edit.html:833
+#: templates/modern/edit.html:810 templates/modern/edit.html:839
 msgid "Change"
 msgstr "Ubah"
 
-#: templates/modern/edit.html:797 templates/modern/add_zone_slave.html:35
+#: templates/modern/edit.html:803 templates/modern/add_zone_slave.html:40
 msgid "IP address of master NS"
 msgstr "Alamat IP master NS"
 
-#: templates/default/edit.html:854 templates/modern/edit.html:854
+#: templates/default/edit.html:860 templates/modern/edit.html:860
 msgid "Manage DNSSEC"
 msgstr "Kelola DNSSEC"
 
-#: templates/default/edit.html:861 templates/modern/edit.html:861
+#: templates/default/edit.html:867 templates/modern/edit.html:867
 msgid "Sign zone"
 msgstr "Tandatangani zona"
 
-#: templates/default/edit.html:865 templates/modern/edit.html:865
+#: templates/default/edit.html:871 templates/modern/edit.html:871
 msgid "Not signed"
 msgstr "Tidak ditandatangani"
 
@@ -11279,7 +11516,7 @@ msgstr "Tidak ditandatangani"
 msgid "User Management"
 msgstr "Manajemen Pengguna"
 
-#: templates/modern/add_user.html:5 templates/modern/header.html:209
+#: templates/modern/add_user.html:5 templates/modern/header.html:210
 msgid "Add user"
 msgstr "Tambah pengguna"
 
@@ -11332,7 +11569,7 @@ msgstr "Jumlah total zona:"
 msgid "There are no forward zones to show in this listing."
 msgstr "Tidak ada zona forward yang ditampilkan dalam daftar ini."
 
-#: templates/modern/list_forward_zones.html:212
+#: templates/modern/list_forward_zones.html:231
 msgid "PTR"
 msgstr "PTR"
 
@@ -11364,11 +11601,11 @@ msgstr "Hapus juga rekod PTR terkait (jika ada)"
 msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr "Hapus juga rekod A/AAAA terkait (jika ada)"
 
-#: templates/modern/delete_zone_templ_record.html:59
+#: templates/modern/delete_zone_templ_record.html:61
 msgid "Yes, delete this record"
 msgstr "Ya, hapus rekod ini"
 
-#: templates/modern/delete_zone_templ_record.html:62
+#: templates/modern/delete_zone_templ_record.html:65
 msgid "No, keep this record"
 msgstr "Tidak, pertahankan rekod ini"
 
@@ -11556,11 +11793,15 @@ msgstr "Kirim kata sandi melalui email"
 msgid "Send login credentials to user's email address"
 msgstr "Kirim kredensial login ke alamat email pengguna"
 
-#: templates/modern/add_user.html:81
+#: templates/modern/add_user.html:72 templates/modern/add_group.html:35
+msgid "Select a template..."
+msgstr "Pilih templat..."
+
+#: templates/modern/add_user.html:82
 msgid "Select permissions for this user"
 msgstr "Pilih izin untuk pengguna ini"
 
-#: templates/default/add_user.html:162 templates/modern/add_user.html:162
+#: templates/default/add_user.html:163 templates/modern/add_user.html:163
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -11570,7 +11811,7 @@ msgstr ""
 "yang dipilih. Anda dapat memodifikasi izin ini nanti dengan mengedit "
 "pengguna."
 
-#: templates/default/add_user.html:176 templates/modern/add_user.html:176
+#: templates/default/add_user.html:177 templates/modern/add_user.html:177
 msgid "Select groups to add the new user to upon creation."
 msgstr "Pilih grup untuk menambahkan pengguna baru saat pembuatan."
 
@@ -11578,15 +11819,23 @@ msgstr "Pilih grup untuk menambahkan pengguna baru saat pembuatan."
 msgid "Zone name"
 msgstr "Nama zona"
 
-#: templates/modern/add_zone_slave.html:30
+#: templates/modern/add_zone_slave.html:31
 msgid "Provide zone name"
 msgstr "Berikan nama zona"
 
-#: templates/modern/add_zone_slave.html:31
+#: templates/modern/add_zone_slave.html:33
+msgid ""
+"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
+"name (e.g. 1.168.192.in-addr.arpa)."
+msgstr ""
+"Masukkan jaringan (mis. 192.168.1.0/24 atau 2001:db8::/48) atau nama zona "
+"reverse (mis. 1.168.192.in-addr.arpa)."
+
+#: templates/modern/add_zone_slave.html:35
 msgid "Example: example.com"
 msgstr "Contoh: example.com"
 
-#: templates/modern/add_zone_master.html:46
+#: templates/modern/add_zone_master.html:51
 msgid "Zone type (usually NATIVE)"
 msgstr "Tipe zona (biasanya NATIVE)"
 
@@ -11594,43 +11843,43 @@ msgstr "Tipe zona (biasanya NATIVE)"
 msgid "default"
 msgstr "default"
 
-#: templates/modern/add_zone_master.html:58
+#: templates/modern/add_zone_master.html:63
 msgid "Optional: Apply predefined records from a template"
 msgstr "Opsional: Terapkan rekod yang telah ditentukan dari templat"
 
-#: templates/modern/add_zone_master.html:66
+#: templates/modern/add_zone_master.html:71
 msgid "Enable DNSSEC"
 msgstr "Aktifkan DNSSEC"
 
-#: templates/modern/add_zone_master.html:68
+#: templates/modern/add_zone_master.html:73
 msgid "Secure this zone with DNSSEC signing"
 msgstr "Amankan zona ini dengan penandatanganan DNSSEC"
 
-#: templates/modern/add_zone_slave.html:55
+#: templates/modern/add_zone_slave.html:60
 msgid "Selected:"
 msgstr "Dipilih:"
 
-#: templates/modern/add_zone_slave.html:61
+#: templates/modern/add_zone_slave.html:66
 msgid "No user owner"
 msgstr "Tidak ada pemilik pengguna"
 
-#: templates/modern/add_zone_slave.html:62
+#: templates/modern/add_zone_slave.html:67
 msgid "Zone will be owned only by groups"
 msgstr "Zona akan dimiliki hanya oleh grup"
 
-#: templates/modern/add_zone_slave.html:85
+#: templates/modern/add_zone_slave.html:90
 msgid "Optional: Select a user responsible for this zone"
 msgstr "Opsional: Pilih pengguna yang bertanggung jawab untuk zona ini"
 
-#: templates/modern/add_zone_slave.html:109
+#: templates/modern/add_zone_slave.html:114
 msgid "members"
 msgstr "anggota"
 
-#: templates/modern/add_zone_slave.html:115
+#: templates/modern/add_zone_slave.html:120
 msgid "Optional: Select one or more groups"
 msgstr "Opsional: Pilih satu atau lebih grup"
 
-#: templates/modern/add_zone_slave.html:130
+#: templates/modern/add_zone_slave.html:135
 msgid "Add zone"
 msgstr "Tambah zona"
 
@@ -11654,7 +11903,7 @@ msgstr "Zona terhubung"
 msgid "Sync Status"
 msgstr "Status Sinkronisasi"
 
-#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:500
+#: templates/modern/list_zone_templ.html:45 templates/modern/search.html:503
 msgid "No results found"
 msgstr "Tidak ada hasil yang ditemukan"
 
@@ -11723,7 +11972,7 @@ msgstr ""
 "- gunakan tombol \"Perbarui Zona\" saat mengedit templat untuk menerapkan "
 "perubahan."
 
-#: templates/modern/change_password.html:49 templates/modern/header.html:378
+#: templates/modern/change_password.html:49 templates/modern/header.html:379
 msgid "Change password"
 msgstr "Key DNSSEC ditambahkan"
 
@@ -11775,7 +12024,7 @@ msgstr "Sertakan campuran huruf, angka, dan simbol"
 msgid "Consider using a password manager"
 msgstr "Pertimbangkan untuk menggunakan pengelola kata sandi"
 
-#: templates/modern/header.html:385
+#: templates/modern/header.html:386
 msgid "Multi-Factor Authentication"
 msgstr "Autentikasi Multi-Faktor"
 
@@ -11974,55 +12223,33 @@ msgstr ""
 msgid "API Key:"
 msgstr "API Key:"
 
-#: templates/modern/header.html:170
+#: templates/modern/header.html:171
 msgid "Bulk registration"
 msgstr "Registrasi massal"
+
+#: templates/modern/bulk_registration.html:30
+msgid "Zone Type"
+msgstr "Tipe Zona"
+
+#: templates/modern/bulk_registration.html:54
+msgid "Domains"
+msgstr "Domain"
+
+#: templates/modern/bulk_registration.html:56
+msgid "Provide a domain name(s)"
+msgstr "Berikan nama domain"
+
+#: templates/modern/bulk_registration.html:57
+msgid "Type one domain per line"
+msgstr "Ketik satu domain per baris"
+
+#: templates/modern/bulk_registration.html:63
+msgid "Add Zones"
+msgstr "Tambah Zona"
 
 #: lib/Module/ZoneImportExport/templates/import.html:138
 msgid "Group ownership"
 msgstr "Kepemilikan grup"
-
-#: templates/modern/bulk_registration.html:65
-msgid "Zone Type"
-msgstr "Tipe Zona"
-
-#: templates/modern/bulk_registration.html:89
-msgid "Domains"
-msgstr "Domain"
-
-#: templates/modern/bulk_registration.html:91
-msgid "Provide a domain name(s)"
-msgstr "Berikan nama domain"
-
-#: templates/modern/bulk_registration.html:92
-msgid "Type one domain per line"
-msgstr "Ketik satu domain per baris"
-
-#: templates/modern/bulk_registration.html:98
-msgid "Add Zones"
-msgstr "Tambah Zona"
-
-#: templates/modern/bulk_registration.html:115
-#, auto-english-fallback
-msgid "After Creation"
-msgstr "Setelah Pembuatan"
-
-#: templates/modern/bulk_registration.html:120
-#, auto-english-fallback
-msgid "Change zone owner"
-msgstr "Ubah pemilik zona"
-
-#: templates/modern/bulk_registration.html:121
-msgid ""
-"You can transfer zone ownership to another user from the user list at any "
-"time."
-msgstr ""
-"Anda dapat mengalihkan kepemilikan zona ke pengguna lain dari daftar pengguna kapan saja."
-
-#: templates/modern/bulk_registration.html:123
-#, auto-english-fallback
-msgid "Manage users"
-msgstr "Kelola pengguna"
 
 #: templates/modern/user_agreement.html:13
 msgid "User Agreement"
@@ -12336,82 +12563,106 @@ msgid "Items per page"
 msgstr "Item per halaman"
 
 #: templates/modern/user_preferences.html:36
+msgid "Timezone"
+msgstr "Zona waktu"
+
+#: templates/modern/user_preferences.html:46
+msgid "Region"
+msgstr "Wilayah"
+
+#: templates/modern/user_preferences.html:48
+msgid "Inherit global setting"
+msgstr "Warisi pengaturan global"
+
+#: templates/modern/user_preferences.html:55
+msgid "City"
+msgstr "Kota"
+
+#: templates/modern/user_preferences.html:64
+msgid ""
+"Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
+"the global server timezone."
+msgstr ""
+"Digunakan untuk stempel waktu pada email yang dikirim kepada Anda (mis. kode "
+"MFA). Kosong akan mewarisi zona waktu server global."
+
+#: templates/modern/user_preferences.html:95
 msgid "Zone Options"
 msgstr "Opsi Zona"
 
-#: templates/modern/user_preferences.html:42
+#: templates/modern/user_preferences.html:101
 msgid "Zone serial numbers"
 msgstr "Nomor serial zona"
 
-#: templates/modern/user_preferences.html:43
+#: templates/modern/user_preferences.html:102
 msgid "Display serial numbers in zone lists"
 msgstr "Tampilkan nomor serial dalam daftar zona"
 
-#: templates/modern/user_preferences.html:51
+#: templates/modern/user_preferences.html:110
 msgid "Display template information in zone lists"
 msgstr "Tampilkan informasi templat dalam daftar zona"
 
-#: templates/modern/user_preferences.html:64
+#: templates/modern/user_preferences.html:123
 msgid "Interface Behavior"
 msgstr "Perilaku Antarmuka"
 
-#: templates/modern/user_preferences.html:69
+#: templates/modern/user_preferences.html:128
 msgid "Record form"
 msgstr "Formulir rekod"
 
-#: templates/modern/user_preferences.html:78
+#: templates/modern/user_preferences.html:137
 msgid "Save buttons"
 msgstr "Tombol simpan"
 
-#: templates/modern/user_preferences.html:88
+#: templates/modern/user_preferences.html:147
 msgid "Edit Zone View"
 msgstr "Tampilan Edit Zona"
 
-#: templates/modern/user_preferences.html:93
+#: templates/modern/user_preferences.html:153
 msgid "Show record ID"
 msgstr "Tampilkan ID rekod"
 
-#: templates/modern/user_preferences.html:94
+#: templates/modern/user_preferences.html:154
 msgid "Display record ID column in edit view"
 msgstr "Tampilkan kolom ID rekod di tampilan edit"
 
-#: templates/modern/user_preferences.html:101
+#: templates/modern/user_preferences.html:162
 msgid "Show add record form"
 msgstr "Tampilkan formulir tambah rekod"
 
-#: templates/modern/user_preferences.html:102
+#: templates/modern/user_preferences.html:163
 msgid "Display inline add record form in edit view"
 msgstr "Tampilkan formulir tambah rekod inline di tampilan edit"
 
-#: templates/modern/user_preferences.html:109
+#: templates/modern/user_preferences.html:170
 msgid "Show edit buttons"
 msgstr "Tampilkan tombol edit"
 
-#: templates/modern/user_preferences.html:110
+#: templates/modern/user_preferences.html:171
 msgid "Display individual edit button per record"
 msgstr "Tampilkan tombol edit individual per rekod"
 
-#: templates/modern/user_preferences.html:117
+#: templates/modern/user_preferences.html:178
 msgid "Show delete buttons"
 msgstr "Tampilkan tombol hapus"
 
-#: templates/modern/user_preferences.html:118
+#: templates/modern/user_preferences.html:179
 msgid "Display individual delete button per record"
 msgstr "Tampilkan tombol hapus individual per rekod"
 
-#: templates/modern/user_preferences.html:125
+#: templates/modern/user_preferences.html:186
 msgid "Hostname-only display"
 msgstr "Tampilkan hanya nama host"
 
-#: templates/modern/user_preferences.html:126
+#: templates/modern/user_preferences.html:187
 msgid "Strip zone suffix from record names in edit view"
 msgstr "Hapus akhiran zona dari nama record dalam tampilan edit"
 
-#: templates/modern/user_preferences.html:141
+#: templates/modern/user_preferences.html:202
 msgid "Save Preferences"
 msgstr "Simpan Preferensi"
 
-#: templates/modern/user_preferences.html:147
+#: templates/modern/user_preferences.html:208
 msgid "Changes will be applied after saving"
 msgstr "Perubahan akan diterapkan setelah menyimpan"
 
@@ -12447,31 +12698,31 @@ msgstr ""
 msgid "Zones found"
 msgstr "Zona ditemukan"
 
-#: templates/default/search.html:316 templates/modern/search.html:316
+#: templates/default/search.html:318 templates/modern/search.html:318
 msgid "Records found"
 msgstr "Rekod ditemukan"
 
-#: templates/default/search.html:501 templates/modern/search.html:501
+#: templates/default/search.html:504 templates/modern/search.html:504
 msgid "Try different search terms or filters"
 msgstr "Coba istilah pencarian atau filter yang berbeda"
 
-#: templates/default/search.html:664 templates/modern/search.html:675
+#: templates/default/search.html:667 templates/modern/search.html:678
 msgid "Confirm Zone Deletion"
 msgstr "Konfirmasi Penghapusan Zona"
 
-#: templates/modern/search.html:680 templates/modern/search.html:706
+#: templates/modern/search.html:683 templates/modern/search.html:709
 msgid "Are you sure you want to delete"
 msgstr "Apakah Anda yakin ingin menghapus"
 
-#: templates/default/search.html:669 templates/modern/search.html:680
+#: templates/default/search.html:672 templates/modern/search.html:683
 msgid "selected zone(s)?"
 msgstr "zona yang dipilih?"
 
-#: templates/default/search.html:690 templates/modern/search.html:701
+#: templates/default/search.html:693 templates/modern/search.html:704
 msgid "Confirm Record Deletion"
 msgstr "Konfirmasi Penghapusan Rekod"
 
-#: templates/default/search.html:695 templates/modern/search.html:706
+#: templates/default/search.html:698 templates/modern/search.html:709
 msgid "selected record(s)?"
 msgstr "rekod yang dipilih?"
 
@@ -12504,7 +12755,7 @@ msgstr "Ya, hapus zona ini"
 msgid "No, keep these zones"
 msgstr "Tidak, pertahankan zona ini"
 
-#: templates/modern/list_log_users.html:5 templates/modern/header.html:216
+#: templates/modern/list_log_users.html:5 templates/modern/header.html:217
 msgid "User logs"
 msgstr "Log pengguna"
 
@@ -12512,15 +12763,15 @@ msgstr "Log pengguna"
 msgid "User Activity Logs"
 msgstr "Log Aktivitas Pengguna"
 
-#: templates/modern/add_zone_slave.html:24
+#: templates/modern/add_zone_slave.html:25
 msgid "Slave Zone Configuration"
 msgstr "Konfigurasi Zona Slave"
 
-#: templates/modern/add_zone_slave.html:37
+#: templates/modern/add_zone_slave.html:42
 msgid "Provide IP address"
 msgstr "Berikan alamat IP"
 
-#: templates/modern/add_zone_slave.html:38
+#: templates/modern/add_zone_slave.html:43
 msgid ""
 "IP address of the master name server (supports IPv4 and IPv6, multiple IPs "
 "separated by commas)"
@@ -12689,11 +12940,11 @@ msgstr ""
 msgid "PowerDNS Server Status"
 msgstr "Status Server PowerDNS"
 
-#: templates/default/pdns_status.html:16 templates/modern/pdns_status.html:17
+#: templates/default/pdns_status.html:15 templates/modern/pdns_status.html:16
 msgid "Refresh Status"
 msgstr "Perbarui Status"
 
-#: templates/default/pdns_status.html:25 templates/modern/pdns_status.html:26
+#: templates/default/pdns_status.html:23 templates/modern/pdns_status.html:24
 msgid ""
 "PowerDNS API is not configured. Please configure the PowerDNS API URL and "
 "key in your settings."
@@ -12701,175 +12952,176 @@ msgstr ""
 "PowerDNS API tidak dikonfigurasi. Silakan konfigurasi URL dan kunci API "
 "PowerDNS di pengaturan Anda."
 
-#: templates/default/pdns_status.html:32 templates/modern/pdns_status.html:33
+#: templates/default/pdns_status.html:30 templates/modern/pdns_status.html:31
 msgid "Server Running"
 msgstr "Server Berjalan"
 
-#: templates/default/pdns_status.html:37 templates/modern/pdns_status.html:38
+#: templates/default/pdns_status.html:35 templates/modern/pdns_status.html:36
 msgid "Server Not Running"
 msgstr "Server Tidak Berjalan"
 
-#: templates/default/pdns_status.html:51 templates/modern/pdns_status.html:52
+#: templates/default/pdns_status.html:49 templates/modern/pdns_status.html:50
 msgid "Server Information"
 msgstr "Informasi Server"
 
-#: templates/default/pdns_status.html:58 templates/modern/pdns_status.html:59
+#: templates/default/pdns_status.html:56 templates/modern/pdns_status.html:57
 msgid "PDNS Server"
 msgstr "Server PDNS"
 
-#: templates/default/pdns_status.html:62 templates/modern/pdns_status.html:63
+#: templates/default/pdns_status.html:60 templates/modern/pdns_status.html:61
 msgid "Server Name"
 msgstr "Nama Server"
 
-#: templates/default/pdns_status.html:67 templates/modern/pdns_status.html:68
+#: templates/default/pdns_status.html:65 templates/modern/pdns_status.html:66
 msgid "Server ID"
 msgstr "ID Server"
 
-#: templates/default/pdns_status.html:72 templates/modern/pdns_status.html:73
+#: templates/default/pdns_status.html:70 templates/modern/pdns_status.html:71
 msgid "PowerDNS Version"
 msgstr "Versi PowerDNS"
 
-#: templates/default/pdns_status.html:76 templates/modern/pdns_status.html:77
+#: templates/default/pdns_status.html:74 templates/modern/pdns_status.html:75
 msgid "Daemon Type"
 msgstr "Tipe Daemon"
 
-#: templates/modern/pdns_status.html:82 templates/modern/pdns_status.html:183
+#: templates/modern/pdns_status.html:80 templates/modern/pdns_status.html:174
 msgid "Uptime"
 msgstr "Waktu Aktif"
 
-#: templates/default/pdns_status.html:90 templates/modern/pdns_status.html:91
+#: templates/default/pdns_status.html:88 templates/modern/pdns_status.html:89
 msgid "Server information is not available."
 msgstr "Informasi server tidak tersedia."
 
-#: templates/default/pdns_status.html:101 templates/modern/pdns_status.html:102
+#: templates/default/pdns_status.html:99 templates/modern/pdns_status.html:100
 msgid "Slave Servers"
 msgstr "Server Slave"
 
-#: templates/default/pdns_status.html:104 templates/modern/pdns_status.html:105
+#: templates/default/pdns_status.html:102 templates/modern/pdns_status.html:103
 msgid ""
 "Showing connectivity status for DNS servers listed in the supermasters table."
 msgstr ""
 "Menampilkan status konektivitas untuk server DNS yang terdaftar di tabel "
 "supermaster."
 
-#: templates/default/pdns_status.html:114 templates/modern/pdns_status.html:115
+#: templates/default/pdns_status.html:106 templates/modern/pdns_status.html:107
 msgid "Server IP"
 msgstr "IP Server"
 
-#: templates/default/pdns_status.html:116 templates/modern/pdns_status.html:117
+#: templates/default/pdns_status.html:108 templates/modern/pdns_status.html:109
 msgid "Last Checked"
 msgstr "Terakhir Diperiksa"
 
-#: templates/default/pdns_status.html:125 templates/modern/pdns_status.html:126
+#: templates/default/pdns_status.html:117 templates/modern/pdns_status.html:118
 #: install/templates/step2.html.twig:18
 msgid "OK"
 msgstr "OK"
 
-#: templates/default/pdns_status.html:127 templates/modern/pdns_status.html:128
+#: templates/default/pdns_status.html:119 templates/modern/pdns_status.html:120
 msgid "Unreachable"
 msgstr "Tidak Terjangkau"
 
-#: templates/default/pdns_status.html:129 templates/modern/pdns_status.html:130
-msgid "Error"
-msgstr "Error"
+#: templates/default/pdns_status.html:121 templates/modern/pdns_status.html:122
+#, auto-english-fallback
+msgid "Not checked"
+msgstr "Not checked"
 
-#: templates/default/pdns_status.html:160 templates/modern/pdns_status.html:161
+#: templates/default/pdns_status.html:151 templates/modern/pdns_status.html:152
 msgid "Server Statistics"
 msgstr "Statistik Server"
 
-#: templates/default/pdns_status.html:170 templates/modern/pdns_status.html:171
+#: templates/default/pdns_status.html:161 templates/modern/pdns_status.html:162
 msgid "Server Health"
 msgstr "Kesehatan Server"
 
-#: templates/modern/pdns_status.html:190 templates/modern/api_keys.html:53
+#: templates/modern/pdns_status.html:181 templates/modern/api_keys.html:53
 msgid "Unknown"
 msgstr "Tidak Diketahui"
 
-#: templates/default/pdns_status.html:198 templates/modern/pdns_status.html:199
+#: templates/default/pdns_status.html:189 templates/modern/pdns_status.html:190
 msgid "Latency"
 msgstr "Latensi"
 
-#: templates/default/pdns_status.html:208 templates/modern/pdns_status.html:209
+#: templates/default/pdns_status.html:199 templates/modern/pdns_status.html:200
 msgid "CPU Usage"
 msgstr "Penggunaan CPU"
 
-#: templates/default/pdns_status.html:223 templates/modern/pdns_status.html:224
+#: templates/default/pdns_status.html:214 templates/modern/pdns_status.html:215
 msgid "Query Statistics"
 msgstr "Statistik Query"
 
-#: templates/default/pdns_status.html:243 templates/modern/pdns_status.html:244
+#: templates/default/pdns_status.html:234 templates/modern/pdns_status.html:235
 msgid "UDP Queries"
 msgstr "Query UDP"
 
-#: templates/default/pdns_status.html:260 templates/modern/pdns_status.html:261
+#: templates/default/pdns_status.html:251 templates/modern/pdns_status.html:252
 msgid "TCP Queries"
 msgstr "Query TCP"
 
-#: templates/default/pdns_status.html:279 templates/modern/pdns_status.html:280
+#: templates/default/pdns_status.html:270 templates/modern/pdns_status.html:271
 msgid "Cache Hits"
 msgstr "Cache Hit"
 
-#: templates/default/pdns_status.html:296 templates/modern/pdns_status.html:297
+#: templates/default/pdns_status.html:287 templates/modern/pdns_status.html:288
 msgid "Cache Misses"
 msgstr "Cache Miss"
 
-#: templates/default/pdns_status.html:331 templates/modern/pdns_status.html:332
+#: templates/default/pdns_status.html:322 templates/modern/pdns_status.html:323
 msgid "Toggle View"
 msgstr "Toggle Tampilan"
 
-#: templates/default/pdns_status.html:336 templates/modern/pdns_status.html:337
+#: templates/default/pdns_status.html:327 templates/modern/pdns_status.html:328
 msgid "Refresh"
 msgstr "Perbarui"
 
-#: templates/modern/pdns_status.html:442
+#: templates/modern/pdns_status.html:433
 msgid "Bytes"
 msgstr "Byte"
 
-#: templates/default/pdns_status.html:410 templates/modern/pdns_status.html:411
+#: templates/default/pdns_status.html:401 templates/modern/pdns_status.html:402
 msgid "Metric"
 msgstr "Metrik"
 
-#: templates/default/pdns_status.html:465 templates/modern/pdns_status.html:466
+#: templates/default/pdns_status.html:456 templates/modern/pdns_status.html:457
 msgid "No detailed metrics available."
 msgstr "Tidak ada metrik detail yang tersedia."
 
-#: templates/default/header.html:104 templates/modern/header.html:144
+#: templates/default/header.html:105 templates/modern/header.html:145
 msgid "Forward zones"
 msgstr "Zona forward"
 
-#: templates/default/header.html:105 templates/modern/header.html:149
+#: templates/default/header.html:106 templates/modern/header.html:150
 msgid "Reverse zones"
 msgstr "Zona reverse"
 
-#: templates/default/header.html:144 templates/modern/header.html:203
+#: templates/default/header.html:145 templates/modern/header.html:204
 msgid "List users"
 msgstr "Zone diimpor"
 
-#: templates/default/header.html:165 templates/modern/header.html:235
+#: templates/default/header.html:166 templates/modern/header.html:236
 msgid "List groups"
 msgstr "Daftar grup"
 
-#: templates/modern/header.html:246 templates/modern/list_log_groups.html:5
+#: templates/modern/header.html:247 templates/modern/list_log_groups.html:5
 msgid "Group logs"
 msgstr "Log grup"
 
-#: templates/default/header.html:185 templates/modern/header.html:265
+#: templates/default/header.html:186 templates/modern/header.html:266
 msgid "List templates"
 msgstr "Daftar templat"
 
-#: templates/default/header.html:202 templates/modern/header.html:290
+#: templates/default/header.html:203 templates/modern/header.html:291
 msgid "List zone templates"
 msgstr "Last health check"
 
-#: templates/default/header.html:229 templates/modern/header.html:330
+#: templates/default/header.html:230 templates/modern/header.html:331
 msgid "API Documentation"
 msgstr "Dokumentasi API"
 
-#: templates/default/header.html:322 templates/modern/header.html:491
+#: templates/default/header.html:323 templates/modern/header.html:492
 msgid "PowerDNS API error"
 msgstr "PowerDNS API error"
 
-#: templates/default/header.html:326 templates/modern/header.html:495
+#: templates/default/header.html:327 templates/modern/header.html:496
 msgid ""
 "Check that pdns_api.key in config/settings.php matches the API key "
 "configured in PowerDNS."
@@ -12877,7 +13129,7 @@ msgstr ""
 "Pastikan pdns_api.key di config/settings.php cocok dengan kunci API yang "
 "dikonfigurasi di PowerDNS.configured in PowerDNS."
 
-#: templates/default/header.html:328 templates/modern/header.html:497
+#: templates/default/header.html:329 templates/modern/header.html:498
 msgid ""
 "Check that pdns_api.server_name matches what PowerDNS reports (default "
 "'localhost')."
@@ -12885,7 +13137,7 @@ msgstr ""
 "Pastikan pdns_api.server_name cocok dengan yang dilaporkan PowerDNS (bawaan "
 "'localhost').'localhost')."
 
-#: templates/default/header.html:330 templates/modern/header.html:499
+#: templates/default/header.html:331 templates/modern/header.html:500
 msgid ""
 "PowerDNS rejected the request. Check the PowerDNS server log for the cause - "
 "a common trigger after importing zones directly into the PowerDNS database "
@@ -12897,7 +13149,7 @@ msgstr ""
 "serialisasi zona.a common trigger after importing zones directly into the "
 "PowerDNS database is a single malformed record that fails zone serialization."
 
-#: templates/default/header.html:332 templates/modern/header.html:501
+#: templates/default/header.html:333 templates/modern/header.html:502
 msgid ""
 "Some features may be unavailable until the API is reachable again. Check "
 "your PowerDNS server log for details."
@@ -13000,11 +13252,11 @@ msgstr "Tambah yang Dipilih"
 msgid "Are you sure you want to remove"
 msgstr "Apakah Anda yakin ingin menghapus"
 
-#: templates/modern/manage_group_zones.html:211
+#: templates/modern/manage_group_zones.html:216
 msgid "zone(s) from this group?"
 msgstr "zona dari grup ini?"
 
-#: templates/modern/manage_group_zones.html:212
+#: templates/modern/manage_group_zones.html:217
 msgid "The zones will remain in the system."
 msgstr "Zona akan tetap berada di sistem."
 
@@ -13179,10 +13431,6 @@ msgstr ""
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Anda akan menghapus kunci DNSSEC (ID"
 
-#: templates/default/add_group.html:35 templates/modern/add_group.html:35
-msgid "Select a template..."
-msgstr "Pilih templat..."
-
 #: templates/modern/add_group.html:45
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
@@ -13240,10 +13488,6 @@ msgstr "Tambah templat akses"
 #: templates/modern/list_perm_templ.html:75
 msgid "User"
 msgstr "Pengguna"
-
-#: templates/modern/list_perm_templ.html:75
-msgid "Group"
-msgstr "Grup"
 
 #: templates/modern/list_perm_templ.html:41
 msgid "No access templates found"
@@ -13476,6 +13720,11 @@ msgstr ""
 msgid "RDAP results for"
 msgstr "Hasil RDAP untuk"
 
+#: lib/Module/Rdap/templates/rdap.html:46
+#, auto-english-fallback
+msgid "Please enter a domain name to perform an RDAP lookup."
+msgstr "Please enter a domain name to perform an RDAP lookup."
+
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
 msgstr "Create limited rights user"
@@ -13540,7 +13789,7 @@ msgstr ""
 msgid "Continue to step"
 msgstr "Continue to step"
 
-#: install/templates/base.html.twig:37
+#: install/templates/base.html.twig:38
 msgid "Installation step"
 msgstr "Installation step"
 
@@ -14043,6 +14292,15 @@ msgstr ""
 "Konfigurasikan koneksi basis data, buat akun admin, dan hasilkan file "
 "konfigurasi."
 
+#: install/templates/step3.html.twig:28
+#, auto-english-fallback
+msgid ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+msgstr ""
+"Note: PostgreSQL and SQLite must use the same database for both PowerDNS and "
+"Poweradmin."
+
 #: install/helpers/InstallStepHandler.php:176
 msgid "Missing PowerDNS tables:"
 msgstr "Missing PowerDNS tables:"
@@ -14181,128 +14439,33 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Tidak dapat terhubung ke basis data PowerDNS \"%s\": %s"
 
-# OBSOLETE: msgid "About Bulk Registration"
-# OBSOLETE: msgstr "Tentang Registrasi Massal"
-
-# OBSOLETE: msgid "This tool allows you to create multiple DNS zones at once."
-# OBSOLETE: msgstr "Alat ini memungkinkan Anda membuat beberapa zona DNS sekaligus."
-
-# OBSOLETE: msgid "Enter one domain name per line in the Domains field"
-# OBSOLETE: msgstr "Masukkan satu nama domain per baris di bidang Domain"
-
-# OBSOLETE: msgid "Select a zone template to apply standard records to all zones"
-# OBSOLETE: msgstr "Pilih templat zona untuk menerapkan rekod standar ke semua zona"
-
-# OBSOLETE: msgid "The chosen owner will have full access to all created zones"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Pemilik yang dipilih akan memiliki akses penuh ke semua zona yang dibuat"
-
-# OBSOLETE: msgid "How It Works"
-# OBSOLETE: msgstr "Cara Kerjanya"
-
+#: install/helpers/LocaleHandler.php:90
 #, auto-english-fallback
+msgid ""
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
+msgstr ""
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
+
+# OBSOLETE: msgid "After Creation"
+# OBSOLETE: msgstr "Setelah Pembuatan"
+
+# OBSOLETE: msgid "Change zone owner"
+# OBSOLETE: msgstr "Ubah pemilik zona"
+
 # OBSOLETE: msgid ""
-# OBSOLETE: "The system will attempt to create each zone with the same settings. "
-# OBSOLETE: "Failed domains will be displayed so you can correct any issues and try "
-# OBSOLETE: "again."
+# OBSOLETE: "You can transfer zone ownership to another user from the user list at any "
+# OBSOLETE: "time."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Sistem akan mencoba membuat setiap zona dengan pengaturan yang sama. "
-# OBSOLETE: "Domain yang gagal akan ditampilkan sehingga Anda dapat memperbaiki "
-# OBSOLETE: "masalah dan mencoba lagi."
+# OBSOLETE: "Anda dapat mengalihkan kepemilikan zona ke pengguna lain dari daftar "
+# OBSOLETE: "pengguna kapan saja."
 
-# OBSOLETE: msgid "Tips & Recommendations"
-# OBSOLETE: msgstr "Tips & Rekomendasi"
+# OBSOLETE: msgid "Manage users"
+# OBSOLETE: msgstr "Kelola pengguna"
 
-# OBSOLETE: msgid "Use NATIVE zone type for most standard setups"
-# OBSOLETE: msgstr "Gunakan tipe zona NATIVE untuk sebagian besar pengaturan standar"
-
-# OBSOLETE: msgid "Create a template first if you need standard records for all zones"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Buat templat terlebih dahulu jika Anda memerlukan rekod standar untuk "
-# OBSOLETE: "semua zona"
-
-# OBSOLETE: msgid "You can copy and paste a list of domains from a spreadsheet"
-# OBSOLETE: msgstr "Anda dapat menyalin dan menempel daftar domain dari spreadsheet"
-
-# OBSOLETE: msgid "Make sure the domain names follow valid DNS naming conventions"
-# OBSOLETE: msgstr "Pastikan nama domain mengikuti konvensi penamaan DNS yang valid"
+# OBSOLETE: msgid "Error"
+# OBSOLETE: msgstr "Error"
 
 
 
-
-#: templates/default/edit_user.html:114
-msgid "Authentication settings can only be changed by an administrator"
-msgstr "Pengaturan autentikasi hanya dapat diubah oleh administrator"
-
-#: lib/Domain/Model/UserManager.php:1118
-msgid "Email address already exists, please choose another one."
-msgstr "Alamat email sudah ada, silakan pilih yang lain."
-
-#: templates/modern/add_zone_slave.html:33
-msgid ""
-"Enter a network (e.g. 192.168.1.0/24 or 2001:db8::/48) or a reverse zone "
-"name (e.g. 1.168.192.in-addr.arpa)."
-msgstr "Masukkan jaringan (mis. 192.168.1.0/24 atau 2001:db8::/48) atau nama zona reverse (mis. 1.168.192.in-addr.arpa)."
-
-#: lib/Application/Controller/AddZoneSlaveController.php:138
-msgid ""
-"Enter a network in CIDR notation (for example 192.168.1.0/24 or "
-"2001:db8::/48) or a reverse zone name ending in in-addr.arpa or ip6.arpa."
-msgstr "Masukkan jaringan dalam notasi CIDR (misalnya 192.168.1.0/24 atau 2001:db8::/48) atau nama zona reverse yang diakhiri dengan in-addr.arpa atau ip6.arpa."
-
-#: lib/Application/Controller/EditController.php:671
-msgid ""
-"Some records were not saved because the form exceeded the server limit on "
-"the number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "Beberapa rekaman tidak disimpan karena formulir melebihi batas server untuk jumlah bidang. Minta administrator Anda untuk menaikkan pengaturan PHP \"max_input_vars\"."
-
-#: lib/Domain/Model/ZoneTemplate.php:670 lib/Domain/Model/ZoneTemplate.php:732
-msgid "The record does not belong to this zone template."
-msgstr "Rekaman tidak termasuk dalam template zona ini."
-
-#: templates/default/edit_user.html:33
-msgid "Your username can only be changed by an administrator"
-msgstr "Nama pengguna Anda hanya dapat diubah oleh administrator"
-
-#: templates/modern/user_preferences.html:55
-msgid "City"
-msgstr "Kota"
-
-#: lib/Application/Controller/DatabaseConsistencyController.php:54
-msgid ""
-"Database consistency checks are not available when using the PowerDNS API "
-"backend."
-msgstr "Pemeriksaan konsistensi basis data tidak tersedia saat menggunakan backend PowerDNS API."
-
-#: templates/modern/user_preferences.html:48
-msgid "Inherit global setting"
-msgstr "Warisi pengaturan global"
-
-#: templates/default/index.html:27 templates/modern/index.html:27
-msgid ""
-"Password reset is enabled but interface.application_url is not configured, "
-"so reset emails are not being sent. Set application_url to your public base "
-"URL."
-msgstr "Atur ulang kata sandi diaktifkan tetapi interface.application_url tidak dikonfigurasi, sehingga email atur ulang tidak dikirim. Setel application_url ke URL dasar publik Anda."
-
-#: templates/modern/user_preferences.html:46
-msgid "Region"
-msgstr "Wilayah"
-
-#: templates/modern/user_preferences.html:36
-msgid "Timezone"
-msgstr "Zona waktu"
-
-#: templates/modern/user_preferences.html:64
-msgid ""
-"Used for timestamps in emails sent to you (e.g. MFA codes). Empty inherits "
-"the global server timezone."
-msgstr "Digunakan untuk stempel waktu pada email yang dikirim kepada Anda (mis. kode MFA). Kosong akan mewarisi zona waktu server global."
-
-#: lib/Application/Controller/DeleteUserController.php:129
-msgid ""
-"The user was not deleted because the form exceeded the server limit on the "
-"number of fields. Ask your administrator to increase the PHP "
-"\"max_input_vars\" setting."
-msgstr "Pengguna tidak dihapus karena formulir melebihi batas server untuk jumlah bidang. Minta administrator Anda untuk menaikkan pengaturan PHP \"max_input_vars\"."
