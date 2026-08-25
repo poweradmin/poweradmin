@@ -1130,10 +1130,19 @@ class UserProvisioningService extends LoggingService
      * distinguish two identically named groups, so a directory user able to
      * create a group in their own OU could satisfy a mapping meant for another.
      * DN-shaped groups must therefore be configured as the full DN.
+     *
+     * PHP stores a numeric array key as an int, and some providers emit the
+     * groups claim as JSON numbers, so both sides are compared as strings.
      */
     private function groupMatches(string $configKey, array $groups): bool
     {
-        return in_array($configKey, $groups, true);
+        foreach ($groups as $group) {
+            if (is_scalar($group) && (string)$group === $configKey) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
