@@ -46,8 +46,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # release/3.x has no docker.yml of its own; its image rebuilds on branch pushes only
-          for branch in develop release/4.3.x release/4.2.x; do
+          # release/3.x has no docker.yml of its own; its image rebuilds on branch pushes only.
+          # develop is excluded: docker-develop.yml owns it and carries its own schedule.
+          for branch in release/4.3.x release/4.2.x; do
             gh workflow run docker.yml --repo "$GITHUB_REPOSITORY" --ref "$branch" -f no_cache=true \
               || echo "dispatch failed for $branch"
           done

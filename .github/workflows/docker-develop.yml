@@ -17,6 +17,8 @@ on:
         description: 'Build without layer cache to pull in updated base packages'
         type: boolean
         default: false
+  schedule:
+    - cron: '30 4 * * 1'
 
 concurrency:
   group: docker-publish-develop
@@ -100,7 +102,7 @@ jobs:
           outputs: type=image,name=${{ env.GHCR_IMAGE }},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=registry,ref=${{ env.GHCR_IMAGE }}:buildcache-develop-${{ env.PLATFORM_PAIR }}
           cache-to: type=registry,ref=${{ env.GHCR_IMAGE }}:buildcache-develop-${{ env.PLATFORM_PAIR }},mode=max,ignore-error=true
-          no-cache: ${{ inputs.no_cache == true }}
+          no-cache: ${{ github.event_name == 'schedule' || inputs.no_cache == true }}
 
       # The digest is pushed but untagged, so a failing smoke test here blocks the
       # merge job and no tag ever points at it. Each platform is tested natively.
