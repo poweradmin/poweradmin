@@ -568,7 +568,7 @@ class UserProvisioningService extends LoggingService
         // Check if user's groups match any configured mappings
         foreach ($permissionTemplateMapping as $groupName => $templateName) {
             $this->logInfo('Checking if group {groupName} is in user groups', ['groupName' => $groupName]);
-            if (in_array($groupName, $groups, true)) {
+            if ($this->groupMatches((string)$groupName, $groups)) {
                 $this->logInfo('Found matching group: {group}', ['group' => $groupName]);
                 $templateId = $this->findPermissionTemplateByName($templateName);
                 if ($templateId) {
@@ -955,7 +955,7 @@ class UserProvisioningService extends LoggingService
         $targetGroupIds = [];
         $targetGroupNames = [];
         foreach ($groupMapping as $externalGroupName => $poweradminGroupName) {
-            if (in_array($externalGroupName, $externalGroups, true)) {
+            if ($this->groupMatches((string)$externalGroupName, $externalGroups)) {
                 $groupId = $this->findGroupByName($poweradminGroupName);
                 if ($groupId) {
                     $targetGroupIds[] = $groupId;
@@ -1007,6 +1007,27 @@ class UserProvisioningService extends LoggingService
         } else {
             $this->logInfo('User {userId} not a member of any mapped groups', ['userId' => $userId]);
         }
+    }
+
+    /**
+     * Whether a mapping key names one of the user's external groups.
+     *
+     * PHP stores a numeric array key as an int, so a group id such as '1001'
+     * arrives here as an integer while the claim carries strings. Both sides are
+     * compared as strings so either representation matches.
+     *
+     * @param string $configKey Mapping key from configuration
+     * @param array $groups External group values from the identity provider
+     */
+    private function groupMatches(string $configKey, array $groups): bool
+    {
+        foreach ($groups as $group) {
+            if (is_scalar($group) && (string)$group === $configKey) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
