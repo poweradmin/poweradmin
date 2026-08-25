@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -282,9 +282,9 @@ class ZoneManagementService
             $this->logger->warning('Failed to snapshot zone before delete: {error}', ['error' => $e->getMessage()]);
         }
 
-        // Clean up zone template sync records before deletion
-        $syncService = new ZoneTemplateSyncService($this->db, $this->config);
-        $syncService->cleanupZoneSyncRecords($zoneId);
+        // zone_template_sync.zone_id cascades from zones.id, so deleting the zones rows
+        // clears it. Resolving zones.id here would need CanonicalZoneSql to tell the two
+        // overlapping id spaces apart, and a plain domain_id lookup hits the wrong zone.
 
         // Delete the zone
         $success = $this->zoneRepository->deleteZone($zoneId);

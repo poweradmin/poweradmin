@@ -50,6 +50,8 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, fullname TEXT)");
         $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ_api (domain_id INTEGER, record_id TEXT, zone_templ_id INTEGER)");
         $this->db->exec("INSERT INTO users (id, username, fullname) VALUES
             (1, 'primary', 'Primary Owner'), (2, 'extra', 'Extra Owner'), (3, 'stranger', 'Stranger')");
 
@@ -160,6 +162,31 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
 
         $this->assertTrue($repository->deleteZone(4));
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones_groups")->fetchColumn());
+    }
+
+    #[Test]
+    public function deletingAZoneAlsoRemovesItsTemplateMappings(): void
+    {
+        // Both mapping tables are keyed by the canonical zone id and carry no foreign
+        // key, so a zone delete that skips them leaves the rows behind for good.
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (2905, 11, 3)");
+        $this->db->exec("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (2905, 'abc', 3)");
+        // A different zone's mappings must survive.
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (4, 12, 3)");
+
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('deleteZone')->willReturn(true);
+        $repository = new ApiZoneRepository(
+            $this->db,
+            $backend,
+            'sqlite',
+            $this->createMock(ConfigurationManager::class)
+        );
+
+        $this->assertTrue($repository->deleteZone(4));
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM records_zone_templ WHERE domain_id = 2905")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM records_zone_templ_api WHERE domain_id = 2905")->fetchColumn());
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM records_zone_templ WHERE domain_id = 4")->fetchColumn());
     }
 
     #[Test]

@@ -806,6 +806,14 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
         $stmt->bindValue(':domain_id', $canonicalId, PDO::PARAM_INT);
         $stmt->execute();
+        // Template mappings key on the canonical zone id too. They cannot carry a foreign
+        // key because in API mode that id is not a local domains.id, so delete them here.
+        $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :domain_id");
+        $stmt->bindValue(':domain_id', $canonicalId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :domain_id");
+        $stmt->bindValue(':domain_id', $canonicalId, PDO::PARAM_INT);
+        $stmt->execute();
         // Delete the canonical row plus any extra ownership rows linked to it
         $stmt = $this->db->prepare(
             "DELETE FROM zones

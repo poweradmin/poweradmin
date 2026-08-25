@@ -250,6 +250,32 @@ class ZoneManagementServiceTest extends TestCase
         $this->assertEquals('Zone deleted successfully', $result['message']);
     }
 
+    #[Test]
+    public function testDeleteZoneLeavesSyncRecordsToTheForeignKeyCascade(): void
+    {
+        // zone_template_sync.zone_id cascades from zones.id. Resolving that id here from a
+        // domains.id used to clear an unrelated zone's sync state, so nothing is issued now.
+        $preparedSql = [];
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $this->db->method('prepare')->willReturnCallback(
+            function (string $sql) use (&$preparedSql, $stmt): PDOStatement {
+                $preparedSql[] = $sql;
+                return $stmt;
+            }
+        );
+
+        $this->zoneRepository->method('zoneIdExists')->with(7)->willReturn(true);
+        $this->zoneRepository->method('deleteZone')->with(7)->willReturn(true);
+
+        $result = $this->service->deleteZone(7);
+
+        $this->assertTrue($result['success']);
+        $this->assertStringNotContainsString('zone_template_sync', implode("\n", $preparedSql));
+        $this->assertStringNotContainsString('FROM zones WHERE domain_id', implode("\n", $preparedSql));
+    }
+
     // ========== setDomainPermissions tests ==========
 
     #[Test]

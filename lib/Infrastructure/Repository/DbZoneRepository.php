@@ -1062,6 +1062,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
             foreach (
                 [
                     "DELETE FROM $records_table WHERE domain_id = :domain_id",
+                    // Mapping tables cannot carry a foreign key: in API mode their domain_id
+                    // is a canonical zone id, not a local domains.id. Delete them here.
+                    "DELETE FROM records_zone_templ WHERE domain_id = :domain_id",
+                    "DELETE FROM records_zone_templ_api WHERE domain_id = :domain_id",
                     "DELETE FROM zones_groups WHERE domain_id = :domain_id",
                     "DELETE FROM zones WHERE domain_id = :domain_id",
                     "DELETE FROM $domainmetadata_table WHERE domain_id = :domain_id",
