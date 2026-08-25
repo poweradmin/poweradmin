@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -727,7 +727,8 @@ class UserManager
      */
     private function template_assignment_rejected(?int $current_templ_id, int $new_templ_id, ?int $target_user_id): bool
     {
-        if ($current_templ_id === $new_templ_id && !self::template_grants_ueberuser($this->db, $new_templ_id)) {
+        $unchanged = $current_templ_id === $new_templ_id;
+        if ($unchanged && !self::template_grants_ueberuser($this->db, $new_templ_id)) {
             return false;
         }
 
@@ -740,6 +741,12 @@ class UserManager
         );
         if ($error_text === null) {
             return false;
+        }
+
+        // No template change was submitted, so the refusal is about the account
+        // holding administrator rights, not about handing them out.
+        if ($unchanged) {
+            $error_text = _('You do not have permission to edit an account with administrator rights.');
         }
 
         $error = new ErrorMessage($error_text);
