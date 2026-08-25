@@ -47,7 +47,9 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.ref }}
+          # This workflow lives on master but always builds develop, so a manual
+          # dispatch must not fall back to github.ref and publish master as :dev.
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || 'develop' }}
 
       - name: Lint Dockerfile with hadolint
         if: matrix.platform == 'linux/amd64'
