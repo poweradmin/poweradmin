@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -66,15 +66,16 @@ class DatabaseConsistencyService
                 // A zone may have multiple `zones` rows (one per direct owner)
                 // plus optional zones_groups entries; treat it as orphaned only
                 // when no row carries a real owner and there is no group link.
-                // Anchor on the canonical zones row (unique by zone_name) and
-                // aggregate ownership tied to its surrogate id. Avoids matching
-                // unrelated rows whose id or domain_id collides numerically.
+                // Anchor on the canonical zones row (unique by zone_name). Extra
+                // ownership rows and zones_groups are keyed by the canonical zone
+                // id, which is domain_id where it diverges from the row's own id.
                 $stmt = $this->db->prepare(
                     'SELECT
                         (SELECT COUNT(*) FROM zones z
-                         WHERE (z.id = c.id OR z.domain_id = c.id)
+                         WHERE (z.id = c.id OR z.domain_id = COALESCE(c.domain_id, c.id))
                            AND z.owner IS NOT NULL AND z.owner <> 0) AS owner_count,
-                        (SELECT COUNT(*) FROM zones_groups zg WHERE zg.domain_id = c.id) AS group_count
+                        (SELECT COUNT(*) FROM zones_groups zg
+                         WHERE zg.domain_id = COALESCE(c.domain_id, c.id)) AS group_count
                      FROM zones c
                      WHERE c.zone_name = ? AND c.zone_name IS NOT NULL
                      LIMIT 1'
