@@ -1,11 +1,7 @@
 name: ghcr prune
 
-# Every multi-arch push stores each per-platform manifest and each attestation
-# manifest as its own UNTAGGED package version; only the OCI index carries the tag.
-# So the usual "delete all untagged versions" recipe would strip the amd64/arm64
-# manifests out from under every published tag and break docker pull. This job
-# resolves what each tag actually references first, and deletes only what nothing
-# points at.
+# A multi-arch image stores its per-platform manifests as untagged versions, so
+# deleting all untagged ones breaks docker pull. Resolve tag references first.
 on:
   schedule:
     - cron: '0 3 * * 0'
@@ -94,8 +90,9 @@ jobs:
         fi
 
         if [ "$DRY_RUN" = "true" ]; then
+          # head first: cut would take SIGPIPE under pipefail and fail the job.
           echo "::group::Would delete (first 50)"
-          cut -f2 orphans.tsv | head -50
+          head -50 orphans.tsv | cut -f2
           echo "::endgroup::"
           {
             echo "### GHCR prune (dry run)"
