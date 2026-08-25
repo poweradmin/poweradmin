@@ -1019,6 +1019,29 @@ class UserProvisioningService extends LoggingService
     }
 
     /**
+     * Whether a permission_template_mapping / group_mapping key names one of the
+     * user's external groups.
+     *
+     * PHP stores a numeric array key as an int, so a group id such as '1001'
+     * arrives here as an integer while the claim carries strings. Some providers
+     * also emit the claim itself as JSON numbers, so both sides are compared as
+     * strings and either representation matches.
+     *
+     * @param string $configKey Mapping key from configuration
+     * @param array $groups External group values from the identity provider
+     */
+    private function groupMatches(string $configKey, array $groups): bool
+    {
+        foreach ($groups as $group) {
+            if (is_scalar($group) && (string)$group === $configKey) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Normalize a group_mapping value into a list of Poweradmin group names.
      * Accepts the legacy single-string form ('team1' => 'Administrators') and the
      * 1:n array form ('team1' => ['lab1', 'lab2']) so existing configs keep working.
@@ -1026,17 +1049,6 @@ class UserProvisioningService extends LoggingService
      * @param mixed $value Raw mapping value from configuration
      * @return string[] Non-empty Poweradmin group names
      */
-    /**
-     * Whether a permission_template_mapping / group_mapping key names one of the
-     * user's external groups. PHP casts a numeric array key to int, so an IdP
-     * group id such as '1001' arrives here as an integer and must be compared as
-     * a string against the claim values.
-     */
-    private function groupMatches(string $configKey, array $groups): bool
-    {
-        return in_array($configKey, $groups, true);
-    }
-
     private function normalizeMappedGroupNames(mixed $value): array
     {
         if (is_string($value)) {

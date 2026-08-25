@@ -503,4 +503,15 @@ class UserProvisioningServiceTest extends TestCase
         $this->assertTrue($invoker('DnsAdmins', ['DnsAdmins']));
         $this->assertFalse($invoker('1002', ['1001']));
     }
+
+    public function testGroupMatchesAcceptsIntegerClaimValues(): void
+    {
+        $invoker = $this->getPrivateMethodInvoker('groupMatches');
+
+        // Some providers emit the groups claim as JSON numbers, so casting only
+        // the config key would break a mapping that works today.
+        $this->assertTrue($invoker('1001', [1001]));
+        $this->assertFalse($invoker('1001', [1002]));
+        $this->assertFalse($invoker('DnsAdmins', [['nested']]));
+    }
 }
