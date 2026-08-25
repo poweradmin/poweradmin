@@ -375,10 +375,12 @@ print_status "INFO" "Running dual-stack tests..."
 test_update "Dual-stack Update" "192.168.1.105" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.105&myip6=2001:db8::4&dualstack_update=1'"
 
 # Test 15: Mixed Valid and Invalid IPs (IPv4)
-test_update "Mixed Valid/Invalid IPv4" "192.168.1.106" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.106,invalid.ip,192.168.1.107'"
+# The list is the complete record set, so an unparseable entry is refused rather
+# than skipped - dropping it would delete the record it was meant to keep.
+test_with_auth "Mixed Valid/Invalid IPv4" "dnserr" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.106,invalid.ip,192.168.1.107'"
 
 # Test 16: Mixed Valid and Invalid IPs (IPv6)
-test_update "Mixed Valid/Invalid IPv6" "2001:db8::5" "-d 'hostname=$TEST_HOSTNAME&myip6=2001:db8::5,invalid::ip,2001:db8::6'"
+test_with_auth "Mixed Valid/Invalid IPv6" "dnserr" "-d 'hostname=$TEST_HOSTNAME&myip6=2001:db8::5,invalid::ip,2001:db8::6'"
 
 print_status "INFO" "Running special parameter tests..."
 
