@@ -67,7 +67,7 @@ if verbose:
 if verbose:
     print("Updating the IP address (" + ipv6 + ") now ...")
 response = requests.get(
-    url + "/dynamic_update.php?hostname=" + dyndns + "&myip=" + ipv6 + "&verbose=" + str(verbose),
+    url + "/dynamic_update.php?hostname=" + dyndns + "&myip6=" + ipv6 + "&verbose=" + str(verbose),
     auth=HTTPBasicAuth(login, password))
 if verbose:
     print("Status: " + response.text)
