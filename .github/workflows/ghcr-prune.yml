@@ -1,0 +1,133 @@
+name: ghcr prune
+
+# Every multi-arch push stores each per-platform manifest and each attestation
+# manifest as its own UNTAGGED package version; only the OCI index carries the tag.
+# So the usual "delete all untagged versions" recipe would strip the amd64/arm64
+# manifests out from under every published tag and break docker pull. This job
+# resolves what each tag actually references first, and deletes only what nothing
+# points at.
+on:
+  schedule:
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'List what would be deleted without deleting it'
+        type: boolean
+        default: false
+      max_deletions:
+        description: 'Stop after this many deletions (GITHUB_TOKEN is rate limited)'
+        type: string
+        default: '900'
+
+permissions:
+  packages: write
+
+# Two prunes deleting the same versions at once would report spurious failures.
+concurrency:
+  group: ghcr-prune
+  cancel-in-progress: false
+
+jobs:
+  prune:
+    name: Prune unreferenced container versions
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    if: github.repository == 'poweradmin/poweradmin'
+
+    steps:
+    - name: Prune unreferenced untagged versions
+      env:
+        GH_TOKEN: ${{ github.token }}
+        DRY_RUN: ${{ inputs.dry_run || false }}
+        MAX_DELETIONS: ${{ inputs.max_deletions || '900' }}
+        PKG: poweradmin
+        OWNER: poweradmin
+      run: |
+        set -euo pipefail
+
+        gh api --paginate \
+          "/orgs/${OWNER}/packages/container/${PKG}/versions?per_page=100" \
+          --jq '.[] | [.id, .name, ((.metadata.container.tags // []) | join(","))] | @tsv' \
+          > versions.tsv
+
+        total=$(wc -l < versions.tsv | tr -d ' ')
+        echo "Package versions: ${total}"
+
+        token=$(curl -sf "https://ghcr.io/token?scope=repository:${OWNER}/${PKG}:pull&service=ghcr.io" | jq -r .token)
+        accept='application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.list.v2+json,application/vnd.oci.image.manifest.v1+json,application/vnd.docker.distribution.manifest.v2+json'
+
+        # A tag whose manifest we cannot read would leave its children looking
+        # unreferenced, so a single failure aborts before anything is deleted.
+        : > referenced.txt
+        tag_count=0
+        while IFS=$'\t' read -r id digest tags; do
+          [ -n "$tags" ] || continue
+          tag_count=$((tag_count + 1))
+          echo "$digest" >> referenced.txt
+          first_tag="${tags%%,*}"
+          if ! body=$(curl -sf -H "Authorization: Bearer ${token}" -H "Accept: ${accept}" \
+                        "https://ghcr.io/v2/${OWNER}/${PKG}/manifests/${first_tag}"); then
+            echo "::error::could not read manifest for tag ${first_tag}; aborting without deleting"
+            exit 1
+          fi
+          echo "$body" | jq -r '.manifests[]?.digest // empty' >> referenced.txt
+        done < versions.tsv
+
+        sort -u referenced.txt -o referenced.txt
+        ref_count=$(wc -l < referenced.txt | tr -d ' ')
+        echo "Tags: ${tag_count}. Digests referenced by them: ${ref_count}"
+
+        : > orphans.tsv
+        while IFS=$'\t' read -r id digest tags; do
+          [ -z "$tags" ] || continue
+          grep -qxF "$digest" referenced.txt || printf '%s\t%s\n' "$id" "$digest" >> orphans.tsv
+        done < versions.tsv
+
+        orphans=$(wc -l < orphans.tsv | tr -d ' ')
+        echo "Unreferenced untagged versions: ${orphans}"
+
+        if [ "$orphans" -eq 0 ]; then
+          echo "Nothing to prune."
+          { echo "### GHCR prune"; echo ""; echo "- Nothing to prune."; } >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+        fi
+
+        if [ "$DRY_RUN" = "true" ]; then
+          echo "::group::Would delete (first 50)"
+          cut -f2 orphans.tsv | head -50
+          echo "::endgroup::"
+          {
+            echo "### GHCR prune (dry run)"
+            echo ""
+            echo "- Tags: ${tag_count} (referencing ${ref_count} digests, all preserved)"
+            echo "- Would delete: ${orphans}"
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+        fi
+
+        deleted=0
+        failed=0
+        while IFS=$'\t' read -r id digest; do
+          if [ "$deleted" -ge "$MAX_DELETIONS" ]; then break; fi
+          if gh api -X DELETE "/orgs/${OWNER}/packages/container/${PKG}/versions/${id}" --silent 2>/dev/null; then
+            deleted=$((deleted + 1))
+          else
+            failed=$((failed + 1))
+          fi
+        done < orphans.tsv
+
+        remaining=$((orphans - deleted))
+
+        # A version left behind is unreferenced, not dangling: nothing points at it
+        # and the next run retries it, so it is reported without failing the job.
+        {
+          echo "### GHCR prune"
+          echo ""
+          echo "- Package versions scanned: ${total}"
+          echo "- Tags: ${tag_count} (referencing ${ref_count} digests, all preserved)"
+          echo "- Unreferenced untagged versions found: ${orphans}"
+          echo "- Deleted this run: ${deleted} (cap ${MAX_DELETIONS})"
+          echo "- Failed: ${failed}"
+          echo "- Still to clear: ${remaining}"
+        } >> "$GITHUB_STEP_SUMMARY"
