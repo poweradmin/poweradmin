@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 3.5.1\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-03-12 21:44+0200\n"
+"POT-Creation-Date: 2026-08-25 09:21+0300\n"
 "PO-Revision-Date: 2023-12-03 17:52+0200\n"
 "Last-Translator: TechQI <techqi@126.com>\n"
 "Language-Team: Chinese\n"
@@ -31,17 +31,26 @@ msgstr ""
 msgid "Invalid CSRF token."
 msgstr "无效的 CSRF 令牌。"
 
-#: lib/BaseController.php:299
-msgid ""
-"The <a href=\"install/\">install/</a> directory exists, you must remove it "
-"first before proceeding."
-msgstr "存在< a href=\"install/\">install/</a>目录，请在继续之前先将其删除。"
-
-#: lib/BaseController.php:320
+#: lib/BaseController.php:294
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr "正在使用默认会话加密密钥，请在配置文件中设置。"
+
+#: lib/BaseController.php:298
+#, auto-english-fallback
+msgid ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+msgstr ""
+"Session encryption key is too short, please set a longer one in your "
+"configuration file."
+
+#: lib/BaseController.php:321
+msgid ""
+"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"first before proceeding."
+msgstr "存在< a href=\"install/\">install/</a>目录，请在继续之前先将其删除。"
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
 #: templates/search.html:151 templates/search.html:284
@@ -65,7 +74,7 @@ msgstr "显示全部"
 msgid "Invalid or unexpected input given."
 msgstr "输入无效或不符合预期。"
 
-#: lib/Domain/Model/UserManager.php:211
+#: lib/Domain/Model/UserManager.php:230
 msgid "You do not have the permission to delete this user."
 msgstr "您没有权限删除此用户。"
 
@@ -93,11 +102,11 @@ msgstr "评论已成功更新。"
 msgid "There is no zone with this ID."
 msgstr "没有此ID的区域。"
 
-#: lib/Domain/Model/ZoneTemplate.php:386 lib/Domain/Service/DnsRecord.php:400
+#: lib/Domain/Model/ZoneTemplate.php:397 lib/Domain/Service/DnsRecord.php:415
 msgid "You do not have the permission to edit this record."
 msgstr "您没有权限编辑此记录。"
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:67
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:64
 msgid "The record has been deleted successfully."
 msgstr "记录已成功删除。"
 
@@ -115,15 +124,33 @@ msgstr "您没有查看超级主机的权限。"
 msgid "You do not have the permission to edit permission templates."
 msgstr "您没有权限编辑权限模板。"
 
-#: lib/Application/Controller/EditPermTemplController.php:74
+#: lib/Application/Controller/EditPermTemplController.php:94
 msgid "The permission template has been updated successfully."
 msgstr "权限模板已成功更新。"
+
+#: lib/Application/Controller/EditPermTemplController.php:139
+#, auto-english-fallback
+msgid ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Editing a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Application/Controller/AddPermTemplController.php:120
+#, auto-english-fallback
+msgid ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
+msgstr ""
+"Granting administrator rights in a permission template requires "
+"administrator rights."
 
 #: lib/Application/Controller/SearchController.php:43
 msgid "You do not have the permission to perform searches."
 msgstr "您没有权限执行查询"
 
-#: lib/Domain/Model/UserManager.php:766
+#: lib/Domain/Model/UserManager.php:917
 msgid "You do not have the permission to add a new user."
 msgstr "您没有权限添加新用户。"
 
@@ -131,11 +158,11 @@ msgstr "您没有权限添加新用户。"
 msgid "The user has been created successfully."
 msgstr "用户已成功创建。"
 
-#: lib/Domain/Model/ZoneTemplate.php:429 lib/Domain/Service/DnsRecord.php:677
+#: lib/Domain/Model/ZoneTemplate.php:455 lib/Domain/Service/DnsRecord.php:699
 msgid "You do not have the permission to delete this record."
 msgstr "您没有权限删除此记录。"
 
-#: lib/Application/Controller/DeleteZoneTemplRecordController.php:69
+#: lib/Application/Controller/DeleteZoneTemplRecordController.php:66
 msgid "The record could not be deleted."
 msgstr "无法删除记录。"
 
@@ -163,27 +190,31 @@ msgstr "区域模板已成功更新。"
 msgid "Zones have been updated successfully."
 msgstr "区域已成功更新。"
 
-#: lib/Domain/Service/DnsRecord.php:1036 lib/Domain/Service/DnsRecord.php:1273
+#: lib/Domain/Service/DnsRecord.php:1060 lib/Domain/Service/DnsRecord.php:1297
 msgid "You do not have the permission to view this zone."
 msgstr "您没有权限查看此区域。"
 
-#: lib/Application/Controller/EditController.php:167
+#: lib/Domain/Service/DnsRecord.php:1779
+msgid "You do not have the permission to edit this zone."
+msgstr "您没有编辑此区域的权限。"
+
+#: lib/Application/Controller/EditController.php:173
 msgid "Zone has been signed successfully."
 msgstr "区域已成功签名。"
 
-#: lib/Application/Controller/EditController.php:170
+#: lib/Application/Controller/EditController.php:176
 msgid "DNSSEC is not enabled on the server."
 msgstr "服务器上未启用 DNSSEC。"
 
-#: lib/Application/Controller/EditController.php:183
+#: lib/Application/Controller/EditController.php:193
 msgid "Zone has been unsigned successfully."
 msgstr "区域已成功取消签名。"
 
-#: lib/Domain/Model/ZoneTemplate.php:135 lib/Domain/Model/ZoneTemplate.php:572
+#: lib/Domain/Model/ZoneTemplate.php:135 lib/Domain/Model/ZoneTemplate.php:646
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "具有此名称的区域模板已存在，请选择其他名称。"
 
-#: lib/Application/Controller/EditController.php:423
+#: lib/Application/Controller/EditController.php:453
 msgid "Template name can't be an empty string."
 msgstr "模板名称不能为空字符串。"
 
@@ -191,23 +222,23 @@ msgstr "模板名称不能为空字符串。"
 msgid "Zone template has been added successfully."
 msgstr "区域模板已成功添加。"
 
-#: lib/Application/Controller/EditController.php:486
+#: lib/Application/Controller/EditController.php:516
 msgid "Request has expired, please try again."
 msgstr "请求已过期，请重试。"
 
-#: lib/Application/Controller/EditController.php:491
+#: lib/Application/Controller/EditController.php:521
 msgid "Zone has been updated successfully."
 msgstr "区域已成功更新。"
 
-#: lib/Application/Controller/EditController.php:493
+#: lib/Application/Controller/EditController.php:523
 msgid "Zone did not have any record changes."
 msgstr "区域没有进行任何记录更改。"
 
-#: lib/Application/Controller/EditController.php:502
+#: lib/Application/Controller/EditController.php:532
 msgid "Zone has not been updated successfully."
 msgstr "区域更新未成功。"
 
-#: lib/Domain/Model/ZoneTemplate.php:330 lib/Domain/Service/DnsRecord.php:459
+#: lib/Domain/Model/ZoneTemplate.php:333 lib/Domain/Service/DnsRecord.php:474
 msgid "You do not have the permission to add a record to this zone."
 msgstr "您没有权限向此区域添加记录。"
 
@@ -239,7 +270,7 @@ msgstr "区域已成功删除。"
 msgid "Zones have been deleted successfully."
 msgstr "区域已成功删除。"
 
-#: lib/Domain/Service/DnsRecord.php:1886
+#: lib/Domain/Service/DnsRecord.php:885 lib/Domain/Service/DnsRecord.php:1916
 msgid "You do not have the permission to delete a zone."
 msgstr "您没有权限删除区域。"
 
@@ -265,11 +296,11 @@ msgstr ""
 "数据库访问检查失败。请确保当前数据库用户拥有创建和修改表的必要权限。the "
 "necessary permissions to create and alter tables."
 
-#: lib/Domain/Service/DnsRecord.php:831
+#: lib/Domain/Service/DnsRecord.php:853
 msgid "You do not have the permission to add a master zone."
 msgstr "您没有权限添加主区域。"
 
-#: lib/Domain/Service/Dns.php:427 lib/Domain/Service/DnsRecord.php:542
+#: lib/Domain/Service/Dns.php:430 lib/Domain/Service/DnsRecord.php:557
 msgid "Invalid hostname."
 msgstr "无效的主机名。"
 
@@ -289,15 +320,11 @@ msgstr "您没有足够的权限查看此页面。"
 msgid "You do not have the permission to see any zones."
 msgstr "您没有权限查看任何区域。"
 
-#: lib/Application/Controller/DnssecEditKeyController.php:80
-msgid "You do not have the permission to edit this zone."
-msgstr "您没有编辑此区域的权限。"
-
-#: lib/Application/Controller/DnssecEditKeyController.php:88
+#: lib/Application/Controller/DnssecEditKeyController.php:85
 msgid "Zone key has been successfully deactivated."
 msgstr "区域密钥已成功停用。"
 
-#: lib/Application/Controller/DnssecEditKeyController.php:93
+#: lib/Application/Controller/DnssecEditKeyController.php:90
 msgid "Zone key has been successfully activated."
 msgstr "区域密钥已成功激活。"
 
@@ -309,19 +336,24 @@ msgstr "删除DNSSEC密钥失败。"
 msgid "Zone key has been deleted successfully."
 msgstr "区域密钥已成功删除。"
 
-#: lib/Application/Controller/AddPermTemplController.php:50
+#: lib/Application/Controller/AddPermTemplController.php:52
 msgid "You do not have the permission to add permission templates."
 msgstr "您没有权限添加权限模板。"
 
-#: lib/Application/Controller/AddPermTemplController.php:69
+#: lib/Application/Controller/AddPermTemplController.php:84
 msgid "The permission template has been added successfully."
 msgstr "权限模板已成功添加。"
+
+#: lib/Application/Controller/AddPermTemplController.php:121
+#, auto-english-fallback
+msgid "The permission template could not be added."
+msgstr "The permission template could not be added."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:92
 msgid "You have logged out."
 msgstr "您已退出登录。"
 
-#: lib/Domain/Model/ZoneTemplate.php:566
+#: lib/Domain/Model/ZoneTemplate.php:640
 msgid "You do not have the permission to add a zone template."
 msgstr "您没有权限添加区域模板。"
 
@@ -329,15 +361,15 @@ msgstr "您没有权限添加区域模板。"
 msgid "You do not have the permission to add a slave zone."
 msgstr "您没有权限添加从区域。"
 
-#: lib/Domain/Service/DnsRecord.php:533
+#: lib/Domain/Service/DnsRecord.php:548
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "这不是有效的IPv4或IPv6地址。"
 
-#: lib/Domain/Model/ZoneTemplate.php:184 lib/Domain/Model/ZoneTemplate.php:218
+#: lib/Domain/Model/ZoneTemplate.php:187 lib/Domain/Model/ZoneTemplate.php:221
 msgid "You do not have the permission to delete zone templates."
 msgstr "您没有权限删除区域模板。"
 
-#: lib/Application/Controller/DeleteZoneTemplController.php:72
+#: lib/Application/Controller/DeleteZoneTemplController.php:74
 msgid "Zone template has been deleted successfully."
 msgstr "区域模板已成功删除。"
 
@@ -353,7 +385,7 @@ msgstr "超级主服务器已成功添加。"
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "您没有向此区域模板添加记录的权限。"
 
-#: lib/Domain/Model/UserManager.php:379 lib/Domain/Model/UserManager.php:744
+#: lib/Domain/Model/UserManager.php:415 lib/Domain/Model/UserManager.php:895
 msgid "You do not have the permission to edit this user."
 msgstr "您没有权限编辑此用户。"
 
@@ -369,19 +401,19 @@ msgstr "无法更新用户。"
 msgid "You do not have the permission to delete permission templates."
 msgstr "您没有删除权限模板的权限。"
 
-#: lib/Application/Controller/DeletePermTemplController.php:69
+#: lib/Application/Controller/DeletePermTemplController.php:71
 msgid "The permission template has been deleted successfully."
 msgstr "权限模板已成功删除。"
 
-#: lib/Application/Controller/EditRecordController.php:79
+#: lib/Application/Controller/EditRecordController.php:77
 msgid "Record does not exist or has been deleted."
 msgstr "记录不存在或已被删除。"
 
-#: lib/Application/Controller/EditRecordController.php:89
+#: lib/Application/Controller/EditRecordController.php:87
 msgid "You do not have the permission to view this record."
 msgstr "您没有查看此记录的权限。"
 
-#: lib/Application/Controller/EditRecordController.php:232
+#: lib/Application/Controller/EditRecordController.php:230
 msgid "The record has been updated successfully."
 msgstr "记录已成功更新。"
 
@@ -405,19 +437,19 @@ msgstr "添加 DNSSEC 密钥时发生错误："
 msgid "You do not have the permission to delete a supermaster."
 msgstr "您没有权限删除超级主服务器。"
 
-#: lib/Application/Controller/DeleteSupermasterController.php:69
+#: lib/Application/Controller/DeleteSupermasterController.php:71
 msgid "Invalid IP address."
 msgstr "IP 地址无效。"
 
-#: lib/Application/Controller/DeleteSupermasterController.php:74
+#: lib/Application/Controller/DeleteSupermasterController.php:76
 msgid "Invalid NS name."
 msgstr "NS 名称无效。"
 
-#: lib/Application/Controller/DeleteSupermasterController.php:80
+#: lib/Application/Controller/DeleteSupermasterController.php:82
 msgid "Super master does not exist."
 msgstr "超级主机不存在。"
 
-#: lib/Application/Controller/DeleteSupermasterController.php:84
+#: lib/Application/Controller/DeleteSupermasterController.php:86
 msgid "The supermaster has been deleted successfully."
 msgstr "超级主服务器已成功删除。"
 
@@ -441,23 +473,23 @@ msgstr "认证失败！"
 msgid "Session expired, please login again."
 msgstr "会话已过期，请重新登录。"
 
-#: lib/Application/Service/LdapAuthenticator.php:87
+#: lib/Application/Service/LdapAuthenticator.php:88
 msgid "Failed to connect to LDAP server!"
 msgstr "连接到 LDAP 服务器失败！"
 
-#: lib/Application/Service/LdapAuthenticator.php:100
+#: lib/Application/Service/LdapAuthenticator.php:101
 msgid "Failed to bind to LDAP server!"
 msgstr "绑定到 LDAP 服务器失败！"
 
-#: lib/Application/Service/LdapAuthenticator.php:124
+#: lib/Application/Service/LdapAuthenticator.php:125
 msgid "Failed to search LDAP."
 msgstr "搜索LDAP失败。"
 
-#: lib/Application/Service/LdapAuthenticator.php:140
+#: lib/Application/Service/LdapAuthenticator.php:141
 msgid "Failed to authenticate against LDAP."
 msgstr "LDAP身份验证失败。"
 
-#: lib/Application/Service/LdapAuthenticator.php:172
+#: lib/Application/Service/LdapAuthenticator.php:177
 msgid "LDAP Authentication failed!"
 msgstr "LDAP认证失败！"
 
@@ -471,11 +503,11 @@ msgstr "是"
 msgid "No"
 msgstr "否"
 
-#: lib/Infrastructure/Database/PDOLayer.php:140
+#: lib/Infrastructure/Database/PDOLayer.php:143
 msgid "Unknown database type."
 msgstr "未知的数据库类型。"
 
-#: lib/Domain/Model/UserManager.php:250
+#: lib/Domain/Model/UserManager.php:269
 msgid "This template is assigned to at least one user."
 msgstr "此模板已分配给至少一个用户。"
 
@@ -517,37 +549,93 @@ msgstr "停用DNSSEC密钥失败。"
 msgid "Failed to remove DNSSEC key."
 msgstr "删除DNSSEC密钥失败。"
 
-#: lib/Domain/Model/UserManager.php:784
+#: lib/Domain/Model/UserManager.php:935
 msgid "Enter a valid email address."
 msgstr "请输入有效的电子邮件地址。"
 
-#: lib/Domain/Model/UserManager.php:772
+#: lib/Domain/Model/UserManager.php:923
 msgid "Username exist already, please choose another one."
 msgstr "用户名已经存在，请另选一个"
 
-#: lib/Domain/Model/UserManager.php:420
+#: lib/Domain/Model/UserManager.php:941
+#, auto-english-fallback
+msgid "Email address already exists, please choose another one."
+msgstr "Email address already exists, please choose another one."
+
+#: lib/Domain/Model/UserManager.php:456
 msgid "The two new password fields do not match."
 msgstr "两个新密码字段不匹配。"
 
-#: lib/Domain/Model/UserManager.php:431
+#: lib/Domain/Model/UserManager.php:467
 msgid "You can not change your password as LDAP user."
 msgstr "LDAP 用户无法更改密码。"
 
-#: lib/Domain/Model/UserManager.php:451
+#: lib/Domain/Model/UserManager.php:487
 msgid "You did not enter the correct current password."
 msgstr "您未输入正确的当前密码。"
 
-#: lib/Domain/Model/UserManager.php:778
+#: lib/Domain/Model/UserManager.php:691
+#, auto-english-fallback
+msgid ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+msgstr ""
+"Changing your own permission template requires the permission to edit other "
+"users."
+
+#: lib/Domain/Model/UserManager.php:695
+#, auto-english-fallback
+msgid ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+msgstr ""
+"Assigning a permission template with administrator rights requires "
+"administrator rights."
+
+#: lib/Domain/Model/UserManager.php:749
+#, auto-english-fallback
+msgid ""
+"You do not have permission to edit an account with administrator rights."
+msgstr ""
+"You do not have permission to edit an account with administrator rights."
+
+#: lib/Domain/Model/UserManager.php:929
 msgid "Enter a valid user name."
 msgstr "请输入有效的用户名。"
 
-#: lib/Domain/Model/ZoneTemplate.php:338 lib/Domain/Service/Dns.php:185
+#: lib/Domain/Model/ZoneTemplate.php:341 lib/Domain/Model/ZoneTemplate.php:411
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to add this record type to a zone template."
+msgstr ""
+"You do not have the permission to add this record type to a zone template."
+
+#: lib/Domain/Model/ZoneTemplate.php:349 lib/Domain/Service/Dns.php:185
 msgid "Your content field doesnt have a legit value."
 msgstr "您的内容字段没有合法值"
 
 #: lib/Domain/Service/Dns.php:316
 msgid "Invalid value for prio field."
 msgstr "优先级字段的值无效。"
+
+#: lib/Domain/Model/ZoneTemplate.php:465
+#, auto-english-fallback
+msgid ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+msgstr ""
+"You do not have the permission to delete this record type from a zone "
+"template."
+
+#: lib/Domain/Model/ZoneTemplate.php:556
+#, auto-english-fallback
+#, php-format
+msgid ""
+"These record types were left out of the template because you may not add "
+"them: %s"
+msgstr ""
+"These record types were left out of the template because you may not add "
+"them: %s"
 
 #: lib/Domain/Service/Dns.php:279
 msgid "The content of the SPF record is invalid"
@@ -557,70 +645,70 @@ msgstr "SPF记录的内容无效"
 msgid "Unknown record type."
 msgstr "未知的记录类型。"
 
-#: lib/Domain/Service/Dns.php:350 lib/Domain/Service/Dns.php:871
+#: lib/Domain/Service/Dns.php:350 lib/Domain/Service/Dns.php:874
 msgid "The hostname is too long."
 msgstr "主机名太长。"
 
-#: lib/Domain/Service/Dns.php:367 lib/Domain/Service/Dns.php:376
+#: lib/Domain/Service/Dns.php:370 lib/Domain/Service/Dns.php:379
 msgid "You have invalid characters in your hostname."
 msgstr "您的主机名包含无效字符。"
 
-#: lib/Domain/Service/Dns.php:384 lib/Domain/Service/Dns.php:391
+#: lib/Domain/Service/Dns.php:387 lib/Domain/Service/Dns.php:394
 msgid "A hostname can not start or end with a dash."
 msgstr "主机名不能以减号开头或结尾"
 
-#: lib/Domain/Service/Dns.php:398
+#: lib/Domain/Service/Dns.php:401
 msgid "Given hostname or one of the labels is too short or too long."
 msgstr "给定的主机名或其中一个标签过短或过长。"
 
-#: lib/Domain/Service/Dns.php:435
+#: lib/Domain/Service/Dns.php:438
 msgid "Given hostname has too many slashes."
 msgstr "给定的主机名包含太多斜杠。"
 
-#: lib/Domain/Service/Dns.php:444
+#: lib/Domain/Service/Dns.php:447
 msgid "You are using an invalid top level domain."
 msgstr "您正在使用无效的顶级域名。"
 
-#: lib/Domain/Service/Dns.php:467
+#: lib/Domain/Service/Dns.php:470
 msgid "This is not a valid IPv4 address."
 msgstr "这不是有效的IPv4地址。"
 
-#: lib/Domain/Service/Dns.php:490
+#: lib/Domain/Service/Dns.php:493
 msgid "This is not a valid IPv6 address."
 msgstr "这不是有效的IPv6地址。"
 
-#: lib/Domain/Service/Dns.php:544
+#: lib/Domain/Service/Dns.php:547
 msgid "Invalid characters have been used in this record."
 msgstr "此记录中使用了无效字符。"
 
-#: lib/Domain/Service/Dns.php:572
+#: lib/Domain/Service/Dns.php:575
 msgid "Backslashes must precede all quotes (\") in TXT content"
 msgstr "在 TXT 内容中，所有引号 (\\\") 前必须加反斜杠"
 
-#: lib/Domain/Service/Dns.php:594
+#: lib/Domain/Service/Dns.php:597
 msgid "Add quotes around TXT record content."
 msgstr "在TXT记录内容周围添加引号。"
 
-#: lib/Domain/Service/Dns.php:624
+#: lib/Domain/Service/Dns.php:627
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr "这不是有效的CNAME记录。您是否将MX或NS记录分配给了此记录？"
 
-#: lib/Domain/Service/Dns.php:653
+#: lib/Domain/Service/Dns.php:656
 msgid ""
 "This is not a valid record. There is already exists a CNAME with this name."
 msgstr "这不是一个有效的记录。已存在一个同名的 CNAME 记录。"
 
-#: lib/Domain/Service/Dns.php:680
+#: lib/Domain/Service/Dns.php:683
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr "这不是有效的CNAME记录。已经存在具有此名称的记录。"
 
-#: lib/Domain/Service/Dns.php:700
+#: lib/Domain/Service/Dns.php:703
 msgid "Empty CNAME records are not allowed."
 msgstr "不允许空的CNAME记录。"
 
-#: lib/Domain/Service/Dns.php:726
+#: lib/Domain/Service/Dns.php:729
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
@@ -628,45 +716,45 @@ msgstr ""
 "您不能将 NS 或 MX 记录指向 CNAME 记录。请先删除或重命名 CNAME 记录，或者使用"
 "不同的名称。"
 
-#: lib/Domain/Service/Dns.php:752
+#: lib/Domain/Service/Dns.php:755
 msgid "Invalid value for content field of HINFO record."
 msgstr "HINFO记录的内容字段值无效。"
 
-#: lib/Domain/Service/Dns.php:839
+#: lib/Domain/Service/Dns.php:842
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
 msgstr "SOA记录的名称字段值无效。应为区域的名称。"
 
-#: lib/Domain/Service/Dns.php:880
+#: lib/Domain/Service/Dns.php:883
 msgid "Invalid service value in name field of SRV record."
 msgstr "SRV记录的名称字段中的服务值无效。"
 
-#: lib/Domain/Service/Dns.php:887
+#: lib/Domain/Service/Dns.php:890
 msgid "Invalid protocol value in name field of SRV record."
 msgstr "SRV记录的名称字段中的协议值无效。"
 
-#: lib/Domain/Service/Dns.php:894
+#: lib/Domain/Service/Dns.php:897
 msgid "Invalid FQDN value in name field of SRV record."
 msgstr "SRV记录的名称字段中的FQDN值无效。"
 
-#: lib/Domain/Service/Dns.php:914
+#: lib/Domain/Service/Dns.php:917
 msgid "Invalid value for the priority field of the SRV record."
 msgstr "SRV记录的优先级字段值无效。"
 
-#: lib/Domain/Service/Dns.php:921
+#: lib/Domain/Service/Dns.php:924
 msgid "Invalid value for the weight field of the SRV record."
 msgstr "SRV记录的权重字段值无效。"
 
-#: lib/Domain/Service/Dns.php:928
+#: lib/Domain/Service/Dns.php:931
 msgid "Invalid SRV target."
 msgstr "无效的SRV目标。"
 
-#: lib/Domain/Service/Dns.php:952
+#: lib/Domain/Service/Dns.php:955
 msgid "Invalid value for TTL field. It should be numeric."
 msgstr "TTL字段值无效。应为数字。"
 
-#: lib/Domain/Service/Dns.php:1031
+#: lib/Domain/Service/Dns.php:1034
 msgid ""
 "Invalid CDNSKEY record format. Expected: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY "
 "(e.g., 257 3 5 AwEA...)"
@@ -674,67 +762,67 @@ msgstr ""
 "无效的 CDNSKEY 记录格式。预期: FLAGS PROTOCOL ALGORITHM PUBLIC_KEY (例如: "
 "257 3 5 AwEA...)"
 
-#: lib/Domain/Service/Dns.php:1046
+#: lib/Domain/Service/Dns.php:1049
 msgid "CDNSKEY flags must be between 0 and 65535."
 msgstr "CDNSKEY flags 必须在 0 到 65535 之间。"
 
-#: lib/Domain/Service/Dns.php:1056
+#: lib/Domain/Service/Dns.php:1059
 msgid "CDNSKEY protocol must be between 0 and 255."
 msgstr "CDNSKEY protocol 必须在 0 到 255 之间。"
 
-#: lib/Domain/Service/Dns.php:1066
+#: lib/Domain/Service/Dns.php:1069
 msgid "CDNSKEY algorithm must be between 0 and 255."
 msgstr "CDNSKEY algorithm 必须在 0 到 255 之间。"
 
-#: lib/Domain/Service/Dns.php:1076
+#: lib/Domain/Service/Dns.php:1079
 msgid "CDNSKEY public key cannot be empty."
 msgstr "CDNSKEY 公钥不能为空。"
 
-#: lib/Domain/Service/Dns.php:1086
+#: lib/Domain/Service/Dns.php:1089
 msgid "CDNSKEY public key must be valid Base64."
 msgstr "CDNSKEY 公钥必须是有效的 Base64。"
 
-#: lib/Domain/Service/Dns.php:1097
+#: lib/Domain/Service/Dns.php:1100
 msgid "CDNSKEY public key contains invalid Base64 encoding."
 msgstr "CDNSKEY 公钥包含无效的 Base64 编码。"
 
-#: lib/Domain/Service/Dns.php:1151
+#: lib/Domain/Service/Dns.php:1154
 #, php-format
 msgid "Invalid APL element format: %s. Expected: [!]FAMILY:ADDRESS/PREFIX"
 msgstr "无效的 APL 元素格式: %s。预期: [!]FAMILY:ADDRESS/PREFIX"
 
-#: lib/Domain/Service/Dns.php:1167
+#: lib/Domain/Service/Dns.php:1170
 #, php-format
 msgid "Invalid IPv4 address in APL: %s"
 msgstr "APL 中的 IPv4 地址无效: %s"
 
-#: lib/Domain/Service/Dns.php:1175
+#: lib/Domain/Service/Dns.php:1178
 msgid "IPv4 prefix must be between 0 and 32."
 msgstr "IPv4 前缀必须在 0 到 32 之间。"
 
-#: lib/Domain/Service/Dns.php:1185
+#: lib/Domain/Service/Dns.php:1188
 #, php-format
 msgid "Invalid IPv6 address in APL: %s"
 msgstr "APL 中的 IPv6 地址无效: %s"
 
-#: lib/Domain/Service/Dns.php:1193
+#: lib/Domain/Service/Dns.php:1196
 msgid "IPv6 prefix must be between 0 and 128."
 msgstr "IPv6 前缀必须在 0 到 128 之间。"
 
-#: lib/Domain/Service/Dns.php:1201
+#: lib/Domain/Service/Dns.php:1204
 #, php-format
 msgid "Unknown address family in APL: %d. Must be 1 (IPv4) or 2 (IPv6)."
 msgstr "APL 中的地址族未知: %d。必须为 1 (IPv4) 或 2 (IPv6)。"
 
-#: lib/Domain/Service/Dns.php:1234
+#: lib/Domain/Service/Dns.php:1237
 msgid "ALIAS target hostname cannot be empty."
 msgstr "ALIAS 目标主机名不能为空。"
 
-#: lib/Domain/Service/Dns.php:1245
+#: lib/Domain/Service/Dns.php:1248
 msgid "ALIAS target must be a valid hostname."
 msgstr "ALIAS 目标必须是有效的主机名。"
 
-#: lib/Domain/Service/Dns.php:1277
+#: lib/Domain/Service/Dns.php:1280
 msgid ""
 "Invalid AFSDB record format. Expected: SUBTYPE HOSTNAME (e.g., 1 afs-"
 "server.example.com)"
@@ -742,15 +830,15 @@ msgstr ""
 "无效的 AFSDB 记录格式。预期: SUBTYPE HOSTNAME (例如: 1 afs-"
 "server.example.com)"
 
-#: lib/Domain/Service/Dns.php:1290
+#: lib/Domain/Service/Dns.php:1293
 msgid "AFSDB subtype must be between 0 and 65535."
 msgstr "AFSDB subtype 必须在 0 到 65535 之间。"
 
-#: lib/Domain/Service/Dns.php:1300
+#: lib/Domain/Service/Dns.php:1303
 msgid "AFSDB hostname cannot be empty."
 msgstr "AFSDB 主机名不能为空。"
 
-#: lib/Domain/Service/Dns.php:1333
+#: lib/Domain/Service/Dns.php:1336
 msgid ""
 "Invalid CAA record format. Expected: FLAGS TAG VALUE (e.g., 0 issue "
 "\"letsencrypt.org\")"
@@ -758,24 +846,24 @@ msgstr ""
 "无效的 CAA 记录格式。预期: FLAGS TAG VALUE (例如: 0 issue "
 "\"letsencrypt.org\")"
 
-#: lib/Domain/Service/Dns.php:1347
+#: lib/Domain/Service/Dns.php:1350
 msgid "CAA flags must be between 0 and 255."
 msgstr "CAA flags 必须在 0 到 255 之间。"
 
-#: lib/Domain/Service/Dns.php:1358
+#: lib/Domain/Service/Dns.php:1361
 msgid "CAA tag must be alphanumeric."
 msgstr "CAA 标签必须是字母数字。"
 
-#: lib/Domain/Service/Dns.php:1368
+#: lib/Domain/Service/Dns.php:1371
 msgid ""
 "CAA value must be enclosed in quotes (e.g., \"letsencrypt.org\" or \"\")."
 msgstr "CAA 值必须用引号括起来 (例如: \"letsencrypt.org\" 或 \"\")。"
 
-#: lib/Domain/Service/Dns.php:1382
+#: lib/Domain/Service/Dns.php:1385
 msgid "Quotes inside CAA value must be escaped with backslash."
 msgstr "CAA 值中的引号必须用反斜杠转义。"
 
-#: lib/Domain/Service/Dns.php:1419
+#: lib/Domain/Service/Dns.php:1422
 msgid ""
 "Invalid CDS record format. Expected: KEYTAG ALGORITHM DIGESTTYPE DIGEST "
 "(e.g., 20642 8 2 04443ABE...)"
@@ -783,23 +871,23 @@ msgstr ""
 "无效的 CDS 记录格式。预期: KEYTAG ALGORITHM DIGESTTYPE DIGEST (例如: 20642 8 "
 "2 04443ABE...)"
 
-#: lib/Domain/Service/Dns.php:1434
+#: lib/Domain/Service/Dns.php:1437
 msgid "CDS keytag must be between 0 and 65535."
 msgstr "CDS keytag 必须在 0 到 65535 之间。"
 
-#: lib/Domain/Service/Dns.php:1444
+#: lib/Domain/Service/Dns.php:1447
 msgid "CDS algorithm must be between 0 and 255."
 msgstr "CDS algorithm 必须在 0 到 255 之间。"
 
-#: lib/Domain/Service/Dns.php:1454
+#: lib/Domain/Service/Dns.php:1457
 msgid "CDS digest type must be between 0 and 255."
 msgstr "CDS digest type 必须在 0 到 255 之间。"
 
-#: lib/Domain/Service/Dns.php:1464
+#: lib/Domain/Service/Dns.php:1467
 msgid "CDS digest cannot be empty."
 msgstr "CDS digest 不能为空。"
 
-#: lib/Domain/Service/Dns.php:1481
+#: lib/Domain/Service/Dns.php:1484
 msgid ""
 "CDS digest has unexpected length. Expected 40 (SHA-1), 64 (SHA-256), or 96 "
 "(SHA-384) hex characters."
@@ -807,7 +895,7 @@ msgstr ""
 "CDS digest 长度异常。预期 40 (SHA-1)、64 (SHA-256) 或 96 (SHA-384) 个十六进制"
 "字符。"
 
-#: lib/Domain/Service/Dns.php:1527
+#: lib/Domain/Service/Dns.php:1530
 msgid ""
 "Invalid CERT record format. Expected: TYPE KEYTAG ALGORITHM CERTIFICATE "
 "(e.g., 1 0 0 MIIB9D...)"
@@ -815,59 +903,59 @@ msgstr ""
 "无效的 CERT 记录格式。预期: TYPE KEYTAG ALGORITHM CERTIFICATE (例如: 1 0 0 "
 "MIIB9D...)"
 
-#: lib/Domain/Service/Dns.php:1542
+#: lib/Domain/Service/Dns.php:1545
 msgid "CERT type must be between 0 and 65535."
 msgstr "CERT type 必须在 0 到 65535 之间。"
 
-#: lib/Domain/Service/Dns.php:1552
+#: lib/Domain/Service/Dns.php:1555
 msgid "CERT keytag must be between 0 and 65535."
 msgstr "CERT keytag 必须在 0 到 65535 之间。"
 
-#: lib/Domain/Service/Dns.php:1562
+#: lib/Domain/Service/Dns.php:1565
 msgid "CERT algorithm must be between 0 and 255."
 msgstr "CERT algorithm 必须在 0 到 255 之间。"
 
-#: lib/Domain/Service/Dns.php:1572
+#: lib/Domain/Service/Dns.php:1575
 msgid "CERT certificate cannot be empty."
 msgstr "CERT 证书不能为空。"
 
-#: lib/Domain/Service/Dns.php:1582
+#: lib/Domain/Service/Dns.php:1585
 msgid "CERT certificate must be valid Base64."
 msgstr "CERT 证书必须是有效的 Base64。"
 
-#: lib/Domain/Service/Dns.php:1593
+#: lib/Domain/Service/Dns.php:1596
 msgid "CERT certificate contains invalid Base64 encoding."
 msgstr "CERT 证书包含无效的 Base64 编码。"
 
-#: lib/Domain/Service/Dns.php:1630
+#: lib/Domain/Service/Dns.php:1633
 msgid "DNAME target cannot be empty."
 msgstr "DNAME 目标不能为空。"
 
-#: lib/Domain/Service/Dns.php:1641
+#: lib/Domain/Service/Dns.php:1644
 msgid "DNAME target cannot contain spaces."
 msgstr "DNAME 目标不能包含空格。"
 
-#: lib/Domain/Service/Dns.php:1651
+#: lib/Domain/Service/Dns.php:1654
 msgid ""
 "DNAME target contains invalid characters. Only alphanumeric, dots, hyphens, "
 "and underscores are allowed."
 msgstr "DNAME 目标包含无效字符。仅允许字母数字、点、连字符和下划线。"
 
-#: lib/Domain/Service/Dns.php:1686
+#: lib/Domain/Service/Dns.php:1689
 msgid ""
 "Invalid L32 record format. Expected: PREFERENCE LOCATOR32 (e.g., 513 "
 "192.0.2.1)"
 msgstr "无效的 L32 记录格式。预期: PREFERENCE LOCATOR32 (例如: 513 192.0.2.1)"
 
-#: lib/Domain/Service/Dns.php:1699
+#: lib/Domain/Service/Dns.php:1702
 msgid "L32 preference must be between 0 and 65535."
 msgstr "L32 preference 必须在 0 到 65535 之间。"
 
-#: lib/Domain/Service/Dns.php:1709
+#: lib/Domain/Service/Dns.php:1712
 msgid "L32 locator32 must be a valid IPv4 address."
 msgstr "L32 locator32 必须是有效的 IPv4 地址。"
 
-#: lib/Domain/Service/Dns.php:1744
+#: lib/Domain/Service/Dns.php:1747
 msgid ""
 "Invalid L64 record format. Expected: PREFERENCE LOCATOR64 (e.g., 255 "
 "2001:0DB8:1234:ABCD)"
@@ -875,22 +963,22 @@ msgstr ""
 "无效的 L64 记录格式。预期: PREFERENCE LOCATOR64 (例如: 255 "
 "2001:0DB8:1234:ABCD)"
 
-#: lib/Domain/Service/Dns.php:1757
+#: lib/Domain/Service/Dns.php:1760
 msgid "L64 preference must be between 0 and 65535."
 msgstr "L64 preference 必须在 0 到 65535 之间。"
 
-#: lib/Domain/Service/Dns.php:1768
+#: lib/Domain/Service/Dns.php:1771
 msgid ""
 "L64 locator64 must be in format XXXX:XXXX:XXXX:XXXX (e.g., "
 "2001:0DB8:1234:ABCD)."
 msgstr ""
 "L64 locator64 必须为 XXXX:XXXX:XXXX:XXXX 格式 (例如: 2001:0DB8:1234:ABCD)。"
 
-#: lib/Domain/Service/Dns.php:1806
+#: lib/Domain/Service/Dns.php:1809
 msgid "LUA record content cannot be empty."
 msgstr "LUA 记录内容不能为空。"
 
-#: lib/Domain/Service/Dns.php:1817
+#: lib/Domain/Service/Dns.php:1820
 msgid ""
 "Invalid LUA record format. Expected: TYPE LUA_CODE (e.g., A \"ifportup(443, "
 "{'192.0.2.1'})\")"
@@ -898,57 +986,57 @@ msgstr ""
 "无效的 LUA 记录格式。预期: TYPE LUA_CODE (例如: A \"ifportup(443, "
 "{'192.0.2.1'})\")"
 
-#: lib/Domain/Service/Dns.php:1836
+#: lib/Domain/Service/Dns.php:1839
 msgid ""
 "LUA record type must be a valid DNS record type (e.g., A, AAAA, TXT, MX, "
 "etc.)."
 msgstr "LUA 记录类型必须是有效的 DNS 记录类型 (例如: A、AAAA、TXT、MX 等)。"
 
-#: lib/Domain/Service/Dns.php:1846
+#: lib/Domain/Service/Dns.php:1849
 msgid "LUA code cannot be empty."
 msgstr "LUA 代码不能为空。"
 
-#: lib/Domain/Service/Dns.php:1885
+#: lib/Domain/Service/Dns.php:1888
 msgid ""
 "Invalid LP record format. Expected: PREFERENCE FQDN (e.g., 512 "
 "foo.powerdns.org.)"
 msgstr ""
 "无效的 LP 记录格式。预期: PREFERENCE FQDN (例如: 512 foo.powerdns.org.)"
 
-#: lib/Domain/Service/Dns.php:1898
+#: lib/Domain/Service/Dns.php:1901
 msgid "LP preference must be between 0 and 65535."
 msgstr "LP preference 必须在 0 到 65535 之间。"
 
-#: lib/Domain/Service/Dns.php:1908
+#: lib/Domain/Service/Dns.php:1911
 msgid "LP FQDN cannot be empty."
 msgstr "LP FQDN 不能为空。"
 
-#: lib/Domain/Service/Dns.php:1919
+#: lib/Domain/Service/Dns.php:1922
 msgid ""
 "LP FQDN contains invalid characters. Only alphanumeric, dots, hyphens, and "
 "underscores are allowed."
 msgstr "LP FQDN 包含无效字符。仅允许字母数字、点、连字符和下划线。"
 
-#: lib/Domain/Service/Dns.php:1952
+#: lib/Domain/Service/Dns.php:1955
 #, php-format
 msgid ""
 "%s is a meta-query type and cannot be used as a zone record. It is only used "
 "in DNS queries."
 msgstr "%s 是元查询类型,不能用作区域记录。它仅用于 DNS 查询。"
 
-#: lib/Domain/Service/Dns.php:1985
+#: lib/Domain/Service/Dns.php:1988
 msgid "OPENPGPKEY content cannot be empty."
 msgstr "OPENPGPKEY 内容不能为空。"
 
-#: lib/Domain/Service/Dns.php:1995
+#: lib/Domain/Service/Dns.php:1998
 msgid "OPENPGPKEY must be valid Base64-encoded data."
 msgstr "OPENPGPKEY 必须是有效的 Base64 编码数据。"
 
-#: lib/Domain/Service/Dns.php:2006
+#: lib/Domain/Service/Dns.php:2009
 msgid "OPENPGPKEY contains invalid Base64 encoding."
 msgstr "OPENPGPKEY 包含无效的 Base64 编码。"
 
-#: lib/Domain/Service/Dns.php:2052
+#: lib/Domain/Service/Dns.php:2055
 msgid ""
 "Invalid SIG record format. Expected: TYPE_COVERED ALGORITHM LABELS "
 "ORIGINAL_TTL SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
@@ -956,104 +1044,104 @@ msgstr ""
 "无效的 SIG 记录格式。预期: TYPE_COVERED ALGORITHM LABELS ORIGINAL_TTL "
 "SIG_EXPIRATION SIG_INCEPTION KEY_TAG SIGNER_NAME SIGNATURE"
 
-#: lib/Domain/Service/Dns.php:2072
+#: lib/Domain/Service/Dns.php:2075
 msgid "SIG type covered must be a valid DNS record type."
 msgstr "SIG type covered 必须是有效的 DNS 记录类型。"
 
-#: lib/Domain/Service/Dns.php:2082
+#: lib/Domain/Service/Dns.php:2085
 msgid "SIG algorithm must be between 0 and 255."
 msgstr "SIG algorithm 必须在 0 到 255 之间。"
 
-#: lib/Domain/Service/Dns.php:2092
+#: lib/Domain/Service/Dns.php:2095
 msgid "SIG labels must be between 0 and 255."
 msgstr "SIG labels 必须在 0 到 255 之间。"
 
-#: lib/Domain/Service/Dns.php:2102
+#: lib/Domain/Service/Dns.php:2105
 msgid "SIG original TTL must be a positive integer."
 msgstr "SIG original TTL 必须是正整数。"
 
-#: lib/Domain/Service/Dns.php:2112
+#: lib/Domain/Service/Dns.php:2115
 msgid "SIG key tag must be between 0 and 65535."
 msgstr "SIG key tag 必须在 0 到 65535 之间。"
 
-#: lib/Domain/Service/Dns.php:2122
+#: lib/Domain/Service/Dns.php:2125
 msgid "SIG signer name cannot be empty."
 msgstr "SIG 签名者名称不能为空。"
 
-#: lib/Domain/Service/Dns.php:2131
+#: lib/Domain/Service/Dns.php:2134
 msgid "SIG signer name must be a valid domain name."
 msgstr "SIG 签名者名称必须是有效的域名。"
 
-#: lib/Domain/Service/Dns.php:2141
+#: lib/Domain/Service/Dns.php:2144
 msgid "SIG signature cannot be empty."
 msgstr "SIG 签名不能为空。"
 
-#: lib/Domain/Service/Dns.php:2150
+#: lib/Domain/Service/Dns.php:2153
 msgid "SIG signature must be valid Base64."
 msgstr "SIG 签名必须是有效的 Base64。"
 
-#: lib/Domain/Service/Dns.php:2160
+#: lib/Domain/Service/Dns.php:2163
 msgid "SIG signature contains invalid Base64 encoding."
 msgstr "SIG 签名包含无效的 Base64 编码。"
 
-#: lib/Domain/Service/Dns.php:2190
+#: lib/Domain/Service/Dns.php:2193
 msgid "DHCID record content is required"
 msgstr "DHCID 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:2204
+#: lib/Domain/Service/Dns.php:2207
 msgid "DHCID record must contain valid Base64-encoded data"
 msgstr "DHCID 记录必须包含有效的 Base64 编码数据"
 
-#: lib/Domain/Service/Dns.php:2214
+#: lib/Domain/Service/Dns.php:2217
 msgid "DHCID record data is too short (minimum 35 bytes required)"
 msgstr "DHCID 记录数据太短 (最少需要 35 字节)"
 
-#: lib/Domain/Service/Dns.php:2246
+#: lib/Domain/Service/Dns.php:2249
 msgid "SMIMEA record content is required"
 msgstr "SMIMEA 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:2257
+#: lib/Domain/Service/Dns.php:2260
 msgid ""
 "SMIMEA record must have at least 4 fields: usage, selector, matching-type, "
 "and certificate data"
 msgstr ""
 "SMIMEA 记录必须至少包含 4 个字段: usage、selector、matching-type 和证书数据"
 
-#: lib/Domain/Service/Dns.php:2272
+#: lib/Domain/Service/Dns.php:2275
 msgid "SMIMEA usage must be an integer between 0 and 255"
 msgstr "SMIMEA usage 必须是 0 到 255 之间的整数"
 
-#: lib/Domain/Service/Dns.php:2282
+#: lib/Domain/Service/Dns.php:2285
 msgid "SMIMEA selector must be an integer between 0 and 255"
 msgstr "SMIMEA selector 必须是 0 到 255 之间的整数"
 
-#: lib/Domain/Service/Dns.php:2292
+#: lib/Domain/Service/Dns.php:2295
 msgid "SMIMEA matching type must be an integer between 0 and 255"
 msgstr "SMIMEA matching type 必须是 0 到 255 之间的整数"
 
-#: lib/Domain/Service/Dns.php:2302
+#: lib/Domain/Service/Dns.php:2305
 msgid "SMIMEA certificate data is required"
 msgstr "SMIMEA 证书数据是必需的"
 
-#: lib/Domain/Service/Dns.php:2311
+#: lib/Domain/Service/Dns.php:2314
 msgid "SMIMEA certificate data must be a valid hexadecimal string"
 msgstr "SMIMEA 证书数据必须是有效的十六进制字符串"
 
-#: lib/Domain/Service/Dns.php:2321
+#: lib/Domain/Service/Dns.php:2324
 msgid ""
 "SMIMEA certificate data must be at least 2 hexadecimal characters (1 byte)"
 msgstr "SMIMEA 证书数据必须至少包含 2 个十六进制字符 (1 字节)"
 
-#: lib/Domain/Service/Dns.php:2331
+#: lib/Domain/Service/Dns.php:2334
 msgid ""
 "SMIMEA certificate data must have an even number of hexadecimal characters"
 msgstr "SMIMEA 证书数据必须包含偶数个十六进制字符"
 
-#: lib/Domain/Service/Dns.php:2368
+#: lib/Domain/Service/Dns.php:2371
 msgid "TKEY record content is required"
 msgstr "TKEY 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:2381
+#: lib/Domain/Service/Dns.php:2384
 msgid ""
 "TKEY record must have at least 6 fields: algorithm, inception, expiration, "
 "mode, error, and keysize"
@@ -1061,59 +1149,59 @@ msgstr ""
 "TKEY 记录必须至少包含 6 个字段: algorithm、inception、expiration、mode、"
 "error 和 keysize"
 
-#: lib/Domain/Service/Dns.php:2398
+#: lib/Domain/Service/Dns.php:2401
 msgid "TKEY algorithm must be a valid domain name"
 msgstr "TKEY algorithm 必须是有效的域名"
 
-#: lib/Domain/Service/Dns.php:2408
+#: lib/Domain/Service/Dns.php:2411
 msgid "TKEY inception must be a 32-bit unsigned integer (0-4294967295)"
 msgstr "TKEY inception 必须是 32 位无符号整数 (0-4294967295)"
 
-#: lib/Domain/Service/Dns.php:2418
+#: lib/Domain/Service/Dns.php:2421
 msgid "TKEY expiration must be a 32-bit unsigned integer (0-4294967295)"
 msgstr "TKEY expiration 必须是 32 位无符号整数 (0-4294967295)"
 
-#: lib/Domain/Service/Dns.php:2428
+#: lib/Domain/Service/Dns.php:2431
 msgid "TKEY mode must be a 16-bit unsigned integer (0-65535)"
 msgstr "TKEY mode 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:2438
+#: lib/Domain/Service/Dns.php:2441
 msgid "TKEY error must be a 16-bit unsigned integer (0-65535)"
 msgstr "TKEY error 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:2448
+#: lib/Domain/Service/Dns.php:2451
 msgid "TKEY keysize must be a 16-bit unsigned integer (0-65535)"
 msgstr "TKEY keysize 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:2462
+#: lib/Domain/Service/Dns.php:2465
 msgid "TKEY keydata is required when keysize > 0"
 msgstr "当 keysize > 0 时 TKEY keydata 是必需的"
 
-#: lib/Domain/Service/Dns.php:2474
+#: lib/Domain/Service/Dns.php:2477
 msgid "TKEY keydata must be valid Base64-encoded data"
 msgstr "TKEY keydata 必须是有效的 Base64 编码数据"
 
-#: lib/Domain/Service/Dns.php:2487
+#: lib/Domain/Service/Dns.php:2490
 msgid "TKEY othersize field is required"
 msgstr "TKEY othersize 字段是必需的"
 
-#: lib/Domain/Service/Dns.php:2499
+#: lib/Domain/Service/Dns.php:2502
 msgid "TKEY othersize must be a 16-bit unsigned integer (0-65535)"
 msgstr "TKEY othersize 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:2513
+#: lib/Domain/Service/Dns.php:2516
 msgid "TKEY otherdata is required when othersize > 0"
 msgstr "当 othersize > 0 时 TKEY otherdata 是必需的"
 
-#: lib/Domain/Service/Dns.php:2525
+#: lib/Domain/Service/Dns.php:2528
 msgid "TKEY otherdata must be valid Base64-encoded data"
 msgstr "TKEY otherdata 必须是有效的 Base64 编码数据"
 
-#: lib/Domain/Service/Dns.php:2557
+#: lib/Domain/Service/Dns.php:2560
 msgid "URI record content is required"
 msgstr "URI 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:2568
+#: lib/Domain/Service/Dns.php:2571
 msgid ""
 "URI record must have format: <priority> <weight> \"<target>\" (target must "
 "be in quotes)"
@@ -1121,56 +1209,56 @@ msgstr ""
 "URI 记录必须为以下格式: <priority> <weight> \"<target>\" (目标必须用引号括起"
 "来)"
 
-#: lib/Domain/Service/Dns.php:2582
+#: lib/Domain/Service/Dns.php:2585
 msgid "URI priority must be a 16-bit unsigned integer (0-65535)"
 msgstr "URI priority 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:2592
+#: lib/Domain/Service/Dns.php:2595
 msgid "URI weight must be a 16-bit unsigned integer (0-65535)"
 msgstr "URI weight 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:2602
+#: lib/Domain/Service/Dns.php:2605
 msgid "URI target cannot be empty"
 msgstr "URI 目标不能为空"
 
-#: lib/Domain/Service/Dns.php:2612
+#: lib/Domain/Service/Dns.php:2615
 #, php-format
 msgid "URI target must be a valid URI with a scheme (e.g., %s, %s, %s)"
 msgstr "URI 目标必须是带有方案的有效 URI (例如: %s, %s, %s)"
 
-#: lib/Domain/Service/Dns.php:2661
+#: lib/Domain/Service/Dns.php:2664
 msgid "SSHFP record content is required"
 msgstr "SSHFP 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:2672
+#: lib/Domain/Service/Dns.php:2675
 msgid "SSHFP record must have 3 fields: algorithm, fptype, and fingerprint"
 msgstr "SSHFP 记录必须包含 3 个字段: algorithm、fptype 和 fingerprint"
 
-#: lib/Domain/Service/Dns.php:2686
+#: lib/Domain/Service/Dns.php:2689
 msgid "SSHFP algorithm must be an 8-bit integer (0-255)"
 msgstr "SSHFP algorithm 必须是 8 位整数 (0-255)"
 
-#: lib/Domain/Service/Dns.php:2696
+#: lib/Domain/Service/Dns.php:2699
 msgid "SSHFP fingerprint type must be an 8-bit integer (0-255)"
 msgstr "SSHFP fingerprint type 必须是 8 位整数 (0-255)"
 
-#: lib/Domain/Service/Dns.php:2706
+#: lib/Domain/Service/Dns.php:2709
 msgid "SSHFP fingerprint is required"
 msgstr "SSHFP fingerprint 是必需的"
 
-#: lib/Domain/Service/Dns.php:2715
+#: lib/Domain/Service/Dns.php:2718
 msgid "SSHFP fingerprint must be a valid hexadecimal string"
 msgstr "SSHFP fingerprint 必须是有效的十六进制字符串"
 
-#: lib/Domain/Service/Dns.php:2725
+#: lib/Domain/Service/Dns.php:2728
 msgid "SSHFP fingerprint must have an even number of hexadecimal characters"
 msgstr "SSHFP fingerprint 必须包含偶数个十六进制字符"
 
-#: lib/Domain/Service/Dns.php:2751
+#: lib/Domain/Service/Dns.php:2754
 msgid "NAPTR record content is required"
 msgstr "NAPTR 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:2761
+#: lib/Domain/Service/Dns.php:2764
 msgid ""
 "NAPTR record must have format: <order> <preference> \"<flags>\" "
 "\"<services>\" \"<regexp>\" <replacement>"
@@ -1178,85 +1266,85 @@ msgstr ""
 "NAPTR 记录必须为以下格式: <order> <preference> \"<flags>\" \"<services>\" "
 "\"<regexp>\" <replacement>"
 
-#: lib/Domain/Service/Dns.php:2778
+#: lib/Domain/Service/Dns.php:2781
 msgid "NAPTR order must be a 16-bit unsigned integer (0-65535)"
 msgstr "NAPTR order 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:2788
+#: lib/Domain/Service/Dns.php:2791
 msgid "NAPTR preference must be a 16-bit unsigned integer (0-65535)"
 msgstr "NAPTR preference 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:2799
+#: lib/Domain/Service/Dns.php:2802
 msgid "NAPTR replacement must be a valid domain name or \".\""
 msgstr "NAPTR replacement 必须是有效的域名或 \".\""
 
-#: lib/Domain/Service/Dns.php:2825
+#: lib/Domain/Service/Dns.php:2828
 msgid "RP record content is required"
 msgstr "RP 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:2836
+#: lib/Domain/Service/Dns.php:2839
 msgid "RP record must have 2 fields: mbox-dname and txt-dname"
 msgstr "RP 记录必须包含 2 个字段: mbox-dname 和 txt-dname"
 
-#: lib/Domain/Service/Dns.php:2849
+#: lib/Domain/Service/Dns.php:2852
 msgid "RP mbox-dname must be a valid domain name"
 msgstr "RP mbox-dname 必须是有效的域名"
 
-#: lib/Domain/Service/Dns.php:2859
+#: lib/Domain/Service/Dns.php:2862
 msgid "RP txt-dname must be a valid domain name"
 msgstr "RP txt-dname 必须是有效的域名"
 
-#: lib/Domain/Service/Dns.php:2885
+#: lib/Domain/Service/Dns.php:2888
 msgid "DNSKEY record content is required"
 msgstr "DNSKEY 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:2896
+#: lib/Domain/Service/Dns.php:2899
 msgid ""
 "DNSKEY record must have at least 4 fields: flags, protocol, algorithm, and "
 "public key"
 msgstr "DNSKEY 记录必须至少包含 4 个字段: flags、protocol、algorithm 和公钥"
 
-#: lib/Domain/Service/Dns.php:2911
+#: lib/Domain/Service/Dns.php:2914
 msgid "DNSKEY flags must be a 16-bit unsigned integer (0-65535)"
 msgstr "DNSKEY flags 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:2921
+#: lib/Domain/Service/Dns.php:2924
 msgid "DNSKEY protocol must be 3"
 msgstr "DNSKEY protocol 必须为 3"
 
-#: lib/Domain/Service/Dns.php:2931
+#: lib/Domain/Service/Dns.php:2934
 msgid "DNSKEY algorithm must be an 8-bit unsigned integer (0-255)"
 msgstr "DNSKEY algorithm 必须是 8 位无符号整数 (0-255)"
 
-#: lib/Domain/Service/Dns.php:2941
+#: lib/Domain/Service/Dns.php:2944
 msgid "DNSKEY public key is required"
 msgstr "DNSKEY 公钥是必需的"
 
-#: lib/Domain/Service/Dns.php:2950
+#: lib/Domain/Service/Dns.php:2953
 msgid "DNSKEY public key must be valid Base64-encoded data"
 msgstr "DNSKEY 公钥必须是有效的 Base64 编码数据"
 
-#: lib/Domain/Service/Dns.php:2976
+#: lib/Domain/Service/Dns.php:2979
 msgid "NSEC record content is required"
 msgstr "NSEC 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:2987
+#: lib/Domain/Service/Dns.php:2990
 msgid "NSEC record must have at least 2 fields: next domain name and type list"
 msgstr "NSEC 记录必须至少包含 2 个字段: 下一个域名和类型列表"
 
-#: lib/Domain/Service/Dns.php:2999
+#: lib/Domain/Service/Dns.php:3002
 msgid "NSEC next domain must be a valid domain name"
 msgstr "NSEC 下一个域名必须是有效的域名"
 
-#: lib/Domain/Service/Dns.php:3012
+#: lib/Domain/Service/Dns.php:3015
 msgid "NSEC type list must contain valid DNS record type names"
 msgstr "NSEC 类型列表必须包含有效的 DNS 记录类型名称"
 
-#: lib/Domain/Service/Dns.php:3039
+#: lib/Domain/Service/Dns.php:3042
 msgid "NSEC3 record content is required"
 msgstr "NSEC3 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:3050
+#: lib/Domain/Service/Dns.php:3053
 msgid ""
 "NSEC3 record must have at least 5 fields: algorithm, flags, iterations, "
 "salt, and next hash"
@@ -1264,60 +1352,60 @@ msgstr ""
 "NSEC3 记录必须至少包含 5 个字段: algorithm、flags、iterations、salt 和下一个"
 "哈希"
 
-#: lib/Domain/Service/Dns.php:3066
+#: lib/Domain/Service/Dns.php:3069
 msgid "NSEC3 algorithm must be an 8-bit unsigned integer (0-255)"
 msgstr "NSEC3 algorithm 必须是 8 位无符号整数 (0-255)"
 
-#: lib/Domain/Service/Dns.php:3076
+#: lib/Domain/Service/Dns.php:3079
 msgid "NSEC3 flags must be an 8-bit unsigned integer (0-255)"
 msgstr "NSEC3 flags 必须是 8 位无符号整数 (0-255)"
 
-#: lib/Domain/Service/Dns.php:3086
+#: lib/Domain/Service/Dns.php:3089
 msgid "NSEC3 iterations must be a 16-bit unsigned integer (0-65535)"
 msgstr "NSEC3 iterations 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:3096
+#: lib/Domain/Service/Dns.php:3099
 msgid "NSEC3 salt must be hexadecimal or \"-\" for no salt"
 msgstr "NSEC3 salt 必须是十六进制或 \"-\" (无盐值)"
 
-#: lib/Domain/Service/Dns.php:3106
+#: lib/Domain/Service/Dns.php:3109
 msgid "NSEC3 next hash must be Base32hex-encoded (0-9, A-V)"
 msgstr "NSEC3 下一个哈希必须是 Base32hex 编码 (0-9, A-V)"
 
-#: lib/Domain/Service/Dns.php:3119
+#: lib/Domain/Service/Dns.php:3122
 msgid "NSEC3 type list must contain uppercase type names"
 msgstr "NSEC3 类型列表必须包含大写类型名称"
 
-#: lib/Domain/Service/Dns.php:3147
+#: lib/Domain/Service/Dns.php:3150
 msgid "NSEC3PARAM record content is required"
 msgstr "NSEC3PARAM 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:3158
+#: lib/Domain/Service/Dns.php:3161
 msgid ""
 "NSEC3PARAM record must have 4 fields: algorithm, flags, iterations, and salt"
 msgstr "NSEC3PARAM 记录必须包含 4 个字段: algorithm、flags、iterations 和 salt"
 
-#: lib/Domain/Service/Dns.php:3173
+#: lib/Domain/Service/Dns.php:3176
 msgid "NSEC3PARAM algorithm must be an 8-bit unsigned integer (0-255)"
 msgstr "NSEC3PARAM algorithm 必须是 8 位无符号整数 (0-255)"
 
-#: lib/Domain/Service/Dns.php:3183
+#: lib/Domain/Service/Dns.php:3186
 msgid "NSEC3PARAM flags must be an 8-bit unsigned integer (0-255)"
 msgstr "NSEC3PARAM flags 必须是 8 位无符号整数 (0-255)"
 
-#: lib/Domain/Service/Dns.php:3193
+#: lib/Domain/Service/Dns.php:3196
 msgid "NSEC3PARAM iterations must be a 16-bit unsigned integer (0-65535)"
 msgstr "NSEC3PARAM iterations 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:3203
+#: lib/Domain/Service/Dns.php:3206
 msgid "NSEC3PARAM salt must be hexadecimal or \"-\" for no salt"
 msgstr "NSEC3PARAM salt 必须是十六进制或 \"-\" (无盐值)"
 
-#: lib/Domain/Service/Dns.php:3247
+#: lib/Domain/Service/Dns.php:3250
 msgid "TSIG record content is required"
 msgstr "TSIG 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:3259
+#: lib/Domain/Service/Dns.php:3262
 msgid ""
 "TSIG record must have at least 8 fields: algorithm, time-signed, fudge, mac-"
 "size, mac, original-id, error, and other-len"
@@ -1325,265 +1413,265 @@ msgstr ""
 "TSIG 记录必须至少包含 8 个字段: algorithm、time-signed、fudge、mac-size、"
 "mac、original-id、error 和 other-len"
 
-#: lib/Domain/Service/Dns.php:3278
+#: lib/Domain/Service/Dns.php:3281
 msgid "TSIG algorithm must be a valid domain name"
 msgstr "TSIG algorithm 必须是有效的域名"
 
-#: lib/Domain/Service/Dns.php:3288
+#: lib/Domain/Service/Dns.php:3291
 msgid "TSIG time-signed must be a non-negative integer"
 msgstr "TSIG time-signed 必须是非负整数"
 
-#: lib/Domain/Service/Dns.php:3298
+#: lib/Domain/Service/Dns.php:3301
 msgid "TSIG fudge must be a 16-bit unsigned integer (0-65535)"
 msgstr "TSIG fudge 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:3308
+#: lib/Domain/Service/Dns.php:3311
 msgid "TSIG mac-size must be a 16-bit unsigned integer (0-65535)"
 msgstr "TSIG mac-size 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:3318
+#: lib/Domain/Service/Dns.php:3321
 msgid "TSIG MAC must be valid Base64-encoded data"
 msgstr "TSIG MAC 必须是有效的 Base64 编码数据"
 
-#: lib/Domain/Service/Dns.php:3328
+#: lib/Domain/Service/Dns.php:3331
 msgid "TSIG original-id must be a 16-bit unsigned integer (0-65535)"
 msgstr "TSIG original-id 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:3338
+#: lib/Domain/Service/Dns.php:3341
 msgid "TSIG error must be a 16-bit unsigned integer (0-65535)"
 msgstr "TSIG error 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:3348
+#: lib/Domain/Service/Dns.php:3351
 msgid "TSIG other-len must be a 16-bit unsigned integer (0-65535)"
 msgstr "TSIG other-len 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:3359
+#: lib/Domain/Service/Dns.php:3362
 msgid "TSIG other-data is required when other-len > 0"
 msgstr "当 other-len > 0 时 TSIG other-data 是必需的"
 
-#: lib/Domain/Service/Dns.php:3369
+#: lib/Domain/Service/Dns.php:3372
 msgid "TSIG other-data must be valid Base64-encoded data"
 msgstr "TSIG other-data 必须是有效的 Base64 编码数据"
 
-#: lib/Domain/Service/Dns.php:3395
+#: lib/Domain/Service/Dns.php:3398
 msgid "EUI48 record content is required"
 msgstr "EUI48 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:3405
+#: lib/Domain/Service/Dns.php:3408
 msgid "EUI48 must be 6 octets separated by dashes (e.g., 00-11-22-33-44-55)"
 msgstr "EUI48 必须是用连字符分隔的 6 个八位字节 (例如: 00-11-22-33-44-55)"
 
-#: lib/Domain/Service/Dns.php:3430
+#: lib/Domain/Service/Dns.php:3433
 msgid "EUI64 record content is required"
 msgstr "EUI64 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:3440
+#: lib/Domain/Service/Dns.php:3443
 msgid ""
 "EUI64 must be 8 octets separated by dashes (e.g., 00-11-22-33-44-55-66-77)"
 msgstr ""
 "EUI64 必须是用连字符分隔的 8 个八位字节 (例如: 00-11-22-33-44-55-66-77)"
 
-#: lib/Domain/Service/Dns.php:3465
+#: lib/Domain/Service/Dns.php:3468
 msgid "NID record content is required"
 msgstr "NID 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:3476
+#: lib/Domain/Service/Dns.php:3479
 msgid "NID record must have 2 fields: preference and node-id"
 msgstr "NID 记录必须包含 2 个字段: preference 和 node-id"
 
-#: lib/Domain/Service/Dns.php:3489
+#: lib/Domain/Service/Dns.php:3492
 msgid "NID preference must be a 16-bit unsigned integer (0-65535)"
 msgstr "NID preference 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:3499
+#: lib/Domain/Service/Dns.php:3502
 msgid ""
 "NID node-id must be in format XXXX:XXXX:XXXX:XXXX (64-bit hex with colons)"
 msgstr "NID node-id 必须为 XXXX:XXXX:XXXX:XXXX 格式 (带冒号的 64 位十六进制)"
 
-#: lib/Domain/Service/Dns.php:3524
+#: lib/Domain/Service/Dns.php:3527
 msgid "KX record content is required"
 msgstr "KX 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:3535
+#: lib/Domain/Service/Dns.php:3538
 msgid "KX record must have 2 fields: preference and exchanger"
 msgstr "KX 记录必须包含 2 个字段: preference 和 exchanger"
 
-#: lib/Domain/Service/Dns.php:3548
+#: lib/Domain/Service/Dns.php:3551
 msgid "KX preference must be a 16-bit unsigned integer (0-65535)"
 msgstr "KX preference 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:3559
+#: lib/Domain/Service/Dns.php:3562
 msgid "KX exchanger must be a valid domain name"
 msgstr "KX exchanger 必须是有效的域名"
 
-#: lib/Domain/Service/Dns.php:3584
+#: lib/Domain/Service/Dns.php:3587
 msgid "IPSECKEY record content is required"
 msgstr "IPSECKEY 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:3595
+#: lib/Domain/Service/Dns.php:3598
 msgid ""
 "IPSECKEY record must have at least 3 fields: precedence, gateway-type, and "
 "algorithm"
 msgstr ""
 "IPSECKEY 记录必须至少包含 3 个字段: precedence、gateway-type 和 algorithm"
 
-#: lib/Domain/Service/Dns.php:3609
+#: lib/Domain/Service/Dns.php:3612
 msgid "IPSECKEY precedence must be an 8-bit unsigned integer (0-255)"
 msgstr "IPSECKEY precedence 必须是 8 位无符号整数 (0-255)"
 
-#: lib/Domain/Service/Dns.php:3619
+#: lib/Domain/Service/Dns.php:3622
 msgid "IPSECKEY gateway-type must be 0-3 (0=none, 1=IPv4, 2=IPv6, 3=domain)"
 msgstr "IPSECKEY gateway-type 必须为 0-3 (0=无、1=IPv4、2=IPv6、3=域名)"
 
-#: lib/Domain/Service/Dns.php:3629
+#: lib/Domain/Service/Dns.php:3632
 msgid "IPSECKEY algorithm must be an 8-bit unsigned integer (0-255)"
 msgstr "IPSECKEY algorithm 必须是 8 位无符号整数 (0-255)"
 
-#: lib/Domain/Service/Dns.php:3708 lib/Domain/Service/Dns.php:3740
+#: lib/Domain/Service/Dns.php:3711 lib/Domain/Service/Dns.php:3743
 msgid "IPSECKEY public key must be Base64-encoded"
 msgstr "IPSECKEY 公钥必须是 Base64 编码的"
 
-#: lib/Domain/Service/Dns.php:3657
+#: lib/Domain/Service/Dns.php:3660
 msgid "IPSECKEY with gateway-type 1 requires an IPv4 address"
 msgstr "gateway-type 为 1 的 IPSECKEY 需要 IPv4 地址"
 
-#: lib/Domain/Service/Dns.php:3666
+#: lib/Domain/Service/Dns.php:3669
 msgid "IPSECKEY gateway must be a valid IPv4 address"
 msgstr "IPSECKEY gateway 必须是有效的 IPv4 地址"
 
-#: lib/Domain/Service/Dns.php:3688
+#: lib/Domain/Service/Dns.php:3691
 msgid "IPSECKEY with gateway-type 2 requires an IPv6 address"
 msgstr "gateway-type 为 2 的 IPSECKEY 需要 IPv6 地址"
 
-#: lib/Domain/Service/Dns.php:3697
+#: lib/Domain/Service/Dns.php:3700
 msgid "IPSECKEY gateway must be a valid IPv6 address"
 msgstr "IPSECKEY gateway 必须是有效的 IPv6 地址"
 
-#: lib/Domain/Service/Dns.php:3719
+#: lib/Domain/Service/Dns.php:3722
 msgid "IPSECKEY with gateway-type 3 requires a domain name"
 msgstr "gateway-type 为 3 的 IPSECKEY 需要域名"
 
-#: lib/Domain/Service/Dns.php:3729
+#: lib/Domain/Service/Dns.php:3732
 msgid "IPSECKEY gateway must be a valid domain name"
 msgstr "IPSECKEY gateway 必须是有效的域名"
 
-#: lib/Domain/Service/Dns.php:3812
+#: lib/Domain/Service/Dns.php:3815
 msgid "MINFO record content is required"
 msgstr "MINFO 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:3823
+#: lib/Domain/Service/Dns.php:3826
 msgid "MINFO record must have 2 fields: rmailbx and emailbx"
 msgstr "MINFO 记录必须包含 2 个字段: rmailbx 和 emailbx"
 
-#: lib/Domain/Service/Dns.php:3836
+#: lib/Domain/Service/Dns.php:3839
 msgid "MINFO rmailbx must be a valid domain name"
 msgstr "MINFO rmailbx 必须是有效的域名"
 
-#: lib/Domain/Service/Dns.php:3846
+#: lib/Domain/Service/Dns.php:3849
 msgid "MINFO emailbx must be a valid domain name"
 msgstr "MINFO emailbx 必须是有效的域名"
 
-#: lib/Domain/Service/Dns.php:3871
+#: lib/Domain/Service/Dns.php:3874
 msgid "MR record content is required"
 msgstr "MR 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:3881
+#: lib/Domain/Service/Dns.php:3884
 msgid "MR newname must be a valid domain name"
 msgstr "MR newname 必须是有效的域名"
 
-#: lib/Domain/Service/Dns.php:3906
+#: lib/Domain/Service/Dns.php:3909
 msgid "WKS record content is required"
 msgstr "WKS 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:3917
+#: lib/Domain/Service/Dns.php:3920
 msgid "WKS record must have at least 3 fields: address, protocol, and services"
 msgstr "WKS 记录必须至少包含 3 个字段: address、protocol 和 services"
 
-#: lib/Domain/Service/Dns.php:3930
+#: lib/Domain/Service/Dns.php:3933
 msgid "WKS address must be a valid IPv4 address"
 msgstr "WKS 地址必须是有效的 IPv4 地址"
 
-#: lib/Domain/Service/Dns.php:3941 lib/Domain/Service/Dns.php:3951
+#: lib/Domain/Service/Dns.php:3944 lib/Domain/Service/Dns.php:3954
 msgid "WKS protocol must be an 8-bit unsigned integer (0-255) or protocol name"
 msgstr "WKS protocol 必须是 8 位无符号整数 (0-255) 或协议名称"
 
-#: lib/Domain/Service/Dns.php:3965 lib/Domain/Service/Dns.php:3975
+#: lib/Domain/Service/Dns.php:3968 lib/Domain/Service/Dns.php:3978
 msgid "WKS service must be a 16-bit port number (0-65535) or service name"
 msgstr "WKS service 必须是 16 位端口号 (0-65535) 或服务名称"
 
-#: lib/Domain/Service/Dns.php:4002
+#: lib/Domain/Service/Dns.php:4005
 msgid "A6 record content is required"
 msgstr "A6 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:4015
+#: lib/Domain/Service/Dns.php:4018
 msgid ""
 "A6 record must have at least 2 fields: prefix-length and address-suffix or "
 "prefix-name"
 msgstr ""
 "A6 记录必须至少包含 2 个字段: prefix-length 和 address-suffix 或 prefix-name"
 
-#: lib/Domain/Service/Dns.php:4027
+#: lib/Domain/Service/Dns.php:4030
 msgid "A6 prefix length must be an integer (0-128)"
 msgstr "A6 prefix length 必须是 0 到 128 之间的整数"
 
-#: lib/Domain/Service/Dns.php:4052
+#: lib/Domain/Service/Dns.php:4055
 msgid "CSYNC record content is required"
 msgstr "CSYNC 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:4063
+#: lib/Domain/Service/Dns.php:4066
 msgid ""
 "CSYNC record must have at least 3 fields: SOA-serial, flags, and type-list"
 msgstr "CSYNC 记录必须至少包含 3 个字段: SOA-serial、flags 和 type-list"
 
-#: lib/Domain/Service/Dns.php:4076
+#: lib/Domain/Service/Dns.php:4079
 msgid "CSYNC SOA serial must be a 32-bit unsigned integer (0-4294967295)"
 msgstr "CSYNC SOA serial 必须是 32 位无符号整数 (0-4294967295)"
 
-#: lib/Domain/Service/Dns.php:4086
+#: lib/Domain/Service/Dns.php:4089
 msgid "CSYNC flags must be a 16-bit unsigned integer (0-65535)"
 msgstr "CSYNC flags 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:4098
+#: lib/Domain/Service/Dns.php:4101
 msgid "CSYNC type list must contain uppercase type names"
 msgstr "CSYNC 类型列表必须包含大写类型名称"
 
-#: lib/Domain/Service/Dns.php:4124
+#: lib/Domain/Service/Dns.php:4127
 msgid "ZONEMD record content is required"
 msgstr "ZONEMD 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:4135
+#: lib/Domain/Service/Dns.php:4138
 msgid "ZONEMD record must have 4 fields: serial, scheme, algorithm, and digest"
 msgstr "ZONEMD 记录必须包含 4 个字段: serial、scheme、algorithm 和 digest"
 
-#: lib/Domain/Service/Dns.php:4150
+#: lib/Domain/Service/Dns.php:4153
 msgid "ZONEMD serial must be a 32-bit unsigned integer (0-4294967295)"
 msgstr "ZONEMD serial 必须是 32 位无符号整数 (0-4294967295)"
 
-#: lib/Domain/Service/Dns.php:4160
+#: lib/Domain/Service/Dns.php:4163
 msgid "ZONEMD scheme must be an 8-bit unsigned integer (0-255)"
 msgstr "ZONEMD scheme 必须是 8 位无符号整数 (0-255)"
 
-#: lib/Domain/Service/Dns.php:4170
+#: lib/Domain/Service/Dns.php:4173
 msgid "ZONEMD algorithm must be an 8-bit unsigned integer (0-255)"
 msgstr "ZONEMD algorithm 必须是 8 位无符号整数 (0-255)"
 
-#: lib/Domain/Service/Dns.php:4180
+#: lib/Domain/Service/Dns.php:4183
 msgid "ZONEMD digest must be hexadecimal"
 msgstr "ZONEMD digest 必须是十六进制"
 
-#: lib/Domain/Service/Dns.php:4220
+#: lib/Domain/Service/Dns.php:4223
 msgid "SVCB record content is required"
 msgstr "SVCB 记录内容是必需的"
 
-#: lib/Domain/Service/Dns.php:4231
+#: lib/Domain/Service/Dns.php:4234
 msgid "SVCB record must have at least 2 fields: priority and target"
 msgstr "SVCB 记录必须至少包含 2 个字段: priority 和 target"
 
-#: lib/Domain/Service/Dns.php:4244
+#: lib/Domain/Service/Dns.php:4247
 msgid "SVCB priority must be a 16-bit unsigned integer (0-65535)"
 msgstr "SVCB priority 必须是 16 位无符号整数 (0-65535)"
 
-#: lib/Domain/Service/Dns.php:4255
+#: lib/Domain/Service/Dns.php:4258
 msgid "SVCB target must be a valid domain name or \".\""
 msgstr "SVCB target 必须是有效的域名或 \".\""
 
@@ -1604,53 +1692,64 @@ msgstr "此域记录无效，无法添加。"
 msgid "The domain record was successfully added."
 msgstr "域记录已成功添加。"
 
-#: lib/Domain/Service/DnsRecord.php:374
+#: lib/Domain/Service/DnsRecord.php:374 lib/Domain/Service/DnsRecord.php:676
+#, auto-english-fallback
+msgid "Record not found."
+msgstr "Record not found."
+
+#: lib/Domain/Service/DnsRecord.php:389
 msgid "You do not have the permission to edit this SOA record."
 msgstr "您没有权限编辑此SOA记录。"
 
-#: lib/Domain/Service/DnsRecord.php:381
+#: lib/Domain/Service/DnsRecord.php:396
 msgid "You do not have the permission to edit this NS record."
 msgstr "您没有权限编辑此NS记录。"
 
-#: lib/Domain/Service/DnsRecord.php:444
+#: lib/Domain/Service/DnsRecord.php:459
 msgid "You do not have the permission to add SOA record."
 msgstr "您没有添加 SOA 记录的权限。"
 
-#: lib/Domain/Service/DnsRecord.php:451
+#: lib/Domain/Service/DnsRecord.php:466
 msgid "You do not have the permission to add NS record."
 msgstr "您没有添加 NS 记录的权限。"
 
-#: lib/Domain/Service/DnsRecord.php:1881
+#: lib/Domain/Service/DnsRecord.php:1911
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "函数%s给定的参数无效 %s"
 
-#: lib/Domain/Service/DnsRecord.php:557
+#: lib/Domain/Service/DnsRecord.php:572
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "已经存在具有此IP地址和主机名的超级主服务器。"
 
-#: lib/Domain/Service/DnsRecord.php:664
+#: lib/Domain/Service/DnsRecord.php:686
 msgid ""
 "You are trying to delete the SOA record. You are not allowed to remove it, "
 "unless you remove the entire zone."
 msgstr "您正在尝试删除SOA记录。除非删除整个区域，否则不允许删除它。"
 
-#: lib/Domain/Service/DnsRecord.php:825 lib/Domain/Service/DnsRecord.php:1538
+#: lib/Domain/Service/DnsRecord.php:847 lib/Domain/Service/DnsRecord.php:1562
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "函数%s给定的参数无效"
 
-#: lib/Domain/Service/DnsRecord.php:910
+#: lib/Domain/Service/DnsRecord.php:934
 msgid "The selected user already owns the zone."
 msgstr "所选用户已拥有该区域。"
 
-#: lib/Domain/Service/DnsRecord.php:940
+#: lib/Domain/Service/DnsRecord.php:964
 msgid "There must be at least one owner for a zone."
 msgstr "区域必须至少有一个所有者。"
 
-#: lib/Domain/Service/DnsRecord.php:1162
+#: lib/Domain/Service/DnsRecord.php:1186
 msgid "This is an invalid zone name."
 msgstr "这是无效的区域名称。"
+
+#: lib/Domain/Service/ReverseRecordCreator.php:61
+#, auto-english-fallback
+#, php-format
+msgid "There is no matching reverse-zone for: %s."
+msgstr "There is no matching reverse-zone for: %s."
 
 #: templates/dnssec_delete_key.html:3 templates/list_perm_templ.html:3
 msgid "Home"
@@ -2515,6 +2614,11 @@ msgstr "删除记录"
 msgid "Delete record in zone template"
 msgstr "删除区域模板中的记录"
 
+#: templates/dnssec_delete_key.html:16
+#, auto-english-fallback
+msgid "Delete key"
+msgstr "Delete key"
+
 #: install/templates/step3.html.twig:4
 msgid "Step"
 msgstr "步骤"
@@ -2813,29 +2917,43 @@ msgid ""
 "letter, one lowercase letter, and one number."
 msgstr "密码必须至少 6 个字符,包含至少一个大写字母、一个小写字母和一个数字。"
 
-#: install/helpers/InstallStepHandler.php:60
+#: install/templates/step3.html.twig:113
+msgid "The default username is \"admin\"."
+msgstr ""
+
+#: install/helpers/InstallStepHandler.php:64
 msgid "An error occurred while rendering the template."
 msgstr "渲染模板时发生错误。"
 
-#: install/helpers/InstallStepHandler.php:121
+#: install/helpers/InstallStepHandler.php:125
 msgid "Updating database..."
 msgstr "正在更新数据库..."
 
-#: install/helpers/InstallStepHandler.php:127
+#: install/helpers/InstallStepHandler.php:131
 msgid "done!"
 msgstr "完成！"
 
-#: install/helpers/DatabaseHelper.php:124
+#: install/helpers/DatabaseHelper.php:121
 msgid "or"
 msgstr "或"
 
-#: install/helpers/Installer.php:79
+#: install/helpers/Installer.php:83
 msgid ""
 "There is already a configuration file in place, so the installation will be "
 "skipped."
 msgstr "已经存在配置文件，因此将跳过安装过程。"
 
-#: install/helpers/Installer.php:93
+#: install/helpers/Installer.php:97
 msgid "Please select a language to proceed with the installation."
 msgstr "请选择一种语言以继续安装。"
+
+#: install/helpers/LocaleHandler.php:87
+#, auto-english-fallback
+msgid ""
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
+msgstr ""
+"Failed to set locale. Selected locale may be unsupported on this system. "
+"Please contact your administrator."
+
 
