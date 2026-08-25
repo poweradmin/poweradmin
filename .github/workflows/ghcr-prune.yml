@@ -49,7 +49,7 @@ jobs:
 
         gh api --paginate \
           "/orgs/${OWNER}/packages/container/${PKG}/versions?per_page=100" \
-          --jq '.[] | [.id, .name, ((.metadata.container.tags // []) | join(",")), .updated_at] | @tsv' \
+          --jq '.[] | [.id, .name, .updated_at, ((.metadata.container.tags // []) | join(","))] | @tsv' \
           > versions.tsv
 
         total=$(wc -l < versions.tsv | tr -d ' ')
@@ -62,7 +62,7 @@ jobs:
         # unreferenced, so a single failure aborts before anything is deleted.
         : > referenced.txt
         tag_count=0
-        while IFS=$'\t' read -r id digest tags updated; do
+        while IFS=$'\t' read -r id digest updated tags; do
           [ -n "$tags" ] || continue
           tag_count=$((tag_count + 1))
           echo "$digest" >> referenced.txt
@@ -85,7 +85,7 @@ jobs:
 
         : > orphans.tsv
         skipped_recent=0
-        while IFS=$'\t' read -r id digest tags updated; do
+        while IFS=$'\t' read -r id digest updated tags; do
           [ -z "$tags" ] || continue
           if [ "$(date -u -d "$updated" +%s)" -ge "$cutoff" ]; then
             skipped_recent=$((skipped_recent + 1))
