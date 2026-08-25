@@ -64,12 +64,13 @@ if not ipv4 and not ipv6:
     raise SystemExit(1)
 
 
-def _push_update(ip):
+def _push_update(ip, param):
     if verbose:
         print("Updating the IP address (" + ip + ") now ...")
     verbose_flag = "1" if verbose else "0"
     response = requests.get(
-        url + "/dynamic_update.php?hostname=" + dyndns + "&myip=" + ip + "&verbose=" + verbose_flag,
+        url + "/dynamic_update.php?hostname=" + dyndns + "&" + param + "=" + ip
+        + "&verbose=" + verbose_flag,
         auth=HTTPBasicAuth(login, password),
         timeout=10,
     )
@@ -77,7 +78,9 @@ def _push_update(ip):
         print("Status: " + response.text.strip())
 
 
+# Name the parameter for each family rather than relying on the server sorting a
+# mixed myip list, which older Poweradmin versions reject.
 if ipv4:
-    _push_update(ipv4)
+    _push_update(ipv4, "myip")
 if ipv6:
-    _push_update(ipv6)
+    _push_update(ipv6, "myip6")
