@@ -93,6 +93,12 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # metadata-action derives revision from github.sha, which on a workflow_run
+      # event is the default branch rather than the sha actually checked out.
+      - name: Resolve build revision
+        id: vars
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
@@ -102,6 +108,8 @@ jobs:
             ${{ env.DOCKERHUB_IMAGE_NAME }}
           flavor: |
             latest=false
+          labels: |
+            org.opencontainers.image.revision=${{ steps.vars.outputs.sha }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
