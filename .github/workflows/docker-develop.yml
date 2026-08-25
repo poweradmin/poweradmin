@@ -72,6 +72,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Labels are baked into the image config, so they must be applied here in the
+      # build jobs, not in merge. Revision comes from the checkout, not github.sha,
+      # which on a workflow_run event points at the default branch instead.
+      - name: Resolve build revision
+        id: vars
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
+        with:
+          images: ${{ env.GHCR_IMAGE }}
+          flavor: latest=false
+          tags: type=raw,value=${{ env.TAG }}
+          labels: |
+            org.opencontainers.image.revision=${{ steps.vars.outputs.sha }}
+
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
@@ -79,6 +96,7 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.GHCR_IMAGE }},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=registry,ref=${{ env.GHCR_IMAGE }}:buildcache-develop-${{ env.PLATFORM_PAIR }}
           cache-to: type=registry,ref=${{ env.GHCR_IMAGE }}:buildcache-develop-${{ env.PLATFORM_PAIR }},mode=max,ignore-error=true
