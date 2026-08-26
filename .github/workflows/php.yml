@@ -59,7 +59,7 @@ jobs:
 
     - name: Get Composer cache directory
       id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
     - name: Cache Composer dependencies
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -92,7 +92,7 @@ jobs:
 
     - name: Get Composer cache directory
       id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
     - name: Cache Composer dependencies
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -125,7 +125,7 @@ jobs:
 
     - name: Get Composer cache directory
       id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
     - name: Cache Composer dependencies
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -166,7 +166,7 @@ jobs:
 
     - name: Get Composer cache directory
       id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
     - name: Cache Composer dependencies
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -205,7 +205,7 @@ jobs:
 
     - name: Get Composer cache directory
       id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
     - name: Cache Composer dependencies
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -235,12 +235,12 @@ jobs:
     - name: Compatibility Summary
       if: always()
       run: |
-        echo "### PHP ${{ matrix.php-version }} Compatibility Check ✓" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Target PHP Version:** ${{ matrix.php-version }}" >> $GITHUB_STEP_SUMMARY
-        echo "**Analysis Tool:** Phan (polyfill parser)" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "Compatibility check completed for PHP ${{ matrix.php-version }}" >> $GITHUB_STEP_SUMMARY
+        echo "### PHP ${{ matrix.php-version }} Compatibility Check ✓" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "**Target PHP Version:** ${{ matrix.php-version }}" >> "$GITHUB_STEP_SUMMARY"
+        echo "**Analysis Tool:** Phan (polyfill parser)" >> "$GITHUB_STEP_SUMMARY"
+        echo "" >> "$GITHUB_STEP_SUMMARY"
+        echo "Compatibility check completed for PHP ${{ matrix.php-version }}" >> "$GITHUB_STEP_SUMMARY"
 
   twig-csrf-check:
     name: Twig CSRF Field Name Check
@@ -298,7 +298,10 @@ jobs:
           echo "::error file=Dockerfile::FROM must be digest-pinned as image:tag@sha256:..."
           fail=1
         fi
-        if grep -rnE '^[[:space:]]*-?[[:space:]]*uses:' .github/workflows/ | grep -vE '@[0-9a-f]{40}'; then
+        # Local reusable workflows (uses: ./...) live in this repo, so there is no
+        # third-party SHA to pin.
+        if grep -rnE '^[[:space:]]*-?[[:space:]]*uses:' .github/workflows/ \
+             | grep -v 'uses: \./' | grep -vE '@[0-9a-f]{40}'; then
           echo "::error::Actions must be pinned to a full 40-character commit SHA"
           fail=1
         fi
