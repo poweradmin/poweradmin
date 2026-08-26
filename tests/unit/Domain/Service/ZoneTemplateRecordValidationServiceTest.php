@@ -141,4 +141,20 @@ class ZoneTemplateRecordValidationServiceTest extends TestCase
     {
         $this->assertFalse($this->validate('www.[ZONE]', 'A', '192.0.2.1', -5));
     }
+
+    public function testAcceptsBareTxtValue(): void
+    {
+        // Storable before template records were type-checked, so it stays storable (#1212)
+        $this->assertTrue($this->validate('spaced', 'TXT', '1       465           smtp.test.loc'));
+    }
+
+    public function testAcceptsQuotedTxtValue(): void
+    {
+        $this->assertTrue($this->validate('spaced', 'TXT', '"1       465           smtp.test.loc"'));
+    }
+
+    public function testRejectsTxtWithUnbalancedQuote(): void
+    {
+        $this->assertFalse($this->validate('spaced', 'TXT', '"unbalanced'));
+    }
 }

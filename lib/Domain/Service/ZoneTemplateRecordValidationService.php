@@ -110,6 +110,13 @@ class ZoneTemplateRecordValidationService
             $resolvedContent .= ' ' . implode(' ', array_fill(0, 4, self::SAMPLE_TIMER));
         }
 
+        // A bare TXT value was storable before template records were type-checked, and it
+        // is still stored verbatim, so quote it for the check alone rather than refusing
+        // it. Content that already carries a quote is left as-is and must be well formed.
+        if ($type === RecordType::TXT && !str_contains($resolvedContent, '"')) {
+            $resolvedContent = '"' . $resolvedContent . '"';
+        }
+
         // An unknown placeholder leaves nothing dependable to check, so the record is
         // stored as it stands rather than rejected on a guess.
         if ($this->hasUnresolvedPlaceholder($resolvedName) || $this->hasUnresolvedPlaceholder($resolvedContent)) {
