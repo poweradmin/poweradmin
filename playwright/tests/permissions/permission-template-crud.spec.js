@@ -301,8 +301,20 @@ test.describe('Permission Template CRUD Operations', () => {
       if (await editLink.count() > 0) {
         await editLink.click();
 
-        const checkedBox = page.locator('input[type="checkbox"]:checked').first();
+        const checkedBox = page.locator('input.permission-checkbox:checked').first();
         if (await checkedBox.count() > 0) {
+          // Permissions sit in accordion sections and only the first is open, so the
+          // checked box may be hidden. Open its section before touching it.
+          if (!(await checkedBox.isVisible())) {
+            const sectionId = await checkedBox.evaluate(
+              el => el.closest('.accordion-collapse')?.id ?? ''
+            );
+            if (sectionId) {
+              await page.locator(`[data-bs-target="#${sectionId}"]`).click();
+              await expect(checkedBox).toBeVisible();
+            }
+          }
+
           await checkedBox.uncheck();
           await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
