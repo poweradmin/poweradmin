@@ -249,9 +249,7 @@ test.describe('Zone Template Records', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       expect(templateId).toBeTruthy();
 
-      // TXT content has to be quoted: dns.txt_auto_quote defaults to false, so
-      // an unquoted value is rejected and no record would be created at all.
-      const spacedContent = '"1       465           smtp.test.loc"';
+      const spacedContent = '1       465           smtp.test.loc';
 
       await page.goto(`/zones/templates/${templateId}/records/add`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
