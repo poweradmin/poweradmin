@@ -28,8 +28,8 @@ return [
     'security' => [
         'session_key' => 'subfolder_session_key_for_testing_only_12345',
         'password_encryption' => 'bcrypt',
-        'login_token_validation' => false,
-        'global_token_validation' => false,
+        'login_token_validation' => true,
+        'global_token_validation' => true,
         'mfa' => [
             'enabled' => false,
             'enforced' => false,
