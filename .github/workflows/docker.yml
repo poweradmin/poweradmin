@@ -15,9 +15,10 @@ on:
     tags:
       - 'v*'
     branches:
+      # release/4.3.x is absent: branch pushes build via docker-4.3.x.yml on master.
+      # v* tags still publish here.
       - release/3.x
       - release/4.2.x
-      - release/4.3.x
   workflow_dispatch:
     inputs:
       no_cache:
