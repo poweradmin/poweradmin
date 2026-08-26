@@ -41,7 +41,8 @@ ON DUPLICATE KEY UPDATE `name` = 'No Access', `descr` = 'Template with no permis
 
 -- Recreate Administrator permissions (template 1)
 INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 1, `id` FROM `perm_items` WHERE `name` = 'user_is_ueberuser';
+SELECT 1, `id` FROM `perm_items` WHERE `name` = 'user_is_ueberuser'
+AND NOT EXISTS (SELECT 1 FROM `perm_templ_items` pti WHERE pti.`templ_id` = 1 AND pti.`perm_id` = `perm_items`.`id`);
 
 -- Recreate Zone Manager permissions (template 2)
 INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`)
