@@ -108,8 +108,10 @@ DELETE FROM username_recovery_requests;
 -- Delete test users (keep admin if exists)
 DELETE FROM users WHERE username != 'admin';
 
--- Delete permission template items for non-default templates
-DELETE FROM perm_templ_items WHERE templ_id > 1;
+-- Delete all permission template items; the fixtures recreate templates 1-5.
+-- Template 1 is included because E2E tests edit the Administrator template and
+-- sparing it here left those edits in place across every --clean run.
+DELETE FROM perm_templ_items;
 
 -- Delete permission templates (keep Administrator)
 DELETE FROM perm_templ WHERE id > 1;
@@ -174,8 +176,10 @@ DELETE FROM username_recovery_requests;
 -- Delete test users (keep admin if exists)
 DELETE FROM users WHERE username != 'admin';
 
--- Delete permission template items for non-default templates
-DELETE FROM perm_templ_items WHERE templ_id > 1;
+-- Delete all permission template items; the fixtures recreate templates 1-5.
+-- Template 1 is included because E2E tests edit the Administrator template and
+-- sparing it here left those edits in place across every --clean run.
+DELETE FROM perm_templ_items;
 
 -- Delete permission templates (keep Administrator)
 DELETE FROM perm_templ WHERE id > 1;
@@ -260,8 +264,10 @@ DELETE FROM username_recovery_requests;
 -- Delete test users (keep admin if exists)
 DELETE FROM users WHERE username != 'admin';
 
--- Delete permission template items for non-default templates
-DELETE FROM perm_templ_items WHERE templ_id > 1;
+-- Delete all permission template items; the fixtures recreate templates 1-5.
+-- Template 1 is included because E2E tests edit the Administrator template and
+-- sparing it here left those edits in place across every --clean run.
+DELETE FROM perm_templ_items;
 
 -- Delete permission templates (keep Administrator)
 DELETE FROM perm_templ WHERE id > 1;
