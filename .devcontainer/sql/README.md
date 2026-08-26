@@ -14,11 +14,6 @@ The SQL files in this directory create a comprehensive test environment with:
 
 ## Files
 
-### `test-users-permissions-mysql.sql`
-MySQL/MariaDB version of test data for single database setup. Use with MySQL 5.7+ or MariaDB 10.3+.
-
-**Note**: For devcontainer use, see the `-combined.sql` version below.
-
 ### `test-users-permissions-pgsql.sql`
 PostgreSQL version of test data. Use with PostgreSQL 12+.
 
