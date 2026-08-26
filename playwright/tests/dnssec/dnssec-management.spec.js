@@ -401,14 +401,15 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
+      // The containers are in the DOM even for an unsigned zone, just empty and
+      // hidden, so ask the keys page whether the zone is signed at all.
+      const keyIds = await listDnssecKeyIds(page, zoneId);
+      test.skip(keyIds.length === 0, 'zone is unsigned, so no DS/DNSKEY records are rendered');
+
       await page.goto(`/zones/${zoneId}/dnssec/ds-dnskey`);
-      // Check page loaded without fatal errors
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
-      // The DS/DNSKEY blocks only render for a signed zone, so skip visibly otherwise
-      const pre = page.locator('pre, code, .records');
-      test.skip(await pre.count() === 0, 'zone is unsigned, so no DS/DNSKEY records are rendered');
-      await expect(pre.first()).toBeVisible();
+      await expect(page.locator('pre, code, .records').first()).toBeVisible();
     });
   });
 
