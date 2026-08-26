@@ -35,7 +35,7 @@ jobs:
 
       - name: Get Composer cache directory
         id: composer-cache-dir
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
       - name: Cache Composer dependencies
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -58,10 +58,10 @@ jobs:
       - name: Lint Summary
         if: always()
         run: |
-          echo "### Twig Linting Summary ✓" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Linter:** TwigCS (friendsoftwig/twigcs)" >> $GITHUB_STEP_SUMMARY
-          echo "**Templates checked:** templates/ (*.twig, *.html)" >> $GITHUB_STEP_SUMMARY
-          echo "**Severity level:** error" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Twig template validation completed" >> $GITHUB_STEP_SUMMARY
+          echo "### Twig Linting Summary ✓" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Linter:** TwigCS (friendsoftwig/twigcs)" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Templates checked:** templates/ (*.twig, *.html)" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Severity level:** error" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Twig template validation completed" >> "$GITHUB_STEP_SUMMARY"

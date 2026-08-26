@@ -57,7 +57,7 @@ jobs:
           if [ -z "$LAST_TAG" ]; then
             COMMIT_COUNT=$(git rev-list --count HEAD)
           else
-            COMMIT_COUNT=$(git rev-list --count ${LAST_TAG}..HEAD)
+            COMMIT_COUNT=$(git rev-list --count "${LAST_TAG}..HEAD")
           fi
 
           # Check if there are releasable commits (feat or fix)
