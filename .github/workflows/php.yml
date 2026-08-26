@@ -273,7 +273,10 @@ jobs:
           echo "::error file=Dockerfile::FROM must be digest-pinned as image:tag@sha256:..."
           fail=1
         fi
-        if grep -rnE '^[[:space:]]*-?[[:space:]]*uses:' .github/workflows/ | grep -vE '@[0-9a-f]{40}'; then
+        # Local reusable workflows (uses: ./...) live in this repo, so there is no
+        # third-party SHA to pin.
+        if grep -rnE '^[[:space:]]*-?[[:space:]]*uses:' .github/workflows/ \
+             | grep -v 'uses: \./' | grep -vE '@[0-9a-f]{40}'; then
           echo "::error::Actions must be pinned to a full 40-character commit SHA"
           fail=1
         fi
