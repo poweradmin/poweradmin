@@ -1,14 +1,8 @@
 name: Docker Image Publish
 
+# Every branch image now builds natively in its own docker-<branch>.yml. What is left
+# here is the v* release-tag publisher.
 on:
-  workflow_run:
-    workflows: ["validations"]
-    types:
-      - completed
-    branches:
-      - master
-      # develop, 4.2.x and 4.3.x build on native arm64 in their own workflows
-      - release/3.x
   push:
     tags:
       - 'v*'
@@ -22,8 +16,6 @@ on:
         description: 'Build without layer cache to pull in updated base packages'
         type: boolean
         default: false
-  schedule:
-    - cron: '30 4 * * 1'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.workflow_run.head_branch || github.ref_name }}

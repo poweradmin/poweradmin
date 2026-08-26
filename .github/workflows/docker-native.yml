@@ -21,6 +21,10 @@ on:
         description: 'Build without layer cache'
         type: boolean
         default: false
+      nonroot_smoke:
+        description: 'Run the non-root smoke test. 3.x already runs as 82:82 on port 80 and has no port-switching entrypoint.'
+        type: boolean
+        default: true
 
 env:
   GHCR_IMAGE: ghcr.io/poweradmin/poweradmin
@@ -123,6 +127,7 @@ jobs:
           docker rm -f smoke-root
 
       - name: Smoke test (non-root mode - port 8080)
+        if: inputs.nonroot_smoke
         env:
           REF: ${{ env.GHCR_IMAGE }}@${{ steps.build.outputs.digest }}
         run: |
