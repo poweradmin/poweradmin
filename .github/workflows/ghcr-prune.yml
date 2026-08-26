@@ -3,8 +3,10 @@ name: ghcr prune
 # A multi-arch image stores its per-platform manifests as untagged versions, so
 # deleting all untagged ones breaks docker pull. Resolve tag references first.
 on:
+  # Daily: a day's worth of superseded manifests is well under the 900 cap, so each
+  # run stays short once the initial backlog has drained.
   schedule:
-    - cron: '0 3 * * 0'
+    - cron: '0 3 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
