@@ -7,10 +7,9 @@ on:
       - completed
     branches:
       - master
-      # develop is built by docker-develop.yml on native arm64 runners
+      # develop and release/4.3.x build on native arm64 in their own workflows
       - release/3.x
       - release/4.2.x
-      - release/4.3.x
   push:
     tags:
       - 'v*'
@@ -47,8 +46,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           # release/3.x has no docker.yml of its own; its image rebuilds on branch pushes only.
-          # develop is excluded: docker-develop.yml owns it and carries its own schedule.
-          for branch in release/4.3.x release/4.2.x; do
+          # develop and release/4.3.x are excluded: their own workflows carry schedules.
+          for branch in release/4.2.x; do
             gh workflow run docker.yml --repo "$GITHUB_REPOSITORY" --ref "$branch" -f no_cache=true \
               || echo "dispatch failed for $branch"
           done
