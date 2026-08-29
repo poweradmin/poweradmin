@@ -95,4 +95,38 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
             $this->assertNotSame('', $shellDefault, sprintf('PA_%s_DEFAULT_PERMISSION_TEMPLATE must not default to an empty value', $provider));
         }
     }
+
+    /**
+     * OidcService::getCallbackUrl() and SamlConfigurationService::getBaseUrl()
+     * both throw when interface.application_url is unset, because neither the
+     * redirect_uri nor the advertised entityID may be derived from the request.
+     * Without this check the container starts and only fails at login time.
+     *
+     * @dataProvider ssoValidatorProvider
+     */
+    public function testEntrypointRequiresApplicationUrlForSso(string $function): void
+    {
+        $entrypoint = file_get_contents(dirname(__DIR__, 2) . '/docker-entrypoint.sh');
+        $this->assertNotFalse($entrypoint, 'docker-entrypoint.sh could not be read');
+
+        $start = strpos($entrypoint, $function . '() {');
+        $this->assertNotFalse($start, sprintf('%s() not found in docker-entrypoint.sh', $function));
+
+        $end = strpos($entrypoint, "\n}\n", $start);
+        $this->assertNotFalse($end, sprintf('%s() has no closing brace', $function));
+
+        $this->assertStringContainsString(
+            'PA_APPLICATION_URL',
+            substr($entrypoint, $start, $end - $start),
+            sprintf('%s() must refuse to start without PA_APPLICATION_URL', $function)
+        );
+    }
+
+    public static function ssoValidatorProvider(): array
+    {
+        return [
+            'saml' => ['validate_saml_config'],
+            'oidc' => ['validate_oidc_config'],
+        ];
+    }
 }
