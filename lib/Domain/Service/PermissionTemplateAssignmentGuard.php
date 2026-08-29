@@ -71,6 +71,19 @@ class PermissionTemplateAssignmentGuard
             return null;
         }
 
+        $requestedTemplateId = (int)$input['perm_templ'];
+
+        // Echoing back the template the account already has is not a template change,
+        // so a full-object update must not be gated on it. Mirrors the web policy in
+        // UserManager::templateAssignmentRejected().
+        if (
+            $targetUserId !== null
+            && $permissionService->getUserPermissionTemplateId($targetUserId) === $requestedTemplateId
+            && !$permissionService->templateGrantsSuperuser($requestedTemplateId)
+        ) {
+            return null;
+        }
+
         if (!$permissionService->userHasPermission($callerId, 'user_edit_templ_perm')) {
             return self::REJECT_MESSAGE;
         }
@@ -80,7 +93,7 @@ class PermissionTemplateAssignmentGuard
             return self::SELF_ASSIGN_MESSAGE;
         }
 
-        if ($permissionService->templateGrantsSuperuser((int)$input['perm_templ'])) {
+        if ($permissionService->templateGrantsSuperuser($requestedTemplateId)) {
             return self::SUPERUSER_TEMPLATE_MESSAGE;
         }
 
