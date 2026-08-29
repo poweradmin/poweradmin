@@ -12,6 +12,12 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  # One run per branch at a time. Pushes landing seconds apart could otherwise both
+  # pass the existence check before either had created the draft.
+  group: create-draft-release-${{ github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   create-draft-release:
     runs-on: ubuntu-latest
@@ -30,21 +36,38 @@ jobs:
 
       - name: Check if release already exists
         id: check_release
-        run: |
-          RELEASE_TAG="v${{ steps.current_version.outputs.version }}"
-
-          # Check if a non-draft release already exists for this version
-          EXISTING=$(gh release view "$RELEASE_TAG" --json isDraft --jq '.isDraft' 2>/dev/null || echo "not_found")
-
-          if [ "$EXISTING" = "false" ]; then
-            echo "Release $RELEASE_TAG already published, skipping"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-            echo "is_draft=$EXISTING" >> "$GITHUB_OUTPUT"
-          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: v${{ steps.current_version.outputs.version }}
+        run: |
+          # A lookup that fails has to stop the run, not fall through to "create".
+          # Reading an API error as "no release exists" forked a second v4.4.1 draft
+          # on 2026-08-17, which then drifted from the real one unnoticed.
+          # shellcheck disable=SC2016  # $m and \(...) are jq syntax, not shell
+          if ! COUNTS=$(gh api "repos/${GITHUB_REPOSITORY}/releases?per_page=100" \
+              --jq '[.[] | select(.tag_name == env.RELEASE_TAG)] as $m
+                    | "\($m | map(select(.draft)) | length) \($m | map(select(.draft | not)) | length)"'); then
+            echo "::error::Could not list releases; refusing to guess whether $RELEASE_TAG exists"
+            exit 1
+          fi
+
+          DRAFT_COUNT="${COUNTS%% *}"
+          PUBLISHED_COUNT="${COUNTS##* }"
+          echo "$RELEASE_TAG: $DRAFT_COUNT draft, $PUBLISHED_COUNT published"
+
+          if [ "$PUBLISHED_COUNT" -gt 0 ]; then
+            echo "Release $RELEASE_TAG already published, skipping"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif [ "$DRAFT_COUNT" -gt 1 ]; then
+            echo "::error::$DRAFT_COUNT drafts already exist for $RELEASE_TAG; delete the extras before rerunning"
+            exit 1
+          elif [ "$DRAFT_COUNT" -eq 1 ]; then
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "is_draft=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "is_draft=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Check for releasable changes
         if: steps.check_release.outputs.skip != 'true'
