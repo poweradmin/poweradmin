@@ -419,7 +419,7 @@ class EditZoneMetadataController extends BaseController
      * not lock the zone's own editor out of saving unrelated metadata.
      *
      * @param array<int, array<string, string>> $submitted
-     * @param callable(): array<int, array<string, string>> $loadCurrent Deferred so the
+     * @param callable $loadCurrent Returns the stored metadata rows. Deferred so the
      *        PowerDNS round-trip is skipped when the caller may set these kinds anyway
      * @return array<int, string>
      */
