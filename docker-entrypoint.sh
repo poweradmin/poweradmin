@@ -240,6 +240,13 @@ validate_ldap_config() {
 validate_saml_config() {
     local saml_enabled=$(to_php_bool "${PA_SAML_ENABLED:-false}")
     if [ "$saml_enabled" = "true" ]; then
+        # The entityID and ACS URL advertised to the IdP are never derived from
+        # the request, so SAML cannot start without an explicit application URL
+        if [ -z "${PA_APPLICATION_URL}" ]; then
+            log "ERROR: PA_APPLICATION_URL is required when SAML is enabled. It defines the entityID and ACS URL advertised to the identity provider"
+            exit 1
+        fi
+
         # Check if at least one provider is enabled
         local azure_enabled=$(to_php_bool "${PA_SAML_AZURE_ENABLED:-false}")
         local okta_enabled=$(to_php_bool "${PA_SAML_OKTA_ENABLED:-false}")
@@ -310,6 +317,13 @@ validate_saml_config() {
 validate_oidc_config() {
     local oidc_enabled=$(to_php_bool "${PA_OIDC_ENABLED:-false}")
     if [ "$oidc_enabled" = "true" ]; then
+        # The redirect_uri is never derived from the request, so OIDC cannot
+        # start without an explicit application URL
+        if [ -z "${PA_APPLICATION_URL}" ]; then
+            log "ERROR: PA_APPLICATION_URL is required when OIDC is enabled. It defines the OAuth redirect_uri registered with the provider"
+            exit 1
+        fi
+
         # Check if at least one provider is enabled
         local azure_enabled=$(to_php_bool "${PA_OIDC_AZURE_ENABLED:-false}")
         local google_enabled=$(to_php_bool "${PA_OIDC_GOOGLE_ENABLED:-false}")
