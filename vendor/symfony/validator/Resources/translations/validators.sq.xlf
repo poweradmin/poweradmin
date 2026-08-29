@@ -7,7 +7,7 @@
                   a) në rast se emri është akronim i përdorur gjerësisht si i përveçëm, atëherë, emri lakohet pa thonjëza dhe mbaresa shkruhet me vizë ndarëse. Gjinia gjykohet sipas rastit. Shembull: JSON (mashkullore)
                   b) në rast se emri është akronim i papërdorur gjerësisht si i përveçëm, atëherë, emri lakohet pa thonjëza dhe mbaresa shkruhet me vizë ndarëse. Gjinia është femërore. Shembull: URL (femërore)
                   c) në rast se emri duhet lakuar për shkak të rasës në fjali, atëherë, emri lakohet pa thonjëza dhe mbaresa shkruhet me vizë ndarëse. Shembull: host-i, prej host-it
-                  d) në rast se emri nuk duhet lakuar për shkak të trajtës në fjali, atëherë, emri rrethote me thonjëzat “”. Shembull: “locale”
+                  d) në rast se emri nuk duhet lakuar për shkak të trajtës në fjali, atëherë, emri rrethohet me thonjëzat “”. Shembull: “locale”
             </note>
         </header>
         <body>
@@ -578,6 +578,14 @@
             <trans-unit id="146">
                 <source>This value is not a valid cron expression.</source>
                 <target>Kjo vlerë nuk është një shprehje e vlefshme cron.</target>
+            </trans-unit>
+            <trans-unit id="147">
+                <source>The referenced entity does not exist.</source>
+                <target>Entiteti i referuar nuk ekziston.</target>
+            </trans-unit>
+            <trans-unit id="148" resname="This is not a valid ULID.">
+                <source>This value is not a valid ULID.</source>
+                <target>Kjo vlerë nuk është ULID i vlefshëm.</target>
             </trans-unit>
         </body>
     </file>
