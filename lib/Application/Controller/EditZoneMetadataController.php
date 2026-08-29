@@ -127,8 +127,8 @@ class EditZoneMetadataController extends BaseController
             $this->validateCsrfToken();
             $submittedMetadata = $this->normalizeSubmittedMetadata($this->request->getPostParam('metadata', []));
 
-            // Cheap in-memory checks first; loadMetadata() costs two PowerDNS API
-            // calls in API-backend mode and is only needed past this point.
+            // Cheap in-memory checks first; loadMetadata() costs two PowerDNS API calls
+            // in API-backend mode, so it is passed lazily and skipped for ueberusers.
             $validationErrors = $this->validateMetadataRows($submittedMetadata);
 
             if (!empty($validationErrors)) {
@@ -139,7 +139,7 @@ class EditZoneMetadataController extends BaseController
 
             $restrictionErrors = $this->operatorOnlyViolations(
                 $submittedMetadata,
-                $this->loadMetadata($zoneId, $zone['name'])
+                fn(): array => $this->loadMetadata($zoneId, $zone['name'])
             );
             if (!empty($restrictionErrors)) {
                 $this->setMessage('zone_metadata', 'error', $restrictionErrors[0]);
@@ -419,10 +419,11 @@ class EditZoneMetadataController extends BaseController
      * not lock the zone's own editor out of saving unrelated metadata.
      *
      * @param array<int, array<string, string>> $submitted
-     * @param array<int, array<string, string>> $current
+     * @param callable(): array<int, array<string, string>> $loadCurrent Deferred so the
+     *        PowerDNS round-trip is skipped when the caller may set these kinds anyway
      * @return array<int, string>
      */
-    private function operatorOnlyViolations(array $submitted, array $current): array
+    private function operatorOnlyViolations(array $submitted, callable $loadCurrent): array
     {
         if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
             return [];
@@ -443,7 +444,7 @@ class EditZoneMetadataController extends BaseController
             return $byKind;
         };
 
-        $before = $collect($current);
+        $before = $collect($loadCurrent());
         $after = $collect($submitted);
 
         $errors = [];
