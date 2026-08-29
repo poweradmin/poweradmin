@@ -98,6 +98,7 @@ class SamlConfigurationService extends LoggingService
 
         // Derived only where the operator gave no URL: deriving needs
         // interface.application_url, which an explicit sp config does not require.
+        // settings.defaults.php ships these keys as '', so presence is not enough.
         $derived = [
             'entity_id' => fn(): string => $this->generateDefaultEntityId(),
             'assertion_consumer_service_url' => fn(): string => $this->generateDefaultAcsUrl(),
@@ -105,8 +106,9 @@ class SamlConfigurationService extends LoggingService
         ];
 
         foreach ($derived as $key => $generate) {
-            if (!array_key_exists($key, $spConfig)) {
+            if (empty($spConfig[$key])) {
                 $defaults[$key] = $generate();
+                unset($spConfig[$key]);
             }
         }
 
