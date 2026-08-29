@@ -4,8 +4,9 @@
 # Note: security updates are only ever raised against master. The weekly
 # dependency-audit workflow covers the other branches.
 #
-# Each branch has its own weekend slot so a week's updates arrive as five small
-# batches instead of one burst of roughly fifteen pull requests.
+# Each branch has its own weekend slot so updates arrive as small batches instead
+# of one burst of roughly fifteen pull requests. The older stable lines poll
+# monthly: they take patch updates only, and security fixes are raised on master.
 version: 2
 updates:
 
@@ -207,7 +208,7 @@ updates:
     directory: "/"
     target-branch: "release/4.2.x"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       day: "sunday"
       time: "09:00"
       timezone: "Europe/Vilnius"
@@ -226,7 +227,7 @@ updates:
     directory: "/"
     target-branch: "release/4.2.x"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       day: "sunday"
       time: "09:00"
       timezone: "Europe/Vilnius"
@@ -242,7 +243,7 @@ updates:
     directory: "/"
     target-branch: "release/4.2.x"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       day: "sunday"
       time: "09:00"
       timezone: "Europe/Vilnius"
@@ -259,7 +260,7 @@ updates:
     directory: "/"
     target-branch: "release/3.x"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       day: "sunday"
       time: "13:00"
       timezone: "Europe/Vilnius"
@@ -278,7 +279,7 @@ updates:
     directory: "/"
     target-branch: "release/3.x"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       day: "sunday"
       time: "13:00"
       timezone: "Europe/Vilnius"
@@ -294,7 +295,7 @@ updates:
     directory: "/"
     target-branch: "release/3.x"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       day: "sunday"
       time: "13:00"
       timezone: "Europe/Vilnius"
