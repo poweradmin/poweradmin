@@ -108,6 +108,30 @@ class SamlConfigurationServiceTest extends TestCase
         $this->assertSame('https://sp.example.com/saml/acs', $config['assertion_consumer_service_url']);
     }
 
+    public function testServiceProviderConfigDerivesUrlsShippedAsEmptyStrings(): void
+    {
+        // settings.defaults.php ships the three sp URLs as '', and the defaults
+        // are merged into the settings tree, so the keys are always present
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'sp', [], [
+                    'entity_id' => '',
+                    'assertion_consumer_service_url' => '',
+                    'single_logout_service_url' => '',
+                    'x509cert' => '',
+                    'private_key' => '',
+                ]],
+                ['interface', 'application_url', '', 'https://sp.example.com/poweradmin'],
+                ['interface', 'base_url', '', ''],
+            ]);
+
+        $config = $this->service->getServiceProviderConfig();
+
+        $this->assertSame('https://sp.example.com/poweradmin/saml/metadata', $config['entity_id']);
+        $this->assertSame('https://sp.example.com/poweradmin/saml/acs', $config['assertion_consumer_service_url']);
+        $this->assertSame('https://sp.example.com/poweradmin/saml/sls', $config['single_logout_service_url']);
+    }
+
     public function testGetProviderConfigReturnsNullForMissingProvider(): void
     {
         $this->mockConfig->method('get')
