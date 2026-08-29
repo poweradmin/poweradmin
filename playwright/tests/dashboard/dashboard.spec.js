@@ -64,16 +64,14 @@ test.describe('Dashboard', () => {
     });
 
     test('should have Zone logs link for admin (if db logging enabled)', async ({ page }) => {
-      // Zone logs link only appears when dblog_use is enabled in config
-      // Link may be in dropdown menu, check if it exists in DOM
-      const zoneLogsLink = page.locator('a[href*="/zones/logs"]');
-      const count = await zoneLogsLink.count();
-      // Either the link exists (dblog enabled) or it doesn't (dblog disabled) - both are valid
-      expect(count >= 0).toBeTruthy();
-      if (count > 0) {
-        // If link exists, verify it's accessible
-        expect(count).toBeGreaterThan(0);
+      // Zone logs only appears when dblog_use is enabled, which is off by default.
+      // When the header link is there, the admin dashboard card must be there too.
+      const headerLink = page.locator('a[href*="/zones/logs"]');
+      if (await headerLink.count() === 0) {
+        test.skip(true, 'Database logging is disabled on this instance');
+        return;
       }
+      await expect(page.locator('[data-testid="zone-logs-link"]')).toHaveCount(1);
     });
 
     test('should have Change password link', async ({ page }) => {
@@ -170,9 +168,10 @@ test.describe('Dashboard', () => {
       await expect(searchLink).toBeVisible();
     });
 
-    test('should not have Zone logs link (not admin)', async ({ page }) => {
-      const zoneLogsLink = page.locator('a[href*="/zones/logs"]');
-      expect(await zoneLogsLink.count()).toBe(0);
+    // The dashboard card stays ueberuser-only. Since #1136 the manager does reach
+    // zone logs through the header menu, so scope this to the card.
+    test('should not have Zone logs dashboard card (not admin)', async ({ page }) => {
+      await expect(page.locator('[data-testid="zone-logs-link"]')).toHaveCount(0);
     });
 
     test('should not have Permission templates link', async ({ page }) => {

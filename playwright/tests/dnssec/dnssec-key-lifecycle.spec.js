@@ -63,7 +63,9 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should display CSK info alert on add key page', async ({ page }) => {
+    // #csk-info-alert only renders for servers older than PowerDNS 4.0, which
+    // default to KSK+ZSK. Anything current offers CSK and must not show it.
+    test('should not display legacy key alert on a modern server', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const zoneId = await getTestZoneId(page);
       if (!zoneId) {
@@ -71,10 +73,8 @@ test.describe('DNSSEC Key Lifecycle', () => {
         return;
       }
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
-      const cskInfoAlert = page.locator('#csk-info-alert');
-      await expect(cskInfoAlert).toBeVisible();
-      await expect(cskInfoAlert).toContainText('PowerDNS 4.0');
-      await expect(cskInfoAlert).toContainText('CSK');
+      await expect(page.locator('#csk-info-alert')).toHaveCount(0);
+      await expect(page.locator('select#key_type option[value="csk"]')).toHaveCount(1);
     });
 
     test('should display key type selector', async ({ page }) => {

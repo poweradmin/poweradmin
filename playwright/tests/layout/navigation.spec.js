@@ -169,13 +169,11 @@ test.describe('Header Navigation', () => {
       expect(await accountLink.count()).toBeGreaterThan(0);
     });
 
-    test('should not have access to zone logs', async ({ page }) => {
+    // Since #1136 zone_content_view_own grants an owner-filtered view of zone logs.
+    test('should have owner-filtered access to zone logs', async ({ page }) => {
       await page.goto('/zones/logs');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().includes('/login');
-      expect(hasError).toBeTruthy();
+      await expect(page).toHaveURL(/zones\/logs/);
+      await expect(page.locator('body')).toContainText(/Zone Logs/i);
     });
 
     test('should not have access to user logs', async ({ page }) => {

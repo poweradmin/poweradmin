@@ -1,7 +1,7 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 
 /**
- * Tests for full language configuration (all 20 languages enabled).
+ * Tests for full language configuration (all shipped languages enabled).
  *
  * These tests verify the complete set of supported languages when
  * `enabled_languages` uses the default (all languages). Designed for
@@ -10,15 +10,13 @@ import { test, expect } from '../../fixtures/test-fixtures.js';
  * Run with: BASE_URL=http://localhost:8080 npx playwright test language-selector-full
  */
 
-const ORIGINAL_LOCALES = [
-  'en_EN', 'de_DE', 'fr_FR', 'es_ES', 'nl_NL', 'pl_PL',
-  'cs_CZ', 'it_IT', 'ja_JP', 'ru_RU', 'zh_CN', 'tr_TR',
-  'lt_LT', 'nb_NO', 'pt_PT',
+// Must stay in sync with the enabled_languages default in config/settings.defaults.php.
+const ALL_LOCALES = [
+  'cs_CZ', 'de_DE', 'en_EN', 'es_ES', 'et_EE', 'fi_FI', 'fr_FR',
+  'hr_HR', 'hu_HU', 'id_ID', 'it_IT', 'ja_JP', 'ko_KR', 'lt_LT',
+  'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_PT', 'ro_RO', 'ru_RU',
+  'sk_SK', 'sr_RS', 'sv_SE', 'tr_TR', 'uk_UA', 'vi_VN', 'zh_CN',
 ];
-
-const NEW_LOCALES = ['id_ID', 'ko_KR', 'sv_SE', 'uk_UA', 'vi_VN'];
-
-const ALL_LOCALES = [...ORIGINAL_LOCALES, ...NEW_LOCALES];
 
 test.describe('Language Selector - Full Configuration', () => {
   const baseUrl = process.env.BASE_URL || 'http://localhost:8080';
@@ -28,26 +26,16 @@ test.describe('Language Selector - Full Configuration', () => {
     await page.goto('/login');
   });
 
-  test('should have all 20 supported languages', async ({ page }) => {
+  test('should have every supported language', async ({ page }) => {
     const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
-    const count = await items.count();
-    expect(count).toBe(ALL_LOCALES.length);
+    await expect(items).toHaveCount(ALL_LOCALES.length);
   });
 
-  test('should contain all original languages', async ({ page }) => {
+  test('should contain all expected languages', async ({ page }) => {
     const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
     const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
 
-    for (const locale of ORIGINAL_LOCALES) {
-      expect(values).toContain(locale);
-    }
-  });
-
-  test('should contain all newly added languages', async ({ page }) => {
-    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
-    const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
-
-    for (const locale of NEW_LOCALES) {
+    for (const locale of ALL_LOCALES) {
       expect(values).toContain(locale);
     }
   });
@@ -56,6 +44,7 @@ test.describe('Language Selector - Full Configuration', () => {
     const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
     const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
 
+    expect(values.length).toBeGreaterThan(0);
     for (const value of values) {
       expect(ALL_LOCALES).toContain(value);
     }
