@@ -6,6 +6,7 @@
 
 namespace OpenApi\Augmenter;
 
+use OpenApi\AttributeInterface;
 use OpenApi\Spec as OA;
 use OpenApi\Specification;
 use OpenApi\Utils\PipeInterface;
@@ -35,7 +36,8 @@ class Refs implements PipeInterface, LoggerAwareInterface
             $this->dedupAllOfRefs($schema);
         }
 
-        $refMap = $this->buildRefMap($payload);
+        $index = $payload->buildComponentIndex();
+        $refMap = $index->buildRefMap();
 
         if ($refMap === []) {
             return null;
@@ -56,8 +58,8 @@ class Refs implements PipeInterface, LoggerAwareInterface
 
     protected function resolveRefRefs(Specification $specification): void
     {
-        $specification->getWalker()->eachRef(function (OA\AbstractAttribute $attribute): void {
-            if ($attribute->ref instanceof OA\Schema\Ref) {
+        $specification->getWalker()->eachRef(function (AttributeInterface $attribute): void {
+            if (property_exists($attribute, 'ref') && $attribute->ref !== null && $attribute->ref instanceof OA\Schema\Ref) {
                 $attribute->ref = $attribute->ref->ref;
             }
         });
@@ -67,8 +69,8 @@ class Refs implements PipeInterface, LoggerAwareInterface
     {
         $unresolved = [];
 
-        $specification->getWalker()->eachRef(function (OA\AbstractAttribute $attribute) use ($refMap, &$unresolved): void {
-            if (str_starts_with($attribute->ref, '#/')) {
+        $specification->getWalker()->eachRef(function (AttributeInterface $attribute) use ($refMap, &$unresolved): void {
+            if (!property_exists($attribute, 'ref') || $attribute->ref === null || str_starts_with($attribute->ref, '#/')) {
                 return;
             }
             if (isset($refMap[$attribute->ref])) {
@@ -81,58 +83,6 @@ class Refs implements PipeInterface, LoggerAwareInterface
         foreach (array_keys($unresolved) as $ref) {
             $this->logger?->warning("Ref: unresolved reference '{$ref}' — no matching component found");
         }
-    }
-
-    /**
-     * Build a map of FQCN → #/components/{type}/{name}.
-     *
-     * @return array<string, string>
-     */
-    protected function buildRefMap(Specification $specification): array
-    {
-        $map = [];
-
-        $specification->getWalker()->eachSchema(function (OA\Schema $schema) use (&$map): void {
-            $name = $schema->schema ?? $schema->title;
-            $fqcn = $schema->getClassName();
-            if ($name !== null && $fqcn !== null) {
-                $map[$fqcn] = '#/components/schemas/' . $name;
-            }
-        });
-
-        foreach ($specification->responses as $response) {
-            $name = $response->response;
-            $fqcn = $response->getClassName();
-            if ($name !== null && $fqcn !== null) {
-                $map[$fqcn] = '#/components/responses/' . $name;
-            }
-        }
-
-        foreach ($specification->requestBodies as $body) {
-            $name = $body->request;
-            $fqcn = $body->getClassName();
-            if ($name !== null && $fqcn !== null) {
-                $map[$fqcn] = '#/components/requestBodies/' . $name;
-            }
-        }
-
-        foreach ($specification->headers as $header) {
-            $name = $header->header;
-            $fqcn = $header->getClassName();
-            if ($name !== null && $fqcn !== null) {
-                $map[$fqcn] = '#/components/headers/' . $name;
-            }
-        }
-
-        foreach ($specification->parameters as $parameter) {
-            $name = $parameter->parameter ?? $parameter->name;
-            $fqcn = $parameter->getClassName();
-            if ($name !== null && $fqcn !== null) {
-                $map[$fqcn] = '#/components/parameters/' . $name;
-            }
-        }
-
-        return $map;
     }
 
     /**
@@ -175,7 +125,11 @@ class Refs implements PipeInterface, LoggerAwareInterface
             }
         });
 
-        $specification->getWalker()->eachRef(function (OA\Schema|OA\Parameter|OA\Response|OA\Header|OA\RequestBody|OA\Link|OA\Example|OA\Security\Scheme $attribute) use (&$candidates): void {
+        $specification->getWalker()->eachRef(function (AttributeInterface $attribute) use (&$candidates): void {
+            if (!property_exists($attribute, 'ref') || $attribute->ref === null) {
+                return;
+            }
+
             preg_match('/#\/components\/schemas\/([^\/]+)\/(properties\/.+)/', (string) $attribute->ref, $matches);
 
             if (count($matches) !== 3) {
