@@ -106,8 +106,11 @@ class ZoneTemplateRecordValidationService
 
         // Zone creation completes short SOA rdata with the configured timers, so a
         // template carrying only the leading fields is legitimate.
-        if ($type === RecordType::SOA && count(explode(' ', $resolvedContent)) < 7) {
-            $resolvedContent .= ' ' . implode(' ', array_fill(0, 4, self::SAMPLE_TIMER));
+        if ($type === RecordType::SOA) {
+            $missingTimers = 7 - count(explode(' ', $resolvedContent));
+            if ($missingTimers > 0) {
+                $resolvedContent .= ' ' . implode(' ', array_fill(0, $missingTimers, self::SAMPLE_TIMER));
+            }
         }
 
         // A bare TXT value was storable before template records were type-checked, and it

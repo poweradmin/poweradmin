@@ -71,6 +71,28 @@ class ZoneTemplateRecordValidationServiceTest extends TestCase
         $this->assertTrue($this->validate('[ZONE]', 'SOA', '[NS1] [HOSTMASTER] [SERIAL]'));
     }
 
+    /**
+     * Completion has to pad only the fields that are missing. Appending a fixed four
+     * timers pushes a partially-specified SOA past the seven the validator allows,
+     * which refused to save a template record that had saved fine before.
+     *
+     * @dataProvider partialSoaProvider
+     */
+    public function testAcceptsPartiallySpecifiedSoa(string $content): void
+    {
+        $this->assertTrue($this->validate('[ZONE]', 'SOA', $content));
+    }
+
+    public static function partialSoaProvider(): array
+    {
+        return [
+            'refresh only' => ['[NS1] [HOSTMASTER] [SERIAL] [SOA_REFRESH]'],
+            'refresh and retry' => ['[NS1] [HOSTMASTER] [SERIAL] [SOA_REFRESH] [SOA_RETRY]'],
+            'all but minimum' => ['[NS1] [HOSTMASTER] [SERIAL] [SOA_REFRESH] [SOA_RETRY] [SOA_EXPIRE]'],
+            'literal timers' => ['ns1.example.com. hostmaster.example.com. 2024010101 3600'],
+        ];
+    }
+
     public function testRejectsSoaWithNonNumericTimers(): void
     {
         $this->assertFalse($this->validate(
