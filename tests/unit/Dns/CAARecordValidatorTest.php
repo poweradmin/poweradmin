@@ -108,6 +108,22 @@ class CAARecordValidatorTest extends TestCase
     }
 
     /**
+     * The rejection for an empty issue value pointed the user at ";" as the way to
+     * allow every CA. Following that advice blocks issuance for the zone instead.
+     */
+    public function testEmptyIssueValueErrorDoesNotClaimSemicolonAllowsAllCas()
+    {
+        $result = $this->validator->validate('0 issue ""', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+
+        // Word boundary matters: "disallow all CAs" contains "allow all" as a substring.
+        $error = $result->getFirstError();
+        $this->assertDoesNotMatchRegularExpression('/\ballow all\b/i', $error);
+        $this->assertStringContainsStringIgnoringCase('disallow', $error);
+    }
+
+    /**
      * The CAA wizard offers ";" as a pickable provider. Its label shipped as
      * "Allow all CAs", the exact inverse of what the record does, so a user
      * choosing it would have blocked issuance for the zone.
