@@ -217,7 +217,7 @@ class AddUserController extends BaseController
 
         // Use minimal permission template as default (most secure); preselect
         // nothing rather than falling back to template id 1 (Administrator).
-        $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId() ?? '';
+        $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user') ?? '';
         $perm_templ = $this->request->getPostParam('perm_templ', (string)$defaultTemplateId);
 
         $description = $this->request->getPostParam('descr', '');
