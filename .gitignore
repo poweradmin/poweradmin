@@ -60,6 +60,7 @@ locale/**/*.po.backup.*
 
 # Playwright
 /playwright-report/
+/playwright-sweep-logs/
 /playwright/.cache/
 /test-results/
 *.trace.zip
@@ -69,6 +70,7 @@ locale/**/*.po.backup.*
 
 # PHP tools
 /.php-cs-fixer.cache
+/.phpstan-cache/
 .phan/phan.phar
 .phpdoc/phpDocumentor.phar
 
