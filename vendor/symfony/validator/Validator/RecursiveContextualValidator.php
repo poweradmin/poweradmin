@@ -438,7 +438,7 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
             // Replace the "Default" group by the group sequence defined
             // for the class, if applicable.
             // This is done after checking the cache, so that
-            // spl_object_hash() isn't called for this sequence and
+            // spl_object_id() isn't called for this sequence and
             // "Default" is used instead in the cache. This is useful
             // if the getters below return different group sequences in
             // every call.
@@ -496,7 +496,7 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
 
         // If no more groups should be validated for the property nodes,
         // we can safely quit
-        if (0 === \count($groups)) {
+        if (!$groups) {
             return;
         }
 
@@ -606,7 +606,7 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
             $this->validateInGroup($value, $cacheKey, $metadata, $group, $context);
         }
 
-        if (0 === \count($groups)) {
+        if (!$groups) {
             return;
         }
 
@@ -630,7 +630,7 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
         // The $cascadedGroups property is set, if the "Default" group is
         // overridden by a group sequence
         // See validateClassNode()
-        $cascadedGroups = null !== $cascadedGroups && \count($cascadedGroups) > 0 ? $cascadedGroups : $groups;
+        $cascadedGroups = $cascadedGroups ?: $groups;
 
         if ($value instanceof LazyProperty) {
             $value = $value->getPropertyValue();
@@ -772,11 +772,11 @@ class RecursiveContextualValidator implements ContextualValidatorInterface
         if ($this->context instanceof ExecutionContext) {
             $cacheKey = $this->context->generateCacheKey($object);
         } else {
-            $cacheKey = spl_object_hash($object);
+            $cacheKey = spl_object_id($object);
         }
 
         if ($dependsOnPropertyPath) {
-            $cacheKey .= $this->context->getPropertyPath();
+            $cacheKey .= "\0".$this->context->getPropertyPath();
         }
 
         return $cacheKey;

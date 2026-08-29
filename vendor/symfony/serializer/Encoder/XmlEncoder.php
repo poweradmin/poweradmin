@@ -13,6 +13,7 @@ namespace Symfony\Component\Serializer\Encoder;
 
 use Symfony\Component\Serializer\Exception\BadMethodCallException;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 
@@ -142,7 +143,9 @@ class XmlEncoder implements EncoderInterface, DecoderInterface, NormalizationAwa
             }
         }
 
-        // todo: throw an exception if the root node name is not correctly configured (bc)
+        if (!$rootNode) {
+            throw new NotEncodableValueException('Invalid XML data, it does not contain a root node.');
+        }
 
         if ($rootNode->hasChildNodes()) {
             $data = $this->parseXml($rootNode, $context);
@@ -234,7 +237,7 @@ class XmlEncoder implements EncoderInterface, DecoderInterface, NormalizationAwa
 
         $value = $this->parseXmlValue($node, $context);
 
-        if (!\count($data)) {
+        if (!$data) {
             return $value;
         }
 
@@ -311,7 +314,7 @@ class XmlEncoder implements EncoderInterface, DecoderInterface, NormalizationAwa
             $val = $this->parseXml($subnode, $context);
 
             if ('item' === $subnode->nodeName && isset($val['@key'])) {
-                $value[$val['@key']] = $val['#'] ?? $val;
+                $value[$val['@key']] = 2 === \count($val) && isset($val['#']) ? $val['#'] : $val;
             } else {
                 $value[$subnode->nodeName][] = $val;
             }
@@ -421,7 +424,7 @@ class XmlEncoder implements EncoderInterface, DecoderInterface, NormalizationAwa
             return $this->appendNode($parentNode, $data, $format, $context, 'data');
         }
 
-        throw new NotEncodableValueException('An unexpected value could not be serialized: '.(!\is_resource($data) ? var_export($data, true) : \sprintf('%s resource', get_resource_type($data))));
+        throw new NotEncodableValueException('An unexpected value could not be serialized: '.(!\is_resource($data) ? var_export($data, true) : get_resource_type($data).' resource'));
     }
 
     /**
@@ -468,7 +471,7 @@ class XmlEncoder implements EncoderInterface, DecoderInterface, NormalizationAwa
         } elseif ($val instanceof \SimpleXMLElement) {
             $child = $node->ownerDocument->importNode(dom_import_simplexml($val), true);
             $node->appendChild($child);
-        } elseif ($val instanceof \Traversable) {
+        } elseif ($val instanceof \Traversable && (!$this->serializer instanceof NormalizerInterface || !$this->serializer->supportsNormalization($val, $format))) {
             $this->buildXml($node, $val, $format, $context);
         } elseif ($val instanceof \DOMNode) {
             $child = $node->ownerDocument->importNode($val, true);
