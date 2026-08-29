@@ -28,20 +28,30 @@ use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 
 class PermissionTemplateAssignmentGuardTest extends TestCase
 {
-    private function permissionService(bool $isUeberuser, bool $canEditTemplPerm): ApiPermissionService
-    {
+    private function permissionService(
+        bool $isUeberuser,
+        bool $canEditTemplPerm,
+        bool $canEditOthers = false,
+        ?int $currentTemplateId = null,
+        bool $templateGrantsSuperuser = false
+    ): ApiPermissionService {
         $svc = $this->createMock(ApiPermissionService::class);
         $svc->method('userHasPermission')->willReturnCallback(
-            static function (int $userId, string $perm) use ($isUeberuser, $canEditTemplPerm): bool {
+            static function (int $userId, string $perm) use ($isUeberuser, $canEditTemplPerm, $canEditOthers): bool {
                 if ($perm === 'user_is_ueberuser') {
                     return $isUeberuser;
                 }
                 if ($perm === 'user_edit_templ_perm') {
                     return $canEditTemplPerm;
                 }
+                if ($perm === 'user_edit_others') {
+                    return $canEditOthers;
+                }
                 return false;
             }
         );
+        $svc->method('getUserPermissionTemplateId')->willReturn($currentTemplateId);
+        $svc->method('templateGrantsSuperuser')->willReturn($templateGrantsSuperuser);
         return $svc;
     }
 
@@ -124,6 +134,73 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
 
         $this->assertNull($error);
         $this->assertArrayNotHasKey('perm_templ', $input);
+    }
+
+    public function testSelfUpdateEchoingTheStoredTemplateIsNotATemplateChange(): void
+    {
+        // A full-object PUT round-trips perm_templ unchanged. Gating on its presence
+        // rejected an ordinary self-edit that the web UI allows.
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: true,
+            canEditOthers: false,
+            currentTemplateId: 4
+        );
+        $input = ['perm_templ' => 4, 'email' => 'updated@example.com'];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, 7);
+
+        $this->assertNull($error);
+    }
+
+    public function testSelfUpdateChangingTheTemplateIsStillRejected(): void
+    {
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: true,
+            canEditOthers: false,
+            currentTemplateId: 4
+        );
+        $input = ['perm_templ' => 5];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, 7);
+
+        $this->assertSame(PermissionTemplateAssignmentGuard::SELF_ASSIGN_MESSAGE, $error);
+    }
+
+    public function testUnchangedSuperuserTemplateIsStillRejected(): void
+    {
+        // The exemption must not become a way to keep a superuser template alive on
+        // an account a non-ueberuser is rewriting.
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: true,
+            canEditOthers: true,
+            currentTemplateId: 1,
+            templateGrantsSuperuser: true
+        );
+        $input = ['perm_templ' => 1];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, 9);
+
+        $this->assertSame(PermissionTemplateAssignmentGuard::SUPERUSER_TEMPLATE_MESSAGE, $error);
+    }
+
+    public function testUnchangedTemplateOnAnotherAccountNeedsNoTemplatePermission(): void
+    {
+        // Mirrors UserManager::templateAssignmentRejected(), which exempts an unchanged
+        // non-superuser template before any permission is consulted.
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: false,
+            canEditOthers: true,
+            currentTemplateId: 4
+        );
+        $input = ['perm_templ' => 4, 'email' => 'other@example.com'];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, 9);
+
+        $this->assertNull($error);
     }
 
     public function testPrivilegedCallerOmittingTemplateGetsMinimalDefault(): void
