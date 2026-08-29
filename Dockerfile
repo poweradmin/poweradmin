@@ -38,7 +38,7 @@
 #     -e PA_ADMIN_PASSWORD=your-secure-password \
 #     poweradmin
 
-FROM dunglas/frankenphp:1.12.7-php8.4-alpine@sha256:21b7f6ff9953e4b351bd5d3b04fbbee9868df568a13843c99e0274b3c3108f44
+FROM dunglas/frankenphp:1.12.7-php8.4-alpine@sha256:71c41d9427ecdd19efb3f427f03afebdef96e37374bb22ad9676916db222b379
 
 LABEL org.opencontainers.image.source="https://github.com/poweradmin/poweradmin"
 LABEL org.opencontainers.image.licenses="GPL-3.0-or-later"
