@@ -38,12 +38,14 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         bool $isUeberuser,
         bool $canEditTemplPerm,
         bool $canEditOthers = false,
-        array $superuserTemplateIds = []
+        array $superuserTemplateIds = [],
+        ?int $currentTemplateId = null
     ): ApiPermissionService {
         $svc = $this->createPartialMock(
             ApiPermissionService::class,
-            ['userHasPermission', 'templateGrantsSuperuser']
+            ['userHasPermission', 'templateGrantsSuperuser', 'getUserPermissionTemplateId']
         );
+        $svc->method('getUserPermissionTemplateId')->willReturn($currentTemplateId);
         $svc->method('userHasPermission')->willReturnCallback(
             static function (int $userId, string $perm) use ($isUeberuser, $canEditTemplPerm, $canEditOthers): bool {
                 return match ($perm) {
@@ -224,6 +226,58 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
             superuserTemplateIds: [1]
         );
         $input = ['perm_templ' => 1];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, 9);
+
+        $this->assertNull($error);
+    }
+
+    public function testSelfUpdateEchoingTheStoredTemplateIsNotATemplateChange(): void
+    {
+        // A full-object PUT round-trips perm_templ unchanged. Gating on its presence
+        // rejected an ordinary self-edit that the web UI allows.
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: true,
+            canEditOthers: false,
+            currentTemplateId: 4
+        );
+        $input = ['perm_templ' => 4, 'email' => 'updated@example.com'];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, 7);
+
+        $this->assertNull($error);
+    }
+
+    public function testUnchangedSuperuserTemplateIsStillRejected(): void
+    {
+        // The exemption must not become a way to keep a superuser template alive on
+        // an account a non-ueberuser is rewriting.
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: true,
+            canEditOthers: true,
+            superuserTemplateIds: [1],
+            currentTemplateId: 1
+        );
+        $input = ['perm_templ' => 1];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, 9);
+
+        $this->assertSame(ApiPermissionService::TEMPLATE_SUPERUSER_DENIED, $error);
+    }
+
+    public function testUnchangedTemplateOnAnotherAccountNeedsNoTemplatePermission(): void
+    {
+        // Mirrors UserManager::templateAssignmentRejected(), which exempts an unchanged
+        // non-superuser template before any permission is consulted.
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: false,
+            canEditOthers: true,
+            currentTemplateId: 4
+        );
+        $input = ['perm_templ' => 4, 'email' => 'other@example.com'];
 
         $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, 9);
 

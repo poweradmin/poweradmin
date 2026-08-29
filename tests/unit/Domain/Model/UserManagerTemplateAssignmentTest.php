@@ -128,11 +128,14 @@ class UserManagerTemplateAssignmentTest extends TestCase
         // against it rather than against a restated copy of the rules.
         $apiPermissionService = $this->createPartialMock(
             ApiPermissionService::class,
-            ['userHasPermission', 'templateGrantsSuperuser']
+            ['userHasPermission', 'templateGrantsSuperuser', 'getUserPermissionTemplateId']
         );
         $apiPermissionService->method('userHasPermission')
             ->willReturnCallback(fn(int $userId, string $permission): bool => $permissions[$permission] ?? false);
         $apiPermissionService->method('templateGrantsSuperuser')->willReturn($templateIsSuperuser);
+        // Every scenario here assigns template 3 to an account holding a different one,
+        // so the unchanged-template exemption never applies.
+        $apiPermissionService->method('getUserPermissionTemplateId')->willReturn(9);
 
         $manager = (new ReflectionClass(UserManager::class))->newInstanceWithoutConstructor();
         $this->setProperty($manager, 'apiPermissionService', $apiPermissionService);

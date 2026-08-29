@@ -577,6 +577,23 @@ class ApiPermissionService
      * @param int $permTemplId Permission template ID
      * @return bool True if the template carries user_is_ueberuser
      */
+    /**
+     * Read the permission template currently stored on an account.
+     *
+     * @param int $userId User ID to look up
+     * @return ?int Template id, or null when the account is gone or has none
+     */
+    public function getUserPermissionTemplateId(int $userId): ?int
+    {
+        $stmt = $this->db->prepare("SELECT perm_templ FROM users WHERE id = :user_id");
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $templateId = $stmt->fetchColumn();
+
+        return $templateId === false || $templateId === null ? null : (int)$templateId;
+    }
+
     public function templateGrantsSuperuser(int $permTemplId): bool
     {
         // One owner for this query: the repository also answers it for the web paths.
@@ -600,6 +617,17 @@ class ApiPermissionService
     public function checkPermissionTemplateAssignment(int $userId, ?int $targetUserId, int $permTemplId): ?string
     {
         if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+            return null;
+        }
+
+        // Echoing back the template the account already has is not a template change,
+        // so a full-object update must not be gated on it. Mirrors the web policy in
+        // UserManager::templateAssignmentRejected().
+        if (
+            $targetUserId !== null
+            && $this->getUserPermissionTemplateId($targetUserId) === $permTemplId
+            && !$this->templateGrantsSuperuser($permTemplId)
+        ) {
             return null;
         }
 
