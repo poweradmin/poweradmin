@@ -3,6 +3,9 @@
 #
 # Note: security updates are only ever raised against master. The weekly
 # dependency-audit workflow covers the other branches.
+#
+# Each branch has its own weekend slot so a week's updates arrive as five small
+# batches instead of one burst of roughly fifteen pull requests.
 version: 2
 updates:
 
@@ -85,7 +88,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "saturday"
-      time: "09:00"
+      time: "13:00"
       timezone: "Europe/Vilnius"
     cooldown:
       default-days: 7
@@ -108,7 +111,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "saturday"
-      time: "09:00"
+      time: "13:00"
       timezone: "Europe/Vilnius"
     cooldown:
       default-days: 7
@@ -124,7 +127,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "saturday"
-      time: "09:00"
+      time: "13:00"
       timezone: "Europe/Vilnius"
     cooldown:
       default-days: 3
@@ -137,7 +140,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "saturday"
-      time: "09:00"
+      time: "13:00"
       timezone: "Europe/Vilnius"
     cooldown:
       default-days: 7
@@ -154,7 +157,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "saturday"
-      time: "09:00"
+      time: "17:00"
       timezone: "Europe/Vilnius"
     cooldown:
       default-days: 7
@@ -173,7 +176,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "saturday"
-      time: "09:00"
+      time: "17:00"
       timezone: "Europe/Vilnius"
     cooldown:
       default-days: 7
@@ -189,7 +192,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "saturday"
-      time: "09:00"
+      time: "17:00"
       timezone: "Europe/Vilnius"
     cooldown:
       default-days: 3
@@ -205,7 +208,7 @@ updates:
     target-branch: "release/4.2.x"
     schedule:
       interval: "weekly"
-      day: "saturday"
+      day: "sunday"
       time: "09:00"
       timezone: "Europe/Vilnius"
     cooldown:
@@ -224,7 +227,7 @@ updates:
     target-branch: "release/4.2.x"
     schedule:
       interval: "weekly"
-      day: "saturday"
+      day: "sunday"
       time: "09:00"
       timezone: "Europe/Vilnius"
     cooldown:
@@ -240,7 +243,7 @@ updates:
     target-branch: "release/4.2.x"
     schedule:
       interval: "weekly"
-      day: "saturday"
+      day: "sunday"
       time: "09:00"
       timezone: "Europe/Vilnius"
     cooldown:
@@ -257,8 +260,8 @@ updates:
     target-branch: "release/3.x"
     schedule:
       interval: "weekly"
-      day: "saturday"
-      time: "09:00"
+      day: "sunday"
+      time: "13:00"
       timezone: "Europe/Vilnius"
     cooldown:
       default-days: 7
@@ -276,8 +279,8 @@ updates:
     target-branch: "release/3.x"
     schedule:
       interval: "weekly"
-      day: "saturday"
-      time: "09:00"
+      day: "sunday"
+      time: "13:00"
       timezone: "Europe/Vilnius"
     cooldown:
       default-days: 7
@@ -292,8 +295,8 @@ updates:
     target-branch: "release/3.x"
     schedule:
       interval: "weekly"
-      day: "saturday"
-      time: "09:00"
+      day: "sunday"
+      time: "13:00"
       timezone: "Europe/Vilnius"
     cooldown:
       default-days: 3
