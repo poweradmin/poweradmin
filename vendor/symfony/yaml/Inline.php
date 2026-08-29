@@ -652,10 +652,11 @@ class Inline
         $scalar = trim($scalar);
 
         if (str_starts_with($scalar, '*')) {
-            if (false !== $pos = strpos($scalar, '#')) {
-                $value = substr($scalar, 1, $pos - 2);
-            } else {
-                $value = substr($scalar, 1);
+            $value = substr($scalar, 1);
+
+            // remove comments
+            if (Parser::preg_match('/[ \t]+#/', $value, $match, \PREG_OFFSET_CAPTURE)) {
+                $value = substr($value, 0, $match[0][1]);
             }
 
             // an unquoted *
@@ -957,6 +958,6 @@ class Inline
      */
     private static function getHexRegex(): string
     {
-        return '~^0x[0-9a-f_]++$~i';
+        return '~^0x[0-9a-fA-F_]++$~';
     }
 }
