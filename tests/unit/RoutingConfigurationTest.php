@@ -2,9 +2,13 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -133,6 +137,66 @@ class RoutingConfigurationTest extends TestCase
         $apiZoneRoute = $this->routes->get('api_v1_zone');
         $this->assertNotNull($apiZoneRoute);
         $this->assertEquals(['GET', 'PUT', 'DELETE'], $apiZoneRoute->getMethods());
+
+        // Both controllers implement exactly one verb, so the routes must not
+        // advertise the other one and render an error page instead of a 405.
+        $this->assertEquals(['GET'], $this->routes->get('dnssec_edit_key')->getMethods());
+        $this->assertEquals(['POST'], $this->routes->get('dnssec_key_toggle')->getMethods());
+    }
+
+    /**
+     * The bulk path must keep the verbs its controller answers 405 for. Dropping
+     * them lets a request fall through to api_v2_zone_record, whose record_id
+     * pattern also matches the literal "bulk".
+     */
+    public function testBulkRecordsRouteClaimsVerbsItRejects(): void
+    {
+        $matcher = new UrlMatcher($this->routes, new RequestContext());
+
+        foreach (['GET', 'PUT', 'DELETE'] as $method) {
+            $matcher->getContext()->setMethod($method);
+            $this->assertEquals(
+                'api_v2_zone_records_bulk',
+                $matcher->match('/api/v2/zones/1/records/bulk')['_route']
+            );
+        }
+    }
+
+    /**
+     * The rrset type is constrained to alphanumerics while the name is left
+     * open. Narrowing the name would make wildcards, apex and underscore
+     * labels unreachable, the same failure mode as #1415.
+     */
+    #[DataProvider('rrsetNameProvider')]
+    public function testRrsetRouteAcceptsEveryValidNameShape(string $name, string $type): void
+    {
+        $matcher = new UrlMatcher($this->routes, new RequestContext());
+
+        $match = $matcher->match("/api/v2/zones/1/rrsets/$name/$type");
+
+        $this->assertEquals('api_v2_zone_rrset', $match['_route']);
+        $this->assertEquals($name, $match['name']);
+        $this->assertEquals($type, $match['type']);
+    }
+
+    public static function rrsetNameProvider(): array
+    {
+        return [
+            'plain' => ['www', 'A'],
+            'apex' => ['@', 'SOA'],
+            'wildcard' => ['*.example.com', 'A'],
+            'underscore label' => ['_dmarc.example.com', 'TXT'],
+            'punycode' => ['xn--bcher-kva.example.com', 'AAAA'],
+            'generic type' => ['www', 'TYPE65534'],
+        ];
+    }
+
+    public function testRrsetRouteRejectsNonAlphanumericType(): void
+    {
+        $matcher = new UrlMatcher($this->routes, new RequestContext());
+
+        $this->expectException(ResourceNotFoundException::class);
+        $matcher->match('/api/v2/zones/1/rrsets/www/A.json');
     }
 
     public function testControllerMappings(): void
