@@ -71,12 +71,22 @@ class ZoneController extends InternalApiController
     }
 
     /**
+     * Either view permission gets you in; which zones are visible is decided per action.
+     */
+    private function hasAnyZoneViewPermission(): bool
+    {
+        return $this->hasPermission('zone_content_view_own')
+            || $this->hasPermission('zone_content_view_others');
+    }
+
+    /**
      * List zones accessible to the current user
      */
     private function listZones(): JsonResponse
     {
-        // Check if user can view zones
-        $this->validatePermission('zone_content_view_own');
+        if (!$this->hasAnyZoneViewPermission()) {
+            return $this->returnErrorResponse('Forbidden: insufficient permissions', 403);
+        }
 
         // Scope to the user's own zones unless they hold zone_content_view_others.
         // Without these args the repository defaults leak every zone in the system.
@@ -108,11 +118,11 @@ class ZoneController extends InternalApiController
             return $this->returnErrorResponse('Missing or invalid zone ID', 400);
         }
 
-        // Either view permission gets you in; which zones you may see is decided below.
-        $viewOthers = $this->hasPermission('zone_content_view_others');
-        if (!$viewOthers && !$this->hasPermission('zone_content_view_own')) {
+        if (!$this->hasAnyZoneViewPermission()) {
             return $this->returnErrorResponse('Forbidden: insufficient permissions', 403);
         }
+
+        $viewOthers = $this->hasPermission('zone_content_view_others');
 
         // Check if user can view this zone
         if (!$viewOthers) {

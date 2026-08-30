@@ -48,4 +48,69 @@ class ZoneControllerResponseTest extends TestCase
         $this->assertSame(400, $response->getStatusCode());
         $this->assertStringContainsString('invalid zone ID', (string)$response->getContent());
     }
+
+    /**
+     * @param string[] $permissions
+     */
+    private function controllerHolding(array $permissions): ZoneController
+    {
+        return new class ($permissions) extends ZoneController {
+            /** @param string[] $granted */
+            public function __construct(private array $granted)
+            {
+            }
+
+            protected function hasPermission(string $permission): bool
+            {
+                return in_array($permission, $this->granted, true);
+            }
+        };
+    }
+
+    private function invokeWith(ZoneController $controller, string $method, string $uri): JsonResponse
+    {
+        $property = new ReflectionProperty($controller, 'request');
+        $property->setAccessible(true);
+        $property->setValue($controller, Request::create($uri));
+
+        $reflected = new ReflectionMethod($controller, $method);
+        $reflected->setAccessible(true);
+
+        return $reflected->invoke($controller);
+    }
+
+    public function testGetZoneRefusesASessionHoldingNeitherViewPermission(): void
+    {
+        $response = $this->invokeWith(
+            $this->controllerHolding([]),
+            'getZone',
+            '/api/internal/zone?action=get&id=5'
+        );
+
+        $this->assertSame(403, $response->getStatusCode());
+    }
+
+    public function testListZonesRefusesASessionHoldingNeitherViewPermission(): void
+    {
+        $response = $this->invokeWith(
+            $this->controllerHolding([]),
+            'listZones',
+            '/api/internal/zone?action=list'
+        );
+
+        $this->assertSame(403, $response->getStatusCode());
+    }
+
+    public function testGetZoneAcceptsOwnViewPermissionAlone(): void
+    {
+        // Past the gate it reaches the ownership lookup, which needs collaborators this
+        // seam does not wire up; not being a 403 is what this pins.
+        $this->expectException(\Error::class);
+
+        $this->invokeWith(
+            $this->controllerHolding(['zone_content_view_own']),
+            'getZone',
+            '/api/internal/zone?action=get&id=5'
+        );
+    }
 }
