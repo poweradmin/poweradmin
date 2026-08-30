@@ -118,7 +118,7 @@ class ApiPermissionServiceCanonicalZoneTest extends TestCase
         sort($ids);
 
         $this->assertSame([55, 56, 201], $ids);
-        $this->assertContainsOnly('int', $ids, true, 'a NULL domain_id used to leak through as null');
+        $this->assertSame($ids, array_filter($ids, 'is_int'), 'a NULL domain_id used to leak through as null');
     }
 
     public function testNoViewPermissionYieldsNoZones(): void

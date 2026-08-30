@@ -137,8 +137,8 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                 $this->db->commit();
             }
         } catch (\Throwable $e) {
-            if ($ownsTransaction && $this->db->inTransaction()) {
-                $this->db->rollBack();
+            if ($ownsTransaction) {
+                $this->rollBackIfOpen();
             }
             throw $e;
         }
@@ -147,6 +147,17 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         $this->localZoneIds = null;
 
         return $zonesId;
+    }
+
+    /**
+     * Some drivers roll back on their own when a statement fails, so the transaction may
+     * already be gone by the time we get here.
+     */
+    private function rollBackIfOpen(): void
+    {
+        if ($this->db->inTransaction()) {
+            $this->db->rollBack();
+        }
     }
 
     public function deleteZone(int $domainId, string $zoneName): bool
