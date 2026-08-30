@@ -42,6 +42,7 @@ use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Module\ModuleRegistry;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 class SearchController extends BaseController
 {
@@ -442,9 +443,14 @@ class SearchController extends BaseController
         }
         $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
         $stmt = $this->db->prepare(
-            "SELECT domain_id, owner FROM zones WHERE domain_id IN ($placeholders)"
+            "SELECT " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id, owner FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " IN ($placeholders)"
         );
-        $stmt->execute($zoneIds);
+        // The canonical id is an expression, which carries no column affinity, so the ids
+        // have to go in as integers or SQLite compares them as text and matches none.
+        foreach (array_values($zoneIds) as $i => $zoneId) {
+            $stmt->bindValue($i + 1, (int)$zoneId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
         $map = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $map[(int)$row['domain_id']][] = (int)$row['owner'];
