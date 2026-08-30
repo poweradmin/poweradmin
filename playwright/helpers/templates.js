@@ -34,7 +34,7 @@ function extractIdFromUrl(href) {
  * @returns {Promise<string|null>} - Template ID or null if not found
  */
 export async function findTemplateIdByName(page, templateName) {
-  await page.goto('/zone-templates');
+  await page.goto('/zones/templates');
 
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);
@@ -65,7 +65,7 @@ export async function findTemplateIdByName(page, templateName) {
  * @returns {Promise<string|null>} - Template ID or null if creation failed
  */
 export async function createTemplate(page, name, description = '') {
-  await page.goto('/zone-templates/add');
+  await page.goto('/zones/templates/add');
 
   // Fill template name
   const nameField = page.locator('input[name*="name"], input[name*="templ"]').first();
@@ -118,7 +118,7 @@ export async function ensureTemplateExists(page, name, description = '') {
  * @returns {Promise<string|null>} - Template ID or null if not found
  */
 export async function findPermTemplateIdByName(page, templateName) {
-  await page.goto('/permission-templates');
+  await page.goto('/permissions/templates');
 
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);
@@ -149,7 +149,7 @@ export async function findPermTemplateIdByName(page, templateName) {
  * @returns {Promise<string|null>} - Template ID or null if creation failed
  */
 export async function createPermTemplate(page, name, description = '') {
-  await page.goto('/permission-templates/add');
+  await page.goto('/permissions/templates/add');
 
   // Fill template name
   const nameField = page.locator('input[name*="name"]').first();
