@@ -31,6 +31,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 class UserManager
 {
@@ -617,8 +618,9 @@ class UserManager
      */
     public static function getFullnamesOwnersFromFomainId($db, int $id)
     {
-        $stmt = $db->prepare("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id = :id AND zones.owner = users.id ORDER by fullname");
-        $stmt->execute([':id' => $id]);
+        $stmt = $db->prepare("SELECT users.id, users.fullname FROM users, zones WHERE " . CanonicalZoneSql::canonicalIdColumn('zones') . " = :id AND zones.owner = users.id ORDER by fullname");
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
         $response = $stmt;
         if ($response) {
             $names = array();
@@ -644,11 +646,10 @@ class UserManager
         $userid = $_SESSION["userid"];
 
         // Check direct ownership
-        $stmt = $db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND zones.domain_id = :zoneid");
-        $stmt->execute([
-            ':userid' => $userid,
-            ':zoneid' => $zoneid
-        ]);
+        $stmt = $db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND " . CanonicalZoneSql::canonicalIdColumn('zones') . " = :zoneid");
+        $stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
+        $stmt->bindValue(':zoneid', $zoneid, PDO::PARAM_INT);
+        $stmt->execute();
         if ($stmt->fetchColumn()) {
             return true;
         }

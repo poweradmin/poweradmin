@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use PDO;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * Stateless permission service for API requests
@@ -128,17 +129,17 @@ class ApiPermissionService
     public function userOwnsZone(int $userId, int $zoneId): bool
     {
         // Check direct ownership
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones');
         $stmt = $this->db->prepare("
             SELECT COUNT(*)
             FROM zones
             WHERE zones.owner = :user_id
-            AND zones.domain_id = :zone_id
+            AND $canonicalId = :zone_id
         ");
 
-        $stmt->execute([
-            ':user_id' => $userId,
-            ':zone_id' => $zoneId
-        ]);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
 
         if ((bool)$stmt->fetchColumn()) {
             return true;
@@ -649,15 +650,16 @@ class ApiPermissionService
 
         // User with zone_content_view_own can view only their own zones (direct + group)
         if ($this->userHasPermission($userId, 'zone_content_view_own')) {
+            $canonicalId = CanonicalZoneSql::canonicalIdColumn();
             $stmt = $this->db->prepare("
-                SELECT domain_id FROM zones WHERE owner = :user_id
+                SELECT $canonicalId FROM zones WHERE owner = :user_id
                 UNION
                 SELECT zg.domain_id FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
                 WHERE ugm.user_id = :user_id2
             ");
             $stmt->execute([':user_id' => $userId, ':user_id2' => $userId]);
-            return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+            return array_map('intval', $stmt->fetchAll(\PDO::FETCH_COLUMN));
         }
 
         // No view permissions - return empty array
