@@ -12,28 +12,20 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
 test.describe.configure({ mode: 'serial' });
 
 test.describe('DNS Wizard', () => {
-  // Helper to find a zone ID for wizard testing
+  // The zone list has no wizard link and its edit link is an icon with no text,
+  // so the zone id comes from that link's href. Asserts rather than returning
+  // false, otherwise every caller's `if (found)` silently passes.
   async function navigateToWizard(page, zoneName) {
     await page.goto('/zones/forward');
-    const row = page.locator(`tr:has-text("${zoneName}")`);
-    if (await row.count() > 0) {
-      const wizardLink = row.locator('a[href*="/wizard"]').first();
-      if (await wizardLink.count() > 0) {
-        await wizardLink.click();
-        return true;
-      }
-    }
-    // Try direct link from zone edit page
-    const editLink = page.locator(`a[href*="/edit"]:has-text("${zoneName}")`).first();
-    if (await editLink.count() > 0) {
-      const href = await editLink.getAttribute('href');
-      const match = href.match(/zones\/(\d+)/);
-      if (match) {
-        await page.goto(`/zones/${match[1]}/wizard`);
-        return true;
-      }
-    }
-    return false;
+
+    const editLink = page.locator(`tr:has-text("${zoneName}") a[href*="/edit"]`).first();
+    await expect(editLink, `zone "${zoneName}" must be listed on /zones/forward`).toBeVisible();
+
+    const match = (await editLink.getAttribute('href')).match(/zones\/(\d+)/);
+    expect(match, 'the edit link must carry a numeric zone id').not.toBeNull();
+
+    await page.goto(`/zones/${match[1]}/wizard`);
+    return true;
   }
 
   test.describe('Wizard Selection Page', () => {
