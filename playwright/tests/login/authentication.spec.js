@@ -330,7 +330,7 @@ test.describe('Logout Functionality', () => {
 
 test.describe('Session Security', () => {
   test('should redirect to login for unauthenticated API access', async ({ page }) => {
-    await page.goto('/api/internal/zones');
+    await page.goto('/api/internal/zone');
     const bodyText = await page.locator('body').textContent();
     const url = page.url();
     const isProtected = url.includes('/login') || bodyText.toLowerCase().includes('unauthorized') || bodyText.toLowerCase().includes('error');

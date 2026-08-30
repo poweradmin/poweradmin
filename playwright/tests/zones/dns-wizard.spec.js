@@ -14,7 +14,7 @@ test.describe.configure({ mode: 'serial' });
 test.describe('DNS Wizard', () => {
   // Helper to find a zone ID for wizard testing
   async function navigateToWizard(page, zoneName) {
-    await page.goto('/zones');
+    await page.goto('/zones/forward');
     const row = page.locator(`tr:has-text("${zoneName}")`);
     if (await row.count() > 0) {
       const wizardLink = row.locator('a[href*="/wizard"]').first();

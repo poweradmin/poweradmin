@@ -39,7 +39,7 @@ export async function goToForgotPasswordPage(page) {
     await page.waitForLoadState('networkidle');
   } else {
     // Try direct navigation
-    await page.goto('/forgot-password');
+    await page.goto('/password/forgot');
     await page.waitForLoadState('networkidle');
   }
 }
