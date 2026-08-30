@@ -101,6 +101,7 @@
     ],
     "lint:themes": "failed=0; for f in $(cd templates/default && find . -name '*.html' | sed 's|^\\./||' | sort); do grep -qx \"$f\" templates/theme-specific-templates.txt && continue; if [ ! -f \"templates/modern/$f\" ]; then echo \"Theme drift: $f is missing from templates/modern\"; failed=1; elif ! cmp -s \"templates/default/$f\" \"templates/modern/$f\"; then echo \"Theme drift: $f differs between templates/default and templates/modern (sync it or add it to templates/theme-specific-templates.txt)\"; failed=1; fi; done; exit $failed",
     "lint:e2e-assertions": "node playwright/tools/check-assertions.js",
+    "lint:e2e-routes": "php playwright/tools/check-route-paths.php",
     "lint:zone-ids": [
         "! grep -rnE 'zg[0-9]*\\.domain_id *(= *z[0-9_]*\\.id\\b|IN *\\( *z[0-9_]*\\.id)' lib/ || (echo 'ERROR: match zones_groups.domain_id against COALESCE(z.domain_id, z.id); zones.id and zones.domain_id overlap, see CanonicalZoneSql' && false)"
     ],
@@ -117,7 +118,8 @@
         "@lint:themes",
         "@lint:zone-ids",
         "@lint:sensitive-params",
-        "@lint:error-traces"
+        "@lint:error-traces",
+        "@lint:e2e-routes"
     ],
 
     "locale:check": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -q 'fatal error'; then echo \"FAIL: $f\"; failed=1; fi; done; exit $failed",

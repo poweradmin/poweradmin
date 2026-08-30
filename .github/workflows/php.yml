@@ -111,6 +111,9 @@ jobs:
     - name: Check code style
       run: composer check:all
 
+    - name: Check E2E navigation paths resolve to routes
+      run: composer lint:e2e-routes
+
   phpstan:
     name: PHPStan Analysis
     runs-on: ubuntu-latest
