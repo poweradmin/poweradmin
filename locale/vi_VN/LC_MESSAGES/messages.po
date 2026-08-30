@@ -6734,10 +6734,8 @@ msgstr ""
 "lỗi cấp chứng chỉ."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr ""
-"Mục tiêu SRV không hợp lệ. Phải là tên miền đầy đủ hợp lệ hoặc '.' cho dịch "
-"vụ không khả dụng."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "Không cho phép giá trị rỗng. Dùng \";\" để cấm mọi CA."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."

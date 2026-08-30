@@ -6853,8 +6853,8 @@ msgstr ""
 "başarısızlıklarına neden olabilir."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "Boş değere izin verilmez. Tüm CA'lara izin vermek için \";\" kullanın."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "Boş değere izin verilmez. Tüm CA'ları engellemek için \";\" kullanın."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."

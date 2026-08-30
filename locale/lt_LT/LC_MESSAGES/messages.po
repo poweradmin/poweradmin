@@ -6889,8 +6889,8 @@ msgstr ""
 "sertifikato išdavimo klaidas."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "Tuščia reikšmė neleidžiama. Naudokite \";\" leisti visoms CA."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "Tuščia reikšmė neleidžiama. Naudokite \";\" uždrausti visoms CA."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."
