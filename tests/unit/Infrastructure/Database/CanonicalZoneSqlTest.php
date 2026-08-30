@@ -123,4 +123,67 @@ class CanonicalZoneSqlTest extends TestCase
 
         $this->assertNull($this->resolve(999));
     }
+
+    public function testCanonicalIdColumnRendersEachAliasForm(): void
+    {
+        $this->assertSame('COALESCE(NULLIF(domain_id, 0), id)', CanonicalZoneSql::canonicalIdColumn());
+        $this->assertSame('COALESCE(NULLIF(z.domain_id, 0), z.id)', CanonicalZoneSql::canonicalIdColumn('z'));
+        $this->assertSame('COALESCE(NULLIF(z.domain_id, 0), z.id)', CanonicalZoneSql::canonicalIdColumn('z.'));
+        $this->assertSame('COALESCE(NULLIF(zones.domain_id, 0), zones.id)', CanonicalZoneSql::canonicalIdColumn('zones'));
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    private function canonicalIds(string $expression): array
+    {
+        $rows = $this->db->query("SELECT id, $expression AS canonical_id FROM zones ORDER BY id")
+            ->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_column($rows, 'canonical_id', 'id');
+    }
+
+    public function testCanonicalIdColumnResolvesEveryDomainIdShape(): void
+    {
+        $this->seed(1, null, 'null.example.com');
+        $this->seed(2, 0, 'zero.example.com');
+        $this->seed(3, 99, 'migrated.example.com');
+        $this->seed(4, 4, 'self.example.com');
+
+        $expected = [1 => 1, 2 => 2, 3 => 99, 4 => 4];
+        $this->assertSame($expected, $this->canonicalIds(CanonicalZoneSql::canonicalIdColumn()));
+    }
+
+    public function testBareCoalesceLeavesAZeroRowUnresolved(): void
+    {
+        // The reason this helper exists: COALESCE skips NULL only, so a row stranded at
+        // domain_id = 0 resolves to 0 instead of its own id.
+        $this->seed(2, 0, 'zero.example.com');
+
+        $this->assertSame([2 => 0], $this->canonicalIds('COALESCE(domain_id, id)'));
+        $this->assertSame([2 => 2], $this->canonicalIds(CanonicalZoneSql::canonicalIdColumn()));
+    }
+
+    public function testCanonicalIdColumnParsesInEveryClauseItIsUsedIn(): void
+    {
+        $this->seed(1, null, 'null.example.com');
+        $this->seed(2, 0, 'zero.example.com');
+        $this->seed(3, 99, 'migrated.example.com');
+
+        $aliased = CanonicalZoneSql::canonicalIdColumn('z');
+
+        $where = $this->db->query("SELECT zone_name FROM zones z WHERE $aliased = 2")->fetchColumn();
+        $this->assertSame('zero.example.com', $where);
+
+        $distinct = $this->db->query("SELECT DISTINCT $aliased AS cid FROM zones z ORDER BY cid")
+            ->fetchAll(PDO::FETCH_COLUMN);
+        $this->assertSame([1, 2, 99], array_map('intval', $distinct));
+
+        $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (2, 7)");
+        $join = $this->db->query(
+            "SELECT z.zone_name FROM zones z INNER JOIN zones_groups zg ON zg.domain_id = $aliased"
+        )->fetchColumn();
+        $this->assertSame('zero.example.com', $join);
+    }
 }

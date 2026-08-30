@@ -37,6 +37,32 @@ use PDOStatement;
 final class CanonicalZoneSql
 {
     /**
+     * SQL expression for a zones row's canonical id, the value API mode hands to callers.
+     *
+     * The PHP form of this rule is `domain_id ?: id`, which treats 0 as absent. A bare
+     * COALESCE does not: it skips NULL only, so a row stranded at domain_id = 0 resolves to
+     * 0 rather than to its own id. NULLIF folds that 0 into NULL first, which is what keeps
+     * this expression in step with the PHP rule.
+     *
+     * Note the fallback to id assumes API mode, where zones is the source of truth. In SQL
+     * mode domain_id is a foreign key into domains and is always populated, so the fallback
+     * never fires; it must never be used to repair a SQL-mode row, because the two id spaces
+     * overlap and id would point at an unrelated zone.
+     *
+     * Bind ids compared against this with PDO::PARAM_INT. An expression carries none of
+     * the column's type affinity, so SQLite compares a string-bound id as text and matches
+     * nothing, where the bare column would have coerced it.
+     *
+     * @param string $alias Table alias or name without the dot, e.g. 'z' or 'zones'
+     */
+    public static function canonicalIdColumn(string $alias = ''): string
+    {
+        $prefix = $alias === '' ? '' : rtrim($alias, '.') . '.';
+
+        return "COALESCE(NULLIF({$prefix}domain_id, 0), {$prefix}id)";
+    }
+
+    /**
      * SELECT that resolves a zone ID to exactly one zones row.
      *
      * Placeholder ownership rows (zone_name IS NULL) never win. Among real rows the order is:
