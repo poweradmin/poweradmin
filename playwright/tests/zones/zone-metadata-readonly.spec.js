@@ -7,6 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { expectAccessDenied } from '../../helpers/access.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
@@ -167,11 +168,7 @@ test.describe('Zone Metadata Read-Only View', () => {
       await loginAndWaitForDashboard(page, users.noperm.username, users.noperm.password);
 
       await page.goto('/zones/1/metadata');
-      const bodyText = await page.locator('body').textContent();
-      const isDenied = bodyText.toLowerCase().includes('permission') ||
-                       bodyText.toLowerCase().includes('error') ||
-                       !page.url().includes('/metadata');
-      expect(isDenied).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
   });
 });

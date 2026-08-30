@@ -7,6 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { expectAccessDenied } from '../../helpers/access.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Header Navigation', () => {
@@ -180,11 +181,7 @@ test.describe('Header Navigation', () => {
 
     test('should not have access to user logs', async ({ page }) => {
       await page.goto('/users/logs');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().includes('/login');
-      expect(hasError).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
   });
 
@@ -205,20 +202,12 @@ test.describe('Header Navigation', () => {
 
     test('should not have access to add master zone', async ({ page }) => {
       await page.goto('/zones/add/master');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied');
-      const hasZoneForm = await page.locator('input[name="domain"], input[name*="zone"]').count() > 0;
-      expect(hasError || !hasZoneForm).toBeTruthy();
+      await expectAccessDenied(page, 'input[name="domain"]');
     });
 
     test('should not have access to templates navigation', async ({ page }) => {
       await page.goto('/zones/templates');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().includes('/login');
-      expect(hasError || page.url().includes('/')).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
   });
 

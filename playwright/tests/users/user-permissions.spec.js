@@ -7,6 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { expectAccessDenied } from '../../helpers/access.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
@@ -269,11 +270,7 @@ test.describe('User Permission Combinations', () => {
     test('manager should not see user logs', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
       await page.goto('/users/logs');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().includes('/login');
-      expect(hasError).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
 
     test('client should have limited zone logs access', async ({ page }) => {

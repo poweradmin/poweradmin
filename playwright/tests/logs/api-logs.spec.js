@@ -11,6 +11,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { expectAccessDeniedJson } from '../../helpers/access.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Serial mode: we create API keys to generate log entries, then verify them
@@ -398,39 +399,24 @@ test.describe('API Logs - Permission Checks', () => {
   test.describe('Manager User', () => {
     test('should not have access to API logs', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-      await page.goto('/settings/api/logs');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().endsWith('/') ||
-                       page.url().includes('/?');
-      expect(hasError || !page.url().includes('settings/api/logs')).toBeTruthy();
+      const response = await page.goto('/settings/api/logs');
+      await expectAccessDeniedJson(response, page, 'table');
     });
   });
 
   test.describe('Client User', () => {
     test('should not have access to API logs', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.client.username, users.client.password);
-      await page.goto('/settings/api/logs');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().endsWith('/') ||
-                       page.url().includes('/?');
-      expect(hasError || !page.url().includes('settings/api/logs')).toBeTruthy();
+      const response = await page.goto('/settings/api/logs');
+      await expectAccessDeniedJson(response, page, 'table');
     });
   });
 
   test.describe('Viewer User', () => {
     test('should not have access to API logs', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-      await page.goto('/settings/api/logs');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().endsWith('/') ||
-                       page.url().includes('/?');
-      expect(hasError || !page.url().includes('settings/api/logs')).toBeTruthy();
+      const response = await page.goto('/settings/api/logs');
+      await expectAccessDeniedJson(response, page, 'table');
     });
   });
 });
