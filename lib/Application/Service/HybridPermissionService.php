@@ -244,10 +244,9 @@ class HybridPermissionService
                   WHERE z.owner = :user_id AND " . CanonicalZoneSql::canonicalIdColumn('z') . " = :domain_id";
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute([
-            ':user_id' => $userId,
-            ':domain_id' => $domainId
-        ]);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }

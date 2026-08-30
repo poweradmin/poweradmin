@@ -164,6 +164,23 @@ class CanonicalZoneSqlTest extends TestCase
         $this->assertSame([2 => 2], $this->canonicalIds(CanonicalZoneSql::canonicalIdColumn()));
     }
 
+    public function testComparisonNeedsAnIntegerBoundId(): void
+    {
+        // An expression has no column affinity, so SQLite will not coerce a string-bound
+        // id. Callers that compare against this must bind PDO::PARAM_INT.
+        $this->seed(55, 0, 'zero.example.com');
+        $sql = "SELECT id FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = ?";
+
+        $asText = $this->db->prepare($sql);
+        $asText->execute(['55']);
+        $this->assertFalse($asText->fetchColumn(), 'a string-bound id must not be relied on');
+
+        $asInt = $this->db->prepare($sql);
+        $asInt->bindValue(1, 55, PDO::PARAM_INT);
+        $asInt->execute();
+        $this->assertSame(55, (int)$asInt->fetchColumn());
+    }
+
     public function testCanonicalIdColumnParsesInEveryClauseItIsUsedIn(): void
     {
         $this->seed(1, null, 'null.example.com');

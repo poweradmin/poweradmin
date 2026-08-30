@@ -52,6 +52,10 @@ final class CanonicalZoneSql
      * never fires; it must never be used to repair a SQL-mode row, because the two id spaces
      * overlap and id would point at an unrelated zone.
      *
+     * Bind ids compared against this with PDO::PARAM_INT. An expression carries none of
+     * the column's type affinity, so SQLite compares a string-bound id as text and matches
+     * nothing, where the bare column would have coerced it.
+     *
      * @param string $alias Table alias or name without the dot, e.g. 'z' or 'zones'
      */
     public static function canonicalIdColumn(string $alias = ''): string
