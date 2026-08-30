@@ -27,6 +27,7 @@ use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * Blocks creating a zone that overlaps an existing zone owned by another user.
@@ -159,7 +160,9 @@ class ZoneOverlapService
     private function zoneSource(): array
     {
         if ($this->config->get('dns', 'backend') === 'api') {
-            return ['zones', 'zone_name', 'domain_id'];
+            // The id is only ever selected, never matched on, so the canonical expression
+            // stands in for the column here.
+            return ['zones', 'zone_name', CanonicalZoneSql::canonicalIdColumn()];
         }
 
         return [$this->tableNameService->getTable(PdnsTable::DOMAINS), 'name', 'id'];

@@ -28,6 +28,7 @@ use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 {
@@ -64,9 +65,9 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
         } else {
             $query = "SELECT zg.*, z.zone_name, z.zone_type
                       FROM zones_groups zg
-                      LEFT JOIN zones z ON zg.domain_id = z.domain_id
+                      LEFT JOIN zones z ON zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . "
                         AND z.zone_name IS NOT NULL
-                        AND z.id = (SELECT MIN(z2.id) FROM zones z2 WHERE z2.domain_id = zg.domain_id AND z2.zone_name IS NOT NULL)
+                        AND z.id = (SELECT MIN(z2.id) FROM zones z2 WHERE " . CanonicalZoneSql::canonicalIdColumn('z2') . " = zg.domain_id AND z2.zone_name IS NOT NULL)
                       WHERE zg.group_id = :group_id
                       ORDER BY zg.created_at DESC";
         }
