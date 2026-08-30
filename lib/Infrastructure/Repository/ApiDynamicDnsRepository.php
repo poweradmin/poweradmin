@@ -81,7 +81,9 @@ class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function getUserZones(User $user): array
     {
-        $query = $this->db->prepare("SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE owner = :user_id AND zone_name IS NOT NULL");
+        // Extra-ownership rows carry no zone_name and point at the zone through domain_id,
+        // so filtering them out would drop zones the user owns as a secondary owner.
+        $query = $this->db->prepare("SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE owner = :user_id");
         $query->execute([':user_id' => $user->getId()]);
 
         $zones = [];
