@@ -1,10 +1,8 @@
 name: Semgrep
 
+# Weekly rather than per-push: the scan runs with `--error || true`, so it never
+# fails on a finding and only ever reported that it had finished.
 on:
-  push:
-    branches: [ "master", "develop", "release/4.2.x", "release/4.3.x" ]
-  pull_request:
-    branches: [ "master", "develop", "release/4.2.x", "release/4.3.x" ]
   schedule:
     - cron: '0 6 * * 1'
   workflow_dispatch:
