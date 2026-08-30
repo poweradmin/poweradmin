@@ -95,15 +95,14 @@ class RequestContextTest extends TestCase
         $this->assertFalse(RequestContext::isApiRequest());
         $this->assertFalse(RequestContext::isInternalApiRoute());
 
-        // Without this the API Logs page answered its permission denial as raw
-        // JSON, because any path merely containing "/api/" negotiated as an API.
+        // Used to answer this page's permission denial as raw JSON.
         $this->assertFalse(RequestContext::isApiPath());
         $this->assertFalse(RequestContext::expectsJson());
     }
 
     /**
-     * isApiPath() drives JSON negotiation, so it has to cover every family under
-     * /api/ - including docs and health, which isApiRequest() deliberately omits.
+     * isApiPath() drives JSON negotiation, so it must cover every /api/ family,
+     * including docs and health, which isApiRequest() omits.
      */
     public function testIsApiPathCoversEveryApiFamily(): void
     {
@@ -190,9 +189,8 @@ class RequestContextTest extends TestCase
             );
         }
 
-        // An /api/ segment that names no API family routes nowhere, so it must not
-        // negotiate as JSON: the real instance of this shape is the web page
-        // /settings/api/logs, which used to answer its permission denial as JSON.
+        // An /api/ segment naming no API family routes nowhere; /settings/api/logs
+        // is the real page that used to answer its denial as JSON.
         foreach (['/api/', '/some/path/api/endpoint'] as $notAnApiRoute) {
             $this->setServerEnvironment([
                 'REQUEST_URI' => $notAnApiRoute,
@@ -348,9 +346,8 @@ class RequestContextTest extends TestCase
         foreach ($maliciousUris as $uri) {
             $this->setServerEnvironment(['REQUEST_URI' => $uri]);
 
-            // None of these name an API family, so they negotiate as HTML. They route
-            // nowhere either way, so the response format is all that changes; security
-            // stays a routing/authorization concern, not a negotiation one.
+            // None name an API family, and all route nowhere, so only the
+            // response format changes.
             $this->assertFalse(
                 RequestContext::expectsJson(),
                 "Unexpected result for potentially malicious URI: {$uri}"
