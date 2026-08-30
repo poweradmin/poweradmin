@@ -388,7 +388,7 @@ dnssec_edit_key:
   requirements:
     zone_id: '\d+'
     key_id: '\d+'
-  methods: [GET, POST]
+  methods: [GET]
 
 dnssec_delete_key:
   path: /zones/{zone_id}/dnssec/keys/{key_id}/delete
@@ -603,11 +603,14 @@ api_v2_zone_rrsets:
     id: '\d+'
   methods: [GET, PUT, POST, PATCH]
 
+# {name} stays unconstrained on purpose: wildcards, underscore labels, apex forms and
+# punycode are all valid record names, and narrowing them would break live callers.
 api_v2_zone_rrset:
   path: /api/v2/zones/{id}/rrsets/{name}/{type}
   controller: Poweradmin\Application\Controller\Api\V2\ZonesRRSetsController::run
   requirements:
     id: '\d+'
+    type: '[A-Za-z0-9]+'
   methods: [GET, DELETE]
 
 api_v2_dynamic_dns:
@@ -792,7 +795,7 @@ dnssec_key_toggle:
   requirements:
     zone_id: '\d+'
     key_id: '\d+'
-  methods: [GET, POST]
+  methods: [POST]
 
 # Monitoring - unauthenticated and disabled by default.
 # Renaming either path also means updating RequestContext::isHealthProbeRequest(),

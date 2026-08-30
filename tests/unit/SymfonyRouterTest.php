@@ -276,6 +276,75 @@ class SymfonyRouterTest extends TestCase
         $this->assertFalse($router->isRouteFound());
     }
 
+    public function testDnssecKeyToggleRejectsGet(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['REQUEST_URI'] = '/zones/1/dnssec/keys/2/toggle';
+
+        $router = new SymfonyRouter();
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(405);
+        $router->match();
+    }
+
+    public function testDnssecKeyTogglePostStillMatches(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_SERVER['REQUEST_URI'] = '/zones/1/dnssec/keys/2/toggle';
+
+        $router = new SymfonyRouter();
+        $routeInfo = $router->match();
+
+        $this->assertEquals('dnssec_key_toggle', $routeInfo['route']);
+    }
+
+    public function testDnssecEditKeyRejectsPost(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_SERVER['REQUEST_URI'] = '/zones/1/dnssec/keys/2/edit';
+
+        $router = new SymfonyRouter();
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(405);
+        $router->match();
+    }
+
+    public function testRrsetTypeRejectsNonAlphanumeric(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones/1/rrsets/www/A.json';
+
+        $router = new SymfonyRouter();
+        $routeInfo = $router->match();
+
+        $this->assertEquals('404', $routeInfo['route']);
+        $this->assertFalse($router->isRouteFound());
+    }
+
+    #[DataProvider('validRrsetPathProvider')]
+    public function testRrsetPathsStillMatch(string $path, array $expectedParameters): void
+    {
+        $_SERVER['REQUEST_URI'] = $path;
+
+        $router = new SymfonyRouter();
+        $routeInfo = $router->match();
+
+        $this->assertEquals('api_v2_zone_rrset', $routeInfo['route']);
+        $this->assertEquals($expectedParameters, $routeInfo['parameters']);
+    }
+
+    public static function validRrsetPathProvider(): array
+    {
+        return [
+            'plain type' => ['/api/v2/zones/1/rrsets/www/A', ['id' => '1', 'name' => 'www', 'type' => 'A']],
+            'generic type' => ['/api/v2/zones/1/rrsets/www/TYPE65534', ['id' => '1', 'name' => 'www', 'type' => 'TYPE65534']],
+            'wildcard name' => ['/api/v2/zones/1/rrsets/*.example.com/A', ['id' => '1', 'name' => '*.example.com', 'type' => 'A']],
+            'underscore label' => ['/api/v2/zones/1/rrsets/_dmarc.example.com/TXT', ['id' => '1', 'name' => '_dmarc.example.com', 'type' => 'TXT']],
+            'punycode name' => ['/api/v2/zones/1/rrsets/xn--bcher-kva.example.com/AAAA', ['id' => '1', 'name' => 'xn--bcher-kva.example.com', 'type' => 'AAAA']],
+        ];
+    }
+
     public function testApiDocsRoutes(): void
     {
         $_SERVER['REQUEST_URI'] = '/api/docs';
