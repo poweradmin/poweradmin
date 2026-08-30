@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -130,11 +131,11 @@ class DbUserRepository implements UserRepository
      */
     public function userOwnsZone(int $userId, int $domainId): bool
     {
-        $stmt = $this->db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND zones.domain_id = :zoneid");
-        $stmt->execute([
-            ':userid' => $userId,
-            ':zoneid' => $domainId
-        ]);
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones');
+        $stmt = $this->db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND $canonicalId = :zoneid");
+        $stmt->bindValue(':userid', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':zoneid', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
         if ($stmt->fetchColumn()) {
             return true;
         }
