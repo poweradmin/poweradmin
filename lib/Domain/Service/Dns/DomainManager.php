@@ -46,7 +46,6 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * Service class for managing domains/zones
@@ -236,7 +235,7 @@ class DomainManager implements DomainManagerInterface
                     if ($this->backendProvider->isApiBackend()) {
                         // In API mode, createZone() already inserted the zones row.
                         // Update it with owner and template info instead of creating a duplicate.
-                        $stmt = $db->prepare("UPDATE zones SET owner = :owner, zone_templ_id = :zone_template WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :domain_id");
+                        $stmt = $db->prepare("UPDATE zones SET owner = :owner, zone_templ_id = :zone_template WHERE domain_id = :domain_id");
                         $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
                         $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
                         $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
@@ -493,7 +492,7 @@ class DomainManager implements DomainManagerInterface
                 $this->db->beginTransaction();
 
                 // Get zone_id before deleting zones record for sync cleanup
-                $stmt = $this->db->prepare("SELECT id FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :id");
+                $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
                 $stmt->bindValue(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
                 $zoneId = $stmt->fetchColumn();
@@ -504,7 +503,7 @@ class DomainManager implements DomainManagerInterface
                     $syncService->cleanupZoneSyncRecords($zoneId);
                 }
 
-                $stmt = $this->db->prepare("DELETE FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :id");
+                $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
                 $stmt->bindValue(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
 
@@ -579,7 +578,7 @@ class DomainManager implements DomainManagerInterface
                 $this->db->beginTransaction();
                 try {
                     // Get zone_id before deleting zones record for sync cleanup
-                    $stmt = $this->db->prepare("SELECT id FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :id");
+                    $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
                     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
                     $stmt->execute();
                     $zoneId = $stmt->fetchColumn();
@@ -591,7 +590,7 @@ class DomainManager implements DomainManagerInterface
                     }
 
                     // Clean up Poweradmin-internal tables (always SQL)
-                    $stmt = $this->db->prepare("DELETE FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :id");
+                    $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
                     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
                     $stmt->execute();
 
@@ -701,7 +700,7 @@ class DomainManager implements DomainManagerInterface
             $db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :did")->execute([':did' => $domainId]);
             $db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :did")->execute([':did' => $domainId]);
             $db->prepare("DELETE FROM zones_groups WHERE domain_id = :did")->execute([':did' => $domainId]);
-            $zonesDeleteStmt = $db->prepare("DELETE FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :did");
+            $zonesDeleteStmt = $db->prepare("DELETE FROM zones WHERE domain_id = :did");
             $zonesDeleteStmt->bindValue(':did', $domainId, PDO::PARAM_INT);
             $zonesDeleteStmt->execute();
         } catch (\Exception $e) {
@@ -873,7 +872,7 @@ class DomainManager implements DomainManagerInterface
         if ($canEditMeta) {
             $userRepository = new DbUserRepository($db, ConfigurationManager::getInstance());
             if ($userRepository->getUserById($user_id) !== null) {
-                $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE owner = ? AND " . CanonicalZoneSql::canonicalIdColumn() . " = ?");
+                $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE owner = ? AND domain_id = ?");
                 $stmt->bindValue(1, $user_id, PDO::PARAM_INT);
                 $stmt->bindValue(2, $zone_id, PDO::PARAM_INT);
                 $stmt->execute();
@@ -912,7 +911,7 @@ class DomainManager implements DomainManagerInterface
      */
     public static function getZoneTemplate($db, int $zone_id): int
     {
-        $stmt = $db->prepare("SELECT zone_templ_id FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :zone_id");
+        $stmt = $db->prepare("SELECT zone_templ_id FROM zones WHERE domain_id = :zone_id");
         $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchColumn();
@@ -1160,7 +1159,7 @@ class DomainManager implements DomainManagerInterface
             // Update the zone's template ID
             $stmt = $this->db->prepare("UPDATE zones
                     SET zone_templ_id = :zone_template_id
-                    WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :zone_id");
+                    WHERE domain_id = :zone_id");
             $stmt->bindValue(':zone_template_id', $zone_template_id, PDO::PARAM_INT);
             $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
             $stmt->execute();
@@ -1168,7 +1167,7 @@ class DomainManager implements DomainManagerInterface
             // Reconcile zone_template_sync so stale rows for a previous template don't
             // keep showing the zone as out-of-sync after it has been reassigned. A zone
             // shared by several owners has one row per owner, so handle every one.
-            $zonesIdStmt = $this->db->prepare("SELECT id FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :domain_id");
+            $zonesIdStmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :domain_id");
             $zonesIdStmt->bindValue(':domain_id', $zone_id, PDO::PARAM_INT);
             $zonesIdStmt->execute();
             $zonesIds = $zonesIdStmt->fetchAll(PDO::FETCH_COLUMN);

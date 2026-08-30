@@ -172,15 +172,26 @@ class DatabaseConsistencyCanonicalIdTest extends TestCase
         $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn(), 'a duplicate row was inserted');
     }
 
-    public function testFixZoneWithoutOwnerResolvesAStrandedRow(): void
+    /**
+     * The owner repair matches on the bare domain_id, because the canonical expression is
+     * not unique and a write through it could reach a different zone. A stranded row is
+     * therefore repaired in two steps: canonical id first, then the owner.
+     */
+    public function testAStrandedRowIsRepairedCanonicalIdFirstThenOwner(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (12, 0, NULL, 'stranded.example.com')");
+        $service = $this->service(true);
 
-        $this->assertTrue($this->service(true)->fixZoneWithoutOwner(12, 77));
+        // The owner repair looks the row up by domain_id, so on a stranded row it would
+        // insert a second, dangling row instead of updating this one. Repair the id first.
+        $this->assertTrue($service->fixZoneCanonicalId(12));
+        $this->assertTrue($service->fixZoneWithoutOwner(12, 77));
 
-        $stmt = $this->db->prepare("SELECT owner FROM zones WHERE id = 12");
+        $stmt = $this->db->prepare("SELECT domain_id, owner FROM zones WHERE id = 12");
         $stmt->execute();
-        $this->assertSame(77, (int)$stmt->fetchColumn());
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->assertSame(12, (int)$row['domain_id']);
+        $this->assertSame(77, (int)$row['owner']);
         $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
     }
 

@@ -29,7 +29,6 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 class DatabaseConsistencyService
 {
@@ -558,14 +557,14 @@ class DatabaseConsistencyService
         }
 
         // Check if zone entry exists
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :domain_id");
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM zones WHERE domain_id = :domain_id");
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
         $exists = $stmt->fetchColumn() > 0;
 
         if ($exists) {
             // Update existing entry
-            $stmt = $this->db->prepare("UPDATE zones SET owner = :owner WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :domain_id");
+            $stmt = $this->db->prepare("UPDATE zones SET owner = :owner WHERE domain_id = :domain_id");
         } else {
             // Insert new entry
             $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, 0)");
@@ -626,7 +625,7 @@ class DatabaseConsistencyService
                 $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
                 $stmt->execute(['domain_id' => $zoneId]);
 
-                $stmt = $this->db->prepare("DELETE FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :domain_id");
+                $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :domain_id");
                 $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
                 $stmt->execute();
 
@@ -653,7 +652,7 @@ class DatabaseConsistencyService
             $stmt->execute(['domain_id' => $zoneId]);
 
             // Delete zone ownership
-            $stmt = $this->db->prepare("DELETE FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = :domain_id");
+            $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :domain_id");
             $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
             $stmt->execute();
 
