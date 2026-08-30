@@ -33,6 +33,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * Orchestration service for DNS data reads.
@@ -421,7 +422,7 @@ class DnsDataService
     private function getOwnedDomainIds(int $userId): array
     {
         $stmt = $this->db->prepare(
-            "SELECT DISTINCT domain_id FROM zones WHERE owner = :uid
+            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE owner = :uid
              UNION
              SELECT DISTINCT zg.domain_id FROM zones_groups zg
              INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
@@ -449,7 +450,7 @@ class DnsDataService
 
         // Query Poweradmin's zones table for ownership and comments
         $stmt = $this->db->query(
-            "SELECT z.domain_id, z.owner, z.comment, u.username, u.fullname
+            "SELECT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS domain_id, z.owner, z.comment, u.username, u.fullname
              FROM zones z
              LEFT JOIN users u ON z.owner = u.id"
         );
@@ -944,12 +945,15 @@ class DnsDataService
 
         $placeholders = implode(',', array_fill(0, count($domainIds), '?'));
         $stmt = $this->db->prepare(
-            "SELECT z.domain_id, z.owner, u.id as user_id, u.username, u.fullname
+            "SELECT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS domain_id, z.owner, u.id as user_id, u.username, u.fullname
              FROM zones z
              LEFT JOIN users u ON z.owner = u.id
-             WHERE z.domain_id IN ($placeholders)"
+             WHERE " . CanonicalZoneSql::canonicalIdColumn('z') . " IN ($placeholders)"
         );
-        $stmt->execute(array_values($domainIds));
+        foreach (array_values($domainIds) as $i => $domainId) {
+            $stmt->bindValue($i + 1, (int)$domainId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
 
         $ownershipMap = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
