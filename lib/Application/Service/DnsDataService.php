@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * Orchestration service for DNS data reads.
@@ -533,7 +534,7 @@ class DnsDataService
     private function getOwnedDomainIds(int $userId): array
     {
         $stmt = $this->db->prepare(
-            "SELECT DISTINCT domain_id FROM zones WHERE owner = :uid
+            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE owner = :uid
              UNION
              SELECT DISTINCT zg.domain_id FROM zones_groups zg
              INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
