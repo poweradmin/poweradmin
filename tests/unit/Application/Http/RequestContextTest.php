@@ -94,6 +94,46 @@ class RequestContextTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/settings/api/logs';
         $this->assertFalse(RequestContext::isApiRequest());
         $this->assertFalse(RequestContext::isInternalApiRoute());
+
+        // Without this the API Logs page answered its permission denial as raw
+        // JSON, because any path merely containing "/api/" negotiated as an API.
+        $this->assertFalse(RequestContext::isApiPath());
+        $this->assertFalse(RequestContext::expectsJson());
+    }
+
+    /**
+     * isApiPath() drives JSON negotiation, so it has to cover every family under
+     * /api/ - including docs and health, which isApiRequest() deliberately omits.
+     */
+    public function testIsApiPathCoversEveryApiFamily(): void
+    {
+        $apiPaths = [
+            '/api/v1/zones',
+            '/api/v2/zones/1',
+            '/api/internal/zone',
+            '/api/docs',
+            '/api/docs/json',
+            '/api/health',
+            '/poweradmin/api/v2/zones', // base_url_prefix deployment
+        ];
+
+        foreach ($apiPaths as $path) {
+            $_SERVER['REQUEST_URI'] = $path;
+            $this->assertTrue(RequestContext::isApiPath(), "should be an API path: {$path}");
+        }
+
+        $webPaths = [
+            '/settings/api/logs',
+            '/settings/api-keys',
+            '/zones/forward',
+            '/apidocs',
+            '/api/logs',
+        ];
+
+        foreach ($webPaths as $path) {
+            $_SERVER['REQUEST_URI'] = $path;
+            $this->assertFalse(RequestContext::isApiPath(), "should not be an API path: {$path}");
+        }
     }
 
     public function testV2ApiRequestDetected(): void
@@ -132,10 +172,10 @@ class RequestContextTest extends TestCase
         $apiRoutes = [
             '/api/v1/zones',
             '/api/v1/records',
+            '/api/v2/zones',
             '/api/internal/stats',
             '/api/docs',
-            '/api/',
-            '/some/path/api/endpoint'
+            '/api/health'
         ];
 
         foreach ($apiRoutes as $route) {
@@ -147,6 +187,21 @@ class RequestContextTest extends TestCase
             $this->assertTrue(
                 RequestContext::expectsJson(),
                 "Failed to detect API route: {$route}"
+            );
+        }
+
+        // An /api/ segment that names no API family routes nowhere, so it must not
+        // negotiate as JSON: the real instance of this shape is the web page
+        // /settings/api/logs, which used to answer its permission denial as JSON.
+        foreach (['/api/', '/some/path/api/endpoint'] as $notAnApiRoute) {
+            $this->setServerEnvironment([
+                'REQUEST_URI' => $notAnApiRoute,
+                'HTTP_ACCEPT' => 'text/html'
+            ]);
+
+            $this->assertFalse(
+                RequestContext::expectsJson(),
+                "Should not detect as API route: {$notAnApiRoute}"
             );
         }
 
@@ -293,11 +348,10 @@ class RequestContextTest extends TestCase
         foreach ($maliciousUris as $uri) {
             $this->setServerEnvironment(['REQUEST_URI' => $uri]);
 
-            // Should still detect /api/ in the path (this is by design)
-            // Security should be handled at routing/authorization level
-            $expectsJson = str_contains($uri, '/api/');
-            $this->assertEquals(
-                $expectsJson,
+            // None of these name an API family, so they negotiate as HTML. They route
+            // nowhere either way, so the response format is all that changes; security
+            // stays a routing/authorization concern, not a negotiation one.
+            $this->assertFalse(
                 RequestContext::expectsJson(),
                 "Unexpected result for potentially malicious URI: {$uri}"
             );

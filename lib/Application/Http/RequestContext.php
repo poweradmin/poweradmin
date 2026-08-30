@@ -87,14 +87,16 @@ final class RequestContext
     }
 
     /**
-     * Whether the request path mentions an /api/ segment. Looser than
-     * isApiRequest(): any /api/ occurrence counts, matching the historical
-     * JSON-negotiation behavior. Keyed off the path so a web URL such as
-     * /zones/1/edit?next=/api/v2/x is not mistaken for an API call.
+     * Whether the request targets one of the API families declared in routes.yaml.
+     * Wider than isApiRequest(), which covers only internal and versioned routes,
+     * but still matched per segment: a plain `/api/` substring test also caught the
+     * web page /settings/api/logs and answered its permission denial as raw JSON.
+     * Keyed off the path so /zones/1/edit?next=/api/v2/x is not mistaken for an API
+     * call, and left unanchored so a base_url_prefix deployment still matches.
      */
     public static function isApiPath(): bool
     {
-        return str_contains(self::path(), '/api/');
+        return preg_match('#/api/(internal|v\d+|docs|health)(/|$)#', self::path()) === 1;
     }
 
     /**
