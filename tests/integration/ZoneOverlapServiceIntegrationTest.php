@@ -161,7 +161,10 @@ class ZoneOverlapServiceIntegrationTest extends TestCase
         $clear = static fn() => $pwDb->prepare("DELETE FROM zones WHERE zone_name LIKE :p")
             ->execute([':p' => '%' . self::PREFIX . '%']);
         $clear();
-        $pwDb->prepare("INSERT INTO zones (domain_id, zone_name, zone_type) VALUES (999001, :n, 'MASTER')")
+        // zone_templ_id is supplied rather than defaulted: installs predating the
+        // DEFAULT 0 still have a plain NOT NULL column, which strict mode rejects.
+        $pwDb->prepare("INSERT INTO zones (domain_id, zone_name, zone_type, zone_templ_id)
+            VALUES (999001, :n, 'MASTER', 0)")
             ->execute([':n' => $parent]);
 
         try {
