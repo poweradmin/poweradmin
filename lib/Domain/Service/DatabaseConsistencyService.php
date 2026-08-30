@@ -571,7 +571,10 @@ class DatabaseConsistencyService
             $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, 0)");
         }
 
-        return $stmt->execute(['domain_id' => $zoneId, 'owner' => $currentUserId]);
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $currentUserId, PDO::PARAM_INT);
+
+        return $stmt->execute();
     }
 
     /**

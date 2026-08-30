@@ -155,6 +155,35 @@ class DatabaseConsistencyCanonicalIdTest extends TestCase
         $this->assertFalse($this->service(true)->fixZoneCanonicalId(-1));
     }
 
+    /**
+     * fixZoneWithoutOwner compares the canonical expression to :domain_id. Binding that id
+     * as a string matched no row on SQLite, so the repair reported success and changed
+     * nothing.
+     */
+    public function testFixZoneWithoutOwnerActuallyAssignsTheOwner(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (9, 9, NULL, 'orphan.example.com')");
+
+        $this->assertTrue($this->service(true)->fixZoneWithoutOwner(9, 77));
+
+        $stmt = $this->db->prepare("SELECT owner FROM zones WHERE id = 9");
+        $stmt->execute();
+        $this->assertSame(77, (int)$stmt->fetchColumn(), 'the repair reported success without writing');
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn(), 'a duplicate row was inserted');
+    }
+
+    public function testFixZoneWithoutOwnerResolvesAStrandedRow(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (12, 0, NULL, 'stranded.example.com')");
+
+        $this->assertTrue($this->service(true)->fixZoneWithoutOwner(12, 77));
+
+        $stmt = $this->db->prepare("SELECT owner FROM zones WHERE id = 12");
+        $stmt->execute();
+        $this->assertSame(77, (int)$stmt->fetchColumn());
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
+    }
+
     public function testFixAllCountsFixedAndFailedSeparately(): void
     {
         $this->seed(1, 0, 'zero.example.com');
