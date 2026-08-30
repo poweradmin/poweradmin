@@ -28,6 +28,7 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use PDO;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * Zone counting service
@@ -155,7 +156,7 @@ class ZoneCountService
             }
 
             $stmt = $this->db->prepare(
-                "SELECT DISTINCT domain_id FROM zones WHERE owner = :uid
+                "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE owner = :uid
                  UNION
                  SELECT DISTINCT zg.domain_id FROM zones_groups zg
                  INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id

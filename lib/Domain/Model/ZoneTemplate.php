@@ -36,6 +36,7 @@ use PDO;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * Template functions
@@ -281,8 +282,9 @@ class ZoneTemplate
 
     public static function getZoneTemplName($db, $zone_id)
     {
-        $stmt = $db->prepare("SELECT zt.name FROM zones z JOIN zone_templ zt ON zt.id = z.zone_templ_id WHERE z.domain_id = :zone_id");
-        $stmt->execute([':zone_id' => $zone_id]);
+        $stmt = $db->prepare("SELECT zt.name FROM zones z JOIN zone_templ zt ON zt.id = z.zone_templ_id WHERE " . CanonicalZoneSql::canonicalIdColumn('z') . " = :zone_id");
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->execute();
         $result = $stmt->fetch();
 
         return $result ? $result['name'] : '';
@@ -1109,8 +1111,9 @@ class ZoneTemplate
     public function unlinkZoneFromTemplate(int $zone_id): bool
     {
         try {
-            $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE domain_id = ?");
-            $stmt->execute([$zone_id]);
+            $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = ?");
+            $stmt->bindValue(1, $zone_id, PDO::PARAM_INT);
+            $stmt->execute();
             return true;
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error unlinking zone from template: ') . $e->getMessage());
