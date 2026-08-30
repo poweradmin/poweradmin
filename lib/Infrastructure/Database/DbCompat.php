@@ -212,10 +212,7 @@ final class DbCompat
             if (str_contains($originalSqlMode, 'ONLY_FULL_GROUP_BY')) {
                 // Drop the mode by list membership; a substring replace misses it when it is
                 // last in the list or the only mode, leaving it silently enabled.
-                $modes = array_filter(
-                    array_map('trim', explode(',', $originalSqlMode)),
-                    static fn(string $mode): bool => $mode !== '' && $mode !== 'ONLY_FULL_GROUP_BY'
-                );
+                $modes = array_diff(array_map('trim', explode(',', $originalSqlMode)), ['', 'ONLY_FULL_GROUP_BY']);
                 $db->exec("SET SESSION sql_mode = '" . implode(',', $modes) . "'");
             } else {
                 $originalSqlMode = '';
