@@ -149,6 +149,18 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
             }
         }
 
+        // The provider also writes a Poweradmin-native zones row, which deleting the
+        // PowerDNS zone leaves behind.
+        foreach ($this->createdZones as $zoneName) {
+            try {
+                $stmt = $this->poweradminDb?->prepare("DELETE FROM zones WHERE zone_name = :name");
+                $stmt?->bindValue(':name', rtrim($zoneName, '.'));
+                $stmt?->execute();
+            } catch (Exception $e) {
+                // Ignore cleanup errors
+            }
+        }
+
         // Clean up any autoprimaries created during tests
         foreach ($this->createdAutoprimaries as [$ip, $ns]) {
             try {
@@ -307,6 +319,53 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $apiZone = $this->client->getZone($zone . '.');
         $this->assertNotNull($apiZone);
         $this->assertEquals($zone . '.', $apiZone['name']);
+    }
+
+    /**
+     * createZone() inserts the zones row with a NULL domain_id and backfills it to the row's
+     * own id. Committed apart, an interrupted request stranded the row at a domain_id no
+     * canonical read resolves, and nothing repaired it.
+     */
+    public function testCreatedZonesRowCarriesItsOwnIdAsDomainId(): void
+    {
+        $zone = $this->uniqueZoneName();
+        $this->createdZones[] = $zone;
+
+        $zonesId = $this->provider->createZone($zone, 'NATIVE');
+
+        $stmt = $this->poweradminDb->prepare("SELECT id, domain_id FROM zones WHERE zone_name = :name");
+        $stmt->bindValue(':name', $zone);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $this->assertNotFalse($row, 'no zones row was written');
+        $this->assertNotNull($row['domain_id'], 'domain_id was left NULL');
+        $this->assertSame((int)$row['id'], (int)$row['domain_id'], 'domain_id was not backfilled to the row id');
+        $this->assertNotSame(0, (int)$row['domain_id'], 'domain_id was left at 0');
+        $this->assertSame($zonesId, (int)$row['id']);
+    }
+
+    public function testCreateZoneLeavesNoOpenTransactionOnTheRealConnection(): void
+    {
+        // MySQL commits differently from SQLite, so the guard is worth pinning here too.
+        $zone = $this->uniqueZoneName();
+        $this->createdZones[] = $zone;
+
+        $this->assertFalse($this->poweradminDb->inTransaction(), 'a transaction was already open');
+        $this->provider->createZone($zone, 'NATIVE');
+        $this->assertFalse($this->poweradminDb->inTransaction(), 'createZone left a transaction open');
+    }
+
+    public function testCreateZoneDoesNotCommitACallersTransaction(): void
+    {
+        $zone = $this->uniqueZoneName();
+        $this->createdZones[] = $zone;
+
+        $this->poweradminDb->beginTransaction();
+        $this->provider->createZone($zone, 'NATIVE');
+
+        $this->assertTrue($this->poweradminDb->inTransaction(), 'the caller lost its transaction');
+        $this->poweradminDb->commit();
     }
 
     public function testCreateSlaveZone(): void
