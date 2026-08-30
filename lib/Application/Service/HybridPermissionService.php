@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * Hybrid Permission Resolution Service
@@ -156,7 +157,7 @@ class HybridPermissionService
     public function getUserAccessibleZones(int $userId): array
     {
         // Direct user zones
-        $query = "SELECT DISTINCT domain_id FROM zones WHERE owner = :user_id";
+        $query = "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE owner = :user_id";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':user_id' => $userId]);
         $userZones = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -248,13 +249,12 @@ class HybridPermissionService
                   INNER JOIN perm_templ pt ON u.perm_templ = pt.id
                   INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
                   INNER JOIN perm_items pi ON pti.perm_id = pi.id
-                  WHERE z.owner = :user_id AND z.domain_id = :domain_id";
+                  WHERE z.owner = :user_id AND " . CanonicalZoneSql::canonicalIdColumn('z') . " = :domain_id";
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute([
-            ':user_id' => $userId,
-            ':domain_id' => $domainId
-        ]);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }

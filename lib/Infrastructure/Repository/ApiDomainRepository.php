@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * API-backend domain repository.
@@ -312,15 +313,18 @@ class ApiDomainRepository implements DomainRepositoryInterface
             return $zones;
         }
 
+        // The map is keyed by canonical id because that is how the zone list is keyed;
+        // reading the raw column collapsed every unresolved row onto key 0.
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('z');
         $stmt = $this->db->query(
-            "SELECT z.domain_id, z.owner, z.comment, u.username, u.fullname
+            "SELECT $canonicalId AS canonical_id, z.owner, z.comment, u.username, u.fullname
              FROM zones z
              LEFT JOIN users u ON z.owner = u.id"
         );
 
         $ownershipMap = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $domainId = (int)$row['domain_id'];
+            $domainId = (int)$row['canonical_id'];
             if (!isset($ownershipMap[$domainId])) {
                 $ownershipMap[$domainId] = [
                     'owners' => [],
@@ -359,7 +363,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
     private function getOwnedDomainIds(int $userId): array
     {
         $stmt = $this->db->prepare(
-            "SELECT DISTINCT domain_id FROM zones WHERE owner = :uid
+            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE owner = :uid
              UNION
              SELECT DISTINCT zg.domain_id FROM zones_groups zg
              INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
