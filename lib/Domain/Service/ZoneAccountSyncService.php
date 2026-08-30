@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * Service for mirroring zone ownership into the PowerDNS account field
@@ -60,15 +61,19 @@ class ZoneAccountSyncService
             return;
         }
 
+        // A miss here does not merely skip the sync, it pushes an empty account and wipes
+        // whatever PowerDNS held, so the lookup has to resolve the canonical id.
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('z');
         $stmt = $this->db->prepare("
             SELECT u.username
             FROM users u
             INNER JOIN zones z ON z.owner = u.id
-            WHERE z.domain_id = ?
+            WHERE $canonicalId = ?
             ORDER BY z.id
             LIMIT 1
         ");
-        $stmt->execute([$domainId]);
+        $stmt->bindValue(1, $domainId, PDO::PARAM_INT);
+        $stmt->execute();
         $account = $stmt->fetchColumn();
 
         $this->pushZoneAccount($domainId, $account === false ? null : (string)$account);
