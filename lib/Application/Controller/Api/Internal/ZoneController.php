@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller\Api\Internal;
 
 use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -109,10 +108,17 @@ class ZoneController extends InternalApiController
             return $this->returnErrorResponse('Missing or invalid zone ID', 400);
         }
 
+        // Either view permission gets you in; which zones you may see is decided below.
+        $viewOthers = $this->hasPermission('zone_content_view_others');
+        if (!$viewOthers && !$this->hasPermission('zone_content_view_own')) {
+            return $this->returnErrorResponse('Forbidden: insufficient permissions', 403);
+        }
+
         // Check if user can view this zone
-        if (!$this->hasPermission('zone_content_view_others')) {
+        if (!$viewOthers) {
             // Verify that the zone belongs to the current user
-            if (!$this->zoneRepository->zoneExists($zoneId, $_SESSION[SessionKeys::USERID])) {
+            $userId = $this->userContextService->getLoggedInUserId() ?? 0;
+            if (!$this->zoneRepository->zoneExists($zoneId, $userId)) {
                 return $this->returnErrorResponse('Zone not found or access denied', 404);
             }
         }
