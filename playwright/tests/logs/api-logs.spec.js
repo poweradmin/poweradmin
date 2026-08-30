@@ -11,7 +11,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { expectAccessDeniedJson } from '../../helpers/access.js';
+import { expectAccessDenied } from '../../helpers/access.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Serial mode: we create API keys to generate log entries, then verify them
@@ -399,24 +399,24 @@ test.describe('API Logs - Permission Checks', () => {
   test.describe('Manager User', () => {
     test('should not have access to API logs', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-      const response = await page.goto('/settings/api/logs');
-      await expectAccessDeniedJson(response, page, 'table');
+      await page.goto('/settings/api/logs');
+      await expectAccessDenied(page, 'table');
     });
   });
 
   test.describe('Client User', () => {
     test('should not have access to API logs', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.client.username, users.client.password);
-      const response = await page.goto('/settings/api/logs');
-      await expectAccessDeniedJson(response, page, 'table');
+      await page.goto('/settings/api/logs');
+      await expectAccessDenied(page, 'table');
     });
   });
 
   test.describe('Viewer User', () => {
     test('should not have access to API logs', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-      const response = await page.goto('/settings/api/logs');
-      await expectAccessDeniedJson(response, page, 'table');
+      await page.goto('/settings/api/logs');
+      await expectAccessDenied(page, 'table');
     });
   });
 });
