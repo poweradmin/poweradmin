@@ -7495,9 +7495,9 @@ msgstr ""
 "Zertifikatsausstellungsfehlern führen."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
 msgstr ""
-"Leerer Wert ist nicht erlaubt. Verwenden Sie \";\" um alle CAs zu erlauben."
+"Leerer Wert ist nicht erlaubt. Verwenden Sie \";\" um alle CAs zu verbieten."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."

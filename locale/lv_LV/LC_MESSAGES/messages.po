@@ -6586,8 +6586,8 @@ msgstr ""
 "Kritisks karodziņš nezināmam tagam \"%s\". Var izraisīt sertifikāta kļūdas."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "Tukša vērtība nav atļauta. Izmantojiet \";\" visām CA."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "Tukša vērtība nav atļauta. Izmantojiet \";\", lai aizliegtu visas CA."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."

@@ -7400,9 +7400,9 @@ msgstr ""
 "niepowodzenia wydawania certyfikatów."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
 msgstr ""
-"Pusta wartość nie jest dozwolona. Użyj \";\" aby zezwolić wszystkim CA."
+"Pusta wartość nie jest dozwolona. Użyj \";\" aby zabronić wszystkim CA."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."

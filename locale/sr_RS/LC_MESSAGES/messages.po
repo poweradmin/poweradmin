@@ -6626,8 +6626,9 @@ msgstr ""
 "Критична заставица за непознат таг \"%s\". Може узроковати грешке у издавању."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "Празна вредност није дозвољена. Користи \";\" за све CA."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr ""
+"Празна вредност није дозвољена. Користите \";\" да бисте забранили све CA."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."
