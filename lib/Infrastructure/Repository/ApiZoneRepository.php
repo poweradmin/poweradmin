@@ -1032,11 +1032,9 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
     /**
      * Oldest owner across the canonical zone row and extra ownership rows.
      *
-     * The canonical row is matched by primary key rather than by canonical id: the two
-     * id spaces overlap (see CanonicalZoneSql), so an unrelated native row can share the
-     * canonical id and would otherwise win the ORDER BY and be pushed as this zone's
-     * account. Extra ownership rows stay keyed by canonical id, which is how they are
-     * written - a placeholder row is still ambiguous when the id spaces collide.
+     * Matches the canonical row by primary key: the id spaces overlap (CanonicalZoneSql),
+     * so an unrelated native row sharing the canonical id would win the ORDER BY and be
+     * pushed as this zone's account. Extra owners stay keyed by canonical id.
      */
     private function getOldestOwnerUsername(int $canonicalRowId, int $canonicalId): ?string
     {

@@ -33,6 +33,9 @@ use PDOStatement;
  * two id spaces overlap, so a single ID can match one row by id and a different row by
  * domain_id - picking the wrong one updates the wrong zone. Every resolver must therefore
  * agree on the same preference, which is why this lives in one place.
+ *
+ * Known limit: an extra-ownership row (NULL zone_name) is keyed only by canonical id, so
+ * under that collision no query can tell which of the two zones it belongs to.
  */
 final class CanonicalZoneSql
 {
