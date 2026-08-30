@@ -2661,7 +2661,7 @@ test_api_key_scopes() {
     if api_request_v2_with_key "$ops_secret" "POST" "/zones" '{"name":"ops-allowed.example.com","type":"MASTER"}' 201 "Ops key may POST (create in subset)"; then
         local ops_created
         ops_created=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
-        [[ -n "$ops_created" ]] && api_request_v2 "DELETE" "/zones/${ops_created}" "" 200 "Cleanup ops-created zone"
+        [[ -n "$ops_created" ]] && api_request_v2 "DELETE" "/zones/${ops_created}" "" 204 "Cleanup ops-created zone" || true
     fi
 
     # Operation scope is enforced per bulk action, not by the POST method: a
@@ -2696,8 +2696,8 @@ test_api_key_scopes() {
     # and the two test zones.
     db_exec "DELETE FROM api_key_zones WHERE api_key_id IN (SELECT id FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone'));" >/dev/null 2>&1 || true
     db_exec "DELETE FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone');" >/dev/null 2>&1 || true
-    [[ -n "$zone_a" ]] && api_request_v2 "DELETE" "/zones/${zone_a}" "" 200 "Cleanup in-scope zone" || true
-    [[ -n "$zone_b" ]] && api_request_v2 "DELETE" "/zones/${zone_b}" "" 200 "Cleanup out-of-scope zone" || true
+    [[ -n "$zone_a" ]] && api_request_v2 "DELETE" "/zones/${zone_a}" "" 204 "Cleanup in-scope zone" || true
+    [[ -n "$zone_b" ]] && api_request_v2 "DELETE" "/zones/${zone_b}" "" 204 "Cleanup out-of-scope zone" || true
 }
 
 test_zone_overlap_guard() {

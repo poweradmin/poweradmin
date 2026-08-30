@@ -272,6 +272,7 @@ run_tests_all_databases() {
     local version="${1:-all}"
     local total_passed=0
     local total_failed=0
+    local total_skipped=0
     local db_results=()
 
     echo -e "${BLUE}================================${NC}"
@@ -286,16 +287,18 @@ run_tests_all_databases() {
             if check_config && test_api_connection; then
                 if run_api_tests "$version"; then
                     db_results+=("${GREEN}$db: PASSED${NC}")
-                    ((total_passed++))
+                    total_passed=$((total_passed + 1))
                 else
                     db_results+=("${RED}$db: FAILED${NC}")
-                    ((total_failed++))
+                    total_failed=$((total_failed + 1))
                 fi
             else
                 db_results+=("${YELLOW}$db: SKIPPED (connection failed)${NC}")
+                total_skipped=$((total_skipped + 1))
             fi
         else
             db_results+=("${YELLOW}$db: SKIPPED (config not found)${NC}")
+            total_skipped=$((total_skipped + 1))
         fi
     done
 
@@ -309,8 +312,15 @@ run_tests_all_databases() {
     echo ""
     echo "Databases passed: $total_passed"
     echo "Databases failed: $total_failed"
+    echo "Databases skipped: $total_skipped"
 
     if [[ $total_failed -gt 0 ]]; then
+        return 1
+    fi
+
+    # A run where every database was skipped asserted nothing; do not report success.
+    if [[ $total_passed -eq 0 ]]; then
+        echo -e "${RED}No database was actually tested.${NC}"
         return 1
     fi
     return 0
