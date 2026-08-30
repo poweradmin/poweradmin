@@ -91,6 +91,7 @@
     "analyse:phpstan": "phpstan analyse --level=3 --memory-limit=512M addons config index.php install lib tests dynamic_update.php",
     "analyse:taint": "psalm --taint-analysis --no-cache",
     "lint:twig": "! grep -rn 'name=\"csrf_token\"' templates/ --include='*.html' || (echo 'ERROR: Use name=\"_token\" instead of name=\"csrf_token\" for CSRF token fields' && false)",
+    "lint:e2e-routes": "php playwright/tools/check-route-paths.php",
     "lint:zone-ids": [
         "! grep -rnE 'zg[0-9]*\\.domain_id *(= *z[0-9_]*\\.id\\b|IN *\\( *z[0-9_]*\\.id)' lib/ || (echo 'ERROR: match zones_groups.domain_id against COALESCE(z.domain_id, z.id); zones.id and zones.domain_id overlap, see CanonicalZoneSql' && false)"
     ],
@@ -98,7 +99,8 @@
         "@check:all",
         "@analyse:phpstan",
         "@lint:twig",
-        "@lint:zone-ids"
+        "@lint:zone-ids",
+        "@lint:e2e-routes"
     ],
 
     "locale:check": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -q 'fatal error'; then echo \"FAIL: $f\"; failed=1; fi; done; exit $failed",
