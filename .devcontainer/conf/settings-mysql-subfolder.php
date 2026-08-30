@@ -73,6 +73,8 @@ return [
      */
     'misc' => [
         'record_comments_sync' => true,
+        // Turns on Twig strict_variables so an undefined template variable fails loudly.
+        'display_errors' => true,
     ],
 
     /**
