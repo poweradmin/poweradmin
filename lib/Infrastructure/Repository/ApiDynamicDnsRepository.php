@@ -28,6 +28,7 @@ use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\ValueObject\HostnameValue;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * API-backend dynamic DNS repository.
@@ -80,7 +81,7 @@ class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function getUserZones(User $user): array
     {
-        $query = $this->db->prepare('SELECT domain_id FROM zones WHERE owner = :user_id');
+        $query = $this->db->prepare("SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE owner = :user_id AND zone_name IS NOT NULL");
         $query->execute([':user_id' => $user->getId()]);
 
         $zones = [];
