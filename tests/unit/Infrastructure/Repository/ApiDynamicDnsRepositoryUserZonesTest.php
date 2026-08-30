@@ -85,6 +85,17 @@ class ApiDynamicDnsRepositoryUserZonesTest extends TestCase
         $this->assertSame([55 => 'api.example'], $zones);
     }
 
+    public function testZoneStrandedAtDomainIdZeroIsReturned(): void
+    {
+        // A row left at 0 by an interrupted createZone; bare COALESCE resolved it to 0.
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, owner) VALUES (66, 0, 'zero.example', 1)");
+
+        $zones = $this->repository($this->providerReturningNames([66 => 'zero.example']))
+            ->getUserZones(new User(1, 'hash', false));
+
+        $this->assertSame([66 => 'zero.example'], $zones);
+    }
+
     public function testMigratedZoneStillResolvesByDomainId(): void
     {
         // A zone migrated from SQL mode keeps a populated domain_id, which must still win.

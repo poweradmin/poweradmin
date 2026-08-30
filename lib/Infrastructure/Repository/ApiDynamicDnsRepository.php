@@ -28,6 +28,7 @@ use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\ValueObject\HostnameValue;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * API-backend dynamic DNS repository.
@@ -91,7 +92,7 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
         // only returned when the owner's template (the user's for direct ownership, or the
         // owning group's) grants zone_content_edit_*.
         $query = $this->db->prepare("
-            SELECT DISTINCT COALESCE(z.domain_id, z.id) AS domain_id
+            SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS domain_id
             FROM zones z
             INNER JOIN users u ON u.id = z.owner
             WHERE z.owner = :user_id
