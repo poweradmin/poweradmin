@@ -98,13 +98,42 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
 
     /**
      * OidcService::getCallbackUrl() and SamlConfigurationService::getBaseUrl()
-     * both throw when interface.application_url is unset, because neither the
-     * redirect_uri nor the advertised entityID may be derived from the request.
-     * Without this check the container starts and only fails at login time.
+     * both throw when no URL source is configured, because neither the redirect_uri
+     * nor the advertised entityID may be derived from the request. Without this
+     * check the container starts and only fails at login time.
      *
+     * @param array<int, string> $expectedVariables
      * @dataProvider ssoValidatorProvider
      */
-    public function testEntrypointRequiresApplicationUrlForSso(string $function): void
+    public function testEntrypointRequiresAUrlSourceForSso(string $function, array $expectedVariables): void
+    {
+        $body = $this->validatorBody($function);
+
+        foreach ($expectedVariables as $variable) {
+            $this->assertStringContainsString(
+                $variable,
+                $body,
+                sprintf('%s() must consider %s before refusing to start', $function, $variable)
+            );
+        }
+    }
+
+    /**
+     * SAML resolves its SP URLs from application_url, the legacy base_url, or explicit
+     * SP URLs, so gating startup on application_url alone broke working deployments.
+     * OIDC has no such alternative - application_url is its only source.
+     */
+    public function testSamlValidatorAcceptsTheAlternativeUrlSources(): void
+    {
+        $body = $this->validatorBody('validate_saml_config');
+
+        $this->assertStringContainsString('PA_BASE_URL', $body);
+        $this->assertStringContainsString('PA_SAML_SP_ENTITY_ID', $body);
+        $this->assertStringContainsString('PA_SAML_SP_ACS_URL', $body);
+        $this->assertStringContainsString('PA_SAML_SP_SLS_URL', $body);
+    }
+
+    private function validatorBody(string $function): string
     {
         $entrypoint = file_get_contents(dirname(__DIR__, 2) . '/docker-entrypoint.sh');
         $this->assertNotFalse($entrypoint, 'docker-entrypoint.sh could not be read');
@@ -115,18 +144,14 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
         $end = strpos($entrypoint, "\n}\n", $start);
         $this->assertNotFalse($end, sprintf('%s() has no closing brace', $function));
 
-        $this->assertStringContainsString(
-            'PA_APPLICATION_URL',
-            substr($entrypoint, $start, $end - $start),
-            sprintf('%s() must refuse to start without PA_APPLICATION_URL', $function)
-        );
+        return substr($entrypoint, $start, $end - $start);
     }
 
     public static function ssoValidatorProvider(): array
     {
         return [
-            'saml' => ['validate_saml_config'],
-            'oidc' => ['validate_oidc_config'],
+            'saml' => ['validate_saml_config', ['PA_APPLICATION_URL', 'PA_BASE_URL']],
+            'oidc' => ['validate_oidc_config', ['PA_APPLICATION_URL']],
         ];
     }
 }
