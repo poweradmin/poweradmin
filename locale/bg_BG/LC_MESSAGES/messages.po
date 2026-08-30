@@ -7666,9 +7666,9 @@ msgstr ""
 "неуспешно издаване на сертификат."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
 msgstr ""
-"Не се допуска празна стойност. Използвайте \";\", за да позволите всички CA."
+"Не се допуска празна стойност. Използвайте \";\", за да забраните всички CA."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201
 msgid "Invalid CA domain in issue tag."

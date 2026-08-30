@@ -7553,8 +7553,8 @@ msgstr ""
 "af certifikater."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "Tomme værdier er ikke tilladt. Brug \";\" til at tillade alle CA 'er."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "Tomme værdier er ikke tilladt. Brug \";\" til at forbyde alle CA'er."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201
 msgid "Invalid CA domain in issue tag."

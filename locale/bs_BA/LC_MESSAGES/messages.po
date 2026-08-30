@@ -7305,8 +7305,8 @@ msgstr ""
 "izdavanju."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "Prazna vrijednost nije dopuštena. Koristite \";\" za sve CA."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "Prazna vrijednost nije dopuštena. Koristite \";\" da zabranite sve CA."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201
 msgid "Invalid CA domain in issue tag."

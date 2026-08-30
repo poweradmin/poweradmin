@@ -7481,9 +7481,9 @@ msgstr ""
 "uzrokovati neuspjeh izdavanja certifikata."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
 msgstr ""
-"Prazna vrijednost nije dopuštena. Koristite \";\" kako biste dopustili sve "
+"Prazna vrijednost nije dopuštena. Koristite \";\" kako biste zabranili sve "
 "CA."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201

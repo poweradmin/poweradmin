@@ -7582,8 +7582,8 @@ msgstr ""
 "povzroči napake pri izdajanju potrdil."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "Prazna vrednost ni dovoljena. Uporabite \";\" za omogočanje vseh CA."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "Prazna vrednost ni dovoljena. Uporabite \";\" za prepoved vseh CA."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201
 msgid "Invalid CA domain in issue tag."

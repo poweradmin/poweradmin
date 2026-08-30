@@ -7727,8 +7727,8 @@ msgstr ""
 "shkaktojë dështime në lëshimin e certifikatës."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "Vlera bosh nuk lejohet. Përdor \";\" për të lejuar të gjithë CAs."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "Vlera bosh nuk lejohet. Përdor \";\" për të ndaluar të gjithë CAs."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201
 msgid "Invalid CA domain in issue tag."

@@ -7607,9 +7607,9 @@ msgstr ""
 "призвести до збоїв у видачі сертифікатів."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
 msgstr ""
-"Порожнє значення не допускається. Використовуйте \";\", щоб дозволити всі "
+"Порожнє значення не допускається. Використовуйте \";\", щоб заборонити всі "
 "центри сертифікації."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201

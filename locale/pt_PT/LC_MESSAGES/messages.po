@@ -7668,8 +7668,8 @@ msgstr ""
 "falhas na emissão de certificados."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "Valor vazio não é permitido. Use \";\" para permitir todas as CAs."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "Valor vazio não é permitido. Use \";\" para proibir todas as CAs."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201
 msgid "Invalid CA domain in issue tag."

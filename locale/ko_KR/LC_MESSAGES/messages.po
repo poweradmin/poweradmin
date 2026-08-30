@@ -7425,8 +7425,8 @@ msgstr ""
 "서 발급이 실패할 수 있습니다."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "빈 값은 허용되지 않습니다. 모든 CA를 허용하려면 \";\"를 사용하십시오."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "빈 값은 허용되지 않습니다. 모든 CA를 거부하려면 \";\"를 사용하십시오."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201
 msgid "Invalid CA domain in issue tag."

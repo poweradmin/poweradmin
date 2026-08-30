@@ -7124,8 +7124,8 @@ msgid ""
 msgstr "ตั้งค่าแฟล็กวิกฤตสำหรับแท็กที่ไม่รู้จัก \"%s\" สิ่งนี้อาจทำให้การออกใบรับรองล้มเหลว"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "ไม่อนุญาตให้ใช้ค่าว่าง ใช้ \";\" เพื่ออนุญาตให้ทุก CAs"
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "ไม่อนุญาตให้ใช้ค่าว่าง ใช้ \";\" เพื่อห้ามทุก CA"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201
 msgid "Invalid CA domain in issue tag."

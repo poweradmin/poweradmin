@@ -6935,8 +6935,8 @@ msgid ""
 msgstr "為未知標籤 \"%s\" 設定了關鍵標誌。這可能導致憑證頒發失敗。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "不允許空值。使用 \";\" 來允許所有 CA。"
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "不允許空值。使用 \";\" 來禁止所有 CA。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201
 msgid "Invalid CA domain in issue tag."

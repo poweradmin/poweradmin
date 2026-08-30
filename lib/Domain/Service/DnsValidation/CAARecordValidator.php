@@ -186,7 +186,7 @@ class CAARecordValidator implements DnsRecordValidatorInterface
 
             // Empty string inside quotes is not allowed - should be ";" instead
             if (empty($unquoted)) {
-                return ValidationResult::failure(_('Empty value is not allowed. Use ";" to disallow all CAs, or name a CA to authorise it.'));
+                return ValidationResult::failure(_('Empty value is not allowed. Use ";" to disallow all CAs.'));
             }
 
             // Validate the CA domain whether or not parameters follow: a bare

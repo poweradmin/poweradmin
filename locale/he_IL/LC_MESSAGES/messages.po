@@ -7276,8 +7276,8 @@ msgstr ""
 "תעודות."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "ערך ריק אינו מותר. השתמש ב- \";\" כדי לאפשר לכל CAs."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "ערך ריק אינו מותר. השתמש ב- \";\" כדי למנוע מכל ה-CAs."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201
 msgid "Invalid CA domain in issue tag."
