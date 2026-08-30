@@ -203,13 +203,17 @@ final class DbCompat
         $originalSqlMode = '';
 
         if ($db_type === 'mysql') {
-            $stmt = $db->query("SELECT @@GLOBAL.sql_mode");
+            // Read the session mode, not the global one. The two diverge under init_connect
+            // or a connection proxy, and the affected queries run in this session.
+            $stmt = $db->query("SELECT @@SESSION.sql_mode");
             $result = $stmt->fetch();
             $originalSqlMode = $result[0] ?? '';
 
             if (str_contains($originalSqlMode, 'ONLY_FULL_GROUP_BY')) {
-                $newSqlMode = str_replace('ONLY_FULL_GROUP_BY,', '', $originalSqlMode);
-                $db->exec("SET SESSION sql_mode = '$newSqlMode'");
+                // Drop the mode by list membership; a substring replace misses it when it is
+                // last in the list or the only mode, leaving it silently enabled.
+                $modes = array_diff(array_map('trim', explode(',', $originalSqlMode)), ['', 'ONLY_FULL_GROUP_BY']);
+                $db->exec("SET SESSION sql_mode = '" . implode(',', $modes) . "'");
             } else {
                 $originalSqlMode = '';
             }
