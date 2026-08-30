@@ -1260,7 +1260,7 @@ class ZoneTemplate
     public function unlinkZoneFromTemplate(int $zone_id): bool
     {
         try {
-            $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = ?");
+            $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE domain_id = ?");
             $stmt->bindValue(1, $zone_id, PDO::PARAM_INT);
             $stmt->execute();
             return true;
