@@ -26,24 +26,31 @@ use PDO;
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use TestHelpers\SqliteIntegrationTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * getDirectUserPermissions() joins zones to the permission templates, so an unresolved
  * domain_id silently drops every direct permission and the action is refused. This needs
  * the real perm_templ chain, hence the shared base class rather than a bare TestCase.
  */
-class HybridPermissionServiceCanonicalZoneTest extends SqliteIntegrationTestCase
+class HybridPermissionServiceCanonicalZoneTest extends TestCase
 {
     private const EDITOR_TEMPL_ID = 20;
     private const EDITOR_USER_ID = 30;
     private const OTHER_USER_ID = 31;
 
+    private PDO $db;
     private HybridPermissionService $service;
 
     protected function setUp(): void
     {
-        parent::setUp();
+        $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $this->db->exec("CREATE TABLE perm_items (id INTEGER PRIMARY KEY, name TEXT)");
+        $this->db->exec("CREATE TABLE perm_templ (id INTEGER PRIMARY KEY, name TEXT)");
+        $this->db->exec("CREATE TABLE perm_templ_items (id INTEGER PRIMARY KEY, templ_id INTEGER, perm_id INTEGER)");
+        $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, perm_templ INTEGER)");
+        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT, perm_templ INTEGER)");
+        $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER, group_id INTEGER)");
 
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, zone_name TEXT, owner INTEGER)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
