@@ -997,22 +997,28 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $canonical = $this->resolveCanonicalRow($cid);
         $accountSync->pushZoneAccount($cid, $canonical === null
             ? null
-            : $this->getOldestOwnerUsername(self::canonicalIdOf($canonical)));
+            : $this->getOldestOwnerUsername((int)$canonical['id'], self::canonicalIdOf($canonical)));
     }
 
     /**
-     * Oldest owner across the canonical zone row and extra ownership rows
+     * Oldest owner across the canonical zone row and extra ownership rows.
+     *
+     * Matches the canonical row by primary key: the id spaces overlap (CanonicalZoneSql),
+     * so an unrelated native row sharing the canonical id would win the ORDER BY and be
+     * pushed as this zone's account. Extra owners stay keyed by canonical id.
      */
-    private function getOldestOwnerUsername(int $canonicalId): ?string
+    private function getOldestOwnerUsername(int $canonicalRowId, int $canonicalId): ?string
     {
         $stmt = $this->db->prepare(
             "SELECT u.username
              FROM zones z
              INNER JOIN users u ON z.owner = u.id
-             WHERE COALESCE(z.domain_id, z.id) = :canonical_id
+             WHERE z.id = :row_id
+                OR (z.zone_name IS NULL AND z.domain_id = :canonical_id)
              ORDER BY z.id
              LIMIT 1"
         );
+        $stmt->bindValue(':row_id', $canonicalRowId, PDO::PARAM_INT);
         $stmt->bindValue(':canonical_id', $canonicalId, PDO::PARAM_INT);
         $stmt->execute();
         $username = $stmt->fetchColumn();
