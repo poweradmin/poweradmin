@@ -41,6 +41,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Logger\PhpErrorLogPsrLogger;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * Template functions
@@ -429,8 +430,9 @@ class ZoneTemplate
 
     public static function getZoneTemplName($db, $zone_id)
     {
-        $stmt = $db->prepare("SELECT zt.name FROM zones z JOIN zone_templ zt ON zt.id = z.zone_templ_id WHERE z.domain_id = :zone_id");
-        $stmt->execute([':zone_id' => $zone_id]);
+        $stmt = $db->prepare("SELECT zt.name FROM zones z JOIN zone_templ zt ON zt.id = z.zone_templ_id WHERE " . CanonicalZoneSql::canonicalIdColumn('z') . " = :zone_id");
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->execute();
         $result = $stmt->fetch();
 
         return $result ? $result['name'] : '';
@@ -990,7 +992,7 @@ class ZoneTemplate
                 $params[':userid'] = $userid;
             }
 
-            $query = "SELECT domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
+            $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
             try {
                 $stmt = $this->db->prepare($query);
                 $stmt->execute($params);
@@ -1068,7 +1070,7 @@ class ZoneTemplate
                 $sql_add = " AND owner = :userid";
                 $params[':userid'] = $userid;
             }
-            $query = "SELECT id AS zone_id, domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
+            $query = "SELECT id AS zone_id, " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
         } else {
             $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
             $sql_add = '';
@@ -1121,12 +1123,12 @@ class ZoneTemplate
             }
 
             try {
-                $query = "SELECT zones.domain_id, zones.owner, zones.comment,
+                $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn('zones') . " AS domain_id, zones.owner, zones.comment,
                           u.username as owner_name, u.fullname as owner_fullname
                           FROM zones
                           LEFT JOIN users u ON zones.owner = u.id
                           WHERE zones.zone_templ_id = :zone_templ_id" . $sql_add . "
-                          ORDER BY zones.domain_id";
+                          ORDER BY 1";
                 $stmt = $this->db->prepare($query);
                 $stmt->execute($params);
                 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -1257,8 +1259,9 @@ class ZoneTemplate
     public function unlinkZoneFromTemplate(int $zone_id): bool
     {
         try {
-            $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE domain_id = ?");
-            $stmt->execute([$zone_id]);
+            $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = ?");
+            $stmt->bindValue(1, $zone_id, PDO::PARAM_INT);
+            $stmt->execute();
             return true;
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error unlinking zone from template: ') . $e->getMessage());
