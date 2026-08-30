@@ -29,6 +29,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 class DatabaseConsistencyService
 {
@@ -103,10 +104,10 @@ class DatabaseConsistencyService
                 $stmt = $this->db->prepare(
                     'SELECT
                         (SELECT COUNT(*) FROM zones z
-                         WHERE (z.id = c.id OR z.domain_id = COALESCE(c.domain_id, c.id))
+                         WHERE (z.id = c.id OR z.domain_id = ' . CanonicalZoneSql::canonicalIdColumn('c') . ')
                            AND z.owner IS NOT NULL AND z.owner <> 0) AS owner_count,
                         (SELECT COUNT(*) FROM zones_groups zg
-                         WHERE zg.domain_id = COALESCE(c.domain_id, c.id)) AS group_count
+                         WHERE zg.domain_id = ' . CanonicalZoneSql::canonicalIdColumn('c') . ') AS group_count
                      FROM zones c
                      WHERE c.zone_name = ? AND c.zone_name IS NOT NULL
                      LIMIT 1'

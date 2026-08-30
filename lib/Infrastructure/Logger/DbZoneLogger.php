@@ -29,6 +29,7 @@ use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 class DbZoneLogger
 {
@@ -71,7 +72,7 @@ class DbZoneLogger
             $stmt = $this->db->prepare("
                 SELECT count(zones.id) as number_of_logs
                 FROM log_zones
-                INNER JOIN zones ON COALESCE(zones.domain_id, zones.id) = log_zones.zone_id
+                INNER JOIN zones ON " . CanonicalZoneSql::canonicalIdColumn('zones') . " = log_zones.zone_id
                 WHERE zones.zone_name IS NOT NULL AND zones.zone_name LIKE :search_by ESCAPE '!'
             ");
         } else {
@@ -118,7 +119,7 @@ class DbZoneLogger
             $stmt = $this->db->prepare("
                 SELECT log_zones.id, log_zones.event, log_zones.created_at, zones.zone_name as name
                 FROM log_zones
-                INNER JOIN zones ON COALESCE(zones.domain_id, zones.id) = log_zones.zone_id
+                INNER JOIN zones ON " . CanonicalZoneSql::canonicalIdColumn('zones') . " = log_zones.zone_id
                 WHERE zones.zone_name IS NOT NULL AND zones.zone_name LIKE :search_by ESCAPE '!'
                 ORDER BY log_zones.created_at DESC
                 LIMIT :limit
@@ -308,7 +309,7 @@ class DbZoneLogger
     {
         if (!empty($filters['name'])) {
             if ($this->isApiBackend()) {
-                $query = str_replace('FROM log_zones', 'FROM log_zones INNER JOIN zones ON COALESCE(zones.domain_id, zones.id) = log_zones.zone_id', $query);
+                $query = str_replace('FROM log_zones', 'FROM log_zones INNER JOIN zones ON ' . CanonicalZoneSql::canonicalIdColumn('zones') . ' = log_zones.zone_id', $query);
                 $conditions[] = "zones.zone_name LIKE :search_by ESCAPE '!'";
             } else {
                 $pdns_db_name = $this->config->get('database', 'pdns_db_name');

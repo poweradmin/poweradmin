@@ -43,6 +43,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 class ListLogZonesController extends BaseController
 {
@@ -185,7 +186,7 @@ class ListLogZonesController extends BaseController
     /**
      * IDs that match log_zones.zone_id for zones the current non-admin user owns.
      *
-     * The logger keys log rows by COALESCE(zones.domain_id, zones.id), so API-mode
+     * The logger keys log rows by the canonical zone id, so API-mode
      * zones with a NULL zones.domain_id must be matched on zones.id. zones_groups
      * already stores the same COALESCE value, so it needs no additional translation.
      *
@@ -199,7 +200,7 @@ class ListLogZonesController extends BaseController
         }
 
         $stmt = $this->db->prepare(
-            "SELECT DISTINCT COALESCE(z.domain_id, z.id) AS log_zone_id
+            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS log_zone_id
              FROM zones z
              WHERE z.owner = :uid
              UNION
