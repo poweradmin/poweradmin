@@ -91,7 +91,7 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
         // only returned when the owner's template (the user's for direct ownership, or the
         // owning group's) grants zone_content_edit_*.
         $query = $this->db->prepare("
-            SELECT DISTINCT z.domain_id
+            SELECT DISTINCT COALESCE(z.domain_id, z.id) AS domain_id
             FROM zones z
             INNER JOIN users u ON u.id = z.owner
             WHERE z.owner = :user_id
