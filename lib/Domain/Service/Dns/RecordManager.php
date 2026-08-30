@@ -45,6 +45,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
 use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * Service class for managing DNS records
@@ -571,8 +572,9 @@ class RecordManager implements RecordManagerInterface
      */
     public static function getZoneComment($db, int $zone_id): string
     {
-        $stmt = $db->prepare("SELECT comment FROM zones WHERE domain_id = ?");
-        $stmt->execute([$zone_id]);
+        $stmt = $db->prepare("SELECT comment FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = ?");
+        $stmt->bindValue(1, $zone_id, PDO::PARAM_INT);
+        $stmt->execute();
         $comment = $stmt->fetchColumn();
 
         return $comment ?: '';
@@ -600,7 +602,10 @@ class RecordManager implements RecordManagerInterface
 
             return false;
         } else {
-            $query = "SELECT COUNT(*) FROM zones WHERE domain_id = :zone_id";
+            // A miss here falls through to the INSERT branch, which would add a second,
+            // dangling zones row owned by user 1 instead of updating the real one.
+            $canonicalId = CanonicalZoneSql::canonicalIdColumn();
+            $query = "SELECT COUNT(*) FROM zones WHERE $canonicalId = :zone_id";
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
             $stmt->execute();
@@ -608,7 +613,7 @@ class RecordManager implements RecordManagerInterface
             $count = $stmt->fetchColumn();
 
             if ($count > 0) {
-                $query = "UPDATE zones SET comment = :comment WHERE domain_id = :zone_id";
+                $query = "UPDATE zones SET comment = :comment WHERE $canonicalId = :zone_id";
             } else {
                 $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id) VALUES (:zone_id, 1, :comment, 0)";
             }
