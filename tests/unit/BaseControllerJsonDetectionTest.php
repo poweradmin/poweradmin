@@ -59,8 +59,7 @@ class BaseControllerJsonDetectionTest extends TestCase
             '/api/v1/records',
             '/api/internal/stats',
             '/api/docs',
-            '/api/',
-            '/some/path/api/endpoint'
+            '/api/v2/zones'
         ];
 
         foreach ($apiRoutes as $route) {
@@ -72,6 +71,16 @@ class BaseControllerJsonDetectionTest extends TestCase
             $this->assertTrue(
                 BaseController::expectsJson(),
                 "Failed to detect API route: {$route}"
+            );
+        }
+
+        // An /api/ segment naming no API family routes nowhere; /settings/api/logs
+        // is the real page that used to answer its denial as JSON.
+        foreach (['/api/', '/some/path/api/endpoint', '/settings/api/logs'] as $webRoute) {
+            $this->setServerEnvironment(['REQUEST_URI' => $webRoute, 'HTTP_ACCEPT' => 'text/html']);
+            $this->assertFalse(
+                BaseController::expectsJson(),
+                "Should not detect as API route: {$webRoute}"
             );
         }
 
@@ -236,11 +245,9 @@ class BaseControllerJsonDetectionTest extends TestCase
         foreach ($maliciousUris as $uri) {
             $this->setServerEnvironment(['REQUEST_URI' => $uri]);
 
-            // Should still detect /api/ in the path (this is by design)
-            // Security should be handled at routing/authorization level
-            $expectsJson = str_contains($uri, '/api/');
-            $this->assertEquals(
-                $expectsJson,
+            // None name an API family, and all route nowhere, so only the
+            // response format changes.
+            $this->assertFalse(
                 BaseController::expectsJson(),
                 "Unexpected result for potentially malicious URI: {$uri}"
             );

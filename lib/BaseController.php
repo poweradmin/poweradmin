@@ -157,9 +157,10 @@ abstract class BaseController
      */
     public static function expectsJson(): bool
     {
-        // Check if it's an API route
-        $requestUri = $_SERVER['REQUEST_URI'] ?? '';
-        if (str_contains($requestUri, '/api/')) {
+        // Per segment and path-only: a plain '/api/' test over the whole URI also
+        // caught the web page /settings/api/logs and a ?next=/api/v2/x query.
+        $path = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+        if (preg_match('#/api/(internal|v\d+|docs|health)(/|$)#', $path) === 1) {
             return true;
         }
 
