@@ -228,4 +228,61 @@ class DbCompatIntegrationTest extends TestCase
             $this->assertSame([1, 3], $ids, "isNumericString failed on $name");
         }
     }
+
+    /**
+     * handleSqlMode must read and write the same scope. It previously read
+     * @@GLOBAL.sql_mode while writing SESSION, so a session-only ONLY_FULL_GROUP_BY
+     * was never cleared and the grouped queries in RecordSearch failed with error 1055.
+     */
+    public function testHandleSqlModeClearsOnlyFullGroupByFromTheSession(): void
+    {
+        if (!$this->mysql) {
+            $this->markTestSkipped('MySQL/MariaDB not reachable');
+        }
+
+        // Position matters: a substring replace only caught the comma-terminated form.
+        $cases = [
+            'only mode' => 'ONLY_FULL_GROUP_BY',
+            'last in list' => 'STRICT_TRANS_TABLES,ONLY_FULL_GROUP_BY',
+            'first in list' => 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES',
+        ];
+
+        foreach ($cases as $label => $mode) {
+            $this->mysql->exec("SET SESSION sql_mode = '$mode'");
+
+            $original = DbCompat::handleSqlMode($this->mysql, 'mysql');
+            $this->assertStringContainsString('ONLY_FULL_GROUP_BY', $original, "original not returned for: $label");
+
+            $active = (string) $this->mysql->query("SELECT @@SESSION.sql_mode")->fetchColumn();
+            $this->assertStringNotContainsString('ONLY_FULL_GROUP_BY', $active, "not cleared for: $label");
+
+            DbCompat::restoreSqlMode($this->mysql, 'mysql', $original);
+            $restored = (string) $this->mysql->query("SELECT @@SESSION.sql_mode")->fetchColumn();
+            $this->assertStringContainsString('ONLY_FULL_GROUP_BY', $restored, "not restored for: $label");
+        }
+    }
+
+    public function testHandleSqlModeReadsTheSessionNotTheGlobalMode(): void
+    {
+        if (!$this->mysql) {
+            $this->markTestSkipped('MySQL/MariaDB not reachable');
+        }
+
+        $global = (string) $this->mysql->query("SELECT @@GLOBAL.sql_mode")->fetchColumn();
+        if (str_contains($global, 'ONLY_FULL_GROUP_BY')) {
+            $this->markTestSkipped('Global sql_mode already sets ONLY_FULL_GROUP_BY; cannot isolate the session');
+        }
+
+        // Global lacks the mode, the session has it: reading GLOBAL saw nothing to do.
+        $this->mysql->exec("SET SESSION sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES'");
+        $original = DbCompat::handleSqlMode($this->mysql, 'mysql');
+        $this->assertNotSame('', $original, 'session-only ONLY_FULL_GROUP_BY went undetected');
+
+        $rows = $this->mysql
+            ->query("SELECT label, val FROM test_dbcompat GROUP BY label")
+            ->fetchAll(PDO::FETCH_ASSOC);
+        $this->assertCount(3, $rows, 'ungrouped column still rejected after handleSqlMode');
+
+        DbCompat::restoreSqlMode($this->mysql, 'mysql', $original);
+    }
 }
