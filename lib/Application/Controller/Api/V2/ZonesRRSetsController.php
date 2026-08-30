@@ -353,7 +353,7 @@ class ZonesRRSetsController extends PublicApiController
         path: '/v2/zones/{id}/rrsets',
         operationId: 'v2CreateZoneRRSet',
         summary: 'Replace or create an RRSet',
-        description: 'Identical to PUT. Replaces all records with the specified name and type, creating the RRSet if it does not exist.',
+        description: 'Alias of PUT on this path.',
         tags: ['rrsets'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]
@@ -361,7 +361,7 @@ class ZonesRRSetsController extends PublicApiController
         path: '/v2/zones/{id}/rrsets',
         operationId: 'v2PatchZoneRRSet',
         summary: 'Replace or create an RRSet',
-        description: 'Identical to PUT. Replaces all records with the specified name and type, creating the RRSet if it does not exist.',
+        description: 'Alias of PUT on this path.',
         tags: ['rrsets'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]

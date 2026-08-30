@@ -603,8 +603,8 @@ api_v2_zone_rrsets:
     id: '\d+'
   methods: [GET, PUT, POST, PATCH]
 
-# {name} stays unconstrained on purpose: wildcards, underscore labels, apex forms and
-# punycode are all valid record names, and narrowing them would break live callers.
+# {name} is unconstrained on purpose: wildcards, apex (@), underscore labels and
+# punycode are all valid record names.
 api_v2_zone_rrset:
   path: /api/v2/zones/{id}/rrsets/{name}/{type}
   controller: Poweradmin\Application\Controller\Api\V2\ZonesRRSetsController::run
