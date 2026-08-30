@@ -240,10 +240,12 @@ validate_ldap_config() {
 validate_saml_config() {
     local saml_enabled=$(to_php_bool "${PA_SAML_ENABLED:-false}")
     if [ "$saml_enabled" = "true" ]; then
-        # The entityID and ACS URL advertised to the IdP are never derived from
-        # the request, so SAML cannot start without an explicit application URL
-        if [ -z "${PA_APPLICATION_URL}" ]; then
-            log "ERROR: PA_APPLICATION_URL is required when SAML is enabled. It defines the entityID and ACS URL advertised to the identity provider"
+        # The entityID and ACS URL advertised to the IdP are never derived from the
+        # request, so one of the three supported sources has to supply them: the
+        # application URL, the legacy base URL, or all three explicit SP URLs.
+        if [ -z "${PA_APPLICATION_URL}" ] && [ -z "${PA_BASE_URL}" ] &&
+           { [ -z "${PA_SAML_SP_ENTITY_ID}" ] || [ -z "${PA_SAML_SP_ACS_URL}" ] || [ -z "${PA_SAML_SP_SLS_URL}" ]; }; then
+            log "ERROR: SAML needs PA_APPLICATION_URL, PA_BASE_URL, or all of PA_SAML_SP_ENTITY_ID, PA_SAML_SP_ACS_URL and PA_SAML_SP_SLS_URL. They define the entityID and ACS URL advertised to the identity provider"
             exit 1
         fi
 
