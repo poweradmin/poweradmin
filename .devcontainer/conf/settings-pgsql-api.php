@@ -99,6 +99,8 @@ return [
     'misc' => [
         'record_comments_sync' => true,
         'email_previews_enabled' => true,
+        // Turns on Twig strict_variables so an undefined template variable fails loudly.
+        'display_errors' => true,
     ],
 
     /**
