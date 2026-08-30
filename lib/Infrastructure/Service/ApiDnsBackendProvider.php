@@ -110,20 +110,41 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return (int)$existingId;
         }
 
-        // Insert a placeholder entry. The caller will update it with owner/template info.
-        $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name, zone_type, zone_master) VALUES (0, NULL, 0, :name, :type, :master)");
-        $stmt->bindValue(':name', $domain);
-        $stmt->bindValue(':type', strtoupper($type));
-        $stmt->bindValue(':master', $slaveMaster);
-        $stmt->execute();
+        // The insert and its domain_id backfill must land together. Committed apart, an
+        // interrupted request strands the row at a domain_id no canonical read resolves.
+        $ownsTransaction = !$this->db->inTransaction();
+        if ($ownsTransaction) {
+            $this->db->beginTransaction();
+        }
 
-        $zonesId = (int)$this->db->lastInsertId('zones_id_seq');
+        try {
+            // Insert a placeholder entry. The caller will update it with owner/template info.
+            $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name, zone_type, zone_master) VALUES (NULL, NULL, 0, :name, :type, :master)");
+            $stmt->bindValue(':name', $domain);
+            $stmt->bindValue(':type', strtoupper($type));
+            $stmt->bindValue(':master', $slaveMaster);
+            $stmt->execute();
 
-        // Set domain_id = zones.id so existing code that uses domain_id works
-        $stmt = $this->db->prepare("UPDATE zones SET domain_id = :did WHERE id = :id");
-        $stmt->bindValue(':did', $zonesId, PDO::PARAM_INT);
-        $stmt->bindValue(':id', $zonesId, PDO::PARAM_INT);
-        $stmt->execute();
+            $zonesId = (int)$this->db->lastInsertId('zones_id_seq');
+
+            // Set domain_id = zones.id so existing code that uses domain_id works
+            $stmt = $this->db->prepare("UPDATE zones SET domain_id = :did WHERE id = :id");
+            $stmt->bindValue(':did', $zonesId, PDO::PARAM_INT);
+            $stmt->bindValue(':id', $zonesId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            if ($ownsTransaction) {
+                $this->db->commit();
+            }
+        } catch (\Throwable $e) {
+            if ($ownsTransaction && $this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
+
+        // The lazy zone-id cache predates this row, so leave it to be rebuilt on next read.
+        $this->localZoneIds = null;
 
         return $zonesId;
     }
