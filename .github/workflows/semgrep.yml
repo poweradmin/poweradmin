@@ -15,8 +15,10 @@ jobs:
   semgrep:
     name: Semgrep scan
     runs-on: ubuntu-latest
+    # Bounded because an unpinned pull once hung this job for 66 minutes.
+    timeout-minutes: 15
     container:
-      image: semgrep/semgrep:latest
+      image: semgrep/semgrep:1.175.0
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
