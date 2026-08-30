@@ -28,7 +28,7 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
 
     test('should require login to access', async ({ page }) => {
       // Try to access template unlink without login - should redirect to login or deny access
-      await page.goto('/zones/templates/1/unlink');
+      await page.goto('/zones/templates/unlink');
       await page.waitForLoadState('networkidle');
 
       // Should either redirect to login page or show access denied
@@ -38,8 +38,7 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
                           bodyText.toLowerCase().includes('login') ||
                           bodyText.toLowerCase().includes('sign in') ||
                           bodyText.toLowerCase().includes('access denied') ||
-                          bodyText.toLowerCase().includes('unauthorized') ||
-                          bodyText.toLowerCase().includes('not found');
+                          bodyText.toLowerCase().includes('unauthorized');
 
       expect(requiresAuth).toBeTruthy();
     });
