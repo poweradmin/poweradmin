@@ -6190,8 +6190,8 @@ msgid ""
 msgstr "为未知标签 \"%s\" 设置了关键标志。这可能导致证书颁发失败。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "不允许空值。使用 \";\" 来允许所有 CA。"
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "不允许空值。使用 \";\" 来禁止所有 CA。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."

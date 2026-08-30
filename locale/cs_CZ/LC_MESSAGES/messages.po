@@ -6754,8 +6754,8 @@ msgstr ""
 "vydávání certifikátů."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "Prázdná hodnota není povolena. Použijte \";\" pro povolení všech CA."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "Prázdná hodnota není povolena. Použijte \";\" pro zakázání všech CA."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."

@@ -6412,8 +6412,8 @@ msgid ""
 msgstr "필드 '%s'는 객체여야 합니다."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:191
-msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr "필드 '%s'는 최소 %d자여야 합니다."
+msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
+msgstr "빈 값은 허용되지 않습니다. 모든 CA를 거부하려면 \";\"를 사용하십시오."
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:202
 msgid "Invalid CA domain in issue tag."
