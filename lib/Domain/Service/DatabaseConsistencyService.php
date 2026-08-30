@@ -434,6 +434,7 @@ class DatabaseConsistencyService
         // can't masquerade as "missing SOA". Discard the run if any read failed.
         $results = [
             'zones_have_owners' => $this->checkZonesHaveOwners($apiZones),
+            'zones_have_canonical_ids' => $this->checkZonesHaveCanonicalIds(),
             'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters($apiZones),
             'records_belong_to_zones' => $this->checkRecordsBelongToZones(),
             'duplicate_soa_records' => $this->checkDuplicateSOARecords($apiZones),
@@ -441,6 +442,103 @@ class DatabaseConsistencyService
         ];
 
         return $this->apiReadFailed ? null : $results;
+    }
+
+    /**
+     * Find zones rows whose domain_id never received the zone's canonical id.
+     *
+     * createZone() writes the row and backfills domain_id; interrupted between the two it
+     * used to leave the row unresolvable, and nothing else repairs it.
+     *
+     * @return array{status: string, message: string, data: array}
+     */
+    public function checkZonesHaveCanonicalIds(): array
+    {
+        // SQL mode stores a domains foreign key here, where the row's own id is not a valid
+        // substitute, so there is nothing this check may safely report or repair.
+        if (!$this->isApiBackend()) {
+            return [
+                'status' => 'success',
+                'message' => _('All zones have a canonical ID'),
+                'data' => [],
+            ];
+        }
+
+        $stmt = $this->db->query(
+            "SELECT id, zone_name, domain_id FROM zones
+             WHERE (domain_id IS NULL OR domain_id = 0) AND zone_name IS NOT NULL
+             ORDER BY id"
+        );
+
+        $zones = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $zones[] = [
+                'id' => (int)$row['id'],
+                'name' => $row['zone_name'],
+                'domain_id' => $row['domain_id'],
+            ];
+        }
+
+        return [
+            'status' => $zones === [] ? 'success' : 'warning',
+            'message' => $zones === []
+                ? _('All zones have a canonical ID')
+                : sprintf(_('%d zones found without a canonical ID'), count($zones)),
+            'data' => $zones,
+        ];
+    }
+
+    /**
+     * Point a stranded zones row's domain_id at its own id.
+     *
+     * $zoneId is the row's primary key, not a canonical id, because the row has none yet.
+     *
+     * @param int $zoneId The zones row ID to repair
+     * @return bool Success status
+     */
+    public function fixZoneCanonicalId(int $zoneId): bool
+    {
+        if ($zoneId <= 0 || !$this->isApiBackend()) {
+            return false;
+        }
+
+        // Predicated on the broken state so a repeated or stale submission cannot rewrite a
+        // healthy row, and so placeholder ownership rows are never self-referenced.
+        $stmt = $this->db->prepare(
+            "UPDATE zones SET domain_id = :did
+             WHERE id = :id AND (domain_id IS NULL OR domain_id = 0) AND zone_name IS NOT NULL"
+        );
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0;
+    }
+
+    /**
+     * Repair every zone returned by checkZonesHaveCanonicalIds().
+     *
+     * @return array{fixed: int, failed: int}
+     */
+    public function fixAllZonesWithCanonicalIdIssue(): array
+    {
+        $stranded = $this->checkZonesHaveCanonicalIds()['data'];
+
+        $fixed = 0;
+        $failed = 0;
+        foreach ($stranded as $zone) {
+            try {
+                if ($this->fixZoneCanonicalId((int)$zone['id'])) {
+                    $fixed++;
+                } else {
+                    $failed++;
+                }
+            } catch (Exception $e) {
+                $failed++;
+            }
+        }
+
+        return ['fixed' => $fixed, 'failed' => $failed];
     }
 
     /**

@@ -139,6 +139,31 @@ class DatabaseConsistencyController extends BaseController
                     }
                     break;
 
+                case 'zones_without_canonical_ids':
+                    if ($action === 'fix') {
+                        $result = $service->fixZoneCanonicalId((int)$itemId);
+                        $message = $result ? _('Zone canonical ID repaired') : _('Failed to repair zone canonical ID');
+                    } elseif ($action === 'fix_all') {
+                        $counts = $service->fixAllZonesWithCanonicalIdIssue();
+                        if ($counts['fixed'] === 0 && $counts['failed'] === 0) {
+                            $this->setMessage('database_consistency', 'success', _('No zones without a canonical ID to fix'));
+                        } elseif ($counts['failed'] === 0) {
+                            $this->setMessage('database_consistency', 'success', sprintf(
+                                _('Repaired the canonical ID of %d zones'),
+                                $counts['fixed']
+                            ));
+                        } else {
+                            $this->setMessage('database_consistency', 'warning', sprintf(
+                                _('Repaired %d zones; %d failed'),
+                                $counts['fixed'],
+                                $counts['failed']
+                            ));
+                        }
+                        $this->redirect('/tools/database-consistency');
+                        return;
+                    }
+                    break;
+
                 case 'slave_zones_without_masters':
                     if ($action === 'delete') {
                         $result = $service->deleteSlaveZone($itemId);

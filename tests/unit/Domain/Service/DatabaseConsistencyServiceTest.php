@@ -237,6 +237,10 @@ class DatabaseConsistencyServiceTest extends TestCase
         $ownerStmt->method('execute')->willReturn(true);
         $ownerStmt->method('fetch')->willReturn(['owner_count' => 1, 'group_count' => 0]);
         $this->db->method('prepare')->willReturn($ownerStmt);
+        // The canonical-id check reads the zones table directly and finds nothing stranded.
+        $emptyStmt = $this->createMock(PDOStatement::class);
+        $emptyStmt->method('fetch')->willReturn(false);
+        $this->db->method('query')->willReturn($emptyStmt);
 
         // ...but the per-zone SOA read fails and is swallowed into an empty list.
         $backend->method('getRecordsByZoneId')->willReturnCallback(function () {
@@ -257,6 +261,10 @@ class DatabaseConsistencyServiceTest extends TestCase
         $ownerStmt->method('execute')->willReturn(true);
         $ownerStmt->method('fetch')->willReturn(['owner_count' => 1, 'group_count' => 0]);
         $this->db->method('prepare')->willReturn($ownerStmt);
+        // The canonical-id check reads the zones table directly and finds nothing stranded.
+        $emptyStmt = $this->createMock(PDOStatement::class);
+        $emptyStmt->method('fetch')->willReturn(false);
+        $this->db->method('query')->willReturn($emptyStmt);
 
         // SOA read succeeds (one SOA record), leaving no recorded API error.
         $backend->method('getRecordsByZoneId')->willReturn([
@@ -268,6 +276,7 @@ class DatabaseConsistencyServiceTest extends TestCase
 
         $this->assertIsArray($results);
         $this->assertArrayHasKey('zones_have_owners', $results);
+        $this->assertArrayHasKey('zones_have_canonical_ids', $results);
         $this->assertArrayHasKey('zones_without_soa', $results);
     }
 }
