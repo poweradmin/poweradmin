@@ -357,4 +357,85 @@ class UserAuthenticationServiceTest extends TestCase
 
         $this->userAuthService->verifyPassword('any-password', 'not-a-recognised-hash');
     }
+
+    public function testDummyVerificationHashIsAWellFormedBcryptHash(): void
+    {
+        $hash = (new UserAuthenticationService('bcrypt', 12))->dummyVerificationHash();
+
+        $this->assertSame(60, strlen($hash));
+        $this->assertStringStartsWith('$2y$12$', $hash);
+        $this->assertNotFalse(password_get_info($hash)['algo']);
+    }
+
+    public function testDummyVerificationHashUsesTheConfiguredCost(): void
+    {
+        foreach ([10, 12, 13] as $cost) {
+            $hash = (new UserAuthenticationService('bcrypt', $cost))->dummyVerificationHash();
+            $this->assertStringStartsWith('$2y$' . sprintf('%02d', $cost) . '$', $hash);
+            $this->assertSame($cost, password_get_info($hash)['options']['cost']);
+        }
+    }
+
+    public function testDummyVerificationHashClampsAnOutOfRangeCost(): void
+    {
+        // A misconfigured cost must still yield a hash password_verify will run,
+        // otherwise the equalising verification silently becomes a no-op.
+        $this->assertStringStartsWith('$2y$04$', (new UserAuthenticationService('bcrypt', 1))->dummyVerificationHash());
+
+        // Capped well under bcrypt's maximum of 31: at that cost a single verify
+        // runs for hours, so a mistyped setting would hang every missing-user login.
+        $this->assertStringStartsWith('$2y$15$', (new UserAuthenticationService('bcrypt', 99))->dummyVerificationHash());
+        $this->assertLessThanOrEqual(15, password_get_info((new UserAuthenticationService('bcrypt', 31))->dummyVerificationHash())['options']['cost']);
+    }
+
+    public function testDummyVerificationHashDoesNotMatchAnyPassword(): void
+    {
+        $service = new UserAuthenticationService('bcrypt', 4);
+        $hash = $service->dummyVerificationHash();
+
+        foreach (['', 'password', 'hunter2', 'admin'] as $candidate) {
+            $this->assertFalse($service->verifyPassword($candidate, $hash));
+        }
+    }
+
+    public function testDummyVerificationHashCostsAboutTheSameAsARealVerification(): void
+    {
+        // The whole point is that a login for a missing user is not measurably
+        // faster than one for a real user, so the two must stay within an order
+        // of magnitude. Deliberately loose - this runs on shared CI hardware.
+        $service = new UserAuthenticationService('bcrypt', 8);
+        $realHash = $service->hashPassword('correct-horse');
+
+        $start = microtime(true);
+        $service->verifyPassword('wrong', $realHash);
+        $real = microtime(true) - $start;
+
+        $start = microtime(true);
+        $service->verifyPassword('wrong', $service->dummyVerificationHash());
+        $dummy = microtime(true) - $start;
+
+        $this->assertGreaterThan($real / 10, $dummy);
+        $this->assertLessThan($real * 10, $dummy);
+    }
+
+    public function testHashesThatVerifyInstantlyAreDetectableSoTheyCanBePadded(): void
+    {
+        // SqlAuthenticator pads these cases with a dummy verification. If this
+        // detection ever stops working, an externally provisioned account becomes
+        // distinguishable from a username that does not exist.
+        $this->assertNull(password_get_info('')['algo']);
+        $this->assertNull(password_get_info('0cc175b9c0f1b6a831c399e269772661:abcde')['algo']);
+
+        $bcrypt = (new UserAuthenticationService('bcrypt', 4))->dummyVerificationHash();
+        $this->assertNotNull(password_get_info($bcrypt)['algo']);
+    }
+
+    public function testDummyVerificationHashIsBcryptEvenForArgon(): void
+    {
+        // Argon installs still get a bcrypt delay rather than none; a constant per
+        // parameter set is not worth it for the residual difference.
+        $hash = (new UserAuthenticationService('argon2id', 12))->dummyVerificationHash();
+
+        $this->assertStringStartsWith('$2y$', $hash);
+    }
 }
