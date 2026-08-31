@@ -44,7 +44,7 @@ test.describe('Dashboard', () => {
         { selector: 'a[href*="/supermasters/add"]', mode: 'present', name: 'Add supermaster' },
         { selector: 'a[href*="/zones/bulk-registration"]', mode: 'present', name: 'Bulk registration' },
         { selector: 'a[href*="/password/change"]', mode: 'present', name: 'Change password' },
-        { selector: 'a[href$="/users"], a[href*="/users?"]', mode: 'visible', name: 'User administration' },
+        { selector: 'a[href$="/users"]', mode: 'visible', name: 'User administration' },
         { selector: 'a[href*="/permissions/templates"]', mode: 'present', name: 'Permission templates' },
         { selector: 'a[href*="/logout"]', mode: 'present', name: 'Logout' },
         { selector: 'a[href*="/groups"]', mode: 'visible', name: 'Groups' },

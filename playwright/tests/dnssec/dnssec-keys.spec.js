@@ -248,7 +248,7 @@ test.describe('DNSSEC Key Management', () => {
       await page.goto(`/zones/${zoneId}/dnssec`);
 
       // Scoped to the key table: an unscoped a[href*="/edit"] matches the nav dropdown
-      const activateLinks = page.locator('table a[href*="/dnssec"], table a[href*="/activate"], table a[href*="/deactivate"]');
+      const activateLinks = page.locator('table a[href*="/dnssec"]');
       test.skip(await activateLinks.count() === 0, 'zone has no DNSSEC keys to activate or deactivate');
       await expect(activateLinks.first()).toBeVisible();
     });
