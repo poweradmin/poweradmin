@@ -103,12 +103,24 @@ class SqlAuthenticator extends LoggingService
         $encryptionService = new PasswordEncryptionService($sessionKey);
         $sessionPassword = $encryptionService->decrypt($_SESSION['userpwd']);
 
+        $passwordEncryption = $this->configManager->get('security', 'password_encryption', 'bcrypt');
+        $passwordCost = $this->configManager->get('security', 'password_cost', 12);
+
+        $userAuthService = new UserAuthenticationService($passwordEncryption, $passwordCost);
+
         $stmt = $this->connection->prepare("SELECT id, fullname, password, active, email FROM users WHERE username=:username AND use_ldap=0");
         $stmt->bindValue(':username', $_SESSION["userlogin"], PDO::PARAM_STR);
         $stmt->execute();
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$rowObj) {
+            // Spend the same time as a real verification. Returning straight away
+            // answered in ~6ms where an existing username took ~212ms, which told
+            // an unauthenticated caller exactly which accounts exist. Account
+            // lockout does not cover this: it ships disabled, and a name that
+            // resolves to no user is never recorded against it.
+            $userAuthService->verifyPassword($sessionPassword, $userAuthService->dummyVerificationHash());
+
             $this->logWarning('No user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
             $this->handleFailedAuthentication();
 
@@ -116,12 +128,17 @@ class SqlAuthenticator extends LoggingService
             return;
         }
 
-        $passwordEncryption = $this->configManager->get('security', 'password_encryption', 'bcrypt');
-        $passwordCost = $this->configManager->get('security', 'password_cost', 12);
+        $storedHash = (string)($rowObj['password'] ?? '');
 
-        $userAuthService = new UserAuthenticationService($passwordEncryption, $passwordCost);
+        // An account provisioned through LDAP/OIDC/SAML stores no local hash, and a
+        // pre-4.3 row may still hold an md5 one. Both verify instantly, which would
+        // now mark those usernames as existing precisely because the missing-user
+        // path above is slow. Spend the same time before the real check.
+        if (password_get_info($storedHash)['algo'] === null) {
+            $userAuthService->verifyPassword($sessionPassword, $userAuthService->dummyVerificationHash());
+        }
 
-        if (!$userAuthService->verifyPassword($sessionPassword, $rowObj['password'])) {
+        if (!$userAuthService->verifyPassword($sessionPassword, $storedHash)) {
             $this->logWarning('Password verification failed for user {username}', ['username' => $_SESSION["userlogin"]]);
             $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             $this->handleFailedAuthentication();
