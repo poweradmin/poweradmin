@@ -21,7 +21,7 @@ test.describe('Dashboard Views', () => {
 
     test('should display quick links', async ({ page }) => {
       await page.goto('/');
-      const links = page.locator('a[href*="/"]');
+      const links = page.locator('a[data-testid$="-link"]');
       expect(await links.count()).toBeGreaterThan(0);
     });
 
@@ -51,7 +51,7 @@ test.describe('Dashboard Views', () => {
 
     test('should link to users list', async ({ page }) => {
       await page.goto('/');
-      const usersLink = page.locator('a[href$="/users"], a[href*="/users?"]');
+      const usersLink = page.locator('a[href$="/users"]');
       expect(await usersLink.count()).toBeGreaterThan(0);
     });
 
