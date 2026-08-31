@@ -207,12 +207,15 @@ test.describe('Pagination Functionality', () => {
     }
 
     await zoneRow.locator('[data-testid^="edit-zone-"]').click();
+    await page.waitForLoadState('networkidle');
 
     for (let i = 1; i <= 15; i++) {
       await page.locator('select.record-type-select, select[name*="type"]').first().selectOption('A');
       await page.locator('[data-testid="record-name-input"]').fill(`host${i}`);
       await page.locator('[data-testid="record-content-input"]').fill(`192.168.1.${i}`);
       await page.locator('[data-testid="add-record-button"]').click();
+      // Each add reloads the edit page; the next iteration must not race the reload.
+      await page.waitForLoadState('networkidle');
     }
 
     const recordsPagination = page.locator('.pagination, [data-testid*="pagination"]');

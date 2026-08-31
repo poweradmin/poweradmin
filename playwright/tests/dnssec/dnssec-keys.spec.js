@@ -360,16 +360,15 @@ test.describe('DNSSEC Key Management', () => {
 
       // Verify the form has the correct CSRF token field name
       const tokenField = page.locator('input[name="_token"]');
-      expect(await tokenField.count()).toBe(1);
+      await expect(tokenField).toHaveCount(1);
 
       // Submit the delete form
       const deleteBtn = page.locator('button[type="submit"]:has-text("Delete")').first();
       if (await deleteBtn.count() > 0) {
         await deleteBtn.click();
-        await page.waitForLoadState('networkidle');
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/Invalid CSRF token/i);
+        // Auto-retrying so a slow render cannot read the page mid-flight
+        await expect(page.locator('body')).not.toContainText(/Invalid CSRF token/i);
       }
     });
   });

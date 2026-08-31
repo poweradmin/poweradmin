@@ -94,16 +94,18 @@ test.describe('Zone Metadata Editor', () => {
     const zoneId = await getTestZoneId(page);
     if (!zoneId) return;
 
+    // Write the value here instead of inheriting it from the previous test:
+    // getTestZoneId resolves whichever zone sorts first, and that shifts while
+    // other suites create and delete zones concurrently.
     await page.goto(`/zones/${zoneId}/metadata`);
-    await page.waitForLoadState('networkidle');
+    await page.locator('.metadata-kind-select').first().selectOption('ALLOW-AXFR-FROM');
+    await page.locator('.metadata-content').first().fill('192.0.2.10');
+    await page.locator('[data-testid="save-zone-metadata"]').click();
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
 
-    const contentInput = page.locator('.metadata-content').first();
-    const value = await contentInput.inputValue();
-    expect(value).toBe('192.0.2.10');
-
-    const kindSelect = page.locator('.metadata-kind-select').first();
-    const selectedValue = await kindSelect.inputValue();
-    expect(selectedValue).toBe('ALLOW-AXFR-FROM');
+    await page.goto(`/zones/${zoneId}/metadata`);
+    await expect(page.locator('.metadata-content').first()).toHaveValue('192.0.2.10');
+    await expect(page.locator('.metadata-kind-select').first()).toHaveValue('ALLOW-AXFR-FROM');
   });
 
   test('should add new row with add button', async ({ page }) => {

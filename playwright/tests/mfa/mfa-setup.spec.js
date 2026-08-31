@@ -220,6 +220,9 @@ test.describe('MFA App Setup Flow', () => {
       if (await setupAppBtn.count() > 0) {
         await setupAppBtn.click();
 
+        // The setup page is reached by a form post; wait for it before reading the body.
+        await expect(page.locator('input[name="verification_code"]')).toBeVisible();
+
         const qrCode = page.locator('img[alt*="QR"], .qr-code, canvas');
         const bodyText = await page.locator('body').textContent();
 
@@ -239,6 +242,9 @@ test.describe('MFA App Setup Flow', () => {
 
       if (await setupAppBtn.count() > 0) {
         await setupAppBtn.click();
+
+        // The setup page is reached by a form post; wait for it before reading the body.
+        await expect(page.locator('input[name="verification_code"]')).toBeVisible();
 
         const bodyText = await page.locator('body').textContent();
         const hasManualKey = bodyText.toLowerCase().includes('manual') ||
@@ -273,6 +279,9 @@ test.describe('MFA App Setup Flow', () => {
 
       if (await setupAppBtn.count() > 0) {
         await setupAppBtn.click();
+
+        // The setup page is reached by a form post; wait for it before reading the body.
+        await expect(page.locator('input[name="verification_code"]')).toBeVisible();
 
         const copyBtn = page.locator('button:has(.bi-clipboard), button[onclick*="copy"]');
         const secretInput = page.locator('input[id="secret-key"], input[readonly]');
@@ -318,6 +327,9 @@ test.describe('MFA App Setup Flow', () => {
 
       if (await setupAppBtn.count() > 0) {
         await setupAppBtn.click();
+
+        // The setup page is reached by a form post; wait for it before reading the body.
+        await expect(page.locator('input[name="verification_code"]')).toBeVisible();
 
         const bodyText = await page.locator('body').textContent();
         const hasAppRecommendations = bodyText.toLowerCase().includes('google authenticator') ||
@@ -365,6 +377,9 @@ test.describe('MFA App Setup Flow', () => {
 
         const verifyBtn = page.locator('button[name="verify_app"], button:has-text("Verify")');
         await verifyBtn.click();
+
+        // Auto-retrying assertion: the verify navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/invalid|error|incorrect|verification code/i);
 
         const bodyText = await page.locator('body').textContent();
         const hasError = bodyText.toLowerCase().includes('invalid') ||
@@ -437,6 +452,9 @@ test.describe('Email MFA Setup Flow', () => {
 
       if (await setupEmailBtn.count() > 0) {
         await setupEmailBtn.click();
+
+        // The setup page is reached by a form post; wait for it before reading the body.
+        await expect(page.locator('input[name="verification_code"]')).toBeVisible();
 
         const bodyText = await page.locator('body').textContent();
         const hasEmailInfo = bodyText.includes('@') ||

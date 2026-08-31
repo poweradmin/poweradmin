@@ -302,10 +302,9 @@ test.describe('API Key Created', () => {
         const submitBtn = page.locator('button[type="submit"]');
         await submitBtn.click();
 
+        // Auto-retrying assertion: the submit navigation may still be in flight
         const copyBtn = page.locator('#copy-button, button:has-text("Copy")');
-        const hasCopyBtn = await copyBtn.count() > 0;
-
-        expect(hasCopyBtn || page.url().includes('api/keys')).toBeTruthy();
+        await expect(copyBtn.first()).toBeVisible();
       }
     });
 

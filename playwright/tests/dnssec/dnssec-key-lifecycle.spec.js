@@ -334,7 +334,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
 
       // Verify the form has the correct CSRF token field name
       const tokenField = page.locator('input[name="_token"]');
-      expect(await tokenField.count()).toBe(1);
+      await expect(tokenField).toHaveCount(1);
 
       // Submit the delete form
       const deleteBtn = page.locator('button[type="submit"]:has-text("Delete")').first();
