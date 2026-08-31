@@ -89,11 +89,13 @@
     "style:all": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- addons config index.php install lib tests dynamic_update.php",
     "analyse:phpstan": "phpstan analyse --level=3 --memory-limit=512M addons config index.php install lib tests dynamic_update.php",
     "analyse:taint": "psalm --taint-analysis --no-cache",
+    "lint:e2e-urls": "php playwright/tools/check-url-literals.php",
     "lint:twig": "! grep -rn 'name=\"csrf_token\"' templates/ --include='*.html' || (echo 'ERROR: Use name=\"_token\" instead of name=\"csrf_token\" for CSRF token fields' && false)",
     "analyse:all": [
         "@check:all",
         "@analyse:phpstan",
-        "@lint:twig"
+        "@lint:twig",
+        "@lint:e2e-urls"
     ],
 
     "locale:check": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -q 'fatal error'; then echo \"FAIL: $f\"; failed=1; fi; done; exit $failed",
