@@ -209,8 +209,8 @@ test.describe('DNSSEC Key Lifecycle', () => {
         return;
       }
       await page.goto(`/zones/${zoneId}/dnssec`);
-      // href*="/activate" also matches "/deactivate", so exclude it explicitly
-      const activateLink = page.locator('a[href*="/activate"]:not([href*="/deactivate"])').first();
+      // The toggle is a .../keys/{id}/edit link; only its title says which way it goes.
+      const activateLink = page.locator('a[href*="/dnssec/keys/"][title*="Activate this key"]').first();
       test.skip(await activateLink.count() === 0, 'zone has no inactive key to activate');
       await activateLink.click();
       // Auto-retrying assertion: the click navigation may still be in flight
@@ -225,7 +225,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
         return;
       }
       await page.goto(`/zones/${zoneId}/dnssec`);
-      const deactivateLink = page.locator('a[href*="/deactivate"]').first();
+      const deactivateLink = page.locator('a[href*="/dnssec/keys/"][title*="Deactivate this key"]').first();
       test.skip(await deactivateLink.count() === 0, 'zone has no active key to deactivate');
       await deactivateLink.click();
       // Auto-retrying assertion: the click navigation may still be in flight

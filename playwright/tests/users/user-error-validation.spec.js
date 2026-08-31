@@ -101,10 +101,10 @@ test.describe('User Management Error Validation', () => {
     await page.goto('/users');
 
     // Find first user edit link or go to user edit page
-    const editLinks = await page.locator('a[href*="users/edit"], [data-testid^="edit-user-"]').count();
+    const editLinks = await page.locator('table a[href*="/users/"][href$="/edit"]').count();
 
     if (editLinks > 0) {
-      await page.locator('a[href*="users/edit"], [data-testid^="edit-user-"]').first().click();
+      await page.locator('table a[href*="/users/"][href$="/edit"]').first().click();
 
       // Update description field
       const descriptionField = page.locator('input[name*="description"], textarea[name*="description"], input[name*="descr"]').first();

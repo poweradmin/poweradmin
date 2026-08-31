@@ -94,7 +94,7 @@ test.describe('404 Error Page', () => {
       const hasHomeLink = await homeLink.count() > 0;
       const has404 = bodyText.includes('404') || bodyText.toLowerCase().includes('error');
 
-      expect(hasHomeLink || has404 || page.url().includes('/')).toBeTruthy();
+      expect(hasHomeLink || has404).toBeTruthy();
     });
 
     test('should have go back button', async ({ adminPage: page }) => {
@@ -107,7 +107,7 @@ test.describe('404 Error Page', () => {
       const hasBackBtn = await backBtn.count() > 0;
       const has404 = bodyText.includes('404') || bodyText.toLowerCase().includes('error');
 
-      expect(hasBackBtn || has404 || page.url().includes('/')).toBeTruthy();
+      expect(hasBackBtn || has404).toBeTruthy();
     });
   });
 });
@@ -301,7 +301,7 @@ test.describe('User Agreement Page', () => {
         const redirectedAway = !page.url().includes('user-agreement');
         const hasAgreementContent = bodyText.toLowerCase().includes('agreement');
 
-        expect(redirectedAway || hasAgreementContent || page.url().includes('/')).toBeTruthy();
+        expect(redirectedAway || hasAgreementContent).toBeTruthy();
       }
     });
   });

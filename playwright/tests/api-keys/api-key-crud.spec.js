@@ -496,7 +496,6 @@ test.describe('API Keys User Permissions', () => {
       const bodyText = await page.locator('body').textContent();
 
       expect(url.includes('api-keys') ||
-             url.includes('/') ||
              bodyText.toLowerCase().includes('api') ||
              bodyText.toLowerCase().includes('permission')).toBeTruthy();
     });
@@ -511,7 +510,6 @@ test.describe('API Keys User Permissions', () => {
       const bodyText = await page.locator('body').textContent();
 
       expect(url.includes('api-keys') ||
-             url.includes('/') ||
              bodyText.toLowerCase().includes('api') ||
              bodyText.toLowerCase().includes('permission')).toBeTruthy();
     });
