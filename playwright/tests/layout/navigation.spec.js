@@ -218,7 +218,7 @@ test.describe('Header Navigation', () => {
       const hasError = bodyText.toLowerCase().includes('error') ||
                        bodyText.toLowerCase().includes('denied') ||
                        page.url().includes('/login');
-      expect(hasError || page.url().includes('/')).toBeTruthy();
+      expect(hasError).toBeTruthy();
     });
   });
 

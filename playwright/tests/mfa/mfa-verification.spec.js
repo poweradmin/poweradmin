@@ -31,7 +31,7 @@ test.describe('MFA Verification Page Structure', () => {
       await page.goto('/mfa/verify');
 
       const url = page.url();
-      expect(url).toMatch(/login|\//);
+      expect(url).toMatch(/login/);
     });
   });
 
@@ -53,7 +53,7 @@ test.describe('MFA Verification Page Structure', () => {
         const verificationInput = page.locator('input[name="mfa_code"], input[id="mfa_code"]');
         const hasInput = await verificationInput.count() > 0;
 
-        expect(hasInput || page.url().includes('/')).toBeTruthy();
+        expect(hasInput).toBeTruthy();
       }
     });
   });
