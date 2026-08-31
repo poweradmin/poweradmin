@@ -121,11 +121,8 @@ class SqlAuthenticator extends LoggingService
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$rowObj) {
-            // Spend the same time as a real verification. Returning straight away
-            // answered in ~6ms where an existing username took ~212ms, which told
-            // an unauthenticated caller exactly which accounts exist. Account
-            // lockout does not cover this: it ships disabled, and a name that
-            // resolves to no user is never recorded against it.
+            // A missing user answered in ~6ms where a real one took ~212ms, telling
+            // an unauthenticated caller which accounts exist. Lockout ships disabled.
             $userAuthService->verifyPassword($sessionPassword, $userAuthService->dummyVerificationHash());
 
             $this->logWarning('No user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
@@ -137,10 +134,8 @@ class SqlAuthenticator extends LoggingService
 
         $storedHash = (string)($rowObj['password'] ?? '');
 
-        // An account provisioned through LDAP/OIDC/SAML stores no local hash, and a
-        // pre-4.3 row may still hold an md5 one. Both verify instantly, which would
-        // now mark those usernames as existing precisely because the missing-user
-        // path above is slow. Spend the same time before the real check.
+        // Rows with no modern hash (LDAP/OIDC/SAML, or a legacy md5) verify instantly,
+        // which would mark those usernames as existing now the missing-user path is slow.
         if (password_get_info($storedHash)['algo'] === null) {
             $userAuthService->verifyPassword($sessionPassword, $userAuthService->dummyVerificationHash());
         }

@@ -133,7 +133,9 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $this->assertNotNull($recordId, $message);
         $this->assertTrue(
             is_int($recordId) || (is_string($recordId) && $recordId !== ''),
-            $message . ': expected a non-empty int|string identifier, got ' . var_export($recordId, true)
+            // var_export() carries the API response into the message, which taint
+            // analysis follows to an HTML sink. The type is the point here anyway.
+            $message . ': expected a non-empty int|string identifier, got ' . get_debug_type($recordId)
         );
     }
 

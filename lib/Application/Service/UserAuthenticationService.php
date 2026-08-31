@@ -33,9 +33,8 @@ class UserAuthenticationService
 {
     private const BCRYPT_MIN_COST = 4;
 
-    // Deliberately below bcrypt's formal maximum of 31. The cost is a doubling
-    // scale, so a mistyped 31 would take hours per call and hang every login for
-    // a username that does not exist, while real users keep their stored cost.
+    // Below bcrypt's maximum of 31: cost doubles per step, so a mistyped 31 would
+    // run for hours and hang every login for a username that does not exist.
     private const BCRYPT_MAX_COST = 15;
 
     // Salt and digest of a throwaway bcrypt hash; the cost is substituted per call.
