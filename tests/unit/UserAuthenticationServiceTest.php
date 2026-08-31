@@ -362,4 +362,53 @@ class UserAuthenticationServiceTest extends TestCase
 
         $this->assertTrue($result, 'Password verification should be successful for a unicode password');
     }
+
+    public function testDummyVerificationHashIsAWellFormedBcryptHash(): void
+    {
+        $hash = (new UserAuthenticationService('bcrypt', 12))->dummyVerificationHash();
+
+        $this->assertSame(60, strlen($hash));
+        $this->assertStringStartsWith('$2y$12$', $hash);
+        $this->assertNotFalse(password_get_info($hash)['algo']);
+    }
+
+    public function testDummyVerificationHashUsesTheConfiguredCost(): void
+    {
+        foreach ([10, 12, 13] as $cost) {
+            $hash = (new UserAuthenticationService('bcrypt', $cost))->dummyVerificationHash();
+            $this->assertStringStartsWith('$2y$' . sprintf('%02d', $cost) . '$', $hash);
+            $this->assertSame($cost, password_get_info($hash)['options']['cost']);
+        }
+    }
+
+    public function testDummyVerificationHashClampsAnOutOfRangeCost(): void
+    {
+        $this->assertStringStartsWith('$2y$04$', (new UserAuthenticationService('bcrypt', 1))->dummyVerificationHash());
+
+        // Capped well under bcrypt's maximum of 31: at that cost a single verify
+        // runs for hours, so a mistyped setting would hang every missing-user login.
+        $this->assertStringStartsWith('$2y$15$', (new UserAuthenticationService('bcrypt', 99))->dummyVerificationHash());
+    }
+
+    public function testDummyVerificationHashDoesNotMatchAnyPassword(): void
+    {
+        $service = new UserAuthenticationService('bcrypt', 4);
+        $hash = $service->dummyVerificationHash();
+
+        foreach (['', 'password', 'hunter2', 'admin'] as $candidate) {
+            $this->assertFalse($service->verifyPassword($candidate, $hash));
+        }
+    }
+
+    public function testHashesThatVerifyInstantlyAreDetectableSoTheyCanBePadded(): void
+    {
+        // SqlAuthenticator pads these cases with a dummy verification. If this
+        // detection ever stops working, an account with no modern hash becomes
+        // distinguishable from a username that does not exist.
+        $this->assertNull(password_get_info('')['algo']);
+        $this->assertNull(password_get_info('0cc175b9c0f1b6a831c399e269772661:abcde')['algo']);
+
+        $bcrypt = (new UserAuthenticationService('bcrypt', 4))->dummyVerificationHash();
+        $this->assertNotNull(password_get_info($bcrypt)['algo']);
+    }
 }

@@ -72,12 +72,23 @@ class SqlAuthenticator extends LoggingService
         $passwordEncryptionService = new PasswordEncryptionService($session_key);
         $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
 
+        $config = new AppConfiguration();
+        $userAuthService = new UserAuthenticationService(
+            $config->get('password_encryption'),
+            $config->get('password_encryption_cost')
+        );
+
         $stmt = $this->db->prepare("SELECT id, fullname, password, active FROM users WHERE username=:username AND use_ldap=0");
         $stmt->bindParam(':username', $_SESSION["userlogin"]);
         $stmt->execute();
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$rowObj) {
+            // Spend the same time as a real verification. Returning straight away
+            // answered far faster than an existing username, which told an
+            // unauthenticated caller exactly which accounts exist.
+            $userAuthService->verifyPassword($session_pass, $userAuthService->dummyVerificationHash());
+
             $this->logWarning('No user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
             $this->handleFailedAuthentication();
 
@@ -85,13 +96,16 @@ class SqlAuthenticator extends LoggingService
             return;
         }
 
-        $config = new AppConfiguration();
-        $userAuthService = new UserAuthenticationService(
-            $config->get('password_encryption'),
-            $config->get('password_encryption_cost')
-        );
+        $storedHash = (string)($rowObj['password'] ?? '');
 
-        if (!$userAuthService->verifyPassword($session_pass, $rowObj['password'])) {
+        // A row with no usable modern hash verifies instantly, which would now mark
+        // that username as existing precisely because the missing-user path above
+        // is slow. Spend the same time before the real check.
+        if (password_get_info($storedHash)['algo'] === null) {
+            $userAuthService->verifyPassword($session_pass, $userAuthService->dummyVerificationHash());
+        }
+
+        if (!$userAuthService->verifyPassword($session_pass, $storedHash)) {
             $this->logWarning('Password verification failed for user {username}', ['username' => $_SESSION["userlogin"]]);
             $this->handleFailedAuthentication();
 
