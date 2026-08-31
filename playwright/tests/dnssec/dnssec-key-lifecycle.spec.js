@@ -177,7 +177,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
         return;
       }
       await page.goto(`/zones/${zoneId}/dnssec`);
-      const activateLink = page.locator('a[href*="/activate"], a:has-text("Activate")').first();
+      const activateLink = page.locator('a[href*="/dnssec/keys/"][title*="Activate this key"]').first();
       if (await activateLink.count() > 0) {
         await activateLink.click();
         // Auto-retrying assertion: the click navigation may still be in flight
@@ -193,7 +193,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
         return;
       }
       await page.goto(`/zones/${zoneId}/dnssec`);
-      const deactivateLink = page.locator('a[href*="/deactivate"], a:has-text("Deactivate")').first();
+      const deactivateLink = page.locator('a[href*="/dnssec/keys/"][title*="Deactivate this key"]').first();
       if (await deactivateLink.count() > 0) {
         await deactivateLink.click();
         // Auto-retrying assertion: the click navigation may still be in flight
