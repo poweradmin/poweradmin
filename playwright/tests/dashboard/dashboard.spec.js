@@ -81,7 +81,7 @@ test.describe('Dashboard', () => {
     });
 
     test('should have User administration link', async ({ page }) => {
-      const userAdminLink = page.locator('a[href$="/users"], a[href*="/users?"]').first();
+      const userAdminLink = page.locator('a[href$="/users"]').first();
       await expect(userAdminLink).toBeVisible();
     });
 
