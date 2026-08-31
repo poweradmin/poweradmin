@@ -406,8 +406,9 @@ class MfaService
                     }
                 }
 
-                // Verify the code (trim to handle potential whitespace)
-                $isValid = trim($storedSecret) === trim($code);
+                // Constant-time, and cast because getSecret() is nullable even though
+                // the guard above means null cannot reach here.
+                $isValid = hash_equals(trim((string) $storedSecret), trim($code));
 
                 if ($isValid) {
                     error_log("[MfaService] Valid email code for user ID: $userId");
