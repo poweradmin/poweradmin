@@ -26,7 +26,7 @@ test.describe('API Keys List', () => {
       const url = page.url();
       const bodyText = await page.locator('body').textContent();
 
-      const isOnApiKeysPage = url.includes('api/keys');
+      const isOnApiKeysPage = url.includes('api-keys');
       const hasApiKeysContent = bodyText.toLowerCase().includes('api key');
       const isFeatureUnavailable = bodyText.toLowerCase().includes('not available') ||
                                     bodyText.toLowerCase().includes('permission');
@@ -49,7 +49,7 @@ test.describe('API Keys List', () => {
       const breadcrumb = page.locator('nav[aria-label="breadcrumb"], .breadcrumb');
       const hasBreadcrumb = await breadcrumb.count() > 0;
 
-      expect(hasBreadcrumb || page.url().includes('api/keys')).toBeTruthy();
+      expect(hasBreadcrumb).toBeTruthy();
     });
 
     test('should require login to access API keys', async ({ page }) => {
@@ -108,7 +108,7 @@ test.describe('API Keys List', () => {
       const hasAddBtn = await addBtn.count() > 0;
       const hasMaxKeysWarning = bodyText.toLowerCase().includes('maximum number');
 
-      expect(hasAddBtn || hasMaxKeysWarning || !page.url().includes('api/keys')).toBeTruthy();
+      expect(hasAddBtn || hasMaxKeysWarning || !page.url().includes('api-keys')).toBeTruthy();
     });
   });
 });
@@ -159,7 +159,7 @@ test.describe('Add API Key', () => {
       const expiresInput = page.locator('input[name="expires_at"], input#expires_at, input[type="date"]');
       const hasExpiresInput = await expiresInput.count() > 0;
 
-      expect(hasExpiresInput || page.url().includes('api/keys')).toBeTruthy();
+      expect(hasExpiresInput).toBeTruthy();
     });
 
     test('should have create API key button', async ({ page }) => {
@@ -178,7 +178,7 @@ test.describe('Add API Key', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/settings/api-keys/add');
 
-      const cancelBtn = page.locator('a:has-text("Cancel"), a[href*="api/keys"]');
+      const cancelBtn = page.locator('a:has-text("Cancel"), a[href*="api-keys"]');
       const hasCancelBtn = await cancelBtn.count() > 0;
 
       expect(hasCancelBtn || !page.url().includes('/add')).toBeTruthy();
@@ -308,7 +308,7 @@ test.describe('API Key Created', () => {
         const copyBtn = page.locator('#copy-button, button:has-text("Copy")');
         const hasCopyBtn = await copyBtn.count() > 0;
 
-        expect(hasCopyBtn || page.url().includes('api/keys')).toBeTruthy();
+        expect(hasCopyBtn).toBeTruthy();
       }
     });
 
@@ -376,7 +376,7 @@ test.describe('Delete API Key', () => {
 
         const hasWarning = bodyText.toLowerCase().includes('warning') ||
                            bodyText.toLowerCase().includes('cannot be undone');
-        expect(hasWarning || page.url().includes('api/keys')).toBeTruthy();
+        expect(hasWarning).toBeTruthy();
       }
     });
 
@@ -392,7 +392,7 @@ test.describe('Delete API Key', () => {
         const confirmBtn = page.locator('button[type="submit"]:has-text("Yes"), button:has-text("delete")');
         const hasConfirmBtn = await confirmBtn.count() > 0;
 
-        expect(hasConfirmBtn || page.url().includes('api/keys')).toBeTruthy();
+        expect(hasConfirmBtn).toBeTruthy();
       }
     });
 
@@ -408,7 +408,7 @@ test.describe('Delete API Key', () => {
         const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
         const hasCancelBtn = await cancelBtn.count() > 0;
 
-        expect(hasCancelBtn || page.url().includes('api/keys')).toBeTruthy();
+        expect(hasCancelBtn).toBeTruthy();
       }
     });
   });
@@ -446,7 +446,7 @@ test.describe('API Key Actions', () => {
       const bodyText = await page.locator('body').textContent();
       const hasNoKeys = bodyText.toLowerCase().includes('no api keys');
 
-      expect(hasRegenerate || hasNoKeys || page.url().includes('api/keys')).toBeTruthy();
+      expect(hasRegenerate || hasNoKeys).toBeTruthy();
     });
   });
 
@@ -461,7 +461,7 @@ test.describe('API Key Actions', () => {
       const bodyText = await page.locator('body').textContent();
       const hasNoKeys = bodyText.toLowerCase().includes('no api keys');
 
-      expect(hasToggle || hasNoKeys || page.url().includes('api/keys')).toBeTruthy();
+      expect(hasToggle || hasNoKeys).toBeTruthy();
     });
   });
 
@@ -476,7 +476,7 @@ test.describe('API Key Actions', () => {
       const bodyText = await page.locator('body').textContent();
       const hasNoKeys = bodyText.toLowerCase().includes('no api keys');
 
-      expect(hasEdit || hasNoKeys || page.url().includes('api/keys')).toBeTruthy();
+      expect(hasEdit || hasNoKeys).toBeTruthy();
     });
   });
 });
@@ -490,7 +490,7 @@ test.describe('API Keys User Permissions', () => {
       const url = page.url();
       const bodyText = await page.locator('body').textContent();
 
-      const hasAccess = url.includes('api/keys') ||
+      const hasAccess = url.includes('api-keys') ||
                         bodyText.toLowerCase().includes('api key');
       expect(hasAccess || bodyText.toLowerCase().includes('permission')).toBeTruthy();
     });
@@ -504,8 +504,7 @@ test.describe('API Keys User Permissions', () => {
       const url = page.url();
       const bodyText = await page.locator('body').textContent();
 
-      expect(url.includes('api/keys') ||
-             url.includes('/') ||
+      expect(url.includes('api-keys') ||
              bodyText.toLowerCase().includes('api') ||
              bodyText.toLowerCase().includes('permission')).toBeTruthy();
     });
@@ -519,8 +518,7 @@ test.describe('API Keys User Permissions', () => {
       const url = page.url();
       const bodyText = await page.locator('body').textContent();
 
-      expect(url.includes('api/keys') ||
-             url.includes('/') ||
+      expect(url.includes('api-keys') ||
              bodyText.toLowerCase().includes('api') ||
              bodyText.toLowerCase().includes('permission')).toBeTruthy();
     });

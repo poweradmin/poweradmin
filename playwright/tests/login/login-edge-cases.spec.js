@@ -170,7 +170,7 @@ test.describe('Login Edge Cases', () => {
       await page.locator('input[name="username"]').fill(users.admin.username);
       await page.locator('input[name="password"]').fill(users.admin.password);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      await page.waitForURL(/\//);
+      await page.waitForLoadState('networkidle');
       // Attempt to go back and check
       await page.goBack();
       const bodyText = await page.locator('body').textContent();

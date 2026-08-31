@@ -200,7 +200,8 @@ test.describe('Zone Operations', () => {
       const editLink = page.locator('table a[href*="/edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
-        const addOwnerLink = page.locator('a[href*="owner/add"]').first();
+        await page.waitForLoadState('networkidle');
+        const addOwnerLink = page.locator('a[href*="/ownership"]').first();
         if (await addOwnerLink.count() > 0) {
           await addOwnerLink.click();
           const bodyText = await page.locator('body').textContent();
