@@ -31,6 +31,16 @@ use InvalidArgumentException;
  */
 class UserAuthenticationService
 {
+    private const BCRYPT_MIN_COST = 4;
+
+    // Deliberately below bcrypt's formal maximum of 31. The cost is a doubling
+    // scale, so a mistyped 31 would take hours per call and hang every login for
+    // a username that does not exist, while real users keep their stored cost.
+    private const BCRYPT_MAX_COST = 15;
+
+    // Salt and digest of a throwaway bcrypt hash; the cost is substituted per call.
+    private const DUMMY_HASH_BODY = 'OPL9hjoN8TlGTl8o61FNyeKnDtoTDDJVWOcOpa88I4pU2PXCbHeiK';
+
     private string $passwordEncryption;
     private int $passwordEncryptionCost;
 
@@ -38,6 +48,25 @@ class UserAuthenticationService
     {
         $this->passwordEncryption = $passwordEncryption;
         $this->passwordEncryptionCost = $passwordEncryptionCost;
+    }
+
+    /**
+     * A well-formed bcrypt hash that no submitted password is expected to match,
+     * at the configured cost.
+     *
+     * Callers use it to spend the same time on a login for a user that does not
+     * exist as on one that does. Only the cost digits are substituted - the salt
+     * and digest stay valid, so password_verify() runs the full key derivation
+     * before returning false, and no hash has to be computed per request.
+     *
+     * Always bcrypt: an argon2i/argon2id install still gets most of the delay,
+     * which is the point, without needing a constant per parameter set.
+     */
+    public function dummyVerificationHash(): string
+    {
+        $cost = max(self::BCRYPT_MIN_COST, min(self::BCRYPT_MAX_COST, $this->passwordEncryptionCost));
+
+        return '$2y$' . sprintf('%02d', $cost) . '$' . self::DUMMY_HASH_BODY;
     }
 
     /**
