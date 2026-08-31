@@ -150,6 +150,7 @@ class ApiKeyServiceTest extends TestCase
         $apiKey->method('getId')->willReturn(1);
         $apiKey->method('getCreatedBy')->willReturn(42);
 
+        $this->mockOwnerRow(['active' => 1]);
         $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
         $this->apiKeyRepository->expects($this->once())
             ->method('updateLastUsed')
@@ -174,6 +175,7 @@ class ApiKeyServiceTest extends TestCase
         $apiKey->method('getId')->willReturn(1);
         $apiKey->method('getCreatedBy')->willReturn(42);
 
+        $this->mockOwnerRow(['active' => 1]);
         $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
         $this->apiKeyRepository->expects($this->once())
             ->method('updateLastUsed')
@@ -255,6 +257,7 @@ class ApiKeyServiceTest extends TestCase
         $apiKey->method('getId')->willReturn(1);
         $apiKey->method('getCreatedBy')->willReturn(42);
 
+        $this->mockOwnerRow(['active' => 1]);
         $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
         $this->apiKeyRepository->expects($this->once())->method('updateLastUsed')->with(1);
 
@@ -274,6 +277,7 @@ class ApiKeyServiceTest extends TestCase
         $apiKey->method('getId')->willReturn(1);
         $apiKey->method('getCreatedBy')->willReturn(42);
 
+        $this->mockOwnerRow(['active' => 1]);
         $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
 
         $this->assertEquals(42, $this->service->getUserIdFromApiKey('pwa_valid_key_no_expiry'));
@@ -292,6 +296,7 @@ class ApiKeyServiceTest extends TestCase
         $apiKey->method('getId')->willReturn(1);
         $apiKey->method('getCreatedBy')->willReturn(42);
 
+        $this->mockOwnerRow(['active' => 1]);
         $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
         $this->apiKeyRepository->expects($this->once())
             ->method('updateLastUsed')
@@ -300,6 +305,93 @@ class ApiKeyServiceTest extends TestCase
         // Test with a key that doesn't start with 'pwa_'
         $result = $this->service->authenticate('legacy_api_key_format');
         $this->assertTrue($result);
+    }
+
+    /**
+     * Answer the owner-active lookup that every key resolution now performs.
+     * Pass false to model a created_by pointing at a row that no longer exists.
+     */
+    private function mockOwnerRow(array|false $row): void
+    {
+        $this->db->method('prepare')->willReturnCallback(function () use ($row) {
+            $stmt = $this->createMock(\PDOStatement::class);
+            $stmt->method('execute')->willReturn(true);
+            $stmt->method('fetch')->willReturn($row);
+            return $stmt;
+        });
+    }
+
+    private function validKeyOwnedBy(?int $ownerId): ApiKey&MockObject
+    {
+        $this->config->method('get')
+            ->willReturnMap([
+                ['api', 'enabled', false, true],
+            ]);
+
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('isValid')->willReturn(true);
+        $apiKey->method('getId')->willReturn(1);
+        $apiKey->method('getCreatedBy')->willReturn($ownerId);
+        $this->apiKeyRepository->method('findBySecretKey')->willReturn($apiKey);
+
+        return $apiKey;
+    }
+
+    #[Test]
+    public function testAuthenticateReturnsFalseWhenOwnerIsDeactivated(): void
+    {
+        $this->validKeyOwnedBy(42);
+        $this->mockOwnerRow(['active' => 0]);
+        $this->apiKeyRepository->expects($this->never())->method('updateLastUsed');
+
+        $this->assertFalse($this->service->authenticate('pwa_valid_key'));
+        $this->assertArrayNotHasKey('userid', $_SESSION);
+    }
+
+    #[Test]
+    public function testAuthenticateReturnsFalseWhenOwnerRowIsMissing(): void
+    {
+        // created_by points at a deleted user: unattributable, so it fails closed.
+        $this->validKeyOwnedBy(42);
+        $this->mockOwnerRow(false);
+
+        $this->assertFalse($this->service->authenticate('pwa_valid_key'));
+    }
+
+    #[Test]
+    public function testAuthenticateReturnsFalseWhenKeyHasNoOwner(): void
+    {
+        $this->validKeyOwnedBy(null);
+
+        $this->assertFalse($this->service->authenticate('pwa_orphan_key'));
+    }
+
+    #[Test]
+    public function testGetUserIdFromApiKeyReturnsZeroWhenOwnerIsDeactivated(): void
+    {
+        $this->validKeyOwnedBy(42);
+        $this->mockOwnerRow(['active' => 0]);
+
+        $this->assertEquals(0, $this->service->getUserIdFromApiKey('pwa_valid_key'));
+    }
+
+    #[Test]
+    public function testGetScopeFromApiKeyReturnsNullWhenOwnerIsDeactivated(): void
+    {
+        $this->validKeyOwnedBy(42);
+        $this->mockOwnerRow(['active' => 0]);
+        $this->apiKeyRepository->expects($this->never())->method('getZoneIds');
+
+        $this->assertNull($this->service->getScopeFromApiKey('pwa_valid_key'));
+    }
+
+    #[Test]
+    public function testGetIdFromApiKeyReturnsNullWhenOwnerIsDeactivated(): void
+    {
+        $this->validKeyOwnedBy(42);
+        $this->mockOwnerRow(['active' => 0]);
+
+        $this->assertNull($this->service->getIdFromApiKey('pwa_valid_key'));
     }
 
     /**

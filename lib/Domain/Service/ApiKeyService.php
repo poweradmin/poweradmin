@@ -396,8 +396,8 @@ class ApiKeyService
      */
     private function authenticateWithKey(string $secretKey): bool
     {
-        $apiKey = $this->apiKeyRepository->findBySecretKey($secretKey);
-        if ($apiKey === null || !$apiKey->isValid()) {
+        $apiKey = $this->resolveUsableKey($secretKey);
+        if ($apiKey === null) {
             return false;
         }
 
@@ -418,8 +418,8 @@ class ApiKeyService
         }
 
         try {
-            $apiKey = $this->apiKeyRepository->findBySecretKey($secretKey);
-            if ($apiKey === null || !$apiKey->isValid()) {
+            $apiKey = $this->resolveUsableKey($secretKey);
+            if ($apiKey === null) {
                 return 0;
             }
 
@@ -442,8 +442,8 @@ class ApiKeyService
         }
 
         try {
-            $apiKey = $this->apiKeyRepository->findBySecretKey($secretKey);
-            if ($apiKey === null || !$apiKey->isValid()) {
+            $apiKey = $this->resolveUsableKey($secretKey);
+            if ($apiKey === null) {
                 return null;
             }
 
@@ -472,8 +472,8 @@ class ApiKeyService
         }
 
         try {
-            $apiKey = $this->apiKeyRepository->findBySecretKey($secretKey);
-            if ($apiKey === null || !$apiKey->isValid()) {
+            $apiKey = $this->resolveUsableKey($secretKey);
+            if ($apiKey === null) {
                 return null;
             }
 
@@ -488,6 +488,53 @@ class ApiKeyService
             $this->logger->error('Failed to resolve API key scope: {error}', ['error' => $e->getMessage()]);
             return null;
         }
+    }
+
+    /**
+     * Resolve a key only when the key itself is usable and the user it was issued
+     * to is still active. Deactivating a user has to revoke their keys: password
+     * login already refuses an inactive account, so a key that skipped this check
+     * kept the deactivated owner's permissions and zone scope.
+     *
+     * Fails closed - a key that cannot be attributed to a live user (no
+     * created_by, or the row is gone) is rejected rather than let through unowned.
+     */
+    private function resolveUsableKey(string $secretKey): ?ApiKey
+    {
+        $apiKey = $this->apiKeyRepository->findBySecretKey($secretKey);
+        if ($apiKey === null || !$apiKey->isValid()) {
+            return null;
+        }
+
+        if (!$this->ownerIsActive($apiKey->getCreatedBy())) {
+            $this->logger->warning('API key {id} rejected: owner is inactive or no longer exists', [
+                'id' => $apiKey->getId()
+            ]);
+            return null;
+        }
+
+        return $apiKey;
+    }
+
+    private function ownerIsActive(?int $userId): bool
+    {
+        if ($userId === null) {
+            return false;
+        }
+
+        // Fail closed on a lookup error: authenticate() has no try block of its
+        // own, so a throw here would surface as a 500 instead of an auth failure.
+        try {
+            $stmt = $this->db->prepare("SELECT active FROM users WHERE id = :user_id");
+            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            $this->logger->error('Failed to verify API key owner: {error}', ['error' => $e->getMessage()]);
+            return false;
+        }
+
+        return is_array($row) && (int)($row['active'] ?? 0) === 1;
     }
 
     /**
