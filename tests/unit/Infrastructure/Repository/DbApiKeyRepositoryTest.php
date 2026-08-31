@@ -74,6 +74,62 @@ class DbApiKeyRepositoryTest extends TestCase
         ], $overrides);
     }
 
+    // ========== findBySecretKey tests ==========
+
+    /**
+     * Drive the real scan loop in findBySecretKey(): query() returns the candidate
+     * rows, and a match is then re-read by id. Nothing else covers this loop -
+     * ApiKeyServiceTest mocks the repository, so the comparison never runs there.
+     */
+    private function mockSecretKeyScan(array $rows, array|false $byIdRow): void
+    {
+        $scan = $this->createMock(PDOStatement::class);
+        $scan->method('fetch')->willReturnOnConsecutiveCalls(...array_merge($rows, [false]));
+        $this->db->method('query')->willReturn($scan);
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn($byIdRow);
+        $this->db->method('prepare')->willReturn($stmt);
+    }
+
+    #[Test]
+    public function testFindBySecretKeyReturnsApiKeyOnExactMatch(): void
+    {
+        $row = $this->createApiKeyDbRow(['secret_key' => 'pwa_correct_key']);
+        $this->mockSecretKeyScan([
+            $this->createApiKeyDbRow(['id' => 7, 'secret_key' => 'pwa_other_key']),
+            $row,
+        ], $row);
+
+        $result = $this->repository->findBySecretKey('pwa_correct_key');
+
+        $this->assertInstanceOf(ApiKey::class, $result);
+        $this->assertEquals('Test API Key', $result->getName());
+    }
+
+    #[Test]
+    public function testFindBySecretKeyReturnsNullWhenNoKeyMatches(): void
+    {
+        $this->mockSecretKeyScan([
+            $this->createApiKeyDbRow(['id' => 7, 'secret_key' => 'pwa_other_key']),
+        ], false);
+
+        $this->assertNull($this->repository->findBySecretKey('pwa_correct_key'));
+    }
+
+    #[Test]
+    public function testFindBySecretKeyDoesNotMatchOnASharedPrefix(): void
+    {
+        // A prefix match must not be treated as a hit: hash_equals compares the
+        // whole value, and a partial match is exactly what a timing probe submits.
+        $this->mockSecretKeyScan([
+            $this->createApiKeyDbRow(['secret_key' => 'pwa_correct_key_full']),
+        ], false);
+
+        $this->assertNull($this->repository->findBySecretKey('pwa_correct_key'));
+    }
+
     // ========== findById tests ==========
 
     #[Test]
