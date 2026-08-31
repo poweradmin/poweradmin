@@ -132,8 +132,9 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
                     'suffix' => substr($row['secret_key'], -4),
                 ]);
 
-                // Check for exact match
-                if ($row['secret_key'] === $secretKey) {
+                // Constant-time so the comparison itself does not reveal how much
+                // of a candidate key was correct.
+                if (hash_equals($row['secret_key'], $secretKey)) {
                     $this->logger->debug('[DbApiKeyRepository] Exact match found with ID: {id}', ['id' => $row['id']]);
                     $found = true;
                     $foundId = $row['id'];

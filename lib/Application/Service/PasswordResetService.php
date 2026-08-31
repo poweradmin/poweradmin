@@ -273,7 +273,9 @@ class PasswordResetService
         $tokens = $this->tokenRepository->findActiveTokens();
 
         foreach ($tokens as $tokenData) {
-            if ($token === $tokenData['token']) {
+            // Constant-time so the comparison itself does not reveal how much of a
+            // candidate token was correct.
+            if (hash_equals((string)$tokenData['token'], $token)) {
                 // Check if already used
                 if ($tokenData['used']) {
                     $this->logger->warning('Attempted to use already used password reset token', [
