@@ -377,6 +377,12 @@ class ApiKeyService
                     return false;
                 }
 
+                // Deactivating a user has to revoke their keys: password login
+                // already refuses an inactive account.
+                if (!$this->ownerIsActive($keyData['created_by'] === null ? null : (int)$keyData['created_by'])) {
+                    return false;
+                }
+
                 // Set session variables for the authenticated user
                 $_SESSION['userid'] = $keyData['created_by'];
                 $_SESSION['auth_used'] = 'api_key';
@@ -398,6 +404,10 @@ class ApiKeyService
         }
 
         if (!$apiKey->isValid()) {
+            return false;
+        }
+
+        if (!$this->ownerIsActive($apiKey->getCreatedBy())) {
             return false;
         }
 
@@ -441,6 +451,10 @@ class ApiKeyService
                     return 0;
                 }
 
+                if (!$this->ownerIsActive($keyData['created_by'] === null ? null : (int)$keyData['created_by'])) {
+                    return 0;
+                }
+
                 // Update last used timestamp (database-agnostic using DbCompat)
                 $dbType = $this->config->get('database', 'type', 'mysql');
                 $nowFunc = DbCompat::now($dbType);
@@ -453,5 +467,31 @@ class ApiKeyService
         }
 
         return 0;
+    }
+
+    /**
+     * True only when the key can be attributed to a live account. Fails closed for
+     * a missing created_by or a user row that is gone, so an unattributable key is
+     * rejected rather than let through unowned.
+     */
+    private function ownerIsActive(?int $userId): bool
+    {
+        if ($userId === null) {
+            return false;
+        }
+
+        // Fail closed on a lookup error: the repository fallback path this also
+        // guards runs outside any try block, so a throw here would surface as a
+        // 500 instead of an auth failure.
+        try {
+            $stmt = $this->db->prepare("SELECT active FROM users WHERE id = :user_id");
+            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            return false;
+        }
+
+        return is_array($row) && (int)($row['active'] ?? 0) === 1;
     }
 }

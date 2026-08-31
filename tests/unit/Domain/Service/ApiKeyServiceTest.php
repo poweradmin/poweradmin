@@ -73,6 +73,21 @@ class ApiKeyServiceTest extends TestCase
         parent::tearDown();
     }
 
+    /**
+     * Send the owner-active lookup to its own statement; every other query keeps
+     * the key-row mock. Pass 0 to model a deactivated owner.
+     */
+    private function prepareWithActiveOwner(PDOStatement $stmt, int $active = 1): void
+    {
+        $ownerStmt = $this->createMock(PDOStatement::class);
+        $ownerStmt->method('execute')->willReturn(true);
+        $ownerStmt->method('fetch')->willReturn(['active' => $active]);
+
+        $this->db->method('prepare')->willReturnCallback(
+            static fn(string $query) => str_contains($query, 'FROM users') ? $ownerStmt : $stmt
+        );
+    }
+
     #[Test]
     public function testGetDbReturnsDbConnection(): void
     {
@@ -103,7 +118,7 @@ class ApiKeyServiceTest extends TestCase
         $stmt->method('execute')->willReturn(true);
         $stmt->method('fetch')->willReturn(false);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->prepareWithActiveOwner($stmt);
 
         $this->apiKeyRepository->method('findBySecretKey')->willReturn(null);
 
@@ -129,7 +144,7 @@ class ApiKeyServiceTest extends TestCase
             'expires_at' => null,
         ]);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->prepareWithActiveOwner($stmt);
 
         $result = $this->service->authenticate('pwa_disabled_key');
         $this->assertFalse($result);
@@ -153,7 +168,7 @@ class ApiKeyServiceTest extends TestCase
             'expires_at' => '2020-01-01 00:00:00', // Expired date
         ]);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->prepareWithActiveOwner($stmt);
 
         $result = $this->service->authenticate('pwa_expired_key');
         $this->assertFalse($result);
@@ -179,7 +194,7 @@ class ApiKeyServiceTest extends TestCase
             'expires_at' => $futureDate,
         ]);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->prepareWithActiveOwner($stmt);
 
         $this->apiKeyRepository->expects($this->once())
             ->method('updateLastUsed')
@@ -209,7 +224,7 @@ class ApiKeyServiceTest extends TestCase
             'expires_at' => null, // No expiration
         ]);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->prepareWithActiveOwner($stmt);
 
         $this->apiKeyRepository->expects($this->once())
             ->method('updateLastUsed')
@@ -242,7 +257,7 @@ class ApiKeyServiceTest extends TestCase
         $stmt->method('execute')->willReturn(true);
         $stmt->method('fetch')->willReturn(false);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->prepareWithActiveOwner($stmt);
 
         $result = $this->service->getUserIdFromApiKey('pwa_invalid_key');
         $this->assertEquals(0, $result);
@@ -264,7 +279,7 @@ class ApiKeyServiceTest extends TestCase
             'expires_at' => null,
         ]);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->prepareWithActiveOwner($stmt);
 
         $result = $this->service->getUserIdFromApiKey('pwa_disabled_key');
         $this->assertEquals(0, $result);
@@ -286,7 +301,7 @@ class ApiKeyServiceTest extends TestCase
             'expires_at' => '2020-01-01 00:00:00',
         ]);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->prepareWithActiveOwner($stmt);
 
         $result = $this->service->getUserIdFromApiKey('pwa_expired_key');
         $this->assertEquals(0, $result);
@@ -314,8 +329,17 @@ class ApiKeyServiceTest extends TestCase
         $updateStmt = $this->createMock(PDOStatement::class);
         $updateStmt->method('execute')->willReturn(true);
 
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($selectStmt, $updateStmt);
+        $ownerStmt = $this->createMock(PDOStatement::class);
+        $ownerStmt->method('execute')->willReturn(true);
+        $ownerStmt->method('fetch')->willReturn(['active' => 1]);
+
+        $this->db->method('prepare')->willReturnCallback(
+            static fn(string $query) => match (true) {
+                str_contains($query, 'FROM users') => $ownerStmt,
+                str_contains($query, 'UPDATE api_keys') => $updateStmt,
+                default => $selectStmt,
+            }
+        );
 
         $result = $this->service->getUserIdFromApiKey('pwa_valid_key');
         $this->assertEquals(42, $result);
@@ -341,8 +365,17 @@ class ApiKeyServiceTest extends TestCase
         $updateStmt = $this->createMock(PDOStatement::class);
         $updateStmt->method('execute')->willReturn(true);
 
-        $this->db->method('prepare')
-            ->willReturnOnConsecutiveCalls($selectStmt, $updateStmt);
+        $ownerStmt = $this->createMock(PDOStatement::class);
+        $ownerStmt->method('execute')->willReturn(true);
+        $ownerStmt->method('fetch')->willReturn(['active' => 1]);
+
+        $this->db->method('prepare')->willReturnCallback(
+            static fn(string $query) => match (true) {
+                str_contains($query, 'FROM users') => $ownerStmt,
+                str_contains($query, 'UPDATE api_keys') => $updateStmt,
+                default => $selectStmt,
+            }
+        );
 
         $result = $this->service->getUserIdFromApiKey('pwa_valid_key_no_expiry');
         $this->assertEquals(42, $result);
@@ -369,6 +402,52 @@ class ApiKeyServiceTest extends TestCase
     }
 
     #[Test]
+    public function testAuthenticateReturnsFalseWhenOwnerIsDeactivated(): void
+    {
+        $this->config->method('get')
+            ->willReturnMap([
+                ['api', 'enabled', false, true],
+            ]);
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn([
+            'id' => 1,
+            'name' => 'Test Key',
+            'created_by' => 42,
+            'disabled' => false,
+            'expires_at' => (new DateTime('+1 year'))->format('Y-m-d H:i:s'),
+        ]);
+
+        $this->prepareWithActiveOwner($stmt, 0);
+        $this->apiKeyRepository->expects($this->never())->method('updateLastUsed');
+
+        $this->assertFalse($this->service->authenticate('pwa_valid_key'));
+        $this->assertArrayNotHasKey('userid', $_SESSION);
+    }
+
+    #[Test]
+    public function testGetUserIdFromApiKeyReturnsZeroWhenOwnerIsDeactivated(): void
+    {
+        $this->config->method('get')
+            ->willReturnMap([
+                ['api', 'enabled', false, true],
+            ]);
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn([
+            'created_by' => 42,
+            'disabled' => false,
+            'expires_at' => (new DateTime('+1 year'))->format('Y-m-d H:i:s'),
+        ]);
+
+        $this->prepareWithActiveOwner($stmt, 0);
+
+        $this->assertEquals(0, $this->service->getUserIdFromApiKey('pwa_valid_key'));
+    }
+
+    #[Test]
     public function testAuthenticateFallsBackToRepositoryAndSucceeds(): void
     {
         $this->config->method('get')
@@ -376,9 +455,20 @@ class ApiKeyServiceTest extends TestCase
                 ['api', 'enabled', false, true],
             ]);
 
-        // Make the direct DB query throw an exception
-        $this->db->method('prepare')
-            ->willThrowException(new \Exception('Database error'));
+        // Only the direct key lookup throws; the owner check still has to resolve,
+        // otherwise it fails closed and the repository fallback can never succeed.
+        $ownerStmt = $this->createMock(PDOStatement::class);
+        $ownerStmt->method('execute')->willReturn(true);
+        $ownerStmt->method('fetch')->willReturn(['active' => 1]);
+
+        $this->db->method('prepare')->willReturnCallback(
+            static function (string $query) use ($ownerStmt) {
+                if (str_contains($query, 'FROM users')) {
+                    return $ownerStmt;
+                }
+                throw new \Exception('Database error');
+            }
+        );
 
         // Create a valid ApiKey mock
         $apiKey = $this->createMock(ApiKey::class);
@@ -440,7 +530,7 @@ class ApiKeyServiceTest extends TestCase
             'expires_at' => null,
         ]);
 
-        $this->db->method('prepare')->willReturn($stmt);
+        $this->prepareWithActiveOwner($stmt);
 
         $this->apiKeyRepository->expects($this->once())
             ->method('updateLastUsed')
