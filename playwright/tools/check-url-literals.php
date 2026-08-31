@@ -39,10 +39,15 @@ use Symfony\Component\Routing\Loader\YamlFileLoader;
 
 $root = dirname(__DIR__, 2);
 
-// Fragments that are real but come from somewhere other than a route path:
-// query strings the app builds, and hash/protocol pieces of an absolute URL.
-$allowed = [
+// A "contains" test on this is true of every url, so it can never fail.
+$tautologies = [
     '/',
+];
+
+// Real fragments that no route path can contain by construction: '/?' is the
+// index with a query string, which the router never sees as part of the path.
+$nonRoute = [
+    '/?',
 ];
 
 $routes = (new YamlFileLoader(new FileLocator([$root . '/lib/Application/Config'])))->load('routes.yaml');
@@ -147,7 +152,7 @@ foreach ($specFiles as $file) {
             }
 
             // True of every URL, so any assertion resting on it can never fail.
-            if ($isContains && in_array($raw, $allowed, true)) {
+            if ($isContains && in_array($raw, $tautologies, true)) {
                 $failures[] = sprintf('%s:%d  %s  (matches every url)', $relative, $number + 1, $raw);
                 continue;
             }
@@ -156,6 +161,10 @@ foreach ($specFiles as $file) {
             // the app rather than the router, an absolute url is not a route at
             // all, and a bare word is as likely to be a css class as a path.
             if (!str_contains($raw, '/') || str_contains($raw, '=') || str_starts_with($raw, 'http')) {
+                continue;
+            }
+
+            if (in_array($raw, $nonRoute, true)) {
                 continue;
             }
 
@@ -189,7 +198,7 @@ if ($failures !== []) {
     foreach ($failures as $failure) {
         echo '  ' . $failure . "\n";
     }
-    echo "\nFix the fragment, or add it to \$allowed if it comes from a query string.\n";
+    echo "\nFix the fragment, or add it to \$nonRoute if it comes from a query string.\n";
     exit(1);
 }
 
