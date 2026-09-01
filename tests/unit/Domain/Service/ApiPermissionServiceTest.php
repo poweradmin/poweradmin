@@ -196,31 +196,31 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
-    public function testCanEditZoneAsUberuser(): void
+    public function testHasZoneContentEditPermissionAsUberuser(): void
     {
         $this->setupPermissionMock([1]); // user_is_ueberuser = true
 
-        $result = $this->service->canEditZone(1, 100);
+        $result = $this->service->hasZoneContentEditPermission(1, 100);
         $this->assertTrue($result);
     }
 
     #[Test]
-    public function testCanEditZoneWithEditOthersPermission(): void
+    public function testHasZoneContentEditPermissionWithEditOthers(): void
     {
         $this->setupPermissionMock([0, 1]); // not ueberuser, has edit_others
 
-        $result = $this->service->canEditZone(2, 100);
+        $result = $this->service->hasZoneContentEditPermission(2, 100);
         $this->assertTrue($result);
     }
 
     #[Test]
-    public function testCanEditZoneRejectsEditOwnAsClient(): void
+    public function testHasZoneContentEditPermissionRejectsEditOwnAsClient(): void
     {
         // canEditZone is strict: own_as_client must NOT pass (zone-meta gate).
         // Sequence: ueberuser=0, edit_others=0, edit_own=0
         $this->setupPermissionMock([0, 0, 0]);
 
-        $result = $this->service->canEditZone(3, 100);
+        $result = $this->service->hasZoneContentEditPermission(3, 100);
         $this->assertFalse($result);
     }
 
@@ -249,7 +249,7 @@ class ApiPermissionServiceTest extends TestCase
     #[Test]
     public function testCanEditZoneRecordAllowsNonRestrictedTypeForEditOwnAsClient(): void
     {
-        // canEditZoneContent: canEditZone(0,0,0) false, own_as_client=1, owns=1 -> true
+        // canEditZoneContent: hasZoneContentEditPermission(0,0,0) false, own_as_client=1, owns=1 -> true
         // Non-SOA/NS short-circuits to true.
         $this->setupPermissionMock([0, 0, 0, 1, 1]);
 
@@ -260,7 +260,7 @@ class ApiPermissionServiceTest extends TestCase
     #[Test]
     public function testCanEditZoneRecordBlocksSOAForEditOwnAsClient(): void
     {
-        // canEditZoneContent: canEditZone(0,0,0) false, own_as_client=1, owns=1 -> true
+        // canEditZoneContent: hasZoneContentEditPermission(0,0,0) false, own_as_client=1, owns=1 -> true
         // SOA branch re-runs canEditZone: ueberuser=0, edit_others=0, edit_own=0 -> deny
         $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0]);
 
@@ -280,8 +280,8 @@ class ApiPermissionServiceTest extends TestCase
     #[Test]
     public function testCanEditZoneRecordAllowsSubzoneNsWithSubzonePermission(): void
     {
-        // canEditZoneContent: canEditZone(0,0,0) false, own_as_client=1, owns=1 -> true
-        // NS branch: canEditZone(0,0,0) false, non-apex name -> zone_content_edit_ns_subzone=1
+        // canEditZoneContent: hasZoneContentEditPermission(0,0,0) false, own_as_client=1, owns=1 -> true
+        // NS branch: hasZoneContentEditPermission(0,0,0) false, non-apex name -> zone_content_edit_ns_subzone=1
         $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0, 1]);
 
         $result = $this->service->canEditZoneRecord(3, 100, 'NS', null, 'sub.example.com', 'example.com');
@@ -330,7 +330,7 @@ class ApiPermissionServiceTest extends TestCase
     #[Test]
     public function testCanEditZoneRecordAllowsSOAForEditOwn(): void
     {
-        // canEditZoneContent: canEditZone(ueberuser=0, edit_others=0, edit_own=1, owns=1) -> true
+        // canEditZoneContent: hasZoneContentEditPermission(ueberuser=0, edit_others=0, edit_own=1, owns=1) -> true
         // SOA branch re-runs canEditZone: ueberuser=0, edit_others=0, edit_own=1, owns=1 -> true
         $this->setupPermissionMock([0, 0, 1, 1, 0, 0, 1, 1]);
 

@@ -740,7 +740,7 @@ class ZonesController extends PublicApiController
             // Metadata and description are gated separately below; this only rejects
             // callers who may write neither.
             $mayEditMeta = $this->permissionService->canEditZoneMeta($userId, $zoneId);
-            $mayEditContent = $this->permissionService->canEditZone($userId, $zoneId);
+            $mayEditContent = $this->permissionService->hasZoneContentEditPermission($userId, $zoneId);
             if (!$mayEditMeta && !$mayEditContent) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }

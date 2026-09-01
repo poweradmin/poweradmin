@@ -198,13 +198,16 @@ class ApiPermissionService
     }
 
     /**
-     * Check if user can edit a specific zone (stateless)
+     * Check if user holds a zone content-edit permission for a zone (stateless)
+     *
+     * This is a content check, not a zone-level one: it never grants metadata
+     * changes (name/type/master), which are gated by canEditZoneMeta().
      *
      * @param int $userId User ID to check
      * @param int $zoneId Zone ID (domain_id in PowerDNS)
-     * @return bool True if user can edit the zone
+     * @return bool True if user may edit content in the zone
      */
-    public function canEditZone(int $userId, int $zoneId): bool
+    public function hasZoneContentEditPermission(int $userId, int $zoneId): bool
     {
         // Uberuser can edit all zones
         if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
@@ -227,9 +230,10 @@ class ApiPermissionService
     /**
      * Check if user can edit records (content) inside a specific zone (stateless)
      *
-     * Broader than canEditZone(): also accepts zone_content_edit_own_as_client, which
-     * is restricted to record edits and must NOT grant zone-level metadata changes
-     * (name/type/master). Zone-level updates remain gated by canEditZone().
+     * Broader than hasZoneContentEditPermission(): also accepts
+     * zone_content_edit_own_as_client, which is restricted to record edits and must
+     * NOT grant zone-level metadata changes (name/type/master). Zone-level updates
+     * are gated by canEditZoneMeta().
      *
      * Record-type restrictions for own_as_client (SOA, NS) are enforced by
      * canEditZoneRecord().
@@ -251,7 +255,7 @@ class ApiPermissionService
             return false;
         }
 
-        if ($this->canEditZone($userId, $zoneId)) {
+        if ($this->hasZoneContentEditPermission($userId, $zoneId)) {
             return true;
         }
 
@@ -294,7 +298,7 @@ class ApiPermissionService
         }
 
         // SOA/NS edits require a stronger permission than own_as_client
-        if ($this->canEditZone($userId, $zoneId)) {
+        if ($this->hasZoneContentEditPermission($userId, $zoneId)) {
             return true;
         }
 

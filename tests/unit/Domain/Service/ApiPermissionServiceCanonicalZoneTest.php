@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ApiPermissionService;
 
 /**
- * userOwnsZone() gates canViewZone(), canEditZone() and the rest of the v2 API's "own"
+ * userOwnsZone() gates canViewZone(), hasZoneContentEditPermission() and the rest of the v2 API's "own"
  * scope. In API backend mode a zones row can carry domain_id NULL or 0, and the bare
  * column then matched nothing, so a user was silently denied a zone they own.
  */
