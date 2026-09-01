@@ -111,6 +111,12 @@ class IndexController extends BaseController
         // Determine if user can change password (internal auth only, not ldap/oidc/saml)
         $canChangePassword = !in_array($this->userContextService->getAuthMethod(), ['ldap', 'oidc', 'saml']);
 
+        // Surface the otherwise-silent misconfiguration: with application_url
+        // unset, reset emails are skipped with only a server log entry.
+        $passwordResetMisconfigured = $permissions['user_is_ueberuser']
+            && $this->config->get('security', 'password_reset.enabled', false)
+            && empty($this->config->get('interface', 'application_url', ''));
+
         $this->render("index.html", [
             'user_name' => $this->userContextService->getDisplayName(),
             'auth_used' => $this->userContextService->getAuthMethod() ?? '',
@@ -126,6 +132,7 @@ class IndexController extends BaseController
             'user_id' => $userId,
             'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
             'module_nav_items' => $this->getModuleNavItemsForDashboard(),
+            'password_reset_misconfigured' => $passwordResetMisconfigured,
         ]);
     }
 
