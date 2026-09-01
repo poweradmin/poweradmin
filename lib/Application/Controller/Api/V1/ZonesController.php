@@ -597,8 +597,9 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('Valid zone ID is required', 400);
             }
 
-            // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZone($userId, $zoneId)) {
+            // Every field this handler writes is zone metadata, so it needs the
+            // metadata permission the web edit form requires, not content-edit rights.
+            if (!$this->permissionService->canEditZoneMeta($userId, $zoneId)) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
