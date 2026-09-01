@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -79,6 +79,12 @@ class DeleteZoneTemplRecordController extends BaseController
 
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
         $record_info = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id);
+
+        // The route authorises the template, not the record, so a record id from
+        // another template would otherwise be shown in the confirmation view.
+        if (!$record_info || (int)$record_info['zone_templ_id'] !== $zone_templ_id) {
+            $this->showError(_('Invalid or unexpected input given.'));
+        }
 
         $this->render('delete_zone_templ_record.html', [
             'record_id' => $record_id,
