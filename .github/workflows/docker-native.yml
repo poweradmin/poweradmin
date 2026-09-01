@@ -25,6 +25,10 @@ on:
         description: 'Run the non-root smoke test. 3.x already runs as 82:82 on port 80 and has no port-switching entrypoint.'
         type: boolean
         default: true
+    secrets:
+      DOCKER_PASSWORD:
+        description: 'Docker Hub token for the manifest push. GITHUB_TOKEN is provided automatically.'
+        required: true
 
 env:
   GHCR_IMAGE: ghcr.io/poweradmin/poweradmin
