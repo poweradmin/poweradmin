@@ -967,17 +967,17 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "2.3.3",
-            "version_normalized": "2.3.3.0",
+            "version": "2.3.5",
+            "version_normalized": "2.3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "fb19eedd2bb67ff8cf7a5502ad329e701d6398a3"
+                "reference": "148cefffaf0233e4c08cc13db8a195a56dd6dfe9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/fb19eedd2bb67ff8cf7a5502ad329e701d6398a3",
-                "reference": "fb19eedd2bb67ff8cf7a5502ad329e701d6398a3",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/148cefffaf0233e4c08cc13db8a195a56dd6dfe9",
+                "reference": "148cefffaf0233e4c08cc13db8a195a56dd6dfe9",
                 "shasum": ""
             },
             "require": {
@@ -994,7 +994,7 @@
                 "phpunit/phpunit": "^9.6",
                 "symfony/process": "^5.2"
             },
-            "time": "2026-07-08T07:01:06+00:00",
+            "time": "2026-08-31T16:05:28+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1011,7 +1011,7 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.3.3"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.3.5"
             },
             "install-path": "../phpstan/phpdoc-parser"
         },
@@ -1786,17 +1786,17 @@
         },
         {
             "name": "symfony/console",
-            "version": "v7.4.17",
-            "version_normalized": "7.4.17.0",
+            "version": "v7.4.18",
+            "version_normalized": "7.4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "962e18f09ebe68a49039b4c82fc0ea4871824fca"
+                "reference": "23d6f88a29f6d0eac45bd77d70307adf83ba7ab0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/962e18f09ebe68a49039b4c82fc0ea4871824fca",
-                "reference": "962e18f09ebe68a49039b4c82fc0ea4871824fca",
+                "url": "https://api.github.com/repos/symfony/console/zipball/23d6f88a29f6d0eac45bd77d70307adf83ba7ab0",
+                "reference": "23d6f88a29f6d0eac45bd77d70307adf83ba7ab0",
                 "shasum": ""
             },
             "require": {
@@ -1829,7 +1829,7 @@
                 "symfony/stopwatch": "^6.4|^7.0|^8.0",
                 "symfony/var-dumper": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-08-21T12:09:28+00:00",
+            "time": "2026-08-25T14:18:37+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1863,7 +1863,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v7.4.17"
+                "source": "https://github.com/symfony/console/tree/v7.4.18"
             },
             "funding": [
                 {
@@ -2304,17 +2304,17 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v7.4.17",
-            "version_normalized": "7.4.17.0",
+            "version": "v7.4.18",
+            "version_normalized": "7.4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "ee7bc7bca4c7079b88e57d5000aeeb20df570c8d"
+                "reference": "90d412aa5277c6819db39e7605aa46b1019e3232"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/ee7bc7bca4c7079b88e57d5000aeeb20df570c8d",
-                "reference": "ee7bc7bca4c7079b88e57d5000aeeb20df570c8d",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/90d412aa5277c6819db39e7605aa46b1019e3232",
+                "reference": "90d412aa5277c6819db39e7605aa46b1019e3232",
                 "shasum": ""
             },
             "require": {
@@ -2325,7 +2325,7 @@
             "require-dev": {
                 "symfony/process": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-08-21T12:09:28+00:00",
+            "time": "2026-08-23T10:03:40+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2353,7 +2353,7 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/filesystem/tree/v7.4.17"
+                "source": "https://github.com/symfony/filesystem/tree/v7.4.18"
             },
             "funding": [
                 {
@@ -3956,8 +3956,8 @@
         },
         {
             "name": "symfony/routing",
-            "version": "v7.4.17",
-            "version_normalized": "7.4.17.0",
+            "version": "v7.4.18",
+            "version_normalized": "7.4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/routing.git",
@@ -4020,7 +4020,7 @@
                 "url"
             ],
             "support": {
-                "source": "https://github.com/symfony/routing/tree/v7.4.17"
+                "source": "https://github.com/symfony/routing/tree/v7.4.18"
             },
             "funding": [
                 {
@@ -4532,17 +4532,17 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v3.7.1",
-            "version_normalized": "3.7.1.0",
+            "version": "v3.7.3",
+            "version_normalized": "3.7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "c0a284bab1ed8aa0417e3d69250ab437739563a0"
+                "reference": "15e6a07ec2a2c75ceb1b21dd98105ee8456d2257"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/c0a284bab1ed8aa0417e3d69250ab437739563a0",
-                "reference": "c0a284bab1ed8aa0417e3d69250ab437739563a0",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/15e6a07ec2a2c75ceb1b21dd98105ee8456d2257",
+                "reference": "15e6a07ec2a2c75ceb1b21dd98105ee8456d2257",
                 "shasum": ""
             },
             "require": {
@@ -4553,7 +4553,7 @@
             "conflict": {
                 "ext-psr": "<1.1|>=2"
             },
-            "time": "2026-06-16T09:55:08+00:00",
+            "time": "2026-07-27T15:39:01+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -4598,7 +4598,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/v3.7.1"
+                "source": "https://github.com/symfony/service-contracts/tree/v3.7.3"
             },
             "funding": [
                 {
@@ -5389,17 +5389,17 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v7.4.17",
-            "version_normalized": "7.4.17.0",
+            "version": "v7.4.18",
+            "version_normalized": "7.4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "0b040d7b66ceb10b7bb24c8e6656257932693a12"
+                "reference": "4cef939e55b8a21c5780418de0d98ab00d0736e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/0b040d7b66ceb10b7bb24c8e6656257932693a12",
-                "reference": "0b040d7b66ceb10b7bb24c8e6656257932693a12",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/4cef939e55b8a21c5780418de0d98ab00d0736e1",
+                "reference": "4cef939e55b8a21c5780418de0d98ab00d0736e1",
                 "shasum": ""
             },
             "require": {
@@ -5413,7 +5413,7 @@
             "require-dev": {
                 "symfony/console": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-08-21T12:09:28+00:00",
+            "time": "2026-08-30T00:47:26+00:00",
             "bin": [
                 "Resources/bin/yaml-lint"
             ],
@@ -5444,7 +5444,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v7.4.17"
+                "source": "https://github.com/symfony/yaml/tree/v7.4.18"
             },
             "funding": [
                 {
@@ -5713,17 +5713,17 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "6.6.0",
-            "version_normalized": "6.6.0.0",
+            "version": "6.7.0",
+            "version_normalized": "6.7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "cc81abcfffec8b2f993db64013ea3b49679341c9"
+                "reference": "af0a8de6c4b6780e8e07d06ee0c7da538b5f1e46"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/cc81abcfffec8b2f993db64013ea3b49679341c9",
-                "reference": "cc81abcfffec8b2f993db64013ea3b49679341c9",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/af0a8de6c4b6780e8e07d06ee0c7da538b5f1e46",
+                "reference": "af0a8de6c4b6780e8e07d06ee0c7da538b5f1e46",
                 "shasum": ""
             },
             "require": {
@@ -5747,7 +5747,7 @@
                 "phpunit/phpunit": "^11.5 || >=12.5.22",
                 "rector/rector": "^2.3"
             },
-            "time": "2026-08-18T03:19:28+00:00",
+            "time": "2026-08-24T21:55:54+00:00",
             "bin": [
                 "bin/openapi"
             ],
@@ -5793,7 +5793,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/6.6.0"
+                "source": "https://github.com/zircote/swagger-php/tree/6.7.0"
             },
             "funding": [
                 {

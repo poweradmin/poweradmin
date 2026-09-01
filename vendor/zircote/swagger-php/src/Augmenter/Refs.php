@@ -6,7 +6,7 @@
 
 namespace OpenApi\Augmenter;
 
-use OpenApi\AttributeInterface;
+use OpenApi\Contracts\AttributeInterface;
 use OpenApi\Spec as OA;
 use OpenApi\Specification;
 use OpenApi\Utils\PipeInterface;
@@ -73,6 +73,7 @@ class Refs implements PipeInterface, LoggerAwareInterface
             if (!property_exists($attribute, 'ref') || $attribute->ref === null || str_starts_with($attribute->ref, '#/')) {
                 return;
             }
+
             if (isset($refMap[$attribute->ref])) {
                 $attribute->ref = $refMap[$attribute->ref];
             } else {
