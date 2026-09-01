@@ -4,9 +4,11 @@
 # Note: security updates are only ever raised against master. The weekly
 # dependency-audit workflow covers the other branches.
 #
-# Each branch has its own weekend slot so updates arrive as small batches instead
-# of one burst of roughly fifteen pull requests. The older stable lines poll
-# monthly: they take patch updates only, and security fixes are raised on master.
+# Every branch polls weekly on a weekend day so updates arrive as small batches
+# instead of one burst of roughly fifteen pull requests. Keep every interval
+# weekly: with monthly, dependabot ignores day and fires on the 1st of the month,
+# which lands on a weekday most of the time. The older stable lines still take
+# patch updates only, and security fixes are raised on master.
 version: 2
 updates:
 
@@ -208,7 +210,7 @@ updates:
     directory: "/"
     target-branch: "release/4.2.x"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
       day: "sunday"
       time: "09:00"
       timezone: "Europe/Vilnius"
@@ -227,7 +229,7 @@ updates:
     directory: "/"
     target-branch: "release/4.2.x"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
       day: "sunday"
       time: "09:00"
       timezone: "Europe/Vilnius"
@@ -243,7 +245,7 @@ updates:
     directory: "/"
     target-branch: "release/4.2.x"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
       day: "sunday"
       time: "09:00"
       timezone: "Europe/Vilnius"
@@ -260,7 +262,7 @@ updates:
     directory: "/"
     target-branch: "release/3.x"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
       day: "sunday"
       time: "13:00"
       timezone: "Europe/Vilnius"
@@ -279,7 +281,7 @@ updates:
     directory: "/"
     target-branch: "release/3.x"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
       day: "sunday"
       time: "13:00"
       timezone: "Europe/Vilnius"
@@ -295,7 +297,7 @@ updates:
     directory: "/"
     target-branch: "release/3.x"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
       day: "sunday"
       time: "13:00"
       timezone: "Europe/Vilnius"
