@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -186,7 +186,8 @@ class ApiPermissionService
      *
      * Broader than canEditZone(): also accepts zone_content_edit_own_as_client, which
      * is restricted to record edits and must NOT grant zone-level metadata changes
-     * (name/type/master). Zone-level updates remain gated by canEditZone().
+     * (name/type/master). Despite its name canEditZone() is a content check too, so
+     * zone-level updates are gated by canEditZoneMeta().
      *
      * Record-type restrictions for own_as_client (SOA, NS) are enforced by
      * canEditZoneRecord().
