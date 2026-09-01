@@ -68,6 +68,16 @@ class ZoneTemplatesController extends PublicApiController
         exit;
     }
 
+    /**
+     * Reading zone templates requires a zone-template permission, matching the web UI.
+     */
+    private function canViewZoneTemplates(int $userId): bool
+    {
+        return $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser')
+            || $this->apiPermissionService->userHasPermission($userId, 'zone_templ_add')
+            || $this->apiPermissionService->userHasPermission($userId, 'zone_templ_edit');
+    }
+
     #[OA\Get(
         path: '/v2/zone-templates',
         summary: 'Get list of zone templates',
@@ -107,6 +117,11 @@ class ZoneTemplatesController extends PublicApiController
     {
         try {
             $userId = $this->getAuthenticatedUserId();
+
+            if (!$this->canViewZoneTemplates($userId)) {
+                return $this->returnApiError('You do not have permission to view zone templates', 403);
+            }
+
             $isUeberuser = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
 
             $templates = $this->repository->listZoneTemplates($userId, $isUeberuser);
@@ -189,6 +204,11 @@ class ZoneTemplatesController extends PublicApiController
     {
         try {
             $userId = $this->getAuthenticatedUserId();
+
+            if (!$this->canViewZoneTemplates($userId)) {
+                return $this->returnApiError('You do not have permission to view zone templates', 403);
+            }
+
             $isUeberuser = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
 
             $id = (int)$this->pathParameters['id'];
