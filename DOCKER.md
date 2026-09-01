@@ -607,6 +607,7 @@ Use this provider for Authentik, Keycloak, Okta, or any other standard OIDC-comp
 
 ```bash
 docker run -d \
+  -e PA_APPLICATION_URL=https://poweradmin.yourdomain.com \
   -e PA_OIDC_ENABLED=true \
   -e PA_OIDC_GENERIC_ENABLED=true \
   -e PA_OIDC_GENERIC_NAME="Authentik" \
@@ -622,6 +623,7 @@ docker run -d \
 
 ```bash
 docker run -d \
+  -e PA_APPLICATION_URL=https://poweradmin.yourdomain.com \
   -e PA_OIDC_ENABLED=true \
   -e PA_OIDC_GENERIC_ENABLED=true \
   -e PA_OIDC_GENERIC_NAME="Keycloak" \
@@ -1032,6 +1034,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e DB_USER=poweradmin \
   -e DB_PASS=secure_password \
   -e DB_NAME=poweradmin \
+  -e PA_APPLICATION_URL=https://poweradmin.yourdomain.com \
   -e PA_OIDC_ENABLED=true \
   -e PA_OIDC_AZURE_ENABLED=true \
   -e PA_OIDC_AZURE_CLIENT_ID=your-azure-client-id \
@@ -1049,6 +1052,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e DB_USER=poweradmin \
   -e DB_PASS=secure_password \
   -e DB_NAME=poweradmin \
+  -e PA_APPLICATION_URL=https://poweradmin.yourdomain.com \
   -e PA_OIDC_ENABLED=true \
   -e PA_OIDC_GOOGLE_ENABLED=true \
   -e PA_OIDC_GOOGLE_CLIENT_ID=your-google-client-id \
@@ -1066,6 +1070,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e DB_USER=poweradmin \
   -e DB_PASS=secure_password \
   -e DB_NAME=poweradmin \
+  -e PA_APPLICATION_URL=https://poweradmin.yourdomain.com \
   -e PA_SAML_ENABLED=true \
   -e PA_SAML_AZURE_ENABLED=true \
   -e PA_SAML_AZURE_X509_CERT="your-azure-saml-certificate" \
@@ -1078,6 +1083,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e DB_USER=poweradmin \
   -e DB_PASS=secure_password \
   -e DB_NAME=poweradmin \
+  -e PA_APPLICATION_URL=https://poweradmin.yourdomain.com \
   -e PA_SAML_ENABLED=true \
   -e PA_SAML_SP_ENTITY_ID=https://poweradmin.yourdomain.com/saml/metadata \
   -e PA_SAML_SP_ACS_URL=https://poweradmin.yourdomain.com/saml/acs \
@@ -1095,6 +1101,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e DB_USER=poweradmin \
   -e DB_PASS=secure_password \
   -e DB_NAME=poweradmin \
+  -e PA_APPLICATION_URL=https://poweradmin.yourdomain.com \
   -e PA_SAML_ENABLED=true \
   -e PA_SAML_SP_ENTITY_ID=https://poweradmin.yourdomain.com/saml/metadata \
   -e PA_SAML_OKTA_ENABLED=true \
@@ -1113,6 +1120,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e DB_USER=poweradmin \
   -e DB_PASS=secure_password \
   -e DB_NAME=poweradmin \
+  -e PA_APPLICATION_URL=https://poweradmin.yourdomain.com \
   -e PA_SAML_ENABLED=true \
   -e PA_SAML_SP_ENTITY_ID=https://poweradmin.yourdomain.com/saml/metadata \
   -e PA_SAML_GENERIC_ENABLED=true \
