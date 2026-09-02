@@ -278,6 +278,15 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanEditZoneRecordBlocksLUAForEditOwnAsClient(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'LUA');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
     public function testCanEditZoneRecordAllowsSOAForEditOwn(): void
     {
         // canEditZoneContent: canEditZone(ueberuser=0, edit_others=0, edit_own=1, owns=1) -> true

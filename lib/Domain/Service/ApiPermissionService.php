@@ -274,12 +274,11 @@ class ApiPermissionService
             return false;
         }
 
-        $restrictedTypes = ['SOA', 'NS'];
-        if (!in_array(strtoupper($recordType), $restrictedTypes, true)) {
+        if (!in_array(strtoupper($recordType), Permission::RESTRICTED_TYPES_FOR_CLIENT, true)) {
             return true;
         }
 
-        // SOA/NS edits require a stronger permission than own_as_client
+        // SOA/NS/LUA edits require a stronger permission than own_as_client, as on the web form
         return $this->canEditZone($userId, $zoneId);
     }
 
