@@ -3,7 +3,7 @@
 /**
  * Top Level Domains list from IANA
  *
- * Updated on 2026-07-22 - 1437 TLDs
+ * Updated on 2026-09-02 - 1438 TLDs
  * Source: http://data.iana.org/TLD/tlds-alpha-by-domain.txt
  *
  * Do not edit manually - use scripts/update_tlds.sh to regenerate
@@ -165,11 +165,11 @@ return [
         'viking', 'villas', 'vin', 'vip', 'virgin', 'visa', 'vision', 'viva', 
         'vivo', 'vlaanderen', 'vn', 'vodka', 'volvo', 'vote', 'voting', 'voto', 
         'voyage', 'vu', 'wales', 'walmart', 'walter', 'wang', 'wanggou', 'watch', 
-        'watches', 'weather', 'weatherchannel', 'webcam', 'weber', 'website', 
-        'wed', 'wedding', 'weibo', 'weir', 'wf', 'whoswho', 'wien', 'wiki', 
-        'williamhill', 'win', 'windows', 'wine', 'winners', 'wme', 'woodside', 
-        'work', 'works', 'world', 'wow', 'ws', 'wtc', 'wtf', 'xbox', 'xerox', 
-        'xihuan', 'xin', 'xn--11b4c3d', 'xn--1ck2e1b', 'xn--1qqw23a', 
+        'watches', 'weather', 'weatherchannel', 'web', 'webcam', 'weber', 
+        'website', 'wed', 'wedding', 'weibo', 'weir', 'wf', 'whoswho', 'wien', 
+        'wiki', 'williamhill', 'win', 'windows', 'wine', 'winners', 'wme', 
+        'woodside', 'work', 'works', 'world', 'wow', 'ws', 'wtc', 'wtf', 'xbox', 
+        'xerox', 'xihuan', 'xin', 'xn--11b4c3d', 'xn--1ck2e1b', 'xn--1qqw23a', 
         'xn--2scrj9c', 'xn--30rr7y', 'xn--3bst00m', 'xn--3ds443g', 'xn--3e0b707e', 
         'xn--3hcrj9c', 'xn--3pxu8k', 'xn--42c2d9a', 'xn--45br5cyl', 'xn--45brj9c', 
         'xn--45q11c', 'xn--4dbrk0ce', 'xn--4gbrim', 'xn--54b7fta0cc', 
