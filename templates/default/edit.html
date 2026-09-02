@@ -411,7 +411,7 @@
                     </thead>
                     <tbody>
         {% for r in records %}
-        {% set record_locked = (r['type'] == "SOA" and perm_edit != "all") or (r['type'] == "NS" and perm_edit == "own_as_client") %}
+        {% set record_locked = (r['type'] == "SOA" and perm_edit != "all") or ((r['type'] == "NS" or r['type'] == "LUA") and perm_edit == "own_as_client") %}
 
         {% if not record_locked %}
         <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}">
@@ -487,7 +487,7 @@
             {% if iface_show_record_edit_button or iface_show_record_delete_button %}
                 {% if domain_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "0" %}
                 <td>&nbsp;</td>
-                {% elseif r['type'] == "SOA" and perm_edit != "all" or r['type'] == "NS" and perm_edit == "own_as_client" %}
+                {% elseif record_locked %}
                 <td>&nbsp;</td>
                 {% else %}
                 <td class="text-center" style="width: 100px;">
