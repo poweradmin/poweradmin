@@ -778,15 +778,21 @@ class ZonesController extends PublicApiController
                 $updates['master'] = $validation['normalized'];
             }
 
-            // For SLAVE zones, ensure master IP is provided
-            if (isset($updates['type']) && $updates['type'] === 'SLAVE' && empty($updates['master'])) {
-                return $this->returnApiError('Master IP address is required for SLAVE zones', 400);
-            }
-
             $hasDescriptionUpdate = array_key_exists('description', $input);
 
             if (empty($updates) && !$hasDescriptionUpdate) {
                 return $this->returnApiError('No valid fields provided for update', 400);
+            }
+
+            $zone = $this->zoneRepository->getZoneById($zoneId);
+
+            // Clients often resend every field; a value equal to the stored one changes
+            // nothing, so only real changes are written and permission-gated.
+            $updates = $this->dropUnchangedZoneFields($zone, $updates);
+
+            // A zone becoming SLAVE needs a master; one that already is keeps its stored master
+            if (isset($updates['type']) && $updates['type'] === 'SLAVE' && empty($updates['master'])) {
+                return $this->returnApiError('Master IP address is required for SLAVE zones', 400);
             }
 
             // name/type/master are zone metadata, so they need the metadata permission
@@ -930,6 +936,45 @@ class ZonesController extends PublicApiController
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZonesController::deleteZone', 'Failed to delete zone');
         }
+    }
+
+    /**
+     * Remove name, type and master entries that equal the zone's stored values.
+     *
+     * @param array<string, mixed>|null $zone Stored zone row, null when it does not exist
+     * @param array<string, mixed> $updates
+     * @return array<string, mixed>
+     */
+    private function dropUnchangedZoneFields(?array $zone, array $updates): array
+    {
+        if ($zone === null || empty($updates)) {
+            return $updates;
+        }
+
+        if (
+            isset($updates['name'])
+            && rtrim((string)$updates['name'], '.') === rtrim((string)$zone['name'], '.')
+        ) {
+            unset($updates['name']);
+        }
+
+        if (isset($updates['type']) && strtoupper((string)($zone['type'] ?? '')) === $updates['type']) {
+            unset($updates['type']);
+        }
+
+        if (
+            isset($updates['master'])
+            && $this->normalizeMasterList((string)$updates['master']) === $this->normalizeMasterList((string)($zone['master'] ?? ''))
+        ) {
+            unset($updates['master']);
+        }
+
+        return $updates;
+    }
+
+    private function normalizeMasterList(string $masters): string
+    {
+        return implode(',', array_filter(array_map('trim', explode(',', $masters)), 'strlen'));
     }
 
     /**
