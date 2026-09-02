@@ -35,6 +35,8 @@ use Symfony\Component\HttpFoundation\Request;
  * The web edit form gates a zone's type and slave master behind zone_meta_edit_*,
  * and offers no rename at all. PUT /api/v2/zones/{id} writes name, type and master,
  * so it must demand the same permission - the record-content permission is not enough.
+ * A value that repeats what is stored changes nothing, so it needs no permission:
+ * clients such as the Terraform provider resend the type on every update.
  */
 class ZoneMetadataPermissionTest extends TestCase
 {
@@ -66,6 +68,47 @@ class ZoneMetadataPermissionTest extends TestCase
         $this->assertSame(200, $response['status']);
     }
 
+    public function testContentOnlyUserMayRepeatStoredTypeAlongsideDescription(): void
+    {
+        $response = $this->updateZone(
+            ['type' => 'master', 'master' => '', 'description' => 'still allowed'],
+            meta: false,
+            content: true
+        );
+
+        $this->assertSame(200, $response['status']);
+    }
+
+    public function testContentOnlyUserMayRepeatStoredName(): void
+    {
+        $response = $this->updateZone(['name' => 'tenant.example.'], meta: false, content: true);
+
+        $this->assertSame(200, $response['status']);
+    }
+
+    public function testContentOnlyUserMayRepeatStoredSlaveTypeWithoutResendingMaster(): void
+    {
+        $response = $this->updateZone(
+            ['type' => 'SLAVE', 'description' => 'still allowed'],
+            meta: false,
+            content: true,
+            stored: ['type' => 'SLAVE', 'master' => '203.0.113.1']
+        );
+
+        $this->assertSame(200, $response['status']);
+    }
+
+    public function testContentOnlyUserCannotChangeMasterWhileRepeatingStoredType(): void
+    {
+        $response = $this->updateZone(
+            ['type' => 'MASTER', 'master' => '203.0.113.66'],
+            meta: false,
+            content: true
+        );
+
+        $this->assertSame(403, $response['status']);
+    }
+
     public function testMetaUserMayChangeZoneType(): void
     {
         $response = $this->updateZone(['type' => 'NATIVE'], meta: true, content: false);
@@ -89,9 +132,10 @@ class ZoneMetadataPermissionTest extends TestCase
 
     /**
      * @param array<string, mixed> $body
+     * @param array<string, string> $stored Overrides for the stored zone row
      * @return array{status: int, body: string}
      */
-    private function updateZone(array $body, bool $meta, bool $content): array
+    private function updateZone(array $body, bool $meta, bool $content, array $stored = []): array
     {
         $permissionService = $this->createMock(ApiPermissionService::class);
         $permissionService->method('canEditZoneMeta')->willReturn($meta);
@@ -99,7 +143,7 @@ class ZoneMetadataPermissionTest extends TestCase
 
         $zoneRepository = $this->createMock(DbZoneRepository::class);
         $zoneRepository->method('zoneIdExists')->willReturn(true);
-        $zoneRepository->method('getZoneById')->willReturn([
+        $zoneRepository->method('getZoneById')->willReturn($stored + [
             'id' => self::ZONE_ID,
             'name' => 'tenant.example',
             'type' => 'MASTER',
