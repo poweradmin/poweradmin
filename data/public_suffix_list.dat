@@ -5,8 +5,8 @@
 // Please pull this list from, and only from https://publicsuffix.org/list/public_suffix_list.dat,
 // rather than any other VCS sites. Pulling from any other URL is not guaranteed to be supported.
 
-// VERSION: 2026-07-20_19-57-20_UTC
-// COMMIT: ca355e4aadee94e349e1f9c86145618cf762249d
+// VERSION: 2026-09-01_20-39-17_UTC
+// COMMIT: b960a1b2a9bdec73e4010f7b51a02a074ff59fc3
 
 // Instructions on pulling and using this list can be found at https://publicsuffix.org/list/.
 
@@ -6838,7 +6838,7 @@ org.zw
 
 // newGTLDs
 
-// List of new gTLDs imported from https://www.icann.org/resources/registries/gtlds/v2/gtlds.json on 2026-07-15T16:20:56Z
+// List of new gTLDs imported from https://www.icann.org/resources/registries/gtlds/v2/gtlds.json on 2026-07-24T16:40:16Z
 // This list is auto-generated, don't edit it manually.
 // aaa : American Automobile Association, Inc.
 // https://www.iana.org/domains/root/db/aaa.html
@@ -10732,6 +10732,10 @@ weather
 // https://www.iana.org/domains/root/db/weatherchannel.html
 weatherchannel
 
+// web : VeriSign, Inc.
+// https://www.iana.org/domains/root/db/web.html
+web
+
 // webcam : dot Webcam Limited
 // https://www.iana.org/domains/root/db/webcam.html
 webcam
@@ -11300,17 +11304,9 @@ ltd.ua
 a2hosted.com
 cpserver.com
 
-// Acorn Labs : https://acorn.io
-// Submitted by Craig Jellick <domains@acorn.io>
-*.on-acorn.io
-
 // ActiveTrail : https://www.activetrail.biz/
 // Submitted by Ofer Kalaora <postmaster@activetrail.com>
 activetrail.biz
-
-// Adaptable.io : https://adaptable.io
-// Submitted by Mark Terrel <support@adaptable.io>
-adaptable.app
 
 // addr.tools : https://addr.tools/
 // Submitted by Brian Shea <publicsuffixlist@addr.tools>
@@ -11351,7 +11347,7 @@ beep.pl
 // Aiven : https://aiven.io/
 // Submitted by Aiven Security Team <security+appdomains@aiven.io>
 aiven.app
-aivencloud.com
+*.aivencloud.com
 
 // Akamai : https://www.akamai.com/
 // Submitted by Akamai Team <publicsuffixlist@akamai.com>
@@ -12361,6 +12357,12 @@ antagonist.cloud
 // Anthropic : https://www.anthropic.com/
 // Submitted by Sid Bidasaria <security@anthropic.com>
 claude.app
+claudeusercontent.com
+frame.claudeusercontent.com
+
+// Anysphere Inc : https://cursor.com
+// Submitted by Benson Liu <security@cursor.com>
+*.cursorusercontent.com
 
 // Apigee : https://apigee.com/
 // Submitted by Apigee Security Team <security@apigee.com>
@@ -12584,6 +12586,7 @@ cafjs.com
 // Canva Pty Ltd : https://canva.com/
 // Submitted by Joel Aquilina <publicsuffixlist@canva.com>
 canva-apps.cn
+canva-code.cn
 my.canvasite.cn
 khsj.cn
 canva-apps.com
@@ -12771,6 +12774,11 @@ store.cv
 // Submitted by Moritz Marquardt <git@momar.de>
 codeberg.page
 
+// CodePen : https://codepen.io
+// Submitted by Stephen Shaw <support@codepen.io>
+codepen.app
+codepen.dev
+
 // CodeSandbox B.V. : https://codesandbox.io
 // Submitted by Ives van Hoorne <abuse@codesandbox.io>
 csb.app
@@ -12917,11 +12925,6 @@ deployagent.space
 // deSEC : https://desec.io/
 // Submitted by Peter Thomassen <peter@desec.io>
 dedyn.io
-
-// Deta : https://www.deta.sh/
-// Submitted by Aavash Shrestha <aavash@deta.sh>
-deta.app
-deta.dev
 
 // Deuxfleurs : https://deuxfleurs.fr
 // Submitted by Aeddis Desauw <ca@deuxfleurs.fr>
@@ -13502,10 +13505,6 @@ on.expo.app
 staging.expo.app
 on.staging.expo.app
 
-// Fabrica Technologies, Inc. : https://www.fabrica.dev/
-// Submitted by Eric Jiang <eric@fabrica.dev>
-onfabrica.com
-
 // fachschaften.org: https://fachschaften.org/
 // Submitted by Felix Schäfer <security@fachschaften.org>
 fspages.org
@@ -14035,6 +14034,10 @@ onhercules.app
 hercules-app.com
 hercules-dev.com
 
+// here.now : https://here.now/
+// Submitted by Adam Ludwin <hello@here.now>
+here.now
+
 // Heroku : https://www.heroku.com/
 // Submitted by Shumon Huque <public-dns@salesforce.com>
 herokuapp.com
@@ -14215,7 +14218,8 @@ botdash.xyz
 
 // IONOS SE : https://www.ionos.com/
 // IONOS Group SE : https://www.ionos-group.com/
-// Submitted by Henrik Willert <security@ionos.com>
+// Submitted by Anton Mehlmann <security@ionos.com>
+online-server.cloud
 apps-1and1.com
 live-website.com
 webspace-host.com
@@ -14304,8 +14308,6 @@ ryd.wafaicloud.com
 j.scaleforce.com.cy
 jelastic.dogado.eu
 fi.cloudplatform.fi
-demo.datacenter.fi
-paas.datacenter.fi
 jele.host
 mircloud.host
 paas.beebyte.io
@@ -14448,6 +14450,11 @@ shiptoday.build
 laravel.cloud
 on-forge.com
 on-vapor.com
+
+// Last Mile Labs, Inc : https://eth.limo
+// Submitted by eth.limo team <security@eth.limo>
+*.eth.limo
+*.eth.link
 
 // LCube - Professional hosting e.K. : https://www.lcube-webhosting.de
 // Submitted by Lars Laehn <info@lcube.de>
@@ -15214,6 +15221,10 @@ us.platform.sh
 *.platformsh.site
 *.tst.site
 
+// Playcode : https://playcode.io
+// Submitted by Ruslan Ianberdin <security@playcode.io>
+playcode.site
+
 // Pley AB : https://www.pley.com/
 // Submitted by Henning Pohl <infra@pley.com>
 pley.games
@@ -15634,6 +15645,9 @@ scbl.pl-waw.scw.cloud
 scalebook.scw.cloud
 smartlabeling.scw.cloud
 dedibox.fr
+scw.site
+ams.scw.site
+waw.scw.site
 
 // schokokeks.org GbR : https://schokokeks.org/
 // Submitted by Hanno Böck <hanno@schokokeks.org>
@@ -16173,11 +16187,12 @@ val.run
 web.val.run
 
 // Vercel, Inc : https://vercel.com/
-// Submitted by Laurens Duijvesteijn <security@vercel.com>
+// Submitted by Thibault Miranda de Oliveira <security@vercel.com>
 vercel.app
 v0.build
 vercel.dev
 vusercontent.net
+tmp.now
 vercel.run
 now.sh
 
@@ -16272,9 +16287,9 @@ wmflabs.org
 
 // William Harrison : https://wharrison.com.au
 // Submitted by William Harrison <security@hrsn.net>
-vps.hrsn.au
 hrsn.dev
 is-a.dev
+vps.hrsn.net
 localcert.net
 
 // Windsurf : https://windsurf.com
@@ -16335,12 +16350,6 @@ grok.me
 // Submitted by Julian Uphoff <publicsuffixlist@xenoncloud.net>
 *.xenonconnect.de
 half.host
-
-// XnBay Technology : http://www.xnbay.com/
-// Submitted by XnBay Developer <developer.xncloud@gmail.com>
-xnbay.com
-u2.xnbay.com
-u2-local.xnbay.com
 
 // XS4ALL Internet bv : https://www.xs4all.nl/
 // Submitted by Daniel Mostertman <unixbeheer+publicsuffix@xs4all.net>
