@@ -69,13 +69,17 @@ class ZoneTemplatesController extends PublicApiController
     }
 
     /**
-     * Reading zone templates requires a zone-template permission, matching the web UI.
+     * Reading zone templates requires a zone-template permission, matching the web
+     * template list. Zone creators may read too: the web add-zone form offers them
+     * templates, and POST /zones takes a template id.
      */
     private function canViewZoneTemplates(int $userId): bool
     {
         return $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser')
             || $this->apiPermissionService->userHasPermission($userId, 'zone_templ_add')
-            || $this->apiPermissionService->userHasPermission($userId, 'zone_templ_edit');
+            || $this->apiPermissionService->userHasPermission($userId, 'zone_templ_edit')
+            || $this->apiPermissionService->userHasPermission($userId, 'zone_master_add')
+            || $this->apiPermissionService->userHasPermission($userId, 'zone_slave_add');
     }
 
     #[OA\Get(

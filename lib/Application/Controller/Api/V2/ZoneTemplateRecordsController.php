@@ -101,11 +101,13 @@ class ZoneTemplateRecordsController extends PublicApiController
             return true;
         }
 
-        // Reading zone templates requires a zone-template permission, matching the
-        // web UI; global and own templates are then readable within that.
+        // Reading needs a zone-template permission, or a zone-add permission since
+        // zone creators pick templates; global and own templates are then readable.
         if (
             !$this->apiPermissionService->userHasPermission($userId, 'zone_templ_add')
             && !$this->apiPermissionService->userHasPermission($userId, 'zone_templ_edit')
+            && !$this->apiPermissionService->userHasPermission($userId, 'zone_master_add')
+            && !$this->apiPermissionService->userHasPermission($userId, 'zone_slave_add')
         ) {
             return false;
         }
