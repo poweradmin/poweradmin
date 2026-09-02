@@ -107,6 +107,8 @@ class LoginController extends BaseController
 
         $this->render('login.html', [
             'login_token' => $loginToken,
+            // Kept for 4.4.0 theme forks whose login form still posts it
+            'query_string' => $_SERVER['QUERY_STRING'] ?? '',
             'msg' => $msg,
             'type' => $type,
             'recaptcha_enabled' => $this->config->get('security', 'recaptcha.enabled', false),

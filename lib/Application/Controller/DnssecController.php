@@ -142,7 +142,10 @@ class DnssecController extends BaseController
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
-        $can_manage_dnssec = $this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id);
+        $permissionService = $this->createPermissionService();
+        $can_manage_dnssec = $permissionService->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id);
+        // Kept for 4.4.0 theme forks that still gate the page on perm_edit
+        $perm_edit = $permissionService->getEditPermissionLevelForZone($this->db, $this->getCurrentUserId(), $zone_id);
 
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,
@@ -158,6 +161,7 @@ class DnssecController extends BaseController
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'algorithm_names' => DnssecAlgorithmName::getSupportedAlgorithmNamesForCapabilities($this->getPdnsCapabilities()),
             'can_manage_dnssec' => $can_manage_dnssec,
+            'perm_edit' => $perm_edit,
             'is_presigned' => $dnssecProvider->isZonePresigned($domain_name),
             'signed_serial' => $dnssecProvider->getEditedSerial($domain_name),
             'is_reverse_zone' => DnsHelper::isReverseZoneName($domain_name),

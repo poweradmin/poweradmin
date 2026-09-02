@@ -285,6 +285,9 @@ class ListReverseZonesController extends BaseController
             'iface_zonelist_fullname' => $iface_zonelist_fullname,
             'show_owner_column' => $showOwnerColumn,
             'show_group_column' => $showGroupColumn,
+            // Kept for 4.4.0 theme forks; mirror the gated flags so ownership view still applies
+            'is_user_owner_allowed' => $showOwnerColumn,
+            'is_group_owner_allowed' => $showGroupColumn,
             'is_owner_sort_supported' => $isOwnerSortSupported,
             'is_group_sort_supported' => $isGroupSortSupported,
             'is_api_backend' => $isApiBackend,
