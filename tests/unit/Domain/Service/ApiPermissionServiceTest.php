@@ -580,9 +580,25 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanViewZoneTemplatesWithZoneMasterAdd(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 1]); // not ueberuser, no templ perms, has zone_master_add
+
+        $this->assertTrue($this->service->canViewZoneTemplates(2));
+    }
+
+    #[Test]
+    public function testCanViewZoneTemplatesWithZoneSlaveAdd(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 0, 1]); // only zone_slave_add
+
+        $this->assertTrue($this->service->canViewZoneTemplates(2));
+    }
+
+    #[Test]
     public function testCanViewZoneTemplatesDeniedWithoutPermission(): void
     {
-        $this->setupPermissionMock([0, 0, 0]);
+        $this->setupPermissionMock([0, 0, 0, 0, 0]);
 
         $this->assertFalse($this->service->canViewZoneTemplates(2));
     }

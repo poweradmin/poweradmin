@@ -744,7 +744,8 @@ class ApiPermissionService
      * Check if user may view zone templates (stateless).
      *
      * Mirrors the web ListZoneTemplController gate: either zone-template
-     * permission (add or edit), or ueberuser.
+     * permission (add or edit), or ueberuser. Zone creators may read too: the
+     * web add-zone form offers them templates, and POST /zones takes a template id.
      *
      * @param int $userId User ID to check
      * @return bool True if user can view zone templates
@@ -753,7 +754,9 @@ class ApiPermissionService
     {
         return $this->userHasPermission($userId, 'user_is_ueberuser')
             || $this->userHasPermission($userId, 'zone_templ_add')
-            || $this->userHasPermission($userId, 'zone_templ_edit');
+            || $this->userHasPermission($userId, 'zone_templ_edit')
+            || $this->userHasPermission($userId, 'zone_master_add')
+            || $this->userHasPermission($userId, 'zone_slave_add');
     }
 
     /**
