@@ -14,6 +14,7 @@ use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
@@ -24,6 +25,7 @@ $request = Request::createFromGlobals();
 
 $config = ConfigurationManager::getInstance();
 $config->initialize();
+CanonicalZoneSql::setRowIdFallback(DnsBackendProviderFactory::isApiBackend($config));
 
 require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
 initializeTimezone($config);

@@ -23,7 +23,9 @@
 use Poweradmin\Application\Http\BootstrapErrorResponder;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Routing\SymfonyRouter;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 require __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
@@ -34,6 +36,7 @@ $configManager = ConfigurationManager::getInstance();
 
 try {
     $configManager->initialize();
+    CanonicalZoneSql::setRowIdFallback(DnsBackendProviderFactory::isApiBackend($configManager));
 
     initializeTimezone($configManager);
 
