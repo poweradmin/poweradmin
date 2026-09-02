@@ -36,6 +36,18 @@ use PDOStatement;
  */
 final class CanonicalZoneSql
 {
+    private static bool $rowIdFallback = true;
+
+    /**
+     * Enable the zones.id fallback only for the API backend. In SQL mode domain_id is always
+     * populated and zones.id is an unrelated id space, so the fallback must never fire there.
+     * Set once at bootstrap from the configured backend.
+     */
+    public static function setRowIdFallback(bool $enabled): void
+    {
+        self::$rowIdFallback = $enabled;
+    }
+
     /**
      * SQL expression for a zones row's canonical id, the value API mode hands to callers.
      *
@@ -58,6 +70,10 @@ final class CanonicalZoneSql
     public static function canonicalIdColumn(string $alias = ''): string
     {
         $prefix = $alias === '' ? '' : rtrim($alias, '.') . '.';
+
+        if (!self::$rowIdFallback) {
+            return "{$prefix}domain_id";
+        }
 
         return "COALESCE(NULLIF({$prefix}domain_id, 0), {$prefix}id)";
     }
