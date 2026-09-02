@@ -22,7 +22,9 @@
 
 use Poweradmin\Application\Controller\NotFoundController;
 use Poweradmin\Application\Routing\SymfonyRouter;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 require __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
@@ -31,6 +33,7 @@ require_once __DIR__ . '/lib/Domain/Model/TopLevelDomainInit.php';
 // Initialize configuration
 $configManager = ConfigurationManager::getInstance();
 $configManager->initialize();
+CanonicalZoneSql::setRowIdFallback(DnsBackendProviderFactory::isApiBackend($configManager));
 
 // Initialize timezone and session
 initializeTimezone($configManager);

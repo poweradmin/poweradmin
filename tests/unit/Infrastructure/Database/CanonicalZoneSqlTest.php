@@ -62,6 +62,24 @@ class CanonicalZoneSqlTest extends TestCase
         return is_array($row) ? $row : null;
     }
 
+    protected function tearDown(): void
+    {
+        CanonicalZoneSql::setRowIdFallback(true);
+    }
+
+    public function testSqlModeReadsThePlainDomainIdColumn(): void
+    {
+        CanonicalZoneSql::setRowIdFallback(false);
+
+        $this->assertSame('z.domain_id', CanonicalZoneSql::canonicalIdColumn('z'));
+        $this->assertSame('domain_id', CanonicalZoneSql::canonicalIdColumn());
+    }
+
+    public function testApiModeFallsBackToTheRowId(): void
+    {
+        $this->assertSame('COALESCE(NULLIF(z.domain_id, 0), z.id)', CanonicalZoneSql::canonicalIdColumn('z'));
+    }
+
     public function testResolvesAZoneThisApplicationCreated(): void
     {
         $this->seed(5, 5, 'example.com');
