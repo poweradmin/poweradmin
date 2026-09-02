@@ -32,7 +32,8 @@ use ReflectionClass;
 /**
  * The web zone-template list refuses a user holding no zone_templ_* permission.
  * The API read paths must refuse the same user, including on global templates,
- * which were previously readable by any authenticated caller.
+ * which were previously readable by any authenticated caller. Zone creators are
+ * the exception: the web add-zone form offers them templates, so they may read.
  *
  * These drive the real private predicates by reflection rather than a copy, so
  * the test fails if the guard is removed from the controller itself.
@@ -62,6 +63,16 @@ class ZoneTemplateReadPermissionTest extends TestCase
         $this->assertTrue($this->canViewZoneTemplates(['user_is_ueberuser']));
     }
 
+    public function testListGateAllowsZoneMasterAdd(): void
+    {
+        $this->assertTrue($this->canViewZoneTemplates(['zone_master_add']));
+    }
+
+    public function testListGateAllowsZoneSlaveAdd(): void
+    {
+        $this->assertTrue($this->canViewZoneTemplates(['zone_slave_add']));
+    }
+
     public function testGlobalTemplateRecordsRefusedWithoutZoneTemplatePermission(): void
     {
         $this->assertFalse($this->canViewTemplate([], 0));
@@ -70,6 +81,16 @@ class ZoneTemplateReadPermissionTest extends TestCase
     public function testGlobalTemplateRecordsAllowedWithZoneTemplatePermission(): void
     {
         $this->assertTrue($this->canViewTemplate(['zone_templ_edit'], 0));
+    }
+
+    public function testGlobalTemplateRecordsAllowedWithZoneMasterAdd(): void
+    {
+        $this->assertTrue($this->canViewTemplate(['zone_master_add'], 0));
+    }
+
+    public function testForeignTemplateRecordsRefusedForZoneCreator(): void
+    {
+        $this->assertFalse($this->canViewTemplate(['zone_master_add'], 99, false));
     }
 
     public function testForeignTemplateRecordsRefusedEvenWithZoneTemplatePermission(): void
