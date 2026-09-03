@@ -148,10 +148,24 @@ class MfaVerifyController extends BaseController
         }
 
         $username = $this->userContextService->getLoggedInUsername() ?? '';
+        // A recovery code is the documented way back into a locked account, so it is checked
+        // before the counter gate; a blacklisted address stays out regardless
+        $recovered = false;
         if ($this->isMfaThrottled($username, (int)$userId)) {
-            $this->logger->warning('[MfaVerifyController] Account locked, refusing MFA attempt for user ID: {user_id}', ['user_id' => $userId]);
-            $this->displayMfaForm(_('Too many failed attempts. Please try again later.'), 'danger');
-            return;
+            $recovered = !$this->loginAttemptService->isIpBlacklisted($this->ipAddressRetriever->getClientIp())
+                && $this->mfaService->consumeRecoveryCode($userId, $code);
+            if (!$recovered) {
+                $this->logger->warning('[MfaVerifyController] Account locked, refusing MFA attempt for user ID: {user_id}', ['user_id' => $userId]);
+                // Audited like any wrong code, but not counted, so a bot cannot hold the window open
+                $this->auditLogger->logWarn(sprintf(
+                    'client_ip:%s user:%s operation:mfa_failed mfa_type:%s',
+                    $this->ipAddressRetriever->getClientIp(),
+                    $username !== '' ? $username : 'unknown',
+                    $this->mfaService->getMfaType($userId) ?? 'unknown'
+                ));
+                $this->displayMfaForm(_('Too many failed attempts. Please try again later.'), 'danger');
+                return;
+            }
         }
 
         // Get user MFA record
@@ -171,7 +185,7 @@ class MfaVerifyController extends BaseController
 
         // Use the MFA service for verification (handles both regular codes and recovery codes)
         $this->logger->debug('[MfaVerifyController] Verifying code for user ID: {user_id}, type: {type}', ['user_id' => $userId, 'type' => $userMfa->getType()]);
-        $isValid = $this->mfaService->verifyCode($userId, $code);
+        $isValid = $recovered || $this->mfaService->verifyCode($userId, $code);
 
         $justLocked = $this->recordMfaAttempt($username, $userId, $isValid);
 

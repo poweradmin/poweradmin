@@ -254,6 +254,30 @@ class MfaService
     }
 
     /**
+     * Consume the supplied code if it is one of the user's recovery codes.
+     *
+     * A recovery code is the documented way back into a locked account, so callers
+     * may check it before any lockout gate.
+     */
+    public function consumeRecoveryCode(int $userId, #[\SensitiveParameter] string $code): bool
+    {
+        $userMfa = $this->userMfaRepository->findByUserId($userId);
+        if (!$userMfa || !$userMfa->getSecret()) {
+            return false;
+        }
+
+        if (!$userMfa->validateRecoveryCode($code)) {
+            return false;
+        }
+
+        $this->logger->info('Valid recovery code used by user ID: {userId}', ['userId' => $userId]);
+        // Recovery code is removed from the list in validateRecoveryCode
+        $this->userMfaRepository->save($userMfa);
+
+        return true;
+    }
+
+    /**
      * Verify a TOTP code, email code, or recovery code for a user
      *
      * @param int $userId The user ID
@@ -281,10 +305,7 @@ class MfaService
         $this->logger->debug('Verifying code for user ID: {userId}, type: {type}', ['userId' => $userId, 'type' => $mfaType]);
 
         // First, check if the code matches a recovery code
-        if ($userMfa->validateRecoveryCode($code)) {
-            $this->logger->info('Valid recovery code used by user ID: {userId}', ['userId' => $userId]);
-            // Recovery code is removed from the list in validateRecoveryCode
-            $this->userMfaRepository->save($userMfa);
+        if ($this->consumeRecoveryCode($userId, $code)) {
             return true;
         }
 

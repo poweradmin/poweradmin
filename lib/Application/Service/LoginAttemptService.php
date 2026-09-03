@@ -103,6 +103,16 @@ class LoginAttemptService
         $this->cleanupOldAttempts();
     }
 
+    /**
+     * Whether the address is on the configured lockout blacklist.
+     */
+    public function isIpBlacklisted(string $ipAddress): bool
+    {
+        $blacklistedIps = $this->configManager->get('security', 'account_lockout.blacklist_ip_addresses', []);
+
+        return !empty($blacklistedIps) && $this->isIpInList($ipAddress, $blacklistedIps);
+    }
+
     public function isAccountLocked(string $username, string $ipAddress, string $attemptType = self::STAGE_PASSWORD, ?int $userId = null): bool
     {
         $limits = $this->stageLimits($attemptType);
@@ -122,9 +132,8 @@ class LoginAttemptService
         }
 
         // Check IP blacklist next - if blacklisted, ALWAYS return locked (true)
-        $blacklistedIps = $this->configManager->get('security', 'account_lockout.blacklist_ip_addresses', []);
-        if (!empty($blacklistedIps) && $this->isIpInList($ipAddress, $blacklistedIps)) {
-            return true; // This IP is blacklisted, consider it locked
+        if ($this->isIpBlacklisted($ipAddress)) {
+            return true;
         }
 
         $userId ??= $this->getUserId($username);

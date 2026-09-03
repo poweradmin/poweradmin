@@ -381,6 +381,46 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function testConsumeRecoveryCodeAcceptsAPrintedCodeOnce(): void
+    {
+        $userId = 1;
+        $userMfa = UserMfa::create(
+            $userId,
+            true,
+            'JBSWY3DPEHPK3PXP',
+            json_encode(['recovery-one', 'recovery-two']),
+            UserMfa::TYPE_APP
+        );
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+        $this->userMfaRepository->expects($this->once())->method('save');
+
+        // The printed code is the only way back into a locked account, so it must be
+        // accepted on its own and spent afterwards
+        $this->assertTrue($this->service->consumeRecoveryCode($userId, 'recovery-one'));
+        $this->assertFalse($this->service->consumeRecoveryCode($userId, 'recovery-one'));
+    }
+
+    public function testConsumeRecoveryCodeRefusesATotpCode(): void
+    {
+        $userId = 1;
+        $userMfa = UserMfa::create(
+            $userId,
+            true,
+            'JBSWY3DPEHPK3PXP',
+            json_encode(['recovery-one']),
+            UserMfa::TYPE_APP
+        );
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+
+        $this->assertFalse($this->service->consumeRecoveryCode($userId, '123456'));
+    }
+
     public function testVerifyCodeReturnsTrueForValidRecoveryCode(): void
     {
         $userId = 1;
