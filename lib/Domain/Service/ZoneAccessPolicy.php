@@ -71,6 +71,7 @@ final class ZoneAccessPolicy
     ): bool {
         return $zoneIsReadOnly
             || ($recordType === 'SOA' && $permEdit !== 'all')
+            || ($recordType === 'LUA' && $permEdit === 'own_as_client')
             || $nsRecordLocked;
     }
 }
