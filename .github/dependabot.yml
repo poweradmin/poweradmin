@@ -34,10 +34,6 @@ updates:
         versions: [">=8.0"]
       - dependency-name: "tomasvotruba/cognitive-complexity"
         versions: [">=1.2"]
-      # master ships the 4.4.x patch line, so it takes patch updates only -
-      # matching the release branches. Lift this when a feature release lands.
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major", "version-update:semver-minor"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
