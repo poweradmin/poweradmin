@@ -153,6 +153,58 @@ updates:
       npm:
         patterns: ["*"]
 
+  # ---- release/4.4.x ----
+  - package-ecosystem: "composer"
+    directory: "/"
+    target-branch: "release/4.4.x"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "15:00"
+      timezone: "Europe/Vilnius"
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      composer:
+        patterns: ["*"]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "release/4.4.x"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "15:00"
+      timezone: "Europe/Vilnius"
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      github-actions:
+        patterns: ["*"]
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    target-branch: "release/4.4.x"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "15:00"
+      timezone: "Europe/Vilnius"
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "chore(deps)"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
   # ---- release/4.3.x ----
   - package-ecosystem: "composer"
     directory: "/"

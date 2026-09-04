@@ -10,6 +10,7 @@ on:
       - release/3.x
       - release/4.2.x
       - release/4.3.x
+      - release/4.4.x
   workflow_dispatch:
     inputs:
       no_cache:
@@ -93,6 +94,7 @@ jobs:
             type=raw,value=lts,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/3.x') }}
             type=raw,value=4.2.x,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.2.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.2.x') }}
             type=raw,value=4.3.x,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.3.x') }}
+            type=raw,value=4.4.x,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.4.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.4.x') }}
 
       - name: Resolve build cache ref
         id: cache
