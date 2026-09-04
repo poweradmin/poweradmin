@@ -135,7 +135,7 @@
                             <td class="small">{{ macros.log_timestamp(row.created_at) }}</td>
                             <td><span class="badge {% if 'create' in row.action %}bg-success{% elseif 'delete' in row.action %}bg-danger{% else %}bg-secondary{% endif %}">{{ row.action }}</span></td>
                             <td class="small">{{ row.username }}{{ macros.change_reason(row.changeset_comment) }}</td>
-                            <td class="small">{% if snap.zone_name %}{{ snap.zone_name }}{% elseif snap.name %}{{ snap.name }}{% else %}<span class="text-muted">{{ row.zone_id }}</span>{% endif %}</td>
+                            <td class="small">{% if snap.zone_name ?? null %}{{ snap.zone_name }}{% elseif snap.name ?? null %}{{ snap.name }}{% else %}<span class="text-muted">{{ row.zone_id }}</span>{% endif %}</td>
                             {% if row.action starts with 'zone_' %}
                                 <td colspan="5" class="small">
                                     {% if snap.type %}<span class="badge bg-light text-dark me-1">{{ snap.type }}</span>{% endif %}
