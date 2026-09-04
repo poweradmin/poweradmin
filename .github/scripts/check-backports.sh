@@ -31,6 +31,7 @@ cd "$(git rev-parse --show-toplevel)" || die "not inside a git repository"
 PAIRS="
 develop::master
 master::develop
+master::release/4.4.x
 master::release/4.3.x
 master::release/4.2.x
 "

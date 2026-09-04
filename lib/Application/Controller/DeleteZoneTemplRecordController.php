@@ -93,6 +93,11 @@ class DeleteZoneTemplRecordController extends BaseController
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
         $record_info = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id, $zone_templ_id);
 
+        // The lookup is scoped to the template, so a record id from another template comes back empty
+        if (!$record_info) {
+            $this->showError(_('Invalid or unexpected input given.'));
+        }
+
         $this->render('delete_zone_templ_record.html', [
             'record_id' => $record_id,
             'zone_templ_id' => $zone_templ_id,

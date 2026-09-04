@@ -64,6 +64,7 @@ locale/**/*.po.backup.*
 
 # Playwright
 /playwright-report/
+/playwright-sweep-logs/
 /playwright/.cache/
 /test-results/
 *.trace.zip

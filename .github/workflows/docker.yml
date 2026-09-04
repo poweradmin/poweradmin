@@ -1,11 +1,16 @@
 name: Docker Image Publish
 
-# Branch images build natively via docker-<branch>.yml on master. This copy only
-# publishes v* release tags for this line.
+# Every branch image now builds natively in its own docker-<branch>.yml. What is left
+# here is the v* release-tag publisher.
 on:
   push:
     tags:
       - 'v*'
+    branches:
+      - release/3.x
+      - release/4.2.x
+      - release/4.3.x
+      - release/4.4.x
   workflow_dispatch:
     inputs:
       no_cache:
@@ -22,22 +27,6 @@ env:
   DOCKERHUB_IMAGE_NAME: poweradmin/poweradmin
 
 jobs:
-  refresh-active-branches:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'schedule'
-    permissions:
-      actions: write
-    steps:
-      - name: Dispatch no-cache rebuilds for active branches
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          # release/3.x has no docker.yml of its own; its image rebuilds on branch pushes only
-          for branch in develop release/4.3.x release/4.2.x; do
-            gh workflow run docker.yml --repo "$GITHUB_REPOSITORY" --ref "$branch" -f no_cache=true \
-              || echo "dispatch failed for $branch"
-          done
-
   build-push:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -105,6 +94,7 @@ jobs:
             type=raw,value=lts,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/3.x') }}
             type=raw,value=4.2.x,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.2.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.2.x') }}
             type=raw,value=4.3.x,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.3.x') }}
+            type=raw,value=4.4.x,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.4.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.4.x') }}
 
       - name: Resolve build cache ref
         id: cache
@@ -140,13 +130,18 @@ jobs:
             -e DNS_NS2=ns2.example.com \
             poweradmin:smoke-test
 
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
+            if [ "$(docker inspect -f '{{.State.Status}}' smoke-root 2>/dev/null)" != "running" ]; then
+              echo "Root mode: container exited unexpectedly"
+              docker logs smoke-root
+              exit 1
+            fi
             if curl -sf http://localhost:80/ -o /dev/null 2>/dev/null; then
-              echo "Root mode: container responded on port 80"
+              echo "Root mode: container responded on port 80 (after ${i}s)"
               break
             fi
-            if [ "$i" = "30" ]; then
-              echo "Root mode: container failed to respond"
+            if [ "$i" = "60" ]; then
+              echo "Root mode: container failed to respond within 60s"
               docker logs smoke-root
               exit 1
             fi
@@ -156,6 +151,9 @@ jobs:
           docker rm -f smoke-root
 
       - name: Smoke test (non-root mode - port 8080)
+        if: >-
+          !(github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/3.x')
+          && github.ref != 'refs/heads/release/3.x'
         run: |
           docker run -d --name smoke-nonroot \
             --user 82:82 \
@@ -167,13 +165,18 @@ jobs:
             -e DNS_NS2=ns2.example.com \
             poweradmin:smoke-test
 
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
+            if [ "$(docker inspect -f '{{.State.Status}}' smoke-nonroot 2>/dev/null)" != "running" ]; then
+              echo "Non-root mode: container exited unexpectedly"
+              docker logs smoke-nonroot
+              exit 1
+            fi
             if curl -sf http://localhost:8080/ -o /dev/null 2>/dev/null; then
-              echo "Non-root mode: container responded on port 8080"
+              echo "Non-root mode: container responded on port 8080 (after ${i}s)"
               break
             fi
-            if [ "$i" = "30" ]; then
-              echo "Non-root mode: container failed to respond"
+            if [ "$i" = "60" ]; then
+              echo "Non-root mode: container failed to respond within 60s"
               docker logs smoke-nonroot
               exit 1
             fi

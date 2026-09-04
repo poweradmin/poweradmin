@@ -96,6 +96,11 @@ class EditZoneTemplRecordController extends BaseController
     {
         $record = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id, $zone_templ_id);
 
+        // The lookup is scoped to the template, so a record id from another template comes back empty
+        if (!$record) {
+            $this->showError(_('Invalid or unexpected input given.'));
+        }
+
         // Get count of zones using this template
         $userId = $this->userContext->getLoggedInUserId();
         $linked_zones = $this->zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);

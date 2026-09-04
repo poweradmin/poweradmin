@@ -1,0 +1,36 @@
+name: Docker Image Publish (develop)
+
+# Lives on master because workflow_run only fires from the default branch, which is
+# also what keeps the "validations must pass" gate. develop is excluded from docker.yml.
+on:
+  workflow_run:
+    workflows: ["validations"]
+    types:
+      - completed
+    branches:
+      - develop
+  workflow_dispatch:
+    inputs:
+      no_cache:
+        description: 'Build without layer cache to pull in updated base packages'
+        type: boolean
+        default: false
+  schedule:
+    - cron: '30 4 * * 1'
+
+concurrency:
+  group: docker-publish-develop
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    uses: ./.github/workflows/docker-native.yml
+    secrets:
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    with:
+      # Never fall back to github.ref: a dispatch from master must not publish master as :dev.
+      ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || 'develop' }}
+      tag: dev
+      cache_prefix: buildcache-develop
+      no_cache: ${{ github.event_name == 'schedule' || inputs.no_cache == true }}

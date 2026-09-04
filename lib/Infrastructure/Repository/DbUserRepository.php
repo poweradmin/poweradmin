@@ -112,8 +112,11 @@ class DbUserRepository implements UserRepository
 
     public function getZoneOwnerFullNames(int $domainId): string
     {
-        $stmt = $this->db->prepare("SELECT users.fullname FROM users, zones WHERE zones.domain_id = :id AND zones.owner = users.id ORDER BY fullname");
-        $stmt->execute([':id' => $domainId]);
+        // PARAM_INT: the canonical expression has no column affinity, so SQLite would compare as text
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones');
+        $stmt = $this->db->prepare("SELECT users.fullname FROM users, zones WHERE $canonicalId = :id AND zones.owner = users.id ORDER BY fullname");
+        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
 
         $names = [];
         while ($row = $stmt->fetch()) {
