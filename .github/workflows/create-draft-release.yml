@@ -155,6 +155,18 @@ jobs:
             echo "> **Note:** Run the appropriate update script for your database type before upgrading." >> RELEASE_NOTES.md
           fi
 
+          # GitHub rejects release bodies over 125000 characters, which a feature
+          # release can reach; keep the head and point at the compare view.
+          LIMIT=120000
+          if [ "$(wc -c < RELEASE_NOTES.md)" -gt "$LIMIT" ]; then
+            LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+            head -c "$LIMIT" RELEASE_NOTES.md | sed '$ d' > RELEASE_NOTES.tmp
+            printf '\n\n*Notes truncated. The full commit list is in the [compare view](https://github.com/%s/compare/%s...v%s).*\n' \
+              "$GITHUB_REPOSITORY" "$LAST_TAG" "$VERSION" >> RELEASE_NOTES.tmp
+            mv RELEASE_NOTES.tmp RELEASE_NOTES.md
+            echo "Release notes truncated to ${LIMIT} bytes"
+          fi
+
       - name: Create or update draft release
         if: steps.check_release.outputs.skip != 'true' && steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true'
         env:
