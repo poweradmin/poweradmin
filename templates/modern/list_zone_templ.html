@@ -86,7 +86,7 @@
                     </td>
                     <td><span class="badge {% if template['zones_linked'] == '0' %}bg-warning{% else %}bg-secondary{% endif %}">{{ template['zones_linked'] }}</span></td>
                     <td>
-                        {% set template_sync = sync_status[template['id']] %}
+                        {% set template_sync = sync_status[template['id']] ?? null %}
                         {% if template_sync and template_sync.total_zones > 0 %}
                             {% if template_sync.unsynced_zones > 0 %}
                                 <span class="badge bg-warning text-dark" title="{% trans %}Zones need updating{% endtrans %}">

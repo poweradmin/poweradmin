@@ -80,7 +80,7 @@
                         {% endif %}
                     </td>
                     <td class="col-sm-2">
-                        <select id="recordTypeSelectTop" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectTop', 'contentInputContainerTop', 'recordContentTop'); updatePriorityFieldState(this, 'priorityFieldTop'); updateTtlForType(this, this.closest('form').querySelector('input[name=ttl]'));" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
+                        <select id="recordTypeSelectTop" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectTop', 'contentInputContainerTop', 'recordContentTop'); updatePriorityFieldState(this, 'priorityFieldTop'); updateTtlForType(this, this.closest('form').querySelector('input[name=ttl]'));" {% if form_data.type is defined and form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
                             {% set rev = false %}
                             {% for record_type in record_types %}
                             {% set add = "" %}
@@ -435,7 +435,7 @@
             <td class="text-center">{% if r['disabled'] %}{% trans %}Yes{% endtrans %}{% else %}{% trans %}No{% endtrans %}{% endif %}</td>
             {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
             <td class="small text-muted text-nowrap">
-                {% if r['modified_at'] %}
+                {% if r['modified_at'] is defined and r['modified_at'] %}
                     <span title="{{ r['modified_at']|date('Y-m-d H:i:s T') }}">{{ r['modified_at']|date('Y-m-d H:i') }}</span>
                 {% else %}
                     <span class="text-muted">&mdash;</span>
@@ -480,7 +480,7 @@
             </td>
             {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
             <td class="small text-muted text-nowrap">
-                {% if r['modified_at'] %}
+                {% if r['modified_at'] is defined and r['modified_at'] %}
                     <span title="{{ r['modified_at']|date('Y-m-d H:i:s T') }}">{{ r['modified_at']|date('Y-m-d H:i') }}</span>
                 {% else %}
                     <span class="text-muted">&mdash;</span>
@@ -685,7 +685,7 @@
                         {% endif %}
                     </td>
                     <td class="col-sm-2">
-                        <select id="recordTypeSelectBottom" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom'); updatePriorityFieldState(this, 'priorityFieldBottom'); updateTtlForType(this, this.closest('form').querySelector('input[name=ttl]'));" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
+                        <select id="recordTypeSelectBottom" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom'); updatePriorityFieldState(this, 'priorityFieldBottom'); updateTtlForType(this, this.closest('form').querySelector('input[name=ttl]'));" {% if form_data.type is defined and form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
                             {% set rev = false %}
                             {% for record_type in record_types %}
                             {% set add = "" %}
