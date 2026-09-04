@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        tag: [latest, dev, lts, 4.2.x, 4.3.x]
+        tag: [latest, dev, lts, 4.2.x, 4.3.x, 4.4.x]
     permissions:
       contents: read
       packages: read

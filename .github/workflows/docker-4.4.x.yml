@@ -1,0 +1,37 @@
+name: Docker Image Publish (4.4.x)
+
+# Lives on master because workflow_run only fires from the default branch, which is
+# also what keeps the "validations must pass" gate. Branch pushes are removed from
+# docker.yml and from 4.4.x's own copy; v* release tags still publish through docker.yml.
+on:
+  workflow_run:
+    workflows: ["validations"]
+    types:
+      - completed
+    branches:
+      - release/4.4.x
+  workflow_dispatch:
+    inputs:
+      no_cache:
+        description: 'Build without layer cache to pull in updated base packages'
+        type: boolean
+        default: false
+  schedule:
+    - cron: '30 4 * * 1'
+
+concurrency:
+  group: docker-publish-4.4.x
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    uses: ./.github/workflows/docker-native.yml
+    secrets:
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    with:
+      # Never fall back to github.ref: a dispatch from master must not publish master as :4.4.x.
+      ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || 'release/4.4.x' }}
+      tag: 4.4.x
+      cache_prefix: buildcache-release-4.4.x
+      no_cache: ${{ github.event_name == 'schedule' || inputs.no_cache == true }}

@@ -29,7 +29,7 @@ jobs:
 
       - name: Fetch branches under comparison
         run: |
-          for b in develop master release/4.3.x release/4.2.x; do
+          for b in develop master release/4.4.x release/4.3.x release/4.2.x; do
             git fetch --quiet origin "$b:refs/remotes/origin/$b" 2>/dev/null \
               || echo "note: branch $b not found on origin, it will be skipped"
           done

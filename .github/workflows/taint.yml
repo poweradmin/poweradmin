@@ -27,6 +27,8 @@ jobs:
             php: '8.4'
           - branch: master
             php: '8.4'
+          - branch: release/4.4.x
+            php: '8.4'
           - branch: release/4.3.x
             php: '8.4'
           - branch: release/4.2.x
