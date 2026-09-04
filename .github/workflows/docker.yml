@@ -1,16 +1,11 @@
 name: Docker Image Publish
 
-# Every branch image now builds natively in its own docker-<branch>.yml. What is left
-# here is the v* release-tag publisher.
+# Branch images build natively via docker-<branch>.yml on master. This copy only
+# publishes v* release tags for this line.
 on:
   push:
     tags:
       - 'v*'
-    branches:
-      - release/3.x
-      - release/4.2.x
-      - release/4.3.x
-      - release/4.4.x
   workflow_dispatch:
     inputs:
       no_cache:
@@ -88,7 +83,6 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
             type=raw,value=latest,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'master') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/master') }}
             type=raw,value=dev,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'develop') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/develop') }}
             type=raw,value=lts,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/3.x') }}
