@@ -16,6 +16,9 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.release.target_commitish }}
+          # The built-in token cannot pass the required status check on the release
+          # branches, and its pushes start no other workflows. A maintainer token can.
+          token: ${{ secrets.RELEASE_BUMP_TOKEN || github.token }}
 
       - name: Get released version
         id: released
