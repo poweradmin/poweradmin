@@ -107,7 +107,7 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 ## Tested on
 
 **Officially tested versions:**
-- **master (4.4.x)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
+- **release/4.4.x (current)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/4.3.x (stable)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/4.2.x (maintenance)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
@@ -124,7 +124,8 @@ Poweradmin maintains multiple release branches:
 | Branch | Status | Support |
 |--------|--------|---------|
 | `develop` | Experimental | 4.5.x experimental features, may be unstable |
-| `master` | Current release | 4.4.x releases - newest line, still hardening |
+| `master` | Next release | 4.5.0 development after the develop merge, may be unstable |
+| `release/4.4.x` | Current release | 4.4.x releases - newest line, still hardening |
 | `release/4.3.x` | Stable | Current stable line (recommended), patch releases and security updates |
 | `release/4.2.x` | Maintenance | Security updates only, winding down |
 | `release/4.1.x` | End of support | No further updates - upgrade to 4.3.x |
