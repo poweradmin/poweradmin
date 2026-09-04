@@ -38,6 +38,9 @@ class DnsSecApiProvider implements DnssecProvider
     private string $clientIp;
     private string $userLogin;
 
+    /** @var array<string, bool> Per-request cache to avoid repeated metadata lookups */
+    private array $presignedByZone = [];
+
     public function __construct(
         PowerdnsApiClient $client,
         LegacyLoggerInterface $logger,
@@ -84,6 +87,16 @@ class DnsSecApiProvider implements DnssecProvider
             // (e.g., due to invalid record data in the zone)
             return false;
         }
+    }
+
+    public function isZonePresigned(string $zoneName): bool
+    {
+        if (!array_key_exists($zoneName, $this->presignedByZone)) {
+            // PowerDNS signals presignedness only when the metadata content is exactly "1"
+            $meta = $this->client->getZoneMetadataKind(new Zone($zoneName), 'PRESIGNED');
+            $this->presignedByZone[$zoneName] = in_array('1', $meta['metadata'] ?? [], true);
+        }
+        return $this->presignedByZone[$zoneName];
     }
 
     public function getDsRecords(string $zoneName): array
@@ -192,6 +205,16 @@ class DnsSecApiProvider implements DnssecProvider
         }
 
         return false;
+    }
+
+    public function getEditedSerial(string $zoneName): ?int
+    {
+        $zoneData = $this->client->getZone(rtrim($zoneName, '.') . '.', false);
+        // Unsigned zones serve the plain serial, so there is no signed serial to report
+        if (!($zoneData['dnssec'] ?? false) || !isset($zoneData['edited_serial'])) {
+            return null;
+        }
+        return (int)$zoneData['edited_serial'];
     }
 
     public function importZoneKey(string $zoneName, string $keyType, string $algorithm, string $privateKeyPem): bool

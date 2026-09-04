@@ -1,19 +1,11 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Add slave zone{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: 'Add slave zone'|trans},
+]) }}
 
 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/add/slave{% if is_reverse_zone %}?type=reverse{% endif %}" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
     {% if is_reverse_zone %}<input type="hidden" name="type" value="reverse">{% endif %}
 
 <!-- Two Column Layout -->
@@ -21,12 +13,10 @@
     <!-- Left Column: Zone Configuration (Vertical) -->
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-cloud-download me-2"></i>{% trans %}Slave Zone Configuration{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-cloud-download', 'Slave Zone Configuration'|trans) }}
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %} <span class="text-danger">*</span></label>
+                    <label for="domain" class="form-label">{% trans %}Zone Name{% endtrans %} <span class="text-danger">*</span></label>
                     <input class="form-control form-control-sm" type="text" id="domain" name="domain" value="{{ domain_value }}" required>
                     <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
                     {% if is_reverse_zone %}
@@ -51,9 +41,7 @@
         {% if user_owner_allowed %}
         <!-- User Owner Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-person-badge me-2"></i>{% trans %}User Owner{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-person-badge', 'User Owner'|trans) }}
             <div class="card-body">
                 <div class="mb-2">
                     <div class="alert alert-sm alert-success py-2 mb-2" id="selected_user_indicator" style="display: none;">
@@ -71,7 +59,12 @@
                 </div>
                 {% if group_owner_allowed and all_groups is not empty %}<hr class="my-2">{% endif %}
                 <div class="mb-2">
-                    <input type="text" class="form-control form-control-sm" id="user_search" placeholder="{% trans %}Search users...{% endtrans %}" autocomplete="off">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="user_search" placeholder="{% trans %}Search users...{% endtrans %}" autocomplete="off">
+                        <button class="btn btn-outline-secondary" type="button" id="clear_user_search" title="{% trans %}Clear search{% endtrans %}">
+                            <i class="bi bi-x-circle text-secondary"></i>
+                        </button>
+                    </div>
                 </div>
                 <div id="user_list" style="max-height: 200px; overflow-y: auto;">
                     {% for user in users %}
@@ -95,12 +88,15 @@
         {% if group_owner_allowed and all_groups is not empty %}
         <!-- Group Ownership Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-people me-2"></i>{% trans %}Group Ownership{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-people', 'Group Ownership'|trans) }}
             <div class="card-body">
                 <div class="mb-2">
-                    <input type="text" class="form-control form-control-sm" id="group_search" placeholder="{% trans %}Search groups...{% endtrans %}" autocomplete="off">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="group_search" placeholder="{% trans %}Search groups...{% endtrans %}" autocomplete="off">
+                        <button class="btn btn-outline-secondary" type="button" id="clear_group_search" title="{% trans %}Clear search{% endtrans %}">
+                            <i class="bi bi-x-circle text-secondary"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="mb-2">
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="select_all_groups">{% trans %}Select All{% endtrans %}</button>
@@ -111,7 +107,8 @@
                     <div class="form-check mb-2 group-item" data-groupname="{{ group.name|lower }}" data-groupdesc="{{ group.description|lower|default('') }}">
                         <input class="form-check-input group-checkbox" type="checkbox" name="groups[]" id="group_{{ group.id }}" value="{{ group.id }}" {% if selected_groups is defined and group.id in selected_groups %}checked{% endif %}>
                         <label class="form-check-label" for="group_{{ group.id }}">
-                            {{ group.name }} <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">{{ group_member_counts[group.id]|default(0) }} {% trans %}members{% endtrans %}</span>
+                            {{ group.name }}
+                            <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">{{ group_member_counts[group.id]|default(0) }} {% trans %}members{% endtrans %}</span>
                             {% if group.description %}<small class="text-muted d-block">{{ group.description }}</small>{% endif %}
                         </label>
                     </div>
@@ -131,7 +128,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <button class="btn btn-primary btn-sm" type="submit" name="submit">
+                        <button class="btn btn-primary btn-sm" type="submit" name="submit" data-busy-text="{% trans %}Saving...{% endtrans %}">
                             <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone{% endtrans %}
                         </button>
                         <a href="{{ base_url_prefix }}/zones/{{ is_reverse_zone ? 'reverse' : 'forward' }}" class="btn btn-secondary btn-sm">
@@ -190,6 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // User search functionality
     const userSearch = document.getElementById('user_search');
+    const clearUserSearch = document.getElementById('clear_user_search');
     const userItems = document.querySelectorAll('.user-item');
 
     if (userSearch) {
@@ -205,10 +203,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+
+        // Clear user search button
+        if (clearUserSearch) {
+            clearUserSearch.addEventListener('click', function() {
+                userSearch.value = '';
+                userItems.forEach(function(item) {
+                    item.style.display = '';
+                });
+                userSearch.focus();
+            });
+        }
     }
 
     // Group search functionality
     const groupSearch = document.getElementById('group_search');
+    const clearGroupSearch = document.getElementById('clear_group_search');
     const groupItems = document.querySelectorAll('.group-item');
 
     if (groupSearch) {
@@ -225,6 +235,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+
+        // Clear group search button
+        if (clearGroupSearch) {
+            clearGroupSearch.addEventListener('click', function() {
+                groupSearch.value = '';
+                groupItems.forEach(function(item) {
+                    item.style.display = '';
+                });
+                groupSearch.focus();
+            });
+        }
     }
 
     // Select all groups

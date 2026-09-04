@@ -39,6 +39,20 @@ interface RecordRepositoryInterface
     public function getRecordsByDomainId(int $domainId, ?string $recordType = null): array;
 
     /**
+     * Get the records at one name in a zone, optionally filtered by type.
+     *
+     * Prefer this over getRecordsByDomainId() whenever only one name matters:
+     * in API backend mode the zone-wide call fetches every record in the zone.
+     * Names match case-insensitively, per RFC 4343.
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name, with or without a trailing dot
+     * @param string|null $type Optional record type filter
+     * @return array Array of records
+     */
+    public function getRecordsByName(int $domainId, string $name, ?string $type = null): array;
+
+    /**
      * Get a record by ID
      *
      * @param int|string $recordId Record ID (int for SQL mode, encoded string for API mode)

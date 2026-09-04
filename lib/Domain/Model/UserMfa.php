@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Model;
 
 use DateTime;
 use InvalidArgumentException;
+use Poweradmin\Domain\Enum\MfaFactorType;
 
 class UserMfa
 {
@@ -34,7 +35,7 @@ class UserMfa
         private readonly int $id,
         private readonly int $userId,
         private bool $enabled,
-        private ?string $secret,
+        #[\SensitiveParameter] private ?string $secret,
         private ?string $recoveryCodes,
         private string $type,
         private ?DateTime $lastUsedAt,
@@ -47,7 +48,7 @@ class UserMfa
     public static function create(
         int $userId,
         bool $enabled = false,
-        ?string $secret = null,
+        #[\SensitiveParameter] ?string $secret = null,
         ?string $recoveryCodes = null,
         string $type = self::TYPE_APP,
         ?string $verificationData = null
@@ -98,7 +99,7 @@ class UserMfa
         return $this->secret;
     }
 
-    public function setSecret(?string $secret): void
+    public function setSecret(#[\SensitiveParameter] ?string $secret): void
     {
         $this->secret = $secret;
         $this->updatedAt = new DateTime();
@@ -140,7 +141,7 @@ class UserMfa
      *
      * @param string $jsonString JSON string to set
      */
-    public function setRecoveryCodesRaw(string $jsonString): void
+    public function setRecoveryCodesRaw(#[\SensitiveParameter] string $jsonString): void
     {
         $this->recoveryCodes = $jsonString;
         $this->updatedAt = new DateTime();
@@ -199,12 +200,20 @@ class UserMfa
 
     public function setType(string $type): void
     {
-        if (!in_array($type, [self::TYPE_APP, self::TYPE_EMAIL])) {
+        if (!MfaFactorType::isValid($type)) {
             throw new InvalidArgumentException("Invalid MFA type: $type");
         }
 
         $this->type = $type;
         $this->updatedAt = new DateTime();
+    }
+
+    /**
+     * The configured factor as an enum, or null for a type this build no longer knows.
+     */
+    public function getFactorType(): ?MfaFactorType
+    {
+        return MfaFactorType::tryFrom($this->type);
     }
 
     public function getLastUsedAt(): ?DateTime
@@ -234,18 +243,16 @@ class UserMfa
      * @param string $code The recovery code to validate
      * @return bool True if the code is valid, false otherwise
      */
-    public function validateRecoveryCode(string $code): bool
+    public function validateRecoveryCode(#[\SensitiveParameter] string $code): bool
     {
         $codes = $this->getRecoveryCodesAsArray();
 
-        if (in_array($code, $codes)) {
-            // Remove the used code
-            $key = array_search($code, $codes);
-            unset($codes[$key]);
-
-            // Update the recovery codes
-            $this->setRecoveryCodes(array_values($codes));
-            return true;
+        foreach ($codes as $key => $stored) {
+            if (is_string($stored) && hash_equals($stored, $code)) {
+                unset($codes[$key]);
+                $this->setRecoveryCodes(array_values($codes));
+                return true;
+            }
         }
 
         return false;

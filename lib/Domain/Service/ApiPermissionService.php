@@ -24,7 +24,11 @@ namespace Poweradmin\Domain\Service;
 
 use PDO;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
  * Stateless permission service for API requests
@@ -34,7 +38,12 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
  */
 class ApiPermissionService
 {
+    public const TEMPLATE_ASSIGN_DENIED = 'Setting perm_templ requires user_edit_templ_perm or user_is_ueberuser';
+    public const TEMPLATE_SELF_ASSIGN_DENIED = 'Changing your own permission template requires user_edit_others';
+    public const TEMPLATE_SUPERUSER_DENIED = 'Assigning a superuser permission template requires user_is_ueberuser';
+
     private PDO $db;
+    private ?UserRepository $userRepository = null;
 
     public function __construct(PDO $db)
     {
@@ -189,13 +198,16 @@ class ApiPermissionService
     }
 
     /**
-     * Check if user can edit a specific zone (stateless)
+     * Check if user holds a zone content-edit permission for a zone (stateless)
+     *
+     * This is a content check, not a zone-level one: it never grants metadata
+     * changes (name/type/master), which are gated by canEditZoneMeta().
      *
      * @param int $userId User ID to check
      * @param int $zoneId Zone ID (domain_id in PowerDNS)
-     * @return bool True if user can edit the zone
+     * @return bool True if user may edit content in the zone
      */
-    public function canEditZone(int $userId, int $zoneId): bool
+    public function hasZoneContentEditPermission(int $userId, int $zoneId): bool
     {
         // Uberuser can edit all zones
         if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
@@ -218,31 +230,32 @@ class ApiPermissionService
     /**
      * Check if user can edit records (content) inside a specific zone (stateless)
      *
-     * Broader than canEditZone(): also accepts zone_content_edit_own_as_client, which
-     * is restricted to record edits and must NOT grant zone-level metadata changes
-     * (name/type/master). Despite its name canEditZone() is a content check too, so
-     * zone-level updates are gated by canEditZoneMeta().
+     * Broader than hasZoneContentEditPermission(): also accepts
+     * zone_content_edit_own_as_client, which is restricted to record edits and must
+     * NOT grant zone-level metadata changes (name/type/master). Zone-level updates
+     * are gated by canEditZoneMeta().
      *
      * Record-type restrictions for own_as_client (SOA, NS) are enforced by
      * canEditZoneRecord().
      *
-     * SLAVE zones cannot be content-edited via Poweradmin (records are owned by
-     * the master); pass the zone type from the caller to enforce this in the
-     * API write paths that bypass RecordManager. ApiPermissionService never
-     * queries PowerDNS tables itself, so the zone type must be supplied.
+     * Secondary and Consumer zones cannot be content-edited via Poweradmin
+     * (records are replicated from a primary); pass the zone type from the
+     * caller to enforce this in the API write paths that bypass RecordManager.
+     * ApiPermissionService never queries PowerDNS tables itself, so the zone
+     * type must be supplied.
      *
      * @param int $userId User ID to check
      * @param int $zoneId Zone ID (domain_id in PowerDNS)
-     * @param string|null $zoneType Zone type (MASTER, SLAVE, NATIVE) when known
+     * @param string|null $zoneType Zone type (MASTER, SLAVE, NATIVE, CONSUMER) when known
      * @return bool True if user can edit records in the zone
      */
     public function canEditZoneContent(int $userId, int $zoneId, ?string $zoneType = null): bool
     {
-        if ($zoneType !== null && strtoupper($zoneType) === 'SLAVE') {
+        if ($zoneType !== null && ZoneType::isReadOnly($zoneType)) {
             return false;
         }
 
-        if ($this->canEditZone($userId, $zoneId)) {
+        if ($this->hasZoneContentEditPermission($userId, $zoneId)) {
             return true;
         }
 
@@ -259,16 +272,22 @@ class ApiPermissionService
      * Mirrors the web UI behavior in RecordManager: users holding only
      * zone_content_edit_own_as_client may edit records in their own zones except
      * for SOA and NS records, which require zone_content_edit_own (or higher).
-     * SLAVE zones are rejected outright (when $zoneType is provided) so API
-     * create paths that bypass RecordManager keep the same restriction as the UI.
+     * Holders of zone_content_edit_ns_subzone may additionally manage NS records
+     * below the zone apex; pass the record and zone names (FQDN) to enable that
+     * exemption - when either is omitted, the type-only restriction applies.
+     * Read-only zones (Secondary, Consumer) are rejected outright (when $zoneType
+     * is provided) so API create paths that bypass RecordManager keep the same
+     * restriction as the UI.
      *
      * @param int $userId User ID to check
      * @param int $zoneId Zone ID (domain_id in PowerDNS)
      * @param string $recordType DNS record type (e.g. "A", "TXT", "SOA", "NS")
      * @param string|null $zoneType Zone type (MASTER, SLAVE, NATIVE) when known
+     * @param string|null $recordName Record name (FQDN) when known
+     * @param string|null $zoneName Zone name when known
      * @return bool True if user can edit records of this type in this zone
      */
-    public function canEditZoneRecord(int $userId, int $zoneId, string $recordType, ?string $zoneType = null): bool
+    public function canEditZoneRecord(int $userId, int $zoneId, string $recordType, ?string $zoneType = null, ?string $recordName = null, ?string $zoneName = null): bool
     {
         if (!$this->canEditZoneContent($userId, $zoneId, $zoneType)) {
             return false;
@@ -278,8 +297,13 @@ class ApiPermissionService
             return true;
         }
 
-        // SOA/NS/LUA edits require a stronger permission than own_as_client, as on the web form
-        return $this->canEditZone($userId, $zoneId);
+        // SOA/NS edits require a stronger permission than own_as_client
+        if ($this->hasZoneContentEditPermission($userId, $zoneId)) {
+            return true;
+        }
+
+        return Permission::isSubzoneNsRecord($recordType, $recordName, $zoneName)
+            && $this->userHasPermission($userId, Permission::PERM_EDIT_NS_SUBZONE);
     }
 
     /**
@@ -334,6 +358,61 @@ class ApiPermissionService
         }
 
         return false;
+    }
+
+    /**
+     * Check if user can manage DNSSEC for an existing zone (stateless).
+     *
+     * Mirrors the web UI gate: ueberuser bypasses; otherwise the user must hold
+     * zone_dnssec_manage_own AND own (directly or via group) the zone.
+     *
+     * @param int $userId User ID to check
+     * @param int $zoneId Zone ID (domain_id in PowerDNS)
+     */
+    public function canManageDnssec(int $userId, int $zoneId): bool
+    {
+        if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+            return true;
+        }
+
+        if (!$this->userHasPermission($userId, 'zone_dnssec_manage_own')) {
+            return false;
+        }
+
+        return $this->userOwnsZone($userId, $zoneId);
+    }
+
+    /**
+     * Check if user can request DNSSEC be enabled on a zone they are about to create.
+     *
+     * The zone does not exist yet, so reuse the would-be ownership intent:
+     * ueberuser bypasses; otherwise the user needs zone_dnssec_manage_own AND
+     * must be the new zone's direct owner or a member of one of its assigned groups.
+     *
+     * @param int $userId Authenticated caller
+     * @param int|null $ownerId The owner_user_id the new zone will be created with (null for groups-only V2 mode)
+     * @param int[] $groupIds Group IDs that will own the new zone (V2 only)
+     */
+    public function canManageDnssecForNewZone(int $userId, ?int $ownerId, array $groupIds = []): bool
+    {
+        if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+            return true;
+        }
+
+        if (!$this->userHasPermission($userId, 'zone_dnssec_manage_own')) {
+            return false;
+        }
+
+        if ($ownerId !== null && $userId === $ownerId) {
+            return true;
+        }
+
+        if ($groupIds === []) {
+            return false;
+        }
+
+        $userGroupIds = $this->getUserGroupIds($userId);
+        return $userGroupIds !== [] && array_intersect($userGroupIds, $groupIds) !== [];
     }
 
     /**
@@ -464,6 +543,23 @@ class ApiPermissionService
     }
 
     /**
+     * Check whether a user may create, edit or delete groups.
+     *
+     * Group management is superuser-only, unlike user permission templates which
+     * `user_edit_templ_perm` delegates. Two reasons: that permission is defined as
+     * covering the template assigned to *users*, and a group's template lands in the
+     * same global permission union as a user's, so delegating it would hand out a
+     * second, unguarded route to superuser.
+     *
+     * @param int $userId User ID to check
+     * @return bool True if the user may manage groups
+     */
+    public function canManageGroups(int $userId): bool
+    {
+        return $this->userHasPermission($userId, 'user_is_ueberuser');
+    }
+
+    /**
      * Check if user can edit permission templates (stateless)
      *
      * @param int $userId User ID to check
@@ -481,10 +577,10 @@ class ApiPermissionService
     }
 
     /**
-     * Check whether a permission template carries superuser rights (stateless)
+     * Check whether a permission template grants superuser rights.
      *
-     * @param int $permTemplId Permission template ID to inspect
-     * @return bool True if the template grants user_is_ueberuser
+     * @param int $permTemplId Permission template ID
+     * @return bool True if the template carries user_is_ueberuser
      */
     /**
      * Read the permission template currently stored on an account.
@@ -505,16 +601,54 @@ class ApiPermissionService
 
     public function templateGrantsSuperuser(int $permTemplId): bool
     {
-        $stmt = $this->db->prepare("
-            SELECT COUNT(*)
-            FROM perm_templ_items pti
-            INNER JOIN perm_items pi ON pti.perm_id = pi.id
-            WHERE pti.templ_id = :templ_id AND pi.name = 'user_is_ueberuser'
-        ");
-        $stmt->bindValue(':templ_id', $permTemplId, PDO::PARAM_INT);
-        $stmt->execute();
+        // One owner for this query: the repository also answers it for the web paths.
+        $this->userRepository ??= new DbUserRepository($this->db, ConfigurationManager::getInstance());
 
-        return (int)$stmt->fetchColumn() > 0;
+        return $this->userRepository->templateGrantsUberuser($permTemplId);
+    }
+
+    /**
+     * Check whether a caller may put a target account on a given permission template.
+     *
+     * Layered on top of canEditPermissionTemplates(): a caller may never hand out
+     * more authority than they hold, and self-retemplating needs user_edit_others
+     * exactly as the web user editor requires.
+     *
+     * @param int $userId Acting user ID
+     * @param ?int $targetUserId Account whose template would change; null on the create path
+     * @param int $permTemplId Template being assigned
+     * @return ?string Error message to surface as 403, or null when allowed
+     */
+    public function checkPermissionTemplateAssignment(int $userId, ?int $targetUserId, int $permTemplId): ?string
+    {
+        if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+            return null;
+        }
+
+        // Echoing back the template the account already has is not a template change,
+        // so a full-object update must not be gated on it. Mirrors the web policy in
+        // UserManager::templateAssignmentRejected().
+        if (
+            $targetUserId !== null
+            && $this->getUserPermissionTemplateId($targetUserId) === $permTemplId
+            && !$this->templateGrantsSuperuser($permTemplId)
+        ) {
+            return null;
+        }
+
+        if (!$this->userHasPermission($userId, 'user_edit_templ_perm')) {
+            return self::TEMPLATE_ASSIGN_DENIED;
+        }
+
+        if ($userId === $targetUserId && !$this->userHasPermission($userId, 'user_edit_others')) {
+            return self::TEMPLATE_SELF_ASSIGN_DENIED;
+        }
+
+        if ($this->templateGrantsSuperuser($permTemplId)) {
+            return self::TEMPLATE_SUPERUSER_DENIED;
+        }
+
+        return null;
     }
 
     /**
@@ -607,6 +741,25 @@ class ApiPermissionService
     }
 
     /**
+     * Check if user may view zone templates (stateless).
+     *
+     * Mirrors the web ListZoneTemplController gate: either zone-template
+     * permission (add or edit), or ueberuser. Zone creators may read too: the
+     * web add-zone form offers them templates, and POST /zones takes a template id.
+     *
+     * @param int $userId User ID to check
+     * @return bool True if user can view zone templates
+     */
+    public function canViewZoneTemplates(int $userId): bool
+    {
+        return $this->userHasPermission($userId, 'user_is_ueberuser')
+            || $this->userHasPermission($userId, 'zone_templ_add')
+            || $this->userHasPermission($userId, 'zone_templ_edit')
+            || $this->userHasPermission($userId, 'zone_master_add')
+            || $this->userHasPermission($userId, 'zone_slave_add');
+    }
+
+    /**
      * Check if user can edit zone metadata (ownership, etc.) (stateless)
      *
      * @param int $userId User ID to check
@@ -624,6 +777,58 @@ class ApiPermissionService
         }
 
         if ($this->userHasPermission($userId, 'zone_meta_edit_own')) {
+            return $this->userOwnsZone($userId, $zoneId);
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user can view zone metadata (stateless)
+     *
+     * Editors of zone metadata always retain view access.
+     *
+     * @param int $userId User ID to check
+     * @param int $zoneId Zone ID (domain_id in PowerDNS)
+     * @return bool True if user can view zone metadata
+     */
+    public function canViewZoneMetadata(int $userId, int $zoneId): bool
+    {
+        if ($this->canEditZoneMeta($userId, $zoneId)) {
+            return true;
+        }
+
+        if ($this->userHasPermission($userId, 'zone_metadata_view_others')) {
+            return true;
+        }
+
+        if ($this->userHasPermission($userId, 'zone_metadata_view_own')) {
+            return $this->userOwnsZone($userId, $zoneId);
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user can view zone owners (stateless)
+     *
+     * Editors of zone metadata always retain view access.
+     *
+     * @param int $userId User ID to check
+     * @param int $zoneId Zone ID (domain_id in PowerDNS)
+     * @return bool True if user can view zone owners
+     */
+    public function canViewZoneOwnership(int $userId, int $zoneId): bool
+    {
+        if ($this->canEditZoneMeta($userId, $zoneId)) {
+            return true;
+        }
+
+        if ($this->userHasPermission($userId, 'zone_ownership_view_others')) {
+            return true;
+        }
+
+        if ($this->userHasPermission($userId, 'zone_ownership_view_own')) {
             return $this->userOwnsZone($userId, $zoneId);
         }
 

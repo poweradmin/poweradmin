@@ -59,6 +59,47 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
         return array_map(fn($row) => $this->mapRowToEntity($row), $results);
     }
 
+    /**
+     * @param array<int> $userIds
+     * @return array<int, UserGroup[]>
+     */
+    public function findByUserIds(array $userIds): array
+    {
+        $userIds = array_values(array_unique(array_map('intval', $userIds)));
+        if (empty($userIds)) {
+            return [];
+        }
+
+        // Chunked because the caller may pass every user in the install and both MySQL
+        // and PostgreSQL cap a prepared statement at 65535 parameters.
+        $groupsByUser = [];
+        foreach (array_chunk($userIds, 1000) as $chunk) {
+            $placeholders = implode(',', array_fill(0, count($chunk), '?'));
+            $query = "SELECT ugm.user_id, ug.*
+                      FROM user_groups ug
+                      INNER JOIN user_group_members ugm ON ug.id = ugm.group_id
+                      WHERE ugm.user_id IN ($placeholders)
+                      ORDER BY ugm.user_id, ug.name ASC";
+
+            $stmt = $this->db->prepare($query);
+            foreach ($chunk as $i => $id) {
+                $stmt->bindValue($i + 1, $id, PDO::PARAM_INT);
+            }
+            $stmt->execute();
+
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $groupsByUser[(int)$row['user_id']][] = $this->mapRowToEntity($row);
+            }
+        }
+
+        return $groupsByUser;
+    }
+
+    public function getGroupIdsForUser(int $userId): array
+    {
+        return array_map(fn($group) => (int) $group->getId(), $this->findByUserId($userId));
+    }
+
     public function findById(int $id): ?UserGroup
     {
         $query = "SELECT * FROM user_groups WHERE id = :id";
@@ -172,7 +213,7 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
             ':created_by' => $group->getCreatedBy()
         ]);
 
-        $id = (int)$this->db->lastInsertId();
+        $id = (int)$this->db->lastInsertId('user_groups_id_seq');
 
         return new UserGroup(
             $id,

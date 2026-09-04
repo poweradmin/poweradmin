@@ -1,3 +1,6 @@
+{% import '_macros.html' as macros %}
+{% set can_edit_keys = can_manage_dnssec and not is_presigned %}
+
 <!-- Unsign Zone Confirmation Modal -->
 <div class="modal fade" id="unsignZoneModal" tabindex="-1" aria-labelledby="unsignZoneModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -11,14 +14,14 @@
                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
                     <strong>{% trans %}Warning{% endtrans %}:</strong> {% trans %}This action will remove all DNSSEC keys and disable DNSSEC for this zone.{% endtrans %}
                 </div>
-                <p>{% trans %}Are you sure you want to unsign the zone{% endtrans %} "<strong>{{ idn_zone_name|default(domain_name) }}</strong>"?</p>
+                <p>{% trans %}Are you sure you want to unsign the zone{% endtrans %} "<strong>{{ zone_display_name }}</strong>"?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
                 <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec" class="d-inline">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <button type="submit" name="unsign_zone" class="btn btn-danger">
-                        <i class="bi bi-shield-x text-white me-1"></i>{% trans %}Unsign Zone{% endtrans %}
+                        <i class="bi bi-shield-x text-white me-1"></i>{% trans %}Unsign zone{% endtrans %}
                     </button>
                 </form>
             </div>
@@ -26,26 +29,21 @@
     </div>
 </div>
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item">
-            {% if idn_zone_name %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
-            {% else %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ domain_name }}</a>
-            {% endif %}
-        </li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}DNSSEC{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: zone_display_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+    {label: 'DNSSEC'|trans},
+]) }}
+
+{% if is_presigned %}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle me-2"></i>{% trans %}This zone is presigned; DNSSEC keys are managed at the primary server.{% endtrans %}
+</div>
+{% endif %}
+
+{% if signed_serial is not null %}
+<p class="text-muted small mb-3" title="{% trans %}Serial as served by PowerDNS, with SOA-EDIT applied{% endtrans %}">{% trans %}Signed serial{% endtrans %}: <code>{{ signed_serial }}</code></p>
+{% endif %}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -58,13 +56,15 @@
             {% endif %}
         </strong>
         <div>
+            {% if can_edit_keys %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/add" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle text-white me-1"></i>{% trans %}Add new key{% endtrans %}
             </a>
+            {% endif %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/ds-dnskey" class="btn btn-secondary btn-sm">
                 <i class="bi bi-key text-white me-1"></i>{% trans %}Show DS and DNSKEY{% endtrans %}
             </a>
-            {% if perm_edit != "none" %}
+            {% if can_edit_keys %}
             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#unsignZoneModal">
                 <i class="bi bi-shield-x text-white me-1"></i>{% trans %}Unsign zone{% endtrans %}
             </button>
@@ -116,6 +116,7 @@
                         </td>
                         <td class="text-end">
                             <div class="gap-2">
+                                {% if can_edit_keys %}
                                 <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/{{ item[0] }}/edit" title="{% if item[5] %}{% trans %}Deactivate this key{% endtrans %}{% else %}{% trans %}Activate this key{% endtrans %}{% endif %}">
                                     <i class="bi bi-{{ button_icon }} text-primary"></i> <span class="d-none d-md-inline text-primary">{% if item[5] %}{% trans %}Deactivate{% endtrans %}{% else %}{% trans %}Activate{% endtrans %}{% endif %}</span>
                                 </a>
@@ -127,6 +128,7 @@
                                 <a class="btn btn-sm btn-outline-danger" href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/{{ item[0] }}/delete">
                                     <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
                                 </a>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
@@ -138,15 +140,13 @@
     </div>
 </div>
 
-{% if pdns_caps and pdns_caps.supportsPemKeyImportExport and perm_edit != "none" %}
+{% if pdns_caps and pdns_caps.supportsPemKeyImportExport and can_edit_keys %}
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-upload me-2"></i>{% trans %}Import key from PEM{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-upload', 'Import key from PEM'|trans) }}
     <div class="card-body">
         <p class="text-muted small mb-3">{% trans %}Paste a PEM-encoded private key (RSA or ECDSA). PowerDNS 4.7+ derives the key size from the PEM contents - select the matching algorithm and key role.{% endtrans %}</p>
         <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/import" class="row g-3">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <div class="col-md-3">
                 <label for="import_key_type" class="form-label">{% trans %}Key type{% endtrans %}</label>
                 <select class="form-select form-select-sm" id="import_key_type" name="key_type" required>

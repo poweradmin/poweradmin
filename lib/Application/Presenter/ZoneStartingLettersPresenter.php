@@ -53,6 +53,19 @@ class ZoneStartingLettersPresenter
             }
         }
 
+        // Then any non-ASCII initials, which only exist once IDN zones are present.
+        foreach ($availableChars as $letter) {
+            if ($letter === '' || preg_match('/^[a-z0-9]$/', $letter)) {
+                continue;
+            }
+            $label = htmlspecialchars($letter, ENT_QUOTES, 'UTF-8');
+            if ($letter === $letterStart) {
+                $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">' . $label . '</span></li>';
+            } else {
+                $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . $baseUrlPrefix . "/zones/forward?letter=" . rawurlencode($letter) . $rowsPerPageParam . "\">" . $label . "</a></li>";
+            }
+        }
+
         if ($letterStart === 'all') {
             $html .= '<li class="page-item active"><span class="page-link" href="#">' . _('Show all') . '</span></li>';
         } else {

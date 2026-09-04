@@ -142,6 +142,7 @@ test_response() {
     local expected_response="$2"
     local curl_args="$3"
     local skip_default_user_agent="${4:-false}"
+    local match_mode="${5:-exact}"
 
     echo -n "Testing: $test_name... "
 
@@ -174,7 +175,14 @@ test_response() {
     local clean_response
     clean_response=$(echo "$response" | grep -v "^<br" | grep -v "^<b>" | tail -1)
 
-    if [ "$clean_response" = "$expected_response" ]; then
+    local matched=false
+    if [[ "$match_mode" == "regex" ]]; then
+        [[ "$clean_response" =~ $expected_response ]] && matched=true
+    else
+        [[ "$clean_response" == "$expected_response" ]] && matched=true
+    fi
+
+    if [[ "$matched" == "true" ]]; then
         print_status "PASS" "$test_name"
         return 0
     else
@@ -193,8 +201,9 @@ test_with_auth() {
     local params="$3"
     local username="${4:-$TEST_USERNAME}"
     local password="${5:-$TEST_PASSWORD}"
+    local match_mode="${6:-exact}"
 
-    test_response "$test_name" "$expected_response" "-u '$username:$password' -G $params"
+    test_response "$test_name" "$expected_response" "-u '$username:$password' -G $params" false "$match_mode"
 }
 
 # Function to test HTTP response without auth
@@ -202,8 +211,26 @@ test_without_auth() {
     local test_name="$1"
     local expected_response="$2"
     local params="$3"
+    local match_mode="${4:-exact}"
 
-    test_response "$test_name" "$expected_response" "-G $params"
+    test_response "$test_name" "$expected_response" "-G $params" false "$match_mode"
+}
+
+# dyndns2 confirms the address it applied: "good <ip>" when a record was written
+# and "nochg <ip>" when it already matched, so re-running this suite still passes.
+accepted_update() {
+    local applied_ip="${1//./\\.}"
+    printf '^(good|nochg) %s$' "$applied_ip"
+}
+
+# Assert an update was accepted and applied the expected primary address. The
+# server reports the first applied IPv4, or the first IPv6 when no IPv4 was sent.
+test_update() {
+    local test_name="$1"
+    local applied_ip="$2"
+    local params="$3"
+
+    test_with_auth "$test_name" "$(accepted_update "$applied_ip")" "$params" "" "" regex
 }
 
 # Help function
@@ -290,7 +317,8 @@ echo "Performing pre-flight credential check..."
 auth_check=$(curl -s --max-time 10 -u "$TEST_USERNAME:$TEST_PASSWORD" -G -d "hostname=$TEST_HOSTNAME&myip=192.168.1.1" "$DYNAMIC_UPDATE_URL")
 if [[ "$auth_check" == *"badauth"* ]]; then
     echo "WARNING: Test credentials appear to be invalid (got: $auth_check)"
-    echo "         Many tests will fail. Please check DYNAMIC_DNS_USER/DYNAMIC_DNS_PASS in .env.api-test"
+    echo "         Many tests will fail. Run ./dynamic_dns_api_setup.sh first, and check"
+    echo "         DYNAMIC_DNS_USER/DYNAMIC_DNS_PASS in $CONFIG_FILE"
     echo ""
 else
     echo "Credentials appear valid for testing."
@@ -322,29 +350,29 @@ test_with_auth "No IP Addresses" "dnserr" "-d 'hostname=$TEST_HOSTNAME'"
 print_status "INFO" "Running IPv4 update tests..."
 
 # Test 8: Valid IPv4 Update
-test_with_auth "Valid IPv4 Update" "good" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.100'"
+test_update "Valid IPv4 Update" "192.168.1.100" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.100'"
 
 # Test 9: Multiple IPv4 Addresses
-test_with_auth "Multiple IPv4 Addresses" "good" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.101,192.168.1.102'"
+test_update "Multiple IPv4 Addresses" "192.168.1.101" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.101,192.168.1.102'"
 
 # Test 10: IPv4 with Spaces
-test_with_auth "IPv4 with Spaces" "good" "--data-urlencode 'hostname=$TEST_HOSTNAME' --data-urlencode 'myip= 192.168.1.103 , 192.168.1.104 '"
+test_update "IPv4 with Spaces" "192.168.1.103" "--data-urlencode 'hostname=$TEST_HOSTNAME' --data-urlencode 'myip= 192.168.1.103 , 192.168.1.104 '"
 
 print_status "INFO" "Running IPv6 update tests..."
 
 # Test 11: Valid IPv6 Update
-test_with_auth "Valid IPv6 Update" "good" "-d 'hostname=$TEST_HOSTNAME&myip6=2001:db8::1'"
+test_update "Valid IPv6 Update" "2001:db8::1" "-d 'hostname=$TEST_HOSTNAME&myip6=2001:db8::1'"
 
 # Test 12: Multiple IPv6 Addresses
-test_with_auth "Multiple IPv6 Addresses" "good" "-d 'hostname=$TEST_HOSTNAME&myip6=2001:db8::2,2001:db8::3'"
+test_update "Multiple IPv6 Addresses" "2001:db8::2" "-d 'hostname=$TEST_HOSTNAME&myip6=2001:db8::2,2001:db8::3'"
 
 # Test 13: IPv6 Loopback
-test_with_auth "IPv6 Loopback" "good" "-d 'hostname=$TEST_HOSTNAME&myip6=::1'"
+test_update "IPv6 Loopback" "::1" "-d 'hostname=$TEST_HOSTNAME&myip6=::1'"
 
 print_status "INFO" "Running dual-stack tests..."
 
 # Test 14: Dual-stack Update
-test_with_auth "Dual-stack Update" "good" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.105&myip6=2001:db8::4&dualstack_update=1'"
+test_update "Dual-stack Update" "192.168.1.105" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.105&myip6=2001:db8::4&dualstack_update=1'"
 
 # Test 15: Mixed Valid and Invalid IPs (IPv4)
 # The list is the complete record set, so an unparseable entry is refused rather
@@ -357,23 +385,23 @@ test_with_auth "Mixed Valid/Invalid IPv6" "dnserr" "-d 'hostname=$TEST_HOSTNAME&
 print_status "INFO" "Running special parameter tests..."
 
 # Test 17: whatismyip Parameter (Note: This will use the server's perceived client IP)
-test_with_auth "whatismyip Parameter" "good" "-d 'hostname=$TEST_HOSTNAME&myip=whatismyip'"
+test_with_auth "whatismyip Parameter" '^(good|nochg) .+$' "-d 'hostname=$TEST_HOSTNAME&myip=whatismyip'" "" "" regex
 
 # Test 18: Alternative Parameter Names (ip instead of myip)
-test_with_auth "Alternative Parameter ip" "good" "-d 'hostname=$TEST_HOSTNAME&ip=192.168.1.108'"
+test_update "Alternative Parameter ip" "192.168.1.108" "-d 'hostname=$TEST_HOSTNAME&ip=192.168.1.108'"
 
 # Test 19: Alternative Parameter Names (ip6 instead of myip6)
-test_with_auth "Alternative Parameter ip6" "good" "-d 'hostname=$TEST_HOSTNAME&ip6=2001:db8::7'"
+test_update "Alternative Parameter ip6" "2001:db8::7" "-d 'hostname=$TEST_HOSTNAME&ip6=2001:db8::7'"
 
 print_status "INFO" "Running query string authentication tests..."
 
 # Test 20: Query String Authentication
-test_without_auth "Query String Auth" "good" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.109&username=$TEST_USERNAME&password=$TEST_PASSWORD'"
+test_without_auth "Query String Auth" "$(accepted_update 192.168.1.109)" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.109&username=$TEST_USERNAME&password=$TEST_PASSWORD'" regex
 
 print_status "INFO" "Running verbose output tests..."
 
 # Test 21: Verbose Output - Success
-test_with_auth "Verbose Success" "Your hostname has been updated." "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.110&verbose=1'"
+test_with_auth "Verbose Success" '^(Your hostname has been updated\.|This update was identical to your last update, so no changes were made to your hostname configuration\.)$' "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.110&verbose=1'" "" "" regex
 
 # Test 22: Verbose Output - Authentication Error
 test_with_auth "Verbose Auth Error" "Invalid username or password.  Authentication failed." "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.111&verbose=1'" "$TEST_USERNAME" "wrongpassword"
@@ -391,16 +419,16 @@ for i in {1..10}; do
     fi
     LONG_IP_LIST="${LONG_IP_LIST}192.168.2.$i"
 done
-test_with_auth "Long IP List" "good" "-d 'hostname=$TEST_HOSTNAME&myip=$LONG_IP_LIST'"
+test_update "Long IP List" "192.168.2.1" "-d 'hostname=$TEST_HOSTNAME&myip=$LONG_IP_LIST'"
 
 # Test 25: Empty IP in List
-test_with_auth "Empty IP in List" "good" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.113,,192.168.1.114'"
+test_update "Empty IP in List" "192.168.1.113" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.113,,192.168.1.114'"
 
 # Test 26: Only Commas
 test_with_auth "Only Commas" "dnserr" "-d 'hostname=$TEST_HOSTNAME&myip=,,,'"
 
 # Test 27: POST Method
-test_with_auth "POST Method" "good" "-X POST -d 'hostname=$TEST_HOSTNAME&myip=192.168.1.115'"
+test_update "POST Method" "192.168.1.115" "-X POST -d 'hostname=$TEST_HOSTNAME&myip=192.168.1.115'"
 
 print_status "INFO" "Running security tests..."
 

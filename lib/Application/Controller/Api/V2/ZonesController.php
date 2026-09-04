@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
@@ -43,6 +44,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
+use Poweradmin\Domain\Enum\ZoneKind;
 
 class ZonesController extends PublicApiController
 {
@@ -165,6 +167,16 @@ class ZonesController extends PublicApiController
             // Determine the actual userId to pass to repository (only needed for non-uber users)
             $filterUserId = ($visibleZoneIds !== null) ? $userId : null;
 
+            // Narrow the visible set to the API key's zone scope, if the key is
+            // restricted. An empty intersection yields an empty list, never a 403.
+            $scope = $this->getApiKeyScope();
+            if ($scope->hasZoneRestriction()) {
+                $scopeIds = $scope->getZoneIds();
+                $visibleZoneIds = ($visibleZoneIds === null)
+                    ? $scopeIds
+                    : array_values(array_intersect($visibleZoneIds, $scopeIds));
+            }
+
             // Get total count for metadata (permission-filtered and name-filtered)
             $totalCount = $this->zoneRepository->getZoneCountFiltered($visibleZoneIds, $filterUserId, $nameFilter);
 
@@ -283,6 +295,10 @@ class ZonesController extends PublicApiController
             $zoneId = $this->pathParameters['id'];
             $userId = $this->getAuthenticatedUserId();
 
+            if (($scopeError = $this->enforceApiKeyZoneScope((int)$zoneId)) !== null) {
+                return $scopeError;
+            }
+
             // Get zone details
             $zone = $this->zoneRepository->getZoneById($zoneId);
 
@@ -385,6 +401,17 @@ class ZonesController extends PublicApiController
                     type: 'array',
                     items: new OA\Items(type: 'integer'),
                     example: [2, 5]
+                ),
+                new OA\Property(
+                    property: 'soa_edit_api',
+                    description: 'Per-zone SOA-EDIT-API serial policy. Omit to apply the dns.soa_edit_api default; '
+                        . 'send OFF to disable the policy for this zone. Values not offered by the server are '
+                        . 'rejected with 400 for every zone type, unlike the web form which ignores them. The '
+                        . 'available set is narrowed by the dns.soa_edit_api_options config list. A SLAVE zone '
+                        . 'takes its serial from the primary, so the accepted value is not applied there.',
+                    type: 'string',
+                    enum: [...MetadataDefinitions::DEFINITIONS['SOA-EDIT-API']['options'], MetadataDefinitions::SOA_EDIT_API_OFF],
+                    example: 'INCREASE'
                 )
             ]
         )
@@ -439,6 +466,16 @@ class ZonesController extends PublicApiController
     {
         try {
             $userId = $this->getAuthenticatedUserId();
+
+            // A zone-scoped key is restricted to a fixed set of zones; creating a
+            // new zone would fall outside that set, so it is not allowed.
+            if ($this->getApiKeyScope()->hasZoneRestriction()) {
+                return $this->returnApiError(
+                    'Forbidden: this API key is restricted to specific zones and cannot create new zones',
+                    403
+                );
+            }
+
             $input = json_decode($this->request->getContent(), true);
 
             if (!$input) {
@@ -448,13 +485,20 @@ class ZonesController extends PublicApiController
             // Extract required parameters
             $domain = $this->inputString($input, 'name', '');
             $type = $this->inputString($input, 'type', 'MASTER');
-            $slaveMaster = $this->inputString($input, 'masters') ?? $this->inputString($input, 'master', '');
+            // Accept both a comma-separated string and the PowerDNS-style `masters`
+            // array; the array form was previously dropped, creating a masterless SLAVE.
+            if (isset($input['masters']) && is_array($input['masters'])) {
+                $slaveMaster = implode(',', array_map('strval', $input['masters']));
+            } else {
+                $slaveMaster = $this->inputString($input, 'masters') ?? $this->inputString($input, 'master', '');
+            }
             $enableDnssec = $this->inputBool($input, 'enable_dnssec', false);
             $description = $this->inputString($input, 'description', '');
             $account = $this->inputString($input, 'account', '');
+            $soaEditApi = $this->inputString($input, 'soa_edit_api', '');
             if (
                 $domain === null || $type === null || $slaveMaster === null || $enableDnssec === null
-                || $description === null || $account === null
+                || $description === null || $account === null || $soaEditApi === null
             ) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
@@ -463,6 +507,8 @@ class ZonesController extends PublicApiController
             if ($zoneTemplate !== 'none' && !is_numeric($zoneTemplate)) {
                 return $this->returnApiError('Template must be a numeric ID', 400);
             }
+            // An omitted field and an empty one both mean "apply the config default".
+            $soaEditApi = $soaEditApi === '' ? null : $soaEditApi;
 
             // Validate master servers format if provided
             if (!empty($slaveMaster)) {
@@ -471,6 +517,11 @@ class ZonesController extends PublicApiController
                     return $this->returnApiError('Invalid master servers format: ' . $validation['message'], 400);
                 }
                 $slaveMaster = $validation['normalized'];
+            }
+
+            // A SLAVE zone is meaningless without a master to replicate from.
+            if ($type === 'SLAVE' && trim($slaveMaster) === '') {
+                return $this->returnApiError('A SLAVE zone requires at least one master server', 400);
             }
 
             // Check if user has permission to create zones
@@ -489,6 +540,13 @@ class ZonesController extends PublicApiController
             $owner = $resolved->owner;
             $groupIds = $resolved->groupIds;
 
+            // Match ZoneManagementService: when DNSSEC is disabled server-side, enable_dnssec
+            // is a silent no-op, so the permission gate would just emit a misleading 403.
+            $dnssecEnabledServerSide = (bool) $this->getConfig()->get('dnssec', 'enabled', false);
+            if ($enableDnssec && $dnssecEnabledServerSide && !$this->permissionService->canManageDnssecForNewZone($userId, $owner, $groupIds)) {
+                return $this->returnApiError('You do not have permission to manage DNSSEC for this zone', 403);
+            }
+
             // Use the zone management service to create zone
             $result = $this->zoneManagementService->createZone(
                 $domain,
@@ -497,7 +555,9 @@ class ZonesController extends PublicApiController
                 $slaveMaster,
                 $zoneTemplate,
                 $enableDnssec,
-                $groupIds
+                $groupIds,
+                $userId,
+                $soaEditApi
             );
 
             if (!$result['success']) {
@@ -668,10 +728,19 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('Valid zone ID is required', 400);
             }
 
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
+
+            // Confirm existence before permission, matching getZone()'s 404-before-403 order.
+            if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+                return $this->returnApiError('Zone not found', 404);
+            }
+
             // Metadata and description are gated separately below; this only rejects
             // callers who may write neither.
             $mayEditMeta = $this->permissionService->canEditZoneMeta($userId, $zoneId);
-            $mayEditContent = $this->permissionService->canEditZone($userId, $zoneId);
+            $mayEditContent = $this->permissionService->hasZoneContentEditPermission($userId, $zoneId);
             if (!$mayEditMeta && !$mayEditContent) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
@@ -694,7 +763,7 @@ class ZonesController extends PublicApiController
             // Validate zone type if provided
             if (isset($updates['type'])) {
                 $updates['type'] = strtoupper($updates['type']);
-                $validTypes = ['MASTER', 'SLAVE', 'NATIVE'];
+                $validTypes = ZoneKind::basicValues();
                 if (!in_array($updates['type'], $validTypes)) {
                     return $this->returnApiError('Invalid zone type. Must be one of: ' . implode(', ', $validTypes), 400);
                 }
@@ -736,9 +805,9 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
-            // Verify zone exists before making any changes
-            if ($zone === null) {
-                return $this->returnApiError('Zone not found', 404);
+            // Converting a zone is equivalent to creating one of the target type.
+            if (isset($updates['type']) && !$this->permissionService->canCreateZone($userId, $updates['type'])) {
+                return $this->returnApiError('You do not have permission to change this zone to that type', 403);
             }
 
             // Use the zone management service to update zone (domains table fields)
@@ -828,6 +897,15 @@ class ZonesController extends PublicApiController
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
             if ($zoneId <= 0) {
                 return $this->returnApiError('Valid zone ID is required', 400);
+            }
+
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
+
+            // Confirm existence before permission, matching getZone()'s 404-before-403 order.
+            if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+                return $this->returnApiError('Zone not found', 404);
             }
 
             // Check if user has permission to delete this zone

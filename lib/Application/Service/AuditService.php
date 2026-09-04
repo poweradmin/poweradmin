@@ -25,21 +25,26 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\UserContextService;
 
 class AuditService
 {
     private LegacyLogger $logger;
     private IpAddressRetriever $ipRetriever;
+    private UserContextService $userContext;
 
     public function __construct(PDO $db)
     {
         $this->logger = new LegacyLogger($db);
         $this->ipRetriever = new IpAddressRetriever($_SERVER);
+        $this->userContext = new UserContextService();
     }
 
     private function getContext(): string
     {
-        $username = $_SESSION['userlogin'] ?? 'unknown';
+        // API requests are stateless, so read the actor through UserContextService
+        // rather than the session, which would attribute every API call to "unknown".
+        $username = $this->userContext->getLoggedInUsername() ?? 'unknown';
         return sprintf(
             'client_ip:%s user:%s',
             $this->ipRetriever->getClientIp(),
@@ -77,6 +82,29 @@ class AuditService
     }
 
     // Zone ownership
+
+    /**
+     * Logged against the member zone: that is the zone whose stored catalog changed.
+     */
+    public function logZoneCatalogAssign(int $zoneId, string $zoneName, string $catalog): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:zone_catalog_assign zone:%s catalog:%s',
+            $this->getContext(),
+            $zoneName,
+            $catalog
+        ), $zoneId);
+    }
+
+    public function logZoneCatalogClear(int $zoneId, string $zoneName, string $catalog): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:zone_catalog_clear zone:%s catalog:%s',
+            $this->getContext(),
+            $zoneName,
+            $catalog
+        ), $zoneId);
+    }
 
     public function logZoneOwnerAdd(int $zoneId, string $zoneName, int $ownerId): void
     {
@@ -220,5 +248,85 @@ class AuditService
             $this->getContext(),
             $zoneId
         ), $zoneId);
+    }
+
+    // Zone template records
+
+    public function logZoneTemplateRecordAdd(int $templateId, string $recordName, string $recordType): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:add_zone_template_record template_id:%d record_name:%s record_type:%s',
+            $this->getContext(),
+            $templateId,
+            str_replace(' ', '_', $recordName),
+            $recordType
+        ));
+    }
+
+    public function logZoneTemplateRecordEdit(int $templateId, int $recordId, string $recordName, string $recordType): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:edit_zone_template_record template_id:%d record_id:%d record_name:%s record_type:%s',
+            $this->getContext(),
+            $templateId,
+            $recordId,
+            str_replace(' ', '_', $recordName),
+            $recordType
+        ));
+    }
+
+    public function logZoneTemplateRecordDelete(int $templateId, int $recordId): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:delete_zone_template_record template_id:%d record_id:%d',
+            $this->getContext(),
+            $templateId,
+            $recordId
+        ));
+    }
+
+    // Zone comments
+
+    public function logZoneCommentEdit(int $zoneId, string $zoneName): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:edit_zone_comment zone:%s',
+            $this->getContext(),
+            $zoneName
+        ), $zoneId);
+    }
+
+    // Supermasters
+
+    public function logSupermasterAdd(string $masterIp, string $nsName): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:add_supermaster master_ip:%s ns_name:%s',
+            $this->getContext(),
+            $masterIp,
+            $nsName
+        ));
+    }
+
+    public function logSupermasterEdit(string $oldMasterIp, string $oldNsName, string $newMasterIp, string $newNsName): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:edit_supermaster old_master_ip:%s old_ns_name:%s new_master_ip:%s new_ns_name:%s',
+            $this->getContext(),
+            $oldMasterIp,
+            $oldNsName,
+            $newMasterIp,
+            $newNsName
+        ));
+    }
+
+    public function logSupermasterDelete(string $masterIp, string $nsName): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:delete_supermaster master_ip:%s ns_name:%s',
+            $this->getContext(),
+            $masterIp,
+            $nsName
+        ));
     }
 }

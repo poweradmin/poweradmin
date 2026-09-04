@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use InvalidArgumentException;
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Repository\UserPreferenceRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -98,6 +99,11 @@ class UserPreferenceService
             $result[$preference->getPreferenceKey()] = $preference->getPreferenceValue();
         }
 
+        // Warm the per-key cache so later single-key reads in the same request are free
+        foreach ($result as $key => $value) {
+            $this->cache[$userId . '_' . $key] = $value;
+        }
+
         return $result;
     }
 
@@ -128,8 +134,12 @@ class UserPreferenceService
 
     public function setRowsPerPage(int $userId, int $rows): void
     {
-        if ($rows < 5 || $rows > 500) {
-            throw new InvalidArgumentException("Rows per page must be between 5 and 500");
+        if ($rows < PaginationService::MIN_ROWS_PER_PAGE || $rows > PaginationService::MAX_ROWS_PER_PAGE) {
+            throw new InvalidArgumentException(sprintf(
+                'Rows per page must be between %d and %d',
+                PaginationService::MIN_ROWS_PER_PAGE,
+                PaginationService::MAX_ROWS_PER_PAGE
+            ));
         }
 
         $this->setPreference($userId, UserPreference::KEY_ROWS_PER_PAGE, (string)$rows);
@@ -145,6 +155,11 @@ class UserPreferenceService
     public function getShowZoneTemplate(int $userId): bool
     {
         return $this->getPreference($userId, UserPreference::KEY_SHOW_ZONE_TEMPLATE) === 'true';
+    }
+
+    public function getShowZoneRecordCount(int $userId): bool
+    {
+        return $this->getPreference($userId, UserPreference::KEY_SHOW_ZONE_RECORD_COUNT) === 'true';
     }
 
     public function getRecordFormPosition(int $userId): string
@@ -182,6 +197,11 @@ class UserPreferenceService
         return $this->getPreference($userId, UserPreference::KEY_DISPLAY_HOSTNAME_ONLY) === 'true';
     }
 
+    public function getWideLayout(int $userId): bool
+    {
+        return $this->getPreference($userId, UserPreference::KEY_WIDE_LAYOUT) === 'true';
+    }
+
     public function clearCache(): void
     {
         $this->cache = [];
@@ -194,6 +214,7 @@ class UserPreferenceService
             UserPreference::KEY_DEFAULT_TTL => (string)$this->config->get('dns', 'ttl', 86400),
             UserPreference::KEY_SHOW_ZONE_SERIAL => $this->config->get('interface', 'display_serial_in_zone_list', false) ? 'true' : 'false',
             UserPreference::KEY_SHOW_ZONE_TEMPLATE => $this->config->get('interface', 'display_template_in_zone_list', false) ? 'true' : 'false',
+            UserPreference::KEY_SHOW_ZONE_RECORD_COUNT => $this->config->get('interface', 'show_zone_record_count', true) ? 'true' : 'false',
             UserPreference::KEY_RECORD_FORM_POSITION => $this->config->get('interface', 'position_record_form_top', true) ? 'top' : 'bottom',
             UserPreference::KEY_SAVE_BUTTON_POSITION => $this->config->get('interface', 'position_save_button_top', false) ? 'top' : 'bottom',
             UserPreference::KEY_DEFAULT_ZONE_VIEW => 'standard',
@@ -203,6 +224,7 @@ class UserPreferenceService
             UserPreference::KEY_SHOW_RECORD_EDIT_BUTTON => $this->config->get('interface', 'show_record_edit_button', false) ? 'true' : 'false',
             UserPreference::KEY_SHOW_RECORD_DELETE_BUTTON => $this->config->get('interface', 'show_record_delete_button', false) ? 'true' : 'false',
             UserPreference::KEY_DISPLAY_HOSTNAME_ONLY => $this->config->get('interface', 'display_hostname_only', false) ? 'true' : 'false',
+            UserPreference::KEY_WIDE_LAYOUT => $this->config->get('interface', 'wide_layout', false) ? 'true' : 'false',
         ];
     }
 

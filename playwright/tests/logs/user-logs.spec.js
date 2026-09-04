@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { expectAccessDenied } from '../../helpers/access.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('User Logs', () => {
@@ -135,12 +136,7 @@ test.describe('User Logs', () => {
     test('should not have access to user logs', async ({ page }) => {
       await page.goto('/users/logs');
       // Should be redirected or show error
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().endsWith('/') ||
-                       page.url().includes('/?');
-      expect(hasError || !page.url().includes('users/logs')).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
   });
 
@@ -151,12 +147,7 @@ test.describe('User Logs', () => {
 
     test('should not have access to user logs', async ({ page }) => {
       await page.goto('/users/logs');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().endsWith('/') ||
-                       page.url().includes('/?');
-      expect(hasError || !page.url().includes('users/logs')).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
   });
 
@@ -167,12 +158,7 @@ test.describe('User Logs', () => {
 
     test('should not have access to user logs', async ({ page }) => {
       await page.goto('/users/logs');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().endsWith('/') ||
-                       page.url().includes('/?');
-      expect(hasError || !page.url().includes('users/logs')).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
   });
 });

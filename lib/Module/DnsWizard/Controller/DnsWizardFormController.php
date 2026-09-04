@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,12 +23,11 @@
 namespace Poweradmin\Module\DnsWizard\Controller;
 
 use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -36,6 +35,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Enum\AccessScope;
 
 /**
  * DNS Wizard Form Controller
@@ -44,7 +44,7 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
  */
 class DnsWizardFormController extends BaseController
 {
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
     private WizardRegistry $wizardRegistry;
     private ZoneRepositoryInterface $zoneRepository;
     private RecordManagerService $recordManager;
@@ -54,7 +54,6 @@ class DnsWizardFormController extends BaseController
     {
         parent::__construct($request);
 
-        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->wizardRegistry = new WizardRegistry($this->getConfig());
         $this->zoneRepository = $this->createZoneRepository();
         $this->formStateService = new FormStateService();
@@ -62,15 +61,15 @@ class DnsWizardFormController extends BaseController
         $logger = new LegacyLogger($this->db);
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
+        $this->domainRepository = $repositoryFactory->createDomainRepository();
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
-        $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
 
         $this->recordManager = new RecordManagerService(
             $this->db,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $this->createRecordManager(),
             $recordCommentService,
-            $commentSyncService,
             $logger,
             $this->getConfig(),
             $backendProvider
@@ -101,15 +100,15 @@ class DnsWizardFormController extends BaseController
 
         // Check permissions
         $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
-        $zone_type = $this->dnsRecord->getDomainType($zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
+        $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && !$user_is_zone_owner)) {
             $this->showError(_('You do not have permission to add records to this zone.'));
         }
 
         // Check if zone is reverse zone
-        $is_reverse_zone = preg_match('/\.in-addr\.arpa$/i', $zone_name) || preg_match('/\.ip6\.arpa$/i', $zone_name);
+        $is_reverse_zone = DnsHelper::isReverseZoneName($zone_name);
 
         // Get wizard
         try {
@@ -127,13 +126,14 @@ class DnsWizardFormController extends BaseController
 
         // Get form schema
         $schema = $wizard->getFormSchema();
+        $schema = $this->withSchemaDefaults($schema);
 
         // Initialize form data with defaults
         $formData = [];
         foreach ($schema['sections'] as $section) {
             if (isset($section['fields'])) {
                 foreach ($section['fields'] as $field) {
-                    if (isset($field['default']) && $field['default'] !== null && $field['default'] !== '') {
+                    if (isset($field['default']) && $field['default'] !== '') {
                         $formData[$field['name']] = $field['default'];
                     }
                 }
@@ -239,7 +239,11 @@ class DnsWizardFormController extends BaseController
         $name = DnsHelper::restoreZoneSuffix($recordData['name'] ?? '', $zone_name);
         $type = $recordData['type'] ?? '';
         $content = $recordData['content'] ?? '';
-        $ttl = isset($recordData['ttl']) && $recordData['ttl'] !== '' ? (int)$recordData['ttl'] : $this->getConfig()->get('dns', 'ttl', 3600);
+        $reverseTtlResolver = $this->createReverseTtlResolver();
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
+        $ttl = isset($recordData['ttl']) && $recordData['ttl'] !== ''
+            ? (int)$recordData['ttl']
+            : $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
         $prio = isset($recordData['prio']) && $recordData['prio'] !== '' ? (int)$recordData['prio'] : 0;
 
         // Create the record
@@ -274,5 +278,31 @@ class DnsWizardFormController extends BaseController
         // Success - redirect to zone edit page
         $this->setMessage('edit', 'success', _('The record was successfully added.'));
         $this->redirect('/zones/' . $zone_id . '/edit');
+    }
+
+    /**
+     * Fill in the optional section, field and option keys the form template reads.
+     *
+     * Wizards only declare the keys they use, and the template runs under Twig
+     * strict_variables when display_errors is on, where a missing key is fatal.
+     *
+     * @param array<string, mixed> $schema
+     * @return array<string, mixed>
+     */
+    private function withSchemaDefaults(array $schema): array
+    {
+        foreach ($schema['sections'] ?? [] as $i => $section) {
+            $section += ['type' => '', 'title' => '', 'description' => '', 'content' => '', 'fields' => []];
+            foreach ($section['fields'] as $j => $field) {
+                $field += ['label' => '', 'required' => false, 'help' => '', 'pattern' => '', 'placeholder' => '', 'default' => '', 'options' => []];
+                foreach ($field['options'] as $k => $option) {
+                    $field['options'][$k] = $option + ['description' => ''];
+                }
+                $section['fields'][$j] = $field;
+            }
+            $schema['sections'][$i] = $section;
+        }
+
+        return $schema;
     }
 }

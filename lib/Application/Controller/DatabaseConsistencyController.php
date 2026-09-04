@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,12 +23,20 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DatabaseConsistencyService;
 
 class DatabaseConsistencyController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
+
     public function run(): void
     {
         if (!$this->getUserContextService()->isAuthenticated()) {
@@ -48,24 +56,26 @@ class DatabaseConsistencyController extends BaseController
             return;
         }
 
-        // The checks read the PowerDNS domains/records tables directly, which the API
-        // backend does not expose in the Poweradmin database. Skip instead of failing.
-        if (DnsBackendProviderFactory::isApiBackend($this->config)) {
-            $this->showError(_('Database consistency checks are not available when using the PowerDNS API backend.'));
-            return;
-        }
+        // Pass the backend provider so checks run against the PowerDNS API when the
+        // API backend is configured, instead of querying tables that aren't local.
+        $consistencyService = new DatabaseConsistencyService($this->db, $this->config, $this->createDnsBackendProvider());
 
-        $consistencyService = new DatabaseConsistencyService($this->db, $this->config);
-
-        // Handle fix actions
-        if ($this->isPost() && isset($_POST['action']) && isset($_POST['check_type'])) {
+        // Handle fix actions before the outage check below: owner assignment touches
+        // only the local zones table, so it must still work when the API is briefly
+        // down. API-dependent fixes fail gracefully on their own.
+        if ($this->isPost() && $this->request->getPostParam('action') !== null && $this->request->getPostParam('check_type') !== null) {
             $this->validateCsrfToken();
             $this->handleFixAction($consistencyService);
             return;
         }
 
-        // Run all checks
+        // Run all checks. Null means the API backend was unreachable; surface one
+        // clear error instead of rendering empty "all clear" results.
         $results = $consistencyService->runAllChecks();
+        if ($results === null) {
+            $this->showError(_('Could not reach the PowerDNS API; consistency checks are unavailable.'));
+            return;
+        }
 
         // Calculate summary statistics
         $totalIssues = 0;
@@ -93,9 +103,9 @@ class DatabaseConsistencyController extends BaseController
 
     private function handleFixAction(DatabaseConsistencyService $service): void
     {
-        $checkType = $_POST['check_type'] ?? '';
-        $action = $_POST['action'] ?? '';
-        $itemId = $_POST['item_id'] ?? null;
+        $checkType = $this->request->getPostParam('check_type', '');
+        $action = $this->request->getPostParam('action', '');
+        $itemId = $this->request->getPostParam('item_id');
 
         try {
             $result = false;
@@ -107,6 +117,50 @@ class DatabaseConsistencyController extends BaseController
                         $currentUserId = $this->getUserContextService()->getLoggedInUserId();
                         $result = $service->fixZoneWithoutOwner($itemId, $currentUserId);
                         $message = $result ? _('Zone owner assigned successfully') : _('Failed to assign zone owner');
+                    } elseif ($action === 'fix_all') {
+                        $currentUserId = $this->getUserContextService()->getLoggedInUserId();
+                        $counts = $service->fixAllZonesWithoutOwner($currentUserId);
+                        if ($counts['assigned'] === 0 && $counts['failed'] === 0) {
+                            $this->setMessage('database_consistency', 'success', _('No zones without owners to fix'));
+                        } elseif ($counts['failed'] === 0) {
+                            $this->setMessage('database_consistency', 'success', sprintf(
+                                _('Assigned ownership of %d zones'),
+                                $counts['assigned']
+                            ));
+                        } else {
+                            $this->setMessage('database_consistency', 'warning', sprintf(
+                                _('Assigned %d zones; %d failed'),
+                                $counts['assigned'],
+                                $counts['failed']
+                            ));
+                        }
+                        $this->redirect('/tools/database-consistency');
+                        return;
+                    }
+                    break;
+
+                case 'zones_without_canonical_ids':
+                    if ($action === 'fix') {
+                        $result = $service->fixZoneCanonicalId((int)$itemId);
+                        $message = $result ? _('Zone canonical ID repaired') : _('Failed to repair zone canonical ID');
+                    } elseif ($action === 'fix_all') {
+                        $counts = $service->fixAllZonesWithCanonicalIdIssue();
+                        if ($counts['fixed'] === 0 && $counts['failed'] === 0) {
+                            $this->setMessage('database_consistency', 'success', _('No zones without a canonical ID to fix'));
+                        } elseif ($counts['failed'] === 0) {
+                            $this->setMessage('database_consistency', 'success', sprintf(
+                                _('Repaired the canonical ID of %d zones'),
+                                $counts['fixed']
+                            ));
+                        } else {
+                            $this->setMessage('database_consistency', 'warning', sprintf(
+                                _('Repaired %d zones; %d failed'),
+                                $counts['fixed'],
+                                $counts['failed']
+                            ));
+                        }
+                        $this->redirect('/tools/database-consistency');
+                        return;
                     }
                     break;
 

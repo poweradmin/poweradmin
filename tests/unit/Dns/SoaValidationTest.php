@@ -56,7 +56,7 @@ class SoaValidationTest extends BaseDnsTest
                 return "'$value'";
             });
 
-        $this->validator = new SOARecordValidator($this->configMock, $this->dbMock);
+        $this->validator = new SOARecordValidator($this->configMock);
     }
 
     /**

@@ -229,8 +229,8 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', 100);
             $isNewRecord = is_numeric($rid) && (int)$rid <= 0;
-            foreach ($result['records'] ?? [] as $r) {
-                if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
+            foreach ($result['records'] as $r) {
+                if (strcasecmp($r['name'], $name) === 0 && $r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
                     return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
                 }
             }
@@ -241,11 +241,11 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         // Existing-record edit: exclude the row being edited from the duplicate check.
         if (is_numeric($rid) && (int)$rid > 0) {
-            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE != 'CNAME' AND id != ?";
+            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE != 'CNAME' AND id != ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name, (int)$rid]);
         } else {
-            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE != 'CNAME'";
+            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE != 'CNAME'";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name]);
         }
@@ -270,7 +270,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     {
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', 100);
-            foreach ($result['records'] ?? [] as $r) {
+            foreach ($result['records'] as $r) {
                 if ($r['content'] === $name && in_array($r['type'], ['MX', 'NS'], true)) {
                     return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
                 }
@@ -321,8 +321,8 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     {
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', 100);
-            foreach ($result['records'] ?? [] as $r) {
-                if ($r['name'] === $name && $r['type'] === 'CNAME' && ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid)) {
+            foreach ($result['records'] as $r) {
+                if (strcasecmp($r['name'], $name) === 0 && $r['type'] === 'CNAME' && ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid)) {
                     return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
                 }
             }
@@ -333,11 +333,11 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         // Existing-record edit: exclude the row being edited from the duplicate check.
         if (is_numeric($rid) && (int)$rid > 0) {
-            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME' AND id != ?";
+            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE = 'CNAME' AND id != ?";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name, (int)$rid]);
         } else {
-            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME'";
+            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE = 'CNAME'";
             $stmt = $this->db->prepare($query);
             $stmt->execute([$name]);
         }
@@ -370,9 +370,10 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $labels = explode('.', $target);
         $labelCount = count($labels);
 
-        // FQDN must have at least 2 labels (e.g., "example.com", not single labels)
+        // HostnameValidator already rejected this when dns.top_level_tld_check
+        // is on, so reaching here means single-label names are permitted.
         if ($labelCount < 2) {
-            return ValidationResult::failure(_('CNAME target must be a fully qualified domain name (FQDN). Single-label names are not allowed.'));
+            return ValidationResult::success(true);
         }
 
         // Check if last label looks like a valid TLD

@@ -23,10 +23,12 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
@@ -39,10 +41,13 @@ class MfaSetupController extends BaseController
     private UserContextService $userContextService;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
+
+        $this->request = new Request();
 
         $userMfaRepository = new DbUserMfaRepository($this->db, $this->config);
         $mailService = new MailService($this->config);
@@ -70,32 +75,32 @@ class MfaSetupController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            if (isset($_POST['setup_app'])) {
+            if ($this->request->getPostParam('setup_app') !== null) {
                 $this->handleAppSetup();
                 return;
             }
 
-            if (isset($_POST['verify_app'])) {
+            if ($this->request->getPostParam('verify_app') !== null) {
                 $this->handleAppVerification();
                 return;
             }
 
-            if (isset($_POST['setup_email'])) {
+            if ($this->request->getPostParam('setup_email') !== null) {
                 $this->handleEmailSetup();
                 return;
             }
 
-            if (isset($_POST['verify_email'])) {
+            if ($this->request->getPostParam('verify_email') !== null) {
                 $this->handleEmailVerification();
                 return;
             }
 
-            if (isset($_POST['disable_mfa'])) {
+            if ($this->request->getPostParam('disable_mfa') !== null) {
                 $this->handleMfaDisable();
                 return;
             }
 
-            if (isset($_POST['regenerate_codes'])) {
+            if ($this->request->getPostParam('regenerate_codes') !== null) {
                 $this->handleRegenerateRecoveryCodes();
                 return;
             }
@@ -105,9 +110,39 @@ class MfaSetupController extends BaseController
         $this->displayMfaSetup();
     }
 
+    /**
+     * Whether email verification can actually be set up: enabled by the
+     * administrator, and with a mail transport configured.
+     */
+    private function isEmailMfaUsable(): bool
+    {
+        return $this->config->get('security', 'mfa.email_enabled', true)
+            && $this->config->get('mail', 'enabled', false);
+    }
+
+    /**
+     * Whether the app method is offered. `mfa.app_enabled` is honoured only
+     * while email remains usable, so the last method is never withdrawn.
+     */
+    private function isAppMfaEnabled(): bool
+    {
+        if ($this->config->get('security', 'mfa.app_enabled', true)) {
+            return true;
+        }
+
+        return !$this->isEmailMfaUsable();
+    }
+
     private function handleAppSetup(): void
     {
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
+
+        // Mirrors handleEmailSetup(): refuse the POST, not just hide the button.
+        if (!$this->isAppMfaEnabled()) {
+            $this->addSystemMessage('error', _('Authenticator app method is not enabled on this system.'));
+            $this->displayMfaSetup();
+            return;
+        }
 
         // Check if MFA is already enabled - use getOrCreate since we're setting up
         $userMfa = $this->mfaService->getOrCreateUserMfa($userId);
@@ -140,7 +175,7 @@ class MfaSetupController extends BaseController
     private function handleAppVerification(): void
     {
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
-        $code = $_POST['verification_code'] ?? '';
+        $code = $this->request->getPostParam('verification_code', '');
 
         if (empty($code)) {
             $this->addSystemMessage('error', _('Verification code is required.'));
@@ -256,7 +291,7 @@ class MfaSetupController extends BaseController
     private function handleEmailVerification(): void
     {
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
-        $code = $_POST['verification_code'] ?? '';
+        $code = $this->request->getPostParam('verification_code', '');
 
         if (empty($code)) {
             $this->addSystemMessage('error', _('Verification code is required.'));
@@ -287,7 +322,7 @@ class MfaSetupController extends BaseController
             $this->displayRecoveryCodes($recoveryCodes);
         } else {
             $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
-            $this->displayEmailVerification($this->userContextService->getSessionData('email') ?? '');
+            $this->displayEmailVerification($this->userContextService->getSessionData(SessionKeys::EMAIL) ?? '');
         }
     }
 
@@ -296,7 +331,7 @@ class MfaSetupController extends BaseController
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
         // Check if MFA is enforced for this user
-        if ($this->mfaService->isMfaEnforced($userId, $this->db)) {
+        if ($this->mfaService->isMfaEnforced($userId, $this->db, $this->userContextService->getAuthMethod())) {
             $this->addSystemMessage('error', _('MFA is required by your organization\'s security policy and cannot be disabled.'));
             $this->displayMfaSetup();
             return;
@@ -371,16 +406,18 @@ class MfaSetupController extends BaseController
         $mailServiceEnabled = $this->config->get('mail', 'enabled', false);
         // Check if email MFA is specifically enabled in security settings
         $emailMfaEnabled = $this->config->get('security', 'mfa.email_enabled', true);
+        // Same helper as the POST guard, so button and handler cannot disagree.
+        $appMfaEnabled = $this->isAppMfaEnabled();
 
         // Check if MFA is enforced for this user
-        $mfaEnforced = $this->mfaService->isMfaEnforced($userId, $this->db);
+        $mfaEnforced = $this->mfaService->isMfaEnforced($userId, $this->db, $this->userContextService->getAuthMethod());
 
         // Check if this is an enforced setup from login redirect
-        $setupEnforced = isset($_SESSION['mfa_setup_enforced']) && $_SESSION['mfa_setup_enforced'] === true;
+        $setupEnforced = isset($_SESSION[SessionKeys::MFA_SETUP_ENFORCED]) && $_SESSION[SessionKeys::MFA_SETUP_ENFORCED] === true;
 
         // Clear the session flag once we've read it
         if ($setupEnforced) {
-            unset($_SESSION['mfa_setup_enforced']);
+            unset($_SESSION[SessionKeys::MFA_SETUP_ENFORCED]);
         }
 
         $this->render('mfa_setup.html', [
@@ -389,12 +426,13 @@ class MfaSetupController extends BaseController
             'email' => $this->userContextService->getUserEmail() ?? '',
             'mail_service_enabled' => $mailServiceEnabled,
             'email_mfa_enabled' => $emailMfaEnabled,
+            'app_mfa_enabled' => $appMfaEnabled,
             'mfa_enforced' => $mfaEnforced,
             'setup_enforced' => $setupEnforced
         ]);
     }
 
-    private function displayAppVerification(string $secret): void
+    private function displayAppVerification(#[\SensitiveParameter] string $secret): void
     {
         // Get the user's email or username for the authenticator app
         $email = $this->userContextService->getUserEmail() ?? '';

@@ -48,6 +48,98 @@ class DbPermissionTemplateRepositoryTest extends TestCase
         $this->repository = new DbPermissionTemplateRepository($this->db, $this->config);
     }
 
+    #[Test]
+    public function testAddPermissionTemplatePassesPostgresSequenceNameToLastInsertId(): void
+    {
+        $templStmt = $this->createMock(PDOStatement::class);
+        $templStmt->expects($this->once())->method('execute')->willReturn(true);
+
+        $this->db->method('prepare')->willReturn($templStmt);
+        $this->db->method('beginTransaction')->willReturn(true);
+        $this->db->method('commit')->willReturn(true);
+
+        $this->db->expects($this->once())
+            ->method('lastInsertId')
+            ->with('perm_templ_id_seq')
+            ->willReturn('42');
+
+        $result = $this->repository->addPermissionTemplate([
+            'templ_name' => 'Test Template',
+            'templ_descr' => 'Description',
+            'template_type' => 'user',
+        ]);
+
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testAddPermissionTemplateWrapsInsertsInTransactionAndCommits(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+
+        $this->db->method('prepare')->willReturn($stmt);
+        $this->db->method('lastInsertId')->willReturn('7');
+
+        $this->db->expects($this->once())->method('beginTransaction')->willReturn(true);
+        $this->db->expects($this->once())->method('commit')->willReturn(true);
+        $this->db->expects($this->never())->method('rollBack');
+
+        $result = $this->repository->addPermissionTemplate([
+            'templ_name' => 'With Perms',
+            'templ_descr' => 'Description',
+            'template_type' => 'user',
+            'perm_id' => [1, 2, 3],
+        ]);
+
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testAddPermissionTemplateRollsBackWhenItemInsertFails(): void
+    {
+        $templStmt = $this->createMock(PDOStatement::class);
+        $templStmt->method('execute')->willReturn(true);
+
+        $itemStmt = $this->createMock(PDOStatement::class);
+        $itemStmt->method('execute')->willThrowException(new RuntimeException('item insert failed'));
+
+        $this->db->method('prepare')->willReturnOnConsecutiveCalls($templStmt, $itemStmt);
+        $this->db->method('lastInsertId')->willReturn('9');
+
+        $this->db->expects($this->once())->method('beginTransaction')->willReturn(true);
+        $this->db->expects($this->never())->method('commit');
+        $this->db->expects($this->once())->method('rollBack')->willReturn(true);
+
+        $this->expectException(RuntimeException::class);
+
+        $this->repository->addPermissionTemplate([
+            'templ_name' => 'Broken',
+            'templ_descr' => 'Description',
+            'template_type' => 'user',
+            'perm_id' => [1],
+        ]);
+    }
+
+    #[Test]
+    public function testAddPermissionTemplateSkipsItemInsertWhenNoPermIds(): void
+    {
+        $templStmt = $this->createMock(PDOStatement::class);
+        $templStmt->expects($this->once())->method('execute')->willReturn(true);
+
+        $this->db->expects($this->once())->method('prepare')->willReturn($templStmt);
+        $this->db->method('beginTransaction')->willReturn(true);
+        $this->db->method('commit')->willReturn(true);
+        $this->db->method('lastInsertId')->willReturn('11');
+
+        $result = $this->repository->addPermissionTemplate([
+            'templ_name' => 'Empty',
+            'templ_descr' => 'No perms',
+        ]);
+
+        $this->assertTrue($result);
+    }
+
     /**
      * @param string[] $preparedSql captures each SQL string passed to prepare()
      */

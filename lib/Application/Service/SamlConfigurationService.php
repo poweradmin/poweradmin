@@ -226,11 +226,6 @@ class SamlConfigurationService extends LoggingService
         return $url;
     }
 
-    private function validateProviderConfig(array $config): bool
-    {
-        return $this->describeConfigError($config) === null;
-    }
-
     private function isValidX509Certificate(string $cert): bool
     {
         $cert = trim($cert);
@@ -296,6 +291,24 @@ class SamlConfigurationService extends LoggingService
         }
 
         return $errors;
+    }
+
+    /**
+     * Auto-provisioning aborts for any user who matches no group mapping when
+     * there is no default template to fall back on, so the login fails with a
+     * generic error. Reported to superusers on the dashboard.
+     */
+    public function isAutoProvisioningTemplateMissing(): bool
+    {
+        if (!$this->isEnabled()) {
+            return false;
+        }
+
+        if (!$this->configManager->get('saml', 'auto_provision', true)) {
+            return false;
+        }
+
+        return empty($this->configManager->get('saml', 'default_permission_template', ''));
     }
 
     public function isEnabled(): bool

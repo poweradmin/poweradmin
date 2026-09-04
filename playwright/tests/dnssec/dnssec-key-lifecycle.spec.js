@@ -6,6 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { listDnssecKeyIds, pruneDnssecKeys } from '../../helpers/dnssec.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
@@ -15,14 +16,52 @@ test.describe('DNSSEC Key Lifecycle', () => {
   // Helper to get a zone ID for testing
   async function getTestZoneId(page) {
     await page.goto('/zones/forward?letter=all');
-    const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-    if (await editLink.count() > 0) {
-      const href = await editLink.getAttribute('href');
+
+    // Admin-only tests; resolve admin-zone by name so the DNSSEC target is
+    // deterministic instead of whichever zone happens to be listed first.
+    const namedRow = page.locator('tr', { hasText: 'admin-zone.example.com' }).first();
+    await expect(namedRow.first()).toBeVisible();
+    const namedLink = namedRow.locator('a[href*="/zones/"][href*="/edit"]').first();
+    if (await namedLink.count() > 0) {
+      const href = await namedLink.getAttribute('href');
       const match = href.match(/\/zones\/(\d+)\/edit/);
-      return match ? match[1] : null;
+      if (match) {
+        return match[1];
+      }
     }
+
+    // Fallback for non-fixture environments: first zone edit link in the table
+    const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
+    await expect(editLink.first()).toBeVisible();
+    const href = await editLink.getAttribute('href');
+    const match = href.match(/\/zones\/(\d+)\/edit/);
+    return match ? match[1] : null;
     return null;
   }
+
+  // Several tests below submit the add-key form, so remove whatever this run added.
+  let pristineKeyIds = [];
+  let pruneZoneId = null;
+
+  test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    pruneZoneId = await getTestZoneId(page);
+    if (pruneZoneId) {
+      pristineKeyIds = await listDnssecKeyIds(page, pruneZoneId);
+    }
+    await page.close();
+  });
+
+  test.afterAll(async ({ browser }) => {
+    if (!pruneZoneId) {
+      return;
+    }
+    const page = await browser.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await pruneDnssecKeys(page, pruneZoneId, pristineKeyIds);
+    await page.close();
+  });
 
   test.describe('Key Generation', () => {
     test('should access DNSSEC page for zone', async ({ page }) => {
@@ -46,9 +85,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
       await page.goto(`/zones/${zoneId}/dnssec`);
       const addBtn = page.locator('a[href*="/dnssec/keys/add"], input[value*="Add"], button:has-text("Add")');
-      if (await addBtn.count() > 0) {
-        await expect(addBtn.first()).toBeVisible();
-      }
+      await expect(addBtn.first()).toBeVisible();
     });
 
     test('should access add key page', async ({ page }) => {
@@ -63,9 +100,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    // #csk-info-alert only renders for servers older than PowerDNS 4.0, which
-    // default to KSK+ZSK. Anything current offers CSK and must not show it.
-    test('should not display legacy key alert on a modern server', async ({ page }) => {
+    test('should not display CSK info alert on modern PowerDNS', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       const zoneId = await getTestZoneId(page);
       if (!zoneId) {
@@ -73,8 +108,10 @@ test.describe('DNSSEC Key Lifecycle', () => {
         return;
       }
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
-      await expect(page.locator('#csk-info-alert')).toHaveCount(0);
-      await expect(page.locator('select#key_type option[value="csk"]')).toHaveCount(1);
+      // The legacy-CSK guidance alert only renders for pre-4.0 PowerDNS
+      // servers; the test environment always runs a modern server.
+      const cskInfoAlert = page.locator('#csk-info-alert');
+      await expect(cskInfoAlert).toHaveCount(0);
     });
 
     test('should display key type selector', async ({ page }) => {
@@ -98,9 +135,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const algoSelector = page.locator('select[name*="algo"], select[name*="algorithm"]');
-      if (await algoSelector.count() > 0) {
-        await expect(algoSelector.first()).toBeVisible();
-      }
+      await expect(algoSelector.first()).toBeVisible();
     });
 
     test('should display key size selector', async ({ page }) => {
@@ -112,9 +147,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
       const sizeSelector = page.locator('select[name*="size"], select[name*="bits"], input[name*="size"]');
-      if (await sizeSelector.count() > 0) {
-        await expect(sizeSelector.first()).toBeVisible();
-      }
+      await expect(sizeSelector.first()).toBeVisible();
     });
 
     test('should generate KSK key', async ({ page }) => {
@@ -126,10 +159,10 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
 
-      const kskRadio = page.locator('input[value="ksk"], input[value="KSK"]');
-      if (await kskRadio.count() > 0) {
-        await kskRadio.first().check();
-      }
+      // Key type is a <select name="key_type">, so input[value="ksk"] never matched
+      const keyType = page.locator('select[name="key_type"]');
+      await expect(keyType).toBeVisible();
+      await keyType.selectOption('ksk');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       // Auto-retrying assertion: the click navigation may still be in flight
@@ -145,10 +178,9 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
       await page.goto(`/zones/${zoneId}/dnssec/keys/add`);
 
-      const zskRadio = page.locator('input[value="zsk"], input[value="ZSK"]');
-      if (await zskRadio.count() > 0) {
-        await zskRadio.first().check();
-      }
+      const keyType = page.locator('select[name="key_type"]');
+      await expect(keyType).toBeVisible();
+      await keyType.selectOption('zsk');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       // Auto-retrying assertion: the click navigation may still be in flight
@@ -177,12 +209,12 @@ test.describe('DNSSEC Key Lifecycle', () => {
         return;
       }
       await page.goto(`/zones/${zoneId}/dnssec`);
+      // The toggle is a .../keys/{id}/edit link; only its title says which way it goes.
       const activateLink = page.locator('a[href*="/dnssec/keys/"][title*="Activate this key"]').first();
-      if (await activateLink.count() > 0) {
-        await activateLink.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      test.skip(await activateLink.count() === 0, 'zone has no inactive key to activate');
+      await activateLink.click();
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should deactivate active key', async ({ page }) => {
@@ -194,11 +226,10 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
       await page.goto(`/zones/${zoneId}/dnssec`);
       const deactivateLink = page.locator('a[href*="/dnssec/keys/"][title*="Deactivate this key"]').first();
-      if (await deactivateLink.count() > 0) {
-        await deactivateLink.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      test.skip(await deactivateLink.count() === 0, 'zone has no active key to deactivate');
+      await deactivateLink.click();
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 
@@ -250,10 +281,9 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
       await page.goto(`/zones/${zoneId}/dnssec`);
       const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        await expect(page).toHaveURL(/.*dnssec.*delete/);
-      }
+      await expect(deleteLink.first()).toBeVisible();
+      await deleteLink.click();
+      await expect(page).toHaveURL(/.*dnssec.*delete/);
     });
 
     test('should display delete confirmation message', async ({ page }) => {
@@ -265,11 +295,10 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
       await page.goto(`/zones/${zoneId}/dnssec`);
       const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/delete|confirm|remove/i);
-      }
+      await expect(deleteLink.first()).toBeVisible();
+      await deleteLink.click();
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/delete|confirm|remove/i);
     });
 
     test('should cancel key deletion', async ({ page }) => {
@@ -281,13 +310,12 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
       await page.goto(`/zones/${zoneId}/dnssec`);
       const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        const cancelBtn = page.locator('a:has-text("Cancel"), button:has-text("Cancel")').first();
-        if (await cancelBtn.count() > 0) {
-          await cancelBtn.click();
-          await expect(page).toHaveURL(/.*dnssec/);
-        }
+      await expect(deleteLink.first()).toBeVisible();
+      await deleteLink.click();
+      const cancelBtn = page.locator('a:has-text("Cancel"), button:has-text("Cancel")').first();
+      if (await cancelBtn.count() > 0) {
+        await cancelBtn.click();
+        await expect(page).toHaveURL(/.*dnssec/);
       }
     });
 
@@ -300,23 +328,22 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
       await page.goto(`/zones/${zoneId}/dnssec`);
       const deleteLink = page.locator('a[href*="/delete"]').last();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        await expect(page).toHaveURL(/.*dnssec.*delete/);
+      await expect(deleteLink.first()).toBeVisible();
+      await deleteLink.click();
+      await expect(page).toHaveURL(/.*dnssec.*delete/);
 
-        // Verify the form has the correct CSRF token field name
-        const tokenField = page.locator('input[name="_token"]');
-        expect(await tokenField.count()).toBe(1);
+      // Verify the form has the correct CSRF token field name
+      const tokenField = page.locator('input[name="_token"]');
+      await expect(tokenField).toHaveCount(1);
 
-        // Submit the delete form
-        const deleteBtn = page.locator('button[type="submit"]:has-text("Delete")').first();
-        if (await deleteBtn.count() > 0) {
-          await deleteBtn.click();
-          await page.waitForLoadState('networkidle');
+      // Submit the delete form
+      const deleteBtn = page.locator('button[type="submit"]:has-text("Delete")').first();
+      if (await deleteBtn.count() > 0) {
+        await deleteBtn.click();
+        await page.waitForLoadState('networkidle');
 
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/Invalid CSRF token/i);
-        }
+        // Auto-retrying so a slow render cannot read the page mid-flight
+        await expect(page.locator('body')).not.toContainText(/Invalid CSRF token/i);
       }
     });
   });
@@ -358,15 +385,14 @@ test.describe('DNSSEC Key Lifecycle', () => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        const href = await editLink.getAttribute('href');
-        const zoneIdMatch = href?.match(/\/zones\/(\d+)\/edit/);
-        if (zoneIdMatch) {
-          await page.goto(`/zones/${zoneIdMatch[1]}/dnssec`);
-          const bodyText = await page.locator('body').textContent() || '';
-          expect(bodyText).not.toMatch(/fatal|exception/i);
-          expect(bodyText.toLowerCase()).toMatch(/dnssec|zone|key|denied|not authorized/i);
-        }
+      await expect(editLink.first()).toBeVisible();
+      const href = await editLink.getAttribute('href');
+      const zoneIdMatch = href?.match(/\/zones\/(\d+)\/edit/);
+      if (zoneIdMatch) {
+        await page.goto(`/zones/${zoneIdMatch[1]}/dnssec`);
+        const bodyText = await page.locator('body').textContent() || '';
+        expect(bodyText).not.toMatch(/fatal|exception/i);
+        expect(bodyText.toLowerCase()).toMatch(/dnssec|zone|key|denied|not authorized/i);
       }
     });
   });

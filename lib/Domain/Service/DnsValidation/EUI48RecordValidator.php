@@ -49,13 +49,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class EUI48RecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -66,7 +64,7 @@ class EUI48RecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the EUI48 record (MAC address in xx-xx-xx-xx-xx-xx format)
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for EUI48 records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
      * @return ValidationResult ValidationResult containing validated data or errors

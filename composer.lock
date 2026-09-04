@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e2ee861888d736f0b78337139492f595",
+    "content-hash": "20fc9e4bacd11048aec1b510c202cf0b",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -937,16 +937,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "2.3.3",
+            "version": "2.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "fb19eedd2bb67ff8cf7a5502ad329e701d6398a3"
+                "reference": "148cefffaf0233e4c08cc13db8a195a56dd6dfe9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/fb19eedd2bb67ff8cf7a5502ad329e701d6398a3",
-                "reference": "fb19eedd2bb67ff8cf7a5502ad329e701d6398a3",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/148cefffaf0233e4c08cc13db8a195a56dd6dfe9",
+                "reference": "148cefffaf0233e4c08cc13db8a195a56dd6dfe9",
                 "shasum": ""
             },
             "require": {
@@ -978,9 +978,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.3.3"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.3.5"
             },
-            "time": "2026-07-08T07:01:06+00:00"
+            "time": "2026-08-31T16:05:28+00:00"
         },
         {
             "name": "pragmarx/google2fa",
@@ -2550,6 +2550,96 @@
                 }
             ],
             "time": "2026-08-07T18:00:13+00:00"
+        },
+        {
+            "name": "symfony/intl",
+            "version": "v7.4.16",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/intl.git",
+                "reference": "a8ff4606c5f5c7ec166d565cea1fb1864c2f9850"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/intl/zipball/a8ff4606c5f5c7ec166d565cea1fb1864c2f9850",
+                "reference": "a8ff4606c5f5c7ec166d565cea1fb1864c2f9850",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/deprecation-contracts": "^2.5|^3"
+            },
+            "conflict": {
+                "symfony/string": "<7.1"
+            },
+            "require-dev": {
+                "symfony/filesystem": "^6.4|^7.0|^8.0",
+                "symfony/var-exporter": "^6.4|^7.0|^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Intl\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/",
+                    "/Resources/data/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@gmail.com"
+                },
+                {
+                    "name": "Eriksen Costa",
+                    "email": "eriksen.costa@infranology.com.br"
+                },
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides access to the localization data of the ICU library",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "i18n",
+                "icu",
+                "internationalization",
+                "intl",
+                "l10n",
+                "localization"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/intl/tree/v7.4.16"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-08-07T10:37:33+00:00"
         },
         {
             "name": "symfony/mailer",
@@ -4752,16 +4842,16 @@
         },
         {
             "name": "symfony/type-info",
-            "version": "v7.4.9",
+            "version": "v7.4.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/type-info.git",
-                "reference": "cafeedbf157b890e94ac5b83eaed85595106d5d6"
+                "reference": "62d0ad6995630a4f7ea8fd270aadb3e2545c8e31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/type-info/zipball/cafeedbf157b890e94ac5b83eaed85595106d5d6",
-                "reference": "cafeedbf157b890e94ac5b83eaed85595106d5d6",
+                "url": "https://api.github.com/repos/symfony/type-info/zipball/62d0ad6995630a4f7ea8fd270aadb3e2545c8e31",
+                "reference": "62d0ad6995630a4f7ea8fd270aadb3e2545c8e31",
                 "shasum": ""
             },
             "require": {
@@ -4811,7 +4901,7 @@
                 "type"
             ],
             "support": {
-                "source": "https://github.com/symfony/type-info/tree/v7.4.9"
+                "source": "https://github.com/symfony/type-info/tree/v7.4.17"
             },
             "funding": [
                 {
@@ -4831,7 +4921,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-22T15:21:55+00:00"
+            "time": "2026-08-21T15:52:48+00:00"
         },
         {
             "name": "symfony/validator",
@@ -5107,16 +5197,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v7.4.15",
+            "version": "v7.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "e101850ded5d2c0d44bf32abb8996404afec2dec"
+                "reference": "4cef939e55b8a21c5780418de0d98ab00d0736e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/e101850ded5d2c0d44bf32abb8996404afec2dec",
-                "reference": "e101850ded5d2c0d44bf32abb8996404afec2dec",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/4cef939e55b8a21c5780418de0d98ab00d0736e1",
+                "reference": "4cef939e55b8a21c5780418de0d98ab00d0736e1",
                 "shasum": ""
             },
             "require": {
@@ -5159,7 +5249,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v7.4.15"
+                "source": "https://github.com/symfony/yaml/tree/v7.4.18"
             },
             "funding": [
                 {
@@ -5179,7 +5269,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-21T15:13:06+00:00"
+            "time": "2026-08-30T00:47:26+00:00"
         },
         {
             "name": "twbs/bootstrap",
@@ -5271,6 +5361,70 @@
             "time": "2025-05-09T23:01:19+00:00"
         },
         {
+            "name": "twig/intl-extra",
+            "version": "v3.26.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twigphp/intl-extra.git",
+                "reference": "98f5ad5bff13230fcd2d834d9e79b50adf3ccda9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/intl-extra/zipball/98f5ad5bff13230fcd2d834d9e79b50adf3ccda9",
+                "reference": "98f5ad5bff13230fcd2d834d9e79b50adf3ccda9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1.0",
+                "symfony/intl": "^5.4|^6.4|^7.0|^8.0",
+                "twig/twig": "^3.13|^4.0"
+            },
+            "require-dev": {
+                "symfony/phpunit-bridge": "^6.4|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Twig\\Extra\\Intl\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "A Twig extension for Intl",
+            "homepage": "https://twig.symfony.com",
+            "keywords": [
+                "intl",
+                "twig"
+            ],
+            "support": {
+                "source": "https://github.com/twigphp/intl-extra/tree/v3.26.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/twig/twig",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-05-19T20:44:48+00:00"
+        },
+        {
             "name": "twig/twig",
             "version": "v3.28.0",
             "source": {
@@ -5352,16 +5506,16 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "6.5.3",
+            "version": "6.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "d0a5edd84dd5e116643c79e53d46814c5a5e4c04"
+                "reference": "af0a8de6c4b6780e8e07d06ee0c7da538b5f1e46"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/d0a5edd84dd5e116643c79e53d46814c5a5e4c04",
-                "reference": "d0a5edd84dd5e116643c79e53d46814c5a5e4c04",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/af0a8de6c4b6780e8e07d06ee0c7da538b5f1e46",
+                "reference": "af0a8de6c4b6780e8e07d06ee0c7da538b5f1e46",
                 "shasum": ""
             },
             "require": {
@@ -5429,7 +5583,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/6.5.3"
+                "source": "https://github.com/zircote/swagger-php/tree/6.7.0"
             },
             "funding": [
                 {
@@ -5437,7 +5591,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-12T04:26:57+00:00"
+            "time": "2026-08-24T21:55:54+00:00"
         }
     ],
     "packages-dev": [
@@ -6957,16 +7111,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.95.22",
+            "version": "v3.95.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "482722e0783c16325a07a998a0d9eda560f9be99"
+                "reference": "b2932a5af3157a0c28324b1efe5e3b556dee09c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/482722e0783c16325a07a998a0d9eda560f9be99",
-                "reference": "482722e0783c16325a07a998a0d9eda560f9be99",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/b2932a5af3157a0c28324b1efe5e3b556dee09c4",
+                "reference": "b2932a5af3157a0c28324b1efe5e3b556dee09c4",
                 "shasum": ""
             },
             "require": {
@@ -7049,7 +7203,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.95.22"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.95.23"
             },
             "funding": [
                 {
@@ -7057,7 +7211,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-24T10:37:43+00:00"
+            "time": "2026-08-26T19:54:54+00:00"
         },
         {
             "name": "kelunik/certificate",
@@ -7767,6 +7921,57 @@
                 }
             ],
             "time": "2026-08-22T07:38:16+00:00"
+        },
+        {
+            "name": "phpstan/phpstan-deprecation-rules",
+            "version": "2.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/phpstan-deprecation-rules.git",
+                "reference": "67bedd65c24bc72840afc45aed48b1059dd44bec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpstan-deprecation-rules/zipball/67bedd65c24bc72840afc45aed48b1059dd44bec",
+                "reference": "67bedd65c24bc72840afc45aed48b1059dd44bec",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0",
+                "phpstan/phpstan": "^2.1.39"
+            },
+            "require-dev": {
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.6",
+                "shipmonk/name-collision-detector": "^2.1"
+            },
+            "type": "phpstan-extension",
+            "extra": {
+                "phpstan": {
+                    "includes": [
+                        "rules.neon"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PHPStan\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPStan rules for detecting usage of deprecated classes, methods, properties, constants and traits.",
+            "keywords": [
+                "static analysis"
+            ],
+            "support": {
+                "issues": "https://github.com/phpstan/phpstan-deprecation-rules/issues",
+                "source": "https://github.com/phpstan/phpstan-deprecation-rules/tree/2.0.5"
+            },
+            "time": "2026-07-22T06:50:43+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -9862,6 +10067,73 @@
             "time": "2025-12-15T09:00:41+00:00"
         },
         {
+            "name": "spaze/phpstan-disallowed-calls",
+            "version": "v4.14.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spaze/phpstan-disallowed-calls.git",
+                "reference": "90210a86e93e3a96f9a7fded9f5a8b3ee40925dd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spaze/phpstan-disallowed-calls/zipball/90210a86e93e3a96f9a7fded9f5a8b3ee40925dd",
+                "reference": "90210a86e93e3a96f9a7fded9f5a8b3ee40925dd",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0",
+                "phpstan/phpstan": "^1.12.6 || ^2.0"
+            },
+            "require-dev": {
+                "nette/neon": "^3.3.1",
+                "php-parallel-lint/php-console-highlighter": "^1.0",
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+                "phpstan/phpstan-deprecation-rules": "^1.2 || ^2.0",
+                "phpunit/phpunit": "^9.6 || ^10.1 || ^11.0 || ^12.0 || ^13.0",
+                "shipmonk/dead-code-detector": "^1.1",
+                "spaze/coding-standard": "^1.8"
+            },
+            "type": "phpstan-extension",
+            "extra": {
+                "phpstan": {
+                    "includes": [
+                        "extension.neon"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spaze\\PHPStan\\Rules\\Disallowed\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michal Špaček",
+                    "email": "mail@michalspacek.cz",
+                    "homepage": "https://www.michalspacek.cz"
+                }
+            ],
+            "description": "PHPStan rules to detect disallowed method & function calls, constant, namespace, attribute, property & superglobal usages, with powerful rules to re-allow a call or a usage in places where it should be allowed.",
+            "keywords": [
+                "static analysis"
+            ],
+            "support": {
+                "issues": "https://github.com/spaze/phpstan-disallowed-calls/issues",
+                "source": "https://github.com/spaze/phpstan-disallowed-calls/tree/v4.14.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spaze",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-08-02T15:18:24+00:00"
+        },
+        {
             "name": "squizlabs/php_codesniffer",
             "version": "4.0.4",
             "source": {
@@ -10328,6 +10600,58 @@
                 }
             ],
             "time": "2025-11-17T20:03:58+00:00"
+        },
+        {
+            "name": "tomasvotruba/cognitive-complexity",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TomasVotruba/cognitive-complexity.git",
+                "reference": "435763b488beabc11e7d1102f6891ebe255cc3b8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TomasVotruba/cognitive-complexity/zipball/435763b488beabc11e7d1102f6891ebe255cc3b8",
+                "reference": "435763b488beabc11e7d1102f6891ebe255cc3b8",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0",
+                "phpstan/phpstan": "^2"
+            },
+            "type": "phpstan-extension",
+            "extra": {
+                "phpstan": {
+                    "includes": [
+                        "config/extension.neon"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "TomasVotruba\\CognitiveComplexity\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPStan rules to measure cognitive complexity of your classes and methods",
+            "support": {
+                "issues": "https://github.com/TomasVotruba/cognitive-complexity/issues",
+                "source": "https://github.com/TomasVotruba/cognitive-complexity/tree/1.1.1"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/rectorphp",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/tomasvotruba",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-05-25T12:12:55+00:00"
         },
         {
             "name": "vimeo/psalm",

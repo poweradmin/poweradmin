@@ -1,5 +1,6 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import { login, loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { expectAccessDenied } from '../../helpers/access.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Login Authentication', () => {
@@ -168,23 +169,12 @@ test.describe('User Permissions After Login', () => {
 
     test('should NOT have access to permission templates', async ({ managerPage: page }) => {
       await page.goto('/permissions/templates');
-      // Should be redirected or show error
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       bodyText.toLowerCase().includes('not allowed');
-      const redirectedToLogin = page.url().includes('/login');
-      expect(hasError || redirectedToLogin || !page.url().includes('/permissions/templates')).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
 
     test('should NOT have access to add user', async ({ managerPage: page }) => {
       await page.goto('/users/add');
-      // Should be redirected or show error
-      const hasAddUserForm = await page.locator('input[name="username"], input[name="fullname"]').count() > 0 &&
-                             await page.locator('input[name="password"]').count() > 0;
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('denied');
-      expect(hasError || !hasAddUserForm).toBeTruthy();
+      await expectAccessDenied(page, 'input[name="username"]');
     });
   });
 
@@ -206,22 +196,12 @@ test.describe('User Permissions After Login', () => {
 
     test('should NOT have access to add master zone', async ({ clientPage: page }) => {
       await page.goto('/zones/add/master');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('denied');
-      const hasZoneForm = await page.locator('input[name="domain"], input[name*="zone"]').count() > 0;
-      expect(hasError || !hasZoneForm).toBeTruthy();
+      await expectAccessDenied(page, 'input[name="domain"]');
     });
 
     test('should NOT have access to permission templates', async ({ clientPage: page }) => {
       await page.goto('/permissions/templates');
-      const bodyText = await page.locator('body').textContent();
-      // Client should see error message or be redirected
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('permission') ||
-                       bodyText.toLowerCase().includes('denied');
-      const isRedirected = page.url().includes('/login');
-      const noTable = await page.locator('table').count() === 0;
-      expect(hasError || isRedirected || noTable).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
   });
 
@@ -243,18 +223,12 @@ test.describe('User Permissions After Login', () => {
 
     test('should NOT have access to add master zone', async ({ viewerPage: page }) => {
       await page.goto('/zones/add/master');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('denied');
-      const hasZoneForm = await page.locator('input[name="domain"], input[name*="zone"]').count() > 0;
-      expect(hasError || !hasZoneForm).toBeTruthy();
+      await expectAccessDenied(page, 'input[name="domain"]');
     });
 
     test('should NOT have access to add slave zone', async ({ viewerPage: page }) => {
       await page.goto('/zones/add/slave');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('denied');
-      const hasZoneForm = await page.locator('input[name="domain"], input[name*="zone"]').count() > 0;
-      expect(hasError || !hasZoneForm).toBeTruthy();
+      await expectAccessDenied(page, 'input[name="domain"]');
     });
   });
 
@@ -266,17 +240,12 @@ test.describe('User Permissions After Login', () => {
 
     test('should NOT have access to add master zone', async ({ nopermPage: page }) => {
       await page.goto('/zones/add/master');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('denied');
-      const hasZoneForm = await page.locator('input[name="domain"], input[name*="zone"]').count() > 0;
-      expect(hasError || !hasZoneForm).toBeTruthy();
+      await expectAccessDenied(page, 'input[name="domain"]');
     });
 
     test('should NOT have access to permission templates', async ({ nopermPage: page }) => {
       await page.goto('/permissions/templates');
-      const bodyText = await page.locator('body').textContent();
-      const hasPermTable = bodyText.toLowerCase().includes('permission template') && !bodyText.toLowerCase().includes('error');
-      expect(!hasPermTable || page.url().includes('/login')).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
   });
 });

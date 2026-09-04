@@ -22,24 +22,30 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\LocaleResolver;
 use Poweradmin\Application\Service\StatsDisplayService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Service\TemplateCacheResolver;
 use Poweradmin\Domain\Utility\MemoryUsage;
 use Poweradmin\Domain\Utility\Timer;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
+use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
 use Poweradmin\Infrastructure\Utility\SimpleSizeFormatter;
 use Poweradmin\Infrastructure\Web\BadgeTwigExtension;
 use Poweradmin\Module\ModuleRegistry;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\Loader\PoFileLoader;
 use Symfony\Component\Translation\Translator;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Twig\Environment;
 use Twig\Error\Error;
+use Twig\Extension\DebugExtension;
+use Twig\Extension\ExtensionInterface;
+use Twig\Extra\Intl\IntlExtension;
 use Twig\Loader\FilesystemLoader;
 
 /**
@@ -60,6 +66,21 @@ class AppManager
 
     private LoggerInterface $logger;
 
+    /** @var string $themeName The theme name after any fallback to 'default' */
+    private string $themeName;
+
+    /** @var string $themeBasePath The theme base path in relative/URL form, after any fallback */
+    private string $themeBasePath;
+
+    /** @var string $themePath The filesystem path of the resolved theme template directory */
+    private string $themePath;
+
+    /** @var string $interfaceLocale The locale the translator was built with */
+    private string $interfaceLocale;
+
+    /** @var list<string> $supportedLocales The enabled locales, trimmed */
+    private array $supportedLocales;
+
     /**
      * AppManager constructor.
      * Initializes the template renderer, configuration, and optional statistics display service.
@@ -70,42 +91,144 @@ class AppManager
         $this->configuration = ConfigurationManager::getInstance();
         $this->configuration->initialize();
 
+        $registry = new ModuleRegistry($this->configuration);
+        $registry->loadModules();
+
+        $this->resolveTheme();
+        $loader = $this->createTemplateLoader($registry);
+        $this->templateRenderer = new Environment($loader, $this->buildTwigOptions());
+        $this->statsDisplayService = $this->createStatsDisplayService();
+
+        $this->setupTranslator($registry);
+
+        $this->templateRenderer->addExtension(new BadgeTwigExtension());
+        $this->templateRenderer->addExtension(new IntlExtension());
+
+        if ($this->templateRenderer->isDebug()) {
+            $this->templateRenderer->addExtension(new DebugExtension());
+        }
+    }
+
+    /**
+     * Fails fast on broken configuration. Static and free of template setup so
+     * callers can check before, or without, building the Twig stack.
+     */
+    public static function assertConfigurationUsable(ConfigurationManager $configuration): void
+    {
+        if (!$configuration->isDefaultsFileLoaded()) {
+            (new MessageService())->displayDirectSystemError(sprintf(
+                'Default settings file is missing or unreadable: %s. Please restore it from the Poweradmin distribution before continuing.',
+                $configuration->getDefaultsFilePath()
+            ));
+        }
+
+        $validator = new ConfigValidator($configuration->getAll());
+        if ($validator->validate()) {
+            return;
+        }
+
+        // MessageService escapes the message itself, so pass plain text only
+        (new MessageService())->displayDirectSystemError(
+            'Invalid configuration: ' . implode('; ', $validator->getErrors())
+        );
+    }
+
+    /**
+     * Resolves the configured theme to an existing template directory,
+     * falling back to the default theme when the configured one is missing.
+     * Sets the themeName, themeBasePath, and themePath properties.
+     */
+    private function resolveTheme(): void
+    {
         $theme_base_path = $this->configuration->get('interface', 'theme_base_path', 'templates');
         $theme = $this->configuration->get('interface', 'theme', 'default');
-        $theme_path = $theme_base_path . '/' . $theme;
 
-        // Validate theme directory exists, fallback to 'default' if not
+        // Resolve against the app root for the on-disk existence check only; the
+        // config value stays relative for use as a URL in templates.
+        $fs_base_path = ThemePathResolver::toFilesystemPath($theme_base_path);
+        $theme_path = $fs_base_path . '/' . $theme;
+
         if (!is_dir($theme_path)) {
             $this->logger->warning('Theme directory {path} does not exist. Falling back to default theme.', ['path' => $theme_path]);
 
-            // Check if this is a removed legacy theme
             $removedThemes = ['spark', 'ignite', 'mobile'];
             if (in_array($theme, $removedThemes)) {
                 $this->logger->warning('The {theme} theme was removed in Poweradmin 4.0. Please update your configuration to use theme: default.', ['theme' => $theme]);
             }
 
-            // Fallback to default theme
             $theme = 'default';
-            $theme_path = $theme_base_path . '/' . $theme;
+            $theme_path = $fs_base_path . '/default';
 
-            // If even default doesn't exist, this is a critical error
+            // Custom base paths without a default theme fall back to the
+            // bundled one so pages still render
+            if (!is_dir($theme_path)) {
+                $theme_base_path = 'templates';
+                $theme_path = ThemePathResolver::toFilesystemPath('templates') . '/default';
+            }
+
             if (!is_dir($theme_path)) {
                 $messageService = new MessageService();
                 $messageService->displayDirectSystemError(
                     "Critical error: Default theme directory '$theme_path' does not exist. " .
                     "Please ensure Poweradmin is properly installed."
                 );
-                exit(1);
             }
         }
 
+        $this->themeName = $theme;
+        $this->themeBasePath = $theme_base_path;
+        $this->themePath = $theme_path;
+    }
+
+    /**
+     * Gets the theme name that templates are actually served from, which is
+     * 'default' when the configured theme directory does not exist.
+     *
+     * @return string The resolved theme name
+     */
+    public function getThemeName(): string
+    {
+        return $this->themeName;
+    }
+
+    /**
+     * Gets the theme base path matching the resolved theme, in the
+     * relative/URL form used for asset paths in templates.
+     *
+     * @return string The resolved theme base path
+     */
+    public function getThemeBasePath(): string
+    {
+        return $this->themeBasePath;
+    }
+
+    /**
+     * Creates the Twig template loader for the resolved theme, with default
+     * theme fallbacks and module template namespaces. Requires resolveTheme()
+     * to have run.
+     *
+     * @param ModuleRegistry $registry The registry of loaded modules
+     * @return FilesystemLoader The configured template loader
+     */
+    private function createTemplateLoader(ModuleRegistry $registry): FilesystemLoader
+    {
         // Look directly in the theme path for templates, not in subdirectories
-        $loader = new FilesystemLoader([$theme_path]);
+        $loader = new FilesystemLoader([$this->themePath]);
+
+        // Custom themes fall back to the default theme for templates they do
+        // not provide (module templates rely on the shared _macros.html).
+        // The bundled default is the last resort for custom theme base paths.
+        $fallbacks = array_unique([
+            ThemePathResolver::toFilesystemPath($this->themeBasePath) . '/default',
+            ThemePathResolver::toFilesystemPath('templates') . '/default',
+        ]);
+        foreach ($fallbacks as $fallback) {
+            if ($fallback !== $this->themePath && is_dir($fallback)) {
+                $loader->addPath($fallback);
+            }
+        }
 
         // Register module template paths as Twig namespaces (@module_name/template.html)
-        $registry = new ModuleRegistry($this->configuration);
-        $registry->loadModules();
-
         foreach ($registry->getEnabledModules() as $module) {
             $templatePath = $module->getTemplatePath();
             if (!empty($templatePath) && is_dir($templatePath)) {
@@ -113,49 +236,46 @@ class AppManager
             }
         }
 
-        $this->templateRenderer = new Environment($loader, ['debug' => false]);
+        return $loader;
+    }
 
-        if ($this->configuration->get('misc', 'display_stats', false)) {
-            $memoryUsage = new MemoryUsage();
-            $timer = new Timer();
-            $sizeFormatter = new SimpleSizeFormatter();
-            $this->statsDisplayService = new StatsDisplayService($memoryUsage, $timer, $sizeFormatter);
+    /**
+     * Creates the statistics display service when misc.display_stats is on.
+     *
+     * @return StatsDisplayService|null The service, or null when disabled
+     */
+    private function createStatsDisplayService(): ?StatsDisplayService
+    {
+        if (!$this->configuration->get('misc', 'display_stats', false)) {
+            return null;
         }
 
-        if ($this->configuration instanceof ConfigurationManager && !$this->configuration->isDefaultsFileLoaded()) {
-            $messageService = new MessageService();
-            $messageService->displayDirectSystemError(sprintf(
-                'Default settings file is missing or unreadable: %s. Please restore it from the Poweradmin distribution before continuing.',
-                htmlspecialchars($this->configuration->getDefaultsFilePath(), ENT_QUOTES)
-            ));
-        }
+        return new StatsDisplayService(new MemoryUsage(), new Timer(), new SimpleSizeFormatter());
+    }
 
-        $validator = new ConfigValidator($this->configuration->getAll());
-        $this->showValidationErrors($validator);
+    /**
+     * Resolves the interface language and registers the translator with the
+     * template renderer, including module translations.
+     *
+     * @param ModuleRegistry $registry The registry of loaded modules
+     */
+    private function setupTranslator(ModuleRegistry $registry): void
+    {
+        $resolver = new LocaleResolver($this->configuration, new UserContextService(), new Request());
+        $this->interfaceLocale = $resolver->resolve();
+        $this->supportedLocales = $resolver->getSupportedLocales();
+        $interfaceLang = $this->interfaceLocale;
 
-        $userContextService = new UserContextService();
-        $interfaceLang = $this->configuration->get('interface', 'language', 'en_EN');
-        $userLang = $userContextService->getUserLanguage();
-        if ($userLang !== null) {
-            $interfaceLang = $userLang;
-        }
-
-        // Allow language override via GET parameter (login page language switcher)
-        $request = Request::createFromGlobals();
-        $requestedLang = $request->query->get('lang');
-        if (is_string($requestedLang) && preg_match('/^[a-zA-Z_]+$/', $requestedLang)) {
-            $enabledLanguages = $this->configuration->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
-            $supportedLocales = explode(',', $enabledLanguages);
-            if (in_array($requestedLang, $supportedLocales, true)) {
-                $interfaceLang = $requestedLang;
-            }
-        }
+        // ICU formatters (format_datetime etc.) read the default locale;
+        // setlocale() in LocaleManager does not affect ICU
+        \Locale::setDefault($interfaceLang);
 
         $translator = new Translator($interfaceLang);
         $translator->addLoader('po', new PoFileLoader());
-        $translator->addResource('po', $this->getLocaleFile($interfaceLang), $interfaceLang);
 
-        // Load module translations
+        // Modules are registered first so the main catalogue, added last, wins on
+        // any msgid both define - a module supplements the app, it does not
+        // redefine it.
         foreach ($registry->getEnabledModules() as $module) {
             $localePath = $module->getLocalePath();
             if (empty($localePath)) {
@@ -168,8 +288,62 @@ class AppManager
             }
         }
 
+        $translator->addResource('po', $this->getLocaleFile(), $interfaceLang);
+
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
-        $this->templateRenderer->addExtension(new BadgeTwigExtension());
+    }
+
+    /**
+     * Builds the Twig environment options, enabling the opt-in compiled
+     * template cache when misc.template_cache is set. Cache failures degrade
+     * to uncached rendering with a logged warning - never fatal.
+     *
+     * @return array The options for the Environment constructor
+     */
+    private function buildTwigOptions(): array
+    {
+        // Dev mode surfaces template typos and undefined params; production
+        // keeps Twig's silent behavior so pages never break on missing vars.
+        $displayErrors = (bool)$this->configuration->get('misc', 'display_errors', false);
+        $options = ['debug' => $displayErrors, 'strict_variables' => $displayErrors];
+
+        if (!$this->configuration->get('misc', 'template_cache', false)) {
+            return $options;
+        }
+
+        $resolver = new TemplateCacheResolver($this->logger);
+        $cachePath = $resolver->resolve((string)$this->configuration->get('misc', 'template_cache_path', ''));
+        if ($cachePath !== null) {
+            $options['cache'] = $cachePath;
+            // Without this, debug=false would let upgrades serve stale compiled templates
+            $options['auto_reload'] = true;
+        }
+
+        return $options;
+    }
+
+    /**
+     * Registers an extension on the template renderer. Must be called before
+     * the first render of the request - Twig locks extensions afterwards.
+     *
+     * @param ExtensionInterface $extension The Twig extension to register
+     */
+    public function addTwigExtension(ExtensionInterface $extension): void
+    {
+        $this->templateRenderer->addExtension($extension);
+    }
+
+    /**
+     * Registers a global template variable. New names must be registered
+     * before the first render of the request; re-registering an existing
+     * name afterwards only updates its value.
+     *
+     * @param string $name The variable name available to all templates
+     * @param mixed $value The value to expose
+     */
+    public function addTwigGlobal(string $name, mixed $value): void
+    {
+        $this->templateRenderer->addGlobal($name, $value);
     }
 
     /**
@@ -185,49 +359,47 @@ class AppManager
         } catch (Error $e) {
             $this->logger->error('Template rendering failed: {error}', ['error' => $e->getMessage()]);
             $messageService = new MessageService();
-            $messageService->displayDirectSystemError('An error occurred while rendering the template. Please check the server logs for details.');
+            if ($this->templateRenderer->isDebug()) {
+                // Twig messages carry the template name and line - essential in dev mode
+                $messageService->displayDirectSystemError('Template rendering failed: ' . $e->getMessage());
+            } else {
+                $messageService->displayDirectSystemError('An error occurred while rendering the template. Please check the server logs for details.');
+            }
         }
     }
 
     /**
-     * Gets the locale file path for the given interface language.
+     * Gets the locale file path for the resolved interface locale.
      *
-     * @param string $interfaceLang The interface language
      * @return string The path to the locale file
      */
-    public function getLocaleFile(string $interfaceLang): string
+    private function getLocaleFile(): string
     {
-        $supportedLocales = explode(',', $this->configuration->get('interface', 'enabled_languages', 'en_EN'));
-        if (in_array($interfaceLang, $supportedLocales)) {
-            return "locale/$interfaceLang/LC_MESSAGES/messages.po";
+        if (in_array($this->interfaceLocale, $this->supportedLocales, true)) {
+            return "locale/$this->interfaceLocale/LC_MESSAGES/messages.po";
         }
         return "locale/en_EN/LC_MESSAGES/messages.po";
     }
 
     /**
-     * Displays validation errors if the configuration is invalid.
+     * Gets the locale the translator was built with. Page chrome must use
+     * this (not re-resolve) so rendered strings and lang metadata agree.
      *
-     * @param ConfigValidator $validator The configuration validator
+     * @return string The resolved interface locale
      */
-    public function showValidationErrors(ConfigValidator $validator): void
+    public function getInterfaceLocale(): string
     {
-        if (!$validator->validate()) {
-            $errors = $validator->getErrors();
-            $messageService = new MessageService();
+        return $this->interfaceLocale;
+    }
 
-            // If there's only one error, display it directly
-            if (count($errors) === 1) {
-                $firstKey = array_key_first($errors);
-                $messageService->displayDirectSystemError("Invalid configuration: " . $errors[$firstKey]);
-            } elseif (count($errors) > 1) {
-                $errorMessage = "Invalid configuration:<ul>";
-                foreach ($errors as $error) {
-                    $errorMessage .= "<li>" . htmlspecialchars($error, ENT_QUOTES) . "</li>";
-                }
-                $errorMessage .= "</ul>";
-                $messageService->displayDirectSystemError($errorMessage);
-            }
-        }
+    /**
+     * Gets the enabled locales as resolved for this request.
+     *
+     * @return list<string> The enabled locales, trimmed
+     */
+    public function getSupportedLocales(): array
+    {
+        return $this->supportedLocales;
     }
 
     /**

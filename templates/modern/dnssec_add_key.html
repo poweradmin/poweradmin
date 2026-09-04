@@ -1,26 +1,10 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item">
-            {% if idn_zone_name %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
-            {% else %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ domain_name }}</a>
-            {% endif %}
-        </li>
-        <li class="breadcrumb-item">
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec">{% trans %}DNSSEC{% endtrans %}</a>
-        </li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Add key{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: zone_display_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+    {label: 'DNSSEC'|trans, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/dnssec'},
+    {label: 'Add key'|trans},
+]) }}
 
 <div class="row">
     <div class="col-md-6">
@@ -49,7 +33,7 @@
                 {% endif %}
 
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/add" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     
                     <div class="mb-3">
                         <label for="key_type" class="form-label">{% trans %}Key type{% endtrans %}</label>
@@ -89,7 +73,7 @@
                     </div>
 
                     <div>
-                        <button type="submit" id="submit-button" name="submit" class="btn btn-primary btn-sm">
+                        <button type="submit" id="submit-button" name="submit" class="btn btn-primary btn-sm" data-busy-text="{% trans %}Saving...{% endtrans %}">
                             <i class="bi bi-plus-circle text-white me-1"></i>{% trans %}Add key{% endtrans %}
                         </button>
                     </div>
@@ -185,9 +169,7 @@
     
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}About DNSSEC Key Types{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'About DNSSEC Key Types'|trans) }}
             <div class="card-body">
                 <div class="mb-3">
                     <h6>{% trans %}Key Types Explained{% endtrans %}</h6>

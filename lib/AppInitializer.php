@@ -22,7 +22,9 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DatabaseService;
+use Poweradmin\Application\Service\LocaleResolver;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -77,10 +79,10 @@ class AppInitializer
 
         if (!file_exists($configFile)) {
             $messageService = new MessageService();
-            $messageService->displayHtmlError(
+            $messageService->displayDirectSystemError(
                 sprintf(
-                    _('No configuration file found at %s. Please use the <a href="install/">installer</a> to create one, or create the configuration file manually.'),
-                    htmlspecialchars($configFile)
+                    _('No configuration file found at %s. Please run the installer at install/ to create one, or create the configuration file manually.'),
+                    $configFile
                 )
             );
         }
@@ -108,25 +110,9 @@ class AppInitializer
      */
     private function loadLocale(): void
     {
-        $enabledLanguages = $this->configManager->get('interface', 'enabled_languages');
-        if (!$enabledLanguages) {
-            // Fallback to legacy config key
-            $enabledLanguages = $this->configManager->get('interface', 'enabled_languages', 'en_EN');
-        }
-
-        $supportedLocales = explode(',', $enabledLanguages);
-        $locale = new LocaleManager($supportedLocales, './locale');
-
-        $userContextService = new UserContextService();
-        $defaultLanguage = $this->configManager->get('interface', 'language', 'en_EN');
-        $userLang = $userContextService->getUserLanguage() ?? $defaultLanguage;
-
-        // Allow language override via GET parameter (login page language switcher)
-        if (!empty($_GET['lang']) && in_array($_GET['lang'], $supportedLocales)) {
-            $userLang = $_GET['lang'];
-        }
-
-        $locale->setLocale($userLang);
+        $resolver = new LocaleResolver($this->configManager, new UserContextService(), new Request());
+        $localeManager = new LocaleManager($resolver->getSupportedLocales(), './locale');
+        $localeManager->setLocale($resolver->resolve());
     }
 
     /**

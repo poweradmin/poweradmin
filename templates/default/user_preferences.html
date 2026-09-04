@@ -1,12 +1,8 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}User Preferences{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([{label: 'User Preferences'|trans}]) }}
 
 <form method="post" id="preferences-form">
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
 
 <div class="row g-4">
     <!-- Left Column -->
@@ -26,6 +22,13 @@
                             {% endfor %}
                         </select>
                     </div>
+                </div>
+                <div class="form-check form-switch mt-3">
+                    <input class="form-check-input" type="checkbox" id="wide_layout" name="wide_layout" {% if preferences.wide_layout == 'true' %}checked{% endif %}>
+                    <label class="form-check-label" for="wide_layout">
+                        <strong>{% trans %}Full browser width{% endtrans %}</strong>
+                        <div class="text-muted small">{% trans %}Use the entire browser width instead of a fixed-width page{% endtrans %}</div>
+                    </label>
                 </div>
             </div>
         </div>
@@ -103,11 +106,19 @@
                     </label>
                 </div>
 
-                <div class="form-check form-switch">
+                <div class="form-check form-switch mb-3">
                     <input class="form-check-input" type="checkbox" id="show_zone_template" name="show_zone_template" {% if preferences.show_zone_template == 'true' %}checked{% endif %}>
                     <label class="form-check-label" for="show_zone_template">
                         <strong>{% trans %}Zone templates{% endtrans %}</strong>
                         <div class="text-muted small">{% trans %}Display template information in zone lists{% endtrans %}</div>
+                    </label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="show_zone_record_count" name="show_zone_record_count" {% if preferences.show_zone_record_count == 'true' %}checked{% endif %}>
+                    <label class="form-check-label" for="show_zone_record_count">
+                        <strong>{% trans %}Zone record count{% endtrans %}</strong>
+                        <div class="text-muted small">{% trans %}Display the record count column in zone lists{% endtrans %}</div>
                     </label>
                 </div>
             </div>
@@ -210,4 +221,3 @@
     </div>
 </div>
 </form>
-

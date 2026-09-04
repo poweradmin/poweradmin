@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,26 +25,35 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 
 class AddSupermasterController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
 
     public function run(): void
     {
         $this->checkPermission('supermaster_add', _("You do not have the permission to add a new supermaster."));
 
-        $master_ip = $_POST["master_ip"] ?? "";
-        $ns_name = $_POST["ns_name"] ?? "";
-        $account = $_POST["account"] ?? "";
+        $master_ip = $this->request->getPostParam('master_ip', "");
+        $ns_name = $this->request->getPostParam('ns_name', "");
+        $account = $this->request->getPostParam('account', "");
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -56,8 +65,11 @@ class AddSupermasterController extends BaseController
 
     private function addSuperMaster($master_ip, $ns_name, $account): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if ($dnsRecord->addSupermaster($master_ip, $ns_name, $account)) {
+        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
+        if ($supermasterManager->addSupermaster($master_ip, $ns_name, $account)) {
+            $auditService = new AuditService($this->db);
+            $auditService->logSupermasterAdd($master_ip, $ns_name);
+
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been added successfully.'));
             $this->redirect('/supermasters');
         } else {
@@ -68,12 +80,12 @@ class AddSupermasterController extends BaseController
     private function showAddSuperMaster($master_ip, $ns_name, $account): void
     {
         $this->render('add_supermaster.html', [
-            'users' => UserManager::showUsers($this->db),
+            'users' => $this->createUserRepository()->getUsersWithZoneCounts(),
             'master_ip' => htmlspecialchars($master_ip),
             'ns_name' => htmlspecialchars($ns_name),
             'account' => htmlspecialchars($account),
-            'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
-            'session_uid' => $_SESSION['userid']
+            'perm_view_others' => $this->hasPermission('user_view_others'),
+            'session_uid' => $_SESSION[SessionKeys::USERID]
         ]);
     }
 }

@@ -22,43 +22,53 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 
-class DynamicDnsAuthenticationService
+readonly class DynamicDnsAuthenticationService
 {
-    private DynamicDnsRepositoryInterface $repository;
-    private UserAuthenticationService $userAuthService;
-
-    public function __construct(DynamicDnsRepositoryInterface $repository, UserAuthenticationService $userAuthService)
-    {
-        $this->repository = $repository;
-        $this->userAuthService = $userAuthService;
+    public function __construct(
+        private DynamicDnsRepositoryInterface $repository,
+        private UserAuthenticationService $userAuthService,
+        private ?LoginAttemptService $loginAttemptService = null
+    ) {
     }
 
-    public function authenticateUser(DynamicDnsRequest $request): ?User
+    /**
+     * Authenticate a DDNS update request.
+     *
+     * @param string $clientIp client IP for lockout tracking; pass '' to disable
+     *                         per-IP throttle for callers that don't have a stable
+     *                         peer address (e.g. CLI bootstrap).
+     */
+    public function authenticateUser(DynamicDnsRequest $request, string $clientIp = ''): ?User
     {
         if (!$request->hasUsername()) {
             return null;
         }
 
-        $user = $this->repository->findUserByUsernameWithDynamicDnsPermissions($request->getUsername());
+        $username = $request->getUsername();
+
+        if ($this->loginAttemptService !== null && $this->loginAttemptService->isAccountLocked($username, $clientIp)) {
+            return null;
+        }
+
+        $user = $this->repository->findUserByUsernameWithDynamicDnsPermissions($username);
         if (!$user) {
             return null;
         }
 
-        // Provisioned users (LDAP/OIDC/SAML) have no local password hash. Verifying against
-        // an empty hash throws, and dynamic_update.php has no catch, so it would be a 500.
+        // Provisioned users (LDAP/OIDC/SAML) have no local password hash. Verifying against an
+        // empty hash would throw, surfacing a 500 and skipping the attempt recording below.
         $hash = $user->getPassword();
-        if ($hash === '' || !$this->userAuthService->verifyPassword($request->getPassword(), $hash)) {
-            return null;
-        }
+        $passwordValid = $hash !== '' && $this->userAuthService->verifyPassword($request->getPassword(), $hash);
+        $this->loginAttemptService?->recordAttempt($username, $clientIp, $passwordValid);
 
-        return $user;
+        return $passwordValid ? $user : null;
     }
-
 
     public function getUserZones(User $user): array
     {
@@ -67,7 +77,6 @@ class DynamicDnsAuthenticationService
 
     public function userCanUpdateZone(User $user, int $zoneId): bool
     {
-        $userZones = $this->getUserZones($user);
-        return in_array($zoneId, $userZones, true);
+        return array_key_exists($zoneId, $this->getUserZones($user));
     }
 }

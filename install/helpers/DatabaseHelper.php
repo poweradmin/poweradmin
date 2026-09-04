@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -103,20 +103,8 @@ class DatabaseHelper
                 }
                 $this->schemaService->createTable($table['table_name'], $table['fields'], $options);
 
-                // Create unique index on zone_name for API-mode zone identification
-                if ($table['table_name'] === 'zones') {
-                    $dbType = $this->databaseCredentials['db_type'];
-                    try {
-                        if ($dbType === 'mysql') {
-                            $this->db->exec("CREATE UNIQUE INDEX idx_zones_zone_name ON zones (zone_name)");
-                        } elseif ($dbType === 'pgsql') {
-                            $this->db->exec('CREATE UNIQUE INDEX idx_zones_zone_name ON zones (zone_name)');
-                        } elseif ($dbType === 'sqlite') {
-                            $this->db->exec("CREATE UNIQUE INDEX idx_zones_zone_name ON zones (zone_name)");
-                        }
-                    } catch (\Exception $e) {
-                        // Index may already exist
-                    }
+                if (!empty($table['indexes'])) {
+                    $this->schemaService->createIndexes($table['table_name'], $table['indexes']);
                 }
 
                 // Set default value for the 'type' column in user_mfa table
@@ -135,6 +123,13 @@ class DatabaseHelper
                             // We'll need to ensure new rows have this value explicitly set
                             break;
                     }
+                }
+            }
+
+            // Foreign keys go in a second pass so every referenced table already exists.
+            foreach ($def_tables as $table) {
+                if (!empty($table['foreign_keys'])) {
+                    $this->schemaService->createForeignKeys($table['table_name'], $table['foreign_keys']);
                 }
             }
         } finally {
@@ -207,7 +202,7 @@ class DatabaseHelper
         }
     }
 
-    public function createAdministratorUser($pa_pass): void
+    public function createAdministratorUser(#[\SensitiveParameter] $pa_pass): void
     {
         // Create permission templates
         $templates = [
@@ -230,7 +225,8 @@ class DatabaseHelper
             'user_is_ueberuser', 'zone_master_add', 'zone_slave_add', 'zone_content_view_own',
             'zone_content_edit_own', 'zone_meta_edit_own', 'search', 'user_edit_own',
             'zone_templ_add', 'zone_templ_edit', 'api_manage_keys', 'zone_delete_own',
-            'zone_content_edit_own_as_client'
+            'zone_content_edit_own_as_client', 'zone_dnssec_manage_own', 'zone_logs_view_own',
+            'zone_metadata_view_own', 'zone_ownership_view_own'
         ];
 
         $permissionIds = [];
@@ -245,9 +241,11 @@ class DatabaseHelper
             'Administrator' => ['user_is_ueberuser'],
             'Zone Manager' => ['zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
                                'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
-                               'api_manage_keys', 'zone_delete_own'],
-            'Editor' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client'],
-            'Viewer' => ['zone_content_view_own', 'search'],
+                               'api_manage_keys', 'zone_delete_own', 'zone_dnssec_manage_own', 'zone_logs_view_own',
+                               'zone_metadata_view_own', 'zone_ownership_view_own'],
+            'Editor' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client', 'zone_logs_view_own',
+                         'zone_metadata_view_own', 'zone_ownership_view_own'],
+            'Viewer' => ['zone_content_view_own', 'search', 'zone_logs_view_own', 'zone_metadata_view_own', 'zone_ownership_view_own'],
             'Guest' => []
         ];
 
@@ -297,16 +295,20 @@ class DatabaseHelper
             'Administrators' => ['user_is_ueberuser'],
             'Zone Managers' => ['zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
                                'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
-                               'api_manage_keys', 'zone_delete_own'],
-            'Editors' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client'],
-            'Viewers' => ['zone_content_view_own', 'search'],
+                               'api_manage_keys', 'zone_delete_own', 'zone_dnssec_manage_own', 'zone_logs_view_own',
+                               'zone_metadata_view_own', 'zone_ownership_view_own'],
+            'Editors' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client', 'zone_logs_view_own',
+                          'zone_metadata_view_own', 'zone_ownership_view_own'],
+            'Viewers' => ['zone_content_view_own', 'search', 'zone_logs_view_own', 'zone_metadata_view_own', 'zone_ownership_view_own'],
             'Guests' => [],
         ];
 
         $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
         foreach ($groupTemplatePermissions as $templateName => $permissions) {
             foreach ($permissions as $permName) {
-                if (isset($permissionIds[$permName]) && isset($groupTemplateIds[$templateName])) {
+                // lastInsertId() returns false on a failed template insert, and
+                // isset() would happily pass that through as a template id
+                if (isset($permissionIds[$permName]) && $groupTemplateIds[$templateName] !== false) {
                     $stmt->execute([
                         ':templ_id' => $groupTemplateIds[$templateName],
                         ':perm_id' => $permissionIds[$permName]
@@ -326,7 +328,7 @@ class DatabaseHelper
 
         $stmt = $this->db->prepare("INSERT INTO user_groups (name, description, perm_templ, created_by) VALUES (:name, :description, :perm_templ, NULL)");
         foreach ($defaultGroups as $group) {
-            if (isset($groupTemplateIds[$group['name']])) {
+            if ($groupTemplateIds[$group['name']] !== false) {
                 $stmt->execute([
                     ':name' => $group['name'],
                     ':description' => $group['description'],

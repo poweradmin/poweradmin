@@ -1,19 +1,11 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Add slave zone{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: 'Add slave zone'|trans},
+]) }}
 
 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/add/slave{% if is_reverse_zone %}?type=reverse{% endif %}" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
     {% if is_reverse_zone %}<input type="hidden" name="type" value="reverse">{% endif %}
 
 <!-- Two Column Layout -->
@@ -21,12 +13,10 @@
     <!-- Left Column: Zone Configuration (Vertical) -->
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-cloud-download me-2"></i>{% trans %}Slave Zone Configuration{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-cloud-download', 'Slave Zone Configuration'|trans) }}
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %} <span class="text-danger">*</span></label>
+                    <label for="domain" class="form-label">{% trans %}Zone Name{% endtrans %} <span class="text-danger">*</span></label>
                     <input class="form-control form-control-sm" type="text" id="domain" name="domain" value="{{ domain_value }}" required>
                     <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
                     {% if is_reverse_zone %}
@@ -51,9 +41,7 @@
         {% if user_owner_allowed %}
         <!-- User Owner Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-person-badge me-2"></i>{% trans %}User Owner{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-person-badge', 'User Owner'|trans) }}
             <div class="card-body">
                 <div class="mb-2">
                     <div class="alert alert-sm alert-success py-2 mb-2" id="selected_user_indicator" style="display: none;">
@@ -100,9 +88,7 @@
         {% if group_owner_allowed and all_groups is not empty %}
         <!-- Group Ownership Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-people me-2"></i>{% trans %}Group Ownership{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-people', 'Group Ownership'|trans) }}
             <div class="card-body">
                 <div class="mb-2">
                     <div class="input-group input-group-sm">
@@ -142,7 +128,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <button class="btn btn-primary btn-sm" type="submit" name="submit">
+                        <button class="btn btn-primary btn-sm" type="submit" name="submit" data-busy-text="{% trans %}Saving...{% endtrans %}">
                             <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone{% endtrans %}
                         </button>
                         <a href="{{ base_url_prefix }}/zones/{{ is_reverse_zone ? 'reverse' : 'forward' }}" class="btn btn-secondary btn-sm">

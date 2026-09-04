@@ -25,11 +25,21 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Enum\LoginAttemptStage;
 
 class LoginAttemptService
 {
+    /** Kept as string constants for callers; {@see LoginAttemptStage} owns the vocabulary. */
+    public const STAGE_PASSWORD = 'password';
+    public const STAGE_MFA = 'mfa';
+
     private ConfigurationManager $configManager;
     private PDO $connection;
+
+    // Cached per-connection so the introspection cost is paid once per request.
+    // Lets login keep working in the upgrade window between code deploy and the
+    // 4.5.0 SQL update (when `attempt_type` does not exist yet).
+    private ?bool $attemptTypeColumnExists = null;
 
     public function __construct(PDO $connection, ?ConfigurationManager $configManager = null)
     {
@@ -37,62 +47,110 @@ class LoginAttemptService
         $this->configManager = $configManager ?? ConfigurationManager::getInstance();
     }
 
-    public function recordAttempt(string $username, string $ipAddress, bool $successful): void
+    /**
+     * @param string $attemptType Lockout stage identifier; defaults to "password"
+     *                            so existing callers (SQL/LDAP/DDNS) are unchanged.
+     *                            Pass STAGE_MFA from the MFA verify path to keep
+     *                            second-factor failures from polluting the
+     *                            first-factor counter.
+     * @param int|null $userId Account the attempt belongs to. Pass it whenever the
+     *                         caller already knows it, rather than relying on the
+     *                         username to resolve: the MFA stage verifies against
+     *                         the pending user id, and keying the counter on a
+     *                         separately held session name would let the two drift.
+     */
+    public function recordAttempt(string $username, string $ipAddress, bool $successful, string $attemptType = self::STAGE_PASSWORD, ?int $userId = null): void
     {
-        if (!$this->configManager->get('security', 'account_lockout.enable_lockout')) {
+        if ($this->stageLimits($attemptType) === null) {
             return;
         }
 
-        $userId = $this->getUserId($username);
+        $userId ??= $this->getUserId($username);
+        $hasAttemptType = $this->hasAttemptTypeColumn();
 
-        if ($successful && $this->configManager->get('security', 'account_lockout.clear_attempts_on_success')) {
-            $this->clearFailedAttempts($userId, $ipAddress);
+        // A clean second factor always clears its own counter; the opt-in
+        // clear_attempts_on_success only governs the password stage.
+        $clearOnSuccess = $attemptType === self::STAGE_MFA
+            || $this->configManager->get('security', 'account_lockout.clear_attempts_on_success');
+
+        if ($successful && $clearOnSuccess) {
+            $this->clearFailedAttempts($userId, $ipAddress, $attemptType, $hasAttemptType);
         }
 
-        $stmt = $this->connection->prepare("
-        INSERT INTO login_attempts (user_id, ip_address, timestamp, successful)
-        VALUES (:user_id, :ip_address, :timestamp, :successful)
-    ");
-
-        $stmt->execute([
+        $columns = 'user_id, ip_address, timestamp, successful';
+        $placeholders = ':user_id, :ip_address, :timestamp, :successful';
+        $params = [
             'user_id' => $userId,
             'ip_address' => $ipAddress,
             'timestamp' => time(),
-            'successful' => DbCompat::boolValue($successful)
-        ]);
+            'successful' => DbCompat::boolValue($successful),
+        ];
+
+        // Pre-4.5.0 schema lacks attempt_type; the upgrade-window fallback omits
+        // the column so MFA failures temporarily mix with password failures
+        // until the SQL update runs.
+        if ($hasAttemptType) {
+            $columns .= ', attempt_type';
+            $placeholders .= ', :attempt_type';
+            $params['attempt_type'] = $attemptType;
+        }
+
+        $stmt = $this->connection->prepare(
+            "INSERT INTO login_attempts ($columns) VALUES ($placeholders)"
+        );
+        $stmt->execute($params);
 
         $this->cleanupOldAttempts();
     }
 
-    public function isAccountLocked(string $username, string $ipAddress): bool
+    /**
+     * Whether the address is on the configured lockout blacklist.
+     */
+    public function isIpBlacklisted(string $ipAddress): bool
     {
-        // Use the updated ConfigurationManager with dot notation support
-        $lockoutEnabled = $this->configManager->get('security', 'account_lockout.enable_lockout', false);
-        if (!$lockoutEnabled) {
+        $blacklistedIps = $this->configManager->get('security', 'account_lockout.blacklist_ip_addresses', []);
+
+        return !empty($blacklistedIps) && $this->isIpInList($ipAddress, $blacklistedIps);
+    }
+
+    public function isAccountLocked(string $username, string $ipAddress, string $attemptType = self::STAGE_PASSWORD, ?int $userId = null): bool
+    {
+        $limits = $this->stageLimits($attemptType);
+        if ($limits === null) {
             return false;
         }
 
-        // Check IP whitelist first (whitelist takes priority over blacklist)
-        $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses', []);
-        if (!empty($whitelistedIps) && $this->isIpInList($ipAddress, $whitelistedIps)) {
-            return false; // This IP is whitelisted, never lock it
+        // The whitelist exempts trusted networks from password lockout so a bot
+        // cannot lock staff out, and it takes priority over the blacklist. It is
+        // skipped for the second factor, where the counter is the only barrier
+        // left once the password is known.
+        if ($attemptType !== self::STAGE_MFA) {
+            $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses', []);
+            if (!empty($whitelistedIps) && $this->isIpInList($ipAddress, $whitelistedIps)) {
+                return false; // This IP is whitelisted, never lock it
+            }
         }
 
         // Check IP blacklist next - if blacklisted, ALWAYS return locked (true)
-        $blacklistedIps = $this->configManager->get('security', 'account_lockout.blacklist_ip_addresses', []);
-        if (!empty($blacklistedIps) && $this->isIpInList($ipAddress, $blacklistedIps)) {
-            return true; // This IP is blacklisted, consider it locked
+        if ($this->isIpBlacklisted($ipAddress)) {
+            return true;
         }
 
-        $userId = $this->getUserId($username);
+        $userId ??= $this->getUserId($username);
         if ($userId === null) {
-            return false;
+            // An unattributable attempt cannot be counted. The password stage
+            // stays open so unknown usernames still reach the authenticator,
+            // but the second factor refuses rather than dropping its only limit.
+            return $attemptType === self::STAGE_MFA;
         }
 
-        $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration', 30) * 60;
-        $cutoffTime = time() - $lockoutDuration;
-        $maxAttempts = $this->configManager->get('security', 'account_lockout.lockout_attempts', 5);
-        $trackIpAddress = $this->configManager->get('security', 'account_lockout.track_ip_address', true);
+        $cutoffTime = time() - $limits['duration'];
+        $maxAttempts = $limits['attempts'];
+
+        // MFA failures count per user across every source address: an attacker
+        // rotating IPs would otherwise reset the counter on each request.
+        $trackIpAddress = $attemptType !== self::STAGE_MFA
+            && $this->configManager->get('security', 'account_lockout.track_ip_address', true);
 
         $db_type = $this->configManager->get('database', 'type');
         $sql = "SELECT COUNT(*) as attempts
@@ -105,6 +163,11 @@ class LoginAttemptService
             'user_id' => $userId,
             'cutoff_time' => $cutoffTime
         ];
+
+        if ($this->hasAttemptTypeColumn()) {
+            $sql .= " AND attempt_type = :attempt_type";
+            $params['attempt_type'] = $attemptType;
+        }
 
         if ($trackIpAddress) {
             $sql .= " AND ip_address = :ip_address";
@@ -223,8 +286,15 @@ class LoginAttemptService
 
     private function cleanupOldAttempts(): void
     {
-        $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration') * 60;
-        $cutoffTime = time() - $lockoutDuration;
+        // Retain until the longest stage window has passed, read from the same
+        // resolver the windows use. Pruning on the password window alone would
+        // drop MFA rows still inside the MFA window and reset that counter
+        // mid-attack; computing it separately let the two silently diverge.
+        $retention = max(
+            $this->stageLimits(self::STAGE_PASSWORD)['duration'] ?? 0,
+            $this->stageLimits(self::STAGE_MFA)['duration'] ?? 0
+        );
+        $cutoffTime = time() - $retention;
 
         $stmt = $this->connection->prepare("
             DELETE FROM login_attempts
@@ -234,22 +304,95 @@ class LoginAttemptService
         $stmt->execute(['cutoff_time' => $cutoffTime]);
     }
 
-    private function clearFailedAttempts(?int $userId, string $ipAddress): void
+    private function clearFailedAttempts(?int $userId, string $ipAddress, string $attemptType, bool $hasAttemptType): void
     {
         if ($userId === null) {
             return;
         }
 
         $sql = "DELETE FROM login_attempts WHERE user_id = :user_id";
-
         $params = ['user_id' => $userId];
 
-        if ($this->configManager->get('security', 'account_lockout.track_ip_address')) {
+        // Scope clearing to the matching stage so a fresh first-factor success
+        // cannot reset MFA failures. Before the 4.5.0 SQL update the column is
+        // absent and the stages are indistinguishable, so clearing stays
+        // all-for-user: password success also clears MFA failures until the
+        // update runs. Keeping clear_attempts_on_success working for password
+        // logins wins over closing that window, which needs account lockout
+        // switched on to reach at all.
+        if ($hasAttemptType) {
+            $sql .= " AND attempt_type = :attempt_type";
+            $params['attempt_type'] = $attemptType;
+        }
+
+        // Clearing must match how the stage counts. MFA counts every address, so
+        // filtering the clear by IP would strand failures from an earlier address
+        // and lock a roaming user who just verified correctly.
+        $clearPerIp = $attemptType !== self::STAGE_MFA
+            && $this->configManager->get('security', 'account_lockout.track_ip_address');
+
+        if ($clearPerIp) {
             $sql .= " AND ip_address = :ip_address";
             $params['ip_address'] = $ipAddress;
         }
 
         $stmt = $this->connection->prepare($sql);
         $stmt->execute($params);
+    }
+
+    /**
+     * Resolves the attempt ceiling and window for an authentication stage, or
+     * null when that stage is not throttled at all.
+     *
+     * The second factor is always throttled. It is the last barrier once the
+     * password is known, so it cannot depend on account_lockout.enable_lockout,
+     * which ships disabled.
+     *
+     * @return array{attempts:int,duration:int}|null Duration is in seconds
+     */
+    private function stageLimits(string $attemptType): ?array
+    {
+        // An unrecognised stage is treated as the password stage, matching the
+        // default this method has always fallen through to.
+        $stage = LoginAttemptStage::tryFrom($attemptType) ?? LoginAttemptStage::PASSWORD;
+
+        if ($stage === LoginAttemptStage::MFA) {
+            // Floors, not "off" switches. A misconfigured 0 must not read as
+            // "unlimited guesses" on the one control standing between a known
+            // password and the account.
+            return [
+                'attempts' => max(1, (int)$this->configManager->get('security', 'mfa.max_verify_attempts', 5)),
+                'duration' => max(1, (int)$this->configManager->get('security', 'mfa.verify_lockout_duration', 15)) * 60,
+            ];
+        }
+
+        if (!$this->configManager->get('security', 'account_lockout.enable_lockout', false)) {
+            return null;
+        }
+
+        return [
+            'attempts' => (int)$this->configManager->get('security', 'account_lockout.lockout_attempts', 5),
+            'duration' => (int)$this->configManager->get('security', 'account_lockout.lockout_duration', 15) * 60,
+        ];
+    }
+
+    /**
+     * Detects whether the `attempt_type` column exists. Cached per instance so
+     * the introspection cost is paid once per request, not per attempt.
+     */
+    private function hasAttemptTypeColumn(): bool
+    {
+        if ($this->attemptTypeColumnExists !== null) {
+            return $this->attemptTypeColumnExists;
+        }
+
+        try {
+            $this->connection->query("SELECT attempt_type FROM login_attempts WHERE 1 = 0");
+            $this->attemptTypeColumnExists = true;
+        } catch (\PDOException) {
+            $this->attemptTypeColumnExists = false;
+        }
+
+        return $this->attemptTypeColumnExists;
     }
 }

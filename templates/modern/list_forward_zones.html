@@ -1,10 +1,8 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">{% trans %}Zones{% endtrans %}</li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans %}Forward Zones{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Zones'|trans},
+    {label: 'Forward Zones'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -17,7 +15,7 @@
         <div>
             {% if is_api_backend and perm_is_godlike %}
             <form action="{{ base_url_prefix }}/zones/forward" method="post" class="d-inline">
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                {{ macros.csrf_field() }}
                 <input type="hidden" name="action" value="sync">
                 <button type="submit" class="btn btn-outline-secondary btn-sm" title="{% trans %}Fetch zones from PowerDNS and reconcile the local table{% endtrans %}">
                     <i class="bi bi-arrow-repeat me-1"></i>{% trans %}Sync from PowerDNS{% endtrans %}
@@ -44,10 +42,7 @@
             <div class="d-flex align-items-center">
                 <label for="rows-per-page" class="me-2 text-secondary">{% trans %}Rows per page:{% endtrans %}</label>
                 <select id="rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="changeRowsPerPage(this.value)">
-                    <option value="10" {{ iface_rowamount == 10 ? 'selected' : '' }}>10</option>
-                    <option value="20" {{ iface_rowamount == 20 ? 'selected' : '' }}>20</option>
-                    <option value="50" {{ iface_rowamount == 50 ? 'selected' : '' }}>50</option>
-                    <option value="100" {{ iface_rowamount == 100 ? 'selected' : '' }}>100</option>
+                    {{ macros.rows_per_page_options(iface_rowamount, rows_per_page_options) }}
                 </select>
             </div>
         </div>
@@ -59,7 +54,7 @@
         {% endif %}
 
         <form method="post" action="{{ base_url_prefix }}/zones/delete" id="delete-zones-form">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm mb-0">
                     {% if zones|length == 0 %}
@@ -81,21 +76,31 @@
                                 {% trans %}Type{% endtrans %}</a>
                             {{ zone_sort_by == 'type' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
+                        {% if iface_zonelist_record_count %}
                         <th>
+                            {% if is_record_count_sort_supported %}
                             <a href="{{ base_url_prefix }}/zones/forward?zone_sort_by=count_records&zone_sort_by_direction={{ zone_sort_by == 'count_records' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Records{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'count_records' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
+                            {% else %}
+                            {% trans %}Records{% endtrans %}
+                            {% endif %}
                         </th>
-                        {% if is_user_owner_allowed %}
+                        {% endif %}
+                        {% if show_owner_column %}
                         <th>
+                            {% if is_owner_sort_supported %}
                             <a href="{{ base_url_prefix }}/zones/forward?zone_sort_by=owner&zone_sort_by_direction={{ zone_sort_by == 'owner' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Owner{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'owner' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
+                            {% else %}
+                            {% trans %}Owner{% endtrans %}
+                            {% endif %}
                         </th>
                         {% endif %}
-                        {% if is_group_owner_allowed %}
+                        {% if show_group_column %}
                         <th>
                             {% if is_group_sort_supported %}
                             <a href="{{ base_url_prefix }}/zones/forward?zone_sort_by=group&zone_sort_by_direction={{ zone_sort_by == 'group' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
@@ -115,6 +120,10 @@
                         <th>{% trans %}Serial{% endtrans %}</th>
                         {% endif %}
 
+                        {% if iface_zonelist_signed_serial %}
+                        <th title="{% trans %}Serial as served by PowerDNS, with SOA-EDIT applied{% endtrans %}">{% trans %}Signed serial{% endtrans %}</th>
+                        {% endif %}
+
                         {% if iface_zonelist_template %}
                         <th>{% trans %}Template{% endtrans %}</th>
                         {% endif %}
@@ -130,7 +139,7 @@
                     <tbody>
                     {% for zone in zones %}
 
-                    {% set user_can_delete_zone = zone['user_can_delete']|default(perm_delete == "all" or (perm_delete == "own" and session_userlogin in zone['users'])) %}
+                    {% set user_can_delete_zone = zone['user_can_delete'] %}
 
                     <tr>
                         <td>
@@ -145,58 +154,42 @@
                             <span class="badge bg-danger ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}SOA record is disabled, the zone will not be served{% endtrans %}">{% trans %}Disabled{% endtrans %}</span>
                             {% elseif zone["is_missing_soa"]|default(false) %}
                             <span class="badge bg-warning text-dark ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}Zone has no SOA record{% endtrans %}"><i class="bi bi-exclamation-triangle-fill"></i> {% trans %}No SOA{% endtrans %}</span>
+                            {% elseif zone["soa_health"]|default('') == 'unknown' %}
+                            <span class="badge bg-secondary-subtle text-secondary-emphasis ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}The DNS server could not be reached, so this zone's SOA status is unknown{% endtrans %}"><i class="bi bi-question-circle"></i> {% trans %}Unknown{% endtrans %}</span>
                             {% endif %}
                         </td>
-                        <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone_type_label(zone['type']) }}</span></td>
+                        <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone_type_label(zone['type']) }}</span>{% if zone_is_read_only(zone['type']) %} <span class="badge bg-secondary-subtle text-secondary-emphasis" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}Records for this zone are replicated from its primary and cannot be edited here.{% endtrans %}">{% trans %}Read-only{% endtrans %}</span>{% endif %}</td>
+                        {% if iface_zonelist_record_count %}
                         <td>{{ zone["count_records"] }}</td>
+                        {% endif %}
 
-                        {% if is_user_owner_allowed %}
+                        {% if show_owner_column %}
                         <td>
-                            {% set owner_count = zone['owners']|length %}
-                            {% for key, owner in zone['owners'] %}
-                                {% if loop.index0 < 2 %}
+                            {% for item in zone['owners_display'].visible %}
                                 <div>
-                                    {% if zone['full_names'][key] %}
-                                        {{ zone['full_names'][key] }} <small class="text-muted">({{ owner }})</small>
+                                    {% if item.full_name %}
+                                        {{ item.full_name }} <small class="text-muted">({{ item.name }})</small>
                                     {% else %}
-                                        {{ owner }}
+                                        {{ item.name }}
                                     {% endif %}
                                 </div>
-                                {% endif %}
                             {% endfor %}
-                            {% if owner_count > 2 %}
+                            {% if zone['owners_display'].remaining_count > 0 %}
                             <div>
-                                {% set remaining_owners = [] %}
-                                {% for key, owner in zone['owners'] %}
-                                    {% if loop.index0 >= 2 %}
-                                        {% set remaining_owners = remaining_owners|merge([zone['full_names'][key] ? zone['full_names'][key] ~ ' (' ~ owner ~ ')' : owner]) %}
-                                    {% endif %}
-                                {% endfor %}
-                                <small class="text-muted" data-bs-toggle="tooltip" title="{{ remaining_owners|join(', ') }}">+{{ owner_count - 2 }} {% trans %}more...{% endtrans %}</small>
+                                <small class="text-muted" data-bs-toggle="tooltip" title="{{ zone['owners_display'].remaining_label }}">+{{ zone['owners_display'].remaining_count }} {% trans %}more...{% endtrans %}</small>
                             </div>
                             {% endif %}
                         </td>
                         {% endif %}
-                        {% if is_group_owner_allowed %}
+                        {% if show_group_column %}
                         <td>
-                            {% set group_count = zone['groups'] is defined ? zone['groups']|length : 0 %}
-                            {% if group_count > 0 %}
-                                {% for group in zone['groups'] %}
-                                    {% if loop.index0 < 2 %}
-                                    <div class="text-muted">{{ group }}</div>
-                                    {% endif %}
-                                {% endfor %}
-                                {% if group_count > 2 %}
-                                <div>
-                                    {% set remaining_groups = [] %}
-                                    {% for group in zone['groups'] %}
-                                        {% if loop.index0 >= 2 %}
-                                            {% set remaining_groups = remaining_groups|merge([group]) %}
-                                        {% endif %}
-                                    {% endfor %}
-                                    <small class="text-muted" data-bs-toggle="tooltip" title="{{ remaining_groups|join(', ') }}">+{{ group_count - 2 }} {% trans %}more...{% endtrans %}</small>
-                                </div>
-                                {% endif %}
+                            {% for group in zone['groups_display'].visible %}
+                                <div class="text-muted">{{ group }}</div>
+                            {% endfor %}
+                            {% if zone['groups_display'].remaining_count > 0 %}
+                            <div>
+                                <small class="text-muted" data-bs-toggle="tooltip" title="{{ zone['groups_display'].remaining_label }}">+{{ zone['groups_display'].remaining_count }} {% trans %}more...{% endtrans %}</small>
+                            </div>
                             {% endif %}
                         </td>
                         {% endif %}
@@ -209,7 +202,20 @@
                         {% endif %}
 
                         {% if iface_zonelist_serial %}
-                        <td>{{ zone["serial"] }}</td>
+                        <td>
+                            {{ zone["serial"] }}
+                            {% if is_api_backend and zone["notified_serial"] is defined %}
+                                {% if zone["notify_pending"] %}
+                                <i class="bi bi-cloud text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ 'NOTIFY pending: serial %serial% not yet acknowledged'|trans({'%serial%': zone['serial']}) }}"></i>
+                                {% else %}
+                                <i class="bi bi-cloud-check text-success ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ 'NOTIFY sent at serial %serial%'|trans({'%serial%': zone['notified_serial']}) }}"></i>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        {% endif %}
+
+                        {% if iface_zonelist_signed_serial %}
+                        <td>{{ zone["signed_serial"] }}</td>
                         {% endif %}
 
                         {% if iface_zonelist_template %}
@@ -248,7 +254,7 @@
             </div>
 
             {% if letter_start != 'all' %}
-            <div class='py-3'>
+            <div class="py-3">
                 {{ pagination | raw }}
             </div>
             {% endif %}
@@ -271,21 +277,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('delete-zones-form');
 
     if (deleteBtn && form) {
-        // Function to update delete button state
-        function updateDeleteButtonState() {
-            const checkedBoxes = form.querySelectorAll('input[type="checkbox"][name="zone_id[]"]:checked');
-            deleteBtn.disabled = checkedBoxes.length === 0;
-        }
+        const refreshDeleteButton = () => updateDeleteButtonState(
+            'delete-zones-btn',
+            form.querySelectorAll('input[type="checkbox"][name="zone_id[]"]')
+        );
 
-        // Listen for checkbox changes
         form.addEventListener('change', function(e) {
             if (e.target.type === 'checkbox') {
-                updateDeleteButtonState();
+                refreshDeleteButton();
             }
         });
 
-        // Initial state check
-        updateDeleteButtonState();
+        refreshDeleteButton();
     }
 });
 </script>

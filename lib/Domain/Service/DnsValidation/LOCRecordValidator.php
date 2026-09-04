@@ -59,13 +59,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class LOCRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -220,7 +218,7 @@ class LOCRecordValidator implements DnsRecordValidatorInterface
             }
 
             // General format error
-            return ValidationResult::failure(_('Invalid LOC record format. Format should be: d1 [m1 [s1]] {"N"|"S"} d2 [m2 [s2]] {"E"|"W"} alt["m"] [siz["m"] [hp["m"] [vp["m"]]].'));
+            return ValidationResult::failure(_('Invalid LOC record format. Format should be: d1 [m1 [s1]] {"N"|"S"} d2 [m2 [s2]] {"E"|"W"} alt["m"] [siz["m"] [hp["m"] [vp["m"]]]].'));
         }
 
         return ValidationResult::success(true);

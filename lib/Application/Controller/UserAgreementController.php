@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -32,10 +33,13 @@ class UserAgreementController extends BaseController
 {
     private UserAgreementService $agreementService;
     private UserContextService $userContextService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request, true);
+
+        $this->request = new Request();
 
         $this->agreementService = new UserAgreementService(
             new DbUserAgreementRepository($this->db, $this->config),
@@ -82,7 +86,7 @@ class UserAgreementController extends BaseController
     {
         $this->validateCsrfToken();
 
-        if (!isset($_POST['accept_agreement'])) {
+        if ($this->request->getPostParam('accept_agreement') === null) {
             $this->setMessage('user_agreement', 'danger', 'You must accept the agreement to continue.');
             $this->showAgreementForm();
             return;

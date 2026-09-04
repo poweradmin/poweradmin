@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\BaseController;
 use Poweradmin\Application\Service\PasswordResetService;
@@ -30,7 +31,6 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -38,6 +38,7 @@ use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class ResetPasswordController extends BaseController
 {
@@ -49,10 +50,13 @@ class ResetPasswordController extends BaseController
     private UserAgentService $userAgentService;
     private LegacyLogger $auditLogger;
     private ?string $token = null;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request, false); // No authentication required for password reset
+
+        $this->request = new Request();
 
         // Create our own CSRF token service
         $this->csrfTokenService = new CsrfTokenService();
@@ -60,7 +64,7 @@ class ResetPasswordController extends BaseController
         // Create PasswordResetService with dependencies
         $configManager = ConfigurationManager::getInstance();
         $tokenRepository = new DbPasswordResetTokenRepository($this->db, $configManager);
-        $userRepository = new DbUserRepository($this->db, $configManager);
+        $userRepository = $this->createUserRepository();
         $mailService = new MailService($configManager, null);
         $authService = new UserAuthenticationService(
             $configManager->get('security', 'password_encryption', 'bcrypt'),
@@ -89,7 +93,16 @@ class ResetPasswordController extends BaseController
         $this->auditLogger = new LegacyLogger($this->db);
 
         // Extract token from URL parameters
-        $this->token = $_GET['token'] ?? null;
+        $this->token = $this->request->getQueryParam('token');
+    }
+
+    /**
+     * This flow validates its own one-shot `reset_password_token` instead of the
+     * session-wide form token.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
     }
 
     public function run(): void
@@ -175,9 +188,9 @@ class ResetPasswordController extends BaseController
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
-            $token = $_POST['reset_password_token'] ?? '';
+            $token = $this->request->getPostParam('reset_password_token', '');
 
-            if (!$this->csrfTokenService->validateToken($token, 'reset_password_token')) {
+            if (!$this->csrfTokenService->validateToken($token, SessionKeys::RESET_PASSWORD_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
                     'user_id' => $userId,
                     'email' => $email,
@@ -189,11 +202,11 @@ class ResetPasswordController extends BaseController
             }
 
             // Clear the token after use
-            unset($_SESSION['reset_password_token']);
+            unset($_SESSION[SessionKeys::RESET_PASSWORD_TOKEN]);
         }
 
-        $password = $_POST['password'] ?? '';
-        $confirmPassword = $_POST['confirm_password'] ?? '';
+        $password = $this->request->getPostParam('password', '');
+        $confirmPassword = $this->request->getPostParam('confirm_password', '');
 
         // Check if passwords match
         if ($password !== $confirmPassword) {
@@ -277,7 +290,7 @@ class ResetPasswordController extends BaseController
 
         // Generate a new token for password reset
         $resetPasswordToken = $this->csrfTokenService->generateToken();
-        $_SESSION['reset_password_token'] = $resetPasswordToken;
+        $_SESSION[SessionKeys::RESET_PASSWORD_TOKEN] = $resetPasswordToken;
 
         $this->render('reset_password.html', [
             'token' => $this->token,

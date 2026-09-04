@@ -66,11 +66,6 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
             // Log the error and rethrow it to be handled by the calling code
             $this->logger->error('DbUserMfaRepository::findByUserId failed: {error}', ['error' => $e->getMessage()]);
 
-            // Only return null for "table not found" error, otherwise rethrow
-            if (strpos($e->getMessage(), "Base table or view not found") !== false) {
-                return null;
-            }
-
             throw $e;
         }
     }
@@ -96,45 +91,26 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
             // Log the error and rethrow it to be handled by the calling code
             $this->logger->error('DbUserMfaRepository::findById failed: {error}', ['error' => $e->getMessage()]);
 
-            // Only return null for "table not found" error, otherwise rethrow
-            if (strpos($e->getMessage(), "Base table or view not found") !== false) {
-                return null;
-            }
-
             throw $e;
         }
     }
 
     public function save(UserMfa $userMfa): UserMfa
     {
-        try {
-            if ($userMfa->getId() === 0) {
-                return $this->insert($userMfa);
-            }
-
+        if ($userMfa->getId() !== 0) {
             return $this->update($userMfa);
+        }
+
+        try {
+            return $this->insert($userMfa);
         } catch (PDOException $e) {
-            // Log the error
-            $this->logger->error('DbUserMfaRepository::save failed: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('DbUserMfaRepository::save insert failed: {error}', ['error' => $e->getMessage()]);
 
-            // If the table doesn't exist, we want to fail gracefully
-            if (strpos($e->getMessage(), "Base table or view not found") !== false) {
-                $this->logger->warning('MFA table not found, operations will be skipped');
-                return $userMfa;
-            }
-
-            // Check for duplicate key error (integrity constraint violation)
-            if (
-                strpos($e->getMessage(), "Integrity constraint violation") !== false &&
-                strpos($e->getMessage(), "idx_user_mfa_user_id") !== false
-            ) {
-                $this->logger->warning('Duplicate user_id in user_mfa table, retrieving existing record');
-
-                // Try to get the existing record
-                $existingUserMfa = $this->findByUserId($userMfa->getUserId());
-                if ($existingUserMfa) {
-                    return $existingUserMfa;
-                }
+            // A concurrent insert may already have created this user's row (unique
+            // user_id). Return it if so; otherwise this was a real failure - rethrow.
+            $existingUserMfa = $this->findByUserId($userMfa->getUserId());
+            if ($existingUserMfa) {
+                return $existingUserMfa;
             }
 
             throw $e;
@@ -194,7 +170,7 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
         ];
 
         $stmt->execute($params);
-        $id = (int) $this->db->lastInsertId();
+        $id = (int) $this->db->lastInsertId('user_mfa_id_seq');
 
         return $this->findById($id);
     }

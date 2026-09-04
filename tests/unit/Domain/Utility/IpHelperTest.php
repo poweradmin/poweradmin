@@ -172,60 +172,6 @@ class IpHelperTest extends TestCase
     }
 
     /**
-     * Test extracting all IPs from single IP
-     */
-    public function testExtractAllIpsFromMasterSingleIp(): void
-    {
-        $result = IpHelper::extractAllIpsFromMaster('192.168.1.1');
-        $this->assertEquals(['192.168.1.1'], $result);
-    }
-
-    /**
-     * Test extracting all IPs from multiple IPs
-     */
-    public function testExtractAllIpsFromMasterMultipleIps(): void
-    {
-        $result = IpHelper::extractAllIpsFromMaster('192.168.1.1,192.168.1.2,192.168.1.3');
-        $this->assertEquals(['192.168.1.1', '192.168.1.2', '192.168.1.3'], $result);
-    }
-
-    /**
-     * Test extracting all IPs with ports
-     */
-    public function testExtractAllIpsFromMasterWithPorts(): void
-    {
-        $result = IpHelper::extractAllIpsFromMaster('192.168.1.1:5300,192.168.1.2:5301');
-        $this->assertEquals(['192.168.1.1', '192.168.1.2'], $result);
-    }
-
-    /**
-     * Test extracting all IPs ignores hostnames
-     */
-    public function testExtractAllIpsFromMasterIgnoresHostnames(): void
-    {
-        $result = IpHelper::extractAllIpsFromMaster('ns1.example.com,192.168.1.1,ns2.example.com,192.168.1.2');
-        $this->assertEquals(['192.168.1.1', '192.168.1.2'], $result);
-    }
-
-    /**
-     * Test extracting all IPs from empty string
-     */
-    public function testExtractAllIpsFromMasterEmptyString(): void
-    {
-        $result = IpHelper::extractAllIpsFromMaster('');
-        $this->assertEquals([], $result);
-    }
-
-    /**
-     * Test extracting all IPs with mixed IPv4 and IPv6
-     */
-    public function testExtractAllIpsFromMasterMixedIpv4IPv6(): void
-    {
-        $result = IpHelper::extractAllIpsFromMaster('192.168.1.1,[2001:db8::1]:5300,192.168.1.2');
-        $this->assertEquals(['192.168.1.1', '2001:db8::1', '192.168.1.2'], $result);
-    }
-
-    /**
      * Test complex real-world scenario
      */
     public function testExtractFirstIpFromMasterComplexRealWorld(): void

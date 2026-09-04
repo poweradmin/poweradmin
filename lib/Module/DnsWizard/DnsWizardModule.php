@@ -82,7 +82,7 @@ class DnsWizardModule implements ModuleInterface
         if ($capability === 'dns_wizard') {
             return [
                 [
-                    'label' => 'Record Wizard',
+                    'label' => _('Record Wizard'),
                     'url_pattern' => '/zones/{id}/wizard',
                     'icon' => 'magic',
                 ],

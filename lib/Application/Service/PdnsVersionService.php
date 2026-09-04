@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -51,7 +52,7 @@ class PdnsVersionService
     /**
      * Fetch server info if the cached copy is stale, then return it.
      *
-     * @return array{version: string, daemon_type: string, id: string}|null
+     * @return array{version: string, daemon_type: string, id: string, backends?: string, views?: string}|null
      */
     public function detect(): ?array
     {
@@ -67,10 +68,19 @@ class PdnsVersionService
         }
 
         $info = [
-            'version' => (string) ($serverInfo['version'] ?? ''),
+            'version' => (string) $serverInfo['version'],
             'daemon_type' => (string) ($serverInfo['daemon_type'] ?? ''),
             'id' => (string) ($serverInfo['id'] ?? ''),
         ];
+
+        // Views need an LMDB backend and views=yes, neither of which the
+        // version reveals. Only 5.0+ can have them, so older servers are
+        // spared the extra call.
+        if (PdnsCapabilities::fromVersion($info['version'])->isAtLeast('5.0.0')) {
+            $config = $this->apiClient->getServerConfig();
+            $info['backends'] = (string) ($config['launch'] ?? '');
+            $info['views'] = (string) ($config['views'] ?? '');
+        }
 
         // Log the version once per session so operational issues can be
         // correlated with a known server version without reading config.
@@ -93,7 +103,7 @@ class PdnsVersionService
     /**
      * Return the cached server info without making a network call.
      *
-     * @return array{version: string, daemon_type: string, id: string}|null
+     * @return array{version: string, daemon_type: string, id: string, backends?: string, views?: string}|null
      */
     public function getCached(): ?array
     {
@@ -110,7 +120,7 @@ class PdnsVersionService
      * PowerDNS upgrade or downgrade for the rest of the session - callers
      * that get null fall through to detect() and refresh the cache.
      *
-     * @return array{version: string, daemon_type: string, id: string}|null
+     * @return array{version: string, daemon_type: string, id: string, backends?: string, views?: string}|null
      */
     public static function getCachedInfo(): ?array
     {

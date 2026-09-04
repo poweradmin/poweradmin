@@ -25,22 +25,25 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
@@ -59,11 +62,14 @@ class EditRecordController extends BaseController
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
     private RecordRepositoryInterface $recordRepository;
+    private PermissionService $permissionService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $backendProvider = $this->createDnsBackendProvider();
@@ -74,10 +80,13 @@ class EditRecordController extends BaseController
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();
+        $this->permissionService = $this->createPermissionService();
     }
 
     public function run(): void
     {
+        $recordRepository = $this->createRecordRepository();
+        $domainRepository = $this->createDomainRepository();
         // Validate record ID parameter
         $record_id = $this->getSafeRequestValue('id');
         if (!$record_id || (!Validator::isNumber($record_id) && !RecordIdentifier::isEncoded($record_id))) {
@@ -87,10 +96,9 @@ class EditRecordController extends BaseController
         if (Validator::isNumber($record_id)) {
             $record_id = (int)$record_id;
         }
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         // Get zone ID from record first
-        $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
+        $zid = $recordRepository->getZoneIdFromRecordId($record_id);
         if ($zid == null) {
             $this->showError(_('Invalid record ID.'));
             return;
@@ -98,11 +106,11 @@ class EditRecordController extends BaseController
 
         // Early permission check - validate access before further operations
         $userId = $this->userContextService->getLoggedInUserId();
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zid);
+        $user_is_zone_owner = $this->isZoneOwner($zid);
 
         // Check view permission first (zone-aware for group support)
-        $canView = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_view_own');
-        $canViewOthers = UserManager::verifyPermission($this->db, 'zone_content_view_others');
+        $canView = $this->permissionService->canPerformZoneAction($this->db, $userId, $zid, 'zone_content_view_own');
+        $canViewOthers = $this->hasPermission('zone_content_view_others');
 
         if (!$canViewOthers && !$canView) {
             $this->showError(_("You do not have permission to view this record."));
@@ -110,32 +118,18 @@ class EditRecordController extends BaseController
         }
 
         // Get zone type after permission validation
-        $zone_type = $dnsRecord->getDomainType($zid);
+        $zone_type = $domainRepository->getDomainType($zid);
 
-        // Check edit permission for SLAVE zones and zone-specific edit rights
-        if ($zone_type == "SLAVE") {
-            $this->showError(_("You cannot edit records in a SLAVE zone."));
+        // Secondary and Consumer zones replicate records from a primary - records are read-only
+        if (ZoneType::isReadOnly($zone_type)) {
+            $this->showError(_("You cannot edit records in a read-only zone."));
             return;
         }
 
-        // Check zone-specific edit permission (includes group permissions)
-        $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_edit_own');
-        $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_edit_own_as_client');
-        $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
-
-        if (!$canEditOthers && !$canEdit && !$canEditAsClient) {
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zid);
+        if ($perm_edit === 'none') {
             $this->showError(_("You do not have permission to edit this record."));
             return;
-        }
-
-        // Determine permission level for UI (for backward compatibility with templates)
-        $perm_edit = 'none';
-        if ($canEditOthers) {
-            $perm_edit = 'all';
-        } elseif ($canEdit) {
-            $perm_edit = 'own';
-        } elseif ($canEditAsClient) {
-            $perm_edit = 'own_as_client';
         }
 
         $validationFailed = false;
@@ -149,11 +143,12 @@ class EditRecordController extends BaseController
 
     public function showRecordEditForm($record_id, string $zone_type, $zid, string $perm_edit, $user_is_zone_owner, bool $validationFailed = false): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_name = $dnsRecord->getDomainNameById($zid);
+        $recordRepository = $this->createRecordRepository();
+        $domainRepository = $this->createDomainRepository();
+        $zone_name = $domainRepository->getDomainNameById($zid);
 
         $recordTypes = $this->recordTypeService->getAllTypes($this->getRecordTypeCapabilities());
-        $record = $dnsRecord->getRecordFromId($record_id);
+        $record = $recordRepository->getRecordFromId($record_id);
         if ($record === null) {
             $this->showError(_('Record not found.'));
             return;
@@ -166,11 +161,7 @@ class EditRecordController extends BaseController
             $record['record_name'] = DnsHelper::stripZoneSuffix($record['name'], $zone_name);
         }
 
-        if (str_starts_with($zone_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($zone_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
 
         $iface_record_comments = $this->config->get('interface', 'show_record_comments', false);
         // Use record ID to find per-record comment, with fallback to RRset-based lookup for legacy comments
@@ -180,6 +171,9 @@ class EditRecordController extends BaseController
             $recordComment = $this->recordCommentService->findComment($zid, $record['name'], $record['type']);
         }
 
+        $zone_is_read_only = ZoneType::isReadOnly($zone_type);
+        $user_can_edit_zone = ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner);
+
         $this->render('edit_record.html', [
             'record_id' => $record_id,
             'record' => $record,
@@ -187,27 +181,32 @@ class EditRecordController extends BaseController
             'deprecated_types' => RecordType::DEPRECATED_TYPES,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => DnsIdnService::toDisplay($zone_name),
             'zone_type' => $zone_type,
             'zid' => $zid,
             'perm_edit' => $perm_edit,
             'user_is_zone_owner' => $user_is_zone_owner,
+            'zone_is_editable' => $user_can_edit_zone && !$zone_is_read_only,
             'iface_record_comments' => $iface_record_comments,
             'comment' => $recordComment ? $recordComment->getComment() : '',
-            'is_reverse_zone' => DnsHelper::isReverseZone($zone_name),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),
+            'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
             'display_hostname_only' => $display_hostname_only,
         ]);
     }
 
     public function saveRecord($zid): bool
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $old_record_info = $dnsRecord->getRecordFromId($_POST["rid"]);
+        $recordRepository = $this->createRecordRepository();
+        $domainRepository = $this->createDomainRepository();
+        $rid = $this->request->getPostParam('rid');
+        $old_record_info = $recordRepository->getRecordFromId($rid);
         if ($old_record_info === null) {
             $this->setMessage('edit', 'error', _('Record not found.'));
             return false;
         }
 
-        $postData = $_POST;
+        $postData = $this->request->getPostParams();
 
         // Convert IDN record name and content to punycode
         if (isset($postData['name'])) {
@@ -217,10 +216,23 @@ class EditRecordController extends BaseController
             $postData['content'] = DnsIdnService::convertContentToPunycode($postData['type'], $postData['content']);
         }
 
+        // Let users type a serial placeholder like [SERIAL] in the SOA form;
+        // non-placeholder content passes through unchanged and updateSOASerial()
+        // below bumps the resolved value.
+        if (
+            ($postData['type'] ?? '') === RecordType::SOA
+            && isset($postData['content'])
+        ) {
+            $postData['content'] = SOARecordManager::expandSerialPlaceholder(
+                $postData['content'],
+                $old_record_info['content'] ?? ''
+            );
+        }
+
         // Normalize record name to full FQDN (always, regardless of display setting)
         // This converts @ to zone apex and ensures proper zone suffix
         if (isset($postData['name'])) {
-            $zone_name = $dnsRecord->getDomainNameById($zid);
+            $zone_name = $domainRepository->getDomainNameById($zid);
             if ($zone_name === null) {
                 $this->setMessage('edit', 'error', _('Zone not found.'));
                 return false;
@@ -233,14 +245,16 @@ class EditRecordController extends BaseController
             $postData['disabled'] = 0;
         }
 
-        $ret_val = $dnsRecord->editRecord($postData);
+        $ret_val = $this->createRecordManager()->editRecord($postData);
         if (!$ret_val) {
             return false;
         }
 
-        $dnsRecord->updateSOASerial($zid);
+        $this->createSOARecordManager()->updateSOASerial($zid);
 
-        $new_record_info = $dnsRecord->getRecordFromId($_POST["rid"]);
+        $this->syncReverseRecord($zid, $old_record_info, $postData);
+
+        $new_record_info = $recordRepository->getRecordFromId($rid);
         if ($new_record_info === null) {
             // In API mode the record ID changes when name/type/content/prio change,
             // so the old ID won't match. Use POST data for audit logging instead.
@@ -280,20 +294,20 @@ class EditRecordController extends BaseController
 
         if ($showRecordComments) {
             // Comments visible - use per-record comment (linked by record ID via record_comment_links table)
-            $commentValue = $_POST['comment'] ?? '';
+            $commentValue = $this->request->getPostParam('comment', '');
 
             $this->recordCommentService->updateCommentForRecord(
                 $zid,
                 $new_record_info['name'],
                 $new_record_info['type'],
                 $commentValue,
-                RecordIdHelper::normalizeId($_POST['rid']),
+                RecordIdHelper::normalizeId($rid),
                 $this->userContextService->getLoggedInUsername()
             );
 
             if ($this->config->get('misc', 'record_comments_sync')) {
                 $this->commentSyncService->updateRelatedRecordComments(
-                    $dnsRecord,
+                    $domainRepository,
                     $new_record_info,
                     $commentValue,
                     $this->userContextService->getLoggedInUsername()
@@ -321,9 +335,9 @@ class EditRecordController extends BaseController
         }
 
         if ($this->config->get('dnssec', 'enabled', false)) {
-            $zone_name = $dnsRecord->getDomainNameById($zid);
+            $zone_name = $domainRepository->getDomainNameById($zid);
             if ($zone_name !== null) {
-                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+                $dnssecProvider = $this->createDnssecProvider();
                 $dnssecProvider->rectifyZone($zone_name);
             }
         }
@@ -332,5 +346,48 @@ class EditRecordController extends BaseController
         $this->redirect('/zones/' . $zid . '/edit');
 
         return true;
+    }
+
+    /**
+     * Move the automatically created PTR record along when an A/AAAA record changes.
+     * Without this the PTR keeps pointing at the old address and the new one has none.
+     */
+    private function syncReverseRecord(int $zid, array $oldRecord, array $postData): void
+    {
+        if ($this->request->getPostParam('update_ptr') === null) {
+            return;
+        }
+
+        $oldType = (string)($oldRecord['type'] ?? '');
+        $newType = (string)($postData['type'] ?? '');
+        if (!in_array($oldType, ['A', 'AAAA'], true) && !in_array($newType, ['A', 'AAAA'], true)) {
+            return;
+        }
+
+        $reverseRecordCreator = new ReverseRecordCreator(
+            $this->db,
+            $this->getConfig(),
+            $this->auditLogger,
+            $this->createDomainRepository(),
+            $this->createRecordManager(),
+            $this->recordCommentService,
+            $this->createDnsBackendProvider()
+        );
+
+        $result = $reverseRecordCreator->updateReverseRecord(
+            $oldType,
+            (string)($oldRecord['content'] ?? ''),
+            (string)($oldRecord['name'] ?? ''),
+            $newType,
+            (string)($postData['content'] ?? ''),
+            (string)($postData['name'] ?? ''),
+            $zid,
+            (int)($postData['ttl'] ?? 0),
+            (int)($postData['prio'] ?? 0)
+        );
+
+        if (isset($result['success']) && !$result['success']) {
+            $this->setMessage('edit', 'warning', _('The record was updated, but the PTR record could not be updated: ') . ($result['message'] ?? ''));
+        }
     }
 }

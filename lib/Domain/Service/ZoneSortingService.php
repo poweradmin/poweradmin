@@ -25,60 +25,86 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
+use Poweradmin\Domain\Enum\SortDirection;
+use Poweradmin\Domain\Enum\ReverseZoneFilter;
 
 class ZoneSortingService
 {
     private ReverseZoneSorting $reverseZoneSorting;
+    private UserContextService $userContextService;
 
-    public function __construct()
+    public function __construct(?UserContextService $userContextService = null)
     {
         $this->reverseZoneSorting = new ReverseZoneSorting();
+        $this->userContextService = $userContextService ?? new UserContextService();
     }
 
     /**
-     * Get zone sort order from session/request
+     * Get zone sort order from session/request. Callers pass distinct
+     * $sessionKey values (see {@see SessionKeys}) to keep buckets isolated.
      *
-     * @param string $name Parameter name
+     * @param string $name Parameter name read from $_GET/$_POST
      * @param array $allowedValues Allowed sort values
+     * @param string $sessionKey Session bucket (direction stored under $sessionKey . '_direction')
+     * @param string $defaultSortBy Fallback sort column when nothing valid is supplied
      * @return array [sortBy, sortDirection]
      */
-    public function getZoneSortOrder(string $name, array $allowedValues): array
-    {
-        $zone_sort_by = 'name';
-        $zone_sort_direction = 'ASC';
+    public function getZoneSortOrder(
+        string $name,
+        array $allowedValues,
+        string $sessionKey = SessionKeys::LIST_ZONE_SORT_BY,
+        string $defaultSortBy = 'name'
+    ): array {
+        $directionSessionKey = $sessionKey . '_direction';
 
-        if (isset($_GET[$name]) && preg_match("/^[a-z_]+$/", $_GET[$name])) {
-            $zone_sort_by = htmlspecialchars($_GET[$name]);
-            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_GET[$name]);
-        } elseif (isset($_POST[$name]) && preg_match("/^[a-z_]+$/", $_POST[$name])) {
-            $zone_sort_by = htmlspecialchars($_POST[$name]);
-            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_POST[$name]);
-        } elseif (isset($_SESSION['list_zone_sort_by'])) {
-            $zone_sort_by = $_SESSION['list_zone_sort_by'];
-        }
+        $zone_sort_by = $this->resolveSortBy($name, $sessionKey)
+            ?? $this->userContextService->getSessionData($sessionKey)
+            ?? $defaultSortBy;
 
         if (!in_array($zone_sort_by, $allowedValues)) {
-            $zone_sort_by = 'name';
+            $zone_sort_by = $defaultSortBy;
         }
 
-        if (isset($_GET[$name . '_direction']) && in_array(strtoupper($_GET[$name . '_direction']), ['ASC', 'DESC'])) {
-            $zone_sort_direction = strtoupper($_GET[$name . '_direction']);
-            $_SESSION['list_zone_sort_by_direction'] = strtoupper($_GET[$name . '_direction']);
-        } elseif (isset($_POST[$name . '_direction']) && in_array(strtoupper($_POST[$name . '_direction']), ['ASC', 'DESC'])) {
-            $zone_sort_direction = strtoupper($_POST[$name . '_direction']);
-            $_SESSION['list_zone_sort_by_direction'] = strtoupper($_POST[$name . '_direction']);
-        } elseif (isset($_SESSION['list_zone_sort_by_direction'])) {
-            $zone_sort_direction = $_SESSION['list_zone_sort_by_direction'];
-        }
+        $zone_sort_direction = $this->resolveSortDirection($name . '_direction', $directionSessionKey)
+            ?? $this->userContextService->getSessionData($directionSessionKey)
+            ?? 'ASC';
 
         return [$zone_sort_by, $zone_sort_direction];
+    }
+
+    private function resolveSortBy(string $name, string $sessionKey): ?string
+    {
+        // POST first so a fresh form submission overrides any stale `?sort=` left
+        // in the URL bar; list views are GET-only so this swap is a no-op for them.
+        foreach ([$_POST[$name] ?? null, $_GET[$name] ?? null] as $candidate) {
+            if ($candidate !== null && preg_match("/^[a-z_]+$/", $candidate)) {
+                $value = htmlspecialchars($candidate);
+                $this->userContextService->setSessionData($sessionKey, $value);
+                return $value;
+            }
+        }
+        return null;
+    }
+
+    private function resolveSortDirection(string $key, string $sessionKey): ?string
+    {
+        // tryFrom rather than fromRequest: null here means "nothing supplied",
+        // which the caller distinguishes from an explicit direction.
+        foreach ([$_POST[$key] ?? null, $_GET[$key] ?? null] as $candidate) {
+            $direction = is_string($candidate) ? SortDirection::tryFrom(strtoupper($candidate)) : null;
+            if ($direction !== null) {
+                $this->userContextService->setSessionData($sessionKey, $direction->value);
+                return $direction->value;
+            }
+        }
+        return null;
     }
 
     /**
@@ -124,15 +150,19 @@ class ZoneSortingService
      */
     public function getReverseZoneTypeFilter(): string
     {
-        $reverse_zone_type = 'all';
+        // tryFrom, not fromRequest: an unknown request value must leave a valid
+        // stored filter alone rather than resetting it to ALL.
+        $requested = $_GET['reverse_type'] ?? null;
+        $filter = is_string($requested) ? ReverseZoneFilter::tryFrom($requested) : null;
 
-        if (isset($_GET['reverse_type'])) {
-            $reverse_zone_type = htmlspecialchars($_GET['reverse_type']);
-            $_SESSION['reverse_zone_type'] = $reverse_zone_type;
-        } elseif (isset($_SESSION['reverse_zone_type'])) {
-            $reverse_zone_type = $_SESSION['reverse_zone_type'];
+        if ($filter !== null) {
+            $this->userContextService->setSessionData(SessionKeys::REVERSE_ZONE_TYPE, $filter->value);
+            return $filter->value;
         }
 
-        return $reverse_zone_type;
+        // Stored values predate this allowlist, so revalidate rather than trust the session.
+        return ReverseZoneFilter::fromRequest(
+            $this->userContextService->getSessionData(SessionKeys::REVERSE_ZONE_TYPE)
+        )->value;
     }
 }

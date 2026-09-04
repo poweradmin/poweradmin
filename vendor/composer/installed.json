@@ -967,17 +967,17 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "2.3.3",
-            "version_normalized": "2.3.3.0",
+            "version": "2.3.5",
+            "version_normalized": "2.3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "fb19eedd2bb67ff8cf7a5502ad329e701d6398a3"
+                "reference": "148cefffaf0233e4c08cc13db8a195a56dd6dfe9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/fb19eedd2bb67ff8cf7a5502ad329e701d6398a3",
-                "reference": "fb19eedd2bb67ff8cf7a5502ad329e701d6398a3",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/148cefffaf0233e4c08cc13db8a195a56dd6dfe9",
+                "reference": "148cefffaf0233e4c08cc13db8a195a56dd6dfe9",
                 "shasum": ""
             },
             "require": {
@@ -994,7 +994,7 @@
                 "phpunit/phpunit": "^9.6",
                 "symfony/process": "^5.2"
             },
-            "time": "2026-07-08T07:01:06+00:00",
+            "time": "2026-08-31T16:05:28+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1011,7 +1011,7 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.3.3"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.3.5"
             },
             "install-path": "../phpstan/phpdoc-parser"
         },
@@ -2652,6 +2652,99 @@
                 }
             ],
             "install-path": "../symfony/http-kernel"
+        },
+        {
+            "name": "symfony/intl",
+            "version": "v7.4.16",
+            "version_normalized": "7.4.16.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/intl.git",
+                "reference": "a8ff4606c5f5c7ec166d565cea1fb1864c2f9850"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/intl/zipball/a8ff4606c5f5c7ec166d565cea1fb1864c2f9850",
+                "reference": "a8ff4606c5f5c7ec166d565cea1fb1864c2f9850",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/deprecation-contracts": "^2.5|^3"
+            },
+            "conflict": {
+                "symfony/string": "<7.1"
+            },
+            "require-dev": {
+                "symfony/filesystem": "^6.4|^7.0|^8.0",
+                "symfony/var-exporter": "^6.4|^7.0|^8.0"
+            },
+            "time": "2026-08-07T10:37:33+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Intl\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/",
+                    "/Resources/data/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@gmail.com"
+                },
+                {
+                    "name": "Eriksen Costa",
+                    "email": "eriksen.costa@infranology.com.br"
+                },
+                {
+                    "name": "Igor Wiedler",
+                    "email": "igor@wiedler.ch"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides access to the localization data of the ICU library",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "i18n",
+                "icu",
+                "internationalization",
+                "intl",
+                "l10n",
+                "localization"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/intl/tree/v7.4.16"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "../symfony/intl"
         },
         {
             "name": "symfony/mailer",
@@ -4929,17 +5022,17 @@
         },
         {
             "name": "symfony/type-info",
-            "version": "v7.4.9",
-            "version_normalized": "7.4.9.0",
+            "version": "v7.4.17",
+            "version_normalized": "7.4.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/type-info.git",
-                "reference": "cafeedbf157b890e94ac5b83eaed85595106d5d6"
+                "reference": "62d0ad6995630a4f7ea8fd270aadb3e2545c8e31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/type-info/zipball/cafeedbf157b890e94ac5b83eaed85595106d5d6",
-                "reference": "cafeedbf157b890e94ac5b83eaed85595106d5d6",
+                "url": "https://api.github.com/repos/symfony/type-info/zipball/62d0ad6995630a4f7ea8fd270aadb3e2545c8e31",
+                "reference": "62d0ad6995630a4f7ea8fd270aadb3e2545c8e31",
                 "shasum": ""
             },
             "require": {
@@ -4953,7 +5046,7 @@
             "require-dev": {
                 "phpstan/phpdoc-parser": "^1.30|^2.0"
             },
-            "time": "2026-04-22T15:21:55+00:00",
+            "time": "2026-08-21T15:52:48+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -4991,7 +5084,7 @@
                 "type"
             ],
             "support": {
-                "source": "https://github.com/symfony/type-info/tree/v7.4.9"
+                "source": "https://github.com/symfony/type-info/tree/v7.4.17"
             },
             "funding": [
                 {
@@ -5296,17 +5389,17 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v7.4.15",
-            "version_normalized": "7.4.15.0",
+            "version": "v7.4.18",
+            "version_normalized": "7.4.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "e101850ded5d2c0d44bf32abb8996404afec2dec"
+                "reference": "4cef939e55b8a21c5780418de0d98ab00d0736e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/e101850ded5d2c0d44bf32abb8996404afec2dec",
-                "reference": "e101850ded5d2c0d44bf32abb8996404afec2dec",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/4cef939e55b8a21c5780418de0d98ab00d0736e1",
+                "reference": "4cef939e55b8a21c5780418de0d98ab00d0736e1",
                 "shasum": ""
             },
             "require": {
@@ -5320,7 +5413,7 @@
             "require-dev": {
                 "symfony/console": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-07-21T15:13:06+00:00",
+            "time": "2026-08-30T00:47:26+00:00",
             "bin": [
                 "Resources/bin/yaml-lint"
             ],
@@ -5351,7 +5444,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v7.4.15"
+                "source": "https://github.com/symfony/yaml/tree/v7.4.18"
             },
             "funding": [
                 {
@@ -5469,6 +5562,73 @@
             "install-path": "../twbs/bootstrap-icons"
         },
         {
+            "name": "twig/intl-extra",
+            "version": "v3.26.0",
+            "version_normalized": "3.26.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twigphp/intl-extra.git",
+                "reference": "98f5ad5bff13230fcd2d834d9e79b50adf3ccda9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/intl-extra/zipball/98f5ad5bff13230fcd2d834d9e79b50adf3ccda9",
+                "reference": "98f5ad5bff13230fcd2d834d9e79b50adf3ccda9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1.0",
+                "symfony/intl": "^5.4|^6.4|^7.0|^8.0",
+                "twig/twig": "^3.13|^4.0"
+            },
+            "require-dev": {
+                "symfony/phpunit-bridge": "^6.4|^7.0"
+            },
+            "time": "2026-05-19T20:44:48+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Twig\\Extra\\Intl\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "A Twig extension for Intl",
+            "homepage": "https://twig.symfony.com",
+            "keywords": [
+                "intl",
+                "twig"
+            ],
+            "support": {
+                "source": "https://github.com/twigphp/intl-extra/tree/v3.26.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/twig/twig",
+                    "type": "tidelift"
+                }
+            ],
+            "install-path": "../twig/intl-extra"
+        },
+        {
             "name": "twig/twig",
             "version": "v3.28.0",
             "version_normalized": "3.28.0.0",
@@ -5553,17 +5713,17 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "6.5.3",
-            "version_normalized": "6.5.3.0",
+            "version": "6.7.0",
+            "version_normalized": "6.7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "d0a5edd84dd5e116643c79e53d46814c5a5e4c04"
+                "reference": "af0a8de6c4b6780e8e07d06ee0c7da538b5f1e46"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/d0a5edd84dd5e116643c79e53d46814c5a5e4c04",
-                "reference": "d0a5edd84dd5e116643c79e53d46814c5a5e4c04",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/af0a8de6c4b6780e8e07d06ee0c7da538b5f1e46",
+                "reference": "af0a8de6c4b6780e8e07d06ee0c7da538b5f1e46",
                 "shasum": ""
             },
             "require": {
@@ -5587,7 +5747,7 @@
                 "phpunit/phpunit": "^11.5 || >=12.5.22",
                 "rector/rector": "^2.3"
             },
-            "time": "2026-08-12T04:26:57+00:00",
+            "time": "2026-08-24T21:55:54+00:00",
             "bin": [
                 "bin/openapi"
             ],
@@ -5633,7 +5793,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/6.5.3"
+                "source": "https://github.com/zircote/swagger-php/tree/6.7.0"
             },
             "funding": [
                 {

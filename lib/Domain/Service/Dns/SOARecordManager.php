@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,6 +33,9 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
  */
 class SOARecordManager implements SOARecordManagerInterface
 {
+    /** Zone serials are 32-bit unsigned values (RFC 1982). */
+    public const MAX_SERIAL = 4294967295;
+
     private PDO $db;
     private ConfigurationManager $config;
     private ?DnsBackendProvider $backendProvider;
@@ -91,6 +94,47 @@ class SOARecordManager implements SOARecordManagerInterface
     }
 
     /**
+     * Replace a literal "[SERIAL]", "[UNIXTIME]" or "[COUNTER]" in the serial
+     * field of a submitted SOA record with a numeric value. The subsequent
+     * updateSOASerial() bump (see EditRecordController) then advances the
+     * value, preserving RFC 1982 monotonicity even if today's serial has
+     * already been incremented several times.
+     *
+     * The resolved value never drops below the existing serial - slaves only
+     * transfer when the serial increases, so a format switch cannot rewind it.
+     *
+     * @param string $newContent SOA content as submitted by the user
+     * @param string $oldContent Current SOA content from the zone (may be empty)
+     * @return string SOA content with the placeholder resolved to a numeric value
+     */
+    public static function expandSerialPlaceholder(string $newContent, string $oldContent): string
+    {
+        $fields = preg_split('/\s+/', trim($newContent));
+        if ($fields === false || !isset($fields[2])) {
+            return $newContent;
+        }
+
+        $oldSerial = self::getSOASerial($oldContent);
+        $hasOldSerial = $oldSerial !== null && is_numeric($oldSerial);
+
+        switch ($fields[2]) {
+            case '[SERIAL]':
+                $fields[2] = $hasOldSerial ? $oldSerial : date('Ymd') . '00';
+                break;
+            case '[UNIXTIME]':
+                $fields[2] = (string)($hasOldSerial ? max(time(), (int)$oldSerial) : time());
+                break;
+            case '[COUNTER]':
+                $fields[2] = $hasOldSerial ? $oldSerial : '1';
+                break;
+            default:
+                return $newContent;
+        }
+
+        return implode(' ', $fields);
+    }
+
+    /**
      * Get Next Date
      *
      * @param string $curr_date Current date in YYYYMMDD format
@@ -145,8 +189,8 @@ class SOARecordManager implements SOARecordManagerInterface
 
         $today = date('Ymd');
 
-        $revision = (int)substr($curr_serial, -2);
-        $ser_date = substr($curr_serial, 0, 8);
+        $revision = (int)substr((string)$curr_serial, -2);
+        $ser_date = substr((string)$curr_serial, 0, 8);
 
         if ($curr_serial == $today . '99') {
             return self::getNextDate($today) . '00';
@@ -173,7 +217,12 @@ class SOARecordManager implements SOARecordManagerInterface
         }
 
         // Create new serial out of existing/updated date and revision
-        return $today . str_pad($revision, 2, "0", STR_PAD_LEFT);
+        $next = $today . str_pad((string)$revision, 2, "0", STR_PAD_LEFT);
+
+        // A serial above 1979999999 that is not a real date still lands in the branch
+        // above and keeps growing. DNS serials are 32-bit unsigned (RFC 1982), so wrap
+        // rather than hand PowerDNS a value it cannot store.
+        return (float)$next > self::MAX_SERIAL ? 1 : $next;
     }
 
     /**
@@ -191,7 +240,7 @@ class SOARecordManager implements SOARecordManagerInterface
             if ($zoneName === null) {
                 return false;
             }
-            $soa_ttl = (int)$this->config->get('dns', 'soa_rec_default_ttl', 86400);
+            $soa_ttl = (int)$this->config->get('dns', 'ttl', 86400);
             return $this->backendProvider->addRecord($domain_id, $zoneName, 'SOA', $content, $soa_ttl, 0);
         }
 
@@ -240,7 +289,7 @@ class SOARecordManager implements SOARecordManagerInterface
         $new_serial = $this->getNextSerial($curr_serial);
 
         if ($curr_serial != $new_serial) {
-            return self::setSOASerial($soa_rec, $new_serial);
+            return self::setSOASerial($soa_rec, (string)$new_serial);
         }
 
         return self::setSOASerial($soa_rec, $curr_serial);
@@ -273,7 +322,7 @@ class SOARecordManager implements SOARecordManagerInterface
         $new_serial = $this->getNextSerial($curr_serial);
 
         if ($curr_serial != $new_serial) {
-            $soa_rec = self::setSOASerial($soa_rec, $new_serial);
+            $soa_rec = self::setSOASerial($soa_rec, (string)$new_serial);
             return $this->updateSOARecord($domain_id, $soa_rec);
         }
 

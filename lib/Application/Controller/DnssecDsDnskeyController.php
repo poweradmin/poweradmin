@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -35,9 +35,8 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 
@@ -58,7 +57,7 @@ class DnssecDsDnskeyController extends BaseController
 
         // Early permission check - validate DNSSEC access before any operations
         $perm_view = Permission::getViewPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         // Check view permission first
         if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
@@ -67,39 +66,36 @@ class DnssecDsDnskeyController extends BaseController
         }
 
         // Validate zone existence
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zone_id)) {
+        $domainRepository = $this->createDomainRepository();
+        if (!$domainRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        (UserManager::verifyPermission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+        $can_manage_dnssec = $this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id);
 
-        $this->showKeys($zone_id, $pdnssec_use);
+        $this->showKeys($zone_id, $pdnssec_use, $can_manage_dnssec);
     }
 
-    public function showKeys(int $zone_id, $pdnssec_use): void
+    public function showKeys(int $zone_id, $pdnssec_use, bool $can_manage_dnssec): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
 
-        $domain_name = $dnsRecord->getDomainNameById($zone_id);
-        $domain_type = $dnsRecord->getDomainType($zone_id);
-        $record_count = $dnsRecord->countZoneRecords($zone_id);
-        $zone_template_id = DnsRecord::getZoneTemplate($this->db, $zone_id);
+        $domain_name = $domainRepository->getDomainNameById($zone_id);
+        $domain_type = $domainRepository->getDomainType($zone_id);
+        $record_count = $this->createRecordRepository()->countZoneRecords($zone_id);
+        $zone_template_id = DomainManager::getZoneTemplate($this->db, $zone_id);
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         $dnskey_records = $dnssecProvider->getDnsKeyRecords($domain_name);
         $ds_records = $dnssecProvider->getDsRecords($domain_name);
 
-        if (str_starts_with($domain_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($domain_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
 
         $this->render('dnssec_ds_dnskey.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => DnsIdnService::toDisplay($domain_name),
             'domain_type' => $domain_type,
             'dnskey_records' => $dnskey_records,
             'ds_records' => $ds_records,
@@ -107,7 +103,8 @@ class DnssecDsDnskeyController extends BaseController
             'record_count' => $record_count,
             'zone_id' => $zone_id,
             'zone_template_id' => $zone_template_id,
-            'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($domain_name),
+            'can_manage_dnssec' => $can_manage_dnssec,
         ]);
     }
 }

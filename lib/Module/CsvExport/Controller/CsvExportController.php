@@ -23,11 +23,7 @@
 namespace Poweradmin\Module\CsvExport\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 class CsvExportController extends BaseController
@@ -47,10 +43,9 @@ class CsvExportController extends BaseController
         }
 
         $userId = $userContextService->getLoggedInUserId();
-        $userRepository = new DbUserRepository($this->db, $this->getConfig());
-        $permissionService = new PermissionService($userRepository);
+        $permissionService = $this->createPermissionService();
         $perm_view = $permissionService->getViewPermissionLevel($userId);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view == "none" || ($perm_view == "own" && $user_is_zone_owner == "0")) {
             $this->showError(_('You do not have permission to export this zone.'));
@@ -65,8 +60,7 @@ class CsvExportController extends BaseController
             return;
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $records = $dnsRecord->getRecordsFromDomainId($this->getConfig()->get('database', 'type', 'mysql'), $zone_id);
+        $records = $this->createRecordRepository()->getRecordsFromDomainId($this->getConfig()->get('database', 'type', 'mysql'), $zone_id);
 
         if (empty($records)) {
             $this->showError(_('This zone does not have any records to export.'));

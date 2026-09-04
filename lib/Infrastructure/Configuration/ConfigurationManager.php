@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
+use Poweradmin\Application\Service\PaginationService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -29,7 +30,8 @@ use Psr\Log\NullLogger;
  * Class ConfigurationManager
  *
  * This class is responsible for loading and accessing configuration values.
- * It combines legacy configuration, defaults, and the new settings structure.
+ * It layers config/settings.php (or PA_CONFIG_PATH) over config/settings.defaults.php.
+ * Legacy inc/config.inc.php support was removed in 4.1.0.
  */
 class ConfigurationManager implements ConfigurationInterface
 {
@@ -129,12 +131,39 @@ class ConfigurationManager implements ConfigurationInterface
             }
         }
 
+        $this->clampRowsPerPage();
+
         // Validate configuration and log errors (non-blocking)
         if ($newConfigExists) {
             $this->validateConfiguration();
         }
 
         $this->initialized = true;
+    }
+
+    /**
+     * Clamp interface.rows_per_page into the pagination range before anything reads it.
+     * 4.4.0 accepted any positive value, so an upgrade must not refuse to start on one.
+     */
+    private function clampRowsPerPage(): void
+    {
+        $configured = $this->settings['interface']['rows_per_page'] ?? null;
+        if (!is_int($configured) || $configured <= 0) {
+            return;
+        }
+
+        $clamped = max(PaginationService::MIN_ROWS_PER_PAGE, min($configured, PaginationService::MAX_ROWS_PER_PAGE));
+        if ($clamped === $configured) {
+            return;
+        }
+
+        $this->logger->warning('interface.rows_per_page {configured} is outside {min}-{max}; using {clamped}', [
+            'configured' => $configured,
+            'min' => PaginationService::MIN_ROWS_PER_PAGE,
+            'max' => PaginationService::MAX_ROWS_PER_PAGE,
+            'clamped' => $clamped,
+        ]);
+        $this->settings['interface']['rows_per_page'] = $clamped;
     }
 
 

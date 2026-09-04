@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,14 +23,21 @@
 namespace Poweradmin\Domain\Service;
 
 use Exception;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\RepositoryFactory;
+use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use PDO;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Throwable;
+use Poweradmin\Domain\Enum\ZoneKind;
 
 /**
  * Service for managing DNS zones
@@ -41,17 +48,20 @@ class ZoneManagementService
     private ConfigurationManager $config;
     private PDO $db;
     private LoggerInterface $logger;
+    private RecordChangeLogger $changeLogger;
 
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
         ConfigurationManager $config,
         object $db,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?RecordChangeLogger $changeLogger = null
     ) {
         $this->zoneRepository = $zoneRepository;
         $this->config = $config;
         $this->db = $db;
         $this->logger = $logger ?? new NullLogger();
+        $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
     }
 
     /**
@@ -64,6 +74,8 @@ class ZoneManagementService
      * @param string $zoneTemplate Zone template to use
      * @param bool $enableDnssec Whether to enable DNSSEC
      * @param array<int> $groupIds Optional list of group IDs to assign as owners
+     * @param int|null $actingUserId User performing the creation, used for the overlap check
+     * @param string|null $soaEditApi Per-zone SOA-EDIT-API choice; null applies the dns.soa_edit_api default
      * @return array Result array with success status and zone ID or error message
      */
     public function createZone(
@@ -73,7 +85,9 @@ class ZoneManagementService
         string $slaveMaster = '',
         string $zoneTemplate = 'none',
         bool $enableDnssec = false,
-        array $groupIds = []
+        array $groupIds = [],
+        ?int $actingUserId = null,
+        ?string $soaEditApi = null
     ): array {
         if ($owner === null && empty($groupIds)) {
             return ['success' => false, 'message' => 'At least one user or group must be assigned as owner', 'status' => 400];
@@ -85,20 +99,30 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Invalid domain name', 'status' => 400];
         }
 
+        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config);
+        $repositoryFactory = new RepositoryFactory($this->db, $this->config, $backendProvider);
+
         // Check if domain already exists
-        $dnsRecord = new DnsRecord($this->db, $this->config);
-        if ($dnsRecord->domainExists($domain)) {
+        if ($repositoryFactory->createDomainRepository()->domainExists($domain)) {
             return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
         }
 
         // Check if non-delegation records exist (prevents zone hijacking)
         // Only delegation records (NS, DS) are allowed
-        if ($dnsRecord->hasNonDelegationRecords($domain)) {
+        if ($repositoryFactory->createRecordRepository()->hasNonDelegationRecords($domain)) {
             return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
         }
 
+        // Block a zone that would overlap an existing zone owned by another user.
+        if ($actingUserId !== null) {
+            $overlapService = new ZoneOverlapService($this->db, $this->config);
+            if ($overlapService->findConflictingZone($domain, $actingUserId) !== null) {
+                return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'status' => 409];
+            }
+        }
+
         // Validate zone type
-        $validTypes = ['MASTER', 'SLAVE', 'NATIVE'];
+        $validTypes = ZoneKind::basicValues();
         if (!in_array($type, $validTypes)) {
             return [
                 'success' => false,
@@ -110,6 +134,19 @@ class ZoneManagementService
         // For SLAVE zones, ensure master IP is provided
         if ($type === 'SLAVE' && empty($slaveMaster)) {
             return ['success' => false, 'message' => 'Master IP address is required for SLAVE zones', 'status' => 400];
+        }
+
+        // applySerialPolicy() only logs and ignores an unoffered value, which would quietly
+        // create the zone with the wrong serial policy. Reject it here instead.
+        if ($soaEditApi !== null && $soaEditApi !== '') {
+            $soaEditApiChoices = MetadataDefinitions::getSoaEditApiChoices($this->config);
+            if (!in_array($soaEditApi, $soaEditApiChoices, true)) {
+                return [
+                    'success' => false,
+                    'message' => 'Invalid soa_edit_api value. Must be one of: ' . implode(', ', $soaEditApiChoices),
+                    'status' => 400
+                ];
+            }
         }
 
         // Resolve zone template: accept both name and numeric ID
@@ -136,8 +173,8 @@ class ZoneManagementService
             ['domain' => $domain, 'type' => $type, 'owner' => $owner ?? 'none', 'groups' => implode(',', $groupIds) ?: 'none']
         );
 
-        // Create the domain using DnsRecord service for now (to maintain compatibility)
-        $success = $dnsRecord->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds);
+        $domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config, $backendProvider);
+        $success = $domainManager->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds, $soaEditApi);
 
         if (!$success) {
             return ['success' => false, 'message' => 'Failed to create zone', 'status' => 500];
@@ -187,6 +224,14 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Zone not found', 'status' => 404];
         }
 
+        // Snapshot before
+        $beforeZone = null;
+        try {
+            $beforeZone = $this->zoneRepository->getZoneById($zoneId);
+        } catch (Throwable $e) {
+            $this->logger->warning('Failed to fetch zone before metadata update for change log: {error}', ['error' => $e->getMessage()]);
+        }
+
         // Update the zone
         try {
             $success = $this->zoneRepository->updateZone($zoneId, $updates);
@@ -196,6 +241,17 @@ class ZoneManagementService
 
         if (!$success) {
             return ['success' => false, 'message' => 'Failed to update zone', 'status' => 500];
+        }
+
+        if ($beforeZone !== null) {
+            try {
+                $afterZone = $this->zoneRepository->getZoneById($zoneId);
+                if ($afterZone !== null) {
+                    $this->changeLogger->logZoneMetadataEdit($beforeZone, $afterZone);
+                }
+            } catch (Throwable $e) {
+                $this->logger->warning('Failed to write zone metadata edit log: {error}', ['error' => $e->getMessage()]);
+            }
         }
 
         return ['success' => true, 'message' => 'Zone updated successfully'];
@@ -214,15 +270,35 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Zone not found', 'status' => 404];
         }
 
-        // Clean up zone template sync records before deletion
-        $syncService = new ZoneTemplateSyncService($this->db, $this->config);
-        $syncService->cleanupZoneSyncRecords($zoneId);
+        // Snapshot the zone for the audit log before any state is touched.
+        $zoneSnapshot = null;
+        $recordCountBefore = 0;
+        try {
+            $zoneSnapshot = $this->zoneRepository->getZoneById($zoneId);
+            if ($zoneSnapshot !== null && isset($zoneSnapshot['record_count'])) {
+                $recordCountBefore = (int) $zoneSnapshot['record_count'];
+            }
+        } catch (Throwable $e) {
+            $this->logger->warning('Failed to snapshot zone before delete: {error}', ['error' => $e->getMessage()]);
+        }
+
+        // zone_template_sync.zone_id cascades from zones.id, so deleting the zones rows
+        // clears it. Resolving zones.id here would need CanonicalZoneSql to tell the two
+        // overlapping id spaces apart, and a plain domain_id lookup hits the wrong zone.
 
         // Delete the zone
         $success = $this->zoneRepository->deleteZone($zoneId);
 
         if (!$success) {
             return ['success' => false, 'message' => 'Failed to delete zone', 'status' => 500];
+        }
+
+        if ($zoneSnapshot !== null) {
+            try {
+                $this->changeLogger->logZoneDelete($zoneSnapshot, $recordCountBefore);
+            } catch (Throwable $e) {
+                $this->logger->warning('Failed to write zone delete log: {error}', ['error' => $e->getMessage()]);
+            }
         }
 
         return ['success' => true, 'message' => 'Zone deleted successfully'];

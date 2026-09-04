@@ -45,6 +45,7 @@ class DbUserRepositoryTest extends TestCase
         parent::setUp();
 
         $this->db = $this->createMock(PDO::class);
+        $this->db->method('getAttribute')->willReturn('mysql');
         $this->config = $this->createMock(ConfigurationManager::class);
         $this->repository = new DbUserRepository($this->db, $this->config);
     }
@@ -480,7 +481,6 @@ class DbUserRepositoryTest extends TestCase
         $userStmt->method('execute')->willReturn(true);
         $userStmt->method('fetch')
             ->willReturnOnConsecutiveCalls(
-                $this->createUserDbRow(),
                 ['permission' => 'zone_content_view_own'],
                 ['permission' => 'zone_content_edit_own'],
                 false
@@ -490,7 +490,7 @@ class DbUserRepositoryTest extends TestCase
 
         $result = $this->repository->getUserPermissions(1);
 
-        $this->assertIsArray($result);
+        $this->assertSame(['zone_content_view_own', 'zone_content_edit_own'], $result);
     }
 
     #[Test]
@@ -598,6 +598,82 @@ class DbUserRepositoryTest extends TestCase
         $this->assertEquals(10, $result);
     }
 
+    #[Test]
+    public function testGetTotalUserCountWithSearchUsesPreparedStatement(): void
+    {
+        // The unrestricted no-search path uses query(); a search must switch to prepare()
+        // so the term is bound rather than interpolated.
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchColumn')->willReturn(2);
+
+        $this->db->expects($this->never())->method('query');
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->stringContains('LOWER(users.username) LIKE LOWER(:search0)'))
+            ->willReturn($stmt);
+
+        $this->assertEquals(2, $this->repository->getTotalUserCount(null, 'alice'));
+    }
+
+    #[Test]
+    public function testGetTotalUserCountIgnoresBlankSearch(): void
+    {
+        // A whitespace-only term must not turn into a LIKE '%%' filter.
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetchColumn')->willReturn(7);
+
+        $this->db->expects($this->never())->method('prepare');
+        $this->db->expects($this->once())->method('query')->willReturn($stmt);
+
+        $this->assertEquals(7, $this->repository->getTotalUserCount(null, '   '));
+    }
+
+    #[Test]
+    public function testGetTotalUserCountCombinesRestrictionAndSearch(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchColumn')->willReturn(1);
+
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->logicalAnd(
+                $this->stringContains('AND users.id = :id'),
+                $this->stringContains(':search0')
+            ))
+            ->willReturn($stmt);
+
+        $this->assertEquals(1, $this->repository->getTotalUserCount(5, 'alice'));
+    }
+
+    #[Test]
+    public function testGetUserDetailListAppliesSearchFilter(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchAll')->willReturn([]);
+
+        $userQuery = null;
+        $this->db->method('prepare')->willReturnCallback(function (string $sql) use (&$userQuery, $stmt) {
+            $userQuery ??= $sql; // the list query runs before the group and MFA lookups
+            return $stmt;
+        });
+
+        $bound = [];
+        $stmt->method('bindValue')->willReturnCallback(function (string $param, $value) use (&$bound) {
+            $bound[$param] = $value;
+            return true;
+        });
+
+        $this->repository->getUserDetailList(false, null, null, null, null, '100% _admin');
+
+        $this->assertStringContainsString("LOWER(users.username) LIKE LOWER(:search0) ESCAPE '!'", (string)$userQuery);
+
+        // LIKE wildcards in the term must be escaped, not treated as wildcards.
+        $this->assertEquals('%100!% !_admin%', $bound[':search0'] ?? null);
+    }
+
     // ========== getUserZones tests ==========
 
     #[Test]
@@ -682,13 +758,54 @@ class DbUserRepositoryTest extends TestCase
         $this->assertFalse($result);
     }
 
-    // ========== unassignUserZones tests ==========
+    /**
+     * @return array{0: bool, 1: string, 2: array} the result, the prepared SQL and the bound params
+     */
+    private function captureUpdateUser(int $userId, array $userData): array
+    {
+        $query = null;
+        $params = [];
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturnCallback(function ($executed) use (&$params) {
+            $params = $executed;
+            return true;
+        });
+
+        $this->db->method('prepare')->willReturnCallback(function ($prepared) use (&$query, $stmt) {
+            $query = $prepared;
+            return $stmt;
+        });
+
+        return [$this->repository->updateUser($userId, $userData), (string)$query, (array)$params];
+    }
 
     #[Test]
-    public function testUnassignUserZonesReturnsFalseAsDeprecated(): void
+    public function testUpdateUserIgnoresEmptyPassword(): void
     {
-        $result = $this->repository->unassignUserZones(1);
+        foreach (['', null] as $empty) {
+            [$result, $query, $params] = $this->captureUpdateUser(1, ['fullname' => 'Updated Name', 'password' => $empty]);
 
-        $this->assertFalse($result);
+            $this->assertTrue($result);
+            $this->assertStringNotContainsString('password', $query);
+            $this->assertArrayNotHasKey(':password', $params);
+        }
+    }
+
+    #[Test]
+    public function testUpdateUserWithOnlyEmptyPasswordMakesNoDatabaseCall(): void
+    {
+        $this->db->expects($this->never())->method('prepare');
+
+        $this->assertTrue($this->repository->updateUser(1, ['password' => '']));
+    }
+
+    #[Test]
+    public function testUpdateUserStillWritesNonEmptyPassword(): void
+    {
+        [$result, $query] = $this->captureUpdateUser(1, ['password' => 'hashed-value']);
+
+        $this->assertTrue($result);
+        $this->assertStringContainsString('password = :password', $query);
     }
 }

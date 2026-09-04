@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,22 +25,24 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordCommentService;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeleteRecordsController extends BaseController
@@ -50,11 +52,14 @@ class DeleteRecordsController extends BaseController
     private ReverseRecordCreator $reverseRecordCreator;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
+    private PermissionService $permissionService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $backendProvider = $this->createDnsBackendProvider();
@@ -62,16 +67,19 @@ class DeleteRecordsController extends BaseController
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $repositoryFactory->createDomainRepository();
+        $dnsRecordManager = $this->createRecordManager();
         $this->reverseRecordCreator = new ReverseRecordCreator(
             $this->db,
             $this->getConfig(),
             $this->auditLogger,
-            $dnsRecord,
+            $domainRepository,
+            $dnsRecordManager,
             $this->recordCommentService,
             $this->createDnsBackendProvider()
         );
         $this->userContextService = new UserContextService();
+        $this->permissionService = $this->createPermissionService();
     }
 
     public function run(): void
@@ -80,7 +88,7 @@ class DeleteRecordsController extends BaseController
             $this->validateCsrfToken();
         }
 
-        $raw_ids = $_POST['record_id'] ?? null;
+        $raw_ids = $this->request->getPostParam('record_id');
         if (!is_array($raw_ids) || empty($raw_ids)) {
             $this->setMessage('search', 'error', _('No records selected for deletion.'));
             $this->redirect('/search');
@@ -89,8 +97,13 @@ class DeleteRecordsController extends BaseController
 
         $record_ids = array_values(array_filter($raw_ids, fn($id) => is_int($id) || is_string($id)));
 
-        if (isset($_POST['confirm'])) {
-            $this->deleteRecords($record_ids);
+        if ($this->request->getPostParam('confirm') !== null) {
+            $comment = (string)($this->request->getPostParam('change_comment') ?? '');
+            if (trim($comment) === '' && RecordChangeLogger::changeCommentRequired()) {
+                $this->setMessage('delete_records', 'error', _('Describe why you are making this change.'));
+            } else {
+                $this->deleteRecords($record_ids);
+            }
         }
 
         $this->showRecords($record_ids);
@@ -101,87 +114,100 @@ class DeleteRecordsController extends BaseController
      */
     public function deleteRecords(array $record_ids): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $recordRepository = $this->createRecordRepository();
+        $recordManager = $this->createRecordManager();
+        $domainRepository = $this->createDomainRepository();
         $deleted_count = 0;
         $affected_zones = [];
 
-        foreach ($record_ids as $record_id) {
-            $record_info = $dnsRecord->getRecordFromId($record_id);
-            if ($record_info === null) {
-                continue;
-            }
+        // One submission, one changeset, so a multi-record delete reads as a single
+        // action in the change log rather than N unrelated deletions. The selection can
+        // span zones, so the changeset carries no zone of its own.
+        RecordChangeLogger::beginChangeset(null, (string)($this->request->getPostParam('change_comment') ?? ''));
 
-            $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
-
-            if ($zid !== null) {
-                $domain_id = $dnsRecord->recidToDomid($record_id);
-
-                // Check if this is an A or AAAA record that might have a corresponding PTR record
-                $hasPtrRecord = false;
-                if (
-                    ($record_info['type'] === RecordType::A || $record_info['type'] === RecordType::AAAA) &&
-                    $this->config->get('interface', 'add_reverse_record', false)
-                ) {
-                    $hasPtrRecord = true;
+        try {
+            foreach ($record_ids as $record_id) {
+                $record_info = $recordRepository->getRecordFromId($record_id);
+                if ($record_info === null) {
+                    continue;
                 }
 
-                if ($dnsRecord->deleteRecord($record_id)) {
-                    $deleted_count++;
-                    $affected_zones[$zid] = true;
+                $zid = $recordRepository->getZoneIdFromRecordId($record_id);
 
-                    if (isset($record_info['prio'])) {
-                        $this->auditLogger->logInfo(sprintf(
-                            'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
-                            $this->ipAddressRetriever->getClientIp(),
-                            $this->userContextService->getLoggedInUsername(),
-                            $record_info['type'],
-                            $record_info['name'],
-                            $record_info['content'],
-                            $record_info['ttl'],
-                            $record_info['prio']
-                        ), $zid);
-                    } else {
-                        $this->auditLogger->logInfo(sprintf(
-                            'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
-                            $this->ipAddressRetriever->getClientIp(),
-                            $this->userContextService->getLoggedInUsername(),
-                            $record_info['type'],
-                            $record_info['name'],
-                            $record_info['content'],
-                            $record_info['ttl']
-                        ), $zid);
+                // 0 means the record no longer exists
+                if ($zid > 0) {
+                    $domain_id = $recordRepository->recidToDomid($record_id);
+
+                    // Check if this is an A or AAAA record that might have a corresponding PTR record
+                    $hasPtrRecord = false;
+                    if (
+                        ($record_info['type'] === RecordType::A || $record_info['type'] === RecordType::AAAA) &&
+                        $this->config->get('interface', 'add_reverse_record', false)
+                    ) {
+                        $hasPtrRecord = true;
                     }
 
-                    DnsRecord::deleteRecordZoneTempl($this->db, $record_id);
+                    if ($recordManager->deleteRecord($record_id)) {
+                        $deleted_count++;
+                        $affected_zones[$zid] = true;
 
-                    // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
-                    $delete_ptr = isset($_POST['delete_ptr']) && $_POST['delete_ptr'] === '1';
-                    if ($hasPtrRecord && $delete_ptr) {
-                        $this->reverseRecordCreator->deleteReverseRecord(
-                            $record_info['type'],
-                            $record_info['content'],
-                            $record_info['name']
-                        );
-                    }
+                        if (isset($record_info['prio'])) {
+                            $this->auditLogger->logInfo(sprintf(
+                                'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
+                                $this->ipAddressRetriever->getClientIp(),
+                                $this->userContextService->getLoggedInUsername(),
+                                $record_info['type'],
+                                $record_info['name'],
+                                $record_info['content'],
+                                $record_info['ttl'],
+                                $record_info['prio']
+                            ), $zid);
+                        } else {
+                            $this->auditLogger->logInfo(sprintf(
+                                'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
+                                $this->ipAddressRetriever->getClientIp(),
+                                $this->userContextService->getLoggedInUsername(),
+                                $record_info['type'],
+                                $record_info['name'],
+                                $record_info['content'],
+                                $record_info['ttl']
+                            ), $zid);
+                        }
 
-                    // Delete comment for this specific record (per-record comment by record_id)
-                    $this->recordCommentService->deleteCommentByRecordId($record_id);
+                        RecordManager::deleteRecordZoneTempl($this->db, $record_id);
 
-                    // For backward compatibility, also clean up RRset-based comments if no similar records remain
-                    if (!$dnsRecord->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
-                        $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
+                        // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
+                        $delete_ptr = $this->request->getPostParam('delete_ptr') === '1';
+                        if ($hasPtrRecord && $delete_ptr) {
+                            $this->reverseRecordCreator->deleteReverseRecord(
+                                $record_info['type'],
+                                $record_info['content'],
+                                $record_info['name']
+                            );
+                        }
+
+                        // Delete comment for this specific record (per-record comment by record_id)
+                        $this->recordCommentService->deleteCommentByRecordId($record_id);
+
+                        // For backward compatibility, also clean up RRset-based comments if no similar records remain
+                        if (!$recordRepository->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
+                            $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
+                        }
                     }
                 }
             }
+        } finally {
+            RecordChangeLogger::endChangeset();
         }
 
         // Update SOA serials and rectify zones
+        $soaRecordManager = $this->createSOARecordManager();
         foreach (array_keys($affected_zones) as $zone_id) {
-            $dnsRecord->updateSOASerial($zone_id);
+            $soaRecordManager->updateSOASerial($zone_id);
 
             if ($this->config->get('dnssec', 'enabled', false)) {
-                $zone_name = $dnsRecord->getDomainNameById($zone_id);
-                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+                $zone_name = $domainRepository->getDomainNameById($zone_id);
+                $dnssecProvider = $this->createDnssecProvider();
                 $dnssecProvider->rectifyZone($zone_name);
             }
         }
@@ -191,10 +217,11 @@ class DeleteRecordsController extends BaseController
         $redirectParams = [];
 
         // Check if this was submitted from a zone edit page
-        if (isset($_POST['zone_id']) && is_numeric($_POST['zone_id'])) {
-            $zone_id = (int) $_POST['zone_id'];
+        $post_zone_id = $this->request->getPostParam('zone_id');
+        if (is_numeric($post_zone_id)) {
+            $zone_id = (int) $post_zone_id;
             // Validate zone exists
-            if ($dnsRecord->getZoneInfoFromId($zone_id) !== null) {
+            if ($domainRepository->getZoneInfoFromId($zone_id) !== []) {
                 $redirectPage = 'edit';
                 $messageKey = 'edit';
                 $redirectParams['id'] = $zone_id;
@@ -220,28 +247,26 @@ class DeleteRecordsController extends BaseController
      */
     public function showRecords(array $record_ids): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $recordRepository = $this->createRecordRepository();
+        $domainRepository = $this->createDomainRepository();
         $records = [];
 
         foreach ($record_ids as $record_id) {
-            $record_info = $dnsRecord->getRecordFromId($record_id);
+            $record_info = $recordRepository->getRecordFromId($record_id);
             if ($record_info) {
-                $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
-                $domain_id = $dnsRecord->recidToDomid($record_id);
+                $zid = $recordRepository->getZoneIdFromRecordId($record_id);
+                $domain_id = $recordRepository->recidToDomid($record_id);
 
-                $zone_info = $dnsRecord->getZoneInfoFromId($zid);
+                $zone_info = $domainRepository->getZoneInfoFromId($zid);
 
-                // Check zone-specific edit permission (includes group permissions)
                 $userId = $this->userContextService->getLoggedInUserId();
-                $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $domain_id, 'zone_content_edit_own');
-                $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $domain_id, 'zone_content_edit_own_as_client');
-                $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+                $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $domain_id);
 
-                if ($zone_info['type'] == "SLAVE" || (!$canEditOthers && !$canEdit && !$canEditAsClient)) {
+                if (ZoneType::isReadOnly($zone_info['type']) || $perm_edit === 'none') {
                     continue;
                 }
 
-                $record_info['zone_name'] = $dnsRecord->getDomainNameById($domain_id);
+                $record_info['zone_name'] = $domainRepository->getDomainNameById($domain_id);
 
                 // Shorten IPv6 addresses in AAAA record content for display
                 if ($record_info['type'] === 'AAAA' && isset($record_info['content'])) {
@@ -266,10 +291,11 @@ class DeleteRecordsController extends BaseController
             $redirectParams = [];
 
             // Check if this was submitted from a zone edit page
-            if (isset($_POST['zone_id']) && is_numeric($_POST['zone_id'])) {
-                $zone_id = (int) $_POST['zone_id'];
+            $post_zone_id = $this->request->getPostParam('zone_id');
+            if (is_numeric($post_zone_id)) {
+                $zone_id = (int) $post_zone_id;
                 // Validate zone exists
-                if ($dnsRecord->getZoneInfoFromId($zone_id) !== null) {
+                if ($domainRepository->getZoneInfoFromId($zone_id) !== []) {
                     $redirectPage = 'edit';
                     $messageKey = 'edit';
                     $redirectParams['id'] = $zone_id;
@@ -282,10 +308,20 @@ class DeleteRecordsController extends BaseController
             return;
         }
 
+        foreach ($records as &$record) {
+            $record['display_name'] ??= $record['name'] ?? '';
+        }
+        unset($record);
+
+        $has_ip_records = (bool)array_filter($records, fn($r) => in_array($r['type'] ?? '', ['A', 'AAAA'], true));
+
         $this->render('delete_records.html', [
             'records' => $records,
             'total_records' => count($records),
-            'zone_id' => $_POST['zone_id'] ?? null
+            'has_ip_records' => $has_ip_records,
+            'zone_id' => $this->request->getPostParam('zone_id'),
+            'change_comment' => (string)($this->request->getPostParam('change_comment') ?? ''),
+            'require_change_comment' => RecordChangeLogger::changeCommentRequired(),
         ]);
     }
 

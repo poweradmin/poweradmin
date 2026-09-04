@@ -1,9 +1,5 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Zone templates{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([{label: 'Zone templates'|trans}]) }}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -90,7 +86,7 @@
                     </td>
                     <td><span class="badge {% if template['zones_linked'] == '0' %}bg-warning{% else %}bg-secondary{% endif %}">{{ template['zones_linked'] }}</span></td>
                     <td>
-                        {% set template_sync = sync_status[template['id']] %}
+                        {% set template_sync = sync_status[template['id']] ?? null %}
                         {% if template_sync and template_sync.total_zones > 0 %}
                             {% if template_sync.unsynced_zones > 0 %}
                                 <span class="badge bg-warning text-dark" title="{% trans %}Zones need updating{% endtrans %}">
@@ -110,7 +106,7 @@
                         <div class="d-flex gap-1 justify-content-end flex-nowrap">
                             {% if perm_is_godlike and (template['owner'] == 0 or template['is_default']) %}
                             <form method="post" action="{{ base_url_prefix }}/zones/templates/set-default" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                {{ macros.csrf_field() }}
                                 {% if template['is_default'] %}
                                 <input type="hidden" name="action" value="unset">
                                 <button class="btn btn-sm btn-warning" type="submit" title="{% trans %}Unset as default{% endtrans %}">

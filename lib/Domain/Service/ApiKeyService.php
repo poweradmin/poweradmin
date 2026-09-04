@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,10 +26,10 @@ use DateTime;
 use Exception;
 use PDO;
 use Poweradmin\Domain\Model\ApiKey;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -46,6 +46,8 @@ class ApiKeyService
     private ConfigurationManager $config;
     private MessageService $messageService;
     private LoggerInterface $logger;
+    private UserContextService $userContextService;
+    private ?PermissionService $permissionService = null;
 
     /**
      * Get the database connection for debugging
@@ -70,13 +72,28 @@ class ApiKeyService
         PDO $db,
         ConfigurationManager $config,
         MessageService $messageService,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?UserContextService $userContextService = null
     ) {
         $this->apiKeyRepository = $apiKeyRepository;
         $this->db = $db;
         $this->config = $config;
         $this->messageService = $messageService;
         $this->logger = $logger ?? new NullLogger();
+        $this->userContextService = $userContextService ?? new UserContextService();
+    }
+
+    /**
+     * Check if the logged-in user has the given permission (admins always pass)
+     */
+    private function currentUserHasPermission(string $permission): bool
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
+        return $this->permissionService->hasPermission($userId, $permission);
     }
 
     /**
@@ -86,10 +103,10 @@ class ApiKeyService
      */
     public function getAllApiKeys(): array
     {
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
         // Admin users can see all API keys, regular users only see their own
-        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if ($this->currentUserHasPermission('user_is_ueberuser')) {
             $apiKeys = $this->apiKeyRepository->getAll();
         } else {
             $apiKeys = $this->apiKeyRepository->getAll($userId);
@@ -134,8 +151,8 @@ class ApiKeyService
         }
 
         // Check if the current user has access to this API key
-        $userId = $_SESSION['userid'] ?? 0;
-        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser') || $apiKey->getCreatedBy() === $userId) {
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
+        if ($this->currentUserHasPermission('user_is_ueberuser') || $apiKey->getCreatedBy() === $userId) {
             // Add creator username and fullname
             if ($apiKey->getCreatedBy() !== null) {
                 $stmt = $this->db->prepare("SELECT username, fullname FROM users WHERE id = :user_id");
@@ -154,6 +171,8 @@ class ApiKeyService
                 $apiKey->setCreatorFullname('');
             }
 
+            $apiKey->setZoneIds($this->apiKeyRepository->getZoneIds($apiKey->getId()));
+
             return $apiKey;
         }
 
@@ -165,11 +184,14 @@ class ApiKeyService
      *
      * @param string $name The name of the API key
      * @param DateTime|null $expiresAt Optional expiration date
+     * @param bool $isReadonly Whether the key is restricted to read-only requests
+     * @param string[]|null $allowedOperations Operations the key may perform; null/empty means all
+     * @param int[] $zoneIds Zones the key is restricted to; empty means no restriction
      * @return ApiKey|null The created API key, or null if creation failed
      */
-    public function createApiKey(string $name, ?DateTime $expiresAt = null): ?ApiKey
+    public function createApiKey(string $name, ?DateTime $expiresAt = null, bool $isReadonly = false, ?array $allowedOperations = null, array $zoneIds = []): ?ApiKey
     {
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
         // Check if API is enabled
         if (!$this->config->get('api', 'enabled', false)) {
@@ -179,8 +201,8 @@ class ApiKeyService
 
         // Check if user has permission to create API keys
         if (
-            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
-            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+            !$this->currentUserHasPermission('user_is_ueberuser') &&
+            !$this->currentUserHasPermission('api_manage_keys')
         ) {
             $this->messageService->addSystemError(_('You do not have permission to create API keys.'));
             return null;
@@ -188,7 +210,7 @@ class ApiKeyService
 
         // Check maximum number of API keys per user
         $maxKeysPerUser = $this->config->get('api', 'max_keys_per_user', 5);
-        if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser && !UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser && !$this->currentUserHasPermission('user_is_ueberuser')) {
             $this->messageService->addSystemError(_('You have reached the maximum number of API keys allowed.'));
             return null;
         }
@@ -203,8 +225,14 @@ class ApiKeyService
             false,
             $expiresAt
         );
+        $apiKey->setIsReadonly($isReadonly);
+        $apiKey->setAllowedOperations($this->sanitizeOperations($allowedOperations));
 
-        return $this->apiKeyRepository->save($apiKey);
+        $saved = $this->apiKeyRepository->save($apiKey);
+        $this->apiKeyRepository->saveZoneIds($saved->getId(), $zoneIds);
+        $saved->setZoneIds($zoneIds);
+
+        return $saved;
     }
 
     /**
@@ -214,9 +242,12 @@ class ApiKeyService
      * @param string $name The new name for the API key
      * @param DateTime|null $expiresAt The new expiration date
      * @param bool $disabled Whether the API key should be disabled
+     * @param bool $isReadonly Whether the key is restricted to read-only requests
+     * @param string[]|null $allowedOperations Operations the key may perform; null/empty means all
+     * @param int[]|null $zoneIds Zones the key is restricted to; null leaves them unchanged, [] clears
      * @return ApiKey|null The updated API key, or null if update failed
      */
-    public function updateApiKey(int $id, string $name, ?DateTime $expiresAt = null, bool $disabled = false): ?ApiKey
+    public function updateApiKey(int $id, string $name, ?DateTime $expiresAt = null, bool $disabled = false, bool $isReadonly = false, ?array $allowedOperations = null, ?array $zoneIds = null): ?ApiKey
     {
         $apiKey = $this->getApiKey($id);
 
@@ -227,8 +258,8 @@ class ApiKeyService
 
         // Check if user has permission to update API keys
         if (
-            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
-            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+            !$this->currentUserHasPermission('user_is_ueberuser') &&
+            !$this->currentUserHasPermission('api_manage_keys')
         ) {
             $this->messageService->addSystemError(_('You do not have permission to update API keys.'));
             return null;
@@ -238,8 +269,19 @@ class ApiKeyService
         $apiKey->setName($name);
         $apiKey->setExpiresAt($expiresAt);
         $apiKey->setDisabled($disabled);
+        $apiKey->setIsReadonly($isReadonly);
+        $apiKey->setAllowedOperations($this->sanitizeOperations($allowedOperations));
 
-        return $this->apiKeyRepository->save($apiKey);
+        $saved = $this->apiKeyRepository->save($apiKey);
+
+        // A null zone list means "leave the existing scope untouched"; an empty
+        // array clears it. This lets callers that don't manage zones skip them.
+        if ($zoneIds !== null) {
+            $this->apiKeyRepository->saveZoneIds($id, $zoneIds);
+            $saved->setZoneIds($zoneIds);
+        }
+
+        return $saved;
     }
 
     /**
@@ -259,8 +301,8 @@ class ApiKeyService
 
         // Check if user has permission to delete API keys
         if (
-            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
-            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+            !$this->currentUserHasPermission('user_is_ueberuser') &&
+            !$this->currentUserHasPermission('api_manage_keys')
         ) {
             $this->messageService->addSystemError(_('You do not have permission to delete API keys.'));
             return false;
@@ -286,8 +328,8 @@ class ApiKeyService
 
         // Check if user has permission to update API keys
         if (
-            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
-            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+            !$this->currentUserHasPermission('user_is_ueberuser') &&
+            !$this->currentUserHasPermission('api_manage_keys')
         ) {
             $this->messageService->addSystemError(_('You do not have permission to regenerate API keys.'));
             return null;
@@ -317,8 +359,8 @@ class ApiKeyService
 
         // Check if user has permission to update API keys
         if (
-            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
-            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+            !$this->currentUserHasPermission('user_is_ueberuser') &&
+            !$this->currentUserHasPermission('api_manage_keys')
         ) {
             $this->messageService->addSystemError(_('You do not have permission to update API keys.'));
             return null;
@@ -338,155 +380,150 @@ class ApiKeyService
      */
     public function authenticate(string $secretKey): bool
     {
-        // Check if API is enabled
         if (!$this->config->get('api', 'enabled', false)) {
             return false;
         }
 
-        // If the key doesn't start with 'pwa_', try to authenticate with it as is
-        // This provides backward compatibility with existing keys
-        if (strpos($secretKey, 'pwa_') !== 0) {
-            return $this->authenticateWithKey($secretKey);
-        }
-
-        // If it does start with 'pwa_', authenticate with the prefixed key
+        // The `pwa_` prefix is informational only; the repository looks the key
+        // up by hash regardless of prefix, so legacy unprefixed keys still work.
         return $this->authenticateWithKey($secretKey);
     }
 
     /**
-     * Internal method to authenticate with a specific key
-     *
-     * @param string $secretKey The secret key to authenticate with
-     * @return bool True if authentication succeeded, false otherwise
+     * Internal method to authenticate with a specific key. The repository hashes
+     * the candidate before lookup; legacy plaintext rows are migrated to a hash
+     * on first match (see {@see DbApiKeyRepository::findBySecretKey}).
      */
     private function authenticateWithKey(string $secretKey): bool
     {
-        // Use case-sensitive comparison to avoid collation-based false matches on MySQL.
-        // PostgreSQL and SQLite are byte-exact by default; MySQL needs the BINARY operator.
-        try {
-            $dbType = $this->config->get('database', 'type', 'mysql');
-            $matchExpr = ($dbType === 'mysql' || $dbType === 'mysqli') ? 'BINARY secret_key' : 'secret_key';
-            $stmt = $this->db->prepare("SELECT id, name, created_by, disabled, expires_at FROM api_keys WHERE $matchExpr = ?");
-            $stmt->execute([$secretKey]);
-            $keyData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($keyData) {
-                // Check if key is disabled
-                if ((bool)$keyData['disabled']) {
-                    return false;
-                }
-
-                // Check if key is expired
-                if ($keyData['expires_at'] && new DateTime($keyData['expires_at']) < new DateTime()) {
-                    return false;
-                }
-
-                // Deactivating a user has to revoke their keys: password login
-                // already refuses an inactive account.
-                if (!$this->ownerIsActive($keyData['created_by'] === null ? null : (int)$keyData['created_by'])) {
-                    return false;
-                }
-
-                // Set session variables for the authenticated user
-                $_SESSION['userid'] = $keyData['created_by'];
-                $_SESSION['auth_used'] = 'api_key';
-
-                // Update last used timestamp
-                $this->apiKeyRepository->updateLastUsed($keyData['id']);
-
-                return true;
-            }
-        } catch (Exception $e) {
-            // Fall through to repository method
-        }
-
-        // If the direct database check failed, try the repository method as fallback
-        $apiKey = $this->apiKeyRepository->findBySecretKey($secretKey);
-
+        $apiKey = $this->resolveUsableKey($secretKey);
         if ($apiKey === null) {
             return false;
         }
 
-        if (!$apiKey->isValid()) {
-            return false;
-        }
-
-        if (!$this->ownerIsActive($apiKey->getCreatedBy())) {
-            return false;
-        }
-
-        // Update the last used timestamp
         $this->apiKeyRepository->updateLastUsed($apiKey->getId());
-
-        // Set session variables for the authenticated user
-        $_SESSION['userid'] = $apiKey->getCreatedBy();
-        $_SESSION['auth_used'] = 'api_key';
+        $this->userContextService->setSessionData(SessionKeys::USERID, $apiKey->getCreatedBy());
+        $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'api_key');
 
         return true;
     }
 
     /**
-     * Get user ID from API key without setting session (stateless)
-     *
-     * @param string $secretKey The API key to look up
-     * @return int User ID or 0 if invalid/not found
+     * Get user ID from API key without setting session (stateless).
      */
     public function getUserIdFromApiKey(string $secretKey): int
     {
-        // Check if API is enabled
         if (!$this->config->get('api', 'enabled', false)) {
             return 0;
         }
 
         try {
-            // Check for a direct database match
-            $stmt = $this->db->prepare("SELECT created_by, disabled, expires_at FROM api_keys WHERE secret_key = ?");
-            $stmt->execute([$secretKey]);
-            $keyData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($keyData) {
-                // Check if key is disabled
-                if ((bool)$keyData['disabled']) {
-                    return 0;
-                }
-
-                // Check if key is expired
-                if ($keyData['expires_at'] && new DateTime($keyData['expires_at']) < new DateTime()) {
-                    return 0;
-                }
-
-                if (!$this->ownerIsActive($keyData['created_by'] === null ? null : (int)$keyData['created_by'])) {
-                    return 0;
-                }
-
-                // Update last used timestamp (database-agnostic using DbCompat)
-                $dbType = $this->config->get('database', 'type', 'mysql');
-                $nowFunc = DbCompat::now($dbType);
-                $this->db->prepare("UPDATE api_keys SET last_used_at = $nowFunc WHERE secret_key = ?")->execute([$secretKey]);
-
-                return (int)$keyData['created_by'];
+            $apiKey = $this->resolveUsableKey($secretKey);
+            if ($apiKey === null) {
+                return 0;
             }
+
+            $this->apiKeyRepository->updateLastUsed($apiKey->getId());
+            return $apiKey->getCreatedBy() ?? 0;
         } catch (Exception $e) {
             $this->logger->error('Failed to get user ID from API key: {error}', ['error' => $e->getMessage()]);
+            return 0;
         }
-
-        return 0;
     }
 
     /**
-     * True only when the key can be attributed to a live account. Fails closed for
-     * a missing created_by or a user row that is gone, so an unattributable key is
-     * rejected rather than let through unowned.
+     * Get the api_keys row id from a raw secret key without setting session (stateless).
+     * Used for audit logging so a request can be traced back to a specific key.
      */
+    public function getIdFromApiKey(string $secretKey): ?int
+    {
+        if (!$this->config->get('api', 'enabled', false)) {
+            return null;
+        }
+
+        try {
+            $apiKey = $this->resolveUsableKey($secretKey);
+            if ($apiKey === null) {
+                return null;
+            }
+
+            return $apiKey->getId();
+        } catch (Exception $e) {
+            $this->logger->error('Failed to get id from API key: {error}', ['error' => $e->getMessage()]);
+            return null;
+        }
+    }
+
+    /**
+     * Resolve the permission scope of an API key (stateless, no session writes).
+     *
+     * Returns null when the key is missing/invalid or the API is disabled, in
+     * which case the caller should fall back to an unrestricted scope (the key is
+     * already rejected by authentication). A key with no restrictions yields a
+     * scope where every zone and operation is allowed.
+     *
+     * @param string $secretKey The raw secret key from the request
+     * @return ApiKeyScope|null The resolved scope, or null if it cannot be resolved
+     */
+    public function getScopeFromApiKey(string $secretKey): ?ApiKeyScope
+    {
+        if (!$this->config->get('api', 'enabled', false)) {
+            return null;
+        }
+
+        try {
+            $apiKey = $this->resolveUsableKey($secretKey);
+            if ($apiKey === null) {
+                return null;
+            }
+
+            $zoneIds = $this->apiKeyRepository->getZoneIds($apiKey->getId());
+
+            return new ApiKeyScope(
+                $zoneIds === [] ? null : $zoneIds,
+                $apiKey->getAllowedOperations(),
+                $apiKey->isReadonly()
+            );
+        } catch (Exception $e) {
+            $this->logger->error('Failed to resolve API key scope: {error}', ['error' => $e->getMessage()]);
+            return null;
+        }
+    }
+
+    /**
+     * Resolve a key only when the key itself is usable and the user it was issued
+     * to is still active. Deactivating a user has to revoke their keys: password
+     * login already refuses an inactive account, so a key that skipped this check
+     * kept the deactivated owner's permissions and zone scope.
+     *
+     * Fails closed - a key that cannot be attributed to a live user (no
+     * created_by, or the row is gone) is rejected rather than let through unowned.
+     */
+    private function resolveUsableKey(string $secretKey): ?ApiKey
+    {
+        $apiKey = $this->apiKeyRepository->findBySecretKey($secretKey);
+        if ($apiKey === null || !$apiKey->isValid()) {
+            return null;
+        }
+
+        if (!$this->ownerIsActive($apiKey->getCreatedBy())) {
+            $this->logger->warning('API key {id} rejected: owner is inactive or no longer exists', [
+                'id' => $apiKey->getId()
+            ]);
+            return null;
+        }
+
+        return $apiKey;
+    }
+
     private function ownerIsActive(?int $userId): bool
     {
         if ($userId === null) {
             return false;
         }
 
-        // Fail closed on a lookup error: the repository fallback path this also
-        // guards runs outside any try block, so a throw here would surface as a
-        // 500 instead of an auth failure.
+        // Fail closed on a lookup error: authenticate() has no try block of its
+        // own, so a throw here would surface as a 500 instead of an auth failure.
         try {
             $stmt = $this->db->prepare("SELECT active FROM users WHERE id = :user_id");
             $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
@@ -498,5 +535,22 @@ class ApiKeyService
         }
 
         return is_array($row) && (int)($row['active'] ?? 0) === 1;
+    }
+
+    /**
+     * Keep only recognised operation names; an empty/null result means "all".
+     *
+     * @param string[]|null $operations
+     * @return string[]|null
+     */
+    private function sanitizeOperations(?array $operations): ?array
+    {
+        if ($operations === null) {
+            return null;
+        }
+
+        $valid = array_values(array_intersect(ApiKeyScope::OPERATIONS, $operations));
+
+        return $valid === [] ? null : $valid;
     }
 }

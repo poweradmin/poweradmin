@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -110,7 +110,14 @@ class IpHelper
             return null;
         }
 
-        return inet_ntop(inet_pton($ipv6));
+        $packed = inet_pton($ipv6);
+        if ($packed === false) {
+            return null;
+        }
+
+        $normalized = inet_ntop($packed);
+
+        return $normalized === false ? null : $normalized;
     }
 
     /**
@@ -255,7 +262,7 @@ class IpHelper
     {
         $parts = explode('.', $address);
         $octetCount = count($parts);
-        if ($octetCount < 1 || $octetCount > 4) {
+        if ($octetCount > 4) {
             return null;
         }
         foreach ($parts as $part) {
@@ -345,7 +352,9 @@ class IpHelper
             return null;
         }
 
-        return inet_ntop($binary);
+        $shortened = inet_ntop($binary);
+
+        return $shortened === false ? null : $shortened;
     }
 
     /**
@@ -436,48 +445,5 @@ class IpHelper
         }
 
         return $shortened;
-    }
-
-    /**
-     * Extract all valid IP addresses from a PowerDNS master field value
-     *
-     * Similar to extractFirstIpFromMaster but returns all valid IPs found.
-     *
-     * @param string $master The master field value from PowerDNS
-     * @return array Array of valid IP addresses
-     */
-    public static function extractAllIpsFromMaster(string $master): array
-    {
-        // Trim whitespace
-        $master = trim($master);
-
-        if (empty($master)) {
-            return [];
-        }
-
-        // Split by comma in case of multiple masters
-        $masters = array_map('trim', explode(',', $master));
-        $validIps = [];
-
-        foreach ($masters as $entry) {
-            // Remove port notation if present
-            // Handle IPv6 with port: [2001:db8::1]:5300
-            if (preg_match('/^\[([^\]]+)\](?::\d+)?$/', $entry, $matches)) {
-                $ip = $matches[1];
-            } elseif (preg_match('/^([0-9.]+):\d+$/', $entry, $matches)) {
-                // Handle IPv4 with port: 192.168.1.1:5300
-                $ip = $matches[1];
-            } else {
-                // No port notation
-                $ip = $entry;
-            }
-
-            // Check if it's a valid IPv4 or IPv6 address (not a hostname)
-            if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
-                $validIps[] = $ip;
-            }
-        }
-
-        return $validIps;
     }
 }

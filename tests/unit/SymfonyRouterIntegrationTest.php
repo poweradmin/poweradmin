@@ -152,37 +152,37 @@ class SymfonyRouterIntegrationTest extends TestCase
         $this->assertEquals('mfa_verify', $routeInfo['route']);
     }
 
-    public function testApiV1Routes(): void
+    public function testApiV2Routes(): void
     {
         // API zones collection
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\Api\V1\ZonesController', $routeInfo['controller']);
-        $this->assertEquals('api_v1_zones', $routeInfo['route']);
+        $this->assertEquals('Poweradmin\Application\Controller\Api\V2\ZonesController', $routeInfo['controller']);
+        $this->assertEquals('api_v2_zones', $routeInfo['route']);
 
         // API specific zone
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones/123';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones/123';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\Api\V1\ZonesController', $routeInfo['controller']);
-        $this->assertEquals('api_v1_zone', $routeInfo['route']);
+        $this->assertEquals('Poweradmin\Application\Controller\Api\V2\ZonesController', $routeInfo['controller']);
+        $this->assertEquals('api_v2_zone', $routeInfo['route']);
         $this->assertEquals(['id' => '123'], $routeInfo['parameters']);
 
         // API zone records collection
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones/456/records';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones/456/records';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\Api\V1\ZonesRecordsController', $routeInfo['controller']);
-        $this->assertEquals('api_v1_zone_records', $routeInfo['route']);
+        $this->assertEquals('Poweradmin\Application\Controller\Api\V2\ZonesRecordsController', $routeInfo['controller']);
+        $this->assertEquals('api_v2_zone_records', $routeInfo['route']);
         $this->assertEquals(['id' => '456'], $routeInfo['parameters']);
 
         // API specific zone record
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones/123/records/789';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones/123/records/789';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\Api\V1\ZonesRecordsController', $routeInfo['controller']);
-        $this->assertEquals('api_v1_zone_record', $routeInfo['route']);
+        $this->assertEquals('Poweradmin\Application\Controller\Api\V2\ZonesRecordsController', $routeInfo['controller']);
+        $this->assertEquals('api_v2_zone_record', $routeInfo['route']);
         $this->assertEquals([
             'id' => '123',
             'record_id' => '789'
@@ -201,7 +201,7 @@ class SymfonyRouterIntegrationTest extends TestCase
 
     public function testHttpMethodHandling(): void
     {
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones';
 
         // GET request (index/list)
         $_SERVER['REQUEST_METHOD'] = 'GET';
@@ -216,7 +216,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $this->assertEquals('run', $routeInfo['method']);
 
         // Test specific resource with PUT/DELETE
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones/123';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones/123';
 
         // PUT request (update)
         $_SERVER['REQUEST_METHOD'] = 'PUT';
@@ -240,8 +240,8 @@ class SymfonyRouterIntegrationTest extends TestCase
         $this->assertEquals('/users/123/edit', $url);
 
         // Test API zone record URL generation
-        $url = $router->generateUrl('api_v1_zone_record', ['id' => 456, 'record_id' => 789]);
-        $this->assertEquals('/api/v1/zones/456/records/789', $url);
+        $url = $router->generateUrl('api_v2_zone_record', ['id' => 456, 'record_id' => 789]);
+        $this->assertEquals('/api/v2/zones/456/records/789', $url);
 
         // Test simple route without parameters
         $url = $router->generateUrl('login');

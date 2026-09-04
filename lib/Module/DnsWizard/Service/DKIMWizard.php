@@ -87,7 +87,7 @@ class DKIMWizard extends AbstractDnsWizard
                         ],
                         [
                             'name' => 'key_type',
-                            'label' => _('Key Type'),
+                            'label' => _('Key type'),
                             'type' => 'radio',
                             'required' => false,
                             'default' => 'rsa',

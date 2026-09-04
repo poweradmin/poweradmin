@@ -7,7 +7,7 @@
 
 /**
  * Extract ID from a URL path
- * Supports both legacy (?id=123) and modern (/zone-templates/123/edit) URL patterns
+ * Supports both legacy (?id=123) and modern (/zones/templates/123/edit) URL patterns
  *
  * @param {string} href - URL to extract ID from
  * @returns {string|null} - ID or null if not found
@@ -15,7 +15,7 @@
 function extractIdFromUrl(href) {
   if (!href) return null;
 
-  // Modern URL pattern: /zone-templates/123/edit, /permission-templates/123/edit
+  // Modern URL pattern: /zones/templates/123/edit, /permissions/templates/123/edit
   const modernMatch = href.match(/\/(\d+)(?:\/edit|\/delete|$)/);
   if (modernMatch) return modernMatch[1];
 
@@ -46,7 +46,7 @@ export async function findTemplateIdByName(page, templateName) {
     return null;
   }
 
-  // Find edit link and extract ID (modern URLs: /zone-templates/123/edit)
+  // Find edit link and extract ID (modern URLs: /zones/templates/123/edit)
   const editLink = row.locator('a[href*="/edit"]').first();
   if (await editLink.count() === 0) {
     return null;
@@ -130,7 +130,7 @@ export async function findPermTemplateIdByName(page, templateName) {
     return null;
   }
 
-  // Find edit link and extract ID (modern URLs: /permission-templates/123/edit)
+  // Find edit link and extract ID (modern URLs: /permissions/templates/123/edit)
   const editLink = row.locator('a[href*="/edit"]').first();
   if (await editLink.count() === 0) {
     return null;

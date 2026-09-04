@@ -1,10 +1,8 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-    <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/mfa/setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
-    <li class="breadcrumb-item" aria-current="page">{% trans %}Email Verification{% endtrans %}</li>
-  </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Multi-Factor Authentication'|trans, url: base_url_prefix ~ '/mfa/setup'},
+    {label: 'Email verification'|trans},
+]) }}
 
 <div class="container-fluid">
   <div class="row justify-content-center">
@@ -18,7 +16,7 @@
           <p class="small mb-4">{% trans %}Please enter the 6-digit code to verify and enable Multi-Factor Authentication.{% endtrans %}</p>
           
           <form method="post" action="{{ base_url_prefix }}/mfa/setup" class="needs-validation" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             
             <div class="mb-3">
               <label for="verification_code" class="form-label small">{% trans %}Verification Code{% endtrans %}</label>

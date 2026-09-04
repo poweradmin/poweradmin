@@ -32,12 +32,20 @@
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Service\DatabaseService;
+use Poweradmin\Domain\Model\ApiKeyScope;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
+use Poweradmin\Infrastructure\Logger\DbApiLogger;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -46,17 +54,18 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class PublicApiController extends AbstractApiController
 {
-    /**
-     * RFC 8594 sunset date for API v1. V1 is superseded by v2 and scheduled
-     * for removal in Poweradmin 4.4.0. Clients should migrate before this date.
-     */
-    private const V1_SUNSET_DATE = 'Tue, 01 Sep 2026 00:00:00 GMT';
-
     protected const MAX_PAGE_SIZE = 10000;
 
     protected array $pathParameters;
     protected int $authenticatedUserId = 0;
     protected LoggerInterface $logger;
+
+    /**
+     * Permission scope of the API key used for this request. Null when the request
+     * authenticated via HTTP Basic auth or no key scope could be resolved, in which
+     * case {@see self::getApiKeyScope()} returns an unrestricted scope.
+     */
+    protected ?ApiKeyScope $apiKeyScope = null;
 
     /**
      * PublicApiController constructor
@@ -82,13 +91,14 @@ abstract class PublicApiController extends AbstractApiController
         // Authenticate the API request using API key or HTTP Basic auth
         $this->authenticateApiRequest();
 
-        // Log deprecation warning for V1 API requests
-        if (!$this->isV2Controller()) {
-            $this->logger->warning('Deprecated API v1 request: {method} {path} from {ip}', [
-                'method' => $this->request->getMethod(),
-                'path' => $this->request->getPathInfo(),
-                'ip' => $this->request->getClientIp(),
-            ]);
+        // Enforce the API key's read-only / operation scope before any handler runs
+        $this->enforceApiKeyMethodScope();
+
+        // HEAD passes the read-only scope check above; route it to the GET handler so
+        // each controller answers it instead of falling through to a 405. The
+        // bootstrap buffers away the GET body so the client still gets headers only.
+        if (strtoupper($this->request->getMethod()) === 'HEAD') {
+            $this->request->setMethod('GET');
         }
     }
 
@@ -125,10 +135,20 @@ abstract class PublicApiController extends AbstractApiController
         // Get authenticated user ID in a stateless way
         if ($authenticated) {
             $this->authenticatedUserId = $apiKeyMiddleware->getAuthenticatedUserId($this->request);
+            $this->apiKeyScope = $apiKeyMiddleware->getApiKeyScope($this->request);
+
+            // The key authenticated, so its scope must resolve. A null here means a
+            // lookup error (e.g. transient DB failure); fail closed rather than fall
+            // back to an unrestricted scope and grant more than the key allows.
+            if ($this->apiKeyScope === null) {
+                $response = $this->returnApiError('Unable to verify API key permissions', 403);
+                $response->send();
+                exit;
+            }
         }
 
         // Try Basic auth if API key auth failed and it's enabled
-        if (!$authenticated && $config->get('api', 'basic_auth_enabled', true)) {
+        if (!$authenticated && $config->get('api', 'basic_auth_enabled', false)) {
             $basicAuthMiddleware = new BasicAuthenticationMiddleware($db, $config);
             $this->authenticatedUserId = $basicAuthMiddleware->getAuthenticatedUserId($this->request);
             $authenticated = ($this->authenticatedUserId > 0);
@@ -136,14 +156,19 @@ abstract class PublicApiController extends AbstractApiController
 
         // If all authentication methods failed, return 401 Unauthorized
         if (!$authenticated) {
-            // Use V2 response format for V2 controllers, V1 format for V1 controllers
-            if ($this->isV2Controller()) {
-                $response = $this->returnApiError('Unauthorized: Invalid credentials', 401);
-            } else {
-                $response = $this->returnErrorResponse('Unauthorized: Invalid credentials', 401);
-            }
+            $response = $this->returnApiError('Unauthorized: Invalid credentials', 401);
             $response->send();
             exit;
+        }
+
+        // Make the authenticated identity visible to UserContextService so the
+        // change log records the actor (instead of falling back to "system")
+        // for record/zone mutations performed via the API.
+        if ($this->authenticatedUserId > 0) {
+            UserContextService::setApiUserContext(
+                $this->authenticatedUserId,
+                $this->getAuthenticatedUsername()
+            );
         }
     }
 
@@ -184,16 +209,6 @@ abstract class PublicApiController extends AbstractApiController
 
         // Authenticate using the API key service
         return $apiKeyService->authenticate($apiKey);
-    }
-
-    /**
-     * Check if this controller is a V2 API controller
-     *
-     * @return bool True if V2 controller, false if V1
-     */
-    protected function isV2Controller(): bool
-    {
-        return str_contains(get_class($this), '\\V2\\');
     }
 
     /**
@@ -249,6 +264,22 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
+     * Pick the right "cannot edit this zone's records" message: read-only zones
+     * (Secondary, Consumer) replicate from a primary and are rejected for a
+     * different reason than a missing edit permission. Keeps the public error
+     * contract accurate for both cases.
+     *
+     * @param string|null $zoneType Zone kind (MASTER, SLAVE, NATIVE, CONSUMER) when known
+     * @return string Error message describing why record edits are not allowed
+     */
+    protected function zoneEditDeniedMessage(?string $zoneType): string
+    {
+        return ZoneType::isReadOnly($zoneType)
+            ? 'Records in Secondary and Consumer zones are read-only; they replicate from a primary'
+            : 'You do not have permission to edit this zone';
+    }
+
+    /**
      * Get the authenticated user ID (stateless)
      *
      * @return int The authenticated user ID or 0 if not authenticated
@@ -266,7 +297,93 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
-     * Override to inject deprecation headers for V1 API responses
+     * Get the permission scope of the API key for this request. Requests without a
+     * key scope (Basic auth, or an unresolvable key) are treated as unrestricted.
+     *
+     * @return ApiKeyScope The resolved scope, never null
+     */
+    protected function getApiKeyScope(): ApiKeyScope
+    {
+        return $this->apiKeyScope ?? ApiKeyScope::unrestricted();
+    }
+
+    /**
+     * Reject the request with 403 when the API key's read-only/operation scope
+     * does not permit the HTTP method. This is a request-global gate.
+     *
+     * @return void
+     */
+    protected function enforceApiKeyMethodScope(): void
+    {
+        $scope = $this->getApiKeyScope();
+        $method = strtoupper($this->request->getMethod());
+
+        // Read-only is always method-based and always correct: only GET/HEAD pass.
+        if ($scope->isReadonly() && !in_array($method, ['GET', 'HEAD'], true)) {
+            $this->sendApiKeyOperationForbidden();
+        }
+
+        // Every operation this request performs must be permitted. The default is
+        // the HTTP method's operation; controllers whose method does not map to a
+        // single operation (upserts, DNSSEC toggles, bulk) override the hook below.
+        foreach ($this->requiredApiKeyOperations() as $operation) {
+            if (!$scope->isOperationTypeAllowed($operation)) {
+                $this->sendApiKeyOperationForbidden();
+            }
+        }
+    }
+
+    /**
+     * Operations the current request performs, all of which the API key must
+     * permit. Defaults to the single operation implied by the HTTP method.
+     * Override for endpoints where the method is not a 1:1 operation mapping:
+     * return the exact set (e.g. [create, update] for an upsert), or [] to skip
+     * the central check and enforce the operation scope inside the handler.
+     *
+     * @return string[]
+     */
+    protected function requiredApiKeyOperations(): array
+    {
+        return [ApiKeyScope::methodToOperation($this->request->getMethod())];
+    }
+
+    /**
+     * Send a 403 for an operation the API key may not perform, and stop.
+     *
+     * @return never
+     */
+    protected function sendApiKeyOperationForbidden(): void
+    {
+        $response = $this->returnApiError(
+            'Forbidden: this API key is not permitted to perform this operation',
+            403
+        );
+        $response->send();
+        exit;
+    }
+
+    /**
+     * Guard a zone-scoped endpoint against the API key's zone restriction.
+     * Returns a 403 response when the zone is out of scope, or null when allowed.
+     * Callers return the response directly: `if (($r = $this->enforceApiKeyZoneScope($id)) !== null) { return $r; }`
+     *
+     * @param int $zoneId The zone (domain) ID the request targets
+     * @return JsonResponse|null A 403 response, or null when the zone is in scope
+     */
+    protected function enforceApiKeyZoneScope(int $zoneId): ?JsonResponse
+    {
+        if ($this->getApiKeyScope()->isZoneAllowed($zoneId)) {
+            return null;
+        }
+
+        return $this->returnApiError(
+            'Forbidden: this API key does not have access to the requested zone',
+            403
+        );
+    }
+
+    /**
+     * Override to record every public API response in the audit log
      *
      * @param mixed $data The data to return
      * @param int $status HTTP status code
@@ -275,13 +392,133 @@ abstract class PublicApiController extends AbstractApiController
      */
     protected function returnJsonResponse($data, int $status = 200, array $headers = []): JsonResponse
     {
-        if (!$this->isV2Controller()) {
-            $headers['Deprecation'] = 'true';
-            $headers['Sunset'] = self::V1_SUNSET_DATE;
-            $headers['Link'] = '</api/v2/>; rel="successor-version"';
-        }
+        $this->logApiRequest($status);
 
         return parent::returnJsonResponse($data, $status, $headers);
+    }
+
+    /**
+     * Record an API request in the audit log (log_api table).
+     *
+     * Permission violations (401/403) are always logged when database audit
+     * logging is on, since they are a low-volume security signal. Successful and
+     * other requests are logged only when the api_request_logging opt-in is set,
+     * because per-request logging is high-volume. Logging never blocks the
+     * response - any failure is swallowed.
+     */
+    private function logApiRequest(int $status): void
+    {
+        try {
+            $config = $this->getConfig();
+            $isViolation = $status === 401 || $status === 403;
+            if (!$isViolation && !$config->get('logging', 'api_request_logging', false)) {
+                return;
+            }
+
+            $operation = $isViolation ? 'api_violation' : 'api_request';
+            $clientIp = (new IpAddressRetriever($_SERVER))->getClientIp();
+            // Resolve the API key id lazily - only now that a log row is actually
+            // being written - so the default (logging off) path pays nothing.
+            $keyId = '-';
+            if ($this->authenticatedUserId > 0) {
+                $id = (new ApiKeyAuthenticationMiddleware($this->db, $config))->getAuthenticatedApiKeyId($this->request);
+                if ($id !== null) {
+                    $keyId = (string)$id;
+                }
+            }
+            $user = $this->authenticatedUserId > 0 ? $this->getAuthenticatedUsername() : '-';
+            // The constructor rewrites v2 HEAD to GET so handlers can serve it;
+            // read the original method so the audit trail stays accurate.
+            $method = $_SERVER['REQUEST_METHOD'] ?? $this->request->getMethod();
+            // Cap the path so a pathological URL cannot push the event past the
+            // log_api.event 2048-char column and get the whole row (incl. a
+            // violation) rejected and silently dropped.
+            $path = mb_substr($this->request->getPathInfo(), 0, 1500);
+
+            $event = sprintf(
+                'operation:%s method:%s path:%s status:%d key_id:%s user:%s client_ip:%s',
+                $operation,
+                $method,
+                $path,
+                $status,
+                $keyId,
+                $user !== '' ? $user : '-',
+                $clientIp !== '' ? $clientIp : '-'
+            );
+
+            (new LegacyLogger($this->db))->logApiInfo($event);
+            $this->pruneApiLog($config);
+        } catch (\Throwable $e) {
+            // Audit logging must never break the API response.
+        }
+    }
+
+    /**
+     * Occasionally drop API log rows older than the configured retention window.
+     *
+     * There is no scheduler in Poweradmin, so pruning piggybacks on writes at a
+     * low probability (like PHP session GC) to keep the table bounded without a
+     * DELETE on every request. Retention of 0 means keep forever.
+     */
+    private function pruneApiLog(ConfigurationManager $config): void
+    {
+        $retentionDays = (int)$config->get('logging', 'api_log_retention_days', 0);
+        if ($retentionDays <= 0) {
+            return;
+        }
+        if (random_int(1, 100) !== 1) {
+            return;
+        }
+        (new DbApiLogger($this->db))->pruneOlderThan($retentionDays);
+    }
+
+    /**
+     * Apply V2 record-content formatting.
+     *
+     * V2 always quotes single-string TXT records, even when dns.txt_auto_quote is
+     * off, so records round-trip: create quotes, read strips, update must re-quote.
+     * Used by create and update paths alike so stored content stays consistent.
+     */
+    protected function formatV2RecordContent(string $type, string $content): string
+    {
+        $type = strtoupper($type);
+        $content = (new DnsFormatter($this->getConfig()))->formatContent($type, $content);
+        if ($type === 'TXT') {
+            $content = trim($content);
+            if (!str_starts_with($content, '"') || !str_ends_with($content, '"')) {
+                $content = '"' . $content . '"';
+            }
+        }
+        return $content;
+    }
+
+    /**
+     * Strip quotes from single-string TXT records for V2 API responses
+     *
+     * V2 responses present single-string TXT content unquoted regardless of stored
+     * form (zone records are force-quoted on write, template records only when
+     * dns.txt_auto_quote is on). Multi-string TXT records (e.g., "part1" "part2")
+     * are preserved as-is since they represent long values split across multiple strings.
+     *
+     * @param string $content The TXT record content from database
+     * @param string $type The record type
+     * @return string The formatted content (quotes stripped for single-string TXT records)
+     */
+    protected function stripTxtQuotes(string $content, string $type): string
+    {
+        if ($type !== 'TXT') {
+            return $content;
+        }
+
+        $content = trim($content);
+        $isMultiString = str_contains($content, '" "');
+
+        // Only strip quotes for single-string TXT records
+        if (!$isMultiString && str_starts_with($content, '"') && str_ends_with($content, '"') && strlen($content) > 1) {
+            return substr($content, 1, -1);
+        }
+
+        return $content;
     }
 
     /**

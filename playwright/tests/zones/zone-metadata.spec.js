@@ -13,7 +13,9 @@ test.describe.configure({ mode: 'serial' });
 
 async function getTestZoneId(page) {
   await page.goto('/zones/forward?letter=all');
-  const editLink = page.locator('a[href*="/edit"]').first();
+  // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
+  // which carries no zone id, so this helper used to return null for every test.
+  const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
   if (await editLink.count() > 0) {
     const href = await editLink.getAttribute('href');
     const match = href.match(/\/zones\/(\d+)\/edit/);
@@ -80,11 +82,11 @@ test.describe('Zone Metadata Editor', () => {
 
     // Save
     await page.locator('[data-testid="save-zone-metadata"]').click();
-    await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-    expect(bodyText).toContain('successfully');
+    // The controller redirects back to the metadata page with a flash message, so
+    // wait for the alert rather than reading the body once and racing the redirect.
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
   });
 
   test('should persist saved metadata on reload', async ({ page }) => {
@@ -92,16 +94,18 @@ test.describe('Zone Metadata Editor', () => {
     const zoneId = await getTestZoneId(page);
     if (!zoneId) return;
 
+    // Write the value here instead of inheriting it from the previous test:
+    // getTestZoneId resolves whichever zone sorts first, and that shifts while
+    // other suites create and delete zones concurrently.
     await page.goto(`/zones/${zoneId}/metadata`);
-    await page.waitForLoadState('networkidle');
+    await page.locator('.metadata-kind-select').first().selectOption('ALLOW-AXFR-FROM');
+    await page.locator('.metadata-content').first().fill('192.0.2.10');
+    await page.locator('[data-testid="save-zone-metadata"]').click();
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
 
-    const contentInput = page.locator('.metadata-content').first();
-    const value = await contentInput.inputValue();
-    expect(value).toBe('192.0.2.10');
-
-    const kindSelect = page.locator('.metadata-kind-select').first();
-    const selectedValue = await kindSelect.inputValue();
-    expect(selectedValue).toBe('ALLOW-AXFR-FROM');
+    await page.goto(`/zones/${zoneId}/metadata`);
+    await expect(page.locator('.metadata-content').first()).toHaveValue('192.0.2.10');
+    await expect(page.locator('.metadata-kind-select').first()).toHaveValue('ALLOW-AXFR-FROM');
   });
 
   test('should add new row with add button', async ({ page }) => {
@@ -160,16 +164,47 @@ test.describe('Zone Metadata Editor', () => {
     const lastKindSelect = page.locator('.metadata-kind-select').last();
     await lastKindSelect.selectOption('SOA-EDIT-API');
 
-    const lastContentInput = page.locator('.metadata-content').last();
-    await lastContentInput.fill('DEFAULT');
+    // Kinds with a fixed vocabulary swap the free-text input for a select and
+    // disable the input, so SOA-EDIT-API takes its value from the dropdown.
+    const lastContentSelect = page.locator('.metadata-content-select').last();
+    await lastContentSelect.selectOption('DEFAULT');
 
     // Save
     await page.locator('[data-testid="save-zone-metadata"]').click();
-    await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
-    expect(bodyText).toContain('successfully');
+    // The controller redirects back to the metadata page with a flash message, so
+    // wait for the alert rather than reading the body once and racing the redirect.
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
+  });
+
+  test('should accept two values for a multi-value kind', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    const zoneId = await getTestZoneId(page);
+    if (!zoneId) return;
+
+    await page.goto(`/zones/${zoneId}/metadata`);
+
+    // PowerDNS reads every TSIG-ALLOW-DNSUPDATE row, so a zone may carry more
+    // than one update key.
+    for (const key of ['update-key-one', 'update-key-two']) {
+      await page.locator('#add-metadata-row').click();
+      await page.locator('.metadata-kind-select').last().selectOption('TSIG-ALLOW-DNSUPDATE');
+      await page.locator('.metadata-content').last().fill(key);
+    }
+
+    await page.locator('[data-testid="save-zone-metadata"]').click();
+
+    // The badge legend always says "Single value", so assert on the alert only.
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
+    await expect(page.locator('[data-testid="system-message"]')).not.toContainText(/single value/i);
+
+    await page.goto(`/zones/${zoneId}/metadata`);
+    const values = await page.locator('.metadata-content').evaluateAll(
+      (inputs) => inputs.map((input) => input.value)
+    );
+    expect(values).toContain('update-key-one');
+    expect(values).toContain('update-key-two');
   });
 
   test('should clean up test metadata', async ({ page }) => {

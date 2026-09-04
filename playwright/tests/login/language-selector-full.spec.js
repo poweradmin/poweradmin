@@ -1,21 +1,24 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 
 /**
- * Tests for full language configuration (all shipped languages enabled).
+ * Tests for the full language configuration (all default languages enabled).
  *
  * These tests verify the complete set of supported languages when
- * `enabled_languages` uses the default (all languages). Designed for
- * the MySQL devcontainer instance (port 8080).
+ * `enabled_languages` uses the default. Designed for the MySQL
+ * devcontainer instance (port 8080).
  *
  * Run with: BASE_URL=http://localhost:8080 npx playwright test language-selector-full
  */
 
-// Must stay in sync with the enabled_languages default in config/settings.defaults.php.
-const ALL_LOCALES = [
-  'cs_CZ', 'de_DE', 'en_EN', 'es_ES', 'et_EE', 'fi_FI', 'fr_FR',
-  'hr_HR', 'hu_HU', 'id_ID', 'it_IT', 'ja_JP', 'ko_KR', 'lt_LT',
-  'lv_LV', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_PT', 'ro_RO', 'ru_RU',
-  'sk_SK', 'sr_RS', 'sv_SE', 'tr_TR', 'uk_UA', 'vi_VN', 'zh_CN',
+// Mirrors interface.enabled_languages in config/settings.defaults.php.
+// Keep both in sync when adding or removing a locale.
+const SUPPORTED_LOCALES = [
+  'ar_SA', 'bg_BG', 'bs_BA', 'cs_CZ', 'da_DK', 'de_DE', 'el_GR', 'en_EN',
+  'es_ES', 'et_EE', 'fa_IR', 'fi_FI', 'fr_FR', 'ga_IE', 'he_IL', 'hi_IN',
+  'hr_HR', 'hu_HU', 'id_ID', 'it_IT', 'ja_JP', 'ko_KR', 'lt_LT', 'lv_LV',
+  'ms_MY', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_BR', 'pt_PT', 'ro_RO', 'ru_RU',
+  'sk_SK', 'sl_SI', 'sq_AL', 'sr_RS', 'sv_SE', 'th_TH', 'tr_TR', 'uk_UA',
+  'vi_VN', 'zh_CN', 'zh_TW',
 ];
 
 test.describe('Language Selector - Full Configuration', () => {
@@ -26,16 +29,17 @@ test.describe('Language Selector - Full Configuration', () => {
     await page.goto('/login');
   });
 
-  test('should have every supported language', async ({ page }) => {
+  test('should have all supported languages', async ({ page }) => {
     const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
-    await expect(items).toHaveCount(ALL_LOCALES.length);
+    const count = await items.count();
+    expect(count).toBe(SUPPORTED_LOCALES.length);
   });
 
-  test('should contain all expected languages', async ({ page }) => {
+  test('should contain every supported language', async ({ page }) => {
     const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
     const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
 
-    for (const locale of ALL_LOCALES) {
+    for (const locale of SUPPORTED_LOCALES) {
       expect(values).toContain(locale);
     }
   });
@@ -44,9 +48,8 @@ test.describe('Language Selector - Full Configuration', () => {
     const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
     const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
 
-    expect(values.length).toBeGreaterThan(0);
     for (const value of values) {
-      expect(ALL_LOCALES).toContain(value);
+      expect(SUPPORTED_LOCALES).toContain(value);
     }
   });
 });

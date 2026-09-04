@@ -1,12 +1,10 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/forward">{% trans %}Zones{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/wizard">{% trans %}DNS Wizard{% endtrans %}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{{ wizard.name }}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Zones'|trans, url: base_url_prefix ~ '/zones/forward'},
+    {label: zone_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+    {label: 'DNS Wizard'|trans, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/wizard'},
+    {label: wizard.name},
+]) }}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">
@@ -35,7 +33,7 @@
         {% endif %}
 
         <form method="post" class="needs-validation" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             {% if showWarnings %}
                 <input type="hidden" name="warnings_acknowledged" value="1">
             {% endif %}

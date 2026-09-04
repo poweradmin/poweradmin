@@ -6,10 +6,10 @@
 
 namespace OpenApi\Assembler;
 
-use OpenApi\AttributeInterface;
+use OpenApi\Contracts\AttributeInterface;
 
 /**
- * Default implementation dealing with native attributes.
+ * Default implementation handling native (OpenApi) attributes.
  */
 class DefaultAttributeTranslator extends AbstractAttributeTranslator
 {

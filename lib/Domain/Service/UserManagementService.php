@@ -23,8 +23,10 @@
 namespace Poweradmin\Domain\Service;
 
 use Exception;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Model\Pagination;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
  * Domain service for user management operations
@@ -35,14 +37,15 @@ use Poweradmin\Domain\Model\Pagination;
 class UserManagementService
 {
     private UserRepository $userRepository;
-    private PermissionService $permissionService;
+    private UserProfileAssembler $profileAssembler;
 
     public function __construct(
         UserRepository $userRepository,
-        PermissionService $permissionService
+        PermissionService $permissionService,
+        UserGroupRepositoryInterface $groupRepository
     ) {
         $this->userRepository = $userRepository;
-        $this->permissionService = $permissionService;
+        $this->profileAssembler = new UserProfileAssembler($permissionService, $groupRepository);
     }
 
     /**
@@ -55,26 +58,7 @@ class UserManagementService
     {
         $user = $this->userRepository->getUserById($userId);
 
-        if (!$user) {
-            return null;
-        }
-
-        // Enrich user data with permissions and admin status
-        $permissions = $this->permissionService->getUserPermissions($userId);
-        $isAdmin = $this->permissionService->isAdmin($userId);
-
-        return [
-            'user_id' => (int)$user['id'],
-            'username' => $user['username'],
-            'fullname' => $user['fullname'] ?? '',
-            'email' => $user['email'] ?? '',
-            'description' => $user['description'] ?? '',
-            'active' => (bool)$user['active'],
-            'is_admin' => $isAdmin,
-            'permissions' => $permissions,
-            'created_at' => $user['created_at'] ?? null,
-            'updated_at' => $user['updated_at'] ?? null
-        ];
+        return $user ? $this->profileAssembler->assembleDetail($user) : null;
     }
 
     /**
@@ -90,27 +74,9 @@ class UserManagementService
             $pagination->getLimit()
         );
 
-        $totalCount = $this->userRepository->getTotalUserCount();
-
-        // Enrich each user with admin status and zone count
-        $enrichedUsers = array_map(function ($user) {
-            $isAdmin = $this->permissionService->isAdmin((int)$user['id']);
-
-            return [
-                'user_id' => (int)$user['id'],
-                'username' => $user['username'],
-                'fullname' => $user['fullname'] ?? '',
-                'email' => $user['email'] ?? '',
-                'description' => $user['description'] ?? '',
-                'active' => (bool)$user['active'],
-                'zone_count' => (int)($user['zone_count'] ?? 0),
-                'is_admin' => $isAdmin
-            ];
-        }, $users);
-
         return [
-            'data' => $enrichedUsers,
-            'total_count' => $totalCount
+            'data' => $this->profileAssembler->assembleList($users),
+            'total_count' => $this->userRepository->getTotalUserCount()
         ];
     }
 
@@ -161,18 +127,7 @@ class UserManagementService
             return null;
         }
 
-        $isAdmin = $this->permissionService->isAdmin((int)$user['id']);
-
-        return [
-            'user_id' => (int)$user['id'],
-            'username' => $user['username'],
-            'fullname' => $user['fullname'] ?? '',
-            'email' => $user['email'] ?? '',
-            'description' => $user['description'] ?? '',
-            'active' => (bool)$user['active'],
-            'zone_count' => 0, // Would need additional query to get exact count
-            'is_admin' => $isAdmin
-        ];
+        return $this->profileAssembler->assembleLookup($user);
     }
 
     /**
@@ -189,18 +144,7 @@ class UserManagementService
             return null;
         }
 
-        $isAdmin = $this->permissionService->isAdmin((int)$user['id']);
-
-        return [
-            'user_id' => (int)$user['id'],
-            'username' => $user['username'],
-            'fullname' => $user['fullname'] ?? '',
-            'email' => $user['email'] ?? '',
-            'description' => $user['description'] ?? '',
-            'active' => (bool)$user['active'],
-            'zone_count' => 0, // Would need additional query to get exact count
-            'is_admin' => $isAdmin
-        ];
+        return $this->profileAssembler->assembleLookup($user);
     }
 
     /**
@@ -257,6 +201,10 @@ class UserManagementService
             ];
         }
 
+        if (($lengthError = $this->validateFieldLengths($userData)) !== null) {
+            return $lengthError;
+        }
+
         // Check if username already exists
         if ($this->userRepository->getUserByUsername($userData['username'])) {
             return [
@@ -290,7 +238,7 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Permission template not found',
-                'status' => 404
+                'status' => 400
             ];
         }
         $userData['perm_templ'] = $permTemplId;
@@ -341,6 +289,14 @@ class UserManagementService
             ];
         }
 
+        if (($lengthError = $this->validateFieldLengths($userData)) !== null) {
+            return $lengthError;
+        }
+
+        if (($emptyError = $this->validateFieldsNotEmpty($userData)) !== null) {
+            return $emptyError;
+        }
+
         // Check if username already exists (exclude current user)
         if (!empty($userData['username'])) {
             $existingUser = $this->userRepository->getUserByUsername($userData['username']);
@@ -375,7 +331,7 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Permission template not found',
-                    'status' => 404
+                    'status' => 400
                 ];
             }
             $userData['perm_templ'] = $permTemplId;
@@ -400,9 +356,7 @@ class UserManagementService
             if (!empty($userData['password'])) {
                 $user = $this->userRepository->getUserById($userId);
                 $authMethod = $user['auth_method'] ?? 'sql';
-                $externalAuthMethods = ['oidc', 'saml', 'ldap'];
-
-                if (in_array($authMethod, $externalAuthMethods, true)) {
+                if (AuthMethod::fromDb($authMethod)->isExternal()) {
                     return [
                         'success' => false,
                         'message' => sprintf(
@@ -487,6 +441,17 @@ class UserManagementService
                     ];
                 }
 
+                // The target must differ from the user being deleted, otherwise the
+                // zones are transferred to an account that is deleted moments later
+                // and left orphaned (there is no FK from zones.owner to users.id).
+                if ($transferToUserId === $userId) {
+                    return [
+                        'success' => false,
+                        'message' => 'Cannot transfer zones to the user being deleted. Specify a different transfer_to_user_id.',
+                        'status' => 400
+                    ];
+                }
+
                 // Check if transfer target user exists
                 if (!$this->userExists($transferToUserId)) {
                     return [
@@ -556,7 +521,22 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Permission template not found',
-                'status' => 404
+                'status' => 400
+            ];
+        }
+
+        // Guard against demoting the last active super admin: if this user is the
+        // only remaining ueberuser and the new template drops that permission, the
+        // system would be left with zero super admins.
+        if (
+            $this->userRepository->isUberuser($userId)
+            && $this->userRepository->countUberusers() <= 1
+            && !$this->userRepository->templateGrantsUberuser($permTemplId)
+        ) {
+            return [
+                'success' => false,
+                'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
+                'status' => 409
             ];
         }
 
@@ -593,6 +573,51 @@ class UserManagementService
     private function permissionTemplateExists(int $permTemplId, ?string $templateType = null): bool
     {
         return $this->userRepository->permissionTemplateExists($permTemplId, $templateType);
+    }
+
+    /**
+     * Reject field values longer than their database column so an over-long value
+     * returns a clear 400 instead of surfacing as a database truncation 500.
+     * Returns a service error array on the first offending field, or null.
+     *
+     * @param array $userData
+     * @return array|null
+     */
+    private function validateFieldLengths(array $userData): ?array
+    {
+        $limits = ['username' => 64, 'fullname' => 255, 'email' => 255, 'description' => 1024];
+        foreach ($limits as $field => $max) {
+            if (isset($userData[$field]) && is_string($userData[$field]) && mb_strlen($userData[$field]) > $max) {
+                return [
+                    'success' => false,
+                    'message' => ucfirst($field) . " must not exceed $max characters",
+                    'status' => 400
+                ];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Reject an empty username. The uniqueness check skips empty input, so writing one
+     * through would leave an account that can never authenticate.
+     * Email is deliberately not checked: IdP-managed accounts legitimately carry an
+     * empty address, and a client echoing that value back must not be rejected.
+     * An empty password means "leave unchanged" and is filtered by the repository.
+     *
+     * @param array $userData
+     * @return array|null
+     */
+    private function validateFieldsNotEmpty(array $userData): ?array
+    {
+        if (array_key_exists('username', $userData) && trim((string)$userData['username']) === '') {
+            return [
+                'success' => false,
+                'message' => 'Username cannot be empty',
+                'status' => 400
+            ];
+        }
+        return null;
     }
 
     /**

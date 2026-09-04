@@ -21,7 +21,8 @@ CREATE TABLE `log_api` (
                              `event` varchar(2048) NOT NULL,
                              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
                              `priority` int(11) NOT NULL,
-                             PRIMARY KEY (`id`)
+                             PRIMARY KEY (`id`),
+                             KEY `idx_log_api_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -43,6 +44,36 @@ CREATE TABLE `log_groups` (
                               `group_id` int(11) DEFAULT NULL,
                               PRIMARY KEY (`id`),
                               KEY `idx_log_groups_group_id` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `log_changesets` (
+                              `id` int(11) NOT NULL AUTO_INCREMENT,
+                              `zone_id` int(11) DEFAULT NULL,
+                              `user_id` int(11) DEFAULT NULL,
+                              `username` varchar(64) NOT NULL,
+                              `comment` text DEFAULT NULL,
+                              `client_ip` varchar(64) DEFAULT NULL,
+                              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+                              PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `log_record_changes` (
+                              `id` int(11) NOT NULL AUTO_INCREMENT,
+                              `zone_id` int(11) DEFAULT NULL,
+                              `changeset_id` int(11) DEFAULT NULL,
+                              `record_id` text DEFAULT NULL,
+                              `action` varchar(32) NOT NULL,
+                              `user_id` int(11) DEFAULT NULL,
+                              `username` varchar(64) NOT NULL,
+                              `before_state` text DEFAULT NULL,
+                              `after_state` text DEFAULT NULL,
+                              `client_ip` varchar(64) DEFAULT NULL,
+                              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+                              PRIMARY KEY (`id`),
+                              KEY `idx_log_record_changes_created_at` (`created_at`),
+                              KEY `idx_log_record_changes_zone_id` (`zone_id`),
+                              KEY `idx_log_record_changes_action` (`action`),
+                              KEY `idx_log_record_changes_changeset_id` (`changeset_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `users` (
@@ -67,10 +98,12 @@ CREATE TABLE `login_attempts` (
     `ip_address` varchar(45) NOT NULL,
     `timestamp` int(11) NOT NULL,
     `successful` tinyint(1) NOT NULL,
+    `attempt_type` varchar(16) NOT NULL DEFAULT 'password',
     PRIMARY KEY (`id`),
     KEY `idx_user_id` (`user_id`),
     KEY `idx_ip_address` (`ip_address`),
     KEY `idx_timestamp` (`timestamp`),
+    KEY `idx_attempt_type` (`attempt_type`),
     CONSTRAINT `fk_login_attempts_users`
         FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
         ON DELETE SET NULL
@@ -89,10 +122,10 @@ CREATE TABLE `perm_items` (
 INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (41,	'zone_master_add',	'User is allowed to add new master zones.'),
                                                      (42,	'zone_slave_add',	'User is allowed to add new slave zones.'),
-                                                     (43,	'zone_content_view_own',	'User is allowed to see the content and meta data of zones he owns.'),
+                                                     (43,	'zone_content_view_own',	'User is allowed to see the content of zones he owns.'),
                                                      (44,	'zone_content_edit_own',	'User is allowed to edit the content of zones he owns.'),
                                                      (45,	'zone_meta_edit_own',	'User is allowed to edit the meta data of zones he owns.'),
-                                                     (46,	'zone_content_view_others',	'User is allowed to see the content and meta data of zones he does not own.'),
+                                                     (46,	'zone_content_view_others',	'User is allowed to see the content of zones he does not own.'),
                                                      (47,	'zone_content_edit_others',	'User is allowed to edit the content of zones he does not own.'),
                                                      (48,	'zone_meta_edit_others',	'User is allowed to edit the meta data of zones he does not own.'),
                                                      (49,	'search',	'User is allowed to perform searches.'),
@@ -114,7 +147,17 @@ INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (65,	'api_manage_keys',	'User is allowed to create and manage API keys.'),
                                                      (67,	'zone_delete_own',	'User is allowed to delete zones they own.'),
                                                      (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.'),
-                                                     (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.');
+                                                     (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.'),
+                                                     (70,	'zone_dnssec_manage_own',	'User is allowed to manage DNSSEC keys for zones he owns.'),
+                                                     (71,	'zone_logs_view_own',	'User is allowed to view activity logs for zones he owns.'),
+                                                     (72,	'zone_logs_view_others',	'User is allowed to view activity logs for zones he does not own.'),
+                                                     (73,	'user_logs_view',	'User is allowed to view the user activity logs.'),
+                                                     (74,	'group_logs_view',	'User is allowed to view the group activity logs.'),
+                                                     (75,	'zone_content_edit_ns_subzone',	'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.'),
+                                                     (76,	'zone_metadata_view_own',	'User is allowed to see the meta data of zones he owns.'),
+                                                     (77,	'zone_metadata_view_others',	'User is allowed to see the meta data of zones he does not own.'),
+                                                     (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.'),
+                                                     (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.');
 
 CREATE TABLE `perm_templ` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -181,7 +224,27 @@ INSERT INTO `perm_templ_items` (`id`, `templ_id`, `perm_id`) VALUES
     (33,	8,	56),
     (34,	8,	62),
     (35,	9,	43),
-    (36,	9,	49);
+    (36,	9,	49),
+    (37,	2,	70),
+    (38,	7,	70),
+    (39,	2,	71),
+    (40,	3,	71),
+    (41,	4,	71),
+    (42,	7,	71),
+    (43,	8,	71),
+    (44,	9,	71),
+    (45,	2,	76),
+    (46,	3,	76),
+    (47,	4,	76),
+    (48,	7,	76),
+    (49,	8,	76),
+    (50,	9,	76),
+    (51,	2,	78),
+    (52,	3,	78),
+    (53,	4,	78),
+    (54,	7,	78),
+    (55,	8,	78),
+    (56,	9,	78);
 
 CREATE TABLE `records_zone_templ` (
                                       `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -193,12 +256,22 @@ CREATE TABLE `records_zone_templ` (
                                       KEY `idx_records_zone_templ_zone_templ_id` (`zone_templ_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `records_zone_templ_api` (
+                                          `id` int(11) NOT NULL AUTO_INCREMENT,
+                                          `domain_id` int(11) NOT NULL,
+                                          `record_id` varchar(255) NOT NULL,
+                                          `zone_templ_id` int(11) NOT NULL,
+                                          PRIMARY KEY (`id`),
+                                          KEY `idx_records_zone_templ_api_domain_id` (`domain_id`),
+                                          KEY `idx_records_zone_templ_api_zone_templ_id` (`zone_templ_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `zones` (
                          `id` int(11) NOT NULL AUTO_INCREMENT,
                          `domain_id` int(11) NULL DEFAULT NULL,
                          `owner` int(11) NULL DEFAULT NULL,
                          `comment` varchar(1024) DEFAULT NULL,
-                         `zone_templ_id` int(11) NOT NULL,
+                         `zone_templ_id` int(11) NOT NULL DEFAULT 0,
                          `zone_name` varchar(255) DEFAULT NULL,
                          `zone_type` varchar(8) DEFAULT NULL,
                          `zone_master` varchar(255) DEFAULT NULL,
@@ -228,7 +301,7 @@ CREATE TABLE `zone_templ_records` (
                                       `id` int(11) NOT NULL AUTO_INCREMENT,
                                       `zone_templ_id` int(11) NOT NULL,
                                       `name` varchar(255) NOT NULL,
-                                      `type` varchar(6) NOT NULL,
+                                      `type` varchar(10) NOT NULL,
                                       `content` varchar(2048) NOT NULL,
                                       `ttl` int(11) NOT NULL,
                                       `prio` int(11) NOT NULL,
@@ -245,11 +318,26 @@ CREATE TABLE `api_keys` (
     `last_used_at` timestamp NULL DEFAULT NULL,
     `disabled` tinyint(1) NOT NULL DEFAULT '0',
     `expires_at` timestamp NULL DEFAULT NULL,
+    `is_readonly` tinyint(1) NOT NULL DEFAULT '0',
+    `allowed_operations` varchar(255) DEFAULT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_api_keys_secret_key` (`secret_key`),
     KEY `idx_api_keys_created_by` (`created_by`),
     KEY `idx_api_keys_disabled` (`disabled`),
     CONSTRAINT `fk_api_keys_users` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Zones an API key is restricted to. No rows for a key means no restriction
+-- (the key can reach every zone its creator may access).
+CREATE TABLE `api_key_zones` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `api_key_id` int(11) NOT NULL,
+    `zone_id` int(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_api_key_zones_unique` (`api_key_id`, `zone_id`),
+    KEY `idx_api_key_zones_api_key_id` (`api_key_id`),
+    KEY `idx_api_key_zones_zone_id` (`zone_id`),
+    CONSTRAINT `fk_api_key_zones_api_key` FOREIGN KEY (`api_key_id`) REFERENCES `api_keys` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `user_mfa` (
@@ -302,7 +390,7 @@ CREATE TABLE `zone_template_sync` (
 CREATE TABLE `password_reset_tokens` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `email` varchar(255) NOT NULL,
-    `token` varchar(64) NOT NULL,
+    `token` varchar(128) NOT NULL,
     `expires_at` timestamp NOT NULL,
     `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `used` tinyint(1) NOT NULL DEFAULT 0,
@@ -426,4 +514,21 @@ CREATE TABLE `record_comment_links` (
     `comment_id` INT NOT NULL,
     PRIMARY KEY (`record_id`),
     UNIQUE KEY `idx_record_comment_links_comment` (`comment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `record_type_defaults` (
+    `record_type` varchar(20) NOT NULL,
+    `ttl` int(11) NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    PRIMARY KEY (`record_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `app_settings` (
+    `setting_key` varchar(128) COLLATE utf8mb4_bin NOT NULL,
+    `setting_value` text NOT NULL,
+    `value_type` varchar(16) NOT NULL DEFAULT 'string',
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+    PRIMARY KEY (`setting_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

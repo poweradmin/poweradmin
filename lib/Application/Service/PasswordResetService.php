@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class PasswordResetService
 {
@@ -88,9 +89,7 @@ class PasswordResetService
         }
 
         $authMethod = $user['auth_method'] ?? 'sql';
-        $blockedMethods = ['oidc', 'saml', 'ldap'];
-
-        if (in_array($authMethod, $blockedMethods, true)) {
+        if (AuthMethod::fromDb($authMethod)->isExternal()) {
             return [
                 'allowed' => false,
                 'auth_method' => $authMethod
@@ -170,7 +169,7 @@ class PasswordResetService
         // Check if user's authentication method allows password reset
         // OIDC, SAML, and LDAP users should only authenticate through their external providers
         $authMethod = $user['auth_method'] ?? 'sql';
-        if (in_array($authMethod, ['oidc', 'saml', 'ldap'], true)) {
+        if (AuthMethod::fromDb($authMethod)->isExternal()) {
             $this->logger->warning('Password reset blocked for external auth user', [
                 'email' => $email,
                 'auth_method' => $authMethod,
@@ -230,9 +229,9 @@ class PasswordResetService
             return false;
         }
 
-        // Check minimum time between requests
-        $lastAttempt = $this->tokenRepository->getLastAttemptTime($email);
-        if ($lastAttempt && (time() - strtotime($lastAttempt)) < $minTime) {
+        // Minimum time between requests, checked DB-side like the rate-limit windows
+        // above so a PHP-vs-DB clock/timezone difference can't skew the throttle.
+        if ($this->tokenRepository->countRecentAttempts($email, $minTime) > 0) {
             return false;
         }
 
@@ -282,76 +281,64 @@ class PasswordResetService
             return null;
         }
 
+        // Refuse candidates already in the stored hash format - blocks pass-the-hash
+        // from a DB-read leak. Matches the API key repository defense.
+        if (str_starts_with($token, 'sha256$')) {
+            $this->logger->warning('Password reset token rejected: candidate is in stored hash format', [
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return null;
+        }
+
         // Clean up expired tokens before validation
         $this->cleanupExpiredTokens();
 
-        // Find all non-expired tokens
-        $tokens = $this->tokenRepository->findActiveTokens();
+        // Indexed lookup by hash - replaces the previous full-scan of active tokens
+        // and the row no longer contains a plaintext token at rest.
+        $hashedToken = DbPasswordResetTokenRepository::hashToken($token);
+        $tokenData = $this->tokenRepository->findByToken($hashedToken);
 
-        foreach ($tokens as $tokenData) {
-            // Constant-time so the comparison itself does not reveal how much of a
-            // candidate token was correct.
-            if (hash_equals((string)$tokenData['token'], $token)) {
-                // Check if already used
-                if ($tokenData['used']) {
-                    $this->logger->warning('Attempted to use already used password reset token', [
-                        'email' => $tokenData['email'],
-                        'token_id' => $tokenData['id'],
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]);
-                    return null;
-                }
-
-                // Check expiration
-                if (time() > strtotime($tokenData['expires_at'])) {
-                    $this->logger->info('Expired password reset token used', [
-                        'email' => $tokenData['email'],
-                        'token_id' => $tokenData['id'],
-                        'expired_at' => $tokenData['expires_at'],
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]);
-                    return null;
-                }
-
-                // Refuse if the email now maps to more than one account - we can't be
-                // sure this token belongs to the returned row.
-                if ($this->userRepository->countUsersByEmail($tokenData['email']) > 1) {
-                    $this->logger->warning('Password reset token rejected: email shared by multiple accounts', [
-                        'email' => $tokenData['email'],
-                        'token_id' => $tokenData['id'],
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]);
-                    return null;
-                }
-
-                // Get user data
-                $user = $this->userRepository->getUserByEmail($tokenData['email']);
-                if ($user) {
-                    // Additional security check: verify auth method allows password reset
-                    $authMethod = $user['auth_method'] ?? 'sql';
-                    if (in_array($authMethod, ['oidc', 'saml', 'ldap'], true)) {
-                        $this->logger->warning('Password reset token validation blocked for external auth user', [
-                            'email' => $tokenData['email'],
-                            'auth_method' => $authMethod,
-                            'user_id' => $user['id'],
-                            'token_id' => $tokenData['id'],
-                            'timestamp' => date('Y-m-d H:i:s')
-                        ]);
-                        return null;
-                    }
-
-                    return [
-                        'user' => $user,
-                        'token_id' => $tokenData['id']
-                    ];
-                }
-            }
+        if (!$tokenData) {
+            $this->logger->warning('Invalid password reset token used', [
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return null;
         }
 
-        $this->logger->warning('Invalid password reset token used', [
-            'timestamp' => date('Y-m-d H:i:s')
-        ]);
-        return null;
+        $user = $this->userRepository->getUserByEmail($tokenData['email']);
+        if (!$user) {
+            return null;
+        }
+
+        // Refuse if the email now maps to more than one account - we can't be sure
+        // this token belongs to the returned row.
+        if ($this->userRepository->countUsersByEmail($tokenData['email']) > 1) {
+            $this->logger->warning('Password reset token rejected: email shared by multiple accounts', [
+                'email' => $tokenData['email'],
+                'token_id' => $tokenData['id'],
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return null;
+        }
+
+        // External-auth users cannot reset their local password; their account
+        // may have switched to OIDC/SAML/LDAP since the token was minted.
+        $authMethod = $user['auth_method'] ?? 'sql';
+        if (AuthMethod::fromDb($authMethod)->isExternal()) {
+            $this->logger->warning('Password reset token validation blocked for external auth user', [
+                'email' => $tokenData['email'],
+                'auth_method' => $authMethod,
+                'user_id' => $user['id'],
+                'token_id' => $tokenData['id'],
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return null;
+        }
+
+        return [
+            'user' => $user,
+            'token_id' => $tokenData['id']
+        ];
     }
 
     /**
@@ -361,7 +348,7 @@ class PasswordResetService
      * @param string $newPassword
      * @return bool
      */
-    public function resetPassword(string $token, string $newPassword): bool
+    public function resetPassword(string $token, #[\SensitiveParameter] string $newPassword): bool
     {
         if (!$this->isEnabled()) {
             return false;

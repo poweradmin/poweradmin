@@ -25,18 +25,22 @@ namespace Poweradmin\Domain\Model;
 use Exception;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsFormatter;
-use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DomainParsingService;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Logger\PhpErrorLogPsrLogger;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
@@ -44,7 +48,7 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class ZoneTemplate
@@ -53,22 +57,36 @@ class ZoneTemplate
     private PDO $db;
     private DnsFormatter $dnsFormatter;
     private MessageService $messageService;
-    private DnsCommonValidator $dnsCommonValidator;
     private DomainParsingService $domainParsingService;
     private TableNameService $tableNameService;
     private ?DnsBackendProvider $backendProvider;
+    private LoggerInterface $logger;
+    private ?PermissionService $permissionService = null;
     private ?ZoneTemplateRecordValidationService $recordValidationService = null;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProvider $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProvider $backendProvider = null, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->dnsFormatter = new DnsFormatter($config);
         $this->messageService = new MessageService();
-        $this->dnsCommonValidator = new DnsCommonValidator($db, $config, $backendProvider);
         $this->domainParsingService = new DomainParsingService();
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
+        $this->logger = $logger ?? new PhpErrorLogPsrLogger();
+    }
+
+    /**
+     * Check if the logged-in user has the given permission (admins always pass)
+     */
+    private function currentUserHasPermission(string $permission): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, ConfigurationManager::getInstance()));
+        return $this->permissionService->hasPermission($userId, $permission);
     }
 
     private function isApiBackend(): bool
@@ -152,7 +170,10 @@ class ZoneTemplate
                 $parts[1] = '[HOSTMASTER]';
             }
 
-            if (preg_match('/\d{10}/', $parts[2])) {
+            // Any numeric serial becomes [SERIAL]; a literal serial in a template
+            // would only stamp stale values into zones created from it. Serial 0
+            // is kept: it means autoserial and getNextSerial() preserves it.
+            if (isset($parts[2]) && ctype_digit($parts[2]) && $parts[2] !== '0') {
                 $parts[2] = '[SERIAL]';
             }
 
@@ -183,7 +204,7 @@ class ZoneTemplate
                 LEFT JOIN zones z ON zt.id = z.zone_templ_id";
         $params = [];
 
-        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if (!$this->currentUserHasPermission('user_is_ueberuser')) {
             $query .= " WHERE zt.owner = :userid OR zt.owner = 0";
             $params[':userid'] = $userid;
         }
@@ -234,10 +255,10 @@ class ZoneTemplate
             $check = $this->db->prepare("SELECT 1 FROM zone_templ WHERE id = :id AND owner = 0");
             $check->execute([':id' => $id]);
             if ($check->fetchColumn() === false) {
-                error_log(sprintf(
-                    'Poweradmin: dns.default_zone_template = %d does not match any global zone template; falling back to "none".',
-                    $id
-                ));
+                $this->logger->warning(
+                    'Poweradmin: dns.default_zone_template = {id} does not match any global zone template; falling back to "none".',
+                    ['id' => $id]
+                );
                 return null;
             }
             return $id;
@@ -248,18 +269,17 @@ class ZoneTemplate
             $check->execute([':name' => $configured]);
             $matches = $check->fetchAll(PDO::FETCH_COLUMN);
             if (count($matches) === 0) {
-                error_log(sprintf(
-                    'Poweradmin: dns.default_zone_template = "%s" does not match any global zone template; falling back to "none".',
-                    $configured
-                ));
+                $this->logger->warning(
+                    'Poweradmin: dns.default_zone_template = "{name}" does not match any global zone template; falling back to "none".',
+                    ['name' => $configured]
+                );
                 return null;
             }
             if (count($matches) > 1) {
-                error_log(sprintf(
-                    'Poweradmin: dns.default_zone_template = "%s" matches %d global zone templates; ignoring the setting. Use the template id or rename one of the duplicates.',
-                    $configured,
-                    count($matches)
-                ));
+                $this->logger->warning(
+                    'Poweradmin: dns.default_zone_template = "{name}" matches {count} global zone templates; ignoring the setting. Use the template id or rename one of the duplicates.',
+                    ['name' => $configured, 'count' => count($matches)]
+                );
                 return null;
             }
             return (int) $matches[0];
@@ -338,7 +358,7 @@ class ZoneTemplate
     {
         $zone_name_exists = $this->zoneTemplNameExists($details['templ_name']);
 
-        if (!(UserManager::verifyPermission($this->db, 'zone_templ_add'))) {
+        if (!($this->currentUserHasPermission('zone_templ_add'))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
@@ -357,8 +377,8 @@ class ZoneTemplate
                     ':created_by' => $userid // Always set created_by to current user
                 ]);
 
-                // Get the new template ID
-                $zone_templ_id = $this->db->lastInsertId();
+                // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+                $zone_templ_id = $this->db->lastInsertId('zone_templ_id_seq');
 
                 // Add a default SOA record to the template
                 $this->addDefaultSOARecordToTemplate((int)$zone_templ_id);
@@ -440,7 +460,7 @@ class ZoneTemplate
      */
     public function deleteZoneTempl(int $zone_templ_id): bool
     {
-        if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
+        if (!($this->currentUserHasPermission('zone_templ_edit'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
@@ -457,6 +477,14 @@ class ZoneTemplate
 
                 // Delete references to zone template
                 $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE zone_templ_id = :zone_templ_id");
+                $stmt->execute([':zone_templ_id' => $zone_templ_id]);
+
+                $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE zone_templ_id = :zone_templ_id");
+                $stmt->execute([':zone_templ_id' => $zone_templ_id]);
+
+                // Unlink the zones that used it. Leaving the id behind re-links them to
+                // whichever template later reuses it (SQLite and MariaDB reuse ids).
+                $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE zone_templ_id = :zone_templ_id");
                 $stmt->execute([':zone_templ_id' => $zone_templ_id]);
 
                 $this->db->commit();
@@ -478,7 +506,7 @@ class ZoneTemplate
      */
     public function deleteZoneTemplUserId(int $userid): bool
     {
-        if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
+        if (!($this->currentUserHasPermission('zone_templ_edit'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
@@ -528,14 +556,25 @@ class ZoneTemplate
      * Retrieve all fields of the record and send it back to the function caller.
      *
      * @param int $id zone template record id
+     * @param int|null $zone_templ_id restrict the lookup to this template; callers that
+     *                                authorised a template must pass it so a record id
+     *                                from another template cannot be read
      *
      * @return array zone template record
-     * [id,zone_templ_id,name,type,content,ttl,prio] or -1 if nothing is found
+     * [id,zone_templ_id,name,type,content,ttl,prio] or an empty array if nothing is found
      */
-    public static function getZoneTemplRecordFromId($db, int $id): array
+    public static function getZoneTemplRecordFromId($db, int $id, ?int $zone_templ_id = null): array
     {
-        $stmt = $db->prepare("SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id = :id");
-        $stmt->execute([':id' => $id]);
+        $query = "SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id = :id";
+        $params = [':id' => $id];
+
+        if ($zone_templ_id !== null) {
+            $query .= " AND zone_templ_id = :zone_templ_id";
+            $params[':zone_templ_id'] = $zone_templ_id;
+        }
+
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
         $result = $stmt->fetch();
         return $result ? array(
             "id" => $result["id"],
@@ -603,7 +642,7 @@ class ZoneTemplate
      */
     public function addZoneTemplRecord(int $zone_templ_id, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
-        if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
+        if (!($this->currentUserHasPermission('zone_templ_edit'))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a record to this zone template."));
             return false;
         }
@@ -624,7 +663,7 @@ class ZoneTemplate
         }
 
         // Check if priority is valid for this record type
-        if (!is_numeric($prio) || $prio < 0 || $prio > 65535) {
+        if ($prio < 0 || $prio > 65535) {
             if ($type == 'MX' || $type == 'SRV') {
                 $this->messageService->addSystemError(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
                 return false;
@@ -641,39 +680,27 @@ class ZoneTemplate
         }
 
         $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([
-            ':zone_templ_id' => $zone_templ_id,
-            ':name' => $name,
-            ':type' => $type,
-            ':content' => $content,
-            ':ttl' => $ttl,
-            ':prio' => $prio
-        ]);
+
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([
+                ':zone_templ_id' => $zone_templ_id,
+                ':name' => $name,
+                ':type' => $type,
+                ':content' => $content,
+                ':ttl' => $ttl,
+                ':prio' => $prio
+            ]);
+        } catch (Exception $e) {
+            $this->messageService->addSystemError(_('Error adding zone template record: ') . $e->getMessage());
+            return false;
+        }
 
         return true;
     }
 
     /**
-     * Confirm a template record actually lives in the given template.
-     *
-     * @param int $rid template record id
-     * @param int $zone_templ_id template the caller is authorized to edit
-     *
-     * @return boolean true when the record belongs to the template
-     */
-    private function recordBelongsToTemplate(int $rid, int $zone_templ_id): bool
-    {
-        $record = self::getZoneTemplRecordFromId($this->db, $rid);
-
-        return !empty($record) && (int)$record['zone_templ_id'] === $zone_templ_id;
-    }
-
-    /**
      * Confirm the current user may store this record type in a zone template.
-     *
-     * Template records are written straight to the backend when the template is
-     * applied, so they never reach the record-level type gates.
      *
      * @param string $type DNS record type
      *
@@ -682,18 +709,6 @@ class ZoneTemplate
     private function canStoreTemplateRecordType(string $type): bool
     {
         return !Permission::isTemplateRecordTypeRestricted($type, Permission::getEditPermission($this->db));
-    }
-
-    /**
-     * Read the stored type of a template record, or '' when it cannot be read.
-     *
-     * @param int $rid template record id
-     */
-    private function storedTemplateRecordType(int $rid): string
-    {
-        $record = self::getZoneTemplRecordFromId($this->db, $rid);
-
-        return (string)($record['type'] ?? '');
     }
 
     /**
@@ -707,7 +722,7 @@ class ZoneTemplate
      */
     private function resolveTemplateOwner(bool $requestedGlobal, int $userid): int
     {
-        if ($requestedGlobal && UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if ($requestedGlobal && $this->currentUserHasPermission('user_is_ueberuser')) {
             return 0;
         }
 
@@ -727,13 +742,14 @@ class ZoneTemplate
      */
     public function editZoneTemplRecord(array $record, int $zone_templ_id): bool
     {
-        if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
-            $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
+        if (!($this->currentUserHasPermission('zone_templ_edit'))) {
+            $this->messageService->addSystemError(_("You do not have permission to edit this record."));
             return false;
         }
 
         // Reject a record id that lives in another template, even when the caller owns this one.
-        if (!$this->recordBelongsToTemplate((int)($record['rid'] ?? 0), $zone_templ_id)) {
+        $storedRecord = self::getZoneTemplRecordFromId($this->db, (int)($record['rid'] ?? 0), $zone_templ_id);
+        if (empty($storedRecord)) {
             $this->messageService->addSystemError(_('The record does not belong to this zone template.'));
             return false;
         }
@@ -741,8 +757,8 @@ class ZoneTemplate
         // Both types are gated: checking only the submitted one would let a
         // protected record be overwritten by relabelling it as an allowed type.
         if (
-            !$this->canStoreTemplateRecordType($this->storedTemplateRecordType((int)($record['rid'] ?? 0)))
-            || !$this->canStoreTemplateRecordType((string)($record['type'] ?? ''))
+            !$this->canStoreTemplateRecordType((string)$storedRecord['type'])
+            || !$this->canStoreTemplateRecordType($record['type'] ?? '')
         ) {
             $this->messageService->addSystemError(_('You do not have the permission to add this record type to a zone template.'));
             return false;
@@ -811,19 +827,20 @@ class ZoneTemplate
      */
     public function deleteZoneTemplRecord(int $rid, int $zone_templ_id): bool
     {
-        if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
+        if (!($this->currentUserHasPermission('zone_templ_edit'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
             return false;
         }
 
         // Reject a record id that lives in another template, even when the caller owns this one.
-        if (!$this->recordBelongsToTemplate($rid, $zone_templ_id)) {
+        $storedRecord = self::getZoneTemplRecordFromId($this->db, $rid, $zone_templ_id);
+        if (empty($storedRecord)) {
             $this->messageService->addSystemError(_('The record does not belong to this zone template.'));
             return false;
         }
 
         // A caller who may not create this type may not remove one either.
-        if (!$this->canStoreTemplateRecordType($this->storedTemplateRecordType($rid))) {
+        if (!$this->canStoreTemplateRecordType((string)$storedRecord['type'])) {
             $this->messageService->addSystemError(_('You do not have the permission to delete this record type from a zone template.'));
             return false;
         }
@@ -861,25 +878,6 @@ class ZoneTemplate
     }
 
     /**
-     * Check if the session user is the owner for the zone template (static version for backward compatibility)
-     *
-     * @deprecated Use instance method isUserOwnerOfTemplate() instead
-     * @param mixed $db Database connection
-     * @param int $zone_templ_id zone template id
-     * @param int $userid user id
-     *
-     * @return boolean true on success, false otherwise
-     */
-    public static function getZoneTemplIsOwner($db, int $zone_templ_id, int $userid): bool
-    {
-        $stmt = $db->prepare("SELECT owner FROM zone_templ WHERE id = :id");
-        $stmt->execute([':id' => $zone_templ_id]);
-        $result = $stmt->fetchColumn();
-
-        return ($result == $userid);
-    }
-
-    /**
      * Add a zone template from zone / another template
      *
      * @param string $template_name template name
@@ -893,7 +891,7 @@ class ZoneTemplate
      */
     public function addZoneTemplSaveAs(string $template_name, string $description, int $userid, array $records, array $options, string $domain = ''): bool
     {
-        if (!(UserManager::verifyPermission($this->db, 'zone_templ_add'))) {
+        if (!($this->currentUserHasPermission('zone_templ_add'))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } else {
@@ -914,7 +912,8 @@ class ZoneTemplate
                     ':created_by' => $userid
                 ]);
 
-                $zone_templ_id = $this->db->lastInsertId();
+                // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+                $zone_templ_id = $this->db->lastInsertId('zone_templ_id_seq');
 
                 // Check if the records include an SOA record
                 $hasSOA = false;
@@ -993,7 +992,7 @@ class ZoneTemplate
                 $params[':userid'] = $userid;
             }
 
-            $query = "SELECT domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
+            $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
             try {
                 $stmt = $this->db->prepare($query);
                 $stmt->execute($params);
@@ -1071,7 +1070,7 @@ class ZoneTemplate
                 $sql_add = " AND owner = :userid";
                 $params[':userid'] = $userid;
             }
-            $query = "SELECT id AS zone_id, domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
+            $query = "SELECT id AS zone_id, " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
         } else {
             $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
             $sql_add = '';
@@ -1124,12 +1123,12 @@ class ZoneTemplate
             }
 
             try {
-                $query = "SELECT zones.domain_id, zones.owner, zones.comment,
+                $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn('zones') . " AS domain_id, zones.owner, zones.comment,
                           u.username as owner_name, u.fullname as owner_fullname
                           FROM zones
                           LEFT JOIN users u ON zones.owner = u.id
                           WHERE zones.zone_templ_id = :zone_templ_id" . $sql_add . "
-                          ORDER BY zones.domain_id";
+                          ORDER BY 1";
                 $stmt = $this->db->prepare($query);
                 $stmt->execute($params);
                 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -1215,7 +1214,7 @@ class ZoneTemplate
     public function editZoneTempl(array $details, int $zone_templ_id, int $user_id): bool
     {
         $zone_name_exists = $this->zoneTemplNameAndIdExists($details['templ_name'], $zone_templ_id);
-        if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
+        if (!($this->currentUserHasPermission('zone_templ_edit'))) {
             $this->messageService->addSystemError(_("You do not have the permission to edit a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
@@ -1385,12 +1384,14 @@ class ZoneTemplate
     /**
      * Parse string and substitute domain and serial
      *
-     * @param string $val string to parse containing tokens '[ZONE]' and '[SERIAL]'
+     * @param string $val string to parse containing tokens like '[ZONE]', '[SERIAL]', '[UNIXTIME]' or '[COUNTER]'
      * @param string $domain domain to substitute for '[ZONE]'
+     * @param string|null $recordType record type of $val; when given it authoritatively
+     *        decides SOA-timer completion. Legacy 2-arg callers fall back to a heuristic.
      *
      * @return string interpolated/parsed string
      */
-    public function parseTemplateValue(string $val, string $domain): string
+    public function parseTemplateValue(string $val, string $domain, ?string $recordType = null): string
     {
         $dns_ns1 = $this->config->get('dns', 'ns1');
         $dns_ns2 = $this->config->get('dns', 'ns2');
@@ -1416,6 +1417,10 @@ class ZoneTemplate
         $val = str_replace('[DOMAIN]', $domainName, $val);
         $val = str_replace('[TLD]', $tld, $val);
         $val = str_replace('[SERIAL]', $serial, $val);
+        // Alternative SOA serial formats: both stay below 1979999999, so
+        // getNextSerial() treats them as plain counters and bumps them by 1.
+        $val = str_replace('[UNIXTIME]', (string)time(), $val);
+        $val = str_replace('[COUNTER]', '1', $val);
         $val = str_replace('[NS1]', $dns_ns1, $val);
         $val = str_replace('[NS2]', $dns_ns2, $val);
         $val = str_replace('[NS3]', $dns_ns3, $val);
@@ -1428,16 +1433,16 @@ class ZoneTemplate
         $val = str_replace('[SOA_EXPIRE]', $soa_expire, $val);
         $val = str_replace('[SOA_MINIMUM]', $soa_minimum, $val);
 
-        // Check if this is an SOA record that should have SOA parameters
-        if (str_contains($val, 'SOA')) {
-            // Extract all parts of the string
-            $parts = explode(' ', $val);
-
-            // Check if the SOA parameters are already included
-            // SOA record should have at least 7 parts:
-            // domain IN SOA ns hostmaster serial refresh retry expire minimum
-            if (count($parts) < 7) {
-                // Append the SOA parameters if they're missing
+        // Only SOA content gets timer completion. With an explicit record type we
+        // decide precisely; without one (legacy 2-arg callers) we keep the old
+        // substring heuristic so behavior is unchanged for them.
+        $isSoaValue = $recordType !== null
+            ? $recordType === RecordType::SOA
+            : str_contains($val, 'SOA');
+        if ($isSoaValue) {
+            // A complete SOA rdata has at least 7 fields:
+            // primary hostmaster serial refresh retry expire minimum
+            if (count(explode(' ', $val)) < 7) {
                 $val .= " $soa_refresh $soa_retry $soa_expire $soa_minimum";
             }
         }

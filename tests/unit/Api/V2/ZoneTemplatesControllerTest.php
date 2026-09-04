@@ -53,6 +53,7 @@ class ZoneTemplatesControllerTest extends TestCase
             ->willReturn($expectedTemplates);
 
         $controller = $this->createController();
+        $this->mockPermissionService->method('canViewZoneTemplates')->willReturn(true);
         $response = $controller->testListZoneTemplates();
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -78,6 +79,7 @@ class ZoneTemplatesControllerTest extends TestCase
             ->willThrowException(new Exception('Database error'));
 
         $controller = $this->createController();
+        $this->mockPermissionService->method('canViewZoneTemplates')->willReturn(true);
         $response = $controller->testListZoneTemplates();
 
         $this->assertEquals(500, $response->getStatusCode());
@@ -112,6 +114,7 @@ class ZoneTemplatesControllerTest extends TestCase
             ->willReturn($expectedRecords);
 
         $controller = $this->createController(['id' => $templateId]);
+        $this->mockPermissionService->method('canViewZoneTemplates')->willReturn(true);
         $response = $controller->testGetZoneTemplate();
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -124,6 +127,40 @@ class ZoneTemplatesControllerTest extends TestCase
         $this->assertCount(1, $content['data']['template']['records']);
         $this->assertEquals('SOA', $content['data']['template']['records'][0]['type']);
         $this->assertEquals(0, $content['data']['template']['records'][0]['priority']);
+    }
+
+    public function testGetZoneTemplateStripsTxtQuotes(): void
+    {
+        $templateId = 1;
+        $expectedTemplate = ['id' => 1, 'name' => 'Default', 'descr' => 'Default template', 'owner' => 0];
+        $expectedRecords = [
+            ['id' => 1, 'name' => '[ZONE]', 'type' => 'TXT', 'content' => '"v=spf1 -all"', 'ttl' => 3600, 'prio' => 0],
+            ['id' => 2, 'name' => 'multi.[ZONE]', 'type' => 'TXT', 'content' => '"part1" "part2"', 'ttl' => 3600, 'prio' => 0],
+            ['id' => 3, 'name' => '[ZONE]', 'type' => 'SPF', 'content' => '"v=spf1 -all"', 'ttl' => 3600, 'prio' => 0],
+        ];
+
+        $this->mockPermissionService
+            ->method('userHasPermission')
+            ->willReturn(false);
+
+        $this->mockRepository
+            ->method('getZoneTemplateDetails')
+            ->willReturn($expectedTemplate);
+
+        $this->mockRepository
+            ->method('getZoneTemplateRecords')
+            ->willReturn($expectedRecords);
+
+        $controller = $this->createController(['id' => $templateId]);
+        $this->mockPermissionService->method('canViewZoneTemplates')->willReturn(true);
+        $response = $controller->testGetZoneTemplate();
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $records = json_decode($response->getContent(), true)['data']['template']['records'];
+        $this->assertEquals('v=spf1 -all', $records[0]['content']);
+        $this->assertEquals('"part1" "part2"', $records[1]['content']);
+        $this->assertEquals('"v=spf1 -all"', $records[2]['content']);
     }
 
     public function testGetZoneTemplateNotFound(): void
@@ -139,6 +176,7 @@ class ZoneTemplatesControllerTest extends TestCase
             ->willReturn(false);
 
         $controller = $this->createController(['id' => 999]);
+        $this->mockPermissionService->method('canViewZoneTemplates')->willReturn(true);
         $response = $controller->testGetZoneTemplate();
 
         $this->assertEquals(404, $response->getStatusCode());
@@ -163,6 +201,7 @@ class ZoneTemplatesControllerTest extends TestCase
             ->willReturn($expectedTemplate);
 
         $controller = $this->createController(['id' => 2]);
+        $this->mockPermissionService->method('canViewZoneTemplates')->willReturn(true);
         $response = $controller->testGetZoneTemplate();
 
         $this->assertEquals(403, $response->getStatusCode());
@@ -448,5 +487,27 @@ class ZoneTemplatesControllerTest extends TestCase
         $content = json_decode($response->getContent(), true);
         $this->assertFalse($content['success']);
         $this->assertStringContainsString('ueberuser', $content['message']);
+    }
+
+    public function testListZoneTemplatesDeniedWithoutViewPermission(): void
+    {
+        $this->mockPermissionService->method('canViewZoneTemplates')->willReturn(false);
+        $this->mockRepository->expects($this->never())->method('listZoneTemplates');
+
+        $controller = $this->createController();
+        $response = $controller->testListZoneTemplates();
+
+        $this->assertEquals(403, $response->getStatusCode());
+    }
+
+    public function testGetZoneTemplateDeniedWithoutViewPermission(): void
+    {
+        $this->mockPermissionService->method('canViewZoneTemplates')->willReturn(false);
+        $this->mockRepository->expects($this->never())->method('getZoneTemplateDetails');
+
+        $controller = $this->createController();
+        $response = $controller->testGetZoneTemplate();
+
+        $this->assertEquals(403, $response->getStatusCode());
     }
 }

@@ -10,13 +10,11 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 
 class TableNameServiceEnumTest extends TestCase
 {
-    private TableNameService $service;
     private ConfigurationManager&MockObject $mockConfig;
 
     protected function setUp(): void
     {
         $this->mockConfig = $this->createMock(ConfigurationManager::class);
-        $this->service = new TableNameService($this->mockConfig);
     }
 
     public function testGetTableWithoutPrefix(): void

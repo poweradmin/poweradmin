@@ -82,10 +82,9 @@ test.describe('Zone Template CRUD Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/templates/add');
 
-      const descField = page.locator('input[name*="description"], textarea[name*="description"]');
-      if (await descField.count() > 0) {
-        await expect(descField.first()).toBeVisible();
-      }
+      // The field is named templ_descr, so a name*="description" selector never matched
+      const descField = page.locator('input[name*="descr"], textarea[name*="descr"]');
+      await expect(descField.first()).toBeVisible();
     });
 
     test('should create template with name only', async ({ page }) => {
@@ -111,10 +110,9 @@ test.describe('Zone Template CRUD Operations', () => {
 
       await page.locator('input[name*="name"], input[name*="templ"]').first().fill(uniqueName);
 
-      const descField = page.locator('input[name*="description"], textarea[name*="description"]').first();
-      if (await descField.count() > 0) {
-        await descField.fill(templateDescription);
-      }
+      const descField = page.locator('input[name*="descr"], textarea[name*="descr"]').first();
+      await expect(descField).toBeVisible();
+      await descField.fill(templateDescription);
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
@@ -164,15 +162,10 @@ test.describe('Zone Template CRUD Operations', () => {
       }
 
       const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
-        await expect(page).toHaveURL(/.*zones\/templates\/\d+\/edit/);
-      } else {
-        // No edit links, just verify page loaded
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      await page.waitForLoadState('networkidle');
+      await expect(page).toHaveURL(/.*zones\/templates\/\d+\/edit/);
     });
 
     test('should display current template name', async ({ page }) => {
@@ -185,14 +178,15 @@ test.describe('Zone Template CRUD Operations', () => {
       }
 
       const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      await page.waitForLoadState('networkidle');
 
-        const nameField = page.locator('input[name*="name"], input[name*="templ"]').first();
-        const value = await nameField.inputValue();
-        expect(value.length).toBeGreaterThan(0);
-      }
+      // The records table above this form has its own name inputs, so target the
+      // template name field directly rather than the first match on the page.
+      const nameField = page.locator('#templ_name');
+      const value = await nameField.inputValue();
+      expect(value.length).toBeGreaterThan(0);
     });
 
     test('should update template name', async ({ page }) => {
@@ -254,18 +248,19 @@ test.describe('Zone Template CRUD Operations', () => {
       }
 
       const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      await page.waitForLoadState('networkidle');
 
-        const descField = page.locator('input[name*="description"], textarea[name*="description"]').first();
-        if (await descField.count() > 0) {
-          await descField.fill(`Updated description ${Date.now()}`);
-          await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      const descField = page.locator('#templ_descr');
+      if (await descField.count() > 0) {
+        await descField.fill(`Updated description ${Date.now()}`);
+        // Save the template details, not the first submit on the page: that is
+        // "Update zones", which renders disabled when no zones use the template.
+        await page.locator('button[type="submit"][name="edit"]').click();
 
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });
@@ -276,10 +271,9 @@ test.describe('Zone Template CRUD Operations', () => {
       await page.goto('/zones/templates');
 
       const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        await expect(page).toHaveURL(/.*delete/);
-      }
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
+      await expect(page).toHaveURL(/.*delete/);
     });
 
     test('should display confirmation message', async ({ page }) => {
@@ -287,12 +281,11 @@ test.describe('Zone Template CRUD Operations', () => {
       await page.goto('/zones/templates');
 
       const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
-      }
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
     });
 
     test('should cancel delete and return to list', async ({ page }) => {
@@ -300,14 +293,13 @@ test.describe('Zone Template CRUD Operations', () => {
       await page.goto('/zones/templates');
 
       const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
 
-        const noBtn = page.locator('input[value="No"], button:has-text("No"), a:has-text("No")').first();
-        if (await noBtn.count() > 0) {
-          await noBtn.click();
-          await expect(page).toHaveURL(/.*zones\/templates/);
-        }
+      const noBtn = page.locator('input[value="No"], button:has-text("No"), a:has-text("No")').first();
+      if (await noBtn.count() > 0) {
+        await noBtn.click();
+        await expect(page).toHaveURL(/.*zones\/templates/);
       }
     });
   });

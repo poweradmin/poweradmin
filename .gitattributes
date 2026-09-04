@@ -13,6 +13,7 @@ package.json export-ignore
 phinx.php export-ignore
 phpcs.xml export-ignore
 phpdoc.dist.xml export-ignore
+phpstan-baseline.neon export-ignore
 phpstan.neon export-ignore
 phpunit.xml.dist export-ignore
 playwright.config.js export-ignore

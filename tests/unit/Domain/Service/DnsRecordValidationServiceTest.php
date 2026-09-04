@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,9 +35,7 @@ use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 #[CoversClass(DnsRecordValidationService::class)]
 class DnsRecordValidationServiceTest extends TestCase
@@ -45,8 +43,6 @@ class DnsRecordValidationServiceTest extends TestCase
     private DnsRecordValidationService $service;
     private DnsValidatorRegistry&MockObject $validatorRegistry;
     private DnsCommonValidator&MockObject $dnsCommonValidator;
-    private TTLValidator&MockObject $ttlValidator;
-    private MessageService&MockObject $messageService;
     private ZoneRepositoryInterface&MockObject $zoneRepository;
     private DNSViolationValidator&MockObject $dnsViolationValidator;
 
@@ -56,16 +52,12 @@ class DnsRecordValidationServiceTest extends TestCase
 
         $this->validatorRegistry = $this->createMock(DnsValidatorRegistry::class);
         $this->dnsCommonValidator = $this->createMock(DnsCommonValidator::class);
-        $this->ttlValidator = $this->createMock(TTLValidator::class);
-        $this->messageService = $this->createMock(MessageService::class);
         $this->zoneRepository = $this->createMock(ZoneRepositoryInterface::class);
         $this->dnsViolationValidator = $this->createMock(DNSViolationValidator::class);
 
         $this->service = new DnsRecordValidationService(
             $this->validatorRegistry,
             $this->dnsCommonValidator,
-            $this->ttlValidator,
-            $this->messageService,
             $this->zoneRepository,
             $this->dnsViolationValidator
         );

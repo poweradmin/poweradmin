@@ -32,12 +32,11 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -45,16 +44,26 @@ use Exception;
 class ZoneOwnersController extends PublicApiController
 {
     private ZoneRepositoryInterface $zoneRepository;
-    private DbUserRepository $userRepository;
+    private UserRepository $userRepository;
     private ApiPermissionService $apiPermissionService;
+    private AuditService $auditService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
         $this->zoneRepository = $this->createZoneRepository();
-        $this->userRepository = new DbUserRepository($this->db, $this->config);
+        $this->userRepository = $this->createUserRepository();
         $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->auditService = new AuditService($this->db);
+    }
+
+    /**
+     * Zone name for the audit entry; the mutation paths only check the id exists.
+     */
+    private function auditZoneName(int $zoneId): string
+    {
+        return $this->createDomainRepository()->getDomainNameById($zoneId) ?? '';
     }
 
     /**
@@ -127,12 +136,16 @@ class ZoneOwnersController extends PublicApiController
     {
         $zoneId = (int)$this->pathParameters['id'];
 
+        if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+            return $scopeError;
+        }
+
         if (!$this->zoneRepository->zoneExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
         }
 
-        if (!$this->apiPermissionService->canViewZone($this->authenticatedUserId, $zoneId)) {
-            return $this->returnApiError('You do not have permission to view this zone', 403);
+        if (!$this->apiPermissionService->canViewZoneOwnership($this->authenticatedUserId, $zoneId)) {
+            return $this->returnApiError('You do not have permission to view zone owners', 403);
         }
 
         try {
@@ -208,13 +221,19 @@ class ZoneOwnersController extends PublicApiController
             type: 'object'
         )
     )]
+    #[OA\Response(response: 200, description: 'Batch processed but no owners were added (all skipped or not found)')]
     #[OA\Response(response: 400, description: 'Invalid input')]
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
     #[OA\Response(response: 409, description: 'User is already an owner of this zone (single mode only)')]
+    #[OA\Response(response: 500, description: 'Failed to add owner due to a server error')]
     private function addOwner(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
+
+        if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+            return $scopeError;
+        }
 
         if (!$this->zoneRepository->zoneExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
@@ -245,7 +264,11 @@ class ZoneOwnersController extends PublicApiController
                 return $this->returnApiError('Missing required field: user_id or user_ids', 400);
             }
 
-            $userId = (int)$data['user_id'];
+            // Reject a non-scalar user_id; (int) would silently coerce an array to 1.
+            $userId = $this->inputInt($data, 'user_id');
+            if ($userId === null || $userId <= 0) {
+                return $this->returnApiError('Invalid user_id', 400);
+            }
 
             if ($this->userRepository->getUserById($userId) === null) {
                 return $this->returnApiError('User not found', 404);
@@ -256,10 +279,12 @@ class ZoneOwnersController extends PublicApiController
             }
 
             $this->zoneRepository->addOwnerToZone($zoneId, $userId);
+            $this->auditService->logZoneOwnerAdd($zoneId, $this->auditZoneName($zoneId), $userId);
 
             return $this->returnApiResponse(null, true, 'Owner added successfully', 201);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 400);
+            // A throw here is a repository/DB failure, not bad input - mirror removeOwner()'s 500.
+            return $this->returnApiError($e->getMessage(), 500);
         }
     }
 
@@ -275,8 +300,13 @@ class ZoneOwnersController extends PublicApiController
         $added = [];
         $skipped = [];
         $notFound = [];
+        $zoneName = $this->auditZoneName($zoneId);
 
         foreach ($userIds as $uid) {
+            // Skip non-numeric ids; (int) would coerce an array/garbage value to 1.
+            if (!is_numeric($uid)) {
+                continue;
+            }
             $userId = (int)$uid;
 
             if ($this->userRepository->getUserById($userId) === null) {
@@ -290,6 +320,7 @@ class ZoneOwnersController extends PublicApiController
             }
 
             $this->zoneRepository->addOwnerToZone($zoneId, $userId);
+            $this->auditService->logZoneOwnerAdd($zoneId, $zoneName, $userId);
             $added[] = $userId;
         }
 
@@ -301,11 +332,12 @@ class ZoneOwnersController extends PublicApiController
             $message .= ', ' . count($notFound) . ' not found';
         }
 
+        // 201 only when something was actually created; a batch that added nothing is a plain 200.
         return $this->returnApiResponse(
             ['added' => $added, 'skipped' => $skipped, 'not_found' => $notFound],
             true,
             $message,
-            201
+            empty($added) ? 200 : 201
         );
     }
 
@@ -356,6 +388,10 @@ class ZoneOwnersController extends PublicApiController
     {
         $zoneId = (int)$this->pathParameters['id'];
 
+        if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+            return $scopeError;
+        }
+
         if (!$this->zoneRepository->zoneExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
         }
@@ -373,7 +409,7 @@ class ZoneOwnersController extends PublicApiController
 
             if ($this->zoneRepository->isUserZoneOwner($zoneId, $userId)) {
                 $remainingOwners = count($this->zoneRepository->getZoneOwners($zoneId));
-                $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
+                $zoneGroupRepo = $this->createZoneGroupRepository();
                 $remainingGroups = count($zoneGroupRepo->findByDomainId($zoneId));
                 $wouldRemoveLast = $remainingOwners <= 1;
                 $ownershipMode = new ZoneOwnershipModeService($this->config);
@@ -414,6 +450,8 @@ class ZoneOwnersController extends PublicApiController
             if (!$success) {
                 return $this->returnApiError('Owner not found for this zone', 404);
             }
+
+            $this->auditService->logZoneOwnerRemove($zoneId, $this->auditZoneName($zoneId), $userId);
 
             return $this->returnApiResponse(null, true, 'Owner removed successfully');
         } catch (Exception $e) {

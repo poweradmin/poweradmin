@@ -27,9 +27,9 @@ class BulkRecordParser
     /**
      * Parse a CSV line into a record array.
      *
-     * @return array{name: string, type: string, content: string, prio: int, ttl: int, disabled: int, comment: string}|string Error message on failure
+     * @return array{name: string, type: string, content: string, prio: int, ttl: int|null, disabled: int, comment: string}|string Error message on failure
      */
-    public function parseLine(string $line, int $defaultTtl): array|string
+    public function parseLine(string $line, ?int $defaultTtl = null): array|string
     {
         $line = trim($line);
         if (empty($line)) {
@@ -67,11 +67,12 @@ class BulkRecordParser
         ];
     }
 
+
     /**
      * @param array<int, string> $parts
-     * @return array{name: string, type: string, content: string, prio: int, ttl: int, disabled: int, comment: string}|string
+     * @return array{name: string, type: string, content: string, prio: int, ttl: int|null, disabled: int, comment: string}|string
      */
-    private function parseSrvRecord(array $parts, string $name, string $content, int $defaultTtl): array|string
+    private function parseSrvRecord(array $parts, string $name, string $content, ?int $defaultTtl): array|string
     {
         if (str_contains($content, ' ')) {
             // CSV export format: name,SRV,"weight port target",priority,ttl[,disabled][,comment]

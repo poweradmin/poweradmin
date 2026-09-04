@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -31,14 +31,14 @@ class InstallSecurityService
 {
     private array $config;
     private CsrfTokenService $csrfTokenService;
-    private IPAddressValidator $ipValidator;
+    private array $server;
     private const DEFAULT_IP = '0.0.0.0';
 
-    public function __construct(array $config, CsrfTokenService $csrfTokenService, ?IPAddressValidator $ipValidator = null)
+    public function __construct(array $config, CsrfTokenService $csrfTokenService, ?array $server = null)
     {
         $this->config = $config;
         $this->csrfTokenService = $csrfTokenService;
-        $this->ipValidator = $ipValidator ?? new IPAddressValidator();
+        $this->server = $server ?? $_SERVER;
     }
 
     public function validateRequest(Request $request): array
@@ -53,7 +53,7 @@ class InstallSecurityService
             $token = $request->request->get('install_token');
             if (empty($token)) {
                 $errors['csrf'] = 'Security Token Missing: A required security token was not provided. Please start the installation from the beginning.';
-            } elseif (!$this->csrfTokenService->validateToken($token, 'install_token')) {
+            } elseif (!$this->csrfTokenService->validateToken($token, SessionKeys::INSTALL_TOKEN)) {
                 $errors['csrf'] = 'Invalid Security Token: The provided token is invalid or has expired. Please start the installation from the beginning.';
             }
         }
@@ -68,54 +68,37 @@ class InstallSecurityService
         }
 
         $clientIp = $this->getClientIp();
+        $allowed = array_merge(
+            $this->config['ip_access']['allowed_ips'] ?? [],
+            $this->config['ip_access']['allowed_ranges'] ?? []
+        );
 
-        $allowedIps = $this->config['ip_access']['allowed_ips'] ?? [];
-        if (in_array($clientIp, $allowedIps)) {
-            return true;
-        }
-
-        $allowedRanges = $this->config['ip_access']['allowed_ranges'] ?? [];
-        foreach ($allowedRanges as $range) {
-            if ($this->ipInRange($clientIp, $range)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function ipInRange(string $ip, string $range): bool
-    {
-        list($range, $netmask) = explode('/', $range, 2);
-        $rangeDecimal = ip2long($range);
-        $ipDecimal = ip2long($ip);
-        $wildcardDecimal = pow(2, (32 - (int)$netmask)) - 1;
-        $netmaskDecimal = ~$wildcardDecimal;
-
-        return ($ipDecimal & $netmaskDecimal) == ($rangeDecimal & $netmaskDecimal);
+        return $allowed !== [] && IpUtils::checkIp($clientIp, $allowed);
     }
 
     private function getClientIp(): string
     {
-        $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? '';
-        if ($remoteAddr === '' || !$this->isValidIp($remoteAddr)) {
+        $remoteAddr = $this->server['REMOTE_ADDR'] ?? '';
+        if ($remoteAddr === '' || filter_var($remoteAddr, FILTER_VALIDATE_IP) === false) {
             return self::DEFAULT_IP;
         }
 
-        // X-Forwarded-For is attacker-controlled unless the peer is a proxy the
-        // operator listed in trusted_proxies, so without that list REMOTE_ADDR is
-        // the only address that may open the allow-list.
+        // Only entries explicitly listed in trusted_proxies are believed when reading
+        // X-Forwarded-For. Private/loopback addresses are NOT auto-trusted: a peer on
+        // the same LAN can be an attacker too, and a legitimate client could itself
+        // hold a private address behind NAT/VPN. Without an operator-configured list,
+        // REMOTE_ADDR is the only address that gates allowlist access.
         $trusted = $this->config['ip_access']['trusted_proxies'] ?? [];
 
-        if ($trusted === [] || !IpUtils::checkIp($remoteAddr, $trusted) || empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        if ($trusted === [] || !IpUtils::checkIp($remoteAddr, $trusted) || empty($this->server['HTTP_X_FORWARDED_FOR'])) {
             return $remoteAddr;
         }
 
         // Walk the chain right-to-left peeling trusted hops; the first untrusted
         // address is the real client, matching Symfony's getClientIp() model.
-        $forwarded = array_reverse(array_map('trim', explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])));
+        $forwarded = array_reverse(array_map('trim', explode(',', $this->server['HTTP_X_FORWARDED_FOR'])));
         foreach ($forwarded as $ip) {
-            if (!$this->isValidIp($ip)) {
+            if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
                 continue;
             }
             if (!IpUtils::checkIp($ip, $trusted)) {
@@ -124,10 +107,5 @@ class InstallSecurityService
         }
 
         return $remoteAddr;
-    }
-
-    private function isValidIp(string $ip): bool
-    {
-        return $this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip);
     }
 }

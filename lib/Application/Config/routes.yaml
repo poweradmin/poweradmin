@@ -23,7 +23,7 @@ oidc_login:
 oidc_callback:
   path: /oidc/callback
   controller: Poweradmin\Application\Controller\OidcCallbackController::run
-  methods: [GET]
+  methods: [GET, POST]
 
 # SAML Authentication
 saml_login:
@@ -130,10 +130,6 @@ zones_reverse:
   path: /zones/reverse
   controller: Poweradmin\Application\Controller\ListReverseZonesController::run
 
-zones_template:
-  path: /zones/template
-  controller: Poweradmin\Application\Controller\ListTemplateZonesController::run
-
 zone_add_master:
   path: /zones/add/master
   controller: Poweradmin\Application\Controller\AddZoneMasterController::run
@@ -160,6 +156,13 @@ zone_metadata:
 zone_ownership:
   path: /zones/{id}/ownership
   controller: Poweradmin\Application\Controller\ZoneOwnershipController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+zone_catalog:
+  path: /zones/{id}/catalog
+  controller: Poweradmin\Application\Controller\ZoneCatalogController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
@@ -196,6 +199,10 @@ batch_ptr:
 zones_logs:
   path: /zones/logs
   controller: Poweradmin\Application\Controller\ListLogZonesController::run
+
+record_changes:
+  path: /zones/changes
+  controller: Poweradmin\Application\Controller\ListRecordChangesController::run
 
 zones_templates:
   path: /zones/templates
@@ -472,6 +479,10 @@ database_consistency:
   path: /tools/database-consistency
   controller: Poweradmin\Application\Controller\DatabaseConsistencyController::run
 
+record_type_defaults:
+  path: /tools/record-type-defaults
+  controller: Poweradmin\Application\Controller\RecordTypeDefaultsController::run
+
 
 pdns_status:
   path: /tools/pdns-status
@@ -498,71 +509,18 @@ delete_supermaster:
   controller: Poweradmin\Application\Controller\DeleteSupermasterController::run
   methods: [GET, POST]
 
-# API v1 Routes - RESTful
-api_v1_zones:
-  path: /api/v1/zones
-  controller: Poweradmin\Application\Controller\Api\V1\ZonesController::run
-  methods: [GET, POST]
-
-api_v1_zone:
-  path: /api/v1/zones/{id}
-  controller: Poweradmin\Application\Controller\Api\V1\ZonesController::run
+# API v1 was removed in 4.5.0 - answer 410 with a pointer to v2
+api_v1_gone:
+  path: /api/v1/{path}
+  controller: Poweradmin\Application\Controller\Api\V1GoneController::run
   requirements:
-    id: '\d+'
-  methods: [GET, PUT, DELETE]
+    path: '.*'
+  defaults:
+    path: ''
 
-api_v1_zone_records:
-  path: /api/v1/zones/{id}/records
-  controller: Poweradmin\Application\Controller\Api\V1\ZonesRecordsController::run
-  requirements:
-    id: '\d+'
-  methods: [GET, POST]
-
-api_v1_zone_record:
-  path: /api/v1/zones/{id}/records/{record_id}
-  controller: Poweradmin\Application\Controller\Api\V1\ZonesRecordsController::run
-  requirements:
-    id: '\d+'
-    record_id: '[\w\-=.]+'
-  methods: [GET, PUT, DELETE]
-
-api_v1_users:
-  path: /api/v1/users
-  controller: Poweradmin\Application\Controller\Api\V1\UsersController::run
-  methods: [GET, POST]
-
-api_v1_user:
-  path: /api/v1/users/{id}
-  controller: Poweradmin\Application\Controller\Api\V1\UsersController::run
-  requirements:
-    id: '\d+'
-  methods: [GET, PUT, PATCH, DELETE]
-
-api_v1_permission_templates:
-  path: /api/v1/permission-templates
-  controller: Poweradmin\Application\Controller\Api\V1\PermissionTemplatesController::run
-  methods: [GET, POST]
-
-api_v1_permission_template:
-  path: /api/v1/permission-templates/{id}
-  controller: Poweradmin\Application\Controller\Api\V1\PermissionTemplatesController::run
-  requirements:
-    id: '\d+'
-  methods: [GET, PUT, DELETE]
-
-api_v1_permissions:
-  path: /api/v1/permissions
-  controller: Poweradmin\Application\Controller\Api\V1\PermissionsController::run
-  methods: [GET]
-
-api_v1_permission:
-  path: /api/v1/permissions/{id}
-  controller: Poweradmin\Application\Controller\Api\V1\PermissionsController::run
-  requirements:
-    id: '\d+'
-  methods: [GET]
-
-# API v2 Routes - RESTful with wrapped responses
+# API v2 Routes - RESTful with wrapped responses.
+# HeadlessRouteFilter::ALLOWED_PREFIXES decides which paths survive with the web
+# interface disabled; an API route added outside those prefixes 404s there.
 api_v2_zones:
   path: /api/v2/zones
   controller: Poweradmin\Application\Controller\Api\V2\ZonesController::run
@@ -589,6 +547,13 @@ api_v2_zone_metadata_kind:
     id: '\d+'
     kind: '[\w\-]+'
   methods: [GET, PUT, DELETE]
+
+api_v2_zone_dnssec:
+  path: /api/v2/zones/{id}/dnssec
+  controller: Poweradmin\Application\Controller\Api\V2\ZoneDnssecController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
 
 api_v2_zone_owners:
   path: /api/v2/zones/{id}/owners
@@ -647,6 +612,11 @@ api_v2_zone_rrset:
     id: '\d+'
     type: '[A-Za-z0-9]+'
   methods: [GET, DELETE]
+
+api_v2_dynamic_dns:
+  path: /api/v2/dynamic-dns
+  controller: Poweradmin\Application\Controller\Api\V2\DynamicDnsController::run
+  methods: [POST]
 
 api_v2_users:
   path: /api/v2/users
@@ -758,25 +728,19 @@ api_docs:
   path: /api/docs
   controller: Poweradmin\Application\Controller\Api\DocsController::run
 
-# Versioned API Documentation (V1 and V2)
-api_docs_json_v1:
-  path: /api/docs/v1/json
-  controller: Poweradmin\Application\Controller\Api\Docs\JsonController::run
-  defaults:
-    version: V1
-
+# Versioned API Documentation
 api_docs_json_v2:
   path: /api/docs/v2/json
   controller: Poweradmin\Application\Controller\Api\Docs\JsonController::run
   defaults:
     version: V2
 
-# Legacy endpoint (defaults to V1 for backward compatibility)
+# Unversioned endpoint kept so existing bookmarks reach the current spec
 api_docs_json:
   path: /api/docs/json
   controller: Poweradmin\Application\Controller\Api\Docs\JsonController::run
   defaults:
-    version: V1
+    version: V2
 
 # Internal API Routes
 api_internal_validation:
@@ -824,21 +788,6 @@ unlink_zones_templ:
   controller: Poweradmin\Application\Controller\UnlinkZonesTemplController::run
   methods: [GET, POST]
 
-# Authentication Routes  
-reset_password_token:
-  path: /auth/reset-password/{token}
-  controller: Poweradmin\Application\Controller\ResetPasswordController::run
-  requirements:
-    token: '[a-zA-Z0-9]+'
-  methods: [GET, POST]
-
-mfa_verify_token:
-  path: /auth/mfa/verify/{token}
-  controller: Poweradmin\Application\Controller\MfaVerifyController::run
-  requirements:
-    token: '[a-zA-Z0-9]+'
-  methods: [GET, POST]
-
 # DNSSEC Key Management
 dnssec_key_toggle:
   path: /zones/{zone_id}/dnssec/keys/{key_id}/toggle
@@ -847,6 +796,19 @@ dnssec_key_toggle:
     zone_id: '\d+'
     key_id: '\d+'
   methods: [POST]
+
+# Monitoring - unauthenticated and disabled by default.
+# Renaming either path also means updating RequestContext::isHealthProbeRequest(),
+# which skips session start for them before the router has run.
+api_health:
+  path: /api/health
+  controller: Poweradmin\Application\Controller\Api\HealthController::run
+  methods: [GET]
+
+ping:
+  path: /ping
+  controller: Poweradmin\Application\Controller\PingController::run
+  methods: [GET]
 
 # Static Assets
 static_assets:

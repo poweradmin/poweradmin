@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,26 +22,33 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 
 class UnlinkZonesTemplController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
 
     public function run(): void
     {
-        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $perm_zone_edit = UserManager::verifyPermission($this->db, 'zone_content_edit_own') || UserManager::verifyPermission($this->db, 'zone_content_edit_others');
-        $perm_zone_meta_edit = UserManager::verifyPermission($this->db, 'zone_meta_edit_own') || UserManager::verifyPermission($this->db, 'zone_meta_edit_others');
+        $perm_godlike = $this->hasPermission('user_is_ueberuser');
+        $perm_zone_edit = $this->hasPermission('zone_content_edit_own') || $this->hasPermission('zone_content_edit_others');
+        $perm_zone_meta_edit = $this->hasPermission('zone_meta_edit_own') || $this->hasPermission('zone_meta_edit_others');
 
         $this->checkCondition(!($perm_godlike || $perm_zone_edit || $perm_zone_meta_edit), _('You do not have permission to unlink zones from templates.'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            $zone_ids = $_POST['zone_ids'] ?? [];
+            $zone_ids = $this->request->getPostParam('zone_ids', []);
             $template_id = filter_input(INPUT_POST, 'template_id', FILTER_VALIDATE_INT);
 
             if (empty($zone_ids)) {
@@ -54,7 +61,7 @@ class UnlinkZonesTemplController extends BaseController
                 return;
             }
 
-            if (isset($_POST['confirm'])) {
+            if ($this->request->getPostParam('confirm') !== null) {
                 $this->unlinkZones($zone_ids, $template_id);
             } else {
                 $this->showConfirmation($zone_ids, $template_id);
@@ -68,6 +75,9 @@ class UnlinkZonesTemplController extends BaseController
     {
         $successful = 0;
         $failed = 0;
+        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+        $auditService = new AuditService($this->db);
+        $perm_godlike = $this->hasPermission('user_is_ueberuser');
 
         foreach ($zone_ids as $zone_id) {
             $zone_id = filter_var($zone_id, FILTER_VALIDATE_INT);
@@ -77,15 +87,12 @@ class UnlinkZonesTemplController extends BaseController
             }
 
             // Check if user has permission to edit this zone
-            $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-            if (!$perm_godlike && !UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id)) {
+            if (!$perm_godlike && !$this->isZoneOwner($zone_id)) {
                 $failed++;
                 continue;
             }
 
-            $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
             if ($zoneTemplate->unlinkZoneFromTemplate($zone_id)) {
-                $auditService = new AuditService($this->db);
                 $auditService->logZoneTemplateUnlink($zone_id);
                 $successful++;
             } else {

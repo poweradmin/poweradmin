@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Model;
 
 use DateTime;
 use JsonSerializable;
+use Poweradmin\Domain\Enum\ApiKeyStatus;
 
 /**
  * Class ApiKey
@@ -44,6 +45,11 @@ class ApiKey implements JsonSerializable
     private ?DateTime $expiresAt = null;
     private string $creatorUsername = '';
     private string $creatorFullname = '';
+    private bool $isReadonly = false;
+    /** @var string[]|null Operations the key may perform; null means all */
+    private ?array $allowedOperations = null;
+    /** @var int[]|null Zones the key is restricted to; null/empty means no restriction */
+    private ?array $zoneIds = null;
 
     /**
      * ApiKey constructor.
@@ -277,7 +283,20 @@ class ApiKey implements JsonSerializable
      */
     public function isValid(): bool
     {
-        return !$this->isDisabled() && !$this->hasExpired();
+        return $this->status()->isUsable();
+    }
+
+    /**
+     * Lifecycle state, derived from the disabled flag and the expiry date.
+     * Disabled wins when both apply, matching what the key list displays.
+     */
+    public function status(): ApiKeyStatus
+    {
+        if ($this->isDisabled()) {
+            return ApiKeyStatus::DISABLED;
+        }
+
+        return $this->hasExpired() ? ApiKeyStatus::EXPIRED : ApiKeyStatus::ACTIVE;
     }
 
     /**
@@ -332,6 +351,66 @@ class ApiKey implements JsonSerializable
     }
 
     /**
+     * Whether this API key is restricted to read-only (view/GET) requests
+     *
+     * @return bool
+     */
+    public function isReadonly(): bool
+    {
+        return $this->isReadonly;
+    }
+
+    /**
+     * Set whether this API key is restricted to read-only requests
+     *
+     * @param bool $isReadonly
+     */
+    public function setIsReadonly(bool $isReadonly): void
+    {
+        $this->isReadonly = $isReadonly;
+    }
+
+    /**
+     * Operations the key may perform (view/create/update/delete); null means all
+     *
+     * @return string[]|null
+     */
+    public function getAllowedOperations(): ?array
+    {
+        return $this->allowedOperations;
+    }
+
+    /**
+     * Set the operations the key may perform; null/empty means all
+     *
+     * @param string[]|null $allowedOperations
+     */
+    public function setAllowedOperations(?array $allowedOperations): void
+    {
+        $this->allowedOperations = ($allowedOperations === null || $allowedOperations === []) ? null : array_values($allowedOperations);
+    }
+
+    /**
+     * Zones the key is restricted to; null/empty means no restriction
+     *
+     * @return int[]|null
+     */
+    public function getZoneIds(): ?array
+    {
+        return $this->zoneIds;
+    }
+
+    /**
+     * Set the zones the key is restricted to; null/empty means no restriction
+     *
+     * @param int[]|null $zoneIds
+     */
+    public function setZoneIds(?array $zoneIds): void
+    {
+        $this->zoneIds = ($zoneIds === null || $zoneIds === []) ? null : array_values(array_map('intval', $zoneIds));
+    }
+
+    /**
      * Specifies data which should be serialized to JSON
      *
      * @return array
@@ -347,10 +426,16 @@ class ApiKey implements JsonSerializable
             'lastUsedAt' => $this->lastUsedAt ? $this->lastUsedAt->format('Y-m-d H:i:s') : null,
             'disabled' => $this->disabled,
             'expiresAt' => $this->expiresAt ? $this->expiresAt->format('Y-m-d H:i:s') : null,
+            // The three booleans below are one three-valued fact; `status` is the
+            // one to read, they are kept for existing consumers.
+            'status' => $this->status()->value,
             'isExpired' => $this->hasExpired(),
             'isValid' => $this->isValid(),
             'creatorUsername' => $this->creatorUsername,
             'creatorFullname' => $this->creatorFullname,
+            'isReadonly' => $this->isReadonly,
+            'allowedOperations' => $this->allowedOperations,
+            'zoneIds' => $this->zoneIds,
         ];
     }
 }

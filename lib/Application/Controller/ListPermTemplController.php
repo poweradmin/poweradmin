@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 
 class ListPermTemplController extends BaseController
 {
@@ -43,7 +42,7 @@ class ListPermTemplController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('list_perm_templ');
-        $this->setPageTitle(_('Permission Templates'));
+        $this->setPageTitle(_('Permission templates'));
 
         $this->showListPermTempl();
     }
@@ -53,18 +52,19 @@ class ListPermTemplController extends BaseController
         $showUser = $this->config->get('permissions', 'show_user_access_templates', true);
         $showGroup = $this->config->get('permissions', 'show_group_access_templates', true);
 
+        $permissionTemplateRepository = $this->createPermissionTemplateRepository();
         if ($showUser && $showGroup) {
-            $templates = UserManager::listPermissionTemplates($this->db);
+            $templates = $permissionTemplateRepository->listPermissionTemplates();
         } elseif ($showGroup) {
-            $templates = UserManager::listPermissionTemplates($this->db, 'group');
+            $templates = $permissionTemplateRepository->listPermissionTemplates('group');
         } elseif ($showUser) {
-            $templates = UserManager::listPermissionTemplates($this->db, 'user');
+            $templates = $permissionTemplateRepository->listPermissionTemplates('user');
         } else {
-            $templates = UserManager::listPermissionTemplates($this->db);
+            $templates = $permissionTemplateRepository->listPermissionTemplates();
         }
 
         $this->render('list_perm_templ.html', [
-            'templ_perm_add' => UserManager::verifyPermission($this->db, 'templ_perm_add'),
+            'templ_perm_add' => $this->hasPermission('templ_perm_add'),
             'permission_templates' => $templates,
             'show_user_access_templates' => $showUser,
             'show_group_access_templates' => $showGroup,

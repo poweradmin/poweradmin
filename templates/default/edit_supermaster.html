@@ -1,26 +1,22 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/supermasters">{{ autoprimaries_label('plural') }}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{{ autoprimaries_label('edit_action') }}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: autoprimaries_label('plural'), url: base_url_prefix ~ '/supermasters'},
+    {label: autoprimaries_label('edit_action')},
+]) }}
 
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-server me-2"></i>{{ autoprimaries_label('edit_action') }}</strong>
-            </div>
+            {{ macros.card_header('bi-server', autoprimaries_label('edit_action')) }}
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/supermasters/edit?master_ip={{ old_master_ip }}&ns_name={{ old_ns_name }}" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
 
                     <div class="mb-3">
                         <label for="master_ip" class="form-label">{{ autoprimaries_label('ip_label') }} <span class="text-danger">*</span></label>
                         <input class="form-control form-control-sm" type="text" id="master_ip" name="master_ip" value="{{ master_ip }}" required>
                         <small class="form-text text-muted">{% trans %}Enter the IP address of the master nameserver{% endtrans %}</small>
-                        <div class="invalid-feedback">{% trans %}Provide ip address{% endtrans %}</div>
+                        <div class="invalid-feedback">{% trans %}Provide IP address{% endtrans %}</div>
                     </div>
 
                     <div class="mb-3">
@@ -70,9 +66,7 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{{ autoprimaries_label('about_edit_title') }}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', autoprimaries_label('about_edit_title')) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">

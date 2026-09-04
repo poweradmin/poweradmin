@@ -52,6 +52,7 @@ class SymfonyRouter
     private array $routeParameters = [];
     private ?string $matchedRoute = null;
     private bool $routeFound = true;
+    private bool $webEnabled = true;
 
     public function __construct()
     {
@@ -88,6 +89,11 @@ class SymfonyRouter
             }
 
             $routes->add($routeDef['name'], $route);
+        }
+
+        $this->webEnabled = (bool) $config->get('interface', 'web_enabled', true);
+        if (!$this->webEnabled) {
+            HeadlessRouteFilter::apply($routes);
         }
 
         // Set up request context with subfolder support
@@ -142,8 +148,14 @@ class SymfonyRouter
             ];
         } catch (ResourceNotFoundException $e) {
             $this->routeFound = false;
+            // A headless install has no interface to render a 404 page with, and
+            // misses are most of its traffic, so answer without touching the database.
+            $notFound = $this->webEnabled
+                ? '\Poweradmin\Application\Controller\NotFoundController'
+                : '\Poweradmin\Application\Controller\Api\HeadlessNotFoundController';
+
             return [
-                'controller' => '\Poweradmin\Application\Controller\NotFoundController',
+                'controller' => $notFound,
                 'method' => 'run',
                 'parameters' => [],
                 'route' => '404'
@@ -169,15 +181,19 @@ class SymfonyRouter
             throw new Exception("Controller class {$controllerClass} not found", 404);
         }
 
+        // Explicit GET+POST merge (POST wins) instead of $_REQUEST, which can
+        // also include cookies depending on the request_order ini setting
+        $requestData = array_merge(
+            $this->request->query->all(),
+            $this->request->request->all()
+        );
+
         // Create controller instance
         if ($this->isApiRoute()) {
-            // API controllers get clean parameter injection
-            // Pass $_REQUEST as first parameter and route parameters as second
-            $controller = new $controllerClass($_REQUEST, $parameters);
+            $controller = new $controllerClass($requestData, $parameters);
         } else {
-            // Web controllers maintain current request structure for compatibility
-            // but merge route parameters into the request data
-            $requestData = array_merge($_REQUEST, $parameters);
+            // Web controllers get route parameters merged into the request data
+            $requestData = array_merge($requestData, $parameters);
             // Add the route name as 'page' for template navigation
             $requestData['page'] = $routeInfo['route'];
             $controller = new $controllerClass($requestData);

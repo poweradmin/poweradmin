@@ -23,12 +23,16 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class ReverseTtlResolverTest extends TestCase
 {
-    private function createResolver(mixed $reverseTtl, int $defaultTtl = 86400): ReverseTtlResolver
+    /**
+     * @param array<string, int> $typeDefaults
+     */
+    private function createResolver(mixed $reverseTtl, int $defaultTtl = 86400, array $typeDefaults = []): ReverseTtlResolver
     {
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(function (string $group, string $key, mixed $default = null) use ($reverseTtl, $defaultTtl) {
@@ -41,7 +45,10 @@ class ReverseTtlResolverTest extends TestCase
             return $default;
         });
 
-        return new ReverseTtlResolver($config);
+        $repo = $this->createMock(RecordTypeDefaultRepositoryInterface::class);
+        $repo->method('find')->willReturnCallback(fn(string $type) => $typeDefaults[strtoupper($type)] ?? null);
+
+        return new ReverseTtlResolver($config, $repo);
     }
 
     public function testGetDefaultTtlReturnsDnsTtlWhenReverseTtlUnsetAndReverseZone(): void
@@ -165,5 +172,36 @@ class ReverseTtlResolverTest extends TestCase
         $resolver = $this->createResolver(reverseTtl: 300);
         $this->assertSame(300, $resolver->resolveTtlForType('ptr', true));
         $this->assertSame(300, $resolver->resolveTtlForType('Ptr', true));
+    }
+
+    public function testRecordTypeDefaultBeatsReverseTtlConfig(): void
+    {
+        $resolver = $this->createResolver(reverseTtl: 300, typeDefaults: ['PTR' => 60]);
+        $this->assertSame(60, $resolver->resolveTtlForType('PTR', true));
+    }
+
+    public function testRecordTypeDefaultAppliesToNonPtrTypes(): void
+    {
+        $resolver = $this->createResolver(reverseTtl: null, typeDefaults: ['MX' => 1800]);
+        $this->assertSame(1800, $resolver->resolveTtlForType('MX', false));
+    }
+
+    public function testRecordTypeDefaultAppliesRegardlessOfZoneDirection(): void
+    {
+        $resolver = $this->createResolver(reverseTtl: null, typeDefaults: ['NS' => 7200]);
+        $this->assertSame(7200, $resolver->resolveTtlForType('NS', true));
+        $this->assertSame(7200, $resolver->resolveTtlForType('NS', false));
+    }
+
+    public function testFallsBackToReverseTtlConfigWhenNoTypeDefault(): void
+    {
+        $resolver = $this->createResolver(reverseTtl: 300, typeDefaults: ['A' => 60]);
+        $this->assertSame(300, $resolver->resolveTtlForType('PTR', true));
+    }
+
+    public function testFallsBackToDnsTtlWhenNoOverridesApply(): void
+    {
+        $resolver = $this->createResolver(reverseTtl: null, typeDefaults: ['MX' => 1800]);
+        $this->assertSame(86400, $resolver->resolveTtlForType('A', false));
     }
 }

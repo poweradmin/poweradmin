@@ -301,8 +301,8 @@ class SamlConfigurationServiceTest extends TestCase
 
     /**
      * PHP casts numeric array keys to int, so a mapping keyed on numeric IdP
-     * group ids used to be rejected as "not a string". A non-empty error array
-     * blocks the auth flow, so this locked out a valid configuration.
+     * group ids used to be rejected as "not a string". For SAML a non-empty
+     * error array hides every login button, so this locked users out.
      */
     public function testNumericGroupKeysAreValid(): void
     {
@@ -335,5 +335,41 @@ class SamlConfigurationServiceTest extends TestCase
 
         $this->assertCount(1, $errors);
         $this->assertStringContainsString('admins', $errors[0]);
+    }
+
+    public function testAutoProvisioningTemplateMissingWhenDefaultIsBlank(): void
+    {
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'enabled', false, true],
+                ['saml', 'auto_provision', true, true],
+                ['saml', 'default_permission_template', '', ''],
+            ]);
+
+        $this->assertTrue($this->service->isAutoProvisioningTemplateMissing());
+    }
+
+    public function testAutoProvisioningTemplateNotMissingWhenDefaultIsSet(): void
+    {
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'enabled', false, true],
+                ['saml', 'auto_provision', true, true],
+                ['saml', 'default_permission_template', '', 'Guest'],
+            ]);
+
+        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
+    }
+
+    public function testAutoProvisioningTemplateNotMissingWhenSamlDisabled(): void
+    {
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'enabled', false, false],
+                ['saml', 'auto_provision', true, true],
+                ['saml', 'default_permission_template', '', ''],
+            ]);
+
+        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
     }
 }

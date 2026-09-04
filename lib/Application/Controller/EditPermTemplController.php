@@ -31,17 +31,19 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Enum\PermissionTemplateType;
 
 class EditPermTemplController extends BaseController
 {
     private DbPermissionTemplateRepository $permissionTemplate;
+    private PermissionTemplateWriteService $permissionTemplateWriteService;
     private LegacyLogger $auditLogger;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
@@ -50,7 +52,8 @@ class EditPermTemplController extends BaseController
     {
         parent::__construct($request);
 
-        $this->permissionTemplate = new DbPermissionTemplateRepository($this->db, $this->getConfig());
+        $this->permissionTemplate = $this->createPermissionTemplateRepository();
+        $this->permissionTemplateWriteService = $this->createPermissionTemplateWriteService();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->userContextService = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
@@ -66,6 +69,18 @@ class EditPermTemplController extends BaseController
 
         if (!$this->validateRequest()) {
             $this->showFirstValidationError();
+            return;
+        }
+
+        $templateId = (int)$this->getSafeRequestValue('id');
+        $guardError = PermissionTemplateContentGuard::apply(
+            $this->createUserRepository(),
+            $this->callerId(),
+            $templateId,
+            null
+        );
+        if ($guardError !== null) {
+            $this->showError($this->translateWriteError($guardError));
             return;
         }
 
@@ -85,29 +100,21 @@ class EditPermTemplController extends BaseController
             return;
         }
 
-        // Ensure perm_id is always present so an all-unchecked form clears the
-        // permission list rather than leaving it untouched.
+        // Ensure perm_id is always a list so an all-unchecked form clears the
+        // permission list rather than leaving it untouched or iterating a scalar.
         $request = $this->getRequest();
         $request['perm_id'] = is_array($request['perm_id'] ?? null) ? $request['perm_id'] : [];
 
         // The route id is the only authoritative one; a posted templ_id would let
         // this write a template the URL never named.
         $templateId = (int)$this->getSafeRequestValue('id');
-        $request['templ_id'] = $templateId;
 
-        $guardError = PermissionTemplateContentGuard::apply(
-            $this->callerIsSuperuser(),
-            $this->permissionTemplate->getPermissionsByTemplateId(),
-            $this->permissionTemplate->getPermissionsByTemplateId($templateId),
-            $request['perm_id']
-        );
-        if ($guardError !== null) {
-            $this->setMessage('list_perm_templ', 'error', $this->guardMessage($guardError));
-            $this->redirect('/permissions/templates');
+        $result = $this->permissionTemplateWriteService->update($this->callerId(), $templateId, $request);
+        if (!$result['success']) {
+            $this->setMessage('list_perm_templ', 'error', $this->translateWriteError($result['message']));
+            $this->showForm();
             return;
         }
-
-        $this->permissionTemplate->updatePermissionTemplateDetails($request);
 
         $this->auditLogger->logInfo(sprintf(
             'client_ip:%s user:%s operation:edit_perm_template id:%s name:%s',
@@ -126,11 +133,11 @@ class EditPermTemplController extends BaseController
         $id = $this->getSafeRequestValue('id');
         $this->render('edit_perm_templ.html', [
             'id' => $id,
-            'templ' => $this->permissionTemplate->getPermissionTemplateDetails($id),
-            'perms_templ' => $this->permissionTemplate->getPermissionsByTemplateId($id),
+            'templ' => $this->permissionTemplate->getPermissionTemplateDetails((int)$id),
+            'perms_templ' => $this->permissionTemplate->getPermissionsByTemplateId((int)$id),
             'perms_avail' => PermissionTemplateContentGuard::filterOfferedPermissions(
                 $this->permissionTemplate->getPermissionsByTemplateId(),
-                $this->callerIsSuperuser()
+                $this->permissionTemplateWriteService->callerMaySetSuperuser($this->callerId())
             ),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
@@ -152,22 +159,26 @@ class EditPermTemplController extends BaseController
         $this->setRequestRules([
             'required' => ['templ_name', 'template_type'],
             'in' => [
-                ['template_type', ['user', 'group']]
+                ['template_type', PermissionTemplateType::values()]
             ],
         ]);
 
         return $this->doValidateRequest();
     }
 
-    private function callerIsSuperuser(): bool
+    private function callerId(): int
     {
-        return UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        return (int)$this->userContextService->getLoggedInUserId();
     }
 
-    private function guardMessage(string $code): string
+    private function translateWriteError(string $message): string
     {
-        return $code === PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED
-            ? _('Editing a permission template with administrator rights requires administrator rights.')
-            : _('Granting administrator rights in a permission template requires administrator rights.');
+        return match ($message) {
+            PermissionTemplateContentGuard::CONTENT_SUPERUSER_DENIED =>
+                _('Granting administrator rights in a permission template requires administrator rights.'),
+            PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED =>
+                _('Editing a permission template with administrator rights requires administrator rights.'),
+            default => _('The permission template could not be updated.'),
+        };
     }
 }

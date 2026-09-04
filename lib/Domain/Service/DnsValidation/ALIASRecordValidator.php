@@ -51,7 +51,6 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private ConfigurationManager $config;
 
     /**
      * Constructor
@@ -62,7 +61,6 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
-        $this->config = $config;
     }
 
     /**
@@ -78,7 +76,6 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
-        $errors = [];
         $warnings = [];
 
         // 1. Validate ALIAS hostname
@@ -122,10 +119,6 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
         }
         $validatedPrio = $prioResult->getData();
 
-
-        if (count($errors) > 0) {
-            return ValidationResult::errors($errors);
-        }
 
         $result = [
             'content' => $content,

@@ -5,6 +5,8 @@ CREATE TABLE log_users (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, cr
 
 CREATE TABLE log_api (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL);
 
+CREATE INDEX idx_log_api_created_at ON log_api(created_at);
+
 
 CREATE TABLE log_zones (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL, zone_id integer);
 
@@ -16,14 +18,44 @@ CREATE TABLE log_groups (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, c
 CREATE INDEX idx_log_groups_group_id ON log_groups(group_id);
 
 
+CREATE TABLE log_changesets (
+    id integer PRIMARY KEY,
+    zone_id integer,
+    user_id integer,
+    username VARCHAR(64) NOT NULL,
+    comment TEXT,
+    client_ip VARCHAR(64),
+    created_at timestamp DEFAULT current_timestamp NOT NULL
+);
+
+CREATE TABLE log_record_changes (
+    id integer PRIMARY KEY,
+    zone_id integer,
+    changeset_id integer,
+    record_id TEXT,
+    action VARCHAR(32) NOT NULL,
+    user_id integer,
+    username VARCHAR(64) NOT NULL,
+    before_state TEXT,
+    after_state TEXT,
+    client_ip VARCHAR(64),
+    created_at timestamp DEFAULT current_timestamp NOT NULL
+);
+
+CREATE INDEX idx_log_record_changes_created_at ON log_record_changes(created_at);
+CREATE INDEX idx_log_record_changes_zone_id ON log_record_changes(zone_id);
+CREATE INDEX idx_log_record_changes_action ON log_record_changes(action);
+CREATE INDEX idx_log_record_changes_changeset_id ON log_record_changes(changeset_id);
+
+
 CREATE TABLE perm_items (id integer PRIMARY KEY, name VARCHAR(64) NOT NULL, descr VARCHAR(1024) NOT NULL);
 
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (41,	'zone_master_add',	'User is allowed to add new master zones.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (42,	'zone_slave_add',	'User is allowed to add new slave zones.');
-INSERT INTO "perm_items" ("id", "name", "descr") VALUES (43,	'zone_content_view_own',	'User is allowed to see the content and meta data of zones he owns.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (43,	'zone_content_view_own',	'User is allowed to see the content of zones he owns.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (44,	'zone_content_edit_own',	'User is allowed to edit the content of zones he owns.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (45,	'zone_meta_edit_own',	'User is allowed to edit the meta data of zones he owns.');
-INSERT INTO "perm_items" ("id", "name", "descr") VALUES (46,	'zone_content_view_others',	'User is allowed to see the content and meta data of zones he does not own.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (46,	'zone_content_view_others',	'User is allowed to see the content of zones he does not own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (47,	'zone_content_edit_others',	'User is allowed to edit the content of zones he does not own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (48,	'zone_meta_edit_others',	'User is allowed to edit the meta data of zones he does not own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (49,	'search',	'User is allowed to perform searches.');
@@ -46,6 +78,16 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (65,	'api_manage_keys',	
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (67,	'zone_delete_own',	'User is allowed to delete zones they own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (70,	'zone_dnssec_manage_own',	'User is allowed to manage DNSSEC keys for zones he owns.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (71,	'zone_logs_view_own',	'User is allowed to view activity logs for zones he owns.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (72,	'zone_logs_view_others',	'User is allowed to view activity logs for zones he does not own.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (73,	'user_logs_view',	'User is allowed to view the user activity logs.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (74,	'group_logs_view',	'User is allowed to view the group activity logs.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (75,	'zone_content_edit_ns_subzone',	'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (76,	'zone_metadata_view_own',	'User is allowed to see the meta data of zones he owns.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (77,	'zone_metadata_view_others',	'User is allowed to see the meta data of zones he does not own.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.');
 
 CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user', CHECK(template_type IN ('user', 'group')));
 
@@ -101,11 +143,36 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (33,	8,	56);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (34,	8,	62);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (35,	9,	43);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (36,	9,	49);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (37,	2,	70);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (38,	7,	70);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (39,	2,	71);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (40,	3,	71);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (41,	4,	71);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (42,	7,	71);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (43,	8,	71);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (44,	9,	71);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (45,	2,	76);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (46,	3,	76);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (47,	4,	76);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (48,	7,	76);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (49,	8,	76);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (50,	9,	76);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (51,	2,	78);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (52,	3,	78);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (53,	4,	78);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (54,	7,	78);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (55,	8,	78);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (56,	9,	78);
 
 CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
 
 CREATE INDEX idx_records_zone_templ_domain_id ON records_zone_templ(domain_id);
 CREATE INDEX idx_records_zone_templ_zone_templ_id ON records_zone_templ(zone_templ_id);
+
+CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id integer NOT NULL, record_id text NOT NULL, zone_templ_id integer NOT NULL);
+
+CREATE INDEX idx_records_zone_templ_api_domain_id ON records_zone_templ_api(domain_id);
+CREATE INDEX idx_records_zone_templ_api_zone_templ_id ON records_zone_templ_api(zone_templ_id);
 
 
 CREATE TABLE users (id integer PRIMARY KEY, username VARCHAR(64) NOT NULL, password VARCHAR(128) NOT NULL, fullname VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, description VARCHAR(1024) NOT NULL, perm_templ integer NOT NULL, perm_templ_source VARCHAR(20) NOT NULL DEFAULT 'admin', active integer(1) NOT NULL, use_ldap integer(1) NOT NULL, auth_method VARCHAR(20) NOT NULL DEFAULT 'sql');
@@ -118,6 +185,7 @@ CREATE TABLE login_attempts (
     ip_address VARCHAR(45) NOT NULL,
     timestamp INTEGER NOT NULL,
     successful BOOLEAN NOT NULL,
+    attempt_type VARCHAR(16) NOT NULL DEFAULT 'password',
     FOREIGN KEY (user_id) REFERENCES users(id)
         ON DELETE SET NULL
 );
@@ -125,6 +193,7 @@ CREATE TABLE login_attempts (
 CREATE INDEX idx_login_attempts_user_id ON login_attempts(user_id);
 CREATE INDEX idx_login_attempts_ip_address ON login_attempts(ip_address);
 CREATE INDEX idx_login_attempts_timestamp ON login_attempts(timestamp);
+CREATE INDEX idx_login_attempts_attempt_type ON login_attempts(attempt_type);
 
 CREATE TABLE zone_templ (
     id integer PRIMARY KEY,
@@ -140,12 +209,12 @@ CREATE INDEX idx_zone_templ_owner ON zone_templ(owner);
 CREATE INDEX idx_zone_templ_created_by ON zone_templ(created_by);
 
 
-CREATE TABLE zone_templ_records (id integer PRIMARY KEY, zone_templ_id integer NOT NULL, name VARCHAR(255) NOT NULL, type VARCHAR(6) NOT NULL, content VARCHAR(2048) NOT NULL, ttl integer NOT NULL, prio integer NOT NULL);
+CREATE TABLE zone_templ_records (id integer PRIMARY KEY, zone_templ_id integer NOT NULL, name VARCHAR(255) NOT NULL, type VARCHAR(10) NOT NULL, content VARCHAR(2048) NOT NULL, ttl integer NOT NULL, prio integer NOT NULL);
 
 CREATE INDEX idx_zone_templ_records_zone_templ_id ON zone_templ_records(zone_templ_id);
 
 
-CREATE TABLE zones (id integer PRIMARY KEY, domain_id integer NULL DEFAULT NULL, owner integer NULL DEFAULT NULL, comment VARCHAR(1024), zone_templ_id integer NOT NULL, zone_name VARCHAR(255) DEFAULT NULL, zone_type VARCHAR(8) DEFAULT NULL, zone_master VARCHAR(255) DEFAULT NULL);
+CREATE TABLE zones (id integer PRIMARY KEY, domain_id integer NULL DEFAULT NULL, owner integer NULL DEFAULT NULL, comment VARCHAR(1024), zone_templ_id integer NOT NULL DEFAULT 0, zone_name VARCHAR(255) DEFAULT NULL, zone_type VARCHAR(8) DEFAULT NULL, zone_master VARCHAR(255) DEFAULT NULL);
 
 CREATE INDEX idx_zones_domain_id ON zones(domain_id);
 CREATE INDEX idx_zones_owner ON zones(owner);
@@ -161,12 +230,27 @@ CREATE TABLE api_keys (
     last_used_at TIMESTAMP NULL,
     disabled BOOLEAN NOT NULL DEFAULT 0,
     expires_at TIMESTAMP NULL,
+    is_readonly BOOLEAN NOT NULL DEFAULT 0,
+    allowed_operations VARCHAR(255) NULL,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
 CREATE UNIQUE INDEX idx_api_keys_secret_key ON api_keys(secret_key);
 CREATE INDEX idx_api_keys_created_by ON api_keys(created_by);
 CREATE INDEX idx_api_keys_disabled ON api_keys(disabled);
+
+-- Zones an API key is restricted to. No rows for a key means no restriction
+-- (the key can reach every zone its creator may access).
+CREATE TABLE api_key_zones (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    api_key_id INTEGER NOT NULL,
+    zone_id INTEGER NOT NULL,
+    UNIQUE (api_key_id, zone_id),
+    FOREIGN KEY (api_key_id) REFERENCES api_keys(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_api_key_zones_api_key_id ON api_key_zones(api_key_id);
+CREATE INDEX idx_api_key_zones_zone_id ON api_key_zones(zone_id);
 
 CREATE TABLE user_mfa (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -217,7 +301,7 @@ CREATE INDEX idx_needs_sync ON zone_template_sync(needs_sync);
 CREATE TABLE password_reset_tokens (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email VARCHAR(255) NOT NULL,
-    token VARCHAR(64) NOT NULL,
+    token VARCHAR(128) NOT NULL,
     expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     used INTEGER NOT NULL DEFAULT 0,
@@ -351,3 +435,18 @@ CREATE TABLE record_comment_links (
 );
 
 CREATE INDEX idx_record_comment_links_comment ON record_comment_links(comment_id);
+
+CREATE TABLE record_type_defaults (
+    record_type text NOT NULL PRIMARY KEY,
+    ttl integer NOT NULL,
+    created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE app_settings (
+    setting_key text NOT NULL PRIMARY KEY,
+    setting_value text NOT NULL,
+    value_type text NOT NULL DEFAULT 'string',
+    created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

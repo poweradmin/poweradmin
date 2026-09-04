@@ -25,14 +25,14 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -44,12 +44,15 @@ class DeletePermTemplController extends BaseController
     private LegacyLogger $auditLogger;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
-        $this->permissionTemplate = new DbPermissionTemplateRepository($this->db, $this->getConfig());
+        $this->request = new Request();
+
+        $this->permissionTemplate = $this->createPermissionTemplateRepository();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->userContextService = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
@@ -59,7 +62,7 @@ class DeletePermTemplController extends BaseController
     {
         $this->checkPermission('user_edit_templ_perm', _("You do not have the permission to delete permission templates."));
 
-        if ($this->isPost()) {
+        if ($this->request->getPostParam('confirm') !== null) {
             $this->handleFormSubmission();
         } else {
             $this->showForm();
@@ -68,8 +71,6 @@ class DeletePermTemplController extends BaseController
 
     private function handleFormSubmission(): void
     {
-        $this->validateCsrfToken();
-
         if (!$this->validateSubmitRequest()) {
             $this->showFirstValidationError();
             return;
@@ -78,7 +79,7 @@ class DeletePermTemplController extends BaseController
         $id = (int)$this->getSafeRequestValue('id');
         $templDetails = $this->permissionTemplate->getPermissionTemplateDetails($id);
 
-        if (UserManager::deletePermTempl($this->db, $id)) {
+        if ($this->permissionTemplate->deletePermissionTemplate($id)) {
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_perm_template id:%s name:%s',
                 $this->ipAddressRetriever->getClientIp(),

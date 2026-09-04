@@ -23,7 +23,12 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
+use PDOException;
+use Poweradmin\Domain\Model\MetadataDefinitions;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -39,14 +44,12 @@ use Psr\Log\NullLogger;
 class SqlDnsBackendProvider implements DnsBackendProvider
 {
     private PDO $db;
-    private ConfigurationInterface $config;
     private TableNameService $tableNameService;
     private LoggerInterface $logger;
 
     public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
-        $this->config = $config;
         $this->tableNameService = new TableNameService($config);
         $this->logger = $logger ?? new NullLogger();
     }
@@ -64,9 +67,10 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
         $stmt->execute();
 
-        $domainId = (int)$this->db->lastInsertId();
+        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+        $domainId = (int)$this->db->lastInsertId('domains_id_seq');
 
-        if ($type === 'SLAVE' && $slaveMaster !== '') {
+        if (ZoneType::replicatesFromPrimary($type) && $slaveMaster !== '') {
             $stmt = $this->db->prepare("UPDATE $domainsTable SET master = :master WHERE id = :id");
             $stmt->bindValue(':master', $slaveMaster, PDO::PARAM_STR);
             $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
@@ -83,19 +87,30 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $domainmetadataTable = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
         $cryptokeysTable = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
 
-        $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE domain_id = :id");
-        $stmt->execute([':id' => $domainId]);
+        // Callers run this before opening their own transaction, so wrapping the
+        // dependent deletes here makes the backend cleanup atomic: a mid-sequence
+        // failure rolls back instead of leaving a half-deleted zone.
+        $this->db->beginTransaction();
 
-        $stmt = $this->db->prepare("DELETE FROM $domainmetadataTable WHERE domain_id = :id");
-        $stmt->execute([':id' => $domainId]);
+        try {
+            foreach (
+                [
+                    "DELETE FROM $recordsTable WHERE domain_id = :id",
+                    "DELETE FROM $domainmetadataTable WHERE domain_id = :id",
+                    "DELETE FROM $cryptokeysTable WHERE domain_id = :id",
+                    "DELETE FROM $domainsTable WHERE id = :id",
+                ] as $query
+            ) {
+                $stmt = $this->db->prepare($query);
+                $stmt->execute([':id' => $domainId]);
+            }
 
-        $stmt = $this->db->prepare("DELETE FROM $cryptokeysTable WHERE domain_id = :id");
-        $stmt->execute([':id' => $domainId]);
-
-        $stmt = $this->db->prepare("DELETE FROM $domainsTable WHERE id = :id");
-        $stmt->execute([':id' => $domainId]);
-
-        return true;
+            $this->db->commit();
+            return true;
+        } catch (\Throwable $e) {
+            $this->db->rollBack();
+            return false;
+        }
     }
 
     public function updateZoneType(int $domainId, string $type): bool
@@ -105,7 +120,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $params = [':type' => $type, ':id' => $domainId];
         $masterClause = '';
 
-        if ($type !== 'SLAVE') {
+        if (!ZoneType::replicatesFromPrimary($type)) {
             $masterClause = ', master = :master';
             $params[':master'] = '';
         }
@@ -126,6 +141,13 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return true;
     }
 
+    public function retrieveZone(int $domainId): bool
+    {
+        // PowerDNS pulls secondaries on its own refresh schedule with the SQL
+        // backend; there is no way to trigger an immediate transfer from here.
+        return false;
+    }
+
     public function updateZoneAccount(int $domainId, string $account): bool
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
@@ -134,6 +156,99 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $stmt->execute([':account' => $account, ':id' => $domainId]);
 
         return true;
+    }
+
+    public function getCatalogMembers(string $catalogName): array
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        try {
+            $stmt = $this->db->prepare("SELECT id, name, type FROM $domainsTable WHERE catalog = :catalog ORDER BY name");
+            $stmt->execute([':catalog' => $catalogName]);
+        } catch (PDOException $e) {
+            return $this->reportMissingCatalogColumn($e, []);
+        }
+
+        $members = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $members[] = [
+                'id' => (int)$row['id'],
+                'name' => (string)$row['name'],
+                'kind' => strtoupper((string)$row['type']),
+            ];
+        }
+
+        return $members;
+    }
+
+    public function getZonesByKind(string $kind): array
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        try {
+            $stmt = $this->db->prepare("SELECT id, name, catalog FROM $domainsTable WHERE type = :kind ORDER BY name");
+            $stmt->execute([':kind' => strtoupper($kind)]);
+        } catch (PDOException $e) {
+            return $this->reportMissingCatalogColumn($e, []);
+        }
+
+        $zones = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $zones[] = [
+                'id' => (int)$row['id'],
+                'name' => (string)$row['name'],
+                'catalog' => PowerdnsApiClient::canonicalZoneName((string)($row['catalog'] ?? '')),
+            ];
+        }
+
+        return $zones;
+    }
+
+    public function getZoneCatalog(int $domainId): string
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        try {
+            $stmt = $this->db->prepare("SELECT catalog FROM $domainsTable WHERE id = :id");
+            $stmt->execute([':id' => $domainId]);
+        } catch (PDOException $e) {
+            return $this->reportMissingCatalogColumn($e, '');
+        }
+
+        return PowerdnsApiClient::canonicalZoneName((string)($stmt->fetchColumn() ?: ''));
+    }
+
+    public function updateZoneCatalog(int $domainId, string $catalogName): bool
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        try {
+            // Empty string, never NULL: that is what PowerDNS itself leaves behind
+            // when a zone is removed from a catalog.
+            $stmt = $this->db->prepare("UPDATE $domainsTable SET catalog = :catalog WHERE id = :id");
+            $stmt->execute([':catalog' => $catalogName, ':id' => $domainId]);
+        } catch (PDOException $e) {
+            return $this->reportMissingCatalogColumn($e, false);
+        }
+
+        return true;
+    }
+
+    /**
+     * domains.catalog only exists from PowerDNS 4.7. A 4.7+ API in front of an older
+     * schema is a misconfiguration that should degrade, not throw off the edit page.
+     *
+     * @template T
+     * @param T $empty
+     * @return T
+     */
+    private function reportMissingCatalogColumn(PDOException $e, mixed $empty): mixed
+    {
+        $this->logger->warning('Catalog column unavailable, is the PowerDNS schema older than 4.7? {error}', [
+            'error' => $e->getMessage(),
+        ]);
+
+        return $empty;
     }
 
     // ---------------------------------------------------------------
@@ -169,7 +284,8 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $stmt->bindValue(':prio', $prio, PDO::PARAM_INT);
         $stmt->execute();
 
-        return (int)$this->db->lastInsertId();
+        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+        return (int)$this->db->lastInsertId('records_id_seq');
     }
 
     public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0): int|string|null
@@ -201,7 +317,8 @@ class SqlDnsBackendProvider implements DnsBackendProvider
                 $stmt->bindValue(':disabled', $disabled, PDO::PARAM_INT);
                 $stmt->execute();
 
-                $id = (int)$this->db->lastInsertId();
+                // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+                $id = (int)$this->db->lastInsertId('records_id_seq');
 
                 if ($ownsTransaction) {
                     $this->db->commit();
@@ -380,7 +497,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return (int)($stmt->fetchColumn() ?: 0);
     }
 
-    public function getZoneStats(): array
+    public function getZoneStats(bool $withDnssec = true): array
     {
         return [];
     }
@@ -460,6 +577,28 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getRecordsByName(int $domainId, string $name, ?string $type = null): array
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        // LOWER() on both sides rather than a pre-lowercased comparison, so the
+        // match stays case-insensitive on PostgreSQL too
+        $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled
+                  FROM $recordsTable
+                  WHERE domain_id = :did AND LOWER(name) = LOWER(:name)
+                    AND type IS NOT NULL AND type != ''";
+        $params = [':did' => $domainId, ':name' => rtrim($name, '.')];
+
+        if ($type !== null) {
+            $query .= " AND type = :type";
+            $params[':type'] = $type;
+        }
+        $query .= " ORDER BY type, content";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getSOARecord(int $domainId): string
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -472,29 +611,29 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     public function getBestMatchingReverseZoneId(string $reverseName): int
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $match = 72;
-        $foundId = -1;
 
         $stmt = $this->db->prepare(
             "SELECT name, id FROM $domainsTable WHERE name LIKE :pattern ORDER BY length(name) DESC"
         );
         $stmt->execute([':pattern' => '%.arpa']);
 
+        $lowerName = strtolower($reverseName);
         while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $pos = stripos($reverseName, $r['name']);
-            if ($pos !== false && $pos < $match) {
-                $match = $pos;
-                $foundId = (int)$r['id'];
+            // Match the reverse zone on a label boundary (apex or suffix); ORDER BY
+            // length DESC yields the most specific zone first, so a record is not
+            // dropped into a shorter zone that only shares a substring.
+            if (DnsHelper::isWithinZone($lowerName, $r['name'])) {
+                return (int)$r['id'];
             }
         }
-        return $foundId;
+        return -1;
     }
 
     // ---------------------------------------------------------------
     // Zone list operations
     // ---------------------------------------------------------------
 
-    public function getZones(): array
+    public function getZones(bool $withDnssec = true): array
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $cryptokeysTable = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
@@ -733,6 +872,36 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     public function hasSoaEditApi(int $domainId): bool
     {
         return false;
+    }
+
+    public function setZoneSerialPolicy(int $domainId, string $zoneName, array $properties): bool
+    {
+        $kindMap = array_flip(MetadataDefinitions::SERIAL_POLICY_PROPERTY_KINDS);
+        $properties = array_intersect_key($properties, $kindMap);
+        if ($properties === []) {
+            return true;
+        }
+
+        $table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+        $delete = $this->db->prepare("DELETE FROM $table WHERE domain_id = :domain_id AND kind = :kind");
+        $insert = $this->db->prepare("INSERT INTO $table (domain_id, kind, content) VALUES (:domain_id, :kind, :content)");
+
+        foreach ($properties as $property => $value) {
+            $kind = $kindMap[$property];
+
+            $delete->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+            $delete->bindValue(':kind', $kind);
+            $delete->execute();
+
+            if ($value !== '') {
+                $insert->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+                $insert->bindValue(':kind', $kind);
+                $insert->bindValue(':content', $value);
+                $insert->execute();
+            }
+        }
+
+        return true;
     }
 
     // ---------------------------------------------------------------

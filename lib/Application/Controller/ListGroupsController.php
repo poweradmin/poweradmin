@@ -33,8 +33,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 class ListGroupsController extends BaseController
 {
@@ -44,7 +42,7 @@ class ListGroupsController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = new DbUserGroupRepository($this->db);
+        $groupRepository = $this->createUserGroupRepository();
         $this->groupService = new GroupService($groupRepository);
     }
 
@@ -66,7 +64,7 @@ class ListGroupsController extends BaseController
     {
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
+        $isAdmin = $this->createPermissionService()->isAdmin($userId);
 
         // Get groups based on user role (admin sees all, normal users see only their groups)
         $groups = $this->groupService->listGroups($userId, $isAdmin);
@@ -90,6 +88,9 @@ class ListGroupsController extends BaseController
             'groups' => $enrichedGroups,
             'is_admin' => $isAdmin,
             'can_add_group' => $isAdmin, // Only admins can create groups
+            'perm_is_godlike' => $isAdmin,
+            'perm_group_logs_view' => $this->hasPermission('group_logs_view'),
+            'dblog_use' => $this->config->get('logging', 'database_enabled', false),
         ]);
     }
 }

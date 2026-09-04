@@ -23,39 +23,49 @@
 namespace Poweradmin;
 
 use InvalidArgumentException;
-use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Application\Service\RequestValidator;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\RepositoryFactory;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PdnsCapabilities;
-use Poweradmin\Domain\Service\UserAvatarService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
+use Poweradmin\Domain\Service\ZoneOverlapService;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
-use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\CatalogZoneService;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Infrastructure\Service\StyleManager;
-use Poweradmin\Module\ModuleRegistry;
-use Poweradmin\Version;
+use Poweradmin\Infrastructure\Web\PageRenderer;
+use Poweradmin\Domain\Service\SessionKeys;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
-use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Abstract class BaseController
@@ -64,21 +74,19 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 abstract class BaseController
 {
-    /** Shorter than the 46 characters the installer writes, so a generated key never trips the warning. */
-    private const MIN_SESSION_KEY_LENGTH = 32;
-
-    private AppManager $app;
+    private ?AppManager $app = null;
     private AppInitializer $init;
     protected PDO $db;
     protected array $requestData;
-    private ValidatorInterface $validator;
-    private array $validationConstraints = [];
+    private ?RequestValidator $requestValidator = null;
     private CsrfTokenService $csrfTokenService;
     protected MessageService $messageService;
     protected ConfigurationManager $config;
     private UserContextService $userContextService;
     private string $pageTitle = '';
     protected LoggerInterface $logger;
+    private ?ControllerServiceFactory $serviceFactory = null;
+    private ?PageRenderer $pageRenderer = null;
 
     /**
      * Abstract method to be implemented by subclasses to run the controller logic.
@@ -102,13 +110,15 @@ abstract class BaseController
         $this->logger = new Logger($logHandler, $logLevel);
 
         $this->config->setLogger($this->logger);
-        $this->app = new AppManager($this->logger);
+
+        // Kept eager: the template stack below is lazy, and a broken configuration
+        // should still stop the request rather than surface deep in a handler
+        AppManager::assertConfigurationUsable($this->config);
 
         $this->init = new AppInitializer($authenticate);
         $this->db = $this->init->getDb();
 
         $this->requestData = $request;
-        $this->validator = Validation::createValidator();
 
         $this->csrfTokenService = new CsrfTokenService();
         $this->messageService = new MessageService();
@@ -116,16 +126,24 @@ abstract class BaseController
 
         // If we're in an API context and the user is not authenticated,
         // check for API key authentication (but only for internal API routes)
-        if ($authenticate && !$this->userContextService->isAuthenticated() && $this->isInternalApiRoute()) {
+        if ($authenticate && !$this->userContextService->isAuthenticated() && RequestContext::isInternalApiRoute()) {
             $this->tryApiKeyAuthentication();
         }
 
-        // Check for MFA requirement for regular controllers using our centralized manager
-        if ($authenticate && !$this->isApiRequest() && $this->userContextService->isAuthenticated()) {
+        // Enforce pending MFA before serving an authenticated request. Web pages are
+        // redirected to the verification form; API requests get a JSON 403 instead of
+        // an HTML redirect they cannot follow (but are still blocked, not skipped).
+        if ($authenticate && $this->userContextService->isAuthenticated()) {
             $currentPage = $request['page'] ?? '';
 
-            // Use our centralized MFA session manager to check if verification is required
             if (MfaSessionManager::isMfaRequired() && $currentPage !== 'mfa_verify') {
+                if (RequestContext::isApiRequest()) {
+                    http_response_code(403);
+                    header('Content-Type: application/json');
+                    echo json_encode(['error' => true, 'message' => 'Multi-factor authentication required']);
+                    exit;
+                }
+
                 // Ensure session is written before redirecting
                 session_write_close();
 
@@ -136,98 +154,30 @@ abstract class BaseController
                 exit;
             }
         }
+
+        // Every state-changing web request is token-checked here rather than in each
+        // controller, so a handler cannot be written without the guard
+        if ($this->isPost() && $this->requiresCsrfValidation()) {
+            $this->validateCsrfToken();
+        }
     }
 
     /**
-     * Checks if the current request is any API route
+     * Whether a POST to this controller must carry a valid `_token`.
      *
-     * @return bool True if this is an API request, false otherwise
+     * Controllers that authenticate statelessly, receive third-party posts, or
+     * validate their own flow-scoped token override this and return false.
      */
-    protected function isApiRequest(): bool
+    protected function requiresCsrfValidation(): bool
     {
-        $page = $this->requestData['page'] ?? '';
-        return str_starts_with($page, 'api/');
-    }
-
-    /**
-     * Checks if the current request expects a JSON response
-     * This is more comprehensive than just checking the route
-     *
-     * @return bool True if this request expects JSON, false otherwise
-     */
-    public static function expectsJson(): bool
-    {
-        // Per segment and path-only: a plain '/api/' test over the whole URI also
-        // caught the web page /settings/api/logs and a ?next=/api/v2/x query.
-        $path = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
-        if (preg_match('#/api/(internal|v\d+|docs|health)(/|$)#', $path) === 1) {
-            return true;
-        }
-
-        // Check Accept header
-        $acceptHeader = $_SERVER['HTTP_ACCEPT'] ?? '';
-        if (str_contains($acceptHeader, 'application/json') && !str_contains($acceptHeader, 'text/html')) {
-            return true;
-        }
-
-        // Check if it's an AJAX request
-        if (
-            isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
-        ) {
-            return true;
-        }
-
-        // Check Content-Type for JSON requests
-        $contentType = $_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? '';
-        if (str_contains($contentType, 'application/json')) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if the current request is an internal API route (api/internal/*)
-     *
-     * @return bool True if this is an internal API route, false otherwise
-     */
-    protected function isInternalApiRoute(): bool
-    {
-        $page = $this->requestData['page'] ?? '';
-        return str_starts_with($page, 'api/internal/');
-    }
-
-    /**
-     * Checks if the current request is a public API route (api/v1/*, api/v2/*, etc.)
-     *
-     * @return bool True if this is a public API route, false otherwise
-     */
-    protected function isPublicApiRoute(): bool
-    {
-        $page = $this->requestData['page'] ?? '';
-
-        // Check if this is an API route
-        if (!str_starts_with($page, 'api/')) {
-            return false;
-        }
-
-        // Extract the API version from the route
-        $parts = explode('/', $page);
-        if (count($parts) < 2) {
-            return false;
-        }
-
-        // Check if the second part is a version indicator (v1, v2, etc.)
-        $versionPart = $parts[1] ?? '';
-        return preg_match('/^v\d+$/i', $versionPart) === 1;
+        return true;
     }
 
     /**
      * Tries to authenticate using API key
      * Only used for internal API routes by default
      */
-    protected function tryApiKeyAuthentication(): void
+    private function tryApiKeyAuthentication(): void
     {
         // Check if API functionality is enabled (which includes API keys)
         if (!$this->config->get('api', 'enabled', false)) {
@@ -287,33 +237,28 @@ abstract class BaseController
      */
     public function render(string $template, array $params): void
     {
-        // Get system messages before rendering
-        $systemMessages = $this->messageService->getMessages('system');
+        // The language selector vars are shared with the body template so the
+        // login form's hidden userlang field carries the chosen language
+        // through submission (PageRenderer memoizes them per request).
+        $languageVars = $this->getPageRenderer()->languageVars();
 
-        // Pass system messages to header template
-        $this->renderHeader($systemMessages);
+        $this->renderHeader(
+            $this->messageService->getMessages('system'),
+            $this->messageService->getMessages(pathinfo($template)['filename'])
+        );
 
-        // Show template-specific messages
-        $this->showMessage($template);
+        // csrf_token, base_url_prefix, pdns_caps, and pdns_server_info are Twig
+        // globals (see PageRenderer::setupTwigEnvironment); page params still
+        // override them.
+        $params = array_merge($languageVars, $params);
 
-        // Render main template
-        // Ensure CSRF token exists, generate one if missing
-        $this->csrfTokenService->ensureTokenExists();
-        $params['csrf_token'] = $this->csrfTokenService->getToken();
+        // Shared page chrome tested bare in many templates; the falsy defaults
+        // keep strict_variables mode rendering identical to non-strict output.
+        $params['message'] ??= false;
+        $params['is_reverse_zone'] ??= false;
+        $params['success'] ??= false;
 
-        // Add base_url_prefix for subfolder deployment support
-        $params['base_url_prefix'] = $this->config->get('interface', 'base_url_prefix', '');
-
-        // Expose connected PowerDNS capabilities to every template so views
-        // can adapt (record types, zone kinds, terminology, etc).
-        if (!array_key_exists('pdns_caps', $params)) {
-            $params['pdns_caps'] = $this->getPdnsCapabilities();
-        }
-        if (!array_key_exists('pdns_server_info', $params)) {
-            $params['pdns_server_info'] = PdnsVersionService::getCachedInfo();
-        }
-
-        $this->app->render($template, $params);
+        $this->app()->render($template, $params);
         $this->renderFooter();
     }
 
@@ -329,7 +274,7 @@ abstract class BaseController
     protected function getPdnsCapabilities(): PdnsCapabilities
     {
         $info = PdnsVersionService::getCachedInfo();
-        return PdnsCapabilities::fromVersion($info['version'] ?? null);
+        return PdnsCapabilities::fromServerInfo($info);
     }
 
     /**
@@ -357,21 +302,24 @@ abstract class BaseController
      * Trigger a session-cached refresh of PowerDNS version + capabilities.
      *
      * Makes at most one API call per minute (rate-limited via the session
-     * timestamp `pdns_version_last_attempt`) and is a no-op on non-API
-     * backends. Call from controllers that need an up-to-date capability
-     * snapshot - e.g. the dashboard. Page renders that don't call this just
-     * read whatever is already cached.
+     * timestamp `pdns_version_last_attempt`) and is a no-op when no PowerDNS
+     * API is configured. Runs in both API and SQL backend modes: the
+     * version display is useful in either mode whenever `pdns_api` is
+     * configured, even though capability gates only matter for API mode.
+     * Page renders that don't call this just read whatever is already cached.
      */
     protected function refreshPdnsCapabilities(): void
     {
-        if (!DnsBackendProviderFactory::isApiBackend($this->config)) {
+        $apiUrl = (string) $this->config->get('pdns_api', 'url', '');
+        $apiKey = (string) $this->config->get('pdns_api', 'key', '');
+        if ($apiUrl === '' || $apiKey === '') {
             return;
         }
-        $last = $_SESSION['pdns_version_last_attempt'] ?? 0;
+        $last = $_SESSION[SessionKeys::PDNS_VERSION_LAST_ATTEMPT] ?? 0;
         if ((time() - (int) $last) < 60) {
             return;
         }
-        $_SESSION['pdns_version_last_attempt'] = time();
+        $_SESSION[SessionKeys::PDNS_VERSION_LAST_ATTEMPT] = time();
         try {
             $apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
             if ($apiClient !== null) {
@@ -435,7 +383,7 @@ abstract class BaseController
      * Sets a message to be displayed for a specific script.
      *
      * @param string $script The script to set the message for.
-     * @param string $type The type of message (error, warn, success, info).
+     * @param string $type The type of message (error, warning, success, info).
      * @param string $content The content of the message.
      */
     public function setMessage(string $script, string $type, string $content): void
@@ -452,16 +400,6 @@ abstract class BaseController
     public function getMessages(string $script): ?array
     {
         return $this->messageService->getMessages($script);
-    }
-
-    /**
-     * Displays messages for a specific template.
-     *
-     * @param string $template The template to display messages for.
-     */
-    public function showMessage(string $template): void
-    {
-        echo $this->messageService->renderMessages($template);
     }
 
     /**
@@ -485,58 +423,149 @@ abstract class BaseController
     }
 
     /**
-     * Create UserPreferenceService instance
-     *
-     * @return UserPreferenceService
+     * Lazily builds the shared service factory so per-request memoized
+     * instances (backend provider, permission cache) span all accessors.
      */
+    private function services(): ControllerServiceFactory
+    {
+        return $this->serviceFactory ??= new ControllerServiceFactory($this->db, $this->config, $this->logger);
+    }
+
     protected function createUserPreferenceService(): UserPreferenceService
     {
-        $db_type = $this->config->get('database', 'type');
-        $repository = new DbUserPreferenceRepository($this->db, $db_type);
-        return new UserPreferenceService($repository, $this->config);
+        return $this->services()->userPreferenceService();
     }
 
     protected function createUserTimezoneService(): UserTimezoneService
     {
-        return new UserTimezoneService($this->createUserPreferenceService(), $this->config);
+        return $this->services()->userTimezoneService();
     }
 
-    /**
-     * Create PaginationService with user preferences support
-     *
-     * @return PaginationService
-     */
     protected function createPaginationService(): PaginationService
     {
-        $userPreferenceService = $this->createUserPreferenceService();
-        return new PaginationService($userPreferenceService);
+        return $this->services()->paginationService();
     }
 
-    /**
-     * Create DnsBackendProvider for backend-aware DNS operations.
-     *
-     * @return DnsBackendProvider
-     */
     protected function createDnsBackendProvider(): DnsBackendProvider
     {
-        return DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        return $this->services()->dnsBackendProvider();
     }
 
     protected function createDnsDataService(): DnsDataService
     {
-        $backendProvider = $this->createDnsBackendProvider();
-        return new DnsDataService($backendProvider, $this->db, $this->getConfig());
+        return $this->services()->dnsDataService();
     }
 
     protected function createZoneRepository(): ZoneRepositoryInterface
     {
-        return $this->getRepositoryFactory()->createZoneRepository();
+        return $this->services()->zoneRepository();
+    }
+
+    protected function createDomainRepository(): DomainRepositoryInterface
+    {
+        return $this->services()->domainRepository();
+    }
+
+    protected function createRecordRepository(): RecordRepositoryInterface
+    {
+        return $this->services()->recordRepository();
+    }
+
+    protected function createUserRepository(): UserRepository
+    {
+        return $this->services()->userRepository();
+    }
+
+    protected function createPermissionService(): PermissionService
+    {
+        return $this->services()->permissionService();
+    }
+
+    /**
+     * Check if the logged-in user has the given permission
+     */
+    protected function hasPermission(string $permission): bool
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        return $userId !== null && $this->createPermissionService()->hasPermission($userId, $permission);
+    }
+
+    /**
+     * Whether the logged-in user wants the page to span the full browser width
+     */
+    protected function getWideLayout(): bool
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        return $userId !== null && $this->createUserPreferenceService()->getWideLayout($userId);
+    }
+
+    /**
+     * Check if the logged-in user owns the given zone directly or via group membership
+     */
+    protected function isZoneOwner(int $zoneId): bool
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        return $userId !== null && $this->createPermissionService()->userOwnsZone($userId, $zoneId);
+    }
+
+    protected function createUserGroupRepository(): UserGroupRepositoryInterface
+    {
+        return $this->services()->userGroupRepository();
+    }
+
+    protected function createUserGroupMemberRepository(): UserGroupMemberRepositoryInterface
+    {
+        return $this->services()->userGroupMemberRepository();
+    }
+
+    protected function createPermissionTemplateRepository(): DbPermissionTemplateRepository
+    {
+        return $this->services()->permissionTemplateRepository();
+    }
+
+    protected function createPermissionTemplateWriteService(): PermissionTemplateWriteService
+    {
+        return $this->services()->permissionTemplateWriteService();
+    }
+
+    protected function createZoneGroupRepository(): ZoneGroupRepositoryInterface
+    {
+        return $this->services()->zoneGroupRepository();
+    }
+
+    protected function createReverseTtlResolver(): ReverseTtlResolver
+    {
+        return $this->services()->reverseTtlResolver();
+    }
+
+    protected function createRecordManager(): RecordManagerInterface
+    {
+        return $this->services()->recordManager();
+    }
+
+    protected function createSOARecordManager(): SOARecordManagerInterface
+    {
+        return $this->services()->soaRecordManager();
+    }
+
+    protected function createDnssecProvider(): DnssecProvider
+    {
+        return $this->services()->dnssecProvider();
+    }
+
+    protected function createDomainManager(): DomainManagerInterface
+    {
+        return $this->services()->domainManager();
+    }
+
+    protected function createCatalogZoneService(): CatalogZoneService
+    {
+        return $this->services()->catalogZoneService();
     }
 
     protected function getRepositoryFactory(?DnsBackendProvider $backendProvider = null): RepositoryFactory
     {
-        $provider = $backendProvider ?? $this->createDnsBackendProvider();
-        return new RepositoryFactory($this->db, $this->getConfig(), $provider, $this->logger);
+        return $this->services()->repositoryFactory($backendProvider);
     }
 
     /**
@@ -547,6 +576,26 @@ abstract class BaseController
     protected function getCurrentUserId(): ?int
     {
         return $this->userContextService->getLoggedInUserId();
+    }
+
+    /**
+     * Error message when the new zone would overlap an existing zone owned by
+     * another user, or null when creation is allowed. The conflicting name is
+     * not disclosed, to avoid leaking another owner's zone.
+     */
+    protected function getZoneOverlapError(string $zoneName): ?string
+    {
+        $userId = $this->getCurrentUserId();
+        if ($userId === null) {
+            return null;
+        }
+
+        $service = new ZoneOverlapService($this->db, $this->getConfig());
+        if ($service->findConflictingZone($zoneName, $userId) === null) {
+            return null;
+        }
+
+        return _('Cannot create this zone because it overlaps an existing zone owned by another user.');
     }
 
     /**
@@ -587,12 +636,12 @@ abstract class BaseController
      */
     public function checkPermission(string $permission, string $errorMessage): void
     {
-        if (!UserManager::verifyPermission($this->db, $permission)) {
+        if (!$this->hasPermission($permission)) {
             $auditService = new AuditService($this->db);
             $auditService->logAccessDenied($permission, $_SERVER['REQUEST_URI'] ?? '');
 
             // Check if this request expects JSON
-            if (self::expectsJson()) {
+            if (RequestContext::expectsJson()) {
                 header('Content-Type: application/json');
                 http_response_code(403);
                 echo json_encode([
@@ -627,7 +676,7 @@ abstract class BaseController
         }
 
         // Check if this request expects JSON
-        if (self::expectsJson()) {
+        if (RequestContext::expectsJson()) {
             header('Content-Type: application/json');
             http_response_code(400);
             echo json_encode([
@@ -648,38 +697,30 @@ abstract class BaseController
     }
 
     /**
-     * Resolves a configurable branding asset (favicon, logo) to a usable URL.
-     *
-     * Absolute URLs (scheme or protocol-relative) are used as-is; site and
-     * app-relative paths are served from the application, so they get the
-     * subfolder prefix like every other internal URL.
+     * Lazily builds the Twig environment and translator. Both consumers are
+     * presentation paths, so API controllers never pay for the template stack.
      */
-    private function brandingUrl(string $configKey, string $bundledPath, string $baseUrlPrefix): string
+    private function app(): AppManager
     {
-        $path = $this->config->get('interface', $configKey, '') ?: $bundledPath;
-        if (preg_match('~^([a-z][a-z0-9+.-]*:|//)~i', $path)) {
-            return $path;
-        }
-        return $baseUrlPrefix . (str_starts_with($path, '/') ? $path : '/' . $path);
+        return $this->app ??= new AppManager($this->logger);
     }
 
     /**
-     * The warning for a session key an attacker could guess, or null when it is fine.
-     *
-     * Only catches unset, shipped-default and obviously short keys. A key of
-     * adequate length generated by a weak source still reads as fine here.
+     * Lazily builds the page chrome renderer. Deferred closures keep
+     * permission, capability, and debug-query lookups out of controller
+     * construction, and API controllers never build the renderer at all.
      */
-    private static function sessionKeyWarning(mixed $key): ?string
+    private function getPageRenderer(): PageRenderer
     {
-        if (!is_string($key) || in_array($key, ['p0w3r4dm1n', 'change_this_key'], true)) {
-            return _('Default session encryption key is used, please set it in your configuration file.');
-        }
-
-        if (strlen($key) < self::MIN_SESSION_KEY_LENGTH) {
-            return _('Session encryption key is too short, please set a longer one in your configuration file.');
-        }
-
-        return null;
+        return $this->pageRenderer ??= new PageRenderer(
+            $this->app(),
+            $this->config,
+            $this->csrfTokenService,
+            $this->userContextService,
+            $this->hasPermission(...),
+            $this->init->getDebugQueries(...),
+            $this->getWideLayout()
+        );
     }
 
     /**
@@ -687,129 +728,9 @@ abstract class BaseController
      *
      * @param array|null $systemMessages System messages to be displayed
      */
-    private function renderHeader(?array $systemMessages = null): void
+    private function renderHeader(?array $systemMessages = null, ?array $scriptMessages = null): void
     {
-        if (!headers_sent()) {
-            header('Content-type: text/html; charset=utf-8');
-        }
-
-        $style = $this->config->get('interface', 'style', 'light');
-        $themeBasePath = $this->config->get('interface', 'theme_base_path', 'templates');
-        $theme = $this->config->get('interface', 'theme', 'default');
-        $styleManager = new StyleManager($style, $themeBasePath, $theme);
-
-        // Check for custom theme stylesheets
-        $customLightExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_light.css');
-        $customDarkExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_dark.css');
-        $customThemeExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_' . $styleManager->getSelectedStyle() . '.css');
-
-        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-
-        $vars = [
-            'iface_title' => $this->config->get('interface', 'title'),
-            'iface_style' => $styleManager->getSelectedStyle(),
-            'iface_favicon' => $this->brandingUrl('favicon_path', '/favicon.ico', $baseUrlPrefix),
-            'iface_logo' => $this->brandingUrl('logo_path', '/assets/logo.png', $baseUrlPrefix),
-            'theme' => $theme,
-            'theme_base_path' => $themeBasePath,
-            'base_url_prefix' => $baseUrlPrefix,
-            'file_version' => time(),
-            'custom_header' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/' . $this->config->get('interface', 'theme', 'default') . '/custom/header.html'),
-            'custom_light_exists' => $customLightExists,
-            'custom_dark_exists' => $customDarkExists,
-            'custom_theme_exists' => $customThemeExists,
-            'install_error' => file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
-            'version' => Version::VERSION,
-            'show_style_switcher' => true,
-        ];
-
-        // Language selector for login page
-        $enabledLanguages = $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
-        $localeList = explode(',', $enabledLanguages);
-        if (count($localeList) > 1) {
-            $interfaceLanguage = $this->config->get('interface', 'language', 'en_EN');
-            // Check for GET lang parameter override
-            if (!empty($_GET['lang']) && in_array($_GET['lang'], $localeList)) {
-                $interfaceLanguage = $_GET['lang'];
-            }
-            $preparedLocales = [];
-            foreach ($localeList as $locale) {
-                $locale = trim($locale);
-                $language = \Poweradmin\Infrastructure\Utility\LanguageCode::getByLocale($locale);
-                $preparedLocales[] = [
-                    'locale' => $locale,
-                    'language' => $language,
-                    'selected' => $locale === $interfaceLanguage,
-                ];
-            }
-            usort($preparedLocales, fn($a, $b) => strcmp($a['language'], $b['language']));
-            $vars['locales'] = $preparedLocales;
-            $vars['show_language_selector'] = true;
-            $vars['current_language'] = $interfaceLanguage;
-        }
-
-        $dblog_use = $this->config->get('logging', 'database_enabled');
-        $session_key = $this->config->get('security', 'session_key');
-
-        if ($this->userContextService->isAuthenticated()) {
-            $perm_is_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-
-            $vars = array_merge($vars, [
-                'user_logged_in' => $this->userContextService->isAuthenticated(),
-                'user_name' => $this->userContextService->getDisplayName(),
-                'user_username' => $this->userContextService->getLoggedInUsername(),
-                'perm_search' => UserManager::verifyPermission($this->db, 'search'),
-                'perm_view_zone_own' => UserManager::verifyPermission($this->db, 'zone_content_view_own'),
-                'perm_view_zone_other' => UserManager::verifyPermission($this->db, 'zone_content_view_others'),
-                'perm_supermaster_view' => UserManager::verifyPermission($this->db, 'supermaster_view'),
-                'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
-                'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
-                'perm_zone_templ_add' => UserManager::verifyPermission($this->db, 'zone_templ_add'),
-                'perm_zone_templ_edit' => UserManager::verifyPermission($this->db, 'zone_templ_edit'),
-                'perm_supermaster_add' => UserManager::verifyPermission($this->db, 'supermaster_add'),
-                'perm_is_godlike' => $perm_is_godlike,
-                'perm_templ_perm_edit' => UserManager::verifyPermission($this->db, 'templ_perm_edit'),
-                'perm_templ_perm_add' => UserManager::verifyPermission($this->db, 'templ_perm_add'),
-                'perm_add_new' => UserManager::verifyPermission($this->db, 'user_add_new'),
-                'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
-                'perm_edit_own' => UserManager::verifyPermission($this->db, 'user_edit_own'),
-                'perm_edit_others' => UserManager::verifyPermission($this->db, 'user_edit_others'),
-                'perm_api_manage_keys' => UserManager::verifyPermission($this->db, 'api_manage_keys'),
-                'session_key_error' => $perm_is_godlike ? (self::sessionKeyWarning($session_key) ?? false) : false,
-                'auth_used' => $this->userContextService->getAuthMethod() !== "ldap",  // Legacy variable for backward compatibility
-                'auth_method' => $this->userContextService->getAuthMethod() ?? 'internal',
-                'can_change_password' => !in_array($this->userContextService->getAuthMethod(), ['ldap', 'oidc', 'saml']),
-                'session_userid' => $this->userContextService->getLoggedInUserId() ?? 0,
-                'user_avatar_url' => $this->getUserAvatarUrl(),
-                'request' => $this->requestData,
-                'dblog_use' => $dblog_use,
-                'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
-                'api_enabled' => $this->config->get('api', 'enabled', false),
-                'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
-                'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
-                'api_docs_enabled' => $this->config->get('api', 'docs_enabled', false),
-                'module_nav_items' => $this->getModuleNavItems(),
-                'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
-                'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
-            ]);
-
-            // Surface PowerDNS API errors on every page, not just the dashboard.
-            if ($perm_is_godlike && DnsBackendProviderFactory::isApiBackend($this->config)) {
-                $vars['api_error'] = (new ApiStatusService())->getLastError();
-            }
-        }
-
-        // Add system messages to header template variables
-        if ($systemMessages) {
-            $vars['system_messages'] = $systemMessages;
-        }
-
-        // Add the current page and page title to the header variables
-        $currentPage = $this->requestData['page'] ?? 'index';
-        $vars['current_page'] = $currentPage;
-        $vars['page_title'] = $this->pageTitle !== '' ? $this->pageTitle : $vars['iface_title'];
-
-        $this->app->render('header.html', $vars);
+        $this->getPageRenderer()->renderHeader($this->requestData, $this->pageTitle, $systemMessages, $scriptMessages);
     }
 
     /**
@@ -817,59 +738,7 @@ abstract class BaseController
      */
     private function renderFooter(): void
     {
-        $style = $this->config->get('interface', 'style', 'light');
-        $themeBasePath = $this->config->get('interface', 'theme_base_path', 'templates');
-        $theme = $this->config->get('interface', 'theme', 'default');
-        $styleManager = new StyleManager($style, $themeBasePath, $theme);
-        $selected_style = $styleManager->getSelectedStyle();
-
-        $display_stats = $this->config->get('misc', 'display_stats');
-        $db_debug = $this->config->get('database', 'debug');
-
-        $this->app->render('footer.html', [
-            'version' => $this->userContextService->isAuthenticated() ? Version::VERSION : false,
-            'custom_footer' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/' . $this->config->get('interface', 'theme', 'default') . '/custom/footer.html'),
-            'display_stats' => $display_stats ? $this->app->displayStats() : false,
-            'db_queries' => $db_debug ? $this->init->getDebugQueries() : false,
-            'show_style_switcher' => in_array($selected_style, ['light', 'dark']),
-            'iface_style' => $selected_style,
-            'theme' => $theme,
-            'theme_base_path' => $themeBasePath,
-            'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
-            'user_logged_in' => $this->userContextService->isAuthenticated(),
-        ]);
-    }
-
-    /**
-     * Gets navigation items from enabled modules.
-     *
-     * @return array<array<string, string>>
-     */
-    private function getModuleNavItems(): array
-    {
-        $registry = new ModuleRegistry($this->config);
-        $registry->loadModules();
-
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $items = $registry->getNavItems($isAdmin);
-
-        return array_values(array_filter($items, function (array $item): bool {
-            if (!empty($item['permission'])) {
-                return UserManager::verifyPermission($this->db, $item['permission']);
-            }
-            return true;
-        }));
-    }
-
-    /**
-     * Gets the user's avatar URL if avatar functionality is enabled
-     *
-     * @return string|null The avatar URL or null if not available/enabled
-     */
-    private function getUserAvatarUrl(): ?string
-    {
-        $userAvatarService = new UserAvatarService($this->userContextService, $this->config);
-        return $userAvatarService->getCurrentUserAvatarUrl();
+        $this->getPageRenderer()->renderFooter();
     }
 
     /**
@@ -894,7 +763,22 @@ abstract class BaseController
             return '';
         }
 
-        return htmlspecialchars($this->requestData[$key], ENT_QUOTES);
+        // Any key can arrive as an array (?id[]=1), which htmlspecialchars rejects
+        $value = $this->requestData[$key];
+        if (!is_scalar($value)) {
+            return '';
+        }
+
+        return htmlspecialchars((string)$value, ENT_QUOTES);
+    }
+
+    /**
+     * Lazily builds the request validator: only the minority of controllers
+     * that declare validation rules pay for the Symfony validator.
+     */
+    private function validator(): RequestValidator
+    {
+        return $this->requestValidator ??= new RequestValidator();
     }
 
     /**
@@ -904,7 +788,7 @@ abstract class BaseController
      */
     public function setValidationConstraints(array $constraints): void
     {
-        $this->validationConstraints = $constraints;
+        $this->validator()->setConstraints($constraints);
     }
 
     /**
@@ -914,51 +798,7 @@ abstract class BaseController
      */
     public function setRequestRules(array $rules): void
     {
-        $constraints = [];
-
-        // Convert rules to Symfony validator constraints
-        if (isset($rules['required'])) {
-            foreach ($rules['required'] as $field) {
-                $constraints[$field] = new Assert\NotBlank(['message' => sprintf(_('The %s field is required.'), $field)]);
-            }
-        }
-
-        if (isset($rules['integer'])) {
-            foreach ($rules['integer'] as $field) {
-                $constraints[$field] = new Assert\Type([
-                    'type' => 'numeric',
-                    'message' => sprintf(_('The %s field must be a number.'), $field)
-                ]);
-            }
-        }
-
-        $this->validationConstraints = $constraints;
-    }
-
-    /**
-     * Validates data and returns constraint violations.
-     *
-     * @param array|null $data Optional data to validate. If not provided, uses $this->requestData
-     * @return ConstraintViolationListInterface
-     */
-    private function validateData(?array $data = null): ConstraintViolationListInterface
-    {
-        $dataToValidate = $data ?? $this->requestData;
-
-        // Filter input data to remove empty values to prevent type errors
-        foreach ($dataToValidate as $key => $value) {
-            if ($value === '') {
-                unset($dataToValidate[$key]);
-            }
-        }
-
-        $collectionConstraint = new Assert\Collection([
-            'fields' => $this->validationConstraints,
-            'allowExtraFields' => true,
-            'allowMissingFields' => true
-        ]);
-
-        return $this->validator->validate($dataToValidate, $collectionConstraint);
+        $this->validator()->setRules($rules);
     }
 
     /**
@@ -969,8 +809,7 @@ abstract class BaseController
      */
     public function doValidateRequest(?array $data = null): bool
     {
-        $violations = $this->validateData($data);
-        return $violations->count() === 0;
+        return $this->validator()->validate($data ?? $this->requestData)->count() === 0;
     }
 
     /**
@@ -980,11 +819,9 @@ abstract class BaseController
      */
     public function showFirstValidationError(?array $data = null): void
     {
-        $violations = $this->validateData($data);
+        $errorMessage = $this->validator()->firstErrorMessage($data ?? $this->requestData);
 
-        if ($violations->count() > 0) {
-            $firstViolation = $violations->get(0);
-            $errorMessage = (string) $firstViolation->getMessage();
+        if ($errorMessage !== null) {
             $this->showError($errorMessage);
         }
     }
@@ -992,51 +829,12 @@ abstract class BaseController
     /**
      * Adds a system-wide message that will be displayed on any page
      *
-     * @param string $type The type of message (error, warn, success, info)
+     * @param string $type The type of message (error, warning, success, info)
      * @param string $content The content of the message
      */
     public function addSystemMessage(string $type, string $content): void
     {
         $this->messageService->addMessage('system', $type, $content);
-    }
-
-    /**
-     * Builds a URL with the given script and arguments.
-     *
-     * @param string $script The script to build the URL for.
-     * @param mixed $args The arguments to include in the URL.
-     * @return string The built URL.
-     */
-    private function buildUrl(string $script, mixed $args): string
-    {
-        $parsedUrl = parse_url($script);
-        $existingQueryParams = $this->parseQueryParams($parsedUrl);
-
-        $args['time'] = time();
-        $queryParams = array_merge($existingQueryParams, $args);
-
-        $queryString = http_build_query($queryParams);
-
-        if (isset($parsedUrl['query'])) {
-            return $script . "&" . $queryString;
-        } else {
-            return $script . "?" . $queryString;
-        }
-    }
-
-    /**
-     * Parses query parameters from a URL.
-     *
-     * @param array $parsedUrl The parsed URL.
-     * @return array The query parameters.
-     */
-    private function parseQueryParams(array $parsedUrl): array
-    {
-        $existingQueryParams = [];
-        if (isset($parsedUrl['query'])) {
-            parse_str($parsedUrl['query'], $existingQueryParams);
-        }
-        return $existingQueryParams;
     }
 
     /**
@@ -1046,13 +844,6 @@ abstract class BaseController
      */
     private function sendRedirect(string $url): void
     {
-        $allowedHosts = [];
-
-        $parsedUrl = parse_url($url);
-        if (isset($parsedUrl['host']) && is_array($allowedHosts) && count($allowedHosts) > 0 && !in_array($parsedUrl['host'], $allowedHosts)) {
-            $url = '/';
-        }
-
         $sanitizeUrl = filter_var($url, FILTER_SANITIZE_URL);
         header("Location: $sanitizeUrl");
         exit;

@@ -25,12 +25,14 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
@@ -38,14 +40,10 @@ use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Utility\IpHelper;
 
@@ -55,23 +53,25 @@ class ListReverseZonesController extends BaseController
     private ForwardZoneAssociationService $forwardZoneAssociationService;
     private UserContextService $userContextService;
     private ZoneSortingService $zoneSortingService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         // Initialize repository and services
         $zoneRepository = $this->createZoneRepository();
         $this->dnsDataService = $this->createDnsDataService();
         $this->forwardZoneAssociationService = new ForwardZoneAssociationService($zoneRepository);
         $this->userContextService = new UserContextService();
-        $this->zoneSortingService = new ZoneSortingService();
+        $this->zoneSortingService = new ZoneSortingService($this->userContextService);
     }
 
     public function run(): void
     {
-        $perm_view_zone_own = UserManager::verifyPermission($this->db, 'zone_content_view_own');
-        $perm_view_zone_others = UserManager::verifyPermission($this->db, 'zone_content_view_others');
+        $perm_view_zone_own = $this->hasPermission('zone_content_view_own');
+        $perm_view_zone_others = $this->hasPermission('zone_content_view_others');
 
         $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
@@ -92,7 +92,12 @@ class ListReverseZonesController extends BaseController
         $userPreferenceService = $this->createUserPreferenceService();
         $userId = $this->getCurrentUserId();
         $iface_zonelist_serial = $userPreferenceService->getShowZoneSerial($userId);
+        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
+        // Signed serial data comes from the PowerDNS API zone list, so SQL backend cannot provide it
+        $iface_zonelist_signed_serial = $isApiBackend
+            && $this->config->get('interface', 'display_signed_serial_in_zone_list', false);
         $iface_zonelist_template = $userPreferenceService->getShowZoneTemplate($userId);
+        $iface_zonelist_record_count = $userPreferenceService->getShowZoneRecordCount($userId);
 
         // Create pagination service and get user preference
         $paginationService = $this->createPaginationService();
@@ -100,9 +105,10 @@ class ListReverseZonesController extends BaseController
         $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
 
         $row_start = 0;
-        if (isset($_GET['start'])) {
-            $start = (int)htmlspecialchars($_GET['start']);
-            $row_start = ($start - 1) * $iface_rowamount;
+        $start_param = $this->request->getQueryParam('start');
+        if ($start_param !== null) {
+            $start = (int)htmlspecialchars($start_param);
+            $row_start = max(0, ($start - 1) * $iface_rowamount);
         }
 
         $perm_view = Permission::getViewPermission($this->db);
@@ -113,14 +119,33 @@ class ListReverseZonesController extends BaseController
         $count_zones_delete = $this->dnsDataService->countZones($perm_delete, 'all', 'reverse');
 
         $ownershipMode = new ZoneOwnershipModeService($this->getConfig());
-        $isUserOwnerAllowed = $ownershipMode->isUserOwnerAllowed();
+        $perm_ownership_view = Permission::getZoneOwnershipViewPermission($this->db);
+        // The full-name column also lists zone owners, so it follows the same gate
+        $iface_zonelist_fullname = $iface_zonelist_fullname && $perm_ownership_view !== 'none';
+        $showOwnerColumn = $ownershipMode->isUserOwnerAllowed()
+            && $this->config->get('interface', 'display_owner_in_zone_list', true)
+            && $perm_ownership_view !== 'none';
         // Group sort relies on JOINs against Poweradmin tables, which the API-backed repository can't perform
-        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
-        $isGroupOwnerAllowed = $ownershipMode->isGroupOwnerAllowed();
-        $isGroupSortSupported = $isGroupOwnerAllowed && !$isApiBackend;
+        $showGroupColumn = $ownershipMode->isGroupOwnerAllowed()
+            && $this->config->get('interface', 'display_group_in_zone_list', true)
+            && $perm_ownership_view !== 'none';
+        // Sorting by owner/group data the user cannot fully see would leak
+        // ownership through row order, so it needs "all" scope, or "own" scope
+        // with a list that already contains only owned zones.
+        $ownershipSortAllowed = $perm_ownership_view === 'all'
+            || ($perm_ownership_view === 'own' && $perm_view === 'own');
+        $isOwnerSortSupported = $showOwnerColumn && $ownershipSortAllowed;
+        $isGroupSortSupported = $showGroupColumn && !$isApiBackend && $ownershipSortAllowed;
 
-        $allowedSort = ['name', 'type', 'count_records'];
-        if ($isUserOwnerAllowed) {
+        // In API mode record counts are resolved per page, so sorting on them
+        // would only order the rows already on screen
+        $isRecordCountSortSupported = $iface_zonelist_record_count && !$isApiBackend;
+
+        $allowedSort = ['name', 'type'];
+        if ($isRecordCountSortSupported) {
+            $allowedSort[] = 'count_records';
+        }
+        if ($isOwnerSortSupported) {
             $allowedSort[] = 'owner';
         }
         if ($isGroupSortSupported) {
@@ -153,7 +178,8 @@ class ListReverseZonesController extends BaseController
             $zone_sort_by,
             $zone_sort_direction,
             $iface_zonelist_serial,
-            $iface_zonelist_template
+            $iface_zonelist_template,
+            $iface_zonelist_record_count
         );
 
         // Apply client-side sorting when sorting by name for additional flexibility
@@ -176,19 +202,22 @@ class ListReverseZonesController extends BaseController
         };
 
         // Augment zones with group information and shorten IPv6 reverse zones
-        $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
-        $userGroupRepo = new DbUserGroupRepository($this->db);
-        $memberRepo = new DbUserGroupMemberRepository($this->db);
+        $zoneGroupRepo = $this->createZoneGroupRepository();
+        $userGroupRepo = $this->createUserGroupRepository();
         $allGroups = $userGroupRepo->findAll();
 
         // Resolve where the user can delete (direct vs. which groups grant it). Two
         // queries up front lets the per-row decision below stay in PHP, instead of
-        // running canUserPerformZoneAction once per rendered zone.
-        $hybridPermissions = new HybridPermissionService($this->db, $userGroupRepo, $memberRepo);
+        // running canPerformZoneAction once per rendered zone.
+        $hybridPermissions = new HybridPermissionService($this->db);
         $deleteSources = $perm_delete === 'own'
             ? $hybridPermissions->getPermissionSourcesForUser($loggedInUserId, 'zone_delete_own')
             : ['has_direct' => false, 'group_ids' => []];
         $loggedInUsername = $this->userContextService->getLoggedInUsername();
+
+        $userGroupIds = $perm_ownership_view === 'own'
+            ? $userGroupRepo->getGroupIdsForUser($loggedInUserId)
+            : [];
 
         foreach ($reverse_zones as &$zone) {
             // Shorten IPv6 reverse zones for display
@@ -222,6 +251,21 @@ class ListReverseZonesController extends BaseController
             } else {
                 $zone['user_can_delete'] = false;
             }
+
+            // At the "own" ownership view level, owner and group cells stay
+            // visible only for zones the user owns directly or via a group.
+            if ($perm_ownership_view === 'own') {
+                $ownsDirect = in_array($loggedInUsername, $zone['users'] ?? [], true);
+                $ownsViaGroup = !empty(array_intersect($userGroupIds, $zoneGroupIds));
+                if (!$ownsDirect && !$ownsViaGroup) {
+                    $zone['owners'] = [];
+                    $zone['full_names'] = [];
+                    $zone['groups'] = [];
+                }
+            }
+
+            $zone['owners_display'] = OwnerGroupColumnPresenter::presentOwners($zone['owners'] ?? [], $zone['full_names'] ?? []);
+            $zone['groups_display'] = OwnerGroupColumnPresenter::presentGroups($zone['groups']);
         }
         unset($zone); // Break the reference
 
@@ -234,19 +278,27 @@ class ListReverseZonesController extends BaseController
             'zone_sort_by' => $zone_sort_by,
             'zone_sort_direction' => $zone_sort_direction,
             'iface_zonelist_serial' => $iface_zonelist_serial,
+            'iface_zonelist_signed_serial' => $iface_zonelist_signed_serial,
             'iface_zonelist_template' => $iface_zonelist_template,
+            'iface_zonelist_record_count' => $iface_zonelist_record_count,
+            'is_record_count_sort_supported' => $isRecordCountSortSupported,
             'iface_zonelist_fullname' => $iface_zonelist_fullname,
-            'is_user_owner_allowed' => $isUserOwnerAllowed,
-            'is_group_owner_allowed' => $isGroupOwnerAllowed,
+            'show_owner_column' => $showOwnerColumn,
+            'show_group_column' => $showGroupColumn,
+            // Kept for 4.4.0 theme forks; mirror the gated flags so ownership view still applies
+            'is_user_owner_allowed' => $showOwnerColumn,
+            'is_group_owner_allowed' => $showGroupColumn,
+            'is_owner_sort_supported' => $isOwnerSortSupported,
             'is_group_sort_supported' => $isGroupSortSupported,
+            'is_api_backend' => $isApiBackend,
             'pdnssec_use' => $pdnssec_use,
             'pagination' => $this->createAndPresentPagination($pagination_count, $iface_rowamount),
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
-            'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
-            'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
-            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'perm_zone_master_add' => $this->hasPermission('zone_master_add'),
+            'perm_zone_slave_add' => $this->hasPermission('zone_slave_add'),
+            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
             'reverse_zone_type' => $reverse_zone_type,
             'count_ipv4_zones' => $count_ipv4_zones,
             'count_ipv6_zones' => $count_ipv6_zones,
@@ -256,7 +308,7 @@ class ListReverseZonesController extends BaseController
         ]);
     }
 
-    private function createAndPresentPagination(int $totalItems, string $itemsPerPage): string
+    private function createAndPresentPagination(int $totalItems, int $itemsPerPage): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();
@@ -268,13 +320,15 @@ class ListReverseZonesController extends BaseController
         $paginationUrl = $baseUrlPrefix . '/zones/reverse?start={PageNumber}';
 
         // Add reverse_type parameter if it exists
-        if (isset($_GET['reverse_type'])) {
-            $paginationUrl .= '&reverse_type=' . htmlspecialchars($_GET['reverse_type']);
+        $reverse_type = $this->request->getQueryParam('reverse_type');
+        if ($reverse_type !== null) {
+            $paginationUrl .= '&reverse_type=' . htmlspecialchars($reverse_type);
         }
 
         // Add rows_per_page parameter if it exists
-        if (isset($_GET['rows_per_page'])) {
-            $paginationUrl .= '&rows_per_page=' . htmlspecialchars($_GET['rows_per_page']);
+        $rows_per_page = $this->request->getQueryParam('rows_per_page');
+        if ($rows_per_page !== null) {
+            $paginationUrl .= '&rows_per_page=' . htmlspecialchars($rows_per_page);
         }
 
         $presenter = new PaginationPresenter($pagination, $paginationUrl);

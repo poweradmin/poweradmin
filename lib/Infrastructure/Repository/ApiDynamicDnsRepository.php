@@ -26,7 +26,7 @@ use PDO;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
@@ -34,34 +34,40 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
  * API-backend dynamic DNS repository.
  * Uses PowerDNS REST API for DNS operations, Poweradmin DB for user/zone queries.
  */
-class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
+readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 {
-    private PDO $db;
-    private DnsRecord $dnsRecord;
-    private DnsBackendProvider $backendProvider;
-
-    public function __construct(PDO $db, DnsRecord $dnsRecord, DnsBackendProvider $backendProvider)
-    {
-        $this->db = $db;
-        $this->dnsRecord = $dnsRecord;
-        $this->backendProvider = $backendProvider;
+    public function __construct(
+        private PDO $db,
+        private SOARecordManagerInterface $soaRecordManager,
+        private DnsBackendProvider $backendProvider
+    ) {
     }
 
     public function findUserByUsernameWithDynamicDnsPermissions(string $username): ?User
     {
-        // User/permission queries always go to Poweradmin DB
+        // DDNS auth needs an explicit zone_content_edit_* grant (own template or a group),
+        // matching the web UI. Admin/ueberuser is intentionally not auto-authorized: DDNS
+        // passwords sit in plaintext client configs, so use a scoped user - do not add a bypass.
         $query = $this->db->prepare("
             SELECT users.id, users.password, users.use_ldap
-            FROM users, perm_templ, perm_templ_items, perm_items
+            FROM users
             WHERE users.username = :username
                 AND users.active = 1
-                AND perm_templ.id = users.perm_templ
-                AND perm_templ_items.templ_id = perm_templ.id
-                AND perm_items.id = perm_templ_items.perm_id
                 AND (
-                    perm_items.name = 'zone_content_edit_own'
-                    OR perm_items.name = 'zone_content_edit_own_as_client'
-                    OR perm_items.name = 'zone_content_edit_others'
+                    EXISTS (
+                        SELECT 1 FROM perm_templ_items pti
+                        JOIN perm_items pi ON pi.id = pti.perm_id
+                        WHERE pti.templ_id = users.perm_templ
+                            AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                    )
+                    OR EXISTS (
+                        SELECT 1 FROM user_group_members ugm
+                        JOIN user_groups ug ON ug.id = ugm.group_id
+                        JOIN perm_templ_items pti ON pti.templ_id = ug.perm_templ
+                        JOIN perm_items pi ON pi.id = pti.perm_id
+                        WHERE ugm.user_id = users.id
+                            AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                    )
                 )
         ");
 
@@ -81,17 +87,57 @@ class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function getUserZones(User $user): array
     {
-        // Extra-ownership rows carry no zone_name and point at the zone through domain_id,
-        // so filtering them out would drop zones the user owns as a secondary owner.
-        $query = $this->db->prepare("SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE owner = :user_id");
-        $query->execute([':user_id' => $user->getId()]);
+        // SQL stays inside Poweradmin-native tables; zone names come from the API.
+        // Edit permission is source-specific (matching the web permission model): a zone is
+        // only returned when the owner's template (the user's for direct ownership, or the
+        // owning group's) grants zone_content_edit_*.
+        $query = $this->db->prepare("
+            SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS domain_id
+            FROM zones z
+            INNER JOIN users u ON u.id = z.owner
+            WHERE z.owner = :user_id
+                AND EXISTS (
+                    SELECT 1 FROM perm_templ_items pti
+                    JOIN perm_items pi ON pi.id = pti.perm_id
+                    WHERE pti.templ_id = u.perm_templ
+                        AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                )
+
+            UNION
+
+            SELECT DISTINCT zg.domain_id
+            FROM zones_groups zg
+            INNER JOIN user_group_members ugm ON ugm.group_id = zg.group_id
+            INNER JOIN user_groups ug ON ug.id = zg.group_id
+            WHERE ugm.user_id = :user_id2
+                AND EXISTS (
+                    SELECT 1 FROM perm_templ_items pti
+                    JOIN perm_items pi ON pi.id = pti.perm_id
+                    WHERE pti.templ_id = ug.perm_templ
+                        AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                )
+        ");
+        $query->execute([
+            ':user_id' => $user->getId(),
+            ':user_id2' => $user->getId(),
+        ]);
 
         $zones = [];
-        while ($zone = $query->fetch(PDO::FETCH_ASSOC)) {
-            $zones[] = (int)$zone['domain_id'];
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $zoneId = (int)$row['domain_id'];
+            $name = $this->backendProvider->getZoneNameById($zoneId);
+            if ($name !== null) {
+                $zones[$zoneId] = $name;
+            }
         }
 
         return $zones;
+    }
+
+    public function getZoneType(int $zoneId): ?string
+    {
+        // Read zone kind via the API; this repository never queries PowerDNS tables
+        return $this->backendProvider->getZoneTypeById($zoneId) ?: null;
     }
 
     public function getDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType): array
@@ -124,6 +170,6 @@ class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function updateSOASerial(int $zoneId): void
     {
-        $this->dnsRecord->updateSOASerial($zoneId);
+        $this->soaRecordManager->updateSOASerial($zoneId);
     }
 }

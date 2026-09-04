@@ -23,11 +23,8 @@
 namespace Poweradmin\Module\ZoneImportExport\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Network\ProxyContext;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
 
 class ZoneFileExportController extends BaseController
@@ -47,10 +44,9 @@ class ZoneFileExportController extends BaseController
         }
 
         $userId = $userContextService->getLoggedInUserId();
-        $userRepository = new DbUserRepository($this->db, $this->getConfig());
-        $permissionService = new PermissionService($userRepository);
+        $permissionService = $this->createPermissionService();
         $perm_view = $permissionService->getViewPermissionLevel($userId);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view == "none" || ($perm_view == "own" && $user_is_zone_owner == "0")) {
             $this->showError(_('You do not have permission to export this zone.'));
@@ -102,14 +98,16 @@ class ZoneFileExportController extends BaseController
             $serverName = $this->getConfig()->get('pdns_api', 'server_name', 'localhost');
             $url = rtrim($apiUrl, '/') . "/api/v1/servers/" . urlencode($serverName) . "/zones/" . urlencode($zone_name . ".") . "/export";
 
-            $context = stream_context_create([
+            $options = [
                 'http' => [
                     'header' => "X-API-Key: $apiKey\r\n",
                     'method' => 'GET',
                     'ignore_errors' => true,
                     'timeout' => 10,
                 ]
-            ]);
+            ];
+
+            $context = stream_context_create(ProxyContext::applyTo($options, $url));
 
             $response = @file_get_contents($url, false, $context);
 
@@ -138,8 +136,7 @@ class ZoneFileExportController extends BaseController
 
     private function generateFromDb(int $zone_id, string $zone_name): ?string
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $records = $dnsRecord->getRecordsFromDomainId(
+        $records = $this->createRecordRepository()->getRecordsFromDomainId(
             $this->getConfig()->get('database', 'type', 'mysql'),
             $zone_id
         );

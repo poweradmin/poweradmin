@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,37 +25,29 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
- * Class StaticAssetController
+ * Serves static assets like CSS, JS, images and fonts.
  *
- * This controller serves static assets like CSS, JS, images, and fonts.
+ * Deliberately does not extend BaseController, whose constructor connects to the
+ * database unconditionally. Every shipped web server config serves existing assets
+ * straight from disk, so the requests that reach this class are the ones for files
+ * that do not exist - a database connection per 404 that nothing here needs.
  */
-class StaticAssetController extends BaseController
+readonly class StaticAssetController
 {
-    /**
-     * Constructor for StaticAssetController
-     *
-     * @param array $request The request data
-     */
-    public function __construct(array $request)
+    public function __construct(private array $requestData)
     {
-        // Disable authentication for static assets
-        parent::__construct($request, false);
     }
 
-    /**
-     * Serve static assets
-     */
     public function run(): void
     {
         // Path comes from route parameters merged into request data by the router

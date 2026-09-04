@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -119,6 +119,36 @@ class ZoneTemplateReplacementTest extends TestCase
         // Serial (10 digits) should be replaced with [SERIAL]
         $this->assertStringContainsString('[SERIAL]', $content);
         $this->assertStringNotContainsString('2024120501', $content);
+    }
+
+    public function testReplaceSOARecordCounterStyleSerialPlaceholder(): void
+    {
+        $domain = 'test.org';
+        $record = [
+            'name' => 'test.org',
+            'content' => 'ns1.test.org admin.test.org 7 28800 7200 604800 86400',
+            'type' => 'SOA'
+        ];
+
+        [, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+
+        // A short counter-style serial must not leak into the template as a stale literal
+        $this->assertEquals('ns1.test.org admin.test.org [SERIAL] 28800 7200 604800 86400', $content);
+    }
+
+    public function testReplaceSOARecordPreservesAutoserialZero(): void
+    {
+        $domain = 'test.org';
+        $record = [
+            'name' => 'test.org',
+            'content' => 'ns1.test.org admin.test.org 0 28800 7200 604800 86400',
+            'type' => 'SOA'
+        ];
+
+        [, $content] = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+
+        // Serial 0 means autoserial and must survive the round trip
+        $this->assertEquals('ns1.test.org admin.test.org 0 28800 7200 604800 86400', $content);
     }
 
     public function testReplaceDomainHyphenatedPattern(): void

@@ -41,10 +41,11 @@ use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class ChangePasswordController extends BaseController
 {
@@ -74,7 +75,7 @@ class ChangePasswordController extends BaseController
             $passwordEncryption,
             $passwordEncryptionCost
         );
-        $userRepository = new DbUserRepository($this->db, $this->config);
+        $userRepository = $this->createUserRepository();
         $this->userContextService = new UserContextService();
         $this->passwordService = new PasswordChangeService($userRepository, $userAuthService, $this->userContextService);
         $this->auditLogger = new LegacyLogger($this->db);
@@ -84,11 +85,10 @@ class ChangePasswordController extends BaseController
     public function run(): void
     {
         // Check for external authentication methods that don't allow password changes
-        $authUsed = $_SESSION["auth_used"] ?? null;
+        $authUsed = $_SESSION[SessionKeys::AUTH_USED] ?? null;
 
         // Block external authentication users
-        $externalAuthMethods = ['ldap', 'oidc', 'saml'];
-        if (in_array($authUsed, $externalAuthMethods)) {
+        if (AuthMethod::fromDb($authUsed)->isExternal()) {
             $message = match ($authUsed) {
                 'ldap' => _('LDAP users cannot change their password here. Please contact your administrator.'),
                 'oidc', 'saml' => _('Users authenticated via Single Sign-On cannot change their password here. Please contact your administrator or change your password through your identity provider.'),
@@ -99,7 +99,7 @@ class ChangePasswordController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('change_password');
-        $this->setPageTitle(_('Change Password'));
+        $this->setPageTitle(_('Change password'));
 
         $policyConfig = $this->policyService->getPolicyConfig();
 

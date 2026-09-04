@@ -34,29 +34,30 @@ class SessionService
     public function endSession(): void
     {
         // Explicitly clear MFA-related session variables
-        if (isset($_SESSION['mfa_required'])) {
-            unset($_SESSION['mfa_required']);
+        unset($_SESSION[SessionKeys::MFA_STATE]);
+        if (isset($_SESSION[SessionKeys::MFA_REQUIRED])) {
+            unset($_SESSION[SessionKeys::MFA_REQUIRED]);
         }
 
         // Clear authentication status
-        if (isset($_SESSION['authenticated'])) {
-            unset($_SESSION['authenticated']);
+        if (isset($_SESSION[SessionKeys::AUTHENTICATED])) {
+            unset($_SESSION[SessionKeys::AUTHENTICATED]);
         }
 
         // Handle MFA tokens if present
-        if (isset($_SESSION['mfa_token'])) {
-            unset($_SESSION['mfa_token']);
+        if (isset($_SESSION[SessionKeys::MFA_TOKEN])) {
+            unset($_SESSION[SessionKeys::MFA_TOKEN]);
         }
 
         // Clear user data
-        if (isset($_SESSION['userid'])) {
-            unset($_SESSION['userid']);
+        if (isset($_SESSION[SessionKeys::USERID])) {
+            unset($_SESSION[SessionKeys::USERID]);
         }
-        if (isset($_SESSION['userlogin'])) {
-            unset($_SESSION['userlogin']);
+        if (isset($_SESSION[SessionKeys::USERLOGIN])) {
+            unset($_SESSION[SessionKeys::USERLOGIN]);
         }
-        if (isset($_SESSION['userpwd'])) {
-            unset($_SESSION['userpwd']);
+        if (isset($_SESSION[SessionKeys::USERPWD])) {
+            unset($_SESSION[SessionKeys::USERPWD]);
         }
 
         // Regenerate session ID and unset all variables only if session is active
@@ -68,7 +69,7 @@ class SessionService
 
     public function setSessionData(SessionEntity $sessionEntity): void
     {
-        $_SESSION['message'] = $sessionEntity->getMessage();
-        $_SESSION['type'] = $sessionEntity->getType();
+        $_SESSION[SessionKeys::LOGIN_MESSAGE] = $sessionEntity->getMessage();
+        $_SESSION[SessionKeys::LOGIN_MESSAGE_TYPE] = $sessionEntity->getType();
     }
 }

@@ -1,18 +1,11 @@
-{% if not (perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike) %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit profile{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{% if not can_manage_users %}
+{{ macros.breadcrumb([{label: 'Edit profile'|trans}]) }}
 {% else %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/users">{% trans %}Users{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit user{% endtrans %}</li>
-    </ol>
-</nav>
+{{ macros.breadcrumb([
+    {label: 'Users'|trans, url: base_url_prefix ~ '/users'},
+    {label: 'Edit User'|trans},
+]) }}
 {% endif %}
 
 <div class="row">
@@ -23,7 +16,7 @@
             </div>
             <div class="card-body">
                 <form class="needs-validation" method="post" action="" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="number" value="{{ edit_id }}">
 
                     <div class="mb-3">
@@ -71,7 +64,7 @@
 
                     {% if show_user_access_templates and edit_templ_perm %}
                     <div class="mb-3">
-                        <label for="perm_templ" class="form-label">{% trans %}Access template{% endtrans %}</label>
+                        <label for="perm_templ" class="form-label">{% trans %}Permission template{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="perm_templ" name="perm_templ">
                             {% for template in permission_templates %}
                             {% if template['id'] == user['tpl_id'] %}
@@ -126,7 +119,7 @@
                             <button type="reset" class="btn btn-secondary btn-sm" name="reset">
                                 <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
                             </button>
-                            {% if not (perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike) %}
+                            {% if not can_manage_users %}
                             <a href="{{ base_url_prefix }}/" class="btn btn-outline-secondary btn-sm">
                                 <i class="bi bi-arrow-left me-1"></i>{% trans %}Back to Home{% endtrans %}
                             </a>
@@ -187,7 +180,7 @@
                         </h6>
                         <div class="collapse" id="permissionsBody">
                         <p class="mb-2 small mt-2">
-                            {% trans %}This user has been assigned the access template{% endtrans %}: <strong>"{{ user['tpl_name'] }}"</strong>
+                            {% trans %}This user has been assigned the permission template{% endtrans %}: <strong>"{{ user['tpl_name'] }}"</strong>
                         </p>
 
                         {% if user['tpl_descr'] != "" %}
@@ -218,9 +211,7 @@
 
         {% if show_group_access_templates %}
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-people me-2"></i>{% trans %}Group Memberships{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-people', 'Group Memberships'|trans) }}
             <div class="card-body">
                 <!-- Current Memberships -->
                 <h6 class="text-muted mb-2">{% trans %}Current Memberships{% endtrans %}</h6>
@@ -262,7 +253,7 @@
                 <p class="small text-muted mb-3">{% trans %}Select one or more groups and click "Add Selected Groups" button.{% endtrans %}</p>
 
                 <form method="post" action="{{ base_url_prefix }}/users/{{ edit_id }}/edit" id="addGroupsForm">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="action" value="add_groups">
 
                     <div class="mb-2">
@@ -311,7 +302,7 @@
 
 {% if show_group_access_templates %}
 <form id="removeGroupForm" method="post" action="{{ base_url_prefix }}/users/groups/remove" style="display: none;">
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
     <input type="hidden" name="user_id" id="remove_user_id" value="">
     <input type="hidden" name="group_id" id="remove_group_id" value="">
 </form>

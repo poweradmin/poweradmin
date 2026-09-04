@@ -32,6 +32,14 @@ class DnsHelper
     private const IPV4_REVERSE_ZONE_PATTERN = '/^(?:[\d\/]+\.){1,4}in-addr\.arpa$/i';
     private const IPV6_REVERSE_ZONE_PATTERN = '/^[0-9a-fA-F\/]+(?:\.[0-9a-fA-F\/]+)*\.ip6\.arpa$/i';
 
+    /**
+     * Tell whether a network can be derived from a reverse zone name.
+     *
+     * This is the strict test: the name must be a structured in-addr.arpa or
+     * ip6.arpa name. It gates network derivation on the add-zone form via
+     * resolveReverseZoneName(). For plain "is this a reverse zone at all"
+     * classification use isReverseZoneName().
+     */
     public static function isReverseZone(string $zoneName): bool
     {
         if (preg_match(self::IPV4_REVERSE_ZONE_PATTERN, $zoneName) === 1) {
@@ -46,6 +54,60 @@ class DnsHelper
     }
 
     /**
+     * Tell whether a name belongs to the reverse-DNS namespace.
+     *
+     * This is the broad classification test: any name under in-addr.arpa or
+     * ip6.arpa counts, including RFC 2317 classless names (e.g.
+     * "0-25.2.0.192.in-addr.arpa") that the strict isReverseZone() rejects
+     * because they carry no parsable network. Use this for listing, filtering
+     * and "is this a reverse zone at all" decisions; use isReverseZone() only
+     * when a network must be derived from the name.
+     */
+    public static function isReverseZoneName(string $name): bool
+    {
+        $name = strtolower(rtrim($name, '.'));
+
+        return $name === 'in-addr.arpa'
+            || $name === 'ip6.arpa'
+            || str_ends_with($name, '.in-addr.arpa')
+            || str_ends_with($name, '.ip6.arpa');
+    }
+
+    /**
+     * Tell whether a record name falls within a zone: the zone apex itself or any
+     * name under it. Comparison is case-insensitive and anchored on a label
+     * boundary, so "testexample.com" is not treated as inside "example.com".
+     *
+     * Names are compared as given (no trailing-dot normalization); callers that
+     * accept FQDN-dotted input must normalize it before matching.
+     *
+     * @param string $name Record name or hostname to test
+     * @param string $zoneName Zone name
+     * @return bool True if $name is the zone apex or a subdomain of the zone
+     */
+    public static function isWithinZone(string $name, string $zoneName): bool
+    {
+        $name = strtolower($name);
+        $zoneName = strtolower($zoneName);
+
+        return $name === $zoneName || str_ends_with($name, '.' . $zoneName);
+    }
+
+    /**
+     * Check whether a record name is the zone apex.
+     *
+     * Comparison is case-insensitive and ignores a trailing dot on either side.
+     *
+     * @param string $recordName Record name (FQDN)
+     * @param string $zoneName Zone name
+     * @return bool True if the record name equals the zone apex
+     */
+    public static function isZoneApex(string $recordName, string $zoneName): bool
+    {
+        return strtolower(rtrim($recordName, '.')) === strtolower(rtrim($zoneName, '.'));
+    }
+
+    /**
      * Resolve user input on a reverse-zone form to a reverse zone name.
      *
      * Passes an already-valid reverse zone name through unchanged and converts
@@ -53,10 +115,10 @@ class DnsHelper
      * Returns null when the input is neither, so the caller can reject it
      * instead of silently creating a forward zone.
      *
-     * Pass-through is gated on isReverseZone() (not a looser .arpa suffix) so
-     * every accepted value is one the post-create redirect and zone lists also
-     * classify as reverse. RFC 2317 range-style names fall outside that and are
-     * rejected; the user enters the parent zone instead.
+     * Pass-through is gated on isReverseZone() (not a looser .arpa suffix)
+     * because form input must be a canonical numeric reverse name or a parsable
+     * network. RFC 2317 range-style names carry no network to derive and are
+     * rejected here; the user enters the parent zone instead.
      */
     public static function resolveReverseZoneName(string $input): ?string
     {
@@ -142,11 +204,8 @@ class DnsHelper
             return $zoneName;
         }
 
-        // If hostname already contains zone name (case-insensitive), return as-is
-        $lowerHostname = strtolower($hostname);
-        $lowerZoneName = strtolower($zoneName);
-
-        if ($lowerHostname === $lowerZoneName || str_ends_with($lowerHostname, '.' . $lowerZoneName)) {
+        // If hostname is already within the zone (case-insensitive), return as-is
+        if (self::isWithinZone($hostname, $zoneName)) {
             return $hostname;
         }
 

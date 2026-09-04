@@ -25,27 +25,36 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class UsersController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
 
     public function run(): void
     {
         // Check if user has permission to view or edit other users before processing
-        $canViewOthers = UserManager::verifyPermission($this->db, 'user_view_others');
-        $canEditOthers = UserManager::verifyPermission($this->db, 'user_edit_others');
+        $canViewOthers = $this->hasPermission('user_view_others');
+        $canEditOthers = $this->hasPermission('user_edit_others');
 
         // If user doesn't have permissions to view/edit others, redirect to home
         if (!$canViewOthers && !$canEditOthers) {
@@ -69,20 +78,21 @@ class UsersController extends BaseController
     {
         $success = false;
         $blocked = false;
-        $currentIsSuperuser = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        foreach ($_POST['user'] as $user) {
+        $currentIsSuperuser = $this->hasPermission('user_is_ueberuser');
+        $permissionService = $this->createPermissionService();
+        $legacyUsers = new UserManager($this->db, $this->getConfig());
+        foreach ($this->request->getPostParam('user') as $user) {
             if (!is_array($user)) {
                 continue;
             }
             // A delegated admin (non-ueberuser) must not modify a superuser account;
             // untouched superuser rows posted by the bulk form are skipped silently.
-            if (!$currentIsSuperuser && UserManager::isUserSuperuser($this->db, (int)$user['uid'])) {
+            if (!$currentIsSuperuser && $permissionService->isAdmin((int)$user['uid'])) {
                 if ($this->superuserRowEdited($user)) {
                     $blocked = true;
                 }
                 continue;
             }
-            $legacyUsers = new UserManager($this->db, $this->getConfig());
             $result = $legacyUsers->updateUserDetails($user);
             if ($result) {
                 $success = true;
@@ -136,30 +146,45 @@ class UsersController extends BaseController
         $paginationService = $this->createPaginationService();
         $rowsPerPage = $paginationService->getUserRowsPerPage($rowsPerPage, $this->getCurrentUserId());
 
-        // Get total count and paginated users
-        $totalUsers = UserManager::countUsers($this->db);
+        // Get total count and paginated users; both restricted to the user's own
+        // account when they lack the permission to view other users
+        $userRepository = $this->createUserRepository();
+        $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
+        // ?search[]=x arrives as an array; treat anything non-string as no filter.
+        $searchParam = $this->request->getQueryParam('search', '');
+        $searchTerm = is_string($searchParam) ? trim($searchParam) : '';
+        $totalUsers = $userRepository->getTotalUserCount($restrictToUserId, $searchTerm);
         $offset = ($currentPage - 1) * $rowsPerPage;
-        $users = UserManager::getUserDetailList(
-            $this->db,
+        $users = $userRepository->getUserDetailList(
             $this->config->get('ldap', 'enabled', false),
+            $restrictToUserId,
             null,
             $rowsPerPage,
-            $offset
+            $offset,
+            $searchTerm
         );
 
         // Create pagination
         $pagination = $paginationService->createPagination($totalUsers, $rowsPerPage, $currentPage);
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-        $paginationPresenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/users?start={PageNumber}');
+        $paginationUrl = $baseUrlPrefix . '/users?start={PageNumber}';
+        if ($searchTerm !== '') {
+            $paginationUrl .= '&search=' . urlencode($searchTerm);
+        }
+        $paginationPresenter = new PaginationPresenter($pagination, $paginationUrl);
 
         $this->render('users.html', [
             'permissions' => $permissions,
-            'perm_templates' => UserManager::listPermissionTemplates($this->db, 'user'),
+            'perm_templates' => $this->createPermissionTemplateRepository()->listPermissionTemplates('user'),
             'users' => $users,
-            'session_userid' => $_SESSION["userid"],
-            'perm_add_new' => UserManager::verifyPermission($this->db, 'user_add_new'),
+            'session_userid' => $_SESSION[SessionKeys::USERID],
+            'perm_add_new' => $this->hasPermission('user_add_new'),
+            'perm_is_godlike' => $permissions['user_is_ueberuser'],
+            'perm_user_logs_view' => $this->hasPermission('user_logs_view'),
+            'dblog_use' => $this->config->get('logging', 'database_enabled', false),
             'pagination' => $paginationPresenter->present(),
             'total_users' => $totalUsers,
+            'search_term' => $searchTerm,
             'rows_per_page' => $rowsPerPage,
             'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),

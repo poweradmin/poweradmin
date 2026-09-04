@@ -31,7 +31,8 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class InternalApiController extends AbstractApiController
@@ -49,6 +50,30 @@ abstract class InternalApiController extends AbstractApiController
 
         // Additional validation for internal API
         $this->validateAuthentication();
+        $this->validateCsrfHeader();
+    }
+
+    /**
+     * Internal API calls ride the browser session, so a state-changing verb needs a
+     * token like any other form post. It travels in a header because these endpoints
+     * take JSON bodies rather than form fields.
+     */
+    protected function validateCsrfHeader(): void
+    {
+        if (in_array(strtoupper($this->request->getMethod()), ['GET', 'HEAD', 'OPTIONS'], true)) {
+            return;
+        }
+
+        if (!$this->config->get('security', 'global_token_validation', true)) {
+            return;
+        }
+
+        $token = (string) $this->request->headers->get('X-CSRF-Token', '');
+        if (!(new CsrfTokenService())->validateToken($token)) {
+            $response = $this->returnApiError('Invalid CSRF token', 403);
+            $response->send();
+            exit;
+        }
     }
 
     /**
@@ -56,22 +81,11 @@ abstract class InternalApiController extends AbstractApiController
      */
     protected function validateAuthentication(): void
     {
-        if (!isset($_SESSION["userid"])) {
+        if (!isset($_SESSION[SessionKeys::USERID])) {
             $response = $this->returnErrorResponse('Unauthorized access', 401);
             $response->send();
             exit;
         }
-    }
-
-    /**
-     * Check if the user has the required permission
-     *
-     * @param string $permission The permission to check
-     * @return bool True if the user has the permission, false otherwise
-     */
-    protected function hasPermission(string $permission): bool
-    {
-        return UserManager::verifyPermission($this->db, $permission);
     }
 
     /**

@@ -285,4 +285,49 @@ class SPFRecordValidatorTest extends TestCase
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(3600, $data['ttl']);
     }
+
+    public function testAllMechanismNotLastEmitsWarning()
+    {
+        $content = 'v=spf1 -all ip4:192.168.0.0/24';
+
+        $result = $this->validator->validate($content, 'example.com', '', 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $this->assertContains(
+            'The "all" mechanism should be the last mechanism in the record (RFC 7208 Section 5.1).',
+            $result->getWarnings()
+        );
+    }
+
+    public function testAllMechanismAtEndDoesNotEmitPositionWarning()
+    {
+        $content = 'v=spf1 ip4:192.168.0.0/24 -all';
+
+        $result = $this->validator->validate($content, 'example.com', '', 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertNotContains(
+            'The "all" mechanism should be the last mechanism in the record (RFC 7208 Section 5.1).',
+            $result->getWarnings()
+        );
+    }
+
+    public function testDuplicateAllMechanismsFlagFirstNonFinalOccurrence()
+    {
+        $content = 'v=spf1 -all -all';
+
+        $result = $this->validator->validate($content, 'example.com', '', 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $warnings = $result->getWarnings();
+        $this->assertContains(
+            'The "all" mechanism should be the last mechanism in the record (RFC 7208 Section 5.1).',
+            $warnings
+        );
+        $this->assertContains(
+            'Multiple "all" mechanisms found. Only the first one will be effective.',
+            $warnings
+        );
+    }
 }

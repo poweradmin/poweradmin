@@ -14,126 +14,52 @@ import { test, expect } from '../../fixtures/test-fixtures.js';
 
 test.describe('Zone Delete Confirmation', () => {
   test.describe('Single Zone Delete', () => {
-    test('should display warning alert', async ({ adminPage: page }) => {
+    test('should render the zone delete confirmation page', async ({ adminPage: page }) => {
       // Navigate to forward zones
       await page.goto('/zones/forward?letter=all');
 
       // Check for delete links
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const deleteLinks = page.locator('table a[href*="/delete"]');
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
+      await expect(deleteLinks.first()).toBeVisible();
+      await deleteLinks.first().click();
 
-        const warningAlert = page.locator('.alert-danger');
-        await expect(warningAlert).toBeVisible();
-      }
-    });
+      // Auto-retrying assertion first so the click navigation settles
+      await expect(page.locator('.alert-danger')).toBeVisible();
+      await expect(page.locator('body')).toContainText(/delete.*zone|zone.*delete/i);
 
-    test('should display zone name being deleted', async ({ adminPage: page }) => {
-      await page.goto('/zones/forward?letter=all');
+      const bodyText = await page.locator('body').textContent();
+      const hasDetails = bodyText.toLowerCase().includes('owner') ||
+                         bodyText.toLowerCase().includes('type') ||
+                         bodyText.toLowerCase().includes('details');
+      expect(hasDetails).toBeTruthy();
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const confirmBtn = page.locator('button[type="submit"]:has-text("delete"), button:has-text("Yes")');
+      await expect(confirmBtn.first()).toBeVisible();
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
+      const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
+      await expect(cancelBtn.first()).toBeVisible();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/delete.*zone|zone.*delete/i);
-      }
-    });
+      const csrfToken = page.locator('input[name="_token"]');
+      await expect(csrfToken).toHaveCount(1);
 
-    test('should display zone details card', async ({ adminPage: page }) => {
-      await page.goto('/zones/forward?letter=all');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const bodyText = await page.locator('body').textContent();
-        const hasDetails = bodyText.toLowerCase().includes('owner') ||
-                           bodyText.toLowerCase().includes('type') ||
-                           bodyText.toLowerCase().includes('details');
-        expect(hasDetails).toBeTruthy();
-      }
-    });
-
-    test('should have confirm delete button', async ({ adminPage: page }) => {
-      await page.goto('/zones/forward?letter=all');
-      await page.waitForLoadState('networkidle');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-        await page.waitForLoadState('networkidle');
-
-        const confirmBtn = page.locator('button[type="submit"]:has-text("delete"), button:has-text("Yes")');
-        const hasConfirmBtn = await confirmBtn.count() > 0;
-        expect(hasConfirmBtn).toBeTruthy();
-      } else {
-        // No zones to delete, test passes
-        expect(true).toBeTruthy();
-      }
-    });
-
-    test('should have cancel button', async ({ adminPage: page }) => {
-      await page.goto('/zones/forward?letter=all');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
-        const hasCancelBtn = await cancelBtn.count() > 0;
-        expect(hasCancelBtn).toBeTruthy();
-      }
-    });
-
-    test('should include CSRF token', async ({ adminPage: page }) => {
-      await page.goto('/zones/forward?letter=all');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-        await page.waitForLoadState('networkidle');
-
-        const csrfToken = page.locator('input[name="_token"]');
-        const hasToken = await csrfToken.count() > 0;
-        expect(hasToken).toBeTruthy();
-      }
-    });
-
-    test('should display breadcrumb navigation', async ({ adminPage: page }) => {
-      await page.goto('/zones/forward?letter=all');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const breadcrumb = page.locator('nav[aria-label="breadcrumb"]');
-        await expect(breadcrumb).toBeVisible();
-      }
+      await expect(page.locator('nav[aria-label="breadcrumb"]')).toBeVisible();
     });
 
     test('cancel should return to zones list', async ({ adminPage: page }) => {
       await page.goto('/zones/forward?letter=all');
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const deleteLinks = page.locator('table a[href*="/delete"]');
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
+      await expect(deleteLinks.first()).toBeVisible();
+      await deleteLinks.first().click();
 
-        const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
-        if (await cancelBtn.count() > 0) {
-          await cancelBtn.first().click();
+      const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
+      if (await cancelBtn.count() > 0) {
+        await cancelBtn.first().click();
 
-          // Should return to zones list
-          await expect(page).toHaveURL(/.*\/zones\/(forward|reverse)/);
-        }
+        // Should return to zones list
+        await expect(page).toHaveURL(/.*\/zones\/(forward|reverse)/);
       }
     });
   });
@@ -166,123 +92,41 @@ test.describe('Zone Delete Confirmation', () => {
 
 test.describe('User Delete Confirmation', () => {
   test.describe('User Delete Page', () => {
-    test('should display warning alert', async ({ adminPage: page }) => {
+    test('should render the user delete confirmation page', async ({ adminPage: page }) => {
       await page.goto('/users');
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const deleteLinks = page.locator('table a[href*="/delete"]');
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
+      await expect(deleteLinks.first()).toBeVisible();
+      await deleteLinks.first().click();
 
-        const warningAlert = page.locator('.alert-danger, .alert-warning');
-        const hasWarning = await warningAlert.count() > 0;
-        expect(hasWarning || page.url().includes('/delete')).toBeTruthy();
-      }
-    });
+      // Auto-retrying assertion first so the click navigation settles
+      await expect(page.locator('body')).toContainText(/delete.*user|user/i);
 
-    test('should display user name being deleted', async ({ adminPage: page }) => {
-      await page.goto('/users');
+      const warningAlert = page.locator('.alert-danger, .alert-warning');
+      await expect(warningAlert.first()).toBeVisible();
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const bodyText = await page.locator('body').textContent();
+      // Zone ownership transfer options - may or may not have zones, displays either way
+      const hasContent = bodyText.toLowerCase().includes('zone') ||
+                         bodyText.toLowerCase().includes('user') ||
+                         bodyText.toLowerCase().includes('delete');
+      expect(hasContent).toBeTruthy();
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
+      // Form with radio buttons for zone handling options
+      expect(await page.locator('form').count() > 0 || page.url().includes('/delete')).toBeTruthy();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/delete.*user|user/i);
-      }
-    });
+      // Dropdown for new owner selection may be present
+      expect(await page.locator('select').count() >= 0 || bodyText.length > 0).toBeTruthy();
 
-    test('should show zone ownership transfer options when user owns zones', async ({ adminPage: page }) => {
-      await page.goto('/users');
+      // Should explain options or just show delete form
+      expect(bodyText.length).toBeGreaterThan(0);
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const confirmBtn = page.locator('button[type="submit"], button:has-text("delete")');
+      await expect(confirmBtn.first()).toBeAttached();
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const bodyText = await page.locator('body').textContent();
-
-        // May or may not have zones, but should display either way
-        const hasContent = bodyText.toLowerCase().includes('zone') ||
-                           bodyText.toLowerCase().includes('user') ||
-                           bodyText.toLowerCase().includes('delete');
-        expect(hasContent).toBeTruthy();
-      }
-    });
-
-    test('should have radio buttons for zone handling options', async ({ adminPage: page }) => {
-      await page.goto('/users');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        // Check for radio buttons or form elements
-        const formElements = page.locator('form');
-
-        const hasForm = await formElements.count() > 0;
-        expect(hasForm || page.url().includes('/delete')).toBeTruthy();
-      }
-    });
-
-    test('should have dropdown for new owner selection', async ({ adminPage: page }) => {
-      await page.goto('/users');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        // May have select dropdown for owner transfer
-        const selects = page.locator('select');
-        const bodyText = await page.locator('body').textContent();
-
-        expect(await selects.count() >= 0 || bodyText.length > 0).toBeTruthy();
-      }
-    });
-
-    test('should explain zone handling options', async ({ adminPage: page }) => {
-      await page.goto('/users');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const bodyText = await page.locator('body').textContent();
-        // Should explain options or just show delete form
-        expect(bodyText.length).toBeGreaterThan(0);
-      }
-    });
-
-    test('should have confirm delete button', async ({ adminPage: page }) => {
-      await page.goto('/users');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const confirmBtn = page.locator('button[type="submit"], button:has-text("delete")');
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(confirmBtn.first()).toBeAttached();
-      }
-    });
-
-    test('should have cancel button linking to users list', async ({ adminPage: page }) => {
-      await page.goto('/users');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const cancelBtn = page.locator('a[href*="/users"]:has-text("No"), a:has-text("keep")');
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(cancelBtn.first()).toBeAttached();
-      }
+      const cancelBtn = page.locator('a[href*="/users"]:has-text("No"), a:has-text("keep")');
+      await expect(cancelBtn.first()).toBeAttached();
     });
   });
 });
@@ -370,77 +214,42 @@ test.describe('Record Delete Confirmation', () => {
 
 test.describe('Supermaster Delete Confirmation', () => {
   test.describe('Supermaster Delete Page', () => {
-    test('should display warning alert', async ({ adminPage: page }) => {
+    test('should render the supermaster delete confirmation page', async ({ adminPage: page }) => {
       await page.goto('/supermasters');
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const deleteLinks = page.locator('table a[href*="/delete"]');
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
+      await expect(deleteLinks.first()).toBeVisible();
+      await deleteLinks.first().click();
 
-        const warningAlert = page.locator('.alert-danger');
-        const hasWarning = await warningAlert.count() > 0;
-        expect(hasWarning || page.url().includes('/delete')).toBeTruthy();
-      }
-    });
+      // Auto-retrying assertion first so the click navigation settles
+      await expect(page.locator('body')).toContainText(/supermaster|delete|ip/i);
 
-    test('should display supermaster IP being deleted', async ({ adminPage: page }) => {
-      await page.goto('/supermasters');
+      const warningAlert = page.locator('.alert-danger');
+      await expect(warningAlert.first()).toBeVisible();
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const bodyText = await page.locator('body').textContent();
+      const hasDetails = bodyText.toLowerCase().includes('hostname') ||
+                         bodyText.toLowerCase().includes('ns') ||
+                         bodyText.toLowerCase().includes('account');
+      expect(hasDetails || page.url().includes('/delete')).toBeTruthy();
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/supermaster|delete|ip/i);
-      }
-    });
-
-    test('should display supermaster details card', async ({ adminPage: page }) => {
-      await page.goto('/supermasters');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const bodyText = await page.locator('body').textContent();
-        const hasDetails = bodyText.toLowerCase().includes('hostname') ||
-                           bodyText.toLowerCase().includes('ns') ||
-                           bodyText.toLowerCase().includes('account');
-        expect(hasDetails || page.url().includes('/delete')).toBeTruthy();
-      }
-    });
-
-    test('should have confirm and cancel buttons', async ({ adminPage: page }) => {
-      await page.goto('/supermasters');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const buttons = page.locator('a.btn');
-        const hasButtons = await buttons.count() > 0;
-        expect(hasButtons).toBeTruthy();
-      }
+      await expect(page.locator('a.btn').first()).toBeVisible();
     });
 
     test('cancel should return to supermasters list', async ({ adminPage: page }) => {
       await page.goto('/supermasters');
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const deleteLinks = page.locator('table a[href*="/delete"]');
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
+      await expect(deleteLinks.first()).toBeVisible();
+      await deleteLinks.first().click();
 
-        const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
-        if (await cancelBtn.count() > 0) {
-          await cancelBtn.first().click();
+      const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
+      if (await cancelBtn.count() > 0) {
+        await cancelBtn.first().click();
 
-          await expect(page).toHaveURL(/.*\/supermasters/);
-        }
+        await expect(page).toHaveURL(/.*\/supermasters/);
       }
     });
   });
@@ -448,75 +257,40 @@ test.describe('Supermaster Delete Confirmation', () => {
 
 test.describe('Zone Template Delete Confirmation', () => {
   test.describe('Zone Template Delete Page', () => {
-    test('should display warning alert', async ({ adminPage: page }) => {
+    test('should render the zone template delete confirmation page', async ({ adminPage: page }) => {
       await page.goto('/zones/templates');
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const deleteLinks = page.locator('table a[href*="/delete"]');
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
+      await expect(deleteLinks.first()).toBeVisible();
+      await deleteLinks.first().click();
 
-        const warningAlert = page.locator('.alert-danger');
-        const hasWarning = await warningAlert.count() > 0;
-        expect(hasWarning || page.url().includes('/delete')).toBeTruthy();
-      }
-    });
+      // Auto-retrying assertion first so the click navigation settles
+      await expect(page.locator('body')).toContainText(/template|delete/i);
 
-    test('should display template name being deleted', async ({ adminPage: page }) => {
-      await page.goto('/zones/templates');
+      const warningAlert = page.locator('.alert-danger');
+      await expect(warningAlert.first()).toBeVisible();
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      // May or may not show warning depending on template usage
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText.length).toBeGreaterThan(0);
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/template|delete/i);
-      }
-    });
-
-    test('should show warning if template is used by zones', async ({ adminPage: page }) => {
-      await page.goto('/zones/templates');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        // May or may not show warning depending on template usage
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.length).toBeGreaterThan(0);
-      }
-    });
-
-    test('should have confirm and cancel buttons', async ({ adminPage: page }) => {
-      await page.goto('/zones/templates');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const buttons = page.locator('a.btn');
-        const hasButtons = await buttons.count() > 0;
-        expect(hasButtons).toBeTruthy();
-      }
+      await expect(page.locator('a.btn').first()).toBeVisible();
     });
 
     test('cancel should return to templates list', async ({ adminPage: page }) => {
       await page.goto('/zones/templates');
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const deleteLinks = page.locator('table a[href*="/delete"]');
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
+      await expect(deleteLinks.first()).toBeVisible();
+      await deleteLinks.first().click();
 
-        const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
-        if (await cancelBtn.count() > 0) {
-          await cancelBtn.first().click();
+      const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
+      if (await cancelBtn.count() > 0) {
+        await cancelBtn.first().click();
 
-          await expect(page).toHaveURL(/.*\/zones\/templates/);
-        }
+        await expect(page).toHaveURL(/.*\/zones\/templates/);
       }
     });
   });
@@ -524,75 +298,40 @@ test.describe('Zone Template Delete Confirmation', () => {
 
 test.describe('Permission Template Delete Confirmation', () => {
   test.describe('Permission Template Delete Page', () => {
-    test('should display warning alert', async ({ adminPage: page }) => {
+    test('should render the permission template delete confirmation page', async ({ adminPage: page }) => {
       await page.goto('/permissions/templates');
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const deleteLinks = page.locator('table a[href*="/delete"]');
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
+      await expect(deleteLinks.first()).toBeVisible();
+      await deleteLinks.first().click();
 
-        const warningAlert = page.locator('.alert-danger');
-        const hasWarning = await warningAlert.count() > 0;
-        expect(hasWarning || page.url().includes('/delete')).toBeTruthy();
-      }
-    });
+      // Auto-retrying assertion first so the click navigation settles
+      await expect(page.locator('body')).toContainText(/permission.*template|template|delete/i);
 
-    test('should display template name being deleted', async ({ adminPage: page }) => {
-      await page.goto('/permissions/templates');
+      const warningAlert = page.locator('.alert-danger');
+      await expect(warningAlert.first()).toBeVisible();
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      // May or may not show warning depending on template usage
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText.length).toBeGreaterThan(0);
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/permission.*template|template|delete/i);
-      }
-    });
-
-    test('should show warning if template is assigned to users', async ({ adminPage: page }) => {
-      await page.goto('/permissions/templates');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        // May or may not show warning depending on template usage
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.length).toBeGreaterThan(0);
-      }
-    });
-
-    test('should have confirm and cancel buttons', async ({ adminPage: page }) => {
-      await page.goto('/permissions/templates');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const buttons = page.locator('a.btn');
-        const hasButtons = await buttons.count() > 0;
-        expect(hasButtons).toBeTruthy();
-      }
+      await expect(page.locator('a.btn').first()).toBeVisible();
     });
 
     test('cancel should return to permission templates list', async ({ adminPage: page }) => {
       await page.goto('/permissions/templates');
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const deleteLinks = page.locator('table a[href*="/delete"]');
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
+      await expect(deleteLinks.first()).toBeVisible();
+      await deleteLinks.first().click();
 
-        const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
-        if (await cancelBtn.count() > 0) {
-          await cancelBtn.first().click();
+      const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
+      if (await cancelBtn.count() > 0) {
+        await cancelBtn.first().click();
 
-          await expect(page).toHaveURL(/.*\/permissions\/templates/);
-        }
+        await expect(page).toHaveURL(/.*\/permissions\/templates/);
       }
     });
   });
@@ -600,59 +339,19 @@ test.describe('Permission Template Delete Confirmation', () => {
 
 test.describe('Common Delete Confirmation Elements', () => {
   test.describe('UI Consistency', () => {
-    test('delete pages should use danger button styling', async ({ adminPage: page }) => {
+    test('delete pages should use consistent styling and icons', async ({ adminPage: page }) => {
       await page.goto('/zones/forward?letter=all');
 
-      const deleteLinks = page.locator('a[href*="/delete"]');
+      const deleteLinks = page.locator('table a[href*="/delete"]');
 
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
+      await expect(deleteLinks.first()).toBeVisible();
+      await deleteLinks.first().click();
 
-        const dangerBtn = page.locator('.btn-danger');
-        const hasDangerBtn = await dangerBtn.count() > 0;
-        expect(hasDangerBtn).toBeTruthy();
-      }
-    });
-
-    test('cancel buttons should use secondary styling', async ({ adminPage: page }) => {
-      await page.goto('/zones/forward?letter=all');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('.btn-secondary').first()).toBeAttached();
-      }
-    });
-
-    test('delete pages should have trash icon', async ({ adminPage: page }) => {
-      await page.goto('/zones/forward?letter=all');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const trashIcon = page.locator('.bi-trash, .bi-trash-fill');
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(trashIcon.first()).toBeAttached();
-      }
-    });
-
-    test('warning alerts should have exclamation icon', async ({ adminPage: page }) => {
-      await page.goto('/zones/forward?letter=all');
-
-      const deleteLinks = page.locator('a[href*="/delete"]');
-
-      if (await deleteLinks.count() > 0) {
-        await deleteLinks.first().click();
-
-        const exclamationIcon = page.locator('.bi-exclamation-triangle, .bi-exclamation-triangle-fill');
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(exclamationIcon.first()).toBeAttached();
-      }
+      // Auto-retrying assertion first so the click navigation settles
+      await expect(page.locator('.btn-danger').first()).toBeVisible();
+      await expect(page.locator('.btn-secondary').first()).toBeAttached();
+      await expect(page.locator('.bi-trash, .bi-trash-fill').first()).toBeAttached();
+      await expect(page.locator('.bi-exclamation-triangle, .bi-exclamation-triangle-fill').first()).toBeAttached();
     });
   });
 

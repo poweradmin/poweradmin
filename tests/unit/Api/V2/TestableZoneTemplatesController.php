@@ -49,6 +49,11 @@ class TestableZoneTemplatesController extends ZoneTemplatesController
     {
         try {
             $userId = $this->getAuthenticatedUserId();
+
+            if (!$this->testApiPermissionService->canViewZoneTemplates($userId)) {
+                return $this->returnApiError('You do not have permission to view zone templates', 403);
+            }
+
             $isUeberuser = $this->testApiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
 
             $templates = $this->testRepository->listZoneTemplates($userId, $isUeberuser);
@@ -74,6 +79,11 @@ class TestableZoneTemplatesController extends ZoneTemplatesController
     {
         try {
             $userId = $this->getAuthenticatedUserId();
+
+            if (!$this->testApiPermissionService->canViewZoneTemplates($userId)) {
+                return $this->returnApiError('You do not have permission to view zone templates', 403);
+            }
+
             $isUeberuser = $this->testApiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
 
             $id = (int)$this->pathParameters['id'];
@@ -90,16 +100,7 @@ class TestableZoneTemplatesController extends ZoneTemplatesController
 
             $records = $this->testRepository->getZoneTemplateRecords($id);
 
-            $formattedRecords = array_map(function (array $record): array {
-                return [
-                    'id' => (int)$record['id'],
-                    'name' => $record['name'],
-                    'type' => $record['type'],
-                    'content' => $record['content'],
-                    'ttl' => (int)$record['ttl'],
-                    'priority' => (int)$record['prio'],
-                ];
-            }, $records);
+            $formattedRecords = array_map([$this, 'formatTemplateRecord'], $records);
 
             return $this->returnApiResponse(['template' => [
                 'id' => (int)$template['id'],

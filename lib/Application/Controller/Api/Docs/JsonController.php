@@ -40,7 +40,6 @@ use Symfony\Component\HttpFoundation\Response;
  * Class JsonController
  *
  * This controller serves the OpenAPI JSON specification generated from annotations.
- * Supports both V1 and V2 API versions.
  */
 class JsonController extends BaseController
 {
@@ -60,12 +59,18 @@ class JsonController extends BaseController
     }
 
     /**
-     * Run the controller
+     * The spec is read-only and is reachable without a session.
      */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
-        // Check if API documentation is enabled
-        if (!$this->config->get('api', 'docs_enabled')) {
+        // Documentation describes the API, so it follows the API being enabled
+        // at all - not just its own toggle.
+        if (!$this->config->get('api', 'enabled', false) || !$this->config->get('api', 'docs_enabled', false)) {
             $response = new Response();
             $response->setStatusCode(404);
             $response->headers->set('Content-Type', 'application/json');
@@ -84,7 +89,7 @@ class JsonController extends BaseController
         try {
             // Generate OpenAPI specification from annotations
             // Current path: /lib/Application/Controller/Api/Docs/JsonController.php
-            // Target path: /lib/Application/Controller/Api/V1/ or V2/
+            // Target path: /lib/Application/Controller/Api/V2/
             $scanPath = dirname(dirname(__FILE__)) . '/' . $version;
 
             if (!is_dir($scanPath)) {
@@ -104,7 +109,7 @@ class JsonController extends BaseController
             }
 
             // Update version info in the spec
-            $decoded['info']['version'] = $version === 'V1' ? '1.0.0' : '2.0.0';
+            $decoded['info']['version'] = '2.0.0';
             $decoded['info']['title'] = 'Poweradmin API ' . $version;
 
             // Set response headers

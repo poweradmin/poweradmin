@@ -1,18 +1,14 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-    <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/mfa/setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
-    <li class="breadcrumb-item" aria-current="page">{% trans %}Set Up Authenticator App{% endtrans %}</li>
-  </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Multi-Factor Authentication'|trans, url: base_url_prefix ~ '/mfa/setup'},
+    {label: 'Set Up Authenticator App'|trans},
+]) }}
 
 <div class="container-fluid">
   <div class="row justify-content-center">
     <div class="col-lg-8">
       <div class="card">
-        <div class="card-header py-3">
-          <strong><i class="bi bi-qr-code me-2"></i>{% trans %}Set Up Authenticator App{% endtrans %}</strong>
-        </div>
+        {{ macros.card_header('bi-qr-code', 'Set Up Authenticator App'|trans) }}
         <div class="card-body">
           <div class="row">
             <div class="col-md-6">
@@ -37,7 +33,7 @@
               <p class="small">{% trans %}Enter the 6-digit code from your authenticator app{% endtrans %}</p>
               
               <form method="post" action="{{ base_url_prefix }}/mfa/setup" class="needs-validation" novalidate>
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                {{ macros.csrf_field() }}
                 
                 <div class="mb-3">
                   <label for="verification_code" class="form-label small">{% trans %}Verification Code{% endtrans %}</label>

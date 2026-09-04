@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\EditZoneMetadataController;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use ReflectionClass;
@@ -92,7 +93,7 @@ class EditZoneMetadataControllerTest extends TestCase
             ],
         ]);
         $this->setProperty($controller, 'powerDnsVersion', '4.8.3');
-        $this->setProperty($controller, 'apiClient', $this->createMock(\Poweradmin\Infrastructure\Api\PowerdnsApiClient::class));
+        $this->setProperty($controller, 'apiClient', $this->createMock(PowerdnsApiClient::class));
 
         $definitions = $this->invokePrivateMethod($controller, 'getMetadataDefinitionsForTemplate');
         $byKind = [];
@@ -128,7 +129,7 @@ class EditZoneMetadataControllerTest extends TestCase
         // version-gated kinds entirely so admins don't pick options the
         // server might reject.
         $this->setProperty($controller, 'powerDnsVersion', '');
-        $this->setProperty($controller, 'apiClient', $this->createMock(\Poweradmin\Infrastructure\Api\PowerdnsApiClient::class));
+        $this->setProperty($controller, 'apiClient', $this->createMock(PowerdnsApiClient::class));
 
         $definitions = $this->invokePrivateMethod($controller, 'getMetadataDefinitionsForTemplate');
         $kinds = array_column($definitions, 'kind');
@@ -139,6 +140,144 @@ class EditZoneMetadataControllerTest extends TestCase
         // unknown server versions - they have always been supported.
         $this->assertContains('API-RECTIFY', $kinds);
         $this->assertContains('SOA-EDIT', $kinds);
+    }
+
+    public function testMetadataDefinitionsHideKindWhoseOptionsAreDisabledByConfig(): void
+    {
+        $controller = $this->createControllerWithConfig([
+            'dns' => ['soa_edit_api_options' => []],
+        ]);
+
+        $definitions = $this->invokePrivateMethod($controller, 'getMetadataDefinitionsForTemplate');
+        $byKind = array_column($definitions, null, 'kind');
+
+        $this->assertArrayNotHasKey('SOA-EDIT-API', $byKind);
+        $this->assertArrayNotHasKey('SOA-EDIT-DNSUPDATE', $byKind);
+        // SOA-EDIT has its own config key and stays visible with full options
+        $this->assertArrayHasKey('SOA-EDIT', $byKind);
+        $this->assertNotEmpty($byKind['SOA-EDIT']['options']);
+    }
+
+    public function testMetadataDefinitionsNarrowOptionsByConfigList(): void
+    {
+        $controller = $this->createControllerWithConfig([
+            'dns' => ['soa_edit_api_options' => ['EPOCH', 'DEFAULT']],
+        ]);
+
+        $definitions = $this->invokePrivateMethod($controller, 'getMetadataDefinitionsForTemplate');
+        $byKind = array_column($definitions, null, 'kind');
+
+        $this->assertSame(['DEFAULT', 'EPOCH'], $byKind['SOA-EDIT-API']['options']);
+    }
+
+    public function testExistingRowOfHiddenKindRendersThroughCustomPathToSurviveSubmission(): void
+    {
+        // A row whose kind is not in the kind dropdown would otherwise submit
+        // a different kind and silently rewrite the stored policy.
+        $controller = $this->createControllerWithConfig([
+            'dns' => ['soa_edit_api_options' => []],
+        ]);
+
+        $rows = $this->invokePrivateMethod($controller, 'prepareRowsForTemplate', [
+            [['kind' => 'SOA-EDIT-API', 'content' => 'EPOCH']],
+            ['SOA-EDIT', 'ALLOW-AXFR-FROM'],
+        ]);
+
+        $this->assertSame('__CUSTOM__', $rows[0]['kind_key']);
+        $this->assertSame('SOA-EDIT-API', $rows[0]['custom_kind']);
+    }
+
+    public function testValidateMetadataRowsRejectsValueOutsideOptionsList(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+
+        $errors = $this->invokePrivateMethod($controller, 'validateMetadataRows', [[
+            ['kind' => 'SOA-EDIT-API', 'content' => 'BOGUS'],
+        ]]);
+
+        $this->assertCount(1, $errors);
+        $this->assertStringContainsString('SOA-EDIT-API', $errors[0]);
+    }
+
+    public function testValidateMetadataRowsAcceptsListedOptionAndFreeFormKinds(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+
+        $errors = $this->invokePrivateMethod($controller, 'validateMetadataRows', [[
+            ['kind' => 'SOA-EDIT-API', 'content' => 'EPOCH'],
+            ['kind' => 'SOA-EDIT', 'content' => 'INCEPTION-INCREMENT'],
+            ['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'],
+        ]]);
+
+        $this->assertSame([], $errors);
+    }
+
+    public function testSaveMetadataViaApiRoutesSerialPoliciesThroughZoneProperties(): void
+    {
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([]);
+        // One lookup covers every zone-object kind absent from the form.
+        $apiClient->expects($this->once())->method('getZone')->willReturn([]);
+        $apiClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('example.com', ['soa_edit_api' => 'EPOCH', 'soa_edit' => 'INCEPTION-INCREMENT'])
+            ->willReturn(true);
+        $apiClient->expects($this->once())
+            ->method('updateZoneMetadata')
+            ->willReturn(true);
+
+        $controller = $this->createControllerWithConfig([]);
+        $this->setProperty($controller, 'apiClient', $apiClient);
+
+        $result = $this->invokePrivateMethod($controller, 'saveMetadataViaApi', ['example.com', [
+            ['kind' => 'SOA-EDIT-API', 'content' => 'EPOCH'],
+            ['kind' => 'SOA-EDIT', 'content' => 'INCEPTION-INCREMENT'],
+            ['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'],
+        ]]);
+
+        $this->assertTrue($result['success']);
+    }
+
+    public function testSaveMetadataViaApiClearsRemovedSerialPolicies(): void
+    {
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([]);
+        $apiClient->expects($this->once())
+            ->method('getZone')
+            ->with('example.com')
+            ->willReturn(['soa_edit_api' => 'DEFAULT', 'soa_edit' => 'EPOCH']);
+        $apiClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('example.com', ['soa_edit_api' => '', 'soa_edit' => ''])
+            ->willReturn(true);
+
+        $controller = $this->createControllerWithConfig([]);
+        $this->setProperty($controller, 'apiClient', $apiClient);
+
+        $result = $this->invokePrivateMethod($controller, 'saveMetadataViaApi', ['example.com', []]);
+
+        $this->assertTrue($result['success']);
+    }
+
+    public function testLoadMetadataViaApiDoesNotDuplicateZonePropertyKinds(): void
+    {
+        // PowerDNS lists SOA-EDIT-API/SOA-EDIT in /metadata AND on the zone
+        // object; the editor must show each policy only once.
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([
+            ['kind' => 'SOA-EDIT-API', 'metadata' => ['EPOCH']],
+            ['kind' => 'ALLOW-AXFR-FROM', 'metadata' => ['192.0.2.10']],
+        ]);
+        $apiClient->method('getZone')->willReturn(['soa_edit_api' => 'EPOCH']);
+
+        $controller = $this->createControllerWithConfig([]);
+        $this->setProperty($controller, 'apiClient', $apiClient);
+
+        $rows = $this->invokePrivateMethod($controller, 'loadMetadataViaApi', ['example.com']);
+        $kinds = array_count_values(array_column($rows, 'kind'));
+
+        $this->assertSame(1, $kinds['SOA-EDIT-API']);
+        $this->assertSame(1, $kinds['ALLOW-AXFR-FROM']);
     }
 
     public function testLoadMetadataReadsFromSqlEvenWhenApiConfigurationExists(): void
@@ -169,49 +308,176 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertSame($expectedRows, $rows);
     }
 
-    public function testLoadMetadataViaApiReturnsSoaEditApiOnlyOnce(): void
+    public function testSaveMetadataViaApiRoutesZoneObjectKindsWithTheirJsonType(): void
     {
-        // PowerDNS reports SOA-EDIT-API both in /metadata and on the zone
-        // object; only the zone object copy may become a row.
-        $apiClient = $this->createMock(\Poweradmin\Infrastructure\Api\PowerdnsApiClient::class);
-        $apiClient->method('getZoneMetadata')->willReturn([
-            ['kind' => 'SOA-EDIT-API', 'metadata' => ['DEFAULT']],
-            ['kind' => 'ALLOW-AXFR-FROM', 'metadata' => ['192.0.2.10']],
-        ]);
-        $apiClient->method('getZone')->willReturn(['soa_edit_api' => 'DEFAULT']);
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([]);
+        $apiClient->method('getZone')->willReturn([]);
+        $apiClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('example.com', [
+                'api_rectify' => true,
+                'nsec3param' => '1 0 0 -',
+                'nsec3narrow' => true,
+            ])
+            ->willReturn(true);
 
-        $controller = $this->controllerReflection->newInstanceWithoutConstructor();
+        $controller = $this->createControllerWithConfig([]);
+        $this->setProperty($controller, 'apiClient', $apiClient);
+
+        $result = $this->invokePrivateMethod($controller, 'saveMetadataViaApi', ['example.com', [
+            ['kind' => 'API-RECTIFY', 'content' => '1'],
+            ['kind' => 'NSEC3PARAM', 'content' => '1 0 0 -'],
+            ['kind' => 'NSEC3NARROW', 'content' => '1'],
+        ]]);
+
+        $this->assertTrue($result['success']);
+    }
+
+    public function testValidateMetadataRowsRejectsNsec3NarrowWithoutNsec3Param(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+
+        $errors = $this->invokePrivateMethod($controller, 'validateMetadataRows', [[
+            ['kind' => 'NSEC3NARROW', 'content' => '1'],
+        ]]);
+        $this->assertCount(1, $errors);
+        $this->assertStringContainsString('NSEC3PARAM', $errors[0]);
+
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'validateMetadataRows', [[
+            ['kind' => 'NSEC3NARROW', 'content' => '1'],
+            ['kind' => 'NSEC3PARAM', 'content' => '1 0 0 -'],
+        ]]));
+
+        // Turning narrow mode off needs no companion row.
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'validateMetadataRows', [[
+            ['kind' => 'NSEC3NARROW', 'content' => '0'],
+        ]]));
+    }
+
+    public function testLoadMetadataViaApiSourcesZoneObjectKindsOnlyFromTheZone(): void
+    {
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([
+            ['kind' => 'NSEC3PARAM', 'metadata' => ['1 0 0 -']],
+            ['kind' => 'API-RECTIFY', 'metadata' => ['1']],
+        ]);
+        $apiClient->method('getZone')->willReturn([
+            'nsec3param' => '1 0 5 ab',
+            'nsec3narrow' => true,
+            'api_rectify' => false,
+        ]);
+
+        $controller = $this->createControllerWithConfig([]);
         $this->setProperty($controller, 'apiClient', $apiClient);
 
         $rows = $this->invokePrivateMethod($controller, 'loadMetadataViaApi', ['example.com']);
+        $byKind = [];
+        foreach ($rows as $row) {
+            $byKind[$row['kind']][] = $row['content'];
+        }
 
-        $soaEditApiRows = array_filter($rows, fn($row) => $row['kind'] === 'SOA-EDIT-API');
-        $this->assertCount(1, $soaEditApiRows);
-        $this->assertContains(['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'], $rows);
+        $this->assertSame(['1 0 5 ab'], $byKind['NSEC3PARAM']);
+        $this->assertSame(['1'], $byKind['NSEC3NARROW']);
+        // api_rectify is false on the zone object, so the stale /metadata row
+        // must not resurface it.
+        $this->assertArrayNotHasKey('API-RECTIFY', $byKind);
     }
 
-    public function testValidateMetadataRowsAcceptsMultipleTsigAllowDnsupdateValues(): void
+    public function testRestrictedKindViolationsRejectChangesTheApiCannotStore(): void
+    {
+        [$controller] = $this->controllerWithApi();
+
+        $errors = $this->invokePrivateMethod($controller, 'restrictedKindViolations', [
+            ['CATALOG-HASH', 'PRESIGNED', 'BILLING-REF'],
+        ]);
+
+        $joined = implode(' ', $errors);
+        $this->assertCount(3, $errors);
+        $this->assertStringContainsString('CATALOG-HASH', $joined);
+        $this->assertStringContainsString('PRESIGNED', $joined);
+        $this->assertStringContainsString('BILLING-REF', $joined);
+    }
+
+    public function testRestrictedKindViolationsAllowKindsTheApiCanStore(): void
+    {
+        [$controller] = $this->controllerWithApi();
+
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'restrictedKindViolations', [
+            ['ALLOW-AXFR-FROM', 'SOA-EDIT', 'NSEC3PARAM', 'X-BILLING-REF'],
+        ]));
+    }
+
+    public function testRestrictedKindViolationsOnSqlBackendOnlyBlockServerManagedKinds(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'restrictedKindViolations', [
+            ['PRESIGNED', 'BILLING-REF'],
+        ]));
+        $this->assertCount(1, $this->invokePrivateMethod($controller, 'restrictedKindViolations', [
+            ['CATALOG-HASH'],
+        ]));
+    }
+
+    public function testChangedKindsIgnoresReorderedValues(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'changedKinds', [
+            [
+                ['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.20'],
+                ['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'],
+            ],
+            [
+                ['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'],
+                ['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.20'],
+            ],
+        ]));
+    }
+
+    public function testSaveMetadataViaApiNeverWritesServerManagedKinds(): void
+    {
+        [$controller, $apiClient] = $this->controllerWithApi([
+            ['kind' => 'CATALOG-HASH', 'metadata' => ['server-value']],
+        ]);
+        $apiClient->expects($this->never())->method('updateZoneMetadata');
+        $apiClient->expects($this->never())->method('deleteZoneMetadata');
+
+        $result = $this->invokePrivateMethod($controller, 'saveMetadataViaApi', ['example.com', [
+            ['kind' => 'CATALOG-HASH', 'content' => 'server-value'],
+        ]]);
+
+        $this->assertTrue($result['success']);
+    }
+
+    public function testValidateMetadataRowsAcceptsRepeatedMultiValueKinds(): void
     {
         $controller = $this->createControllerWithConfig([]);
 
         $errors = $this->invokePrivateMethod($controller, 'validateMetadataRows', [[
             ['kind' => 'TSIG-ALLOW-DNSUPDATE', 'content' => 'key-one'],
             ['kind' => 'TSIG-ALLOW-DNSUPDATE', 'content' => 'key-two'],
+            ['kind' => 'PUBLISH-CDS', 'content' => '2'],
+            ['kind' => 'PUBLISH-CDS', 'content' => '4'],
         ]]);
 
         $this->assertSame([], $errors);
     }
 
-    public function testValidateMetadataRowsRejectsDuplicateSingleValueKind(): void
+    /**
+     * @return array{0: EditZoneMetadataController, 1: PowerdnsApiClient}
+     */
+    private function controllerWithApi(array $metadata = [], array $zone = []): array
     {
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn($metadata);
+        $apiClient->method('getZone')->willReturn($zone);
+
         $controller = $this->createControllerWithConfig([]);
+        $this->setProperty($controller, 'apiClient', $apiClient);
 
-        $errors = $this->invokePrivateMethod($controller, 'validateMetadataRows', [[
-            ['kind' => 'SOA-EDIT-API', 'content' => 'DEFAULT'],
-            ['kind' => 'SOA-EDIT-API', 'content' => 'INCREASE'],
-        ]]);
-
-        $this->assertCount(1, $errors);
+        return [$controller, $apiClient];
     }
 
     private function createControllerWithConfig(array $overrides): EditZoneMetadataController
@@ -274,10 +540,5 @@ class EditZoneMetadataControllerTest extends TestCase
         $property = $baseReflection->getProperty($propertyName);
         $property->setAccessible(true);
         $property->setValue($object, $value);
-    }
-
-    private function getProjectRoot(): string
-    {
-        return dirname(__DIR__, 4);
     }
 }

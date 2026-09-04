@@ -1,15 +1,11 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/groups">{% trans %}Groups{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Delete group{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Groups'|trans, url: base_url_prefix ~ '/groups'},
+    {label: 'Delete group'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete Group{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-trash', 'Delete group'|trans, 'text-danger') }}
     <div class="card-body">
         <div class="alert alert-danger bg-danger bg-opacity-10">
             <h5 class="alert-heading text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning{% endtrans %}</h5>
@@ -79,15 +75,10 @@
 
         <div class="mt-4">
             <form method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/delete" style="display: inline;">
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                {{ macros.csrf_field() }}
                 <input type="hidden" name="confirm" value="yes">
-                <button type="submit" class="btn btn-danger btn-sm">
-                    <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this group{% endtrans %}
-                </button>
+                {{ macros.delete_actions('Yes, delete this group'|trans, base_url_prefix ~ '/groups', 'No, keep this group'|trans) }}
             </form>
-            <a href="{{ base_url_prefix }}/groups" class="btn btn-secondary btn-sm">
-                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this group{% endtrans %}
-            </a>
         </div>
     </div>
 </div>

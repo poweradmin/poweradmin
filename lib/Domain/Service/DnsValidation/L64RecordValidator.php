@@ -75,7 +75,7 @@ class L64RecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the L64 record
      * @param string $name The name of the record
      * @param mixed $prio The priority (preference) value
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
      * @return ValidationResult Validation result with data or errors

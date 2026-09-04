@@ -25,20 +25,31 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class DeleteZoneTemplRecordController extends BaseController
 {
+    private Request $request;
+    private ZoneTemplate $zoneTemplate;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+        $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+    }
 
     public function run(): void
     {
@@ -54,20 +65,22 @@ class DeleteZoneTemplRecordController extends BaseController
         }
         $zone_templ_id = (int)$zone_templ_id_value;
 
-        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
+        $confirmed = $this->request->getPostParam('confirm') !== null;
+
+        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
+        $perm_godlike = $this->hasPermission('user_is_ueberuser');
+        $perm_templ_edit = $this->hasPermission('zone_templ_edit');
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to delete this record."));
 
-        if ($this->isPost()) {
-            $this->validateCsrfToken();
-
-            $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->createDnsBackendProvider());
-            if ($zoneTemplate->deleteZoneTemplRecord($record_id, $zone_templ_id)) {
+        if ($confirmed) {
+            if ($this->zoneTemplate->deleteZoneTemplRecord($record_id, $zone_templ_id)) {
                 // Mark template as modified to track sync status
                 $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
                 $syncService->markTemplateAsModified($zone_templ_id);
+
+                $auditService = new AuditService($this->db);
+                $auditService->logZoneTemplateRecordDelete($zone_templ_id, $record_id);
 
                 $this->setMessage('edit_zone_templ', 'success', _('The record has been deleted successfully.'));
                 $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
@@ -78,11 +91,10 @@ class DeleteZoneTemplRecordController extends BaseController
         }
 
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
-        $record_info = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id);
+        $record_info = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id, $zone_templ_id);
 
-        // The route authorises the template, not the record, so a record id from
-        // another template would otherwise be shown in the confirmation view.
-        if (!$record_info || (int)$record_info['zone_templ_id'] !== $zone_templ_id) {
+        // The lookup is scoped to the template, so a record id from another template comes back empty
+        if (!$record_info) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 

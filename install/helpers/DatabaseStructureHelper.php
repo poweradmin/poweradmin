@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -333,10 +333,13 @@ class DatabaseStructureHelper
                         'table' => 'zones',
                         'flags' => ''
                     ),
+                    // emit_default forces DEFAULT 0; 0 is the "no template" sentinel used by every INSERT path.
                     'zone_templ_id' => array
                     (
                         'notnull' => 1,
                         'unsigned' => 0,
+                        'default' => 0,
+                        'emit_default' => true,
                         'type' => 'integer',
                         'name' => 'zone_templ_id',
                         'table' => 'zones',
@@ -457,10 +460,12 @@ class DatabaseStructureHelper
                         'table' => 'zone_templ',
                         'flags' => ''
                     ),
+                    // emit_default forces DEFAULT 0; zone_templ INSERTs omit is_default, so a bare NOT NULL breaks MySQL-strict/SQLite.
                     'is_default' => array
                     (
                         'notnull' => 1,
                         'default' => 0,
+                        'emit_default' => true,
                         'type' => 'boolean',
                         'name' => 'is_default',
                         'table' => 'zone_templ',
@@ -519,7 +524,7 @@ class DatabaseStructureHelper
                     'type' => array
                     (
                         'notnull' => 1,
-                        'length' => 6,
+                        'length' => 10,
                         'fixed' => 0,
                         'default' => 0,
                         'type' => 'text',
@@ -620,6 +625,62 @@ class DatabaseStructureHelper
                         )
                     ),
                     'records_zone_templ_zone_templ_id_idx' => array(
+                        'fields' => array(
+                            'zone_templ_id' => array()
+                        )
+                    )
+                )
+            ),
+            array(
+                'table_name' => 'records_zone_templ_api',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'autoincrement' => 1,
+                        'type' => 'integer',
+                        'name' => 'id',
+                        'table' => 'records_zone_templ_api',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'domain_id' => array(
+                        'notnull' => 1,
+                        'fixed' => 0,
+                        'default' => 0,
+                        'type' => 'integer',
+                        'name' => 'domain_id',
+                        'table' => 'records_zone_templ_api',
+                        'flags' => 'not_null'
+                    ),
+                    'record_id' => array(
+                        'notnull' => 1,
+                        'fixed' => 0,
+                        'default' => '',
+                        'length' => 255,
+                        'type' => 'text',
+                        'name' => 'record_id',
+                        'table' => 'records_zone_templ_api',
+                        'flags' => 'not_null'
+                    ),
+                    'zone_templ_id' => array(
+                        'notnull' => 1,
+                        'fixed' => 0,
+                        'default' => 0,
+                        'type' => 'integer',
+                        'name' => 'zone_templ_id',
+                        'table' => 'records_zone_templ_api',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'records_zone_templ_api_domain_id_idx' => array(
+                        'fields' => array(
+                            'domain_id' => array()
+                        )
+                    ),
+                    'records_zone_templ_api_zone_templ_id_idx' => array(
                         'fields' => array(
                             'zone_templ_id' => array()
                         )
@@ -769,6 +830,13 @@ class DatabaseStructureHelper
                         'table' => 'log_api',
                         'flags' => ''
                     )
+                ),
+                'indexes' => array(
+                    'log_api_created_at_idx' => array(
+                        'fields' => array(
+                            'created_at' => array()
+                        )
+                    )
                 )
             ),
             array(
@@ -831,6 +899,192 @@ class DatabaseStructureHelper
                 )
             ),
             array(
+                'table_name' => 'log_changesets',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array
+                    (
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'autoincrement' => 1,
+                        'type' => 'integer',
+                        'name' => 'id',
+                        'table' => 'log_changesets',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'zone_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'zone_id',
+                        'table' => 'log_changesets',
+                        'flags' => ''
+                    ),
+                    'user_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'user_id',
+                        'table' => 'log_changesets',
+                        'flags' => ''
+                    ),
+                    'username' => array(
+                        'notnull' => 1,
+                        'length' => 64,
+                        'type' => 'text',
+                        'name' => 'username',
+                        'table' => 'log_changesets',
+                        'flags' => 'not_null'
+                    ),
+                    'comment' => array(
+                        'notnull' => 0,
+                        'type' => 'text',
+                        'name' => 'comment',
+                        'table' => 'log_changesets',
+                        'flags' => ''
+                    ),
+                    'client_ip' => array(
+                        'notnull' => 0,
+                        'length' => 64,
+                        'type' => 'text',
+                        'name' => 'client_ip',
+                        'table' => 'log_changesets',
+                        'flags' => ''
+                    ),
+                    'created_at' => array(
+                        'notnull' => 0,
+                        'default' => 'current_timestamp',
+                        'type' => 'timestamp',
+                        'name' => 'created_at',
+                        'table' => 'log_changesets',
+                        'flags' => ''
+                    )
+                ),
+            ),
+            array(
+                'table_name' => 'log_record_changes',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array
+                    (
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'autoincrement' => 1,
+                        'type' => 'integer',
+                        'name' => 'id',
+                        'table' => 'log_record_changes',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'zone_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'zone_id',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'changeset_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'changeset_id',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'record_id' => array(
+                        'notnull' => 0,
+                        'default' => null,
+                        'type' => 'text',
+                        'name' => 'record_id',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'action' => array(
+                        'notnull' => 1,
+                        'length' => 32,
+                        'type' => 'text',
+                        'name' => 'action',
+                        'table' => 'log_record_changes',
+                        'flags' => 'not_null'
+                    ),
+                    'user_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'user_id',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'username' => array(
+                        'notnull' => 1,
+                        'length' => 64,
+                        'type' => 'text',
+                        'name' => 'username',
+                        'table' => 'log_record_changes',
+                        'flags' => 'not_null'
+                    ),
+                    'before_state' => array(
+                        'notnull' => 0,
+                        'type' => 'text',
+                        'name' => 'before_state',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'after_state' => array(
+                        'notnull' => 0,
+                        'type' => 'text',
+                        'name' => 'after_state',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'client_ip' => array(
+                        'notnull' => 0,
+                        'length' => 64,
+                        'type' => 'text',
+                        'name' => 'client_ip',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    ),
+                    'created_at' => array(
+                        'notnull' => 0,
+                        'default' => 'current_timestamp',
+                        'type' => 'timestamp',
+                        'name' => 'created_at',
+                        'table' => 'log_record_changes',
+                        'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'log_record_changes_created_at_idx' => array(
+                        'fields' => array(
+                            'created_at' => array()
+                        )
+                    ),
+                    'log_record_changes_zone_id_idx' => array(
+                        'fields' => array(
+                            'zone_id' => array()
+                        )
+                    ),
+                    'log_record_changes_action_idx' => array(
+                        'fields' => array(
+                            'action' => array()
+                        )
+                    ),
+                    'log_record_changes_changeset_id_idx' => array(
+                        'fields' => array(
+                            'changeset_id' => array()
+                        )
+                    )
+                )
+            ),
+            array(
                 'table_name' => 'login_attempts',
                 'options' => array('type' => 'innodb'),
                 'fields' => array(
@@ -878,12 +1132,23 @@ class DatabaseStructureHelper
                         'name' => 'successful',
                         'table' => 'login_attempts',
                         'flags' => 'not_null'
+                    ),
+                    'attempt_type' => array(
+                        'notnull' => 1,
+                        'length' => 16,
+                        'fixed' => 0,
+                        'default' => 'password',
+                        'type' => 'text',
+                        'name' => 'attempt_type',
+                        'table' => 'login_attempts',
+                        'flags' => 'not_null'
                     )
                 ),
                 'indexes' => array(
                     'idx_login_attempts_user_id' => array('user_id'),
                     'idx_login_attempts_ip_address' => array('ip_address'),
-                    'idx_login_attempts_timestamp' => array('timestamp')
+                    'idx_login_attempts_timestamp' => array('timestamp'),
+                    'idx_login_attempts_attempt_type' => array('attempt_type')
                 ),
                 'foreign_keys' => array(
                     'fk_login_attempts_users' => array(
@@ -964,10 +1229,29 @@ class DatabaseStructureHelper
                         'name' => 'expires_at',
                         'table' => 'api_keys',
                         'flags' => ''
+                    ),
+                    'is_readonly' => array(
+                        'notnull' => 1,
+                        'length' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'type' => 'integer',
+                        'name' => 'is_readonly',
+                        'table' => 'api_keys',
+                        'flags' => 'not_null'
+                    ),
+                    'allowed_operations' => array(
+                        'notnull' => 0,
+                        'length' => 255,
+                        'fixed' => 0,
+                        'type' => 'text',
+                        'name' => 'allowed_operations',
+                        'table' => 'api_keys',
+                        'flags' => ''
                     )
                 ),
                 'indexes' => array(
-                    'idx_api_keys_secret_key' => array('secret_key'),
+                    'idx_api_keys_secret_key' => array('secret_key', 'unique' => true),
                     'idx_api_keys_created_by' => array('created_by'),
                     'idx_api_keys_disabled' => array('disabled')
                 ),
@@ -976,6 +1260,49 @@ class DatabaseStructureHelper
                         'table' => 'users',
                         'fields' => array('created_by' => 'id'),
                         'ondelete' => 'SET NULL'
+                    )
+                )
+            ),
+            array(
+                'table_name' => 'api_key_zones',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'autoincrement' => 1,
+                        'name' => 'id',
+                        'table' => 'api_key_zones',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'api_key_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'api_key_id',
+                        'table' => 'api_key_zones',
+                        'flags' => 'not_null'
+                    ),
+                    'zone_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'zone_id',
+                        'table' => 'api_key_zones',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'idx_api_key_zones_unique' => array('api_key_id', 'zone_id', 'unique' => true),
+                    'idx_api_key_zones_api_key_id' => array('api_key_id'),
+                    'idx_api_key_zones_zone_id' => array('zone_id')
+                ),
+                'foreign_keys' => array(
+                    'fk_api_key_zones_api_key' => array(
+                        'table' => 'api_keys',
+                        'fields' => array('api_key_id' => 'id'),
+                        'ondelete' => 'CASCADE'
                     )
                 )
             ),
@@ -1068,7 +1395,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'idx_user_mfa_user_id' => array('user_id'),
+                    'idx_user_mfa_user_id' => array('user_id', 'unique' => true),
                     'idx_user_mfa_enabled' => array('enabled')
                 ),
                 'foreign_keys' => array(
@@ -1119,7 +1446,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'idx_user_preferences_user_key' => array('user_id', 'preference_key'),
+                    'idx_user_preferences_user_key' => array('user_id', 'preference_key', 'unique' => true),
                     'idx_user_preferences_user_id' => array('user_id')
                 ),
                 'foreign_keys' => array(
@@ -1200,7 +1527,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'idx_zone_template_unique' => array('zone_id', 'zone_templ_id'),
+                    'idx_zone_template_unique' => array('zone_id', 'zone_templ_id', 'unique' => true),
                     'idx_zone_templ_id' => array('zone_templ_id'),
                     'idx_needs_sync' => array('needs_sync')
                 ),
@@ -1273,7 +1600,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'unique_user_agreement' => array('user_id', 'agreement_version'),
+                    'unique_user_agreement' => array('user_id', 'agreement_version', 'unique' => true),
                     'idx_user_agreements_user_id' => array('user_id'),
                     'idx_user_agreements_version' => array('agreement_version')
                 ),
@@ -1310,7 +1637,7 @@ class DatabaseStructureHelper
                     'token' => array(
                         'type' => 'text',
                         'notnull' => 1,
-                        'length' => 64,
+                        'length' => 128,
                         'fixed' => 0,
                         'name' => 'token',
                         'table' => 'password_reset_tokens',
@@ -1352,7 +1679,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'idx_password_reset_tokens_token' => array('token'),
+                    'idx_password_reset_tokens_token' => array('token', 'unique' => true),
                     'idx_password_reset_tokens_email' => array('email'),
                     'idx_password_reset_tokens_expires' => array('expires_at')
                 )
@@ -1478,8 +1805,8 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'unique_user_provider' => array('user_id', 'provider_id'),
-                    'unique_subject_provider' => array('oidc_subject', 'provider_id'),
+                    'unique_user_provider' => array('user_id', 'provider_id', 'unique' => true),
+                    'unique_subject_provider' => array('oidc_subject', 'provider_id', 'unique' => true),
                     'idx_oidc_provider_id' => array('provider_id'),
                     'idx_oidc_subject' => array('oidc_subject')
                 ),
@@ -1566,8 +1893,8 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'unique_user_provider' => array('user_id', 'provider_id'),
-                    'unique_subject_provider' => array('saml_subject', 'provider_id'),
+                    'unique_user_provider' => array('user_id', 'provider_id', 'unique' => true),
+                    'unique_subject_provider' => array('saml_subject', 'provider_id', 'unique' => true),
                     'idx_saml_provider_id' => array('provider_id'),
                     'idx_saml_subject' => array('saml_subject')
                 ),
@@ -1644,7 +1971,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'unique_name' => array('name'),
+                    'unique_name' => array('name', 'unique' => true),
                     'idx_perm_templ' => array('perm_templ'),
                     'idx_created_by' => array('created_by'),
                     'idx_name' => array('name')
@@ -1700,7 +2027,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'unique_member' => array('group_id', 'user_id'),
+                    'unique_member' => array('group_id', 'user_id', 'unique' => true),
                     'idx_user_id' => array('user_id'),
                     'idx_group_id' => array('group_id')
                 ),
@@ -1756,7 +2083,7 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'unique_zone_group' => array('domain_id', 'group_id'),
+                    'unique_zone_group' => array('domain_id', 'group_id', 'unique' => true),
                     'idx_domain_id' => array('domain_id'),
                     'idx_group_id' => array('group_id')
                 ),
@@ -1791,7 +2118,93 @@ class DatabaseStructureHelper
                     )
                 ),
                 'indexes' => array(
-                    'idx_record_comment_links_comment' => array('comment_id')
+                    'idx_record_comment_links_comment' => array('comment_id', 'unique' => true)
+                )
+            ),
+            array(
+                'table_name' => 'record_type_defaults',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'record_type' => array(
+                        'type' => 'text',
+                        'length' => 20,
+                        'notnull' => 1,
+                        'name' => 'record_type',
+                        'table' => 'record_type_defaults',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'ttl' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'ttl',
+                        'table' => 'record_type_defaults',
+                        'flags' => 'not_null'
+                    ),
+                    'created_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'created_at',
+                        'table' => 'record_type_defaults',
+                        'flags' => ''
+                    ),
+                    'updated_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'updated_at',
+                        'table' => 'record_type_defaults',
+                        'flags' => ''
+                    )
+                )
+            ),
+            array(
+                'table_name' => 'app_settings',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'setting_key' => array(
+                        'type' => 'text',
+                        'length' => 128,
+                        'notnull' => 1,
+                        // Binary collation keeps setting-key lookups case-sensitive (matches shipped SQL).
+                        'collation' => 'utf8mb4_bin',
+                        'name' => 'setting_key',
+                        'table' => 'app_settings',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'setting_value' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'name' => 'setting_value',
+                        'table' => 'app_settings',
+                        'flags' => 'not_null'
+                    ),
+                    'value_type' => array(
+                        'type' => 'text',
+                        'length' => 16,
+                        'notnull' => 1,
+                        'default' => 'string',
+                        'name' => 'value_type',
+                        'table' => 'app_settings',
+                        'flags' => 'not_null'
+                    ),
+                    'created_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'created_at',
+                        'table' => 'app_settings',
+                        'flags' => ''
+                    ),
+                    'updated_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'updated_at',
+                        'table' => 'app_settings',
+                        'flags' => ''
+                    )
                 )
             )
         );

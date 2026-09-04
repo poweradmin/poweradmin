@@ -1,23 +1,9 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item">
-            {% if idn_zone_name %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
-            {% else %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a>
-            {% endif %}
-        </li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Add record{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: zone_display_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+    {label: 'Add record'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">
@@ -46,7 +32,7 @@
         <p class="small text-muted mb-3">{% trans %}Create a new DNS record in this zone{% endtrans %}</p>
 
         <form class="needs-validation" method="post" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <input type="hidden" name="domain" value="{{ zone_id }}">
 
             <input type="hidden" name="multi_record_mode" value="1">
@@ -206,7 +192,7 @@
                     <i class="bi bi-info-circle"></i> 
                     {% trans %}Tip: Enter just the hostname (e.g. 'www') and the zone name will be added automatically. Use '@' for the zone apex/root.{% endtrans %}
                 </small>
-                <button class="btn btn-primary btn-sm" type="submit" name="commit">
+                <button class="btn btn-primary btn-sm" type="submit" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
                     <i class="bi bi-plus-circle me-1 text-white"></i>
                     <span>{% trans %}Add records{% endtrans %}</span>
                 </button>
@@ -245,11 +231,12 @@
         }
     }
 
-    // TTL_DEFAULTS.ptr is null when dns.ttl_reverse is unset or this is a forward
-    // zone (so forward-zone PTR records, e.g. RFC 2317, keep dns.ttl).
+    // TTL_DEFAULTS.byType[TYPE] wins when set (admin-managed record_type_defaults).
+    // ptr is the legacy dns.ttl_reverse fallback, only applied for PTR in reverse zones.
     const TTL_DEFAULTS = {
         plain: {{ default_ttl|json_encode|raw }},
-        ptr: {{ (is_reverse_zone ? ptr_default_ttl : null)|json_encode|raw }}
+        ptr: {{ (is_reverse_zone ? ptr_default_ttl : null)|json_encode|raw }},
+        byType: {{ type_default_ttls|default({})|json_encode|raw }}
     };
 
     let suppressTtlSwap = false;
@@ -258,9 +245,13 @@
         if (suppressTtlSwap || !ttlInput || ttlInput.dataset.userEdited === 'true') {
             return;
         }
-        const isPtr = typeSelect.value === 'PTR';
-        const target = isPtr && TTL_DEFAULTS.ptr !== null ? TTL_DEFAULTS.ptr : TTL_DEFAULTS.plain;
-        ttlInput.value = target;
+        const type = typeSelect.value;
+        if (Object.prototype.hasOwnProperty.call(TTL_DEFAULTS.byType, type)) {
+            ttlInput.value = TTL_DEFAULTS.byType[type];
+            return;
+        }
+        const isPtr = type === 'PTR';
+        ttlInput.value = isPtr && TTL_DEFAULTS.ptr !== null ? TTL_DEFAULTS.ptr : TTL_DEFAULTS.plain;
     }
 
     document.addEventListener('DOMContentLoaded', function() {

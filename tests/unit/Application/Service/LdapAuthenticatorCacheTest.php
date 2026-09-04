@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -393,11 +393,6 @@ class LdapAuthenticatorCacheTest extends TestCase
         $this->assertArrayHasKey('ldap_auth_timestamp', $_SESSION, 'Timestamp should be set in session');
         $this->assertArrayHasKey('ldap_auth_ip', $_SESSION, 'IP address should be set in session');
         $this->assertArrayHasKey('ldap_auth_username', $_SESSION, 'Username should be set in session');
-
-        // Assert keys exist for static analysis
-        assert(isset($_SESSION['ldap_auth_timestamp']));
-        assert(isset($_SESSION['ldap_auth_ip']));
-        assert(isset($_SESSION['ldap_auth_username']));
 
         $this->assertEquals($ipAddress, $_SESSION['ldap_auth_ip'], 'IP address should match');
         $this->assertEquals('testuser', $_SESSION['ldap_auth_username'], 'Username should match');

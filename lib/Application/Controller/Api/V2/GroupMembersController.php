@@ -31,11 +31,10 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -49,8 +48,8 @@ class GroupMembersController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $memberRepository = new DbUserGroupMemberRepository($this->db);
-        $groupRepository = new DbUserGroupRepository($this->db);
+        $memberRepository = $this->createUserGroupMemberRepository();
+        $groupRepository = $this->createUserGroupRepository();
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->apiPermissionService = new ApiPermissionService($this->db);
     }
@@ -141,6 +140,8 @@ class GroupMembersController extends PublicApiController
             ], $members);
 
             return $this->returnApiResponse(['members' => $membersData], true, 'Members retrieved successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -205,10 +206,16 @@ class GroupMembersController extends PublicApiController
                 return $this->returnApiError('Missing required field: user_id', 400);
             }
 
-            $userId = (int)$data['user_id'];
+            // Reject a non-scalar user_id; (int) would silently coerce an array to 1.
+            $userId = $this->inputInt($data, 'user_id');
+            if ($userId === null || $userId <= 0) {
+                return $this->returnApiError('Invalid user_id', 400);
+            }
             $this->membershipService->addUserToGroup($groupId, $userId);
 
             return $this->returnApiResponse(null, true, 'Member added successfully', 201);
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -278,6 +285,8 @@ class GroupMembersController extends PublicApiController
             }
 
             return $this->returnApiResponse(null, true, 'Member removed successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }

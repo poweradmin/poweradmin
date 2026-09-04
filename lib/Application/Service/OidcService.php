@@ -31,12 +31,14 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
+use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Network\ProxyContext;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use ReflectionClass;
@@ -44,6 +46,11 @@ use RuntimeException;
 
 class OidcService extends LoggingService
 {
+    // Carries OIDC flow state across the IdP's cross-site POST when a provider
+    // uses response_mode=form_post, since the session cookie is SameSite=Lax.
+    private const FLOW_COOKIE_NAME = 'oidc_flow';
+    private const FLOW_COOKIE_TTL = 300;
+
     private ConfigurationManager $configManager;
     private AuthenticationService $authenticationService;
     private SessionService $sessionService;
@@ -78,16 +85,20 @@ class OidcService extends LoggingService
         $this->authenticationService = new AuthenticationService($this->sessionService, $redirectService);
         $this->csrfTokenService = new CsrfTokenService();
         $this->userEventLogger = new UserEventLogger($db);
+    }
 
-        // Initialize MFA service
-        $userMfaRepository = new DbUserMfaRepository($db, $configManager);
-        $mailService = new MailService($configManager);
-        $this->mfaService = new MfaService(
-            $userMfaRepository,
-            $configManager,
-            $mailService,
+    /**
+     * Builds the MFA service on first use. The call site is already guarded by
+     * security.mfa.enabled, so installations without MFA never pay for the graph.
+     */
+    private function mfaService(): MfaService
+    {
+        return $this->mfaService ??= new MfaService(
+            new DbUserMfaRepository($this->db, $this->configManager),
+            $this->configManager,
+            new MailService($this->configManager),
             null,
-            UserTimezoneService::createDefault($db, $configManager)
+            UserTimezoneService::createDefault($this->db, $this->configManager)
         );
     }
 
@@ -182,12 +193,19 @@ class OidcService extends LoggingService
             $config = $this->oidcConfigurationService->getProviderConfig($providerId);
             $scopes = $config['scopes'] ?? 'openid profile email';
 
-            $authUrl = $provider->getAuthorizationUrl([
+            $authParams = [
                 'state' => $state,
                 'code_challenge' => $codeChallenge,
                 'code_challenge_method' => 'S256',
                 'scope' => $scopes,
-            ]);
+            ];
+
+            if ($this->shouldUseFormPost($config, $providerId)) {
+                $authParams['response_mode'] = 'form_post';
+                $this->setFlowCookie($state, $providerId, $codeVerifier);
+            }
+
+            $authUrl = $provider->getAuthorizationUrl($authParams);
 
             $this->logInfo('Generated OIDC authorization URL: {url}', ['url' => $authUrl]);
 
@@ -205,8 +223,18 @@ class OidcService extends LoggingService
     {
         $this->logInfo('Handling OIDC callback');
 
+        // A form_post callback is a cross-site POST, so the browser withholds the
+        // SameSite=Lax session cookie; recover the flow state from the flow cookie.
+        if ($this->request->getMethod() === 'POST' && $this->getSessionValue('oidc_state') === null) {
+            $this->restoreFlowFromCookie();
+        }
+
+        // The flow cookie is single-use; this also drops a leftover cookie when
+        // an abandoned form_post attempt is later completed via the query flow.
+        $this->clearFlowCookie();
+
         // Validate state parameter
-        $receivedState = $this->request->getQueryParam('state');
+        $receivedState = $this->request->getParam('state');
         $sessionState = $this->getSessionValue('oidc_state');
 
         if (empty($receivedState) || $receivedState !== $sessionState) {
@@ -217,9 +245,9 @@ class OidcService extends LoggingService
         }
 
         // Check for error parameter from OIDC provider
-        $error = $this->request->getQueryParam('error');
+        $error = $this->request->getParam('error');
         if (!empty($error)) {
-            $errorDescription = $this->request->getQueryParam('error_description', 'Unknown error');
+            $errorDescription = $this->request->getParam('error_description', 'Unknown error');
             $this->logError('OIDC provider returned error: {error} - {description}', [
                 'error' => $error,
                 'description' => $errorDescription
@@ -229,7 +257,7 @@ class OidcService extends LoggingService
             return;
         }
 
-        $code = $this->request->getQueryParam('code');
+        $code = $this->request->getParam('code');
         if (empty($code)) {
             $this->logWarning('No authorization code in OIDC callback');
             $sessionEntity = new SessionEntity(_('Authentication failed: No authorization code'), 'danger');
@@ -304,10 +332,6 @@ class OidcService extends LoggingService
             if ($userId) {
                 $this->logInfo('Successfully authenticated OIDC user: {username}', ['username' => $userInfo->getUsername()]);
 
-                // Issue a fresh session ID on successful login, matching the local
-                // login flow, so a pre-authentication session cannot be reused.
-                session_regenerate_id(true);
-
                 // Get the actual database username (important for existing users linked by email)
                 $databaseUsername = $this->userProvisioningService->getDatabaseUsername($userId);
                 if (!$databaseUsername) {
@@ -323,6 +347,10 @@ class OidcService extends LoggingService
                 // Log successful authentication to database
                 $this->userEventLogger->logSuccessfulAuth(AuthMethod::OIDC);
 
+                // Rotate session id before binding the user - matches SqlAuthenticator.
+                session_regenerate_id(true);
+                $this->logInfo('Session ID regenerated for OIDC user {username}', ['username' => $databaseUsername]);
+
                 // Ensure a CSRF token exists for subsequent requests
                 $this->csrfTokenService->ensureTokenExists();
                 $this->logInfo('CSRF token ensured for OIDC session.');
@@ -331,7 +359,7 @@ class OidcService extends LoggingService
                 $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
 
                 // Check if MFA is enabled for this user
-                $mfaRequired = $mfaGloballyEnabled && $this->mfaService->isMfaEnabled($userId);
+                $mfaRequired = $mfaGloballyEnabled && $this->mfaService()->isMfaEnabled($userId);
 
                 if ($mfaRequired) {
                     $this->logInfo('MFA is required for OIDC user {username}', ['username' => $databaseUsername]);
@@ -379,7 +407,9 @@ class OidcService extends LoggingService
                     $this->setSessionValue('auth_used', 'oidc');
                     $this->setSessionValue('auth_method_used', 'oidc');
                     $this->setSessionValue('authenticated', true);
-                    $this->setSessionValue('mfa_required', false);
+                    // Clears any stale pending state from an abandoned MFA login,
+                    // which would otherwise bounce this session back to /mfa/verify.
+                    MfaSessionManager::setMfaNotRequired();
 
                     // Set OIDC-specific session variables for logout detection
                     $this->setSessionValue('oidc_authenticated', true);
@@ -427,14 +457,41 @@ class OidcService extends LoggingService
             return null;
         }
 
-        return new GenericProvider([
+        $options = [
             'clientId' => $config['client_id'],
             'clientSecret' => $config['client_secret'],
             'redirectUri' => $this->getCallbackUrl(),
             'urlAuthorize' => $config['authorize_url'],
             'urlAccessToken' => $config['token_url'],
             'urlResourceOwnerDetails' => $config['userinfo_url'],
-        ]);
+        ];
+
+        // AbstractProvider forwards `proxy` (and `timeout`) to the Guzzle
+        // client it builds for token exchange and userinfo fetches. Without
+        // this, those calls bypass HTTPS_PROXY/NO_PROXY in air-gapped setups.
+        //
+        // GenericProvider takes a single proxy setting that applies to every
+        // request the provider makes, so we set the proxy if either the token
+        // exchange or the userinfo fetch needs it. Once set, Guzzle's own
+        // NO_PROXY matcher (suffix-only) decides per-request bypass within the
+        // provider; CIDR/host:port entries in NO_PROXY only fully apply to
+        // the stream-wrapper sites in ProxyContext::httpOptionsFor().
+        $serverUrls = array_filter([
+            $config['token_url'] ?? '',
+            $config['userinfo_url'] ?? '',
+        ], static fn(string $url): bool => $url !== '');
+
+        foreach ($serverUrls as $serverUrl) {
+            if (ProxyContext::shouldProxy($serverUrl)) {
+                $proxyConfig = ProxyContext::guzzleProxyConfig();
+                if ($proxyConfig !== null) {
+                    $options['proxy'] = $proxyConfig;
+                }
+                break;
+            }
+        }
+
+        return new GenericProvider($options);
     }
 
     private function getUserInfo(GenericProvider $provider, AccessTokenInterface $token, string $providerId): OidcUserInfo
@@ -494,7 +551,7 @@ class OidcService extends LoggingService
             return [];
         }
 
-        $payload = base64_decode(strtr($parts[1], '-_', '+/'));
+        $payload = base64_decode(strtr($parts[1], '-_', '+/'), true);
         if ($payload === false) {
             $this->logWarning('Failed to decode ID token payload');
             return [];
@@ -541,6 +598,109 @@ class OidcService extends LoggingService
         if (isset($_SESSION[$key])) {
             unset($_SESSION[$key]);
         }
+    }
+
+    /**
+     * Flow cookie methods for response_mode=form_post support
+     */
+    private function shouldUseFormPost(array $config, string $providerId): bool
+    {
+        if (($config['response_mode'] ?? 'query') !== 'form_post') {
+            return false;
+        }
+
+        // SameSite=None cookies require a secure context, so form_post is
+        // HTTPS-only; localhost is allowed for development setups. Judged by
+        // the browser-facing callback URL, which honors application_url on
+        // deployments where TLS terminates before PHP.
+        $callbackUrl = $this->getCallbackUrl();
+        if (parse_url($callbackUrl, PHP_URL_SCHEME) !== 'https' && !$this->isLocalhostUrl($callbackUrl)) {
+            $this->logWarning(
+                'OIDC provider {provider} is configured with response_mode=form_post but the callback URL is not HTTPS; falling back to query',
+                ['provider' => $providerId]
+            );
+            return false;
+        }
+
+        return true;
+    }
+
+    private function isLocalhostUrl(string $url): bool
+    {
+        $host = parse_url($url, PHP_URL_HOST);
+
+        return in_array($host, ['localhost', '127.0.0.1', '::1', '[::1]'], true);
+    }
+
+    private function setFlowCookie(string $state, string $providerId, string $codeVerifier): void
+    {
+        $payload = json_encode([
+            'state' => $state,
+            'provider' => $providerId,
+            'verifier' => $codeVerifier,
+        ]);
+
+        $this->writeFlowCookie($this->flowEncryptionService()->encrypt($payload), time() + self::FLOW_COOKIE_TTL);
+    }
+
+    private function restoreFlowFromCookie(): void
+    {
+        $rawCookie = $_COOKIE[self::FLOW_COOKIE_NAME] ?? '';
+        if ($rawCookie === '') {
+            return;
+        }
+
+        try {
+            $payload = json_decode($this->flowEncryptionService()->decrypt($rawCookie), true);
+        } catch (\Throwable $e) {
+            $this->logWarning('Failed to decrypt OIDC flow cookie: {error}', ['error' => $e->getMessage()]);
+            return;
+        }
+
+        if (!is_array($payload) || empty($payload['state']) || empty($payload['provider']) || empty($payload['verifier'])) {
+            $this->logWarning('OIDC flow cookie has an invalid payload');
+            return;
+        }
+
+        $this->setSessionValue('oidc_state', $payload['state']);
+        $this->setSessionValue('oidc_provider', $payload['provider']);
+        $this->setSessionValue('oidc_code_verifier', $payload['verifier']);
+
+        $this->logInfo('Restored OIDC flow state from flow cookie for form_post callback');
+    }
+
+    private function clearFlowCookie(): void
+    {
+        if (!isset($_COOKIE[self::FLOW_COOKIE_NAME])) {
+            return;
+        }
+
+        $this->writeFlowCookie('', time() - 3600);
+    }
+
+    private function writeFlowCookie(string $value, int $expires): void
+    {
+        setcookie(self::FLOW_COOKIE_NAME, $value, [
+            'expires' => $expires,
+            'path' => $this->getFlowCookiePath(),
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'None',
+        ]);
+    }
+
+    private function getFlowCookiePath(): string
+    {
+        // Must match the real callback path or the browser won't return the
+        // cookie; getCallbackUrl() honors application_url and base_url_prefix.
+        $path = parse_url($this->getCallbackUrl(), PHP_URL_PATH);
+
+        return is_string($path) && $path !== '' ? $path : '/oidc/callback';
+    }
+
+    private function flowEncryptionService(): PasswordEncryptionService
+    {
+        return new PasswordEncryptionService($this->configManager->get('security', 'session_key', ''));
     }
 
     /**

@@ -24,22 +24,23 @@ namespace Poweradmin\Domain\Service;
 
 use Exception;
 use PDO;
+use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 class DatabaseConsistencyService
 {
     private PDO $db;
-    private ConfigurationManager $config;
     private TableNameService $tableNameService;
     private ?DnsBackendProvider $backendProvider;
+    private bool $apiReadFailed = false;
 
     public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
-        $this->config = $config;
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
     }
@@ -49,20 +50,51 @@ class DatabaseConsistencyService
         return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
+    /**
+     * Whether a fetched zone list reflects an API outage rather than an empty
+     * backend. The provider swallows transport errors and returns an empty list,
+     * which would otherwise read as "all checks passed"; an empty list paired
+     * with a recorded API error means the API was unreachable.
+     */
+    private function apiZonesUnavailable(array $zones): bool
+    {
+        return empty($zones) && (new ApiStatusService())->getLastError() !== null;
+    }
+
+    /**
+     * Fetch a zone's records, flagging the run if the read failed. The provider
+     * swallows a failed per-zone read into an empty list; getZone() records the
+     * failure and clears on success, so an error set right after this call means
+     * this read failed and the empty result must not be trusted as "no records".
+     */
+    private function fetchRecordsTracked(int $zoneId, ?string $type = null): array
+    {
+        $records = $this->backendProvider->getRecordsByZoneId($zoneId, $type);
+        if ((new ApiStatusService())->getLastError() !== null) {
+            $this->apiReadFailed = true;
+        }
+        return $records;
+    }
 
     /**
      * Check if all zones have an owner
      *
      * @return array{status: string, message: string, data: array}
      */
-    public function checkZonesHaveOwners(): array
+    public function checkZonesHaveOwners(?array $apiZones = null): array
     {
         if ($this->isApiBackend()) {
-            $allZones = $this->backendProvider->getZones();
+            $allZones = $apiZones ?? $this->backendProvider->getZones();
             $orphanedZones = [];
             foreach ($allZones as $z) {
                 $zoneId = (int)($z['id'] ?? 0);
                 $zoneName = $z['name'] ?? '';
+                // A zone that PowerDNS reports but Poweradmin has not synced yet has
+                // no local row to own (id 0); skip it rather than offer an owner fix
+                // that would insert a dangling zones row keyed on domain_id 0.
+                if ($zoneId <= 0) {
+                    continue;
+                }
                 // A zone may have multiple `zones` rows (one per direct owner)
                 // plus optional zones_groups entries; treat it as orphaned only
                 // when no row carries a real owner and there is no group link.
@@ -72,10 +104,10 @@ class DatabaseConsistencyService
                 $stmt = $this->db->prepare(
                     'SELECT
                         (SELECT COUNT(*) FROM zones z
-                         WHERE (z.id = c.id OR z.domain_id = COALESCE(c.domain_id, c.id))
+                         WHERE (z.id = c.id OR z.domain_id = ' . CanonicalZoneSql::canonicalIdColumn('c') . ')
                            AND z.owner IS NOT NULL AND z.owner <> 0) AS owner_count,
                         (SELECT COUNT(*) FROM zones_groups zg
-                         WHERE zg.domain_id = COALESCE(c.domain_id, c.id)) AS group_count
+                         WHERE zg.domain_id = ' . CanonicalZoneSql::canonicalIdColumn('c') . ') AS group_count
                      FROM zones c
                      WHERE c.zone_name = ? AND c.zone_name IS NOT NULL
                      LIMIT 1'
@@ -137,15 +169,15 @@ class DatabaseConsistencyService
      *
      * @return array{status: string, message: string, data: array}
      */
-    public function checkSlaveZonesHaveMasters(): array
+    public function checkSlaveZonesHaveMasters(?array $apiZones = null): array
     {
         if ($this->isApiBackend()) {
-            $allZones = $this->backendProvider->getZones();
+            $allZones = $apiZones ?? $this->backendProvider->getZones();
             $slavesWithoutMaster = [];
             foreach ($allZones as $z) {
-                $kind = strtoupper($z['kind'] ?? $z['type'] ?? '');
+                $kind = strtoupper($z['type'] ?? '');
                 if ($kind === 'SLAVE') {
-                    $master = $z['masters'][0] ?? $z['master'] ?? '';
+                    $master = $z['master'] ?? '';
                     if (empty($master) || $master === '0.0.0.0') {
                         $slavesWithoutMaster[] = [
                             'id' => (int)($z['id'] ?? 0),
@@ -247,14 +279,19 @@ class DatabaseConsistencyService
      *
      * @return array{status: string, message: string, data: array}
      */
-    public function checkDuplicateSOARecords(): array
+    public function checkDuplicateSOARecords(?array $apiZones = null): array
     {
         if ($this->isApiBackend()) {
-            $allZones = $this->backendProvider->getZones();
+            $allZones = $apiZones ?? $this->backendProvider->getZones();
             $duplicateSOA = [];
             foreach ($allZones as $z) {
                 $zoneId = (int)($z['id'] ?? 0);
-                $records = $this->backendProvider->getRecordsByZoneId($zoneId, 'SOA');
+                // Unsynced zones (id 0) have no local ID mapping yet; their SOA
+                // lookup is meaningless, so skip until ZoneSyncService imports them.
+                if ($zoneId <= 0) {
+                    continue;
+                }
+                $records = $this->fetchRecordsTracked($zoneId, 'SOA');
                 if (count($records) > 1) {
                     $duplicateSOA[] = [
                         'zone_id' => $zoneId,
@@ -309,16 +346,22 @@ class DatabaseConsistencyService
      *
      * @return array{status: string, message: string, data: array}
      */
-    public function checkZonesWithoutSOA(): array
+    public function checkZonesWithoutSOA(?array $apiZones = null): array
     {
         if ($this->isApiBackend()) {
-            $allZones = $this->backendProvider->getZones();
+            $allZones = $apiZones ?? $this->backendProvider->getZones();
             $zonesWithoutSOA = [];
             foreach ($allZones as $z) {
-                $kind = strtoupper($z['kind'] ?? $z['type'] ?? '');
+                $kind = strtoupper($z['type'] ?? '');
                 if ($kind === 'MASTER' || $kind === 'NATIVE') {
                     $zoneId = (int)($z['id'] ?? 0);
-                    $soaRecords = $this->backendProvider->getRecordsByZoneId($zoneId, 'SOA');
+                    // Unsynced zones (id 0) have no local ID mapping, so the SOA
+                    // lookup always comes back empty; skip to avoid a false
+                    // "missing SOA" until ZoneSyncService imports the zone.
+                    if ($zoneId <= 0) {
+                        continue;
+                    }
+                    $soaRecords = $this->fetchRecordsTracked($zoneId, 'SOA');
                     if (empty($soaRecords)) {
                         $zonesWithoutSOA[] = [
                             'id' => $zoneId,
@@ -366,19 +409,137 @@ class DatabaseConsistencyService
     }
 
     /**
-     * Run all consistency checks
+     * Run all consistency checks.
      *
-     * @return array<string, array{status: string, message: string, data: array}>
+     * In API mode the zone list is fetched once and reused across every check,
+     * so a single transient failure can't make one check pass while another
+     * fails. Returns null when that fetch reveals an API outage, letting the
+     * caller surface one clear error instead of empty "all clear" results.
+     *
+     * @return array<string, array{status: string, message: string, data: array}>|null
      */
-    public function runAllChecks(): array
+    public function runAllChecks(): ?array
     {
-        return [
-            'zones_have_owners' => $this->checkZonesHaveOwners(),
-            'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters(),
+        $this->apiReadFailed = false;
+
+        $apiZones = null;
+        if ($this->isApiBackend()) {
+            $apiZones = $this->backendProvider->getZones();
+            if ($this->apiZonesUnavailable($apiZones)) {
+                return null;
+            }
+        }
+
+        // The SOA checks fetch each zone's records individually; fetchRecordsTracked
+        // flags this when one of those reads fails, so a swallowed empty result
+        // can't masquerade as "missing SOA". Discard the run if any read failed.
+        $results = [
+            'zones_have_owners' => $this->checkZonesHaveOwners($apiZones),
+            'zones_have_canonical_ids' => $this->checkZonesHaveCanonicalIds(),
+            'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters($apiZones),
             'records_belong_to_zones' => $this->checkRecordsBelongToZones(),
-            'duplicate_soa_records' => $this->checkDuplicateSOARecords(),
-            'zones_without_soa' => $this->checkZonesWithoutSOA()
+            'duplicate_soa_records' => $this->checkDuplicateSOARecords($apiZones),
+            'zones_without_soa' => $this->checkZonesWithoutSOA($apiZones)
         ];
+
+        return $this->apiReadFailed ? null : $results;
+    }
+
+    /**
+     * Find zones rows whose domain_id never received the zone's canonical id.
+     *
+     * createZone() writes the row and backfills domain_id; interrupted between the two it
+     * used to leave the row unresolvable, and nothing else repairs it.
+     *
+     * @return array{status: string, message: string, data: array}
+     */
+    public function checkZonesHaveCanonicalIds(): array
+    {
+        // SQL mode stores a domains foreign key here, where the row's own id is not a valid
+        // substitute, so there is nothing this check may safely report or repair.
+        if (!$this->isApiBackend()) {
+            return [
+                'status' => 'success',
+                'message' => _('All zones have a canonical ID'),
+                'data' => [],
+            ];
+        }
+
+        $stmt = $this->db->query(
+            "SELECT id, zone_name, domain_id FROM zones
+             WHERE (domain_id IS NULL OR domain_id = 0) AND zone_name IS NOT NULL
+             ORDER BY id"
+        );
+
+        $zones = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $zones[] = [
+                'id' => (int)$row['id'],
+                'name' => $row['zone_name'],
+                'domain_id' => $row['domain_id'],
+            ];
+        }
+
+        return [
+            'status' => $zones === [] ? 'success' : 'warning',
+            'message' => $zones === []
+                ? _('All zones have a canonical ID')
+                : sprintf(_('%d zones found without a canonical ID'), count($zones)),
+            'data' => $zones,
+        ];
+    }
+
+    /**
+     * Point a stranded zones row's domain_id at its own id.
+     *
+     * $zoneId is the row's primary key, not a canonical id, because the row has none yet.
+     *
+     * @param int $zoneId The zones row ID to repair
+     * @return bool Success status
+     */
+    public function fixZoneCanonicalId(int $zoneId): bool
+    {
+        if ($zoneId <= 0 || !$this->isApiBackend()) {
+            return false;
+        }
+
+        // Predicated on the broken state so a repeated or stale submission cannot rewrite a
+        // healthy row, and so placeholder ownership rows are never self-referenced.
+        $stmt = $this->db->prepare(
+            "UPDATE zones SET domain_id = :did
+             WHERE id = :id AND (domain_id IS NULL OR domain_id = 0) AND zone_name IS NOT NULL"
+        );
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0;
+    }
+
+    /**
+     * Repair every zone returned by checkZonesHaveCanonicalIds().
+     *
+     * @return array{fixed: int, failed: int}
+     */
+    public function fixAllZonesWithCanonicalIdIssue(): array
+    {
+        $stranded = $this->checkZonesHaveCanonicalIds()['data'];
+
+        $fixed = 0;
+        $failed = 0;
+        foreach ($stranded as $zone) {
+            try {
+                if ($this->fixZoneCanonicalId((int)$zone['id'])) {
+                    $fixed++;
+                } else {
+                    $failed++;
+                }
+            } catch (Exception $e) {
+                $failed++;
+            }
+        }
+
+        return ['fixed' => $fixed, 'failed' => $failed];
     }
 
     /**
@@ -390,9 +551,16 @@ class DatabaseConsistencyService
      */
     public function fixZoneWithoutOwner(int $zoneId, int $currentUserId): bool
     {
+        // Guard against unsynced API zones (id 0): assigning an owner here would
+        // insert a dangling zones row keyed on domain_id 0 with no zone_name.
+        if ($zoneId <= 0) {
+            return false;
+        }
+
         // Check if zone entry exists
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM zones WHERE domain_id = :domain_id");
-        $stmt->execute(['domain_id' => $zoneId]);
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
         $exists = $stmt->fetchColumn() > 0;
 
         if ($exists) {
@@ -403,7 +571,39 @@ class DatabaseConsistencyService
             $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, 0)");
         }
 
-        return $stmt->execute(['domain_id' => $zoneId, 'owner' => $currentUserId]);
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $currentUserId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    /**
+     * Assign the current user as owner to every zone returned by
+     * checkZonesHaveOwners().
+     *
+     * @param int $currentUserId The current user ID from UserContextService
+     * @return array{assigned: int, failed: int}
+     */
+    public function fixAllZonesWithoutOwner(int $currentUserId): array
+    {
+        $orphans = $this->checkZonesHaveOwners()['data'];
+
+        $assigned = 0;
+        $failed = 0;
+        foreach ($orphans as $zone) {
+            $zoneId = (int)$zone['id'];
+            try {
+                if ($this->fixZoneWithoutOwner($zoneId, $currentUserId)) {
+                    $assigned++;
+                } else {
+                    $failed++;
+                }
+            } catch (Exception $e) {
+                $failed++;
+            }
+        }
+
+        return ['assigned' => $assigned, 'failed' => $failed];
     }
 
     /**
@@ -427,7 +627,8 @@ class DatabaseConsistencyService
                 $stmt->execute(['domain_id' => $zoneId]);
 
                 $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :domain_id");
-                $stmt->execute(['domain_id' => $zoneId]);
+                $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+                $stmt->execute();
 
                 $this->db->commit();
             } catch (Exception $e) {
@@ -453,7 +654,8 @@ class DatabaseConsistencyService
 
             // Delete zone ownership
             $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :domain_id");
-            $stmt->execute(['domain_id' => $zoneId]);
+            $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+            $stmt->execute();
 
             // Delete domain
             $stmt = $this->db->prepare("DELETE FROM $domains_table WHERE id = :id");

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@ use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
-use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 
 class UserPreferencesController extends InternalApiController
 {
@@ -38,9 +37,7 @@ class UserPreferencesController extends InternalApiController
     {
         parent::__construct($request);
 
-        $db_type = $this->config->get('database', 'type');
-        $repository = new DbUserPreferenceRepository($this->db, $db_type);
-        $this->userPreferenceService = new UserPreferenceService($repository, $this->config);
+        $this->userPreferenceService = $this->createUserPreferenceService();
         $this->userContextService = new UserContextService();
     }
 
@@ -76,7 +73,7 @@ class UserPreferencesController extends InternalApiController
 
     private function handleGet(int $userId): void
     {
-        $key = $_GET['key'] ?? null;
+        $key = $this->request->query->get('key');
 
         if ($key) {
             if (!UserPreference::isValidKey($key)) {
@@ -128,7 +125,7 @@ class UserPreferencesController extends InternalApiController
 
     private function handleDelete(int $userId): void
     {
-        $key = $_GET['key'] ?? null;
+        $key = $this->request->query->get('key');
 
         if (!$key) {
             $response = $this->returnJsonResponse(['error' => 'Missing key parameter'], 400);

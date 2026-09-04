@@ -52,10 +52,23 @@ class RecordIdentifierTest extends TestCase
     {
         $encoded = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
-        $this->assertMatchesRegularExpression('/^[A-Za-z0-9_\-]+$/', $encoded);
+        $this->assertMatchesRegularExpression(RecordIdentifier::ID_PATTERN, $encoded);
         $this->assertStringNotContainsString('+', $encoded);
         $this->assertStringNotContainsString('/', $encoded);
         $this->assertStringNotContainsString('=', $encoded);
+    }
+
+    /**
+     * encode() strips the padding, so a padded variant is a second spelling of
+     * the same record. The route pattern allows "=", so it has to be rejected here.
+     */
+    public function testIsEncodedRejectsPaddedVariants(): void
+    {
+        $encoded = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
+
+        $this->assertTrue(RecordIdentifier::isEncoded($encoded));
+        $this->assertFalse(RecordIdentifier::isEncoded($encoded . '='));
+        $this->assertFalse(RecordIdentifier::isEncoded($encoded . '=='));
     }
 
     public function testDecodeInvalidThrowsException(): void

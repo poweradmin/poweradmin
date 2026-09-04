@@ -34,10 +34,10 @@ class PermissionHelper
         return [
             [41, 'zone_master_add', 'User is allowed to add new master zones.'],
             [42, 'zone_slave_add', 'User is allowed to add new slave zones.'],
-            [43, 'zone_content_view_own', 'User is allowed to see the content and meta data of zones he owns.'],
+            [43, 'zone_content_view_own', 'User is allowed to see the content of zones he owns.'],
             [44, 'zone_content_edit_own', 'User is allowed to edit the content of zones he owns.'],
             [45, 'zone_meta_edit_own', 'User is allowed to edit the meta data of zones he owns.'],
-            [46, 'zone_content_view_others', 'User is allowed to see the content and meta data of zones he does not own.'],
+            [46, 'zone_content_view_others', 'User is allowed to see the content of zones he does not own.'],
             [47, 'zone_content_edit_others', 'User is allowed to edit the content of zones he does not own.'],
             [48, 'zone_meta_edit_others', 'User is allowed to edit the meta data of zones he does not own.'],
             [49, 'search', 'User is allowed to perform searches.'],
@@ -60,6 +60,16 @@ class PermissionHelper
             [67, 'zone_delete_own', 'User is allowed to delete zones they own.'],
             [68, 'zone_delete_others', 'User is allowed to delete zones owned by others.'],
             [69, 'user_enforce_mfa', 'User is required to use multi-factor authentication.'],
+            [70, 'zone_dnssec_manage_own', 'User is allowed to manage DNSSEC keys for zones he owns.'],
+            [71, 'zone_logs_view_own', 'User is allowed to view activity logs for zones he owns.'],
+            [72, 'zone_logs_view_others', 'User is allowed to view activity logs for zones he does not own.'],
+            [73, 'user_logs_view', 'User is allowed to view the user activity logs.'],
+            [74, 'group_logs_view', 'User is allowed to view the group activity logs.'],
+            [75, 'zone_content_edit_ns_subzone', 'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.'],
+            [76, 'zone_metadata_view_own', 'User is allowed to see the meta data of zones he owns.'],
+            [77, 'zone_metadata_view_others', 'User is allowed to see the meta data of zones he does not own.'],
+            [78, 'zone_ownership_view_own', 'User is allowed to see the owners of zones he owns.'],
+            [79, 'zone_ownership_view_others', 'User is allowed to see the owners of zones he does not own.'],
         ];
     }
 }

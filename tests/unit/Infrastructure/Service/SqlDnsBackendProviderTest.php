@@ -33,6 +33,12 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertFalse($this->provider->isApiBackend());
     }
 
+    public function testRetrieveZoneReturnsFalse(): void
+    {
+        // SQL backend cannot trigger an immediate transfer; PowerDNS handles it.
+        $this->assertFalse($this->provider->retrieveZone(1));
+    }
+
     // ---------------------------------------------------------------
     // Zone operations
     // ---------------------------------------------------------------
@@ -51,6 +57,36 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertEquals(42, $result);
     }
 
+    public function testSetZoneSerialPolicyReplacesMetadataRows(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('bindValue');
+        $stmt->method('execute')->willReturn(true);
+
+        $preparedSql = [];
+        $this->mockDb->method('prepare')->willReturnCallback(function (string $sql) use (&$preparedSql, $stmt) {
+            $preparedSql[] = $sql;
+            return $stmt;
+        });
+
+        $this->assertTrue($this->provider->setZoneSerialPolicy(42, 'example.com', [
+            'soa_edit_api' => 'EPOCH',
+            'soa_edit' => '',
+        ]));
+
+        // Set value: DELETE then INSERT; empty value: DELETE only
+        $this->assertCount(2, $preparedSql);
+        $this->assertStringContainsString('DELETE FROM domainmetadata', $preparedSql[0]);
+        $this->assertStringContainsString('INSERT INTO domainmetadata', $preparedSql[1]);
+    }
+
+    public function testSetZoneSerialPolicyIgnoresUnknownProperties(): void
+    {
+        $this->mockDb->expects($this->never())->method('prepare');
+
+        $this->assertTrue($this->provider->setZoneSerialPolicy(42, 'example.com', ['account' => 'evil']));
+    }
+
     public function testCreateSlaveZoneSetsMaster(): void
     {
         $stmtInsert = $this->createMock(PDOStatement::class);
@@ -67,6 +103,38 @@ class SqlDnsBackendProviderTest extends TestCase
         $result = $this->provider->createZone('slave.example.com', 'SLAVE', '192.168.1.1');
 
         $this->assertEquals(43, $result);
+    }
+
+    public function testCreateConsumerZoneSetsMaster(): void
+    {
+        $stmtInsert = $this->createMock(PDOStatement::class);
+        $stmtInsert->expects($this->once())->method('execute');
+        $stmtInsert->method('bindValue');
+
+        $stmtUpdate = $this->createMock(PDOStatement::class);
+        $stmtUpdate->expects($this->once())->method('execute');
+        $stmtUpdate->method('bindValue');
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmtInsert, $stmtUpdate);
+        $this->mockDb->method('lastInsertId')->willReturn('44');
+
+        $result = $this->provider->createZone('catalog.example.com', 'CONSUMER', '192.0.2.42');
+
+        $this->assertEquals(44, $result);
+    }
+
+    public function testCreateProducerZoneDoesNotSetMaster(): void
+    {
+        $stmtInsert = $this->createMock(PDOStatement::class);
+        $stmtInsert->expects($this->once())->method('execute');
+        $stmtInsert->method('bindValue');
+
+        $this->mockDb->expects($this->once())->method('prepare')->willReturn($stmtInsert);
+        $this->mockDb->method('lastInsertId')->willReturn('45');
+
+        $result = $this->provider->createZone('catalog.example.com', 'PRODUCER', '');
+
+        $this->assertEquals(45, $result);
     }
 
     public function testDeleteZoneDeletesAllRelatedTables(): void
@@ -114,6 +182,106 @@ class SqlDnsBackendProviderTest extends TestCase
         $result = $this->provider->updateZoneType(1, 'SLAVE');
 
         $this->assertTrue($result);
+    }
+
+    public function testUpdateZoneTypeConsumerDoesNotClearMaster(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->callback(function ($params) {
+                return $params[':type'] === 'CONSUMER'
+                    && !array_key_exists(':master', $params);
+            }));
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->updateZoneType(1, 'CONSUMER');
+
+        $this->assertTrue($result);
+    }
+
+    public function testUpdateZoneTypeProducerClearsMaster(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->callback(function ($params) {
+                return $params[':type'] === 'PRODUCER'
+                    && $params[':master'] === '';
+            }));
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->updateZoneType(1, 'PRODUCER');
+
+        $this->assertTrue($result);
+    }
+
+    public function testUpdateZoneCatalogNormalizesToPowerdnsStoredForm(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with([':catalog' => 'producer.example.com', ':id' => 1]);
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->assertTrue($this->provider->updateZoneCatalog(1, 'producer.example.com'));
+    }
+
+    public function testUpdateZoneCatalogClearsWithEmptyStringNotNull(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with($this->callback(function ($params) {
+                // NULL would leave a row PowerDNS still treats as unset differently
+                // from how its own tooling writes it.
+                $this->assertNotNull($params[':catalog']);
+                return $params[':catalog'] === '' && $params[':id'] === 1;
+            }));
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->assertTrue($this->provider->updateZoneCatalog(1, ''));
+    }
+
+    public function testGetCatalogMembersRunsOneQuery(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetchAll')->willReturn([
+            ['id' => '7', 'name' => 'member.example.com', 'type' => 'master'],
+        ]);
+
+        $this->mockDb->expects($this->once())->method('prepare')->willReturn($stmt);
+
+        $members = $this->provider->getCatalogMembers('producer.example.com');
+
+        $this->assertSame([['id' => 7, 'name' => 'member.example.com', 'kind' => 'MASTER']], $members);
+    }
+
+    public function testGetZoneCatalogNormalizesStoredValue(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetchColumn')->willReturn('Producer.Example.COM.');
+
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->assertSame('producer.example.com', $this->provider->getZoneCatalog(1));
+    }
+
+    public function testCatalogReadsDegradeOnPreCatalogSchema(): void
+    {
+        // domains.catalog only exists from PowerDNS 4.7; an older schema must not
+        // take the page down.
+        $this->mockDb->method('prepare')->willThrowException(new \PDOException('Unknown column'));
+
+        $this->assertSame([], $this->provider->getCatalogMembers('producer.example.com'));
+        $this->assertSame('', $this->provider->getZoneCatalog(1));
+        $this->assertFalse($this->provider->updateZoneCatalog(1, 'producer.example.com'));
     }
 
     public function testUpdateZoneMasterSetsNewMaster(): void

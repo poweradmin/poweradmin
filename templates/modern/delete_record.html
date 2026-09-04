@@ -1,28 +1,12 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">
-            {% if idn_zone_name %}
-            {{ idn_zone_name }}
-            {% else %}
-            {{ zone_name }}
-            {% endif %}
-        </a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Delete Record{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: zone_display_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+    {label: 'Delete Record'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete Record{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-trash', 'Delete Record'|trans, 'text-danger') }}
     <div class="card-body">
         <div class="alert alert-warning py-1 mb-2 small">
             <i class="bi bi-exclamation-triangle-fill me-1"></i>
@@ -54,7 +38,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ record_info['display_name'] is defined ? record_info['display_name'] : record_info['name'] }}</td>
+                                <td>{{ record_info['display_name'] }}</td>
                                 <td><span class="badge bg-secondary">{{ record_info['type'] }}</span></td>
                                 <td>{{ record_info['content'] }}</td>
                                 {% if record_info['prio'] %}
@@ -76,7 +60,7 @@
         {% endif %}
 
         <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ record_id }}/delete" id="delete_form">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
 
             {% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}
             <div class="form-check mb-3">
@@ -97,12 +81,7 @@
             {% endif %}
 
             <div class="mt-4">
-                <button type="submit" class="btn btn-danger btn-sm">
-                    <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this record{% endtrans %}
-                </button>
-                <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
-                    <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this record{% endtrans %}
-                </a>
+                {{ macros.delete_actions('Yes, delete this record'|trans, base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit', 'No, keep this record'|trans) }}
             </div>
         </form>
     </div>

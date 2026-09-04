@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,6 +63,15 @@ class CAARecordValidatorTest extends TestCase
         $this->assertEquals(3600, $data['ttl']);
     }
 
+    public function testValidateRejectsInvalidIssueDomainWithoutParameters()
+    {
+        // A bare issue value with no `;` parameters must still validate the domain.
+        $content = '0 issue "not a valid domain"';
+        $result = $this->validator->validate($content, 'host.example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
     public function testValidateWithValidIssuewildData()
     {
         $content = '0 issuewild "ca.example.org"';
@@ -78,6 +87,65 @@ class CAARecordValidatorTest extends TestCase
 
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
+    }
+
+    /**
+     * RFC 8659: ";" as the issuer-domain-name means no issuance is permitted.
+     * It is valid for issuewild exactly as it is for issue.
+     */
+    public function testValidateAcceptsSemicolonIssuewild()
+    {
+        $result = $this->validator->validate('0 issuewild ";"', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid(), implode('; ', $result->getErrors()));
+    }
+
+    public function testValidateAcceptsSemicolonIssue()
+    {
+        $result = $this->validator->validate('0 issue ";"', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid(), implode('; ', $result->getErrors()));
+    }
+
+    /**
+     * The rejection for an empty issue value pointed the user at ";" as the way to
+     * allow every CA. Following that advice blocks issuance for the zone instead.
+     */
+    public function testEmptyIssueValueErrorDoesNotClaimSemicolonAllowsAllCas()
+    {
+        $result = $this->validator->validate('0 issue ""', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+
+        // Word boundary matters: "disallow all CAs" contains "allow all" as a substring.
+        $error = $result->getFirstError();
+        $this->assertDoesNotMatchRegularExpression('/\ballow all\b/i', $error);
+        $this->assertStringContainsStringIgnoringCase('disallow', $error);
+    }
+
+    /**
+     * The CAA wizard offers ";" as a pickable provider. Its label shipped as
+     * "Allow all CAs", the exact inverse of what the record does, so a user
+     * choosing it would have blocked issuance for the zone.
+     */
+    public function testShippedCaaProviderLabelForSemicolonDoesNotClaimToAllow()
+    {
+        $defaults = require dirname(__DIR__, 3) . '/config/settings.defaults.php';
+        $providers = $defaults['modules']['dns_wizards']['caa_providers'];
+
+        $this->assertArrayHasKey(';', $providers);
+
+        // Word boundary matters: "Disallow all CAs" contains "allow all" as a substring.
+        $label = $providers[';'];
+        $this->assertDoesNotMatchRegularExpression('/\ballow all\b/i', $label);
+        $this->assertStringContainsStringIgnoringCase('disallow', $label);
+    }
+
+    public function testValidateStillRejectsInvalidIssuewildDomain()
+    {
+        $result = $this->validator->validate('0 issuewild "not a valid domain"', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
     }
 
     public function testValidateWithValidIodefData()
@@ -214,39 +282,5 @@ class CAARecordValidatorTest extends TestCase
 
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
-    }
-
-    /**
-     * The rejection for an empty issue value pointed the user at ";" as the way to
-     * allow every CA. Following that advice blocks issuance for the zone instead.
-     */
-    public function testEmptyIssueValueErrorDoesNotClaimSemicolonAllowsAllCas()
-    {
-        $result = $this->validator->validate('0 issue ""', 'host.example.com', 0, 3600, 86400);
-
-        $this->assertFalse($result->isValid());
-
-        // Word boundary matters: "disallow all CAs" contains "allow all" as a substring.
-        $error = $result->getFirstError();
-        $this->assertDoesNotMatchRegularExpression('/\ballow all\b/i', $error);
-        $this->assertStringContainsStringIgnoringCase('disallow', $error);
-    }
-
-    /**
-     * The CAA wizard offers ";" as a pickable provider. Its label shipped as
-     * "Allow all CAs", the exact inverse of what the record does, so a user
-     * choosing it would have blocked issuance for the zone.
-     */
-    public function testShippedCaaProviderLabelForSemicolonDoesNotClaimToAllow()
-    {
-        $defaults = require dirname(__DIR__, 3) . '/config/settings.defaults.php';
-        $providers = $defaults['modules']['dns_wizards']['caa_providers'];
-
-        $this->assertArrayHasKey(';', $providers);
-
-        // Word boundary matters: "Disallow all CAs" contains "allow all" as a substring.
-        $label = $providers[';'];
-        $this->assertDoesNotMatchRegularExpression('/\ballow all\b/i', $label);
-        $this->assertStringContainsStringIgnoringCase('disallow', $label);
     }
 }

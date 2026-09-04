@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@ class UserAuthenticationService
      * @return string The hashed password.
      * @throws InvalidArgumentException If the password encryption method is invalid.
      */
-    public function hashPassword(string $password): string
+    public function hashPassword(#[\SensitiveParameter] string $password): string
     {
         if ($this->passwordEncryption === 'bcrypt') {
             return password_hash($password, PASSWORD_BCRYPT, array('cost' => $this->passwordEncryptionCost));
@@ -122,7 +122,7 @@ class UserAuthenticationService
      * @return bool True if the password matches, false otherwise.
      * @throws InvalidArgumentException If the hash algorithm cannot be determined.
      */
-    public function verifyPassword(string $password, string $hash): bool
+    public function verifyPassword(#[\SensitiveParameter] string $password, string $hash): bool
     {
         // Users provisioned by LDAP/OIDC/SAML have no local hash. That is a failed
         // verification, not an unknown algorithm, so it must not throw.
@@ -212,7 +212,7 @@ class UserAuthenticationService
      * @param string $pass The password.
      * @return string The combined salt.
      */
-    public function generateCombinedSalt(string $pass): string
+    public function generateCombinedSalt(#[\SensitiveParameter] string $pass): string
     {
         $salt = $this->generateSalt();
         return $this->combineSalts($salt, $pass);
@@ -225,7 +225,7 @@ class UserAuthenticationService
      * @param string $pass The password.
      * @return string The combined salt and password.
      */
-    public function combineSalts(string $salt, string $pass): string
+    public function combineSalts(string $salt, #[\SensitiveParameter] string $pass): string
     {
         return md5($salt . $pass) . ':' . $salt;
     }
@@ -236,7 +236,7 @@ class UserAuthenticationService
      * @param string $password The password.
      * @return string The extracted salt.
      */
-    public function extractUserSalt(string $password): string
+    public function extractUserSalt(#[\SensitiveParameter] string $password): string
     {
         return substr(strstr($password, ':'), 1);
     }

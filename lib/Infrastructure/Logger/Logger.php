@@ -44,10 +44,35 @@ class Logger extends AbstractLogger
         'debug' => 7,
     ];
 
+    private const DEFAULT_LEVEL = 'info';
+
+    /**
+     * Level names accepted by the logging.level setting, most severe first.
+     *
+     * @return string[]
+     */
+    public static function levelNames(): array
+    {
+        return array_keys(self::LEVELS);
+    }
+
     public function __construct(LogHandlerInterface $handler, string $logLevel)
     {
         $this->logHandler = $handler;
         $this->logLevel = $logLevel;
+
+        // Falling back silently would hide the typo; shouldLog() resolves the
+        // threshold to the default, so this record is emitted rather than gated out.
+        if (!isset(self::LEVELS[$logLevel])) {
+            $this->warning(
+                'Unrecognised logging.level {level}; falling back to {fallback}. Valid levels: {valid}',
+                [
+                    'level' => $logLevel,
+                    'fallback' => self::DEFAULT_LEVEL,
+                    'valid' => implode(', ', self::levelNames()),
+                ]
+            );
+        }
     }
 
     public function log($level, Stringable|string $message, array $context = []): void
@@ -85,18 +110,38 @@ class Logger extends AbstractLogger
 
     private function interpolateMessage(string $message, array $context = []): string
     {
-        $replace = array();
+        return self::interpolatePlaceholders($message, $context);
+    }
+
+    /**
+     * Substitute PSR-3 `{key}` placeholders in a log message with values from the context array.
+     *
+     * Shared by Logger and the lightweight PhpErrorLogPsrLogger fallback so the
+     * substitution rules stay in one place.
+     */
+    public static function interpolatePlaceholders(string $message, array $context): string
+    {
+        if ($context === []) {
+            return $message;
+        }
+
+        $replace = [];
         foreach ($context as $key => $val) {
             if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
-                $replace['{' . $key . '}'] = $val;
+                $replace['{' . $key . '}'] = (string) $val;
             }
         }
 
         return strtr($message, $replace);
     }
 
-    private function shouldLog(string $level)
+    private function shouldLog(string $level): bool
     {
-        return self::LEVELS[$level] <= self::LEVELS[$this->logLevel];
+        // An unrecognised configured level must not silence logging; a missing key
+        // would coerce to 0 and suppress everything below emergency.
+        $threshold = self::LEVELS[$this->logLevel] ?? self::LEVELS[self::DEFAULT_LEVEL];
+        $severity = self::LEVELS[$level] ?? self::LEVELS['debug'];
+
+        return $severity <= $threshold;
     }
 }

@@ -220,6 +220,17 @@ class DbCompatTest extends TestCase
         $this->assertSame("CONCAT('hello', ' ', 'world')", $result);
     }
 
+    public function testEscapeLikeEscapesWildcardsAndEscapeChar(): void
+    {
+        // %, _ and the escape char (!) must all be escaped with !.
+        $this->assertSame('a!_b!%c!!d', DbCompat::escapeLike('a_b%c!d'));
+    }
+
+    public function testEscapeLikeLeavesPlainTextUnchanged(): void
+    {
+        $this->assertSame('host.example.com', DbCompat::escapeLike('host.example.com'));
+    }
+
     public function testBinaryCollationMySQL(): void
     {
         $this->assertSame(' COLLATE utf8mb4_bin', DbCompat::binaryCollation('mysql'));
@@ -231,6 +242,7 @@ class DbCompatTest extends TestCase
         // PostgreSQL and SQLite compare strings byte-exact already, so no clause.
         $this->assertSame('', DbCompat::binaryCollation('pgsql'));
         $this->assertSame('', DbCompat::binaryCollation('sqlite'));
+        $this->assertSame('', DbCompat::binaryCollation(null));
     }
 
     public function testAccentSensitiveEqualsMySQLFoldsCaseAndForcesBinary(): void

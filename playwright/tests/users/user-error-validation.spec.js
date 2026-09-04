@@ -138,24 +138,19 @@ test.describe('User Management Error Validation', () => {
   test('should validate required fields when editing user', async ({ page }) => {
     await page.goto('/users');
 
-    const editLinks = await page.locator('table a[href*="/users/"][href$="/edit"]').count();
+    // Edit URLs are /users/{id}/edit, so a href*="users/edit" substring never matches
+    const editLink = page.locator('table a[href*="/users/"][href$="/edit"]').first();
+    await expect(editLink).toBeVisible();
+    await editLink.click();
 
-    if (editLinks > 0) {
-      await page.locator('table a[href*="/users/"][href$="/edit"]').first().click();
+    const usernameField = page.locator('input[name*="username"]').first();
+    await expect(usernameField).toBeVisible();
+    await usernameField.clear();
 
-      // Clear required field (e.g., username or email)
-      const usernameField = page.locator('input[name*="username"]').first();
-      if (await usernameField.count() > 0) {
-        await usernameField.clear();
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        // Try to submit
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-        // Should show validation error or stay on form
-        const currentUrl = page.url();
-        expect(currentUrl).toMatch(/users.*edit/i);
-      }
-    }
+    // A blank username must be rejected, leaving us on the edit form
+    await expect(page).toHaveURL(/users.*edit/i);
   });
 
   test('should prevent duplicate username creation', async ({ page }) => {
@@ -173,16 +168,11 @@ test.describe('User Management Error Validation', () => {
     // Submit form
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-    // Should show error about duplicate username or validation error
-    const bodyText = await page.locator('body').textContent();
-    const hasError = bodyText.match(/already.*exists|duplicate|username.*taken|error/i);
-
-    if (hasError) {
-      await expect(page.locator('[data-testid="error-message"], .alert-danger, .error')).toBeVisible();
-    } else {
-      // At minimum, should stay on the form
-      await expect(page).toHaveURL(/users.*add/);
-    }
+    // The duplicate must be rejected: exactly one admin account may exist afterwards.
+    // Match the username input itself - every row carries a permission-template
+    // dropdown listing "Administrator", so a row-level text match hits all of them.
+    await page.goto('/users');
+    await expect(page.locator('input[name$="[username]"][value="admin"]')).toHaveCount(1);
   });
 
   test('should validate email format when creating user', async ({ page }) => {

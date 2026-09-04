@@ -40,17 +40,13 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class EditUserController extends BaseController
 {
-    /** Auth methods whose identity/password fields are owned by an external provider. */
-    private const EXTERNAL_AUTH_METHODS = ['ldap', 'oidc', 'saml'];
-
     protected Request $request;
     private PasswordPolicyService $policyService;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
@@ -67,7 +63,7 @@ class EditUserController extends BaseController
         $this->request = new Request();
         $this->policyService = new PasswordPolicyService();
         $this->userContextService = new UserContextService();
-        $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->auditService = new AuditService($this->db);
@@ -162,8 +158,8 @@ class EditUserController extends BaseController
             }
 
             $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
-            $canViewAllUsers = UserManager::verifyPermission($this->db, 'user_view_others');
-            $canEditAllUsers = UserManager::verifyPermission($this->db, 'user_edit_others');
+            $canViewAllUsers = $this->hasPermission('user_view_others');
+            $canEditAllUsers = $this->hasPermission('user_edit_others');
 
             if ($isOwnProfile && !$canViewAllUsers && !$canEditAllUsers) {
                 // Limited user edited their own profile - redirect to home
@@ -200,7 +196,7 @@ class EditUserController extends BaseController
             '',
             $this->request->getPostParam('use_ldap') === '1'
         );
-        if (!self::isIdpManaged($user['auth_type'] ?? null)) {
+        if (!self::isIdpManaged($user['auth_type'] ?? null, $auth['use_ldap'] && $this->isLdapSyncEnabled())) {
             $constraints['email'] = [
                 new Assert\NotBlank(),
                 new Assert\Email()
@@ -237,7 +233,7 @@ class EditUserController extends BaseController
         if ($auth['use_ldap']) {
             return true;
         }
-        if (in_array($user['auth_type'] ?? 'sql', self::EXTERNAL_AUTH_METHODS, true)) {
+        if (AuthMethod::fromDb($user['auth_type'] ?? null)->isExternal()) {
             return true;
         }
 
@@ -253,16 +249,16 @@ class EditUserController extends BaseController
     private function checkEditPermissions(int $editId): void
     {
         $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
-        $canEditOwn = UserManager::verifyPermission($this->db, 'user_edit_own');
-        $canEditOthers = UserManager::verifyPermission($this->db, 'user_edit_others');
+        $canEditOwn = $this->hasPermission('user_edit_own');
+        $canEditOthers = $this->hasPermission('user_edit_others');
 
         if ((!$isOwnProfile || !$canEditOwn) && ($isOwnProfile || !$canEditOthers)) {
             $this->showError(_('You do not have the permission to edit this user.'));
         }
 
         // Prevent non-superusers from editing superuser accounts (privilege escalation protection)
-        $targetIsSuperuser = UserManager::isUserSuperuser($this->db, $editId);
-        $currentIsSuperuser = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $targetIsSuperuser = $this->createPermissionService()->isAdmin($editId);
+        $currentIsSuperuser = $this->hasPermission('user_is_ueberuser');
 
         if ($targetIsSuperuser && !$currentIsSuperuser) {
             $this->showError(_('You do not have permission to edit a superuser account.'));
@@ -276,13 +272,13 @@ class EditUserController extends BaseController
     private function isRestrictedSelfEdit(int $editId): bool
     {
         return $editId === $this->userContextService->getLoggedInUserId()
-            && !UserManager::verifyPermission($this->db, 'user_edit_others');
+            && !$this->hasPermission('user_edit_others');
     }
 
     private function prepareUserData(int $editId): array
     {
         $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
-        $canEditOthers = UserManager::verifyPermission($this->db, 'user_edit_others');
+        $canEditOthers = $this->hasPermission('user_edit_others');
         $userData = null;
 
         // Force active state to true if user is editing their own profile
@@ -291,7 +287,7 @@ class EditUserController extends BaseController
         // Determine permission template
         $permTempl = $this->request->getPostParam('perm_templ');
 
-        // When user access templates are hidden, always preserve existing template
+        // When user permission templates are hidden, always preserve existing template
         $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
         if (!$showUserAccessTemplates) {
             $userData = $this->getUserDetails($editId);
@@ -325,7 +321,8 @@ class EditUserController extends BaseController
         $identity = self::resolveIdentityFields(
             $userData,
             htmlspecialchars($this->request->getPostParam('fullname')),
-            htmlspecialchars($this->request->getPostParam('email'))
+            htmlspecialchars($this->request->getPostParam('email')),
+            $auth['use_ldap'] && $this->isLdapSyncEnabled()
         );
 
         return [
@@ -344,13 +341,18 @@ class EditUserController extends BaseController
      * Whether a user's identity fields (fullname/email) are owned by an external
      * identity provider, and so must stay read-only.
      *
-     * Only OIDC/SAML sync fullname/email on login and would revert local edits.
-     * LDAP authentication never syncs these fields, so LDAP accounts keep
-     * Poweradmin-managed (editable) identity fields.
+     * OIDC/SAML sync fullname/email on login and would revert local edits.
+     * LDAP accounts are IdP-managed only while LDAP stays enabled for the user
+     * AND ldap.sync_user_info is on; callers pass that combined state.
      */
-    public static function isIdpManaged(?string $currentAuthMethod): bool
+    public static function isIdpManaged(?string $currentAuthMethod, bool $ldapSynced = false): bool
     {
-        return in_array($currentAuthMethod, ['oidc', 'saml'], true);
+        return AuthMethod::fromDb($currentAuthMethod)->isIdpManaged($ldapSynced);
+    }
+
+    private function isLdapSyncEnabled(): bool
+    {
+        return (bool)$this->config->get('ldap', 'sync_user_info', false);
     }
 
     /**
@@ -392,9 +394,9 @@ class EditUserController extends BaseController
         ];
     }
 
-    public static function resolveIdentityFields(array $userData, string $submittedFullname, string $submittedEmail): array
+    public static function resolveIdentityFields(array $userData, string $submittedFullname, string $submittedEmail, bool $ldapSynced = false): array
     {
-        if (self::isIdpManaged($userData['auth_type'] ?? null)) {
+        if (self::isIdpManaged($userData['auth_type'] ?? null, $ldapSynced)) {
             return [
                 'fullname' => (string)($userData['fullname'] ?? ''),
                 'email' => (string)($userData['email'] ?? ''),
@@ -413,14 +415,14 @@ class EditUserController extends BaseController
         $permissions = $this->getUserPermissions($editId);
 
         // Check if password changes should be disabled for external auth users
-        $isExternalAuth = in_array($user['auth_type'] ?? 'sql', self::EXTERNAL_AUTH_METHODS, true);
+        $isExternalAuth = AuthMethod::fromDb($user['auth_type'] ?? null)->isExternal();
 
         // Fetch user's group memberships
-        $groupMemberRepo = new DbUserGroupMemberRepository($this->db);
-        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $groupMemberRepo = $this->createUserGroupMemberRepository();
+        $userGroupRepo = $this->createUserGroupRepository();
 
         $memberships = $groupMemberRepo->findByUserId($editId);
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $currentUserId = $this->userContextService->getLoggedInUserId();
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($currentUserId);
 
@@ -466,17 +468,18 @@ class EditUserController extends BaseController
             'edit_templ_perm' => $permissions['edit_templ_perm'],
             'edit_own_perm' => $permissions['edit_own'],
             'perm_passwd_edit_others' => $permissions['passwd_edit_others'],
-            'permission_templates' => UserManager::listPermissionTemplates($this->db, 'user'),
-            'user_permissions' => UserManager::getPermissionsByTemplateId($this->db, (int)$user['tpl_id']),
+            'permission_templates' => $this->permissionTemplateRepository->listPermissionTemplates('user'),
+            'user_permissions' => $this->permissionTemplateRepository->getPermissionsByTemplateId((int)$user['tpl_id']),
             'ldap_use' => $this->config->get('ldap', 'enabled', false) && !$permissions['is_admin'],
             'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
             'is_external_auth' => $isExternalAuth,
-            'is_identity_readonly' => self::isIdpManaged($user['auth_type'] ?? 'sql'),
+            'is_identity_readonly' => self::isIdpManaged($user['auth_type'] ?? 'sql', $this->isLdapSyncEnabled()),
             'restricted_self_edit' => $this->isRestrictedSelfEdit($editId),
             'password_policy' => $policyConfig,
             'user_groups' => $userGroups,
             'available_groups' => $availableGroupsArray,
-            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
+            'can_manage_users' => $this->createPermissionService()->canManageUsers((int)$this->userContextService->getLoggedInUserId()),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
@@ -487,9 +490,9 @@ class EditUserController extends BaseController
         $isCurrentUser = $this->userContextService->getLoggedInUserId() == $editId;
 
         return [
-            'edit_templ_perm' => UserManager::verifyPermission($this->db, 'user_edit_templ_perm'),
-            'passwd_edit_others' => UserManager::verifyPermission($this->db, 'user_passwd_edit_others'),
-            'edit_own' => UserManager::verifyPermission($this->db, 'user_edit_own'),
+            'edit_templ_perm' => $this->hasPermission('user_edit_templ_perm'),
+            'passwd_edit_others' => $this->hasPermission('user_passwd_edit_others'),
+            'edit_own' => $this->hasPermission('user_edit_own'),
             'is_admin' => Permission::getPermissions($this->db, ['user_is_ueberuser'])['user_is_ueberuser']
                 && $isCurrentUser
         ];
@@ -498,7 +501,7 @@ class EditUserController extends BaseController
     private function handleAddToGroups(int $userId): void
     {
         // Only admins can manage group memberships
-        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if (!$this->hasPermission('user_is_ueberuser')) {
             $this->setMessage('edit_user', 'error', _('You do not have permission to manage group memberships.'));
             $this->showUserEditForm($userId, $this->policyService->getPolicyConfig());
             return;
@@ -515,8 +518,8 @@ class EditUserController extends BaseController
         // Convert to integers
         $groupIds = array_map('intval', $groupIds);
 
-        $groupRepository = new DbUserGroupRepository($this->db);
-        $memberRepository = new DbUserGroupMemberRepository($this->db);
+        $groupRepository = $this->createUserGroupRepository();
+        $memberRepository = $this->createUserGroupMemberRepository();
         $membershipService = new GroupMembershipService($memberRepository, $groupRepository);
 
         // Get target user details for logging
@@ -588,7 +591,7 @@ class EditUserController extends BaseController
 
     private function getUserDetails(int $editId): array
     {
-        $users = UserManager::getUserDetailList($this->db, $this->config->get('ldap', 'enabled', false), $editId);
+        $users = $this->createUserRepository()->getUserDetailList($this->config->get('ldap', 'enabled', false), null, $editId);
 
         if (empty($users)) {
             $this->showError(_('User does not exist.'));

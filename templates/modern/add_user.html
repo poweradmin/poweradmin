@@ -1,20 +1,16 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/users">{% trans %}Users{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Add user{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Users'|trans, url: base_url_prefix ~ '/users'},
+    {label: 'Add user'|trans},
+]) }}
 
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-person-plus me-2"></i>{% trans %}Add User{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-person-plus', 'Add user'|trans) }}
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/users/add" novalidate autocomplete="off" id="addUserForm">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     
                     <div class="mb-3">
                         <label for="username" class="form-label">{% trans %}Username{% endtrans %} <span class="text-danger">*</span></label>
@@ -67,9 +63,10 @@
 
                     {% if show_user_access_templates and user_edit_templ_perm %}
                     <div class="mb-3">
-                        <label for="perm_templ" class="form-label">{% trans %}Access template{% endtrans %}</label>
+                        <label for="perm_templ" class="form-label">{% trans %}Permission template{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="perm_templ" name="perm_templ" required>
-                            <option value="" disabled {{ perm_templ ? '' : 'selected' }}>{% trans %}Select a template...{% endtrans %}</option>
+                            {% set perm_templ_listed = user_templates|filter(t => perm_templ == t['id'])|length > 0 %}
+                            <option value="" disabled {{ perm_templ_listed ? '' : 'selected' }}>{% trans %}Select a template...{% endtrans %}</option>
                             {% for template in user_templates %}
                             {% if perm_templ == template['id'] %}
                             {% set selected = 'selected' %}
@@ -110,7 +107,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <button type="submit" class="btn btn-primary btn-sm" name="commit">
-                                <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add User{% endtrans %}
+                                <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add user{% endtrans %}
                             </button>
                             <a href="{{ base_url_prefix }}/users" class="btn btn-secondary btn-sm">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
@@ -125,9 +122,7 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Account Information{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'Account Information'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">
@@ -169,9 +164,7 @@
 
         {% if show_group_access_templates and perm_is_godlike and available_groups is not empty %}
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-people me-2"></i>{% trans %}Group Memberships{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-people', 'Group Memberships'|trans) }}
             <div class="card-body">
                 <h6 class="text-muted mb-2">{% trans %}Add to Groups{% endtrans %}</h6>
                 <p class="small text-muted mb-3">{% trans %}Select groups to add the new user to upon creation.{% endtrans %}</p>

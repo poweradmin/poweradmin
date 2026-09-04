@@ -432,4 +432,61 @@ class RecordTypeServiceTest extends TestCase
 
         $this->assertSame(['A', 'AAAA', 'CNAME', 'TXT'], array_slice($result, 0, 4));
     }
+
+    public function testGetDomainZoneTypesIncludesSoaByDefault(): void
+    {
+        $this->configManagerMock->method('get')->willReturn(null);
+
+        $this->assertContains('SOA', $this->service->getDomainZoneTypes(false));
+        $this->assertContains('SOA', $this->service->getDomainZoneTypes(true));
+    }
+
+    public function testGetDomainZoneTypesExcludesSoaWhenRequested(): void
+    {
+        $this->configManagerMock->method('get')->willReturn(null);
+
+        $this->assertNotContains('SOA', $this->service->getDomainZoneTypes(false, null, false));
+        $this->assertNotContains('SOA', $this->service->getDomainZoneTypes(true, null, false));
+    }
+
+    public function testGetDomainZoneTypesExcludesSoaFromConfiguredList(): void
+    {
+        $this->configManagerMock->method('get')
+            ->willReturnCallback(function ($section, $key) {
+                if ($section === 'dns' && $key === 'domain_record_types') {
+                    return ['A', 'AAAA', 'SOA', 'TXT', 'MX'];
+                }
+                return null;
+            });
+
+        $this->assertNotContains('SOA', $this->service->getDomainZoneTypes(false, null, false));
+    }
+
+    public function testGetReverseZoneTypesIncludesSoaByDefault(): void
+    {
+        $this->configManagerMock->method('get')->willReturn(null);
+
+        $this->assertContains('SOA', $this->service->getReverseZoneTypes(false));
+    }
+
+    public function testGetReverseZoneTypesExcludesSoaWhenRequested(): void
+    {
+        $this->configManagerMock->method('get')->willReturn(null);
+
+        $this->assertNotContains('SOA', $this->service->getReverseZoneTypes(false, null, false));
+        $this->assertNotContains('SOA', $this->service->getReverseZoneTypes(true, null, false));
+    }
+
+    public function testGetReverseZoneTypesExcludesSoaFromConfiguredList(): void
+    {
+        $this->configManagerMock->method('get')
+            ->willReturnCallback(function ($section, $key) {
+                if ($section === 'dns' && $key === 'reverse_record_types') {
+                    return ['PTR', 'SOA', 'NS', 'CNAME'];
+                }
+                return null;
+            });
+
+        $this->assertNotContains('SOA', $this->service->getReverseZoneTypes(false, null, false));
+    }
 }

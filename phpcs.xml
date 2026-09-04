@@ -2,6 +2,10 @@
 <ruleset name="Custom PSR-12">
     <description>PSR-12 with modified line length</description>
 
+    <!-- phpcs is single-process by default; the CI runner has 4 cores idle.
+         Splits the ~960-file scan across workers (requires ext-pcntl). -->
+    <arg name="parallel" value="4"/>
+
     <rule ref="PSR12">
         <exclude name="PSR12.Classes.OpeningBraceSpace"/>
     </rule>

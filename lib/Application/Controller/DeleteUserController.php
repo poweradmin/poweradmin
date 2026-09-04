@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\UserEntity;
@@ -39,6 +40,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class DeleteUserController extends BaseController
 {
@@ -49,10 +51,13 @@ class DeleteUserController extends BaseController
     private LegacyLogger $auditLogger;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
+
+        $this->request = new Request();
 
         $this->auditLogger = new LegacyLogger($this->db);
         $this->userContextService = new UserContextService();
@@ -61,8 +66,8 @@ class DeleteUserController extends BaseController
 
     public function run(): void
     {
-        $perm_edit_others = UserManager::verifyPermission($this->db, 'user_edit_others');
-        $perm_is_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $perm_edit_others = $this->hasPermission('user_edit_others');
+        $perm_is_godlike = $this->hasPermission('user_is_ueberuser');
 
         $uid = $this->getSafeRequestValue('id');
         if (!$uid || !Validator::isNumber($uid)) {
@@ -70,12 +75,12 @@ class DeleteUserController extends BaseController
         }
 
         // Check basic permissions first
-        if (($uid != $_SESSION['userid'] && !$perm_edit_others) || ($uid == $_SESSION['userid'] && !$perm_is_godlike)) {
+        if (($uid != $_SESSION[SessionKeys::USERID] && !$perm_edit_others) || ($uid == $_SESSION[SessionKeys::USERID] && !$perm_is_godlike)) {
             $this->showError(_("You do not have the permission to delete this user."));
         }
 
         // Prevent non-superusers from deleting superuser accounts (privilege escalation protection)
-        $targetIsSuperuser = UserManager::isUserSuperuser($this->db, $uid);
+        $targetIsSuperuser = $this->createPermissionService()->isAdmin((int)$uid);
 
         if ($targetIsSuperuser && !$perm_is_godlike) {
             $this->showError(_('You do not have permission to delete a superuser account.'));
@@ -92,7 +97,7 @@ class DeleteUserController extends BaseController
 
     public function deleteUser(string $uid): void
     {
-        if (!UserManager::isValidUser($this->db, $uid)) {
+        if ($this->createUserRepository()->getUserById((int)$uid) === null) {
             $this->showError(_('User does not exist.'));
         }
 
@@ -100,7 +105,7 @@ class DeleteUserController extends BaseController
         $targetUsername = UserEntity::getUserNameById($this->db, $uid);
 
         $zones = array();
-        $zone = $_POST['zone'] ?? null;
+        $zone = $this->request->getPostParam('zone');
         if (is_string($zone)) {
             // Per-zone decisions arrive as one JSON field to stay under PHP's max_input_vars limit
             $parsed = self::parseZoneDecisions($zone);
@@ -112,7 +117,7 @@ class DeleteUserController extends BaseController
         } elseif (is_array($zone)) {
             // No-JS fallback posts several fields per zone; a missing trailing marker means
             // the POST was truncated, so abort instead of mishandling the dropped zones
-            if (!isset($_POST['form_complete'])) {
+            if ($this->request->getPostParam('form_complete') === null) {
                 $this->setMessage('delete_user', 'error', _('The user was not deleted because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP "max_input_vars" setting.'));
                 return;
             }
@@ -127,7 +132,7 @@ class DeleteUserController extends BaseController
         }
 
         $legacyUsers = new UserManager($this->db, $this->getConfig());
-        if ($legacyUsers->deleteUser($uid, $zones)) {
+        if ($legacyUsers->deleteUser((int)$uid, $zones)) {
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_user target_user:%s',
                 $this->ipAddressRetriever->getClientIp(),
@@ -175,17 +180,18 @@ class DeleteUserController extends BaseController
 
     public function showQuestion(string $uid): void
     {
-        $name = UserManager::getFullnameFromUserId($this->db, $uid);
+        $name = $this->createUserRepository()->getFullNameById((int)$uid);
         if (!$name) {
             $name = UserEntity::getUserNameById($this->db, $uid);
         }
         $repositoryFactory = $this->getRepositoryFactory();
         $domainRepository = $repositoryFactory->createDomainRepository();
-        $zones = $domainRepository->getZones("own", (int)$uid, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false);
+        // The reassignment list renders neither health badges nor record counts
+        $zones = $domainRepository->getZones("own", (int)$uid, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false, false);
 
         $users = [];
         if (count($zones) > 0) {
-            $users = UserManager::showUsers($this->db);
+            $users = $this->createUserRepository()->getUsersWithZoneCounts();
         }
 
         $this->render('delete_user.html', [

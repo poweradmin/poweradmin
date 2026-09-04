@@ -1,16 +1,13 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Views{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([{label: 'Views'|trans}]) }}
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-eye me-2"></i>{% trans %}Views{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-eye', 'Views'|trans) }}
     <div class="card-body">
-        <p class="text-muted small mb-3">{% trans %}Views serve different zone variants to different clients based on the network mapping. Each variant is identified as zone..variant (for example, example.com..trusted).{% endtrans %}</p>
+        <div class="text-muted small mb-3">
+            <strong><i class="bi bi-info-circle me-1"></i>{% trans %}View Behavior:{% endtrans %}</strong>
+            {% trans %}Views serve different zone variants to different clients based on the network that queried the resolver. Each variant is named zone..variant (for example, example.com..trusted) and must exist as a separate zone in PowerDNS before it can be assigned here. Variants share a name but resolve differently per view, so the same hostname can answer with different IPs depending on the client's network.{% endtrans %}
+        </div>
 
         {% if views is empty %}
         <div class="text-center py-3 text-muted">
@@ -30,7 +27,7 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center py-2">
                     <span class="font-monospace small">{{ zone }}</span>
                     <form method="post" action="{{ base_url_prefix }}/views" class="d-inline">
-                        <input type="hidden" name="_token" value="{{ csrf_token }}">
+                        {{ macros.csrf_field() }}
                         <input type="hidden" name="action" value="remove">
                         <input type="hidden" name="view" value="{{ view.name }}">
                         <input type="hidden" name="zone" value="{{ zone }}">
@@ -52,7 +49,7 @@
             </div>
             <div class="card-body">
                 <form method="post" action="{{ base_url_prefix }}/views" class="row g-2">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="action" value="add">
                     <div class="col-md-4">
                         <label for="view-name" class="form-label small">{% trans %}View name{% endtrans %}</label>

@@ -152,4 +152,24 @@ class SqlDomainRepositoryGroupSortTest extends TestCase
         $this->assertStringNotContainsString('LEFT JOIN user_groups', $capturedQuery, 'Non-group sort must not join user_groups');
         $this->assertStringContainsString('users.username', $capturedQuery, 'Owner sort must reference users.username');
     }
+
+    #[Test]
+    public function getZonesFallsBackWhenSortingByAHiddenRecordCountColumn(): void
+    {
+        // Turning the Records column off drops count_records from the allowed
+        // sort keys, but a session set while it was visible still asks for it
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchAll')->willReturn([]);
+        $stmt->method('fetch')->willReturn(false);
+        $stmt->method('bindValue')->willReturn(true);
+        $this->db->method('prepare')->willReturn($stmt);
+        $this->db->method('query')->willReturn($stmt);
+        $this->db->method('exec')->willReturn(0);
+
+        $repository = new SqlDomainRepository($this->db, $this->config);
+        $result = $repository->getZones('all', 0, 'all', 0, 25, 'count_records', 'ASC', false, null, null, true, false);
+
+        $this->assertSame([], $result);
+    }
 }

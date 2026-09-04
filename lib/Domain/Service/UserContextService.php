@@ -22,37 +22,77 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Enum\AuthMethod;
+
 class UserContextService
 {
+    // Auth methods delegated to an external IdP (shared by session auth_used and
+    // users.auth_method values); everything else validates against the local database
+    /** Derived from {@see AuthMethod::isExternal()}; do not list the cases again. */
+    public const EXTERNAL_AUTH_METHODS = [
+        AuthMethod::LDAP->value,
+        AuthMethod::OIDC->value,
+        AuthMethod::SAML->value,
+    ];
+
+    // Request-scoped fallback for stateless API requests. Web UI requests use
+    // session-backed values directly; API requests authenticate via API key /
+    // Basic auth and have no $_SESSION user, so PublicApiController seeds these
+    // after authentication succeeds. Both fields are cleared when the request
+    // process ends; tests should reset them in tearDown.
+    private static ?int $apiUserId = null;
+    private static ?string $apiUsername = null;
+
+    public static function setApiUserContext(int $userId, ?string $username): void
+    {
+        self::$apiUserId = $userId > 0 ? $userId : null;
+        self::$apiUsername = ($username !== null && $username !== '') ? $username : null;
+    }
+
+    public static function clearApiUserContext(): void
+    {
+        self::$apiUserId = null;
+        self::$apiUsername = null;
+    }
+
     public function getLoggedInUsername(): ?string
     {
-        return $_SESSION['userlogin'] ?? null;
+        return $_SESSION[SessionKeys::USERLOGIN] ?? self::$apiUsername;
     }
 
     public function getLoggedInUserId(): ?int
     {
-        return $_SESSION['userid'] ?? null;
+        return $_SESSION[SessionKeys::USERID] ?? self::$apiUserId;
     }
 
     public function getDisplayName(): ?string
     {
-        return $_SESSION['name'] ?? $this->getLoggedInUsername();
+        return $_SESSION[SessionKeys::NAME] ?? $this->getLoggedInUsername();
     }
 
     public function getAuthMethod(): ?string
     {
-        return $_SESSION['auth_used'] ?? null;
+        return $_SESSION[SessionKeys::AUTH_USED] ?? null;
+    }
+
+    /**
+     * The session's auth method as an enum. Unknown or absent reads as SQL.
+     * getAuthMethod() stays for Twig, which compares the raw string.
+     */
+    public function getAuthMethodEnum(): AuthMethod
+    {
+        return AuthMethod::fromDb($this->getAuthMethod());
     }
 
     public function getUserEmail(): ?string
     {
         // Check both OAuth and regular login email session keys
-        return $_SESSION['useremail'] ?? $_SESSION['email'] ?? null;
+        return $_SESSION[SessionKeys::USEREMAIL] ?? $_SESSION[SessionKeys::EMAIL] ?? null;
     }
 
     public function getOAuthAvatarUrl(): ?string
     {
-        return $_SESSION['oauth_avatar_url'] ?? null;
+        return $_SESSION[SessionKeys::OAUTH_AVATAR_URL] ?? null;
     }
 
     public function isAuthenticated(): bool
@@ -63,12 +103,12 @@ class UserContextService
 
     public function getUserLanguage(): ?string
     {
-        return $_SESSION['userlang'] ?? null;
+        return $_SESSION[SessionKeys::USERLANG] ?? null;
     }
 
     public function setUserLanguage(string $language): void
     {
-        $_SESSION['userlang'] = $language;
+        $_SESSION[SessionKeys::USERLANG] = $language;
     }
 
     public function hasSessionData(string $key): bool

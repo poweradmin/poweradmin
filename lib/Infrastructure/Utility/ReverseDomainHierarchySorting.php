@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
  */
 
 namespace Poweradmin\Infrastructure\Utility;
+
+use Poweradmin\Domain\Enum\SortDirection;
 
 /**
  * Class ReverseDomainHierarchySorting
@@ -45,11 +47,7 @@ class ReverseDomainHierarchySorting
      */
     public function getHierarchicalSortOrder(string $field, string $dbType, string $direction = 'ASC'): string
     {
-        // Normalize direction
-        $direction = strtoupper($direction);
-        if (!in_array($direction, ['ASC', 'DESC'])) {
-            $direction = 'ASC';
-        }
+        $direction = SortDirection::fromRequest($direction)->value;
 
         // Generate database-specific hierarchical sort
         return match ($dbType) {
@@ -129,8 +127,8 @@ class ReverseDomainHierarchySorting
 
                 // Compare by top network component (the most significant octet)
                 // Example: For "1.2.10.in-addr.arpa", the top network is "10"
-                $aNetwork = isset($aParts[0]) ? (int)$aParts[0] : 0;
-                $bNetwork = isset($bParts[0]) ? (int)$bParts[0] : 0;
+                $aNetwork = (int)$aParts[0];
+                $bNetwork = (int)$bParts[0];
 
                 if ($aNetwork !== $bNetwork) {
                     return $aNetwork - $bNetwork;

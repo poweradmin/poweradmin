@@ -51,13 +51,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class AFSDBRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -125,10 +123,6 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
         }
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
-
-        if (count($errors) > 0) {
-            return ValidationResult::errors($errors);
-        }
 
         // Return success with data and any warnings
         $result = [

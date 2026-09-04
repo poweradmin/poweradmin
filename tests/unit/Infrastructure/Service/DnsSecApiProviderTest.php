@@ -297,6 +297,86 @@ class DnsSecApiProviderTest extends TestCase
         $this->assertEmpty($result);
     }
 
+    public function testIsZonePresignedReturnsTrueWhenMetadataIsOne(): void
+    {
+        $this->mockApiClient
+            ->expects($this->once())
+            ->method('getZoneMetadataKind')
+            ->with($this->isInstanceOf(Zone::class), 'PRESIGNED')
+            ->willReturn(['kind' => 'PRESIGNED', 'metadata' => ['1']]);
+
+        $this->assertTrue($this->provider->isZonePresigned('example.com'));
+    }
+
+    public function testIsZonePresignedReturnsFalseWhenMetadataMissing(): void
+    {
+        $this->mockApiClient
+            ->method('getZoneMetadataKind')
+            ->willReturn(['kind' => 'PRESIGNED', 'metadata' => []]);
+
+        $this->assertFalse($this->provider->isZonePresigned('example.com'));
+    }
+
+    public function testIsZonePresignedReturnsFalseOnApiError(): void
+    {
+        // getZoneMetadataKind returns [] when the API call fails
+        $this->mockApiClient
+            ->method('getZoneMetadataKind')
+            ->willReturn([]);
+
+        $this->assertFalse($this->provider->isZonePresigned('example.com'));
+    }
+
+    public function testIsZonePresignedReturnsFalseWhenMetadataNotOne(): void
+    {
+        $this->mockApiClient
+            ->method('getZoneMetadataKind')
+            ->willReturn(['kind' => 'PRESIGNED', 'metadata' => ['0']]);
+
+        $this->assertFalse($this->provider->isZonePresigned('example.com'));
+    }
+
+    public function testGetEditedSerialReturnsServedSerial(): void
+    {
+        $this->mockApiClient
+            ->expects($this->once())
+            ->method('getZone')
+            ->with('example.com.', false)
+            ->willReturn(['name' => 'example.com.', 'dnssec' => true, 'serial' => 2024010101, 'edited_serial' => 2024010199]);
+
+        $this->assertSame(2024010199, $this->provider->getEditedSerial('example.com'));
+    }
+
+    public function testGetEditedSerialReturnsNullForUnsignedZone(): void
+    {
+        // Unsigned zones serve the plain serial, so there is no signed serial to report
+        $this->mockApiClient
+            ->method('getZone')
+            ->willReturn(['name' => 'example.com.', 'dnssec' => false, 'serial' => 2024010101, 'edited_serial' => 2024010101]);
+
+        $this->assertNull($this->provider->getEditedSerial('example.com'));
+    }
+
+    public function testGetEditedSerialReturnsNullWhenZoneUnavailable(): void
+    {
+        // getZone returns null on API failure or unknown zone
+        $this->mockApiClient
+            ->method('getZone')
+            ->willReturn(null);
+
+        $this->assertNull($this->provider->getEditedSerial('example.com'));
+    }
+
+    public function testGetEditedSerialReturnsNullWhenFieldMissing(): void
+    {
+        // PowerDNS versions before 4.2 do not expose edited_serial
+        $this->mockApiClient
+            ->method('getZone')
+            ->willReturn(['name' => 'example.com.', 'dnssec' => true, 'serial' => 2024010101]);
+
+        $this->assertNull($this->provider->getEditedSerial('example.com'));
+    }
+
     /**
      * Helper method to create mock CryptoKey with specific ID
      */

@@ -29,16 +29,22 @@ use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Throwable;
+use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
@@ -55,6 +61,8 @@ class RecordManager implements RecordManagerInterface
     private DomainRepositoryInterface $domainRepository;
     private DnsBackendProvider $backendProvider;
     private LoggerInterface $logger;
+    private RecordChangeLogger $changeLogger;
+    private ?PermissionService $permissionService = null;
 
     /**
      * Constructor
@@ -73,7 +81,8 @@ class RecordManager implements RecordManagerInterface
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
         ?DnsBackendProvider $backendProvider = null,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?RecordChangeLogger $changeLogger = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -84,6 +93,66 @@ class RecordManager implements RecordManagerInterface
         $this->domainRepository = $domainRepository;
         $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $this->logger = $logger ?? new NullLogger();
+        $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
+    }
+
+    private function captureChange(callable $callback): void
+    {
+        try {
+            $callback();
+        } catch (Throwable $e) {
+            $this->logger->warning('Failed to write record change log: {error}', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Check if the logged-in user owns the zone directly or via group membership
+     */
+    private function userIsZoneOwner(int $zoneId): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+        $userRepository = new DbUserRepository($this->db, $this->config);
+        return $userRepository->userOwnsZone($userId, $zoneId);
+    }
+
+    /**
+     * Check if the logged-in user has the given permission (admins always pass).
+     * Memoized service keeps bulk record loops at one permission lookup.
+     */
+    private function userHasPermission(string $permission): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
+        return $this->permissionService->hasPermission($userId, $permission);
+    }
+
+    /**
+     * Resolve the zone name, normalize the record name against it, and reject
+     * record types a client-level editor may not add.
+     *
+     * Normalization happens first so the apex comparison sees the FQDN.
+     *
+     * @return array{0: string, 1: string} Zone name and normalized record name
+     * @throws Exception When the record type is restricted for the user
+     */
+    private function normalizeNameAndAssertAddAllowed(int $zone_id, string $name, string $type, string $perm_edit): array
+    {
+        $zone = $this->domainRepository->getDomainNameById($zone_id);
+        $hostnameValidator = new HostnameValidator($this->config);
+        $name = $hostnameValidator->normalizeRecordName($name, $zone);
+
+        $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
+        if (Permission::isRecordRestrictedForClient($type, $perm_edit, $name, $zone, $canEditSubzoneNs)) {
+            throw new Exception(Permission::restrictedRecordTypeMessage($type, 'add'));
+        }
+
+        return [$zone, $name];
     }
 
     /**
@@ -105,24 +174,12 @@ class RecordManager implements RecordManagerInterface
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if ($type == 'SOA' && $perm_edit == "own_as_client") {
-            throw new Exception(_("You do not have the permission to add SOA record."));
-        }
+        [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
 
-        if ($type == 'NS' && $perm_edit == "own_as_client") {
-            throw new Exception(_("You do not have the permission to add NS record."));
-        }
-
-        // LUA content is evaluated by the DNS server, so writing one reaches past
-        // the zone the client-level editor administers.
-        if ($type == 'LUA' && $perm_edit == "own_as_client") {
-            throw new Exception(_("You do not have the permission to add LUA record."));
-        }
-
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
             throw new Exception(_("You do not have the permission to add a record to this zone."));
         }
 
@@ -131,11 +188,6 @@ class RecordManager implements RecordManagerInterface
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         $content = $this->dnsFormatter->formatContent($type, $content);
-
-        // Normalize the name BEFORE validation
-        $zone = $this->domainRepository->getDomainNameById($zone_id);
-        $hostnameValidator = new HostnameValidator($this->config);
-        $name = $hostnameValidator->normalizeRecordName($name, $zone);
 
         // Now validate the input with normalized name using the validation service
         $validationResult = $this->validationService->validateRecord(
@@ -173,13 +225,29 @@ class RecordManager implements RecordManagerInterface
             return false;
         }
 
+        $this->captureChange(function () use ($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio): void {
+            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+            $this->changeLogger->logRecordCreate([
+                'name' => $name,
+                'type' => $type,
+                'content' => $content,
+                'ttl' => $validatedTtl,
+                'prio' => $validatedPrio,
+                'zone_name' => is_string($zone_name) ? $zone_name : null,
+            ], $zone_id);
+        });
+
         if ($type != 'SOA') {
             $this->soaRecordManager->updateSOASerial($zone_id);
         }
 
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
         if ($pdnssec_use) {
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
+            $dnssecProvider = DnssecProviderFactory::create(
+                $this->db,
+                $this->config,
+                DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
+            );
             $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             if (is_string($zone_name)) {
                 $dnssecProvider->rectifyZone($zone_name);
@@ -201,32 +269,21 @@ class RecordManager implements RecordManagerInterface
      * @param string $content Content of record
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
+     * @param int $disabled Whether the record is created in disabled state (0 or 1)
      *
      * @return int|string|null The new record ID, or null on failure
      * @throws Exception
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): int|string|null
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0): int|string|null
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if ($type == 'SOA' && $perm_edit == "own_as_client") {
-            throw new Exception(_("You do not have the permission to add SOA record."));
-        }
+        [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
 
-        if ($type == 'NS' && $perm_edit == "own_as_client") {
-            throw new Exception(_("You do not have the permission to add NS record."));
-        }
-
-        // LUA content is evaluated by the DNS server, so writing one reaches past
-        // the zone the client-level editor administers.
-        if ($type == 'LUA' && $perm_edit == "own_as_client") {
-            throw new Exception(_("You do not have the permission to add LUA record."));
-        }
-
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
             throw new Exception(_("You do not have the permission to add a record to this zone."));
         }
 
@@ -235,11 +292,6 @@ class RecordManager implements RecordManagerInterface
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         $content = $this->dnsFormatter->formatContent($type, $content);
-
-        // Normalize the name BEFORE validation
-        $zone = $this->domainRepository->getDomainNameById($zone_id);
-        $hostnameValidator = new HostnameValidator($this->config);
-        $name = $hostnameValidator->normalizeRecordName($name, $zone);
 
         // Now validate the input with normalized name using the validation service
         $validationResult = $this->validationService->validateRecord(
@@ -273,11 +325,32 @@ class RecordManager implements RecordManagerInterface
         }
 
         try {
-            $recordId = $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
+            // Disabled records need the disabled flag persisted atomically with the
+            // insert; the regular insert path has no disabled support.
+            $recordId = $disabled
+                ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled)
+                : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
         } catch (RecordIdNotFoundException $e) {
             $this->logger->error('Failed to get record ID after creation: {error}', ['error' => $e->getMessage()]);
             return null;
         }
+        if ($recordId === null) {
+            return null;
+        }
+
+        $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled): void {
+            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+            $this->changeLogger->logRecordCreate([
+                'id' => $recordId,
+                'name' => $name,
+                'type' => $type,
+                'content' => $content,
+                'ttl' => $validatedTtl,
+                'prio' => $validatedPrio,
+                'disabled' => (bool)$disabled,
+                'zone_name' => is_string($zone_name) ? $zone_name : null,
+            ], $zone_id);
+        });
 
         if ($type != 'SOA') {
             $this->soaRecordManager->updateSOASerial($zone_id);
@@ -285,7 +358,11 @@ class RecordManager implements RecordManagerInterface
 
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
         if ($pdnssec_use) {
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
+            $dnssecProvider = DnssecProviderFactory::create(
+                $this->db,
+                $this->config,
+                DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
+            );
             $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             if (is_string($zone_name)) {
                 $dnssecProvider->rectifyZone($zone_name);
@@ -319,24 +396,24 @@ class RecordManager implements RecordManagerInterface
         }
         $record['zid'] = (int)$recordDetails['zid'];
 
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
+        $user_is_zone_owner = $this->userIsZoneOwner($record['zid']);
         $zone_type = $this->domainRepository->getDomainType($record['zid']);
 
-        // The stored type counts as well: posting a different type would otherwise
-        // let a client-level editor rewrite an existing SOA or NS record.
-        $affectedTypes = [strtoupper((string)$recordDetails['type']), strtoupper((string)$record['type'])];
-        if ($perm_edit == "own_as_client" && in_array('SOA', $affectedTypes, true)) {
-            $this->messageService->addSystemError(_("You do not have the permission to edit this SOA record."));
+        // Normalize the posted name first so the apex comparison below sees the FQDN
+        $zone = $this->domainRepository->getDomainNameById($record['zid']);
+        $hostnameValidator = new HostnameValidator($this->config);
+        $record['name'] = $hostnameValidator->normalizeRecordName($record['name'], $zone);
 
-            return false;
-        }
-        if ($perm_edit == "own_as_client" && in_array('NS', $affectedTypes, true)) {
-            $this->messageService->addSystemError(_("You do not have the permission to edit this NS record."));
-
-            return false;
-        }
-        if ($perm_edit == "own_as_client" && in_array('LUA', $affectedTypes, true)) {
-            $this->messageService->addSystemError(_("You do not have the permission to edit this LUA record."));
+        // Both the stored record and the posted state must pass: a client-level
+        // editor may neither touch a restricted record nor turn a record into one.
+        $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
+        $storedIsRestricted = Permission::isRecordRestrictedForClient($recordDetails['type'], $perm_edit, $recordDetails['name'], $zone, $canEditSubzoneNs);
+        $postedIsRestricted = Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs);
+        if ($storedIsRestricted || $postedIsRestricted) {
+            // Name the type that actually triggered the refusal: reporting the posted
+            // type would call a LUA-to-A retype an SOA denial.
+            $refusedType = $storedIsRestricted ? $recordDetails['type'] : $record['type'];
+            $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($refusedType, 'edit'));
 
             return false;
         }
@@ -346,14 +423,9 @@ class RecordManager implements RecordManagerInterface
 
         $dns_ttl = $this->config->get('dns', 'ttl');
 
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
-            $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
+            $this->messageService->addSystemError(_("You do not have permission to edit this record."));
         } else {
-            // Normalize the name BEFORE validation
-            $zone = $this->domainRepository->getDomainNameById($record['zid']);
-            $hostnameValidator = new HostnameValidator($this->config);
-            $record['name'] = $hostnameValidator->normalizeRecordName($record['name'], $zone);
-
             // Now validate the input with normalized name using the validation service
             $validationResult = $this->validationService->validateRecord(
                 $record['rid'],
@@ -388,6 +460,24 @@ class RecordManager implements RecordManagerInterface
                     $this->messageService->addSystemError(_('Failed to update record in DNS backend.'));
                     return false;
                 }
+
+                $afterRecord = [
+                    'id' => $record['rid'],
+                    'name' => $name,
+                    'type' => $record['type'],
+                    'content' => $content,
+                    'ttl' => $validatedTtl,
+                    'prio' => $validatedPrio,
+                    'disabled' => $record['disabled'] ?? false,
+                    'zone_name' => is_string($zone) ? $zone : null,
+                ];
+                $beforeForLog = $recordDetails;
+                $beforeForLog['id'] = $record['rid'];
+                $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
+                $this->captureChange(function () use ($beforeForLog, $afterRecord, $record): void {
+                    $this->changeLogger->logRecordEdit($beforeForLog, $afterRecord, $record['zid']);
+                });
+
                 return true;
             } else {
                 $this->messageService->addSystemError($validationResult->getFirstError());
@@ -414,25 +504,35 @@ class RecordManager implements RecordManagerInterface
             $this->messageService->addSystemError(_("Record not found."));
             return false;
         }
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
+        $user_is_zone_owner = $this->userIsZoneOwner($record['zid']);
 
-        if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
-            if ($record['type'] == "SOA" && $perm_edit == "own_as_client") {
-                $this->messageService->addSystemError(_('You do not have the permission to delete SOA records.'));
+        // Secondary and Consumer zones replicate records from a primary - records are read-only
+        if (ZoneType::isReadOnly($this->domainRepository->getDomainType($record['zid']))) {
+            $this->messageService->addSystemError(_("You cannot delete records from a read-only zone."));
+            return false;
+        }
+
+        if ($perm_edit == "all" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "1")) {
+            $zone = $this->domainRepository->getDomainNameById($record['zid']);
+            $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
+            if (Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)) {
+                $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($record['type'], 'delete'));
                 return false;
             }
 
-            if ($record['type'] == "NS" && $perm_edit == "own_as_client") {
-                $this->messageService->addSystemError(_('You do not have the permission to delete NS records.'));
-                return false;
+            $deleted = $this->backendProvider->deleteRecord($rid);
+
+            if ($deleted) {
+                $this->captureChange(function () use ($record, $rid, $zone): void {
+                    $zoneId = isset($record['zid']) ? (int) $record['zid'] : null;
+                    $beforeForLog = $record;
+                    $beforeForLog['id'] = $rid;
+                    $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
+                    $this->changeLogger->logRecordDelete($beforeForLog, $zoneId);
+                });
             }
 
-            if ($record['type'] == "LUA" && $perm_edit == "own_as_client") {
-                $this->messageService->addSystemError(_('You do not have the permission to delete LUA records.'));
-                return false;
-            }
-
-            return $this->backendProvider->deleteRecord($rid);
+            return $deleted;
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
             return false;
@@ -448,13 +548,17 @@ class RecordManager implements RecordManagerInterface
      */
     public static function deleteRecordZoneTempl($db, int|string $rid): bool
     {
-        // records_zone_templ.record_id is integer-only and never references API-mode encoded IDs.
-        if (!is_int($rid) && !ctype_digit($rid)) {
-            return true;
+        // SQL record IDs live in records_zone_templ; API record IDs (encoded
+        // RecordIdentifier strings) live in records_zone_templ_api. PostgreSQL
+        // rejects encoded strings against the integer record_id column, so
+        // dispatch by ID type instead of probing both tables.
+        if (is_int($rid) || ctype_digit($rid)) {
+            $stmt = $db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?");
+            $stmt->execute([(int)$rid]);
+        } else {
+            $stmt = $db->prepare("DELETE FROM records_zone_templ_api WHERE record_id = ?");
+            $stmt->execute([$rid]);
         }
-
-        $stmt = $db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?");
-        $stmt->execute([(int)$rid]);
 
         return true;
     }
@@ -490,10 +594,10 @@ class RecordManager implements RecordManagerInterface
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this comment."));
 
             return false;

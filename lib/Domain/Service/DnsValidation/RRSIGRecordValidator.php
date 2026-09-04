@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -77,13 +77,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class RRSIGRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -104,7 +102,7 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         $warnings = [];
 
         // Validate the hostname format
-        if (!StringValidator::isValidPrintable($name)) {
+        if (!StringValidator::validatePrintable($name)->isValid()) {
             return ValidationResult::failure(_('Hostname contains invalid characters.'));
         }
 
@@ -170,7 +168,7 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Check for valid printable characters
-        if (!StringValidator::isValidPrintable($content)) {
+        if (!StringValidator::validatePrintable($content)->isValid()) {
             return ValidationResult::failure(_('RRSIG record contains invalid characters.'));
         }
 

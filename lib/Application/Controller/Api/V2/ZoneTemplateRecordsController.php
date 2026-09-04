@@ -35,7 +35,9 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -43,6 +45,8 @@ class ZoneTemplateRecordsController extends PublicApiController
 {
     private DbZoneTemplateRepository $repository;
     private ApiPermissionService $apiPermissionService;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
     private ?ZoneTemplateRecordValidationService $recordValidationService = null;
 
     public function __construct(array $request, array $pathParameters = [])
@@ -50,6 +54,8 @@ class ZoneTemplateRecordsController extends PublicApiController
         parent::__construct($request, $pathParameters);
         $this->repository = new DbZoneTemplateRepository($this->db, $this->config);
         $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     /**
@@ -97,19 +103,14 @@ class ZoneTemplateRecordsController extends PublicApiController
 
     private function canViewTemplate(int $userId, int $templateId): bool
     {
-        if ($this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser')) {
-            return true;
+        // Viewing zone templates requires a zone-template permission (matches the
+        // web UI); global and own templates are then readable within that.
+        if (!$this->apiPermissionService->canViewZoneTemplates($userId)) {
+            return false;
         }
 
-        // Reading needs a zone-template permission, or a zone-add permission since
-        // zone creators pick templates; global and own templates are then readable.
-        if (
-            !$this->apiPermissionService->userHasPermission($userId, 'zone_templ_add')
-            && !$this->apiPermissionService->userHasPermission($userId, 'zone_templ_edit')
-            && !$this->apiPermissionService->userHasPermission($userId, 'zone_master_add')
-            && !$this->apiPermissionService->userHasPermission($userId, 'zone_slave_add')
-        ) {
-            return false;
+        if ($this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser')) {
+            return true;
         }
 
         $owner = $this->repository->getOwner($templateId);
@@ -144,7 +145,7 @@ class ZoneTemplateRecordsController extends PublicApiController
             'id' => (int)$record['id'],
             'name' => $record['name'],
             'type' => $record['type'],
-            'content' => $record['content'],
+            'content' => $this->stripTxtQuotes($record['content'], $record['type']),
             'ttl' => (int)$record['ttl'],
             'priority' => (int)($record['prio'] ?? 0),
         ];
@@ -171,19 +172,19 @@ class ZoneTemplateRecordsController extends PublicApiController
                 content: new OA\JsonContent(
                     type: 'object',
                     properties: [
-                        'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'data' => new OA\Property(
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(
                             property: 'data',
                             type: 'array',
                             items: new OA\Items(
                                 type: 'object',
                                 properties: [
-                                    'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
-                                    'name' => new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
-                                    'type' => new OA\Property(property: 'type', type: 'string', example: 'SOA'),
-                                    'content' => new OA\Property(property: 'content', type: 'string', example: '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400'),
-                                    'ttl' => new OA\Property(property: 'ttl', type: 'integer', example: 86400),
-                                    'priority' => new OA\Property(property: 'priority', type: 'integer', example: 0)
+                                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
+                                    new OA\Property(property: 'type', type: 'string', example: 'SOA'),
+                                    new OA\Property(property: 'content', type: 'string', example: '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400'),
+                                    new OA\Property(property: 'ttl', type: 'integer', example: 86400),
+                                    new OA\Property(property: 'priority', type: 'integer', example: 0)
                                 ]
                             )
                         )
@@ -239,11 +240,11 @@ class ZoneTemplateRecordsController extends PublicApiController
                 type: 'object',
                 required: ['name', 'type', 'content'],
                 properties: [
-                    'name' => new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
-                    'type' => new OA\Property(property: 'type', type: 'string', example: 'A'),
-                    'content' => new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
-                    'ttl' => new OA\Property(property: 'ttl', type: 'integer', example: 86400),
-                    'priority' => new OA\Property(property: 'priority', type: 'integer', example: 0)
+                    new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
+                    new OA\Property(property: 'type', type: 'string', example: 'A'),
+                    new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
+                    new OA\Property(property: 'ttl', type: 'integer', example: 86400),
+                    new OA\Property(property: 'priority', type: 'integer', example: 0)
                 ]
             )
         ),
@@ -254,12 +255,12 @@ class ZoneTemplateRecordsController extends PublicApiController
                 content: new OA\JsonContent(
                     type: 'object',
                     properties: [
-                        'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'data' => new OA\Property(
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(
                             property: 'data',
                             type: 'object',
                             properties: [
-                                'id' => new OA\Property(property: 'id', type: 'integer', example: 5)
+                                new OA\Property(property: 'id', type: 'integer', example: 5)
                             ]
                         )
                     ]
@@ -312,6 +313,16 @@ class ZoneTemplateRecordsController extends PublicApiController
 
             $recordId = $this->repository->addRecord($templateId, $name, $type, $content, $ttl, $priority);
 
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_add_zone_template_record template_id:%d record_id:%d record_name:%s record_type:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->getAuthenticatedUsername(),
+                $templateId,
+                $recordId,
+                str_replace(' ', '_', $name),
+                $type
+            ));
+
             return $this->returnApiResponse(['id' => $recordId], true, null, 201);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplateRecordsController::createRecord', 'Failed to create zone template record');
@@ -346,17 +357,17 @@ class ZoneTemplateRecordsController extends PublicApiController
                 content: new OA\JsonContent(
                     type: 'object',
                     properties: [
-                        'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'data' => new OA\Property(
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(
                             property: 'data',
                             type: 'object',
                             properties: [
-                                'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
-                                'name' => new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
-                                'type' => new OA\Property(property: 'type', type: 'string', example: 'SOA'),
-                                'content' => new OA\Property(property: 'content', type: 'string', example: '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400'),
-                                'ttl' => new OA\Property(property: 'ttl', type: 'integer', example: 86400),
-                                'priority' => new OA\Property(property: 'priority', type: 'integer', example: 0)
+                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
+                                new OA\Property(property: 'type', type: 'string', example: 'SOA'),
+                                new OA\Property(property: 'content', type: 'string', example: '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400'),
+                                new OA\Property(property: 'ttl', type: 'integer', example: 86400),
+                                new OA\Property(property: 'priority', type: 'integer', example: 0)
                             ]
                         )
                     ]
@@ -421,11 +432,11 @@ class ZoneTemplateRecordsController extends PublicApiController
                 type: 'object',
                 required: ['name', 'type', 'content'],
                 properties: [
-                    'name' => new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
-                    'type' => new OA\Property(property: 'type', type: 'string', example: 'A'),
-                    'content' => new OA\Property(property: 'content', type: 'string', example: '192.168.1.2'),
-                    'ttl' => new OA\Property(property: 'ttl', type: 'integer', example: 86400),
-                    'priority' => new OA\Property(property: 'priority', type: 'integer', example: 0)
+                    new OA\Property(property: 'name', type: 'string', example: '[ZONE]'),
+                    new OA\Property(property: 'type', type: 'string', example: 'A'),
+                    new OA\Property(property: 'content', type: 'string', example: '192.168.1.2'),
+                    new OA\Property(property: 'ttl', type: 'integer', example: 86400),
+                    new OA\Property(property: 'priority', type: 'integer', example: 0)
                 ]
             )
         ),
@@ -436,8 +447,8 @@ class ZoneTemplateRecordsController extends PublicApiController
                 content: new OA\JsonContent(
                     type: 'object',
                     properties: [
-                        'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'message' => new OA\Property(property: 'message', type: 'string', example: 'Zone template record updated successfully')
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'Zone template record updated successfully')
                     ]
                 )
             ),
@@ -499,6 +510,16 @@ class ZoneTemplateRecordsController extends PublicApiController
 
             $this->repository->updateRecord($recordId, $name, $type, $content, $ttl, $priority);
 
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_edit_zone_template_record template_id:%d record_id:%d record_name:%s record_type:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->getAuthenticatedUsername(),
+                $templateId,
+                $recordId,
+                str_replace(' ', '_', $name),
+                $type
+            ));
+
             return $this->returnApiResponse(null, true, 'Zone template record updated successfully');
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplateRecordsController::updateRecord', 'Failed to update zone template record');
@@ -533,8 +554,8 @@ class ZoneTemplateRecordsController extends PublicApiController
                 content: new OA\JsonContent(
                     type: 'object',
                     properties: [
-                        'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
-                        'message' => new OA\Property(property: 'message', type: 'string', example: 'Zone template record deleted successfully')
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(property: 'message', type: 'string', example: 'Zone template record deleted successfully')
                     ]
                 )
             ),
@@ -566,10 +587,18 @@ class ZoneTemplateRecordsController extends PublicApiController
 
             // A caller who may not create this type may not remove one either.
             if (!$this->apiPermissionService->canWriteTemplateRecordType($userId, (string)$record['type'])) {
-                return $this->returnApiError('You do not have permission to store this record type in a zone template', 403);
+                return $this->returnApiError('You do not have permission to delete this record type from a zone template', 403);
             }
 
             $this->repository->deleteRecord($recordId);
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_delete_zone_template_record template_id:%d record_id:%d',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->getAuthenticatedUsername(),
+                $templateId,
+                $recordId
+            ));
 
             return $this->returnApiResponse(null, true, 'Zone template record deleted successfully');
         } catch (\Throwable $e) {

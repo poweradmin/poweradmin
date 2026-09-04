@@ -26,7 +26,7 @@ namespace Poweradmin\Domain\Service;
  * Outcome of {@see ZoneCreateOwnershipResolver::resolve()}: either a resolved
  * owner/group assignment for the new zone, or an error with HTTP status.
  */
-final class ZoneOwnershipResolution
+final readonly class ZoneOwnershipResolution
 {
     /**
      * @param int|null   $owner    Resolved user owner (null when no user owner).
@@ -35,10 +35,10 @@ final class ZoneOwnershipResolution
      * @param int        $status   HTTP status code to return on error.
      */
     private function __construct(
-        public readonly ?int $owner,
-        public readonly array $groupIds,
-        public readonly ?string $error,
-        public readonly int $status,
+        public ?int $owner,
+        public array $groupIds,
+        public ?string $error,
+        public int $status,
     ) {
     }
 

@@ -171,6 +171,97 @@ class LoggerTest extends TestCase
         $warningLogger->warning('Warning message', ['level' => 'warning']);
     }
 
+    public function testUnknownConfiguredLevelFallsBackToInfo(): void
+    {
+        // 'warn' is not a PSR-3 level; it must not silence logging.
+        $captured = $this->captureHandledRecords();
+        $typoLogger = new Logger($this->mockHandler, 'warn');
+
+        $typoLogger->error('Error message');
+
+        $this->assertContains('Error message', array_column($captured->records, 'message'));
+    }
+
+    public function testUnknownConfiguredLevelStillFiltersBelowInfo(): void
+    {
+        $captured = $this->captureHandledRecords();
+        $typoLogger = new Logger($this->mockHandler, 'warn');
+
+        $typoLogger->debug('Debug message');
+
+        $this->assertNotContains('DEBUG', array_column($captured->records, 'level'));
+    }
+
+    public function testUnknownConfiguredLevelIsReported(): void
+    {
+        $captured = $this->captureHandledRecords();
+
+        new Logger($this->mockHandler, 'warn');
+
+        $this->assertCount(1, $captured->records);
+        $this->assertSame('WARNING', $captured->records[0]['level']);
+        $this->assertStringContainsString('warn', $captured->records[0]['message']);
+        $this->assertStringContainsString('falling back to info', $captured->records[0]['message']);
+    }
+
+    public function testKnownConfiguredLevelIsNotReported(): void
+    {
+        $captured = $this->captureHandledRecords();
+
+        new Logger($this->mockHandler, 'warning');
+
+        $this->assertSame([], $captured->records);
+    }
+
+    private function captureHandledRecords(): object
+    {
+        $sink = new class {
+            public array $records = [];
+        };
+
+        $this->mockHandler->method('handle')
+            ->willReturnCallback(function ($data) use ($sink) {
+                $sink->records[] = $data;
+            });
+
+        return $sink;
+    }
+
+    public function testUnknownConfiguredLevelRaisesNoPhpWarning(): void
+    {
+        $raised = [];
+        set_error_handler(function (int $errno, string $errstr) use (&$raised): bool {
+            $raised[] = $errstr;
+            return true;
+        });
+
+        try {
+            (new Logger($this->mockHandler, 'warn'))->error('Error message');
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame([], $raised);
+    }
+
+    public function testUnknownMessageLevelIsTreatedAsDebug(): void
+    {
+        $debugLogger = new Logger($this->mockHandler, 'debug');
+
+        $this->mockHandler->expects($this->once())
+            ->method('handle');
+
+        $debugLogger->log('warn', 'Warn message');
+    }
+
+    public function testLevelNamesCoversTheDocumentedVocabulary(): void
+    {
+        $this->assertSame(
+            ['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug'],
+            Logger::levelNames()
+        );
+    }
+
     public function testInterpolation(): void
     {
         $context = [

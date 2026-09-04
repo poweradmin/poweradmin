@@ -26,6 +26,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use PDO;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
@@ -87,7 +88,7 @@ class ZoneCountService
 
         if ($perm == "own") {
             // Use UserContextService if provided, otherwise fall back to $_SESSION
-            $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION['userid'] ?? null);
+            $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION[SessionKeys::USERID] ?? null);
 
             if ($userId) {
                 // Include zones accessible via direct ownership or group membership.
@@ -110,8 +111,12 @@ class ZoneCountService
                 $db_type = $this->config->get('database', 'type');
                 $conditions[] = DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
             } else {
-                $conditions[] = "$domains_table.name LIKE ?";
-                $params[] = $letterstart . "%";
+                // Exact first-character match, mirroring the zone list query, so a
+                // filter of `_` (e.g. _dmarc zones) matches literally instead of the
+                // unescaped LIKE `_%` treating `_` as a single-char wildcard.
+                $db_type = $this->config->get('database', 'type');
+                $conditions[] = DbCompat::substr($db_type) . "($domains_table.name,1,1) = ?";
+                $params[] = $letterstart;
             }
         }
 
@@ -146,11 +151,12 @@ class ZoneCountService
 
     private function countZonesApi(string $perm, string $letterstart, string $zone_type): int
     {
-        $allZones = $this->backendProvider->getZones();
+        // Only names and ids are counted, so skip the DNSSEC lookup
+        $allZones = $this->backendProvider->getZones(false);
 
         // Filter by ownership
         if ($perm === 'own') {
-            $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION['userid'] ?? null);
+            $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION[SessionKeys::USERID] ?? null);
             if (!$userId) {
                 return 0;
             }
@@ -186,13 +192,11 @@ class ZoneCountService
         // Filter by zone type
         if ($zone_type === 'forward') {
             $allZones = array_filter($allZones, function ($z) {
-                $name = rtrim($z['name'] ?? '', '.');
-                return !str_ends_with($name, '.in-addr.arpa') && !str_ends_with($name, '.ip6.arpa');
+                return !DnsHelper::isReverseZoneName($z['name'] ?? '');
             });
         } elseif ($zone_type === 'reverse') {
             $allZones = array_filter($allZones, function ($z) {
-                $name = rtrim($z['name'] ?? '', '.');
-                return str_ends_with($name, '.in-addr.arpa') || str_ends_with($name, '.ip6.arpa');
+                return DnsHelper::isReverseZoneName($z['name'] ?? '');
             });
         }
 

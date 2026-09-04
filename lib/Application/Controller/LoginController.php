@@ -22,21 +22,17 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Presenter\LocalePresenter;
 use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Application\Service\LocaleService;
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
-use Poweradmin\Infrastructure\Utility\LanguageCode;
 
 class LoginController extends BaseController
 {
-    private LocaleService $localeService;
-    private LocalePresenter $localePresenter;
     private CsrfTokenService $csrfTokenService;
     private SamlService $samlService;
 
@@ -46,11 +42,8 @@ class LoginController extends BaseController
         $authenticate = $_SERVER['REQUEST_METHOD'] === 'POST';
         parent::__construct($request, $authenticate);
 
-        $this->localeService = new LocaleService();
-        $this->localePresenter = new LocalePresenter();
         $this->csrfTokenService = new CsrfTokenService();
 
-        // Initialize external auth services
         $logHandler = LoggerHandlerFactory::create($this->config->getAll());
         $logLevel = $this->config->get('logging', 'level', 'info');
         $logger = new Logger($logHandler, $logLevel);
@@ -67,93 +60,60 @@ class LoginController extends BaseController
         );
     }
 
+    /**
+     * The login form sends `_token` carrying the login token, which
+     * SessionAuthenticator validates against its own session key.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
-        // If user is already authenticated, redirect to index
-        if (isset($_SESSION['userid'])) {
+        if (isset($_SESSION[SessionKeys::USERID])) {
             $this->redirect('/');
             return;
         }
 
-
-        $currentLanguage = $_GET['lang'] ?? $this->config->get('interface', 'language', 'en_EN');
-
-        $localesData = $this->getLocalesData();
-        $preparedLocales = $this->localeService->prepareLocales($localesData, $currentLanguage);
-
-        list($msg, $type) = $this->getSessionMessages();
+        [$msg, $type] = $this->getSessionMessages();
 
         if (file_exists('install')) {
             $this->render('empty.html', []);
-        } else {
-            $this->renderLogin($preparedLocales, $msg, $type);
+            return;
         }
+
+        $this->renderLogin($msg, $type);
     }
 
     private function getSessionMessages(): array
     {
-        $msg = $_SESSION['message'] ?? '';
-        $type = $_SESSION['type'] ?? '';
-        unset($_SESSION['message'], $_SESSION['type']);
+        $msg = $_SESSION[SessionKeys::LOGIN_MESSAGE] ?? '';
+        $type = $_SESSION[SessionKeys::LOGIN_MESSAGE_TYPE] ?? '';
+        unset($_SESSION[SessionKeys::LOGIN_MESSAGE], $_SESSION[SessionKeys::LOGIN_MESSAGE_TYPE]);
         return [$msg, $type];
     }
 
-    private function renderLogin(array $preparedLocales, string $msg, string $type): void
+    private function renderLogin(string $msg, string $type): void
     {
-        $locales = explode(',', $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN');
-        $showLanguageSelector = count($locales) > 1;
-
         $loginToken = $this->csrfTokenService->generateToken();
-        $_SESSION['login_token'] = $loginToken;
+        $_SESSION[SessionKeys::LOGIN_TOKEN] = $loginToken;
 
-        // Get available external auth providers
-        $oidcProviders = [];
-        $oidcEnabled = false;
-
-        // Check OIDC status but don't initialize the service here
-        // OIDC authentication is handled by dedicated OidcLoginController
         $oidcEnabled = $this->config->get('oidc', 'enabled', false);
-        if ($oidcEnabled) {
-            // For template display purposes, get provider info from config
-            $providersConfig = $this->config->get('oidc', 'providers', []);
-            foreach ($providersConfig as $id => $config) {
-                // Default to enabled if flag not set, or if provider has required credentials
-                $isEnabled = !isset($config['enabled']) || $config['enabled'];
-                $hasCredentials = !empty($config['client_id']) && !empty($config['client_secret']);
+        $oidcProviders = $oidcEnabled ? $this->buildOidcProviders() : [];
 
-                if ($isEnabled && $hasCredentials) {
-                    $oidcProviders[$id] = [
-                        'id' => $id,
-                        'display_name' => $config['display_name'] ?? ucfirst($id)
-                    ];
-                }
-            }
-        }
-
-        $samlProviders = [];
-        $samlEnabled = false;
-        if ($this->samlService->isEnabled()) {
-            $samlEnabled = true;
-            $samlProviders = $this->samlService->getAvailableProviders();
-        }
-
-        $currentLanguage = $_GET['lang'] ?? $this->config->get('interface', 'language', 'en_EN');
-        if (!in_array($currentLanguage, $locales)) {
-            $currentLanguage = $this->config->get('interface', 'language', 'en_EN');
-        }
+        $samlEnabled = $this->samlService->isEnabled();
+        $samlProviders = $samlEnabled ? $this->samlService->getAvailableProviders() : [];
 
         $this->render('login.html', [
             'login_token' => $loginToken,
+            // Kept for 4.4.0 theme forks whose login form still posts it
             'query_string' => $_SERVER['QUERY_STRING'] ?? '',
-            'locale_options' => $this->localePresenter->generateLocaleOptions($preparedLocales),
-            'locales' => $preparedLocales,
-            'show_language_selector' => $showLanguageSelector,
-            'current_language' => $currentLanguage,
             'msg' => $msg,
             'type' => $type,
             'recaptcha_enabled' => $this->config->get('security', 'recaptcha.enabled', false),
             'recaptcha_site_key' => $this->config->get('security', 'recaptcha.site_key', ''),
-            'recaptcha_version' => $this->config->get('security', 'recaptcha.version', 'v2'),
+            'recaptcha_version' => $this->config->get('security', 'recaptcha.version', 'v3'),
             'password_reset_enabled' => $this->config->get('security', 'password_reset.enabled', false),
             'username_recovery_enabled' => $this->config->get('security', 'username_recovery.enabled', false),
             'oidc_enabled' => $oidcEnabled,
@@ -163,29 +123,20 @@ class LoginController extends BaseController
         ]);
     }
 
-    private function getLocalesData(): array
+    private function buildOidcProviders(): array
     {
-        $enabledLanguages = $this->config->get('interface', 'enabled_languages', 'en_EN') ?? 'en_EN';
-        $locales = explode(',', $enabledLanguages);
-        $localesData = [];
-        foreach ($locales as $locale) {
-            $localesData[$locale] = LanguageCode::getByLocale($locale);
+        $providers = [];
+        foreach ($this->config->get('oidc', 'providers', []) as $id => $config) {
+            $isEnabled = !isset($config['enabled']) || $config['enabled'];
+            $hasCredentials = !empty($config['client_id']) && !empty($config['client_secret']);
+
+            if ($isEnabled && $hasCredentials) {
+                $providers[$id] = [
+                    'id' => $id,
+                    'display_name' => $config['display_name'] ?? ucfirst($id),
+                ];
+            }
         }
-        asort($localesData);
-
-        return $localesData;
-    }
-
-
-    private function validateSamlProvider(string $provider): bool
-    {
-        // Sanitize provider ID - only allow alphanumeric characters and underscores
-        if (!preg_match('/^[a-zA-Z0-9_]+$/', $provider)) {
-            return false;
-        }
-
-        // Check if provider is actually available
-        $availableProviders = $this->samlService->getAvailableProviders();
-        return isset($availableProviders[$provider]);
+        return $providers;
     }
 }

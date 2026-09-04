@@ -15,7 +15,9 @@ test.describe.configure({ mode: 'serial' });
 // Helper to get a zone ID for testing
 async function getTestZoneId(page) {
   await page.goto('/zones/forward?letter=all');
-  const editLink = page.locator('a[href*="/edit"]').first();
+  // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
+  // which carries no zone id, so this helper used to return null for every test.
+  const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
   if (await editLink.count() > 0) {
     const href = await editLink.getAttribute('href');
     const match = href.match(/\/zones\/(\d+)\/edit/);
@@ -56,9 +58,11 @@ test.describe('Zone Operations', () => {
       if (!zoneId) return;
 
       await page.goto(`/zones/${zoneId}/edit`);
-      const bodyText = await page.locator('body').textContent();
-      // SOA should contain a serial number (typically format: YYYYMMDDNN)
-      expect(bodyText).toMatch(/\d{10}|\d{8}/);
+
+      // Records render as editable inputs, so the serial lives in a value attribute
+      // that textContent() cannot see. Assert against the SOA row's content field.
+      const soaContent = page.locator('tr:has(input[value="SOA"]) input[name*="[content]"]').first();
+      await expect(soaContent).toHaveValue(/\d{8,10}/);
     });
 
     test('should update SOA serial on record change', async ({ page }) => {

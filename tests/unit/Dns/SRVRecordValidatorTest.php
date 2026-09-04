@@ -272,6 +272,35 @@ class SRVRecordValidatorTest extends TestCase
     }
 
     /**
+     * RFC 2782: a target of "." with port and weight 0 means the service is
+     * deliberately not available at this domain, so port 0 must be accepted.
+     */
+    public function testValidateAcceptsRfc2782NoServiceForm()
+    {
+        $result = $this->validator->validate('0 0 .', '_sip._tcp.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid(), implode('; ', $result->getErrors()));
+        $this->assertEquals(0, $result->getData()['contentData']['port']);
+        $this->assertEmpty(
+            array_filter($result->getWarnings(), fn($w) => str_contains($w, 'port and weight should both be 0')),
+            'the "no service" warning must not fire for the conformant form'
+        );
+    }
+
+    /**
+     * A "." target with a real port is still accepted, but warns.
+     */
+    public function testValidateWarnsWhenNoServiceTargetHasNonZeroPort()
+    {
+        $result = $this->validator->validate('0 5060 .', '_sip._tcp.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid(), implode('; ', $result->getErrors()));
+        $this->assertNotEmpty(
+            array_filter($result->getWarnings(), fn($w) => str_contains($w, 'port and weight should both be 0'))
+        );
+    }
+
+    /**
      * Test validation with invalid hostname in target
      */
     public function testValidateWithInvalidContentTarget()

@@ -65,7 +65,6 @@ class DomainUtilityTest extends TestCase
         // Skip if the function doesn't exist, just to be safe
         if (!function_exists('inet_pton')) {
             $this->markTestSkipped('inet_pton function not available');
-            return;
         }
 
         // Create a temporary TestNetworkUtility class that overrides the inetPton method

@@ -88,9 +88,10 @@ class RecordTypeService
      *
      * @param bool $isDnsSecEnabled
      * @param ?PdnsCapabilities $caps See getAllTypes().
+     * @param bool $includeSoa Set false in add-record flows; SOA is auto-created with the zone and PowerDNS allows only one.
      * @return array
      */
-    public function getDomainZoneTypes(bool $isDnsSecEnabled, ?PdnsCapabilities $caps = null): array
+    public function getDomainZoneTypes(bool $isDnsSecEnabled, ?PdnsCapabilities $caps = null, bool $includeSoa = true): array
     {
         $configuredDomainTypes = $this->configManager->get('dns', 'domain_record_types');
 
@@ -98,11 +99,11 @@ class RecordTypeService
             $types = $isDnsSecEnabled ?
                 $this->mergeDnsSecTypes($configuredDomainTypes, true) :
                 $configuredDomainTypes;
-            return $this->applyTopOrder($this->filterByCapabilities($types, $caps));
+            return $this->applyTopOrder($this->filterSoa($this->filterByCapabilities($types, $caps), $includeSoa));
         }
 
         $types = array_merge(RecordType::DOMAIN_ZONE_COMMON_RECORDS, RecordType::LESS_COMMON_RECORDS);
-        return $this->applyTopOrder($this->filterByCapabilities($this->mergeDnsSecTypes($types, $isDnsSecEnabled), $caps));
+        return $this->applyTopOrder($this->filterSoa($this->filterByCapabilities($this->mergeDnsSecTypes($types, $isDnsSecEnabled), $caps), $includeSoa));
     }
 
     /**
@@ -110,9 +111,10 @@ class RecordTypeService
      *
      * @param bool $isDnsSecEnabled
      * @param ?PdnsCapabilities $caps See getAllTypes().
+     * @param bool $includeSoa See getDomainZoneTypes().
      * @return array
      */
-    public function getReverseZoneTypes(bool $isDnsSecEnabled, ?PdnsCapabilities $caps = null): array
+    public function getReverseZoneTypes(bool $isDnsSecEnabled, ?PdnsCapabilities $caps = null, bool $includeSoa = true): array
     {
         $configuredReverseTypes = $this->configManager->get('dns', 'reverse_record_types');
 
@@ -120,11 +122,22 @@ class RecordTypeService
             $types = $isDnsSecEnabled ?
                 $this->mergeDnsSecTypes($configuredReverseTypes, true) :
                 $configuredReverseTypes;
-            return $this->applyTopOrder($this->filterByCapabilities($types, $caps));
+            return $this->applyTopOrder($this->filterSoa($this->filterByCapabilities($types, $caps), $includeSoa));
         }
 
         $types = RecordType::REVERSE_ZONE_COMMON_RECORDS;
-        return $this->applyTopOrder($this->filterByCapabilities($this->mergeDnsSecTypes($types, $isDnsSecEnabled), $caps));
+        return $this->applyTopOrder($this->filterSoa($this->filterByCapabilities($this->mergeDnsSecTypes($types, $isDnsSecEnabled), $caps), $includeSoa));
+    }
+
+    /**
+     * @param array<int, string> $types
+     */
+    private function filterSoa(array $types, bool $includeSoa): array
+    {
+        if ($includeSoa) {
+            return $types;
+        }
+        return array_values(array_filter($types, static fn(string $type): bool => $type !== 'SOA'));
     }
 
     /**

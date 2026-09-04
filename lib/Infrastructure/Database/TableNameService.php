@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Database;
 
 use InvalidArgumentException;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Enum\SortDirection;
 
 class TableNameService
 {
@@ -81,14 +82,13 @@ class TableNameService
      */
     public function validateDirection(string $direction): string
     {
-        $allowedDirections = ['ASC', 'DESC'];
-        $direction = strtoupper($direction);
+        $normalized = SortDirection::tryFrom(strtoupper($direction));
 
-        if (!in_array($direction, $allowedDirections, true)) {
+        if ($normalized === null) {
             throw new InvalidArgumentException("Invalid sort direction: $direction");
         }
 
-        return $direction;
+        return $normalized->value;
     }
 
     public function validateLimit(int $limit, int $maxLimit = 10000): int

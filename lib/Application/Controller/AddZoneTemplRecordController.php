@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,14 +25,15 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -43,12 +44,16 @@ class AddZoneTemplRecordController extends BaseController
 {
     private RecordTypeService $recordTypeService;
     private UserContextService $userContext;
+    private Request $request;
+    private ZoneTemplate $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
+        $this->request = new Request();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContext = new UserContextService();
+        $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
     }
 
     public function run(): void
@@ -67,9 +72,9 @@ class AddZoneTemplRecordController extends BaseController
 
         $zone_templ_id = (int)$this->getSafeRequestValue('id');
         $userId = $this->userContext->getLoggedInUserId();
-        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
-        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
+        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
+        $perm_godlike = $this->hasPermission('user_is_ueberuser');
+        $perm_templ_edit = $this->hasPermission('zone_templ_edit');
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to add records to zone templates."));
 
@@ -96,10 +101,11 @@ class AddZoneTemplRecordController extends BaseController
 
             $this->setValidationConstraints($constraints);
 
-            if ($this->doValidateRequest($_POST)) {
+            $postParams = $this->request->getPostParams();
+            if ($this->doValidateRequest($postParams)) {
                 $this->addZoneTemplRecord();
             } else {
-                $this->showFirstValidationError($_POST);
+                $this->showFirstValidationError($postParams);
             }
         } else {
             $this->showAddZoneTemplRecord();
@@ -109,19 +115,20 @@ class AddZoneTemplRecordController extends BaseController
     private function addZoneTemplRecord(): void
     {
         $zone_templ_id = (int)$this->getSafeRequestValue('id');
-        $name = $_POST['name'] ?? "[ZONE]";
-        $type = $_POST['type'] ?? "";
-        $content = $_POST['content'] ?? "";
-        $prio = $_POST['prio'] ?? 0;
+        $name = $this->request->getPostParam('name', "[ZONE]");
+        $type = $this->request->getPostParam('type', "");
+        $content = $this->request->getPostParam('content', "");
+        $prio = $this->request->getPostParam('prio', 0);
         $dns_ttl = $this->config->get('dns', 'ttl', 3600);
-        $ttl = $_POST['ttl'] ?? $dns_ttl;
+        $ttl = $this->request->getPostParam('ttl', $dns_ttl);
 
-        $template = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
-
-        if ($template->addZoneTemplRecord($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
+        if ($this->zoneTemplate->addZoneTemplRecord($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
             // Mark template as modified to track sync status
             $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
             $syncService->markTemplateAsModified($zone_templ_id);
+
+            $auditService = new AuditService($this->db);
+            $auditService->logZoneTemplateRecordAdd($zone_templ_id, $name, $type);
 
             $this->setMessage('edit_zone_templ', 'success', 'The record was successfully added.');
             $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
@@ -134,17 +141,16 @@ class AddZoneTemplRecordController extends BaseController
     {
         $zone_templ_id = (int)$this->getSafeRequestValue('id');
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
-        $name = $_POST['name'] ?? "[ZONE]";
-        $type = $_POST['type'] ?? "";
-        $content = $_POST['content'] ?? "";
-        $prio = $_POST['prio'] ?? 0;
+        $name = $this->request->getPostParam('name', "[ZONE]");
+        $type = $this->request->getPostParam('type', "");
+        $content = $this->request->getPostParam('content', "");
+        $prio = $this->request->getPostParam('prio', 0);
         $dns_ttl = $this->config->get('dns', 'ttl', 3600);
-        $ttl = $_POST['ttl'] ?? $dns_ttl;
+        $ttl = $this->request->getPostParam('ttl', $dns_ttl);
 
         // Get count of zones using this template
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
-        $linked_zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
+        $linked_zones = $this->zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
         $zones_linked_count = count($linked_zones);
 
         $this->render('add_zone_templ_record.html', [

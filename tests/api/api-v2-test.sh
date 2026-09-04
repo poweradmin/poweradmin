@@ -121,9 +121,14 @@ api_request_v2() {
         -H "X-API-Key: $API_KEY"
         -H "Content-Type: application/json"
         -H "Accept: application/json"
-        -X "$method"
         --max-time 30
     )
+    # curl -X HEAD waits for a body a HEAD response never sends; --head reads headers only.
+    if [[ "$method" == "HEAD" ]]; then
+        curl_opts+=(--head)
+    else
+        curl_opts+=(-X "$method")
+    fi
 
     if [[ -n "$data" ]]; then
         curl_opts+=(-d "$data")
@@ -356,11 +361,11 @@ test_ptr_autocreation() {
         CREATED_REVERSE_ZONE=true
         print_info "Created reverse zone ID: $TEST_REVERSE_ZONE_ID"
     else
-        # Reverse zone already exists from test data - look it up via v1 API
+        # Reverse zone already exists from test data - look it up by name
         print_info "Reverse zone already exists, looking up ID..."
         local existing_zones
         existing_zones=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-            "${API_BASE_URL}/api/v1/zones" 2>/dev/null | jq -r '[.data[]? | select(.name=="2.0.192.in-addr.arpa") | .zone_id // .id][0] // empty')
+            "${API_BASE_URL}/api/v2/zones?name=2.0.192.in-addr.arpa" 2>/dev/null | jq -r '[.data.zones[]? | select(.name=="2.0.192.in-addr.arpa") | .id][0] // empty')
         if [[ -n "$existing_zones" ]]; then
             TEST_REVERSE_ZONE_ID="$existing_zones"
             print_info "Found existing reverse zone ID: $TEST_REVERSE_ZONE_ID"
@@ -431,6 +436,165 @@ test_ptr_autocreation() {
     fi
 
     print_info "PTR auto-creation tests completed"
+}
+
+##############################################################################
+# Test: PTR sync on record update (issue #1255)
+##############################################################################
+
+# Remove PTR records by name from the shared reverse zone. The reverse zone
+# survives between runs when it wasn't created by this suite, so leftover PTRs
+# from a previous run would make PTR creation fail with "already exists".
+cleanup_stale_ptr_records() {
+    local records
+    records=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/zones/${TEST_REVERSE_ZONE_ID}/records" 2>/dev/null)
+
+    local name id
+    for name in "$@"; do
+        for id in $(echo "$records" | jq -r ".data.records[]? | select(.type == \"PTR\" and .name == \"$name\") | .id" 2>/dev/null); do
+            curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+                "${API_BASE_URL}/api/v2/zones/${TEST_REVERSE_ZONE_ID}/records/${id}" >/dev/null 2>&1 || true
+        done
+    done
+}
+
+test_ptr_update() {
+    print_section "PTR Update Tests"
+
+    if [[ -z "$TEST_ZONE_ID" || -z "$TEST_REVERSE_ZONE_ID" ]]; then
+        print_info "Skipping PTR update tests - PTR auto-creation didn't run"
+        return 0
+    fi
+
+    cleanup_stale_ptr_records "200.2.0.192.in-addr.arpa" "201.2.0.192.in-addr.arpa" "202.2.0.192.in-addr.arpa"
+
+    # Seed an A record with PTR so we have something to update.
+    local seed='{
+        "name": "ptr-upd",
+        "type": "A",
+        "content": "192.0.2.200",
+        "ttl": 3600,
+        "create_ptr": true
+    }'
+    if ! api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records" "$seed" 201 "Seed A record (192.0.2.200) with PTR"; then
+        print_info "Failed to seed record - skipping PTR update tests"
+        return 1
+    fi
+    local PTR_UPD_RECORD_ID
+    PTR_UPD_RECORD_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
+
+    # Test 1: change IP with update_ptr=true - old PTR should go, new PTR should appear.
+    local update_change_ip='{
+        "name": "ptr-upd",
+        "type": "A",
+        "content": "192.0.2.201",
+        "ttl": 3600,
+        "update_ptr": true
+    }'
+    api_request_v2 "PUT" "/zones/$TEST_ZONE_ID/records/$PTR_UPD_RECORD_ID" "$update_change_ip" 200 "Update A record IP with update_ptr=true"
+
+    # On the API backend a record id encodes its content, so changing the IP
+    # retires the old id. Take the one the update reports back.
+    PTR_UPD_RECORD_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
+
+    increment_test
+    if [[ "$LAST_RESPONSE_BODY" =~ "\"ptr_updated\":true" ]]; then
+        print_pass "ptr_updated flag is true in response"
+    else
+        print_fail "ptr_updated flag missing or false in response"
+    fi
+
+    # Verify new PTR exists and old PTR is gone.
+    api_request_v2 "GET" "/zones/$TEST_REVERSE_ZONE_ID/records" "" 200 "List reverse zone after PTR update"
+
+    increment_test
+    if [[ "$LAST_RESPONSE_BODY" =~ "201.2.0.192.in-addr.arpa" ]]; then
+        print_pass "New PTR (201.2.0.192.in-addr.arpa) found in reverse zone"
+    else
+        print_fail "New PTR not found in reverse zone"
+    fi
+
+    increment_test
+    if [[ "$LAST_RESPONSE_BODY" =~ "200.2.0.192.in-addr.arpa" ]]; then
+        print_fail "Old PTR (200.2.0.192.in-addr.arpa) still present in reverse zone"
+    else
+        print_pass "Old PTR removed from reverse zone"
+    fi
+
+    # Test 2: update without update_ptr should not touch PTRs.
+    local update_no_ptr='{
+        "name": "ptr-upd",
+        "type": "A",
+        "content": "192.0.2.202",
+        "ttl": 3600
+    }'
+    api_request_v2 "PUT" "/zones/$TEST_ZONE_ID/records/$PTR_UPD_RECORD_ID" "$update_no_ptr" 200 "Update A record IP without update_ptr"
+
+    api_request_v2 "GET" "/zones/$TEST_REVERSE_ZONE_ID/records" "" 200 "List reverse zone after silent update"
+
+    increment_test
+    if [[ "$LAST_RESPONSE_BODY" =~ "201.2.0.192.in-addr.arpa" ]]; then
+        print_pass "PTR for previous IP (201) still present (update_ptr default off)"
+    else
+        print_fail "PTR for previous IP unexpectedly removed"
+    fi
+
+    print_info "PTR update tests completed"
+}
+
+##############################################################################
+# Test: Server-side TTL defaults (issue #1032, 4.5.0)
+##############################################################################
+
+test_ttl_defaults() {
+    print_section "TTL Default Resolution Tests"
+
+    if [[ -z "$TEST_ZONE_ID" || -z "$TEST_REVERSE_ZONE_ID" ]]; then
+        print_info "Skipping TTL default tests - PTR auto-creation didn't run"
+        return 0
+    fi
+
+    # Create an A record on the forward zone without a ttl field.
+    # Without dns.ttl_reverse configured the server should fall back to dns.ttl.
+    local record_no_ttl='{
+        "name": "ttl-default-a",
+        "type": "A",
+        "content": "192.0.2.50"
+    }'
+
+    if api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records" "$record_no_ttl" 201 "Create A record without ttl (forward zone)"; then
+        local returned_ttl
+        returned_ttl=$(extract_json_field "$LAST_RESPONSE_BODY" "ttl")
+        increment_test
+        if [[ "$returned_ttl" =~ ^[0-9]+$ && "$returned_ttl" -gt 0 ]]; then
+            print_pass "Forward A record default ttl is numeric: $returned_ttl"
+        else
+            print_fail "Forward A record default ttl unexpected: $returned_ttl"
+        fi
+    fi
+
+    # Create a PTR record on the reverse zone without a ttl field.
+    # The server resolves dns.ttl_reverse (when set) or dns.ttl otherwise.
+    cleanup_stale_ptr_records "51.2.0.192.in-addr.arpa"
+    local ptr_no_ttl='{
+        "name": "51.2.0.192.in-addr.arpa",
+        "type": "PTR",
+        "content": "ttl-default.example.com"
+    }'
+
+    if api_request_v2 "POST" "/zones/$TEST_REVERSE_ZONE_ID/records" "$ptr_no_ttl" 201 "Create PTR record without ttl (reverse zone)"; then
+        local returned_ttl
+        returned_ttl=$(extract_json_field "$LAST_RESPONSE_BODY" "ttl")
+        increment_test
+        if [[ "$returned_ttl" =~ ^[0-9]+$ && "$returned_ttl" -gt 0 ]]; then
+            print_pass "Reverse PTR record default ttl is numeric: $returned_ttl"
+        else
+            print_fail "Reverse PTR record default ttl unexpected: $returned_ttl"
+        fi
+    fi
+
+    print_info "TTL default tests completed"
 }
 
 ##############################################################################
@@ -517,7 +681,14 @@ test_bulk_operations() {
     api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records" "" 200 "Verify rollback"
 
     increment_test
-    if [[ ! "$LAST_RESPONSE_BODY" =~ "192.0.2.20" ]]; then
+    if [[ "${DNS_BACKEND:-sql}" == "api" ]]; then
+        # Writes go straight to PowerDNS over REST, which no PDO transaction can
+        # undo, so the controller deliberately skips one (ZonesRecordsBulkController
+        # sets $useTransaction = !isApiBackend()). A partial batch is expected here.
+        print_info "Atomic rollback is not available on the API backend - skipping"
+    # Match the full field: a bare 192.0.2.20 is also a prefix of the
+    # 192.0.2.20x addresses the PTR tests leave in this same zone
+    elif [[ ! "$LAST_RESPONSE_BODY" =~ \"content\":\"192\.0\.2\.20\" ]]; then
         print_pass "Transaction rolled back correctly (no partial records)"
     else
         print_fail "Rollback failed - found record that should have been rolled back"
@@ -792,9 +963,20 @@ test_zone_status_codes() {
     fi
     api_request_v2 "POST" "/zones" "$dup_zone" 409 "Reject duplicate zone name (already exists)"
 
-    # Operations on a non-existent zone return 404
+    # Operations on a non-existent zone return 404 (existence checked before permission)
     api_request_v2 "PUT" "/zones/999999" '{"type":"NATIVE"}' 404 "Update non-existent zone returns 404"
+    assert_json "Update 404 uses v2 wrapper" "$LAST_RESPONSE_BODY" '.success' 'false'
     api_request_v2 "DELETE" "/zones/999999" "" 404 "Delete non-existent zone returns 404"
+    assert_json "Delete 404 uses v2 wrapper" "$LAST_RESPONSE_BODY" '.success' 'false'
+
+    # HEAD is scoped like GET and must reach the read handler, not fall through to 405
+    if [[ -n "$dup_zone_id" ]]; then
+        api_request_v2 "HEAD" "/zones/$dup_zone_id" "" 200 "HEAD on existing zone returns 200 (not 405)"
+    fi
+
+    # Unknown v2 endpoints return 404 in the v2 {success:false} wrapper
+    api_request_v2 "GET" "/this-endpoint-does-not-exist" "" 404 "Unknown v2 endpoint returns 404"
+    assert_json "Unknown-endpoint 404 uses v2 wrapper" "$LAST_RESPONSE_BODY" '.success' 'false'
 
     # Clean up the zone created for the duplicate test
     if [[ -n "$dup_zone_id" ]]; then
@@ -1148,6 +1330,28 @@ test_zone_templates() {
         api_request_v2 "PUT" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records/${TEST_ZONE_TEMPLATE_RECORD_ID}" "$update_record_data" 200 "Update template record"
     fi
 
+    # Test 7b: TXT template record round-trip returns unquoted content (issue #1373)
+    if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
+        local txt_record_id=""
+        local txt_record_data='{"name": "[ZONE]", "type": "TXT", "content": "\"v=spf1 -all\"", "ttl": 3600, "priority": 0}'
+        if api_request_v2 "POST" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records" "$txt_record_data" 201 "Add TXT record to zone template"; then
+            txt_record_id=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
+        fi
+
+        if [[ -n "$txt_record_id" ]]; then
+            api_request_v2 "GET" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records/${txt_record_id}" "" 200 "Get TXT template record"
+            assert_json "TXT template record content is unquoted on get" "$LAST_RESPONSE_BODY" ".data.record.content" "v=spf1 -all"
+
+            api_request_v2 "GET" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records" "" 200 "List records with TXT template record"
+            assert_json "TXT template record content is unquoted on list" "$LAST_RESPONSE_BODY" ".data.records[] | select(.id == ${txt_record_id}) | .content" "v=spf1 -all"
+
+            api_request_v2 "GET" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}" "" 200 "Get template details with TXT record"
+            assert_json "TXT template record content is unquoted in template details" "$LAST_RESPONSE_BODY" ".data.template.records[] | select(.id == ${txt_record_id}) | .content" "v=spf1 -all"
+
+            api_request_v2 "DELETE" "/zone-templates/${TEST_ZONE_TEMPLATE_ID}/records/${txt_record_id}" "" 200 "Delete TXT template record"
+        fi
+    fi
+
     # Test 8: Update zone template
     if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
         local update_data='{"name": "Updated API Test Template", "description": "Updated via API test"}'
@@ -1177,6 +1381,30 @@ test_zone_templates() {
     # Test 10b: Create zone with string template name (should fail, must be numeric ID)
     local name_template_zone='{"name":"name-template-test.example.com","type":"MASTER","template":"blockTemplate"}'
     api_request_v2 "POST" "/zones" "$name_template_zone" 400 "Reject zone creation with string template name" || true
+
+    # Test 10c: soa_edit_api is validated, unlike the web form which ignores unknown values
+    local bad_soa_edit_api='{"name":"bad-soa-edit-api.example.com","type":"MASTER","soa_edit_api":"NOPE"}'
+    api_request_v2 "POST" "/zones" "$bad_soa_edit_api" 400 "Reject zone creation with unknown soa_edit_api" || true
+
+    local nonstring_soa_edit_api='{"name":"nonstring-soa-edit-api.example.com","type":"MASTER","soa_edit_api":5}'
+    api_request_v2 "POST" "/zones" "$nonstring_soa_edit_api" 400 "Reject non-string soa_edit_api" || true
+
+    # Test 10d: a valid choice is accepted and stored as zone metadata
+    local soa_edit_api_zone='{"name":"soa-edit-api-test.example.com","type":"MASTER","soa_edit_api":"INCREASE"}'
+    if api_request_v2 "POST" "/zones" "$soa_edit_api_zone" 201 "Create zone with soa_edit_api"; then
+        local soa_zone_id
+        soa_zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+        if [[ -n "$soa_zone_id" ]]; then
+            api_request_v2 "GET" "/zones/${soa_zone_id}/metadata/SOA-EDIT-API" "" 200 "Read back SOA-EDIT-API metadata" || true
+            if ! echo "$LAST_RESPONSE_BODY" | grep -q "INCREASE"; then
+                print_fail "soa_edit_api was not persisted as SOA-EDIT-API metadata"
+            fi
+        fi
+    fi
+
+    # Test 10e: OFF is a valid choice that disables the policy
+    local soa_off_zone='{"name":"soa-edit-api-off.example.com","type":"MASTER","soa_edit_api":"OFF"}'
+    api_request_v2 "POST" "/zones" "$soa_off_zone" 201 "Create zone with soa_edit_api=OFF" || true
 
     # Test 11: Duplicate template name
     if [[ -n "$TEST_ZONE_TEMPLATE_ID" ]]; then
@@ -1215,7 +1443,7 @@ test_zone_templates() {
 cleanup_existing_test_owner_user() {
     local user_id
     user_id=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "zone_owner_test_user") | .user_id' 2>/dev/null)
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data.users[]? | select(.username == "zone_owner_test_user") | .user_id' 2>/dev/null)
     if [[ -n "$user_id" ]]; then
         curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
             "${API_BASE_URL}/api/v2/users/${user_id}" >/dev/null 2>&1 || true
@@ -1351,7 +1579,8 @@ test_zone_owners() {
     http_code=$(echo "$response" | tail -n1)
     body=$(echo "$response" | sed '$d')
 
-    if [[ "$http_code" == "201" ]]; then
+    # Nothing added (all already assigned) is a plain 200, not a 201 Created.
+    if [[ "$http_code" == "200" ]]; then
         local skipped=$(echo "$body" | jq -r '.data.skipped | length')
         local added=$(echo "$body" | jq -r '.data.added | length')
         if [[ "$added" == "0" && "$skipped" -ge 1 ]]; then
@@ -1360,7 +1589,7 @@ test_zone_owners() {
             print_fail "Expected 0 added and skipped >= 1, got added=$added skipped=$skipped"
         fi
     else
-        print_fail "Expected 201 for batch add, got HTTP $http_code"
+        print_fail "Expected 200 for batch add with nothing added, got HTTP $http_code"
     fi
 
     # Test 8d: Batch add with non-existent users (reports not_found)
@@ -1370,7 +1599,8 @@ test_zone_owners() {
     http_code=$(echo "$response" | tail -n1)
     body=$(echo "$response" | sed '$d')
 
-    if [[ "$http_code" == "201" ]]; then
+    # All users not found means nothing was created: expect 200, not 201.
+    if [[ "$http_code" == "200" ]]; then
         local not_found=$(echo "$body" | jq -r '.data.not_found | length')
         if [[ "$not_found" == "2" ]]; then
             print_pass "Non-existent users correctly reported in not_found ($not_found)"
@@ -1378,11 +1608,8 @@ test_zone_owners() {
             print_fail "Expected 2 not_found, got $not_found"
         fi
     else
-        print_fail "Expected 201 for batch add, got HTTP $http_code"
+        print_fail "Expected 200 for batch add with nothing added, got HTTP $http_code"
     fi
-
-    # Clean up batch-added owners before removal tests
-    api_request_groups DELETE "/zones/${TEST_OWNER_ZONE_ID}/owners/1" >/dev/null 2>&1 || true
 
     # Test 9: Remove owner from zone
     increment_test
@@ -1442,6 +1669,37 @@ test_zone_owners() {
         print_pass "Remove owner from non-existent zone correctly returns 404"
     else
         print_fail "Expected 404 for non-existent zone, got HTTP $http_code"
+    fi
+
+    # Test 15 (regression for issue #49): orphan prevention refuses last-owner removal.
+    # A freshly-created zone has exactly one owner (the API caller) and no groups,
+    # so deleting that sole owner must fail with HTTP 400.
+    if api_request_v2 "POST" "/zones" '{"name":"orphan-test.example.com","type":"MASTER"}' 201 "Create dedicated zone for orphan-prevention test"; then
+        local orphan_zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+
+        increment_test
+        print_test "Removing the last owner is refused (issue #49)"
+
+        response=$(api_request_groups GET "/zones/${orphan_zone_id}/owners")
+        body=$(echo "$response" | sed '$d')
+        local sole_owner_id=$(echo "$body" | jq -r '.data.owners[0].user_id')
+
+        response=$(api_request_groups DELETE "/zones/${orphan_zone_id}/owners/${sole_owner_id}")
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | sed '$d')
+
+        if [[ "$http_code" == "400" ]]; then
+            local message=$(echo "$body" | jq -r '.message // ""')
+            if [[ "$message" == *"last owner"* ]]; then
+                print_pass "Last-owner removal refused with 400: $message"
+            else
+                print_fail "Got 400 but message did not mention 'last owner': $message"
+            fi
+        else
+            print_fail "Expected 400 for last-owner removal, got HTTP $http_code (body: $body)"
+        fi
+
+        api_request_v2 "DELETE" "/zones/${orphan_zone_id}" "" 204 "Cleanup orphan-prevention test zone" || true
     fi
 
     print_info "Zone Owners API tests completed"
@@ -1569,6 +1827,123 @@ test_zone_metadata() {
 }
 
 ##############################################################################
+# Zone DNSSEC Tests
+##############################################################################
+
+TEST_DNSSEC_ZONE_ID=""
+
+test_zone_dnssec() {
+    print_section "Zone DNSSEC API Tests"
+
+    print_info "Creating test zone for DNSSEC tests..."
+    local zone_data='{"name":"dnssec-test.example.com","type":"MASTER"}'
+
+    if api_request_v2 "POST" "/zones" "$zone_data" 201 "Create test zone for DNSSEC"; then
+        TEST_DNSSEC_ZONE_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+        print_info "Created zone ID: $TEST_DNSSEC_ZONE_ID"
+    else
+        print_fail "Failed to create test zone - skipping DNSSEC tests"
+        return 1
+    fi
+
+    # Apex NS records are required before a zone can be DNSSEC-signed.
+    api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/records" \
+        '{"name":"dnssec-test.example.com","type":"NS","content":"ns1.example.com"}' 201 "Add apex NS1 record"
+    api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/records" \
+        '{"name":"dnssec-test.example.com","type":"NS","content":"ns2.example.com"}' 201 "Add apex NS2 record"
+
+    # Probe the status endpoint. When the PowerDNS API is not configured the
+    # controller returns 501; skip the live sign/unsign checks in that case.
+    local probe_code
+    probe_code=$(curl -s -o /dev/null -w "%{http_code}" \
+        -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        --max-time 30 \
+        "${API_BASE_URL}/api/v2/zones/${TEST_DNSSEC_ZONE_ID}/dnssec")
+
+    if [[ "$probe_code" == "501" ]]; then
+        print_info "DNSSEC endpoints return 501 (PowerDNS API not configured) - skipping live sign/unsign tests"
+    else
+        # Status on an unsigned zone
+        api_request_v2 "GET" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" "" 200 "Get DNSSEC status (unsigned)"
+        increment_test
+        local enabled
+        enabled=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.enabled' 2>/dev/null)
+        if [[ "$enabled" == "false" ]]; then
+            print_pass "New zone reports DNSSEC disabled"
+        else
+            print_fail "Expected DNSSEC disabled on new zone, got '$enabled'"
+        fi
+
+        # Enable DNSSEC
+        api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" '{"enabled":true}' 200 "Enable DNSSEC"
+        increment_test
+        local ds_count dnskey
+        enabled=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.enabled' 2>/dev/null)
+        ds_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.ds_records | length' 2>/dev/null)
+        dnskey=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.dnskey' 2>/dev/null)
+        if [[ "$enabled" == "true" && "$ds_count" -ge 1 && -n "$dnskey" && "$dnskey" != "null" ]]; then
+            print_pass "Enable returned signed status with $ds_count DS record(s) and a DNSKEY"
+        else
+            print_fail "Enable response incomplete (enabled=$enabled ds_records=$ds_count dnskey=$dnskey)"
+        fi
+
+        # Verify DS record fields are structured
+        increment_test
+        local key_tag
+        key_tag=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.ds_records[0].key_tag' 2>/dev/null)
+        if [[ "$key_tag" =~ ^[0-9]+$ ]]; then
+            print_pass "DS record exposes a numeric key_tag ($key_tag)"
+        else
+            print_fail "Expected numeric key_tag in DS record, got '$key_tag'"
+        fi
+
+        # Status now reports signed with DS records
+        api_request_v2 "GET" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" "" 200 "Get DNSSEC status (signed)"
+        increment_test
+        ds_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.ds_records | length' 2>/dev/null)
+        if [[ "$ds_count" -ge 1 ]]; then
+            print_pass "Signed zone status lists $ds_count DS record(s)"
+        else
+            print_fail "Expected DS records on signed zone, got $ds_count"
+        fi
+
+        # Re-enabling an already-signed zone is a no-op (idempotent)
+        api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" '{"enabled":true}' 200 "Re-enable DNSSEC is idempotent"
+
+        # Disable DNSSEC
+        api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" '{"enabled":false}' 200 "Disable DNSSEC"
+        increment_test
+        enabled=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.enabled' 2>/dev/null)
+        if [[ "$enabled" == "false" ]]; then
+            print_pass "Disable returned unsigned status"
+        else
+            print_fail "Expected DNSSEC disabled after disable, got '$enabled'"
+        fi
+
+        # A zone without apex NS records must be rejected before signing
+        local nons_zone_id
+        if api_request_v2 "POST" "/zones" '{"name":"dnssec-nons.example.com","type":"MASTER"}' 201 "Create zone without NS records"; then
+            nons_zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+            api_request_v2 "POST" "/zones/${nons_zone_id}/dnssec" '{"enabled":true}' 400 "Reject signing a zone with no apex NS records"
+            api_request_v2 "DELETE" "/zones/${nons_zone_id}" "" 204 "Delete NS-less validation zone" || true
+        fi
+    fi
+
+    # Validation and error paths (independent of PowerDNS API availability)
+    api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" '{}' 400 "Reject missing enabled field"
+    api_request_v2 "POST" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" '{"enabled":"yes"}' 400 "Reject non-boolean enabled field"
+    api_request_v2 "GET" "/zones/999999/dnssec" "" 404 "Get DNSSEC status for non-existent zone"
+    api_request_v2 "POST" "/zones/999999/dnssec" '{"enabled":true}' 404 "Enable DNSSEC on non-existent zone"
+
+    # Cleanup test zone
+    if [[ -n "$TEST_DNSSEC_ZONE_ID" ]]; then
+        print_info "Deleting DNSSEC test zone $TEST_DNSSEC_ZONE_ID..."
+        api_request_v2 "DELETE" "/zones/$TEST_DNSSEC_ZONE_ID" "" 204 "Delete DNSSEC test zone" || true
+        TEST_DNSSEC_ZONE_ID=""
+    fi
+}
+
+##############################################################################
 # Users CRUD Tests
 ##############################################################################
 
@@ -1582,7 +1957,7 @@ test_users_crud() {
 
     increment_test
     local user_count
-    user_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data | length' 2>/dev/null)
+    user_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.users | length' 2>/dev/null)
     if [[ "$user_count" -ge 1 ]]; then
         print_pass "Users list contains at least 1 user ($user_count)"
     else
@@ -1602,11 +1977,32 @@ test_users_crud() {
 
         increment_test
         local username
-        username=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.username' 2>/dev/null)
+        username=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user.username' 2>/dev/null)
         if [[ "$username" == "api_crud_test_user" ]]; then
             print_pass "User data matches (username: $username)"
         else
             print_fail "Expected username 'api_crud_test_user', got '$username'"
+        fi
+
+        # Test 3b: permission template is reported by ID and by name (#1330)
+        increment_test
+        local templ_id templ_name
+        templ_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user.perm_templ' 2>/dev/null)
+        templ_name=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user.perm_templ_name' 2>/dev/null)
+        if [[ "$templ_id" == "1" && -n "$templ_name" && "$templ_name" != "null" ]]; then
+            print_pass "User reports perm_templ $templ_id ($templ_name)"
+        else
+            print_fail "Expected perm_templ 1 with a name, got id '$templ_id' name '$templ_name'"
+        fi
+
+        # Test 3c: groups is present and empty for a user created without groups
+        increment_test
+        local group_count
+        group_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.user.groups | length' 2>/dev/null)
+        if [[ "$group_count" == "0" ]]; then
+            print_pass "User with no memberships reports an empty groups array"
+        else
+            print_fail "Expected 0 groups, got '$group_count'"
         fi
     fi
 
@@ -1620,7 +2016,7 @@ test_users_crud() {
 
         increment_test
         local fullname
-        fullname=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.fullname' 2>/dev/null)
+        fullname=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user.fullname' 2>/dev/null)
         if [[ "$fullname" == "API CRUD Updated" ]]; then
             print_pass "User fullname updated correctly"
         else
@@ -1648,12 +2044,107 @@ test_users_crud() {
 
     # Test 9: Delete non-existent user
     api_request_v2 "DELETE" "/users/999999" "" 404 "Delete non-existent user"
+
+    test_users_group_assignment
+}
+
+# Group assignment at user-creation time (#1330)
+test_users_group_assignment() {
+    local group_id group_name="Viewers"
+    group_id=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/groups" 2>/dev/null \
+        | jq -r --arg n "$group_name" '.data.groups[]? | select(.name == $n) | .id' 2>/dev/null)
+
+    if [[ -z "$group_id" || "$group_id" == "null" ]]; then
+        print_info "Skipping group-assignment tests: seeded group '$group_name' not found"
+        return
+    fi
+
+    # An ID and that same group's name in one list must collapse to a single membership
+    local create_data
+    create_data=$(jq -nc --argjson gid "$group_id" --arg gname "$group_name" '{
+        username: "api_groups_test_user",
+        password: "SecureTestPass1234",
+        fullname: "API Groups Test",
+        email: "api_groups_test@example.com",
+        perm_templ: 1,
+        active: true,
+        groups: [$gid, $gname]
+    }')
+
+    local grouped_user_id=""
+    if api_request_v2 "POST" "/users" "$create_data" 201 "Create user with groups by ID and name"; then
+        grouped_user_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')
+
+        increment_test
+        local assigned
+        assigned=$(echo "$LAST_RESPONSE_BODY" | jq '.data.groups | length' 2>/dev/null)
+        if [[ "$assigned" == "1" ]]; then
+            print_pass "Duplicate ID and name collapsed into one membership"
+        else
+            print_fail "Expected 1 assigned group, got '$assigned'"
+        fi
+    fi
+
+    if [[ -n "$grouped_user_id" && "$grouped_user_id" != "null" ]]; then
+        api_request_v2 "GET" "/users/${grouped_user_id}" "" 200 "Get user created with groups"
+
+        increment_test
+        local read_back
+        read_back=$(echo "$LAST_RESPONSE_BODY" | jq -r --arg n "$group_name" \
+            '.data.user.groups[]? | select(.name == $n) | .name' 2>/dev/null)
+        if [[ "$read_back" == "$group_name" ]]; then
+            print_pass "Group membership visible on user read"
+        else
+            print_fail "Expected group '$group_name' on user read, got '$read_back'"
+        fi
+
+        api_request_v2 "DELETE" "/users/${grouped_user_id}" "" 200 "Delete grouped test user"
+    fi
+
+    # Unknown group name is rejected before the user row is written
+    local unknown_data
+    unknown_data=$(jq -nc '{
+        username: "api_groups_reject_user",
+        password: "SecureTestPass1234",
+        perm_templ: 1,
+        groups: ["no-such-group-1330"]
+    }')
+    api_request_v2 "POST" "/users" "$unknown_data" 400 "Create user with unknown group name (should fail)"
+
+    increment_test
+    local leaked
+    leaked=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null \
+        | jq -r '.data.users[]? | select(.username == "api_groups_reject_user") | .user_id' 2>/dev/null)
+    if [[ -z "$leaked" || "$leaked" == "null" ]]; then
+        print_pass "Rejected group reference left no user behind"
+    else
+        print_fail "User api_groups_reject_user was created despite a bad group reference"
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" \
+            "${API_BASE_URL}/api/v2/users/$leaked" >/dev/null 2>&1 || true
+    fi
+
+    # Name matching is exact on every backend, including MySQL's case-insensitive collation
+    local case_data
+    case_data=$(jq -nc --arg gname "$(echo "$group_name" | tr '[:lower:]' '[:upper:]')" '{
+        username: "api_groups_case_user",
+        password: "SecureTestPass1234",
+        perm_templ: 1,
+        groups: [$gname]
+    }')
+    api_request_v2 "POST" "/users" "$case_data" 400 "Create user with wrong-case group name (should fail)"
+
+    # Non-integer, non-string entries are rejected
+    api_request_v2 "POST" "/users" \
+        '{"username":"api_groups_type_user","password":"SecureTestPass1234","perm_templ":1,"groups":[3.5]}' \
+        400 "Create user with a non-integer group entry (should fail)"
 }
 
 cleanup_existing_test_crud_user() {
     local user_id
     user_id=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "api_crud_test_user") | .user_id' 2>/dev/null)
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data.users[]? | select(.username == "api_crud_test_user") | .user_id' 2>/dev/null)
     if [[ -n "$user_id" ]]; then
         curl -s -X DELETE -H "X-API-Key: $API_KEY" \
             "${API_BASE_URL}/api/v2/users/$user_id" >/dev/null 2>&1 || true
@@ -1748,6 +2239,8 @@ cleanup_existing_test_zones() {
         "template-zone-test.example.com"
         "bad-template-test.example.com"
         "name-template-test.example.com"
+        "soa-edit-api-test.example.com"
+        "soa-edit-api-off.example.com"
         "owner-test.example.com"
         "metadata-test.example.com"
         "disabled-test.example.com"
@@ -1756,11 +2249,11 @@ cleanup_existing_test_zones() {
 
     local all_zones
     all_zones=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v1/zones" 2>/dev/null)
+        "${API_BASE_URL}/api/v2/zones" 2>/dev/null)
 
     for zone_name in "${test_zone_names[@]}"; do
         local zone_id
-        zone_id=$(echo "$all_zones" | jq -r ".data[]? | select(.name==\"$zone_name\") | .zone_id // .id" 2>/dev/null)
+        zone_id=$(echo "$all_zones" | jq -r ".data.zones[]? | select(.name==\"$zone_name\") | .id" 2>/dev/null)
         if [[ -n "$zone_id" ]]; then
             curl -s -X DELETE -H "X-API-Key: $API_KEY" \
                 "${API_BASE_URL}/api/v2/zones/$zone_id" >/dev/null 2>&1 || true
@@ -1775,7 +2268,7 @@ cleanup_existing_test_zones() {
 cleanup_existing_ldap_test_user() {
     local user_id
     user_id=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "ldap_sync_test_user") | .user_id' 2>/dev/null)
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data.users[]? | select(.username == "ldap_sync_test_user") | .user_id' 2>/dev/null)
     if [[ -n "$user_id" ]]; then
         curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
             "${API_BASE_URL}/api/v2/users/${user_id}" >/dev/null 2>&1 || true
@@ -1820,7 +2313,7 @@ cleanup_existing_perm_templ_test_users() {
     for uname in "${usernames[@]}"; do
         local user_id
         user_id=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
-            "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r ".data[]? | select(.username == \"${uname}\") | .user_id" 2>/dev/null)
+            "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r ".data.users[]? | select(.username == \"${uname}\") | .user_id" 2>/dev/null)
         if [[ -n "$user_id" ]]; then
             curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
                 "${API_BASE_URL}/api/v2/users/${user_id}" >/dev/null 2>&1 || true
@@ -1848,9 +2341,14 @@ api_request_v2_basic() {
         -u "${username}:${password}"
         -H "Content-Type: application/json"
         -H "Accept: application/json"
-        -X "$method"
         --max-time 30
     )
+    # curl -X HEAD waits for a body a HEAD response never sends; --head reads headers only.
+    if [[ "$method" == "HEAD" ]]; then
+        curl_opts+=(--head)
+    else
+        curl_opts+=(-X "$method")
+    fi
 
     if [[ -n "$data" ]]; then
         curl_opts+=(-d "$data")
@@ -1880,7 +2378,7 @@ api_request_v2_basic() {
 cleanup_existing_self_edit_test_data() {
     local user_id
     user_id=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "self_edit_test_user" or .username == "self_edit_hijacked") | .user_id' 2>/dev/null)
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data.users[]? | select(.username == "self_edit_test_user" or .username == "self_edit_hijacked") | .user_id' 2>/dev/null)
     if [[ -n "$user_id" ]]; then
         curl -s -X DELETE -H "X-API-Key: $API_KEY" \
             "${API_BASE_URL}/api/v2/users/$user_id" >/dev/null 2>&1 || true
@@ -1888,7 +2386,7 @@ cleanup_existing_self_edit_test_data() {
 
     local templ_id
     templ_id=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v2/permission-templates" 2>/dev/null | jq -r '.data[]? | select(.name == "self_edit_test_templ") | .id' 2>/dev/null)
+        "${API_BASE_URL}/api/v2/permission-templates" 2>/dev/null | jq -r '.data.templates[]? | select(.name == "self_edit_test_templ") | .id' 2>/dev/null)
     if [[ -n "$templ_id" ]]; then
         curl -s -X DELETE -H "X-API-Key: $API_KEY" \
             "${API_BASE_URL}/api/v2/permission-templates/$templ_id" >/dev/null 2>&1 || true
@@ -1912,7 +2410,7 @@ test_users_self_edit_guard() {
     # The create response carries no id - look it up by name.
     api_request_v2 "GET" "/permission-templates" "" 200 "List templates to find self-edit template id"
     local templ_id
-    templ_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data[]? | select(.name == "self_edit_test_templ") | .id')
+    templ_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.templates[]? | select(.name == "self_edit_test_templ") | .id')
     if [[ -z "$templ_id" || "$templ_id" == "null" ]]; then
         increment_test
         print_fail "Could not resolve self_edit_test_templ id - skipping suite"
@@ -1953,9 +2451,9 @@ test_users_self_edit_guard() {
 
     # Verify nothing auth-critical actually changed and contact edits landed.
     api_request_v2 "GET" "/users/${user_id}" "" 200 "Get self-edit user after attempts"
-    assert_json "Username unchanged after self-edit attempts" "$LAST_RESPONSE_BODY" '.data.username' "self_edit_test_user"
-    assert_json "Account still active after self-edit attempts" "$LAST_RESPONSE_BODY" '.data.active' "true"
-    assert_json "Contact edit landed" "$LAST_RESPONSE_BODY" '.data.fullname' "Self Edit Updated"
+    assert_json "Username unchanged after self-edit attempts" "$LAST_RESPONSE_BODY" '.data.user.username' "self_edit_test_user"
+    assert_json "Account still active after self-edit attempts" "$LAST_RESPONSE_BODY" '.data.user.active' "true"
+    assert_json "Contact edit landed" "$LAST_RESPONSE_BODY" '.data.user.fullname' "Self Edit Updated"
 
     # An admin (API key) still changes these fields freely.
     api_request_v2 "PUT" "/users/${user_id}" '{"username":"self_edit_hijacked"}' \
@@ -2004,7 +2502,7 @@ test_users_perm_templ_validation() {
 
     # Listing must include the freshly created user (the JOIN fix surfaces broken rows too).
     api_request_v2 "GET" "/users" "" 200 "List users after create"
-    if ! echo "$LAST_RESPONSE_BODY" | jq -e '.data[] | select(.username == "perm_templ_valid_user")' >/dev/null 2>&1; then
+    if ! echo "$LAST_RESPONSE_BODY" | jq -e '.data.users[] | select(.username == "perm_templ_valid_user")' >/dev/null 2>&1; then
         increment_test
         print_fail "Created user not present in GET /users response"
     fi
@@ -2034,6 +2532,317 @@ test_users_perm_templ_validation() {
     fi
 }
 
+##############################################################################
+# Test: Granular API Key Permissions (gh #795)
+##############################################################################
+
+# Run a one-shot SQL statement against the configured database. Best-effort:
+# returns non-zero (and prints nothing) when the client/credentials are missing.
+db_exec() {
+    local sql="$1"
+    case "${DB_TYPE:-mysql}" in
+        mysql|mariadb)
+            command -v mysql >/dev/null 2>&1 || return 1
+            mysql --batch --skip-column-names -h"${DB_HOST:-localhost}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -e "$sql"
+            ;;
+        pgsql|postgres|postgresql)
+            command -v psql >/dev/null 2>&1 || return 1
+            PGPASSWORD="${DB_PASS}" psql -h"${DB_HOST:-localhost}" -U"${DB_USER}" -d"${DB_NAME}" -tA -c "$sql"
+            ;;
+        sqlite|sqlite3)
+            command -v sqlite3 >/dev/null 2>&1 || return 1
+            sqlite3 "${DB_NAME}" "$sql"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+# Stored form of an API key secret (mirrors DbApiKeyRepository::hashSecretKey).
+hash_api_key() {
+    printf 'sha256$%s' "$(printf '%s' "$1" | sha256sum | awk '{print $1}')"
+}
+
+# Like api_request_v2 but sends an explicit X-API-Key (first argument).
+api_request_v2_with_key() {
+    local key="$1"
+    local method="$2"
+    local endpoint="$3"
+    local data="${4:-}"
+    local expected_status="${5:-200}"
+    local description="${6:-API v2 request}"
+
+    increment_test
+    print_test "$description"
+
+    local curl_opts=(
+        -s
+        -w "\n%{http_code}"
+        -H "X-API-Key: $key"
+        -H "Content-Type: application/json"
+        -H "Accept: application/json"
+        --max-time 30
+    )
+    # curl -X HEAD waits for a body a HEAD response never sends; --head reads headers only.
+    if [[ "$method" == "HEAD" ]]; then
+        curl_opts+=(--head)
+    else
+        curl_opts+=(-X "$method")
+    fi
+    if [[ -n "$data" ]]; then
+        curl_opts+=(-d "$data")
+    fi
+
+    local response http_code body
+    response=$(curl "${curl_opts[@]}" "${API_BASE_URL}/api/v2${endpoint}")
+    http_code=$(echo "$response" | tail -1)
+    body=$(echo "$response" | sed '$d')
+    LAST_RESPONSE_BODY="$body"
+    LAST_RESPONSE_CODE="$http_code"
+
+    if [[ "$http_code" -eq "$expected_status" ]]; then
+        print_pass "$description (HTTP $http_code)"
+        return 0
+    else
+        print_fail "$description - Expected $expected_status, got $http_code"
+        echo "Response: $body"
+        return 1
+    fi
+}
+
+test_api_key_scopes() {
+    print_section "Granular API Key Permissions (gh #795)"
+
+    # These tests seed scoped keys directly in the database; skip cleanly when
+    # the DB client or credentials are not available to this runner.
+    local owner_id
+    if ! owner_id=$(db_exec "SELECT id FROM users WHERE username='admin' LIMIT 1;" 2>/dev/null) || [[ -z "$owner_id" ]]; then
+        print_info "Database access not available - skipping API key scope tests"
+        return 0
+    fi
+    owner_id=$(echo "$owner_id" | tr -d '[:space:]')
+
+    local ro_secret="scopetest-readonly-key-aaaaaaaaaaaa"
+    local ops_secret="scopetest-ops-key-bbbbbbbbbbbb"
+    local zone_secret="scopetest-zone-key-cccccccccccc"
+
+    # Clean any leftovers from a previous run, then seed fresh keys.
+    db_exec "DELETE FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone');" >/dev/null 2>&1 || true
+
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by, is_readonly) VALUES ('scopetest-ro', '$(hash_api_key "$ro_secret")', ${owner_id}, 1);" >/dev/null 2>&1
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by, allowed_operations) VALUES ('scopetest-ops', '$(hash_api_key "$ops_secret")', ${owner_id}, 'view,create');" >/dev/null 2>&1
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by) VALUES ('scopetest-zone', '$(hash_api_key "$zone_secret")', ${owner_id});" >/dev/null 2>&1
+
+    # Two zones: one in the zone-scoped key's allowlist, one outside it.
+    local zone_a zone_b
+    api_request_v2 "POST" "/zones" '{"name":"scope-allowed.example.com","type":"MASTER"}' 201 "Create in-scope zone" || true
+    zone_a=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    api_request_v2 "POST" "/zones" '{"name":"scope-denied.example.com","type":"MASTER"}' 201 "Create out-of-scope zone" || true
+    zone_b=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+
+    local zone_key_id
+    zone_key_id=$(db_exec "SELECT id FROM api_keys WHERE name='scopetest-zone' LIMIT 1;" 2>/dev/null | tr -d '[:space:]')
+    if [[ -n "$zone_key_id" && -n "$zone_a" ]]; then
+        db_exec "INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (${zone_key_id}, ${zone_a});" >/dev/null 2>&1
+    fi
+
+    # Read-only key: view allowed, every write rejected with 403.
+    api_request_v2_with_key "$ro_secret" "GET" "/zones/${zone_a}" "" 200 "Read-only key may GET a zone"
+    api_request_v2_with_key "$ro_secret" "HEAD" "/zones/${zone_a}" "" 200 "Read-only key may HEAD a zone (routed to GET, not 405)"
+    api_request_v2_with_key "$ro_secret" "POST" "/zones" '{"name":"ro-denied.example.com","type":"MASTER"}' 403 "Read-only key may not POST"
+    api_request_v2_with_key "$ro_secret" "PUT" "/zones/${zone_a}" '{"type":"NATIVE"}' 403 "Read-only key may not PUT"
+    api_request_v2_with_key "$ro_secret" "DELETE" "/zones/${zone_b}" "" 403 "Read-only key may not DELETE"
+
+    # Operation-subset key (view+create): create allowed, update/delete rejected.
+    api_request_v2_with_key "$ops_secret" "GET" "/zones/${zone_a}" "" 200 "Ops key may GET (view in subset)"
+    api_request_v2_with_key "$ops_secret" "PUT" "/zones/${zone_a}" '{"type":"NATIVE"}' 403 "Ops key may not PUT (update not in subset)"
+    api_request_v2_with_key "$ops_secret" "DELETE" "/zones/${zone_a}" "" 403 "Ops key may not DELETE (delete not in subset)"
+    if api_request_v2_with_key "$ops_secret" "POST" "/zones" '{"name":"ops-allowed.example.com","type":"MASTER"}' 201 "Ops key may POST (create in subset)"; then
+        local ops_created
+        ops_created=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+        [[ -n "$ops_created" ]] && api_request_v2 "DELETE" "/zones/${ops_created}" "" 204 "Cleanup ops-created zone" || true
+    fi
+
+    # Operation scope is enforced per bulk action, not by the POST method: a
+    # view+create key may not smuggle an update through the bulk endpoint.
+    api_request_v2_with_key "$ops_secret" "POST" "/zones/${zone_a}/records/bulk" \
+        '{"operations":[{"action":"update","id":1,"name":"x.scope-allowed.example.com","type":"A","content":"192.0.2.9","ttl":3600}]}' \
+        403 "Ops key (view+create) may not bulk-update"
+
+    # A zone-scoped key is confined to its allowlist, so it cannot create new zones.
+    api_request_v2_with_key "$zone_secret" "POST" "/zones" '{"name":"zonescope-create.example.com","type":"MASTER"}' 403 "Zone-scoped key may not create new zones"
+
+    # Zone-scoped key: in-scope zone allowed, out-of-scope zone rejected.
+    api_request_v2_with_key "$zone_secret" "GET" "/zones/${zone_a}" "" 200 "Zone-scoped key may access allowed zone"
+    api_request_v2_with_key "$zone_secret" "GET" "/zones/${zone_b}" "" 403 "Zone-scoped key may not access other zone"
+    api_request_v2_with_key "$zone_secret" "POST" "/zones/${zone_b}/records" '{"name":"x.scope-denied.example.com","type":"A","content":"192.0.2.1","ttl":3600}' 403 "Zone-scoped key may not write to other zone"
+
+    # The list endpoint is filtered, not rejected: only in-scope zones appear.
+    if api_request_v2_with_key "$zone_secret" "GET" "/zones" "" 200 "Zone-scoped key lists zones"; then
+        if echo "$LAST_RESPONSE_BODY" | jq -e '.data.zones[]? | select(.name == "scope-allowed.example.com")' >/dev/null 2>&1; then
+            increment_test; print_pass "List includes the in-scope zone"
+        else
+            increment_test; print_fail "List should include the in-scope zone"
+        fi
+        if echo "$LAST_RESPONSE_BODY" | jq -e '.data.zones[]? | select(.name == "scope-denied.example.com")' >/dev/null 2>&1; then
+            increment_test; print_fail "List must exclude the out-of-scope zone"
+        else
+            increment_test; print_pass "List excludes the out-of-scope zone"
+        fi
+    fi
+
+    # Cleanup seeded keys (api_key_zones rows cascade / are removed with the key)
+    # and the two test zones.
+    db_exec "DELETE FROM api_key_zones WHERE api_key_id IN (SELECT id FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone'));" >/dev/null 2>&1 || true
+    db_exec "DELETE FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone');" >/dev/null 2>&1 || true
+    [[ -n "$zone_a" ]] && api_request_v2 "DELETE" "/zones/${zone_a}" "" 204 "Cleanup in-scope zone" || true
+    [[ -n "$zone_b" ]] && api_request_v2 "DELETE" "/zones/${zone_b}" "" 204 "Cleanup out-of-scope zone" || true
+}
+
+test_zone_overlap_guard() {
+    print_section "Zone Overlap Guard (parent_zone_ownership_check)"
+
+    # Seeds a non-ueberuser key directly in the DB (ueberusers bypass the guard);
+    # skip cleanly when the DB client or credentials are unavailable.
+    local mgr_id
+    if ! mgr_id=$(db_exec "SELECT id FROM users WHERE username='manager' LIMIT 1;" 2>/dev/null) || [[ -z "$mgr_id" ]]; then
+        print_info "Database access not available - skipping zone overlap guard tests"
+        return 0
+    fi
+    mgr_id=$(echo "$mgr_id" | tr -d '[:space:]')
+
+    local mgr_secret="overlaptest-manager-key-aaaaaaaaaaaa"
+    db_exec "DELETE FROM api_keys WHERE name='overlaptest-mgr';" >/dev/null 2>&1 || true
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by) VALUES ('overlaptest-mgr', '$(hash_api_key "$mgr_secret")', ${mgr_id});" >/dev/null 2>&1
+
+    # Parent zone owned by the suite's admin key user; manager does not own it.
+    local parent="overlap-parent.example.com"
+    local parent_id=""
+    if api_request_v2 "POST" "/zones" "{\"name\":\"${parent}\",\"type\":\"MASTER\"}" 201 "Create admin-owned parent zone"; then
+        parent_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+
+    # child-under-parent across owners must be rejected with 409.
+    if api_request_v2_with_key "$mgr_secret" "POST" "/zones" "{\"name\":\"child.${parent}\",\"type\":\"MASTER\"}" 409 "Non-owner blocked from child of another owner's zone"; then
+        increment_test
+        if echo "$LAST_RESPONSE_BODY" | grep -q "overlaps"; then
+            print_pass "409 message mentions overlap"
+        else
+            print_fail "409 message should mention overlap"
+        fi
+    fi
+
+    # Same owner may nest under their own zone.
+    local own="overlap-mgr-own.example.com"
+    local own_id="" own_child_id=""
+    if api_request_v2_with_key "$mgr_secret" "POST" "/zones" "{\"name\":\"${own}\",\"type\":\"MASTER\"}" 201 "Owner may create their own zone"; then
+        own_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+    if api_request_v2_with_key "$mgr_secret" "POST" "/zones" "{\"name\":\"sub.${own}\",\"type\":\"MASTER\"}" 201 "Owner may create a child under their own zone"; then
+        own_child_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+
+    # Cleanup (admin key deletes all created zones; then drop the seeded key).
+    [[ -n "$own_child_id" ]] && api_request_v2 "DELETE" "/zones/${own_child_id}" "" 204 "Cleanup own child zone" || true
+    [[ -n "$own_id" ]] && api_request_v2 "DELETE" "/zones/${own_id}" "" 204 "Cleanup own zone" || true
+    [[ -n "$parent_id" ]] && api_request_v2 "DELETE" "/zones/${parent_id}" "" 204 "Cleanup parent zone" || true
+    db_exec "DELETE FROM api_keys WHERE name='overlaptest-mgr';" >/dev/null 2>&1 || true
+}
+
+test_api_documentation() {
+    print_section "API Documentation"
+
+    local response http_code body
+
+    increment_test
+    print_test "Swagger UI endpoint"
+    response=$(curl -s -w "%{http_code}" "${API_BASE_URL}/api/docs" 2>/dev/null || echo "000")
+    http_code="${response: -3}"
+    if [[ "$http_code" == "200" ]]; then
+        print_pass "Swagger UI endpoint accessible"
+    elif [[ "$http_code" == "404" || "$http_code" == "503" ]]; then
+        print_info "Swagger UI endpoint not available in test environment"
+    else
+        print_fail "Swagger UI endpoint - Unexpected status $http_code"
+    fi
+
+    # The unversioned /api/docs/json now serves the v2 spec
+    for docs_path in "/api/docs/json" "/api/docs/v2/json"; do
+        increment_test
+        print_test "OpenAPI spec at ${docs_path}"
+        response=$(curl -s -w "%{http_code}" -H "Accept: application/json" \
+            "${API_BASE_URL}${docs_path}" 2>/dev/null || echo "000")
+        http_code="${response: -3}"
+        body="${response%???}"
+
+        if [[ "$http_code" != "200" ]]; then
+            if [[ "$http_code" == "404" || "$http_code" == "503" ]]; then
+                print_info "${docs_path} not available in test environment"
+            else
+                print_fail "${docs_path} - Unexpected status $http_code"
+            fi
+            continue
+        fi
+
+        local spec_version
+        spec_version=$(echo "$body" | jq -r '.info.version // empty' 2>/dev/null)
+        if [[ "$spec_version" == "2.0.0" ]]; then
+            print_pass "${docs_path} serves the v2 spec"
+        else
+            print_fail "${docs_path} - Expected info.version 2.0.0, got '${spec_version}'"
+        fi
+
+        increment_test
+        print_test "OpenAPI spec at ${docs_path} documents only v2 paths"
+        if echo "$body" | jq -e '[.paths | keys[] | select(startswith("/v1"))] | length == 0' >/dev/null 2>&1; then
+            print_pass "${docs_path} has no v1 paths"
+        else
+            print_fail "${docs_path} still documents v1 paths"
+        fi
+    done
+}
+
+test_v1_removed() {
+    print_section "Removed API v1"
+
+    local headers http_code
+
+    for v1_request in "GET /api/v1/zones" "POST /api/v1/zones" "GET /api/v1/users/1" "DELETE /api/v1/permission-templates/1" "GET /api/v1"; do
+        local method="${v1_request%% *}"
+        local path="${v1_request#* }"
+
+        increment_test
+        print_test "${method} ${path} is gone"
+        headers=$(curl -s -o /dev/null -D - -X "$method" \
+            -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+            "${API_BASE_URL}${path}" 2>/dev/null || echo "")
+        http_code=$(echo "$headers" | awk 'NR==1 {print $2}')
+
+        if [[ "$http_code" != "410" ]]; then
+            print_fail "${method} ${path} - Expected 410, got ${http_code:-000}"
+            continue
+        fi
+
+        if echo "$headers" | grep -qi 'successor-version'; then
+            print_pass "${method} ${path} returns 410 with a v2 pointer"
+        else
+            print_fail "${method} ${path} returned 410 without a successor-version Link header"
+        fi
+    done
+
+    increment_test
+    print_test "Removed v1 endpoint keeps the v1 error shape"
+    local body
+    body=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v1/zones" 2>/dev/null || echo "")
+    if echo "$body" | jq -e '.error == true and (.message | contains("/api/v2"))' >/dev/null 2>&1; then
+        print_pass "410 body reports the error and points at /api/v2"
+    else
+        print_fail "410 body should be {error:true, message:...} mentioning /api/v2"
+    fi
+}
+
 main() {
     print_header "PowerAdmin API v2 Test Suite"
 
@@ -2045,9 +2854,14 @@ main() {
 
     echo -e "\n${YELLOW}Starting tests...${NC}\n"
 
-    # Run test suites
+    # Run test suites. The docs and removed-v1 checks are independent of test
+    # data, so they run first and still report if a later suite aborts the run.
+    test_api_documentation
+    test_v1_removed
     test_rrsets
     test_ptr_autocreation
+    test_ptr_update
+    test_ttl_defaults
     test_bulk_operations
     test_disabled_records
     test_master_port_syntax
@@ -2055,11 +2869,14 @@ main() {
     test_groups
     test_zone_owners
     test_zone_metadata
+    test_zone_dnssec
     test_users_crud
     test_zone_templates
     test_users_ldap_sync
     test_users_perm_templ_validation
     test_users_self_edit_guard
+    test_api_key_scopes
+    test_zone_overlap_guard
 
     # Cleanup
     cleanup

@@ -68,7 +68,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
             ':comment' => $comment->getComment()
         ]);
 
-        $id = (int)$this->connection->lastInsertId();
+        $id = (int)$this->connection->lastInsertId($this->comments_table . '_id_seq');
 
         return new RecordComment(
             $id,

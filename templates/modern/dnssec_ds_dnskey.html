@@ -1,28 +1,12 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item">
-            {% if idn_zone_name %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
-            {% else %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ domain_name }}</a>
-            {% endif %}
-        </li>
-        <li class="breadcrumb-item">
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec">{% trans %}DNSSEC{% endtrans %}</a>
-        </li>
-        <li class="breadcrumb-item" aria-current="page">
-            {% trans %}DS and DNS keys{% endtrans %}
-        </li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{% set crumbs = [
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: zone_display_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+] %}
+{% if can_manage_dnssec %}
+{% set crumbs = crumbs|merge([{label: 'DNSSEC'|trans, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/dnssec'}]) %}
+{% endif %}
+{{ macros.breadcrumb(crumbs|merge([{label: 'DS and DNS keys'|trans}])) }}
 
 <div class="row">
     <div class="col-md-12">
@@ -37,9 +21,15 @@
                     {% endif %}
                 </strong>
                 <div>
+                    {% if can_manage_dnssec %}
                     <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec" class="btn btn-secondary btn-sm">
                         <i class="bi bi-arrow-left text-white me-1"></i>{% trans %}Back to DNSSEC keys{% endtrans %}
                     </a>
+                    {% else %}
+                    <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
+                        <i class="bi bi-arrow-left text-white me-1"></i>{% trans %}Back to zone{% endtrans %}
+                    </a>
+                    {% endif %}
                 </div>
             </div>
             <div class="card-body">
@@ -81,6 +71,10 @@
     </div>
 </div>
 
+<style>
+    .copy-line, .copy-block { user-select: none; }
+</style>
+
 <script>
 (function () {
     function flash(button) {
@@ -100,11 +94,31 @@
         }, 1500);
     }
 
+    function fallbackCopy(text, button) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            if (document.execCommand('copy')) {
+                flash(button);
+            }
+        } catch (e) {
+            // Clipboard unavailable; user can still select the visible record manually.
+        }
+        document.body.removeChild(ta);
+    }
+
     function copy(text, button) {
-        if (!navigator.clipboard) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text)
+                .then(function () { flash(button); })
+                .catch(function () { fallbackCopy(text, button); });
             return;
         }
-        navigator.clipboard.writeText(text).then(function () { flash(button); });
+        fallbackCopy(text, button);
     }
 
     document.querySelectorAll('.copy-block').forEach(function (btn) {

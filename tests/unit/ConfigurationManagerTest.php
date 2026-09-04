@@ -490,6 +490,25 @@ class ConfigurationManagerTest extends TestCase
         @unlink($customConfigFile);
     }
 
+    public function testRowsPerPageOutsideThePaginationRangeIsClampedOnLoad(): void
+    {
+        // 4.4.0 accepted any positive value; an upgraded config with 1000 must load, not fatal
+        $configFile = sys_get_temp_dir() . '/poweradmin_rows_per_page_settings.php';
+        file_put_contents($configFile, '<?php return ' . var_export(['interface' => ['rows_per_page' => 1000]], true) . ';');
+        putenv('PA_CONFIG_PATH=' . $configFile);
+
+        try {
+            $this->resetConfigurationManager();
+            $config = ConfigurationManager::getInstance();
+            $config->initialize();
+
+            $this->assertSame(500, $config->get('interface', 'rows_per_page'));
+        } finally {
+            putenv('PA_CONFIG_PATH');
+            @unlink($configFile);
+        }
+    }
+
     /**
      * Test that empty PA_CONFIG_PATH falls back to default behavior
      */

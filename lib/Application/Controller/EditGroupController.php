@@ -37,14 +37,9 @@ use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditGroupController extends BaseController
@@ -61,15 +56,15 @@ class EditGroupController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = new DbUserGroupRepository($this->db);
-        $memberRepository = new DbUserGroupMemberRepository($this->db);
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
+        $groupRepository = $this->createUserGroupRepository();
+        $memberRepository = $this->createUserGroupMemberRepository();
+        $zoneGroupRepository = $this->createZoneGroupRepository();
 
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
         $this->request = new Request();
-        $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
@@ -84,7 +79,7 @@ class EditGroupController extends BaseController
         // Only admin (überuser) can edit groups
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->canManageGroups($userId)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to edit groups.'));
             $this->redirect('/groups');
             return;
@@ -99,7 +94,7 @@ class EditGroupController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('edit_group');
-        $this->setPageTitle(_('Edit Group'));
+        $this->setPageTitle(_('Edit group'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -131,7 +126,7 @@ class EditGroupController extends BaseController
             // Get current group details before update for change tracking
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
             $oldGroup = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
 
             // Track what changed
@@ -146,7 +141,7 @@ class EditGroupController extends BaseController
             }
             if ($oldGroup->getPermTemplId() !== $permTemplId) {
                 // Get permission template names for better logging (no filter - need to find any template type)
-                $permTemplates = UserManager::listPermissionTemplates($this->db);
+                $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates();
                 $oldTemplName = 'Unknown';
                 $newTemplName = 'Unknown';
                 foreach ($permTemplates as $template) {
@@ -196,7 +191,7 @@ class EditGroupController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
+            $isAdmin = $this->createPermissionService()->isAdmin($userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
@@ -209,7 +204,7 @@ class EditGroupController extends BaseController
             $members = $this->membershipService->listGroupMembers($groupId);
             $zones = $this->zoneGroupService->listGroupZones($groupId);
 
-            $permTemplates = UserManager::listPermissionTemplates($this->db, 'group');
+            $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates('group');
 
             // Get member usernames
             $memberUsernames = [];

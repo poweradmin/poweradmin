@@ -57,6 +57,12 @@ class PDODatabaseConnection implements DatabaseConnection
             // Enable foreign key constraints for SQLite
             if ($credentials['db_type'] === 'sqlite') {
                 $pdo->exec('PRAGMA foreign_keys = ON');
+                // Wait for competing writers instead of failing immediately
+                // with "database is locked" when requests run concurrently
+                $pdo->exec('PRAGMA busy_timeout = 5000');
+                // Shorter write-lock windows; corruption-safe in all journal
+                // modes, trades only last-commit durability on power loss
+                $pdo->exec('PRAGMA synchronous = NORMAL');
             }
 
             return $pdo;
@@ -71,8 +77,8 @@ class PDODatabaseConnection implements DatabaseConnection
             $this->showErrorAndExit('No database type has been set. Please check your configuration file.');
         }
 
-        if (!in_array($db_type, ['mysql', 'mysqli', 'pgsql', 'sqlite'])) {
-            $this->showErrorAndExit('Unknown database type: "' . $db_type . '". Supported types are: mysql, mysqli, pgsql, and sqlite.');
+        if (!DbDriver::isValid($db_type)) {
+            $this->showErrorAndExit('Unknown database type: "' . $db_type . '". Supported types are: ' . implode(', ', DbDriver::values()) . '.');
         }
     }
 
@@ -103,7 +109,7 @@ class PDODatabaseConnection implements DatabaseConnection
 
         $dsn = "$db_type:host={$credentials['db_host']};port=$db_port;dbname={$credentials['db_name']}";
 
-        if (in_array($db_type, ['mysql', 'mysqli']) && $credentials['db_charset'] === 'utf8') {
+        if (DbDriver::tryFrom($db_type)?->isMysqlFamily() && $credentials['db_charset'] === 'utf8') {
             $dsn .= ';charset=utf8';
         }
 
@@ -203,7 +209,14 @@ class PDODatabaseConnection implements DatabaseConnection
         $options = [];
         $db_type = $credentials['db_type'];
 
-        if (!in_array($db_type, ['mysql', 'mysqli'])) {
+        // Set before the driver check: without it a host that drops packets holds the
+        // connect for the OS TCP timeout (~30s). Only callers that opt in pass it, so
+        // every existing connection keeps its current unbounded behaviour.
+        if (!empty($credentials['db_connect_timeout'])) {
+            $options[PDO::ATTR_TIMEOUT] = (int) $credentials['db_connect_timeout'];
+        }
+
+        if (!DbDriver::tryFrom($db_type)?->isMysqlFamily()) {
             return $options;
         }
 

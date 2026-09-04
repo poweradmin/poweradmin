@@ -1,30 +1,20 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Bulk registration{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: 'Bulk Registration'|trans},
+]) }}
 
 {% if message %}
-<div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+{% include 'message_alert.html' with {message: message} only %}
 {% endif %}
 
 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/bulk-registration" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
 
     <div class="row">
         <div class="col-md-6">
             <div class="card shadow-sm mb-4">
-                <div class="card-header py-3">
-                    <strong><i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}</strong>
-                </div>
+                {{ macros.card_header('bi-collection', 'Bulk Registration'|trans) }}
                 <div class="card-body">
                     <div class="mb-3">
                         <label for="dom_type" class="form-label">{% trans %}Zone Type{% endtrans %}</label>
@@ -52,14 +42,15 @@
 
                     <div class="mb-3">
                         <label for="domains" class="form-label">{% trans %}Domains{% endtrans %}</label>
-                        <textarea class="form-control form-control-sm" id="domains" name="domains" rows="10" required>{% if failed_domains %}{{ failed_domains | join('\n') }}{% endif %}</textarea>
+                        <textarea class="form-control form-control-sm" id="domains" name="domains" rows="10" required>{% if failed_domains %}{% for fail in failed_domains %}{{ fail.name }}
+{% endfor %}{% endif %}</textarea>
                         <div class="invalid-feedback">{% trans %}Provide a domain name(s){% endtrans %}</div>
                         <small class="form-text text-muted">{% trans %}Type one domain per line{% endtrans %}</small>
                     </div>
 
                     <div class="d-flex justify-content-between">
                         <div>
-                            <button type="submit" class="btn btn-sm btn-primary" name="submit">
+                            <button type="submit" class="btn btn-sm btn-primary" name="submit" data-busy-text="{% trans %}Saving...{% endtrans %}">
                                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add Zones{% endtrans %}
                             </button>
                             <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-sm btn-secondary">
@@ -75,9 +66,7 @@
         {% if user_owner_allowed or (group_owner_allowed and all_groups is not empty) %}
         <div class="col-md-6">
             <div class="card shadow-sm mb-4">
-                <div class="card-header py-3">
-                    <strong><i class="bi bi-person-gear me-2"></i>{% trans %}Ownership{% endtrans %}</strong>
-                </div>
+                {{ macros.card_header('bi-person-gear', 'Ownership'|trans) }}
                 <div class="card-body">
                     {% if user_owner_allowed %}
                     <div class="mb-3">
@@ -99,7 +88,7 @@
 
                     {% if group_owner_allowed and all_groups is not empty %}
                     <div class="mb-3">
-                        <label class="form-label">{% trans %}Group ownership{% endtrans %}</label>
+                        <label class="form-label">{% trans %}Group Ownership{% endtrans %}</label>
                         <div class="border rounded p-2" style="max-height: 160px; overflow-y: auto;">
                             {% for group in all_groups %}
                             <div class="form-check">
@@ -119,5 +108,32 @@
         {% endif %}
     </div>
 </form>
+
+{% if added_domains or failed_domains %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-2 d-flex align-items-center">
+        <strong class="me-3"><i class="bi bi-list-check me-2"></i>{% trans %}Bulk Registration Report{% endtrans %}</strong>
+        {% if added_domains %}<span class="badge bg-success-subtle text-success me-2">{{ added_domains|length }} {% trans %}imported{% endtrans %}</span>{% endif %}
+        {% if failed_domains %}<span class="badge bg-danger-subtle text-danger">{{ failed_domains|length }} {% trans %}failed{% endtrans %}</span>{% endif %}
+    </div>
+    <div class="card-body p-0">
+        <ul class="list-group list-group-flush small">
+            {% for domain in added_domains %}
+            <li class="list-group-item py-1 px-3 d-flex align-items-center">
+                <i class="bi bi-check-circle text-success me-2"></i>
+                <span class="text-success">{{ domain }}</span>
+            </li>
+            {% endfor %}
+            {% for fail in failed_domains %}
+            <li class="list-group-item py-1 px-3 d-flex align-items-center">
+                <i class="bi bi-x-circle text-danger me-2"></i>
+                <span class="text-danger me-2">{{ fail.name }}</span>
+                <span class="text-muted">{{ fail.reason }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
 
 <script src="{{ base_url_prefix }}/assets/textareaAutoResize.js?time={{ file_version }}"></script>

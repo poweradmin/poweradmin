@@ -48,7 +48,6 @@ class TTLValidator
      */
     private const TTL_MIN = 0;           // Minimum allowed TTL (unsigned)
     private const TTL_MAX = 2147483647;  // Maximum allowed TTL (RFC 2181, signed 32-bit integer)
-    private const TTL_MAX_UNSIGNED = 4294967295; // Maximum of unsigned 32-bit integer (RFC 2181)
 
     // Recommended values based on common practices
     private const TTL_RECOMMENDED_MIN = 300;     // 5 minutes (minimum recommended)

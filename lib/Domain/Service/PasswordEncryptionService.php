@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,12 +28,12 @@ class PasswordEncryptionService
     private const IV_LENGTH = 16;
     private string $session_key;
 
-    public function __construct(string $session_key)
+    public function __construct(#[\SensitiveParameter] string $session_key)
     {
         $this->session_key = $session_key;
     }
 
-    public function encrypt(string $password): string
+    public function encrypt(#[\SensitiveParameter] string $password): string
     {
         if (empty($password)) {
             return '';
@@ -45,18 +45,24 @@ class PasswordEncryptionService
         return openssl_encrypt($password, self::ALGORITHM, $key, 0, $iv) . ':' . base64_encode($iv);
     }
 
-    public function decrypt(string $password): string
+    public function decrypt(#[\SensitiveParameter] string $password): string
     {
-        if (empty($password)) {
+        // Malformed or tampered input decrypts to an empty string.
+        if (empty($password) || !str_contains($password, ':')) {
             return '';
         }
 
         $key = $this->computeKey();
 
         list($encryptedPassword, $iv) = explode(':', $password, 2);
-        $iv = base64_decode($iv);
+        $iv = base64_decode($iv, true);
+        if ($iv === false || strlen($iv) !== self::IV_LENGTH) {
+            return '';
+        }
 
-        return rtrim(openssl_decrypt($encryptedPassword, self::ALGORITHM, $key, 0, $iv), "\0");
+        $decrypted = openssl_decrypt($encryptedPassword, self::ALGORITHM, $key, 0, $iv);
+
+        return $decrypted === false ? '' : rtrim($decrypted, "\0");
     }
 
     private function computeKey(): string

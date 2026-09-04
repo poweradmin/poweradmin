@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -59,13 +59,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class ZONEMDRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -83,12 +81,13 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
-        // ZONEMD records should be at the apex of the zone
-        // Just check if the name is printable and valid for tests
-        $nameResult = StringValidator::validatePrintable($name);
-        if (!$nameResult->isValid()) {
-            return ValidationResult::failure(_('Invalid characters in name field.'));
+        // Validate the hostname
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
         $validationResult = $this->isValidZONEMDContent($content);

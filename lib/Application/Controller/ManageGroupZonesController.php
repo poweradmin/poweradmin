@@ -37,12 +37,9 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Utility\IpHelper;
 
@@ -58,8 +55,8 @@ class ManageGroupZonesController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = new DbUserGroupRepository($this->db);
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
+        $groupRepository = $this->createUserGroupRepository();
+        $zoneGroupRepository = $this->createZoneGroupRepository();
 
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
@@ -78,7 +75,7 @@ class ManageGroupZonesController extends BaseController
         // Any admin can manage zone ownership (same as user ownership model)
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->isAdmin($userId)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to manage zone ownership.'));
             $this->redirect('/groups');
             return;
@@ -154,7 +151,7 @@ class ManageGroupZonesController extends BaseController
             // Get group details and zone names before adding
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
@@ -175,9 +172,8 @@ class ManageGroupZonesController extends BaseController
                 $this->setMessage('manage_group_zones', 'success', $message);
 
                 // Get current admin username
-                $ldapUse = $this->config->get('ldap', 'enabled');
-                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
-                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+                $currentUser = $this->createUserRepository()->getUserById($currentUserId);
+                $actorUsername = $currentUser !== null ? $currentUser['username'] : "ID: $currentUserId";
 
                 // Get zone names for successful additions
                 $zoneNames = array_filter(array_map(
@@ -240,7 +236,7 @@ class ManageGroupZonesController extends BaseController
             // Get group details and zone names before removing
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
@@ -261,9 +257,8 @@ class ManageGroupZonesController extends BaseController
                 $this->setMessage('manage_group_zones', 'success', $message);
 
                 // Get current admin username
-                $ldapUse = $this->config->get('ldap', 'enabled');
-                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
-                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+                $currentUser = $this->createUserRepository()->getUserById($currentUserId);
+                $actorUsername = $currentUser !== null ? $currentUser['username'] : "ID: $currentUserId";
 
                 // Get zone names for successful removals
                 $zoneNames = array_filter(array_map(
@@ -317,7 +312,7 @@ class ManageGroupZonesController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
+            $isAdmin = $this->createPermissionService()->isAdmin($userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
@@ -333,23 +328,23 @@ class ManageGroupZonesController extends BaseController
             $zoneGroups = $this->zoneGroupService->listGroupZones($groupId);
             $ownedDomainIds = array_map(fn($zg) => $zg->getDomainId(), $zoneGroups);
 
-            // Get owned zone details
+            // Get owned zone details in one bulk call to avoid per-zone API round-trips
             $ownedZones = [];
             if (!empty($ownedDomainIds)) {
-                foreach ($ownedDomainIds as $domainId) {
-                    $zoneInfo = $domainRepository->getZoneInfoFromId($domainId);
-                    if ($zoneInfo) {
-                        $name = $zoneInfo['name'] ?? '';
-                        if (str_ends_with($name, '.ip6.arpa')) {
-                            $shortened = IpHelper::shortenIPv6ReverseZone($name);
-                            $name = $shortened ?? $name;
-                        }
-                        $ownedZones[] = [
-                            'id' => $domainId,
-                            'name' => $name,
-                            'type' => $zoneInfo['type'] ?? '',
-                        ];
+                foreach ($domainRepository->getZoneInfoFromIds($ownedDomainIds) as $zoneInfo) {
+                    $name = $zoneInfo['name'] ?? '';
+                    if ($name === '') {
+                        continue;
                     }
+                    if (str_ends_with($name, '.ip6.arpa')) {
+                        $shortened = IpHelper::shortenIPv6ReverseZone($name);
+                        $name = $shortened ?? $name;
+                    }
+                    $ownedZones[] = [
+                        'id' => (int)($zoneInfo['id'] ?? 0),
+                        'name' => $name,
+                        'type' => $zoneInfo['type'] ?? '',
+                    ];
                 }
                 usort($ownedZones, fn($a, $b) => strcasecmp($a['name'], $b['name']));
             }

@@ -48,13 +48,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class CAARecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -191,13 +189,14 @@ class CAARecordValidator implements DnsRecordValidatorInterface
                 return ValidationResult::failure(_('Empty value is not allowed. Use ";" to disallow all CAs.'));
             }
 
-            // Check for parameters using ASCII Control characters
-            if ($tag === 'issue' && strpos($unquoted, ';') !== false) {
-                // After validating domain, check for parameters
+            // Validate the CA domain whether or not parameters follow: a bare
+            // `issue "not a domain"` (no `;`) must still be rejected. explode()
+            // yields the whole value as segment 0 when there is no `;`.
+            if ($tag === 'issue') {
                 $segments = explode(';', $unquoted);
                 $domain = $segments[0];
 
-                // Domain part must be a valid hostname
+                // Domain part must be a valid hostname (empty = ';...' allows all)
                 if (!empty($domain) && !$this->hostnameValidator->isValid($domain)) {
                     return ValidationResult::failure(_('Invalid CA domain in issue tag.'));
                 }
@@ -231,8 +230,11 @@ class CAARecordValidator implements DnsRecordValidatorInterface
                     }
                 }
             } elseif ($tag === 'issuewild') {
-                // For issuewild, RFC 8659 doesn't define parameters, so it should be just a domain
-                if (!$this->hostnameValidator->isValid($unquoted) && $unquoted !== '') {
+                // RFC 8659 gives issuewild the same issuer-domain-name grammar as
+                // issue, so ";" (no wildcard issuance permitted) is valid here too.
+                $domain = explode(';', $unquoted)[0];
+
+                if (!empty($domain) && !$this->hostnameValidator->isValid($domain)) {
                     return ValidationResult::failure(_('Invalid CA domain in issuewild tag.'));
                 }
             }

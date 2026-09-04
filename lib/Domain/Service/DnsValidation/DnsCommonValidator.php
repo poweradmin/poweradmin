@@ -26,7 +26,6 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PDO;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -42,14 +41,12 @@ class DnsCommonValidator
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private MessageService $messageService;
     private ?DnsBackendProvider $backendProvider;
 
     public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProvider $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->backendProvider = $backendProvider;
     }
 
@@ -96,7 +93,7 @@ class DnsCommonValidator
     {
         if ($this->backendProvider !== null && $this->backendProvider->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($target, 'record', 100);
-            foreach ($result['records'] ?? [] as $r) {
+            foreach ($result['records'] as $r) {
                 if ($r['name'] === $target && $r['type'] === 'CNAME') {
                     return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
                 }

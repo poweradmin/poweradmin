@@ -4,6 +4,7 @@
 /scripts
 /templates/*
 /templates/default/custom/*
+!/templates/theme-specific-templates.txt
 !/templates/default
 !/templates/modern
 !/templates/emails
@@ -47,6 +48,9 @@ package-lock.json
 # Logs
 /logs
 /*.log
+
+# Runtime caches (compiled templates, ...)
+/var/
 /npm-debug.log*
 
 # Temporary files
@@ -65,6 +69,7 @@ locale/**/*.po.backup.*
 /test-results/
 *.trace.zip
 /blob-report/
+/playwright-sweep-logs/
 /playwright/.auth/
 /.playwright-mcp/
 

@@ -4,12 +4,14 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Integration test to verify routing configuration is valid and complete.
@@ -66,17 +68,17 @@ class RoutingConfigurationTest extends TestCase
         }
     }
 
-    public function testApiV1RoutesExist(): void
+    public function testApiV2RoutesExist(): void
     {
         $apiRoutes = [
-            'api_v1_zones',
-            'api_v1_zone',
-            'api_v1_zone_records',
-            'api_v1_zone_record',
-            'api_v1_users',
-            'api_v1_user',
-            'api_v1_permission_templates',
-            'api_v1_permission_template'
+            'api_v2_zones',
+            'api_v2_zone',
+            'api_v2_zone_records',
+            'api_v2_zone_record',
+            'api_v2_users',
+            'api_v2_user',
+            'api_v2_permission_templates',
+            'api_v2_permission_template'
         ];
 
         foreach ($apiRoutes as $routeName) {
@@ -85,6 +87,26 @@ class RoutingConfigurationTest extends TestCase
                 "API route '{$routeName}' should exist"
             );
         }
+    }
+
+    public function testApiV1IsServedOnlyByTheGoneHandler(): void
+    {
+        foreach ($this->routes->all() as $routeName => $route) {
+            if (!str_starts_with($route->getPath(), '/api/v1')) {
+                continue;
+            }
+
+            $this->assertEquals(
+                'api_v1_gone',
+                $routeName,
+                "API v1 route '{$routeName}' should have been removed"
+            );
+        }
+
+        $goneRoute = $this->routes->get('api_v1_gone');
+        $this->assertNotNull($goneRoute);
+        $this->assertEquals('/api/v1/{path}', $goneRoute->getPath());
+        $this->assertEmpty($goneRoute->getMethods(), 'Every verb must reach the 410 handler');
     }
 
     public function testInternalApiRoutesExist(): void
@@ -116,11 +138,29 @@ class RoutingConfigurationTest extends TestCase
         $this->assertNotNull($userEditRoute);
         $this->assertEquals('\d+', $userEditRoute->getRequirement('id'));
 
-        $zoneRecordRoute = $this->routes->get('api_v1_zone_record');
+        $zoneRecordRoute = $this->routes->get('api_v2_zone_record');
         $this->assertNotNull($zoneRecordRoute);
         $this->assertEquals('\d+', $zoneRecordRoute->getRequirement('id'));
         // record_id accepts both numeric IDs (SQL mode) and encoded strings (API mode)
         $this->assertEquals('[\w\-=.]+', $zoneRecordRoute->getRequirement('record_id'));
+    }
+
+    /**
+     * Record IDs are integers with the SQL backend and encoded composite keys
+     * with the API backend. Narrowing these routes to digits makes every
+     * API-mode record unreachable, which is what broke in #1415.
+     */
+    public function testRecordRoutesMatchBothIdFormats(): void
+    {
+        $matcher = new UrlMatcher($this->routes, new RequestContext());
+
+        $encoded = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
+
+        foreach ([$encoded, '42'] as $recordId) {
+            $this->assertEquals('record_edit', $matcher->match("/zones/1/records/$recordId/edit")['_route']);
+            $this->assertEquals('record_delete', $matcher->match("/zones/1/records/$recordId/delete")['_route']);
+            $this->assertEquals('api_v2_zone_record', $matcher->match("/api/v2/zones/1/records/$recordId")['_route']);
+        }
     }
 
     public function testRouteMethodRestrictions(): void
@@ -130,11 +170,11 @@ class RoutingConfigurationTest extends TestCase
         $this->assertNotNull($loginRoute);
         $this->assertEquals(['GET', 'POST'], $loginRoute->getMethods());
 
-        $apiZonesRoute = $this->routes->get('api_v1_zones');
+        $apiZonesRoute = $this->routes->get('api_v2_zones');
         $this->assertNotNull($apiZonesRoute);
         $this->assertEquals(['GET', 'POST'], $apiZonesRoute->getMethods());
 
-        $apiZoneRoute = $this->routes->get('api_v1_zone');
+        $apiZoneRoute = $this->routes->get('api_v2_zone');
         $this->assertNotNull($apiZoneRoute);
         $this->assertEquals(['GET', 'PUT', 'DELETE'], $apiZoneRoute->getMethods());
 
@@ -214,9 +254,9 @@ class RoutingConfigurationTest extends TestCase
             $loginRoute->getDefault('_controller')
         );
 
-        $apiZonesRoute = $this->routes->get('api_v1_zones');
+        $apiZonesRoute = $this->routes->get('api_v2_zones');
         $this->assertEquals(
-            'Poweradmin\Application\Controller\Api\V1\ZonesController::run',
+            'Poweradmin\Application\Controller\Api\V2\ZonesController::run',
             $apiZonesRoute->getDefault('_controller')
         );
     }
@@ -230,8 +270,8 @@ class RoutingConfigurationTest extends TestCase
         $recordEditRoute = $this->routes->get('record_edit');
         $this->assertEquals('/zones/{zone_id}/records/{id}/edit', $recordEditRoute->getPath());
 
-        $apiZoneRecordRoute = $this->routes->get('api_v1_zone_record');
-        $this->assertEquals('/api/v1/zones/{id}/records/{record_id}', $apiZoneRecordRoute->getPath());
+        $apiZoneRecordRoute = $this->routes->get('api_v2_zone_record');
+        $this->assertEquals('/api/v2/zones/{id}/records/{record_id}', $apiZoneRecordRoute->getPath());
     }
 
     public function testNoRouteConflicts(): void
@@ -272,7 +312,7 @@ class RoutingConfigurationTest extends TestCase
         // Simulate route matching performance
         for ($i = 0; $i < 100; $i++) {
             $this->routes->get('home');
-            $this->routes->get('api_v1_zones');
+            $this->routes->get('api_v2_zones');
             $this->routes->get('user_edit');
         }
 
@@ -296,6 +336,45 @@ class RoutingConfigurationTest extends TestCase
                     "Controller class '{$className}' for route '{$name}' should exist"
                 );
             }
+        }
+    }
+
+    /**
+     * index.php skips session start for these paths before the router has run, so the
+     * literals in RequestContext are a second copy of what routes.yaml declares. Renaming
+     * a route without updating them would silently restore a session file per scrape.
+     */
+    public function testHealthProbePathsMatchTheDeclaredRoutes(): void
+    {
+        $routes = Yaml::parseFile(__DIR__ . '/../../lib/Application/Config/routes.yaml');
+
+        foreach (['api_health', 'ping'] as $name) {
+            $this->assertArrayHasKey($name, $routes, "Route $name is missing from routes.yaml");
+
+            $_SERVER['REQUEST_URI'] = $routes[$name]['path'];
+            $this->assertTrue(
+                \Poweradmin\Application\Http\RequestContext::isHealthProbeRequest(),
+                sprintf('%s is routed at %s but RequestContext does not treat it as a probe', $name, $routes[$name]['path'])
+            );
+        }
+    }
+
+    /**
+     * BaseController connects to the database in its constructor, so a public route
+     * whose handler reads nothing would open a connection per request. These routes
+     * answer without one and must stay outside that hierarchy.
+     */
+    public function testDatabaseFreeControllersDoNotExtendBaseController(): void
+    {
+        foreach (['static_assets', 'ping', 'api_health', 'api_v1_gone'] as $name) {
+            $route = $this->routes->get($name);
+            $this->assertNotNull($route, "Route $name is missing from routes.yaml");
+
+            [$className] = explode('::', (string)$route->getDefault('_controller'));
+            $this->assertFalse(
+                is_subclass_of($className, \Poweradmin\BaseController::class),
+                sprintf('%s must not extend BaseController; it answers without a database', $className)
+            );
         }
     }
 }

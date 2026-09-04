@@ -353,6 +353,21 @@ final class DbCompat
     }
 
     /**
+     * Escape LIKE wildcards (`%`, `_`) in a user-supplied value so it matches
+     * literally. Uses `!` as the escape character (a backslash escape clause is
+     * unsafe to embed as a string literal across MySQL/PostgreSQL/SQLite), so the
+     * query must pair this with `LIKE ? ESCAPE '!'`. Append/prepend `%` to the
+     * returned value for the intended wildcard positions.
+     *
+     * @param string $value The raw value to embed in a LIKE pattern
+     * @return string The value with `!`, `%` and `_` escaped by `!`
+     */
+    public static function escapeLike(string $value): string
+    {
+        return str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $value);
+    }
+
+    /**
      * Returns a collation clause that forces a byte-exact string comparison,
      * to be appended to a column reference in a WHERE clause (e.g.
      * "oidc_subject" . self::binaryCollation($db_type) . " = ?").
@@ -362,10 +377,10 @@ final class DbCompat
      * need an explicit binary collation. PostgreSQL and SQLite compare strings
      * byte-exact by default and need no clause.
      *
-     * @param string $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @param string|null $db_type The type of database (e.g., "mysql", "sqlite", etc.)
      * @return string The collation clause, or an empty string when not needed.
      */
-    public static function binaryCollation(string $db_type): string
+    public static function binaryCollation(?string $db_type): string
     {
         return match ($db_type) {
             'mysql', 'mysqli' => ' COLLATE utf8mb4_bin',

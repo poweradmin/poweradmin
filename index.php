@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\Application\Controller\NotFoundController;
+use Poweradmin\Application\Http\BootstrapErrorResponder;
+use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Routing\SymfonyRouter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -28,75 +29,40 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 require __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
-require_once __DIR__ . '/lib/Domain/Model/TopLevelDomainInit.php';
 
-// Initialize configuration
+// getInstance() only allocates; initialize() is what can fail, so it goes inside
+// the guarded region. The responder tolerates a half-built configuration.
 $configManager = ConfigurationManager::getInstance();
-$configManager->initialize();
-CanonicalZoneSql::setRowIdFallback(DnsBackendProviderFactory::isApiBackend($configManager));
-
-// Initialize timezone and session
-initializeTimezone($configManager);
-initializeSession();
-
-// Create and process routes
-$router = new SymfonyRouter();
 
 try {
-    // Process the request
-    $router->process();
-} catch (Exception $e) {
-    error_log($e->getMessage());
-    error_log($e->getTraceAsString());
+    $configManager->initialize();
+    CanonicalZoneSql::setRowIdFallback(DnsBackendProviderFactory::isApiBackend($configManager));
 
-    // Check if request expects JSON response
-    $expectsJson = (
-        str_contains($_SERVER['REQUEST_URI'] ?? '', '/api/') ||
-        str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') ||
-        (isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-         strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
-    );
+    initializeTimezone($configManager);
 
-    if ($expectsJson) {
-        header('Content-Type: application/json');
-
-        if ($e->getCode() === 404) {
-            http_response_code(404);
-            echo json_encode([
-                'error' => true,
-                'message' => 'Endpoint not found'
-            ]);
-        } elseif ($e->getCode() === 405) {
-            http_response_code(405);
-            echo json_encode([
-                'error' => true,
-                'message' => 'Method not allowed'
-            ]);
-        } else {
-            http_response_code(500);
-            $showDebug = $configManager->get('misc', 'display_errors', false);
-            echo json_encode([
-                'error' => true,
-                'message' => $showDebug ? $e->getMessage() : 'Internal server error',
-                'file' => $showDebug ? $e->getFile() : null,
-                'line' => $showDebug ? $e->getLine() : null,
-                'trace' => $showDebug ? explode("\n", $e->getTraceAsString()) : null
-            ]);
-        }
-    } else {
-        // HTML error response
-        if ($e->getCode() === 404) {
-            http_response_code(404);
-            try {
-                $notFoundController = new NotFoundController([]);
-                $notFoundController->run();
-            } catch (Exception $notFoundError) {
-                echo 'Page not found.';
-            }
-        } elseif ($configManager->get('misc', 'display_errors', false)) {
-            displayHtmlError($e);
-        } else {
-            echo 'An error occurred while processing the request.';
-        }
+    // Neither a headless install nor the monitoring probes have any use for a session,
+    // and starting one per scrape would leave a session file behind on every request.
+    if (
+        $configManager->get('interface', 'web_enabled', true)
+        && !RequestContext::isHealthProbeRequest((string) $configManager->get('interface', 'base_url_prefix', ''))
+    ) {
+        initializeSession($configManager);
     }
+
+    // A v2 HEAD request is dispatched through the GET handler (see PublicApiController),
+    // so buffer the response and drop its body: HEAD must return headers only. The
+    // callback runs when the response flushes its own output buffers during send().
+    if (($_SERVER['REQUEST_METHOD'] ?? '') === 'HEAD' && RequestContext::isV2ApiRequest()) {
+        ob_start(static fn(): string => '');
+    }
+
+    // Constructing the router parses routes.yaml and loads the module registry, so
+    // it belongs inside the guarded region rather than ahead of it.
+    $router = new SymfonyRouter();
+    $router->process();
+} catch (Throwable $e) {
+    // Throwable, not Exception: a TypeError from mistyped-but-valid JSON (e.g. an
+    // array where a string is expected) is an Error, and must still be shaped into
+    // a JSON 500 instead of escaping as a blank/HTML fatal.
+    (new BootstrapErrorResponder($configManager))->handle($e);
 }

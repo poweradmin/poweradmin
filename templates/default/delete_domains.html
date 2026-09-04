@@ -1,21 +1,11 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Delete zones{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: 'Delete zones'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete Multiple Zones{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-trash', 'Delete Multiple Zones'|trans, 'text-danger') }}
     <div class="card-body">
         <div class="alert alert-warning py-1 mb-2 small">
             <i class="bi bi-exclamation-triangle-fill me-1"></i>
@@ -28,7 +18,7 @@
             </div>
             <div class="card-body">
                 <form method="post" action="{{ base_url_prefix }}/zones/delete">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
 
                     <div class="table-responsive">
                         <table class="table table-striped table-hover table-sm">
@@ -54,7 +44,7 @@
                                     <td>{{ zone['owner'] }}</td>
                                     <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone_type_label(zone['type']) }}</span></td>
                                     <td>
-                                        {% if perm_delete != "all" and (perm_delete != "own" or zone['is_owner'] != "1") %}
+                                        {% if not zone['user_can_delete'] %}
                                         <span class="text-danger"><i class="bi bi-exclamation-circle-fill me-1"></i>{{ error }}</span>
                                         {% endif %}
 
@@ -71,22 +61,7 @@
                     </div>
 
                     <div class="mt-4">
-                        <button type="submit" name="confirm" class="btn btn-danger btn-sm">
-                            <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete these zones{% endtrans %}
-                        </button>
-                        {% if is_reverse_zone %}
-                            <a href="{{ base_url_prefix }}/zones/reverse" class="btn btn-secondary btn-sm">
-                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep these zones{% endtrans %}
-                            </a>
-                        {% elseif is_mixed_zones %}
-                            <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-secondary btn-sm">
-                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep these zones{% endtrans %}
-                            </a>
-                        {% else %}
-                            <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-secondary btn-sm">
-                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep these zones{% endtrans %}
-                            </a>
-                        {% endif %}
+                        {{ macros.delete_actions('Yes, delete these zones'|trans, base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward'), 'No, keep these zones'|trans, confirm_name: 'confirm') }}
                     </div>
                 </form>
             </div>

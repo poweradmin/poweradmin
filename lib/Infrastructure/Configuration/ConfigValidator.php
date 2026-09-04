@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
+use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Infrastructure\Database\DbDriver;
+
 class ConfigValidator
 {
     private array $config;
@@ -115,6 +118,13 @@ class ConfigValidator
         $rowsPerPage = $this->getSetting('interface', 'rows_per_page');
         if (!is_int($rowsPerPage) || $rowsPerPage <= 0) {
             $this->errors['interface.rows_per_page'] = 'rows_per_page must be a positive integer';
+        } elseif ($rowsPerPage < PaginationService::MIN_ROWS_PER_PAGE || $rowsPerPage > PaginationService::MAX_ROWS_PER_PAGE) {
+            // Reported rather than silently clamped, so a mistyped value is visible.
+            $this->errors['interface.rows_per_page'] = sprintf(
+                'rows_per_page must be between %d and %d',
+                PaginationService::MIN_ROWS_PER_PAGE,
+                PaginationService::MAX_ROWS_PER_PAGE
+            );
         }
     }
 
@@ -137,7 +147,7 @@ class ConfigValidator
         }
 
         foreach ($enabledLanguagesArray as $lang) {
-            if (!is_string($lang) || empty($lang)) {
+            if (empty($lang)) {
                 $this->errors['interface.enabled_languages'] = 'enabled_languages must be a non-empty string and contain a list of languages separated by commas';
                 break;
             }
@@ -147,6 +157,15 @@ class ConfigValidator
     private function validateTheme(): void
     {
         $themeBasePath = $this->getSetting('interface', 'theme_base_path', 'templates');
+
+        if (!is_string($themeBasePath) || $themeBasePath === '') {
+            $this->errors['interface.theme_base_path'] = 'theme_base_path must be a non-empty string';
+            return;
+        }
+
+        // Resolve against the app root (not the process cwd) so the theme-exists
+        // check doesn't spuriously fail when invoked from another directory.
+        $themeBasePath = ThemePathResolver::toFilesystemPath($themeBasePath);
         $theme = $this->getSetting('interface', 'theme', 'default');
 
         if (!is_string($theme) || empty($theme)) {
@@ -231,14 +250,10 @@ class ConfigValidator
 
         // Check port if specified
         if (isset($parsedUrl['port'])) {
+            // parse_url() already constrains the port to 0-65535
             $port = $parsedUrl['port'];
-            // parse_url() returns int|null for port, so this should always be int here
-            if (!is_int($port)) {
-                $this->errors['pdns_api.url'] = 'PowerDNS API URL contains an invalid port number';
-                return;
-            }
 
-            if ($port < 1 || $port > 65535) {
+            if ($port < 1) {
                 $this->errors['pdns_api.url'] = 'PowerDNS API URL port must be between 1 and 65535';
                 return;
             }
@@ -306,7 +321,7 @@ class ConfigValidator
 
         // For PostgreSQL and SQLite, pdns_db_name should be null or empty
         // Only MySQL supports separate database for PowerDNS tables
-        if (in_array($dbType, ['pgsql', 'sqlite'], true) && !empty($pdnsDbName)) {
+        if (DbDriver::tryFrom((string)$dbType)?->supportsSeparatePdnsDb() === false && !empty($pdnsDbName)) {
             $this->errors['database.pdns_db_name'] = "pdns_db_name must be null for '$dbType' (only MySQL supports separate database)";
         }
     }

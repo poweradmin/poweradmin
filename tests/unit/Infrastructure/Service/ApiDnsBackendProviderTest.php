@@ -5,6 +5,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
@@ -38,6 +39,31 @@ class ApiDnsBackendProviderTest extends TestCase
     public function testIsApiBackendReturnsTrue(): void
     {
         $this->assertTrue($this->provider->isApiBackend());
+    }
+
+    public function testRetrieveZoneTriggersAxfrForSlave(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetch')->willReturn(['zone_name' => 'example.com', 'zone_type' => 'SLAVE']);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->mockClient->expects($this->once())
+            ->method('retrieveZone')
+            ->with('example.com.')
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->retrieveZone(42));
+    }
+
+    public function testRetrieveZoneDoesNothingForNonSlave(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetch')->willReturn(['zone_name' => 'example.com', 'zone_type' => 'NATIVE']);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->mockClient->expects($this->never())->method('retrieveZone');
+
+        $this->assertFalse($this->provider->retrieveZone(42));
     }
 
     // ---------------------------------------------------------------
@@ -86,6 +112,49 @@ class ApiDnsBackendProviderTest extends TestCase
         $result = $this->provider->createZone('slave.example.com', 'SLAVE', '192.168.1.1');
 
         $this->assertEquals(43, $result);
+    }
+
+    public function testCreateConsumerZoneIncludesMasters(): void
+    {
+        $this->mockClient->expects($this->once())
+            ->method('createZoneWithData')
+            ->with([
+                'name' => 'catalog.example.com.',
+                'kind' => 'CONSUMER',
+                'nameservers' => [],
+                'masters' => ['192.0.2.42'],
+            ])
+            ->willReturn(['name' => 'catalog.example.com.']);
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetchColumn')->willReturn(44);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->createZone('catalog.example.com', 'CONSUMER', '192.0.2.42');
+
+        $this->assertEquals(44, $result);
+    }
+
+    public function testCreateProducerZoneOmitsMasters(): void
+    {
+        $this->mockClient->expects($this->once())
+            ->method('createZoneWithData')
+            ->with([
+                'name' => 'catalog.example.com.',
+                'kind' => 'PRODUCER',
+                'nameservers' => [],
+            ])
+            ->willReturn(['name' => 'catalog.example.com.']);
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetchColumn')->willReturn(45);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->createZone('catalog.example.com', 'PRODUCER', '');
+
+        $this->assertEquals(45, $result);
     }
 
     public function testCreateSlaveZoneIncludesMultipleMasters(): void
@@ -212,6 +281,115 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function testUpdateZoneTypeConsumerKeepsMasters(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'SLAVE']);
+        $stmt->method('bindValue');
+
+        $stmtUpdate = $this->createMock(PDOStatement::class);
+        $stmtUpdate->method('bindValue');
+        $stmtUpdate->method('execute');
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmt, $stmtUpdate);
+
+        // A consumer AXFRs its catalog from a primary; clearing masters would break replication.
+        $this->mockClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('example.com.', ['kind' => 'CONSUMER'])
+            ->willReturn(true);
+
+        $result = $this->provider->updateZoneType(1, 'CONSUMER');
+
+        $this->assertTrue($result);
+    }
+
+    public function testUpdateZoneTypeProducerClearsMasters(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $stmt->method('bindValue');
+
+        $stmtUpdate = $this->createMock(PDOStatement::class);
+        $stmtUpdate->method('bindValue');
+        $stmtUpdate->method('execute');
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmt, $stmtUpdate);
+
+        $this->mockClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('example.com.', ['kind' => 'PRODUCER', 'masters' => []])
+            ->willReturn(true);
+
+        $result = $this->provider->updateZoneType(1, 'PRODUCER');
+
+        $this->assertTrue($result);
+    }
+
+    public function testUpdateZoneCatalogSendsTheDottedName(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('bindValue');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->mockClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('example.com.', ['catalog' => 'producer.example.com.'])
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->updateZoneCatalog(1, 'producer.example.com'));
+    }
+
+    public function testUpdateZoneCatalogClearsWithEmptyStringNotNull(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('bindValue');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        // PowerDNS reads this field only when it is a JSON string. A null is
+        // silently ignored, leaving the zone in its catalog while reporting success.
+        $this->mockClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('example.com.', $this->callback(function ($data) {
+                $this->assertArrayHasKey('catalog', $data);
+                $this->assertNotNull($data['catalog']);
+                return $data['catalog'] === '';
+            }))
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->updateZoneCatalog(1, ''));
+    }
+
+    public function testGetCatalogMembersUsesTheBulkListAndNeverReadsZonesIndividually(): void
+    {
+        // Reading catalog per zone would reintroduce the N+1 that #1387 removed.
+        $this->mockClient->expects($this->once())
+            ->method('getAllZoneKinds')
+            ->willReturn([
+                'member.example.com.' => ['kind' => 'MASTER', 'masters' => [], 'catalog' => 'producer.example.com'],
+                'other.example.com.' => ['kind' => 'MASTER', 'masters' => [], 'catalog' => 'elsewhere.example.com'],
+                'loose.example.com.' => ['kind' => 'NATIVE', 'masters' => [], 'catalog' => ''],
+            ]);
+        $this->mockClient->expects($this->never())->method('getZone');
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 4, 'domain_id' => 4, 'zone_name' => 'member.example.com'],
+            false
+        );
+        $this->mockDb->method('query')->willReturn($stmt);
+
+        $members = $this->provider->getCatalogMembers('producer.example.com');
+
+        $this->assertSame([['id' => 4, 'name' => 'member.example.com', 'kind' => 'MASTER']], $members);
+    }
+
     public function testUpdateZoneTypeReturnsFalseWhenZoneNotFound(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
@@ -297,6 +475,22 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $this->assertTrue($this->provider->updateZoneType(10, 'NATIVE'));
         $this->assertSame([1], $boundIds);
+    }
+
+    public function testGetZoneByNameSurvivesAMastersFieldThatIsNotAnArray(): void
+    {
+        // The raw zone read is not shape-normalized the way getAllZoneKinds is, so a
+        // proxy flattening masters to a scalar used to be a TypeError inside implode().
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'SLAVE', 'masters' => '192.0.2.1']);
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetch')->willReturn(['id' => 1, 'domain_id' => 1]);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $result = $this->provider->getZoneByName('slave.example.com');
+
+        $this->assertSame('', $result['master']);
     }
 
     private function stubCanonicalRowLookup(array $row): PDOStatement
@@ -516,7 +710,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtZone->method('bindValue');
         $this->mockDb->method('prepare')->willReturn($stmtZone);
 
-        // getZoneRrset returns null (API failure)
+        // getZone returns null (API failure)
         $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn(null);
@@ -723,7 +917,7 @@ class ApiDnsBackendProviderTest extends TestCase
         // Old record at www.example.com A, moving to web.example.com A
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
 
-        // getZoneRrset returns both old and new RRsets
+        // getZone returns both old and new RRsets
         $this->mockClient->method('getZoneRrset')
             ->with('example.com.')
             ->willReturn([
@@ -797,6 +991,43 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertFalse($result, 'editRecord should return false when encoded record content is not found in RRset');
     }
 
+    /**
+     * A rename moves the record between RRsets. If the encoded record is absent from the
+     * old RRset the remainder is empty, which previously emitted a DELETE for the whole
+     * old name/type RRset instead of failing.
+     */
+    #[DataProvider('staleRenameRRsetProvider')]
+    public function testEditRecordRenameFailsWhenEncodedRecordIsAbsent(array $rrsets): void
+    {
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
+
+        $this->mockClient->method('getZoneRrset')
+            ->with('example.com.')
+            ->willReturn(['rrsets' => $rrsets]);
+
+        $this->mockClient->expects($this->never())
+            ->method('patchZoneRRsets');
+
+        $result = $this->provider->editRecord($encodedId, 'web.example.com', 'A', '10.0.0.1', 3600, 0, 0);
+
+        $this->assertFalse($result);
+    }
+
+    public static function staleRenameRRsetProvider(): array
+    {
+        return [
+            'old RRset holds different content' => [[
+                [
+                    'name' => 'www.example.com.',
+                    'type' => 'A',
+                    'ttl' => 3600,
+                    'records' => [['content' => '10.0.0.99', 'disabled' => false]],
+                ],
+            ]],
+            'old RRset absent entirely' => [[]],
+        ];
+    }
+
     public function testEditRecordWithDisabledFlag(): void
     {
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
@@ -868,7 +1099,7 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockClient->expects($this->never())
             ->method('patchZoneRRsets');
 
-        // Name change: www -> web, second getZoneRrset fails
+        // Name change: www -> web, second getZone fails
         $result = $this->provider->editRecord($encodedId, 'web.example.com', 'A', '192.168.1.1', 3600, 0, 0);
 
         $this->assertFalse($result);
@@ -1348,6 +1579,36 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertEquals('NATIVE', $result[0]['type']);
     }
 
+    /**
+     * Both list reads must hit the same endpoint, otherwise the client's
+     * per-request cache cannot collapse them into one HTTP request.
+     */
+    #[DataProvider('zoneListDnssecProvider')]
+    public function testGetZonesReadsTheListUnderOneEndpoint(bool $withDnssec): void
+    {
+        $mockZone = $this->createMock(\Poweradmin\Domain\Model\Zone::class);
+        $mockZone->method('getName')->willReturn('example.com.');
+        $mockZone->method('isSecured')->willReturn(false);
+
+        $this->mockClient->expects($this->once())
+            ->method('getAllZones')->with($withDnssec)->willReturn([$mockZone]);
+        $this->mockClient->expects($this->once())
+            ->method('getAllZoneKinds')->with($withDnssec)->willReturn([
+                'example.com.' => ['kind' => 'NATIVE', 'masters' => []],
+            ]);
+
+        $stmtZones = $this->createMock(PDOStatement::class);
+        $stmtZones->method('fetch')->willReturn(false);
+        $this->mockDb->method('query')->willReturn($stmtZones);
+
+        $this->provider->getZones($withDnssec);
+    }
+
+    public static function zoneListDnssecProvider(): array
+    {
+        return ['with dnssec' => [true], 'without dnssec' => [false]];
+    }
+
     // ---------------------------------------------------------------
     // SOA health (disabled / missing) - issue #805
     // ---------------------------------------------------------------
@@ -1425,6 +1686,71 @@ class ApiDnsBackendProviderTest extends TestCase
         $result = $this->provider->getZoneSoaHealth('healthy.example.com', 'MASTER');
 
         $this->assertSame(['is_disabled' => false, 'is_missing_soa' => false], $result);
+    }
+
+    public function testGetZoneSoaHealthAsksPowerdnsForOnlyTheApexSoaRrset(): void
+    {
+        // Downloading the whole zone body to read one flag is what made large
+        // zone lists slow (#1387)
+        $this->mockClient->expects($this->once())
+            ->method('getZoneRrset')
+            ->with('healthy.example.com.', 'healthy.example.com.', 'SOA')
+            ->willReturn([
+                'name' => 'healthy.example.com.',
+                'kind' => 'Master',
+                'rrsets' => [
+                    [
+                        'name' => 'healthy.example.com.',
+                        'type' => 'SOA',
+                        'records' => [
+                            ['content' => 'ns1 hostmaster 1 10800 3600 604800 86400', 'disabled' => false],
+                        ],
+                    ],
+                ],
+            ]);
+
+        $result = $this->provider->getZoneSoaHealth('healthy.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => false, 'is_missing_soa' => false], $result);
+    }
+
+    public function testGetZoneSoaHealthStillWorksWhenServerIgnoresTheRrsetFilter(): void
+    {
+        // PowerDNS below 4.7 does not know rrset_name and returns the whole
+        // zone; the scan must still find the apex SOA among the other RRsets.
+        $this->mockClient->expects($this->once())
+            ->method('getZoneRrset')
+            ->willReturn([
+                'name' => 'legacy.example.com.',
+                'kind' => 'Master',
+                'rrsets' => [
+                    ['name' => 'legacy.example.com.', 'type' => 'NS', 'records' => [['content' => 'ns1.', 'disabled' => false]]],
+                    ['name' => 'www.legacy.example.com.', 'type' => 'A', 'records' => [['content' => '192.0.2.1', 'disabled' => false]]],
+                    [
+                        'name' => 'legacy.example.com.',
+                        'type' => 'SOA',
+                        'records' => [
+                            ['content' => 'ns1 hostmaster 1 10800 3600 604800 86400', 'disabled' => true],
+                        ],
+                    ],
+                ],
+            ]);
+
+        $result = $this->provider->getZoneSoaHealth('legacy.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => true, 'is_missing_soa' => false], $result);
+    }
+
+    public function testGetZoneSoaHealthReportsMissingSoaWhenFilteredResponseIsEmpty(): void
+    {
+        // On 4.7+ a zone with no apex SOA comes back with an empty rrsets array
+        $this->mockClient->expects($this->once())
+            ->method('getZoneRrset')
+            ->willReturn(['name' => 'empty.example.com.', 'kind' => 'Master', 'rrsets' => []]);
+
+        $result = $this->provider->getZoneSoaHealth('empty.example.com', 'MASTER');
+
+        $this->assertSame(['is_disabled' => false, 'is_missing_soa' => true], $result);
     }
 
     public function testGetZoneSoaHealthRespectsAuthoritativeApiKindOverStaleCallerHint(): void
@@ -1574,5 +1900,101 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $this->assertEquals('SLAVE', $result[0]['type']);
         $this->assertEquals('10.0.0.1,10.0.0.2', $result[0]['master']);
+    }
+
+    // ---------------------------------------------------------------
+    // getRecordsByName
+    // ---------------------------------------------------------------
+
+    private function stubZoneNameLookup(string $zoneName = 'example.com', int $rowId = 1): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute');
+        $stmt->method('fetch')->willReturn(['id' => $rowId, 'zone_name' => $zoneName, 'zone_type' => 'MASTER']);
+        $stmt->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmt);
+    }
+
+    public function testGetRecordsByNameAsksForOnlyThatRrset(): void
+    {
+        $this->stubZoneNameLookup();
+
+        $this->mockClient->expects($this->once())
+            ->method('getZoneRrset')
+            ->with('example.com.', 'www.example.com.', 'A')
+            ->willReturn(['rrsets' => [
+                ['name' => 'www.example.com.', 'type' => 'A', 'ttl' => 300,
+                 'records' => [['content' => '192.0.2.1', 'disabled' => false]]],
+            ]]);
+
+        $result = $this->provider->getRecordsByName(1, 'www.example.com', 'A');
+
+        $this->assertCount(1, $result);
+        $this->assertSame('www.example.com', $result[0]['name']);
+        $this->assertSame('192.0.2.1', $result[0]['content']);
+    }
+
+    public function testGetRecordsByNameWithoutTypeAsksForEveryTypeAtTheName(): void
+    {
+        $this->stubZoneNameLookup();
+
+        $this->mockClient->expects($this->once())
+            ->method('getZoneRrset')
+            ->with('example.com.', 'example.com.', null)
+            ->willReturn(['rrsets' => [
+                ['name' => 'example.com.', 'type' => 'NS', 'ttl' => 300,
+                 'records' => [['content' => 'ns1.example.com.', 'disabled' => false]]],
+                ['name' => 'example.com.', 'type' => 'MX', 'ttl' => 300,
+                 'records' => [['content' => '10 mail.example.com.', 'disabled' => false]]],
+            ]]);
+
+        $result = $this->provider->getRecordsByName(1, 'example.com');
+
+        $this->assertCount(2, $result);
+        $this->assertSame(['NS', 'MX'], array_column($result, 'type'));
+    }
+
+    public function testGetRecordsByNameNarrowsWhatAnOlderServerReturnsUnfiltered(): void
+    {
+        // PowerDNS below 4.7 ignores the filter and hands back the whole zone
+        $this->stubZoneNameLookup();
+
+        $this->mockClient->method('getZoneRrset')->willReturn(['rrsets' => [
+            ['name' => 'www.example.com.', 'type' => 'A', 'ttl' => 300,
+             'records' => [['content' => '192.0.2.1', 'disabled' => false]]],
+            ['name' => 'other.example.com.', 'type' => 'A', 'ttl' => 300,
+             'records' => [['content' => '192.0.2.9', 'disabled' => false]]],
+            ['name' => 'www.example.com.', 'type' => 'TXT', 'ttl' => 300,
+             'records' => [['content' => '"v=spf1"', 'disabled' => false]]],
+        ]]);
+
+        $result = $this->provider->getRecordsByName(1, 'www.example.com', 'A');
+
+        $this->assertCount(1, $result);
+        $this->assertSame('www.example.com', $result[0]['name']);
+        $this->assertSame('A', $result[0]['type']);
+    }
+
+    public function testGetRecordsByNameMatchesTheNameCaseInsensitively(): void
+    {
+        // RFC 4343: a differently-cased owner name is the same name
+        $this->stubZoneNameLookup();
+
+        $this->mockClient->method('getZoneRrset')->willReturn(['rrsets' => [
+            ['name' => 'WWW.example.com.', 'type' => 'A', 'ttl' => 300,
+             'records' => [['content' => '192.0.2.1', 'disabled' => false]]],
+        ]]);
+
+        $result = $this->provider->getRecordsByName(1, 'www.example.com', 'A');
+
+        $this->assertCount(1, $result);
+    }
+
+    public function testGetRecordsByNameReturnsEmptyWhenTheApiFails(): void
+    {
+        $this->stubZoneNameLookup();
+        $this->mockClient->method('getZoneRrset')->willReturn(null);
+
+        $this->assertSame([], $this->provider->getRecordsByName(1, 'www.example.com', 'A'));
     }
 }

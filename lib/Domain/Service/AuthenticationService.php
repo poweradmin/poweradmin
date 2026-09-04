@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\RedirectService;
@@ -54,8 +55,32 @@ class AuthenticationService
 
     private function redirectToLogin(): void
     {
+        // Internal API routes are session-authenticated but expect JSON. Bouncing
+        // them to the HTML login page gives clients a 302 to parse instead of an
+        // auth error, so answer unauthenticated API requests with a 401 JSON body.
+        if ($this->isApiRequest()) {
+            $this->sendApiUnauthorized();
+        }
+
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
         $this->redirectService->redirectTo($baseUrlPrefix . '/login');
+    }
+
+    private function isApiRequest(): bool
+    {
+        // Trailing slash required: only requests below a real API root get the
+        // JSON 401; a bare /api/v2 still falls through to the login redirect
+        return RequestContext::isApiRequest(requireTrailingSlash: true);
+    }
+
+    private function sendApiUnauthorized(): void
+    {
+        if (!headers_sent()) {
+            http_response_code(401);
+            header('Content-Type: application/json');
+        }
+        echo json_encode(['error' => true, 'message' => 'Unauthorized']);
+        exit;
     }
 
     public function redirectToIndex(): void

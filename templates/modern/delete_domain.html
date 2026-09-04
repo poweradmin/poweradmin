@@ -1,28 +1,12 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">
-            {% if idn_zone_name %}
-            {{ idn_zone_name }}
-            {% else %}
-            {{ zone_info['name'] }}
-            {% endif %}
-        </a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Delete Zone{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: zone_display_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+    {label: 'Delete Zone'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete Zone{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-trash', 'Delete Zone'|trans, 'text-danger') }}
     <div class="card-body">
         <div class="alert alert-danger bg-danger bg-opacity-10">
             <h5 class="alert-heading text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning{% endtrans %}</h5>
@@ -70,18 +54,9 @@
 
         <div class="mt-4">
             <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/delete" style="display: inline;">
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
-                <button type="submit" class="btn btn-danger btn-sm" data-testid="confirm-delete-zone">
-                    <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this zone{% endtrans %}
-                </button>
+                {{ macros.csrf_field() }}
+                {{ macros.delete_actions('Yes, delete this zone'|trans, base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward'), 'No, keep this zone'|trans, 'confirm-delete-zone', 'cancel-delete-zone') }}
             </form>
-            {% if is_reverse_zone %}
-            <a href="{{ base_url_prefix }}/zones/reverse" class="btn btn-secondary btn-sm" data-testid="cancel-delete-zone">
-            {% else %}
-            <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-secondary btn-sm" data-testid="cancel-delete-zone">
-            {% endif %}
-                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this zone{% endtrans %}
-            </a>
         </div>
     </div>
 </div>

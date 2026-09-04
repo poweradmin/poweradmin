@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
@@ -32,6 +32,7 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
  * User provisioning service for external authentication providers
@@ -40,19 +41,24 @@ use ReflectionClass;
 class UserProvisioningService extends LoggingService
 {
     // Authentication method constants
-    public const AUTH_METHOD_SQL = 'sql';
-    public const AUTH_METHOD_LDAP = 'ldap';
-    public const AUTH_METHOD_OIDC = 'oidc';
-    public const AUTH_METHOD_SAML = 'saml';
+    /** Aliases kept for callers; {@see AuthMethod} owns the vocabulary. */
+    public const AUTH_METHOD_SQL = AuthMethod::SQL->value;
+    public const AUTH_METHOD_LDAP = AuthMethod::LDAP->value;
+    public const AUTH_METHOD_OIDC = AuthMethod::OIDC->value;
+    public const AUTH_METHOD_SAML = AuthMethod::SAML->value;
+
+    /** Methods with an identity link table; LDAP identity is the username itself. */
+    private const LINKABLE_AUTH_METHODS = [self::AUTH_METHOD_OIDC, self::AUTH_METHOD_SAML];
 
     private PDO $db;
     private ConfigurationManager $configManager;
-    private UserManager $userManager;
     private DbUserRepository $userRepository;
 
     /** Collation clause forcing byte-exact matches on OIDC/SAML subject lookups. */
     private string $binaryCollation;
-    private string $dbType;
+
+    /** Database driver name, used to build identity-match predicates. */
+    private string $dbType = '';
 
     public function __construct(
         PDO $connection,
@@ -64,10 +70,19 @@ class UserProvisioningService extends LoggingService
 
         $this->db = $connection;
         $this->configManager = $configManager;
-        $this->userManager = new UserManager($connection, $configManager);
         $this->userRepository = new DbUserRepository($connection, $configManager);
         $this->dbType = (string)$connection->getAttribute(PDO::ATTR_DRIVER_NAME);
         $this->binaryCollation = DbCompat::binaryCollation($this->dbType);
+    }
+
+    /**
+     * Sync an already-matched user from external auth data. Identity fields,
+     * template mapping and group membership are driven by the auth method's
+     * config section; nothing is written when the data is unchanged.
+     */
+    public function syncExistingUser(int $userId, UserInfoInterface $userInfo): void
+    {
+        $this->updateExistingUser($userId, $userInfo, $this->determineAuthMethodFromUserInfo($userInfo));
     }
 
     public function provisionUser(UserInfoInterface $userInfo, string $providerId): ?int
@@ -91,10 +106,13 @@ class UserProvisioningService extends LoggingService
         }
 
         try {
-            // First, try to find existing user by subject
-            $existingUserId = $authMethod === self::AUTH_METHOD_SAML
-                ? $this->findUserBySamlSubject($userInfo->getSubject(), $providerId)
-                : $this->findUserByOidcSubject($userInfo->getSubject(), $providerId);
+            // First, try to find existing user by subject (LDAP identity is the
+            // username itself - there is no separate link table)
+            $existingUserId = match ($authMethod) {
+                self::AUTH_METHOD_SAML => $this->findUserBySamlSubject($userInfo->getSubject(), $providerId),
+                self::AUTH_METHOD_LDAP => $this->findLdapUserByUsername($userInfo->getUsername()),
+                default => $this->findUserByOidcSubject($userInfo->getSubject(), $providerId),
+            };
 
             if ($existingUserId) {
                 $this->logInfo('Found existing user by {method} subject: {subject}', [
@@ -108,7 +126,8 @@ class UserProvisioningService extends LoggingService
             // Try to find by email if email linking is enabled
             $authConfig = $this->getAuthMethodConfig($authMethod);
             if (
-                ($authConfig['link_by_email'] ?? true)
+                in_array($authMethod, self::LINKABLE_AUTH_METHODS, true)
+                && ($authConfig['link_by_email'] ?? true)
                 && !empty($userInfo->getEmail())
                 && $this->emailClaimIsLinkable($userInfo)
             ) {
@@ -117,20 +136,16 @@ class UserProvisioningService extends LoggingService
                 if ($existingUserId !== null && $this->userHoldsSuperuserPermission($existingUserId)) {
                     // An address is not proof of identity, so it may never hand out
                     // the account that can rewrite every zone and every other user.
-                    $this->logWarning('Refusing to link {method} identity to superuser account {id} by email', [
-                        'method' => strtoupper($authMethod),
-                        'id' => $existingUserId
-                    ]);
+                    $this->logWarning(
+                        'Refusing to link {method} identity to superuser account {id} by email',
+                        ['method' => strtoupper($authMethod), 'id' => $existingUserId]
+                    );
                     $existingUserId = null;
                 }
 
                 if ($existingUserId) {
                     $this->logInfo('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
-                    if ($authMethod === self::AUTH_METHOD_SAML) {
-                        $this->linkSamlToExistingUser($existingUserId, $userInfo, $providerId);
-                    } else {
-                        $this->linkOidcToExistingUser($existingUserId, $userInfo, $providerId);
-                    }
+                    $this->linkIdentity($existingUserId, $userInfo, $providerId, $authMethod);
                     $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
                     return $existingUserId;
                 }
@@ -196,8 +211,38 @@ class UserProvisioningService extends LoggingService
         }
     }
 
+    private function findLdapUserByUsername(string $username): ?int
+    {
+        $user = $this->userRepository->findByUsername($username);
+
+        return $user !== null && $user->isLdapUser() ? $user->getId() : null;
+    }
+
     /**
-     * Whether the provider vouched for the email address it just sent.
+     * Record the external identity for methods that keep a link table.
+     * LDAP is a no-op: its identity is the username itself.
+     */
+    private function linkIdentity(int $userId, UserInfoInterface $userInfo, string $providerId, string $authMethod): void
+    {
+        if (!in_array($authMethod, self::LINKABLE_AUTH_METHODS, true)) {
+            return;
+        }
+
+        $this->logInfo('Linking {method} identity to user ID: {userId}', ['method' => strtoupper($authMethod), 'userId' => $userId]);
+        if ($authMethod === self::AUTH_METHOD_SAML) {
+            $this->linkSamlToExistingUser($userId, $userInfo, $providerId);
+        } else {
+            $this->linkOidcToExistingUser($userId, $userInfo, $providerId);
+        }
+    }
+
+    /**
+     * Decide whether the provider's email claim may be used to match an account.
+     *
+     * OpenID Connect defines email_verified so a relying party can tell whether
+     * the provider actually confirmed the address; a provider that says "false"
+     * is stating the address is attacker-settable. SAML has no equivalent claim,
+     * so an absent value stays permissive and the superuser rule carries the load.
      */
     private function emailClaimIsLinkable(UserInfoInterface $userInfo): bool
     {
@@ -214,13 +259,20 @@ class UserProvisioningService extends LoggingService
 
         // Providers serialize this as bool, "true"/"false", or 1/0.
         $isVerified = filter_var($verified, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false;
+
         if (!$isVerified) {
-            $this->logWarning('Provider reported email_verified=false; skipping email-based account linking');
+            $this->logWarning(
+                'Provider reported email_verified=false; skipping email-based account linking for {email}',
+                ['email' => $userInfo->getEmail()]
+            );
         }
 
         return $isVerified;
     }
 
+    /**
+     * Check whether an account carries user_is_ueberuser, directly or via a group.
+     */
     private function userHoldsSuperuserPermission(int $userId): bool
     {
         try {
@@ -266,8 +318,17 @@ class UserProvisioningService extends LoggingService
 
             $this->logInfo('Permission template ID determined: {templateId}', ['templateId' => $permissionTemplateId]);
 
-            // Generate a unique username if needed
-            $username = $this->ensureUniqueUsername($userInfo->getUsername());
+            // LDAP logins authenticate by exact username, so a suffixed variant
+            // would never be matched again - fail instead of uniquifying.
+            $username = $userInfo->getUsername();
+            if ($authMethod === self::AUTH_METHOD_LDAP) {
+                if ($this->usernameExists($username)) {
+                    $this->logError('Cannot auto-provision LDAP user {username}: username is taken by a local account', ['username' => $username]);
+                    return null;
+                }
+            } else {
+                $username = $this->ensureUniqueUsername($username);
+            }
             $this->logInfo('Final username for creation: {username}', ['username' => $username]);
 
             // Log all the data that will be inserted
@@ -296,27 +357,21 @@ class UserProvisioningService extends LoggingService
                 'Created via ' . strtoupper($authMethod) . ' from ' . $providerId,
                 1, // Active
                 $permissionTemplateId,
-                'sso', // Template assigned via SSO provisioning
-                0,  // use_ldap = 0 for external auth users
-                $authMethod  // auth_method (oidc, saml, etc.)
+                $authMethod, // Template ownership: only this provider may revoke it later
+                $authMethod === self::AUTH_METHOD_LDAP ? 1 : 0,
+                $authMethod  // auth_method (ldap, oidc, saml)
             ]);
 
             if (!$success) {
-                $errorInfo = $stmt->errorInfo();
+                $errorInfo = implode(' - ', $stmt->errorInfo());
                 $this->logError('Database INSERT failed. PDO Error: {error}', ['error' => $errorInfo]);
-                throw new \RuntimeException('Failed to insert user. PDO Error: ' . implode(' - ', $errorInfo));
+                throw new \RuntimeException('Failed to insert user. PDO Error: ' . $errorInfo);
             }
 
-            $userId = (int)$this->db->lastInsertId();
+            $userId = (int)$this->db->lastInsertId('users_id_seq');
             $this->logInfo('User INSERT successful, new user ID: {userId}', ['userId' => $userId]);
 
-            // Link identity to user
-            $this->logInfo('Linking {method} identity to user ID: {userId}', ['method' => strtoupper($authMethod), 'userId' => $userId]);
-            if ($authMethod === self::AUTH_METHOD_SAML) {
-                $this->linkSamlToExistingUser($userId, $userInfo, $providerId);
-            } else {
-                $this->linkOidcToExistingUser($userId, $userInfo, $providerId);
-            }
+            $this->linkIdentity($userId, $userInfo, $providerId, $authMethod);
 
             // Apply group membership based on external groups
             $this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod);
@@ -328,9 +383,10 @@ class UserProvisioningService extends LoggingService
 
             return $userId;
         } catch (\Exception $e) {
-            $this->logError('Error creating new OIDC user: {error}. Stack trace: {trace}', [
+            $this->logError('Error creating new {method} user: {error} at {origin}', [
+                'method' => strtoupper($authMethod),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'origin' => $e->getFile() . ':' . $e->getLine()
             ]);
             return null;
         }
@@ -342,23 +398,29 @@ class UserProvisioningService extends LoggingService
             $updateFields = [];
             $updateValues = [];
 
-            // Update user information if configured to sync
+            $stmt = $this->db->prepare("SELECT fullname, email, auth_method, perm_templ, perm_templ_source FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $current = $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+
+            // Update user information if configured to sync, skipping unchanged values
             $authConfig = $this->getAuthMethodConfig($authMethod);
             if ($authConfig['sync_user_info'] ?? true) {
-                if (!empty($userInfo->getDisplayName())) {
+                $displayName = $userInfo->getDisplayName();
+                if (!empty($displayName) && $displayName !== ($current['fullname'] ?? null)) {
                     $updateFields[] = 'fullname = ?';
-                    $updateValues[] = $userInfo->getDisplayName();
+                    $updateValues[] = $displayName;
                 }
 
-                if (!empty($userInfo->getEmail())) {
+                $email = $userInfo->getEmail();
+                if (!empty($email) && $email !== ($current['email'] ?? null)) {
                     $updateFields[] = 'email = ?';
-                    $updateValues[] = $userInfo->getEmail();
+                    $updateValues[] = $email;
                 }
             }
 
             // Only update auth_method if it's safe to do so (prevent overwriting LDAP/other methods)
-            $currentAuthMethod = $this->getCurrentUserAuthMethod($userId);
-            if ($this->shouldUpdateAuthMethod($currentAuthMethod, $authMethod)) {
+            $currentAuthMethod = isset($current['auth_method']) ? (string)$current['auth_method'] : null;
+            if ($currentAuthMethod !== $authMethod && $this->shouldUpdateAuthMethod($currentAuthMethod, $authMethod)) {
                 $updateFields[] = 'auth_method = ?';
                 $updateValues[] = $authMethod;
                 $this->logInfo('Updating auth_method from {old} to {new} for user {userId}', [
@@ -366,7 +428,7 @@ class UserProvisioningService extends LoggingService
                     'new' => $authMethod,
                     'userId' => $userId
                 ]);
-            } else {
+            } elseif ($currentAuthMethod !== $authMethod) {
                 $this->logInfo('Preserving existing auth_method {current} for user {userId} (not overwriting with {new})', [
                     'current' => $currentAuthMethod,
                     'new' => $authMethod,
@@ -377,14 +439,17 @@ class UserProvisioningService extends LoggingService
             // Update permission template based on current groups
             $newPermissionTemplateId = $this->determinePermissionTemplate($userInfo->getGroups(), $authMethod, false);
             if ($newPermissionTemplateId) {
-                $updateFields[] = 'perm_templ = ?';
-                $updateValues[] = $newPermissionTemplateId;
-                $updateFields[] = 'perm_templ_source = ?';
-                $updateValues[] = 'sso';
+                if ($newPermissionTemplateId !== (int)($current['perm_templ'] ?? 0) || ($current['perm_templ_source'] ?? '') !== $authMethod) {
+                    $updateFields[] = 'perm_templ = ?';
+                    $updateValues[] = $newPermissionTemplateId;
+                    $updateFields[] = 'perm_templ_source = ?';
+                    $updateValues[] = $authMethod;
+                }
             } else {
-                // No group mapping matched - check if we should revoke SSO-assigned template
-                $currentSource = $this->getPermTemplSource($userId);
-                if ($currentSource === 'sso') {
+                // Only the provider that assigned the template may revoke it
+                // ('sso' is the legacy label from before per-method sources)
+                $currentSource = $current['perm_templ_source'] ?? null;
+                if ($currentSource === $authMethod || $currentSource === 'sso') {
                     // User previously got template from SSO mapping but no longer matches any group
                     // Fall back to default permission template
                     $defaultTemplateId = $this->getDefaultPermissionTemplateId($authMethod);
@@ -560,17 +625,16 @@ class UserProvisioningService extends LoggingService
 
     private function determinePermissionTemplate(array $groups, string $authMethod = self::AUTH_METHOD_OIDC, bool $useDefaultFallback = true): ?int
     {
-        $this->logInfo('Determining permission template for groups: {groups}', ['groups' => $groups]);
+        $this->logDebug('Determining permission template for groups: {groups}', ['groups' => $groups]);
 
         $permissionTemplateMapping = $this->configManager->get($authMethod, 'permission_template_mapping', []);
-        $this->logInfo('Available permission template mappings: {mappings}', ['mappings' => $permissionTemplateMapping]);
+        $this->logDebug('Available permission template mappings: {mappings}', ['mappings' => $permissionTemplateMapping]);
 
         // Check if user's groups match any configured mappings
         foreach ($permissionTemplateMapping as $groupName => $templateName) {
-            $this->logInfo('Checking if group {groupName} is in user groups', ['groupName' => $groupName]);
             if ($this->groupMatches((string)$groupName, $groups)) {
                 $this->logInfo('Found matching group: {group}', ['group' => $groupName]);
-                $templateId = $this->findPermissionTemplateByName($templateName);
+                $templateId = $this->findPermissionTemplateByName($templateName, $authMethod);
                 if ($templateId) {
                     $this->logInfo('Mapped OIDC group {group} to permission template: {template} (ID: {id})', [
                         'group' => $groupName,
@@ -604,7 +668,7 @@ class UserProvisioningService extends LoggingService
 
         $this->logInfo('Falling back to default permission template: {template}', ['template' => $defaultTemplateName]);
 
-        $defaultTemplateId = $this->findPermissionTemplateByName($defaultTemplateName);
+        $defaultTemplateId = $this->findPermissionTemplateByName($defaultTemplateName, $authMethod);
 
         if ($defaultTemplateId) {
             $this->logInfo('Using default permission template: {template} (ID: {id})', [
@@ -614,27 +678,15 @@ class UserProvisioningService extends LoggingService
             return $defaultTemplateId;
         }
 
-        // No arbitrary fallback: the lowest template id is the bundled Administrator
-        // template, so guessing one would hand out superuser access.
-        $this->logError('Default permission template {template} not found in database!', ['template' => $defaultTemplateName]);
+        // Fail closed. Picking "any available template" resolved to the lowest id,
+        // which is the bundled Administrator template, so a renamed or deleted
+        // default silently provisioned external identities as superusers.
+        $this->logError(
+            'Default permission template {template} not found in database; refusing to provision user.',
+            ['template' => $defaultTemplateName]
+        );
 
         return null;
-    }
-
-    private function getPermTemplSource(int $userId): ?string
-    {
-        try {
-            $stmt = $this->db->prepare("SELECT perm_templ_source FROM users WHERE id = ?");
-            $stmt->execute([$userId]);
-            $result = $stmt->fetchColumn();
-            return $result ?: null;
-        } catch (\Exception $e) {
-            $this->logError('Error getting perm_templ_source for user {userId}: {error}', [
-                'userId' => $userId,
-                'error' => $e->getMessage()
-            ]);
-            return null;
-        }
     }
 
     private function getDefaultPermissionTemplateId(string $authMethod): ?int
@@ -643,7 +695,7 @@ class UserProvisioningService extends LoggingService
         if (empty($defaultTemplateName)) {
             return null;
         }
-        return $this->findPermissionTemplateByName($defaultTemplateName);
+        return $this->findPermissionTemplateByName($defaultTemplateName, $authMethod);
     }
 
     /**
@@ -667,17 +719,70 @@ class UserProvisioningService extends LoggingService
         }
     }
 
-    private function findPermissionTemplateByName(string $templateName): ?int
+    private function findPermissionTemplateByName(string $templateName, string $authMethod): ?int
     {
         try {
-            $stmt = $this->db->prepare("SELECT id FROM perm_templ WHERE name = ?");
+            // Accent-exact match, so an IdP-asserted claim cannot map to a look-alike template.
+            $match = DbCompat::accentSensitiveEquals($this->dbType, 'name');
+            $stmt = $this->db->prepare("SELECT id FROM perm_templ WHERE $match");
             $stmt->execute([$templateName]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            return $result ? (int)$result['id'] : null;
+            if (!$result) {
+                return null;
+            }
+
+            $templateId = (int)$result['id'];
+            if (!$this->superuserProvisioningAllowed($authMethod) && $this->templateGrantsSuperuser($templateId)) {
+                $this->logWarning(
+                    'Refusing to provision superuser template {template} from {method}; '
+                    . 'set allow_superuser_provisioning to permit it',
+                    ['template' => $templateName, 'method' => strtoupper($authMethod)]
+                );
+                return null;
+            }
+
+            return $templateId;
         } catch (\Exception $e) {
             $this->logError('Error finding permission template by name: {error}', ['error' => $e->getMessage()]);
             return null;
+        }
+    }
+
+    /**
+     * Whether this auth method may hand out superuser rights without an admin acting.
+     */
+    private function superuserProvisioningAllowed(string $authMethod): bool
+    {
+        return (bool)$this->configManager->get($authMethod, 'allow_superuser_provisioning', false);
+    }
+
+    private function templateGrantsSuperuser(int $permTemplId): bool
+    {
+        try {
+            return $this->userRepository->templateGrantsUberuser($permTemplId);
+        } catch (\Exception $e) {
+            // Fail closed: an unreadable template must not be assumed harmless.
+            $this->logError('Error checking template permissions: {error}', ['error' => $e->getMessage()]);
+            return true;
+        }
+    }
+
+    /**
+     * Whether membership of this group would confer superuser rights on its members.
+     */
+    private function groupGrantsSuperuser(int $groupId): bool
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT perm_templ FROM user_groups WHERE id = :id");
+            $stmt->bindValue(':id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+            $permTemplId = $stmt->fetchColumn();
+
+            return $permTemplId !== false && $this->templateGrantsSuperuser((int)$permTemplId);
+        } catch (\Exception $e) {
+            $this->logError('Error checking group permissions: {error}', ['error' => $e->getMessage()]);
+            return true;
         }
     }
 
@@ -725,6 +830,9 @@ class UserProvisioningService extends LoggingService
         if ($userInfo instanceof OidcUserInfo) {
             return self::AUTH_METHOD_OIDC;
         }
+        if ($userInfo instanceof LdapUserInfo) {
+            return self::AUTH_METHOD_LDAP;
+        }
 
         // Fallback to OIDC for backward compatibility with unknown types
         return self::AUTH_METHOD_OIDC;
@@ -736,26 +844,6 @@ class UserProvisioningService extends LoggingService
     private function getAuthMethodConfig(string $authMethod): array
     {
         return $this->configManager->getGroup($authMethod);
-    }
-
-    /**
-     * Get the current auth_method for a user
-     */
-    private function getCurrentUserAuthMethod(int $userId): ?string
-    {
-        try {
-            $stmt = $this->db->prepare("SELECT auth_method FROM users WHERE id = ?");
-            $stmt->execute([$userId]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            return $result ? $result['auth_method'] : null;
-        } catch (\Exception $e) {
-            $this->logError('Error getting current auth method for user {userId}: {error}', [
-                'userId' => $userId,
-                'error' => $e->getMessage()
-            ]);
-            return null;
-        }
     }
 
     /**
@@ -939,72 +1027,91 @@ class UserProvisioningService extends LoggingService
         $groupMapping = $this->configManager->get($authMethod, 'group_mapping', []);
 
         if (empty($groupMapping)) {
-            $this->logInfo('No group mapping configured for {method}, skipping group membership sync', [
+            $this->logDebug('No group mapping configured for {method}, skipping group membership sync', [
                 'method' => strtoupper($authMethod)
             ]);
             return;
         }
 
-        $this->logInfo('Synchronizing group membership for user {userId} based on {method} groups: {groups}', [
+        $this->logDebug('Synchronizing group membership for user {userId} based on {method} groups: {groups}', [
             'userId' => $userId,
             'method' => strtoupper($authMethod),
             'groups' => $externalGroups
         ]);
 
-        // Determine which Poweradmin groups the user should be in based on external groups.
-        // Each mapping value may be a single group name (legacy format) or a list of
-        // group names, letting one external group grant access to several Poweradmin groups.
+        // Resolve every mapped Poweradmin group name once (name => id). Each
+        // mapping value may be a single group name (legacy format) or a list.
+        $mappedGroupIds = [];
+        foreach ($groupMapping as $mappedValue) {
+            foreach ($this->normalizeMappedGroupNames($mappedValue) as $poweradminGroupName) {
+                if (array_key_exists($poweradminGroupName, $mappedGroupIds)) {
+                    continue;
+                }
+                $mappedGroupIds[$poweradminGroupName] = $this->findGroupByName($poweradminGroupName);
+                if ($mappedGroupIds[$poweradminGroupName] === null) {
+                    $this->logWarning('Poweradmin group {group} from {method} group_mapping not found', [
+                        'group' => $poweradminGroupName,
+                        'method' => strtoupper($authMethod)
+                    ]);
+                }
+            }
+        }
+        $idToName = array_flip(array_filter($mappedGroupIds));
+
+        // Groups the user should be in, based on matching external groups
         $targetGroupIds = [];
-        $targetGroupNames = [];
         foreach ($groupMapping as $externalGroupName => $mappedValue) {
             if (!$this->groupMatches((string)$externalGroupName, $externalGroups)) {
                 continue;
             }
             foreach ($this->normalizeMappedGroupNames($mappedValue) as $poweradminGroupName) {
-                $groupId = $this->findGroupByName($poweradminGroupName);
-                if ($groupId) {
-                    $targetGroupIds[$groupId] = $groupId;
-                    $targetGroupNames[$groupId] = $poweradminGroupName;
-                } else {
-                    $this->logWarning('Poweradmin group {group} not found for mapping from external group {external}', [
-                        'group' => $poweradminGroupName,
-                        'external' => $externalGroupName
-                    ]);
+                if (!empty($mappedGroupIds[$poweradminGroupName])) {
+                    $targetGroupIds[] = $mappedGroupIds[$poweradminGroupName];
                 }
             }
         }
-        $targetGroupIds = array_values($targetGroupIds);
+        $targetGroupIds = array_values(array_unique($targetGroupIds));
 
-        // Get all mapped Poweradmin group IDs (regardless of current external groups)
-        $allMappedGroupIds = [];
-        $allMappedGroupNames = [];
-        foreach ($groupMapping as $mappedValue) {
-            foreach ($this->normalizeMappedGroupNames($mappedValue) as $poweradminGroupName) {
-                $groupId = $this->findGroupByName($poweradminGroupName);
-                if ($groupId) {
-                    $allMappedGroupIds[$groupId] = $groupId;
-                    $allMappedGroupNames[$groupId] = $poweradminGroupName;
+        // A group whose template grants superuser turns an IdP claim into full access,
+        // so membership of it is not something an assertion may hand out on its own.
+        if (!$this->superuserProvisioningAllowed($authMethod)) {
+            $targetGroupIds = array_values(array_filter($targetGroupIds, function (int $groupId) use ($idToName, $authMethod): bool {
+                if (!$this->groupGrantsSuperuser($groupId)) {
+                    return true;
                 }
-            }
-        }
-        $allMappedGroupIds = array_values($allMappedGroupIds);
 
-        // Remove user from mapped groups they should no longer be in
-        $groupsToRemove = array_diff($allMappedGroupIds, $targetGroupIds);
-        foreach ($groupsToRemove as $groupId) {
+                $this->logWarning(
+                    'Refusing to add {method} user to superuser group {group}; '
+                    . 'set allow_superuser_provisioning to permit it',
+                    ['method' => strtoupper($authMethod), 'group' => $idToName[$groupId] ?? $groupId]
+                );
+                return false;
+            }));
+        }
+
+        // Current memberships among mapped groups, so unchanged state costs no writes
+        $currentGroupIds = [];
+        $allMappedIds = array_keys($idToName);
+        if ($allMappedIds !== []) {
+            $placeholders = implode(',', array_fill(0, count($allMappedIds), '?'));
+            $stmt = $this->db->prepare("SELECT group_id FROM user_group_members WHERE user_id = ? AND group_id IN ($placeholders)");
+            $stmt->execute([$userId, ...$allMappedIds]);
+            $currentGroupIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        }
+
+        foreach (array_diff($currentGroupIds, $targetGroupIds) as $groupId) {
             if ($this->removeUserFromGroup($userId, $groupId)) {
                 $this->logInfo('Removed user {userId} from group: {group} (no longer in external group)', [
                     'userId' => $userId,
-                    'group' => $allMappedGroupNames[$groupId] ?? $groupId
+                    'group' => $idToName[$groupId] ?? $groupId
                 ]);
             }
         }
 
-        // Add user to groups they should be in
         $addedGroups = [];
-        foreach ($targetGroupIds as $groupId) {
+        foreach (array_diff($targetGroupIds, $currentGroupIds) as $groupId) {
             if ($this->addUserToGroup($userId, $groupId)) {
-                $addedGroups[] = $targetGroupNames[$groupId];
+                $addedGroups[] = $idToName[$groupId] ?? $groupId;
             }
         }
 
@@ -1013,22 +1120,19 @@ class UserProvisioningService extends LoggingService
                 'userId' => $userId,
                 'groups' => implode(', ', $addedGroups)
             ]);
-        } else {
-            $this->logInfo('User {userId} not a member of any mapped groups', ['userId' => $userId]);
         }
     }
 
     /**
-     * Whether a permission_template_mapping / group_mapping key names one of the
-     * user's external groups.
+     * True when a mapping key equals a group value exactly.
      *
-     * PHP stores a numeric array key as an int, so a group id such as '1001'
-     * arrives here as an integer while the claim carries strings. Some providers
-     * also emit the claim itself as JSON numbers, so both sides are compared as
-     * strings and either representation matches.
+     * Matching only the first RDN of a DN would discard the OU and DC that
+     * distinguish two identically named groups, so a directory user able to
+     * create a group in their own OU could satisfy a mapping meant for another.
+     * DN-shaped groups must therefore be configured as the full DN.
      *
-     * @param string $configKey Mapping key from configuration
-     * @param array $groups External group values from the identity provider
+     * PHP stores a numeric array key as an int, and some providers emit the
+     * groups claim as JSON numbers, so both sides are compared as strings.
      */
     private function groupMatches(string $configKey, array $groups): bool
     {
@@ -1076,7 +1180,9 @@ class UserProvisioningService extends LoggingService
     private function findGroupByName(string $groupName): ?int
     {
         try {
-            $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE name = ?");
+            // Accent-exact match, so an IdP-asserted claim cannot map to a look-alike group.
+            $match = DbCompat::accentSensitiveEquals($this->dbType, 'name');
+            $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE $match");
             $stmt->execute([$groupName]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

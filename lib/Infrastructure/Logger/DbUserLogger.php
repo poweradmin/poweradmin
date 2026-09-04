@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
 use Poweradmin\Domain\Model\UserEntity;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 class DbUserLogger
 {
@@ -54,9 +55,9 @@ class DbUserLogger
         $stmt = $this->db->prepare("
                     SELECT count(log_users.id) as number_of_logs
                     FROM log_users
-                    WHERE log_users.event LIKE :search_by
+                    WHERE log_users.event LIKE :search_by ESCAPE '!'
         ");
-        $name = "%'$user'%";
+        $name = "%user:" . DbCompat::escapeLike($user) . " %";
         $stmt->execute(['search_by' => $name]);
         return $stmt->fetch()['number_of_logs'];
     }
@@ -85,12 +86,12 @@ class DbUserLogger
 
         $stmt = $this->db->prepare("
             SELECT * FROM log_users
-            WHERE log_users.event LIKE :search_by
+            WHERE log_users.event LIKE :search_by ESCAPE '!'
             ORDER BY created_at DESC
             LIMIT :limit
             OFFSET :offset");
 
-        $user = "%'$user'%";
+        $user = "%user:" . DbCompat::escapeLike($user) . " %";
         $stmt->bindValue(':search_by', $user, PDO::PARAM_STR);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -103,25 +104,43 @@ class DbUserLogger
     {
         return [
             'access_denied',
+            'add_supermaster',
             'add_user',
             'add_zone_template',
+            'add_zone_template_record',
+            'api_add_zone_template',
+            'api_add_zone_template_record',
+            'api_delete_zone_template',
+            'api_delete_zone_template_record',
+            'api_edit_zone_template',
+            'api_edit_zone_template_record',
             'change_password',
+            'delete_supermaster',
             'delete_user',
             'delete_zone_template',
+            'delete_zone_template_record',
+            'dynamic_dns_update',
+            'edit_supermaster',
             'edit_user',
             'edit_zone_template',
+            'edit_zone_template_record',
+            'login_error',
             'login_failed',
+            'login_locked',
             'login_success',
             'logout',
             'mfa_disable',
             'mfa_enable',
+            'mfa_failed',
             'mfa_regenerate_codes',
             'mfa_verify',
+            'oidc_login_error',
             'oidc_login_failed',
             'oidc_login_success',
             'password_reset',
             'password_reset_request',
             'perm_template_change',
+            'saml_login_error',
             'saml_login_failed',
             'saml_login_success',
             'saml_logout',
@@ -184,41 +203,26 @@ class DbUserLogger
     private function buildFilterConditions(array $filters, array &$conditions, array &$params): void
     {
         if (!empty($filters['name'])) {
-            $conditions[] = "log_users.event LIKE :search_by";
-            $params[':search_by'] = ["%'" . $filters['name'] . "'%", PDO::PARAM_STR];
+            // Producers emit a bare "user:<name> "; quoting the value matched nothing.
+            $conditions[] = "log_users.event LIKE :search_by ESCAPE '!'";
+            $params[':search_by'] = ["%user:" . DbCompat::escapeLike($filters['name']) . " %", PDO::PARAM_STR];
         }
 
         if (!empty($filters['event_type'])) {
-            $typePatterns = [
-                'access_denied' => '%operation:access_denied%',
-                'login_success' => '%operation:login_success%',
-                'login_failed' => '%operation:login_failed%',
-                'add_user' => '%operation:add_user%',
-                'add_zone_template' => '%operation:add_zone_template%',
-                'edit_user' => '%operation:edit_user%',
-                'delete_user' => '%operation:delete_user%',
-                'delete_zone_template' => '%operation:delete_zone_template%',
-                'edit_zone_template' => '%operation:edit_zone_template%',
-                'change_password' => '%operation:change_password%',
-                'logout' => '%operation:logout%',
-                'mfa_enable' => '%operation:mfa_enable%',
-                'mfa_disable' => '%operation:mfa_disable%',
-                'mfa_verify' => '%operation:mfa_verify%',
-                'mfa_regenerate_codes' => '%operation:mfa_regenerate_codes%',
-                'password_reset_request' => '%operation:password_reset_request%',
-                'password_reset' => '%operation:password_reset%',
-                'perm_template_change' => '%operation:perm_template_change%',
-                'username_recovery' => '%operation:username_recovery%',
-                'oidc_login_success' => '%operation:oidc_login_success%',
-                'oidc_login_failed' => '%operation:oidc_login_failed%',
-                'saml_login_success' => '%operation:saml_login_success%',
-                'saml_login_failed' => '%operation:saml_login_failed%',
-                'saml_logout' => '%operation:saml_logout%',
-                'session_expired' => '%operation:session_expired%',
+            $eventType = $filters['event_type'];
+            // Most filters key directly off operation:<name>; the exceptions disambiguate
+            // OIDC/SAML callback errors that share the generic login_error operation, and
+            // retain a legacy oidc_login_failed pattern for rows logged before 4.4.0.
+            $exceptions = [
+                'oidc_login_error' => '%operation:login_error%auth_method:oidc%',
+                'saml_login_error' => '%operation:login_error%auth_method:saml%',
             ];
-            if (isset($typePatterns[$filters['event_type']])) {
+            $allowed = array_flip($this->getDistinctEventTypes());
+            if (isset($allowed[$eventType])) {
+                // Anchor on the trailing space so add_zone_template does not also
+                // match add_zone_template_record, nor password_reset its _request sibling.
                 $conditions[] = "log_users.event LIKE :event_type";
-                $params[':event_type'] = [$typePatterns[$filters['event_type']], PDO::PARAM_STR];
+                $params[':event_type'] = [$exceptions[$eventType] ?? "%operation:$eventType %", PDO::PARAM_STR];
             }
         }
 

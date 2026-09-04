@@ -24,17 +24,17 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class ListTemplateZonesController extends BaseController
 {
     public function run(): void
     {
-        $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
-        $perm_templ_add = UserManager::verifyPermission($this->db, 'zone_templ_add');
-        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $perm_templ_edit = $this->hasPermission('zone_templ_edit');
+        $perm_templ_add = $this->hasPermission('zone_templ_add');
+        $perm_godlike = $this->hasPermission('user_is_ueberuser');
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit || $perm_templ_add), _('You do not have permission to view zone templates.'));
 
@@ -77,7 +77,7 @@ class ListTemplateZonesController extends BaseController
         $template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
         // Get zones using this template with pagination
-        $zones = $zoneTemplate->getZonesUsingTemplate($zone_templ_id, $_SESSION['userid']);
+        $zones = $zoneTemplate->getZonesUsingTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
 
         // Get total count of zones for pagination
         $totalZones = count($zones);
@@ -101,7 +101,7 @@ class ListTemplateZonesController extends BaseController
         $this->render('list_template_zones.html', [
             'template' => $template_details,
             'zones' => $paginatedZones,
-            'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
+            'user_name' => $this->createUserRepository()->getFullNameById($_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
             'pagination' => $paginationHtml,
             'total_zones' => $totalZones,
             'iface_rowamount' => $itemsPerPage

@@ -74,6 +74,107 @@ class PdnsCapabilitiesTest extends TestCase
         $this->assertTrue(PdnsCapabilities::fromVersion('5.0.0')->supportsViews());
     }
 
+    #[DataProvider('viewsReasonProvider')]
+    public function testViewsUnavailableReason(array $info, ?string $expected): void
+    {
+        $caps = PdnsCapabilities::fromServerInfo($info);
+        $this->assertSame($expected, $caps->viewsUnavailableReason());
+        $this->assertSame($expected === null, $caps->supportsViews());
+    }
+
+    public static function viewsReasonProvider(): array
+    {
+        return [
+            'lmdb with views=yes' => [['version' => '5.1.4', 'backends' => 'lmdb', 'views' => 'yes'], null],
+            'sql backend' => [
+                ['version' => '5.1.4', 'backends' => 'gmysql', 'views' => 'no'],
+                PdnsCapabilities::VIEWS_NEED_LMDB,
+            ],
+            'views disabled' => [
+                ['version' => '5.1.4', 'backends' => 'lmdb', 'views' => 'no'],
+                PdnsCapabilities::VIEWS_NEED_SETTING,
+            ],
+            'version is reported before the backend' => [
+                ['version' => '4.9.12', 'backends' => 'gmysql', 'views' => 'no'],
+                PdnsCapabilities::VIEWS_NEED_VERSION,
+            ],
+            // /config unreachable: no evidence against views, so nothing is hidden.
+            'settings unread' => [['version' => '5.1.4'], null],
+            'settings empty' => [['version' => '5.1.4', 'backends' => '', 'views' => ''], null],
+        ];
+    }
+
+    public function testViewsStayVisibleForAVersionOnlyCapabilitySet(): void
+    {
+        $this->assertTrue(PdnsCapabilities::fromVersion('5.1.4')->supportsViews());
+    }
+
+    public function testViewsUnavailableMessageNamesTheMissingPrerequisite(): void
+    {
+        $message = fn(array $info): ?string => PdnsCapabilities::fromServerInfo($info)->viewsUnavailableMessage();
+
+        $this->assertNull($message(['version' => '5.1.4', 'backends' => 'lmdb', 'views' => 'yes']));
+        $this->assertStringContainsString(
+            '5.0',
+            (string) $message(['version' => '4.9.12'])
+        );
+        $this->assertStringContainsString(
+            'LMDB',
+            (string) $message(['version' => '5.1.4', 'backends' => 'gmysql', 'views' => 'yes'])
+        );
+        $this->assertStringContainsString(
+            'views=yes',
+            (string) $message(['version' => '5.1.4', 'backends' => 'lmdb', 'views' => 'no'])
+        );
+    }
+
+    #[DataProvider('launchValueProvider')]
+    public function testLaunchListsAndInstanceSuffixesAreParsed(string $launch, bool $expected): void
+    {
+        $caps = PdnsCapabilities::fromServerInfo([
+            'version' => '5.1.4',
+            'backends' => $launch,
+            'views' => 'yes',
+        ]);
+        $this->assertSame($expected, $caps->supportsViews());
+    }
+
+    public static function launchValueProvider(): array
+    {
+        return [
+            'single' => ['lmdb', true],
+            'instance suffix' => ['lmdb:one', true],
+            'comma separated' => ['gmysql,lmdb', true],
+            'space separated' => ['gmysql lmdb', true],
+            'uppercase' => ['LMDB', true],
+            'sql only' => ['gmysql', false],
+            'lookalike' => ['lmdbx', false],
+        ];
+    }
+
+    #[DataProvider('viewsSettingProvider')]
+    public function testViewsSettingAcceptsPowerDnsBooleanSpellings(string $value, bool $expected): void
+    {
+        $caps = PdnsCapabilities::fromServerInfo([
+            'version' => '5.1.4',
+            'backends' => 'lmdb',
+            'views' => $value,
+        ]);
+        $this->assertSame($expected, $caps->supportsViews());
+    }
+
+    public static function viewsSettingProvider(): array
+    {
+        return [
+            'yes' => ['yes', true],
+            'true' => ['true', true],
+            'one' => ['1', true],
+            'padded' => [' yes ', true],
+            'no' => ['no', false],
+            'zero' => ['0', false],
+        ];
+    }
+
     #[DataProvider('recordTypeProvider')]
     public function testSupportsRecordType(string $version, string $type, bool $expected): void
     {
@@ -97,6 +198,12 @@ class PdnsCapabilitiesTest extends TestCase
             'ZONEMD unavailable on 4.7' => ['4.7.0', 'ZONEMD', false],
             'WALLET available from 5.1' => ['5.1.0', 'WALLET', true],
             'WALLET unavailable on 5.0' => ['5.0.0', 'WALLET', false],
+            'RESINFO available from 5.1' => ['5.1.0', 'RESINFO', true],
+            'RESINFO unavailable on 5.0' => ['5.0.0', 'RESINFO', false],
+            'HHIT available from 5.1' => ['5.1.0', 'HHIT', true],
+            'HHIT unavailable on 5.0' => ['5.0.0', 'HHIT', false],
+            'BRID available from 5.1' => ['5.1.0', 'BRID', true],
+            'BRID unavailable on 5.0' => ['5.0.0', 'BRID', false],
             'lowercase input is normalised' => ['4.4.0', 'svcb', true],
         ];
     }
@@ -105,8 +212,10 @@ class PdnsCapabilitiesTest extends TestCase
     {
         $v45 = PdnsCapabilities::fromVersion('4.5.9');
         $v46 = PdnsCapabilities::fromVersion('4.6.0');
-        $this->assertFalse($v45->supportsIndividualRrsetFetch());
-        $this->assertTrue($v46->supportsIndividualRrsetFetch());
+        $v47 = PdnsCapabilities::fromVersion('4.7.0');
+        // rrset_name/rrset_type landed in auth-4.7.0, not 4.6
+        $this->assertFalse($v46->supportsIndividualRrsetFetch());
+        $this->assertTrue($v47->supportsIndividualRrsetFetch());
         $this->assertFalse($v45->supportsAutoprimariesApi());
         $this->assertTrue($v46->supportsAutoprimariesApi());
 
@@ -160,6 +269,9 @@ class PdnsCapabilitiesTest extends TestCase
         $this->assertFalse($caps->supportsRecordType('SVCB'));
         $this->assertFalse($caps->supportsRecordType('ZONEMD'));
         $this->assertFalse($caps->supportsRecordType('WALLET'));
+        $this->assertFalse($caps->supportsRecordType('RESINFO'));
+        $this->assertFalse($caps->supportsRecordType('HHIT'));
+        $this->assertFalse($caps->supportsRecordType('BRID'));
         $this->assertFalse($caps->supportsIndividualRrsetFetch());
         $this->assertFalse($caps->supportsAutoprimariesApi());
         $this->assertFalse($caps->supportsRecordTimestamps());

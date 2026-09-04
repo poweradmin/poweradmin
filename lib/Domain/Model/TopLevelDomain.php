@@ -33,6 +33,7 @@ class TopLevelDomain
 {
     private const DATA_FILE = __DIR__ . '/../../../data/tlds.php';
 
+    /** @var array<string, true>|null */
     private static ?array $validTopLevelDomains = null;
 
     private function __construct()
@@ -67,7 +68,7 @@ class TopLevelDomain
         }
 
         $data = self::loadData();
-        self::$validTopLevelDomains = array_merge($data['tlds'], $data['special']);
+        self::$validTopLevelDomains = array_fill_keys(array_merge($data['tlds'], $data['special']), true);
     }
 
     public static function isValidTopLevelDomain($hostname): bool
@@ -79,7 +80,7 @@ class TopLevelDomain
         $hostname_labels = explode('.', $hostname);
         $label_count = count($hostname_labels);
         $domain = strtolower($hostname_labels[$label_count - 1]);
-        return in_array($domain, self::$validTopLevelDomains);
+        return isset(self::$validTopLevelDomains[$domain]);
     }
 
     /**

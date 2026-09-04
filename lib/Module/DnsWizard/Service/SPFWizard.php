@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Module\DnsWizard\Service;
 
-use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
@@ -38,7 +37,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
  */
 class SPFWizard extends AbstractDnsWizard
 {
-    private SPFRecordValidator $validator;
 
     public function __construct(ConfigurationInterface $config)
     {
@@ -47,7 +45,6 @@ class SPFWizard extends AbstractDnsWizard
         $this->wizardType = 'SPF';
         $this->displayName = _('SPF Record');
         $this->description = _('Authorized mail server configuration');
-        $this->validator = new SPFRecordValidator($config);
     }
 
     /**

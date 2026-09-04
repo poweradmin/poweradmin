@@ -18,12 +18,36 @@ test.describe('Group CRUD Operations', () => {
     await page.locator('input#name').fill(groupName);
     const select = page.locator('select#perm_templ');
     const options = select.locator('option:not([disabled])');
-    if (await options.count() > 0) {
-      await select.selectOption(await options.first().getAttribute('value'));
-    }
+    // <option> elements are never visible to Playwright; assert presence instead
+    await expect(options).not.toHaveCount(0);
+    await select.selectOption(await options.first().getAttribute('value'));
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('domcontentloaded');
   }
+
+  // Several tests here create groups they cannot delete inline (the delete-page
+  // test stops at the confirmation on purpose). Sweep them so the seeded fixtures
+  // other specs assert against stay as the importer left them.
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+    for (const prefix of ['Test Group ', 'Edit Test ', 'Updated Edit Test ', 'Delete Test ', 'ToDelete ']) {
+      let guard = 0;
+      while (guard++ < 20) {
+        await page.goto('/groups');
+        const row = page.locator(`tr:has-text("${prefix}")`).first();
+        if (await row.count() === 0) {
+          break;
+        }
+        await row.locator('a[href*="/delete"]').first().click();
+        await page.locator('button[type="submit"]').first().click();
+        await page.waitForLoadState('domcontentloaded');
+      }
+    }
+
+    await page.close();
+  });
 
   test.describe('List Groups', () => {
     test('admin should access groups list page', async ({ page }) => {
@@ -162,10 +186,10 @@ test.describe('Group CRUD Operations', () => {
       // Select the first available template
       const select = page.locator('select#perm_templ');
       const options = select.locator('option:not([disabled])');
-      if (await options.count() > 0) {
-        const firstValue = await options.first().getAttribute('value');
-        await select.selectOption(firstValue);
-      }
+      // <option> elements are never visible to Playwright; assert presence instead
+    await expect(options).not.toHaveCount(0);
+      const firstValue = await options.first().getAttribute('value');
+      await select.selectOption(firstValue);
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
@@ -182,9 +206,9 @@ test.describe('Group CRUD Operations', () => {
       await page.locator('textarea#description, input#description').first().fill('No name group');
       const select = page.locator('select#perm_templ');
       const options = select.locator('option:not([disabled])');
-      if (await options.count() > 0) {
-        await select.selectOption(await options.first().getAttribute('value'));
-      }
+      // <option> elements are never visible to Playwright; assert presence instead
+    await expect(options).not.toHaveCount(0);
+      await select.selectOption(await options.first().getAttribute('value'));
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       const url = page.url();
@@ -204,9 +228,9 @@ test.describe('Group CRUD Operations', () => {
       await page.locator('input#name').fill('Administrators');
       const select = page.locator('select#perm_templ');
       const options = select.locator('option:not([disabled])');
-      if (await options.count() > 0) {
-        await select.selectOption(await options.first().getAttribute('value'));
-      }
+      // <option> elements are never visible to Playwright; assert presence instead
+    await expect(options).not.toHaveCount(0);
+      await select.selectOption(await options.first().getAttribute('value'));
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       const bodyText = await page.locator('body').textContent();
@@ -225,10 +249,9 @@ test.describe('Group CRUD Operations', () => {
       await page.goto('/groups');
 
       const editLink = page.locator('a[href*="/groups/"][href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await expect(page).toHaveURL(/.*groups\/\d+\/edit/);
-      }
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      await expect(page).toHaveURL(/.*groups\/\d+\/edit/);
     });
 
     test('should update group name and description', async ({ page }) => {
@@ -240,19 +263,18 @@ test.describe('Group CRUD Operations', () => {
       // Find and edit the created group
       await page.goto('/groups');
       const row = page.locator(`tr:has-text("${groupName}")`);
-      if (await row.count() > 0) {
-        const editLink = row.locator('a[href*="/edit"]').first();
-        await editLink.click();
+      await expect(row.first()).toBeVisible();
+      const editLink = row.locator('a[href*="/edit"]').first();
+      await editLink.click();
 
-        const updatedName = `Updated ${groupName}`;
-        await page.locator('input#name').fill(updatedName);
-        await page.locator('textarea#description, input#description').first().fill('Updated description');
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      const updatedName = `Updated ${groupName}`;
+      await page.locator('input#name').fill(updatedName);
+      await page.locator('textarea#description, input#description').first().fill('Updated description');
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-        await page.waitForLoadState('domcontentloaded');
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      }
+      await page.waitForLoadState('domcontentloaded');
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
     });
   });
 
@@ -265,14 +287,13 @@ test.describe('Group CRUD Operations', () => {
 
       await page.goto('/groups');
       const row = page.locator(`tr:has-text("${groupName}")`);
-      if (await row.count() > 0) {
-        const deleteLink = row.locator('a[href*="/delete"]').first();
-        await deleteLink.click();
+      await expect(row.first()).toBeVisible();
+      const deleteLink = row.locator('a[href*="/delete"]').first();
+      await deleteLink.click();
 
-        await expect(page).toHaveURL(/.*groups\/\d+\/delete/);
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/delete|warning|confirm/i);
-      }
+      await expect(page).toHaveURL(/.*groups\/\d+\/delete/);
+      // Auto-retrying: the URL settles before the body finishes rendering
+      await expect(page.locator('body')).toContainText(/delete|warning|confirm/i);
     });
 
     test('should display deletion impact', async ({ page }) => {
@@ -280,12 +301,11 @@ test.describe('Group CRUD Operations', () => {
       await page.goto('/groups');
 
       const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/member|zone|impact/i);
-      }
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/member|zone|impact/i);
     });
 
     test('should cancel delete and return to list', async ({ page }) => {
@@ -293,14 +313,13 @@ test.describe('Group CRUD Operations', () => {
       await page.goto('/groups');
 
       const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
 
-        const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")').first();
-        if (await cancelBtn.count() > 0) {
-          await cancelBtn.click();
-          await expect(page).toHaveURL(/.*groups$/);
-        }
+      const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")').first();
+      if (await cancelBtn.count() > 0) {
+        await cancelBtn.click();
+        await expect(page).toHaveURL(/.*groups$/);
       }
     });
 
@@ -312,18 +331,17 @@ test.describe('Group CRUD Operations', () => {
 
       await page.goto('/groups');
       const row = page.locator(`tr:has-text("${groupName}")`);
-      if (await row.count() > 0) {
-        const deleteLink = row.locator('a[href*="/delete"]').first();
-        await deleteLink.click();
+      await expect(row.first()).toBeVisible();
+      const deleteLink = row.locator('a[href*="/delete"]').first();
+      await deleteLink.click();
 
-        const yesBtn = page.locator('button:has-text("Yes"), button:has-text("delete this group")').first();
-        if (await yesBtn.count() > 0) {
-          await yesBtn.click();
+      const yesBtn = page.locator('button:has-text("Yes"), button:has-text("delete this group")').first();
+      if (await yesBtn.count() > 0) {
+        await yesBtn.click();
 
-          await page.waitForLoadState('domcontentloaded');
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
-        }
+        await page.waitForLoadState('domcontentloaded');
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
       }
     });
   });

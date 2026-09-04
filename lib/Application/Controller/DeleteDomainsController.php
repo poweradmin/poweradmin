@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,23 +25,22 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeleteDomainsController extends BaseController
@@ -51,11 +50,13 @@ class DeleteDomainsController extends BaseController
     private RecordCommentService $recordCommentService;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
@@ -67,7 +68,7 @@ class DeleteDomainsController extends BaseController
 
     public function run(): void
     {
-        $zone_ids = $_POST['zone_id'] ?? null;
+        $zone_ids = $this->request->getPostParam('zone_id');
         if (!$zone_ids) {
             $referrer = $_SERVER['HTTP_REFERER'] ?? null;
             $return_page = 'list_forward_zones';
@@ -86,7 +87,7 @@ class DeleteDomainsController extends BaseController
         // (direct or group ownership); matches the single-zone delete controller.
         $this->verifyDeletePermission($zone_ids);
 
-        if (isset($_POST['confirm'])) {
+        if ($this->request->getPostParam('confirm') !== null) {
             $this->validateCsrfToken();
             $this->deleteDomains($zone_ids);
         }
@@ -97,19 +98,19 @@ class DeleteDomainsController extends BaseController
     private function verifyDeletePermission($zone_ids): void
     {
         $userId = $this->userContextService->getLoggedInUserId();
-        $canDeleteOthers = UserManager::verifyPermission($this->db, 'zone_delete_others');
+        $canDeleteOthers = $this->hasPermission('zone_delete_others');
 
         foreach ((array)$zone_ids as $zone_id) {
             $canDelete = $canDeleteOthers
-                || UserManager::canUserPerformZoneAction($this->db, $userId, (int)$zone_id, 'zone_delete_own');
+                || $this->createPermissionService()->canPerformZoneAction($this->db, $userId, (int)$zone_id, 'zone_delete_own');
             $this->checkCondition(!$canDelete, _("You do not have the permission to delete a zone."));
         }
     }
 
     public function deleteDomains($zone_ids): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $deleted_zones = $dnsRecord->getZoneInfoFromIds($zone_ids);
+        $domainRepository = $this->createDomainRepository();
+        $deleted_zones = $domainRepository->getZoneInfoFromIds($zone_ids);
 
         // Handle DNSSEC before deletion - PowerDNS API modifies records directly,
         // which would conflict with the deletion transaction
@@ -126,7 +127,7 @@ class DeleteDomainsController extends BaseController
             }
         }
 
-        $delete_domains = $dnsRecord->deleteDomains($zone_ids);
+        $delete_domains = $this->createDomainManager()->deleteDomains($zone_ids);
 
         if ($delete_domains) {
             foreach ($deleted_zones as $deleted_zone) {
@@ -156,7 +157,7 @@ class DeleteDomainsController extends BaseController
             // Determine if we should redirect to reverse or forward zones page
             $all_reverse = true;
             foreach ($deleted_zones as $zone) {
-                if (empty($zone['name']) || !DnsHelper::isReverseZone($zone['name'])) {
+                if (empty($zone['name']) || !DnsHelper::isReverseZoneName($zone['name'])) {
                     $all_reverse = false;
                     break;
                 }
@@ -182,7 +183,7 @@ class DeleteDomainsController extends BaseController
         $all_forward = true;
 
         foreach ($zones as $zone) {
-            $is_reverse = DnsHelper::isReverseZone($zone['name']);
+            $is_reverse = DnsHelper::isReverseZoneName($zone['name']);
             if ($is_reverse) {
                 $all_forward = false;
             } else {
@@ -190,8 +191,20 @@ class DeleteDomainsController extends BaseController
             }
         }
 
+        $permissionService = $this->createPermissionService();
+        $userId = $this->userContextService->getLoggedInUserId();
+        // Same "all"/"own"/"none" contract as Permission::getDeletePermission(), but off
+        // the request-cached service the delete check above already warmed
+        $perm_delete = $permissionService->getDeletePermissionLevel($userId);
+        foreach ($zones as &$zone) {
+            // Effectively always true here: verifyDeletePermission() already blocked
+            // any zone the user cannot delete. Kept for the template contract.
+            $zone['user_can_delete'] = $permissionService->canDeleteZone($userId, (bool)$zone['is_owner']);
+        }
+        unset($zone);
+
         $this->render('delete_domains.html', [
-            'perm_delete' => Permission::getDeletePermission($this->db),
+            'perm_delete' => $perm_delete,
             'zones' => $zones,
             'error' => _("You do not have the permission to delete a zone."),
             'is_reverse_zone' => $all_reverse, // If all zones are reverse, use reverse breadcrumb
@@ -202,32 +215,31 @@ class DeleteDomainsController extends BaseController
     private function getZoneInfo($zone_ids): array
     {
         $zones = [];
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
+        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
 
-        $userId = $this->userContextService->getLoggedInUserId();
-        $canDeleteOthers = UserManager::verifyPermission($this->db, 'zone_delete_others');
+        // Fetch all zone details in one bulk call to avoid per-zone API round-trips
+        $zoneInfos = [];
+        foreach ($domainRepository->getZoneInfoFromIds($zone_ids) as $info) {
+            $zoneInfos[(int)($info['id'] ?? 0)] = $info;
+        }
 
+        $userRepository = $this->createUserRepository();
         foreach ($zone_ids as $zone_id) {
-            $zones[$zone_id]['id'] = $zone_id;
-            $zones[$zone_id] = $dnsRecord->getZoneInfoFromId($zone_id);
-            $zones[$zone_id]['owner'] = UserManager::getFullnamesOwnersFromFomainId($this->db, $zone_id);
-            $zones[$zone_id]['is_owner'] = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
-
-            // Effectively always true here: verifyDeletePermission() already blocked
-            // any zone the user cannot delete. Kept for the template contract.
-            $zones[$zone_id]['can_delete'] = $canDeleteOthers
-                || UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_delete_own');
+            $zones[$zone_id] = $zoneInfos[$zone_id] ?? ['id' => $zone_id];
+            $zones[$zone_id]['owner'] = $userRepository->getZoneOwnerFullNames($zone_id);
+            $zones[$zone_id]['is_owner'] = $this->isZoneOwner($zone_id);
 
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;
             if ($zones[$zone_id]['type'] == "SLAVE") {
-                $slave_master = $dnsRecord->getDomainSlaveMaster($zone_id);
+                $slave_master = $domainRepository->getDomainSlaveMaster($zone_id);
                 $zones[$zone_id]['slave_master'] = $slave_master;
 
                 if ($slave_master) {
                     // Extract first IP from master field (can contain multiple IPs, hostnames, ports)
                     $master_ip = IpHelper::extractFirstIpFromMaster($slave_master);
-                    if ($master_ip && $dnsRecord->supermasterExists($master_ip)) {
+                    if ($master_ip && $supermasterManager->supermasterExists($master_ip)) {
                         $zones[$zone_id]['has_supermaster'] = true;
                     }
                 }

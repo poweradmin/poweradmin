@@ -22,49 +22,61 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Repository\UserRepository;
+
 /**
  * Gates what a permission template may contain.
  *
- * templ_perm_add and templ_perm_edit delegate template management, but a template's
- * permission list is itself an authority grant: ticking user_is_ueberuser on the
- * template you are already assigned to makes you a superuser with no assignment step.
- * Works on permission rows the caller already loaded, so it needs no database access.
+ * `templ_perm_add`/`templ_perm_edit` delegate template management, but a template's
+ * permission list is itself an authority grant: ticking `user_is_ueberuser` on the
+ * template you are already assigned to makes you a superuser without any assignment
+ * step, which would bypass PermissionTemplateAssignmentGuard entirely. So a caller who
+ * is not already a superuser may neither put that permission into a template nor touch
+ * a template that already carries it - the latter also stops them stripping the
+ * Administrator template bare to lock real admins out.
  */
 class PermissionTemplateContentGuard
 {
     public const UBERUSER_PERMISSION = 'user_is_ueberuser';
 
-    public const CONTENT_SUPERUSER_DENIED = 'content_superuser_denied';
-    public const EDIT_SUPERUSER_DENIED = 'edit_superuser_denied';
+    public const CONTENT_SUPERUSER_DENIED = 'Granting user_is_ueberuser in a permission template requires user_is_ueberuser';
+    public const EDIT_SUPERUSER_DENIED = 'Editing a permission template that grants user_is_ueberuser requires user_is_ueberuser';
 
     /**
-     * @param array<int, array<string, mixed>> $allPermissions Every row of perm_items
-     * @param array<int, array<string, mixed>> $currentPermissions Rows the template holds now; empty when creating
-     * @param ?array<mixed> $submittedPermIds Ids the write would persist; null leaves contents untouched
-     * @return ?string One of the denial constants, or null when the write is allowed
+     * Apply the rule to a template create or update.
+     *
+     * @param int $callerId Acting user
+     * @param ?int $templateId Template being written; null on the create path
+     * @param ?array<mixed> $permIds Permission ids the write would persist; null leaves contents untouched
+     * @return ?string Error to surface, or null when the write is allowed
      */
     public static function apply(
-        bool $callerIsSuperuser,
-        array $allPermissions,
-        array $currentPermissions,
-        ?array $submittedPermIds
+        UserRepository $userRepository,
+        int $callerId,
+        ?int $templateId,
+        ?array $permIds
     ): ?string {
-        if ($callerIsSuperuser) {
+        // hasAdminPermission() honours group-granted superuser; isUberuser() would not.
+        if ($userRepository->hasAdminPermission($callerId)) {
             return null;
         }
 
-        if (self::containsUberuser($currentPermissions)) {
+        if ($templateId !== null && $userRepository->templateGrantsUberuser($templateId)) {
             return self::EDIT_SUPERUSER_DENIED;
         }
 
-        if ($submittedPermIds === null) {
+        if ($permIds === null) {
             return null;
         }
 
-        $uberuserIds = self::uberuserPermissionIds($allPermissions);
-        foreach ($submittedPermIds as $permId) {
+        $uberuserPermIds = $userRepository->getPermissionIdsByName(self::UBERUSER_PERMISSION);
+        if ($uberuserPermIds === []) {
+            return null;
+        }
+
+        foreach ($permIds as $permId) {
             // Posted ids arrive as strings; non-scalars would cast to a colliding int.
-            if (is_scalar($permId) && in_array((int)$permId, $uberuserIds, true)) {
+            if (is_scalar($permId) && in_array((int)$permId, $uberuserPermIds, true)) {
                 return self::CONTENT_SUPERUSER_DENIED;
             }
         }
@@ -75,7 +87,7 @@ class PermissionTemplateContentGuard
     /**
      * Drop the superuser permission from a picker list shown to a non-superuser.
      *
-     * @param array<int, array<string, mixed>> $permissions
+     * @param array<int, array<string, mixed>> $permissions Rows of id/name/descr
      * @return array<int, array<string, mixed>>
      */
     public static function filterOfferedPermissions(array $permissions, bool $callerIsSuperuser): array
@@ -84,41 +96,11 @@ class PermissionTemplateContentGuard
             return $permissions;
         }
 
-        return array_values(array_filter(
+        $filtered = array_filter(
             $permissions,
             static fn(array $permission): bool => ($permission['name'] ?? '') !== self::UBERUSER_PERMISSION
-        ));
-    }
+        );
 
-    /**
-     * @param array<int, array<string, mixed>> $permissions
-     */
-    private static function containsUberuser(array $permissions): bool
-    {
-        foreach ($permissions as $permission) {
-            if (($permission['name'] ?? '') === self::UBERUSER_PERMISSION) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Every id carrying the name, since perm_items has no unique constraint on it.
-     *
-     * @param array<int, array<string, mixed>> $permissions
-     * @return array<int, int>
-     */
-    private static function uberuserPermissionIds(array $permissions): array
-    {
-        $ids = [];
-        foreach ($permissions as $permission) {
-            if (($permission['name'] ?? '') === self::UBERUSER_PERMISSION) {
-                $ids[] = (int)$permission['id'];
-            }
-        }
-
-        return $ids;
+        return array_values($filtered);
     }
 }

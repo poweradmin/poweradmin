@@ -25,14 +25,15 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -43,12 +44,16 @@ class EditZoneTemplRecordController extends BaseController
 {
     private RecordTypeService $recordTypeService;
     private UserContextService $userContext;
+    private Request $request;
+    private ZoneTemplate $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
+        $this->request = new Request();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContext = new UserContextService();
+        $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
     }
 
     public function run(): void
@@ -74,9 +79,9 @@ class EditZoneTemplRecordController extends BaseController
         $zone_templ_id = (int)$this->getSafeRequestValue('template_id');
 
         $userId = $this->userContext->getLoggedInUserId();
-        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
-        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
+        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
+        $perm_godlike = $this->hasPermission('user_is_ueberuser');
+        $perm_templ_edit = $this->hasPermission('zone_templ_edit');
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to edit zone template records."));
 
         if ($this->isPost()) {
@@ -89,18 +94,16 @@ class EditZoneTemplRecordController extends BaseController
 
     public function showZoneTemplateRecordForm(int $record_id, int $zone_templ_id): void
     {
-        $record = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id);
+        $record = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id, $zone_templ_id);
 
-        // The route authorises the template, not the record, so a record id from
-        // another template would otherwise be displayed to its non-owner.
-        if (!$record || (int)$record['zone_templ_id'] !== $zone_templ_id) {
+        // The lookup is scoped to the template, so a record id from another template comes back empty
+        if (!$record) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
         // Get count of zones using this template
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $userId = $this->userContext->getLoggedInUserId();
-        $linked_zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
+        $linked_zones = $this->zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
         $zones_linked_count = count($linked_zones);
 
         $this->render('edit_zone_templ_record.html', [
@@ -136,17 +139,24 @@ class EditZoneTemplRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        $postParams = $this->request->getPostParams();
+        if (!$this->doValidateRequest($postParams)) {
+            $this->showFirstValidationError($postParams);
             return;
         }
 
-        $template = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
-
-        if ($template->editZoneTemplRecord($_POST, $zone_templ_id)) {
+        if ($this->zoneTemplate->editZoneTemplRecord($postParams, $zone_templ_id)) {
             // Mark template as modified to track sync status
             $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
             $syncService->markTemplateAsModified($zone_templ_id);
+
+            $auditService = new AuditService($this->db);
+            $auditService->logZoneTemplateRecordEdit(
+                $zone_templ_id,
+                (int)$this->getSafeRequestValue('rid'),
+                $this->getSafeRequestValue('name'),
+                $this->getSafeRequestValue('type')
+            );
 
             $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));
             $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');

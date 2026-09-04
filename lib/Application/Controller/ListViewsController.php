@@ -22,26 +22,36 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 
 /**
  * Lists PowerDNS views (5.0+) and the zones they contain. Also exposes inline
  * add/remove actions. The whole feature is admin-only and hidden when the
- * connected server pre-dates 5.0 (capability gate).
+ * connected server cannot serve views, whether through its version, its
+ * backend or its views setting (capability gate).
  */
 class ListViewsController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
+
     public function run(): void
     {
-        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if (!$this->hasPermission('user_is_ueberuser')) {
             $this->showError(_('You do not have permission to manage PowerDNS views.'));
             return;
         }
 
-        if (!$this->getPdnsCapabilities()->supportsViews()) {
-            $this->showError(_('Views require PowerDNS 5.0 or newer.'));
+        $viewsError = $this->getPdnsCapabilities()->viewsUnavailableMessage();
+        if ($viewsError !== null) {
+            $this->showError($viewsError);
             return;
         }
 
@@ -51,7 +61,7 @@ class ListViewsController extends BaseController
             return;
         }
 
-        if (!empty($_POST)) {
+        if (!empty($this->request->getPostParams())) {
             $this->validateCsrfToken();
             $action = $this->getSafeRequestValue('action');
             $view = trim($this->getSafeRequestValue('view'));

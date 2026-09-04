@@ -48,7 +48,9 @@ class ApiRecordRepository implements RecordRepositoryInterface
     {
         foreach ($records as &$record) {
             $record['comment'] = $record['api_comment'] ?? null;
-            unset($record['api_comment']);
+            $record['comment_account'] = $record['api_comment_account'] ?? null;
+            $record['comment_modified_at'] = $record['api_comment_modified_at'] ?? null;
+            unset($record['api_comment'], $record['api_comment_account'], $record['api_comment_modified_at']);
         }
         unset($record);
     }
@@ -77,6 +79,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
             'content' => $record['content'],
             'ttl' => $record['ttl'],
             'prio' => $record['prio'],
+            'disabled' => $record['disabled'] ?? 0,
         ];
     }
 
@@ -214,6 +217,11 @@ class ApiRecordRepository implements RecordRepositoryInterface
         return $this->backendProvider->getRecordsByZoneId($domainId, $recordType);
     }
 
+    public function getRecordsByName(int $domainId, string $name, ?string $type = null): array
+    {
+        return $this->backendProvider->getRecordsByName($domainId, $name, $type);
+    }
+
     public function getFilteredRecords(
         int $zone_id,
         int $row_start,
@@ -227,8 +235,9 @@ class ApiRecordRepository implements RecordRepositoryInterface
     ): array {
         $records = $this->fetchAndFilterRecords($zone_id, $search_term, $type_filter, $content_filter);
 
-        // Sort
-        $records = ResultPaginator::sort($records, $sort_by, $sort_direction);
+        // Sort, pinning SOA/NS/apex records to the top to match the unfiltered listing (issue #1250)
+        $zoneName = $this->backendProvider->getZoneNameById($zone_id) ?? '';
+        $records = ResultPaginator::sortRecords($records, $sort_by, $sort_direction, $zoneName);
 
         // Paginate
         $records = ResultPaginator::paginate($records, $row_start, $row_amount);
@@ -254,7 +263,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
 
     public function getNewRecordId(int $domainId, string $name, string $type, string $content): int|string|null
     {
-        $records = $this->backendProvider->getRecordsByZoneId($domainId, $type);
+        $records = $this->backendProvider->getRecordsByName($domainId, $name, $type);
         foreach ($records as $r) {
             if (strtolower($r['name']) === strtolower($name) && $r['type'] === $type && $r['content'] === $content) {
                 return $r['id'] ?? null;
@@ -276,14 +285,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
 
     public function getRRSetRecords(int $domainId, string $name, string $type): array
     {
-        $name = strtolower($name);
-        $records = $this->backendProvider->getRecordsByZoneId($domainId, $type);
-        $result = [];
-        foreach ($records as $r) {
-            if (strtolower($r['name']) === $name) {
-                $result[] = $r;
-            }
-        }
+        $result = $this->backendProvider->getRecordsByName($domainId, $name, $type);
         usort($result, fn($a, $b) => strcmp($a['content'] ?? '', $b['content'] ?? ''));
         return $result;
     }

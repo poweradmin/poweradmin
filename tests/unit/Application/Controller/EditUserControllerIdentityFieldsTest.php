@@ -27,21 +27,23 @@ use Poweradmin\Application\Controller\EditUserController;
 
 /**
  * Tests for EditUserController::isIdpManaged() and resolveIdentityFields(), which
- * keep fullname/email read-only for OIDC/SAML users (their IdP sync overwrites
- * local edits). LDAP never syncs these fields, so LDAP accounts stay editable.
+ * keep fullname/email read-only when an IdP sync would overwrite local edits:
+ * always for OIDC/SAML, for LDAP only while ldap.sync_user_info is enabled.
  */
 class EditUserControllerIdentityFieldsTest extends TestCase
 {
     public function testIsIdpManagedForEachAuthMethod(): void
     {
-        // Only OIDC/SAML sync identity fields on login.
+        // OIDC/SAML sync identity fields on login, regardless of LDAP sync.
         $this->assertTrue(EditUserController::isIdpManaged('oidc'));
         $this->assertTrue(EditUserController::isIdpManaged('saml'));
 
-        // LDAP has no attribute sync, so its identity fields stay editable.
+        // LDAP is managed only while ldap.sync_user_info is enabled.
         $this->assertFalse(EditUserController::isIdpManaged('ldap'));
+        $this->assertTrue(EditUserController::isIdpManaged('ldap', true));
 
         $this->assertFalse(EditUserController::isIdpManaged('sql'));
+        $this->assertFalse(EditUserController::isIdpManaged('sql', true));
         $this->assertFalse(EditUserController::isIdpManaged(null));
     }
 
@@ -73,7 +75,8 @@ class EditUserControllerIdentityFieldsTest extends TestCase
             'email' => 'stored@example.com',
         ];
 
-        // LDAP never syncs fullname/email, so admin edits must take effect.
+        // Without ldap.sync_user_info nothing overwrites these fields, so
+        // admin edits must take effect.
         $result = EditUserController::resolveIdentityFields(
             $userData,
             'New Name',
@@ -82,6 +85,25 @@ class EditUserControllerIdentityFieldsTest extends TestCase
 
         $this->assertSame('New Name', $result['fullname']);
         $this->assertSame('new@example.com', $result['email']);
+    }
+
+    public function testSyncedLdapAccountKeepsStoredIdentity(): void
+    {
+        $userData = [
+            'auth_type' => 'ldap',
+            'fullname' => 'Stored Name',
+            'email' => 'stored@example.com',
+        ];
+
+        $result = EditUserController::resolveIdentityFields(
+            $userData,
+            'New Name',
+            'new@example.com',
+            true,
+        );
+
+        $this->assertSame('Stored Name', $result['fullname']);
+        $this->assertSame('stored@example.com', $result['email']);
     }
 
     public function testInternalUserKeepsSubmittedValues(): void

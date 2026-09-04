@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -398,16 +398,15 @@ class PasswordResetSecurityTest extends TestCase
         $token = 'valid-token-12345';
         $email = 'oidc-user@example.com';
 
-        // Mock token data
-        $this->tokenRepository->method('findActiveTokens')
+        // Repository returns the row for the hashed candidate lookup.
+        $this->tokenRepository->method('findByToken')
+            ->with(DbPasswordResetTokenRepository::hashToken($token))
             ->willReturn([
-                [
-                    'id' => 1,
-                    'token' => $token,
-                    'email' => $email,
-                    'expires_at' => date('Y-m-d H:i:s', time() + 3600),
-                    'used' => 0
-                ]
+                'id' => 1,
+                'token' => DbPasswordResetTokenRepository::hashToken($token),
+                'email' => $email,
+                'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+                'used' => 0
             ]);
 
         // Mock OIDC user
@@ -444,16 +443,14 @@ class PasswordResetSecurityTest extends TestCase
         $token = 'valid-token-67890';
         $email = 'saml-user@example.com';
 
-        // Mock token data
-        $this->tokenRepository->method('findActiveTokens')
+        $this->tokenRepository->method('findByToken')
+            ->with(DbPasswordResetTokenRepository::hashToken($token))
             ->willReturn([
-                [
-                    'id' => 2,
-                    'token' => $token,
-                    'email' => $email,
-                    'expires_at' => date('Y-m-d H:i:s', time() + 3600),
-                    'used' => 0
-                ]
+                'id' => 2,
+                'token' => DbPasswordResetTokenRepository::hashToken($token),
+                'email' => $email,
+                'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+                'used' => 0
             ]);
 
         // Mock SAML user
@@ -490,16 +487,14 @@ class PasswordResetSecurityTest extends TestCase
         $token = 'valid-token-11111';
         $email = 'ldap-user@example.com';
 
-        // Mock token data
-        $this->tokenRepository->method('findActiveTokens')
+        $this->tokenRepository->method('findByToken')
+            ->with(DbPasswordResetTokenRepository::hashToken($token))
             ->willReturn([
-                [
-                    'id' => 3,
-                    'token' => $token,
-                    'email' => $email,
-                    'expires_at' => date('Y-m-d H:i:s', time() + 3600),
-                    'used' => 0
-                ]
+                'id' => 3,
+                'token' => DbPasswordResetTokenRepository::hashToken($token),
+                'email' => $email,
+                'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+                'used' => 0
             ]);
 
         // Mock LDAP user
@@ -526,6 +521,104 @@ class PasswordResetSecurityTest extends TestCase
         // Token validation should fail for LDAP users
         $result = $this->passwordResetService->validateToken($token);
         $this->assertNull($result);
+    }
+
+    /**
+     * Valid SQL-user token must successfully validate.
+     */
+    public function testValidateTokenReturnsUserForMatchingSqlToken(): void
+    {
+        $token = str_repeat('a', 64);
+        $email = 'sql@example.com';
+
+        $this->tokenRepository->method('findByToken')
+            ->with(DbPasswordResetTokenRepository::hashToken($token))
+            ->willReturn([
+                'id' => 10,
+                'token' => DbPasswordResetTokenRepository::hashToken($token),
+                'email' => $email,
+                'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+                'used' => 0,
+            ]);
+
+        $this->userRepository->method('getUserByEmail')
+            ->with($email)
+            ->willReturn([
+                'id' => 7,
+                'username' => 'sql',
+                'email' => $email,
+                'auth_method' => 'sql',
+            ]);
+
+        $result = $this->passwordResetService->validateToken($token);
+        $this->assertIsArray($result);
+        $this->assertSame(10, $result['token_id']);
+        $this->assertSame(7, $result['user']['id']);
+    }
+
+    /**
+     * Wrong token of the same length must NOT validate. Timing safety now
+     * comes from a single indexed lookup on the hashed candidate rather
+     * than a hash_equals scan, but the rejection contract is unchanged.
+     */
+    public function testValidateTokenRejectsSameLengthWrongToken(): void
+    {
+        $submittedToken = str_repeat('a', 63) . 'b';
+
+        // Repository returns null because the hashed candidate doesn't match
+        // any stored row - the previous full-scan + hash_equals iteration is gone.
+        $this->tokenRepository->method('findByToken')
+            ->with(DbPasswordResetTokenRepository::hashToken($submittedToken))
+            ->willReturn(null);
+
+        $this->userRepository->expects($this->never())->method('getUserByEmail');
+
+        $result = $this->passwordResetService->validateToken($submittedToken);
+        $this->assertNull($result);
+    }
+
+    /**
+     * Wrong token of different length must also be rejected. With hashing,
+     * candidate length no longer matters at the SQL layer - every input
+     * collapses to a 64-hex digest - but the rejection contract still holds.
+     */
+    public function testValidateTokenRejectsDifferentLengthToken(): void
+    {
+        // Short candidate hashes to a 64-hex SHA-256 that no stored row matches.
+        $this->tokenRepository->method('findByToken')
+            ->with(DbPasswordResetTokenRepository::hashToken('short-token'))
+            ->willReturn(null);
+
+        $this->userRepository->expects($this->never())->method('getUserByEmail');
+
+        $result = $this->passwordResetService->validateToken('short-token');
+        $this->assertNull($result);
+    }
+
+    /**
+     * Pass-the-hash defense: a candidate that already looks like the stored
+     * hash format (sha256$ prefix) must be rejected before the lookup runs.
+     * Blocks an attacker who read the column from authenticating.
+     */
+    public function testValidateTokenRejectsSubmittedHashCandidate(): void
+    {
+        $stolenHash = DbPasswordResetTokenRepository::hashToken(str_repeat('b', 64));
+
+        $this->tokenRepository->expects($this->never())->method('findByToken');
+        $this->userRepository->expects($this->never())->method('getUserByEmail');
+
+        $result = $this->passwordResetService->validateToken($stolenHash);
+        $this->assertNull($result);
+    }
+
+    /**
+     * Confirms the hash helper produces a prefixed SHA-256 hex string.
+     */
+    public function testHashTokenProducesPrefixedFormat(): void
+    {
+        $hash = DbPasswordResetTokenRepository::hashToken('any-input');
+        $this->assertStringStartsWith('sha256$', $hash);
+        $this->assertSame(7 + 64, strlen($hash));
     }
 
     /**

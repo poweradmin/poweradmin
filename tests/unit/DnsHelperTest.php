@@ -32,6 +32,38 @@ class DnsHelperTest extends TestCase
         $this->assertFalse(DnsHelper::isReverseZone(' 1.0.0.127.in-addr.arpa'), 'Should return false for a reverse zone with leading whitespace.');
     }
 
+    public function testIsReverseZoneNamePositiveCases(): void
+    {
+        $this->assertTrue(DnsHelper::isReverseZoneName('1.0.0.127.in-addr.arpa'), 'IPv4 reverse zone is in the reverse namespace.');
+        $this->assertTrue(DnsHelper::isReverseZoneName('0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa'), 'IPv6 reverse zone is in the reverse namespace.');
+        $this->assertTrue(DnsHelper::isReverseZoneName('in-addr.arpa'), 'The in-addr.arpa apex is in the reverse namespace.');
+        $this->assertTrue(DnsHelper::isReverseZoneName('ip6.arpa'), 'The ip6.arpa apex is in the reverse namespace.');
+        $this->assertTrue(DnsHelper::isReverseZoneName('1.0.0.127.IN-ADDR.ARPA'), 'Classification is case-insensitive.');
+        $this->assertTrue(DnsHelper::isReverseZoneName('1.0.0.127.in-addr.arpa.'), 'A trailing dot does not change classification.');
+    }
+
+    public function testIsReverseZoneNameNegativeCases(): void
+    {
+        $this->assertFalse(DnsHelper::isReverseZoneName('example.com'), 'A regular domain is not reverse.');
+        $this->assertFalse(DnsHelper::isReverseZoneName('example.in-addr.arpa.com'), 'A name only containing in-addr.arpa as an infix is not reverse.');
+        $this->assertFalse(DnsHelper::isReverseZoneName(''), 'An empty string is not reverse.');
+    }
+
+    /**
+     * RFC 2317 classless names carry no parsable network, so the strict
+     * isReverseZone() rejects them, but they still belong to the reverse
+     * namespace and must be classified as reverse for listing, the overlap
+     * guard, the post-create redirect and the record UI. This pins that
+     * divergence.
+     */
+    public function testIsReverseZoneNameAcceptsRfc2317ClasslessNames(): void
+    {
+        $classless = '0-25.2.0.192.in-addr.arpa';
+
+        $this->assertFalse(DnsHelper::isReverseZone($classless), 'Strict check rejects the classless name.');
+        $this->assertTrue(DnsHelper::isReverseZoneName($classless), 'Namespace check accepts the classless name.');
+    }
+
     public function testGetRegisteredDomainWithSimpleDomain()
     {
         $this->assertEquals('example.com', DnsHelper::getRegisteredDomain('example.com'));
@@ -80,6 +112,36 @@ class DnsHelperTest extends TestCase
     public function testGetDomainNameWithTwoPartDomain()
     {
         $this->assertEquals('example', DnsHelper::getSubDomainName('example.co.uk'));
+    }
+
+    // Tests for isWithinZone
+
+    public function testIsWithinZoneMatchesApexAndSubdomains(): void
+    {
+        $this->assertTrue(DnsHelper::isWithinZone('example.com', 'example.com'), 'The zone apex is within the zone.');
+        $this->assertTrue(DnsHelper::isWithinZone('www.example.com', 'example.com'), 'A direct subdomain is within the zone.');
+        $this->assertTrue(DnsHelper::isWithinZone('a.b.example.com', 'example.com'), 'A deep subdomain is within the zone.');
+    }
+
+    public function testIsWithinZoneRejectsOutOfZoneNames(): void
+    {
+        $this->assertFalse(DnsHelper::isWithinZone('testexample.com', 'example.com'), 'A label-boundary substring is not within the zone.');
+        $this->assertFalse(DnsHelper::isWithinZone('example.com', 'www.example.com'), 'A parent is not within a child zone.');
+        $this->assertFalse(DnsHelper::isWithinZone('example.org', 'example.com'), 'A different zone is not a match.');
+        $this->assertFalse(DnsHelper::isWithinZone('example.com.evil.com', 'example.com'), 'A suffix in the middle is not a match.');
+    }
+
+    public function testIsWithinZoneIsCaseInsensitive(): void
+    {
+        $this->assertTrue(DnsHelper::isWithinZone('WWW.Example.COM', 'example.com'), 'Comparison is case-insensitive.');
+        $this->assertTrue(DnsHelper::isWithinZone('example.com', 'EXAMPLE.COM'), 'The zone name comparison is case-insensitive.');
+    }
+
+    public function testIsWithinZoneComparesNamesAsGiven(): void
+    {
+        // Trailing dots are not normalized here; callers pass already-normalized names.
+        $this->assertFalse(DnsHelper::isWithinZone('www.example.com.', 'example.com'), 'A trailing dot on the name is not trimmed, so it does not match.');
+        $this->assertFalse(DnsHelper::isWithinZone('www.example.com', 'example.com.'), 'A trailing dot on the zone is not trimmed, so it does not match.');
     }
 
     // Tests for stripZoneSuffix
@@ -265,5 +327,21 @@ class DnsHelperTest extends TestCase
         // with the post-create redirect (RFC 2317 range-style, malformed labels)
         $this->assertNull(DnsHelper::resolveReverseZoneName('0-63.1.168.192.in-addr.arpa'));
         $this->assertNull(DnsHelper::resolveReverseZoneName('abc.in-addr.arpa'));
+    }
+
+    public function testIsZoneApexPositiveCases(): void
+    {
+        $this->assertTrue(DnsHelper::isZoneApex('example.com', 'example.com'));
+        $this->assertTrue(DnsHelper::isZoneApex('EXAMPLE.COM', 'example.com'), 'Comparison is case-insensitive.');
+        $this->assertTrue(DnsHelper::isZoneApex('example.com.', 'example.com'), 'A trailing dot on the record name is ignored.');
+        $this->assertTrue(DnsHelper::isZoneApex('example.com', 'example.com.'), 'A trailing dot on the zone name is ignored.');
+    }
+
+    public function testIsZoneApexNegativeCases(): void
+    {
+        $this->assertFalse(DnsHelper::isZoneApex('sub.example.com', 'example.com'));
+        $this->assertFalse(DnsHelper::isZoneApex('example.com', 'sub.example.com'));
+        $this->assertFalse(DnsHelper::isZoneApex('other.org', 'example.com'));
+        $this->assertFalse(DnsHelper::isZoneApex('testexample.com', 'example.com'), 'A suffix match without a dot boundary is not the apex.');
     }
 }

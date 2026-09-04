@@ -23,11 +23,14 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
@@ -41,10 +44,14 @@ class MfaVerifyController extends BaseController
     private UserContextService $userContextService;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
+    private LoginAttemptService $loginAttemptService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request, false);
+
+        $this->request = new Request();
 
         $userMfaRepository = new DbUserMfaRepository($this->db, $this->config);
         $mailService = new MailService($this->config);
@@ -54,19 +61,31 @@ class MfaVerifyController extends BaseController
         $this->userContextService = new UserContextService();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->loginAttemptService = new LoginAttemptService($this->db, $this->config);
+    }
+
+    /**
+     * This flow validates its own one-shot `mfa_token` instead of the
+     * session-wide form token.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
     }
 
     public function run(): void
     {
         // Check if MFA is globally enabled or this is a logout request
-        if (!$this->config->get('security', 'mfa.enabled', false) || isset($_GET['logout'])) {
+        $logout = $this->request->getQueryParam('logout');
+        if (!$this->config->get('security', 'mfa.enabled', false) || $logout !== null) {
             // If MFA is disabled or this is a logout request, but we have MFA session flags, clear them
-            if ($this->userContextService->hasSessionData('mfa_required')) {
-                $this->userContextService->unsetSessionData('mfa_required');
+            if ($this->userContextService->hasSessionData(SessionKeys::MFA_REQUIRED)) {
+                $this->userContextService->unsetSessionData(SessionKeys::MFA_REQUIRED);
             }
+            $this->userContextService->unsetSessionData(SessionKeys::MFA_STATE);
 
             // If this is a logout request, do a proper logout
-            if (isset($_GET['logout'])) {
+            if ($logout !== null) {
                 session_regenerate_id(true);
                 session_unset();
 
@@ -76,7 +95,7 @@ class MfaVerifyController extends BaseController
                 header("Location: $redirectUrl");
             } else {
                 // Otherwise just mark as authenticated
-                $this->userContextService->setSessionData('authenticated', true);
+                $this->userContextService->setSessionData(SessionKeys::AUTHENTICATED, true);
                 session_regenerate_id(true);
 
                 // Build redirect URL with base_url_prefix support for subfolder deployments
@@ -89,8 +108,8 @@ class MfaVerifyController extends BaseController
 
         // Check if we have the necessary session data
         // During MFA verification, userid is stored as pending_userid to prevent API bypass
-        $userId = $this->userContextService->getLoggedInUserId() ?? $this->userContextService->getSessionData('pending_userid');
-        if (!$this->userContextService->getLoggedInUsername() || !$userId || !$this->userContextService->hasSessionData('mfa_required')) {
+        $userId = $this->userContextService->getLoggedInUserId() ?? $this->userContextService->getSessionData(SessionKeys::PENDING_USERID);
+        if (!$this->userContextService->getLoggedInUsername() || !$userId || !$this->userContextService->hasSessionData(SessionKeys::MFA_REQUIRED)) {
             $this->redirect('/');
         }
 
@@ -102,7 +121,7 @@ class MfaVerifyController extends BaseController
         }
 
         // Make verification more robust by just checking for the code
-        if (isset($_POST['mfa_code'])) {
+        if ($this->request->getPostParam('mfa_code') !== null) {
             $this->handleMfaVerification();
             return;
         }
@@ -116,16 +135,37 @@ class MfaVerifyController extends BaseController
         // Basic logging
         $this->logger->debug('[MfaVerifyController] Verification attempt started');
 
-        $code = $_POST['mfa_code'] ?? '';
+        $code = $this->request->getPostParam('mfa_code', '');
         // During MFA verification, userid is stored as pending_userid to prevent API bypass
-        $userId = $this->userContextService->getLoggedInUserId() ?? $this->userContextService->getSessionData('pending_userid');
-        $mfaToken = $_POST['mfa_token'] ?? '';
+        $userId = $this->userContextService->getLoggedInUserId() ?? $this->userContextService->getSessionData(SessionKeys::PENDING_USERID);
+        $mfaToken = $this->request->getPostParam('mfa_token', '');
 
         // Validate CSRF token for security
-        if (!$this->csrfTokenService->validateToken($mfaToken, 'mfa_token')) {
+        if (!$this->csrfTokenService->validateToken($mfaToken, SessionKeys::MFA_TOKEN)) {
             $this->logger->warning('[MfaVerifyController] Invalid CSRF token for user ID: {user_id}', ['user_id' => $userId]);
             $this->displayMfaForm(_('Invalid security token. Please try again.'), 'danger');
             return;
+        }
+
+        $username = $this->userContextService->getLoggedInUsername() ?? '';
+        // A recovery code is the documented way back into a locked account, so it is checked
+        // before the counter gate; a blacklisted address stays out regardless
+        $recovered = false;
+        if ($this->isMfaThrottled($username, (int)$userId)) {
+            $recovered = !$this->loginAttemptService->isIpBlacklisted($this->ipAddressRetriever->getClientIp())
+                && $this->mfaService->consumeRecoveryCode($userId, $code);
+            if (!$recovered) {
+                $this->logger->warning('[MfaVerifyController] Account locked, refusing MFA attempt for user ID: {user_id}', ['user_id' => $userId]);
+                // Audited like any wrong code, but not counted, so a bot cannot hold the window open
+                $this->auditLogger->logWarn(sprintf(
+                    'client_ip:%s user:%s operation:mfa_failed mfa_type:%s',
+                    $this->ipAddressRetriever->getClientIp(),
+                    $username !== '' ? $username : 'unknown',
+                    $this->mfaService->getMfaType($userId) ?? 'unknown'
+                ));
+                $this->displayMfaForm(_('Too many failed attempts. Please try again later.'), 'danger');
+                return;
+            }
         }
 
         // Get user MFA record
@@ -145,20 +185,29 @@ class MfaVerifyController extends BaseController
 
         // Use the MFA service for verification (handles both regular codes and recovery codes)
         $this->logger->debug('[MfaVerifyController] Verifying code for user ID: {user_id}, type: {type}', ['user_id' => $userId, 'type' => $userMfa->getType()]);
-        $isValid = $this->mfaService->verifyCode($userId, $code);
+        $isValid = $recovered || $this->mfaService->verifyCode($userId, $code);
+
+        $justLocked = $this->recordMfaAttempt($username, $userId, $isValid);
 
         // Log the verification result
         if ($isValid) {
             $this->logger->info('[MfaVerifyController] Verification successful for user ID: {user_id}', ['user_id' => $userId]);
         } else {
             $this->logger->warning('[MfaVerifyController] Verification failed for user ID: {user_id}', ['user_id' => $userId]);
+            // Structured audit entry so fail2ban can react to wrong-code brute force.
+            $this->auditLogger->logWarn(sprintf(
+                'client_ip:%s user:%s operation:mfa_failed mfa_type:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->userContextService->getLoggedInUsername() ?? $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown',
+                $userMfa->getType()
+            ));
         }
 
         if ($isValid) {
             // After successful verification, update the MFA secret for both app and email based auth
             try {
                 // Get the user's email from session if available (for email-based MFA)
-                $email = $this->userContextService->getSessionData('email');
+                $email = $this->userContextService->getSessionData(SessionKeys::EMAIL);
 
                 // Update the MFA secret only for email-based MFA (app-based MFA must keep the same secret)
                 $mfaType = $this->mfaService->getMfaType($userId);
@@ -175,56 +224,56 @@ class MfaVerifyController extends BaseController
             }
 
             // Promote pending session variables to actual ones now that MFA is verified
-            if ($this->userContextService->hasSessionData('pending_userid')) {
-                $this->userContextService->setSessionData('userid', $this->userContextService->getSessionData('pending_userid'));
-                $this->userContextService->unsetSessionData('pending_userid');
+            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_USERID)) {
+                $this->userContextService->setSessionData(SessionKeys::USERID, $this->userContextService->getSessionData(SessionKeys::PENDING_USERID));
+                $this->userContextService->unsetSessionData(SessionKeys::PENDING_USERID);
                 $this->logger->debug('[MfaVerifyController] Promoted pending_userid to userid for user ID: {user_id}', ['user_id' => $userId]);
             }
-            if ($this->userContextService->hasSessionData('pending_name')) {
-                $this->userContextService->setSessionData('name', $this->userContextService->getSessionData('pending_name'));
-                $this->userContextService->unsetSessionData('pending_name');
+            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_NAME)) {
+                $this->userContextService->setSessionData(SessionKeys::NAME, $this->userContextService->getSessionData(SessionKeys::PENDING_NAME));
+                $this->userContextService->unsetSessionData(SessionKeys::PENDING_NAME);
             }
-            if ($this->userContextService->hasSessionData('pending_email')) {
-                $this->userContextService->setSessionData('email', $this->userContextService->getSessionData('pending_email'));
-                $this->userContextService->unsetSessionData('pending_email');
+            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_EMAIL)) {
+                $this->userContextService->setSessionData(SessionKeys::EMAIL, $this->userContextService->getSessionData(SessionKeys::PENDING_EMAIL));
+                $this->userContextService->unsetSessionData(SessionKeys::PENDING_EMAIL);
             }
-            if ($this->userContextService->hasSessionData('pending_auth_used')) {
-                $this->userContextService->setSessionData('auth_used', $this->userContextService->getSessionData('pending_auth_used'));
-                $this->userContextService->unsetSessionData('pending_auth_used');
+            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_AUTH_USED)) {
+                $this->userContextService->setSessionData(SessionKeys::AUTH_USED, $this->userContextService->getSessionData(SessionKeys::PENDING_AUTH_USED));
+                $this->userContextService->unsetSessionData(SessionKeys::PENDING_AUTH_USED);
             }
-            if ($this->userContextService->hasSessionData('pending_auth_method_used')) {
-                $this->userContextService->setSessionData('auth_method_used', $this->userContextService->getSessionData('pending_auth_method_used'));
-                $this->userContextService->unsetSessionData('pending_auth_method_used');
+            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_AUTH_METHOD_USED)) {
+                $this->userContextService->setSessionData(SessionKeys::AUTH_METHOD_USED, $this->userContextService->getSessionData(SessionKeys::PENDING_AUTH_METHOD_USED));
+                $this->userContextService->unsetSessionData(SessionKeys::PENDING_AUTH_METHOD_USED);
             }
 
             // Promote OIDC-specific pending session variables
-            if ($this->userContextService->hasSessionData('pending_oidc_provider')) {
-                $this->userContextService->setSessionData('oidc_provider', $this->userContextService->getSessionData('pending_oidc_provider'));
-                $this->userContextService->unsetSessionData('pending_oidc_provider');
-                $this->userContextService->setSessionData('oidc_authenticated', true);
+            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_OIDC_PROVIDER)) {
+                $this->userContextService->setSessionData(SessionKeys::OIDC_PROVIDER, $this->userContextService->getSessionData(SessionKeys::PENDING_OIDC_PROVIDER));
+                $this->userContextService->unsetSessionData(SessionKeys::PENDING_OIDC_PROVIDER);
+                $this->userContextService->setSessionData(SessionKeys::OIDC_AUTHENTICATED, true);
             }
-            if ($this->userContextService->hasSessionData('pending_oidc_id_token')) {
-                $this->userContextService->setSessionData('oidc_id_token', $this->userContextService->getSessionData('pending_oidc_id_token'));
-                $this->userContextService->unsetSessionData('pending_oidc_id_token');
+            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_OIDC_ID_TOKEN)) {
+                $this->userContextService->setSessionData(SessionKeys::OIDC_ID_TOKEN, $this->userContextService->getSessionData(SessionKeys::PENDING_OIDC_ID_TOKEN));
+                $this->userContextService->unsetSessionData(SessionKeys::PENDING_OIDC_ID_TOKEN);
             }
-            if ($this->userContextService->hasSessionData('pending_oauth_avatar_url')) {
-                $this->userContextService->setSessionData('oauth_avatar_url', $this->userContextService->getSessionData('pending_oauth_avatar_url'));
-                $this->userContextService->unsetSessionData('pending_oauth_avatar_url');
+            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_OAUTH_AVATAR_URL)) {
+                $this->userContextService->setSessionData(SessionKeys::OAUTH_AVATAR_URL, $this->userContextService->getSessionData(SessionKeys::PENDING_OAUTH_AVATAR_URL));
+                $this->userContextService->unsetSessionData(SessionKeys::PENDING_OAUTH_AVATAR_URL);
             }
 
             // Promote SAML-specific pending session variables
-            if ($this->userContextService->hasSessionData('pending_saml_provider')) {
-                $this->userContextService->setSessionData('saml_provider', $this->userContextService->getSessionData('pending_saml_provider'));
-                $this->userContextService->unsetSessionData('pending_saml_provider');
-                $this->userContextService->setSessionData('saml_authenticated', true);
+            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_SAML_PROVIDER)) {
+                $this->userContextService->setSessionData(SessionKeys::SAML_PROVIDER, $this->userContextService->getSessionData(SessionKeys::PENDING_SAML_PROVIDER));
+                $this->userContextService->unsetSessionData(SessionKeys::PENDING_SAML_PROVIDER);
+                $this->userContextService->setSessionData(SessionKeys::SAML_AUTHENTICATED, true);
             }
-            if ($this->userContextService->hasSessionData('pending_saml_name_id')) {
-                $this->userContextService->setSessionData('saml_name_id', $this->userContextService->getSessionData('pending_saml_name_id'));
-                $this->userContextService->unsetSessionData('pending_saml_name_id');
+            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_SAML_NAME_ID)) {
+                $this->userContextService->setSessionData(SessionKeys::SAML_NAME_ID, $this->userContextService->getSessionData(SessionKeys::PENDING_SAML_NAME_ID));
+                $this->userContextService->unsetSessionData(SessionKeys::PENDING_SAML_NAME_ID);
             }
-            if ($this->userContextService->hasSessionData('pending_saml_session_index')) {
-                $this->userContextService->setSessionData('saml_session_index', $this->userContextService->getSessionData('pending_saml_session_index'));
-                $this->userContextService->unsetSessionData('pending_saml_session_index');
+            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_SAML_SESSION_INDEX)) {
+                $this->userContextService->setSessionData(SessionKeys::SAML_SESSION_INDEX, $this->userContextService->getSessionData(SessionKeys::PENDING_SAML_SESSION_INDEX));
+                $this->userContextService->unsetSessionData(SessionKeys::PENDING_SAML_SESSION_INDEX);
             }
 
             // Use the centralized session manager to mark MFA as verified
@@ -233,23 +282,23 @@ class MfaVerifyController extends BaseController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:mfa_verify mfa_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername() ?? $_SESSION['userlogin'] ?? 'unknown',
+                $this->userContextService->getLoggedInUsername() ?? $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown',
                 $this->mfaService->getMfaType($userId) ?? 'unknown'
             ));
 
             // Populate LDAP authentication cache for LDAP users (if auth_used is ldap)
             // This ensures LDAP+MFA users benefit from session caching
             if (
-                $this->userContextService->hasSessionData('auth_used') &&
-                $this->userContextService->getSessionData('auth_used') === 'ldap'
+                $this->userContextService->hasSessionData(SessionKeys::AUTH_USED) &&
+                $this->userContextService->getSessionData(SessionKeys::AUTH_USED) === 'ldap'
             ) {
                 $ipRetriever = new IpAddressRetriever($_SERVER);
                 $ipAddress = $ipRetriever->getClientIp() ?: '0.0.0.0';
                 $username = $this->userContextService->getLoggedInUsername();
 
-                $this->userContextService->setSessionData('ldap_auth_timestamp', time());
-                $this->userContextService->setSessionData('ldap_auth_ip', $ipAddress);
-                $this->userContextService->setSessionData('ldap_auth_username', $username);
+                $this->userContextService->setSessionData(SessionKeys::LDAP_AUTH_TIMESTAMP, time());
+                $this->userContextService->setSessionData(SessionKeys::LDAP_AUTH_IP, $ipAddress);
+                $this->userContextService->setSessionData(SessionKeys::LDAP_AUTH_USERNAME, $username);
             }
 
             // Ensure session is written before redirecting
@@ -275,26 +324,78 @@ class MfaVerifyController extends BaseController
             exit;
         } else {
             // MFA verification failed
-            $this->displayMfaForm(_('Invalid verification code. Please try again.'), 'danger');
+            $this->displayMfaForm(
+                $justLocked
+                    ? _('Too many failed attempts. Please try again later.')
+                    : _('Invalid verification code. Please try again.'),
+                'danger'
+            );
         }
+    }
+
+    /**
+     * Whether the second factor is currently refusing attempts for this account.
+     *
+     * The MFA stage is counted separately from the password stage, so second-factor
+     * failures never block a later password login and a fresh first-factor success
+     * cannot reset the MFA counter mid-attack.
+     */
+    private function isMfaThrottled(string $username, int $userId): bool
+    {
+        return $this->loginAttemptService->isAccountLocked(
+            $username,
+            $this->ipAddressRetriever->getClientIp(),
+            LoginAttemptService::STAGE_MFA,
+            $userId
+        );
+    }
+
+    /**
+     * Counts one second-factor attempt and reports whether it tripped the limit.
+     *
+     * On tripping, the pending email code is burned so it stays dead even when the
+     * lockout window is configured shorter than the code lifetime.
+     */
+    private function recordMfaAttempt(string $username, int $userId, bool $isValid): bool
+    {
+        $this->loginAttemptService->recordAttempt(
+            $username,
+            $this->ipAddressRetriever->getClientIp(),
+            $isValid,
+            LoginAttemptService::STAGE_MFA,
+            $userId
+        );
+
+        if ($isValid || !$this->isMfaThrottled($username, $userId)) {
+            return false;
+        }
+
+        $this->mfaService->invalidatePendingEmailCode($userId);
+        return true;
     }
 
     private function displayMfaForm(?string $message = null, ?string $type = null): void
     {
         // During MFA verification, userid is stored as pending_userid to prevent API bypass
-        $userId = $this->userContextService->getLoggedInUserId() ?? $this->userContextService->getSessionData('pending_userid') ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? $this->userContextService->getSessionData(SessionKeys::PENDING_USERID) ?? 0;
         $username = $this->userContextService->getLoggedInUsername() ?? '';
-        $email = $this->userContextService->getSessionData('email') ?? $this->userContextService->getSessionData('pending_email') ?? '';
+        $email = $this->userContextService->getSessionData(SessionKeys::EMAIL) ?? $this->userContextService->getSessionData(SessionKeys::PENDING_EMAIL) ?? '';
 
         // Generate a new CSRF token
         $mfaToken = $this->csrfTokenService->generateToken();
-        $this->userContextService->setSessionData('mfa_token', $mfaToken);
+        $this->userContextService->setSessionData(SessionKeys::MFA_TOKEN, $mfaToken);
 
         // Get MFA type
         $mfaType = $this->mfaService->getMfaType($userId) ?? 'app';
 
+        // A locked account must not trigger the refresh below: the code was just
+        // invalidated on hitting the limit, and refresh treats a used code as a
+        // reason to mail a new one, which would turn the lockout page into a
+        // mail flood aimed at the account owner.
+        $mfaLocked = $this->isMfaThrottled($username, (int)$userId);
+
         // For email-based MFA, check if we need to refresh the code
-        if ($mfaType === 'email' && !empty($email)) {
+        if ($mfaType === 'email' && !empty($email) && !$mfaLocked) {
             // First check if mail service is enabled - only required for email verification
             if (!$this->config->get('mail', 'enabled', false)) {
                 // Force user to use recovery codes since email is not available

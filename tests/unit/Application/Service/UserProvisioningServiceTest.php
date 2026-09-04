@@ -5,6 +5,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserProvisioningService;
+use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use ReflectionClass;
@@ -234,12 +235,71 @@ class UserProvisioningServiceTest extends TestCase
      * Create a UserProvisioningService instance with mocked dependencies for testing
      * determinePermissionTemplate and related methods.
      */
+    public function testSuperuserTemplateIsRefusedWhenProvisioningItIsNotAllowed(): void
+    {
+        // An IdP claim mapped onto the Administrator template would otherwise mint a
+        // global superuser at login.
+        $result = $this->resolveMappedTemplate(templateGrantsUberuser: true, allowSuperuser: false);
+
+        $this->assertNull($result, 'A superuser template must not be provisioned from an IdP claim');
+    }
+
+    public function testSuperuserTemplateIsAllowedWhenTheOperatorOptsIn(): void
+    {
+        $result = $this->resolveMappedTemplate(templateGrantsUberuser: true, allowSuperuser: true);
+
+        $this->assertEquals(1, $result);
+    }
+
+    public function testOrdinaryTemplateIsUnaffected(): void
+    {
+        $result = $this->resolveMappedTemplate(templateGrantsUberuser: false, allowSuperuser: false);
+
+        $this->assertEquals(1, $result);
+    }
+
+    private function resolveMappedTemplate(bool $templateGrantsUberuser, bool $allowSuperuser): ?int
+    {
+        $stmt = $this->createMock(\PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(['id' => 1]);
+
+        $db = $this->createMock(\PDO::class);
+        $db->method('prepare')->willReturn($stmt);
+
+        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'permission_template_mapping', [], ['admins' => 'Administrator']],
+                ['oidc', 'allow_superuser_provisioning', false, $allowSuperuser],
+            ]);
+
+        $userRepository = $this->createMock(\Poweradmin\Infrastructure\Repository\DbUserRepository::class);
+        $userRepository->method('templateGrantsUberuser')->willReturn($templateGrantsUberuser);
+
+        $service = $this->createServiceWithMocks($db, $configManager, $userRepository);
+
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
+        $method->setAccessible(true);
+
+        return $method->invoke($service, ['admins'], 'oidc', false);
+    }
+
     private function createServiceWithMocks(
         ?\PDO $db = null,
-        ?\Poweradmin\Infrastructure\Configuration\ConfigurationManager $configManager = null
+        ?\Poweradmin\Infrastructure\Configuration\ConfigurationManager $configManager = null,
+        ?\Poweradmin\Infrastructure\Repository\DbUserRepository $userRepository = null
     ): UserProvisioningService {
         $reflection = new ReflectionClass(UserProvisioningService::class);
         $service = $reflection->newInstanceWithoutConstructor();
+
+        if ($userRepository === null) {
+            $userRepository = $this->createMock(\Poweradmin\Infrastructure\Repository\DbUserRepository::class);
+            $userRepository->method('templateGrantsUberuser')->willReturn(false);
+        }
+        $userRepositoryProp = $reflection->getProperty('userRepository');
+        $userRepositoryProp->setAccessible(true);
+        $userRepositoryProp->setValue($service, $userRepository);
 
         $dbProp = $reflection->getProperty('db');
         $dbProp->setAccessible(true);
@@ -376,6 +436,36 @@ class UserProvisioningServiceTest extends TestCase
         // Test SAML user info
         $result = $determineAuthMethod($samlUserInfo);
         $this->assertEquals(UserProvisioningService::AUTH_METHOD_SAML, $result, 'Should detect SAML from SamlUserInfo');
+
+        // Test LDAP user info
+        $result = $determineAuthMethod(new LdapUserInfo('test.user'));
+        $this->assertEquals(UserProvisioningService::AUTH_METHOD_LDAP, $result, 'Should detect LDAP from LdapUserInfo');
+    }
+
+    public function testGroupMatchesRequiresTheWholeValue(): void
+    {
+        $groupMatches = $this->getPrivateMethodInvoker('groupMatches');
+        $groups = ['cn=dns-admins,ou=groups,dc=example,dc=com', 'plain-group'];
+
+        $this->assertTrue($groupMatches('plain-group', $groups), 'Exact value matches');
+        $this->assertTrue($groupMatches('cn=dns-admins,ou=groups,dc=example,dc=com', $groups), 'Full DN matches');
+        $this->assertFalse($groupMatches('dns-admins', $groups), 'A bare RDN value must not match a DN');
+        $this->assertFalse($groupMatches('ou=groups', $groups), 'Later RDNs do not match');
+        $this->assertFalse($groupMatches('dns-operators', $groups));
+        $this->assertFalse($groupMatches('dns-admins', []), 'No groups, no match');
+    }
+
+    public function testGroupMatchesRejectsLookalikeDnInAnotherContainer(): void
+    {
+        // A directory user who can create groups in their own OU must not be able to
+        // satisfy a mapping written for the same name in a different container.
+        $groupMatches = $this->getPrivateMethodInvoker('groupMatches');
+        $configuredDn = 'cn=dns-admins,ou=groups,dc=example,dc=com';
+
+        $this->assertFalse(
+            $groupMatches($configuredDn, ['cn=dns-admins,ou=lab,dc=example,dc=com']),
+            'Same CN in a different OU must not match'
+        );
     }
 
     /**
@@ -489,29 +579,125 @@ class UserProvisioningServiceTest extends TestCase
         $this->assertSame(['lab1'], $invoker(['lab1', 42, ['nested'], new \stdClass()]));
     }
 
-    public function testGroupMatchesComparesNumericConfigKeysAsStrings(): void
+    /**
+     * A missing default template must not fall back to "the first template by id",
+     * which is the bundled Administrator template on every shipped schema.
+     */
+    public function testDeterminePermissionTemplateFailsClosedWhenDefaultIsMissing(): void
     {
-        $invoker = $this->getPrivateMethodInvoker('groupMatches');
+        $stmt = $this->createMock(\PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(false);
 
-        // PHP stores a numeric mapping key as an int, while the IdP claim yields
-        // strings - which is why a strict in_array never matched an Entra/Keycloak
-        // group id.
-        $mapping = ['1001' => 'Operator'];
-        $this->assertSame(1001, array_key_first($mapping));
+        $db = $this->createMock(\PDO::class);
+        $db->method('prepare')->willReturn($stmt);
 
-        $this->assertTrue($invoker(array_key_first($mapping), ['1001', 'other']));
-        $this->assertTrue($invoker('DnsAdmins', ['DnsAdmins']));
-        $this->assertFalse($invoker('1002', ['1001']));
+        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'permission_template_mapping', [], []],
+                ['oidc', 'default_permission_template', '', 'Guest'],
+            ]);
+
+        $service = $this->createServiceWithMocks($db, $configManager);
+
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('determinePermissionTemplate');
+        $method->setAccessible(true);
+
+        $this->assertNull(
+            $method->invoke($service, [], 'oidc', true),
+            'A renamed or deleted default template must refuse provisioning, not pick template id 1'
+        );
     }
 
-    public function testGroupMatchesAcceptsIntegerClaimValues(): void
+    /**
+     * @return array<string, array{mixed, bool}>
+     */
+    public static function emailVerifiedClaimProvider(): array
     {
-        $invoker = $this->getPrivateMethodInvoker('groupMatches');
+        return [
+            'verified bool true' => [true, true],
+            'verified string true' => ['true', true],
+            'verified int one' => [1, true],
+            'unverified bool false' => [false, false],
+            'unverified string false' => ['false', false],
+            'unverified int zero' => [0, false],
+            'unparseable value' => ['maybe', false],
+        ];
+    }
 
-        // Some providers emit the groups claim as JSON numbers, so casting only
-        // the config key would break a mapping that works today.
-        $this->assertTrue($invoker('1001', [1001]));
-        $this->assertFalse($invoker('1001', [1002]));
-        $this->assertFalse($invoker('DnsAdmins', [['nested']]));
+    #[DataProvider('emailVerifiedClaimProvider')]
+    public function testEmailClaimIsLinkableHonoursEmailVerified(mixed $claim, bool $expected): void
+    {
+        $service = $this->createServiceWithMocks();
+
+        $userInfo = $this->createMock(\Poweradmin\Domain\ValueObject\UserInfoInterface::class);
+        $userInfo->method('getEmail')->willReturn('admin@tenant.test');
+        $userInfo->method('getRawData')->willReturn(['email_verified' => $claim]);
+
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('emailClaimIsLinkable');
+        $method->setAccessible(true);
+
+        $this->assertSame($expected, $method->invoke($service, $userInfo));
+    }
+
+    /**
+     * SAML has no email_verified equivalent, so an absent claim stays permissive
+     * and the superuser-account rule carries the protection.
+     */
+    public function testEmailClaimIsLinkableWhenClaimIsAbsent(): void
+    {
+        $service = $this->createServiceWithMocks();
+
+        $userInfo = $this->createMock(\Poweradmin\Domain\ValueObject\UserInfoInterface::class);
+        $userInfo->method('getEmail')->willReturn('admin@tenant.test');
+        $userInfo->method('getRawData')->willReturn(['sub' => 'abc']);
+
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('emailClaimIsLinkable');
+        $method->setAccessible(true);
+
+        $this->assertTrue($method->invoke($service, $userInfo));
+    }
+
+    public function testUserHoldsSuperuserPermissionFailsClosedOnDatabaseError(): void
+    {
+        $service = $this->createServiceWithMocks();
+
+        $repository = $this->createMock(\Poweradmin\Infrastructure\Repository\DbUserRepository::class);
+        $repository->method('hasAdminPermission')->willThrowException(new \RuntimeException('connection lost'));
+
+        $reflection = new ReflectionClass(UserProvisioningService::class);
+        $repositoryProp = $reflection->getProperty('userRepository');
+        $repositoryProp->setAccessible(true);
+        $repositoryProp->setValue($service, $repository);
+
+        $method = $reflection->getMethod('userHoldsSuperuserPermission');
+        $method->setAccessible(true);
+
+        $this->assertTrue(
+            $method->invoke($service, 1),
+            'An unreadable permission state must block email linking rather than allow it'
+        );
+    }
+
+    public function testUserHoldsSuperuserPermissionDelegatesToRepository(): void
+    {
+        $service = $this->createServiceWithMocks();
+
+        $repository = $this->createMock(\Poweradmin\Infrastructure\Repository\DbUserRepository::class);
+        $repository->method('hasAdminPermission')->willReturnCallback(
+            static fn(int $userId): bool => $userId === 1
+        );
+
+        $reflection = new ReflectionClass(UserProvisioningService::class);
+        $repositoryProp = $reflection->getProperty('userRepository');
+        $repositoryProp->setAccessible(true);
+        $repositoryProp->setValue($service, $repository);
+
+        $method = $reflection->getMethod('userHoldsSuperuserPermission');
+        $method->setAccessible(true);
+
+        $this->assertTrue($method->invoke($service, 1));
+        $this->assertFalse($method->invoke($service, 2));
     }
 }

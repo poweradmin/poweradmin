@@ -42,9 +42,9 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddUserController extends BaseController
@@ -53,8 +53,8 @@ class AddUserController extends BaseController
     private PasswordGenerationService $passwordGenerationService;
     private MailService $mailService;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
-    private DbUserGroupRepository $groupRepository;
-    private DbUserGroupMemberRepository $memberRepository;
+    private UserGroupRepositoryInterface $groupRepository;
+    private UserGroupMemberRepositoryInterface $memberRepository;
     private UserContextService $userContextService;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
@@ -74,11 +74,11 @@ class AddUserController extends BaseController
         $this->mailService = new MailService($configManager);
 
         // Initialize permission template repository
-        $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
 
         // Initialize group repositories for group membership management
-        $this->groupRepository = new DbUserGroupRepository($this->db);
-        $this->memberRepository = new DbUserGroupMemberRepository($this->db);
+        $this->groupRepository = $this->createUserGroupRepository();
+        $this->memberRepository = $this->createUserGroupMemberRepository();
         $this->userContextService = new UserContextService();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
@@ -90,7 +90,7 @@ class AddUserController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('add_user');
-        $this->setPageTitle(_('Add User'));
+        $this->setPageTitle(_('Add user'));
 
         $policyConfig = $this->passwordPolicyService->getPolicyConfig();
 
@@ -117,10 +117,13 @@ class AddUserController extends BaseController
         $legacyUsers = new UserManager($this->db, $this->getConfig());
         $userParams = $this->request->getPostParams();
 
-        // When user access templates are hidden, force minimal user template assignment
+        // The template picker is hidden when access templates are disabled or the
+        // caller lacks user_edit_templ_perm; those callers get the minimal one.
         $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
-        if (!$showUserAccessTemplates) {
-            $minimalTemplateId = UserManager::getMinimalPermissionTemplateId($this->db, 'user');
+        $canChooseTemplate = $showUserAccessTemplates && $this->hasPermission('user_edit_templ_perm');
+
+        if (!$canChooseTemplate || !isset($userParams['perm_templ']) || $userParams['perm_templ'] === '') {
+            $minimalTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user');
             if ($minimalTemplateId === null) {
                 $this->setMessage('add_user', 'error', _('No non-superuser permission template is available to assign.'));
                 $this->renderAddUserForm($policyConfig);
@@ -130,12 +133,10 @@ class AddUserController extends BaseController
         }
 
         // Validate that the template is a user template
-        if (isset($userParams['perm_templ']) && $userParams['perm_templ'] !== '') {
-            if (!$this->permissionTemplateRepository->validateTemplateType((int)$userParams['perm_templ'], 'user')) {
-                $this->setMessage('add_user', 'error', _('Invalid permission template: must be a user template'));
-                $this->renderAddUserForm($policyConfig);
-                return;
-            }
+        if (!$this->permissionTemplateRepository->validateTemplateType((int)$userParams['perm_templ'], 'user')) {
+            $this->setMessage('add_user', 'error', _('Invalid permission template: must be a user template'));
+            $this->renderAddUserForm($policyConfig);
+            return;
         }
 
         // Handle auto-generated password
@@ -207,15 +208,16 @@ class AddUserController extends BaseController
 
     private function renderAddUserForm(array $policyConfig): void
     {
-        $user_edit_templ_perm = UserManager::verifyPermission($this->db, 'user_edit_templ_perm');
-        $user_templates = UserManager::listPermissionTemplates($this->db, 'user');
+        $user_edit_templ_perm = $this->hasPermission('user_edit_templ_perm');
+        $user_templates = $this->permissionTemplateRepository->listPermissionTemplates('user');
 
         $username = $this->request->getPostParam('username', '');
         $fullname = $this->request->getPostParam('fullname', '');
         $email = $this->request->getPostParam('email', '');
 
-        // Use minimal permission template as default (most secure)
-        $defaultTemplateId = UserManager::getMinimalPermissionTemplateId($this->db, 'user') ?? '';
+        // Use minimal permission template as default (most secure); preselect
+        // nothing rather than falling back to template id 1 (Administrator).
+        $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user') ?? '';
         $perm_templ = $this->request->getPostParam('perm_templ', (string)$defaultTemplateId);
 
         $description = $this->request->getPostParam('descr', '');
@@ -255,7 +257,7 @@ class AddUserController extends BaseController
             'mail_enabled' => $mail_enabled,
             'available_groups' => $availableGroups,
             'selected_groups' => $selectedGroups,
-            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
@@ -323,7 +325,7 @@ class AddUserController extends BaseController
     private function assignUserToGroups(int $userId, array $groupIds, string $username): void
     {
         // Only admins can manage group memberships
-        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if (!$this->hasPermission('user_is_ueberuser')) {
             return;
         }
 

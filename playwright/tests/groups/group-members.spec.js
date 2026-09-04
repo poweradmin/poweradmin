@@ -12,6 +12,29 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Group Members Management', () => {
+  async function createGroup(page, groupName) {
+    await page.goto('/groups/add');
+    await page.locator('input#name').fill(groupName);
+    const select = page.locator('select#perm_templ');
+    const options = select.locator('option:not([disabled])');
+    // <option> elements are never visible to Playwright; assert presence instead
+    await expect(options).not.toHaveCount(0);
+    await select.selectOption(await options.first().getAttribute('value'));
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await page.waitForLoadState('domcontentloaded');
+  }
+
+  async function deleteGroup(page, groupName) {
+    await page.goto('/groups');
+    const row = page.locator(`tr:has-text("${groupName}")`);
+    if (await row.count() === 0) {
+      return;
+    }
+    await row.locator('a[href*="/delete"]').first().click();
+    await page.locator('button[type="submit"]').first().click();
+    await page.waitForLoadState('domcontentloaded');
+  }
+
   // Helper to find a group ID by navigating to the list and clicking members link
   async function navigateToGroupMembers(page, groupName) {
     await page.goto('/groups');
@@ -63,25 +86,29 @@ test.describe('Group Members Management', () => {
   });
 
   test.describe('Add Members', () => {
+    // Works on a group it creates and deletes itself. Adding a member to a seeded
+    // group would leave it behind and skew the fixtures other specs assert against.
     test('should add user to group', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      // Navigate to Guests group (has only noperm)
-      const found = await navigateToGroupMembers(page, 'Guests');
-      if (found) {
-        // Look for available users to add
-        const availableCheckbox = page.locator('#add-form .available-checkbox').first();
-        if (await availableCheckbox.count() > 0) {
-          await availableCheckbox.check();
-          const addBtn = page.locator('#add-btn');
-          if (await addBtn.count() > 0) {
-            await addBtn.click();
-            await page.waitForLoadState('domcontentloaded');
+      const groupName = `Members Test ${Date.now()}`;
+      await createGroup(page, groupName);
 
-            const bodyText = await page.locator('body').textContent();
-            expect(bodyText).not.toMatch(/fatal|exception/i);
-          }
-        }
+      try {
+        expect(await navigateToGroupMembers(page, groupName)).toBe(true);
+
+        const availableCheckbox = page.locator('#add-form .available-checkbox').first();
+        await expect(availableCheckbox).toHaveCount(1);
+
+        const addedUserId = await availableCheckbox.getAttribute('value');
+        await availableCheckbox.check();
+        await page.locator('#add-btn').click();
+        await page.waitForLoadState('domcontentloaded');
+
+        // The user must now appear as a current member, not merely not crash.
+        await expect(page.locator(`#remove-form .member-checkbox[value="${addedUserId}"]`)).toHaveCount(1);
+      } finally {
+        await deleteGroup(page, groupName);
       }
     });
 

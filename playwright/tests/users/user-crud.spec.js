@@ -212,22 +212,10 @@ test.describe('User CRUD Operations', () => {
       await page.waitForLoadState('networkidle');
 
       // Use table-specific selector to avoid matching dropdown menu items
-      const usersTable = page.locator('table');
-      if (await usersTable.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/user|admin/i);
-        return;
-      }
-
-      const editLink = usersTable.locator('tbody a[href*="users"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
-        await expect(page).toHaveURL(/.*\/users\/\d+\/edit/);
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/user|admin/i);
-      }
+      const editLink = page.locator('table tbody a[href*="users"][href*="edit"]').first();
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+      await expect(page).toHaveURL(/.*\/users\/\d+\/edit/);
     });
 
     test('should display current user data', async ({ page }) => {
@@ -235,30 +223,13 @@ test.describe('User CRUD Operations', () => {
       await page.goto('/users');
       await page.waitForLoadState('networkidle');
 
-      const usersTable = page.locator('table');
-      if (await usersTable.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/user|admin/i);
-        return;
-      }
+      const editLink = page.locator('table tbody a[href*="users"][href*="edit"]').first();
+      await expect(editLink).toBeVisible();
+      await editLink.click();
 
-      const editLink = usersTable.locator('tbody a[href*="users"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
-
-        const usernameField = page.locator('input[name*="username"], input[name*="user"]').first();
-        if (await usernameField.count() > 0) {
-          const value = await usernameField.inputValue();
-          expect(value.length).toBeGreaterThan(0);
-        } else {
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
-        }
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/user|admin/i);
-      }
+      const usernameField = page.locator('input[name*="username"], input[name*="user"]').first();
+      await expect(usernameField).toBeVisible();
+      await expect(usernameField).not.toHaveValue('');
     });
   });
 
@@ -268,51 +239,37 @@ test.describe('User CRUD Operations', () => {
       await page.goto('/users');
       await page.waitForLoadState('networkidle');
 
-      const usersTable = page.locator('table');
-      if (await usersTable.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/user|admin/i);
-        return;
-      }
-
-      const deleteLink = usersTable.locator('tbody a[href*="users"][href*="delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        await page.waitForLoadState('networkidle');
-        await expect(page).toHaveURL(/.*\/users\/\d+\/delete/);
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/user|admin/i);
-      }
+      const deleteLink = page.locator('table tbody a[href*="users"][href*="delete"]').first();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
+      await expect(page).toHaveURL(/.*\/users\/\d+\/delete/);
     });
 
     test('should display confirmation message', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/users');
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      const deleteLink = page.locator('table tbody a[href*="users"][href*="delete"]').first();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
-      }
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
     });
 
     test('should cancel delete and return to list', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/users');
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      const deleteLink = page.locator('table tbody a[href*="users"][href*="delete"]').first();
+      await expect(deleteLink).toBeVisible();
+      await deleteLink.click();
 
-        const noBtn = page.locator('a:has-text("No"), button:has-text("No")').first();
-        if (await noBtn.count() > 0) {
-          await noBtn.click();
-          await expect(page).toHaveURL(/.*\/users/);
-        }
-      }
+      // delete_actions() renders the cancel control as a link, not a button
+      const noBtn = page.locator('a:has-text("No"), button:has-text("No")').first();
+      await expect(noBtn).toBeVisible();
+      await noBtn.click();
+      await expect(page).toHaveURL(/.*\/users/);
     });
   });
 
@@ -330,9 +287,7 @@ test.describe('User CRUD Operations', () => {
       await page.goto('/users/add');
 
       const templateSelector = page.locator('select[name*="template"], select[name*="perm_templ"]');
-      if (await templateSelector.count() > 0) {
-        await expect(templateSelector.first()).toBeVisible();
-      }
+      await expect(templateSelector.first()).toBeVisible();
     });
   });
 

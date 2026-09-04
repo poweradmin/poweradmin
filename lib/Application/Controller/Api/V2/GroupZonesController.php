@@ -31,14 +31,12 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -53,8 +51,8 @@ class GroupZonesController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
-        $groupRepository = new DbUserGroupRepository($this->db);
+        $zoneGroupRepository = $this->createZoneGroupRepository();
+        $groupRepository = $this->createUserGroupRepository();
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
         $this->apiPermissionService = new ApiPermissionService($this->db);
         $this->zoneRepository = $this->createZoneRepository();
@@ -136,14 +134,24 @@ class GroupZonesController extends PublicApiController
             $groupId = (int)$this->pathParameters['id'];
             $zones = $this->zoneGroupService->listGroupZones($groupId);
 
-            $zonesData = array_map(fn($z) => [
-                'zone_id' => $z->getDomainId(),
-                'zone_name' => $z->getName(),
-                'zone_type' => $z->getType(),
-                'created_at' => $z->getCreatedAt(),
-            ], $zones);
+            // Do not disclose zones outside a zone-scoped key's allowlist.
+            $scope = $this->getApiKeyScope();
+            $zonesData = [];
+            foreach ($zones as $z) {
+                if (!$scope->isZoneAllowed($z->getDomainId())) {
+                    continue;
+                }
+                $zonesData[] = [
+                    'zone_id' => $z->getDomainId(),
+                    'zone_name' => $z->getName(),
+                    'zone_type' => $z->getType(),
+                    'created_at' => $z->getCreatedAt(),
+                ];
+            }
 
             return $this->returnApiResponse(['zones' => $zonesData], true, 'Zones retrieved successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -217,7 +225,15 @@ class GroupZonesController extends PublicApiController
                 return $this->returnApiError('Missing required field: zone_id', 400);
             }
 
-            $zoneId = (int)$data['zone_id'];
+            // Reject a non-scalar zone_id; (int) would silently coerce an array to 1.
+            $zoneId = $this->inputInt($data, 'zone_id');
+            if ($zoneId === null || $zoneId <= 0) {
+                return $this->returnApiError('Invalid zone_id', 400);
+            }
+
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
 
             if (!$this->zoneRepository->zoneExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
@@ -226,6 +242,8 @@ class GroupZonesController extends PublicApiController
             $this->zoneGroupService->addGroupToZone($zoneId, $groupId);
 
             return $this->returnApiResponse(null, true, 'Zone assigned successfully', 201);
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -288,11 +306,15 @@ class GroupZonesController extends PublicApiController
                 return $this->returnApiError('Invalid zone_id', 400);
             }
 
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
+
             if (!$this->zoneRepository->zoneExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
             }
 
-            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
+            $zoneGroupRepo = $this->createZoneGroupRepository();
             $existingGroups = $zoneGroupRepo->findByDomainId($zoneId);
             $hasThisGroup = false;
             foreach ($existingGroups as $zg) {
@@ -344,6 +366,8 @@ class GroupZonesController extends PublicApiController
             }
 
             return $this->returnApiResponse(null, true, 'Zone unassigned successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }

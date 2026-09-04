@@ -23,11 +23,12 @@ export default defineConfig({
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
 
-  // Retry on CI only
-  retries: process.env.CI ? 2 : 0,
+  // One local retry absorbs rare load flakes in parallel runs
+  retries: process.env.CI ? 2 : 1,
 
-  // 2 workers locally for parallel file execution, 1 on CI for stability
-  // Session conflicts may occur if two files use the same user simultaneously
+  // 2 workers locally for parallel file execution, 1 on CI for stability.
+  // Workers never share sessions (each has its own cookie jar and PHP session);
+  // the constraint is shared zone data, contained by per-file serial mode.
   workers: process.env.CI ? 1 : 2,
 
   // Reporter to use

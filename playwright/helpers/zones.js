@@ -378,23 +378,26 @@ export async function ensureTestZoneExists(page, zoneKey) {
 }
 
 /**
- * Get a zone ID for testing, trying multiple fallback options
- * Uses manager zone first, then admin, then any available zone
+ * Get a zone ID for testing, resolving stable fixture zones by name first.
+ *
+ * Prefers manager-zone.example.com, then admin-zone.example.com (both seeded by
+ * global-setup and resolved by name, not list order) so the result is
+ * deterministic. findAnyZoneId is only a last resort when neither named fixture
+ * is present, e.g. against a non-fixture environment.
  *
  * @param {import('@playwright/test').Page} page - Playwright page object
  * @returns {Promise<string|null>} - Zone ID or null if no zones available
  */
 export async function getZoneIdForTest(page) {
-  // First try the manager zone
+  // Prefer named fixture zones so the choice does not depend on list order
   let zoneId = await getTestZoneId(page, 'manager');
 
   if (!zoneId) {
-    // Fallback to admin zone
     zoneId = await getTestZoneId(page, 'admin');
   }
 
   if (!zoneId) {
-    // Last resort: find any zone
+    // Last resort for non-fixture environments: any available zone
     const anyZone = await findAnyZoneId(page);
     if (anyZone) {
       zoneId = anyZone.id;
@@ -420,6 +423,39 @@ export async function ensureAnyZoneExists(page) {
 
   // No zones exist, create the manager zone
   return await ensureTestZoneExists(page, 'manager');
+}
+
+/**
+ * Find a zone list column index by its exact header text
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ * @param {string} headerText - Exact header text to match
+ * @returns {Promise<number>} - Column index, or -1 when the column is absent
+ */
+export async function getColumnIndex(page, headerText) {
+  return page.evaluate((target) => {
+    const headers = Array.from(document.querySelectorAll('thead th'));
+    return headers.findIndex(h => h.innerText.trim() === target);
+  }, headerText);
+}
+
+/**
+ * Ports of the instances configured with dns.backend = 'api'
+ */
+export const API_MODE_PORTS = ['8083', '8084', '8085'];
+
+/**
+ * Whether a base URL points at an API-backend instance.
+ *
+ * Zone list columns whose data comes from PowerDNS rather than the local
+ * database are rendered without a sort link there, so tests asserting those
+ * links have to skip.
+ *
+ * @param {string} baseURL - Base URL under test
+ * @returns {boolean} - True when the instance runs the API backend
+ */
+export function isApiModeInstance(baseURL) {
+  return API_MODE_PORTS.some((port) => (baseURL || '').includes(`:${port}`));
 }
 
 // Export zones fixture for direct access

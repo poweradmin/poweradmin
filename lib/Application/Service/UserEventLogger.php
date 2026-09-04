@@ -24,8 +24,10 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class UserEventLogger
 {
@@ -40,21 +42,29 @@ class UserEventLogger
 
     public function logSuccessfulAuth(AuthMethod $authMethod = AuthMethod::SQL): void
     {
-        $this->logger->logNotice(sprintf(
-            'client_ip:%s user:%s operation:login_success auth_method:%s',
-            $this->ipRetriever->getClientIp(),
-            $_SESSION['userlogin'],
-            $authMethod->value
-        ));
+        $this->logger->logNotice($this->format('login_success', $authMethod));
     }
 
-    public function logFailedAuth(AuthMethod $authMethod = AuthMethod::SQL): void
+    public function logLockout(AuthMethod $authMethod = AuthMethod::SQL): void
     {
-        $this->logger->logWarn(sprintf(
-            'client_ip:%s user:%s operation:login_failed auth_method:%s',
+        $this->logger->logWarn($this->format('login_locked', $authMethod));
+    }
+
+    public function logFailedAuth(AuthMethod $authMethod = AuthMethod::SQL, ?LoginFailureReason $reason = null): void
+    {
+        $this->logger->logWarn($this->format('login_failed', $authMethod, $reason?->value));
+    }
+
+    private function format(string $operation, AuthMethod $authMethod, ?string $reason = null): string
+    {
+        $base = sprintf(
+            'client_ip:%s user:%s operation:%s auth_method:%s',
             $this->ipRetriever->getClientIp(),
-            $_SESSION["userlogin"],
+            $_SESSION[SessionKeys::USERLOGIN] ?? '',
+            $operation,
             $authMethod->value
-        ));
+        );
+
+        return $reason !== null ? $base . ' reason:' . $reason : $base;
     }
 }

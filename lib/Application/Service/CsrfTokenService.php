@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Domain\Service\SessionKeys;
+
 class CsrfTokenService
 {
     public const TOKEN_LENGTH = 40;
@@ -34,12 +36,12 @@ class CsrfTokenService
         return substr($token, 0, self::TOKEN_LENGTH);
     }
 
-    public function getToken(string $session_var = 'csrf_token'): string
+    public function getToken(string $session_var = SessionKeys::CSRF_TOKEN): string
     {
         return $_SESSION[$session_var] ?? '';
     }
 
-    public function validateToken(string $token, string $session_var = 'csrf_token'): bool
+    public function validateToken(string $token, string $session_var = SessionKeys::CSRF_TOKEN): bool
     {
         if (!isset($_SESSION[$session_var])) {
             return false;
@@ -47,7 +49,7 @@ class CsrfTokenService
         return hash_equals($_SESSION[$session_var], $token);
     }
 
-    public function ensureTokenExists(string $session_var = 'csrf_token'): void
+    public function ensureTokenExists(string $session_var = SessionKeys::CSRF_TOKEN): void
     {
         if (!isset($_SESSION[$session_var]) || $_SESSION[$session_var] === '') {
             $_SESSION[$session_var] = $this->generateToken();

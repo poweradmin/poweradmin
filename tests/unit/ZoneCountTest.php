@@ -128,11 +128,16 @@ class ZoneCountTest extends TestCase
 
     public function testCountZonesWithLetterFilter(): void
     {
-        // Configure mocks - TableNameService calls get() during construction
-        $this->configMock->expects($this->once())
+        // Configure mocks - TableNameService needs pdns_db_name; the letter filter
+        // now also reads the database type for the SUBSTR() first-char comparison.
+        $this->configMock->expects($this->exactly(2))
             ->method('get')
-            ->with('database', 'pdns_db_name')
-            ->willReturn(null); // No prefix for tables
+            ->willReturnCallback(function ($group, $key) {
+                if ($group === 'database' && $key === 'type') {
+                    return 'mysql';
+                }
+                return null; // No prefix for tables
+            });
 
         // Create service after mock expectations are set
         $this->zoneCountService = new ZoneCountService($this->dbMock, $this->configMock);

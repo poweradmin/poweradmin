@@ -1,11 +1,9 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/forward">{% trans %}Zones{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{% trans %}DNS Wizard{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Zones'|trans, url: base_url_prefix ~ '/zones/forward'},
+    {label: zone_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+    {label: 'DNS Wizard'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">
@@ -55,7 +53,7 @@
                             <p class="card-text small text-muted">{{ wizard.description }}</p>
                             <div class="mt-3">
                                 <span class="badge bg-secondary">{{ wizard.recordType }}</span>
-                                {% if wizard.recommended %}
+                                {% if wizard.recommended ?? false %}
                                 <span class="badge bg-success">{% trans %}Recommended{% endtrans %}</span>
                                 {% endif %}
                             </div>

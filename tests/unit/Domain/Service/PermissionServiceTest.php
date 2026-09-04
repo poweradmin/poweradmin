@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -102,6 +102,50 @@ class PermissionServiceTest extends TestCase
 
         $this->assertTrue($this->service->isAdmin(1));
         $this->assertFalse($this->service->isAdmin(2));
+    }
+
+    #[Test]
+    public function testUserOwnsZoneDelegatesToRepository(): void
+    {
+        $this->userRepository->method('userOwnsZone')
+            ->willReturnMap([
+                [1, 100, true],
+                [2, 100, false],
+            ]);
+
+        $this->assertTrue($this->service->userOwnsZone(1, 100));
+        $this->assertFalse($this->service->userOwnsZone(2, 100));
+    }
+
+    #[Test]
+    public function testCanPerformZoneActionShortCircuitsForAdmin(): void
+    {
+        $userId = 1;
+
+        $this->userRepository->method('hasAdminPermission')
+            ->with($userId)
+            ->willReturn(true);
+
+        $db = $this->createMock(\PDO::class);
+
+        // Admin short-circuit must not touch the hybrid permission query path
+        $db->expects($this->never())->method('prepare');
+        $this->assertTrue($this->service->canPerformZoneAction($db, $userId, 100, 'zone_delete_own'));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForZoneShortCircuitsForAdmin(): void
+    {
+        $userId = 1;
+
+        $this->userRepository->method('hasAdminPermission')
+            ->with($userId)
+            ->willReturn(true);
+
+        $db = $this->createMock(\PDO::class);
+
+        $db->expects($this->never())->method('prepare');
+        $this->assertTrue($this->service->canManageDnssecForZone($db, $userId, 100));
     }
 
     #[Test]
@@ -263,6 +307,44 @@ class PermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testGetEditPermissionLevelForZoneReturnsAllForAdmin(): void
+    {
+        $userId = 10;
+        $domainId = 100;
+
+        $this->userRepository->method('hasAdminPermission')
+            ->with($userId)
+            ->willReturn(true);
+
+        $this->userRepository->method('getUserPermissions')
+            ->with($userId)
+            ->willReturn([]);
+
+        $db = $this->createMock(\PDO::class);
+
+        $this->assertEquals('all', $this->service->getEditPermissionLevelForZone($db, $userId, $domainId));
+    }
+
+    #[Test]
+    public function testGetEditPermissionLevelForZoneReturnsAllForEditOthers(): void
+    {
+        $userId = 11;
+        $domainId = 101;
+
+        $this->userRepository->method('hasAdminPermission')
+            ->with($userId)
+            ->willReturn(false);
+
+        $this->userRepository->method('getUserPermissions')
+            ->with($userId)
+            ->willReturn(['zone_content_edit_others']);
+
+        $db = $this->createMock(\PDO::class);
+
+        $this->assertEquals('all', $this->service->getEditPermissionLevelForZone($db, $userId, $domainId));
+    }
+
+    #[Test]
     public function testGetZoneMetaEditPermissionLevel(): void
     {
         $this->userRepository->method('hasAdminPermission')
@@ -285,6 +367,74 @@ class PermissionServiceTest extends TestCase
         $this->assertEquals('all', $this->service->getZoneMetaEditPermissionLevel(2)); // edit_others
         $this->assertEquals('own', $this->service->getZoneMetaEditPermissionLevel(3)); // edit_own
         $this->assertEquals('none', $this->service->getZoneMetaEditPermissionLevel(4)); // no permission
+    }
+
+    #[Test]
+    public function testGetZoneMetadataViewPermissionLevel(): void
+    {
+        $this->userRepository->method('hasAdminPermission')
+            ->willReturnMap([
+                [1, true],
+                [2, false],
+                [3, false],
+                [4, false],
+                [5, false],
+                [6, false],
+                [7, false],
+            ]);
+
+        $this->userRepository->method('getUserPermissions')
+            ->willReturnMap([
+                [1, []],
+                [2, ['zone_metadata_view_others']],
+                [3, ['zone_meta_edit_others']],
+                [4, ['zone_metadata_view_own']],
+                [5, ['zone_meta_edit_own']],
+                [6, ['zone_content_view_own', 'zone_content_view_others']],
+                [7, []],
+            ]);
+
+        $this->assertEquals('all', $this->service->getZoneMetadataViewPermissionLevel(1)); // admin
+        $this->assertEquals('all', $this->service->getZoneMetadataViewPermissionLevel(2)); // view_others
+        $this->assertEquals('all', $this->service->getZoneMetadataViewPermissionLevel(3)); // edit implies view
+        $this->assertEquals('own', $this->service->getZoneMetadataViewPermissionLevel(4)); // view_own
+        $this->assertEquals('own', $this->service->getZoneMetadataViewPermissionLevel(5)); // edit implies view
+        $this->assertEquals('none', $this->service->getZoneMetadataViewPermissionLevel(6)); // content view alone no longer implies
+        $this->assertEquals('none', $this->service->getZoneMetadataViewPermissionLevel(7)); // no permission
+    }
+
+    #[Test]
+    public function testGetZoneOwnershipViewPermissionLevel(): void
+    {
+        $this->userRepository->method('hasAdminPermission')
+            ->willReturnMap([
+                [1, true],
+                [2, false],
+                [3, false],
+                [4, false],
+                [5, false],
+                [6, false],
+                [7, false],
+            ]);
+
+        $this->userRepository->method('getUserPermissions')
+            ->willReturnMap([
+                [1, []],
+                [2, ['zone_ownership_view_others']],
+                [3, ['zone_meta_edit_others']],
+                [4, ['zone_ownership_view_own']],
+                [5, ['zone_meta_edit_own']],
+                [6, ['zone_content_view_own', 'zone_content_view_others']],
+                [7, []],
+            ]);
+
+        $this->assertEquals('all', $this->service->getZoneOwnershipViewPermissionLevel(1)); // admin
+        $this->assertEquals('all', $this->service->getZoneOwnershipViewPermissionLevel(2)); // view_others
+        $this->assertEquals('all', $this->service->getZoneOwnershipViewPermissionLevel(3)); // edit implies view
+        $this->assertEquals('own', $this->service->getZoneOwnershipViewPermissionLevel(4)); // view_own
+        $this->assertEquals('own', $this->service->getZoneOwnershipViewPermissionLevel(5)); // edit implies view
+        $this->assertEquals('none', $this->service->getZoneOwnershipViewPermissionLevel(6)); // content view alone no longer implies
+        $this->assertEquals('none', $this->service->getZoneOwnershipViewPermissionLevel(7)); // no permission
     }
 
     #[Test]

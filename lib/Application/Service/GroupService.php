@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use InvalidArgumentException;
+use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 
@@ -157,7 +158,7 @@ class GroupService
     ): UserGroup {
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
-            throw new InvalidArgumentException('Group not found');
+            throw new GroupNotFoundException('Group not found');
         }
 
         // Validate new name if provided
@@ -191,7 +192,7 @@ class GroupService
     {
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
-            throw new InvalidArgumentException('Group not found');
+            throw new GroupNotFoundException('Group not found');
         }
 
         return $this->groupRepository->delete($groupId);
@@ -208,7 +209,7 @@ class GroupService
     {
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
-            throw new InvalidArgumentException('Group not found');
+            throw new GroupNotFoundException('Group not found');
         }
 
         return [

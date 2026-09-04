@@ -1,0 +1,63 @@
+{# Shared template macros. Import with: {% import '_macros.html' as macros %} #}
+
+{# CSRF token field - the name MUST stay "_token" (BaseController::validateCsrfToken).
+   Pass a token only for flows with their own session token (e.g. login). #}
+{% macro csrf_field(token) %}
+<input type="hidden" name="_token" value="{{ token|default(csrf_token) }}">
+{%- endmacro %}
+
+{# Locale-aware timestamp for log listings - one place to change the app-wide style. #}
+{% macro log_timestamp(value) %}
+{{- value|format_datetime('medium', 'medium') -}}
+{% endmacro %}
+
+{# Reason a change was made, shown under the username in change-log rows. #}
+{% macro change_reason(comment) %}
+{%- if comment %}<div class="text-muted fst-italic mt-1" title="{% trans %}Reason for this change{% endtrans %}"><i class="bi bi-chat-left-text me-1"></i>{{ comment }}</div>{% endif -%}
+{% endmacro %}
+
+{# Confirm/cancel pair for delete confirmation pages. The confirm button
+   submits the enclosing POST form; the cancel link navigates away. #}
+{% macro delete_actions(confirm_label, cancel_url, cancel_label, confirm_testid = '', cancel_testid = '', confirm_name = '') %}
+<button type="submit" class="btn btn-danger btn-sm" data-busy-text="{% trans %}Saving...{% endtrans %}"{% if confirm_name %} name="{{ confirm_name }}"{% endif %}{% if confirm_testid %} data-testid="{{ confirm_testid }}"{% endif %}>
+    <i class="bi bi-trash-fill me-1 text-white"></i>{{ confirm_label }}
+</button>
+<a href="{{ cancel_url }}" class="btn btn-secondary btn-sm"{% if cancel_testid %} data-testid="{{ cancel_testid }}"{% endif %}>
+    <i class="bi bi-x-circle me-1 text-white"></i>{{ cancel_label }}
+</a>
+{% endmacro %}
+
+{# Simple card header: icon + bold title. Pass translated titles: 'X'|trans.
+   Rich headers (badges, buttons, collapse toggles) stay hand-written. #}
+{% macro card_header(icon, title, icon_class = '') %}
+<div class="card-header py-3">
+    <strong><i class="bi {{ icon }} me-2{% if icon_class %} {{ icon_class }}{% endif %}"></i>{{ title }}</strong>
+</div>
+{% endmacro %}
+
+{# Breadcrumb trail. items: list of {label, url} maps; omit url on the current
+   (last) item. Home is prepended automatically. Pass translated labels: 'X'|trans #}
+{% macro breadcrumb(items) %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        {% for item in items %}
+        {% if item.url is defined and item.url %}
+        <li class="breadcrumb-item"><a href="{{ item.url }}">{{ item.label }}</a></li>
+        {% else %}
+        <li class="breadcrumb-item"{% if loop.last %} aria-current="page"{% endif %}>{{ item.label }}</li>
+        {% endif %}
+        {% endfor %}
+    </ol>
+</nav>
+{% endmacro %}
+
+{# Page-size options. Includes the current value so a configured size outside the
+   presets stays selectable rather than silently resetting the dropdown. #}
+{% macro rows_per_page_options(current, options) %}
+{% set opts = options|default([10, 20, 50, 100]) %}
+{% if current is not null and current not in opts %}{% set opts = opts|merge([current]) %}{% endif %}
+{% for option in opts|sort %}
+                    <option value="{{ option }}" {{ current == option ? 'selected' : '' }}>{{ option }}</option>
+{% endfor %}
+{% endmacro %}

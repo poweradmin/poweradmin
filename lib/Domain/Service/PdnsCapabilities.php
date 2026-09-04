@@ -32,14 +32,27 @@ namespace Poweradmin\Domain\Service;
  * (strict mode): the UI must hide newer features whose support cannot be
  * confirmed. This is the fail-safe choice - showing options the server then
  * rejects is worse than briefly hiding them while the API is unreachable.
+ *
+ * Views are the exception: they also depend on two runtime settings read from
+ * the API, and there an unknown value means "leave the feature visible". See
+ * viewsUnavailableReason().
  */
-final class PdnsCapabilities
+final readonly class PdnsCapabilities
 {
-    private string $version;
+    /** Reasons Views and Networks cannot be used. @see viewsUnavailableReason() */
+    public const VIEWS_NEED_VERSION = 'version';
+    public const VIEWS_NEED_LMDB = 'lmdb';
+    public const VIEWS_NEED_SETTING = 'setting';
 
-    private function __construct(string $version)
+    private string $version;
+    private string $backends;
+    private string $viewsSetting;
+
+    private function __construct(string $version, string $backends = '', string $viewsSetting = '')
     {
         $this->version = $version;
+        $this->backends = $backends;
+        $this->viewsSetting = $viewsSetting;
     }
 
     /**
@@ -49,9 +62,28 @@ final class PdnsCapabilities
      */
     public static function fromVersion(?string $version): self
     {
-        $version = (string) $version;
-        $version = preg_replace('/^[^0-9]*/', '', $version) ?? '';
-        return new self($version);
+        return new self(self::normalizeVersion($version));
+    }
+
+    /**
+     * Build a capability set from the session-cached server info, which may
+     * carry the `launch` and `views` settings alongside the version. Missing
+     * or empty entries are treated as "not read", not as "not supported".
+     *
+     * @param array{version?: string, backends?: string, views?: string}|null $info
+     */
+    public static function fromServerInfo(?array $info): self
+    {
+        return new self(
+            self::normalizeVersion($info['version'] ?? null),
+            (string) ($info['backends'] ?? ''),
+            (string) ($info['views'] ?? '')
+        );
+    }
+
+    private static function normalizeVersion(?string $version): string
+    {
+        return preg_replace('/^[^0-9]*/', '', (string) $version) ?? '';
     }
 
     public function version(): string
@@ -92,10 +124,69 @@ final class PdnsCapabilities
         return $this->isAtLeast('4.7.0');
     }
 
-    /** Per-zone/network Views introduced in 5.0. */
+    /** Per-zone/network Views introduced in 5.0, and only on LMDB with views=yes. */
     public function supportsViews(): bool
     {
-        return $this->isAtLeast('5.0.0');
+        return $this->viewsUnavailableReason() === null;
+    }
+
+    /**
+     * Which Views prerequisite the connected server fails, or null when it
+     * meets all of them.
+     *
+     * Unlike every other gate here, an unread setting counts as passing. The
+     * two settings come from an extra API call that a restrictive proxy can
+     * block, and hiding Views from an installation where they demonstrably
+     * work is a worse failure than the status quo of showing them and letting
+     * PowerDNS refuse. Only a value we actually read closes the gate.
+     *
+     * @phpstan-return self::VIEWS_NEED_VERSION|self::VIEWS_NEED_LMDB|self::VIEWS_NEED_SETTING|null
+     */
+    public function viewsUnavailableReason(): ?string
+    {
+        if (!$this->isAtLeast('5.0.0')) {
+            return self::VIEWS_NEED_VERSION;
+        }
+        if ($this->backends !== '' && !$this->backendsIncludeLmdb()) {
+            return self::VIEWS_NEED_LMDB;
+        }
+        if ($this->viewsSetting !== '' && !self::isEnabled($this->viewsSetting)) {
+            return self::VIEWS_NEED_SETTING;
+        }
+        return null;
+    }
+
+    /** The reason from viewsUnavailableReason() as a sentence for the UI. */
+    public function viewsUnavailableMessage(): ?string
+    {
+        return match ($this->viewsUnavailableReason()) {
+            self::VIEWS_NEED_VERSION => _('Views require PowerDNS 5.0 or newer.'),
+            self::VIEWS_NEED_LMDB => _('Views require the LMDB backend. The connected server runs a backend that does not implement them.'),
+            self::VIEWS_NEED_SETTING => _('Views require "views=yes" in pdns.conf. The connected server has them disabled.'),
+            // Not `default`: a new reason without a message here must fail
+            // loudly rather than reopen the page for a server that refuses.
+            null => null,
+        };
+    }
+
+    /**
+     * `launch` is a comma or space separated list and each entry may carry an
+     * instance suffix ("lmdb:one"), so a plain string match is not enough.
+     */
+    private function backendsIncludeLmdb(): bool
+    {
+        foreach (preg_split('/[\s,]+/', $this->backends) ?: [] as $backend) {
+            if (strtolower(explode(':', $backend, 2)[0]) === 'lmdb') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** PowerDNS reports booleans as yes/no, and older builds as true/1. */
+    private static function isEnabled(string $value): bool
+    {
+        return in_array(strtolower(trim($value)), ['yes', 'true', 'on', '1'], true);
     }
 
     /* ----- Record types ------------------------------------------------ */
@@ -114,7 +205,7 @@ final class PdnsCapabilities
             'SVCB', 'HTTPS', 'APL' => '4.4.0',
             'CSYNC', 'NID', 'L32', 'L64', 'LP' => '4.5.0',
             'ZONEMD' => '4.8.0',
-            'WALLET' => '5.1.0',
+            'RESINFO', 'WALLET', 'HHIT', 'BRID' => '5.1.0',
             default => null,
         };
 
@@ -126,10 +217,10 @@ final class PdnsCapabilities
 
     /* ----- API endpoints ---------------------------------------------- */
 
-    /** Individual RRset fetch endpoint added in 4.6. */
+    /** Filtering a zone read down to one RRset (rrset_name/rrset_type) added in 4.7. */
     public function supportsIndividualRrsetFetch(): bool
     {
-        return $this->isAtLeast('4.6.0');
+        return $this->isAtLeast('4.7.0');
     }
 
     /** Autoprimary management via API added in 4.6. */

@@ -73,7 +73,7 @@ class GroupsControllerRosterTest extends TestCase
 
         $groupService = $this->createMock(GroupService::class);
         $groupService->method('getGroupById')->willReturn($group);
-        $groupService->method('getGroupDetails')->willReturn(['memberCount' => 2, 'zoneCount' => 0]);
+        $groupService->method('getGroupDetails')->willReturn(['memberCount' => 2]);
 
         $membershipService = $this->createMock(GroupMembershipService::class);
         $membershipService->method('listGroupMembers')->willReturn([

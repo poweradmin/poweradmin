@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Network\ProxyContext;
 use ReflectionClass;
 
 class OidcConfigurationService extends LoggingService
@@ -153,36 +154,14 @@ class OidcConfigurationService extends LoggingService
         try {
             $this->logInfo('Discovering OIDC endpoints for provider: {provider}', ['provider' => $providerId]);
 
-            $httpOptions = [
-                'timeout' => 10,
-                'user_agent' => 'Poweradmin OIDC Client'
+            $options = [
+                'http' => [
+                    'timeout' => 10,
+                    'user_agent' => 'Poweradmin OIDC Client'
+                ]
             ];
 
-            // Honor HTTPS_PROXY / http_proxy env vars so OIDC discovery works
-            // behind corporate proxies. PHP's stream wrapper does not pick these
-            // up automatically. Uppercase HTTP_PROXY is intentionally not honored
-            // to avoid the httpoxy attack (CVE-2016-5385) under CGI/FastCGI.
-            $scheme = strtolower((string) parse_url($metadataUrl, PHP_URL_SCHEME));
-            $proxyEnv = $scheme === 'https'
-                ? (getenv('HTTPS_PROXY') ?: getenv('https_proxy'))
-                : getenv('http_proxy');
-
-            if (is_string($proxyEnv) && $proxyEnv !== '') {
-                $proxyParts = parse_url(preg_match('#^[a-z][a-z0-9+\-.]*://#i', $proxyEnv) ? $proxyEnv : 'tcp://' . $proxyEnv);
-                if (is_array($proxyParts) && !empty($proxyParts['host'])) {
-                    $proxyPort = $proxyParts['port'] ?? 80;
-                    $httpOptions['proxy'] = 'tcp://' . $proxyParts['host'] . ':' . $proxyPort;
-                    $httpOptions['request_fulluri'] = true;
-
-                    if (!empty($proxyParts['user'])) {
-                        $auth = rawurldecode($proxyParts['user'])
-                            . (isset($proxyParts['pass']) ? ':' . rawurldecode($proxyParts['pass']) : '');
-                        $httpOptions['header'] = 'Proxy-Authorization: Basic ' . base64_encode($auth);
-                    }
-                }
-            }
-
-            $context = stream_context_create(['http' => $httpOptions]);
+            $context = stream_context_create(ProxyContext::applyTo($options, $metadataUrl));
 
             $metadata = @file_get_contents($metadataUrl, false, $context);
 
@@ -310,6 +289,24 @@ class OidcConfigurationService extends LoggingService
         }
 
         return $errors;
+    }
+
+    /**
+     * Auto-provisioning aborts for any user who matches no group mapping when
+     * there is no default template to fall back on, so the login fails with a
+     * generic error. Reported to superusers on the dashboard.
+     */
+    public function isAutoProvisioningTemplateMissing(): bool
+    {
+        if (!$this->isEnabled()) {
+            return false;
+        }
+
+        if (!$this->configManager->get('oidc', 'auto_provision', true)) {
+            return false;
+        }
+
+        return empty($this->configManager->get('oidc', 'default_permission_template', ''));
     }
 
     public function isEnabled(): bool

@@ -74,13 +74,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class SMIMEARecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -91,7 +89,7 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the SMIMEA record
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for SMIMEA records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
@@ -102,7 +100,7 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
 
         // For SMIMEA records with special format
         // Validate printable characters at minimum
-        if (!StringValidator::isValidPrintable($name)) {
+        if (!StringValidator::validatePrintable($name)->isValid()) {
             return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 
@@ -185,7 +183,7 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
         }
 
         // Check for valid printable characters
-        if (!StringValidator::isValidPrintable($content)) {
+        if (!StringValidator::validatePrintable($content)->isValid()) {
             return ValidationResult::failure(_('SMIMEA record contains invalid characters.'));
         }
 

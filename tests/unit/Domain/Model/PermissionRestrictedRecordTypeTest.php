@@ -27,9 +27,13 @@ use Poweradmin\Domain\Model\Permission;
 
 class PermissionRestrictedRecordTypeTest extends TestCase
 {
-    public function testSoaAndNsAreRestrictedForOwnAsClient(): void
+    public function testSoaIsRestrictedForOwnAsClient(): void
     {
         $this->assertTrue(Permission::isRecordTypeRestrictedForClient('SOA', 'own_as_client'));
+    }
+
+    public function testNsIsRestrictedForOwnAsClient(): void
+    {
         $this->assertTrue(Permission::isRecordTypeRestrictedForClient('NS', 'own_as_client'));
     }
 
@@ -48,8 +52,9 @@ class PermissionRestrictedRecordTypeTest extends TestCase
 
     public function testLowercaseTypeStillRestricted(): void
     {
-        $this->assertTrue(Permission::isRecordTypeRestrictedForClient('lua', 'own_as_client'));
         $this->assertTrue(Permission::isRecordTypeRestrictedForClient('soa', 'own_as_client'));
+        $this->assertTrue(Permission::isRecordTypeRestrictedForClient('ns', 'own_as_client'));
+        $this->assertTrue(Permission::isRecordTypeRestrictedForClient('lua', 'own_as_client'));
     }
 
     public function testNonRestrictedTypesArePermitted(): void
@@ -62,33 +67,146 @@ class PermissionRestrictedRecordTypeTest extends TestCase
         }
     }
 
+    public function testOwnEditorIsNotRestricted(): void
+    {
+        $this->assertFalse(Permission::isRecordTypeRestrictedForClient('SOA', 'own'));
+        $this->assertFalse(Permission::isRecordTypeRestrictedForClient('NS', 'own'));
+    }
+
+    public function testAllEditorIsNotRestricted(): void
+    {
+        $this->assertFalse(Permission::isRecordTypeRestrictedForClient('SOA', 'all'));
+        $this->assertFalse(Permission::isRecordTypeRestrictedForClient('NS', 'all'));
+    }
+
     public function testNoneEditorIsNotRestrictedByThisHelper(): void
     {
         // "none" is gated by the zone-level check, not the record-type list.
         $this->assertFalse(Permission::isRecordTypeRestrictedForClient('SOA', 'none'));
     }
 
-    public function testTemplateGateHoldsLuaToAStricterBar(): void
+    public function testRestrictedRecordTypeMessageForAdd(): void
     {
-        // A template seeds its records into every zone created from it and they are
-        // written straight to the backend, so LUA needs the standing to write one
-        // directly - "none" is not enough even though the record-type list is not hit.
-        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('LUA', 'own_as_client'));
-        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('LUA', 'none'));
-        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('LUA', 'own'));
-        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('LUA', 'all'));
+        $this->assertSame(
+            'You do not have the permission to add SOA record.',
+            Permission::restrictedRecordTypeMessage('SOA', 'add')
+        );
+        $this->assertSame(
+            'You do not have the permission to add NS record.',
+            Permission::restrictedRecordTypeMessage('NS', 'add')
+        );
     }
 
-    public function testTemplateGateStillCoversSoaAndNsForClients(): void
+    public function testLuaGetsItsOwnDenialMessage(): void
     {
-        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('SOA', 'own_as_client'));
-        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('NS', 'own_as_client'));
-        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('SOA', 'own'));
+        // The helper used to fall through to the SOA wording for anything but NS.
+        $this->assertSame(
+            'You do not have the permission to add LUA record.',
+            Permission::restrictedRecordTypeMessage('LUA', 'add')
+        );
+        $this->assertSame(
+            'You do not have the permission to edit this LUA record.',
+            Permission::restrictedRecordTypeMessage('LUA', 'edit')
+        );
+        $this->assertSame(
+            'You do not have the permission to delete LUA records.',
+            Permission::restrictedRecordTypeMessage('LUA', 'delete')
+        );
     }
 
-    public function testTemplateGateLeavesOrdinaryTypesAlone(): void
+    public function testRestrictedRecordTypeMessageForEdit(): void
     {
-        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('A', 'own_as_client'));
-        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('TXT', 'none'));
+        $this->assertSame(
+            'You do not have the permission to edit this SOA record.',
+            Permission::restrictedRecordTypeMessage('SOA', 'edit')
+        );
+        $this->assertSame(
+            'You do not have the permission to edit this NS record.',
+            Permission::restrictedRecordTypeMessage('NS', 'edit')
+        );
+    }
+
+    public function testRestrictedRecordTypeMessageForDelete(): void
+    {
+        $this->assertSame(
+            'You do not have the permission to delete SOA records.',
+            Permission::restrictedRecordTypeMessage('SOA', 'delete')
+        );
+        $this->assertSame(
+            'You do not have the permission to delete NS records.',
+            Permission::restrictedRecordTypeMessage('NS', 'delete')
+        );
+    }
+
+    public function testRestrictedRecordTypeMessageIsCaseInsensitive(): void
+    {
+        $this->assertSame(
+            'You do not have the permission to add NS record.',
+            Permission::restrictedRecordTypeMessage('ns', 'add')
+        );
+    }
+
+    public function testSubzoneNsIsPermittedWithSubzonePermission(): void
+    {
+        $this->assertFalse(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', 'sub.example.com', 'example.com', true)
+        );
+        $this->assertFalse(
+            Permission::isRecordRestrictedForClient('ns', 'own_as_client', 'SUB.EXAMPLE.COM', 'example.com', true)
+        );
+    }
+
+    public function testApexNsStaysRestrictedDespiteSubzonePermission(): void
+    {
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', 'example.com', 'example.com', true)
+        );
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', 'EXAMPLE.COM.', 'example.com', true),
+            'Trailing dot and case must not bypass the apex check'
+        );
+    }
+
+    public function testSoaStaysRestrictedDespiteSubzonePermission(): void
+    {
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('SOA', 'own_as_client', 'sub.example.com', 'example.com', true)
+        );
+    }
+
+    public function testSubzoneNsStaysRestrictedWithoutSubzonePermission(): void
+    {
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', 'sub.example.com', 'example.com', false)
+        );
+    }
+
+    public function testMissingNamesKeepTypeOnlyRestriction(): void
+    {
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', null, null, true)
+        );
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', 'sub.example.com', null, true)
+        );
+        $this->assertTrue(
+            Permission::isRecordRestrictedForClient('NS', 'own_as_client', null, 'example.com', true)
+        );
+    }
+
+    public function testStrongerEditorsAreNeverRestrictedByRecordCheck(): void
+    {
+        foreach (['all', 'own', 'none'] as $permEdit) {
+            $this->assertFalse(
+                Permission::isRecordRestrictedForClient('NS', $permEdit, 'example.com', 'example.com', false)
+            );
+        }
+    }
+
+    public function testNonRestrictedTypesArePermittedByRecordCheck(): void
+    {
+        $this->assertFalse(
+            Permission::isRecordRestrictedForClient('A', 'own_as_client', 'example.com', 'example.com', false)
+        );
     }
 }

@@ -65,6 +65,7 @@ return [
         'add_reverse_record' => true,
         'search_group_records' => true,
         'show_add_record_form' => true,
+        'display_signed_serial_in_zone_list' => true,
     ],
 
     /**
@@ -109,6 +110,15 @@ return [
     'api' => [
         'enabled' => true,
         'docs_enabled' => true,
+        'basic_auth_enabled' => true,
+    ],
+
+    /**
+     * Health Check Settings
+     */
+    'health' => [
+        'enabled' => true,
+        'ping_enabled' => true,
     ],
 
     /**
@@ -164,6 +174,9 @@ return [
             'enabled' => true,
         ],
         'dns_wizards' => [
+            'enabled' => true,
+        ],
+        'secondary_zone_import' => [
             'enabled' => true,
         ],
     ],

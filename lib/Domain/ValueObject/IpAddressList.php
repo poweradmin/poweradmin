@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,10 +26,10 @@ use InvalidArgumentException;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 
-class IpAddressList
+readonly class IpAddressList
 {
-    private readonly array $ipv4Addresses;
-    private readonly array $ipv6Addresses;
+    private array $ipv4Addresses;
+    private array $ipv6Addresses;
 
     public function __construct(array $ipv4Addresses = [], array $ipv6Addresses = [])
     {

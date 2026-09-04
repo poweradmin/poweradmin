@@ -196,31 +196,31 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
-    public function testCanEditZoneAsUberuser(): void
+    public function testHasZoneContentEditPermissionAsUberuser(): void
     {
         $this->setupPermissionMock([1]); // user_is_ueberuser = true
 
-        $result = $this->service->canEditZone(1, 100);
+        $result = $this->service->hasZoneContentEditPermission(1, 100);
         $this->assertTrue($result);
     }
 
     #[Test]
-    public function testCanEditZoneWithEditOthersPermission(): void
+    public function testHasZoneContentEditPermissionWithEditOthers(): void
     {
         $this->setupPermissionMock([0, 1]); // not ueberuser, has edit_others
 
-        $result = $this->service->canEditZone(2, 100);
+        $result = $this->service->hasZoneContentEditPermission(2, 100);
         $this->assertTrue($result);
     }
 
     #[Test]
-    public function testCanEditZoneRejectsEditOwnAsClient(): void
+    public function testHasZoneContentEditPermissionRejectsEditOwnAsClient(): void
     {
         // canEditZone is strict: own_as_client must NOT pass (zone-meta gate).
         // Sequence: ueberuser=0, edit_others=0, edit_own=0
         $this->setupPermissionMock([0, 0, 0]);
 
-        $result = $this->service->canEditZone(3, 100);
+        $result = $this->service->hasZoneContentEditPermission(3, 100);
         $this->assertFalse($result);
     }
 
@@ -249,7 +249,7 @@ class ApiPermissionServiceTest extends TestCase
     #[Test]
     public function testCanEditZoneRecordAllowsNonRestrictedTypeForEditOwnAsClient(): void
     {
-        // canEditZoneContent: canEditZone(0,0,0) false, own_as_client=1, owns=1 -> true
+        // canEditZoneContent: hasZoneContentEditPermission(0,0,0) false, own_as_client=1, owns=1 -> true
         // Non-SOA/NS short-circuits to true.
         $this->setupPermissionMock([0, 0, 0, 1, 1]);
 
@@ -260,7 +260,7 @@ class ApiPermissionServiceTest extends TestCase
     #[Test]
     public function testCanEditZoneRecordBlocksSOAForEditOwnAsClient(): void
     {
-        // canEditZoneContent: canEditZone(0,0,0) false, own_as_client=1, owns=1 -> true
+        // canEditZoneContent: hasZoneContentEditPermission(0,0,0) false, own_as_client=1, owns=1 -> true
         // SOA branch re-runs canEditZone: ueberuser=0, edit_others=0, edit_own=0 -> deny
         $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0]);
 
@@ -287,9 +287,59 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanEditZoneRecordAllowsSubzoneNsWithSubzonePermission(): void
+    {
+        // canEditZoneContent: hasZoneContentEditPermission(0,0,0) false, own_as_client=1, owns=1 -> true
+        // NS branch: hasZoneContentEditPermission(0,0,0) false, non-apex name -> zone_content_edit_ns_subzone=1
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0, 1]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'NS', null, 'sub.example.com', 'example.com');
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordBlocksApexNsDespiteSubzonePermission(): void
+    {
+        // Apex name fails the subzone check before the permission is even queried
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'NS', null, 'example.com', 'example.com');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordBlocksSubzoneNsWithoutSubzonePermission(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0, 0]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'NS', null, 'sub.example.com', 'example.com');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordBlocksSoaDespiteSubzonePermission(): void
+    {
+        // SOA is never exempted regardless of names or the subzone permission
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'SOA', null, 'sub.example.com', 'example.com');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneRecordBlocksNsWhenNamesOmitted(): void
+    {
+        // Callers that do not pass names keep the strict type-only behavior
+        $this->setupPermissionMock([0, 0, 0, 1, 1, 0, 0, 0]);
+
+        $result = $this->service->canEditZoneRecord(3, 100, 'NS', null, 'sub.example.com', null);
+        $this->assertFalse($result);
+    }
+
+    #[Test]
     public function testCanEditZoneRecordAllowsSOAForEditOwn(): void
     {
-        // canEditZoneContent: canEditZone(ueberuser=0, edit_others=0, edit_own=1, owns=1) -> true
+        // canEditZoneContent: hasZoneContentEditPermission(ueberuser=0, edit_others=0, edit_own=1, owns=1) -> true
         // SOA branch re-runs canEditZone: ueberuser=0, edit_others=0, edit_own=1, owns=1 -> true
         $this->setupPermissionMock([0, 0, 1, 1, 0, 0, 1, 1]);
 
@@ -314,6 +364,16 @@ class ApiPermissionServiceTest extends TestCase
         $this->db->expects($this->never())->method('prepare');
 
         $result = $this->service->canEditZoneRecord(1, 100, 'A', 'SLAVE');
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanEditZoneContentBlocksConsumerZone(): void
+    {
+        // No permission queries should be made: read-only zones short-circuit to false.
+        $this->db->expects($this->never())->method('prepare');
+
+        $result = $this->service->canEditZoneContent(1, 100, 'CONSUMER');
         $this->assertFalse($result);
     }
 
@@ -505,6 +565,54 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanViewZoneTemplatesAsUberuser(): void
+    {
+        $this->setupPermissionMock([1]); // user_is_ueberuser
+
+        $this->assertTrue($this->service->canViewZoneTemplates(1));
+    }
+
+    #[Test]
+    public function testCanViewZoneTemplatesWithAddPermission(): void
+    {
+        $this->setupPermissionMock([0, 1]); // not ueberuser, has zone_templ_add
+
+        $this->assertTrue($this->service->canViewZoneTemplates(2));
+    }
+
+    #[Test]
+    public function testCanViewZoneTemplatesWithEditPermission(): void
+    {
+        $this->setupPermissionMock([0, 0, 1]); // not ueberuser, no add, has zone_templ_edit
+
+        $this->assertTrue($this->service->canViewZoneTemplates(2));
+    }
+
+    #[Test]
+    public function testCanViewZoneTemplatesWithZoneMasterAdd(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 1]); // not ueberuser, no templ perms, has zone_master_add
+
+        $this->assertTrue($this->service->canViewZoneTemplates(2));
+    }
+
+    #[Test]
+    public function testCanViewZoneTemplatesWithZoneSlaveAdd(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 0, 1]); // only zone_slave_add
+
+        $this->assertTrue($this->service->canViewZoneTemplates(2));
+    }
+
+    #[Test]
+    public function testCanViewZoneTemplatesDeniedWithoutPermission(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 0, 0]);
+
+        $this->assertFalse($this->service->canViewZoneTemplates(2));
+    }
+
+    #[Test]
     public function testCanCreateUserAsUberuser(): void
     {
         $this->setupPermissionMock([1]); // user_is_ueberuser = true
@@ -690,6 +798,94 @@ class ApiPermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanViewZoneMetadataViaMetaEditPermission(): void
+    {
+        $this->setupPermissionMock([0, 1]); // not ueberuser, has zone_meta_edit_others
+
+        $result = $this->service->canViewZoneMetadata(2, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanViewZoneMetadataWithViewOthersPermission(): void
+    {
+        // not ueberuser, not meta_edit_others, not meta_edit_own, has zone_metadata_view_others
+        $this->setupPermissionMock([0, 0, 0, 1]);
+
+        $result = $this->service->canViewZoneMetadata(2, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanViewZoneMetadataWithViewOwnPermissionAndOwnership(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+
+        $callIndex = 0;
+        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex): int {
+            // not ueberuser, not meta_edit_others, not meta_edit_own,
+            // not metadata_view_others, has metadata_view_own, owns zone
+            $results = [0, 0, 0, 0, 1, 1];
+            $index = $callIndex++;
+            return array_key_exists($index, $results) ? $results[$index] : 0;
+        });
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $result = $this->service->canViewZoneMetadata(3, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanViewZoneMetadataReturnsFalseWithoutPermission(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 0, 0]); // no permissions
+
+        $result = $this->service->canViewZoneMetadata(4, 100);
+        $this->assertFalse($result);
+    }
+
+    #[Test]
+    public function testCanViewZoneOwnershipViaMetaEditPermission(): void
+    {
+        $this->setupPermissionMock([0, 1]); // not ueberuser, has zone_meta_edit_others
+
+        $result = $this->service->canViewZoneOwnership(2, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanViewZoneOwnershipWithViewOwnPermissionAndOwnership(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+
+        $callIndex = 0;
+        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex): int {
+            // not ueberuser, not meta_edit_others, not meta_edit_own,
+            // not ownership_view_others, has ownership_view_own, owns zone
+            $results = [0, 0, 0, 0, 1, 1];
+            $index = $callIndex++;
+            return array_key_exists($index, $results) ? $results[$index] : 0;
+        });
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $result = $this->service->canViewZoneOwnership(3, 100);
+        $this->assertTrue($result);
+    }
+
+    #[Test]
+    public function testCanViewZoneOwnershipReturnsFalseWithoutPermission(): void
+    {
+        $this->setupPermissionMock([0, 0, 0, 0, 0]); // no permissions
+
+        $result = $this->service->canViewZoneOwnership(4, 100);
+        $this->assertFalse($result);
+    }
+
+    #[Test]
     public function testGetUserGroupIdsReturnsIntegerList(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
@@ -744,5 +940,115 @@ class ApiPermissionServiceTest extends TestCase
             ->willReturn($stmt);
 
         $this->assertSame([3, 8], $this->service->getExistingGroupIds([3, 5, 8]));
+    }
+
+    #[Test]
+    public function testCanManageDnssecAsUberuser(): void
+    {
+        $this->mockPermissionCheck(1, 'user_is_ueberuser', true);
+
+        $this->assertTrue($this->service->canManageDnssec(1, 100));
+    }
+
+    #[Test]
+    public function testCanManageDnssecRequiresOwnershipForNonUberuser(): void
+    {
+        $this->setupPermissionMock([0, 1, 1]);
+
+        $this->assertTrue($this->service->canManageDnssec(1, 100));
+    }
+
+    #[Test]
+    public function testCanManageDnssecDeniesWhenPermissionGrantedButNotOwner(): void
+    {
+        $this->setupPermissionMock([0, 1, 0, 0]);
+
+        $this->assertFalse($this->service->canManageDnssec(1, 100));
+    }
+
+    #[Test]
+    public function testCanManageDnssecDeniesWithoutPermission(): void
+    {
+        $this->setupPermissionMock([0, 0]);
+
+        $this->assertFalse($this->service->canManageDnssec(1, 100));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneAsUberuser(): void
+    {
+        $this->mockPermissionCheck(1, 'user_is_ueberuser', true);
+
+        $this->assertTrue($this->service->canManageDnssecForNewZone(1, 7));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneAllowsSelfOwnedWithGrant(): void
+    {
+        $this->setupPermissionMock([0, 1]);
+
+        $this->assertTrue($this->service->canManageDnssecForNewZone(1, 1));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneDeniesOtherOwnerWithoutUberuser(): void
+    {
+        $this->setupPermissionMock([0, 1]);
+
+        $this->assertFalse($this->service->canManageDnssecForNewZone(1, 7));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneDeniesWithoutPermission(): void
+    {
+        $this->setupPermissionMock([0, 0]);
+
+        $this->assertFalse($this->service->canManageDnssecForNewZone(1, 1));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneAllowsMatchingGroupOwner(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+
+        $callIndex = 0;
+        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex): int {
+            $results = [0, 1];
+            $index = $callIndex++;
+            return $results[$index] ?? 0;
+        });
+        $stmt->method('fetchAll')->with(PDO::FETCH_COLUMN)->willReturn([4, 9]);
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $this->assertTrue($this->service->canManageDnssecForNewZone(1, null, [9, 12]));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneDeniesNonOverlappingGroups(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+
+        $callIndex = 0;
+        $stmt->method('fetchColumn')->willReturnCallback(function () use (&$callIndex): int {
+            $results = [0, 1];
+            $index = $callIndex++;
+            return $results[$index] ?? 0;
+        });
+        $stmt->method('fetchAll')->with(PDO::FETCH_COLUMN)->willReturn([4, 9]);
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $this->assertFalse($this->service->canManageDnssecForNewZone(1, null, [12, 15]));
+    }
+
+    #[Test]
+    public function testCanManageDnssecForNewZoneDeniesNullOwnerWithoutGroups(): void
+    {
+        $this->setupPermissionMock([0, 1]);
+
+        $this->assertFalse($this->service->canManageDnssecForNewZone(1, null, []));
     }
 }

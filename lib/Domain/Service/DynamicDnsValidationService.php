@@ -33,14 +33,14 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class DynamicDnsValidationService
 {
     private HostnameValidator $hostnameValidator;
-    private IPAddressValidator $ipValidator;
+    private IPAddressValidator $ipAddressValidator;
     private ConfigurationManager $config;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
-        $this->ipValidator = new IPAddressValidator();
+        $this->ipAddressValidator = new IPAddressValidator();
     }
 
     public function validateRequest(DynamicDnsRequest $request): ValidationResult
@@ -134,8 +134,8 @@ class DynamicDnsValidationService
                 continue;
             }
             if (
-                !$this->ipValidator->isValidIPv4($address)
-                && !$this->ipValidator->isValidIPv6($address)
+                !$this->ipAddressValidator->isValidIPv4($address)
+                && !$this->ipAddressValidator->isValidIPv6($address)
             ) {
                 return true;
             }

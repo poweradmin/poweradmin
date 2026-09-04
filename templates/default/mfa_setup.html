@@ -1,9 +1,5 @@
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-    <li class="breadcrumb-item" aria-current="page">{% trans %}Multi-Factor Authentication{% endtrans %}</li>
-  </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([{label: 'Multi-Factor Authentication'|trans}]) }}
 
 <div class="container-fluid">
   <div class="row">
@@ -40,14 +36,14 @@
 
               <div class="d-flex gap-2">
                 <form method="post" action="{{ base_url_prefix }}/mfa/setup">
-                  <input type="hidden" name="_token" value="{{ csrf_token }}">
+                  {{ macros.csrf_field() }}
                   <button type="submit" name="regenerate_codes" class="btn btn-sm btn-secondary me-2">
                     <i class="bi bi-key text-white"></i> {% trans %}Regenerate Recovery Codes{% endtrans %}
                   </button>
                 </form>
                 {% if not mfa_enforced %}
                 <form method="post" action="{{ base_url_prefix }}/mfa/setup">
-                  <input type="hidden" name="_token" value="{{ csrf_token }}">
+                  {{ macros.csrf_field() }}
                   <button type="submit" name="disable_mfa" class="btn btn-sm btn-danger">
                     {% trans %}Disable MFA{% endtrans %}
                   </button>
@@ -69,7 +65,7 @@
         <div class="col-md-6">
           <div class="card mb-4 shadow-sm">
             <div class="card-header py-2">
-              <small><strong><i class="bi bi-phone me-2"></i>{% trans %}Authenticator App{% endtrans %}</strong></small>
+              <small><strong><i class="bi bi-phone me-2"></i>{% trans %}Authenticator app{% endtrans %}</strong></small>
             </div>
             <div class="card-body py-2">
               <p class="small">{% trans %}Use an authenticator app like Google Authenticator, Microsoft Authenticator, or Authy.{% endtrans %}</p>
@@ -78,10 +74,16 @@
                 <li>{% trans %}More secure{% endtrans %}</li>
                 <li>{% trans %}Easy to use{% endtrans %}</li>
               </ul>
-              <form method="post" action="{{ base_url_prefix }}/mfa/setup">
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
-                <button type="submit" name="setup_app" class="btn btn-sm btn-primary">{% trans %}Set up app authentication{% endtrans %}</button>
-              </form>
+              {% if not app_mfa_enabled %}
+                <div class="alert alert-danger py-1 px-2">
+                  <small>{% trans %}Authenticator app verification is not available because it has been disabled by the administrator.{% endtrans %}</small>
+                </div>
+              {% else %}
+                <form method="post" action="{{ base_url_prefix }}/mfa/setup">
+                  {{ macros.csrf_field() }}
+                  <button type="submit" name="setup_app" class="btn btn-sm btn-primary">{% trans %}Set up app authentication{% endtrans %}</button>
+                </form>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -89,7 +91,7 @@
         <div class="col-md-6">
           <div class="card mb-4 shadow-sm">
             <div class="card-header py-2">
-              <small><strong><i class="bi bi-envelope me-2"></i>{% trans %}Email Verification{% endtrans %}</strong></small>
+              <small><strong><i class="bi bi-envelope me-2"></i>{% trans %}Email verification{% endtrans %}</strong></small>
             </div>
             <div class="card-body py-2">
               <p class="small">{% trans %}Receive a verification code via email when you log in.{% endtrans %}</p>
@@ -113,7 +115,7 @@
                 </div>
               {% else %}
                 <form method="post" action="{{ base_url_prefix }}/mfa/setup">
-                  <input type="hidden" name="_token" value="{{ csrf_token }}">
+                  {{ macros.csrf_field() }}
                   <button type="submit" name="setup_email" class="btn btn-sm btn-primary">{% trans %}Set up email verification{% endtrans %}</button>
                 </form>
               {% endif %}

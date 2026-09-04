@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
-use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;
 use PDO;
@@ -32,7 +31,6 @@ use PDO;
 class UsernameRecoveryService
 {
     private DbUsernameRecoveryRepository $recoveryRepository;
-    private UserRepository $userRepository;
     private MailService $mailService;
     private ConfigurationInterface $config;
     private IpAddressRetriever $ipRetriever;
@@ -42,7 +40,6 @@ class UsernameRecoveryService
 
     public function __construct(
         DbUsernameRecoveryRepository $recoveryRepository,
-        UserRepository $userRepository,
         MailService $mailService,
         ConfigurationInterface $config,
         IpAddressRetriever $ipRetriever,
@@ -50,7 +47,6 @@ class UsernameRecoveryService
         PDO $db
     ) {
         $this->recoveryRepository = $recoveryRepository;
-        $this->userRepository = $userRepository;
         $this->mailService = $mailService;
         $this->config = $config;
         $this->ipRetriever = $ipRetriever;
@@ -196,9 +192,9 @@ class UsernameRecoveryService
             return false;
         }
 
-        // Check minimum time between requests
-        $lastAttempt = $this->recoveryRepository->getLastAttemptTime($email);
-        if ($lastAttempt && (time() - strtotime($lastAttempt)) < $minTime) {
+        // Minimum time between requests, checked DB-side like the rate-limit windows
+        // above so a PHP-vs-DB clock/timezone difference can't skew the throttle.
+        if ($this->recoveryRepository->countRecentAttempts($email, $minTime) > 0) {
             return false;
         }
 

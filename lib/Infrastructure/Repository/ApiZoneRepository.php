@@ -22,8 +22,10 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use LogicException;
 use PDO;
 use Poweradmin\Application\Service\ZoneSyncService;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -31,49 +33,78 @@ use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Domain\Enum\ReverseZoneFilter;
+use Poweradmin\Domain\Enum\ZoneKind;
+use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
-class ApiZoneRepository implements ZoneRepositoryInterface
+readonly class ApiZoneRepository implements ZoneRepositoryInterface
 {
+    // Failing beats returning an empty set that reads as "this zone has none".
+    private const METADATA_NOT_SUPPORTED = 'Zone metadata is not available through the API zone repository; use PowerdnsApiClient instead.';
+
+    private TableNameService $tableNameService;
+
     public function __construct(
-        private readonly PDO $db,
-        private readonly DnsBackendProvider $backendProvider,
-        private readonly string $dbType,
-        private readonly ConfigurationInterface $config
+        private PDO $db,
+        private DnsBackendProvider $backendProvider,
+        private string $dbType,
+        private ConfigurationInterface $config
     ) {
+        $this->tableNameService = new TableNameService($config);
     }
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
     {
-        $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->dbType) . "(z.zone_name, 1, 1)) AS letter
-                  FROM zones z";
         if (!$viewOthers) {
-            $query .= " WHERE (z.owner = :userId
+            $where = " WHERE (z.owner = :userId
                 OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :userId_own AND z_own.zone_name IS NULL)
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :userId_group
+                    WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :userId_group
                 ))
             AND z.zone_name NOT LIKE '%.in-addr.arpa'
             AND z.zone_name NOT LIKE '%.ip6.arpa'
             AND z.zone_name IS NOT NULL";
         } else {
-            $query .= " WHERE z.zone_name NOT LIKE '%.in-addr.arpa'
+            $where = " WHERE z.zone_name NOT LIKE '%.in-addr.arpa'
                          AND z.zone_name NOT LIKE '%.ip6.arpa'
                          AND z.zone_name IS NOT NULL";
         }
-        $query .= " ORDER BY letter";
+
+        $bind = function ($stmt) use ($viewOthers, $userId): void {
+            if (!$viewOthers) {
+                $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+                $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
+                $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
+            }
+        };
+
+        // IDN zones are excluded here so they do not all register as "x"; they are
+        // resolved to their decoded initial below.
+        $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->dbType) . "(z.zone_name, 1, 1)) AS letter
+                  FROM zones z" . $where . " AND z.zone_name NOT LIKE 'xn--%' ORDER BY letter";
         $stmt = $this->db->prepare($query);
-        if (!$viewOthers) {
-            $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-            $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
-            $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
-        }
+        $bind($stmt);
         $stmt->execute();
-        $letters = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-        return array_filter($letters, function ($letter) {
+
+        $letters = array_filter($stmt->fetchAll(PDO::FETCH_COLUMN, 0), function ($letter) {
             return ctype_alpha($letter) || is_numeric($letter);
         });
+
+        $idnStmt = $this->db->prepare("SELECT DISTINCT z.zone_name FROM zones z" . $where . " AND z.zone_name LIKE 'xn--%'");
+        $bind($idnStmt);
+        $idnStmt->execute();
+
+        foreach ($idnStmt->fetchAll(PDO::FETCH_COLUMN, 0) as $name) {
+            $letters[] = DnsIdnService::getFirstLetter($name);
+        }
+
+        $letters = array_values(array_unique(array_filter($letters, fn($letter) => $letter !== '')));
+        sort($letters, SORT_STRING);
+
+        return $letters;
     }
 
     public function getReverseZones(
@@ -87,12 +118,20 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         bool $countOnly = false,
         bool $showSerial = false,
         bool $showTemplate = false,
-        bool $includeHealth = true
+        bool $includeHealth = true,
+        bool $includeRecordCount = true
     ) {
+        $showSignedSerial = $this->config->get('interface', 'display_signed_serial_in_zone_list', false);
+        // DNSSEC state costs a per-zone lookup on the PowerDNS side, so only ask
+        // for it when a column actually renders it
+        $needsDnssec = (bool)$this->config->get('dnssec', 'enabled', false) || $showSignedSerial;
+
         // Sync local zones table with PowerDNS API before listing so reverse
         // zones are visible on a fresh install without the user having to open
-        // the Forward Zones page first. Throttled to once per 5 minutes.
-        (new ZoneSyncService($this->db, $this->backendProvider))->syncIfStale();
+        // the Forward Zones page first. Throttled to once per 5 minutes. Reads
+        // the same zone-list variant as the stats call below so both share one
+        // response.
+        (new ZoneSyncService($this->db, $this->backendProvider))->syncIfStale($needsDnssec);
 
         // Build base query from local zones table
         if ($countOnly) {
@@ -107,24 +146,15 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     OR EXISTS (
                         SELECT 1 FROM zones_groups zg
                         INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                        WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :userId_group
+                        WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :userId_group
                     ))";
                 $params[':userId'] = $userId;
                 $params[':userId_own'] = $userId;
                 $params[':userId_group'] = $userId;
             }
 
-            $query .= " AND (";
-            if ($reverseType == 'all' || $reverseType == 'ipv4') {
-                $query .= "z.zone_name LIKE '%.in-addr.arpa'";
-                if ($reverseType == 'all') {
-                    $query .= " OR ";
-                }
-            }
-            if ($reverseType == 'all' || $reverseType == 'ipv6') {
-                $query .= "z.zone_name LIKE '%.ip6.arpa'";
-            }
-            $query .= ")) AS distinct_zones";
+            // Built from the enum so an unknown filter cannot emit an empty AND ()
+            $query .= " AND (" . $this->reverseZoneClause($reverseType) . ")) AS distinct_zones";
 
             $stmt = $this->db->prepare($query);
             foreach ($params as $param => $value) {
@@ -148,30 +178,24 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :userId_group
+                    WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :userId_group
                 ))";
             $params[':userId'] = $userId;
             $params[':userId_own'] = $userId;
             $params[':userId_group'] = $userId;
         }
 
-        $query .= " AND (";
-        if ($reverseType == 'all' || $reverseType == 'ipv4') {
-            $query .= "z.zone_name LIKE '%.in-addr.arpa'";
-            if ($reverseType == 'all') {
-                $query .= " OR ";
-            }
-        }
-        if ($reverseType == 'all' || $reverseType == 'ipv6') {
-            $query .= "z.zone_name LIKE '%.ip6.arpa'";
-        }
-        $query .= ")";
+        // Built from the enum so an unknown filter cannot emit an empty AND ()
+        $query .= " AND (" . $this->reverseZoneClause($reverseType) . ")";
 
-        // Sorting
+        // Sorting. The Type column is offered as sortable, so it needs its own
+        // arm - without one it fell to the default and quietly sorted by name.
         $sortCol = match ($sortBy) {
             'owner' => 'u.username',
+            'type' => 'z.zone_type',
             default => "z.zone_name",
         };
+        $sortDirection = $this->tableNameService->validateDirection($sortDirection);
         $query .= " ORDER BY $sortCol $sortDirection";
         $query .= " LIMIT :limit OFFSET :offset";
 
@@ -184,7 +208,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $zoneStats = $this->backendProvider->getZoneStats();
+        $zoneStats = $this->backendProvider->getZoneStats($needsDnssec);
         $zones = [];
         foreach ($results as $row) {
             $name = (string)$row['name'];
@@ -192,8 +216,11 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 $apiName = $name . '.';
                 $stats = $zoneStats[$apiName] ?? [];
                 $kind = $row['type'] ?? 'NATIVE';
-                // Per-visible-zone API call - bounded by page size. Skipped for
-                // callers that don't render badges (e.g. PTR batch dropdown).
+                // Both of these read the same zone body, so counting first lets
+                // the health check reuse it instead of fetching the zone twice.
+                // Bounded by page size, and skipped for callers that render
+                // neither (e.g. PTR batch dropdown).
+                $countRecords = $includeRecordCount ? $this->backendProvider->countZoneRecords((int)$row['id']) : 0;
                 $soaHealth = $includeHealth
                     ? $this->backendProvider->getZoneSoaHealth($name, $kind)
                     : null;
@@ -203,9 +230,10 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $kind,
-                    'count_records' => $this->resolveRecordCount($stats, (int)$row['id']),
-                    'is_disabled' => $soaHealth['is_disabled'] ?? false,
-                    'is_missing_soa' => $soaHealth['is_missing_soa'] ?? false,
+                    'count_records' => $countRecords,
+                    // A failed lookup is UNKNOWN, not healthy; ?? false used to
+                    // render an outage as a green badge.
+                    ...ZoneSoaHealth::fromBackend($soaHealth)->toZoneFields(),
                     'comment' => $row['comment'] ?? '',
                     'secured' => $stats['dnssec'] ?? false,
                     'owners' => [],
@@ -216,8 +244,24 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     $serial = (int)($stats['serial'] ?? 0);
                     $zones[$name]['serial'] = $serial > 0 ? (string)$serial : '';
                 }
+                if ($showSignedSerial) {
+                    // Unsigned zones serve the plain serial, so the column stays blank for them
+                    $signedSerial = $zones[$name]['secured'] ? ($stats['edited_serial'] ?? null) : null;
+                    $zones[$name]['signed_serial'] = $signedSerial > 0 ? (string)$signedSerial : '';
+                }
                 if ($showTemplate) {
                     $zones[$name]['template'] = $this->resolveTemplateName((int)$row['id']);
+                }
+
+                // Pending-NOTIFY state, only meaningful for zones that notify, have
+                // a published serial, and run on a server that reports notified_serial
+                if (ZoneType::notifies($kind)) {
+                    $notifiedSerial = $stats['notified_serial'] ?? null;
+                    $currentSerial = (int)($stats['serial'] ?? 0);
+                    if ($notifiedSerial !== null && $currentSerial > 0) {
+                        $zones[$name]['notified_serial'] = $notifiedSerial;
+                        $zones[$name]['notify_pending'] = $currentSerial !== $notifiedSerial;
+                    }
                 }
             }
         }
@@ -225,22 +269,6 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $this->enrichZonesWithOwnership($zones);
 
         return $zones;
-    }
-
-    /**
-     * Resolve a zone's record count, falling back to a per-zone API call when
-     * PowerDNS's /zones summary endpoint omits rrset_count (older versions
-     * such as 4.4.x) or returns 0.
-     *
-     * @param array<string, mixed> $stats Stats row from getZoneStats()
-     */
-    private function resolveRecordCount(array $stats, int $zoneId): int
-    {
-        $count = (int)($stats['rrset_count'] ?? 0);
-        if ($count > 0 || $zoneId <= 0) {
-            return $count;
-        }
-        return $this->backendProvider->countZoneRecords($zoneId);
     }
 
     /**
@@ -352,7 +380,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     COUNT(DISTINCT CASE WHEN z.zone_name LIKE '%.ip6.arpa' THEN z.id END) AS count_ipv6
                   FROM zones z";
         if ($permType === 'own') {
-            $query .= " LEFT JOIN zones_groups zg ON zg.domain_id = COALESCE(z.domain_id, z.id)";
+            $query .= " LEFT JOIN zones_groups zg ON zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . "";
         }
         $query .= " WHERE z.zone_name IS NOT NULL AND (z.zone_name LIKE '%.in-addr.arpa' OR z.zone_name LIKE '%.ip6.arpa')";
         if ($permType === 'own') {
@@ -361,7 +389,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg2
                     INNER JOIN user_group_members ugm ON zg2.group_id = ugm.group_id
-                    WHERE zg2.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :user_id_group
+                    WHERE zg2.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :user_id_group
                 ))";
         }
         $stmt = $this->db->prepare($query);
@@ -400,13 +428,13 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :userId_group
+                    WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :userId_group
                 ))";
             $params[':userId'] = $userId;
             $params[':userId_own'] = $userId;
             $params[':userId_group'] = $userId;
         }
-        if (isset($filters['type']) && in_array($filters['type'], ['MASTER', 'SLAVE', 'NATIVE'])) {
+        if (isset($filters['type']) && in_array($filters['type'], ZoneKind::basicValues(), true)) {
             $query .= " AND z.zone_type = :type";
             $params[':type'] = $filters['type'];
         }
@@ -435,7 +463,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
-                    'count_records' => $this->resolveRecordCount($stats, (int)$row['id']),
+                    // One API call per zone - safe because the query above is paged
+                    'count_records' => $this->backendProvider->countZoneRecords((int)$row['id']),
                     'comment' => $row['comment'] ?? '',
                     'secured' => $stats['dnssec'] ?? false,
                     'owners' => [],
@@ -474,7 +503,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                  OR EXISTS (
                      SELECT 1 FROM zones_groups zg
                      INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                     WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :userId_group
+                     WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :userId_group
                  )
              )"
         );
@@ -748,31 +777,12 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneIdByName(string $zoneName): ?int
     {
-        $query = "SELECT COALESCE(domain_id, id) FROM zones WHERE zone_name = :name";
+        $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE zone_name = :name";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
         $stmt->execute();
         $result = $stmt->fetchColumn();
         return $result ? (int)$result : null;
-    }
-
-    public function createDomain(string $domain, int $owner, string $type, string $slaveMaster = '', string $zoneTemplate = 'none'): bool
-    {
-        $domainId = $this->backendProvider->createZone($domain, $type, $slaveMaster);
-        if ($domainId === false) {
-            return false;
-        }
-        // createZone already inserts into zones table in API mode; set the owner
-        // on the canonical row only.
-        $canonical = $this->resolveCanonicalRow($domainId);
-        if ($canonical === null) {
-            return false;
-        }
-        $stmt = $this->db->prepare("UPDATE zones SET owner = :owner WHERE id = :id");
-        $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
-        $stmt->bindValue(':id', (int)$canonical['id'], PDO::PARAM_INT);
-        $stmt->execute();
-        return true;
     }
 
     public function deleteZone(int $zoneId): bool
@@ -794,6 +804,14 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         // Group ownership is keyed by the canonical zone id, like the extra ownership
         // rows below - matching on the row's own id leaves the rows behind.
         $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
+        $stmt->bindValue(':domain_id', $canonicalId, PDO::PARAM_INT);
+        $stmt->execute();
+        // Template mappings key on the canonical zone id too. They cannot carry a foreign
+        // key because in API mode that id is not a local domains.id, so delete them here.
+        $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :domain_id");
+        $stmt->bindValue(':domain_id', $canonicalId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :domain_id");
         $stmt->bindValue(':domain_id', $canonicalId, PDO::PARAM_INT);
         $stmt->execute();
         // Delete the canonical row plus any extra ownership rows linked to it
@@ -874,29 +892,58 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         if ($zoneIds !== null && empty($zoneIds)) {
             return 0;
         }
-        if ($zoneIds === null && $userId === null) {
-            $query = "SELECT COUNT(*) FROM zones z WHERE z.zone_name IS NOT NULL";
-            $params = [];
-        } elseif ($zoneIds === null) {
-            $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE z.zone_name IS NOT NULL";
-            $params = [];
-        } else {
-            $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE (z.owner = :user_id
+
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+        $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE z.zone_name IS NOT NULL"
+            . ($conditions === [] ? '' : ' AND ' . implode(' AND ', $conditions));
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Build shared WHERE conditions for the API-backed zone list/count queries.
+     * Conditions reference `z` (the Poweradmin-native zones table).
+     *
+     * @param int[]|null $zoneIds Explicit zone-id allowlist, or null for no id restriction
+     * @param int|null $userId Owner to filter by, or null for no ownership restriction
+     * @param string|null $nameFilter Optional exact zone-name filter
+     * @return array{0: string[], 1: array<string, mixed>} [conditions, bind params]
+     */
+    private function buildZoneFilterConditions(?array $zoneIds, ?int $userId, ?string $nameFilter): array
+    {
+        $conditions = [];
+        $params = [];
+
+        if ($userId !== null) {
+            $conditions[] = "(z.owner = :user_id
                 OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :user_id_own AND z_own.zone_name IS NULL)
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :user_id_group
-                )) AND z.zone_name IS NOT NULL";
-            $params = [':user_id' => $userId, ':user_id_own' => $userId, ':user_id_group' => $userId];
+                    WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :user_id_group
+                ))";
+            $params[':user_id'] = $userId;
+            $params[':user_id_own'] = $userId;
+            $params[':user_id_group'] = $userId;
         }
+
+        if ($zoneIds !== null && $zoneIds !== []) {
+            $placeholders = [];
+            foreach (array_values($zoneIds) as $i => $zoneId) {
+                $placeholders[] = ":zone_id_$i";
+                $params[":zone_id_$i"] = (int)$zoneId;
+            }
+            $conditions[] = "z.id IN (" . implode(', ', $placeholders) . ")";
+        }
+
         if ($nameFilter !== null && $nameFilter !== '') {
-            $query .= " AND z.zone_name = :name_filter";
+            $conditions[] = "z.zone_name = :name_filter";
             $params[':name_filter'] = $nameFilter;
         }
-        $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
-        return (int)$stmt->fetchColumn();
+
+        return [$conditions, $params];
     }
 
     public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null): array
@@ -904,29 +951,13 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         if ($zoneIds !== null && empty($zoneIds)) {
             return [];
         }
-        if ($zoneIds === null && $userId === null) {
-            $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
-                             COALESCE(z.owner, 0) as owner
-                      FROM zones z
-                      WHERE z.zone_name IS NOT NULL";
-            $params = [];
-        } else {
-            $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
-                             COALESCE(z.owner, 0) as owner
-                      FROM zones z
-                      WHERE (z.owner = :user_id
-                          OR EXISTS (SELECT 1 FROM zones z_own WHERE z_own.domain_id IN (z.id, z.domain_id) AND z_own.owner = :user_id_own AND z_own.zone_name IS NULL)
-                          OR EXISTS (
-                              SELECT 1 FROM zones_groups zg
-                              INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                              WHERE zg.domain_id = COALESCE(z.domain_id, z.id) AND ugm.user_id = :user_id_group
-                          )) AND z.zone_name IS NOT NULL";
-            $params = [':user_id' => $userId, ':user_id_own' => $userId, ':user_id_group' => $userId];
-        }
-        if ($nameFilter !== null && $nameFilter !== '') {
-            $query .= " AND z.zone_name = :name_filter";
-            $params[':name_filter'] = $nameFilter;
-        }
+
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
+                         COALESCE(z.owner, 0) as owner
+                  FROM zones z
+                  WHERE z.zone_name IS NOT NULL"
+            . ($conditions === [] ? '' : ' AND ' . implode(' AND ', $conditions));
         $query .= " ORDER BY z.zone_name";
         if ($limit !== null && $limit > 0) {
             $query .= " LIMIT :limit OFFSET :offset";
@@ -975,8 +1006,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
      */
     public function getDomainMetadata(int $zoneId): array
     {
-        // TODO: Implement via PowerDNS API metadata endpoints
-        return [];
+        throw new LogicException(self::METADATA_NOT_SUPPORTED);
     }
 
     /**
@@ -984,8 +1014,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
      */
     public function replaceDomainMetadata(int $zoneId, array $metadata): bool
     {
-        // TODO: Implement via PowerDNS API metadata endpoints
-        return false;
+        throw new LogicException(self::METADATA_NOT_SUPPORTED);
     }
 
     private function syncZoneAccount(int $cid): void
@@ -1023,5 +1052,24 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->execute();
         $username = $stmt->fetchColumn();
         return $username === false ? null : (string)$username;
+    }
+
+    /**
+     * OR-joined name predicates for the requested address family. Never empty:
+     * an unrecognised filter degrades to ALL rather than producing `AND ()`.
+     */
+    private function reverseZoneClause(string $reverseType): string
+    {
+        $filter = ReverseZoneFilter::fromRequest($reverseType);
+
+        $clauses = [];
+        if ($filter->includesIpv4()) {
+            $clauses[] = "z.zone_name LIKE '%.in-addr.arpa'";
+        }
+        if ($filter->includesIpv6()) {
+            $clauses[] = "z.zone_name LIKE '%.ip6.arpa'";
+        }
+
+        return implode(' OR ', $clauses);
     }
 }

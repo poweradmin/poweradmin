@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@ use DateTime;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
 
 /**
  * SOA record validator
@@ -49,16 +48,14 @@ class SOARecordValidator implements DnsRecordValidatorInterface
     private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private PDO $db;
 
     // SOA-specific parameters
-    private string $dns_hostmaster;
-    private string $zone;
+    private ?string $dns_hostmaster = null;
+    private ?string $zone = null;
 
-    public function __construct(ConfigurationManager $config, PDO $db)
+    public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->db = $db;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -112,7 +109,10 @@ class SOARecordValidator implements DnsRecordValidatorInterface
 
         // Validate zone name
         if ($name != $this->zone) {
-            return ValidationResult::failure(_('Invalid value for name field of SOA record. It should be the name of the zone.'));
+            return ValidationResult::failure(sprintf(
+                _('SOA record name must match the zone apex "%s". Leave the name field blank or enter "@".'),
+                $this->zone
+            ));
         }
 
         // Validate hostname
@@ -175,6 +175,17 @@ class SOARecordValidator implements DnsRecordValidatorInterface
             return ['isValid' => false, 'errors' => $errors];
         }
 
+        // Reject template placeholders - they're only valid in template definitions, not stored SOA content.
+        foreach ($fields as $field) {
+            if (preg_match('/\[[A-Z0-9_]+\]/', $field, $match)) {
+                $errors[] = sprintf(
+                    _('SOA contains the template placeholder %s. Use literal values; placeholders are only expanded when creating a zone from a template.'),
+                    $match[0]
+                );
+                return ['isValid' => false, 'errors' => $errors];
+            }
+        }
+
         // Validate primary nameserver
         $primaryNsResult = $this->hostnameValidator->validate($fields[0], false);
         if (!$primaryNsResult->isValid() || preg_match('/\.arpa\.?$/', $fields[0])) {
@@ -196,9 +207,9 @@ class SOARecordValidator implements DnsRecordValidatorInterface
             $addr_to_check = $addr_input;
         }
 
-        $validation = new Validator($this->db, $this->config);
+        $validation = new Validator($this->config);
         if (!$validation->isValidEmail($addr_to_check)) {
-            $errors[] = _('Invalid email address in SOA record.');
+            $errors[] = _('Invalid email address in SOA record. Use the form "hostmaster.example.net" (the first unescaped dot represents @).');
             return ['isValid' => false, 'errors' => $errors];
         }
 
@@ -258,7 +269,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         // Process the SOA timing fields (refresh, retry, expire, minimum)
         for ($i = 3; ($i < 7); $i++) {
             $field_idx = $i - 3;
-            $field_name = $soa_field_names[$field_idx] ?? 'unknown';
+            $field_name = $soa_field_names[$field_idx];
 
             // Basic validation - fields must be numeric
             if (!is_numeric($fields[$i])) {

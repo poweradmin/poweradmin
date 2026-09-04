@@ -1,0 +1,10 @@
+# Advisory only - reported weekly, never gates a pull request.
+# See .github/workflows/complexity.yml and `composer analyse:complexity`.
+includes:
+  - phpstan.neon
+  - vendor/tomasvotruba/cognitive-complexity/config/extension.neon
+
+parameters:
+  cognitive_complexity:
+    class: 60
+    function: 15

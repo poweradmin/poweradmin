@@ -1,26 +1,16 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        {% if zone_id %}
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{% trans %}Edit zone{% endtrans %}</a></li>
-        {% else %}
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/search">{% trans %}Search{% endtrans %}</a></li>
-        {% endif %}
-        <li class="breadcrumb-item active" aria-current="page">{% trans %}Delete records{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{% if zone_id %}
+{% set crumbs = [
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: 'Edit zone'|trans, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+] %}
+{% else %}
+{% set crumbs = [{label: 'Search'|trans, url: base_url_prefix ~ '/search'}] %}
+{% endif %}
+{{ macros.breadcrumb(crumbs|merge([{label: 'Delete records'|trans}])) }}
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-trash me-2"></i>{% trans %}Delete records{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-trash', 'Delete records'|trans) }}
     <div class="card-body">
         <div class="alert alert-warning py-1 mb-2 small">
             <i class="bi bi-exclamation-triangle-fill me-1"></i>
@@ -42,7 +32,7 @@
                 <tbody>
                 {% for record in records %}
                 <tr>
-                    <td>{{ record['display_name'] is defined ? record['display_name'] : record['name'] }}</td>
+                    <td>{{ record['display_name'] }}</td>
                     <td><span class="badge {{ record_type_class(record['type']) }}">{{ record['type'] }}</span></td>
                     <td>{{ record['prio'] }}</td>
                     <td><code class="text-break">{{ record['content'] }}</code></td>
@@ -55,20 +45,12 @@
         </div>
 
         <form method="post" action="{{ base_url_prefix }}/zones/records/delete">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             {% if zone_id %}
             <input type="hidden" name="zone_id" value="{{ zone_id }}">
             {% endif %}
             {% for record in records %}
             <input type="hidden" name="record_id[]" value="{{ record['id'] }}">
-            {% endfor %}
-
-            {# Check if any A or AAAA records are being deleted #}
-            {% set has_ip_records = false %}
-            {% for record in records %}
-                {% if record['type'] == 'A' or record['type'] == 'AAAA' %}
-                    {% set has_ip_records = true %}
-                {% endif %}
             {% endfor %}
 
             {% if has_ip_records %}
@@ -80,16 +62,17 @@
             </div>
             {% endif %}
 
-            <button type="submit" name="confirm" value="1" class="btn btn-danger btn-sm">
-                <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete these records{% endtrans %}
-            </button>
-            {% if zone_id %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm ms-2">
-            {% else %}
-            <a href="{{ base_url_prefix }}/search" class="btn btn-secondary btn-sm ms-2">
-            {% endif %}
-                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
-            </a>
+            <div class="mb-3">
+                <label for="change_comment" class="form-label">
+                    {% trans %}Reason for this change{% endtrans %}
+                    {% if not require_change_comment %}<small class="text-muted">({% trans %}optional{% endtrans %})</small>{% endif %}
+                </label>
+                <input type="text" class="form-control form-control-sm" id="change_comment" name="change_comment"
+                       value="{{ change_comment|default('') }}" maxlength="1000"{% if require_change_comment %} required{% endif %}>
+                <small class="form-text text-muted">{% trans %}Recorded in the change log.{% endtrans %}</small>
+            </div>
+
+            {{ macros.delete_actions('Yes, delete these records'|trans, base_url_prefix ~ (zone_id ? '/zones/' ~ zone_id ~ '/edit' : '/search'), 'Cancel'|trans, confirm_name: 'confirm') }}
         </form>
     </div>
 </div>

@@ -60,9 +60,12 @@ class ZoneSyncService
     /**
      * Run sync only if enough time has passed since the last sync.
      *
+     * @param bool $withDnssec Match the zone-list variant the caller reads next,
+     *                         so both share one response instead of fetching
+     *                         the list under two URLs
      * @return array|null Sync result or null if skipped
      */
-    public function syncIfStale(): ?array
+    public function syncIfStale(bool $withDnssec = false): ?array
     {
         $lastSync = $_SESSION[self::LAST_SYNC_KEY] ?? 0;
         $age = time() - $lastSync;
@@ -75,7 +78,7 @@ class ZoneSyncService
         }
 
         try {
-            return $this->sync();
+            return $this->sync($withDnssec);
         } catch (\Throwable $e) {
             $this->logger->warning('Zone sync failed: {error}', ['error' => $e->getMessage(), 'exception' => $e]);
             return null;
@@ -92,14 +95,16 @@ class ZoneSyncService
      *
      * @return array{added: int, removed: int, updated: int}
      */
-    public function sync(): array
+    public function sync(bool $withDnssec = false): array
     {
         $this->logger->debug('Zone sync starting');
 
         $apiStatusService = new ApiStatusService();
         $syncStartedAt = time();
 
-        $apiZones = $this->backendProvider->getZones();
+        // Only name/kind/master are mirrored, so the DNSSEC lookup is skipped
+        // unless the caller is about to read the list with it anyway
+        $apiZones = $this->backendProvider->getZones($withDnssec);
 
         // getZones() swallows API errors; if one was recorded during this call,
         // fail the sync so manual callers see it and the throttle stays open.
@@ -207,7 +212,7 @@ class ZoneSyncService
                 $insertStmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);
                 if ($insertStmt->execute()) {
                     // Set domain_id = id (self-referencing for API mode compatibility)
-                    $id = $this->db->lastInsertId();
+                    $id = $this->db->lastInsertId('zones_id_seq');
                     $updateStmt->execute([':did' => $id, ':id' => $id]);
                     $count++;
                 }

@@ -35,6 +35,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class SamlCallbackController extends BaseController
 {
@@ -76,6 +77,15 @@ class SamlCallbackController extends BaseController
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
+    /**
+     * The identity provider posts here directly; the signed SAML response, not a
+     * form token, is what authenticates the request.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         // Check if SAML is enabled
@@ -108,16 +118,18 @@ class SamlCallbackController extends BaseController
             $this->samlService->handleAssertion();
 
             // Log successful SAML login if session was established
-            if (isset($_SESSION['userid'])) {
+            if (isset($_SESSION[SessionKeys::USERID])) {
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:saml_login_success',
                     $this->ipAddressRetriever->getClientIp(),
-                    $_SESSION['userlogin'] ?? 'unknown'
+                    $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown'
                 ));
             }
         } catch (\Exception $e) {
+            // operation:login_error (not login_failed) - SAML assertion-handling
+            // failure should not feed fail2ban brute-force counters.
             $this->auditLogger->logWarn(sprintf(
-                'client_ip:%s operation:saml_login_failed error:%s',
+                'client_ip:%s operation:login_error auth_method:saml error:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $e->getMessage()
             ));
@@ -132,7 +144,7 @@ class SamlCallbackController extends BaseController
 
     private function handleSingleLogout(): void
     {
-        $username = $_SESSION['userlogin'] ?? 'unknown';
+        $username = $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown';
 
         try {
             // Process SAML Single Logout

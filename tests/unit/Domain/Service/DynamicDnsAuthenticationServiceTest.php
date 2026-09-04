@@ -3,6 +3,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
@@ -12,7 +13,8 @@ use Poweradmin\Domain\Model\User;
 class DynamicDnsAuthenticationServiceTest extends TestCase
 {
     private DynamicDnsAuthenticationService $authService;
-    private DynamicDnsRepositoryInterface $mockRepository;
+    /** @var DynamicDnsRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject */
+    private $mockRepository;
     /** @var UserAuthenticationService&\PHPUnit\Framework\MockObject\MockObject */
     private $mockUserAuthService;
 
@@ -127,10 +129,10 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
         $this->mockRepository->expects($this->once())
             ->method('getUserZones')
             ->with($user)
-            ->willReturn([1, 2]);
+            ->willReturn([1 => 'a.example.com', 2 => 'b.example.com']);
 
         $zones = $this->authService->getUserZones($user);
-        $this->assertEquals([1, 2], $zones);
+        $this->assertEquals([1 => 'a.example.com', 2 => 'b.example.com'], $zones);
     }
 
     public function testGetUserZonesEmpty(): void
@@ -153,31 +155,123 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
         $this->mockRepository->expects($this->exactly(3))
             ->method('getUserZones')
             ->with($user)
-            ->willReturn([1, 2]);
+            ->willReturn([1 => 'a.example.com', 2 => 'b.example.com']);
 
         $this->assertTrue($this->authService->userCanUpdateZone($user, 1));
         $this->assertTrue($this->authService->userCanUpdateZone($user, 2));
         $this->assertFalse($this->authService->userCanUpdateZone($user, 3));
     }
 
-    public function testAuthenticateUserRejectsEmptyPasswordHashWithoutThrowing(): void
+    public function testAuthenticateUserRefusedWhenAccountLocked(): void
+    {
+        $loginAttempts = $this->createMock(LoginAttemptService::class);
+        $loginAttempts->expects($this->once())
+            ->method('isAccountLocked')
+            ->with('testuser', '198.51.100.1')
+            ->willReturn(true);
+
+        $this->mockRepository->expects($this->never())->method('findUserByUsernameWithDynamicDnsPermissions');
+        $this->mockUserAuthService->expects($this->never())->method('verifyPassword');
+        $loginAttempts->expects($this->never())->method('recordAttempt');
+
+        $service = new DynamicDnsAuthenticationService(
+            $this->mockRepository,
+            $this->mockUserAuthService,
+            $loginAttempts
+        );
+
+        $request = new DynamicDnsRequest('testuser', 'testpass', 'example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $this->assertNull($service->authenticateUser($request, '198.51.100.1'));
+    }
+
+    public function testAuthenticateUserRecordsSuccessfulAttempt(): void
+    {
+        $loginAttempts = $this->createMock(LoginAttemptService::class);
+        $loginAttempts->method('isAccountLocked')->willReturn(false);
+        $loginAttempts->expects($this->once())
+            ->method('recordAttempt')
+            ->with('testuser', '198.51.100.2', true);
+
+        $user = new User(123, 'hashedpassword', false);
+        $this->mockRepository->method('findUserByUsernameWithDynamicDnsPermissions')->willReturn($user);
+        $this->mockUserAuthService->method('verifyPassword')->willReturn(true);
+
+        $service = new DynamicDnsAuthenticationService(
+            $this->mockRepository,
+            $this->mockUserAuthService,
+            $loginAttempts
+        );
+
+        $request = new DynamicDnsRequest('testuser', 'testpass', 'example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $this->assertInstanceOf(User::class, $service->authenticateUser($request, '198.51.100.2'));
+    }
+
+    public function testAuthenticateUserRecordsFailedAttempt(): void
+    {
+        $loginAttempts = $this->createMock(LoginAttemptService::class);
+        $loginAttempts->method('isAccountLocked')->willReturn(false);
+        $loginAttempts->expects($this->once())
+            ->method('recordAttempt')
+            ->with('testuser', '198.51.100.3', false);
+
+        $user = new User(123, 'hashedpassword', false);
+        $this->mockRepository->method('findUserByUsernameWithDynamicDnsPermissions')->willReturn($user);
+        $this->mockUserAuthService->method('verifyPassword')->willReturn(false);
+
+        $service = new DynamicDnsAuthenticationService(
+            $this->mockRepository,
+            $this->mockUserAuthService,
+            $loginAttempts
+        );
+
+        $request = new DynamicDnsRequest('testuser', 'wrongpass', 'example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $this->assertNull($service->authenticateUser($request, '198.51.100.3'));
+    }
+
+    public function testAuthenticateUserDoesNotRecordAttemptForUnknownUsername(): void
+    {
+        // Unknown-username requests intentionally skip recordAttempt: the lockout
+        // tracker only counts attempts against existing user_ids, so a recorded
+        // attempt with user_id=null is dead weight. Brute force across unknown
+        // usernames is acknowledged as a documented LOW-severity limitation.
+        $loginAttempts = $this->createMock(LoginAttemptService::class);
+        $loginAttempts->method('isAccountLocked')->willReturn(false);
+        $loginAttempts->expects($this->never())->method('recordAttempt');
+
+        $this->mockRepository->method('findUserByUsernameWithDynamicDnsPermissions')->willReturn(null);
+
+        $service = new DynamicDnsAuthenticationService(
+            $this->mockRepository,
+            $this->mockUserAuthService,
+            $loginAttempts
+        );
+
+        $request = new DynamicDnsRequest('nonexistent', 'testpass', 'example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $this->assertNull($service->authenticateUser($request, '198.51.100.4'));
+    }
+
+    public function testAuthenticateUserRejectsEmptyPasswordHashAndStillRecordsTheAttempt(): void
     {
         // OIDC/SAML-provisioned users are stored with an empty hash. A real
-        // UserAuthenticationService throws on one, and dynamic_update.php has no catch,
-        // so an unguarded call surfaces as a 500 instead of badauth.
-        $this->mockRepository->expects($this->once())
-            ->method('findUserByUsernameWithDynamicDnsPermissions')
-            ->with('ssouser')
+        // UserAuthenticationService throws on one, and an uncaught throw would also skip
+        // recordAttempt, leaving the account unable to ever lock out.
+        $loginAttempts = $this->createMock(LoginAttemptService::class);
+        $loginAttempts->method('isAccountLocked')->willReturn(false);
+        $loginAttempts->expects($this->once())
+            ->method('recordAttempt')
+            ->with('ssouser', '198.51.100.5', false);
+
+        $this->mockRepository->method('findUserByUsernameWithDynamicDnsPermissions')
             ->willReturn(new User(789, '', false));
 
         $service = new DynamicDnsAuthenticationService(
             $this->mockRepository,
-            new UserAuthenticationService('bcrypt', 12)
+            new UserAuthenticationService('bcrypt', 12),
+            $loginAttempts
         );
 
         $request = new DynamicDnsRequest('ssouser', 'anypass', 'example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
-
-        $this->assertNull($service->authenticateUser($request));
+        $this->assertNull($service->authenticateUser($request, '198.51.100.5'));
     }
 
     public function testAuthenticateUserWithLdap(): void

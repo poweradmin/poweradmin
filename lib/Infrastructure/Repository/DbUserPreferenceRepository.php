@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,12 +29,10 @@ use Poweradmin\Domain\Repository\UserPreferenceRepositoryInterface;
 class DbUserPreferenceRepository implements UserPreferenceRepositoryInterface
 {
     private PDO $db;
-    private string $db_type;
 
-    public function __construct(PDO $db, string $db_type)
+    public function __construct(PDO $db)
     {
         $this->db = $db;
-        $this->db_type = $db_type;
     }
 
     public function findByUserIdAndKey(int $userId, string $key): ?UserPreference

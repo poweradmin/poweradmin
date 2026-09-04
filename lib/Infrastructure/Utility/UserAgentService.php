@@ -100,7 +100,7 @@ class UserAgentService
 
         foreach ($patterns as $pattern => $browser) {
             if (preg_match($pattern, $userAgent, $matches)) {
-                $version = $matches[1] ?? 'Unknown';
+                $version = $matches[1];
                 return $this->sanitize("$browser/$version");
             }
         }

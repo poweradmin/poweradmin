@@ -27,14 +27,17 @@ use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
 /**
  * API-backend domain repository.
@@ -114,9 +117,17 @@ class ApiDomainRepository implements DomainRepositoryInterface
         bool $excludeReverse = false,
         ?bool $showSerial = null,
         ?bool $showTemplate = null,
-        bool $includeHealth = true
+        bool $includeHealth = true,
+        bool $includeRecordCount = true
     ): array {
-        $allowedSortColumns = ['name', 'type', 'count_records', 'owner'];
+        // Record counts are resolved per page, so sorting on them would only
+        // order the rows already on screen. Fall back rather than reject: a
+        // session carried over from SQL mode can still ask for this column.
+        if ($sortby === 'count_records') {
+            $sortby = 'name';
+        }
+
+        $allowedSortColumns = ['name', 'type', 'owner'];
         $tableNameService = new TableNameService($this->config);
         $sortby = $tableNameService->validateOrderBy($sortby, $allowedSortColumns);
         $sortDirection = $tableNameService->validateDirection($sortDirection);
@@ -126,27 +137,30 @@ class ApiDomainRepository implements DomainRepositoryInterface
         }
 
         $iface_zonelist_serial = $showSerial ?? $this->config->get('interface', 'display_serial_in_zone_list');
+        $iface_zonelist_signed_serial = $this->config->get('interface', 'display_signed_serial_in_zone_list', false);
         $iface_zonelist_template = $showTemplate ?? $this->config->get('interface', 'display_template_in_zone_list');
+
+        // DNSSEC state costs a per-zone lookup on the PowerDNS side, so only ask
+        // for it when a column actually renders it. The zone list feeds the
+        // DNSSEC column; the stats call additionally feeds the signed serial.
+        $needsDnssec = (bool)$this->config->get('dnssec', 'enabled', false) || $iface_zonelist_signed_serial;
+        $needsEditedSerial = (bool)$iface_zonelist_signed_serial;
 
         // Sync local zones table with PowerDNS API before listing
         $syncService = new ZoneSyncService($this->db, $this->backendProvider);
-        $syncService->syncIfStale();
+        $syncService->syncIfStale($needsDnssec);
 
-        $allZones = $this->backendProvider->getZones();
+        $allZones = $this->backendProvider->getZones($needsDnssec);
 
         // Filter reverse zones if requested
         if ($excludeReverse) {
             $allZones = array_values(array_filter($allZones, function ($zone) {
-                $name = $zone['name'] ?? '';
-                return !str_ends_with($name, '.in-addr.arpa') && !str_ends_with($name, '.ip6.arpa');
+                return !DnsHelper::isReverseZoneName($zone['name'] ?? '');
             }));
         }
 
         // Enrich with ownership from local tables
         $allZones = $this->enrichZonesWithOwnership($allZones);
-
-        // Enrich with record counts from API
-        $this->enrichWithRecordCounts($allZones);
 
         // Filter by ownership
         if ($perm === 'own') {
@@ -175,7 +189,9 @@ class ApiDomainRepository implements DomainRepositoryInterface
             $allZones = ResultPaginator::paginate($allZones, $rowstart, $rowamount);
         }
 
-        $zoneStats = $iface_zonelist_serial ? $this->backendProvider->getZoneStats() : [];
+        $zoneStats = ($iface_zonelist_serial || $iface_zonelist_signed_serial)
+            ? $this->backendProvider->getZoneStats($needsDnssec)
+            : [];
         $templateMap = $iface_zonelist_template ? $this->fetchTemplateNames($allZones) : [];
 
         // Convert to expected output shape (keyed by domain name)
@@ -185,8 +201,11 @@ class ApiDomainRepository implements DomainRepositoryInterface
             $utf8Name = DnsIdnService::toUtf8($name);
             $zoneId = (int)($zone['id'] ?? 0);
 
-            // Per-visible-zone API call - bounded by page size. Skipped for callers
-            // that don't render badges (DeleteUser, log iteration, etc).
+            // Both of these read the same zone body, so counting first lets the
+            // health check reuse it instead of fetching the zone twice. Bounded
+            // by page size, and skipped for callers that render neither
+            // (DeleteUser, log iteration, etc).
+            $countRecords = $includeRecordCount ? $this->backendProvider->countZoneRecords($zoneId) : 0;
             $soaHealth = $includeHealth
                 ? $this->backendProvider->getZoneSoaHealth($name, $zone['type'] ?? 'NATIVE')
                 : null;
@@ -196,9 +215,10 @@ class ApiDomainRepository implements DomainRepositoryInterface
                 'name' => $name,
                 'utf8_name' => $utf8Name,
                 'type' => $zone['type'] ?? 'NATIVE',
-                'count_records' => $zone['count_records'] ?? 0,
-                'is_disabled' => $soaHealth['is_disabled'] ?? false,
-                'is_missing_soa' => $soaHealth['is_missing_soa'] ?? false,
+                'count_records' => $countRecords,
+                // A failed lookup is UNKNOWN, not healthy; ?? false used to
+                // render an outage as a green badge.
+                ...ZoneSoaHealth::fromBackend($soaHealth)->toZoneFields(),
                 'comment' => $zone['comment'] ?? '',
                 'secured' => $zone['dnssec'] ?? $zone['secured'] ?? false,
                 'owners' => $zone['owners'] ?? [],
@@ -211,8 +231,25 @@ class ApiDomainRepository implements DomainRepositoryInterface
                 $result[$name]['serial'] = $serial > 0 ? (string)$serial : '';
             }
 
+            if ($iface_zonelist_signed_serial) {
+                // Unsigned zones serve the plain serial, so the column stays blank for them
+                $signedSerial = $result[$name]['secured'] ? ($zoneStats[$name . '.']['edited_serial'] ?? null) : null;
+                $result[$name]['signed_serial'] = $signedSerial > 0 ? (string)$signedSerial : '';
+            }
+
             if ($iface_zonelist_template) {
                 $result[$name]['template'] = $templateMap[$zoneId] ?? '';
+            }
+
+            // Pending-NOTIFY state, only meaningful for zones that notify, have
+            // a published serial, and run on a server that reports notified_serial
+            if (ZoneType::notifies($result[$name]['type'])) {
+                $notifiedSerial = $zoneStats[$name . '.']['notified_serial'] ?? null;
+                $currentSerial = (int)($zoneStats[$name . '.']['serial'] ?? 0);
+                if ($notifiedSerial !== null && $currentSerial > 0) {
+                    $result[$name]['notified_serial'] = $notifiedSerial;
+                    $result[$name]['notify_pending'] = $currentSerial !== $notifiedSerial;
+                }
             }
         }
 
@@ -267,7 +304,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
         $perm_view = Permission::getViewPermission($this->db);
 
         if ($perm_view == "none") {
-            $this->messageService->addSystemError(_("You do not have the permission to view this zone."));
+            $this->messageService->addSystemError(_("You do not have permission to view this zone."));
             return [];
         }
 
@@ -286,10 +323,37 @@ class ApiDomainRepository implements DomainRepositoryInterface
 
     public function getZoneInfoFromIds(array $zones): array
     {
-        $zone_infos = array();
-        foreach ($zones as $zone) {
-            $zone_info = $this->getZoneInfoFromId($zone);
-            $zone_infos[] = $zone_info;
+        if (empty($zones)) {
+            return [];
+        }
+
+        $perm_view = Permission::getViewPermission($this->db);
+        if ($perm_view == "none") {
+            $this->messageService->addSystemError(_("You do not have permission to view this zone."));
+            return [];
+        }
+
+        // One bulk zone-list fetch for name/type/master instead of a per-zone
+        // zone-body fetch. Record counts have no bulk equivalent in the API.
+        $byId = [];
+        foreach ($this->backendProvider->getZones() as $zone) {
+            $byId[(int)($zone['id'] ?? 0)] = $zone;
+        }
+
+        $zone_infos = [];
+        foreach ($zones as $zid) {
+            $zid = (int)$zid;
+            $zone = $byId[$zid] ?? null;
+            if ($zone === null) {
+                continue;
+            }
+            $zone_infos[] = [
+                'id' => $zid,
+                'name' => $zone['name'],
+                'type' => $zone['type'],
+                'master_ip' => $zone['master'],
+                'record_count' => $this->backendProvider->countZoneRecords($zid),
+            ];
         }
         return $zone_infos;
     }
@@ -297,14 +361,6 @@ class ApiDomainRepository implements DomainRepositoryInterface
     public function getBestMatchingZoneIdFromName(string $domain): int
     {
         return $this->backendProvider->getBestMatchingReverseZoneId($domain);
-    }
-
-    private function enrichWithRecordCounts(array &$zones): void
-    {
-        foreach ($zones as &$zone) {
-            $zone['count_records'] = $this->backendProvider->countZoneRecords($zone['id'] ?? 0);
-        }
-        unset($zone);
     }
 
     private function enrichZonesWithOwnership(array $zones): array

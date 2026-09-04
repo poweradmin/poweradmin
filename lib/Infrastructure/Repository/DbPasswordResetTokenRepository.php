@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,18 +38,27 @@ class DbPasswordResetTokenRepository
     }
 
     /**
-     * Create a new password reset token
+     * One-way hash applied to a reset token before persistence. SHA-256 is
+     * sufficient because tokens are 256 bits of entropy from `random_bytes(32)`;
+     * brute force across the keyspace is infeasible without a salt. The
+     * `sha256$` prefix matches the API key repository so the same shape gate
+     * defends both surfaces against pass-the-hash from a DB-read leak.
      */
+    public static function hashToken(string $token): string
+    {
+        return 'sha256$' . hash('sha256', $token);
+    }
+
     public function create(array $data): bool
     {
         $db_type = $this->config->get('database', 'type');
-        $sql = "INSERT INTO password_reset_tokens (email, token, created_at, expires_at, ip_address, used) 
+        $sql = "INSERT INTO password_reset_tokens (email, token, created_at, expires_at, ip_address, used)
                 VALUES (:email, :token, " . DbCompat::now($db_type) . ", :expires_at, :ip_address, " . DbCompat::boolFalse($db_type) . ")";
 
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ':email' => $data['email'],
-            ':token' => $data['token'],
+            ':token' => self::hashToken((string) $data['token']),
             ':expires_at' => $data['expires_at'],
             ':ip_address' => $data['ip_address'] ?? null
         ]);
@@ -60,13 +69,14 @@ class DbPasswordResetTokenRepository
      */
     public function findActiveTokens(): array
     {
-        $db_type = $this->config->get('database', 'type');
-        $sql = "SELECT * FROM password_reset_tokens 
-                WHERE expires_at > " . DbCompat::now($db_type) . " 
+        // expires_at is written with PHP's clock, so compare against PHP's clock too;
+        // DbCompat::now() uses the DB session/UTC clock and skews by the tz offset.
+        $sql = "SELECT * FROM password_reset_tokens
+                WHERE expires_at > :now
                 ORDER BY created_at DESC";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':now' => date('Y-m-d H:i:s')]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -77,14 +87,16 @@ class DbPasswordResetTokenRepository
     public function findByToken(string $token): ?array
     {
         $db_type = $this->config->get('database', 'type');
-        $sql = "SELECT * FROM password_reset_tokens 
-                WHERE token = :token 
-                AND expires_at > " . DbCompat::now($db_type) . " 
-                AND used = " . DbCompat::boolFalse($db_type) . " 
+        // Compare expires_at against PHP's clock (it was written with PHP's), not
+        // DbCompat::now() whose DB/UTC clock skews the check by the tz offset.
+        $sql = "SELECT * FROM password_reset_tokens
+                WHERE token = :token
+                AND expires_at > :now
+                AND used = " . DbCompat::boolFalse($db_type) . "
                 LIMIT 1";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':token' => $token]);
+        $stmt->execute([':token' => $token, ':now' => date('Y-m-d H:i:s')]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ?: null;
@@ -175,12 +187,15 @@ class DbPasswordResetTokenRepository
     public function deleteExpired(): int
     {
         $db_type = $this->config->get('database', 'type');
-        $sql = "DELETE FROM password_reset_tokens 
-                WHERE expires_at < " . DbCompat::now($db_type) . " 
+        // expires_at is compared against PHP's clock (matching how it was written);
+        // the used-token retention window keys off DB-written created_at, so it stays
+        // on the DB clock via dateSubtract.
+        $sql = "DELETE FROM password_reset_tokens
+                WHERE expires_at < :now
                 OR (used = " . DbCompat::boolTrue($db_type) . " AND created_at < " . DbCompat::dateSubtract($db_type, 604800) . ")";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':now' => date('Y-m-d H:i:s')]);
 
         return $stmt->rowCount();
     }

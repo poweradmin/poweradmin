@@ -144,7 +144,8 @@ class DbZoneTemplateRepository
                 ':created_by' => $createdBy
             ]);
 
-            $templateId = (int)$this->db->lastInsertId();
+            // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+            $templateId = (int)$this->db->lastInsertId('zone_templ_id_seq');
 
             // Add default SOA record
             $ttl = (int)$this->config->get('dns', 'ttl');
@@ -222,6 +223,14 @@ class DbZoneTemplateRepository
             $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE zone_templ_id = :id");
             $stmt->execute([':id' => $id]);
 
+            $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE zone_templ_id = :id");
+            $stmt->execute([':id' => $id]);
+
+            // Unlink the zones that used it. Leaving the id behind re-links them to
+            // whichever template later reuses it (SQLite and MariaDB reuse ids).
+            $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE zone_templ_id = :id");
+            $stmt->execute([':id' => $id]);
+
             $this->db->commit();
             return true;
         } catch (Exception $e) {
@@ -255,7 +264,8 @@ class DbZoneTemplateRepository
             ':prio' => $prio
         ]);
 
-        return (int)$this->db->lastInsertId();
+        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+        return (int)$this->db->lastInsertId('zone_templ_records_id_seq');
     }
 
     /**
@@ -340,7 +350,7 @@ class DbZoneTemplateRepository
      */
     public function isOwner(int $templateId, int $userId): bool
     {
-        return ZoneTemplate::getZoneTemplIsOwner($this->db, $templateId, $userId);
+        return (new ZoneTemplate($this->db, $this->config))->isUserOwnerOfTemplate($templateId, $userId);
     }
 
     /**

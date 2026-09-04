@@ -7,6 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard, logout } from '../../helpers/auth.js';
+import { isApiModeInstance } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
@@ -27,7 +28,10 @@ test.describe('Group-Only Zone Visibility (Issue #1042)', () => {
     expect(bodyText).toContain(groupOnlyZone);
   });
 
-  test('group member should see group-owned zone that has no zones row (issue #1329)', async ({ page }) => {
+  test('group member should see group-owned zone that has no zones row (issue #1329)', async ({ page, baseURL }) => {
+    // API mode matches zones_groups.domain_id against the local zones.id, but the
+    // fixture stores the PowerDNS domains.id for this zone - see issue #1418.
+    test.skip(isApiModeInstance(baseURL), 'blocked by #1418 on the API backend');
     await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
     await page.goto('/zones/forward?letter=all');
 

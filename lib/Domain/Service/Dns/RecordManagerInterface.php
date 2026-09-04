@@ -53,11 +53,12 @@ interface RecordManagerInterface
      * @param string $content Content of record
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
+     * @param int $disabled Whether the record is created in disabled state (0 or 1)
      *
      * @return int|string|null The new record ID, or null on failure
      * @throws Exception
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): int|string|null;
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0): int|string|null;
 
     /**
      * Edit a record

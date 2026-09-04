@@ -25,39 +25,47 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 
 /**
  * SQL-backend dynamic DNS repository.
  */
-class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
+readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 {
-    private PDO $db;
-    private DnsRecord $dnsRecord;
-    private string $recordsTable;
-
-    public function __construct(PDO $db, DnsRecord $dnsRecord, string $recordsTable)
-    {
-        $this->db = $db;
-        $this->dnsRecord = $dnsRecord;
-        $this->recordsTable = $recordsTable;
+    public function __construct(
+        private PDO $db,
+        private SOARecordManagerInterface $soaRecordManager,
+        private string $recordsTable,
+        private string $domainsTable
+    ) {
     }
 
     public function findUserByUsernameWithDynamicDnsPermissions(string $username): ?User
     {
+        // DDNS auth needs an explicit zone_content_edit_* grant (own template or a group),
+        // matching the web UI. Admin/ueberuser is intentionally not auto-authorized: DDNS
+        // passwords sit in plaintext client configs, so use a scoped user - do not add a bypass.
         $query = $this->db->prepare("
             SELECT users.id, users.password, users.use_ldap
-            FROM users, perm_templ, perm_templ_items, perm_items
+            FROM users
             WHERE users.username = :username
                 AND users.active = 1
-                AND perm_templ.id = users.perm_templ
-                AND perm_templ_items.templ_id = perm_templ.id
-                AND perm_items.id = perm_templ_items.perm_id
                 AND (
-                    perm_items.name = 'zone_content_edit_own'
-                    OR perm_items.name = 'zone_content_edit_own_as_client'
-                    OR perm_items.name = 'zone_content_edit_others'
+                    EXISTS (
+                        SELECT 1 FROM perm_templ_items pti
+                        JOIN perm_items pi ON pi.id = pti.perm_id
+                        WHERE pti.templ_id = users.perm_templ
+                            AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                    )
+                    OR EXISTS (
+                        SELECT 1 FROM user_group_members ugm
+                        JOIN user_groups ug ON ug.id = ugm.group_id
+                        JOIN perm_templ_items pti ON pti.templ_id = ug.perm_templ
+                        JOIN perm_items pi ON pi.id = pti.perm_id
+                        WHERE ugm.user_id = users.id
+                            AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                    )
                 )
         ");
 
@@ -77,15 +85,60 @@ class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function getUserZones(User $user): array
     {
-        $query = $this->db->prepare('SELECT domain_id FROM zones WHERE owner = :user_id');
-        $query->execute([':user_id' => $user->getId()]);
+        // Domain names come from the PowerDNS-owned `domains` table; needed by the service
+        // to longest-suffix-match the supplied hostname against the user's editable zones.
+        // Edit permission is source-specific (matching the web permission model): a zone is
+        // only returned when the template of the owner (the user for direct ownership, or the
+        // owning group) grants zone_content_edit_*. Owning a zone via a group whose template
+        // lacks edit does not make it updatable.
+        $query = $this->db->prepare("
+            SELECT d.id AS domain_id, d.name AS name
+            FROM {$this->domainsTable} d
+            INNER JOIN zones z ON z.domain_id = d.id
+            INNER JOIN users u ON u.id = z.owner
+            WHERE z.owner = :user_id
+                AND EXISTS (
+                    SELECT 1 FROM perm_templ_items pti
+                    JOIN perm_items pi ON pi.id = pti.perm_id
+                    WHERE pti.templ_id = u.perm_templ
+                        AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                )
+
+            UNION
+
+            SELECT d.id AS domain_id, d.name AS name
+            FROM {$this->domainsTable} d
+            INNER JOIN zones_groups zg ON zg.domain_id = d.id
+            INNER JOIN user_group_members ugm ON ugm.group_id = zg.group_id
+            INNER JOIN user_groups ug ON ug.id = zg.group_id
+            WHERE ugm.user_id = :user_id2
+                AND EXISTS (
+                    SELECT 1 FROM perm_templ_items pti
+                    JOIN perm_items pi ON pi.id = pti.perm_id
+                    WHERE pti.templ_id = ug.perm_templ
+                        AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                )
+        ");
+        $query->execute([
+            ':user_id' => $user->getId(),
+            ':user_id2' => $user->getId(),
+        ]);
 
         $zones = [];
-        while ($zone = $query->fetch(PDO::FETCH_ASSOC)) {
-            $zones[] = (int)$zone['domain_id'];
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $zones[(int)$row['domain_id']] = (string)$row['name'];
         }
 
         return $zones;
+    }
+
+    public function getZoneType(int $zoneId): ?string
+    {
+        $query = $this->db->prepare("SELECT type FROM {$this->domainsTable} WHERE id = :id");
+        $query->execute([':id' => $zoneId]);
+        $type = $query->fetchColumn();
+
+        return $type === false ? null : (string)$type;
     }
 
     public function getDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType): array
@@ -131,6 +184,6 @@ class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function updateSOASerial(int $zoneId): void
     {
-        $this->dnsRecord->updateSOASerial($zoneId);
+        $this->soaRecordManager->updateSOASerial($zoneId);
     }
 }

@@ -7,9 +7,7 @@
 [![docker pulls](https://img.shields.io/docker/pulls/poweradmin/poweradmin)](https://hub.docker.com/r/poweradmin/poweradmin)
 [![docker image size](https://img.shields.io/docker/image-size/poweradmin/poweradmin)](https://hub.docker.com/r/poweradmin/poweradmin)
 
-[Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for PowerDNS server. The
-interface supports most of the features of PowerDNS. It can work directly against the PowerDNS database
-(with API-assisted DNSSEC) or run entirely through the PowerDNS API in API backend mode.
+[Poweradmin](https://www.poweradmin.org) is a DNS administration tool for PowerDNS that can be driven through a friendly web UI, a REST API, or both at the same time. Use the UI for day-to-day operations, the API for scripts and infrastructure-as-code, or run completely headless after the initial setup - the same validation runs on every path. It can work directly against the PowerDNS database (with API-assisted DNSSEC) or run entirely through the PowerDNS API in API backend mode.
 
 ![Zone editor with inline record management](https://docs.poweradmin.org/screenshots/zone-editor.png)
 
@@ -21,12 +19,13 @@ docker run -d --name poweradmin -p 8080:80 -e DB_TYPE=sqlite -e PA_CREATE_ADMIN=
 
 - All zone types (master, native, and slave), supermasters, and zone templates
 - Native PowerDNS API backend mode - manage zones without direct access to the PowerDNS database
-- DNSSEC operations, plus a zone metadata editor for PowerDNS `domainmetadata`
-- RESTful API with OpenAPI documentation (used by the Terraform/OpenTofu provider)
-- Bulk operations for records and reverse DNS, and search across zones and records
 - Version-aware interface that adapts record types, metadata kinds, and terminology to the connected PowerDNS version
-- User and permission management with role-based access, plus LDAP, SAML, OIDC, and TOTP two-factor authentication
-- 28 languages, light and dark themes, and IPv6 support
+- DNSSEC operations, plus a zone metadata editor for PowerDNS `domainmetadata`
+- REST API with OpenAPI documentation, and API keys that can be made read-only, restricted to specific operations, or scoped to specific zones
+- Bulk operations for records and reverse DNS, and secondary zone import over AXFR
+- Record change log with before/after snapshots of every record and zone change
+- Users, groups, and role-based permissions, with LDAP, SAML, OIDC, and TOTP two-factor authentication
+- 43 languages including right-to-left, light and dark themes, and full IPv6 support
 - Docker deployment with FrankenPHP
 
 [Full feature list](https://docs.poweradmin.org/getting-started/features/)
@@ -89,6 +88,8 @@ docker run -d \
 - DB_TYPE environment variable is required (sqlite, mysql, pgsql)
 - No admin user is created by default for security reasons. Use `-e PA_CREATE_ADMIN=1` to create an admin user (a secure password will be auto-generated and shown in logs)
 
+**Want to drive PowerDNS from scripts instead of a browser?** Add `-e PA_API_ENABLED=true -e PA_API_DOCS_ENABLED=true` and follow the [Headless / API-First Quickstart](https://docs.poweradmin.org/getting-started/headless-quickstart/) - zero to scripted record updates in about five minutes.
+
 * **Docker Hub**: `poweradmin/poweradmin`
 * **GitHub Container Registry**: `ghcr.io/poweradmin/poweradmin`
 * **Full documentation**: [DOCKER.md](DOCKER.md)
@@ -134,6 +135,8 @@ Poweradmin maintains multiple release branches:
 ### PHP Version Support
 
 **Important:** Starting with version 4.2.x, the minimum required PHP version is **8.2**. PHP 8.1 is no longer supported.
+
+Poweradmin tracks the [official PHP release lifecycle](https://www.php.net/supported-versions.php). PHP versions that have reached end-of-life are dropped from the next Poweradmin release; security-only versions remain supported until then. See [docs.poweradmin.org → Requirements](https://docs.poweradmin.org/getting-started/requirements/) for the current supported range.
 
 ### Long-Term Support (LTS)
 

@@ -1,15 +1,11 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/supermasters">{{ autoprimaries_label('plural') }}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{{ autoprimaries_label('delete_action') }}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: autoprimaries_label('plural'), url: base_url_prefix ~ '/supermasters'},
+    {label: autoprimaries_label('delete_action')},
+]) }}
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-trash me-2 text-danger"></i>{{ autoprimaries_label('delete_action') }}</strong>
-    </div>
+    {{ macros.card_header('bi-trash', autoprimaries_label('delete_action'), 'text-danger') }}
     <div class="card-body">
         <div class="alert alert-danger bg-danger bg-opacity-10">
             <h5 class="alert-heading text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning{% endtrans %}</h5>
@@ -48,18 +44,11 @@
             </div>
         </div>
 
-        <div class="mt-4">
-            <form method="post" action="{{ base_url_prefix }}/supermasters/delete" class="d-inline">
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
-                <input type="hidden" name="master_ip" value="{{ master_ip }}">
-                <input type="hidden" name="ns_name" value="{{ info['ns_name'] }}">
-                <button type="submit" class="btn btn-danger btn-sm">
-                    <i class="bi bi-trash-fill me-1 text-white"></i>{{ autoprimaries_label('delete_yes') }}
-                </button>
-            </form>
-            <a href="{{ base_url_prefix }}/supermasters" class="btn btn-secondary btn-sm">
-                <i class="bi bi-x-circle me-1 text-white"></i>{{ autoprimaries_label('delete_no') }}
-            </a>
-        </div>
+        <form method="post" action="{{ base_url_prefix }}/supermasters/delete" class="mt-4">
+            {{ macros.csrf_field() }}
+            <input type="hidden" name="master_ip" value="{{ master_ip }}">
+            <input type="hidden" name="ns_name" value="{{ info['ns_name'] }}">
+            {{ macros.delete_actions(autoprimaries_label('delete_yes'), base_url_prefix ~ '/supermasters', autoprimaries_label('delete_no'), confirm_name: 'confirm') }}
+        </form>
     </div>
 </div>

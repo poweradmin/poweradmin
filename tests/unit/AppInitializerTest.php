@@ -96,7 +96,7 @@ class AppInitializerTest extends TestCase
         $this->assertFalse($configExists, 'Config file should not exist in test environment');
 
         // This confirms the method would detect the missing configuration
-        // In the actual implementation, this would trigger MessageService::displayHtmlError
+        // In the actual implementation, this would trigger MessageService::displayDirectSystemError
         $this->assertTrue(true, 'Missing configuration would be correctly detected');
     }
 

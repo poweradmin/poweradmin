@@ -16,9 +16,7 @@ class PowerdnsApiClientExtendedTest extends TestCase
     protected function setUp(): void
     {
         $this->mockHttpClient = $this->createMock(HttpClient::class);
-        // Narrowed reads only keep disabled records from PowerDNS 5.0, so declare a
-        // server that supports them rather than letting the client probe
-        $this->apiClient = new PowerdnsApiClient($this->mockHttpClient, 'localhost', null, '5.0.0');
+        $this->apiClient = new PowerdnsApiClient($this->mockHttpClient, 'localhost');
     }
 
     // ---------------------------------------------------------------
@@ -52,97 +50,44 @@ class PowerdnsApiClientExtendedTest extends TestCase
         $this->assertNull($result);
     }
 
-    // ---------------------------------------------------------------
-    // getZoneRrset
-    // ---------------------------------------------------------------
-
-    public function testGetZoneRrsetRequestsOnlyTheNamedRrset(): void
-    {
-        $this->mockHttpClient->expects($this->once())
-            ->method('makeRequest')
-            ->with(
-                'GET',
-                '/api/v1/servers/localhost/zones/example.com.?rrset_name=www.example.com.&rrset_type=A'
-            )
-            ->willReturn([
-                'responseCode' => 200,
-                'data' => [
-                    'name' => 'example.com.',
-                    'rrsets' => [['name' => 'www.example.com.', 'type' => 'A', 'records' => []]],
-                ],
-            ]);
-
-        $result = $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
-
-        $this->assertNotNull($result);
-        $this->assertCount(1, $result['rrsets']);
-    }
-
-    public function testAnOlderServerIsNotAskedToFilterBecauseItHidesDisabledRecords(): void
-    {
-        // Before 5.0 the filter runs through the resolver lookup, which omits
-        // disabled records. Rebuilding an RRset from that answer would drop them.
-        $this->mockHttpClient
-            ->expects($this->once())
-            ->method('makeRequest')
-            ->with('GET', '/api/v1/servers/localhost/zones/example.com.')
-            ->willReturn(['responseCode' => 200, 'data' => [
-                'name' => 'example.com.',
-                'rrsets' => [
-                    ['name' => 'www.example.com.', 'type' => 'A', 'records' => [
-                        ['content' => '192.0.2.1', 'disabled' => true],
-                    ]],
-                ],
-            ]]);
-
-        $client = new PowerdnsApiClient($this->mockHttpClient, 'localhost', null, '4.9.12');
-        $zone = $client->getZoneRrset('example.com.', 'www.example.com.', 'A');
-
-        $this->assertSame('192.0.2.1', $zone['rrsets'][0]['records'][0]['content']);
-        $this->assertTrue($zone['rrsets'][0]['records'][0]['disabled']);
-    }
-
-    public function testGetZoneRrsetReturnsNullOnNotFound(): void
-    {
-        $this->mockHttpClient->expects($this->once())
-            ->method('makeRequest')
-            ->willReturn(['responseCode' => 404, 'data' => []]);
-
-        $result = $this->apiClient->getZoneRrset('nonexistent.com.', 'www.nonexistent.com.', 'A');
-
-        $this->assertNull($result);
-    }
-
-    // ---------------------------------------------------------------
-    // getZoneWithoutRrsets
-    // ---------------------------------------------------------------
-
-    public function testGetZoneWithoutRrsetsAsksTheServerToOmitRecords(): void
+    public function testGetZoneWithoutRrsetsRequestsMetadataOnly(): void
     {
         $this->mockHttpClient->expects($this->once())
             ->method('makeRequest')
             ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrsets=false')
             ->willReturn([
                 'responseCode' => 200,
-                'data' => ['name' => 'example.com.', 'kind' => 'Master', 'soa_edit_api' => 'DEFAULT'],
+                'data' => ['name' => 'example.com.', 'serial' => 2024010101, 'edited_serial' => 2024010199],
             ]);
 
-        $result = $this->apiClient->getZoneWithoutRrsets('example.com.');
+        $result = $this->apiClient->getZone('example.com.', false);
 
         $this->assertNotNull($result);
-        $this->assertSame('DEFAULT', $result['soa_edit_api']);
-        $this->assertArrayNotHasKey('rrsets', $result);
+        $this->assertEquals(2024010199, $result['edited_serial']);
     }
 
-    public function testGetZoneWithoutRrsetsReturnsNullOnNotFound(): void
+    // ---------------------------------------------------------------
+    // getAllZoneStats
+    // ---------------------------------------------------------------
+
+    public function testGetAllZoneStatsParsesEditedSerial(): void
     {
         $this->mockHttpClient->expects($this->once())
             ->method('makeRequest')
-            ->willReturn(['responseCode' => 404, 'data' => []]);
+            ->with('GET', '/api/v1/servers/localhost/zones')
+            ->willReturn([
+                'responseCode' => 200,
+                'data' => [
+                    ['name' => 'signed.com.', 'dnssec' => true, 'serial' => 2024010101, 'edited_serial' => 2024010199],
+                    ['name' => 'legacy.com.', 'dnssec' => false, 'serial' => 2024010101],
+                ],
+            ]);
 
-        $result = $this->apiClient->getZoneWithoutRrsets('nonexistent.com.');
+        $stats = $this->apiClient->getAllZoneStats();
 
-        $this->assertNull($result);
+        $this->assertSame(2024010199, $stats['signed.com.']['edited_serial']);
+        $this->assertSame(2024010101, $stats['signed.com.']['serial']);
+        $this->assertNull($stats['legacy.com.']['edited_serial']);
     }
 
     // ---------------------------------------------------------------

@@ -24,6 +24,7 @@ namespace Poweradmin\Module\Rdap\Service;
 
 use Exception;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Infrastructure\Network\ProxyContext;
 
 class RdapService
 {
@@ -62,16 +63,13 @@ class RdapService
 
         if (preg_match('/[^\x20-\x7E]/', $tld)) {
             $punycodeTld = DnsIdnService::toPunycode($tld);
-            if ($punycodeTld !== false && isset($this->rdapServers[$punycodeTld])) {
+            if (isset($this->rdapServers[$punycodeTld])) {
                 return $this->rdapServers[$punycodeTld];
             }
         } elseif (str_starts_with($tld, 'xn--')) {
             try {
                 $unicodeTld = DnsIdnService::toUtf8($tld);
-                if (
-                    $unicodeTld !== false && $unicodeTld !== $tld &&
-                    isset($this->rdapServers[$unicodeTld])
-                ) {
+                if ($unicodeTld !== $tld && isset($this->rdapServers[$unicodeTld])) {
                     return $this->rdapServers[$unicodeTld];
                 }
             } catch (Exception $e) {
@@ -141,8 +139,7 @@ class RdapService
         $parts = explode('.', $domain);
         foreach ($parts as &$part) {
             if (preg_match('/[^\x20-\x7E]/', $part)) {
-                $punycode = DnsIdnService::toPunycode($part);
-                $part = $punycode !== false ? $punycode : $part;
+                $part = DnsIdnService::toPunycode($part);
             }
         }
 
@@ -167,7 +164,7 @@ class RdapService
             ]
         ];
 
-        $context = stream_context_create($options);
+        $context = stream_context_create(ProxyContext::applyTo($options, $url));
         $response = @file_get_contents($url, false, $context);
 
         return $response !== false ? $response : null;
@@ -264,6 +261,8 @@ class RdapService
 
     public function formatRdapResponse(array $response): string
     {
-        return json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $json = json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        return $json === false ? '' : $json;
     }
 }

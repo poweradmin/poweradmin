@@ -26,30 +26,37 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordLog;
 use Poweradmin\Domain\Service\RecordTypeService;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\Dns\DomainManager;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\SOARecordManager;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\RecordDisplayService;
@@ -59,16 +66,18 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ModuleRegistry;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Enum\SortDirection;
+use Poweradmin\Domain\Enum\ZoneSaveOutcome;
 
 class EditController extends BaseController
 {
@@ -77,7 +86,9 @@ class EditController extends BaseController
     private RecordTypeService $recordTypeService;
     private FormStateService $formStateService;
     private LegacyLogger $auditLogger;
-    private DnsRecord $dnsRecord;
+    private SOARecordManagerInterface $soaRecordManager;
+    private RecordManagerInterface $dnsRecordManager;
+    private ?DomainManagerInterface $domainManager = null;
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
     private ReverseTtlResolver $reverseTtlResolver;
@@ -87,44 +98,54 @@ class EditController extends BaseController
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
     private RecordRepositoryInterface $recordRepository;
+    private DomainRepositoryInterface $domainRepository;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
+        $this->request = new Request();
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->recordRepository = $repositoryFactory->createRecordRepository();
+        $this->domainRepository = $repositoryFactory->createDomainRepository();
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->formStateService = new FormStateService();
 
         // Initialize services for record addition
         $this->auditLogger = new LegacyLogger($this->db);
-        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $this->soaRecordManager = $this->createSOARecordManager();
 
+        $this->dnsRecordManager = $this->createRecordManager();
         $this->recordManager = new RecordManagerService(
             $this->db,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $this->dnsRecordManager,
             $this->recordCommentService,
-            $this->commentSyncService,
             $this->auditLogger,
             $this->getConfig(),
             $backendProvider
         );
 
+        $this->reverseTtlResolver = $this->createReverseTtlResolver();
+
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
-            $this->auditLogger,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $this->dnsRecordManager,
+            null,
+            $this->reverseTtlResolver,
         );
 
         $this->reverseRecordCreator = new ReverseRecordCreator(
             $this->db,
             $this->getConfig(),
             $this->auditLogger,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $this->dnsRecordManager,
             $this->recordCommentService,
             $this->createDnsBackendProvider()
         );
@@ -132,17 +153,15 @@ class EditController extends BaseController
         $this->userContextService = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->zoneRepository = $this->createZoneRepository();
-        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
 
-        $userRepository = new DbUserRepository($this->db, $this->getConfig());
-        $this->permissionService = new PermissionService($userRepository);
+        $this->permissionService = $this->createPermissionService();
     }
 
     public function run(): void
     {
         // Set the current page for navigation highlighting
         $this->setCurrentPage('edit');
-        $this->setPageTitle(_('Edit Zone'));
+        $this->setPageTitle(_('Edit zone'));
 
         // Get default rows per page from config
         $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
@@ -170,22 +189,24 @@ class EditController extends BaseController
         $iface_zone_comments = $configManager->get('interface', 'show_zone_comments', true);
 
         // Initialize filter parameters
-        $searchTerm = isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '';
-        $recordTypeFilter = isset($_GET['record_type']) ? htmlspecialchars($_GET['record_type']) : '';
-        $contentFilter = isset($_GET['content']) ? htmlspecialchars($_GET['content']) : '';
+        $searchTerm = htmlspecialchars($this->request->getQueryParam('search', ''));
+        $recordTypeFilter = htmlspecialchars($this->request->getQueryParam('record_type', ''));
+        $contentFilter = htmlspecialchars($this->request->getQueryParam('content', ''));
 
         // Generate a form token for the add record form
         $formToken = $this->formStateService->generateFormId('add_record');
 
         // Check if we have any form data from a failed submission
         $formData = null;
-        if (isset($_REQUEST['form_id']) && !empty($_REQUEST['form_id'])) {
-            $formData = $this->formStateService->getFormData($_REQUEST['form_id']);
+        $formId = $this->request->getQueryParam('form_id');
+        if ($formId) {
+            $formData = $this->formStateService->getFormData($formId);
         }
 
         $row_start = 0;
-        if (isset($_GET["start"])) {
-            $row_start = ((int)$_GET["start"] - 1) * $iface_rowamount;
+        $start = $this->request->getQueryParam('start');
+        if ($start !== null) {
+            $row_start = max(0, ((int)$start - 1) * $iface_rowamount);
         }
 
         $record_sort_by = $this->getSortBy('record_sort_by', ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled']);
@@ -203,7 +224,7 @@ class EditController extends BaseController
         // Early permission check - validate access before data retrieval
         $userId = $this->userContextService->getLoggedInUserId();
         $perm_view = $this->permissionService->getViewPermissionLevel($userId);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view !== "all" && !$user_is_zone_owner) {
             $this->showError(_('You do not have permission to access this zone.'));
@@ -216,48 +237,55 @@ class EditController extends BaseController
             $this->showError(_('Zone not found.'));
             return;
         }
-        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
         // Form pre-fill stays on dns.ttl; JS updateTtlForType() swaps in dns.ttl_reverse
         // for PTR selections so display tracks what's persisted.
         $defaultTtl = $this->reverseTtlResolver->getForwardTtl();
 
         // Process form submissions
-        if ($this->isPost() && isset($_POST['commit'])) {
+        if ($this->isPost() && $this->request->getPostParam('commit') !== null) {
             $this->validateCsrfToken();
 
             // Check if this is a record addition (has name, content, type fields)
-            if (isset($_POST['name']) && isset($_POST['content']) && isset($_POST['type'])) {
+            $name = $this->request->getPostParam('name');
+            $content = $this->request->getPostParam('content');
+            $type = $this->request->getPostParam('type');
+            if ($name !== null && $content !== null && $type !== null) {
                 // Store the original form data before processing (in case validation fails)
-                $_SESSION['add_record_last_data'] = [
-                    'name' => $_POST['name'] ?? '',
-                    'content' => $_POST['content'] ?? '',
-                    'type' => $_POST['type'] ?? '',
-                    'prio' => isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0,
-                    'ttl' => isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->reverseTtlResolver->resolveTtlForType($_POST['type'] ?? '', $isReverseZone),
-                    'comment' => $_POST['comment'] ?? ''
+                $prio = $this->request->getPostParam('prio');
+                $ttl = $this->request->getPostParam('ttl');
+                $_SESSION[SessionKeys::ADD_RECORD_LAST_DATA] = [
+                    'name' => $name,
+                    'content' => $content,
+                    'type' => $type,
+                    'prio' => $prio !== null && $prio !== '' ? (int)$prio : 0,
+                    'ttl' => $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone),
+                    'comment' => $this->request->getPostParam('comment', '')
                 ];
 
                 // Handle record addition directly in edit controller (no redirect)
-                if (!isset($_POST['record'])) { // Check if it's an add record operation (not a zone update)
+                if ($this->request->getPostParam('record') === null) { // Check if it's an add record operation (not a zone update)
                     $result = $this->addRecord($zone_id);
 
                     // If the record was added successfully, clear the stored data
                     if ($result) {
-                        unset($_SESSION['add_record_last_data']);
-                        unset($_SESSION['add_record_error']);
-                    } elseif (!$formData && isset($_SESSION['add_record_error'])) {
+                        unset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
+                        unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
+                    } elseif (!$formData && isset($_SESSION[SessionKeys::ADD_RECORD_ERROR])) {
                         // Create form data from the session error data
-                        $formData = array_merge($_SESSION['add_record_last_data'], $_SESSION['add_record_error']);
+                        $formData = array_merge($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA], $_SESSION[SessionKeys::ADD_RECORD_ERROR]);
                     }
                 } else {
                     // This is a zone update operation, handle as before
                     $this->saveRecords($zone_id, $zone_name);
                 }
-            } elseif (isset($_POST['record']) || isset($_POST['zone_comment'])) {
-                // This is just a save operation without adding new records, or zone comment update
+            } elseif ($this->request->getPostParam('record') !== null || $this->request->getPostParam('zone_comment') !== null || $this->request->getPostParam('form_complete') !== null) {
+                // Save operation: records, a zone comment, or an unchanged form. The
+                // form_complete marker is always present, so a save where the client
+                // omitted every unchanged record still bumps the SOA serial as before.
                 $this->saveRecords($zone_id, $zone_name);
             }
-        } elseif ($this->isPost() && isset($_POST['record']) && !isset($_POST['commit'])) {
+        } elseif ($this->isPost() && $this->request->getPostParam('record') !== null && $this->request->getPostParam('commit') === null) {
             // max_input_vars truncated the POST and dropped the bottom save button; run
             // the save anyway so incomplete rows are skipped and the operator is warned.
             $this->validateCsrfToken();
@@ -265,72 +293,49 @@ class EditController extends BaseController
         }
 
         // If we have stored validation error data from a previous request, use it
-        if (!$formData && isset($_SESSION['add_record_last_data']) && isset($_SESSION['add_record_error'])) {
-            $formData = array_merge($_SESSION['add_record_last_data'], $_SESSION['add_record_error']);
+        if (!$formData && isset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]) && isset($_SESSION[SessionKeys::ADD_RECORD_ERROR])) {
+            $formData = array_merge($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA], $_SESSION[SessionKeys::ADD_RECORD_ERROR]);
         }
 
         // Permission levels - use zone-aware checking for group permission support
         $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
         $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
+        $can_manage_dnssec = $this->permissionService->canManageDnssecForZone($this->db, $userId, $zone_id);
+
+        $perm_metadata_view = $this->permissionService->getZoneMetadataViewPermissionLevel($userId);
+        $perm_ownership_view = $this->permissionService->getZoneOwnershipViewPermissionLevel($userId);
+        $metadata_view = $perm_metadata_view === 'all' || ($perm_metadata_view === 'own' && $user_is_zone_owner == "1");
+        $ownership_view = $perm_ownership_view === 'all' || ($perm_ownership_view === 'own' && $user_is_zone_owner == "1");
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            $this->showError(_("You do not have the permission to view this zone."));
+            $this->showError(_("You do not have permission to view this zone."));
         }
 
         if (!$this->zoneRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
         }
 
-        // Handle zone configuration changes
         if ($this->isPost() && $meta_edit) {
-            // Change zone type
-            $new_type = htmlspecialchars($_POST['newtype'] ?? '');
-            if (isset($_POST['type_change']) && in_array($new_type, ZoneType::getTypes())) {
-                $this->validateCsrfToken();
-                if ($this->dnsRecord->changeZoneType($new_type, $zone_id)) {
-                    $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
-                }
-            }
-
-            // Change slave master
-            if (isset($_POST['slave_master_change'])) {
-                $this->validateCsrfToken();
-                if ($this->dnsRecord->changeZoneSlaveMaster($zone_id, $_POST['new_master'])) {
-                    $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
-                }
-            }
-
-            // Change template
-            if (isset($_POST["template_change"])) {
-                $this->validateCsrfToken();
-                if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
-                    $new_zone_template = 0;
-                } else {
-                    $new_zone_template = $_POST['zone_template'];
-                }
-                $current_zone_template = $_POST['current_zone_template'] ?? 0;
-
-                if ($current_zone_template != $new_zone_template) {
-                    $this->dnsRecord->updateZoneRecords(
-                        $this->config->get('database', 'type', 'mysql'),
-                        $this->config->get('dns', 'ttl', 86400),
-                        $zone_id,
-                        $new_zone_template
-                    );
-                    $this->setMessage('edit', 'success', _('Zone template has been changed successfully.'));
-                }
-            }
+            $this->handleZoneMetadataPost($zone_id);
         }
 
-        if (isset($_POST['sign_zone'])) {
+        $dnssecProvider = $this->createDnssecProvider();
+
+        if ($this->request->getPostParam('sign_zone') !== null) {
             $this->validateCsrfToken();
 
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+            if (!$can_manage_dnssec) {
+                $this->setMessage('edit', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
+                $this->redirect('/zones/' . $zone_id . '/edit');
+                return;
+            }
 
             // Check if DNSSEC is enabled on the server
             if (!$dnssecProvider->isDnssecEnabled()) {
                 $this->setMessage('edit', 'error', _('DNSSEC is not enabled on the server.'));
+            } elseif ($dnssecProvider->isZonePresigned($zone_name)) {
+                $this->setMessage('edit', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
             } elseif ($dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                 // Check if zone is already secured
                 $this->setMessage('edit', 'info', _('Zone is already signed with DNSSEC.'));
@@ -347,7 +352,7 @@ class EditController extends BaseController
                 } else {
                     // Validation passed - proceed with signing
                     // Update SOA serial before signing
-                    $this->dnsRecord->updateSOASerial($zone_id);
+                    $this->soaRecordManager->updateSOASerial($zone_id);
 
                     // Try to secure the zone
                     $result = $dnssecProvider->secureZone($zone_name);
@@ -371,13 +376,19 @@ class EditController extends BaseController
             }
         }
 
-        if (isset($_POST['unsign_zone'])) {
+        if ($this->request->getPostParam('unsign_zone') !== null) {
             $this->validateCsrfToken();
 
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+            if (!$can_manage_dnssec) {
+                $this->setMessage('edit', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
+                $this->redirect('/zones/' . $zone_id . '/edit');
+                return;
+            }
 
             // Check if zone is secured before attempting to unsecure
-            if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
+            if ($dnssecProvider->isZonePresigned($zone_name)) {
+                $this->setMessage('edit', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            } elseif (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                 $this->setMessage('edit', 'info', _('Zone is not currently signed with DNSSEC.'));
             } else {
                 // Try to unsecure the zone
@@ -387,7 +398,7 @@ class EditController extends BaseController
                     // Verify the zone is now unsecured
                     if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                         // Update SOA serial after unsigning
-                        $this->dnsRecord->updateSOASerial($zone_id);
+                        $this->soaRecordManager->updateSOASerial($zone_id);
                         $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
                     } else {
                         $this->setMessage('edit', 'warning', _('Zone unsigning requested successfully, but verification failed.'));
@@ -401,14 +412,26 @@ class EditController extends BaseController
         }
 
         $domain_type = $this->zoneRepository->getDomainType($zone_id);
-        $record_count = $this->dnsRecord->countZoneRecords($zone_id);
+        $record_count = $this->recordRepository->countZoneRecords($zone_id);
         $slave_master = $this->zoneRepository->getDomainSlaveMaster($zone_id);
         $types = ZoneType::getTypes();
+
+        // Only zones PowerDNS would actually publish from a catalog get the selector,
+        // so nothing below runs for the kinds that would discard the result.
+        $catalog_selector_view = $this->getPdnsCapabilities()->supportsCatalogZones()
+            && in_array($domain_type, CatalogZoneService::PUBLISHABLE_KINDS, true);
+
+        // Read after the record listing above: in API mode the zone body is already
+        // held, so the catalog read costs nothing extra here.
+        $catalog_service = $this->createCatalogZoneService();
+        $catalog_name = $catalog_selector_view ? $catalog_service->getCatalog($zone_id) : '';
+        $catalog_producer = $catalog_name !== '' ? $catalog_service->getCatalogProducer($zone_id) : null;
+        $catalog_producers = $catalog_selector_view && $meta_edit ? $catalog_service->getManageableProducers($userId) : [];
 
         // Get zone templates
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $zone_templates = $zone_templates->getListZoneTempl($userId);
-        $zone_template_id = DnsRecord::getZoneTemplate($this->db, $zone_id);
+        $zone_template_id = DomainManager::getZoneTemplate($this->db, $zone_id);
         $zone_template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_template_id);
 
         $zone_comment = '';
@@ -418,17 +441,13 @@ class EditController extends BaseController
         }
 
         $zone_name_to_display = $this->zoneRepository->getDomainNameById($zone_id);
-        if (str_starts_with($zone_name_to_display, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($zone_name_to_display);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($zone_name_to_display);
         // Get records via DnsDataService (supports both SQL and API backends)
         $dnsDataService = $this->createDnsDataService();
         $recordResult = $dnsDataService->getZoneRecords(
             $zone_id,
             $zone_name,
-            (int)$row_start,
+            $row_start,
             $iface_rowamount,
             $record_sort_by,
             $sort_direction,
@@ -440,32 +459,71 @@ class EditController extends BaseController
         $records = $recordResult['records'];
         $total_filtered_count = $recordResult['total'];
 
-        $soa_record = $this->dnsRecord->getSOARecord($zone_id);
+        $soa_record = $this->soaRecordManager->getSOARecord($zone_id);
 
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $is_secured = $dnssecProvider->isZoneSecured($zone_name, $this->getConfig());
+        // Presigned zones always report secured, so unsigned zones skip the metadata lookup
+        $is_presigned = $is_secured && $dnssecProvider->isZonePresigned($zone_name);
+        // Serial as served by PowerDNS (SOA-EDIT applied); only relevant for signed zones
+        $signed_serial = ($isDnsSecEnabled && $is_secured) ? $dnssecProvider->getEditedSerial($zone_name) : null;
 
         // Transform records for display using the RecordDisplayService
         $recordDisplayService = new RecordDisplayService($display_hostname_only);
 
-        $displayRecords = [];
-        if ($zone_name !== null) {
-            $recordDisplayObjects = $recordDisplayService->transformRecords($records, $zone_name);
-            // Convert to arrays for template compatibility
-            $displayRecords = array_map(fn($recordDisplay) => $recordDisplay->toArray(), $recordDisplayObjects);
-        } else {
-            $displayRecords = $records;
+        $recordDisplayObjects = $recordDisplayService->transformRecords($records, $zone_name);
+        // Convert to arrays for template compatibility
+        $displayRecords = array_map(fn($recordDisplay) => $recordDisplay->toArray(), $recordDisplayObjects);
+
+        $perm_edit_ns_subzone = $this->hasPermission(Permission::PERM_EDIT_NS_SUBZONE);
+        $perm_is_godlike = $this->permissionService->isAdmin($userId);
+        $zone_is_read_only = ZoneType::isReadOnly($domain_type);
+        $user_can_edit_zone = ZoneAccessPolicy::canEditZone($perm_edit, $user_is_zone_owner);
+        $zone_is_editable = $user_can_edit_zone && !$zone_is_read_only;
+        $log_permission = Permission::getZoneLogPermission($this->db);
+        $can_view_zone_logs = $log_permission === 'all' || ($log_permission === 'own' && $user_is_zone_owner);
+
+        foreach ($displayRecords as &$record) {
+            $record['display_name'] ??= $record['name'];
+            $record['editable_name'] ??= $record['name'];
+            $nsRecordLocked = ZoneAccessPolicy::isNsRecordLocked(
+                $record['type'],
+                $perm_edit,
+                $perm_edit_ns_subzone,
+                $record['name'],
+                $zone_name
+            );
+            $record['record_locked'] = ZoneAccessPolicy::isRecordLocked(
+                $zone_is_read_only,
+                $record['type'],
+                $perm_edit,
+                $nsRecordLocked
+            );
         }
+        unset($record);
 
         $this->render('edit.html', [
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'zone_name_to_display' => $zone_name_to_display,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => DnsIdnService::toDisplay($zone_name_to_display),
             'zone_comment' => $zone_comment,
             'domain_type' => $domain_type,
             'slave_master' => $slave_master,
             'zone_types' => $types,
+            'zone_replicates_from_primary' => ZoneType::replicatesFromPrimary($domain_type),
+            // Catalog kinds are absent from $types, so the browser would preselect the
+            // first option and one click would silently retype the zone.
+            'zone_type_change_allowed' => in_array($domain_type, $types, true),
+            'catalog_members_view' => $domain_type === ZoneType::PRODUCER && $metadata_view
+                && $this->getPdnsCapabilities()->supportsCatalogZones(),
+            'catalog_selector_view' => $catalog_selector_view,
+            'catalog_producers' => $catalog_producers,
+            'catalog_producer_id' => $catalog_producer['id'] ?? null,
+            // Non-empty with a null producer id means the zone is in a catalog whose
+            // producer this install does not manage. Shown so it is not silently lost.
+            'catalog_name' => $catalog_name,
             'zone_templates' => $zone_templates,
             'zone_template_id' => $zone_template_id,
             'zone_template_details' => $zone_template_details,
@@ -474,13 +532,21 @@ class EditController extends BaseController
             'records' => $displayRecords,
             'perm_view' => $perm_view,
             'perm_edit' => $perm_edit,
+            'perm_edit_ns_subzone' => $perm_edit_ns_subzone,
             'perm_meta_edit' => $perm_meta_edit,
             'meta_edit' => $meta_edit,
+            'metadata_view' => $metadata_view,
+            'ownership_view' => $ownership_view,
+            'zone_is_read_only' => $zone_is_read_only,
+            'user_can_edit_zone' => $user_can_edit_zone,
+            'zone_is_editable' => $zone_is_editable,
+            'can_view_zone_logs' => $can_view_zone_logs,
+            'can_manage_dnssec' => $can_manage_dnssec,
             'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
-            'perm_is_godlike' => $this->permissionService->isAdmin($userId),
+            'perm_is_godlike' => $perm_is_godlike,
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
-            'perm_view_zone_own' => UserManager::verifyPermission($this->db, 'zone_content_view_own'),
-            'perm_view_zone_other' => UserManager::verifyPermission($this->db, 'zone_content_view_others'),
+            'perm_view_zone_own' => $this->hasPermission('zone_content_view_own'),
+            'perm_view_zone_other' => $this->hasPermission('zone_content_view_others'),
             'user_is_zone_owner' => $user_is_zone_owner,
             'row_start' => $row_start,
             'row_amount' => $iface_rowamount,
@@ -488,11 +554,14 @@ class EditController extends BaseController
             'sort_direction' => $sort_direction,
             'pagination' => $this->createAndPresentPagination($total_filtered_count, $iface_rowamount, $zone_id, $paginationService),
             'pdnssec_use' => $isDnsSecEnabled,
-            'is_secured' => $zone_name !== null && $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
+            'is_secured' => $is_secured,
+            'is_presigned' => $is_presigned,
+            'signed_serial' => $signed_serial,
             'session_userid' => $this->userContextService->getLoggedInUserId(),
             'dns_ttl' => $defaultTtl,
             'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),
             'ptr_default_ttl' => $this->reverseTtlResolver->getConfiguredReverseTtl(),
+            'type_default_ttls' => $this->reverseTtlResolver->getTypeDefaults(),
             'is_reverse_zone' => $isReverseZone,
             'record_types' => $isReverseZone
                 ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities())
@@ -507,8 +576,7 @@ class EditController extends BaseController
             'iface_edit_save_changes_top' => $iface_edit_save_changes_top,
             'iface_record_comments' => $iface_record_comments,
             'iface_zone_comments' => $iface_zone_comments,
-            'serial' => DnsRecord::getSOASerial($soa_record),
-            'file_version' => time(),
+            'serial' => SOARecordManager::getSOASerial($soa_record),
             'whois_actions' => $this->getWhoisActions($zone_id),
             'rdap_actions' => $this->getRdapActions($zone_id),
             'form_token' => $formToken,
@@ -523,6 +591,87 @@ class EditController extends BaseController
         ]);
     }
 
+    /**
+     * Join or leave a catalog. The producer arrives as a zone id so the service can
+     * resolve its name and check rights on it, rather than trusting a posted name.
+     */
+    private function handleCatalogChange(int $zone_id): void
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        $catalogService = $this->createCatalogZoneService();
+        $producerId = $this->request->getPostParam('new_catalog', '');
+
+        // The zone is in a catalog with no local producer; leave it as it is rather
+        // than clearing something the operator cannot see the whole of.
+        if ($producerId === 'keep') {
+            return;
+        }
+
+        if ($producerId === '' || $producerId === null) {
+            $done = $catalogService->clear($userId, $zone_id);
+            $message = $done ? _('The zone has been removed from the catalog.') : _('You do not have permission to edit this zone.');
+        } elseif (!is_numeric($producerId)) {
+            $done = false;
+            $message = _('Invalid or unexpected input given.');
+        } else {
+            $done = $catalogService->assign($userId, $zone_id, (int)$producerId);
+            $message = $done ? _('The catalog has been changed successfully.') : _('You do not have permission to edit this zone.');
+        }
+
+        $this->setMessage('edit', $done ? 'success' : 'error', $message);
+    }
+
+    private function handleZoneMetadataPost(int $zone_id): void
+    {
+        $domainManager = $this->domainManager ??= $this->createDomainManager();
+        $new_type = htmlspecialchars($this->request->getPostParam('newtype', ''));
+        if ($this->request->getPostParam('type_change') !== null && in_array($new_type, ZoneType::getTypes())) {
+            $this->validateCsrfToken();
+            if ($domainManager->changeZoneType($new_type, $zone_id)) {
+                $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
+            }
+        }
+
+        if ($this->request->getPostParam('slave_master_change') !== null) {
+            $this->validateCsrfToken();
+            if ($domainManager->changeZoneSlaveMaster($zone_id, $this->request->getPostParam('new_master', ''))) {
+                $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
+            }
+        }
+
+        if ($this->request->getPostParam('catalog_change') !== null) {
+            $this->validateCsrfToken();
+            $this->handleCatalogChange($zone_id);
+        }
+
+        if ($this->request->getPostParam('template_change') !== null) {
+            $this->validateCsrfToken();
+
+            // Applying a template writes records, which read-only zones cannot accept
+            if (ZoneType::isReadOnly($this->domainRepository->getDomainType($zone_id))) {
+                $this->setMessage('edit', 'error', _('You cannot apply a template to a read-only zone.'));
+                return;
+            }
+
+            $zone_template = $this->request->getPostParam('zone_template');
+            $new_zone_template = ($zone_template === null || $zone_template === 'none') ? 0 : $zone_template;
+            $current_zone_template = $this->request->getPostParam('current_zone_template', 0);
+
+            if ($current_zone_template != $new_zone_template) {
+                $updated = $domainManager->updateZoneRecords(
+                    $this->config->get('database', 'type', 'mysql'),
+                    $this->config->get('dns', 'ttl', 86400),
+                    $zone_id,
+                    $new_zone_template
+                );
+
+                if ($updated) {
+                    $this->setMessage('edit', 'success', _('Zone template has been changed successfully.'));
+                }
+            }
+        }
+    }
+
     private function createAndPresentPagination(int $totalItems, int $itemsPerPage, int $id, PaginationService $paginationService): string
     {
         $httpParameters = new HttpPaginationParameters();
@@ -535,14 +684,17 @@ class EditController extends BaseController
         $baseUrl = $baseUrlPrefix . '/zones/' . $id . '/edit?start={PageNumber}';
 
         // Add filters to pagination links if they exist
-        if (isset($_GET['search']) && !empty($_GET['search'])) {
-            $baseUrl .= '&search=' . urlencode($_GET['search']);
+        $search = $this->request->getQueryParam('search');
+        if (!empty($search)) {
+            $baseUrl .= '&search=' . urlencode($search);
         }
-        if (isset($_GET['record_type']) && !empty($_GET['record_type'])) {
-            $baseUrl .= '&record_type=' . urlencode($_GET['record_type']);
+        $recordType = $this->request->getQueryParam('record_type');
+        if (!empty($recordType)) {
+            $baseUrl .= '&record_type=' . urlencode($recordType);
         }
-        if (isset($_GET['content']) && !empty($_GET['content'])) {
-            $baseUrl .= '&content=' . urlencode($_GET['content']);
+        $content = $this->request->getQueryParam('content');
+        if (!empty($content)) {
+            $baseUrl .= '&content=' . urlencode($content);
         }
 
         $presenter = new PaginationPresenter($pagination, $baseUrl);
@@ -554,7 +706,7 @@ class EditController extends BaseController
     {
         $sortOrder = 'name';
 
-        foreach ([$_GET, $_POST, $_SESSION] as $source) {
+        foreach ([$this->request->getQueryParams(), $this->request->getPostParams(), $_SESSION] as $source) {
             if (isset($source[$name]) && in_array($source[$name], $allowedValues)) {
                 $sortOrder = $source[$name];
                 $_SESSION[$name] = $source[$name];
@@ -569,8 +721,8 @@ class EditController extends BaseController
     {
         $sortDirection = 'ASC';
 
-        foreach ([$_GET, $_POST, $_SESSION] as $source) {
-            if (isset($source[$name]) && in_array($source[$name], ['ASC', 'DESC'])) {
+        foreach ([$this->request->getQueryParams(), $this->request->getPostParams(), $_SESSION] as $source) {
+            if (isset($source[$name]) && is_string($source[$name]) && SortDirection::isValid($source[$name])) {
                 $sortDirection = $source[$name];
                 $_SESSION[$name] = $source[$name];
                 break;
@@ -582,22 +734,33 @@ class EditController extends BaseController
 
     public function saveRecords(int $zone_id, string $zone_name): void
     {
+        // Secondary and Consumer zones replicate from a primary - reject any save
+        // (records, comment, or SOA serial bump) server-side, not just in the UI
+        if (ZoneType::isReadOnly($this->zoneRepository->getDomainType($zone_id))) {
+            $this->setMessage('edit', 'error', _('You cannot edit records in a read-only zone.'));
+            return;
+        }
+
         $error = false;
         $one_record_changed = false;
         $serial_mismatch = false;
 
+        $records = $this->request->getPostParam('record');
+        $form_submitted = $this->request->getPostParam('form_complete') !== null;
         // A truncated POST (max_input_vars) drops the form's trailing fields, so the
         // zone comment must not be processed either - it would be saved as empty.
-        $records_truncated = isset($_POST['record']) && !isset($_POST['form_complete']);
+        $records_truncated = $records !== null && !$form_submitted;
 
-        if (isset($_POST['record'])) {
-            $soa_record = $this->dnsRecord->getSOARecord($zone_id);
-            $current_serial = DnsRecord::getSOASerial($soa_record);
+        // The client omits unchanged rows but always sends form_complete, so treat
+        // either as an edit-form save and run the stale-form serial check for both.
+        if ($records !== null || $form_submitted) {
+            $soa_record = $this->soaRecordManager->getSOARecord($zone_id);
+            $current_serial = SOARecordManager::getSOASerial($soa_record);
 
             if ($this->isSerialMismatch($current_serial)) {
                 $serial_mismatch = true;
             } else {
-                foreach ($_POST['record'] as &$record) {
+                foreach (($records ?? []) as &$record) {
                     // Rows end with a hidden _complete marker; max_input_vars truncation
                     // drops it, so skip such rows and flag the partial save.
                     if (!isset($record['_complete'])) {
@@ -606,13 +769,14 @@ class EditController extends BaseController
                     }
                     unset($record['_complete']);
 
+
                     // Normalize record name to full FQDN (always, regardless of display setting)
                     // This converts @ to zone apex and ensures proper zone suffix
                     if (isset($record['name'])) {
                         $record['name'] = DnsHelper::restoreZoneSuffix($record['name'], $zone_name);
                     }
 
-                    $log = new RecordLog($this->db, $this->getConfig());
+                    $log = new RecordLog($this->db, $this->recordRepository);
 
                     if (isset($record['disabled']) && $record['disabled'] == 'on') {
                         $record["disabled"] = 1;
@@ -637,7 +801,7 @@ class EditController extends BaseController
                         $one_record_changed = true;
                     }
 
-                    $edit_record = $this->dnsRecord->editRecord($record);
+                    $edit_record = $this->dnsRecordManager->editRecord($record);
                     if (false === $edit_record) {
                         $error = true;
                     } else {
@@ -657,7 +821,7 @@ class EditController extends BaseController
 
                             if ($this->config->get('misc', 'record_comments_sync')) {
                                 $this->commentSyncService->updateRelatedRecordComments(
-                                    $this->dnsRecord,
+                                    $this->domainRepository,
                                     $record,
                                     $record['comment'] ?? '',
                                     $this->userContextService->getLoggedInUsername()
@@ -668,13 +832,13 @@ class EditController extends BaseController
                 }
 
                 if ($records_truncated) {
-                    $this->setMessage('edit', 'warn', _('Some records were not saved because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP "max_input_vars" setting.'));
+                    $this->setMessage('edit', 'warning', _('Some records were not saved because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP "max_input_vars" setting.'));
                 }
             }
         }
 
         if (!$records_truncated && $this->config->get('interface', 'show_zone_comments', true)) {
-            $one_record_changed = $this->processZoneComment($zone_id, $this->dnsRecord, $one_record_changed);
+            $one_record_changed = $this->processZoneComment($zone_id, $one_record_changed);
         }
 
         // A truncated save that changed nothing keeps the SOA serial untouched and
@@ -683,13 +847,23 @@ class EditController extends BaseController
             return;
         }
 
-        $this->finalizeSave($error, $serial_mismatch, $this->dnsRecord, $zone_id, $one_record_changed, $zone_name);
+        // Collapse the flags into one outcome here, where all of them are in
+        // scope; $error wins over a stale form, which wins over the record count.
+        $conflictResolution = $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins');
+        $outcome = match (true) {
+            $error => ZoneSaveOutcome::WRITE_FAILED,
+            $serial_mismatch && $conflictResolution === 'only_latest_version' => ZoneSaveOutcome::SERIAL_CONFLICT,
+            $one_record_changed => ZoneSaveOutcome::UPDATED,
+            default => ZoneSaveOutcome::NO_CHANGES,
+        };
+
+        $this->finalizeSave($outcome, $zone_id, $zone_name);
     }
 
 
     private function getDnsWizardActions(int $zone_id): array
     {
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
         return $registry->getCapabilityData('dns_wizard', ['zone_id' => $zone_id], $isAdmin);
@@ -697,7 +871,7 @@ class EditController extends BaseController
 
     private function getWhoisActions(int $zone_id): array
     {
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
         return $registry->getCapabilityData('whois_lookup', ['zone_id' => $zone_id], $isAdmin);
@@ -705,7 +879,7 @@ class EditController extends BaseController
 
     private function getRdapActions(int $zone_id): array
     {
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
         return $registry->getCapabilityData('rdap_lookup', ['zone_id' => $zone_id], $isAdmin);
@@ -738,21 +912,21 @@ class EditController extends BaseController
      */
     public function isSerialMismatch(string $current_serial): bool
     {
-        return isset($_POST['serial']) && $_POST['serial'] != $current_serial;
+        $serial = $this->request->getPostParam('serial');
+        return $serial !== null && $serial != $current_serial;
     }
 
     /**
      * Process zone comment
      *
      * @param int $zone_id
-     * @param DnsRecord $dnsRecord
      * @param bool $one_record_changed
      * @return bool
      */
-    public function processZoneComment(int $zone_id, DnsRecord $dnsRecord, bool $one_record_changed): bool
+    public function processZoneComment(int $zone_id, bool $one_record_changed): bool
     {
         $raw_zone_comment = $this->zoneRepository->getZoneComment($zone_id);
-        $zone_comment = $_POST['zone_comment'] ?? '';
+        $zone_comment = $this->request->getPostParam('zone_comment', '');
         if ($raw_zone_comment != $zone_comment) {
             $this->zoneRepository->updateZoneComment($zone_id, $zone_comment);
             $one_record_changed = true;
@@ -761,38 +935,28 @@ class EditController extends BaseController
     }
 
     /**
-     * Finalize save
-     *
-     * @param bool $error
-     * @param bool $serial_mismatch
-     * @param DnsRecord $dnsRecord
-     * @param int $zone_id
-     * @param bool $one_record_changed
-     * @param string $zone_name
-     * @return void
+     * Report the result of a zone-edit save, bumping the serial when one happened.
      */
-    public function finalizeSave(bool $error, bool $serial_mismatch, DnsRecord $dnsRecord, int $zone_id, bool $one_record_changed, string $zone_name): void
+    public function finalizeSave(ZoneSaveOutcome $outcome, int $zone_id, string $zone_name): void
     {
-        if ($error === false) {
-            $experimental_edit_conflict_resolution = $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins');
-            if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
-                $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
-            } else {
-                $dnsRecord->updateSOASerial($zone_id);
+        if (!$outcome->wasWritten()) {
+            match ($outcome) {
+                ZoneSaveOutcome::WRITE_FAILED => $this->setMessage('edit', 'error', _('Zone has not been updated successfully.')),
+                ZoneSaveOutcome::SERIAL_CONFLICT => $this->setMessage('edit', 'warning', _('Request has expired, please try again.')),
+                default => null,
+            };
+            return;
+        }
 
-                if ($one_record_changed) {
-                    $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
-                } else {
-                    $this->setMessage('edit', 'info', (_('Zone saved successfully. No record changes were made, but SOA serial was incremented.')));
-                }
+        $this->soaRecordManager->updateSOASerial($zone_id);
 
-                if ($this->config->get('dnssec', 'enabled', false)) {
-                    $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-                    $dnssecProvider->rectifyZone($zone_name);
-                }
-            }
-        } else {
-            $this->setMessage('edit', 'error', _('Zone has not been updated successfully.'));
+        match ($outcome) {
+            ZoneSaveOutcome::UPDATED => $this->setMessage('edit', 'success', _('Zone has been updated successfully.')),
+            default => $this->setMessage('edit', 'info', _('Zone saved successfully. No record changes were made, but SOA serial was incremented.')),
+        };
+
+        if ($this->config->get('dnssec', 'enabled', false)) {
+            $this->createDnssecProvider()->rectifyZone($zone_name);
         }
     }
 
@@ -816,12 +980,12 @@ class EditController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
+        if (!$this->doValidateRequest($this->request->getPostParams())) {
             // Store validation error directly in session
-            $_SESSION['add_record_error'] = [
+            $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
                 'error' => true,
                 'errorMessage' => _('Please provide all required fields.'),
-                'fieldError' => isset($_POST['content']) && !empty($_POST['content']) ? 'type' : 'content'
+                'fieldError' => !empty($this->request->getPostParam('content')) ? 'type' : 'content'
             ];
 
             // Don't call showFirstValidationError as it would redirect
@@ -829,25 +993,27 @@ class EditController extends BaseController
             return false;
         }
 
-        $name = $_POST['name'] ?? '';
-        $content = $_POST['content'];
-        $type = $_POST['type'];
-        $prio = isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0;
-        $comment = $_POST['comment'] ?? '';
+        $name = $this->request->getPostParam('name', '');
+        $content = $this->request->getPostParam('content');
+        $type = $this->request->getPostParam('type');
+        $prio = $this->request->getPostParam('prio');
+        $prio = $prio !== null && $prio !== '' ? (int)$prio : 0;
+        $comment = $this->request->getPostParam('comment', '');
 
         // Normalize record name to full FQDN (always, regardless of display setting)
         // This converts @ to zone apex and ensures proper zone suffix
         $zone_name_for_record = $this->zoneRepository->getDomainNameById($zone_id);
         if ($zone_name_for_record === null) {
-            $_SESSION['add_record_error'] = [
+            $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
                 'error' => true,
                 'errorMessage' => _('Zone not found.'),
                 'fieldError' => ''
             ];
             return false;
         }
-        $isReverseZone = DnsHelper::isReverseZone($zone_name_for_record);
-        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name_for_record);
+        $ttl = $this->request->getPostParam('ttl');
+        $ttl = $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
         $name = DnsHelper::restoreZoneSuffix($name, $zone_name_for_record);
 
         try {
@@ -861,7 +1027,7 @@ class EditController extends BaseController
                 $fieldWithError = $this->determineFieldWithError($errorMessage);
 
                 // Store validation error directly in session
-                $_SESSION['add_record_error'] = [
+                $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
                     'error' => true,
                     'errorMessage' => $errorMessage,
                     'fieldError' => $fieldWithError
@@ -874,7 +1040,7 @@ class EditController extends BaseController
             $fieldWithError = $this->determineFieldWithError($errorMessage);
 
             // Store validation error directly in session
-            $_SESSION['add_record_error'] = [
+            $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
                 'error' => true,
                 'errorMessage' => $errorMessage,
                 'fieldError' => $fieldWithError
@@ -883,15 +1049,16 @@ class EditController extends BaseController
         }
 
         // Clear session data when record is successfully created
-        unset($_SESSION['add_record_last_data']);
-        unset($_SESSION['add_record_error']);
+        unset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
+        unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
 
         // Clear form data if it exists in the session
-        if (isset($_POST['form_token'])) {
-            $this->formStateService->clearFormData($_POST['form_token']);
+        $formToken = $this->request->getPostParam('form_token');
+        if ($formToken !== null) {
+            $this->formStateService->clearFormData($formToken);
         }
 
-        if (isset($_POST['reverse'])) {
+        if ($this->request->getPostParam('reverse') !== null) {
             // When dns.ttl_reverse is configured it always wins for the auto-created PTR;
             // when unset, the PTR inherits the forward record's TTL (historical behavior).
             $ptrTtl = $this->reverseTtlResolver->resolvePtrTtl($ttl);
@@ -900,7 +1067,7 @@ class EditController extends BaseController
             if ($reverseResult && isset($reverseResult['success']) && $reverseResult['success']) {
                 $message = _('Record successfully added. A matching PTR record was also created.');
                 $this->setMessage('edit', 'success', $message);
-            } elseif ($reverseResult && isset($reverseResult['success']) && !$reverseResult['success'] && isset($reverseResult['message'])) {
+            } elseif ($reverseResult && isset($reverseResult['success'], $reverseResult['message'])) {
                 // Reverse record creation failed with a specific message
                 $message = _('Record successfully added, but PTR record creation failed: ') . $reverseResult['message'];
                 $this->setMessage('edit', 'warning', $message);
@@ -908,7 +1075,7 @@ class EditController extends BaseController
                 // Reverse record creation failed without a specific message
                 $this->setMessage('edit', 'success', _('The record was successfully added, but PTR record creation failed.'));
             }
-        } elseif (isset($_POST['create_domain_record'])) {
+        } elseif ($this->request->getPostParam('create_domain_record') !== null) {
             // Strip zone suffix for PTR record processing - DomainRecordCreator expects relative hostname
             $relativeHostname = DnsHelper::stripZoneSuffix($name, $zone_name_for_record);
             $domainRecord = $this->createDomainRecord($relativeHostname, $type, $content, $zone_id, $comment);
@@ -966,7 +1133,7 @@ class EditController extends BaseController
             $name,
             $type,
             $content,
-            $zone_id,
+            (int)$zone_id,
             $ttl,
             $prio,
             $comment,
@@ -996,7 +1163,7 @@ class EditController extends BaseController
             $name,
             $type,
             $content,
-            $zone_id,
+            (int)$zone_id,
             $comment,
             $this->userContextService->getLoggedInUsername()
         );
@@ -1050,14 +1217,14 @@ class EditController extends BaseController
     private function clearFormDataOnZoneChange(int $currentZoneId): void
     {
         // Check if we have a previously stored zone ID in session for form data
-        if (isset($_SESSION['add_record_zone_id']) && $_SESSION['add_record_zone_id'] != $currentZoneId) {
+        if (isset($_SESSION[SessionKeys::ADD_RECORD_ZONE_ID]) && $_SESSION[SessionKeys::ADD_RECORD_ZONE_ID] != $currentZoneId) {
             // Zone has changed, clear the form data and error information
-            unset($_SESSION['add_record_last_data']);
-            unset($_SESSION['add_record_error']);
-            unset($_SESSION['add_record_zone_id']);
+            unset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
+            unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
+            unset($_SESSION[SessionKeys::ADD_RECORD_ZONE_ID]);
         }
 
         // Store the current zone ID for future comparisons
-        $_SESSION['add_record_zone_id'] = $currentZoneId;
+        $_SESSION[SessionKeys::ADD_RECORD_ZONE_ID] = $currentZoneId;
     }
 }

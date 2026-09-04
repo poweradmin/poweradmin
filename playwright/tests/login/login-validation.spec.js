@@ -160,12 +160,10 @@ test.describe('Login Form Validation', () => {
     });
 
     test('should handle CSRF protection', async ({ page }) => {
-      // Check for CSRF token in form
-      const csrfToken = page.locator('input[name*="csrf"], input[name*="token"]');
-      if (await csrfToken.count() > 0) {
-        const value = await csrfToken.first().getAttribute('value');
-        expect(value).toBeTruthy();
-      }
+      // The login form must carry a non-empty _token; a missing one is the regression
+      const csrfToken = page.locator('input[name="_token"]');
+      await expect(csrfToken).toHaveCount(1);
+      await expect(csrfToken).not.toHaveValue('');
     });
   });
 });

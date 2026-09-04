@@ -61,6 +61,31 @@ interface UserRepository
     public function getUserById(int $userId): ?array;
 
     /**
+     * Get a user's full name by ID
+     *
+     * @param int $userId User ID to look up
+     * @return string|null Full name, or null if the user does not exist
+     */
+    public function getFullNameById(int $userId): ?string;
+
+    /**
+     * Get the full names of all owners of a zone, comma-separated
+     *
+     * @param int $domainId Domain/zone ID
+     * @return string Comma-separated owner full names, empty string if none
+     */
+    public function getZoneOwnerFullNames(int $domainId): string;
+
+    /**
+     * Check if a user owns a zone directly or via group membership
+     *
+     * @param int $userId User ID to check
+     * @param int $domainId Domain/zone ID
+     * @return bool True if the user owns the zone
+     */
+    public function userOwnsZone(int $userId, int $domainId): bool;
+
+    /**
      * Get all permissions for a specific user
      *
      * @param int $userId User ID to get permissions for
@@ -86,11 +111,33 @@ interface UserRepository
     public function getUsersList(int $offset, int $limit): array;
 
     /**
+     * Get all users with the number of zones each one owns
+     *
+     * @return array Array of user rows [id, username, fullname, email, description, active, numdomains]
+     */
+    public function getUsersWithZoneCounts(): array;
+
+    /**
+     * Get detailed user list with template, group, and MFA info
+     *
+     * @param bool $ldapUse Whether the LDAP column should be included
+     * @param int|null $restrictToUserId Return only this user (for users without view-others permission)
+     * @param int|null $specific User ID to fetch (overrides the restriction)
+     * @param int|null $limit Number of records to return (optional)
+     * @param int|null $offset Starting offset (optional)
+     * @param string|null $search Filter on username, full name, email or description
+     * @return array Array of user details
+     */
+    public function getUserDetailList(bool $ldapUse, ?int $restrictToUserId, ?int $specific = null, ?int $limit = null, ?int $offset = null, ?string $search = null): array;
+
+    /**
      * Get total count of users in the system
      *
+     * @param int|null $restrictToUserId Count only this user (for users without view-others permission)
+     * @param string|null $search Filter on username, full name, email or description
      * @return int Total number of users
      */
-    public function getTotalUserCount(): int;
+    public function getTotalUserCount(?int $restrictToUserId = null, ?string $search = null): int;
 
     /**
      * Delete a user by ID
@@ -118,14 +165,6 @@ interface UserRepository
     public function transferUserZones(int $fromUserId, int $toUserId): bool;
 
     /**
-     * Unassign all zones owned by a user (set owner to NULL)
-     *
-     * @param int $userId User ID
-     * @return bool True if zones were unassigned successfully
-     */
-    public function unassignUserZones(int $userId): bool;
-
-    /**
      * Count total number of uberusers (super admins) in the system
      *
      * @return int Number of uberusers
@@ -139,6 +178,25 @@ interface UserRepository
      * @return bool True if user is an uberuser
      */
     public function isUberuser(int $userId): bool;
+
+    /**
+     * Check whether a permission template grants the uberuser permission
+     *
+     * @param int $permTemplId Permission template ID
+     * @return bool True if the template grants user_is_ueberuser
+     */
+    public function templateGrantsUberuser(int $permTemplId): bool;
+
+    /**
+     * Resolve every permission id carrying a given name
+     *
+     * perm_items.name has no unique constraint, so a name can map to several rows and
+     * all of them grant the permission.
+     *
+     * @param string $name Permission name as stored in perm_items
+     * @return array<int, int> Matching permission ids, empty when the permission is absent
+     */
+    public function getPermissionIdsByName(string $name): array;
 
     /**
      * Create a new user

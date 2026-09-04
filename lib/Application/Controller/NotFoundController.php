@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\BaseController;
 
 class NotFoundController extends BaseController
@@ -32,19 +33,37 @@ class NotFoundController extends BaseController
         parent::__construct($request, false);
     }
 
+    /**
+     * Serving a 404 changes nothing, and the response must stay a 404 for any
+     * verb rather than becoming a token error page.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         // Set 404 HTTP status code
         http_response_code(404);
 
         // Check if the request expects JSON
-        if (self::expectsJson()) {
+        if (RequestContext::expectsJson()) {
             header('Content-Type: application/json');
-            echo json_encode([
-                'error' => 'Not Found',
-                'message' => 'The requested resource was not found',
-                'status' => 404
-            ]);
+            // v2 wraps errors as {success:false,data,message}; other JSON callers keep the legacy shape.
+            if (RequestContext::isV2ApiRequest()) {
+                echo json_encode([
+                    'success' => false,
+                    'data' => null,
+                    'message' => 'The requested resource was not found'
+                ]);
+            } else {
+                echo json_encode([
+                    'error' => 'Not Found',
+                    'message' => 'The requested resource was not found',
+                    'status' => 404
+                ]);
+            }
             return;
         }
 

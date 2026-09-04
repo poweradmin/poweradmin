@@ -43,15 +43,10 @@ use RuntimeException;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class MfaService
 {
-    // Wrong second-factor guesses tolerated before verification is refused, and
-    // how long it stays refused. Without this a caller holding the password can
-    // walk the whole six-digit space while one code is live.
-    private const MAX_VERIFY_ATTEMPTS = 5;
-    private const VERIFY_LOCKOUT_SECONDS = 900;
-
     private Google2FA $google2fa;
     private UserMfaRepositoryInterface $userMfaRepository;
     private ConfigurationManager $configManager;
@@ -188,7 +183,7 @@ class MfaService
      * @param string|null $secret The secret key to check
      * @return bool True if the secret is valid, false otherwise
      */
-    public function isValidTotpSecret(?string $secret): bool
+    public function isValidTotpSecret(#[\SensitiveParameter] ?string $secret): bool
     {
         if ($secret === null || empty($secret)) {
             return false;
@@ -259,93 +254,14 @@ class MfaService
     }
 
     /**
-     * Verify a TOTP code, email code, or recovery code for a user
-     *
-     * @param int $userId The user ID
-     * @param string $code The verification code to check
-     * @return bool True if the code is valid, false otherwise
-     */
-    public function verifyCode(int $userId, string $code): bool
-    {
-        // A recovery code is the documented way back into a locked account, so it is
-        // checked before the gate; 10 random characters need no brute-force ceiling.
-        if ($this->consumeRecoveryCode($userId, $code)) {
-            $this->recordVerificationOutcome($userId, true);
-            return true;
-        }
-
-        if ($this->isVerificationLocked($userId)) {
-            $this->logger->warning('Verification refused - too many failed attempts for user ID: {userId}', ['userId' => $userId]);
-            return false;
-        }
-
-        $isValid = $this->checkCode($userId, $code);
-        $this->recordVerificationOutcome($userId, $isValid);
-
-        return $isValid;
-    }
-
-    /**
-     * Whether verification is currently refused for this user because the
-     * failed-attempt ceiling was reached.
-     */
-    private function isVerificationLocked(int $userId): bool
-    {
-        $userMfa = $this->userMfaRepository->findByUserId($userId);
-
-        if (!$userMfa) {
-            return false;
-        }
-
-        return (int)($userMfa->getVerificationDataAsArray()['locked_until'] ?? 0) > time();
-    }
-
-    /**
-     * Count the attempt and start refusing once the ceiling is reached.
-     *
-     * Re-reads the record because checkCode() saves its own changes (recovery
-     * code consumed, code marked used); writing a stale copy would undo them.
-     */
-    private function recordVerificationOutcome(int $userId, bool $isValid): void
-    {
-        $userMfa = $this->userMfaRepository->findByUserId($userId);
-
-        if (!$userMfa) {
-            return;
-        }
-
-        $metadata = $userMfa->getVerificationDataAsArray();
-
-        if ($isValid) {
-            // Nothing accrued, so skip the write a clean verification would add.
-            if (empty($metadata['failed_attempts']) && empty($metadata['locked_until'])) {
-                return;
-            }
-
-            unset($metadata['failed_attempts'], $metadata['locked_until']);
-        } else {
-            $failed = (int)($metadata['failed_attempts'] ?? 0) + 1;
-
-            if ($failed >= self::MAX_VERIFY_ATTEMPTS) {
-                $metadata['failed_attempts'] = 0;
-                $metadata['locked_until'] = time() + self::VERIFY_LOCKOUT_SECONDS;
-                $this->logger->warning('Second factor locked after repeated failures for user ID: {userId}', ['userId' => $userId]);
-            } else {
-                $metadata['failed_attempts'] = $failed;
-            }
-        }
-
-        $userMfa->setVerificationData($metadata);
-        $this->userMfaRepository->save($userMfa);
-    }
-
-    /**
      * Consume the supplied code if it is one of the user's recovery codes.
+     *
+     * A recovery code is the documented way back into a locked account, so callers
+     * may check it before any lockout gate.
      */
-    private function consumeRecoveryCode(int $userId, string $code): bool
+    public function consumeRecoveryCode(int $userId, #[\SensitiveParameter] string $code): bool
     {
         $userMfa = $this->userMfaRepository->findByUserId($userId);
-
         if (!$userMfa || !$userMfa->getSecret()) {
             return false;
         }
@@ -361,7 +277,14 @@ class MfaService
         return true;
     }
 
-    private function checkCode(int $userId, string $code): bool
+    /**
+     * Verify a TOTP code, email code, or recovery code for a user
+     *
+     * @param int $userId The user ID
+     * @param string $code The verification code to check
+     * @return bool True if the code is valid, false otherwise
+     */
+    public function verifyCode(int $userId, #[\SensitiveParameter] string $code): bool
     {
         $userMfa = $this->userMfaRepository->findByUserId($userId);
 
@@ -380,6 +303,11 @@ class MfaService
         }
 
         $this->logger->debug('Verifying code for user ID: {userId}, type: {type}', ['userId' => $userId, 'type' => $mfaType]);
+
+        // First, check if the code matches a recovery code
+        if ($this->consumeRecoveryCode($userId, $code)) {
+            return true;
+        }
 
         // For email type, verify with direct comparison
         if ($mfaType === UserMfa::TYPE_EMAIL) {
@@ -414,8 +342,7 @@ class MfaService
                     }
                 }
 
-                // Constant-time, and cast because getSecret() is nullable even though
-                // the guard above means null cannot reach here.
+                // Verify the code (trim to handle potential whitespace)
                 $isValid = hash_equals(trim((string) $storedSecret), trim($code));
 
                 if ($isValid) {
@@ -469,9 +396,36 @@ class MfaService
     }
 
     /**
+     * Burn the pending email code so it cannot be guessed any further.
+     *
+     * Called when a user trips the second-factor attempt limit: the lockout
+     * window can be configured shorter than the code lifetime, and without this
+     * the same code would still be live when the lockout lifts.
+     */
+    public function invalidatePendingEmailCode(int $userId): void
+    {
+        $userMfa = $this->userMfaRepository->findByUserId($userId);
+
+        if (!$userMfa || $userMfa->getType() !== UserMfa::TYPE_EMAIL) {
+            return;
+        }
+
+        $metadata = $userMfa->getVerificationDataAsArray();
+        if ($metadata === []) {
+            return;
+        }
+
+        $metadata['used'] = true;
+        $userMfa->setVerificationData($metadata);
+        $this->userMfaRepository->save($userMfa);
+
+        $this->logger->warning('Pending email code invalidated after too many failed attempts for user ID: {userId}', ['userId' => $userId]);
+    }
+
+    /**
      * Generate a QR code SVG for MFA setup
      */
-    public function generateQrCodeSvg(string $email, string $secret): string
+    public function generateQrCodeSvg(string $email, #[\SensitiveParameter] string $secret): string
     {
         // Get the application name from configuration to use as the issuer
         $appName = $this->configManager->get('interface', 'title', 'Poweradmin');
@@ -529,10 +483,7 @@ class MfaService
         }
 
         // Validate mail configuration before proceeding
-        if (
-            method_exists($this->mailService, 'isMailConfigurationValid') &&
-            !$this->mailService->isMailConfigurationValid()
-        ) {
+        if (!$this->mailService->isMailConfigurationValid()) {
             $this->logger->warning('Email verification attempted but mail configuration is invalid for user ID: {userId}', ['userId' => $userId]);
             throw new RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
         }
@@ -545,17 +496,12 @@ class MfaService
         // Add expiration timestamp (10 minutes from now)
         $expiresAt = time() + 600; // 10 minutes
 
-        // Carry the attempt counters across regeneration, otherwise requesting a
-        // fresh code would clear the lockout and hand back unlimited guesses.
-        $previous = $userMfa->getVerificationDataAsArray();
-
+        // Store metadata about this verification code
         $verificationMeta = json_encode([
             'code' => $verificationCode,
             'generated_at' => time(),
             'expires_at' => $expiresAt,
-            'used' => false,
-            'failed_attempts' => (int)($previous['failed_attempts'] ?? 0),
-            'locked_until' => (int)($previous['locked_until'] ?? 0),
+            'used' => false
         ]);
 
         // Log the code generation but not the actual code for security
@@ -609,10 +555,7 @@ class MfaService
         }
 
         // Validate mail configuration before proceeding
-        if (
-            method_exists($this->mailService, 'isMailConfigurationValid') &&
-            !$this->mailService->isMailConfigurationValid()
-        ) {
+        if (!$this->mailService->isMailConfigurationValid()) {
             $this->logger->warning('Email verification refresh attempted but mail configuration is invalid for user ID: {userId}', ['userId' => $userId]);
             throw new RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
         }
@@ -624,34 +567,25 @@ class MfaService
             return null;
         }
 
-        // While locked, sending a replacement would mail the account owner on
-        // every refused attempt without letting the caller verify anyway.
-        if ($this->isVerificationLocked($userId)) {
-            return null;
-        }
-
         // Check if we have metadata
         $metadataJson = $userMfa->getVerificationData();
         $needsRefresh = true;
 
         if (!empty($metadataJson)) {
-            try {
-                $metadata = json_decode($metadataJson, true);
+            // Malformed metadata decodes to null, which fails the isset check below
+            // and refreshes the code - the same outcome as an expired one.
+            $metadata = json_decode($metadataJson, true);
 
-                // Check if code has expired or was used
-                if (
-                    !isset($metadata['expires_at']) ||
-                    $metadata['expires_at'] < time() ||
-                    (isset($metadata['used']) && $metadata['used'] === true)
-                ) {
-                    $needsRefresh = true;
-                } else {
-                    // Code is still valid
-                    $needsRefresh = false;
-                }
-            } catch (Exception $e) {
-                $this->logger->error('Error checking verification code status: {error}', ['error' => $e->getMessage()]);
+            // Check if code has expired or was used
+            if (
+                !isset($metadata['expires_at']) ||
+                $metadata['expires_at'] < time() ||
+                (isset($metadata['used']) && $metadata['used'] === true)
+            ) {
                 $needsRefresh = true;
+            } else {
+                // Code is still valid
+                $needsRefresh = false;
             }
         }
 
@@ -674,13 +608,15 @@ class MfaService
      * This checks:
      * 1. Global mfa.enabled setting (MFA feature must be available)
      * 2. Global mfa.enforced setting (enforcement must be enabled)
-     * 3. User or group has user_enforce_mfa permission
+     * 3. mfa.skip_for_external_auth exemption for external IdP logins
+     * 4. User or group has user_enforce_mfa permission
      *
      * @param int $userId The user ID
      * @param object $db Database connection for permission check
+     * @param string|null $authMethod How the user authenticated (session auth_used value), null if unknown
      * @return bool True if MFA is enforced for this user
      */
-    public function isMfaEnforced(int $userId, object $db): bool
+    public function isMfaEnforced(int $userId, object $db, ?string $authMethod = null): bool
     {
         // Check if MFA feature is enabled
         if (!$this->configManager->get('security', 'mfa.enabled', false)) {
@@ -689,6 +625,14 @@ class MfaService
 
         // Check if MFA enforcement is enabled globally
         if (!$this->configManager->get('security', 'mfa.enforced', false)) {
+            return false;
+        }
+
+        // External IdP logins may be exempt - the IdP is trusted to enforce MFA itself
+        if (
+            AuthMethod::fromDb($authMethod)->isExternal()
+            && $this->configManager->get('security', 'mfa.skip_for_external_auth', false)
+        ) {
             return false;
         }
 
@@ -745,12 +689,13 @@ class MfaService
      *
      * @param int $userId The user ID
      * @param object $db Database connection
+     * @param string|null $authMethod How the user authenticated (session auth_used value), null if unknown
      * @return bool True if MFA setup is required
      */
-    public function isMfaSetupRequired(int $userId, object $db): bool
+    public function isMfaSetupRequired(int $userId, object $db, ?string $authMethod = null): bool
     {
         // Check if MFA is enforced for this user
-        if (!$this->isMfaEnforced($userId, $db)) {
+        if (!$this->isMfaEnforced($userId, $db, $authMethod)) {
             return false;
         }
 

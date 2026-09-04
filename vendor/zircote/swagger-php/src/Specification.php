@@ -6,7 +6,9 @@
 
 namespace OpenApi;
 
+use OpenApi\Contracts\AttributeInterface;
 use OpenApi\Spec as OA;
+use OpenApi\Specification\ComponentIndex;
 use OpenApi\Utils\SpecificationWalker;
 
 /**
@@ -101,11 +103,16 @@ class Specification
         return new SpecificationWalker($this);
     }
 
+    public function buildComponentIndex(): ComponentIndex
+    {
+        return new ComponentIndex($this);
+    }
+
     protected function addComponentsChildren(OA\Components $components): void
     {
-        foreach ($components->contains() as $slot) {
-            $property = rtrim($slot, '[]');
-            if (property_exists($this, $property) && property_exists($components, $property)) {
+        foreach ((new \ReflectionClass($components))->getProperties(\ReflectionProperty::IS_PUBLIC) as $rp) {
+            $property = $rp->getName();
+            if (property_exists($this, $property) && is_array($components->{$property})) {
                 array_push($this->{$property}, ...$components->{$property});
             }
         }

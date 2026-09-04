@@ -24,11 +24,10 @@ namespace Poweradmin\Tests\Unit\Api\V2;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesController;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneManagementService;
-use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -140,9 +139,10 @@ class ZoneMetadataPermissionTest extends TestCase
     {
         $permissionService = $this->createMock(ApiPermissionService::class);
         $permissionService->method('canEditZoneMeta')->willReturn($meta);
-        $permissionService->method('canEditZone')->willReturn($content);
+        $permissionService->method('hasZoneContentEditPermission')->willReturn($content);
+        $permissionService->method('canCreateZone')->willReturn(true);
 
-        $zoneRepository = $this->createMock(ZoneRepositoryInterface::class);
+        $zoneRepository = $this->createMock(DbZoneRepository::class);
         $zoneRepository->method('zoneIdExists')->willReturn(true);
         $zoneRepository->method('getZoneById')->willReturn($stored + [
             'id' => self::ZONE_ID,
@@ -164,7 +164,6 @@ class ZoneMetadataPermissionTest extends TestCase
         $this->inject($controller, 'pathParameters', ['id' => self::ZONE_ID]);
         $this->inject($controller, 'authenticatedUserId', self::USER_ID);
         $this->inject($controller, 'ipAddressValidator', new IPAddressValidator());
-        $this->inject($controller, 'logger', $this->createMock(LoggerInterface::class));
 
         $reflection = new ReflectionClass($controller);
         $response = $reflection->getMethod('updateZone')->invoke($controller);

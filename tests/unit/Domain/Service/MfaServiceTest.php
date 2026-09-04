@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
+use PDO;
+use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -30,6 +32,7 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use RuntimeException;
 
@@ -378,6 +381,46 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function testConsumeRecoveryCodeAcceptsAPrintedCodeOnce(): void
+    {
+        $userId = 1;
+        $userMfa = UserMfa::create(
+            $userId,
+            true,
+            'JBSWY3DPEHPK3PXP',
+            json_encode(['recovery-one', 'recovery-two']),
+            UserMfa::TYPE_APP
+        );
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+        $this->userMfaRepository->expects($this->once())->method('save');
+
+        // The printed code is the only way back into a locked account, so it must be
+        // accepted on its own and spent afterwards
+        $this->assertTrue($this->service->consumeRecoveryCode($userId, 'recovery-one'));
+        $this->assertFalse($this->service->consumeRecoveryCode($userId, 'recovery-one'));
+    }
+
+    public function testConsumeRecoveryCodeRefusesATotpCode(): void
+    {
+        $userId = 1;
+        $userMfa = UserMfa::create(
+            $userId,
+            true,
+            'JBSWY3DPEHPK3PXP',
+            json_encode(['recovery-one']),
+            UserMfa::TYPE_APP
+        );
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+
+        $this->assertFalse($this->service->consumeRecoveryCode($userId, '123456'));
+    }
+
     public function testVerifyCodeReturnsTrueForValidRecoveryCode(): void
     {
         $userId = 1;
@@ -433,70 +476,6 @@ class MfaServiceTest extends TestCase
 
         $result = $this->service->verifyCode($userId, $verificationCode);
         $this->assertTrue($result);
-    }
-
-    #[Test]
-    public function testVerifyCodeRefusesCorrectCodeWhileLockedOut(): void
-    {
-        $userId = 1;
-        $verificationCode = '123456';
-
-        $userMfa = $this->createMock(UserMfa::class);
-        $userMfa->method('getSecret')->willReturn($verificationCode);
-        $userMfa->method('getType')->willReturn(UserMfa::TYPE_EMAIL);
-        $userMfa->method('validateRecoveryCode')->willReturn(false);
-        $userMfa->method('getVerificationDataAsArray')->willReturn([
-            'expires_at' => time() + 600,
-            'used' => false,
-            'locked_until' => time() + 300,
-        ]);
-
-        $this->userMfaRepository->method('findByUserId')
-            ->with($userId)
-            ->willReturn($userMfa);
-
-        $this->userMfaRepository->expects($this->never())->method('save');
-
-        $result = $this->service->verifyCode($userId, $verificationCode);
-        $this->assertFalse($result, 'A locked out account must not verify even with the right code');
-    }
-
-    #[Test]
-    public function testVerifyCodeLocksOutAfterRepeatedFailures(): void
-    {
-        $userId = 1;
-
-        $userMfa = $this->createMock(UserMfa::class);
-        $userMfa->method('getSecret')->willReturn('123456');
-        $userMfa->method('getType')->willReturn(UserMfa::TYPE_EMAIL);
-        $userMfa->method('validateRecoveryCode')->willReturn(false);
-        $userMfa->method('getVerificationData')->willReturn(json_encode([
-            'expires_at' => time() + 600,
-            'used' => false,
-        ]));
-        $userMfa->method('getVerificationDataAsArray')->willReturn([
-            'expires_at' => time() + 600,
-            'used' => false,
-            'failed_attempts' => 4, // the guess below is the fifth
-        ]);
-
-        $this->configManager->method('get')
-            ->willReturnMap([
-                ['mail', 'enabled', false, true],
-            ]);
-
-        $this->userMfaRepository->method('findByUserId')
-            ->with($userId)
-            ->willReturn($userMfa);
-
-        $userMfa->expects($this->once())
-            ->method('setVerificationData')
-            ->with($this->callback(static function (array $metadata): bool {
-                return isset($metadata['locked_until']) && $metadata['locked_until'] > time();
-            }));
-
-        $result = $this->service->verifyCode($userId, '999999');
-        $this->assertFalse($result);
     }
 
     #[Test]
@@ -636,6 +615,69 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function testVerifyCodeRejectsSameLengthWrongEmailCode(): void
+    {
+        $userId = 1;
+        $storedCode = '123456';
+        $wrongCode = '123455';
+        $metadata = json_encode([
+            'expires_at' => time() + 600,
+            'used' => false,
+        ]);
+
+        $userMfa = $this->createMock(UserMfa::class);
+        $userMfa->method('getSecret')->willReturn($storedCode);
+        $userMfa->method('getType')->willReturn(UserMfa::TYPE_EMAIL);
+        $userMfa->method('validateRecoveryCode')->willReturn(false);
+        $userMfa->method('getVerificationData')->willReturn($metadata);
+
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['mail', 'enabled', false, true],
+            ]);
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+
+        $this->userMfaRepository->expects($this->never())->method('save');
+
+        $this->assertFalse($this->service->verifyCode($userId, $wrongCode));
+    }
+
+    #[Test]
+    public function testVerifyCodeAcceptsEmailCodeWithSurroundingWhitespace(): void
+    {
+        $userId = 1;
+        $storedCode = '123456';
+        $metadata = json_encode([
+            'expires_at' => time() + 600,
+            'used' => false,
+        ]);
+
+        $userMfa = $this->createMock(UserMfa::class);
+        $userMfa->method('getSecret')->willReturn($storedCode);
+        $userMfa->method('getType')->willReturn(UserMfa::TYPE_EMAIL);
+        $userMfa->method('validateRecoveryCode')->willReturn(false);
+        $userMfa->method('getVerificationData')->willReturn($metadata);
+
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['mail', 'enabled', false, true],
+            ]);
+
+        $this->userMfaRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn($userMfa);
+
+        $this->userMfaRepository->expects($this->once())
+            ->method('save')
+            ->willReturn($userMfa);
+
+        $this->assertTrue($this->service->verifyCode($userId, "  $storedCode  "));
+    }
+
+    #[Test]
     public function testVerifyCodeReturnsFalseForInvalidTotpSecretFormat(): void
     {
         $userId = 1;
@@ -652,66 +694,80 @@ class MfaServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
-    #[Test]
-    public function aRecoveryCodeStillWorksWhileTheSecondFactorIsLockedOut(): void
+    private function configureMfaEnforcementSettings(bool $enabled, bool $enforced, bool $skipForExternalAuth): void
     {
-        $userId = 1;
-        $userMfa = UserMfa::create(
-            $userId,
-            true,
-            'JBSWY3DPEHPK3PXP',
-            json_encode(['recovery-one', 'recovery-two']),
-            UserMfa::TYPE_APP,
-            json_encode(['failed_attempts' => 0, 'locked_until' => time() + 900])
-        );
+        $this->configManager->method('get')->willReturnMap([
+            ['security', 'mfa.enabled', false, $enabled],
+            ['security', 'mfa.enforced', false, $enforced],
+            ['security', 'mfa.skip_for_external_auth', false, $skipForExternalAuth],
+        ]);
+    }
 
-        $this->userMfaRepository->method('findByUserId')
-            ->with($userId)
-            ->willReturn($userMfa);
+    private function createDbWithEnforcementPermission(bool $hasPermission): PDO
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn($hasPermission ? ['permission' => 'user_enforce_mfa'] : false);
 
-        // The printed recovery code is the only way back in, so the lockout must
-        // not swallow it.
-        $this->assertTrue($this->service->verifyCode($userId, 'recovery-one'));
+        $db = $this->createMock(PDO::class);
+        $db->method('prepare')->willReturn($stmt);
+
+        return $db;
     }
 
     #[Test]
-    public function aWrongCodeIsStillRefusedWhileLockedOut(): void
+    public function testIsMfaEnforcedReturnsFalseWhenMfaDisabled(): void
     {
-        $userId = 1;
-        $userMfa = UserMfa::create(
-            $userId,
-            true,
-            'JBSWY3DPEHPK3PXP',
-            json_encode(['recovery-one']),
-            UserMfa::TYPE_APP,
-            json_encode(['failed_attempts' => 0, 'locked_until' => time() + 900])
-        );
+        $this->configureMfaEnforcementSettings(false, true, false);
 
-        $this->userMfaRepository->method('findByUserId')
-            ->with($userId)
-            ->willReturn($userMfa);
-
-        $this->assertFalse($this->service->verifyCode($userId, '123456'));
+        $this->assertFalse($this->service->isMfaEnforced(1, new \stdClass()));
     }
 
     #[Test]
-    public function aSpentRecoveryCodeIsNotAcceptedTwice(): void
+    public function testIsMfaEnforcedReturnsFalseWhenNotEnforcedGlobally(): void
     {
-        $userId = 1;
-        $userMfa = UserMfa::create(
-            $userId,
-            true,
-            'JBSWY3DPEHPK3PXP',
-            json_encode(['recovery-one']),
-            UserMfa::TYPE_APP,
-            json_encode(['locked_until' => time() + 900])
-        );
+        $this->configureMfaEnforcementSettings(true, false, false);
 
-        $this->userMfaRepository->method('findByUserId')
-            ->with($userId)
-            ->willReturn($userMfa);
+        $this->assertFalse($this->service->isMfaEnforced(1, new \stdClass()));
+    }
 
-        $this->assertTrue($this->service->verifyCode($userId, 'recovery-one'));
-        $this->assertFalse($this->service->verifyCode($userId, 'recovery-one'));
+    #[Test]
+    public function testIsMfaEnforcedSkipsExternalAuthMethodsWhenConfigured(): void
+    {
+        $this->configureMfaEnforcementSettings(true, true, true);
+
+        // stdClass as db proves the permission query is never reached
+        foreach (UserContextService::EXTERNAL_AUTH_METHODS as $authMethod) {
+            $this->assertFalse($this->service->isMfaEnforced(1, new \stdClass(), $authMethod));
+        }
+    }
+
+    #[Test]
+    public function testIsMfaEnforcedDoesNotSkipInternalAuth(): void
+    {
+        $this->configureMfaEnforcementSettings(true, true, true);
+        $db = $this->createDbWithEnforcementPermission(true);
+
+        $this->assertTrue($this->service->isMfaEnforced(1, $db, 'internal'));
+        $this->assertTrue($this->service->isMfaEnforced(1, $db, 'basic_auth'));
+        $this->assertTrue($this->service->isMfaEnforced(1, $db, null));
+    }
+
+    #[Test]
+    public function testIsMfaEnforcedDoesNotSkipExternalAuthWhenSettingDisabled(): void
+    {
+        $this->configureMfaEnforcementSettings(true, true, false);
+        $db = $this->createDbWithEnforcementPermission(true);
+
+        $this->assertTrue($this->service->isMfaEnforced(1, $db, 'ldap'));
+    }
+
+    #[Test]
+    public function testIsMfaEnforcedReturnsFalseWithoutEnforcementPermission(): void
+    {
+        $this->configureMfaEnforcementSettings(true, true, false);
+        $db = $this->createDbWithEnforcementPermission(false);
+
+        $this->assertFalse($this->service->isMfaEnforced(1, $db, 'internal'));
     }
 }

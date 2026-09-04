@@ -121,7 +121,6 @@ class WhoisServiceIdnIntegrationTest extends TestCase
 
         if ($whoisServer === null) {
             $this->markTestSkipped("No WHOIS server found for TLD {$tldUnicode}");
-            return;
         }
 
         // Test that we can make WHOIS queries with both unicode and punycode forms
@@ -130,7 +129,6 @@ class WhoisServiceIdnIntegrationTest extends TestCase
 
         if ($responseFromPunycode === null) {
             $this->markTestSkipped("WHOIS server {$whoisServer} is not responding for {$domainPunycode}");
-            return;
         }
 
         // Now test with Unicode form
@@ -164,7 +162,6 @@ class WhoisServiceIdnIntegrationTest extends TestCase
         // or some servers might be down
         if ($resultUnicode['success'] === false && $resultUnicode['error'] !== null) {
             $this->markTestSkipped("Could not get WHOIS info for {$domainUnicode}: {$resultUnicode['error']}");
-            return;
         }
 
         // Test with Punycode form

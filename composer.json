@@ -48,7 +48,8 @@
     "league/oauth2-client": "^2.8",
     "onelogin/php-saml": "^4.2",
     "symfony/security-bundle": "^7.4.4",
-    "symfony/mailer": "^7.4.4"
+    "symfony/mailer": "^7.4.4",
+    "twig/intl-extra": "^3.26"
   },
   "suggest": {
     "ext-ldap": "For LDAP support"
@@ -71,13 +72,16 @@
     "squizlabs/php_codesniffer": "^4.0.1",
     "phpstan/phpstan": "^2.1",
     "friendsofphp/php-cs-fixer": "^v3.89",
-    "vimeo/psalm": "^6.15"
+    "vimeo/psalm": "^6.15",
+    "phpstan/phpstan-deprecation-rules": "^2.0",
+    "tomasvotruba/cognitive-complexity": "^1.1",
+    "spaze/phpstan-disallowed-calls": "^4.13"
   },
   "scripts": {
     "phpdoc:install": "test -f .phpdoc/phpDocumentor.phar || (mkdir -p .phpdoc && curl -sL -o .phpdoc/phpDocumentor.phar https://phpdoc.org/phpDocumentor.phar)",
     "docs": ["@phpdoc:install", "php .phpdoc/phpDocumentor.phar"],
-    "docs:api:json": "vendor/bin/openapi lib/Application/Controller/Api/V1/ --output docs/openapi.json",
-    "docs:api:yaml": "vendor/bin/openapi lib/Application/Controller/Api/V1/ --output docs/openapi.yaml --format yaml",
+    "docs:api:json": "vendor/bin/openapi lib/Application/Controller/Api/V2/ --output docs/openapi.json",
+    "docs:api:yaml": "vendor/bin/openapi lib/Application/Controller/Api/V2/ --output docs/openapi.yaml --format yaml",
     "docs:api": ["@docs:api:json", "@docs:api:yaml"],
 
     "tests": "phpunit --testsuite unit",
@@ -88,25 +92,48 @@
     "check:all": "phpcs --standard=phpcs.xml addons config index.php install lib tests dynamic_update.php",
     "format:all": "phpcbf --standard=phpcs.xml addons config index.php install lib tests dynamic_update.php",
     "style:all": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- addons config index.php install lib tests dynamic_update.php",
-    "analyse:phpstan": "phpstan analyse --level=3 --memory-limit=512M addons config index.php install lib tests dynamic_update.php",
+    "analyse:phpstan": "phpstan analyse --level=4 --memory-limit=512M addons config index.php install lib tests dynamic_update.php",
+    "analyse:complexity": "phpstan analyse -c phpstan-complexity.neon --level=4 --memory-limit=512M addons config index.php install lib tests dynamic_update.php",
     "analyse:taint": "psalm --taint-analysis --no-cache",
-    "lint:twig": "! grep -rn 'name=\"csrf_token\"' templates/ --include='*.html' || (echo 'ERROR: Use name=\"_token\" instead of name=\"csrf_token\" for CSRF token fields' && false)",
+    "lint:twig": [
+        "! grep -rn 'name=\"csrf_token\"' templates/ lib/ --include='*.html' || (echo 'ERROR: Use name=\"_token\" instead of name=\"csrf_token\" for CSRF token fields' && false)",
+        "! grep -rn 'name=\"_token\"' templates/ lib/ --include='*.html' | grep -v '_macros.html' || (echo 'ERROR: Use the csrf_field() macro from _macros.html instead of a raw _token input' && false)"
+    ],
+    "lint:themes": "failed=0; for f in $(cd templates/default && find . -name '*.html' | sed 's|^\\./||' | sort); do grep -qx \"$f\" templates/theme-specific-templates.txt && continue; if [ ! -f \"templates/modern/$f\" ]; then echo \"Theme drift: $f is missing from templates/modern\"; failed=1; elif ! cmp -s \"templates/default/$f\" \"templates/modern/$f\"; then echo \"Theme drift: $f differs between templates/default and templates/modern (sync it or add it to templates/theme-specific-templates.txt)\"; failed=1; fi; done; exit $failed",
+    "lint:e2e-assertions": "node playwright/tools/check-assertions.js",
     "lint:e2e-routes": "php playwright/tools/check-route-paths.php",
     "lint:e2e-urls": "php playwright/tools/check-url-literals.php",
     "lint:zone-ids": [
         "! grep -rnE 'zg[0-9]*\\.domain_id *(= *z[0-9_]*\\.id\\b|IN *\\( *z[0-9_]*\\.id)' lib/ || (echo 'ERROR: match zones_groups.domain_id against COALESCE(z.domain_id, z.id); zones.id and zones.domain_id overlap, see CanonicalZoneSql' && false)"
     ],
+    "lint:sensitive-params": [
+        "! grep -rnE '\\??string \\$(password|passwd|newPassword|oldPassword|user_password|plainPassword|currentPassword|paPass|pa_pass|dbPass|secret)\\b' lib/ install/ --include='*.php' | grep -vE ':[0-9]+:[[:space:]]*\\*' | grep -v 'SensitiveParameter' || (echo 'ERROR: annotate the parameter above with #[\\SensitiveParameter]; the attribute does not inherit, so every frame carrying a password needs its own' && false)"
+    ],
+    "lint:error-traces": [
+        "! grep -rnE 'getTrace(AsString)?\\(\\)' lib/ install/ index.php dynamic_update.php --include='*.php' | grep -vE ':[0-9]+:[[:space:]]*\\*' | grep -v 'BootstrapErrorResponder.php' || (echo 'ERROR: a stack trace prints call arguments, including passwords. Log the file and line instead of the trace. The only permitted traces live in BootstrapErrorResponder, gated behind misc.display_errors' && false)"
+    ],
     "analyse:all": [
         "@check:all",
         "@analyse:phpstan",
         "@lint:twig",
+        "@lint:themes",
         "@lint:zone-ids",
+        "@lint:sensitive-params",
+        "@lint:error-traces",
         "@lint:e2e-routes",
         "@lint:e2e-urls"
     ],
 
     "locale:check": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -q 'fatal error'; then echo \"FAIL: $f\"; failed=1; fi; done; exit $failed",
-    "locale:stats": "./scripts/check_translation_stats.sh",
+    "locale:stats": "python3 scripts/check_translation_stats.py",
+    "locale:msgfmt": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if ! msgfmt --check -o /dev/null \"$f\" 2>/dev/null; then echo \"FAIL: $f\"; msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -v 'warning:' | head -5; failed=1; fi; done; exit $failed",
+    "locale:mo-sync": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do mo=\"${f%.po}.mo\"; msgfmt -o /tmp/pa-mo-check.mo \"$f\" 2>/dev/null || continue; if ! cmp -s /tmp/pa-mo-check.mo \"$mo\"; then echo \"STALE: $mo does not match $f\"; failed=1; fi; done; rm -f /tmp/pa-mo-check.mo; exit $failed",
+    "locale:verify": [
+        "@locale:msgfmt",
+        "@locale:mo-sync",
+        "python3 scripts/check_translation_integrity.py --quiet",
+        "python3 scripts/check_locale_unicode.py"
+    ],
     "locale:all": [
         "@locale:check",
         "@locale:stats"
@@ -161,6 +188,7 @@
       "package.json",
       "phpcs.xml",
       "phpdoc.dist.xml",
+      "phpstan-baseline.neon",
       "phpstan.neon",
       "phpunit.xml.dist",
       "psalm.xml",

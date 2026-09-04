@@ -8,7 +8,6 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-API_V1_TEST_SCRIPT="$SCRIPT_DIR/api-v1-test.sh"
 API_V2_TEST_SCRIPT="$SCRIPT_DIR/api-v2-test.sh"
 LOAD_TEST_SCRIPT="$SCRIPT_DIR/api-load-test.sh"
 
@@ -39,7 +38,7 @@ usage() {
     echo "Usage: $0 [COMMAND] [OPTIONS]"
     echo ""
     echo "Commands:"
-    echo "  test [VERSION]     Run API tests (v1, v2, or all)"
+    echo "  test [VERSION]     Run API tests (v2 or all)"
     echo "  test:all-dbs       Run API tests against all databases"
     echo "  load [TYPE]        Run load tests"
     echo "  check              Check test prerequisites"
@@ -56,17 +55,8 @@ usage() {
     echo "  --db sqlite-api    Use SQLite + API config (port 8085)"
     echo ""
     echo "API Versions:"
-    echo "  v1                 Run API v1 tests only (98 tests)"
-    echo "  v2                 Run API v2 tests only (RRSets, Bulk, PTR)"
-    echo "  all                Run both v1 and v2 tests (default)"
-    echo ""
-    echo "API v1 Test Suites (use with 'test v1:SUITE'):"
-    echo "  v1:auth            Authentication tests only"
-    echo "  v1:users           User management tests"
-    echo "  v1:zones           Zone management tests"
-    echo "  v1:records         Record management tests"
-    echo "  v1:security        Security tests"
-    echo "  v1:performance     Performance tests"
+    echo "  v2                 Run API v2 tests (RRSets, Bulk, PTR)"
+    echo "  all                Same as v2 (default); API v1 was removed in 4.5.0"
     echo ""
     echo "Load Test Types:"
     echo "  all                Run all load tests (default)"
@@ -76,10 +66,8 @@ usage() {
     echo "  memory             Memory leak test"
     echo ""
     echo "Examples:"
-    echo "  $0 test v1              # Run all API v1 tests"
     echo "  $0 test v2              # Run all API v2 tests"
-    echo "  $0 test all             # Run both v1 and v2 tests"
-    echo "  $0 test v1:auth         # Run v1 auth tests only"
+    echo "  $0 test all             # Same as 'test v2'"
     echo "  $0 --db pgsql test all  # Test against PostgreSQL"
     echo "  $0 test:all-dbs         # Test all databases"
     echo "  $0 load rate-limit      # Run rate limiting test"
@@ -239,7 +227,7 @@ test_api_connection() {
     local response_code=$(curl -s -w "%{http_code}" \
         -H "X-API-Key: $API_KEY" \
         -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v1/users" \
+        "${API_BASE_URL}/api/v2/users" \
         -o /dev/null 2>/dev/null || echo "000")
 
     if [[ "$response_code" == "200" ]]; then
@@ -264,25 +252,7 @@ run_api_tests() {
     export CONFIG_FILE
 
     case "$version" in
-        "v1")
-            echo -e "${BLUE}Running API v1 tests${NC}"
-            echo ""
-            if [[ ! -x "$API_V1_TEST_SCRIPT" ]]; then
-                chmod +x "$API_V1_TEST_SCRIPT"
-            fi
-            "$API_V1_TEST_SCRIPT" "all"
-            ;;
-        "v1:"*)
-            # Extract suite name after v1:
-            local suite="${version#v1:}"
-            echo -e "${BLUE}Running API v1 tests: $suite${NC}"
-            echo ""
-            if [[ ! -x "$API_V1_TEST_SCRIPT" ]]; then
-                chmod +x "$API_V1_TEST_SCRIPT"
-            fi
-            "$API_V1_TEST_SCRIPT" "$suite"
-            ;;
-        "v2")
+        "v2" | "all")
             echo -e "${BLUE}Running API v2 tests${NC}"
             echo ""
             if [[ ! -x "$API_V2_TEST_SCRIPT" ]]; then
@@ -290,38 +260,9 @@ run_api_tests() {
             fi
             "$API_V2_TEST_SCRIPT"
             ;;
-        "all")
-            echo -e "${BLUE}Running all API tests (v1 + v2)${NC}"
-            echo ""
-
-            # Run v1 tests
-            echo -e "${CYAN}═══════════════════════════════════════════${NC}"
-            echo -e "${CYAN}  API v1 Test Suite${NC}"
-            echo -e "${CYAN}═══════════════════════════════════════════${NC}"
-            if [[ ! -x "$API_V1_TEST_SCRIPT" ]]; then
-                chmod +x "$API_V1_TEST_SCRIPT"
-            fi
-            "$API_V1_TEST_SCRIPT" "all"
-            local v1_exit=$?
-
-            echo ""
-            echo -e "${CYAN}═══════════════════════════════════════════${NC}"
-            echo -e "${CYAN}  API v2 Test Suite${NC}"
-            echo -e "${CYAN}═══════════════════════════════════════════${NC}"
-            if [[ ! -x "$API_V2_TEST_SCRIPT" ]]; then
-                chmod +x "$API_V2_TEST_SCRIPT"
-            fi
-            "$API_V2_TEST_SCRIPT"
-            local v2_exit=$?
-
-            # Return failure if either suite failed
-            if [[ $v1_exit -ne 0 ]] || [[ $v2_exit -ne 0 ]]; then
-                return 1
-            fi
-            ;;
         *)
             echo -e "${RED}Unknown test version: $version${NC}"
-            echo "Use: v1, v2, or all"
+            echo "Use: v2 or all"
             return 1
             ;;
     esac
@@ -331,6 +272,7 @@ run_tests_all_databases() {
     local version="${1:-all}"
     local total_passed=0
     local total_failed=0
+    local total_skipped=0
     local db_results=()
 
     echo -e "${BLUE}================================${NC}"
@@ -345,16 +287,18 @@ run_tests_all_databases() {
             if check_config && test_api_connection; then
                 if run_api_tests "$version"; then
                     db_results+=("${GREEN}$db: PASSED${NC}")
-                    ((total_passed++))
+                    total_passed=$((total_passed + 1))
                 else
                     db_results+=("${RED}$db: FAILED${NC}")
-                    ((total_failed++))
+                    total_failed=$((total_failed + 1))
                 fi
             else
                 db_results+=("${YELLOW}$db: SKIPPED (connection failed)${NC}")
+                total_skipped=$((total_skipped + 1))
             fi
         else
             db_results+=("${YELLOW}$db: SKIPPED (config not found)${NC}")
+            total_skipped=$((total_skipped + 1))
         fi
     done
 
@@ -368,8 +312,15 @@ run_tests_all_databases() {
     echo ""
     echo "Databases passed: $total_passed"
     echo "Databases failed: $total_failed"
+    echo "Databases skipped: $total_skipped"
 
     if [[ $total_failed -gt 0 ]]; then
+        return 1
+    fi
+
+    # A run where every database was skipped asserted nothing; do not report success.
+    if [[ $total_passed -eq 0 ]]; then
+        echo -e "${RED}No database was actually tested.${NC}"
         return 1
     fi
     return 0
@@ -452,7 +403,7 @@ clean_test_data() {
         # This is a simplified cleanup - in a real scenario, you'd want to
         # query the API to find and delete test items
         curl -s -H "X-API-Key: $API_KEY" \
-            "${API_BASE_URL}/api/v1/users?username=$pattern" \
+            "${API_BASE_URL}/api/v2/users?username=$pattern" \
             >/dev/null 2>&1 || true
     done
 

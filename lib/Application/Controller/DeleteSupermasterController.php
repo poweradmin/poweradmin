@@ -25,28 +25,33 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class DeleteSupermasterController extends BaseController
 {
+    private Request $request;
+
     public function __construct(array $request)
     {
         parent::__construct($request);
+        $this->request = new Request();
     }
 
     public function run(): void
     {
         $this->checkPermission('supermaster_edit', _("You do not have the permission to delete a supermaster."));
 
-        if ($this->isPost()) {
+        if ($this->request->getPostParam('confirm') !== null) {
             $this->deleteSuperMaster();
         } else {
             $this->showDeleteSuperMaster();
@@ -55,8 +60,6 @@ class DeleteSupermasterController extends BaseController
 
     private function deleteSuperMaster(): void
     {
-        $this->validateCsrfToken();
-
         $constraints = [
             'master_ip' => [
                 new Assert\NotBlank(),
@@ -70,13 +73,13 @@ class DeleteSupermasterController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        if (!$this->doValidateRequest($this->request->getPostParams())) {
+            $this->showFirstValidationError($this->request->getPostParams());
             return;
         }
 
-        $master_ip = filter_input(INPUT_POST, 'master_ip', FILTER_VALIDATE_IP);
-        $ns_name = filter_input(INPUT_POST, 'ns_name', FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
+        $master_ip = filter_var((string)$this->request->getPostParam('master_ip'), FILTER_VALIDATE_IP);
+        $ns_name = filter_var((string)$this->request->getPostParam('ns_name'), FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
 
         if ($master_ip === false) {
             $this->setMessage('list_supermasters', 'error', _('Invalid IP address.'));
@@ -88,12 +91,15 @@ class DeleteSupermasterController extends BaseController
             $this->redirect('/supermasters');
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->supermasterIpNameExists($master_ip, $ns_name)) {
+        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
+        if (!$supermasterManager->supermasterIpNameExists($master_ip, $ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
             $this->redirect('/supermasters');
         }
-        if ($dnsRecord->deleteSupermaster($master_ip, $ns_name)) {
+        if ($supermasterManager->deleteSupermaster($master_ip, $ns_name)) {
+            $auditService = new AuditService($this->db);
+            $auditService->logSupermasterDelete($master_ip, $ns_name);
+
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been deleted successfully.'));
             $this->redirect('/supermasters');
         }
@@ -101,9 +107,15 @@ class DeleteSupermasterController extends BaseController
 
     private function showDeleteSuperMaster(): void
     {
-        $master_ip = htmlspecialchars($_GET['master_ip']);
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $info = $dnsRecord->getSupermasterInfoFromIp($master_ip);
+        $master_ip = htmlspecialchars($this->request->getQueryParam('master_ip'));
+        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
+        $info = $supermasterManager->getSupermasterInfoFromIp($master_ip);
+
+        if (empty($info)) {
+            $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
+            $this->redirect('/supermasters');
+            return;
+        }
 
         $this->render('delete_supermaster.html', [
             'master_ip' => $master_ip,

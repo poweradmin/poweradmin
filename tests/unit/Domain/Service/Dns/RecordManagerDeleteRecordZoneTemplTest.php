@@ -39,7 +39,7 @@ use Poweradmin\Domain\ValueObject\RecordIdentifier;
  */
 class RecordManagerDeleteRecordZoneTemplTest extends TestCase
 {
-    public function testDeleteWithIntegerIdExecutesDelete(): void
+    public function testDeleteWithIntegerIdTouchesOnlySqlTable(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->expects($this->once())
@@ -50,13 +50,13 @@ class RecordManagerDeleteRecordZoneTemplTest extends TestCase
         $db = $this->createMock(PDO::class);
         $db->expects($this->once())
             ->method('prepare')
-            ->with($this->stringContains('DELETE FROM records_zone_templ'))
+            ->with($this->stringContains('DELETE FROM records_zone_templ '))
             ->willReturn($stmt);
 
         $this->assertTrue(RecordManager::deleteRecordZoneTempl($db, 42));
     }
 
-    public function testDeleteWithNumericStringIdExecutesDelete(): void
+    public function testDeleteWithNumericStringIdTouchesOnlySqlTable(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->expects($this->once())
@@ -67,6 +67,7 @@ class RecordManagerDeleteRecordZoneTemplTest extends TestCase
         $db = $this->createMock(PDO::class);
         $db->expects($this->once())
             ->method('prepare')
+            ->with($this->stringContains('DELETE FROM records_zone_templ '))
             ->willReturn($stmt);
 
         $this->assertTrue(RecordManager::deleteRecordZoneTempl($db, '42'));
@@ -76,9 +77,10 @@ class RecordManagerDeleteRecordZoneTemplTest extends TestCase
      * In API mode the record id is a base64-encoded composite identifier
      * (RecordIdentifier::encode). It must never be sent to the integer
      * records_zone_templ.record_id column - PostgreSQL would raise
-     * SQLSTATE[22P02] and abort the whole delete request.
+     * SQLSTATE[22P02] and abort the whole delete request. Encoded ids only
+     * belong in records_zone_templ_api.
      */
-    public function testDeleteWithEncodedApiIdSkipsQuery(): void
+    public function testDeleteWithEncodedApiIdTouchesOnlyApiTable(): void
     {
         $encodedId = RecordIdentifier::encode(
             'admin-zone.example.com',
@@ -88,8 +90,17 @@ class RecordManagerDeleteRecordZoneTemplTest extends TestCase
             0
         );
 
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())
+            ->method('execute')
+            ->with([$encodedId])
+            ->willReturn(true);
+
         $db = $this->createMock(PDO::class);
-        $db->expects($this->never())->method('prepare');
+        $db->expects($this->once())
+            ->method('prepare')
+            ->with($this->stringContains('DELETE FROM records_zone_templ_api'))
+            ->willReturn($stmt);
 
         $this->assertTrue(RecordManager::deleteRecordZoneTempl($db, $encodedId));
     }

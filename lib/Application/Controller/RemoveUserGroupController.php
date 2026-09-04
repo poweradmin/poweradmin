@@ -35,10 +35,7 @@ use InvalidArgumentException;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 class RemoveUserGroupController extends BaseController
 {
@@ -49,8 +46,8 @@ class RemoveUserGroupController extends BaseController
     {
         parent::__construct($request);
 
-        $memberRepository = new DbUserGroupMemberRepository($this->db);
-        $groupRepository = new DbUserGroupRepository($this->db);
+        $memberRepository = $this->createUserGroupMemberRepository();
+        $groupRepository = $this->createUserGroupRepository();
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->auditLogger = new LegacyLogger($this->db);
     }
@@ -65,7 +62,7 @@ class RemoveUserGroupController extends BaseController
         // Only admin (überuser) can manage group membership
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->isAdmin($userId)) {
             $this->setMessage('edit_user', 'error', _('You do not have permission to manage group memberships.'));
             $this->redirect('/users');
             return;
@@ -83,23 +80,23 @@ class RemoveUserGroupController extends BaseController
         $groupId = isset($this->requestData['group_id']) ? (int)$this->requestData['group_id'] : 0;
 
         if ($targetUserId <= 0 || $groupId <= 0) {
-            $this->setMessage('edit_user', 'error', _('Invalid user or group ID.'));
+            $this->setMessage('edit_user', 'error', _('Invalid group or user ID.'));
             $this->redirect('/users');
             return;
         }
 
         try {
             // Get details before removal for logging
-            $groupRepository = new DbUserGroupRepository($this->db);
+            $groupRepository = $this->createUserGroupRepository();
             $groupService = new GroupService($groupRepository);
 
             $group = $groupRepository->findById($groupId);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             // Get target user details for logging
-            $ldapUse = $this->config->get('ldap', 'enabled');
-            $targetUsers = UserManager::getUserDetailList($this->db, $ldapUse, $targetUserId);
-            $targetUsername = !empty($targetUsers) ? $targetUsers[0]['username'] : "ID: $targetUserId";
+            $userRepository = $this->createUserRepository();
+            $targetUser = $userRepository->getUserById($targetUserId);
+            $targetUsername = $targetUser !== null ? $targetUser['username'] : "ID: $targetUserId";
 
             $success = $this->membershipService->removeUserFromGroup($groupId, $targetUserId);
 
@@ -107,9 +104,8 @@ class RemoveUserGroupController extends BaseController
                 $this->setMessage('edit_user', 'success', _('User removed from group successfully.'));
 
                 // Log the removal in the same format as group management
-                $currentUserId = $userId;
-                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
-                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+                $currentUser = $userRepository->getUserById($userId);
+                $actorUsername = $currentUser !== null ? $currentUser['username'] : "ID: $userId";
 
                 $logMessage = sprintf(
                     "Removed 1 user(s) from group '%s' (ID: %d) by %s: %s",

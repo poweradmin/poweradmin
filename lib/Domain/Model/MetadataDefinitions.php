@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+
 /**
  * Built-in PowerDNS domain metadata kind definitions.
  *
@@ -30,7 +32,7 @@ namespace Poweradmin\Domain\Model;
 class MetadataDefinitions
 {
     /**
-     * @var array<string, array<string, bool|string>>
+     * @var array<string, array<string, bool|string|array<int, string>>>
      */
     public const DEFINITIONS = [
         'ALLOW-AXFR-FROM' => [
@@ -79,13 +81,15 @@ class MetadataDefinitions
             'placeholder' => 'DNS/ns1.example.com@REALM',
             'help' => 'Kerberos principal used to accept GSS-TSIG requests.',
             'api_write' => true,
-            'min_version' => '4.0.0',
+            // GSS-TSIG existed in 4.0, was removed in 4.3.1 and restored in 4.7.0.
+            // Gated at 4.7.0 like its sibling rather than modelling the gap.
+            'min_version' => '4.7.0',
         ],
         'GSS-ALLOW-AXFR-PRINCIPAL' => [
             'label' => 'GSS-ALLOW-AXFR-PRINCIPAL',
-            'multi' => false,
+            'multi' => true,
             'placeholder' => 'host/ns1.example.com@REALM',
-            'help' => 'Allow this GSS principal to retrieve AXFR for the zone.',
+            'help' => 'Allow these GSS principals to retrieve AXFR for the zone. Add one principal per row.',
             'api_write' => true,
             'min_version' => '4.7.0',
         ],
@@ -108,10 +112,11 @@ class MetadataDefinitions
         'SOA-EDIT-DNSUPDATE' => [
             'label' => 'SOA-EDIT-DNSUPDATE',
             'multi' => false,
-            'placeholder' => 'INCEPTION-INCREMENT',
+            'placeholder' => 'DEFAULT',
             'help' => 'SOA serial policy applied after DNS updates.',
             'api_write' => true,
             'min_version' => '4.0.0',
+            'options' => ['DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE'],
         ],
         'TSIG-ALLOW-AXFR' => [
             'label' => 'TSIG-ALLOW-AXFR',
@@ -133,14 +138,14 @@ class MetadataDefinitions
             'label' => 'AXFR-MASTER-TSIG',
             'multi' => false,
             'placeholder' => 'primary-key-name',
-            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'help' => 'TSIG key used to retrieve the zone from the primary.',
             'api_write' => false,
         ],
         'LUA-AXFR-SCRIPT' => [
             'label' => 'LUA-AXFR-SCRIPT',
             'multi' => false,
             'placeholder' => '/path/to/script.lua',
-            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'help' => 'Lua script filtering an incoming AXFR.',
             'api_write' => false,
             'operator_only' => true,
         ],
@@ -148,21 +153,22 @@ class MetadataDefinitions
             'label' => 'NSEC3NARROW',
             'multi' => false,
             'placeholder' => '1',
-            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'help' => 'Use NSEC3 narrow mode. Only takes effect together with NSEC3PARAM.',
             'api_write' => false,
+            'options' => ['0', '1'],
         ],
         'NSEC3PARAM' => [
             'label' => 'NSEC3PARAM',
             'multi' => false,
             'placeholder' => '1 0 0 -',
-            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'help' => 'NSEC3 parameters as "algorithm flags iterations salt". Removing the row switches the zone back to NSEC.',
             'api_write' => false,
         ],
         'PRESIGNED' => [
             'label' => 'PRESIGNED',
             'multi' => false,
             'placeholder' => '1',
-            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'help' => 'The zone carries its own RRSIGs.',
             'api_write' => false,
         ],
         'PUBLISH-CDNSKEY' => [
@@ -175,9 +181,9 @@ class MetadataDefinitions
         ],
         'PUBLISH-CDS' => [
             'label' => 'PUBLISH-CDS',
-            'multi' => false,
+            'multi' => true,
             'placeholder' => '2',
-            'help' => 'Publish CDS records using a comma-separated list of digest algorithm numbers.',
+            'help' => 'Publish CDS records for these digest algorithm numbers. Use 0 to publish the delete CDS.',
             'api_write' => true,
             'min_version' => '4.0.0',
         ],
@@ -209,21 +215,23 @@ class MetadataDefinitions
             'label' => 'SOA-EDIT',
             'multi' => false,
             'placeholder' => 'INCEPTION-INCREMENT',
-            'help' => 'Readable via API, but not writable through the metadata endpoint.',
+            'help' => 'SOA serial policy applied when the zone is served (DNSSEC).',
             'api_write' => false,
+            'options' => ['INCEPTION-INCREMENT', 'INCREMENT-WEEKS', 'EPOCH', 'INCEPTION-EPOCH', 'NONE'],
         ],
         'API-RECTIFY' => [
             'label' => 'API-RECTIFY',
             'multi' => false,
             'placeholder' => '1',
-            'help' => 'Not writable through the metadata API endpoint.',
+            'help' => 'Rectify the zone after API changes.',
             'api_write' => false,
+            'options' => ['0', '1'],
         ],
         'ENABLE-LUA-RECORDS' => [
             'label' => 'ENABLE-LUA-RECORDS',
             'multi' => false,
             'placeholder' => '1',
-            'help' => 'Not writable through the metadata API endpoint.',
+            'help' => 'Allow LUA records in this zone.',
             'api_write' => false,
             'operator_only' => true,
         ],
@@ -231,16 +239,17 @@ class MetadataDefinitions
             'label' => 'SOA-EDIT-API',
             'multi' => false,
             'placeholder' => 'DEFAULT',
-            'help' => 'SOA serial update policy for API changes. Options: DEFAULT, INCREASE, EPOCH, SOA-EDIT, SOA-EDIT-INCREASE, OFF.',
+            'help' => 'SOA serial update policy for API changes. Remove the row to fall back to the server default.',
             'api_write' => true,
             'min_version' => '4.0.0',
+            'options' => ['DEFAULT', 'INCREASE', 'EPOCH', 'SOA-EDIT', 'SOA-EDIT-INCREASE'],
         ],
     ];
 
     /**
      * Get the definition for a specific metadata kind.
      *
-     * @return array<string, bool|string>|null
+     * @return array<string, bool|string|array<int, string>>|null
      */
     public static function get(string $kind): ?array
     {
@@ -260,7 +269,10 @@ class MetadataDefinitions
     }
 
     /**
-     * Check if a metadata kind may only be set by an administrator.
+     * Check whether a metadata kind may only be set by a superuser.
+     *
+     * These kinds make PowerDNS evaluate operator-supplied Lua, so a zone-level
+     * editor setting them would reach past the zone they administer.
      */
     public static function isOperatorOnly(string $kind): bool
     {
@@ -269,6 +281,239 @@ class MetadataDefinitions
             return false;
         }
         return (bool)($definition['operator_only'] ?? false);
+    }
+
+    /**
+     * Config keys (dns group) that narrow the offered values per kind.
+     */
+    public const OPTION_CONFIG_KEYS = [
+        'SOA-EDIT-API' => 'soa_edit_api_options',
+        'SOA-EDIT-DNSUPDATE' => 'soa_edit_api_options',
+        'SOA-EDIT' => 'soa_edit_options',
+    ];
+
+    /**
+     * The kinds the backend providers may write as a serial policy; a narrower
+     * allowlist than ZONE_PROPERTY_KINDS on purpose.
+     */
+    public const SERIAL_POLICY_PROPERTY_KINDS = [
+        'SOA-EDIT-API' => 'soa_edit_api',
+        'SOA-EDIT' => 'soa_edit',
+    ];
+
+    /**
+     * Kinds PowerDNS rejects on the /metadata endpoint and accepts as a field
+     * on the zone object instead (kind => property name).
+     */
+    public const ZONE_PROPERTY_KINDS = [
+        'SOA-EDIT-API' => 'soa_edit_api',
+        'SOA-EDIT' => 'soa_edit',
+        'API-RECTIFY' => 'api_rectify',
+        'NSEC3PARAM' => 'nsec3param',
+        'NSEC3NARROW' => 'nsec3narrow',
+    ];
+
+    /**
+     * Zone properties PowerDNS types as JSON booleans rather than strings.
+     */
+    public const BOOLEAN_ZONE_PROPERTY_KINDS = [
+        'API-RECTIFY',
+        'NSEC3NARROW',
+    ];
+
+    /**
+     * Kinds PowerDNS maintains itself. They are shown read-only and never
+     * written back; PUTting them to /metadata is rejected with 422.
+     */
+    public const SERVER_MANAGED_KINDS = [
+        'CATALOG-HASH',
+    ];
+
+    /**
+     * PowerDNS only accepts unknown metadata kinds when they carry this prefix.
+     */
+    public const CUSTOM_KIND_API_PREFIX = 'X-';
+
+    public const REJECT_SERVER_MANAGED = 'server_managed';
+    public const REJECT_NO_API_ROUTE = 'no_api_route';
+    public const REJECT_CUSTOM_PREFIX = 'custom_needs_prefix';
+
+    /**
+     * Check whether a submitted value needs a companion kind to have any
+     * effect. PowerDNS ignores NSEC3NARROW unless the zone also has NSEC3PARAM.
+     */
+    public static function requiredCompanionKind(string $kind, string $value): ?string
+    {
+        if ($kind !== 'NSEC3NARROW' || $value === '' || $value === '0') {
+            return null;
+        }
+
+        return 'NSEC3PARAM';
+    }
+
+    /**
+     * Check whether PowerDNS maintains this kind itself.
+     */
+    public static function isServerManaged(string $kind): bool
+    {
+        return in_array($kind, self::SERVER_MANAGED_KINDS, true);
+    }
+
+    /**
+     * Classify why the active backend cannot store a kind, or null when it can.
+     *
+     * Callers turn the reason into their own message and status; keeping the
+     * rule (and its ordering) here is what keeps the web editor and API v2
+     * answering the same question the same way.
+     */
+    public static function writeRejection(string $kind, bool $apiBackend): ?string
+    {
+        if (self::isServerManaged($kind)) {
+            return self::REJECT_SERVER_MANAGED;
+        }
+
+        // The domainmetadata table takes any kind and any value.
+        if (!$apiBackend) {
+            return null;
+        }
+
+        if (!isset(self::ZONE_PROPERTY_KINDS[$kind]) && !self::isApiWritable($kind)) {
+            return self::REJECT_NO_API_ROUTE;
+        }
+
+        if (!isset(self::DEFINITIONS[$kind]) && !str_starts_with($kind, self::CUSTOM_KIND_API_PREFIX)) {
+            return self::REJECT_CUSTOM_PREFIX;
+        }
+
+        return null;
+    }
+
+    /**
+     * Convert a stored metadata value to the type the zone object expects.
+     */
+    public static function toZonePropertyValue(string $kind, string $value): bool|string
+    {
+        return in_array($kind, self::BOOLEAN_ZONE_PROPERTY_KINDS, true) ? $value === '1' : $value;
+    }
+
+    /**
+     * Convert a zone object value back to its metadata row representation.
+     */
+    public static function fromZonePropertyValue(string $kind, mixed $value): string
+    {
+        return in_array($kind, self::BOOLEAN_ZONE_PROPERTY_KINDS, true)
+            ? ($value ? '1' : '')
+            : (string) $value;
+    }
+
+    /**
+     * Build metadata rows from a PowerDNS /metadata listing plus the zone
+     * object. Zone-property kinds appear in both, and the zone object wins.
+     *
+     * @param array<int, array<string, mixed>> $apiMetadata
+     * @param array<string, mixed>|null $zoneData
+     * @return array<int, array{kind: string, content: string}>
+     */
+    public static function rowsFromApiPayload(array $apiMetadata, ?array $zoneData): array
+    {
+        $rows = [];
+
+        foreach ($apiMetadata as $entry) {
+            $kind = (string) ($entry['kind'] ?? '');
+            if (isset(self::ZONE_PROPERTY_KINDS[$kind])) {
+                continue;
+            }
+            foreach (($entry['metadata'] ?? []) as $value) {
+                $rows[] = ['kind' => $kind, 'content' => (string) $value];
+            }
+        }
+
+        // The zone object reports a boolean kind as false both when it holds "0"
+        // and when it is absent, so a false must not become a row of its own.
+        foreach (self::ZONE_PROPERTY_KINDS as $kind => $property) {
+            if (!empty($zoneData[$property])) {
+                $rows[] = ['kind' => $kind, 'content' => self::fromZonePropertyValue($kind, $zoneData[$property])];
+            }
+        }
+
+        return $rows;
+    }
+
+    /**
+     * Zone-creation choice that explicitly disables SOA-EDIT-API (stored as
+     * an empty value, distinct from leaving the server default in place).
+     */
+    public const SOA_EDIT_API_OFF = 'OFF';
+
+    /**
+     * Get the allowed values for a metadata kind, or null when any value is accepted.
+     *
+     * @return array<int, string>|null
+     */
+    public static function getOptions(string $kind): ?array
+    {
+        $definition = self::get($kind);
+        if ($definition === null || !isset($definition['options'])) {
+            return null;
+        }
+        return $definition['options'];
+    }
+
+    /**
+     * Get the values offered by the UI for a kind, narrowed by the matching
+     * dns.* config list when set. An empty result means the kind's options
+     * are all disabled by configuration; null means free-form input.
+     *
+     * @return array<int, string>|null
+     */
+    public static function getOfferedOptions(string $kind, ConfigurationInterface $config): ?array
+    {
+        $options = self::getOptions($kind);
+        $configKey = self::OPTION_CONFIG_KEYS[$kind] ?? null;
+        if ($options === null || $configKey === null) {
+            return $options;
+        }
+
+        $configured = $config->get('dns', $configKey);
+        if (!is_array($configured)) {
+            return $options;
+        }
+
+        return array_values(array_intersect($options, $configured));
+    }
+
+    /**
+     * The values an editor may store for a kind, or null when any value goes.
+     *
+     * A kind whose options config narrows to nothing is hidden from the UI but
+     * still accepts every PowerDNS value, so rows stored before the restriction
+     * keep saving.
+     *
+     * @return array<int, string>|null
+     */
+    public static function getAllowedValues(string $kind, ConfigurationInterface $config): ?array
+    {
+        $options = self::getOfferedOptions($kind, $config);
+
+        return $options === [] ? self::getOptions($kind) : $options;
+    }
+
+    /**
+     * SOA-EDIT-API choices for zone creation: the metadata values plus 'OFF',
+     * narrowed by the dns.soa_edit_api_options config list when set.
+     *
+     * @return array<int, string>
+     */
+    public static function getSoaEditApiChoices(ConfigurationInterface $config): array
+    {
+        $choices = array_merge(self::getOptions('SOA-EDIT-API'), [self::SOA_EDIT_API_OFF]);
+
+        $configured = $config->get('dns', self::OPTION_CONFIG_KEYS['SOA-EDIT-API']);
+        if (!is_array($configured)) {
+            return $choices;
+        }
+
+        return array_values(array_intersect($choices, $configured));
     }
 
     /**

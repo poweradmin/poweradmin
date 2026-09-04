@@ -36,10 +36,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class ManageGroupMembersController extends BaseController
@@ -54,8 +51,8 @@ class ManageGroupMembersController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = new DbUserGroupRepository($this->db);
-        $memberRepository = new DbUserGroupMemberRepository($this->db);
+        $groupRepository = $this->createUserGroupRepository();
+        $memberRepository = $this->createUserGroupMemberRepository();
 
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
@@ -74,7 +71,7 @@ class ManageGroupMembersController extends BaseController
         // Only admin (überuser) can manage group membership
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->isAdmin($userId)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to manage group members.'));
             $this->redirect('/groups');
             return;
@@ -150,16 +147,12 @@ class ManageGroupMembersController extends BaseController
             // Get group details and usernames before adding
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             // Get usernames for logging
-            $allUsers = UserManager::getUserDetailList($this->db, false);
-            $userMap = [];
-            foreach ($allUsers as $user) {
-                $userMap[$user['uid']] = $user['username'];
-            }
+            $userMap = array_column($this->getVisibleUsers(), 'username', 'uid');
 
             $results = $this->membershipService->bulkAddUsers($groupId, $userIds);
 
@@ -223,16 +216,12 @@ class ManageGroupMembersController extends BaseController
             // Get group details and usernames before removing
             $userContext = $this->getUserContextService();
             $currentUserId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $isAdmin = $this->createPermissionService()->isAdmin($currentUserId);
             $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
             // Get usernames for logging
-            $allUsers = UserManager::getUserDetailList($this->db, false);
-            $userMap = [];
-            foreach ($allUsers as $user) {
-                $userMap[$user['uid']] = $user['username'];
-            }
+            $userMap = array_column($this->getVisibleUsers(), 'username', 'uid');
 
             $results = $this->membershipService->bulkRemoveUsers($groupId, $userIds);
 
@@ -287,7 +276,7 @@ class ManageGroupMembersController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
+            $isAdmin = $this->createPermissionService()->isAdmin($userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
@@ -312,7 +301,7 @@ class ManageGroupMembersController extends BaseController
             }
 
             // Get all users for selection
-            $allUsers = UserManager::getUserDetailList($this->db, false);
+            $allUsers = $this->getVisibleUsers();
 
             // Filter out current members from available users
             $availableUsers = array_filter($allUsers, function ($user) use ($memberIds) {
@@ -328,5 +317,15 @@ class ManageGroupMembersController extends BaseController
             $this->setMessage('list_groups', 'error', $e->getMessage());
             $this->redirect('/groups');
         }
+    }
+
+    /**
+     * Users visible to the current account: everyone with the view-others
+     * permission, otherwise only the account itself
+     */
+    private function getVisibleUsers(): array
+    {
+        $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
+        return $this->createUserRepository()->getUserDetailList(false, $restrictToUserId);
     }
 }

@@ -1,6 +1,18 @@
+includes:
+  - phpstan-baseline.neon
+  - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+  - vendor/spaze/phpstan-disallowed-calls/extension.neon
+
 parameters:
+  # Pinned so CI can persist the result cache between runs; PHPStan
+  # invalidates entries itself by file/config/version hash.
+  tmpDir: .phpstan-cache
   excludePaths:
     - vendor
+  # Global helpers loaded via require_once in entry points; lets targeted
+  # runs (single file, IDE) resolve them without analyzing all of lib/
+  scanFiles:
+    - lib/Application/Helpers/StartupHelpers.php
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # Ignore errors in test files related to mocking
@@ -9,3 +21,131 @@ parameters:
       path: tests/*
     # Ignore constructor unused parameter errors
     - '#Constructor of class .+ has an unused parameter \$_?config.#'
+    # php-saml annotates processSLO() as never-returning when $stay is false, but
+    # its SAMLResponse branch falls through and returns - which is exactly the path
+    # that records the logout errors read on the next line.
+    -
+      identifier: deadCode.unreachable
+      path: lib/Application/Service/SamlService.php
+    # LdapAuthenticator writes its cache keys into $_SESSION from a private method
+    # the test reaches by reflection, so PHPStan still sees them as unset from the
+    # test's own unset() and reports every later read as a missing offset.
+    -
+      identifier: offsetAccess.notFound
+      path: tests/unit/Application/Service/LdapAuthenticatorCacheTest.php
+    # PHPStan treats a repeated identical call as pure and reuses the first
+    # result's narrowing, so every "did the mutation take effect?" check below
+    # looks dead. The state genuinely changed in between and removing any of
+    # these would drop a verification or, worse, a rollback. Each is scoped to
+    # its file for want of a narrower hook.
+    #   EditController      - isZoneSecured() after secureZone()/unsecureZone()
+    -
+      identifier: if.alwaysFalse
+      path: lib/Application/Controller/EditController.php
+    -
+      identifier: booleanNot.alwaysFalse
+      path: lib/Application/Controller/EditController.php
+    #   DnssecDeleteKeyController - keyExists() after removeZoneKey()
+    -
+      identifier: booleanAnd.rightAlwaysTrue
+      path: lib/Application/Controller/DnssecDeleteKeyController.php
+    #   SqlDnsBackendProvider, ZoneSyncService - inTransaction() in the catch,
+    #   narrowed from the call made before beginTransaction(). Deleting either
+    #   skips the rollback.
+    -
+      identifier: booleanAnd.rightAlwaysFalse
+      path: lib/Infrastructure/Service/SqlDnsBackendProvider.php
+    -
+      identifier: booleanAnd.rightAlwaysFalse
+      path: lib/Application/Service/ZoneSyncService.php
+    #   DatabaseConsistencyService - the check* calls set $apiReadFailed, which
+    #   PHPStan cannot see, so the "did any API read fail?" ternary reads as dead.
+    -
+      identifier: ternary.alwaysFalse
+      path: lib/Domain/Service/DatabaseConsistencyService.php
+    # processIPv6() is kept alongside its commented-out call site until IPv6
+    # reverse-record creation is finished; see the FIXME above that call.
+    -
+      identifier: method.unused
+      path: lib/Domain/Service/DomainRecordCreator.php
+    # The anonymous LegacyLogger captor binds $sink by reference to the caller's
+    # array, so writing the property is how the test observes the log call.
+    -
+      identifier: property.onlyWritten
+      path: tests/unit/Application/Service/UserEventLoggerTest.php
+    # NetworkUtility::$instance is a test seam. DomainUtilityTest installs a stub
+    # through ReflectionProperty, which static analysis cannot see.
+    -
+      identifier: property.unusedType
+      path: lib/Domain/Utility/NetworkUtility.php
+    # Defensive checks PHPStan can prove redundant today, kept on purpose.
+    #   DbZoneRepository - is_int() picks PDO::PARAM_INT vs PARAM_STR in the
+    #   bindValue loops. $params happens to be all-int now; hardcoding PARAM_INT
+    #   would break the first time a string parameter is added, and MariaDB is
+    #   unforgiving about the wrong type on LIMIT/OFFSET.
+    -
+      identifier: function.alreadyNarrowedType
+      path: lib/Infrastructure/Repository/DbZoneRepository.php
+    #   ModuleRegistry - instanceof after `new $className()`. The class-string
+    #   type is only as good as the registry declaration; this is a real guard.
+    -
+      identifier: instanceof.alwaysTrue
+      path: lib/Module/ModuleRegistry.php
+    #   DynamicDnsUpdateService - `$flag = $flag || ...` accumulators, whose left
+    #   side is literally false on first use. Rewriting would only obscure it.
+    -
+      identifier: booleanOr.leftAlwaysFalse
+      path: lib/Domain/Service/DynamicDnsUpdateService.php
+    #   RRSIGRecordValidator - DateTime::modify() is typed DateTime by PHPStan but
+    #   returns DateTime|false before PHP 8.3, which phan does flag. Dropping the
+    #   truthiness check produces a TypeError on the ordering comparison.
+    -
+      identifier: booleanAnd.leftAlwaysTrue
+      path: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php
+    # Array shapes asserted by docblock over data that does not have to obey them:
+    # session payloads written by an older release, and DB rows. isset()/?? here
+    # is protection against the docblock being wrong, which is exactly when it
+    # matters. Dropping them turns a skipped row into a deprecation or a warning.
+    -
+      identifier: isset.offset
+      path: lib/Application/Service/ZoneSyncService.php
+    -
+      identifier: function.alreadyNarrowedType
+      path: lib/Infrastructure/Logger/RecordChangeLogger.php
+    -
+      identifier: booleanAnd.rightAlwaysTrue
+      path: lib/Infrastructure/Logger/RecordChangeLogger.php
+    -
+      identifier: nullCoalesce.offset
+      path: lib/Application/Controller/Api/V2/ZoneMetadataController.php
+    # The match arms are deliberately parallel and self-documenting; the second
+    # GET arm restates $hasKind that the first arm already excluded.
+    -
+      identifier: booleanAnd.rightAlwaysTrue
+      path: lib/Application/Controller/Api/V2/ZoneMetadataController.php
+    # Tests assert types on purpose, so "already narrowed" is expected there.
+    -
+      identifier: method.alreadyNarrowedType
+      path: tests/*
+    -
+      identifier: function.alreadyNarrowedType
+      path: tests/*
+  disallowedSuperglobals:
+    -
+      superglobal: ['$_GET', '$_POST', '$_REQUEST']
+      message: 'use Poweradmin\Application\Http\Request instead'
+      allowIn:
+        # Reading the superglobal is the job of these files.
+        - lib/Application/Http/Request.php
+        - tests/*
+        # Not yet migrated to Request. Delete each entry as its file is done.
+        - lib/Application/Presenter/PaginationPresenter.php
+        - lib/Application/Presenter/ZoneStartingLettersPresenter.php
+        - lib/Application/Service/LdapAuthenticator.php
+        - lib/Application/Service/PaginationService.php
+        - lib/Application/Service/SqlAuthenticator.php
+        - lib/Domain/Service/ZoneSortingService.php
+        - lib/Infrastructure/Service/HttpPaginationParameters.php
+        - lib/Infrastructure/Service/SessionAuthenticator.php
+        - lib/Module/DnsWizard/Controller/DnsWizardFormController.php
+        - lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php

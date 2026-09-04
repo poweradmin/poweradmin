@@ -1,0 +1,24 @@
+{% if message.type in ['error', 'danger'] %}
+    {% set color = 'danger' %}
+    {% set icon = 'exclamation-triangle' %}
+    {% set title = 'Error:'|trans %}
+{% elseif message.type in ['warn', 'warning'] %}
+    {% set color = 'warning' %}
+    {% set icon = 'exclamation-triangle' %}
+    {% set title = 'Warning:'|trans %}
+{% elseif message.type == 'success' %}
+    {% set color = 'success' %}
+    {% set icon = 'check-circle' %}
+    {% set title = 'Success:'|trans %}
+{% else %}
+    {# An unknown type would otherwise become a CSS class that does not exist. #}
+    {% set color = message.type in ['info', 'primary', 'secondary', 'light', 'dark'] ? message.type : 'info' %}
+    {% set icon = 'info-circle' %}
+    {% set title = 'Info:'|trans %}
+{% endif %}
+<div class="alert alert-{{ color }} bg-{{ color }} bg-opacity-10 py-2 border border-{{ color }} alert-dismissible small fade show"
+     role="alert" data-testid="system-message">
+    <i class="bi bi-{{ icon }}-fill me-2 text-{{ color }}"></i>
+    <strong class="text-{{ color }}">{{ title }}</strong> {{ message.content }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>

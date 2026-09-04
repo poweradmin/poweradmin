@@ -24,22 +24,28 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Domain\Error\ZoneIdNotFoundException;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Throwable;
 
 /**
  * Service class for managing domains/zones
@@ -54,6 +60,8 @@ class DomainManager implements DomainManagerInterface
     private IPAddressValidator $ipAddressValidator;
     private DnsBackendProvider $backendProvider;
     private LoggerInterface $logger;
+    private RecordChangeLogger $changeLogger;
+    private ?PermissionService $permissionService = null;
 
     /**
      * Constructor
@@ -70,7 +78,8 @@ class DomainManager implements DomainManagerInterface
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
         ?DnsBackendProvider $backendProvider = null,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?RecordChangeLogger $changeLogger = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -80,6 +89,75 @@ class DomainManager implements DomainManagerInterface
         $this->ipAddressValidator = new IPAddressValidator();
         $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $this->logger = $logger ?? new NullLogger();
+        $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
+    }
+
+    private function captureChange(callable $callback): void
+    {
+        try {
+            $callback();
+        } catch (Throwable $e) {
+            $this->logger->warning('Failed to write zone change log: {error}', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Check if the logged-in user owns the zone directly or via group membership.
+     * Static so the static owner-management methods can share it.
+     */
+    private static function currentUserOwnsZone($db, int $zoneId): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+        $userRepository = new DbUserRepository($db, ConfigurationManager::getInstance());
+        return $userRepository->userOwnsZone($userId, $zoneId);
+    }
+
+    /**
+     * Check if the logged-in user has the given permission (admins always pass)
+     */
+    private function userHasPermission(string $permission): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, ConfigurationManager::getInstance()));
+        return $this->permissionService->hasPermission($userId, $permission);
+    }
+
+    /**
+     * Snapshot a zone's metadata-relevant fields (type and master IP) for the
+     * change log. Distinct from {@see snapshotZoneForLog()}, which only carries
+     * id/name/type and is used for zone create/delete entries.
+     *
+     * Uses the backend provider's lightweight zone lookup rather than the
+     * repository's getZoneInfoFromId(), which aggregates record_count and
+     * would turn a metadata edit into O(records) work on large zones.
+     *
+     * @return array{id:int,name:?string,type:?string,master:?string}|null
+     */
+    private function snapshotZoneMetadataForLog(int $zoneId): ?array
+    {
+        try {
+            $zone = $this->backendProvider->getZoneById($zoneId);
+        } catch (Throwable $e) {
+            $this->logger->warning('Failed to snapshot zone for change log: {error}', ['error' => $e->getMessage()]);
+            return null;
+        }
+
+        if ($zone === null || empty($zone['name'])) {
+            return null;
+        }
+
+        return [
+            'id' => $zoneId,
+            'name' => $zone['name'],
+            'type' => $zone['type'] ?? null,
+            'master' => $zone['master'] ?? null,
+        ];
     }
 
     /**
@@ -88,16 +166,28 @@ class DomainManager implements DomainManagerInterface
      * @param object $db Database connection
      * @param string $domain A domain name
      * @param int|null $owner Owner ID for domain (null if only groups are assigned)
-     * @param string $type Type of domain ['NATIVE','MASTER','SLAVE']
-     * @param string $slave_master Master server hostname for domain
+     * @param string $type Type of domain ['NATIVE','MASTER','SLAVE','PRODUCER','CONSUMER']
+     * @param string $slave_master Master server hostname, required for kinds that replicate from a primary
      * @param int|string $zone_template ID of zone template ['none' or int]
+     * @param array $groupIds Group IDs to assign as zone owners
+     * @param string|null $soaEditApi SOA-EDIT-API policy for the new zone; 'OFF' disables, null uses the dns.soa_edit_api config default
      *
      * @return boolean true on success
      */
-    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = []): bool
+    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): bool
     {
-        $zone_master_add = UserManager::verifyPermission($db, 'zone_master_add');
-        $zone_slave_add = UserManager::verifyPermission($db, 'zone_slave_add');
+        // Last-resort guard: not every caller whitelists the kind, and an unknown
+        // string would otherwise be written straight into the zone type.
+        if (!in_array(strtoupper($type), ZoneType::getAllTypes(), true)) {
+            $this->messageService->addSystemError(_('Invalid or unexpected input given.'));
+            return false;
+        }
+
+        $zone_master_add = $this->userHasPermission('zone_master_add');
+        $zone_slave_add = $this->userHasPermission('zone_slave_add');
+        // Keeps the original string for MASTER/NATIVE zones, which pass '' here, and for
+        // anything that fails validation - addDomain has never validated this argument.
+        $slave_master = $this->normalizeMasterList($slave_master) ?? $slave_master;
 
         // TODO: make sure only one is possible if only one is enabled
         if ($zone_master_add || $zone_slave_add) {
@@ -105,11 +195,13 @@ class DomainManager implements DomainManagerInterface
             $dns_hostmaster = $this->config->get('dns', 'hostmaster');
             $dns_ttl = $this->config->get('dns', 'ttl');
 
-            if (
-                ($domain && $zone_template) ||
-                (preg_match('/in-addr.arpa/i', $domain) && $zone_template) ||
-                ($type == "SLAVE" && $domain && $slave_master)
-            ) {
+            // A replicating kind is inert without a primary, so require one rather
+            // than letting the template slot alone satisfy the guard.
+            $hasRequiredArgs = ZoneType::replicatesFromPrimary($type)
+                ? (bool)($domain && $slave_master)
+                : (bool)($domain && $zone_template);
+
+            if ($hasRequiredArgs) {
                 // Create zone BEFORE starting the transaction. In API mode,
                 // createZone() polls the DB to discover the new domain ID.
                 // If called inside a transaction, snapshot isolation can hide
@@ -134,6 +226,10 @@ class DomainManager implements DomainManagerInterface
                     return false;
                 }
 
+                if (!ZoneType::replicatesFromPrimary($type)) {
+                    $this->applySerialPolicy($domain_id, $domain, $soaEditApi);
+                }
+
                 $db->beginTransaction();
                 try {
                     if ($this->backendProvider->isApiBackend()) {
@@ -153,7 +249,8 @@ class DomainManager implements DomainManagerInterface
                         $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
                         $stmt->execute();
 
-                        $zone_id = $db->lastInsertId();
+                        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+                        $zone_id = $db->lastInsertId('zones_id_seq');
                     }
 
                     // Ownerless zones keep their default empty account; no push needed on create
@@ -179,9 +276,19 @@ class DomainManager implements DomainManagerInterface
                         $stmt->execute();
                     }
 
-                    if ($type == "SLAVE") {
-                        // Master IP is already set by backendProvider->createZone()
+                    if (ZoneType::replicatesFromPrimary($type)) {
+                        // Records arrive by transfer, so skip the apex SOA and any template
+                        // records. Master IP is already set by backendProvider->createZone().
                         $db->commit();
+                        $this->captureChange(function () use ($domain_id, $domain, $type, $slave_master, $owner): void {
+                            $this->changeLogger->logZoneCreate([
+                                'id' => $domain_id,
+                                'name' => $domain,
+                                'type' => $type,
+                                'master' => $slave_master,
+                                'owner' => $owner,
+                            ]);
+                        });
                         return true;
                     } else {
                         if ($zone_template == "none" && $domain_id) {
@@ -223,6 +330,14 @@ class DomainManager implements DomainManagerInterface
                             if (!$isApiBackend) {
                                 $db->commit();
                             }
+                            $this->captureChange(function () use ($domain_id, $domain, $type, $owner): void {
+                                $this->changeLogger->logZoneCreate([
+                                    'id' => $domain_id,
+                                    'name' => $domain,
+                                    'type' => $type,
+                                    'owner' => $owner,
+                                ]);
+                            });
                             return true;
                         } elseif ($domain_id && is_numeric($zone_template)) {
                             $isApiBackend = $this->backendProvider->isApiBackend();
@@ -236,7 +351,7 @@ class DomainManager implements DomainManagerInterface
 
                             $dns_ttl = $this->config->get('dns', 'ttl');
 
-                            $templ_records = ZoneTemplate::getZoneTemplRecords($db, $zone_template);
+                            $templ_records = ZoneTemplate::getZoneTemplRecords($db, (int)$zone_template);
                             if (!empty($templ_records)) {
                                 // Process the template records
                                 foreach ($templ_records as $r) {
@@ -244,7 +359,7 @@ class DomainManager implements DomainManagerInterface
                                         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
                                         $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
                                         $recordType = $r["type"];
-                                        $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
+                                        $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
                                         $ttl = $r["ttl"];
                                         $prio = intval($r["prio"]);
 
@@ -271,9 +386,17 @@ class DomainManager implements DomainManagerInterface
                                             $record_id = 0;
                                         }
 
-                                        // Skip template linkage in API mode: record IDs are encoded
-                                        // strings that can't be stored in the integer record_id column.
-                                        if (!$isApiBackend) {
+                                        // Link the record to the template so future template
+                                        // edits can remove it precisely. SQL records use
+                                        // INT-keyed records_zone_templ; API records use
+                                        // string-keyed records_zone_templ_api.
+                                        if ($isApiBackend) {
+                                            $stmt = $db->prepare("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
+                                            $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                                            $stmt->bindValue(':record_id', (string) $record_id, PDO::PARAM_STR);
+                                            $stmt->bindValue(':zone_templ_id', (int) $r['zone_templ_id'], PDO::PARAM_INT);
+                                            $stmt->execute();
+                                        } else {
                                             $stmt = $db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
                                             $stmt->execute([
                                                 ':domain_id' => $domain_id,
@@ -287,6 +410,15 @@ class DomainManager implements DomainManagerInterface
                             if (!$isApiBackend) {
                                 $db->commit();
                             }
+                            $this->captureChange(function () use ($domain_id, $domain, $type, $zone_template, $owner): void {
+                                $this->changeLogger->logZoneCreate([
+                                    'id' => $domain_id,
+                                    'name' => $domain,
+                                    'type' => $type,
+                                    'template_id' => (int) $zone_template,
+                                    'owner' => $owner,
+                                ]);
+                            });
                             return true;
                         } else {
                             $db->rollBack();
@@ -327,12 +459,17 @@ class DomainManager implements DomainManagerInterface
      */
     public function deleteDomain(int $id): bool
     {
-        $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
+        $perm_delete = Permission::getDeletePermission($this->db);
+        $user_is_zone_owner = self::currentUserOwnsZone($this->db, $id);
 
-        if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+        if ($perm_delete == "all" || ($perm_delete == "own" && $user_is_zone_owner == "1")) {
             // Get zone name for backend deletion.
             $zoneName = $this->domainRepository->getDomainNameById($id);
+
+            // Snapshot zone metadata + record count BEFORE deletion for the audit log.
+            $zoneSnapshot = $this->snapshotZoneForLog($id, $zoneName);
+            $recordCountBefore = $this->countRecordsForZone($id);
+
             if ($zoneName !== null) {
                 // Delete DNS data via backend first (SQL or API).
                 // This must happen before local cleanup so that a failure
@@ -356,7 +493,8 @@ class DomainManager implements DomainManagerInterface
 
                 // Get zone_id before deleting zones record for sync cleanup
                 $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
-                $stmt->execute([':id' => $id]);
+                $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+                $stmt->execute();
                 $zoneId = $stmt->fetchColumn();
 
                 // Clean up zone template sync records if zone exists
@@ -366,12 +504,16 @@ class DomainManager implements DomainManagerInterface
                 }
 
                 $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
-                $stmt->execute([':id' => $id]);
+                $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+                $stmt->execute();
 
                 $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
                 $stmt->execute([':id' => $id]);
 
                 $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
+                $stmt->execute([':id' => $id]);
+
+                $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :id");
                 $stmt->execute([':id' => $id]);
 
                 $this->db->commit();
@@ -382,6 +524,10 @@ class DomainManager implements DomainManagerInterface
                 $this->messageService->addSystemError(sprintf(_('Failed to clean up zone metadata: %s'), $e->getMessage()));
                 return false;
             }
+
+            $this->captureChange(function () use ($zoneSnapshot, $recordCountBefore): void {
+                $this->changeLogger->logZoneDelete($zoneSnapshot, $recordCountBefore);
+            });
 
             return true;
         } else {
@@ -402,12 +548,17 @@ class DomainManager implements DomainManagerInterface
         $allSucceeded = true;
 
         foreach ($domains as $id) {
-            $perm_edit = Permission::getEditPermission($this->db);
-            $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
+            $perm_delete = Permission::getDeletePermission($this->db);
+            $user_is_zone_owner = self::currentUserOwnsZone($this->db, $id);
 
-            if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+            if ($perm_delete == "all" || ($perm_delete == "own" && $user_is_zone_owner == "1")) {
                 // Get zone name for backend deletion.
                 $zoneName = $this->domainRepository->getDomainNameById($id);
+
+                // Snapshot for audit log
+                $zoneSnapshot = $this->snapshotZoneForLog($id, $zoneName);
+                $recordCountBefore = $this->countRecordsForZone($id);
+
                 if ($zoneName !== null) {
                     // Delete DNS data BEFORE the transaction. API deletions are
                     // irreversible, so they must not be inside a transaction that
@@ -428,7 +579,8 @@ class DomainManager implements DomainManagerInterface
                 try {
                     // Get zone_id before deleting zones record for sync cleanup
                     $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
-                    $stmt->execute([':id' => $id]);
+                    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+                    $stmt->execute();
                     $zoneId = $stmt->fetchColumn();
 
                     // Clean up zone template sync records if zone exists
@@ -439,7 +591,8 @@ class DomainManager implements DomainManagerInterface
 
                     // Clean up Poweradmin-internal tables (always SQL)
                     $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
-                    $stmt->execute([':id' => $id]);
+                    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+                    $stmt->execute();
 
                     $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
                     $stmt->execute([':id' => $id]);
@@ -447,7 +600,14 @@ class DomainManager implements DomainManagerInterface
                     $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
                     $stmt->execute([':id' => $id]);
 
+                    $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
+
                     $this->db->commit();
+
+                    $this->captureChange(function () use ($zoneSnapshot, $recordCountBefore): void {
+                        $this->changeLogger->logZoneDelete($zoneSnapshot, $recordCountBefore);
+                    });
                 } catch (\Exception $e) {
                     if ($this->db->inTransaction()) {
                         $this->db->rollBack();
@@ -462,6 +622,54 @@ class DomainManager implements DomainManagerInterface
         }
 
         return $allSucceeded;
+    }
+
+    /**
+     * Apply the SOA serial policy (SOA-EDIT / SOA-EDIT-API) to a new zone.
+     *
+     * The per-zone SOA-EDIT-API choice wins over the dns.soa_edit_api config
+     * default; 'OFF' explicitly disables the policy (in API mode this clears
+     * the server-applied default). SOA-EDIT comes from dns.soa_edit only.
+     * Values are validated against the same choice sets the UI offers, so
+     * config restrictions hold everywhere. Failures are logged but never
+     * fail zone creation.
+     */
+    private function applySerialPolicy(int $domainId, string $domain, ?string $soaEditApi): void
+    {
+        if ($soaEditApi === null || $soaEditApi === '') {
+            $soaEditApi = (string)$this->config->get('dns', 'soa_edit_api', '');
+        }
+        $soaEdit = (string)$this->config->get('dns', 'soa_edit', '');
+
+        $properties = [];
+
+        if ($soaEditApi !== '') {
+            if (in_array($soaEditApi, MetadataDefinitions::getSoaEditApiChoices($this->config), true)) {
+                $properties['soa_edit_api'] = $soaEditApi === MetadataDefinitions::SOA_EDIT_API_OFF ? '' : $soaEditApi;
+            } else {
+                $this->logger->warning('Ignoring invalid or not offered SOA-EDIT-API value: {value}', ['value' => $soaEditApi]);
+            }
+        }
+
+        if ($soaEdit !== '') {
+            if (in_array($soaEdit, MetadataDefinitions::getOfferedOptions('SOA-EDIT', $this->config) ?? [], true)) {
+                $properties['soa_edit'] = $soaEdit;
+            } else {
+                $this->logger->warning('Ignoring invalid or not offered dns.soa_edit value: {value}', ['value' => $soaEdit]);
+            }
+        }
+
+        if ($properties === []) {
+            return;
+        }
+
+        try {
+            if (!$this->backendProvider->setZoneSerialPolicy($domainId, $domain, $properties)) {
+                $this->logger->warning('Failed to set SOA serial policy on new zone {id}', ['id' => $domainId]);
+            }
+        } catch (\Exception $e) {
+            $this->logger->warning('Failed to set SOA serial policy on new zone {id}: {error}', ['id' => $domainId, 'error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -490,11 +698,76 @@ class DomainManager implements DomainManagerInterface
         try {
             $db = $this->db;
             $db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :did")->execute([':did' => $domainId]);
+            $db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :did")->execute([':did' => $domainId]);
             $db->prepare("DELETE FROM zones_groups WHERE domain_id = :did")->execute([':did' => $domainId]);
-            $db->prepare("DELETE FROM zones WHERE domain_id = :did")->execute([':did' => $domainId]);
+            $zonesDeleteStmt = $db->prepare("DELETE FROM zones WHERE domain_id = :did");
+            $zonesDeleteStmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+            $zonesDeleteStmt->execute();
         } catch (\Exception $e) {
             $this->logger->error('Failed to clean up zone metadata for domain_id {domainId}: {error}', ['domainId' => $domainId, 'error' => $e->getMessage()]);
         }
+    }
+
+    /**
+     * Capture a minimal zone snapshot suitable for the change log.
+     * Tolerates missing data (out-of-band deletes leave $zoneName null).
+     */
+    private function snapshotZoneForLog(int $domainId, ?string $zoneName): array
+    {
+        $type = null;
+        try {
+            $type = $this->domainRepository->getDomainType($domainId);
+        } catch (Throwable $e) {
+            // Type lookup is best-effort; the log still gets a row with null type.
+        }
+
+        return [
+            'id' => $domainId,
+            'name' => $zoneName,
+            'type' => $type,
+        ];
+    }
+
+    /**
+     * Count records in a zone before deletion. Used to summarize how many
+     * records were removed by a zone delete in the audit log.
+     */
+    private function countRecordsForZone(int $domainId): int
+    {
+        try {
+            $tableNameService = new TableNameService($this->config);
+            $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+            $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table WHERE domain_id = :did");
+            $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+            $stmt->execute();
+            return (int) $stmt->fetchColumn();
+        } catch (Throwable $e) {
+            return 0;
+        }
+    }
+
+    private function userCanEditZoneMetadata(int $zoneId): bool
+    {
+        if ($this->userHasPermission('zone_meta_edit_others')) {
+            return true;
+        }
+        if (
+            $this->userHasPermission('zone_meta_edit_own')
+            && self::currentUserOwnsZone($this->db, $zoneId)
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Request an immediate AXFR transfer of a secondary zone from its master.
+     *
+     * @param int $id Zone ID
+     */
+    public function retrieveZone(int $id): bool
+    {
+        return $this->backendProvider->retrieveZone($id);
     }
 
     /**
@@ -505,11 +778,42 @@ class DomainManager implements DomainManagerInterface
      */
     public function changeZoneType(string $type, int $id): bool
     {
+        if (!$this->userCanEditZoneMetadata($id)) {
+            $this->messageService->addSystemError(_('You do not have the permission to edit zone metadata.'));
+            return false;
+        }
+
+        $beforeZone = $this->snapshotZoneMetadataForLog($id);
+
         if (!$this->backendProvider->updateZoneType($id, $type)) {
             $this->messageService->addSystemError(_('Failed to update zone type in DNS backend.'));
             return false;
         }
+
+        if ($beforeZone !== null) {
+            $afterZone = $this->snapshotZoneMetadataForLog($id) ?? array_merge($beforeZone, ['type' => $type]);
+            $this->captureChange(function () use ($beforeZone, $afterZone): void {
+                $this->changeLogger->logZoneMetadataEdit($beforeZone, $afterZone);
+            });
+        }
+
         return true;
+    }
+
+    /**
+     * Collapse a master list to the one spelling the DomainManager write paths store.
+     *
+     * The forms submit several masters as one comma-separated string, and the v2 API
+     * normalizes its own copy the same way, so agreeing on one spelling here stops a zone
+     * sync from rewriting the row purely over spacing. Returns null when the list does not
+     * validate, which lets addDomain() pass the original through - it does not validate its
+     * input today and must not start failing here.
+     */
+    private function normalizeMasterList(string $masters): ?string
+    {
+        $validation = $this->ipAddressValidator->validateMultipleIPs($masters);
+
+        return $validation->isValid() ? implode(',', $validation->getData()) : null;
     }
 
     /**
@@ -520,14 +824,31 @@ class DomainManager implements DomainManagerInterface
      */
     public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master): bool
     {
-        if (!$this->ipAddressValidator->areMultipleValidIPs($ip_slave_master)) {
+        if (!$this->userCanEditZoneMetadata($zone_id)) {
+            $this->messageService->addSystemError(_('You do not have the permission to edit zone metadata.'));
+            return false;
+        }
+
+        $normalized = $this->normalizeMasterList($ip_slave_master);
+        if ($normalized === null) {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "changeZoneSlaveMaster", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
             return false;
         }
 
+        $ip_slave_master = $normalized;
+
+        $beforeZone = $this->snapshotZoneMetadataForLog($zone_id);
+
         if (!$this->backendProvider->updateZoneMaster($zone_id, $ip_slave_master)) {
             $this->messageService->addSystemError(_('Failed to update zone master in DNS backend.'));
             return false;
+        }
+
+        if ($beforeZone !== null) {
+            $afterZone = $this->snapshotZoneMetadataForLog($zone_id) ?? array_merge($beforeZone, ['master' => $ip_slave_master]);
+            $this->captureChange(function () use ($beforeZone, $afterZone): void {
+                $this->changeLogger->logZoneMetadataEdit($beforeZone, $afterZone);
+            });
         }
 
         return true;
@@ -543,10 +864,18 @@ class DomainManager implements DomainManagerInterface
      */
     public static function addOwnerToZone($db, int $zone_id, int $user_id): bool
     {
-        if (UserManager::verifyPermission($db, 'zone_meta_edit_others') || (UserManager::verifyPermission($db, 'zone_meta_edit_own') && UserManager::verifyUserIsOwnerZoneId($db, $zone_id))) {
-            if (UserManager::isValidUser($db, $user_id)) {
+        $currentUserId = (new UserContextService())->getLoggedInUserId();
+        $permissionService = new PermissionService(new DbUserRepository($db, ConfigurationManager::getInstance()));
+        $canEditMeta = $currentUserId !== null && ($permissionService->hasPermission($currentUserId, 'zone_meta_edit_others')
+            || ($permissionService->hasPermission($currentUserId, 'zone_meta_edit_own') && $permissionService->userOwnsZone($currentUserId, $zone_id)));
+
+        if ($canEditMeta) {
+            $userRepository = new DbUserRepository($db, ConfigurationManager::getInstance());
+            if ($userRepository->getUserById($user_id) !== null) {
                 $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE owner = ? AND domain_id = ?");
-                $stmt->execute([$user_id, $zone_id]);
+                $stmt->bindValue(1, $user_id, PDO::PARAM_INT);
+                $stmt->bindValue(2, $zone_id, PDO::PARAM_INT);
+                $stmt->execute();
                 if ($stmt->fetchColumn() == 0) {
                     $zone_templ_id = self::getZoneTemplate($db, $zone_id);
                     if ($zone_templ_id == null) {
@@ -573,41 +902,6 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
-     * Delete owner from zone
-     *
-     * @param int $zone_id Zone ID
-     * @param int $user_id User ID
-     *
-     * @return boolean true on success
-     */
-    public static function deleteOwnerFromZone($db, int $zone_id, int $user_id): bool
-    {
-        if (UserManager::verifyPermission($db, 'zone_meta_edit_others') || (UserManager::verifyPermission($db, 'zone_meta_edit_own') && UserManager::verifyUserIsOwnerZoneId($db, $zone_id))) {
-            if (UserManager::isValidUser($db, $user_id)) {
-                $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE domain_id = ?");
-                $stmt->execute([$zone_id]);
-                if ($stmt->fetchColumn() > 1) {
-                    $stmt = $db->prepare("DELETE FROM zones WHERE owner = ? AND domain_id = ?");
-                    $stmt->execute([$user_id, $zone_id]);
-
-                    self::syncZoneAccountStatic($db, $zone_id);
-                    return true;
-                } else {
-                    $messageService = new MessageService();
-                    $messageService->addSystemError(_('There must be at least one owner for a zone.'));
-                    return false;
-                }
-            } else {
-                $messageService = new MessageService();
-                $messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "deleteOwnerFromZone", "$zone_id / $user_id"));
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Get Zone Template ID for Zone ID
      *
      * @param object $db Database connection
@@ -618,7 +912,8 @@ class DomainManager implements DomainManagerInterface
     public static function getZoneTemplate($db, int $zone_id): int
     {
         $stmt = $db->prepare("SELECT zone_templ_id FROM zones WHERE domain_id = :zone_id");
-        $stmt->execute([':zone_id' => $zone_id]);
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->execute();
         $result = $stmt->fetchColumn();
 
         // Handle NULL (PostgreSQL) or false (no row found)
@@ -637,13 +932,19 @@ class DomainManager implements DomainManagerInterface
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
      */
-    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): void
+    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): bool
     {
-        $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        // Secondary and Consumer zones replicate from a primary - applying a
+        // template would write replicated records, so skip them entirely
+        if (ZoneType::isReadOnly($this->domainRepository->getDomainType($zone_id))) {
+            return true;
+        }
 
-        $zone_master_add = UserManager::verifyPermission($this->db, 'zone_master_add');
-        $zone_slave_add = UserManager::verifyPermission($this->db, 'zone_slave_add');
+        $perm_edit = Permission::getEditPermission($this->db);
+        $user_is_zone_owner = self::currentUserOwnsZone($this->db, $zone_id);
+
+        $zone_master_add = $this->userHasPermission('zone_master_add');
+        $zone_slave_add = $this->userHasPermission('zone_slave_add');
 
         $soa_rec = $this->soaRecordManager->getSOARecord($zone_id);
 
@@ -652,21 +953,31 @@ class DomainManager implements DomainManagerInterface
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
+        // Set when the previous template's records could not be removed, so the caller
+        // does not report success over a zone left holding records from both templates.
+        $templateRecordsRefused = false;
+
         $this->db->beginTransaction();
         try {
             if ($zone_template_id != 0) {
                 if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                     if ($isApiBackend) {
-                        // API mode has no record-to-template mapping, so the old logic
-                        // matched on name+type+content and could wipe user-authored
-                        // records that happened to mirror a template entry. Leave any
-                        // existing records in place; users can prune by hand.
-                        $this->logger->info(
-                            'Skipping template record cleanup for API zone {zone_id}; '
-                            . 'pre-existing records left in place to avoid removing user data.',
-                            ['zone_id' => $zone_id, 'zone_template_id' => $zone_template_id]
-                        );
+                        // API mode: encoded RecordIdentifier IDs are kept in the
+                        // string-keyed records_zone_templ_api table so we can
+                        // remove only the records this template applied here.
+                        $this->deleteTemplateRecordsViaApi($zone_id, $zone_template_id, $dns_ttl);
                     } else {
+                        // Snapshot template-linked records before the bulk delete
+                        // so the audit log captures every removal.
+                        $selectStmt = $this->db->prepare(
+                            "SELECT r.id, r.name, r.type, r.content, r.ttl, r.prio, r.disabled
+                             FROM $records_table r
+                             INNER JOIN records_zone_templ rzt ON r.id = rzt.record_id
+                             WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id"
+                        );
+                        $selectStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
+                        $templateRecordsRemoved = $selectStmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
                         // Delete the template-applied records. Only MySQL can drop the
                         // record and its mapping in one statement; the other backends
                         // delete records here and the mapping is cleared uniformly below.
@@ -685,8 +996,17 @@ class DomainManager implements DomainManagerInterface
                         // rowid could later resolve a stale mapping to an unrelated record.
                         $mappingStmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id");
                         $mappingStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
+
+                        if ($templateRecordsRemoved !== []) {
+                            $this->captureChange(function () use ($templateRecordsRemoved, $zone_id): void {
+                                foreach ($templateRecordsRemoved as $removed) {
+                                    $this->changeLogger->logRecordDelete($removed, $zone_id);
+                                }
+                            });
+                        }
                     }
                 } else {
+                    $templateRecordsRefused = true;
                     $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
                 }
 
@@ -715,14 +1035,27 @@ class DomainManager implements DomainManagerInterface
                                     continue;
                                 }
                                 // For SOA records, delete existing ones and use updated SOA record
+                                $soaSelect = $this->db->prepare("SELECT id, name, type, content, ttl, prio, disabled FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
+                                $soaSelect->execute([':zone_id' => $zone_id]);
+                                $existingSoaRecords = $soaSelect->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
                                 $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
                                 $stmt->execute([':zone_id' => $zone_id]);
+
+                                if ($existingSoaRecords !== []) {
+                                    $this->captureChange(function () use ($existingSoaRecords, $zone_id): void {
+                                        foreach ($existingSoaRecords as $soaRecord) {
+                                            $this->changeLogger->logRecordDelete($soaRecord, $zone_id);
+                                        }
+                                    });
+                                }
+
                                 $content = $this->soaRecordManager->getUpdatedSOARecord($soa_rec);
                                 if ($content == "") {
-                                    $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
+                                    $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
                                 }
                             } else {
-                                $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
+                                $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
                             }
 
                             $ttl = $r["ttl"];
@@ -784,9 +1117,18 @@ class DomainManager implements DomainManagerInterface
                                     }
                                 }
 
-                                // Link the record to the template in the mapping table
-                                // Skip for API-backed records: encoded string IDs can't be stored in INT column
-                                if (!$isApiBackend) {
+                                // Link the record to the template so future template
+                                // changes can remove it precisely. SQL records use the
+                                // INT-keyed records_zone_templ; API records use the
+                                // string-keyed records_zone_templ_api because their
+                                // encoded RecordIdentifier IDs don't fit an INT column.
+                                if ($isApiBackend) {
+                                    $stmt = $this->db->prepare("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
+                                    $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+                                    $stmt->bindValue(':record_id', (string) $record_id, PDO::PARAM_STR);
+                                    $stmt->bindValue(':zone_template_id', $zone_template_id, PDO::PARAM_INT);
+                                    $stmt->execute();
+                                } else {
                                     $stmt = $this->db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
                                     $stmt->execute([
                                         ':zone_id' => $zone_id,
@@ -794,6 +1136,20 @@ class DomainManager implements DomainManagerInterface
                                         ':zone_template_id' => $zone_template_id
                                     ]);
                                 }
+
+                                $loggedRecordId = $isApiBackend
+                                    ? $record_id
+                                    : ($record_id !== false ? (int) $record_id : null);
+                                $this->captureChange(function () use ($loggedRecordId, $name, $recordType, $content, $ttl, $prio, $zone_id): void {
+                                    $this->changeLogger->logRecordCreate([
+                                        'id' => $loggedRecordId,
+                                        'name' => $name,
+                                        'type' => $recordType,
+                                        'content' => $content,
+                                        'ttl' => (int) $ttl,
+                                        'prio' => $prio,
+                                    ], $zone_id);
+                                });
                             }
                         }
                     }
@@ -804,16 +1160,16 @@ class DomainManager implements DomainManagerInterface
             $stmt = $this->db->prepare("UPDATE zones
                     SET zone_templ_id = :zone_template_id
                     WHERE domain_id = :zone_id");
-            $stmt->execute([
-                ':zone_template_id' => $zone_template_id,
-                ':zone_id' => $zone_id
-            ]);
+            $stmt->bindValue(':zone_template_id', $zone_template_id, PDO::PARAM_INT);
+            $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+            $stmt->execute();
 
             // Reconcile zone_template_sync so stale rows for a previous template don't
             // keep showing the zone as out-of-sync after it has been reassigned. A zone
             // shared by several owners has one row per owner, so handle every one.
             $zonesIdStmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :domain_id");
-            $zonesIdStmt->execute([':domain_id' => $zone_id]);
+            $zonesIdStmt->bindValue(':domain_id', $zone_id, PDO::PARAM_INT);
+            $zonesIdStmt->execute();
             $zonesIds = $zonesIdStmt->fetchAll(PDO::FETCH_COLUMN);
             if ($zonesIds) {
                 $syncService = new ZoneTemplateSyncService($this->db, $this->config, $this->backendProvider);
@@ -829,12 +1185,82 @@ class DomainManager implements DomainManagerInterface
             if (!$isApiBackend || $this->db->inTransaction()) {
                 $this->db->commit();
             }
+
+            return !$templateRecordsRefused;
         } catch (\Exception $e) {
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
             }
             $this->messageService->addSystemError(sprintf(_('Failed to update zone records: %s'), $e->getMessage()));
+            return false;
         }
+    }
+
+    /**
+     * Delete records that this template applied to a zone, via the API backend.
+     *
+     * Looks up the encoded RecordIdentifier values stored in records_zone_templ_api
+     * for the given (zone, template) pair and deletes only those records, leaving
+     * any user-authored entries that happen to share name/type/content untouched.
+     *
+     * Pre-existing API zones from before records_zone_templ_api was introduced
+     * have no mapping rows, so their template records are left in place rather
+     * than being matched fuzzily; the operator removes them by hand.
+     */
+    private function deleteTemplateRecordsViaApi(int $zone_id, int $zone_template_id, int $dns_ttl): void
+    {
+        $stmt = $this->db->prepare(
+            "SELECT id, record_id
+             FROM records_zone_templ_api
+             WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id"
+        );
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->bindValue(':zone_template_id', $zone_template_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $mappingRows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+        if ($mappingRows === []) {
+            return;
+        }
+
+        // Index zone records by encoded ID so the audit log can capture full
+        // before-state for each delete. Records that no longer exist in the
+        // backend (e.g. removed out-of-band) are still removed from the mapping
+        // below, but skip the deleteRecord/log call for them.
+        $recordsByEncodedId = [];
+        foreach ($this->backendProvider->getRecordsByZoneId($zone_id) as $record) {
+            if (isset($record['id'])) {
+                $recordsByEncodedId[(string) $record['id']] = $record;
+            }
+        }
+
+        $deletedMappingIds = [];
+        foreach ($mappingRows as $mapping) {
+            $encodedId = (string) $mapping['record_id'];
+            $record = $recordsByEncodedId[$encodedId] ?? null;
+
+            if ($record !== null && $this->backendProvider->deleteRecord($encodedId)) {
+                $this->captureChange(function () use ($record, $zone_id): void {
+                    $this->changeLogger->logRecordDelete([
+                        'id' => $record['id'] ?? null,
+                        'name' => $record['name'] ?? null,
+                        'type' => $record['type'] ?? null,
+                        'content' => $record['content'] ?? null,
+                        'ttl' => isset($record['ttl']) ? (int) $record['ttl'] : null,
+                        'prio' => isset($record['prio']) ? (int) $record['prio'] : null,
+                        'disabled' => $record['disabled'] ?? null,
+                    ], $zone_id);
+                });
+            }
+            $deletedMappingIds[] = (int) $mapping['id'];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($deletedMappingIds), '?'));
+        $cleanup = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE id IN ($placeholders)");
+        foreach ($deletedMappingIds as $i => $id) {
+            $cleanup->bindValue($i + 1, $id, PDO::PARAM_INT);
+        }
+        $cleanup->execute();
     }
 
     /**

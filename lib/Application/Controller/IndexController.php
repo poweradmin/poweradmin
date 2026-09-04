@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,12 +33,16 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\PowerdnsStatusService;
+use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Module\ModuleRegistry;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class IndexController extends BaseController
 {
@@ -111,7 +115,7 @@ class IndexController extends BaseController
                         !$permissions['user_edit_others'];
 
         // Determine if user can change password (internal auth only, not ldap/oidc/saml)
-        $canChangePassword = !in_array($this->userContextService->getAuthMethod(), ['ldap', 'oidc', 'saml']);
+        $canChangePassword = AuthMethod::fromDb($this->userContextService->getAuthMethod())->allowsLocalPassword();
 
         // Dashboard stats for admin users
         $dashboardStats = null;
@@ -121,9 +125,9 @@ class IndexController extends BaseController
         }
 
         // Dashboard owns the version refresh so other pages read from cache only.
-        // Runs for every user: non-admin sessions need the capability snapshot
-        // too, or record-type filtering falls back to unfiltered lists.
-        if (DnsBackendProviderFactory::isApiBackend($this->config)) {
+        // Runs whenever pdns_api is configured (SQL dashboards show the version)
+        // and for every user - non-admin sessions need the capability snapshot too.
+        if ($pdnsApiEnabled) {
             $this->refreshPdnsCapabilities();
         }
 
@@ -133,31 +137,78 @@ class IndexController extends BaseController
             && $this->config->get('security', 'password_reset.enabled', false)
             && empty($this->config->get('interface', 'application_url', ''));
 
+        $ssoTemplateMisconfigured = $permissions['user_is_ueberuser']
+            && $this->ssoProvisioningTemplateMissing();
+
+        $dblogUse = $this->config->get('logging', 'database_enabled', false);
+        $ifaceAddReverseRecord = $this->config->get('interface', 'add_reverse_record', true);
+        $apiEnabled = $this->config->get('api', 'enabled', false);
+        $enableConsistencyChecks = $this->config->get('interface', 'enable_consistency_checks', false);
+        $moduleNavItems = $this->getModuleNavItemsForDashboard();
+
+        $hasDnsManagement = ($permissions['user_is_ueberuser'] && $pdnsApiEnabled && $showPdnsStatus)
+            || $permissions['search']
+            || $permissions['zone_content_view_own'] || $permissions['zone_content_view_others']
+            || $permissions['zone_templ_add'] || $permissions['zone_templ_edit']
+            || $permissions['supermaster_view'];
+        $hasZoneOperations = $permissions['zone_master_add']
+            || $permissions['zone_slave_add']
+            || $permissions['supermaster_add']
+            || ($ifaceAddReverseRecord && ($permissions['zone_content_edit_own'] || $permissions['zone_content_edit_others']));
+        $hasAdministration = $permissions['user_view_others'] || $permissions['user_edit_others']
+            || $permissions['user_add_new'] || $permissions['user_is_ueberuser']
+            || $permissions['templ_perm_edit'];
+        $hasTools = ($permissions['user_is_ueberuser'] && $enableConsistencyChecks)
+            || (($permissions['user_is_ueberuser'] || $permissions['api_manage_keys']) && $apiEnabled)
+            || count($moduleNavItems) > 0;
+
         $this->render("index.html", [
             'dashboard_stats' => $dashboardStats,
             'user_name' => $this->userContextService->getDisplayName(),
             'auth_used' => $this->userContextService->getAuthMethod() ?? '',
             'can_change_password' => $canChangePassword,
             'permissions' => $permissions,
-            'dblog_use' => $this->config->get('logging', 'database_enabled', false),
-            'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', true),
-            'api_enabled' => $this->config->get('api', 'enabled', false),
+            'dblog_use' => $dblogUse,
+            'iface_add_reverse_record' => $ifaceAddReverseRecord,
+            'api_enabled' => $apiEnabled,
             'pdns_api_enabled' => $pdnsApiEnabled,
             'is_api_backend' => DnsBackendProviderFactory::isApiBackend($this->config),
             'show_pdns_status' => $showPdnsStatus,
             'pdns_server_status' => $pdnsServerStatus,
             'is_limited_user' => $isLimitedUser,
             'user_id' => $userId,
-            'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
+            'enable_consistency_checks' => $enableConsistencyChecks,
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
-            'module_nav_items' => $this->getModuleNavItemsForDashboard(),
+            'module_nav_items' => $moduleNavItems,
+            'has_dns_management' => $hasDnsManagement,
+            'has_zone_operations' => $hasZoneOperations,
+            'has_administration' => $hasAdministration,
+            'has_tools' => $hasTools,
             'password_reset_misconfigured' => $passwordResetMisconfigured,
+            'sso_template_misconfigured' => $ssoTemplateMisconfigured,
         ]);
+    }
+
+    /**
+     * Same silent-failure class as the password reset warning: SSO provisioning
+     * aborts for any user matching no group mapping when the fallback template
+     * is blank, and the login fails with a generic error.
+     */
+    private function ssoProvisioningTemplateMissing(): bool
+    {
+        $logHandler = LoggerHandlerFactory::create($this->config->getAll());
+        $logger = new Logger($logHandler, $this->config->get('logging', 'level', 'info'));
+
+        return (new OidcConfigurationService($this->config, $logger))->isAutoProvisioningTemplateMissing()
+            || (new SamlConfigurationService($this->config, $logger))->isAutoProvisioningTemplateMissing();
     }
 
     private function getDashboardStats(): array
     {
-        $userCount = UserManager::countUsers($this->db);
+        $userRepository = $this->createUserRepository();
+        $userCount = $this->hasPermission('user_view_others')
+            ? $userRepository->getTotalUserCount()
+            : $userRepository->getTotalUserCount($this->getCurrentUserId() ?? 0);
         $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
 
         if (DnsBackendProviderFactory::isApiBackend($this->config)) {
@@ -215,12 +266,12 @@ class IndexController extends BaseController
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
 
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $items = $registry->getNavItems($isAdmin);
 
         return array_values(array_filter($items, function (array $item): bool {
             if (!empty($item['permission'])) {
-                return UserManager::verifyPermission($this->db, $item['permission']);
+                return $this->hasPermission($item['permission']);
             }
             return true;
         }));

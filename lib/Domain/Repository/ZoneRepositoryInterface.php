@@ -75,7 +75,8 @@ interface ZoneRepositoryInterface
         bool $countOnly = false,
         bool $showSerial = false,
         bool $showTemplate = false,
-        bool $includeHealth = true
+        bool $includeHealth = true,
+        bool $includeRecordCount = true
     );
 
     /**
@@ -257,18 +258,6 @@ interface ZoneRepositoryInterface
      * @return array|null Zone data if found, null otherwise
      */
     public function getZoneByName(string $zoneName): ?array;
-
-    /**
-     * Create a new domain/zone
-     *
-     * @param string $domain Domain name
-     * @param int $owner Owner user ID
-     * @param string $type Zone type (MASTER, SLAVE, NATIVE)
-     * @param string $slaveMaster Slave master server
-     * @param string $zoneTemplate Zone template name
-     * @return bool True if created successfully
-     */
-    public function createDomain(string $domain, int $owner, string $type, string $slaveMaster = '', string $zoneTemplate = 'none'): bool;
 
     /**
      * Get count of zones with filtering

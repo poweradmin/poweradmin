@@ -23,19 +23,8 @@ cd tests/api/
 # Check prerequisites
 ./run-tests.sh check
 
-# Run all API tests (v1 + v2)
+# Run all API tests
 ./run-tests.sh test all
-
-# Run API v1 or v2 separately
-./run-tests.sh test v1
-./run-tests.sh test v2
-
-# Run specific v1 test suites
-./run-tests.sh test v1:auth
-./run-tests.sh test v1:users
-./run-tests.sh test v1:zones
-./run-tests.sh test v1:records
-./run-tests.sh test v1:security
 
 # Run load tests
 ./run-tests.sh load all
@@ -96,7 +85,7 @@ npm run test:api:all-dbs      # All databases
 Simplified interface for running all API tests.
 
 **Commands:**
-- `test [VERSION]` - Run API tests (v1, v2, or all)
+- `test [VERSION]` - Run API tests (v2 or all)
 - `test:all-dbs` - Run tests against all databases
 - `load [TYPE]` - Run load/performance tests
 - `check` - Verify prerequisites and configuration
@@ -105,39 +94,11 @@ Simplified interface for running all API tests.
 **Examples:**
 ```bash
 ./run-tests.sh check              # Check everything is ready
-./run-tests.sh test all           # Run all tests (v1 + v2)
-./run-tests.sh test v1            # Run API v1 tests only
+./run-tests.sh test all           # Run all tests
 ./run-tests.sh test v2            # Run API v2 tests only
-./run-tests.sh test v1:auth       # Run v1 auth tests only
 ./run-tests.sh --db pgsql test all  # Test against PostgreSQL
 ./run-tests.sh test:all-dbs       # Test all databases
 ./run-tests.sh load rate-limit    # Test rate limiting
-```
-
-### `api-v1-test.sh` - API v1 Tests
-Full API test suite covering all endpoints with success and failure scenarios.
-
-**Test Categories:**
-- **Authentication** - API key validation, invalid keys, missing auth
-- **User Management** - CRUD operations, validation, pagination
-- **Zone Management** - Zone operations, validation, error handling
-- **Zone Records** - Record CRUD, type validation, cross-zone access
-- **Record Types** - Comprehensive DNS record type validation
-- **Security** - SQL injection, XSS, large payloads, invalid JSON
-- **Edge Cases** - Unsupported methods, TTL validation, content-type
-- **Documentation** - Swagger UI, OpenAPI JSON endpoints
-- **Dynamic DNS** - Dynamic update endpoint testing
-- **Performance** - Response time measurement
-
-**Usage:**
-```bash
-./api-v1-test.sh                     # Run all tests
-./api-v1-test.sh auth               # Authentication tests only
-./api-v1-test.sh users              # User management tests
-./api-v1-test.sh zones              # Zone management tests
-./api-v1-test.sh records            # Record management tests
-./api-v1-test.sh security           # Security tests only
-./api-v1-test.sh performance        # Performance tests only
 ```
 
 ### `api-v2-test.sh` - API v2 Tests
@@ -218,7 +179,7 @@ brew install curl jq bc
 ## Test Features
 
 ### ✅ Comprehensive Coverage
-- All API v1 endpoints (`/users`, `/zones`, `/zones/{id}/records`)
+- All API v2 endpoints (`/users`, `/zones`, `/zones/{id}/records`)
 - Success and failure scenarios
 - Authentication and authorization testing
 - Input validation and edge cases
@@ -310,7 +271,7 @@ Success Rate: 98%
 You can extend the test scripts by adding custom functions:
 
 ```bash
-# Add to api-v1-test.sh
+# Add to api-v2-test.sh
 test_custom_scenario() {
     print_section "Custom Test Scenario"
     
@@ -425,7 +386,7 @@ Enable verbose output for debugging:
 export DEBUG=1
 
 # Run tests with maximum verbosity
-./api-v1-test.sh auth 2>&1 | tee debug.log
+./api-v2-test.sh 2>&1 | tee debug.log
 ```
 
 ### Performance Tuning

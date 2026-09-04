@@ -29,6 +29,7 @@ use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 class DbZoneLogger
 {
@@ -71,8 +72,8 @@ class DbZoneLogger
             $stmt = $this->db->prepare("
                 SELECT count(zones.id) as number_of_logs
                 FROM log_zones
-                INNER JOIN zones ON COALESCE(zones.domain_id, zones.id) = log_zones.zone_id
-                WHERE zones.zone_name IS NOT NULL AND zones.zone_name LIKE :search_by
+                INNER JOIN zones ON " . CanonicalZoneSql::canonicalIdColumn('zones') . " = log_zones.zone_id
+                WHERE zones.zone_name IS NOT NULL AND zones.zone_name LIKE :search_by ESCAPE '!'
             ");
         } else {
             $pdns_db_name = $this->config->get('database', 'pdns_db_name');
@@ -82,11 +83,11 @@ class DbZoneLogger
                 SELECT count($domains_table.id) as number_of_logs
                 FROM log_zones
                 INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id
-                WHERE $domains_table.name LIKE :search_by
+                WHERE $domains_table.name LIKE :search_by ESCAPE '!'
             ");
         }
 
-        $name = "%$domain%";
+        $name = "%" . DbCompat::escapeLike($domain) . "%";
         $stmt->execute(['search_by' => $name]);
         return $stmt->fetch()['number_of_logs'];
     }
@@ -118,8 +119,8 @@ class DbZoneLogger
             $stmt = $this->db->prepare("
                 SELECT log_zones.id, log_zones.event, log_zones.created_at, zones.zone_name as name
                 FROM log_zones
-                INNER JOIN zones ON COALESCE(zones.domain_id, zones.id) = log_zones.zone_id
-                WHERE zones.zone_name IS NOT NULL AND zones.zone_name LIKE :search_by
+                INNER JOIN zones ON " . CanonicalZoneSql::canonicalIdColumn('zones') . " = log_zones.zone_id
+                WHERE zones.zone_name IS NOT NULL AND zones.zone_name LIKE :search_by ESCAPE '!'
                 ORDER BY log_zones.created_at DESC
                 LIMIT :limit
                 OFFSET :offset");
@@ -131,13 +132,13 @@ class DbZoneLogger
                 SELECT log_zones.id, log_zones.event, log_zones.created_at, $domains_table.name
                 FROM log_zones
                 INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id
-                WHERE $domains_table.name LIKE :search_by
+                WHERE $domains_table.name LIKE :search_by ESCAPE '!'
                 ORDER BY log_zones.created_at DESC
                 LIMIT :limit
                 OFFSET :offset");
         }
 
-        $domain = "%$domain%";
+        $domain = "%" . DbCompat::escapeLike($domain) . "%";
         $stmt->bindValue(':search_by', $domain, PDO::PARAM_STR);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -156,7 +157,9 @@ class DbZoneLogger
         $backendProvider = $this->backendProvider ?? DnsBackendProviderFactory::create($this->db, $this->config);
         $repositoryFactory = new RepositoryFactory($this->db, $this->config, $backendProvider);
         $domainRepository = $repositoryFactory->createDomainRepository();
-        $zones = $domainRepository->getZones('all', 0, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false);
+        // Only zone names are read here, and this runs unpaginated, so neither
+        // health badges nor record counts may trigger their per-zone lookups
+        $zones = $domainRepository->getZones('all', 0, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false, false);
         foreach ($zones as $zone) {
             if (str_contains($zone['name'], $domain_searched)) {
                 return true;
@@ -183,8 +186,11 @@ class DbZoneLogger
             'dnssec_toggle_key',
             'dnssec_unsign_zone',
             'edit_record',
+            'edit_zone_comment',
             'edit_zone_metadata',
             'unlink_zone_template',
+            'zone_catalog_assign',
+            'zone_catalog_clear',
             'zone_group_add',
             'zone_group_remove',
             'zone_import',
@@ -303,25 +309,25 @@ class DbZoneLogger
     {
         if (!empty($filters['name'])) {
             if ($this->isApiBackend()) {
-                $query = str_replace('FROM log_zones', 'FROM log_zones INNER JOIN zones ON COALESCE(zones.domain_id, zones.id) = log_zones.zone_id', $query);
-                $conditions[] = "zones.zone_name LIKE :search_by";
+                $query = str_replace('FROM log_zones', 'FROM log_zones INNER JOIN zones ON ' . CanonicalZoneSql::canonicalIdColumn('zones') . ' = log_zones.zone_id', $query);
+                $conditions[] = "zones.zone_name LIKE :search_by ESCAPE '!'";
             } else {
                 $pdns_db_name = $this->config->get('database', 'pdns_db_name');
                 $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
                 $query = str_replace('FROM log_zones', "FROM log_zones INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id", $query);
-                $conditions[] = "$domains_table.name LIKE :search_by";
+                $conditions[] = "$domains_table.name LIKE :search_by ESCAPE '!'";
             }
-            $params[':search_by'] = ["%" . $filters['name'] . "%", PDO::PARAM_STR];
+            $params[':search_by'] = ["%" . DbCompat::escapeLike($filters['name']) . "%", PDO::PARAM_STR];
         }
 
         if (!empty($filters['operation'])) {
-            $conditions[] = "log_zones.event LIKE :operation";
-            $params[':operation'] = ["%operation:" . $filters['operation'] . " %", PDO::PARAM_STR];
+            $conditions[] = "log_zones.event LIKE :operation ESCAPE '!'";
+            $params[':operation'] = ["%operation:" . DbCompat::escapeLike($filters['operation']) . " %", PDO::PARAM_STR];
         }
 
         if (!empty($filters['user'])) {
-            $conditions[] = "log_zones.event LIKE :user_filter";
-            $params[':user_filter'] = ["%user:" . $filters['user'] . " %", PDO::PARAM_STR];
+            $conditions[] = "log_zones.event LIKE :user_filter ESCAPE '!'";
+            $params[':user_filter'] = ["%user:" . DbCompat::escapeLike($filters['user']) . " %", PDO::PARAM_STR];
         }
 
         if (!empty($filters['date_from'])) {

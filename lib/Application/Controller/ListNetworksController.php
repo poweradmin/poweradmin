@@ -22,26 +22,35 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 
 /**
  * Lists network -> view mappings (PowerDNS 5.0+) and exposes inline
  * add/edit/remove actions. Admin-only; hidden behind the supportsViews()
- * capability gate.
+ * capability gate, which covers the version, the backend and views=yes.
  */
 class ListNetworksController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
+
     public function run(): void
     {
-        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if (!$this->hasPermission('user_is_ueberuser')) {
             $this->showError(_('You do not have permission to manage network views.'));
             return;
         }
 
-        if (!$this->getPdnsCapabilities()->supportsViews()) {
-            $this->showError(_('Network views require PowerDNS 5.0 or newer.'));
+        $viewsError = $this->getPdnsCapabilities()->viewsUnavailableMessage();
+        if ($viewsError !== null) {
+            $this->showError($viewsError);
             return;
         }
 
@@ -51,7 +60,7 @@ class ListNetworksController extends BaseController
             return;
         }
 
-        if (!empty($_POST)) {
+        if (!empty($this->request->getPostParams())) {
             $this->validateCsrfToken();
             $action = $this->getSafeRequestValue('action');
             $cidr = trim($this->getSafeRequestValue('cidr'));

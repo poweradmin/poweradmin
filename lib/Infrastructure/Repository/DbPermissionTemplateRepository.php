@@ -25,20 +25,22 @@ namespace Poweradmin\Infrastructure\Repository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Throwable;
+use Poweradmin\Domain\Enum\PermissionTemplateType;
 
 class DbPermissionTemplateRepository
 {
     private object $db;
-    private ConfigurationManager $config;
 
+    // $config is unused but kept so every Db*Repository is constructed alike.
     public function __construct($db, ConfigurationManager $config)
     {
         $this->db = $db;
-        $this->config = $config;
     }
 
     /**
      * Add a Permission Template
+     *
+     * Write through PermissionTemplateWriteService; it carries the content guard.
      *
      * @param array $details Permission template details [templ_name,templ_descr,template_type,perm_id]
      *
@@ -48,26 +50,34 @@ class DbPermissionTemplateRepository
     {
         $template_type = $details['template_type'] ?? 'user';
 
-        $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr, template_type) VALUES (:name, :descr, :template_type)");
-        $stmt->execute([
-            ':name' => $details['templ_name'],
-            ':descr' => $details['templ_descr'],
-            ':template_type' => $template_type
-        ]);
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr, template_type) VALUES (:name, :descr, :template_type)");
+            $stmt->execute([
+                ':name' => $details['templ_name'],
+                ':descr' => $details['templ_descr'],
+                ':template_type' => $template_type
+            ]);
 
-        $perm_templ_id = $this->db->lastInsertId();
+            // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+            $perm_templ_id = $this->db->lastInsertId('perm_templ_id_seq');
 
-        if (isset($details['perm_id'])) {
-            $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
-            foreach ($details['perm_id'] as $perm_id) {
-                $stmt->execute([
-                    ':templ_id' => $perm_templ_id,
-                    ':perm_id' => $perm_id
-                ]);
+            if (isset($details['perm_id'])) {
+                $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
+                foreach ($details['perm_id'] as $perm_id) {
+                    $stmt->execute([
+                        ':templ_id' => $perm_templ_id,
+                        ':perm_id' => $perm_id
+                    ]);
+                }
             }
-        }
 
-        return true;
+            $this->db->commit();
+            return true;
+        } catch (Throwable $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -122,6 +132,8 @@ class DbPermissionTemplateRepository
 
     /**
      * Update permission template details
+     *
+     * Write through PermissionTemplateWriteService; it carries the content guard.
      *
      * @param array $details Permission Template Details
      *
@@ -207,7 +219,7 @@ class DbPermissionTemplateRepository
      */
     public function listPermissionTemplates(?string $filter_type = null): array
     {
-        if ($filter_type !== null && in_array($filter_type, ['user', 'group'])) {
+        if ($filter_type !== null && PermissionTemplateType::isValid($filter_type)) {
             $query = "SELECT * FROM perm_templ WHERE template_type = :template_type ORDER BY name";
             $stmt = $this->db->prepare($query);
             $stmt->execute([':template_type' => $filter_type]);
@@ -227,6 +239,48 @@ class DbPermissionTemplateRepository
             );
         }
         return $template_list;
+    }
+
+    /**
+     * Get the permission template with the fewest permissions assigned.
+     * Useful for setting a secure default when creating new users or groups.
+     *
+     * Superuser templates are excluded outright: user_is_ueberuser is a single
+     * row, so the bundled Administrator template ranks as one of the smallest
+     * and would otherwise win this query whenever an emptier template (such as
+     * the bundled Guest) is renamed or removed.
+     *
+     * @param string|null $templateType Restrict to 'user' or 'group' templates; null = no filter
+     * @return int|null Template ID with minimal permissions, or null if none qualify
+     */
+    public function getMinimalPermissionTemplateId(?string $templateType = null): ?int
+    {
+        $query = "SELECT pt.id, pt.name, COUNT(pti.perm_id) as perm_count
+                  FROM perm_templ pt
+                  LEFT JOIN perm_templ_items pti ON pt.id = pti.templ_id
+                  WHERE NOT EXISTS (
+                      SELECT 1
+                      FROM perm_templ_items sup
+                      INNER JOIN perm_items spi ON sup.perm_id = spi.id
+                      WHERE sup.templ_id = pt.id AND spi.name = 'user_is_ueberuser'
+                  )";
+
+        if ($templateType !== null) {
+            $query .= " AND pt.template_type = :template_type";
+        }
+
+        $query .= " GROUP BY pt.id, pt.name
+                  ORDER BY perm_count ASC, pt.name ASC
+                  LIMIT 1";
+
+        $stmt = $this->db->prepare($query);
+        if ($templateType !== null) {
+            $stmt->bindValue(':template_type', $templateType);
+        }
+        $stmt->execute();
+        $result = $stmt->fetch();
+
+        return $result ? (int)$result['id'] : null;
     }
 
     /**

@@ -648,7 +648,7 @@ ZONE;
         $this->assertEquals('1.2.3.4', $aRecord->content);
     }
 
-    // --- No $TTL directive — uses default TTL (master4.data) ---
+    // --- No $TTL directive - uses default TTL (master4.data) ---
 
     public function testParseWithoutTtlDirectiveUsesDefault(): void
     {
@@ -769,7 +769,7 @@ ZONE;
         $records = $result->getRecords();
 
         // TTL=0 is valid (but gets mapped to autoTtlValue? No, only TTL=1 is auto)
-        // Actually TTL=0 is legitimate — it means "do not cache"
+        // Actually TTL=0 is legitimate - it means "do not cache"
         $this->assertEquals(0, $records[0]->ttl);
     }
 

@@ -33,20 +33,23 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
+use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
+use Poweradmin\Domain\Enum\PermissionTemplateType;
 
 class PermissionTemplatesController extends PublicApiController
 {
     private DbPermissionTemplateRepository $permissionTemplateRepository;
+    private PermissionTemplateWriteService $permissionTemplateWriteService;
     private ApiPermissionService $apiPermissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
-        $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
+        $this->permissionTemplateWriteService = $this->createPermissionTemplateWriteService();
         $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 
@@ -290,7 +293,7 @@ class PermissionTemplatesController extends PublicApiController
             $templateType = $data['template_type'] ?? 'user';
 
             // Validate template_type if provided
-            if (!in_array($templateType, ['user', 'group'])) {
+            if (!is_string($templateType) || !PermissionTemplateType::isValid($templateType)) {
                 return $this->returnApiError('Invalid template_type. Must be either "user" or "group"', 400);
             }
 
@@ -304,23 +307,13 @@ class PermissionTemplatesController extends PublicApiController
                 $details['perm_id'] = $data['permissions'];
             }
 
-            $guardError = PermissionTemplateContentGuard::apply(
-                $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser'),
-                $this->permissionTemplateRepository->getPermissionsByTemplateId(),
-                [],
-                $details['perm_id'] ?? []
-            );
-            if ($guardError !== null) {
-                return $this->returnApiError($this->guardMessage($guardError), 403);
+            $result = $this->permissionTemplateWriteService->create($currentUserId, $details);
+
+            if (!$result['success']) {
+                return $this->returnApiError($result['message'], $result['status']);
             }
 
-            $result = $this->permissionTemplateRepository->addPermissionTemplate($details);
-
-            if ($result) {
-                return $this->returnApiResponse(null, true, 'Permission template created successfully', 201);
-            } else {
-                return $this->returnApiError('Failed to create permission template', 500);
-            }
+            return $this->returnApiResponse(null, true, $result['message'], $result['status']);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'PermissionTemplatesController::createTemplate', 'Failed to create permission template');
         }
@@ -422,7 +415,7 @@ class PermissionTemplatesController extends PublicApiController
             $templateType = $data['template_type'] ?? $existing['template_type'];
 
             // Validate template_type if provided
-            if (!in_array($templateType, ['user', 'group'])) {
+            if (!is_string($templateType) || !PermissionTemplateType::isValid($templateType)) {
                 return $this->returnApiError('Invalid template_type. Must be either "user" or "group"', 400);
             }
 
@@ -437,23 +430,13 @@ class PermissionTemplatesController extends PublicApiController
                 $details['perm_id'] = $data['permissions'];
             }
 
-            $guardError = PermissionTemplateContentGuard::apply(
-                $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser'),
-                $this->permissionTemplateRepository->getPermissionsByTemplateId(),
-                $this->permissionTemplateRepository->getPermissionsByTemplateId($id),
-                $details['perm_id'] ?? []
-            );
-            if ($guardError !== null) {
-                return $this->returnApiError($this->guardMessage($guardError), 403);
+            $result = $this->permissionTemplateWriteService->update($currentUserId, $id, $details);
+
+            if (!$result['success']) {
+                return $this->returnApiError($result['message'], $result['status']);
             }
 
-            $result = $this->permissionTemplateRepository->updatePermissionTemplateDetails($details);
-
-            if ($result) {
-                return $this->returnApiResponse(null, true, 'Permission template updated successfully');
-            } else {
-                return $this->returnApiError('Failed to update permission template', 500);
-            }
+            return $this->returnApiResponse(null, true, $result['message'], $result['status']);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'PermissionTemplatesController::updateTemplate', 'Failed to update permission template');
         }
@@ -529,12 +512,5 @@ class PermissionTemplatesController extends PublicApiController
         } catch (\Throwable $e) {
             return $this->handleException($e, 'PermissionTemplatesController::deleteTemplate', 'Failed to delete permission template');
         }
-    }
-
-    private function guardMessage(string $code): string
-    {
-        return $code === PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED
-            ? 'Editing a permission template that grants user_is_ueberuser requires user_is_ueberuser'
-            : 'Granting user_is_ueberuser in a permission template requires user_is_ueberuser';
     }
 }

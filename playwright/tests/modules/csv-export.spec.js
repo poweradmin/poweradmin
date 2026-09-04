@@ -11,7 +11,9 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
 // Helper to get a zone ID for testing
 async function getTestZoneId(page) {
   await page.goto('/zones/forward?letter=all');
-  const editLink = page.locator('a[href*="/edit"]').first();
+  // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
+  // which carries no zone id, so this helper used to return null for every test.
+  const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
   if (await editLink.count() > 0) {
     const href = await editLink.getAttribute('href');
     const match = href.match(/\/zones\/(\d+)\/edit/);
@@ -63,7 +65,9 @@ test.describe('CSV Export Module', () => {
     // Listen for download event
     const downloadPromise = page.waitForEvent('download');
 
-    await page.goto(`/zones/${zoneId}/export/csv`);
+    // Navigating to a download URL aborts the navigation once the transfer starts,
+    // so page.goto() rejects with "Download is starting" - the download still fires.
+    await page.goto(`/zones/${zoneId}/export/csv`).catch(() => {});
 
     const download = await downloadPromise;
 
@@ -88,9 +92,9 @@ test.describe('CSV Export Module', () => {
 
     const body = await response.text();
 
-    // CSV should contain standard DNS record columns
-    expect(body).toContain('name');
-    expect(body).toContain('type');
+    // The header row is capitalised: Name,Type,Content,Priority,TTL,Disabled,Comment
+    expect(body).toMatch(/^﻿?Name,Type,Content/m);
+    expect(body).toContain('SOA');
   });
 
   test('should deny CSV export for non-authenticated users', async ({ page }) => {

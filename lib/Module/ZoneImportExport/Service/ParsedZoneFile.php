@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\ZoneImportExport\Service;
 
-class ParsedZoneFile
+readonly class ParsedZoneFile
 {
     /** @var string|null */
     private ?string $origin;

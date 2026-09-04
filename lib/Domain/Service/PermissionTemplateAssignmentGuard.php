@@ -27,19 +27,15 @@ namespace Poweradmin\Domain\Service;
  *
  * Without this gate, any caller with `user_add_new` could create a new ueberuser
  * by supplying `perm_templ` equal to the Administrator template id, and any
- * caller with `user_edit_own` could self-elevate via PUT /users/{self}. Only
- * ueberusers may choose any template. Holders of `user_edit_templ_perm` may
- * assign non-superuser templates, and not to their own account unless they also
- * hold `user_edit_others`. Everyone else gets the supplied value rejected or,
- * when omitted, a safe minimal-template default in place of the repository's
+ * caller with `user_edit_own` could self-elevate via PUT /users/{self}. Mirrors
+ * the web UI policy: a caller may only choose a template that stays within the
+ * authority they already hold, and retemplating their own account additionally
+ * requires `user_edit_others`; everyone else gets the supplied value rejected
+ * or, when omitted, a safe minimal-template default in place of the repository's
  * historical fallback to template id 1 (Administrator).
  */
 class PermissionTemplateAssignmentGuard
 {
-    public const REJECT_MESSAGE = 'Setting perm_templ requires user_edit_templ_perm or user_is_ueberuser';
-    public const SELF_ASSIGN_MESSAGE = 'Changing your own permission template requires user_edit_others';
-    public const SUPERUSER_TEMPLATE_MESSAGE = 'Assigning a superuser permission template requires user_is_ueberuser';
-
     /**
      * Apply the gate to a create/update input array.
      *
@@ -47,7 +43,8 @@ class PermissionTemplateAssignmentGuard
      *                                    the caller cannot choose; null leaves the
      *                                    input untouched (suited to update paths).
      * @param array<string, mixed> $input Mutated in place when defaulting.
-     * @param ?int $targetUserId Account being written, or null on create paths.
+     * @param ?int $targetUserId Account being written; null on the create path,
+     *                           where no account exists to self-elevate yet.
      * @return ?string Error message to surface as 403, or null if the input passes.
      */
     public static function apply(
@@ -55,46 +52,24 @@ class PermissionTemplateAssignmentGuard
         ?int $defaultUserTemplateId,
         int $callerId,
         array &$input,
-        ?int $targetUserId = null
+        ?int $targetUserId
     ): ?string {
         $providesTemplate = array_key_exists('perm_templ', $input) && $input['perm_templ'] !== null;
 
-        if (!$providesTemplate) {
-            if ($defaultUserTemplateId !== null) {
-                $input['perm_templ'] = $defaultUserTemplateId;
-            }
-
-            return null;
+        if ($providesTemplate) {
+            return $permissionService->checkPermissionTemplateAssignment(
+                $callerId,
+                $targetUserId,
+                (int)$input['perm_templ']
+            );
         }
 
-        if ($permissionService->userHasPermission($callerId, 'user_is_ueberuser')) {
-            return null;
-        }
-
-        $requestedTemplateId = (int)$input['perm_templ'];
-
-        // Echoing back the template the account already has is not a template change,
-        // so a full-object update must not be gated on it. Mirrors the web policy in
-        // UserManager::templateAssignmentRejected().
-        if (
-            $targetUserId !== null
-            && $permissionService->getUserPermissionTemplateId($targetUserId) === $requestedTemplateId
-            && !$permissionService->templateGrantsSuperuser($requestedTemplateId)
-        ) {
-            return null;
-        }
-
-        if (!$permissionService->userHasPermission($callerId, 'user_edit_templ_perm')) {
-            return self::REJECT_MESSAGE;
-        }
-
-        // user_edit_templ_perm delegates template management, not self-promotion.
-        if ($callerId === $targetUserId && !$permissionService->userHasPermission($callerId, 'user_edit_others')) {
-            return self::SELF_ASSIGN_MESSAGE;
-        }
-
-        if ($permissionService->templateGrantsSuperuser($requestedTemplateId)) {
-            return self::SUPERUSER_TEMPLATE_MESSAGE;
+        // No template supplied: on the create path default to the minimal template
+        // rather than the repository's historical Administrator (id 1) fallback -
+        // otherwise a privileged caller omitting perm_templ silently creates a
+        // super admin. On the update path the default is null and nothing changes.
+        if ($defaultUserTemplateId !== null) {
+            $input['perm_templ'] = $defaultUserTemplateId;
         }
 
         return null;

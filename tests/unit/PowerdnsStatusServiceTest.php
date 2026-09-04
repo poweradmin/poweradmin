@@ -18,43 +18,6 @@ class PowerdnsStatusServiceTest extends TestCase
         $this->reflection = new ReflectionClass($this->service);
     }
 
-    #[DataProvider('secureUrlProvider')]
-    public function testIsSecureUrl(string $url, bool $expected): void
-    {
-        $method = $this->reflection->getMethod('isSecureUrl');
-        $method->setAccessible(true);
-
-        $result = $method->invoke($this->service, $url);
-        $this->assertSame($expected, $result);
-    }
-
-    public static function secureUrlProvider(): array
-    {
-        return [
-            // Valid HTTP/HTTPS URLs
-            ['http://example.com', true],
-            ['https://example.com', true],
-            ['http://localhost:8081/metrics', true],
-            ['https://api.example.com/status', true],
-
-            // Invalid schemes (security risk)
-            ['file:///etc/passwd', false],
-            ['ftp://example.com', false],
-            ['javascript:alert(1)', false],
-            ['data:text/plain;base64,SGVsbG8=', false],
-
-            // Invalid URLs
-            ['not-a-url', false],
-            ['', false],
-            ['http://', false],
-            ['https://', false],
-
-            // Edge cases
-            ['http://127.0.0.1:8081', true],
-            ['https://[::1]:8080', true],
-        ];
-    }
-
     #[DataProvider('displayNameProvider')]
     public function testSanitizeDisplayName($input, string $expected): void
     {
@@ -94,5 +57,125 @@ class PowerdnsStatusServiceTest extends TestCase
             ['🚀 PowerDNS 🔥', '🚀 PowerDNS 🔥'], // Unicode/emojis
             ['Power&DNS <Test>', 'Power&DNS <Test>'], // Special characters (no XSS filtering in sanitize method)
         ];
+    }
+
+    private function setApiUrl(object $service, string $url): void
+    {
+        $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('apiUrl');
+        $property->setAccessible(true);
+        $property->setValue($service, $url);
+    }
+
+    private function invokePrivate(object $service, string $method, array $args = []): mixed
+    {
+        $reflectionMethod = (new ReflectionClass(PowerdnsStatusService::class))->getMethod($method);
+        $reflectionMethod->setAccessible(true);
+        return $reflectionMethod->invokeArgs($service, $args);
+    }
+
+    #[DataProvider('metricsUrlProvider')]
+    public function testBuildMetricsUrlPreservesPortAndPathPrefix(string $apiUrl, string $expected): void
+    {
+        $this->setApiUrl($this->service, $apiUrl);
+
+        $this->assertSame($expected, $this->invokePrivate($this->service, 'buildMetricsUrl'));
+    }
+
+    public static function metricsUrlProvider(): array
+    {
+        return [
+            'explicit port' => ['http://127.0.0.1:8081', 'http://127.0.0.1:8081/metrics'],
+            'trailing slash' => ['http://127.0.0.1:8081/', 'http://127.0.0.1:8081/metrics'],
+            // Regression: the old parse_url rebuild forced :8081 and dropped the prefix.
+            'implicit https port' => ['https://pdns.example.com', 'https://pdns.example.com/metrics'],
+            'reverse proxy prefix' => ['https://pdns.example.com/api', 'https://pdns.example.com/api/metrics'],
+        ];
+    }
+
+    #[DataProvider('metricsUrlValidationProvider')]
+    public function testIsValidMetricsUrl(string $apiUrl, string $candidate, bool $expected): void
+    {
+        $this->setApiUrl($this->service, $apiUrl);
+
+        $this->assertSame($expected, $this->invokePrivate($this->service, 'isValidMetricsUrl', [$candidate]));
+    }
+
+    public static function metricsUrlValidationProvider(): array
+    {
+        return [
+            'derived url accepted' => ['http://127.0.0.1:8081', 'http://127.0.0.1:8081/metrics', true],
+            'derived prefixed url accepted' => ['https://pdns.example.com/api', 'https://pdns.example.com/api/metrics', true],
+            'implicit port accepted' => ['https://pdns.example.com', 'https://pdns.example.com/metrics', true],
+            'file scheme rejected' => ['http://127.0.0.1:8081', 'file:///etc/passwd', false],
+            'other host rejected' => ['http://127.0.0.1:8081', 'http://evil.test/metrics', false],
+            'other port rejected' => ['https://pdns.example.com', 'https://pdns.example.com:9999/metrics', false],
+            'escaping the prefix rejected' => ['https://pdns.example.com/api', 'https://pdns.example.com/metrics', false],
+            'path traversal rejected' => ['https://pdns.example.com/api', 'https://pdns.example.com/api/../../metrics', false],
+        ];
+    }
+
+    /**
+     * @param PowerdnsStatusService $service
+     */
+    private function enableApi(object $service): void
+    {
+        $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('apiEnabled');
+        $property->setAccessible(true);
+        $property->setValue($service, true);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private static function autoprimaries(int $count): array
+    {
+        $servers = [];
+        for ($i = 1; $i <= $count; $i++) {
+            $servers[] = '192.0.2.' . $i;
+        }
+        return $servers;
+    }
+
+    public function testFastAutoprimaryProbesAllRunWithinBudget(): void
+    {
+        $service = new class extends PowerdnsStatusService {
+            public int $probes = 0;
+
+            protected function probeHost(string $host): ?string
+            {
+                $this->probes++;
+                return null;
+            }
+        };
+        $this->enableApi($service);
+
+        $results = $service->checkSlaveServerStatus(self::autoprimaries(25));
+
+        $this->assertCount(25, $results);
+        $this->assertSame(25, $service->probes, 'cheap probes must not be truncated');
+        $this->assertSame('ok', $results['192.0.2.25']['status']);
+    }
+
+    public function testSlowAutoprimaryProbesStopAtTheBudgetAndRestAreSkipped(): void
+    {
+        $service = new class extends PowerdnsStatusService {
+            public int $probes = 0;
+
+            protected function probeHost(string $host): string
+            {
+                $this->probes++;
+                usleep(600_000);
+                return 'Connection timed out';
+            }
+        };
+        $this->enableApi($service);
+
+        $results = $service->checkSlaveServerStatus(self::autoprimaries(25));
+
+        $this->assertCount(25, $results, 'every host is still reported');
+        $this->assertLessThan(25, $service->probes, 'probing stops once the budget is spent');
+        $this->assertSame('unreachable', $results['192.0.2.1']['status']);
+        $this->assertSame('skipped', $results['192.0.2.25']['status']);
+        $this->assertSame('', $results['192.0.2.25']['lastChecked'], 'a skipped host was never checked');
     }
 }

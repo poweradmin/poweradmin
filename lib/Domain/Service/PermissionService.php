@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Domain\Repository\UserRepository;
 
 /**
@@ -40,6 +40,14 @@ class PermissionService
      *
      * @param UserRepository $userRepository User repository for database access
      */
+    /** @var array<int, array<string>> */
+    private array $permissionsCache = [];
+
+    /** @var array<int, bool> */
+    private array $adminCache = [];
+
+    private ?HybridPermissionService $hybridPermissionService = null;
+
     public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
@@ -54,25 +62,42 @@ class PermissionService
      */
     public function hasPermission(int $userId, string $permissionName): bool
     {
-        // Check if the user is an admin (has the "überuser" permission)
         if ($this->isAdmin($userId)) {
             return true;
         }
 
-        // Get user permissions and check if the specified permission exists
-        $permissions = $this->getUserPermissions($userId);
-        return in_array($permissionName, $permissions);
+        return in_array($permissionName, $this->getUserPermissions($userId));
     }
 
     /**
-     * Get all permissions for a specific user
+     * Get all permissions for a specific user (direct template and group-based)
+     *
+     * Permissions do not change within a request, so they are cached per user
+     * to keep repeated checks at a single query.
      *
      * @param int $userId User ID to get permissions for
      * @return array Array of permission names
      */
     public function getUserPermissions(int $userId): array
     {
-        return $this->userRepository->getUserPermissions($userId);
+        return $this->permissionsCache[$userId] ??= $this->userRepository->getUserPermissions($userId);
+    }
+
+    /**
+     * Check whether a user may create, edit or delete groups.
+     *
+     * Group management is superuser-only, unlike user permission templates which
+     * `user_edit_templ_perm` delegates. Two reasons: that permission is defined as
+     * covering the template assigned to *users*, and a group's template lands in the
+     * same global permission union as a user's, so delegating it would hand out a
+     * second, unguarded route to superuser.
+     *
+     * @param int $userId User ID to check
+     * @return bool True if the user may manage groups
+     */
+    public function canManageGroups(int $userId): bool
+    {
+        return $this->isAdmin($userId);
     }
 
     /**
@@ -83,7 +108,53 @@ class PermissionService
      */
     public function isAdmin(int $userId): bool
     {
-        return $this->userRepository->hasAdminPermission($userId);
+        return $this->adminCache[$userId] ??= $this->userRepository->hasAdminPermission($userId);
+    }
+
+    /**
+     * Check if a user owns a zone directly or via group membership
+     *
+     * @param int $userId User ID to check
+     * @param int $domainId Domain/zone ID
+     * @return bool True if the user owns the zone
+     */
+    public function userOwnsZone(int $userId, int $domainId): bool
+    {
+        return $this->userRepository->userOwnsZone($userId, $domainId);
+    }
+
+    /**
+     * Check if a user may perform an action on a zone, combining ownership
+     * (direct or via group) with template and group permissions
+     *
+     * @param \PDO $db Database connection
+     * @param int $userId User ID to check
+     * @param int $domainId Zone/Domain ID
+     * @param string $permissionName Permission name (e.g. 'zone_delete_own')
+     * @return bool True if the user may perform the action on this zone
+     */
+    public function canPerformZoneAction(\PDO $db, int $userId, int $domainId, string $permissionName): bool
+    {
+        if ($this->isAdmin($userId)) {
+            return true;
+        }
+
+        return $this->getHybridPermissionService($db)->canUserPerformAction($userId, $domainId, $permissionName);
+    }
+
+    /**
+     * Get the permissions a user has for a zone from ownership and group membership.
+     * Callers short-circuit admins first, so no ueberuser handling here.
+     */
+    private function getZonePermissions(\PDO $db, int $userId, int $domainId): array
+    {
+        $zonePermissions = $this->getHybridPermissionService($db)->getUserPermissionsForZone($userId, $domainId);
+        return $zonePermissions['permissions'];
+    }
+
+    private function getHybridPermissionService(\PDO $db): HybridPermissionService
+    {
+        return $this->hybridPermissionService ??= new HybridPermissionService($db);
     }
 
     /**
@@ -94,8 +165,9 @@ class PermissionService
      */
     public function getViewPermissionLevel(int $userId): string
     {
-        // Note: This checks DIRECT user permissions only
-        // For zone-specific permissions (including groups), use getViewPermissionLevelForZone()
+        // Covers the user's own template and their groups' templates. The ForZone
+        // variant is stricter, not broader: there the grant must come from a group
+        // that also owns the zone.
         $permissions = $this->getUserPermissions($userId);
 
         if (in_array('zone_content_view_others', $permissions) || $this->isAdmin($userId)) {
@@ -125,10 +197,9 @@ class PermissionService
         }
 
         // Check zone-specific permissions (direct ownership + group membership)
-        // This uses HybridPermissionService internally
-        $zonePermissions = UserManager::getUserZonePermissions($db, $userId, $domainId);
+        $zonePermissions = $this->getZonePermissions($db, $userId, $domainId);
 
-        if (in_array('zone_content_view_own', $zonePermissions['permissions'])) {
+        if (in_array('zone_content_view_own', $zonePermissions)) {
             return 'own';
         }
 
@@ -143,8 +214,9 @@ class PermissionService
      */
     public function getEditPermissionLevel(int $userId): string
     {
-        // Note: This checks DIRECT user permissions only
-        // For zone-specific permissions (including groups), use getEditPermissionLevelForZone()
+        // Covers the user's own template and their groups' templates. The ForZone
+        // variant is stricter, not broader: there the grant must come from a group
+        // that also owns the zone.
         $permissions = $this->getUserPermissions($userId);
 
         if (in_array('zone_content_edit_others', $permissions) || $this->isAdmin($userId)) {
@@ -176,12 +248,11 @@ class PermissionService
         }
 
         // Check zone-specific permissions (direct ownership + group membership)
-        // This uses HybridPermissionService internally
-        $zonePermissions = UserManager::getUserZonePermissions($db, $userId, $domainId);
+        $zonePermissions = $this->getZonePermissions($db, $userId, $domainId);
 
-        if (in_array('zone_content_edit_own', $zonePermissions['permissions'])) {
+        if (in_array('zone_content_edit_own', $zonePermissions)) {
             return 'own';
-        } elseif (in_array('zone_content_edit_own_as_client', $zonePermissions['permissions'])) {
+        } elseif (in_array('zone_content_edit_own_as_client', $zonePermissions)) {
             return 'own_as_client';
         }
 
@@ -201,6 +272,62 @@ class PermissionService
         if (in_array('zone_meta_edit_others', $permissions) || $this->isAdmin($userId)) {
             return 'all';
         } elseif (in_array('zone_meta_edit_own', $permissions)) {
+            return 'own';
+        } else {
+            return 'none';
+        }
+    }
+
+    /**
+     * Get zone metadata view permission level for a user
+     *
+     * Holders of zone_meta_edit_* may always see what they are allowed to edit.
+     *
+     * @param int $userId User ID to check
+     * @return string "all", "own", or "none" depending on the user's metadata view permission
+     */
+    public function getZoneMetadataViewPermissionLevel(int $userId): string
+    {
+        $permissions = $this->getUserPermissions($userId);
+
+        if (
+            in_array('zone_metadata_view_others', $permissions)
+            || in_array('zone_meta_edit_others', $permissions)
+            || $this->isAdmin($userId)
+        ) {
+            return 'all';
+        } elseif (
+            in_array('zone_metadata_view_own', $permissions)
+            || in_array('zone_meta_edit_own', $permissions)
+        ) {
+            return 'own';
+        } else {
+            return 'none';
+        }
+    }
+
+    /**
+     * Get zone ownership view permission level for a user
+     *
+     * Holders of zone_meta_edit_* may always see what they are allowed to edit.
+     *
+     * @param int $userId User ID to check
+     * @return string "all", "own", or "none" depending on the user's ownership view permission
+     */
+    public function getZoneOwnershipViewPermissionLevel(int $userId): string
+    {
+        $permissions = $this->getUserPermissions($userId);
+
+        if (
+            in_array('zone_ownership_view_others', $permissions)
+            || in_array('zone_meta_edit_others', $permissions)
+            || $this->isAdmin($userId)
+        ) {
+            return 'all';
+        } elseif (
+            in_array('zone_ownership_view_own', $permissions)
+            || in_array('zone_meta_edit_own', $permissions)
+        ) {
             return 'own';
         } else {
             return 'none';
@@ -238,6 +365,33 @@ class PermissionService
     public function canAddZoneTemplates(int $userId): bool
     {
         return $this->hasPermission($userId, 'zone_templ_add') || $this->isAdmin($userId);
+    }
+
+    /**
+     * Check if a user may access user management (any view/edit/add grant or admin).
+     *
+     * @param int $userId User ID to check
+     * @return bool True if the user may manage other users
+     */
+    public function canManageUsers(int $userId): bool
+    {
+        return $this->hasPermission($userId, 'user_view_others')
+            || $this->hasPermission($userId, 'user_edit_others')
+            || $this->hasPermission($userId, 'user_add_new')
+            || $this->isAdmin($userId);
+    }
+
+    /**
+     * Check if a user may manage DNSSEC keys for a zone (includes group permissions).
+     *
+     * @param \PDO $db Database connection
+     * @param int $userId User ID to check
+     * @param int $domainId Zone/Domain ID
+     * @return bool True if the user may manage DNSSEC for this zone
+     */
+    public function canManageDnssecForZone(\PDO $db, int $userId, int $domainId): bool
+    {
+        return $this->canPerformZoneAction($db, $userId, $domainId, 'zone_dnssec_manage_own');
     }
 
     /**

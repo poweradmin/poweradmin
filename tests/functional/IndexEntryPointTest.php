@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Functional;
 
-use ErrorException;
-use Exception;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Routing\SymfonyRouter;
-use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Pages;
 use ReflectionMethod;
-use RuntimeException;
 
 /**
  * Functional tests for index.php entry point
@@ -23,11 +19,9 @@ use RuntimeException;
  * - Session initialization
  * - Configuration loading
  * - Router setup
- * - Error handling integration
- * - Security measures
+ * - Bootstrap failures reaching the error responder
  *
- * Note: These tests may require database connection mocking or
- * environment-specific configuration for full functionality.
+ * Error-response shaping itself is covered by BootstrapErrorResponderTest.
  */
 class IndexEntryPointTest extends TestCase
 {
@@ -61,13 +55,46 @@ class IndexEntryPointTest extends TestCase
             'initializeSession() function should be available'
         );
         $this->assertTrue(
-            function_exists('sendJsonError'),
-            'sendJsonError() function should be available'
+            function_exists('initializeTimezone'),
+            'initializeTimezone() function should be available'
         );
-        $this->assertTrue(
-            function_exists('displayHtmlError'),
-            'displayHtmlError() function should be available'
+    }
+
+    /**
+     * A configuration failure happens before the router exists, so it can only be
+     * shaped if the whole bootstrap sits inside the front controller's try block.
+     */
+    public function testBootstrapFailureIsShapedInsteadOfEscapingAsAFatal(): void
+    {
+        $repositoryRoot = dirname(__DIR__, 2);
+
+        $process = proc_open(
+            [PHP_BINARY, $repositoryRoot . '/index.php'],
+            [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+            $pipes,
+            $repositoryRoot,
+            [
+                'PATH' => getenv('PATH'),
+                'PA_CONFIG_PATH' => __DIR__ . '/fixtures/throwing-settings.php',
+                'REQUEST_METHOD' => 'GET',
+                'REQUEST_URI' => '/api/v2/zones',
+                'HTTP_ACCEPT' => 'application/json',
+                'SERVER_NAME' => 'localhost',
+                'SERVER_PORT' => '80',
+            ]
         );
+
+        $this->assertIsResource($process, 'Failed to start the front controller subprocess');
+
+        $stdout = (string) stream_get_contents($pipes[1]);
+        $stderr = (string) stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        $exitCode = proc_close($process);
+
+        $this->assertSame(0, $exitCode, 'A configuration failure must not exit as an uncaught fatal');
+        $this->assertSame('{"success":false,"data":null,"message":"Internal server error"}', $stdout);
+        $this->assertStringContainsString('Simulated configuration failure', $stderr);
     }
 
     /**
@@ -87,56 +114,6 @@ class IndexEntryPointTest extends TestCase
         // The actual session initialization is tested in integration context
         // Here we just verify the function exists and can be called
         $this->assertIsCallable('initializeSession');
-    }
-
-    /**
-     * Test error handling integration with various scenarios
-     */
-    public function testErrorHandlingIntegration(): void
-    {
-        // Test JSON error output
-        ob_start();
-        sendJsonError("Test API error", "/api/endpoint.php", 123, ["API call failed"]);
-        $jsonOutput = ob_get_clean();
-
-        $this->assertJson($jsonOutput);
-        $decoded = json_decode($jsonOutput, true);
-        $this->assertArrayHasKey('error', $decoded);
-        $this->assertTrue($decoded['error']);
-
-        // Test HTML error output
-        $testException = new Exception("Test web error");
-        ob_start();
-        displayHtmlError($testException);
-        $htmlOutput = ob_get_clean();
-
-        $this->assertStringContainsString('<pre>', $htmlOutput);
-        $this->assertStringContainsString('Test web error', $htmlOutput);
-    }
-
-    /**
-     * Test security measures in error handling
-     */
-    public function testErrorHandlingSecurity(): void
-    {
-        // Test XSS protection in HTML errors
-        $xssException = new Exception("<script>alert('xss')</script>");
-        ob_start();
-        displayHtmlError($xssException);
-        $output = ob_get_clean();
-
-        $this->assertStringNotContainsString('<script>alert(', $output);
-        $this->assertStringContainsString('&lt;script&gt;', $output);
-
-        // Test that file paths in production don't expose sensitive info
-        ob_start();
-        sendJsonError("Production error", "/var/www/poweradmin/config/database.php", 50, []);
-        $jsonOutput = ob_get_clean();
-
-        $decoded = json_decode($jsonOutput, true);
-        // In production, file paths might be filtered - this tests the structure
-        $this->assertArrayHasKey('file', $decoded);
-        $this->assertArrayHasKey('message', $decoded);
     }
 
     /**
@@ -209,14 +186,14 @@ class IndexEntryPointTest extends TestCase
 
         // Test that expectsJson method exists and is static
         $this->assertTrue(
-            method_exists('Poweradmin\BaseController', 'expectsJson'),
-            'BaseController::expectsJson() should be available'
+            method_exists('Poweradmin\Application\Http\RequestContext', 'expectsJson'),
+            'RequestContext::expectsJson() should be available'
         );
 
-        $reflection = new ReflectionMethod('Poweradmin\BaseController', 'expectsJson');
+        $reflection = new ReflectionMethod('Poweradmin\Application\Http\RequestContext', 'expectsJson');
         $this->assertTrue(
             $reflection->isStatic(),
-            'BaseController::expectsJson() should be static'
+            'RequestContext::expectsJson() should be static'
         );
     }
 
@@ -254,8 +231,8 @@ class IndexEntryPointTest extends TestCase
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['HTTPS'] = '';
 
-        // Test BaseController JSON detection
-        $expectsJson = BaseController::expectsJson();
+        // Test RequestContext JSON detection
+        $expectsJson = RequestContext::expectsJson();
         $this->assertFalse($expectsJson, 'Home page request should not expect JSON');
 
         // Test router setup
@@ -288,7 +265,7 @@ class IndexEntryPointTest extends TestCase
         ConfigurationManager::getInstance();
         $router = new SymfonyRouter();
         $pages = Pages::getPages();
-        BaseController::expectsJson();
+        RequestContext::expectsJson();
 
         $memoryAfter = memory_get_usage();
         $memoryUsed = $memoryAfter - $memoryBefore;
@@ -299,45 +276,6 @@ class IndexEntryPointTest extends TestCase
             $memoryUsed,
             "Initialization should not use excessive memory: {$memoryUsed} bytes"
         );
-    }
-
-    /**
-     * Test error handling with different exception types
-     */
-    public function testErrorHandlingWithDifferentExceptions(): void
-    {
-        $exceptionTypes = [
-            new Exception("General exception"),
-            new RuntimeException("Runtime error"),
-            new InvalidArgumentException("Invalid argument"),
-            new ErrorException("PHP error", 0, E_ERROR, __FILE__, __LINE__),
-        ];
-
-        foreach ($exceptionTypes as $exception) {
-            // Test HTML error display
-            ob_start();
-            displayHtmlError($exception);
-            $htmlOutput = ob_get_clean();
-
-            $this->assertStringContainsString($exception->getMessage(), $htmlOutput);
-            $this->assertStringContainsString('Error:', $htmlOutput);
-            $this->assertStringContainsString('File:', $htmlOutput);
-            $this->assertStringContainsString('Line:', $htmlOutput);
-
-            // Test JSON error (simulating what index.php would do)
-            ob_start();
-            sendJsonError(
-                $exception->getMessage(),
-                $exception->getFile(),
-                $exception->getLine(),
-                explode("\n", $exception->getTraceAsString())
-            );
-            $jsonOutput = ob_get_clean();
-
-            $decoded = json_decode($jsonOutput, true);
-            $this->assertIsArray($decoded);
-            $this->assertEquals($exception->getMessage(), $decoded['message']);
-        }
     }
 
     /**
@@ -392,12 +330,12 @@ class IndexEntryPointTest extends TestCase
             $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
         }
 
-        // BaseController JSON detection
+        // RequestContext JSON detection
         $_SERVER['REQUEST_URI'] = '/api/test';
-        $this->assertTrue(BaseController::expectsJson());
+        $this->assertTrue(RequestContext::expectsJson());
 
         $_SERVER['REQUEST_URI'] = '/dashboard';
         $_SERVER['HTTP_ACCEPT'] = 'text/html';
-        $this->assertFalse(BaseController::expectsJson());
+        $this->assertFalse(RequestContext::expectsJson());
     }
 }

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,16 +23,13 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
-use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LoginAttemptService;
-use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserEntity;
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\NullLogHandler;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,8 +45,7 @@ class BasicAuthenticationMiddleware
 {
     private PDO $db;
     private ConfigurationManager $config;
-    private MessageService $messageService;
-    private SqlAuthenticator $sqlAuthenticator;
+    private LoginAttemptService $loginAttemptService;
 
     /**
      * Constructor
@@ -61,34 +57,7 @@ class BasicAuthenticationMiddleware
     {
         $this->db = $db;
         $this->config = $config;
-        $this->messageService = new MessageService();
-
-        // Initialize authenticators
-        $authService = new UserAuthenticationService(
-            $this->config->get('security', 'password_encryption', 'bcrypt'),
-            $this->config->get('security', 'password_cost', 12)
-        );
-
-        // Create minimal dependencies required for authenticators
-        $userEventLogger = new UserEventLogger($db);
-        $csrfTokenService = new CsrfTokenService();
-
-        // Create a simple NullLogHandler and Logger
-        $logHandler = new NullLogHandler();
-        $logger = new Logger($logHandler, 'info');
-
-        $loginAttemptService = new LoginAttemptService($db, $this->config);
-
-        // Initialize SQL authenticator with all required dependencies
-        $this->sqlAuthenticator = new SqlAuthenticator(
-            $db,
-            $this->config,
-            $userEventLogger,
-            $authService,
-            $csrfTokenService,
-            $logger,
-            $loginAttemptService
-        );
+        $this->loginAttemptService = new LoginAttemptService($db, $this->config);
     }
 
     /**
@@ -100,7 +69,7 @@ class BasicAuthenticationMiddleware
     public function getAuthenticatedUserId(Request $request): int
     {
         // Check if basic auth is enabled
-        if (!$this->config->get('api', 'basic_auth_enabled', true)) {
+        if (!$this->config->get('api', 'basic_auth_enabled', false)) {
             return 0;
         }
 
@@ -151,7 +120,7 @@ class BasicAuthenticationMiddleware
 
         // Decode the Authorization header
         $encoded = substr($authHeader, 6);
-        $decoded = base64_decode($encoded);
+        $decoded = base64_decode($encoded, true);
         if ($decoded === false) {
             return null;
         }
@@ -172,10 +141,18 @@ class BasicAuthenticationMiddleware
      * @param string $password The password
      * @return int User ID if authentication succeeded, 0 otherwise
      */
-    private function authenticateAndGetUserId(string $username, string $password): int
+    private function authenticateAndGetUserId(string $username, #[\SensitiveParameter] string $password): int
     {
         // Check if user exists
         if (!UserEntity::exists($this->db, $username)) {
+            return 0;
+        }
+
+        // Refuse brute-force guesses once account_lockout thresholds trip. Without
+        // this, Basic Auth bypasses the throttling that the browser login already
+        // enforces via SqlAuthenticator.
+        $ipAddress = (new IpAddressRetriever($_SERVER))->getClientIp() ?: '0.0.0.0';
+        if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             return 0;
         }
 
@@ -185,6 +162,8 @@ class BasicAuthenticationMiddleware
         $user = $query->fetch(PDO::FETCH_ASSOC);
 
         if (!$user) {
+            // Disabled account: still record so probing inactive users contributes to lockout.
+            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             return 0;
         }
 
@@ -194,24 +173,34 @@ class BasicAuthenticationMiddleware
         // Try LDAP authentication first if user is configured for LDAP
         if ($userModel->isLdapUser() && $this->config->get('ldap', 'enabled', false)) {
             if ($this->ldapAuthenticatorApiAuth($userModel->getId(), $username, $password)) {
-                // Set session for compatibility with legacy code (DomainManager)
-                $_SESSION['userid'] = $userModel->getId();
-                $_SESSION['auth_used'] = 'basic_auth';
-                return $userModel->getId();
+                return $this->onAuthSuccess($userModel->getId());
             }
             // LDAP users should not fall back to SQL authentication
+            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             return 0;
         }
 
         // Fall back to SQL authentication for non-LDAP users
         if ($this->sqlAuthenticatorApiAuth($userModel, $password)) {
-            // Set session for compatibility with legacy code (DomainManager)
-            $_SESSION['userid'] = $userModel->getId();
-            $_SESSION['auth_used'] = 'basic_auth';
-            return $userModel->getId();
+            return $this->onAuthSuccess($userModel->getId());
         }
 
+        $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
         return 0;
+    }
+
+    /**
+     * Basic Auth is stateless and called on every request, so we deliberately do
+     * not call recordAttempt(true) here: that would (with clear_attempts_on_success)
+     * wipe an attacker's accumulating failures on every legitimate API call.
+     * Window-based expiry on failures is sufficient.
+     */
+    private function onAuthSuccess(int $userId): int
+    {
+        // Set session for compatibility with legacy code (DomainManager)
+        $_SESSION[SessionKeys::USERID] = $userId;
+        $_SESSION[SessionKeys::AUTH_USED] = 'basic_auth';
+        return $userId;
     }
 
     /**
@@ -221,15 +210,24 @@ class BasicAuthenticationMiddleware
      * @param string $password The password
      * @return bool True if authentication succeeded, false otherwise
      */
-    private function sqlAuthenticatorApiAuth(User $userModel, string $password): bool
+    private function sqlAuthenticatorApiAuth(User $userModel, #[\SensitiveParameter] string $password): bool
     {
+        $hashedPassword = $userModel->getHashedPassword();
+
+        // Provisioned users (LDAP/OIDC/SAML) have no local password hash. Verifying
+        // against an empty hash would throw (unknown algorithm), surfacing a 500 and
+        // skipping the caller's failed-attempt recording; treat it as a clean failure.
+        if ($hashedPassword === '') {
+            return false;
+        }
+
         $passwordEncryption = $this->config->get('security', 'password_encryption', 'bcrypt');
         $passwordCost = $this->config->get('security', 'password_cost', 12);
 
         $authService = new UserAuthenticationService($passwordEncryption, $passwordCost);
 
         // Verify the password directly without going through the full authentication flow
-        return $authService->verifyPassword($password, $userModel->getHashedPassword());
+        return $authService->verifyPassword($password, $hashedPassword);
     }
 
     /**
@@ -240,7 +238,7 @@ class BasicAuthenticationMiddleware
      * @param string $password The password
      * @return bool True if authentication succeeded, false otherwise
      */
-    private function ldapAuthenticatorApiAuth(int $userId, string $username, string $password): bool
+    private function ldapAuthenticatorApiAuth(int $userId, string $username, #[\SensitiveParameter] string $password): bool
     {
         // Get LDAP connection settings from config
         $ldapUri = $this->config->get('ldap', 'uri', '');
@@ -270,10 +268,12 @@ class BasicAuthenticationMiddleware
             return false;
         }
 
-        // Search for the user
+        // Search for the user, escaping the username as the web login path does -
+        // usernames are not character-restricted, so they can carry filter syntax.
+        $escapedUsername = ldap_escape($username, '', LDAP_ESCAPE_FILTER);
         $filter = $ldapSearchFilter
-            ? "(&($ldapUserAttribute=$username)$ldapSearchFilter)"
-            : "($ldapUserAttribute=$username)";
+            ? "(&($ldapUserAttribute=$escapedUsername)$ldapSearchFilter)"
+            : "($ldapUserAttribute=$escapedUsername)";
 
         $attributes = array($ldapUserAttribute, 'dn');
         $search = @ldap_search($ldapConn, $ldapBaseDn, $filter, $attributes);

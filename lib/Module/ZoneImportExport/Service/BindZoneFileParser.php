@@ -39,10 +39,6 @@ class BindZoneFileParser
         'SVCB', 'TKEY', 'TLSA', 'TSIG', 'TXT', 'URI', 'ZONEMD',
     ];
 
-    private const TYPES_WITH_NAME_RDATA = [
-        'MX', 'NS', 'CNAME', 'PTR', 'DNAME', 'SRV', 'AFSDB', 'KX',
-    ];
-
     private int $autoTtlValue;
 
     public function __construct(int $autoTtlValue = 300)
@@ -471,7 +467,7 @@ class BindZoneFileParser
             return rtrim($name, '.');
         }
 
-        // Relative name — append origin
+        // Relative name - append origin
         if ($origin !== null) {
             return $name . '.' . $origin;
         }

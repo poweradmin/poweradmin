@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,9 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Application\Service\RepositoryFactory;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\DnsBackendProvider;
@@ -34,26 +36,26 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 class RecordManagerService
 {
     private PDO $db;
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
+    private RecordManagerInterface $recordManager;
     private RecordCommentService $recordCommentService;
-    private RecordCommentSyncService $commentSyncService;
     private LegacyLogger $logger;
     private ConfigurationManager $config;
     private ?DnsBackendProvider $backendProvider;
 
     public function __construct(
         PDO $db,
-        DnsRecord $dnsRecord,
+        DomainRepositoryInterface $domainRepository,
+        RecordManagerInterface $recordManager,
         RecordCommentService $recordCommentService,
-        RecordCommentSyncService $commentSyncService,
         LegacyLogger $logger,
         ConfigurationManager $config,
         ?DnsBackendProvider $backendProvider = null
     ) {
         $this->db = $db;
-        $this->dnsRecord = $dnsRecord;
+        $this->domainRepository = $domainRepository;
+        $this->recordManager = $recordManager;
         $this->recordCommentService = $recordCommentService;
-        $this->commentSyncService = $commentSyncService;
         $this->logger = $logger;
         $this->config = $config;
         $this->backendProvider = $backendProvider;
@@ -61,11 +63,11 @@ class RecordManagerService
 
     public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, string $clientIp, int $disabled = 0): bool
     {
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
-        $recordId = ($disabled && $this->backendProvider !== null)
-            ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $ttl, $prio, $disabled)
-            : $this->dnsRecord->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
+        // All creates go through RecordManager so permission gates and record
+        // validation apply to disabled records as well.
+        $recordId = $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio, $disabled);
         if ($recordId === null) {
             return false;
         }
@@ -77,7 +79,7 @@ class RecordManagerService
         return true;
     }
 
-    private function logRecordCreation(string $clientIp, string $userlogin, string $type, string $name, string $zone_name, string $content, int $ttl, int $prio, string $zone_id): void
+    private function logRecordCreation(string $clientIp, string $userlogin, string $type, string $name, string $zone_name, string $content, int $ttl, int $prio, int $zone_id): void
     {
         $this->logger->logInfo(sprintf(
             'client_ip:%s user:%s operation:add_record record_type:%s record:%s content:%s ttl:%s priority:%s',
@@ -128,46 +130,6 @@ class RecordManagerService
         }
     }
 
-    private function handleComments(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin, string $zone_name, ?int $prio = null, ?int $ttl = null): void
-    {
-        if ($comment === '') {
-            return;
-        }
-
-        $fullZoneName = DnsHelper::restoreZoneSuffix($name, $zone_name);
-
-        // Get record ID for per-record comment linking (via linking table)
-        // Pass prio and ttl for deterministic lookup (important for MX, SRV records with same content)
-        $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
-        $recordId = $recordRepository->getRecordId($zoneId, strtolower($fullZoneName), $type, $content, $prio, $ttl);
-
-        if ($recordId !== null) {
-            // Use per-record comment (linked by record ID via linking table)
-            $this->recordCommentService->createCommentForRecord(
-                $zoneId,
-                $fullZoneName,
-                $type,
-                $comment,
-                $recordId,
-                $userLogin
-            );
-        } else {
-            // Fallback to legacy RRset-based comment if record ID not found
-            $this->recordCommentService->createComment(
-                $zoneId,
-                $fullZoneName,
-                $type,
-                $comment,
-                $userLogin
-            );
-        }
-
-        // Handle synced comments separately (for PTR records, etc.)
-        if ($this->config->get('misc', 'record_comments_sync')) {
-            $this->handleSyncedComments($zoneId, $name, $type, $content, $comment, $userLogin, $fullZoneName);
-        }
-    }
-
     /**
      * Sync comments to related records (A/AAAA <-> PTR).
      * This only syncs to the TARGET record, not the source record
@@ -191,10 +153,10 @@ class RecordManagerService
     private function syncCommentToPtrRecord(string $type, string $content, string $comment, string $userlogin): void
     {
         $ptrName = $type === RecordType::A
-            ? DnsRecord::convertIPv4AddrToPtrRec($content)
-            : DnsRecord::convertIPv6AddrToPtrRec($content);
+            ? DomainUtility::convertIPv4AddrToPtrRec($content)
+            : DomainUtility::convertIPv6AddrToPtrRec($content);
 
-        $ptrZoneId = $this->dnsRecord->getBestMatchingZoneIdFromName($ptrName);
+        $ptrZoneId = $this->domainRepository->getBestMatchingZoneIdFromName($ptrName);
         if ($ptrZoneId !== -1) {
             $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
             $rrsetRecords = $recordRepository->getRRSetRecords($ptrZoneId, $ptrName, RecordType::PTR);
@@ -224,7 +186,7 @@ class RecordManagerService
         while (count($parts) > 1) {
             array_shift($parts);
             $zoneName = implode('.', $parts);
-            $contentDomainId = $this->dnsRecord->getDomainIdByName($zoneName);
+            $contentDomainId = $this->domainRepository->getDomainIdByName($zoneName);
             if ($contentDomainId !== null) {
                 break;
             }

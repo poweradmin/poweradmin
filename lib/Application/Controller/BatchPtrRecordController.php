@@ -23,49 +23,55 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
-use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Model\Constants;
 
 class BatchPtrRecordController extends BaseController
 {
     private LegacyLogger $auditLogger;
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
     private BatchReverseRecordCreator $batchReverseRecordCreator;
     private UserContextService $userContextService;
     private ReverseTtlResolver $reverseTtlResolver;
+    private PermissionService $permissionService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
-        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
-        $backendProvider = $this->createDnsBackendProvider();
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $recordRepository = $repositoryFactory->createRecordRepository();
+        $recordRepository = $this->createRecordRepository();
+        $this->domainRepository = $this->createDomainRepository();
+        $recordManager = $this->createRecordManager();
 
         $this->batchReverseRecordCreator = new BatchReverseRecordCreator(
             $this->db,
             $this->getConfig(),
             $this->auditLogger,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $recordManager,
             null,
             $recordRepository
         );
         $this->userContextService = new UserContextService();
-        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
+        $this->reverseTtlResolver = $this->createReverseTtlResolver();
+        $this->permissionService = $this->createPermissionService();
     }
 
     public function run(): void
@@ -75,8 +81,8 @@ class BatchPtrRecordController extends BaseController
         $this->checkCondition(!$isReverseRecordAllowed, _("Batch PTR record creation is not enabled."));
 
         // Check if user has permission to use this feature
-        $perm_edit_own = UserManager::verifyPermission($this->db, 'zone_content_edit_own');
-        $perm_edit_others = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+        $perm_edit_own = $this->hasPermission('zone_content_edit_own');
+        $perm_edit_others = $this->hasPermission('zone_content_edit_others');
         $this->checkCondition(
             !$perm_edit_own && !$perm_edit_others,
             _("You do not have permission to edit DNS records.")
@@ -87,35 +93,32 @@ class BatchPtrRecordController extends BaseController
         $this->setPageTitle(_('Batch PTR Records'));
 
         // Check if we have a specific zone_id
-        $hasZoneId = isset($_GET['id']) && !empty($_GET['id']);
+        $id = $this->request->getQueryParam('id');
+        $hasZoneId = !empty($id);
 
         if ($hasZoneId) {
             $this->checkId();
-            $zone_id = (int)htmlspecialchars($_GET['id']);
-            $zone_type = $this->dnsRecord->getDomainType($zone_id);
-            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+            $zone_id = (int)htmlspecialchars($id);
+            $zone_type = $this->domainRepository->getDomainType($zone_id);
+            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             $userId = $this->userContextService->getLoggedInUserId();
-            $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
             // Check if this is a reverse zone
-            $isReverseZone = DnsHelper::isReverseZone($zone_name);
+            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
             $this->checkCondition($isReverseZone, _("Batch PTR record creation is not available for reverse zones."));
 
-            // Check zone-specific edit permission (includes group permissions)
-            $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_content_edit_own');
-            $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_content_edit_own_as_client');
-            $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+            $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
 
             $this->checkCondition(
-                $zone_type == "SLAVE" || (!$canEditOthers && !$canEdit && !$canEditAsClient),
-                _("You do not have the permission to add records to this zone.")
+                ZoneType::isReadOnly($zone_type) || $perm_edit === 'none',
+                _("You do not have permission to add records to this zone.")
             );
         }
 
         // Preserve form data in case of errors
         $formData = [];
         if ($this->isPost()) {
-            $formData = $_POST;
+            $formData = $this->request->getPostParams();
             try {
                 $this->validateCsrfToken();
                 if ($this->addBatchPtrRecords()) {
@@ -147,27 +150,33 @@ class BatchPtrRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        $postParams = $this->request->getPostParams();
+        if (!$this->doValidateRequest($postParams)) {
+            $this->showFirstValidationError($postParams);
             return false;
         }
 
-        $networkType = $_POST['network_type'] ?? '';
-        $networkPrefix = $_POST['network_prefix'] ?? '';
-        $hostPrefix = $_POST['host_prefix'] ?? '';
-        $domain = $_POST['domain'] ?? '';
-        $ttl = $this->reverseTtlResolver->getDefaultTtl(true);
-        // Auto-created forward A/AAAA records use the regular dns.ttl, never dns.ttl_reverse.
-        $forwardTtl = $this->reverseTtlResolver->getDefaultTtl(false);
-        // When dns.ttl_reverse is configured, matching-records mode overrides each A record's TTL with it;
-        // when unset, null preserves the historical behavior of inheriting the matched A's TTL.
-        $matchingPtrTtl = $this->reverseTtlResolver->getConfiguredReverseTtl();
+        $networkType = $this->request->getPostParam('network_type', '');
+        $networkPrefix = $this->request->getPostParam('network_prefix', '');
+        $hostPrefix = $this->request->getPostParam('host_prefix', '');
+        $domain = $this->request->getPostParam('domain', '');
+        $ttl = $this->reverseTtlResolver->resolveTtlForType('PTR', true);
+        // Forward A/AAAA records get their own per-type default (or dns.ttl).
+        $forwardType = $networkType === 'ipv6' ? 'AAAA' : 'A';
+        $forwardTtl = $this->reverseTtlResolver->resolveTtlForType($forwardType, false);
+        // Matching-records mode: override each A's TTL with the configured PTR
+        // default (per-type table or legacy dns.ttl_reverse); null preserves
+        // historical behavior of inheriting the matched A's TTL.
+        $matchingPtrTtl = $this->reverseTtlResolver->getTypeDefaults()['PTR']
+            ?? $this->reverseTtlResolver->getConfiguredReverseTtl();
         $prio = 0;
-        $comment = $_POST['comment'] ?? '';
-        $zone_id = isset($_GET['id']) ? (int)$_GET['id'] : 0; // Use 0 when no zone_id is provided
-        $ipv6_count = isset($_POST['ipv6_count']) ? (int)$_POST['ipv6_count'] : 256;
-        $createForwardRecords = isset($_POST['create_forward_records']) && $_POST['create_forward_records'] === 'on';
-        $onlyMatchingRecords = isset($_POST['only_matching_records']) && $_POST['only_matching_records'] === 'on';
+        $comment = $this->request->getPostParam('comment', '');
+        $id = $this->request->getQueryParam('id');
+        $zone_id = $id !== null ? (int)$id : 0; // Use 0 when no zone_id is provided
+        $ipv6_count_param = $this->request->getPostParam('ipv6_count');
+        $ipv6_count = $ipv6_count_param !== null ? (int)$ipv6_count_param : 256;
+        $createForwardRecords = $this->request->getPostParam('create_forward_records') === 'on';
+        $onlyMatchingRecords = $this->request->getPostParam('only_matching_records') === 'on';
 
         try {
             if ($networkType === 'ipv4') {
@@ -218,8 +227,8 @@ class BatchPtrRecordController extends BaseController
 
     private function showForm(array $formData = []): void
     {
-        $hasZoneId = isset($_GET['id']) && !empty($_GET['id']);
-        $file_version = time();
+        $id = $this->request->getQueryParam('id');
+        $hasZoneId = !empty($id);
         $zone_id = "";
         $zone_name = "";
         $idn_zone_name = "";
@@ -227,16 +236,12 @@ class BatchPtrRecordController extends BaseController
         $preFillDomain = "";
 
         if ($hasZoneId) {
-            $zone_id = (int)htmlspecialchars($_GET['id']);
-            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
-            $isReverseZone = DnsHelper::isReverseZone($zone_name);
+            $zone_id = (int)htmlspecialchars($id);
+            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
             $preFillDomain = $zone_name;
 
-            if (str_starts_with($zone_name, "xn--")) {
-                $idn_zone_name = DnsIdnService::toUtf8($zone_name);
-            } else {
-                $idn_zone_name = "";
-            }
+            $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
         }
 
         // Get all reverse zones for the dropdown
@@ -255,9 +260,9 @@ class BatchPtrRecordController extends BaseController
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => DnsIdnService::toDisplay($zone_name),
             'is_reverse_zone' => $isReverseZone,
             'has_zone_id' => $hasZoneId,
-            'file_version' => $file_version,
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', false),
             'reverse_zones' => $reverseZones,
         ]);
@@ -274,8 +279,8 @@ class BatchPtrRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_GET)) {
-            $this->showFirstValidationError($_GET);
+        if (!$this->doValidateRequest($this->request->getQueryParams())) {
+            $this->showFirstValidationError($this->request->getQueryParams());
         }
     }
 
@@ -293,8 +298,9 @@ class BatchPtrRecordController extends BaseController
         $userId = $this->userContextService->getLoggedInUserId();
 
         // Get all reverse zones (using a high limit to get all zones for the dropdown).
-        // No badges are rendered here, so skip the per-zone SOA-health probe.
-        $reverseZonesResult = $zoneRepository->getReverseZones($perm_view, $userId, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, false, false, false);
+        // The dropdown renders neither badges nor record counts, so skip both
+        // per-zone probes.
+        $reverseZonesResult = $zoneRepository->getReverseZones($perm_view, $userId, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, false, false, false, false);
 
         $reverseZones = [];
         foreach ($reverseZonesResult as $zone) {

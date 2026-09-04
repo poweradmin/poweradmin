@@ -77,13 +77,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class NAPTRRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -453,27 +451,6 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
     }
 
     /**
-     * Legacy adapter method for backward compatibility
-     *
-     * @param string $content The content to validate
-     * @return array Array with 'isValid' (bool) and 'errors' (array) keys
-     */
-    private function isValidNAPTRContent(string $content): array
-    {
-        $result = $this->validateNAPTRContent($content);
-        if (!$result->isValid()) {
-            return [
-                'isValid' => false,
-                'errors' => [$result->getFirstError()]
-            ];
-        }
-        return [
-            'isValid' => true,
-            'errors' => []
-        ];
-    }
-
-    /**
      * Validate if a string is a valid quoted string
      *
      * @param string $value The string to check
@@ -485,17 +462,5 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::success(true);
         }
         return ValidationResult::failure(_('Value must be enclosed in double quotes.'));
-    }
-
-    /**
-     * Legacy adapter method for backward compatibility
-     *
-     * @param string $value The string to check
-     * @return bool True if valid, false otherwise
-     */
-    private function isValidQuotedString(string $value): bool
-    {
-        $result = $this->validateQuotedString($value);
-        return $result->isValid();
     }
 }

@@ -1,25 +1,11 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-            {% if is_reverse_zone %}
-            <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-            {% else %}
-            <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-            {% endif %}
-        </li>
-        <li class="breadcrumb-item">
-            {% if idn_zone_name %}
-            {{ idn_zone_name }}
-            {% else %}
-            {{ zone_name_to_display }}
-            {% endif %}
-        </li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: zone_display_name},
+    {label: 'Edit'|trans},
+]) }}
 
-{% if (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and domain_type != "SLAVE" and iface_edit_add_record_top and iface_show_add_record_form %}
+{% if zone_is_editable and iface_edit_add_record_top and iface_show_add_record_form %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
@@ -59,7 +45,7 @@
         </div>
         {% endif %}
         <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <input type="hidden" name="form_token" value="{{ form_token }}">
             <table class="table table-striped table-hover table-sm add-record-form">
@@ -87,14 +73,14 @@
                 <tr>
                     <td class="col-sm-2">
                         <input class="form-control form-control-sm {% if form_data.fieldError is defined and (form_data.fieldError == 'name' or form_data.fieldError == 'name-content-duplicate') %}is-invalid{% endif %}" 
-                               type="text" name="name" value="{{ form_data.name|default('') }}" 
+                               type="text" name="name" value="{{ form_data.name|default('') }}" data-testid="record-name-input"
                                placeholder="">
                         {% if form_data.fieldError is defined and form_data.fieldError == 'name' %}
                         <div class="invalid-feedback">{% trans %}Invalid hostname format{% endtrans %}</div>
                         {% endif %}
                     </td>
                     <td class="col-sm-2">
-                        <select id="recordTypeSelectTop" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectTop', 'contentInputContainerTop', 'recordContentTop'); updatePriorityFieldState(this, 'priorityFieldTop'); updateTtlForType(this, this.closest('form').querySelector('input[name=ttl]'));" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
+                        <select id="recordTypeSelectTop" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectTop', 'contentInputContainerTop', 'recordContentTop'); updatePriorityFieldState(this, 'priorityFieldTop'); updateTtlForType(this, this.closest('form').querySelector('input[name=ttl]'));" {% if form_data.type is defined and form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
                             {% set rev = false %}
                             {% for record_type in record_types %}
                             {% set add = "" %}
@@ -112,8 +98,8 @@
                     </td>
                     <td>
                         <div id="contentInputContainerTop">
-                            <input id="recordContentTop" class="form-control form-control-sm {% if form_data.fieldError is defined and (form_data.fieldError == 'content' or form_data.fieldError == 'name-content-duplicate') %}is-invalid{% endif %}" 
-                                   type="text" name="content" value="{{ form_data.content|default('') }}" required>
+                            <input id="recordContentTop" class="form-control form-control-sm {% if form_data.fieldError is defined and (form_data.fieldError == 'content' or form_data.fieldError == 'name-content-duplicate') %}is-invalid{% endif %}"
+                                   type="text" name="content" value="{{ form_data.content|default('') }}" data-testid="record-content-input" required>
                         </div>
                         {% if form_data.fieldError is defined and form_data.fieldError == 'content' %}
                         <div class="invalid-feedback">{{ form_data.errorMessage }}</div>
@@ -148,18 +134,18 @@
                     <td class="col-sm-1 text-center">
                         {% if not is_reverse_zone and iface_add_reverse_record %}
                         <span class="align-middle">
-                            <input class="form-check-input" type="checkbox" name="reverse">
+                            <input class="form-check-input" type="checkbox" name="reverse" data-testid="add-reverse-record-checkbox">
                         </span>
                         {% endif %}
                         {% if is_reverse_zone and iface_add_domain_record %}
                         <span class="align-middle">
-                            <input class="form-check-input" type="checkbox" name="create_domain_record">
+                            <input class="form-check-input" type="checkbox" name="create_domain_record" data-testid="add-domain-record-checkbox">
                         </span>
                         {% endif %}
                     </td>
                     <td class="col-sm-1">
-                        <input class="btn btn-primary btn-sm" type="submit" name="commit"
-                            value="{% trans %}Add record{% endtrans %}">
+                        <button class="btn btn-primary btn-sm" type="submit" name="commit" value="1" data-testid="add-record-button"
+                            data-busy-text="{% trans %}Saving...{% endtrans %}">{% trans %}Add record{% endtrans %}</button>
                     </td>
                 </tr>
             </table>
@@ -185,20 +171,20 @@
             {% endif %}
         </strong>
         <div>
-            {% if perm_edit != "none" and iface_edit_save_changes_top %}
-            <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit">
+            {% if perm_edit != "none" and iface_edit_save_changes_top and not zone_is_read_only %}
+            <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
                 <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
             </button>
             <button class="btn btn-secondary btn-sm" type="reset" form="edit-zone-form" name="reset">
                 <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
             </button>
             {% endif %}
-            {% if not iface_show_add_record_form and (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and domain_type != "SLAVE" %}
+            {% if not iface_show_add_record_form and zone_is_editable %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/add" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
             </a>
             {% endif %}
-            {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone and (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and domain_type != "SLAVE" %}
+            {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone and zone_is_editable %}
             {% for action in dns_wizard_actions %}
             <a href="{{ base_url_prefix }}{{ action.url }}" class="btn btn-primary btn-sm" title="{% trans %}Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records{% endtrans %}">
                 <i class="bi bi-{{ action.icon }} me-1 text-white"></i>{{ action.label|trans }}
@@ -219,12 +205,20 @@
             </a>
             {% endfor %}
             {% endif %}
+            {% if ownership_view %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership" class="btn btn-secondary btn-sm">
                 <i class="bi bi-people me-1 text-white"></i>{% trans %}Ownership{% endtrans %}
             </a>
-            {% if meta_edit or perm_view != "none" %}
+            {% endif %}
+            {% if metadata_view %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/metadata" class="btn btn-secondary btn-sm">
                 <i class="bi bi-database-gear me-1 text-white"></i>{% if meta_edit %}{% trans %}Metadata{% endtrans %}{% else %}{% trans %}View Metadata{% endtrans %}{% endif %}
+            </a>
+            {% endif %}
+            {% if catalog_members_view %}
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/catalog" class="btn btn-secondary btn-sm"
+               data-testid="catalog-members-button">
+                <i class="bi bi-collection me-1 text-white"></i>{% trans %}Catalog Members{% endtrans %}
             </a>
             {% endif %}
             {% if (perm_zone_templ_add or perm_is_godlike) and domain_type != "SLAVE" %}
@@ -311,10 +305,7 @@
             <div class="d-flex align-items-center">
                 <label for="rows-per-page" class="me-2 text-secondary small">{% trans %}Rows per page:{% endtrans %}</label>
                 <select id="rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="changeRowsPerPage(this.value)">
-                    <option value="10" {{ row_amount == 10 ? 'selected' : '' }}>10</option>
-                    <option value="20" {{ row_amount == 20 ? 'selected' : '' }}>20</option>
-                    <option value="50" {{ row_amount == 50 ? 'selected' : '' }}>50</option>
-                    <option value="100" {{ row_amount == 100 ? 'selected' : '' }}>100</option>
+                    {{ macros.rows_per_page_options(row_amount, rows_per_page_options) }}
                 </select>
             </div>
         </div>
@@ -330,7 +321,7 @@
         {% endif %}
 
         <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <input type="hidden" name="serial" value="{{ serial }}">
 
             <div class="table-responsive">
@@ -343,7 +334,7 @@
                         {% if iface_edit_show_id %}
                         <th>
                             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?record_sort_by=id&sort_direction={{ record_sort_by == 'id' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
-                                {% trans %}Id{% endtrans %}
+                                {% trans %}ID{% endtrans %}
                             </a>
                             {% if record_sort_by == 'id' %}
                                 <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
@@ -411,34 +402,40 @@
                     </thead>
                     <tbody>
         {% for r in records %}
-        {% set record_locked = (r['type'] == "SOA" and perm_edit != "all") or ((r['type'] == "NS" or r['type'] == "LUA") and perm_edit == "own_as_client") %}
-
-        {% if not record_locked %}
+        {% set record_url_base = base_url_prefix ~ '/zones/' ~ zone_id ~ '/records/' ~ r['id'] %}
+        {% if not r['record_locked'] %}
         <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}">
         <input type="hidden" name="record[{{ r['id'] }}][zid]" value="{{ zone_id }}">
         {% endif %}
         <tr style="font-size: 14px;">
             <td class="text-center">
-                {% if not record_locked %}
-                <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ r['id'] }}" onclick="updateRecordSelectionButtons()">
+                {% if not r['record_locked'] %}
+                <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ r['id'] }}"
+                       {% if not iface_show_record_edit_button %}data-edit-url="{{ record_url_base }}/edit"{% endif %}>
                 {% endif %}
             </td>
             {% if iface_edit_show_id %}
             <td>{{ r['id'] }}</td>
             {% endif %}
-            {% if record_locked %}
-            <td class="col-sm-2">{{ r['display_name'] is defined ? r['display_name'] : r['name'] }}</td>
+            {% if r['record_locked'] %}
+            <td class="col-sm-2">{{ r['display_name'] }}</td>
             <td class="text-center"><span class="badge {{ record_type_class(r['type']) }}">{{ r['type'] }}</span></td>
             <td>{{ r['content'] }}</td>
             <td>-</td>
             <td class="col-sm-1">{{ r['ttl'] }}</td>
             {% if iface_record_comments %}
-            <td>{{ r['comment'] ?? '-' }}</td>
+            <td>
+                {{ r['comment'] ?? '-' }}
+                {% if r['comment'] and r['comment_modified_at'] %}
+                <i class="bi bi-info-circle text-muted" data-bs-toggle="tooltip" data-bs-placement="top"
+                   title="{{ 'Last edited by %account% on %date%'|trans({'%account%': r['comment_account'] ?: '-', '%date%': r['comment_modified_at']|date('Y-m-d H:i')}) }}"></i>
+                {% endif %}
+            </td>
             {% endif %}
             <td class="text-center">{% if r['disabled'] %}{% trans %}Yes{% endtrans %}{% else %}{% trans %}No{% endtrans %}{% endif %}</td>
             {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
             <td class="small text-muted text-nowrap">
-                {% if r['modified_at'] %}
+                {% if r['modified_at'] is defined and r['modified_at'] %}
                     <span title="{{ r['modified_at']|date('Y-m-d H:i:s T') }}">{{ r['modified_at']|date('Y-m-d H:i') }}</span>
                 {% else %}
                     <span class="text-muted">&mdash;</span>
@@ -447,7 +444,7 @@
             {% endif %}
             {% else %}
             <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
-                                        name="record[{{ r['id'] }}][name]" value="{{ r['editable_name'] is defined ? r['editable_name'] : r['name'] }}"></td>
+                                        name="record[{{ r['id'] }}][name]" value="{{ r['editable_name'] }}"></td>
             <td class="text-center">
                 <input type="hidden" name="record[{{ r['id'] }}][type]" value="{{ r['type'] }}">
                 <span class="badge {{ record_type_class(r['type']) }}">{{ r['type'] }}</span>
@@ -465,8 +462,16 @@
                                         min="0" max="2147483647" pattern="[0-9]*" name="record[{{ r['id'] }}][ttl]"
                                         value="{{ r['ttl'] }}"></td>
             {% if iface_record_comments %}
-            <td class="col-sm-3"><input class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][comment]"
-                       value="{{ r['comment'] }}"></td>
+            <td class="col-sm-3">
+                <div class="input-group input-group-sm">
+                    <input class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][comment]"
+                           value="{{ r['comment'] }}">
+                    {% if r['comment'] and r['comment_modified_at'] %}
+                    <span class="input-group-text" data-bs-toggle="tooltip" data-bs-placement="top"
+                          title="{{ 'Last edited by %account% on %date%'|trans({'%account%': r['comment_account'] ?: '-', '%date%': r['comment_modified_at']|date('Y-m-d H:i')}) }}"><i class="bi bi-info-circle"></i></span>
+                    {% endif %}
+                </div>
+            </td>
             {% endif %}
             <td class="text-center">
                 <input class="form-check-input" type="checkbox" name="record[{{ r['id'] }}][disabled]" {% if r['disabled'] == 1 %}checked{% endif %}>
@@ -475,7 +480,7 @@
             </td>
             {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
             <td class="small text-muted text-nowrap">
-                {% if r['modified_at'] %}
+                {% if r['modified_at'] is defined and r['modified_at'] %}
                     <span title="{{ r['modified_at']|date('Y-m-d H:i:s T') }}">{{ r['modified_at']|date('Y-m-d H:i') }}</span>
                 {% else %}
                     <span class="text-muted">&mdash;</span>
@@ -485,19 +490,19 @@
             {% endif %}
 
             {% if iface_show_record_edit_button or iface_show_record_delete_button %}
-                {% if domain_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "0" %}
+                {% if not zone_is_editable %}
                 <td>&nbsp;</td>
-                {% elseif record_locked %}
+                {% elseif r['record_locked'] %}
                 <td>&nbsp;</td>
                 {% else %}
                 <td class="text-center" style="width: 100px;">
                     <div class="d-flex gap-1 justify-content-center">
                         {% if iface_show_record_edit_button %}
-                        <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ r['id'] }}/edit">
+                        <a class="btn btn-outline-primary btn-sm" href="{{ record_url_base }}/edit">
                             <i class="bi bi-pencil-square text-primary"></i></a>
                         {% endif %}
                         {% if iface_show_record_delete_button %}
-                        <a class="btn btn-outline-danger btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ r['id'] }}/delete">
+                        <a class="btn btn-outline-danger btn-sm" href="{{ record_url_base }}/delete">
                             <i class="bi bi-trash text-danger"></i></a>
                         {% endif %}
                     </div>
@@ -515,7 +520,7 @@
                     {{ pagination | raw }}
                 </div>
                 <div class="d-flex gap-2">
-                    {% if perm_edit != "none" and domain_type != "SLAVE" and (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") %}
+                    {% if zone_is_editable %}
                         {% if not iface_show_record_edit_button %}
                         <button type="button" class="btn btn-primary btn-sm" id="edit-selected-record" disabled onclick="editSelectedRecord()">
                             <i class="bi bi-pencil-square me-1 text-white"></i>{% trans %}Edit selected{% endtrans %}
@@ -545,11 +550,11 @@
 
     {% endif %}
 
-{% if (perm_edit != "none" and not iface_edit_save_changes_top) or (dblog_use and (perm_is_godlike or perm_view_zone_own or perm_view_zone_other)) %}
+{% if (perm_edit != "none" and not iface_edit_save_changes_top) or (dblog_use and can_view_zone_logs) %}
 <div class="card-footer py-3 d-flex justify-content-between align-items-center">
     <div>
-        {% if perm_edit != "none" and not iface_edit_save_changes_top %}
-        <button class="btn btn-primary btn-sm" type="submit" name="commit">
+        {% if perm_edit != "none" and not iface_edit_save_changes_top and not zone_is_read_only %}
+        <button class="btn btn-primary btn-sm" type="submit" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
             <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
         </button>
         <button class="btn btn-secondary btn-sm" type="reset" name="reset">
@@ -558,7 +563,7 @@
         {% endif %}
     </div>
     <div class="d-flex gap-2">
-        {% if (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and domain_type != "SLAVE" %}
+        {% if zone_is_editable %}
         <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-outline-primary btn-sm">
             <i class="bi bi-file-earmark-text me-1 text-primary"></i>{% trans %}Bulk add{% endtrans %}
         </a>
@@ -585,7 +590,7 @@
         </a>
         {% endif %}
         {% endif %}
-        {% if dblog_use and (perm_is_godlike or perm_view_zone_own or perm_view_zone_other) %}
+        {% if dblog_use and can_view_zone_logs %}
         <a href="{{ base_url_prefix }}/zones/logs?zone_id={{ zone_id }}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-journal-text me-1 text-secondary"></i>{% trans %}Logs{% endtrans %}
         </a>
@@ -596,15 +601,15 @@
 </form>
 
 <form id="delete-records-form" method="post" action="{{ base_url_prefix }}/zones/records/delete" style="display: none;">
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
     <input type="hidden" name="zone_id" value="{{ zone_id }}">
     <div id="selected-records-container"></div>
 </form>
 </div>
 </div>
 
-{% if perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1" %}
-{% if domain_type != "SLAVE" and not iface_edit_add_record_top and iface_show_add_record_form %}
+{% if user_can_edit_zone %}
+{% if not zone_is_read_only and not iface_edit_add_record_top and iface_show_add_record_form %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
@@ -644,7 +649,7 @@
         </div>
         {% endif %}
         <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <input type="hidden" name="form_token" value="{{ form_token }}">
 
@@ -680,7 +685,7 @@
                         {% endif %}
                     </td>
                     <td class="col-sm-2">
-                        <select id="recordTypeSelectBottom" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom'); updatePriorityFieldState(this, 'priorityFieldBottom'); updateTtlForType(this, this.closest('form').querySelector('input[name=ttl]'));" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
+                        <select id="recordTypeSelectBottom" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom'); updatePriorityFieldState(this, 'priorityFieldBottom'); updateTtlForType(this, this.closest('form').querySelector('input[name=ttl]'));" {% if form_data.type is defined and form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
                             {% set rev = false %}
                             {% for record_type in record_types %}
                             {% set add = "" %}
@@ -744,8 +749,8 @@
                         {% endif %}
                     </td>
                     <td class="col-sm-1">
-                        <input class="btn btn-primary btn-sm" type="submit" name="commit" data-testid="add-record-button"
-                            value="{% trans %}Add record{% endtrans %}">
+                        <button class="btn btn-primary btn-sm" type="submit" name="commit" value="1" data-testid="add-record-button"
+                            data-busy-text="{% trans %}Saving...{% endtrans %}">{% trans %}Add record{% endtrans %}</button>
                     </td>
                 </tr>
             </table>
@@ -761,22 +766,22 @@
 {% endif %}
 
 <!-- Zone Configuration -->
+{% if metadata_view or pdnssec_use %}
 <div class="row">
     <div class="col-12">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-2 d-flex justify-content-between align-items-center" role="button" data-bs-toggle="collapse" data-bs-target="#zone-config-body" aria-expanded="false">
+            <div class="card-header py-2 d-flex align-items-center">
                 <strong><i class="bi bi-gear me-2"></i>{% trans %}Zone Configuration{% endtrans %}</strong>
-                <i class="bi bi-chevron-down collapse-icon-config small"></i>
             </div>
-            <div class="collapse" id="zone-config-body">
             <div class="card-body">
                 <div class="row">
+                    {% if metadata_view %}
                     <!-- Zone Type -->
                     <div class="col-md-4">
                         <h6 class="text-muted mb-3">{% trans %}Type{% endtrans %}</h6>
-                        {% if meta_edit %}
+                        {% if meta_edit and zone_type_change_allowed %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
-                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            {{ macros.csrf_field() }}
                             <div class="input-group input-group-sm">
                                 <select class="form-select form-select-sm" name="newtype">
                                     {% for type in zone_types %}
@@ -797,13 +802,13 @@
                         {% endif %}
                     </div>
 
-                    <!-- Slave Master IP (only for SLAVE type) -->
-                    {% if domain_type == "SLAVE" %}
+                    <!-- Primary IP, for zone kinds that replicate from one -->
+                    {% if zone_replicates_from_primary %}
                     <div class="col-md-4">
                         <h6 class="text-muted mb-3">{% trans %}IP address of master NS{% endtrans %}</h6>
                         {% if meta_edit %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
-                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            {{ macros.csrf_field() }}
                             <div class="input-group input-group-sm">
                                 <input class="form-control form-control-sm" type="text" name="new_master" value="{{ slave_master }}">
                                 <button class="btn btn-outline-secondary btn-sm" type="submit" name="slave_master_change">
@@ -822,7 +827,7 @@
                         <h6 class="text-muted mb-3">{% trans %}Template{% endtrans %}</h6>
                         {% if meta_edit %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
-                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            {{ macros.csrf_field() }}
                             <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">
                             <div class="input-group input-group-sm">
                                 <select class="form-select form-select-sm" name="zone_template">
@@ -851,19 +856,66 @@
                         {% endif %}
                     </div>
 
+                    <!-- Catalog, for zone kinds PowerDNS publishes from one -->
+                    {% if catalog_selector_view %}
+                    <div class="col-md-4">
+                        <h6 class="text-muted mb-3">{% trans %}Catalog{% endtrans %}</h6>
+                        {% if meta_edit %}
+                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
+                            {{ macros.csrf_field() }}
+                            <div class="input-group input-group-sm">
+                                <select class="form-select form-select-sm" name="new_catalog" data-testid="zone-catalog-select">
+                                    <option value="">none</option>
+                                    {% if catalog_name and not catalog_producer_id %}
+                                    <option value="keep" selected>{{ catalog_name }} ({% trans %}not managed here{% endtrans %})</option>
+                                    {% endif %}
+                                    {% for producer in catalog_producers %}
+                                    <option value="{{ producer['id'] }}" {% if producer['id'] == catalog_producer_id %}selected{% endif %}>{{ producer['name'] }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-outline-secondary btn-sm" type="submit" name="catalog_change">
+                                    <i class="bi text-secondary bi-arrow-repeat"></i> {% trans %}Change{% endtrans %}
+                                </button>
+                            </div>
+                        </form>
+                        {% else %}
+                        <p>
+                            {% if catalog_name %}
+                            <span class="badge bg-info">{{ catalog_name }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary">none</span>
+                            {% endif %}
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endif %}
+
                     <!-- DNSSEC -->
                     {% if pdnssec_use %}
                     <div class="col-md-4">
                         <h6 class="text-muted mb-3">{% trans %}DNSSEC{% endtrans %}</h6>
                         {% if is_secured %}
+                        {% if can_manage_dnssec %}
                         <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-shield-lock me-1 text-primary"></i>{% trans %}Manage DNSSEC{% endtrans %}
                         </a>
                         {% else %}
-                            {% if perm_edit != "none" and meta_edit %}
+                        <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/ds-dnskey" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-key me-1 text-primary"></i>{% trans %}Show DS and DNSKEY{% endtrans %}
+                        </a>
+                        {% endif %}
+                        {% if is_presigned %}
+                        <span class="badge bg-info align-middle" title="{% trans %}DNSSEC keys are managed at the primary server{% endtrans %}">{% trans %}Presigned{% endtrans %}</span>
+                        {% endif %}
+                        {% if signed_serial is not null %}
+                        <p class="text-muted small mt-2 mb-0" title="{% trans %}Serial as served by PowerDNS, with SOA-EDIT applied{% endtrans %}">{% trans %}Signed serial{% endtrans %}: <code>{{ signed_serial }}</code></p>
+                        {% endif %}
+                        {% else %}
+                            {% if can_manage_dnssec %}
                             <form method="post" action="" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token }}">
-                                <button class="btn btn-outline-success btn-sm" type="submit" name="sign_zone">
+                                {{ macros.csrf_field() }}
+                                <button class="btn btn-outline-success btn-sm" type="submit" name="sign_zone" data-busy-text="{% trans %}Saving...{% endtrans %}">
                                     <i class="bi bi-shield-check me-1 text-success"></i>{% trans %}Sign zone{% endtrans %}
                                 </button>
                             </form>
@@ -875,20 +927,10 @@
                     {% endif %}
                 </div>
             </div>
-            </div>
         </div>
     </div>
 </div>
-
-<style>
-    [data-bs-target="#zone-config-body"] .collapse-icon-config {
-        transition: transform 0.2s ease;
-        transform: rotate(0deg);
-    }
-    [data-bs-target="#zone-config-body"]:not(.collapsed) .collapse-icon-config {
-        transform: rotate(180deg);
-    }
-</style>
+{% endif %}
 
 <script src="{{ base_url_prefix }}/assets/textareaAutoResize.js?time={{ file_version }}"></script>
 
@@ -963,11 +1005,12 @@
         }
     }
 
-    // TTL_DEFAULTS.ptr is null when dns.ttl_reverse is unset or this is a forward
-    // zone (so forward-zone PTR records, e.g. RFC 2317, keep dns.ttl).
+    // TTL_DEFAULTS.byType[TYPE] wins when set (admin-managed record_type_defaults).
+    // ptr is the legacy dns.ttl_reverse fallback, only applied for PTR in reverse zones.
     const TTL_DEFAULTS = {
         plain: {{ default_ttl|json_encode|raw }},
-        ptr: {{ (is_reverse_zone ? ptr_default_ttl : null)|json_encode|raw }}
+        ptr: {{ (is_reverse_zone ? ptr_default_ttl : null)|json_encode|raw }},
+        byType: {{ type_default_ttls|default({})|json_encode|raw }}
     };
 
     let suppressTtlSwap = false;
@@ -976,9 +1019,13 @@
         if (suppressTtlSwap || !ttlInput || ttlInput.dataset.userEdited === 'true') {
             return;
         }
-        const isPtr = typeSelect.value === 'PTR';
-        const target = isPtr && TTL_DEFAULTS.ptr !== null ? TTL_DEFAULTS.ptr : TTL_DEFAULTS.plain;
-        ttlInput.value = target;
+        const type = typeSelect.value;
+        if (Object.prototype.hasOwnProperty.call(TTL_DEFAULTS.byType, type)) {
+            ttlInput.value = TTL_DEFAULTS.byType[type];
+            return;
+        }
+        const isPtr = type === 'PTR';
+        ttlInput.value = isPtr && TTL_DEFAULTS.ptr !== null ? TTL_DEFAULTS.ptr : TTL_DEFAULTS.plain;
     }
 </script>
 
@@ -1064,6 +1111,7 @@
         for (let i = 0; i < recordCheckboxes.length; i++) {
             recordCheckboxes[i].addEventListener('change', function() {
                 updateDeleteButtonState('delete-selected-records', recordCheckboxes);
+                updateEditButtonState(recordCheckboxes);
                 updateSelectedCount(recordCheckboxes);
             });
         }
@@ -1148,80 +1196,49 @@
         }
     }
     
-    // Function to update delete button state
-    function updateDeleteButtonState(buttonId, checkboxes) {
-        const button = document.getElementById(buttonId);
-        if (!button) return;
+</script>
+{# Record selection and edit handlers live in assets/helper.js #}
 
-        let hasChecked = false;
-        for (let i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i].checked) {
-                hasChecked = true;
-                break;
-            }
+<script>
+    // Submit only the rows the operator actually changed. Unchanged rows are
+    // disabled on submit so the browser omits them, keeping the field count
+    // proportional to edits and well under the server's max_input_vars limit.
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('edit-zone-form');
+        if (!form) {
+            return;
         }
 
-        button.disabled = !hasChecked;
-    }
+        const fieldPattern = /^record\[([^\]]+)\]\[(.+)\]$/;
+        const fieldValue = (el) => (el.type === 'checkbox' ? (el.checked ? '1' : '0') : el.value);
 
-    function updateEditButtonState(checkboxes) {
-        const editButton = document.getElementById('edit-selected-record');
-        if (!editButton) return;
-
-        let checkedCount = 0;
-        for (let i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i].checked) {
-                checkedCount++;
-            }
-        }
-
-        // Enable only when exactly one record is selected
-        editButton.disabled = checkedCount !== 1;
-    }
-
-    function editSelectedRecord() {
-        const recordCheckboxes = document.getElementsByName('record_id[]');
-        let selectedRecordId = null;
-
-        for (let i = 0; i < recordCheckboxes.length; i++) {
-            if (recordCheckboxes[i].checked) {
-                selectedRecordId = recordCheckboxes[i].value;
-                break;
-            }
-        }
-
-        if (selectedRecordId) {
-            // Numeric in SQL mode, url-safe base64 in API mode
-            if (!/^[A-Za-z0-9_-]+$/.test(selectedRecordId)) {
-                console.error('Invalid record ID format');
+        // Snapshot each row's submitted values as the form was rendered.
+        const original = {};
+        form.querySelectorAll('[name^="record["]').forEach((el) => {
+            const match = el.name.match(fieldPattern);
+            if (!match) {
                 return;
             }
+            const [, id, field] = match;
+            (original[id] = original[id] || {})[field] = fieldValue(el);
+        });
 
-            // Encode the record ID for safe URL construction
-            const encodedRecordId = encodeURIComponent(selectedRecordId);
-            window.location.href = '{{ base_url_prefix }}/zones/{{ zone_id }}/records/' + encodedRecordId + '/edit';
-        }
-    }
-
-    function updateRecordSelectionButtons() {
-        const recordCheckboxes = document.getElementsByName('record_id[]');
-        updateDeleteButtonState('delete-selected-records', recordCheckboxes);
-        updateEditButtonState(recordCheckboxes);
-    }
-
-    // Function to toggle all record checkboxes
-    function toggleEditRecordCheckboxes() {
-        const selectAllCheckbox = document.getElementById('select_edit_records');
-        const recordCheckboxes = document.getElementsByName('record_id[]');
-        const checked = selectAllCheckbox.checked;
-
-        for (let i = 0; i < recordCheckboxes.length; i++) {
-            recordCheckboxes[i].checked = checked;
-        }
-
-        updateDeleteButtonState('delete-selected-records', recordCheckboxes);
-        updateEditButtonState(recordCheckboxes);
-    }
-
-
+        form.addEventListener('submit', () => {
+            Object.keys(original).forEach((id) => {
+                const fields = form.querySelectorAll('[name^="record[' + id + ']["]');
+                let changed = false;
+                fields.forEach((el) => {
+                    const match = el.name.match(fieldPattern);
+                    if (match && fieldValue(el) !== original[id][match[2]]) {
+                        changed = true;
+                    }
+                });
+                if (!changed) {
+                    fields.forEach((el) => {
+                        el.disabled = true;
+                    });
+                }
+            });
+        });
+    });
 </script>

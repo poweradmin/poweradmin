@@ -27,9 +27,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
  * Zone ownership resolves through the canonical id expression COALESCE(NULLIF(domain_id, 0), id).
@@ -56,6 +55,7 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
     private const EDITOR_TEMPL = 20;
 
     private PDO $db;
+    private DbUserRepository $userRepository;
     private ApiPermissionService $apiPermissions;
     private HybridPermissionService $hybridPermissions;
 
@@ -75,12 +75,9 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
 
         $this->seedSqlModeFixture();
 
+        $this->userRepository = new DbUserRepository($this->db, ConfigurationManager::getInstance());
         $this->apiPermissions = new ApiPermissionService($this->db);
-        $this->hybridPermissions = new HybridPermissionService(
-            $this->db,
-            $this->createMock(UserGroupRepositoryInterface::class),
-            $this->createMock(UserGroupMemberRepositoryInterface::class)
-        );
+        $this->hybridPermissions = new HybridPermissionService($this->db);
     }
 
     /**
@@ -145,10 +142,7 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
     #[DataProvider('ownershipMatrix')]
     public function testWebUiOwnershipMatrixIsUnchanged(int $userId, int $zoneId, bool $owns): void
     {
-        // UserManager reads the acting user from the session.
-        $_SESSION['userid'] = $userId;
-        $this->assertSame($owns, UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId));
-        unset($_SESSION['userid']);
+        $this->assertSame($owns, $this->userRepository->userOwnsZone($userId, $zoneId));
     }
 
     #[DataProvider('ownershipMatrix')]
@@ -172,11 +166,8 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
      */
     public function testRowIdCollisionGrantsNothingAcrossZones(): void
     {
-        $_SESSION['userid'] = self::ALICE;
-        $this->assertTrue(UserManager::verifyUserIsOwnerZoneId($this->db, 100), 'alpha lost its owner');
-        $_SESSION['userid'] = self::CAROL;
-        $this->assertFalse(UserManager::verifyUserIsOwnerZoneId($this->db, 100), 'carol cross-granted alpha');
-        unset($_SESSION['userid']);
+        $this->assertTrue($this->userRepository->userOwnsZone(self::ALICE, 100), 'alpha lost its owner');
+        $this->assertFalse($this->userRepository->userOwnsZone(self::CAROL, 100), 'carol cross-granted alpha');
 
         $this->assertTrue($this->apiPermissions->userOwnsZone(self::ALICE, 100));
         $this->assertFalse($this->apiPermissions->userOwnsZone(self::CAROL, 100));

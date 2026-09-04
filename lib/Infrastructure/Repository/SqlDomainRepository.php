@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -36,6 +37,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
+use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
 /**
  * SQL-backend domain repository.
@@ -149,6 +151,60 @@ class SqlDomainRepository implements DomainRepositoryInterface
         return (bool)$stmt->fetch();
     }
 
+    /**
+     * SQL fragment restricting zones to a starting letter.
+     *
+     * Punycode zone names all begin with "x", so an IDN zone would only ever be
+     * reachable under that letter. Their decoded initials are resolved here and
+     * matched by name, keeping the comparison in step with the letter list.
+     */
+    private function buildLetterCondition(string $domains_table, string $db_type, string $letterstart, array &$params): string
+    {
+        if ($letterstart === 'all') {
+            return '';
+        }
+
+        if ($letterstart == 1) {
+            return " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
+        }
+
+        $condition = " AND (" . DbCompat::substr($db_type) . "($domains_table.name,1,1) = :letterstart";
+        $params[':letterstart'] = $letterstart;
+
+        $idnNames = $this->idnNamesForLetter($domains_table, $letterstart);
+        if ($idnNames !== []) {
+            $placeholders = [];
+            foreach (array_values($idnNames) as $index => $name) {
+                $placeholder = ":idnletter$index";
+                $placeholders[] = $placeholder;
+                $params[$placeholder] = $name;
+            }
+            $condition .= " OR $domains_table.name IN (" . implode(', ', $placeholders) . ")";
+        }
+
+        return $condition . ") ";
+    }
+
+    /**
+     * Punycode zone names whose decoded first letter matches, bounded to IDN zones.
+     *
+     * @return string[]
+     */
+    private function idnNamesForLetter(string $domains_table, string $letterstart): array
+    {
+        $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE name LIKE 'xn--%'");
+        $stmt->execute();
+
+        $matching = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN, 0) as $name) {
+            if (mb_strtolower(DnsIdnService::getFirstLetter($name), 'UTF-8') === mb_strtolower($letterstart, 'UTF-8')) {
+                $matching[] = $name;
+            }
+        }
+
+        return $matching;
+    }
+
     public function getZones(
         string $perm,
         int $userid = 0,
@@ -160,9 +216,17 @@ class SqlDomainRepository implements DomainRepositoryInterface
         bool $excludeReverse = false,
         ?bool $showSerial = null,
         ?bool $showTemplate = null,
-        bool $includeHealth = true
+        bool $includeHealth = true,
+        bool $includeRecordCount = true
     ): array {
-        $allowedSortColumns = ['name', 'type', 'count_records', 'owner', 'group'];
+        $allowedSortColumns = $includeRecordCount
+            ? ['name', 'type', 'count_records', 'owner', 'group']
+            : ['name', 'type', 'owner', 'group'];
+        // Hiding the Records column drops its sort key, but a session set while
+        // the column was visible still asks for it - fall back instead of failing
+        if (!$includeRecordCount && $sortby === 'count_records') {
+            $sortby = 'name';
+        }
         $sortby = $this->tableNameService->validateOrderBy($sortby, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
 
@@ -176,10 +240,6 @@ class SqlDomainRepository implements DomainRepositoryInterface
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
         $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
-
-        if ($letterstart == '_') {
-            $letterstart = '\_';
-        }
 
         $sql_add = '';
         if ($perm != "own" && $perm != "all") {
@@ -196,12 +256,8 @@ class SqlDomainRepository implements DomainRepositoryInterface
                 $params[':userid_group'] = $userid;
             }
 
-            if ($letterstart != 'all' && $letterstart != 1) {
-                $sql_add .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = :letterstart ";
-                $params[':letterstart'] = $letterstart;
-            } elseif ($letterstart == 1) {
-                $sql_add .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
-            }
+            $letterCondition = $this->buildLetterCondition($domains_table, $db_type, $letterstart, $params);
+            $sql_add .= $letterCondition;
 
             if ($excludeReverse) {
                 $sql_add .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
@@ -244,11 +300,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                     }
                 }
 
-                if ($letterstart != 'all' && $letterstart != 1) {
-                    $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = :letterstart";
-                } elseif ($letterstart == 1) {
-                    $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
-                }
+                $id_query .= $letterCondition;
 
                 if ($excludeReverse) {
                     $id_query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
@@ -300,11 +352,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                     }
                 }
 
-                if ($letterstart != 'all' && $letterstart != 1) {
-                    $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = :letterstart";
-                } elseif ($letterstart == 1) {
-                    $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
-                }
+                $id_query .= $letterCondition;
 
                 if ($excludeReverse) {
                     $id_query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
@@ -326,10 +374,12 @@ class SqlDomainRepository implements DomainRepositoryInterface
 
             $sortByGroup = strpos($sql_sortby, 'user_groups.name') !== false;
 
+            $needsRecordsJoin = $includeRecordCount || $includeHealth;
+
             $query = "SELECT $domains_table.id,
                             $domains_table.name,
                             $domains_table.type,
-                            COUNT(DISTINCT $records_table.id) AS count_records,
+                            " . ($includeRecordCount ? "COUNT(DISTINCT $records_table.id) AS count_records," : "") . "
                             " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                             users.username,
                             users.fullname
@@ -338,7 +388,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                         FROM $domains_table
                         INNER JOIN (" . $id_query . ") AS limited_domains ON $domains_table.id = limited_domains.id
                         LEFT JOIN zones ON $domains_table.id=zones.domain_id
-                        LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL
+                        " . ($needsRecordsJoin ? "LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL" : "") . "
                         LEFT JOIN users ON users.id=zones.owner";
 
             if ($sortByGroup) {
@@ -370,11 +420,12 @@ class SqlDomainRepository implements DomainRepositoryInterface
             $sortByGroup = strpos($sql_sortby, 'user_groups.name') !== false;
             // Group join multiplies record rows per group, so DISTINCT keeps the count accurate
             $recordCountExpr = $sortByGroup ? "COUNT(DISTINCT $records_table.id)" : "COUNT($records_table.id)";
+            $needsRecordsJoin = $includeRecordCount || $includeHealth;
 
             $query = "SELECT $domains_table.id,
                             $domains_table.name,
                             $domains_table.type,
-                            $recordCountExpr AS count_records,
+                            " . ($includeRecordCount ? "$recordCountExpr AS count_records," : "") . "
                             " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                             users.username,
                             users.fullname
@@ -382,7 +433,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
                             " . ($iface_zone_comments ? ", zones.comment" : "") . "
                             FROM $domains_table
                             LEFT JOIN zones ON $domains_table.id=zones.domain_id
-                            LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL
+                            " . ($needsRecordsJoin ? "LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL" : "") . "
                             LEFT JOIN users ON users.id=zones.owner";
 
             if ($sortByGroup) {
@@ -420,9 +471,11 @@ class SqlDomainRepository implements DomainRepositoryInterface
             $ret[$domainName]["name"] = $domainName;
             $ret[$domainName]["utf8_name"] = $utf8Name;
             $ret[$domainName]["type"] = $r["type"];
-            $ret[$domainName]["count_records"] = $r["count_records"];
-            $ret[$domainName]["is_disabled"] = !empty($r["is_disabled"] ?? null);
-            $ret[$domainName]["is_missing_soa"] = !empty($r["is_missing_soa"] ?? null);
+            $ret[$domainName]["count_records"] = $r["count_records"] ?? 0;
+            $ret[$domainName] = array_merge($ret[$domainName], ZoneSoaHealth::fromBackend([
+                'is_disabled' => !empty($r["is_disabled"] ?? null),
+                'is_missing_soa' => !empty($r["is_missing_soa"] ?? null),
+            ])->toZoneFields());
             $ret[$domainName]["comment"] = $r["comment"] ?? '';
 
             if ($r["username"] !== null) {
@@ -463,7 +516,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
         $perm_view = Permission::getViewPermission($this->db);
 
         if ($perm_view == "none") {
-            $this->messageService->addSystemError(_("You do not have the permission to view this zone."));
+            $this->messageService->addSystemError(_("You do not have permission to view this zone."));
             return [];
         }
 
@@ -481,6 +534,9 @@ class SqlDomainRepository implements DomainRepositoryInterface
                 GROUP BY $domains_table.id, $domains_table.type, $domains_table.name, $domains_table.master");
         $stmt->execute([':zid' => $zid]);
         $result = $stmt->fetch();
+        if ($result === false) {
+            return [];
+        }
         return array(
             "id" => $zid,
             "name" => $result['name'],
@@ -502,29 +558,22 @@ class SqlDomainRepository implements DomainRepositoryInterface
 
     public function getBestMatchingZoneIdFromName(string $domain): int
     {
-        $match = 72;
-        $found_domain_id = -1;
-
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->prepare("SELECT name, id FROM $domains_table
                    WHERE name like :pattern
                    ORDER BY length(name) DESC");
         $stmt->execute([':pattern' => '%.arpa']);
-        $response = $stmt;
-        if ($response) {
-            while ($r = $response->fetch()) {
-                $pos = stripos($domain, $r["name"]);
-                if ($pos !== false) {
-                    if ($pos < $match) {
-                        $match = $pos;
-                        $found_domain_id = $r["id"];
-                    }
-                }
+
+        $lowerDomain = strtolower($domain);
+        while ($r = $stmt->fetch()) {
+            // The reverse zone must equal the record name or be a suffix on a label
+            // boundary; ORDER BY length DESC returns the most specific match first,
+            // so "12.0.192.in-addr.arpa" is not mistaken for "2.0.192.in-addr.arpa".
+            if (DnsHelper::isWithinZone($lowerDomain, $r["name"])) {
+                return (int)$r["id"];
             }
-        } else {
-            return -1;
         }
-        return $found_domain_id;
+        return -1;
     }
 }

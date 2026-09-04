@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -35,22 +35,12 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 
 class DnssecToggleKeyController extends BaseController
 {
     public function run(): void
     {
-        // Toggling a key changes zone signing state, so it may not be driven by a
-        // plain link that any third-party page could trigger.
-        if (!$this->isPost()) {
-            $this->showError(_('Invalid or unexpected input given.'));
-            return;
-        }
-        $this->validateCsrfToken();
-
         $zone_id = $this->getSafeRequestValue('zone_id');
         if (!$zone_id || !Validator::isNumber($zone_id)) {
             $this->showError(_('Invalid zone ID.'));
@@ -65,28 +55,47 @@ class DnssecToggleKeyController extends BaseController
         }
         $key_id = (int) $key_id;
 
-        // Validate permissions
-        $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        // Toggling a signing key changes state, so require a CSRF-protected POST
+        // rather than a bare GET that could be triggered cross-site.
+        if (!$this->isPost()) {
+            $this->showError(_('This action requires a POST request.'));
+            return;
+        }
+        $this->validateCsrfToken();
 
-        if ($perm_edit !== "all" && !($perm_edit === "own" && $user_is_zone_owner)) {
+        // Validate permissions
+        $perm_view = Permission::getViewPermission($this->db);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
+
+        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
+            $this->showError(_("You do not have permission to view this zone."));
+            return;
+        }
+
+        if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id)) {
             $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
             return;
         }
 
         // Validate zone existence
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zone_id)) {
+        $domainRepository = $this->createDomainRepository();
+        if (!$domainRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        $domain_name = $dnsRecord->getDomainNameById($zone_id);
+        $domain_name = $domainRepository->getDomainNameById($zone_id);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
         // Check if DNSSEC is available
         if (!$dnssecProvider->isDnssecEnabled()) {
             $this->showError(_('DNSSEC functionality is not available. Please check PowerDNS API configuration.'));
+            return;
+        }
+
+        if ($dnssecProvider->isZonePresigned($domain_name)) {
+            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            $this->redirect('/zones/' . $zone_id . '/dnssec');
             return;
         }
 

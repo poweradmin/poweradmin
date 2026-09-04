@@ -24,8 +24,6 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 
 use PDO;
 use Poweradmin\Application\Service\HybridPermissionService;
-use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -55,13 +53,7 @@ class HybridPermissionServiceCanonicalZoneTest extends SqliteIntegrationTestCase
             (" . self::EDITOR_USER_ID . ", 'editor', " . self::EDITOR_TEMPL_ID . "),
             (" . self::OTHER_USER_ID . ", 'other', " . self::EDITOR_TEMPL_ID . ")");
 
-        // The two repositories are unused by the queries under test; master still
-        // requires them on the constructor.
-        $this->service = new HybridPermissionService(
-            $this->db,
-            $this->createMock(UserGroupRepositoryInterface::class),
-            $this->createMock(UserGroupMemberRepositoryInterface::class)
-        );
+        $this->service = new HybridPermissionService($this->db);
     }
 
     private function seedZone(int $id, ?int $domainId, int $owner): void

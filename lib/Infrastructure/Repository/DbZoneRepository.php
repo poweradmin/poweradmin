@@ -32,17 +32,15 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\ZoneHealthSql;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Utility\NaturalSorting;
-use Poweradmin\Infrastructure\Utility\ReverseDomainNaturalSorting;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
+use Poweradmin\Domain\Enum\ReverseZoneFilter;
+use Poweradmin\Domain\Enum\ZoneKind;
+use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
 class DbZoneRepository implements ZoneRepositoryInterface
 {
     private object $db;
     private string $db_type;
-    private ?string $pdns_db_name;
-    private NaturalSorting $naturalSorting;
-    private ReverseDomainNaturalSorting $reverseDomainNaturalSorting;
     private ReverseZoneSorting $reverseZoneSorting;
     private object $config;
     private TableNameService $tableNameService;
@@ -53,9 +51,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $this->db = $db;
         $this->config = $config;
         $this->db_type = $config->get('database', 'type');
-        $this->pdns_db_name = $config->get('database', 'pdns_db_name');
-        $this->naturalSorting = new NaturalSorting();
-        $this->reverseDomainNaturalSorting = new ReverseDomainNaturalSorting();
         $this->reverseZoneSorting = new ReverseZoneSorting();
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
@@ -67,23 +62,26 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->db_type) . "($domains_table.name, 1, 1)) AS letter FROM $domains_table";
+        $where = " WHERE $domains_table.name NOT LIKE '%.in-addr.arpa'"
+            . " AND $domains_table.name NOT LIKE '%.ip6.arpa'";
+        $join = '';
 
         if (!$viewOthers) {
-            $query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
-            $query .= " WHERE (zones.owner = :userId OR EXISTS (
+            $join = " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
+            $where = " WHERE (zones.owner = :userId OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
                 WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
-            ))";
-            $query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa'";
-            $query .= " AND $domains_table.name NOT LIKE '%.ip6.arpa'";
-        } else {
-            $query .= " WHERE $domains_table.name NOT LIKE '%.in-addr.arpa'";
-            $query .= " AND $domains_table.name NOT LIKE '%.ip6.arpa'";
+            ))"
+                . " AND $domains_table.name NOT LIKE '%.in-addr.arpa'"
+                . " AND $domains_table.name NOT LIKE '%.ip6.arpa'";
         }
 
-        $query .= " ORDER BY letter";
+        // IDN zones are excluded here so they do not all register as "x"; they are
+        // resolved to their decoded initial below.
+        $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->db_type) . "($domains_table.name, 1, 1)) AS letter"
+            . " FROM $domains_table" . $join . $where
+            . " AND $domains_table.name NOT LIKE 'xn--%' ORDER BY letter";
 
         $stmt = $this->db->prepare($query);
 
@@ -94,11 +92,29 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $stmt->execute();
 
-        $letters = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-
-        return array_filter($letters, function ($letter) {
+        $letters = array_filter($stmt->fetchAll(PDO::FETCH_COLUMN, 0), function ($letter) {
             return ctype_alpha($letter) || is_numeric($letter);
         });
+
+        // Punycode zones all start with "x", so their real initial has to come from the
+        // decoded name. Bounded to the IDN zones rather than scanning every domain.
+        $idnQuery = "SELECT DISTINCT $domains_table.name FROM $domains_table" . $join . $where
+            . " AND $domains_table.name LIKE 'xn--%'";
+        $idnStmt = $this->db->prepare($idnQuery);
+        if (!$viewOthers) {
+            $idnStmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+            $idnStmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
+        }
+        $idnStmt->execute();
+
+        foreach ($idnStmt->fetchAll(PDO::FETCH_COLUMN, 0) as $name) {
+            $letters[] = DnsIdnService::getFirstLetter($name);
+        }
+
+        $letters = array_values(array_unique(array_filter($letters, fn($letter) => $letter !== '')));
+        sort($letters, SORT_STRING);
+
+        return $letters;
     }
 
     /**
@@ -125,11 +141,19 @@ class DbZoneRepository implements ZoneRepositoryInterface
         bool $countOnly = false,
         bool $showSerial = false,
         bool $showTemplate = false,
-        bool $includeHealth = true
+        bool $includeHealth = true,
+        bool $includeRecordCount = true
     ) {
 
         // Validate sort parameters
-        $allowedSortColumns = ['name', 'owner', 'count_records', 'type', 'group'];
+        $allowedSortColumns = $includeRecordCount
+            ? ['name', 'owner', 'count_records', 'type', 'group']
+            : ['name', 'owner', 'type', 'group'];
+        // Hiding the Records column drops its sort key, but a session set while
+        // the column was visible still asks for it - fall back instead of failing
+        if (!$includeRecordCount && $sortBy === 'count_records') {
+            $sortBy = 'name';
+        }
         $sortBy = $this->tableNameService->validateOrderBy($sortBy, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
 
@@ -164,19 +188,16 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 $params[':userId_group'] = $userId;
             }
 
-            // Add reverse zone type filter
-            $query .= " AND (";
-            if ($reverseType == 'all' || $reverseType == 'ipv4') {
-                $query .= "$domains_table.name LIKE '%.in-addr.arpa'";
-                if ($reverseType == 'all') {
-                    $query .= " OR ";
-                }
+            // Built from the enum so an unknown filter cannot emit an empty AND ()
+            $filter = ReverseZoneFilter::fromRequest($reverseType);
+            $clauses = [];
+            if ($filter->includesIpv4()) {
+                $clauses[] = "$domains_table.name LIKE '%.in-addr.arpa'";
             }
-
-            if ($reverseType == 'all' || $reverseType == 'ipv6') {
-                $query .= "$domains_table.name LIKE '%.ip6.arpa'";
+            if ($filter->includesIpv6()) {
+                $clauses[] = "$domains_table.name LIKE '%.ip6.arpa'";
             }
-            $query .= ")";
+            $query .= " AND (" . implode(' OR ', $clauses) . ")";
 
             $query .= ") AS distinct_domains";
 
@@ -192,11 +213,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $sortByGroup = $sortBy === 'group';
             // Group join multiplies record rows per group, so DISTINCT keeps the count accurate
             $recordCountExpr = $sortByGroup ? "COUNT(DISTINCT $records_table.id)" : "COUNT($records_table.id)";
+            $needsRecordsJoin = $includeRecordCount || $includeHealth;
 
             $selectFields = "$domains_table.id,
                            $domains_table.name,
                            $domains_table.type,
-                           $recordCountExpr AS count_records,
+                           " . ($includeRecordCount ? "$recordCountExpr AS count_records," : "") . "
                            " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                            users.username,
                            users.fullname,
@@ -208,7 +230,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $query = "SELECT $selectFields
                  FROM $domains_table
                  LEFT JOIN zones ON $domains_table.id = zones.domain_id
-                 LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL
+                 " . ($needsRecordsJoin ? "LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL" : "") . "
                  LEFT JOIN users ON users.id = zones.owner
                  LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
                  LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'"
@@ -229,19 +251,16 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $params[':userId_group'] = $userId;
         }
 
-        // Add reverse zone type filter at database level
-        $query .= " AND (";
-        if ($reverseType == 'all' || $reverseType == 'ipv4') {
-            $query .= "$domains_table.name LIKE '%.in-addr.arpa'";
-            if ($reverseType == 'all') {
-                $query .= " OR ";
-            }
+        // Built from the enum so an unknown filter cannot emit an empty AND ()
+        $filter = ReverseZoneFilter::fromRequest($reverseType);
+        $clauses = [];
+        if ($filter->includesIpv4()) {
+            $clauses[] = "$domains_table.name LIKE '%.in-addr.arpa'";
         }
-
-        if ($reverseType == 'all' || $reverseType == 'ipv6') {
-            $query .= "$domains_table.name LIKE '%.ip6.arpa'";
+        if ($filter->includesIpv6()) {
+            $clauses[] = "$domains_table.name LIKE '%.ip6.arpa'";
         }
-        $query .= ")";
+        $query .= " AND (" . implode(' OR ', $clauses) . ")";
 
         // GROUP BY only needed for non-count queries -
         // count queries are already handled and returned above
@@ -283,10 +302,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        if ($countOnly) {
-            return (int)$stmt->fetchColumn();
-        }
-
         // Process results
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $zones = [];
@@ -299,9 +314,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
-                    'count_records' => $row['count_records'],
-                    'is_disabled' => !empty($row['is_disabled'] ?? null),
-                    'is_missing_soa' => !empty($row['is_missing_soa'] ?? null),
+                    'count_records' => $row['count_records'] ?? 0,
+                    ...ZoneSoaHealth::fromBackend([
+                        'is_disabled' => !empty($row['is_disabled'] ?? null),
+                        'is_missing_soa' => !empty($row['is_missing_soa'] ?? null),
+                    ])->toZoneFields(),
                     'comment' => $row['comment'] ?? '',
                     'secured' => $row['secured'],
                     'owners' => [],
@@ -457,7 +474,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         }
 
         // Apply additional filters
-        if (isset($filters['type']) && in_array($filters['type'], ['MASTER', 'SLAVE', 'NATIVE'])) {
+        if (isset($filters['type']) && in_array($filters['type'], ZoneKind::basicValues(), true)) {
             $query .= " AND $domains_table.type = :type";
             $params[':type'] = $filters['type'];
         }
@@ -1025,44 +1042,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
-     * Create a new domain
-     *
-     * @param string $domain Domain name
-     * @param int $owner Owner user ID
-     * @param string $type Domain type (MASTER, SLAVE, NATIVE)
-     * @param string $slaveMaster Master IP for slave zones
-     * @param string $zoneTemplate Zone template to use
-     * @return bool True if domain was created successfully
-     */
-    public function createDomain(string $domain, int $owner, string $type, string $slaveMaster = '', string $zoneTemplate = 'none'): bool
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        // Insert into domains table
-        $query = "INSERT INTO $domains_table (name, type, master) VALUES (:name, :type, :master)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $domain, PDO::PARAM_STR);
-        $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-        $stmt->bindValue(':master', $slaveMaster, PDO::PARAM_STR);
-
-        if (!$stmt->execute()) {
-            return false;
-        }
-
-        $domainId = $this->db->lastInsertId();
-
-        // Insert into zones table for ownership
-        $query = "INSERT INTO zones (domain_id, owner, comment) VALUES (:domain_id, :owner, :comment)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
-        $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
-        $stmt->bindValue(':comment', '', PDO::PARAM_STR);
-
-        return $stmt->execute();
-    }
-
-    /**
      * Delete a zone by ID
      *
      * @param int $zoneId The zone ID
@@ -1070,48 +1049,41 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function deleteZone(int $zoneId): bool
     {
-
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-        // Delete records first
-        $query = "DELETE FROM $records_table WHERE domain_id = :domain_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Delete group ownership associations
-        $query = "DELETE FROM zones_groups WHERE domain_id = :domain_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Delete from zones table
-        $query = "DELETE FROM zones WHERE domain_id = :domain_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Delete PowerDNS domain metadata
         $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
-        $query = "DELETE FROM $domainmetadata_table WHERE domain_id = :domain_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        // Delete PowerDNS crypto keys
         $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
-        $query = "DELETE FROM $cryptokeys_table WHERE domain_id = :domain_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
 
-        // Delete from domains table
-        $query = "DELETE FROM $domains_table WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        // Wrap the dependent deletes in one transaction so a mid-sequence failure
+        // rolls back instead of leaving a half-deleted zone.
+        $this->db->beginTransaction();
 
-        return $stmt->execute();
+        try {
+            foreach (
+                [
+                    "DELETE FROM $records_table WHERE domain_id = :domain_id",
+                    // Mapping tables cannot carry a foreign key: in API mode their domain_id
+                    // is a canonical zone id, not a local domains.id. Delete them here.
+                    "DELETE FROM records_zone_templ WHERE domain_id = :domain_id",
+                    "DELETE FROM records_zone_templ_api WHERE domain_id = :domain_id",
+                    "DELETE FROM zones_groups WHERE domain_id = :domain_id",
+                    "DELETE FROM zones WHERE domain_id = :domain_id",
+                    "DELETE FROM $domainmetadata_table WHERE domain_id = :domain_id",
+                    "DELETE FROM $cryptokeys_table WHERE domain_id = :domain_id",
+                    "DELETE FROM $domains_table WHERE id = :domain_id",
+                ] as $query
+            ) {
+                $stmt = $this->db->prepare($query);
+                $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (\Throwable $e) {
+            $this->db->rollBack();
+            return false;
+        }
     }
 
     /**
@@ -1123,10 +1095,23 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function updateZone(int $zoneId, array $updates): bool
     {
+        // Renaming the zone would leave every records.name under the old name, so it is
+        // refused here exactly as it already is in API backend mode. A name equal to the
+        // current one is dropped so clients that PUT the whole zone object back still work.
+        $nameWasNoOp = isset($updates['name']);
+        if ($nameWasNoOp) {
+            $currentName = $this->getDomainNameById($zoneId);
+            if ($currentName !== null && $updates['name'] !== $currentName) {
+                throw new \InvalidArgumentException(
+                    'Zone renaming is not supported. Delete the zone and recreate it under the new name.'
+                );
+            }
+            unset($updates['name']);
+        }
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $allowedFields = ['name', 'type', 'master'];
+        $allowedFields = ['type', 'master'];
         $setClause = [];
         $params = [':id' => $zoneId];
 
@@ -1138,7 +1123,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         }
 
         if (empty($setClause)) {
-            return false;
+            return $nameWasNoOp;
         }
 
         $query = "UPDATE $domains_table SET " . implode(', ', $setClause) . " WHERE id = :id";
@@ -1204,39 +1189,70 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        // Build query with optional JOIN for permission filtering
-        if ($zoneIds === null && $userId === null) {
-            // No filtering - count all zones
-            $query = "SELECT COUNT(*) FROM $domains_table";
-            $params = [];
-        } elseif ($zoneIds === null && $userId !== null) {
-            // User can see all zones, but use JOIN for consistency
-            $query = "SELECT COUNT(DISTINCT d.id) FROM $domains_table d";
-            $params = [];
+        // Build the WHERE conditions: ownership (when a user is given) AND an explicit
+        // zone-id allowlist (when provided). Both are optional and combine with AND.
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+
+        if ($conditions === []) {
+            $query = "SELECT COUNT(*) FROM $domains_table d";
         } else {
+            // The zones join is only needed when filtering by owner.
+            $join = ($userId !== null) ? " LEFT JOIN zones z ON d.id = z.domain_id" : "";
+            $query = "SELECT COUNT(DISTINCT d.id) FROM $domains_table d" . $join
+                . " WHERE " . implode(' AND ', $conditions);
+        }
+
+        $stmt = $this->db->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Build shared WHERE conditions for the permission-aware zone list/count queries.
+     * Conditions reference `d` (domains) and, for ownership, `z` (zones).
+     *
+     * @param int[]|null $zoneIds Explicit zone-id allowlist, or null for no id restriction
+     * @param int|null $userId Owner to filter by, or null for no ownership restriction
+     * @param string|null $nameFilter Optional exact zone-name filter
+     * @return array{0: string[], 1: array<string, mixed>} [conditions, bind params]
+     */
+    private function buildZoneFilterConditions(?array $zoneIds, ?int $userId, ?string $nameFilter): array
+    {
+        $conditions = [];
+        $params = [];
+
+        if ($userId !== null) {
             // Include zones owned only via a group (no direct owner).
-            $query = "SELECT COUNT(DISTINCT d.id)
-                      FROM $domains_table d
-                      LEFT JOIN zones z ON d.id = z.domain_id
-                      WHERE (z.owner = :user_id OR EXISTS (
+            $conditions[] = "(z.owner = :user_id OR EXISTS (
                           SELECT 1 FROM zones_groups zg
                           INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
                           WHERE zg.domain_id = d.id AND ugm.user_id = :user_id_group
                       ))";
-            $params = [':user_id' => $userId, ':user_id_group' => $userId];
+            $params[':user_id'] = $userId;
+            $params[':user_id_group'] = $userId;
         }
 
-        // Add name filter if specified
+        // Empty array is handled by callers (no results); here a non-empty list
+        // restricts to exactly those zone IDs.
+        if ($zoneIds !== null && $zoneIds !== []) {
+            $placeholders = [];
+            foreach (array_values($zoneIds) as $i => $zoneId) {
+                $placeholders[] = ":zone_id_$i";
+                $params[":zone_id_$i"] = (int)$zoneId;
+            }
+            $conditions[] = "d.id IN (" . implode(', ', $placeholders) . ")";
+        }
+
         if ($nameFilter !== null && $nameFilter !== '') {
-            $whereClause = ($zoneIds === null && $userId === null) ? 'WHERE' : 'AND';
-            $query .= " $whereClause d.name = :name_filter";
+            $conditions[] = "d.name = :name_filter";
             $params[':name_filter'] = $nameFilter;
         }
 
-        $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
-
-        return (int)$stmt->fetchColumn();
+        return [$conditions, $params];
     }
 
     /**
@@ -1260,40 +1276,18 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-        // Build query based on permission model
-        if ($zoneIds === null && $userId === null) {
-            // No filtering - get all zones (uberuser or view_others permission)
-            $query = "SELECT d.id, d.name, d.type, d.master,
-                             COALESCE(MIN(z.owner), 0) as owner,
-                             COUNT(DISTINCT r.id) as record_count
-                      FROM $domains_table d
-                      LEFT JOIN zones z ON d.id = z.domain_id
-                      LEFT JOIN $records_table r ON d.id = r.domain_id";
-            $whereAdded = false;
-            $params = [];
-        } else {
-            // Include zones owned only via a group (no direct owner).
-            $query = "SELECT d.id, d.name, d.type, d.master,
-                             COALESCE(MIN(z.owner), 0) as owner,
-                             COUNT(DISTINCT r.id) as record_count
-                      FROM $domains_table d
-                      LEFT JOIN zones z ON d.id = z.domain_id
-                      LEFT JOIN $records_table r ON d.id = r.domain_id
-                      WHERE (z.owner = :user_id OR EXISTS (
-                          SELECT 1 FROM zones_groups zg
-                          INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                          WHERE zg.domain_id = d.id AND ugm.user_id = :user_id_group
-                      ))";
-            $whereAdded = true;
-            $params = [':user_id' => $userId, ':user_id_group' => $userId];
-        }
+        // Ownership and explicit zone-id allowlist conditions (both optional).
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
 
-        // Add name filter if specified
-        if ($nameFilter !== null && $nameFilter !== '') {
-            $whereClause = $whereAdded ? 'AND' : 'WHERE';
-            $query .= " $whereClause d.name = :name_filter";
-            $params[':name_filter'] = $nameFilter;
-            $whereAdded = true;
+        $query = "SELECT d.id, d.name, d.type, d.master,
+                         COALESCE(MIN(z.owner), 0) as owner,
+                         COUNT(DISTINCT r.id) as record_count
+                  FROM $domains_table d
+                  LEFT JOIN zones z ON d.id = z.domain_id
+                  LEFT JOIN $records_table r ON d.id = r.domain_id";
+
+        if ($conditions !== []) {
+            $query .= " WHERE " . implode(' AND ', $conditions);
         }
 
         // Add GROUP BY and ORDER BY

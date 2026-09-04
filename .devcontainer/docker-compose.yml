@@ -403,6 +403,25 @@ services:
     depends_on:
       - sqlite
 
+  # Opt-in, since LMDB is the only backend that implements views and network
+  # mappings: docker compose --profile lmdb up pdns-lmdb
+  pdns-lmdb:
+    image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    container_name: pdns-lmdb
+    profiles:
+      - lmdb
+    networks:
+      - internal
+    volumes:
+      - ./conf/pdns-lmdb.conf:/etc/powerdns/pdns.conf
+      # The pdns user owns /var/lib/powerdns in the image; a volume on /data
+      # lands as root and the backend cannot create its database.
+      - lmdb_data:/var/lib/powerdns
+    ports:
+      - "1056:53"
+      - "1056:53/udp"
+      - "8184:8081"
+
   # =============================================================================
   # Admin Tools
   # =============================================================================
@@ -490,6 +509,7 @@ volumes:
   mysql_data: { }
   pgsql_data: { }
   sqlite_data: {}
+  lmdb_data: {}
   caddy_data: {}
   caddy_config: {}
 

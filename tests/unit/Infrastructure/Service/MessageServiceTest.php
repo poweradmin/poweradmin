@@ -103,61 +103,13 @@ class MessageServiceTest extends TestCase
         $this->assertCount(2, $_SESSION['messages']['test_script']);
     }
 
-    // ========== addError tests ==========
-
-    #[Test]
-    public function testAddErrorAddsErrorTypeMessage(): void
-    {
-        $this->service->addError('test_script', 'Error message');
-
-        $this->assertEquals('error', $_SESSION['messages']['test_script'][0]['type']);
-    }
-
-    #[Test]
-    public function testAddErrorWithRecordName(): void
-    {
-        $this->service->addError('test_script', 'Error message', 'rec1');
-
-        $this->assertStringContainsString('rec1', $_SESSION['messages']['test_script'][0]['content']);
-    }
-
-    // ========== addWarning tests ==========
-
-    #[Test]
-    public function testAddWarningAddsWarnTypeMessage(): void
-    {
-        $this->service->addWarning('test_script', 'Warning message');
-
-        $this->assertEquals('warn', $_SESSION['messages']['test_script'][0]['type']);
-    }
-
-    // ========== addSuccess tests ==========
-
-    #[Test]
-    public function testAddSuccessAddsSuccessTypeMessage(): void
-    {
-        $this->service->addSuccess('test_script', 'Success message');
-
-        $this->assertEquals('success', $_SESSION['messages']['test_script'][0]['type']);
-    }
-
-    // ========== addInfo tests ==========
-
-    #[Test]
-    public function testAddInfoAddsInfoTypeMessage(): void
-    {
-        $this->service->addInfo('test_script', 'Info message');
-
-        $this->assertEquals('info', $_SESSION['messages']['test_script'][0]['type']);
-    }
-
     // ========== getMessages tests ==========
 
     #[Test]
     public function testGetMessagesReturnsAndClearsMessages(): void
     {
-        $this->service->addInfo('test_script', 'Message 1');
-        $this->service->addError('test_script', 'Message 2');
+        $this->service->addMessage('test_script', 'info', 'Message 1');
+        $this->service->addMessage('test_script', 'error', 'Message 2');
 
         $messages = $this->service->getMessages('test_script');
 
@@ -184,58 +136,6 @@ class MessageServiceTest extends TestCase
         $this->assertEquals('error', $_SESSION['messages']['system'][0]['type']);
     }
 
-    // ========== renderMessages tests ==========
-
-    #[Test]
-    public function testRenderMessagesReturnsHtmlWithAlert(): void
-    {
-        $this->service->addError('test', 'Error message');
-
-        $html = $this->service->renderMessages('test.twig');
-
-        $this->assertStringContainsString('alert-danger', $html);
-        $this->assertStringContainsString('Error message', $html);
-    }
-
-    #[Test]
-    public function testRenderMessagesReturnsEmptyStringWhenNoMessages(): void
-    {
-        $html = $this->service->renderMessages('test.twig');
-
-        $this->assertEquals('', $html);
-    }
-
-    #[Test]
-    public function testRenderMessagesShowsCorrectIconForSuccess(): void
-    {
-        $this->service->addSuccess('test', 'Success message');
-
-        $html = $this->service->renderMessages('test.twig');
-
-        $this->assertStringContainsString('alert-success', $html);
-        $this->assertStringContainsString('check-circle', $html);
-    }
-
-    #[Test]
-    public function testRenderMessagesShowsCorrectIconForWarning(): void
-    {
-        $this->service->addWarning('test', 'Warning message');
-
-        $html = $this->service->renderMessages('test.twig');
-
-        $this->assertStringContainsString('alert-warning', $html);
-    }
-
-    #[Test]
-    public function testRenderMessagesShowsCorrectIconForInfo(): void
-    {
-        $this->service->addInfo('test', 'Info message');
-
-        $html = $this->service->renderMessages('test.twig');
-
-        $this->assertStringContainsString('alert-info', $html);
-        $this->assertStringContainsString('info-circle', $html);
-    }
 
     // ========== generateFormToken tests ==========
 
@@ -385,14 +285,6 @@ class MessageServiceTest extends TestCase
     }
 
     #[Test]
-    public function testAllowHtmlReturnsInstance(): void
-    {
-        $result = $this->service->allowHtml();
-
-        $this->assertInstanceOf(MessageService::class, $result);
-    }
-
-    #[Test]
     public function testDontExitReturnsInstance(): void
     {
         $result = $this->service->dontExit();
@@ -405,8 +297,8 @@ class MessageServiceTest extends TestCase
     #[Test]
     public function testMessagesAreSeparatedByScript(): void
     {
-        $this->service->addError('script1', 'Error in script 1');
-        $this->service->addInfo('script2', 'Info in script 2');
+        $this->service->addMessage('script1', 'error', 'Error in script 1');
+        $this->service->addMessage('script2', 'info', 'Info in script 2');
 
         $script1Messages = $this->service->getMessages('script1');
         $script2Messages = $this->service->getMessages('script2');
@@ -416,5 +308,34 @@ class MessageServiceTest extends TestCase
 
         $this->assertCount(1, $script2Messages);
         $this->assertEquals('info', $script2Messages[0]['type']);
+    }
+
+    // ========== Direct system error tests ==========
+
+    #[Test]
+    public function testDirectSystemErrorReportsServerError(): void
+    {
+        ob_start();
+        $this->service->dontExit()->displayDirectSystemError('Configuration is broken');
+        $body = (string)ob_get_clean();
+
+        $this->assertSame(500, http_response_code());
+        $this->assertStringContainsString('<!DOCTYPE html>', $body);
+        $this->assertStringContainsString('Configuration is broken', $body);
+
+        http_response_code(200);
+    }
+
+    #[Test]
+    public function testDirectSystemErrorEscapesTheMessage(): void
+    {
+        ob_start();
+        $this->service->dontExit()->displayDirectSystemError('<script>alert(1)</script>');
+        $body = (string)ob_get_clean();
+
+        $this->assertStringContainsString('&lt;script&gt;', $body);
+        $this->assertStringNotContainsString('<script>alert', $body);
+
+        http_response_code(200);
     }
 }

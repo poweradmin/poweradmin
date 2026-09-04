@@ -1,11 +1,9 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
-        <li class="breadcrumb-item">{{ templ_details['name'] }}</li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit template{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Zone templates'|trans, url: base_url_prefix ~ '/zones/templates'},
+    {label: templ_details['name']},
+    {label: 'Edit template'|trans},
+]) }}
 
 {% if unsynced_zones_count > 0 %}
 <div class="alert alert-warning alert-dismissible fade show mb-3 py-2 small" role="alert">
@@ -42,7 +40,7 @@
         </div>
         {% else %}
         <form method="post" action="" id="template-records-form">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm mb-0">
                     <thead class="table-light">
@@ -120,12 +118,10 @@
     <div class="col-md-6">
         <!-- Template Settings Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-gear me-2"></i>{% trans %}Template Settings{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-gear', 'Template Settings'|trans) }}
             <div class="card-body">
                 <form class="needs-validation" method="post" action="" id="template-form" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
 
                     <div class="mb-3">
                         <label for="templ_name" class="form-label">{% trans %}Template name{% endtrans %}</label>
@@ -174,9 +170,7 @@
     <div class="col-md-6">
         <!-- Placeholders Info Card -->
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Template Placeholders{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'Template Placeholders'|trans) }}
             <div class="card-body">
                 <p>{% trans %}The following placeholders can be used in template records{% endtrans %}:</p>
                 <div class="table-responsive">
@@ -203,6 +197,14 @@
                         <tr>
                             <td><code>[SERIAL]</code></td>
                             <td>{% trans %}Substituted with current date and 2 numbers{% endtrans %} (YYYYMMDD + 00)</td>
+                        </tr>
+                        <tr>
+                            <td><code>[UNIXTIME]</code></td>
+                            <td>{% trans %}Substituted with current UNIX timestamp{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[COUNTER]</code></td>
+                            <td>{% trans %}Substituted with initial counter value{% endtrans %} (1)</td>
                         </tr>
                         <tr>
                             <td><code>[NS1]</code></td>

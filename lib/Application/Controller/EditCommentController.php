@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,25 +25,36 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Enum\AccessScope;
 
 class EditCommentController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
 
     public function run(): void
     {
+        $domainRepository = $this->createDomainRepository();
         $iface_zone_comments = $this->config->get('interface', 'show_zone_comments', true);
 
         if (!$iface_zone_comments) {
@@ -59,39 +70,47 @@ class EditCommentController extends BaseController
         }
         $zone_id = htmlspecialchars($zone_id);
 
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner((int)$zone_id);
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this comment."));
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_type = $dnsRecord->getDomainType($zone_id);
+        if (!$domainRepository->zoneIdExists((int)$zone_id)) {
+            $this->showError(_('There is no zone with this ID.'));
+            return;
+        }
+
+        $zone_type = $domainRepository->getDomainType((int)$zone_id);
 
         // Check permission to edit comment - directly reuse the logic from edit_zone_comment method
-        $is_admin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $is_admin = $this->hasPermission('user_is_ueberuser');
 
-        // Permission check logic matches what's in DnsRecord->edit_zone_comment
-        // Users can edit if:
-        // 1. They are an admin (uberuser) OR
-        // 2. It's not a slave zone AND they have edit permission AND (they have 'all' permission OR they own the zone)
-        $can_edit = $is_admin ||
-                   ($zone_type != "SLAVE" &&
-                    $perm_edit != "none" &&
-                    ($perm_edit == "all" ||
-                     (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner)));
+        // Permission check logic matches what's in RecordManager->editZoneComment.
+        // Read-only zones (Secondary, Consumer) block comment edits for everyone -
+        // including admins - because RecordManager rejects the write. Otherwise a
+        // user can edit if they are an admin, or have edit permission and own the zone.
+        $can_edit = !ZoneType::isReadOnly($zone_type) &&
+                   ($is_admin ||
+                    ($perm_edit != "none" &&
+                     ($perm_edit == "all" ||
+                      (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner))));
 
         // For the form, we need to know if editing is disabled
         $perm_edit_comment = !$can_edit;
 
-        if (isset($_POST["commit"])) {
+        if ($this->request->getPostParam('commit') !== null) {
             $this->validateCsrfToken();
 
             if ($perm_edit_comment) {
                 $messageService = new MessageService();
                 $messageService->addSystemError(_("You do not have the permission to edit this comment."));
             } else {
-                $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                $dnsRecord->editZoneComment($zone_id, $_POST['comment']);
+                $this->createRecordManager()->editZoneComment((int)$zone_id, $this->request->getPostParam('comment'));
+
+                $zoneIdInt = (int)$zone_id;
+                $auditService = new AuditService($this->db);
+                $auditService->logZoneCommentEdit($zoneIdInt, $domainRepository->getDomainNameById($zoneIdInt));
+
                 $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));
                 $this->redirect('/zones/' . $zone_id . '/edit');
             }
@@ -102,21 +121,18 @@ class EditCommentController extends BaseController
 
     public function showCommentForm(string $zone_id, bool $perm_edit_comment): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_name = $dnsRecord->getDomainNameById($zone_id);
+        $domainRepository = $this->createDomainRepository();
+        $zone_name = $domainRepository->getDomainNameById((int)$zone_id);
 
-        if (str_starts_with($zone_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($zone_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
 
         $this->render('edit_comment.html', [
             'zone_id' => $zone_id,
-            'comment' => DnsRecord::getZoneComment($this->db, $zone_id),
+            'comment' => RecordManager::getZoneComment($this->db, (int)$zone_id),
             'disabled' => $perm_edit_comment,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => DnsIdnService::toDisplay($zone_name),
         ]);
     }
 }

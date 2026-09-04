@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\TopLevelDomain;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -219,31 +220,14 @@ class HostnameValidator
         }
 
         if ($dns_strict_tld_check && !TopLevelDomain::isValidTopLevelDomain($hostname)) {
-            return ValidationResult::failure(_('You are using an invalid top level domain.'));
+            $customTlds = $this->config->get('dns', 'custom_tlds', []);
+            $tld = strtolower($hostname_labels[$label_count - 1]);
+            if (!is_array($customTlds) || !in_array($tld, array_map('strtolower', $customTlds), true)) {
+                return ValidationResult::failure(_('You are using an invalid top level domain.'));
+            }
         }
 
         return ValidationResult::success(['hostname' => $normalizedHostname]);
-    }
-
-    /**
-     * Legacy method for compatibility with existing code
-     *
-     * @param mixed $hostname Hostname string
-     * @param mixed $wildcard Whether wildcards are allowed (1/0 or true/false)
-     *
-     * @return array|bool Returns array with normalized hostname if valid, false otherwise
-     * @deprecated Use validate() instead
-     */
-    public function isValidHostnameFqdn(mixed $hostname, mixed $wildcard): array|bool
-    {
-        $allowWildcard = (bool)$wildcard;
-        $result = $this->validate($hostname, $allowWildcard);
-
-        if (!$result->isValid()) {
-            return false;
-        }
-
-        return $result->getData();
     }
 
     /**
@@ -270,18 +254,31 @@ class HostnameValidator
      */
     public function normalizeRecordName(string $name, string $zone): string
     {
-        // Check if name already ends with the zone name
-        if (!$this->endsWith(strtolower($zone), strtolower($name))) {
-            // Append zone name if not already there
-            if ($name !== "") {
-                return $name . "." . $zone;
-            } else {
-                return $zone;
-            }
+        // Strip at most one trailing dot (the absolute-name marker) so an absolute
+        // name is still qualified within its zone; repeated dots are left intact so
+        // malformed input like "host.." still fails validation downstream.
+        $name = preg_replace('/\.$/', '', $name);
+        $zone = preg_replace('/\.$/', '', $zone);
+
+        // Root zone: names carry a single trailing dot and the apex is ".".
+        if ($zone === "") {
+            return $name === "" ? "." : $name . ".";
         }
 
-        // Name already includes zone, return unchanged
-        return $name;
+        // "@" is the origin marker, never a literal label. Resolving it here keeps every
+        // write path from having to pre-expand it before normalizing.
+        if ($name === "" || $name === "@") {
+            return $zone;
+        }
+
+        // Already qualified only at the apex or on a dot boundary. "testexample.com"
+        // is not inside "example.com" and must get the suffix, else PowerDNS stores
+        // an out-of-zone record it never serves.
+        if (DnsHelper::isWithinZone($name, $zone)) {
+            return $name;
+        }
+
+        return $name . "." . $zone;
     }
 
     /**

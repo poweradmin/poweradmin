@@ -66,16 +66,13 @@ class WhoisService
 
         if (preg_match('/[^\x20-\x7E]/', $tld)) {
             $punycodeTld = DnsIdnService::toPunycode($tld);
-            if ($punycodeTld !== false && isset($this->whoisServers[$punycodeTld])) {
+            if (isset($this->whoisServers[$punycodeTld])) {
                 return $this->whoisServers[$punycodeTld];
             }
         } elseif (str_starts_with($tld, 'xn--')) {
             try {
                 $unicodeTld = DnsIdnService::toUtf8($tld);
-                if (
-                    $unicodeTld !== false && $unicodeTld !== $tld &&
-                    isset($this->whoisServers[$unicodeTld])
-                ) {
+                if ($unicodeTld !== $tld && isset($this->whoisServers[$unicodeTld])) {
                     return $this->whoisServers[$unicodeTld];
                 }
             } catch (Exception $e) {
@@ -134,8 +131,7 @@ class WhoisService
         $parts = explode('.', $domain);
         foreach ($parts as &$part) {
             if (preg_match('/[^\x20-\x7E]/', $part)) {
-                $punycode = DnsIdnService::toPunycode($part);
-                $part = $punycode !== false ? $punycode : $part;
+                $part = DnsIdnService::toPunycode($part);
             }
         }
 

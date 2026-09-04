@@ -70,7 +70,7 @@ class DNSKEYRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the DNSKEY record (flags protocol algorithm public-key)
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for DNSKEY records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
      * @return ValidationResult Validation result with data or errors

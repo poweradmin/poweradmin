@@ -36,12 +36,8 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 
 class DeleteGroupController extends BaseController
 {
@@ -55,8 +51,8 @@ class DeleteGroupController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = new DbUserGroupRepository($this->db);
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
+        $groupRepository = $this->createUserGroupRepository();
+        $zoneGroupRepository = $this->createZoneGroupRepository();
 
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
@@ -75,7 +71,7 @@ class DeleteGroupController extends BaseController
         // Only admin (überuser) can delete groups
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->isAdmin($userId)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to delete groups.'));
             $this->redirect('/groups');
             return;
@@ -90,7 +86,7 @@ class DeleteGroupController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('delete_group');
-        $this->setPageTitle(_('Delete Group'));
+        $this->setPageTitle(_('Delete group'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -114,7 +110,7 @@ class DeleteGroupController extends BaseController
             // Get group details and stats before deletion for logging
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
+            $isAdmin = $this->createPermissionService()->isAdmin($userId);
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
@@ -151,7 +147,7 @@ class DeleteGroupController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
+            $isAdmin = $this->createPermissionService()->isAdmin($userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Query;
 
+use PDO;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
@@ -84,10 +85,71 @@ abstract class BaseSearch
     }
 
     /**
+     * The needle for free-text columns. Record content and comments hold whatever the
+     * user typed, so the punycoded form of the query cannot match them.
+     */
+    protected function buildRawSearchString(array $parameters): string
+    {
+        $needle = trim((string)($parameters['query'] ?? ''));
+        $wildcard = !empty($parameters['wildcard']);
+        return ($wildcard ? '%' : '') . $needle . ($wildcard ? '%' : '');
+    }
+
+    /**
      * Handles SQL mode for MySQL database connection by disabling 'ONLY_FULL_GROUP_BY' if needed.
      *
      * @return string The original SQL mode if modified, or an empty string if no change was needed or not using MySQL.
      */
+    /**
+     * Punycode names whose decoded form contains the query.
+     *
+     * The punycode of a substring is not a substring of the punycode, so a partial
+     * query like "munch" can never match "xn--mnchen-3ya" through LIKE. Decoding the
+     * IDN names and comparing in PHP is bounded to the rows that are actually punycode.
+     *
+     * @return string[]
+     */
+    protected function idnNamesMatching(string $table, string $column, string $query): array
+    {
+        $needle = mb_strtolower(trim($query), 'UTF-8');
+        if ($needle === '') {
+            return [];
+        }
+
+        $stmt = $this->db->prepare("SELECT DISTINCT $column FROM $table WHERE $column LIKE 'xn--%' OR $column LIKE '%.xn--%'");
+        $stmt->execute();
+
+        $matching = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN, 0) as $name) {
+            if (str_contains(mb_strtolower(DnsIdnService::toUtf8((string)$name), 'UTF-8'), $needle)) {
+                $matching[] = $name;
+            }
+        }
+
+        return $matching;
+    }
+
+    /**
+     * Extend a name predicate so partial IDN queries match. Returns the SQL to append,
+     * binding one placeholder per matching name into $params.
+     */
+    protected function idnNameCondition(string $table, string $column, string $query, string $prefix, array &$params): string
+    {
+        $names = $this->idnNamesMatching($table, $column, $query);
+        if ($names === []) {
+            return '';
+        }
+
+        $placeholders = [];
+        foreach (array_values($names) as $index => $name) {
+            $placeholder = ":{$prefix}{$index}";
+            $placeholders[] = $placeholder;
+            $params[$placeholder] = $name;
+        }
+
+        return " OR $column IN (" . implode(', ', $placeholders) . ")";
+    }
+
     protected function handleSqlMode(): string
     {
         return DbCompat::handleSqlMode($this->db, $this->db_type);

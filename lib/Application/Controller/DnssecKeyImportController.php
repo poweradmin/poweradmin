@@ -23,14 +23,14 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Enum\DnssecKeyType;
 
 /**
  * Imports a PEM-encoded DNSSEC private key into a zone via the PowerDNS API.
@@ -39,6 +39,14 @@ use Poweradmin\Domain\Service\Validator;
  */
 class DnssecKeyImportController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
+
     public function run(): void
     {
         $zoneId = $this->getSafeRequestValue('id');
@@ -49,21 +57,20 @@ class DnssecKeyImportController extends BaseController
 
         $zoneIdInt = (int) $zoneId;
         $permView = Permission::getViewPermission($this->db);
-        $permEdit = Permission::getEditPermission($this->db);
-        $userIsZoneOwner = UserManager::verifyUserIsOwnerZoneId($this->db, $zoneIdInt);
+        $userIsZoneOwner = $this->isZoneOwner($zoneIdInt);
 
         if ($permView === 'none' || ($permView === 'own' && !$userIsZoneOwner)) {
             $this->showError(_('You do not have permission to view this zone.'));
             return;
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zoneIdInt)) {
+        $domainRepository = $this->createDomainRepository();
+        if (!$domainRepository->zoneIdExists($zoneIdInt)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        if ($permEdit !== 'all' && !($permEdit === 'own' && $userIsZoneOwner)) {
+        if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zoneIdInt)) {
             $this->showError(_('You do not have permission to manage DNSSEC for this zone.'));
             return;
         }
@@ -75,13 +82,22 @@ class DnssecKeyImportController extends BaseController
             return;
         }
 
+        $domainName = $domainRepository->getDomainNameById($zoneIdInt);
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+
+        if ($dnssecProvider->isZonePresigned($domainName)) {
+            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            $this->redirect('/zones/' . $zoneId . '/dnssec');
+            return;
+        }
+
         $this->validateCsrfToken();
 
         $keyType = $this->getSafeRequestValue('key_type');
         $algorithm = $this->getSafeRequestValue('algorithm');
-        $privateKeyPem = (string) ($_POST['private_key_pem'] ?? '');
+        $privateKeyPem = (string) $this->request->getPostParam('private_key_pem', '');
 
-        if (!in_array($keyType, ['ksk', 'zsk', 'csk'], true)) {
+        if (!DnssecKeyType::isValid($keyType)) {
             $this->setMessage('dnssec', 'error', _('Invalid or unexpected input given.'));
             $this->redirect('/zones/' . $zoneId . '/dnssec');
             return;
@@ -99,9 +115,6 @@ class DnssecKeyImportController extends BaseController
             $this->redirect('/zones/' . $zoneId . '/dnssec');
             return;
         }
-
-        $domainName = $dnsRecord->getDomainNameById($zoneIdInt);
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
         try {
             if ($dnssecProvider->importZoneKey($domainName, $keyType, $algorithm, $privateKeyPem)) {

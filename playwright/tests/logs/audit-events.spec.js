@@ -11,6 +11,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { expectAccessDenied } from '../../helpers/access.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
@@ -20,12 +21,8 @@ test.describe('Audit Events - Generate Events', () => {
     await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
     await page.goto('/users/logs');
 
-    // Viewer doesn't have permission - should see error or redirect
-    const bodyText = await page.locator('body').textContent();
-    const wasDenied = bodyText.toLowerCase().includes('error') ||
-                      bodyText.toLowerCase().includes('denied') ||
-                      !page.url().includes('users/logs');
-    expect(wasDenied).toBeTruthy();
+    // The denial is what writes the access_denied audit event
+    await expectAccessDenied(page, 'table');
   });
 
   test('should generate perm_template_change by editing noperm user template', async ({ page }) => {

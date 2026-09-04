@@ -203,9 +203,12 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_DNS_SOA_EXPIRE` | SOA expire time (seconds) | `604800` | No |
 | `PA_DNS_SOA_MINIMUM` | SOA minimum TTL (seconds) | `86400` | No |
 | `PA_DNS_ZONE_TYPE_DEFAULT` | Default zone type: `MASTER` or `NATIVE` | `MASTER` | No |
+| `PA_DNS_SOA_EDIT` | SOA-EDIT metadata for new zones (e.g. `INCEPTION-INCREMENT`) | Empty | No |
+| `PA_DNS_SOA_EDIT_API` | SOA-EDIT-API metadata for new zones (e.g. `EPOCH`); `OFF` disables, empty uses the server default | Empty | No |
 | `PA_DNS_DEFAULT_ZONE_TEMPLATE` | Template pre-selected on the add-zone form, by id or name | Empty | No |
 | `PA_DNS_ZONE_OWNERSHIP_MODE` | Zone ownership model: `both`, `users_only` or `groups_only` | `both` | No |
 | `PA_DNS_SYNC_ZONE_OWNER_TO_ACCOUNT` | Mirror the oldest zone owner's username into the PowerDNS account field | `false` | No |
+| `PA_DNS_PARENT_ZONE_OWNERSHIP_CHECK` | Block creating a zone that overlaps a zone owned by another user | `true` | No |
 
 ### DNS Validation Settings
 
@@ -246,6 +249,9 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LOGGING_SYSLOG_ENABLED` | Enable logging authentication attempts to syslog | `false` | No |
 | `PA_LOGGING_SYSLOG_IDENTITY` | Syslog program identity | `poweradmin` | No |
 | `PA_LOGGING_SYSLOG_FACILITY` | Syslog facility (`LOG_USER`, `LOG_LOCAL0`-`LOG_LOCAL7`) | `LOG_USER` | No |
+| `PA_LOGGING_REQUIRE_CHANGE_COMMENT` | Require a reason for bulk record changes | `false` | No |
+| `PA_LOGGING_API_REQUEST_LOGGING` | Log every API request, not just 401/403 violations; both need `PA_LOGGING_DATABASE_ENABLED` | `false` | No |
+| `PA_LOGGING_API_LOG_RETENTION_DAYS` | Days to keep API log rows; `0` keeps them forever | `0` | No |
 
 ### Security Configuration
 
@@ -288,6 +294,9 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_MFA_EMAIL_ENABLED` | Enable email verification option | `true` | No |
 | `PA_MFA_RECOVERY_CODES` | Number of recovery codes to generate | `8` | No |
 | `PA_MFA_RECOVERY_CODE_LENGTH` | Length of recovery codes | `10` | No |
+| `PA_MFA_SKIP_FOR_EXTERNAL_AUTH` | Skip MFA enforcement for LDAP/OIDC/SAML logins, trusting the IdP to enforce it | `false` | No |
+| `PA_MFA_MAX_VERIFY_ATTEMPTS` | Failed second-factor guesses before the code is refused | `5` | No |
+| `PA_MFA_VERIFY_LOCKOUT_DURATION` | Minutes to refuse further attempts once the limit is hit | `15` | No |
 
 ### Password Reset
 
@@ -365,7 +374,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LOGO_PATH` | Custom header logo path or URL; empty uses the bundled assets/logo.png | Empty | No |
 | `PA_BASE_URL` | Base URL for SAML auto-generation and interface configuration | Empty | No |
 | `PA_BASE_URL_PREFIX` | Base URL prefix for subdirectory deployments | Empty | No |
-| `PA_APPLICATION_URL` | Full application URL for emails and absolute links. Required for OIDC, password reset and username recovery; these fail without it | Empty | Yes, for OIDC/SAML and email links |
+| `PA_APPLICATION_URL` | Full application URL for emails and absolute links | Auto-detect | No |
+| `PA_WEB_ENABLED` | Serve the web interface; `false` runs API-only (headless) | `true` | No |
 
 ### Interface UI Elements
 
@@ -380,7 +390,10 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_SHOW_ZONE_COMMENTS` | Show zone comments | `true` | No |
 | `PA_SHOW_RECORD_COMMENTS` | Show record comments | `false` | No |
 | `PA_DISPLAY_SERIAL_IN_ZONE_LIST` | Display serial in zone list | `false` | No |
+| `PA_DISPLAY_SIGNED_SERIAL_IN_ZONE_LIST` | Display serial served by PowerDNS (SOA-EDIT applied) in zone list; requires API backend | `false` | No |
 | `PA_DISPLAY_TEMPLATE_IN_ZONE_LIST` | Display template in zone list | `false` | No |
+| `PA_DISPLAY_OWNER_IN_ZONE_LIST` | Display owner column in zone lists | `true` | No |
+| `PA_DISPLAY_GROUP_IN_ZONE_LIST` | Display group column in zone lists | `true` | No |
 | `PA_DISPLAY_FULLNAME_IN_ZONE_LIST` | Show user's full name in zone lists | `false` | No |
 | `PA_SEARCH_GROUP_RECORDS` | Group records in search results | `false` | No |
 | `PA_REVERSE_ZONE_SORT` | Reverse zone sorting: `natural` or `hierarchical` | `natural` | No |
@@ -390,6 +403,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_DISPLAY_HOSTNAME_ONLY` | Display only hostname in zone edit | `false` | No |
 | `PA_ENABLE_CONSISTENCY_CHECKS` | Enable consistency checks page | `false` | No |
 | `PA_SHOW_FORWARD_ZONE_ASSOCIATIONS` | Show associated forward zones in reverse zone list | `true` | No |
+| `PA_SHOW_ZONE_RECORD_COUNT` | Show record count column in zone lists | `true` | No |
+| `PA_WIDE_LAYOUT` | Use full browser width instead of a fixed-width page | `false` | No |
 
 ### API Configuration
 
@@ -401,6 +416,34 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_API_DOCS_ENABLED` | Enable API documentation at /api/docs | `false` | No |
 | `PA_API_MAX_KEYS_PER_USER` | Maximum API keys per user (admins unlimited) | `5` | No |
 
+### Health Endpoints
+
+Both endpoints answer without a session and without an API key, so they are disabled by
+default. Restrict them at your reverse proxy when enabling them.
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_HEALTH_ENABLED` | Enable readiness endpoint at /api/health (database and PowerDNS API reachability) | `false` | No |
+| `PA_HEALTH_PING_ENABLED` | Enable liveness endpoint at /ping (returns `ok`, checks nothing else) | `false` | No |
+| `PA_HEALTH_DB_TIMEOUT` | Database connect timeout in seconds used by the health check | `2` | No |
+| `PA_HEALTH_PDNS_TIMEOUT` | PowerDNS API timeout in seconds used by the health check | `2` | No |
+
+The image's built-in `HEALTHCHECK` requests `/`, which succeeds even when the database is
+down. To have the container reflect real readiness, enable the endpoint and override the
+healthcheck:
+
+```yaml
+services:
+  poweradmin:
+    environment:
+      - PA_HEALTH_ENABLED=true
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+```
+
 ### PowerDNS API Integration
 
 | Variable | Description | Default | Required |
@@ -410,6 +453,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_PDNS_API_KEY` | PowerDNS API key | Empty | No |
 | `PA_PDNS_SERVER_NAME` | PowerDNS server name for API calls | `localhost` | No |
 | `PA_PDNS_API_TIMEOUT` | PowerDNS API request timeout in seconds | `10` | No |
+| `PA_PDNS_WEBSERVER_USERNAME` | PowerDNS webserver Basic Auth username (usually `#`) | Empty | No |
+| `PA_PDNS_WEBSERVER_PASSWORD` | PowerDNS webserver Basic Auth password, for the `/metrics` endpoint | Empty | No |
 
 ### Modules
 
@@ -447,6 +492,15 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LDAP_USER_ATTRIBUTE` | User attribute (`uid` for OpenLDAP, `sAMAccountName` for AD) | `uid` | No |
 | `PA_LDAP_PROTOCOL_VERSION` | LDAP protocol version | `3` | No |
 | `PA_LDAP_SEARCH_FILTER` | Additional LDAP search filter | Empty | No |
+| `PA_LDAP_SYNC_USER_INFO` | Sync fullname/email from LDAP on login | `false` | No |
+| `PA_LDAP_FULLNAME_ATTRIBUTE` | LDAP attribute for full name (`displayName` for AD, `cn` for OpenLDAP) | `displayName` | No |
+| `PA_LDAP_EMAIL_ATTRIBUTE` | LDAP attribute for email address | `mail` | No |
+| `PA_LDAP_AUTO_PROVISION` | Create missing users on first successful LDAP login | `false` | No |
+| `PA_LDAP_ALLOW_SUPERUSER_PROVISIONING` | Let LDAP group mappings grant the superuser flag | `false` | No |
+| `PA_LDAP_DEFAULT_PERMISSION_TEMPLATE` | Template for auto-provisioned users when no mapping matches | `Guest` | No |
+| `PA_LDAP_GROUPS_ATTRIBUTE` | LDAP attribute holding group memberships | `memberOf` | No |
+| `PA_LDAP_PERMISSION_TEMPLATE_MAPPING` | LDAP group to permission template mapping (`group1:Template1,group2:Template2`) | Empty | No |
+| `PA_LDAP_GROUP_MAPPING` | LDAP group to Poweradmin group mapping (`group1:PAGroup1,group2:PAGroup2`) | Empty | No |
 | `PA_LDAP_SESSION_CACHE_TIMEOUT` | Session cache timeout in seconds (0 to disable) | `300` | No |
 
 ### Custom CA Certificate
@@ -485,6 +539,8 @@ Supports Docker secrets via `TRUSTED_CA_FILE__FILE` (see [DOCKER-SECRETS.md](DOC
 
 When running behind a reverse proxy (Nginx, Traefik, HAProxy, etc.), the container sees the proxy's IP instead of the real client IP. Setting `TRUSTED_PROXIES` configures Caddy to resolve the real client IP from `X-Forwarded-For` headers, so both access logs and application logs show the correct IP.
 
+The same value is also written to Poweradmin's `security.trusted_proxies` setting, so the application honors forwarded IP headers from those proxies even when the proxy connects from a public (non-RFC1918) address. The Caddy-only `private_ranges` keyword is ignored at the application layer, which always trusts private/loopback peers. To configure the two layers independently, set `PA_TRUSTED_PROXIES` to override only the application allowlist.
+
 For most Docker setups, `private_ranges` is the recommended value - it trusts all private/reserved IP ranges (RFC 1918, RFC 4193, link-local):
 
 ```bash
@@ -518,6 +574,7 @@ services:
 | `PA_OIDC_AUTO_PROVISION` | Automatically create user accounts from OIDC | `true` | No |
 | `PA_OIDC_LINK_BY_EMAIL` | Link OIDC accounts to existing users by email | `true` | No |
 | `PA_OIDC_SYNC_USER_INFO` | Sync user information from OIDC provider | `true` | No |
+| `PA_OIDC_ALLOW_SUPERUSER_PROVISIONING` | Let OIDC group mappings grant the superuser flag | `false` | No |
 | `PA_OIDC_DEFAULT_PERMISSION_TEMPLATE` | Permission template for auto-provisioned OIDC users when no mapping matches | `Guest` | No |
 | `PA_OIDC_PERMISSION_TEMPLATE_MAPPING` | Map OIDC groups to permission templates (format: `group1=Template1,group2=Template2` or `group1:Template1,group2:Template2`) | Empty | No |
 | `PA_OIDC_GROUP_MAPPING` | Map OIDC groups to Poweradmin groups (format: `group1=PaGroup1,group2=PaGroup2` or `group1:PaGroup1,group2:PaGroup2`) | Empty | No |
@@ -643,6 +700,7 @@ docker run -d \
 | `PA_SAML_AUTO_PROVISION` | Automatically create user accounts from SAML | `true` | No |
 | `PA_SAML_LINK_BY_EMAIL` | Link SAML accounts to existing users by email | `true` | No |
 | `PA_SAML_SYNC_USER_INFO` | Sync user information from SAML provider | `true` | No |
+| `PA_SAML_ALLOW_SUPERUSER_PROVISIONING` | Let SAML group mappings grant the superuser flag | `false` | No |
 | `PA_SAML_DEFAULT_PERMISSION_TEMPLATE` | Permission template for auto-provisioned SAML users when no mapping matches | `Guest` | No |
 | `PA_SAML_PERMISSION_TEMPLATE_MAPPING` | Map SAML groups to permission templates (format: `group1=Template1,group2=Template2` or `group1:Template1,group2:Template2`) | Empty | No |
 | `PA_SAML_GROUP_MAPPING` | Map SAML groups to Poweradmin groups (format: `group1=PaGroup1,group2=PaGroup2` or `group1:PaGroup1,group2:PaGroup2`) | Empty | No |
@@ -775,6 +833,8 @@ docker run -d \
 | `PA_RECORD_COMMENTS_SYNC` | Enable bidirectional comment sync between A and PTR records | `false` | No |
 | `PA_EDIT_CONFLICT_RESOLUTION` | Edit conflict resolution: `last_writer_wins`, `only_latest_version`, `3_way_merge` | `last_writer_wins` | No |
 | `PA_DISPLAY_ERRORS` | Display PHP errors (false for production) | `false` | No |
+| `PA_TEMPLATE_CACHE` | Cache compiled templates on disk for faster rendering | `false` | No |
+| `PA_TEMPLATE_CACHE_PATH` | Compiled template directory (default `var/cache/twig`); must be writable, e.g. `/tmp/twig-cache` for read-only containers, otherwise the app logs a warning and runs uncached | (empty) | No |
 | `PA_SHOW_GENERATED_PASSWORDS` | Show generated passwords on user creation | `true` | No |
 
 ### Configuration Override
@@ -1007,6 +1067,28 @@ docker run -d --name poweradmin-dev -p 8080:80 \
   -e PA_MAIL_ENABLED=false \
   poweradmin/poweradmin
 ```
+
+### Headless (API-Only) Example
+
+The web interface issues API keys, so bring it up once, create a key at
+**Settings -> API Keys**, then restart with `PA_WEB_ENABLED=false`. Only
+`/api/v2/*`, `/api/docs`, `/api/health` and `/ping` answer after that;
+every other path returns a JSON 404.
+
+```bash
+docker run -d --name poweradmin -p 8080:80 \
+  -e DB_TYPE=mysql \
+  -e DB_HOST=mysql.example.com \
+  -e DB_USER=poweradmin \
+  -e DB_PASS=secure_password \
+  -e DB_NAME=poweradmin \
+  -e PA_API_ENABLED=true \
+  -e PA_WEB_ENABLED=false \
+  poweradmin/poweradmin
+```
+
+Set `PA_WEB_ENABLED=true` and restart to get the interface back, for example to
+rotate a key.
 
 ### LDAP Integration Example
 

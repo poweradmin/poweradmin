@@ -216,7 +216,7 @@ test.describe('MFA Recovery Codes Page', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/mfa/setup');
 
-      const csrfToken = page.locator('input[name="_token"], input[name="csrf_token"]');
+      const csrfToken = page.locator('input[name="_token"]');
       expect(await csrfToken.count()).toBeGreaterThan(0);
     });
 

@@ -1,39 +1,23 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        {% if has_zone_id %}
-        <li class="breadcrumb-item">
-            {% if idn_zone_name %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
-            {% else %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a>
-            {% endif %}
-        </li>
-        {% endif %}
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Batch PTR Records{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{% set crumbs = [
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+] %}
+{% if has_zone_id %}
+{% set crumbs = crumbs|merge([{label: zone_display_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'}]) %}
+{% endif %}
+{{ macros.breadcrumb(crumbs|merge([{label: 'Batch PTR Records'|trans}])) }}
 
 {% if message %}
-<div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+{% include 'message_alert.html' with {message: message} only %}
 {% endif %}
 
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-arrow-left-right me-2"></i>{% trans %}Batch PTR Records{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-arrow-left-right', 'Batch PTR Records'|trans) }}
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/batch-ptr{% if has_zone_id %}?id={{ zone_id }}{% endif %}" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
 
                     <div class="mb-3">
                         <label for="network_type" class="form-label">{% trans %}IP Version{% endtrans %}</label>
@@ -110,7 +94,7 @@
 
                     <div class="d-flex justify-content-between">
                         <div>
-                            <button type="submit" class="btn btn-sm btn-primary">
+                            <button type="submit" class="btn btn-sm btn-primary" data-busy-text="{% trans %}Saving...{% endtrans %}">
                                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Create PTR Records{% endtrans %}
                             </button>
                             {% if has_zone_id %}
@@ -132,9 +116,7 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}PTR Record Information{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'PTR Record Information'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">
@@ -173,9 +155,7 @@
         </div>
         
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}Quick Tips{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-question-circle', 'Quick Tips'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item">

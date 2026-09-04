@@ -37,6 +37,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class LogoutController extends BaseController
 {
@@ -67,9 +68,9 @@ class LogoutController extends BaseController
         ));
 
         // Check if user was authenticated via external auth
-        $authMethod = $_SESSION['auth_method_used'] ?? null;
-        $oidcProviderId = $_SESSION['oidc_provider'] ?? null;
-        $samlProviderId = $_SESSION['saml_provider'] ?? null;
+        $authMethod = $_SESSION[SessionKeys::AUTH_METHOD_USED] ?? null;
+        $oidcProviderId = $_SESSION[SessionKeys::OIDC_PROVIDER] ?? null;
+        $samlProviderId = $_SESSION[SessionKeys::SAML_PROVIDER] ?? null;
 
         if ($authMethod === 'oidc' && $oidcProviderId) {
             $this->performOidcLogout($oidcProviderId);
@@ -94,7 +95,7 @@ class LogoutController extends BaseController
 
             if ($providerConfig && !empty($providerConfig['logout_url'])) {
                 // The id_token captured at login lets the provider honor post_logout_redirect_uri
-                $idToken = $_SESSION['oidc_id_token'] ?? null;
+                $idToken = $_SESSION[SessionKeys::OIDC_ID_TOKEN] ?? null;
                 $baseUrl = $this->getBaseUrl();
                 $returnUrl = $baseUrl !== null ? $baseUrl . '/login' : null;
                 $logoutUrl = $this->buildOidcLogoutUrl($providerConfig, $returnUrl, $idToken);
@@ -144,7 +145,7 @@ class LogoutController extends BaseController
 
             if ($logoutUrl) {
                 // Mark session for clearing after SLO callback
-                $_SESSION['saml_slo_pending'] = true;
+                $_SESSION[SessionKeys::SAML_SLO_PENDING] = true;
 
                 // Clear user data but preserve SAML state for SLO callback
                 $this->clearUserSession();
@@ -214,28 +215,28 @@ class LogoutController extends BaseController
     {
         // Clear OIDC-specific session data
         unset(
-            $_SESSION['oidc_authenticated'],
-            $_SESSION['oidc_provider'],
-            $_SESSION['oidc_id_token'],
-            $_SESSION['oidc_state']
+            $_SESSION[SessionKeys::OIDC_AUTHENTICATED],
+            $_SESSION[SessionKeys::OIDC_PROVIDER],
+            $_SESSION[SessionKeys::OIDC_ID_TOKEN],
+            $_SESSION[SessionKeys::OIDC_STATE]
         );
 
         // Clear SAML-specific session data
         unset(
-            $_SESSION['saml_authenticated'],
-            $_SESSION['saml_provider'],
-            $_SESSION['saml_session_index']
+            $_SESSION[SessionKeys::SAML_AUTHENTICATED],
+            $_SESSION[SessionKeys::SAML_PROVIDER],
+            $_SESSION[SessionKeys::SAML_SESSION_INDEX]
         );
 
         // Clear LDAP session cache
         unset(
-            $_SESSION['ldap_auth_timestamp'],
-            $_SESSION['ldap_auth_ip'],
-            $_SESSION['ldap_auth_username']
+            $_SESSION[SessionKeys::LDAP_AUTH_TIMESTAMP],
+            $_SESSION[SessionKeys::LDAP_AUTH_IP],
+            $_SESSION[SessionKeys::LDAP_AUTH_USERNAME]
         );
 
         // Clear general external auth data
-        unset($_SESSION['auth_method_used']);
+        unset($_SESSION[SessionKeys::AUTH_METHOD_USED]);
 
         // Clear standard session data
         session_destroy();
@@ -245,38 +246,38 @@ class LogoutController extends BaseController
     {
         // Clear OIDC-specific session data
         unset(
-            $_SESSION['oidc_authenticated'],
-            $_SESSION['oidc_provider'],
-            $_SESSION['oidc_id_token'],
-            $_SESSION['oidc_state']
+            $_SESSION[SessionKeys::OIDC_AUTHENTICATED],
+            $_SESSION[SessionKeys::OIDC_PROVIDER],
+            $_SESSION[SessionKeys::OIDC_ID_TOKEN],
+            $_SESSION[SessionKeys::OIDC_STATE]
         );
 
         // Clear user session data but preserve SAML state for SLO callback
         unset(
-            $_SESSION['saml_authenticated'],
-            $_SESSION['saml_session_index']
+            $_SESSION[SessionKeys::SAML_AUTHENTICATED],
+            $_SESSION[SessionKeys::SAML_SESSION_INDEX]
         );
-        // Keep $_SESSION['saml_provider'] for SLO callback
+        // Keep $_SESSION[SessionKeys::SAML_PROVIDER] for SLO callback
 
         // Clear LDAP session cache
         unset(
-            $_SESSION['ldap_auth_timestamp'],
-            $_SESSION['ldap_auth_ip'],
-            $_SESSION['ldap_auth_username']
+            $_SESSION[SessionKeys::LDAP_AUTH_TIMESTAMP],
+            $_SESSION[SessionKeys::LDAP_AUTH_IP],
+            $_SESSION[SessionKeys::LDAP_AUTH_USERNAME]
         );
 
         // Clear general external auth data
-        unset($_SESSION['auth_method_used']);
+        unset($_SESSION[SessionKeys::AUTH_METHOD_USED]);
 
         // Clear user-specific data but keep session alive
         unset(
-            $_SESSION['userid'],
-            $_SESSION['userlogin'],
-            $_SESSION['userfullname'],
-            $_SESSION['userpasswd'],
-            $_SESSION['useremail'],
-            $_SESSION['usertype'],
-            $_SESSION['userlevel']
+            $_SESSION[SessionKeys::USERID],
+            $_SESSION[SessionKeys::USERLOGIN],
+            $_SESSION[SessionKeys::USERFULLNAME],
+            $_SESSION[SessionKeys::USERPASSWD],
+            $_SESSION[SessionKeys::USEREMAIL],
+            $_SESSION[SessionKeys::USERTYPE],
+            $_SESSION[SessionKeys::USERLEVEL]
         );
     }
 

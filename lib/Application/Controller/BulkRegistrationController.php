@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,36 +25,40 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DomainHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class BulkRegistrationController extends BaseController
 {
+    /** Bulk creation only makes sense for locally served zones. */
+    private const AVAILABLE_ZONE_TYPES = [ZoneType::MASTER, ZoneType::NATIVE];
 
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
     private UserContextService $userContextService;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
+        $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->userContextService = new UserContextService();
@@ -88,8 +92,8 @@ class BulkRegistrationController extends BaseController
         if ($ownershipMode->isUserOwnerAllowed()) {
             return null;
         }
-        $userGroupRepo = new DbUserGroupRepository($this->db);
-        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        $userGroupRepo = $this->createUserGroupRepository();
+        if ($this->hasPermission('user_is_ueberuser')) {
             if (empty($userGroupRepo->findAll())) {
                 return _('Zone ownership mode is groups_only but no groups exist. Create a group before adding zones.');
             }
@@ -117,16 +121,24 @@ class BulkRegistrationController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        $postParams = $this->request->getPostParams();
+        if (!$this->doValidateRequest($postParams)) {
+            $this->showFirstValidationError($postParams);
         }
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
-        $domains = DomainHelper::getDomains($_POST['domains']);
-        $dom_type = $_POST['dom_type'];
-        $zone_template = $_POST['zone_template'];
+        $domains = DomainHelper::getDomains($this->request->getPostParam('domains'));
+        $dom_type = $this->request->getPostParam('dom_type');
+        $zone_template = $this->request->getPostParam('zone_template');
 
-        $rawOwner = $_POST['owner'] ?? '';
+        // The dropdown only populates the form; the submit path must whitelist too.
+        if (!in_array($dom_type, self::AVAILABLE_ZONE_TYPES, true)) {
+            $this->setMessage('bulk_registration', 'error', _('Invalid or unexpected input given.'));
+            $this->showBulkRegistrationForm();
+            return;
+        }
+
+        $rawOwner = $this->request->getPostParam('owner', '');
         if ($ownershipMode->isUserOwnerAllowed() && $rawOwner !== '' && $rawOwner !== null) {
             if (!is_numeric($rawOwner)) {
                 $this->setMessage('bulk_registration', 'error', _('Owner must be a numeric user ID.'));
@@ -140,11 +152,12 @@ class BulkRegistrationController extends BaseController
         } else {
             $owner = null;
         }
-        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups']) ?
-            array_map('intval', $_POST['groups']) : [];
+        $groups = $this->request->getPostParam('groups');
+        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && is_array($groups) ?
+            array_map('intval', $groups) : [];
 
         if (!empty($selected_groups)) {
-            $userGroupRepo = new DbUserGroupRepository($this->db);
+            $userGroupRepo = $this->createUserGroupRepository();
             $existing = $userGroupRepo->findExistingIds($selected_groups);
             $unknown = array_values(array_diff($selected_groups, $existing));
             if (!empty($unknown)) {
@@ -155,7 +168,7 @@ class BulkRegistrationController extends BaseController
             $selected_groups = $existing;
 
             // Reject (don't silently drop) groups the caller is not a member of
-            if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+            if (!$this->hasPermission('user_is_ueberuser')) {
                 $callerId = $this->userContextService->getLoggedInUserId();
                 $allowedIds = array_map(fn($g) => $g->getId(), $userGroupRepo->findByUserId($callerId));
                 $disallowed = array_values(array_diff($selected_groups, $allowedIds));
@@ -176,24 +189,29 @@ class BulkRegistrationController extends BaseController
         // Block assigning zones to a different user without elevated permission
         $callerId = $this->userContextService->getLoggedInUserId();
         if ($owner !== null && $owner !== $callerId) {
-            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-            if (!$isAdmin && !UserManager::verifyPermission($this->db, 'zone_content_edit_others')) {
+            $isAdmin = $this->hasPermission('user_is_ueberuser');
+            if (!$isAdmin && !$this->hasPermission('zone_content_edit_others')) {
                 $this->setMessage('bulk_registration', 'error', _('You do not have permission to create zones for other users.'));
                 $this->showBulkRegistrationForm();
                 return;
             }
         }
 
+        $added_domains = [];
         $failed_domains = [];
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
+        $domainManager = $this->createDomainManager();
+        $hostnameValidator = new HostnameValidator($this->config);
         foreach ($domains as $domain) {
-            $hostnameValidator = new HostnameValidator($this->config);
-            if (!$hostnameValidator->isValidHostnameFqdn($domain, 0)) {
-                $failed_domains[] = $domain . " - " . _('Invalid hostname.');
-            } elseif ($dnsRecord->domainExists($domain)) {
-                $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');
-            } elseif ($dnsRecord->addDomain($this->db, $domain, $owner, $dom_type, '', $zone_template, $selected_groups)) {
-                $zone_id = $dnsRecord->getZoneIdFromName($domain);
+            if (!$hostnameValidator->isValid($domain)) {
+                $failed_domains[] = ['name' => $domain, 'reason' => _('Invalid hostname.')];
+            } elseif ($domainRepository->domainExists($domain)) {
+                $failed_domains[] = ['name' => $domain, 'reason' => _('There is already a zone with this name.')];
+            } elseif (($overlapError = $this->getZoneOverlapError($domain)) !== null) {
+                $failed_domains[] = ['name' => $domain, 'reason' => $overlapError];
+            } elseif ($domainManager->addDomain($this->db, $domain, $owner, $dom_type, '', $zone_template, $selected_groups)) {
+                $added_domains[] = $domain;
+                $zone_id = $domainRepository->getZoneIdFromName($domain);
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                     $this->ipAddressRetriever->getClientIp(),
@@ -202,38 +220,41 @@ class BulkRegistrationController extends BaseController
                     $dom_type,
                     $zone_template
                 ), $zone_id);
+            } else {
+                $failed_domains[] = ['name' => $domain, 'reason' => _('Failed to add zone.')];
             }
         }
 
         if (!$failed_domains) {
-            $this->setMessage('list_forward_zones', 'success', _('Zones has been added successfully.'));
+            $this->setMessage('list_forward_zones', 'success', _('Zones have been added successfully.'));
             $this->redirect('/zones/forward');
         } else {
-            $this->setMessage('bulk_registration', 'warn', _('Some zone(s) could not be added.'));
-            $this->showBulkRegistrationForm(array_unique($failed_domains));
+            $this->setMessage('bulk_registration', 'warning', _('Some zone(s) could not be added.'));
+            $this->showBulkRegistrationForm($failed_domains, $added_domains);
         }
     }
 
-    private function showBulkRegistrationForm(array $failed_domains = []): void
+    private function showBulkRegistrationForm(array $failed_domains = [], array $added_domains = []): void
     {
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
-        $userGroupRepo = new DbUserGroupRepository($this->db);
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION['userid']);
+        $userGroupRepo = $this->createUserGroupRepository();
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
+        $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION[SessionKeys::USERID]);
 
         $callerId = $this->userContextService->getLoggedInUserId();
-        $canViewOthers = UserManager::verifyPermission($this->db, 'user_view_others');
+        $canViewOthers = $this->hasPermission('user_view_others');
         // Preserve the user's owner choice (including explicit "no user owner")
         // when re-rendering after a partial failure. Only honour foreign user
         // IDs when the caller is allowed to see other users; otherwise fall back
         // to the caller's own ID so the dropdown can't leak hidden accounts.
-        if (array_key_exists('owner', $_POST)) {
-            if ($_POST['owner'] === '') {
+        $postParams = $this->request->getPostParams();
+        if (array_key_exists('owner', $postParams)) {
+            if ($postParams['owner'] === '') {
                 $owner_value = '';
-            } elseif (is_numeric($_POST['owner'])) {
-                $postedId = (int)$_POST['owner'];
+            } elseif (is_numeric($postParams['owner'])) {
+                $postedId = (int)$postParams['owner'];
                 $owner_value = ($postedId === $callerId || $canViewOthers) ? $postedId : $callerId;
             } else {
                 $owner_value = $callerId;
@@ -243,19 +264,20 @@ class BulkRegistrationController extends BaseController
         }
 
         $this->render('bulk_registration.html', [
-            'userid' => $_SESSION['userid'],
+            'userid' => $_SESSION[SessionKeys::USERID],
             'owner_value' => $owner_value,
-            'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
-            'perm_edit_others' => UserManager::verifyPermission($this->db, 'user_edit_others'),
+            'perm_view_others' => $this->hasPermission('user_view_others'),
+            'perm_edit_others' => $this->hasPermission('user_edit_others'),
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'MASTER'),
-            'available_zone_types' => array("MASTER", "NATIVE"),
-            'users' => UserManager::showUsers($this->db),
-            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
+            'available_zone_types' => self::AVAILABLE_ZONE_TYPES,
+            'users' => $this->createUserRepository()->getUsersWithZoneCounts(),
+            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]),
             'failed_domains' => $failed_domains,
+            'added_domains' => $added_domains,
             'user_owner_allowed' => $ownershipMode->isUserOwnerAllowed(),
             'group_owner_allowed' => $ownershipMode->isGroupOwnerAllowed(),
             'all_groups' => $allGroups,
-            'selected_groups' => isset($_POST['groups']) && is_array($_POST['groups']) ? array_map('intval', $_POST['groups']) : [],
+            'selected_groups' => isset($postParams['groups']) && is_array($postParams['groups']) ? array_map('intval', $postParams['groups']) : [],
         ]);
     }
 }

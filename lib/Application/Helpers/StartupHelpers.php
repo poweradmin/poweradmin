@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -40,11 +40,20 @@ function initializeTimezone(ConfigurationInterface $config): void
 /**
  * Initialize secure session configuration
  */
-function initializeSession(): void
+function initializeSession(ConfigurationInterface $config): void
 {
     if (!function_exists('session_start')) {
         require_once __DIR__ . '/../../Infrastructure/Service/MessageService.php';
         (new MessageService())->displayDirectSystemError("You have to install the PHP session extension!");
+    }
+
+    // PHP collects sessions after gc_maxlifetime, 1440s by default, which is shorter
+    // than the 1800s timeout shipped in interface.session_timeout. The session then
+    // vanished before the expiry check could report it and the user was returned to a
+    // login page with no explanation. Keep collection strictly behind our own timeout.
+    $sessionTimeout = (int)$config->get('interface', 'session_timeout', 1800);
+    if ($sessionTimeout > 0) {
+        ini_set('session.gc_maxlifetime', (string)($sessionTimeout + 300));
     }
 
     $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
@@ -55,32 +64,4 @@ function initializeSession(): void
     ]);
 
     session_start();
-}
-
-/**
- * Send JSON error response
- */
-function sendJsonError(string $message, ?string $file = null, ?int $line = null, ?array $trace = null): void
-{
-    header('Content-Type: application/json');
-    echo json_encode([
-        'error' => true,
-        'message' => $message,
-        'file' => $file,
-        'line' => $line,
-        'trace' => $trace
-    ]);
-}
-
-/**
- * Display HTML error with detailed information
- */
-function displayHtmlError(Exception $e): void
-{
-    echo '<pre>';
-    echo 'Error: ' . htmlspecialchars($e->getMessage()) . "\n";
-    echo 'File: ' . htmlspecialchars($e->getFile()) . "\n";
-    echo 'Line: ' . $e->getLine() . "\n";
-    echo 'Trace: ' . "\n" . htmlspecialchars($e->getTraceAsString());
-    echo '</pre>';
 }

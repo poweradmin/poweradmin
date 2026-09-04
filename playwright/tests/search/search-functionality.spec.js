@@ -11,7 +11,11 @@ test.describe('Search Functionality', () => {
     `search-test-special-${timestamp}.net`
   ];
 
-  test.beforeEach(async ({ page }) => {
+  // Create the shared test zones once per worker; they only need to exist once.
+  test.beforeAll(async ({ browser }) => {
+    // browser.newContext does not inherit baseURL from the project config.
+    const context = await browser.newContext({ baseURL: process.env.BASE_URL || 'http://localhost:8080' });
+    const page = await context.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
     // Set up test zones using direct navigation
@@ -28,13 +32,18 @@ test.describe('Search Functionality', () => {
       await addButton.click();
       await page.waitForLoadState('networkidle');
 
-      // Check if zone was created successfully (may already exist)
+      // "already exists" is a success for our purposes; only a real error matters.
       const bodyText = await page.locator('body').textContent();
       if (bodyText.match(/error|already exists|failed/i) && !bodyText.match(/already exists/i)) {
-        // If there's a real error (not just "already exists"), skip
         continue;
       }
     }
+
+    await context.close();
+  });
+
+  test.beforeEach(async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
   });
 
   test('should search for zones by exact name', async ({ page }) => {

@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Api;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Api\HttpClient;
@@ -9,13 +10,16 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
 class PowerdnsApiClientTest extends TestCase
 {
+    /** @var HttpClient&MockObject */
     private $mockHttpClient;
     private PowerdnsApiClient $apiClient;
 
     protected function setUp(): void
     {
         $this->mockHttpClient = $this->createMock(HttpClient::class);
-        $this->apiClient = new PowerdnsApiClient($this->mockHttpClient, 'localhost');
+        // Narrowed reads only keep disabled records from PowerDNS 5.0, so declare a
+        // server that supports them rather than letting the client probe
+        $this->apiClient = new PowerdnsApiClient($this->mockHttpClient, 'localhost', null, '5.0.0');
     }
 
     public function testGetZoneKeysWithMissingDsKey(): void
@@ -50,6 +54,28 @@ class PowerdnsApiClientTest extends TestCase
         $this->assertEquals('zsk', $keys[0]->getType());
         $this->assertIsArray($keys[0]->getDs());
         $this->assertEmpty($keys[0]->getDs());
+    }
+
+    public function testRetrieveZoneTriggersAxfrRetrieve(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('PUT', '/api/v1/servers/localhost/zones/example.com./axfr-retrieve')
+            ->willReturn(['responseCode' => 200]);
+
+        $this->assertTrue($this->apiClient->retrieveZone('example.com.'));
+    }
+
+    public function testRetrieveZoneReturnsFalseOnNonSuccess(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('PUT', '/api/v1/servers/localhost/zones/example.com./axfr-retrieve')
+            ->willReturn(['responseCode' => 422]);
+
+        $this->assertFalse($this->apiClient->retrieveZone('example.com.'));
     }
 
     public function testGetZoneKeysWithDsRecords(): void
@@ -407,5 +433,517 @@ class PowerdnsApiClientTest extends TestCase
         $result = $this->apiClient->deleteZoneMetadata($zone, 'NONEXISTENT');
 
         $this->assertFalse($result);
+    }
+
+    public function testGetZoneRequestsTheWholeZoneByDefault(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.']]);
+
+        $this->apiClient->getZone('example.com.');
+    }
+
+    public function testGetZoneCanNarrowToASingleRrset(): void
+    {
+        // Lets the SOA-health probe read one RRset instead of downloading the
+        // whole zone. PowerDNS below 4.7 ignores these and returns everything.
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrset_name=example.com.&rrset_type=SOA')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]]);
+
+        $this->apiClient->getZoneRrset('example.com.', 'example.com.', 'SOA');
+    }
+
+    public function testGetZoneCombinesRrsetsFalseWithTheRrsetFilter(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrsets=false&rrset_name=www.example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.']]);
+
+        $this->apiClient->getZone('example.com.', false, ['rrset_name' => 'www.example.com.']);
+    }
+
+    public function testGetAllZonesOmitsDnssecFlagByDefault(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones')
+            ->willReturn(['responseCode' => 200, 'data' => []]);
+
+        $this->apiClient->getAllZones();
+    }
+
+    public function testGetAllZonesCanSkipDnssecLookup(): void
+    {
+        // PowerDNS then skips a DNSSEC-keeper lookup per zone
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones?dnssec=false')
+            ->willReturn(['responseCode' => 200, 'data' => []]);
+
+        $this->apiClient->getAllZones(false);
+    }
+
+    public function testGetAllZoneStatsCanSkipDnssecLookup(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones?dnssec=false')
+            ->willReturn(['responseCode' => 200, 'data' => []]);
+
+        $this->apiClient->getAllZoneStats(false);
+    }
+
+    public function testGetAllZoneKindsNeverPaysForTheDnssecLookup(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones?dnssec=false')
+            ->willReturn(['responseCode' => 200, 'data' => []]);
+
+        $this->apiClient->getAllZoneKinds();
+    }
+
+    public function testGetAllZoneKindsReportsCatalogInPowerdnsStoredForm(): void
+    {
+        // PowerDNS returns the dotted form over the API but stores lowercase with no
+        // trailing dot, and matches members on an exact string compare.
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                ['name' => 'member.example.com.', 'kind' => 'Master', 'catalog' => 'Cat.Example.COM.'],
+            ]]);
+
+        $kinds = $this->apiClient->getAllZoneKinds();
+
+        $this->assertSame('cat.example.com', $kinds['member.example.com.']['catalog']);
+        $this->assertSame('MASTER', $kinds['member.example.com.']['kind'], 'kind stays uppercased');
+    }
+
+    public function testGetAllZoneKindsReportsEmptyCatalogForNonMembers(): void
+    {
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                ['name' => 'absent.example.com.', 'kind' => 'Native'],
+                ['name' => 'empty.example.com.', 'kind' => 'Native', 'catalog' => ''],
+                ['name' => 'root.example.com.', 'kind' => 'Native', 'catalog' => '.'],
+            ]]);
+
+        $kinds = $this->apiClient->getAllZoneKinds();
+
+        $this->assertSame('', $kinds['absent.example.com.']['catalog']);
+        $this->assertSame('', $kinds['empty.example.com.']['catalog']);
+        $this->assertSame('', $kinds['root.example.com.']['catalog']);
+    }
+
+    public function testGetAllZoneStatsReportsNoRecordCount(): void
+    {
+        // PowerDNS's zone list carries no record count - callers must not expect one
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                ['name' => 'example.com.', 'dnssec' => true, 'serial' => 5, 'edited_serial' => 6, 'notified_serial' => 4],
+            ]]);
+
+        $stats = $this->apiClient->getAllZoneStats();
+
+        $this->assertArrayNotHasKey('rrset_count', $stats['example.com.']);
+        $this->assertSame(5, $stats['example.com.']['serial']);
+        $this->assertTrue($stats['example.com.']['dnssec']);
+    }
+
+    // ---------------------------------------------------------------
+    // Per-request GET cache
+    // ---------------------------------------------------------------
+
+    public function testRepeatedGetsOfTheSameEndpointIssueOneRequest(): void
+    {
+        // One page render asks for the zone list several times over
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones')
+            ->willReturn(['responseCode' => 200, 'data' => [['name' => 'example.com.', 'dnssec' => false]]]);
+
+        $this->apiClient->getAllZones();
+        $this->apiClient->getAllZones();
+        $stats = $this->apiClient->getAllZoneStats();
+
+        $this->assertArrayHasKey('example.com.', $stats);
+    }
+
+    public function testDifferentEndpointsAreCachedSeparately(): void
+    {
+        $seen = [];
+        $this->mockHttpClient
+            ->expects($this->exactly(2))
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$seen): array {
+                $seen[] = $endpoint;
+                return ['responseCode' => 200, 'data' => []];
+            });
+
+        $this->apiClient->getAllZones();
+        $this->apiClient->getAllZones(false);
+
+        $this->assertSame([
+            '/api/v1/servers/localhost/zones',
+            '/api/v1/servers/localhost/zones?dnssec=false',
+        ], $seen);
+    }
+
+    public function testWriteClearsTheCacheSoLaterReadsSeeFreshState(): void
+    {
+        // Guards the check-then-create loops in BatchReverseRecordCreator: a
+        // second existence check after a write must not be served from the
+        // pre-write body, or duplicate records get created.
+        $calls = [];
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$calls): array {
+                $calls[] = $method . ' ' . $endpoint;
+                return ['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]];
+            });
+
+        $this->apiClient->getZone('example.com.');
+        $this->apiClient->getZone('example.com.');
+        $this->apiClient->patchZoneRRsets('example.com.', ['rrsets' => []]);
+        $this->apiClient->getZone('example.com.');
+
+        $this->assertSame([
+            'GET /api/v1/servers/localhost/zones/example.com.',
+            'PATCH /api/v1/servers/localhost/zones/example.com.',
+            'GET /api/v1/servers/localhost/zones/example.com.',
+        ], $calls, 'the write must evict the cached body');
+    }
+
+    public function testAWholeZoneBodyAnswersALaterFilteredReadOfTheSameZone(): void
+    {
+        // The record count fetches the whole body; the SOA badge then wants one
+        // RRset out of it. Asking PowerDNS again would double the per-row cost,
+        // and the reused body must be narrowed to what the filter asked for.
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                'name' => 'example.com.',
+                'rrsets' => [
+                    ['name' => 'example.com.', 'type' => 'SOA', 'records' => []],
+                    ['name' => 'example.com.', 'type' => 'NS', 'records' => []],
+                    ['name' => 'www.example.com.', 'type' => 'A', 'records' => []],
+                ],
+            ]]);
+
+        $this->apiClient->getZone('example.com.');
+        $rrset = $this->apiClient->getZoneRrset('example.com.', 'example.com.', 'SOA');
+
+        $this->assertSame('example.com.', $rrset['name']);
+        $this->assertCount(1, $rrset['rrsets']);
+        $this->assertSame('SOA', $rrset['rrsets'][0]['type']);
+    }
+
+    public function testAWholeZoneBodyAnswersALaterRecordlessReadOfTheSameZone(): void
+    {
+        // Callers reading only zone-level fields must not pay for a second
+        // round trip, and must see the same shape a rrsets=false response has.
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                'name' => 'example.com.',
+                'kind' => 'Master',
+                'soa_edit_api' => 'DEFAULT',
+                'rrsets' => [
+                    ['name' => 'example.com.', 'type' => 'SOA', 'records' => []],
+                ],
+            ]]);
+
+        $this->apiClient->getZone('example.com.');
+        $zone = $this->apiClient->getZone('example.com.', false);
+
+        $this->assertSame('DEFAULT', $zone['soa_edit_api']);
+        $this->assertArrayNotHasKey('rrsets', $zone);
+    }
+
+    public function testAnOlderServerIsNotAskedToFilterBecauseItHidesDisabledRecords(): void
+    {
+        // Before 5.0 the filter runs through the resolver lookup, which omits
+        // disabled records. Rebuilding an RRset from that answer would drop them.
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                'name' => 'example.com.',
+                'rrsets' => [
+                    ['name' => 'www.example.com.', 'type' => 'A', 'records' => [
+                        ['content' => '192.0.2.1', 'disabled' => true],
+                    ]],
+                ],
+            ]]);
+
+        $client = new PowerdnsApiClient($this->mockHttpClient, 'localhost', null, '4.9.12');
+        $zone = $client->getZoneRrset('example.com.', 'www.example.com.', 'A');
+
+        $this->assertSame('192.0.2.1', $zone['rrsets'][0]['records'][0]['content']);
+        $this->assertTrue($zone['rrsets'][0]['records'][0]['disabled']);
+    }
+
+    public function testAnUnknownServerVersionIsTreatedAsTheOlderBehaviour(): void
+    {
+        $client = new PowerdnsApiClient($this->mockHttpClient, 'localhost');
+
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(fn(string $method, string $endpoint): array => [
+                'responseCode' => 200,
+                'data' => str_contains($endpoint, '/zones/')
+                    ? ['name' => 'example.com.', 'rrsets' => []]
+                    : [],
+            ]);
+
+        $this->assertNotNull($client->getZoneRrset('example.com.', 'www.example.com.', 'A'));
+    }
+
+    public function testGetZoneRrsetWithoutATypeAsksForEveryTypeAtTheName(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrset_name=www.example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]]);
+
+        $this->assertNotNull($this->apiClient->getZoneRrset('example.com.', 'www.example.com.'));
+    }
+
+    public function testAHeldBodyNarrowsTheNameCaseInsensitively(): void
+    {
+        // PowerDNS matches owner names case-insensitively. If the reused body did
+        // not, a narrowed read would come back empty and callers that validate
+        // against it would silently see no conflicting records.
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->willReturn(['responseCode' => 200, 'data' => [
+                'name' => 'example.com.',
+                'rrsets' => [['name' => 'WWW.example.com.', 'type' => 'A', 'records' => []]],
+            ]]);
+
+        $this->apiClient->getZone('example.com.');
+        $rrset = $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+
+        $this->assertCount(1, $rrset['rrsets']);
+    }
+
+    public function testRepeatedNarrowedReadsOfTheSameRrsetCostOneRequest(): void
+    {
+        // A single save reads the same RRset several times, and a narrowed body
+        // is never stored as the whole-zone answer, so without this it pays for
+        // each read.
+        $calls = [];
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$calls): array {
+                $calls[] = $method . ' ' . $endpoint;
+                return ['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]];
+            });
+
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+        $this->apiClient->patchZoneRRsets('example.com.', ['rrsets' => []]);
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+
+        $narrowed = '/api/v1/servers/localhost/zones/example.com.?rrset_name=www.example.com.&rrset_type=A';
+        $this->assertSame([
+            'GET ' . $narrowed,
+            'PATCH /api/v1/servers/localhost/zones/example.com.',
+            'GET ' . $narrowed,
+        ], $calls, 'the write must evict the cached narrowed body');
+    }
+
+    public function testAnInterleavedNarrowedReadDoesNotEvictTheFirst(): void
+    {
+        // Validation reads one type, then another, then the first again. With a
+        // single slot the middle read evicted the first and it had to be refetched.
+        $calls = [];
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$calls): array {
+                $calls[] = $endpoint;
+                return ['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]];
+            });
+
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'CNAME');
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+
+        $this->assertCount(2, $calls, 'the repeated read must be served from cache');
+    }
+
+    public function testAWriteEvictsEveryNarrowedEntryNotJustTheLast(): void
+    {
+        $calls = [];
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$calls): array {
+                $calls[] = $method;
+                return ['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]];
+            });
+
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'CNAME');
+        $this->apiClient->patchZoneRRsets('example.com.', ['rrsets' => []]);
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+        $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'CNAME');
+
+        $this->assertSame(['GET', 'GET', 'PATCH', 'GET', 'GET'], $calls);
+    }
+
+    public function testTheNarrowedCacheIsCapped(): void
+    {
+        // Walking many names must not retain a body per name for the whole request
+        $calls = 0;
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function () use (&$calls): array {
+                $calls++;
+                return ['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]];
+            });
+
+        for ($i = 0; $i < 12; $i++) {
+            $this->apiClient->getZoneRrset('example.com.', "host{$i}.example.com.", 'A');
+        }
+        $this->assertSame(12, $calls);
+
+        // The earliest entries have been evicted, so re-reading them costs again
+        $this->apiClient->getZoneRrset('example.com.', 'host0.example.com.', 'A');
+        $this->assertSame(13, $calls);
+    }
+
+    public function testRepeatedIdenticalSearchesCostOneRequest(): void
+    {
+        // CNAME validation searches the same name once per record in a bulk write
+        $calls = [];
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$calls): array {
+                $calls[] = $method . ' ' . $endpoint;
+                return ['responseCode' => 200, 'data' => ['records' => []]];
+            });
+
+        $this->apiClient->searchData('*www.example.com*', 'record', 100);
+        $this->apiClient->searchData('*www.example.com*', 'record', 100);
+        $this->apiClient->patchZoneRRsets('example.com.', ['rrsets' => []]);
+        $this->apiClient->searchData('*www.example.com*', 'record', 100);
+
+        $this->assertCount(3, $calls, 'the write must evict the cached search');
+        $this->assertStringStartsWith('GET ', $calls[0]);
+        $this->assertStringStartsWith('PATCH ', $calls[1]);
+    }
+
+    public function testTheSearchCacheIsCapped(): void
+    {
+        // /search-data responses can hold 100 records each, so this must not grow
+        // with the number of distinct names a bulk write touches
+        $calls = 0;
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function () use (&$calls): array {
+                $calls++;
+                return ['responseCode' => 200, 'data' => ['records' => []]];
+            });
+
+        for ($i = 0; $i < 9; $i++) {
+            $this->apiClient->searchData("*host{$i}.example.com*", 'record', 100);
+        }
+        $this->assertSame(9, $calls);
+
+        $this->apiClient->searchData('*host0.example.com*', 'record', 100);
+        $this->assertSame(10, $calls, 'the oldest entry must have been evicted');
+    }
+
+    public function testNarrowedReadsOfDifferentRrsetsAreNotConfused(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->exactly(2))
+            ->method('makeRequest')
+            ->willReturnCallback(fn(string $method, string $endpoint): array => [
+                'responseCode' => 200,
+                'data' => ['name' => 'example.com.', 'endpoint' => $endpoint],
+            ]);
+
+        $first = $this->apiClient->getZoneRrset('example.com.', 'www.example.com.', 'A');
+        $second = $this->apiClient->getZoneRrset('example.com.', 'mail.example.com.', 'MX');
+
+        $this->assertStringContainsString('rrset_name=www.example.com.', $first['endpoint']);
+        $this->assertStringContainsString('rrset_name=mail.example.com.', $second['endpoint']);
+    }
+
+    public function testARecordlessReadStillGoesToTheServerWhenNoBodyIsHeld(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com.?rrsets=false')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.', 'kind' => 'Master']]);
+
+        $zone = $this->apiClient->getZone('example.com.', false);
+
+        $this->assertSame('Master', $zone['kind']);
+    }
+
+    public function testOnlyOneZoneBodyIsHeldAtATime(): void
+    {
+        // Listing pages loop over a page of zones; retaining every body would
+        // scale memory with the page size
+        $calls = [];
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function (string $method, string $endpoint) use (&$calls): array {
+                $calls[] = $endpoint;
+                return ['responseCode' => 200, 'data' => ['name' => 'zone.', 'rrsets' => []]];
+            });
+
+        $this->apiClient->getZone('a.example.com.');
+        $this->apiClient->getZone('b.example.com.');
+        $this->apiClient->getZone('a.example.com.');
+
+        $this->assertSame([
+            '/api/v1/servers/localhost/zones/a.example.com.',
+            '/api/v1/servers/localhost/zones/b.example.com.',
+            '/api/v1/servers/localhost/zones/a.example.com.',
+        ], $calls, 'a second zone must evict the first');
+    }
+
+    public function testAFilteredFetchIsNotReusedAsAWholeZoneBody(): void
+    {
+        // A filtered response holds a subset, so it must not satisfy a caller
+        // asking for the entire zone
+        $calls = 0;
+        $this->mockHttpClient
+            ->method('makeRequest')
+            ->willReturnCallback(function () use (&$calls): array {
+                $calls++;
+                return ['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]];
+            });
+
+        $this->apiClient->getZoneRrset('example.com.', 'example.com.', 'SOA');
+        $this->apiClient->getZone('example.com.');
+
+        $this->assertSame(2, $calls);
     }
 }

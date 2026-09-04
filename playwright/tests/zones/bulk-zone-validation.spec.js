@@ -141,11 +141,9 @@ test.describe('Bulk Zone Registration Validation', () => {
     await page.locator('textarea[name*="domain"], textarea[name*="zone"], textarea').fill(zoneName);
     await page.locator('button[type="submit"], input[type="submit"]').click();
 
-    // Should show error about duplicate
-    const bodyText = await page.locator('body').textContent();
     // Match various duplicate zone error messages: "already exists", "already a zone", "duplicate", etc.
-    const hasDuplicateError = bodyText.match(/already|duplicate|error/i);
-    expect(hasDuplicateError).toBeTruthy();
+    // Auto-retrying assertion: the submit navigation may still be in flight.
+    await expect(page.locator('body')).toContainText(/already|duplicate|error/i);
 
     // Cleanup
     await cleanupZone(page, zoneName);

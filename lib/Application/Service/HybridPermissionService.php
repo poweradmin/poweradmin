@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,8 +23,6 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
@@ -42,8 +40,6 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 class HybridPermissionService
 {
     private PDO $db;
-    private UserGroupRepositoryInterface $groupRepository;
-    private UserGroupMemberRepositoryInterface $memberRepository;
 
     /**
      * Per-instance cache of resolved zone permissions, keyed by "userId:domainId".
@@ -54,14 +50,9 @@ class HybridPermissionService
      */
     private array $zonePermissionCache = [];
 
-    public function __construct(
-        PDO $db,
-        UserGroupRepositoryInterface $groupRepository,
-        UserGroupMemberRepositoryInterface $memberRepository
-    ) {
+    public function __construct(PDO $db)
+    {
         $this->db = $db;
-        $this->groupRepository = $groupRepository;
-        $this->memberRepository = $memberRepository;
     }
 
     /**
@@ -157,7 +148,8 @@ class HybridPermissionService
     public function getUserAccessibleZones(int $userId): array
     {
         // Direct user zones
-        $query = "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE owner = :user_id";
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn();
+        $query = "SELECT DISTINCT $canonicalId FROM zones WHERE owner = :user_id";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':user_id' => $userId]);
         $userZones = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -195,7 +187,7 @@ class HybridPermissionService
      * Resolve, in two queries, which sources grant the user a given permission.
      *
      * Returned shape lets callers decide per-zone eligibility in PHP without
-     * hitting the database again — direct ownership is granted iff
+     * hitting the database again - direct ownership is granted iff
      * `has_direct` is true and the user is the zone's direct owner; group
      * ownership is granted iff one of `group_ids` also owns the zone.
      *

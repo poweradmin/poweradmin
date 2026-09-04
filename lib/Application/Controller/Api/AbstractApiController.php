@@ -66,11 +66,12 @@ abstract class AbstractApiController extends BaseController
 
         // Check if API is enabled in the system
         if (!$config->get('api', 'enabled', false)) {
-            // Return API disabled error
-            $response = new JsonResponse([
-                'error' => true,
-                'message' => 'The API feature is disabled in the system configuration.'
-            ], 403);
+            // v2 wraps errors as {success:false,data,message}; the internal API keeps {error:true}.
+            $message = 'The API feature is disabled in the system configuration.';
+            $body = str_contains(static::class, '\\V2\\')
+                ? ['success' => false, 'data' => null, 'message' => $message]
+                : ['error' => true, 'message' => $message];
+            $response = new JsonResponse($body, 403);
             $response->send();
             exit;
         }
@@ -80,6 +81,15 @@ abstract class AbstractApiController extends BaseController
 
         // Assign the already created Symfony Request object to the instance property
         $this->request = self::$tempRequest;
+    }
+
+    /**
+     * API requests authenticate per call with an API key or HTTP Basic credentials,
+     * so there is no session-bound form token to check.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
     }
 
     /**
@@ -259,31 +269,5 @@ abstract class AbstractApiController extends BaseController
             return (string)$raw;
         }
         return is_string($raw) ? $raw : 'none';
-    }
-
-    /**
-     * Determines if this is a public API route (v1, v2, etc.) or internal API route
-     *
-     * @return bool True if this is a public API route, false otherwise
-     */
-    protected function isPublicApiRoute(): bool
-    {
-        // Use the temporary request object which is initialized before this method is called
-        $page = self::$tempRequest?->query->get('page', '');
-
-        // Check if this is an API route
-        if (!$page || !str_starts_with($page, 'api/')) {
-            return false;
-        }
-
-        // Extract the API version from the route
-        $parts = explode('/', $page);
-        if (count($parts) < 2) {
-            return false;
-        }
-
-        // Check if the second part is a version indicator (v1, v2, etc.)
-        $versionPart = $parts[1] ?? '';
-        return preg_match('/^v\d+$/i', $versionPart) === 1;
     }
 }

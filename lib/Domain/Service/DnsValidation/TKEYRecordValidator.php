@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -71,13 +71,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class TKEYRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -279,12 +277,6 @@ class TKEYRecordValidator implements DnsRecordValidatorInterface
 
         // Check if it's a recommended algorithm
         if (array_key_exists(strtolower($algorithmName), $recommendedAlgorithms)) {
-            if (
-                strtolower($algorithmName) === 'hmac-md5.sig-alg.reg.int.' ||
-                strtolower($algorithmName) === 'hmac-md5.'
-            ) {
-                $warnings[] = _('HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is recommended.');
-            }
             return ['isValid' => true, 'warnings' => $warnings];
         }
 
@@ -316,18 +308,6 @@ class TKEYRecordValidator implements DnsRecordValidatorInterface
         $warnings[] = _('Custom algorithm name detected. Standard algorithm names like "hmac-sha256." are recommended for better compatibility.');
 
         return ['isValid' => true, 'warnings' => $warnings];
-    }
-
-    /**
-     * Legacy adapter method for backward compatibility
-     *
-     * @param string $algorithmName
-     * @return bool
-     */
-    private function isValidAlgorithmName(string $algorithmName): bool
-    {
-        $result = $this->validateAlgorithmName($algorithmName);
-        return $result['isValid'];
     }
 
     /**

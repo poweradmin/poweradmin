@@ -26,12 +26,10 @@ use Poweradmin\Domain\Service\DnsValidation\PTRRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Base DNS test class with common setup for all DNS-related tests
@@ -44,7 +42,6 @@ class BaseDnsTest extends TestCase
     {
         $dbMock = $this->createMock(PDO::class);
         $configMock = $this->createMock(ConfigurationManager::class);
-        $messageServiceMock = $this->createMock(MessageService::class);
         $zoneRepositoryMock = $this->createMock(ZoneRepositoryInterface::class);
 
         // Configure the mock to return expected values
@@ -87,18 +84,14 @@ class BaseDnsTest extends TestCase
                 if (strpos($query, "TYPE = 'CNAME'") !== false) {
                     if (strpos($query, "'existing.cname.example.com'") !== false) {
                         $stmtMock->method('fetch')->willReturn([123]); // Record exists
+                    } elseif (strpos($query, "'alias.example.com'") !== false) {
+                        $stmtMock->method('fetch')->willReturn([456]); // Record exists - CNAME exists for target
                     } else {
                         $stmtMock->method('fetch')->willReturn(false);
                     }
                 } elseif (strpos($query, "type = 'MX'") !== false || strpos($query, "type = 'NS'") !== false) {
                     if (strpos($query, "'invalid.cname.target'") !== false) {
                         $stmtMock->method('fetch')->willReturn([123]); // Record exists - makes CNAME invalid
-                    } else {
-                        $stmtMock->method('fetch')->willReturn(false);
-                    }
-                } elseif (strpos($query, "TYPE = 'CNAME'") !== false) {
-                    if (strpos($query, "'alias.example.com'") !== false) {
-                        $stmtMock->method('fetch')->willReturn([456]); // Record exists - CNAME exists for target
                     } else {
                         $stmtMock->method('fetch')->willReturn(false);
                     }
@@ -196,18 +189,15 @@ class BaseDnsTest extends TestCase
                 return $validator;
             });
 
-        $ttlValidator = new TTLValidator();
         $dnsCommonValidator = new DnsCommonValidator($dbMock, $configMock);
         $recordRepositoryMock = $this->createMock(RecordRepositoryInterface::class);
-        $recordRepositoryMock->method('getRecordsByDomainId')->willReturn([]);
+        $recordRepositoryMock->method('getRecordsByName')->willReturn([]);
         $dnsViolationValidator = new DNSViolationValidator($recordRepositoryMock);
 
         // Create validation service with mocked dependencies for tests
         $this->validationService = new DnsRecordValidationService(
             $registryMock,
             $dnsCommonValidator,
-            $ttlValidator,
-            $messageServiceMock,
             $zoneRepositoryMock,
             $dnsViolationValidator
         );

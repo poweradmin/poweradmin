@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,10 +35,10 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\SOARecordManager;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -46,8 +46,11 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -56,32 +59,30 @@ class ZonesRRSetsController extends PublicApiController
     private ZoneRepositoryInterface $zoneRepository;
     private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
-    private SOARecordManager $soaRecordManager;
+    private SOARecordManagerInterface $soaRecordManager;
     private ApiPermissionService $permissionService;
     private DnsBackendProvider $backendProvider;
+    private RecordChangeLogger $changeLogger;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
+    private ReverseTtlResolver $reverseTtlResolver;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        $this->backendProvider = $this->createDnsBackendProvider();
+        $this->reverseTtlResolver = $this->createReverseTtlResolver();
         $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->permissionService = new ApiPermissionService($this->db);
 
-        // Initialize services using factory
-        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-        $this->soaRecordManager = new SOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
-        $domainRepository = $repositoryFactory->createDomainRepository();
-        $this->recordManager = new RecordManager(
-            $this->db,
-            $this->getConfig(),
-            $validationService,
-            $this->soaRecordManager,
-            $domainRepository,
-            $this->backendProvider
-        );
+        $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
+        $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
+        $this->changeLogger = new RecordChangeLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     /**
@@ -102,6 +103,17 @@ class ZonesRRSetsController extends PublicApiController
 
         $response->send();
         exit;
+    }
+
+    // POST/PUT/PATCH all replace an RRSet (an upsert that may create or update),
+    // so writes require both operations rather than the method's default mapping.
+    protected function requiredApiKeyOperations(): array
+    {
+        return match (strtoupper($this->request->getMethod())) {
+            'GET', 'HEAD' => [ApiKeyScope::OP_VIEW],
+            'DELETE' => [ApiKeyScope::OP_DELETE],
+            default => [ApiKeyScope::OP_CREATE, ApiKeyScope::OP_UPDATE],
+        };
     }
 
     /**
@@ -172,6 +184,10 @@ class ZonesRRSetsController extends PublicApiController
             $userId = $this->getAuthenticatedUserId();
             $zoneId = $this->pathParameters['id'];
             $recordType = $this->request->query->get('type');
+
+            if (($scopeError = $this->enforceApiKeyZoneScope((int)$zoneId)) !== null) {
+                return $scopeError;
+            }
 
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
@@ -280,6 +296,10 @@ class ZonesRRSetsController extends PublicApiController
             $zoneId = (int)$this->pathParameters['id'];
             $name = $this->pathParameters['name'];
             $type = strtoupper($this->pathParameters['type']);
+
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
 
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
@@ -417,6 +437,10 @@ class ZonesRRSetsController extends PublicApiController
                 return $this->returnApiError('Valid zone ID is required', 400);
             }
 
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
+
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
             if (!$zone) {
@@ -425,18 +449,12 @@ class ZonesRRSetsController extends PublicApiController
 
             // Check if user has permission to edit this zone
             if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
-                return $this->returnApiError('You do not have permission to edit this zone', 403);
+                return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
             $input = json_decode($this->request->getContent(), true);
             if (!$input) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
-            }
-
-            // Block SOA/NS RRSet edits for users limited to zone_content_edit_own_as_client
-            $rrsetTypeRaw = strtoupper(trim((string)($input['type'] ?? '')));
-            if ($rrsetTypeRaw !== '' && !$this->permissionService->canEditZoneRecord($userId, $zoneId, $rrsetTypeRaw, $zone['type'] ?? null)) {
-                return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
 
             // Validate required fields
@@ -453,17 +471,11 @@ class ZonesRRSetsController extends PublicApiController
 
             $nameRaw = $this->inputString($input, 'name', '');
             $typeRaw = $this->inputString($input, 'type', '');
-            $ttl = $this->inputInt($input, 'ttl', 3600);
-            if ($nameRaw === null || $typeRaw === null || $ttl === null) {
+            if ($nameRaw === null || $typeRaw === null) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
             $name = trim($nameRaw);
             $type = strtoupper(trim($typeRaw));
-
-            // Validate TTL
-            if ($ttl < 1) {
-                return $this->returnApiError('TTL must be greater than 0', 400);
-            }
 
             // Get zone name
             $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
@@ -472,9 +484,26 @@ class ZonesRRSetsController extends PublicApiController
             if ($zoneName === null) {
                 return $this->returnApiError('Zone not found', 404);
             }
+            $isReverseZone = DnsHelper::isReverseZoneName($zoneName);
+
+            $ttl = $this->inputInt($input, 'ttl', $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone));
+            if ($ttl === null) {
+                return $this->returnApiError('Invalid field types in request body', 400);
+            }
+
+            // Validate TTL
+            if ($ttl < 1) {
+                return $this->returnApiError('TTL must be greater than 0', 400);
+            }
 
             // Convert name to FQDN
             $fqdn = DnsHelper::restoreZoneSuffix($name, $zoneName);
+
+            // Block SOA/NS RRSet edits for users limited to zone_content_edit_own_as_client;
+            // checked after FQDN conversion so the subzone NS exemption sees the full name
+            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null, $fqdn, $zoneName)) {
+                return $this->returnApiError('You do not have permission to edit this record type', 403);
+            }
 
             // Start transaction (SQL backend only).
             // API backend polls the DB for new record IDs after HTTP calls;
@@ -487,7 +516,7 @@ class ZonesRRSetsController extends PublicApiController
             try {
                 // Validate all records BEFORE any destructive operations.
                 // This prevents data loss when validation fails after records have been deleted.
-                $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
+                $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
                 $hostnameValidator = new HostnameValidator($this->getConfig());
                 $dnsFormatter = new DnsFormatter($this->getConfig());
                 $normalizedName = $hostnameValidator->normalizeRecordName($fqdn, $zoneName);
@@ -503,6 +532,16 @@ class ZonesRRSetsController extends PublicApiController
                     $content = trim($recordData['content']);
                     $disabled = $this->inputIntFromBool($recordData, 'disabled', 0);
                     $priority = $this->inputInt($recordData, 'priority', 0);
+
+                    // Reject non-coercible disabled/priority here, before the RRSet is
+                    // deleted: on the API backend there is no transaction, so a later
+                    // typed-insert failure would leave the RRSet gone (audit H5).
+                    if ($disabled === null || $priority === null) {
+                        if ($useTransaction) {
+                            $this->db->rollBack();
+                        }
+                        return $this->returnApiError("Invalid 'disabled' or 'priority' value in record", 400);
+                    }
 
                     $content = $dnsFormatter->formatContent($type, $content);
 
@@ -562,6 +601,7 @@ class ZonesRRSetsController extends PublicApiController
 
                 // Insert validated records
                 $recordsCreated = 0;
+                $createdForLog = [];
                 foreach ($validatedRecords as $vr) {
                     $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $vr['content'], $vr['ttl'], $vr['priority'], $vr['disabled']);
                     if ($newRecordId === null) {
@@ -571,6 +611,24 @@ class ZonesRRSetsController extends PublicApiController
                         return $this->returnApiError('Failed to insert record: ' . $vr['content'], 500);
                     }
                     $recordsCreated++;
+                    $createdForLog[] = ['id' => $newRecordId, 'vr' => $vr];
+                }
+
+                foreach ($createdForLog as $entry) {
+                    try {
+                        $this->changeLogger->logRecordCreate([
+                            'id' => $entry['id'],
+                            'name' => $normalizedName,
+                            'type' => $type,
+                            'content' => $entry['vr']['content'],
+                            'ttl' => $entry['vr']['ttl'],
+                            'prio' => $entry['vr']['priority'],
+                            'disabled' => (bool) $entry['vr']['disabled'],
+                            'zone_name' => $zoneName,
+                        ], $zoneId);
+                    } catch (\Throwable $e) {
+                        $this->logger->warning('Failed to write RRSet record create log: {error}', ['error' => $e->getMessage()]);
+                    }
                 }
 
                 // Update SOA serial
@@ -581,6 +639,15 @@ class ZonesRRSetsController extends PublicApiController
                 if ($useTransaction) {
                     $this->db->commit();
                 }
+
+                $this->auditLogger->logInfo(sprintf(
+                    'client_ip:%s user:%s operation:api_replace_rrset name:%s type:%s records:%d',
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getAuthenticatedUsername(),
+                    $normalizedName,
+                    $type,
+                    $recordsCreated
+                ), $zoneId);
             } catch (\Throwable $e) {
                 if ($useTransaction) {
                     $this->db->rollBack();
@@ -685,6 +752,10 @@ class ZonesRRSetsController extends PublicApiController
                 return $this->returnApiError('Valid zone ID is required', 400);
             }
 
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
+
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
             if (!$zone) {
@@ -693,12 +764,7 @@ class ZonesRRSetsController extends PublicApiController
 
             // Check if user has permission to edit this zone
             if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
-                return $this->returnApiError('You do not have permission to edit this zone', 403);
-            }
-
-            // Block SOA/NS RRSet deletes for users limited to zone_content_edit_own_as_client
-            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null)) {
-                return $this->returnApiError('You do not have permission to delete this record type', 403);
+                return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
             // Get zone name
@@ -708,6 +774,12 @@ class ZonesRRSetsController extends PublicApiController
 
             // Convert name to FQDN
             $fqdn = DnsHelper::restoreZoneSuffix($name, $zoneName);
+
+            // Block SOA/NS RRSet deletes for users limited to zone_content_edit_own_as_client;
+            // checked after FQDN conversion so the subzone NS exemption sees the full name
+            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null, $fqdn, $zoneName)) {
+                return $this->returnApiError('You do not have permission to delete this record type', 403);
+            }
 
             // Get all records matching this name and type
             $records = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
@@ -750,6 +822,15 @@ class ZonesRRSetsController extends PublicApiController
                 }
 
                 $this->db->commit();
+
+                $this->auditLogger->logInfo(sprintf(
+                    'client_ip:%s user:%s operation:api_delete_rrset name:%s type:%s records:%d',
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getAuthenticatedUsername(),
+                    $fqdn,
+                    $type,
+                    $recordsDeleted
+                ), $zoneId);
 
                 return $this->returnApiResponse(
                     ['records_deleted' => $recordsDeleted],
@@ -862,29 +943,5 @@ class ZonesRRSetsController extends PublicApiController
             $this->logger->error('Failed to insert record: {message}', ['message' => $e->getMessage()]);
             return null;
         }
-    }
-
-    /**
-     * Strip quotes from single-string TXT records for V2 API responses
-     *
-     * @param string $content The TXT record content from database
-     * @param string $type The record type
-     * @return string The formatted content
-     */
-    private function stripTxtQuotes(string $content, string $type): string
-    {
-        if ($type !== 'TXT') {
-            return $content;
-        }
-
-        $content = trim($content);
-        $isMultiString = strpos($content, '" "') !== false;
-
-        // Only strip quotes for single-string TXT records
-        if (!$isMultiString && str_starts_with($content, '"') && str_ends_with($content, '"') && strlen($content) > 1) {
-            return substr($content, 1, -1);
-        }
-
-        return $content;
     }
 }

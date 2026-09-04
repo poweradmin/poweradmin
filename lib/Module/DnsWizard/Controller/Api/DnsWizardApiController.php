@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,18 +24,17 @@ namespace Poweradmin\Module\DnsWizard\Controller\Api;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\InternalApiController;
-use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Domain\Service\SessionKeys;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Poweradmin\Domain\Enum\AccessScope;
 
 /**
  * DNS Wizard Internal API Controller
@@ -91,7 +90,10 @@ class DnsWizardApiController extends InternalApiController
                 $response = $this->generateRecord();
                 break;
             case 'create':
-                $response = $this->createRecord();
+                // The only mutating action, and the CSRF header check skips GET
+                $response = strtoupper($this->request->getMethod()) === 'POST'
+                    ? $this->createRecord()
+                    : $this->returnApiError('Method not allowed', 405);
                 break;
             default:
                 $response = $this->returnApiError('Invalid action', 400);
@@ -298,22 +300,8 @@ class DnsWizardApiController extends InternalApiController
      */
     private function createRecord(): JsonResponse
     {
-        // Validate CSRF token from X-CSRF-Token header
-        $csrfToken = $this->request->headers->get('X-CSRF-Token', '');
-        if (empty($csrfToken)) {
-            return $this->returnApiError('Missing CSRF token', 403);
-        }
-
-        // Validate the CSRF token using the service from BaseController
-        if (!$this->config->get('security', 'global_token_validation', true)) {
-            // CSRF validation is disabled in config - skip check
-        } else {
-            // Create a temporary CsrfTokenService to validate the token
-            $csrfService = new CsrfTokenService();
-            if (!$csrfService->validateToken($csrfToken)) {
-                return $this->returnApiError('Invalid CSRF token', 403);
-            }
-        }
+        // Reached on POST only, so InternalApiController has already validated the
+        // X-CSRF-Token header (it skips GET, HEAD and OPTIONS)
 
         $data = json_decode($this->request->getContent(), true) ?? [];
 
@@ -338,7 +326,6 @@ class DnsWizardApiController extends InternalApiController
         $name = $data['name'];
         $type = $data['type'];
         $content = $data['content'];
-        $ttl = isset($data['ttl']) && $data['ttl'] !== '' ? (int)$data['ttl'] : $this->config->get('dns', 'ttl', 3600);
         $prio = isset($data['priority']) && $data['priority'] !== '' ? (int)$data['priority'] : 0;
         $comment = $data['comment'] ?? '';
 
@@ -351,17 +338,23 @@ class DnsWizardApiController extends InternalApiController
                 return $this->returnApiError('Zone not found', 404);
             }
 
+            $reverseTtlResolver = $this->createReverseTtlResolver();
+            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
+            $ttl = isset($data['ttl']) && $data['ttl'] !== ''
+                ? (int)$data['ttl']
+                : $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
+
             // Check user has permission to edit this zone
-            $dnsRecord = new DnsRecord($this->db, $this->config);
-            $zone_type = $dnsRecord->getDomainType($zone_id);
+            $domainRepository = $this->createDomainRepository();
+            $zone_type = $domainRepository->getDomainType($zone_id);
             $perm_edit = Permission::getEditPermission($this->db);
-            $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+            $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
             // Same permission check as AddRecordController
             if (
-                $zone_type == "SLAVE"
+                ZoneType::isReadOnly($zone_type)
                 || $perm_edit == "none"
-                || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)
+                || (AccessScope::fromString($perm_edit)->isOwnedOnly() && !$user_is_zone_owner)
             ) {
                 return $this->returnApiError('You do not have permission to add records to this zone', 403);
             }
@@ -376,18 +369,17 @@ class DnsWizardApiController extends InternalApiController
             $repositoryFactory = $this->getRepositoryFactory($backendProvider);
             $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
             $recordCommentService = new RecordCommentService($recordCommentRepository);
-            $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
             $recordManager = new RecordManagerService(
                 $this->db,
-                $dnsRecord,
+                $domainRepository,
+                $this->createRecordManager(),
                 $recordCommentService,
-                $commentSyncService,
                 $logger,
                 $this->config,
                 $backendProvider
             );
 
-            $userlogin = $_SESSION['userlogin'] ?? 'unknown';
+            $userlogin = $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown';
             $clientIp = $this->request->getClientIp() ?? '0.0.0.0';
 
             $success = $recordManager->createRecord(

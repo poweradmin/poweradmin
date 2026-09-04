@@ -24,10 +24,12 @@ namespace Poweradmin\Module\DnsWizard\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Enum\AccessScope;
 
 /**
  * DNS Wizard Selection Controller
@@ -37,7 +39,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
  */
 class DnsWizardSelectController extends BaseController
 {
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
     private WizardRegistry $wizardRegistry;
     private ZoneRepositoryInterface $zoneRepository;
 
@@ -45,7 +47,7 @@ class DnsWizardSelectController extends BaseController
     {
         parent::__construct($request);
 
-        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $this->domainRepository = $this->createDomainRepository();
         $this->wizardRegistry = new WizardRegistry($this->getConfig());
         $this->zoneRepository = $this->createZoneRepository();
     }
@@ -73,15 +75,15 @@ class DnsWizardSelectController extends BaseController
 
         // Check permissions
         $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
-        $zone_type = $this->dnsRecord->getDomainType($zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
+        $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)) {
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && !$user_is_zone_owner)) {
             $this->showError(_('You do not have permission to add records to this zone.'));
         }
 
         // Check if zone is reverse zone
-        $is_reverse_zone = preg_match('/\.in-addr\.arpa$/i', $zone_name) || preg_match('/\.ip6\.arpa$/i', $zone_name);
+        $is_reverse_zone = DnsHelper::isReverseZoneName($zone_name);
 
         // Get available wizards
         $wizards = $this->wizardRegistry->getWizardMetadata();

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -62,19 +62,20 @@
  * - Redirect with: $this->redirect('/target-url')
  * - Render template with: $this->render('template.html', $params)
  * - Get safe input with: $this->getSafeRequestValue('field_name')
+ * - Read raw query/POST input with: $this->request->getQueryParam('name') / $this->request->getPostParam('name')
  * - Set validation constraints with: $this->setValidationConstraints($constraints)
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -95,16 +96,20 @@ class ExampleController extends BaseController
 {
     private UserContextService $userContextService;
     protected MessageService $messageService;
+    private Request $request;
 
     /**
      * Constructor - initialize required services
      *
-     * @param array $request Request parameters from $_REQUEST
+     * @param array $request Request parameters passed by the router
      */
     public function __construct(array $request)
     {
         // Call parent constructor with authentication enabled (true by default)
         parent::__construct($request, true);
+
+        // Use the Request wrapper instead of reading superglobals directly
+        $this->request = new Request();
 
         // Initialize required services
         $this->userContextService = new UserContextService();
@@ -146,8 +151,8 @@ class ExampleController extends BaseController
         $exampleData = $this->getExampleData();
 
         // Example: Check additional permissions for conditional display
-        $canEdit = UserManager::verifyPermission($this->db, 'user_edit_others');
-        $canDelete = UserManager::verifyPermission($this->db, 'user_delete_others');
+        $canEdit = $this->hasPermission('user_edit_others');
+        $canDelete = $this->hasPermission('user_delete_others');
 
         // Prepare template variables
         $templateVars = [
@@ -193,8 +198,9 @@ class ExampleController extends BaseController
         $this->setValidationConstraints($constraints);
 
         // Validate the request
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        $postParams = $this->request->getPostParams();
+        if (!$this->doValidateRequest($postParams)) {
+            $this->showFirstValidationError($postParams);
             return;
         }
 

@@ -1,23 +1,9 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item">
-            {% if idn_zone_name %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
-            {% else %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a>
-            {% endif %}
-        </li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit comment{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: zone_display_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+    {label: 'Edit comment'|trans},
+]) }}
 
 {% if idn_zone_name %}
 <h5 class="mb-3">{% trans %}Edit comment in zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name }})</h5>
@@ -26,7 +12,7 @@
 {% endif %}
 
 <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/comment/edit">
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    {{ macros.csrf_field() }}
     <div>
         <label for="floatingTextarea"></label>
         <textarea class="form-control form-control-sm" rows="10" name="comment"
@@ -34,7 +20,7 @@
     </div>
     <div class="pt-3">
         {% if not disabled %}
-        <input type="submit" name="commit" value="{% trans %}Update{% endtrans %}" class="btn btn-primary btn-sm">
+        <button type="submit" name="commit" value="1" class="btn btn-primary btn-sm" data-busy-text="{% trans %}Saving...{% endtrans %}">{% trans %}Update{% endtrans %}</button>
         <input type="reset" name="reset" value="{% trans %}Reset{% endtrans %}" class="btn btn-secondary btn-sm">
         {% endif %}
     </div>

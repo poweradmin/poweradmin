@@ -27,6 +27,10 @@ use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Enum\PermissionTemplateType;
+use Poweradmin\Domain\Enum\AuthMethod;
 
 class DbUserRepository implements UserRepository
 {
@@ -56,7 +60,9 @@ class DbUserRepository implements UserRepository
 
     public function findByUsername(string $username): ?User
     {
-        $stmt = $this->db->prepare('SELECT id, password, use_ldap FROM users WHERE username = ?');
+        // Accent-exact match, so a look-alike username cannot resolve to another account.
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'username');
+        $stmt = $this->db->prepare("SELECT id, password, use_ldap FROM users WHERE $match");
         $stmt->execute([$username]);
 
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -81,11 +87,73 @@ class DbUserRepository implements UserRepository
      */
     public function getUserById(int $userId): ?array
     {
-        $stmt = $this->db->prepare('SELECT id, username, fullname, email, description, active, perm_templ, use_ldap, auth_method FROM users WHERE id = ?');
+        // The join is restricted to user-type templates so a row pointing at a group
+        // template reports a NULL name rather than that group template's name.
+        $stmt = $this->db->prepare('SELECT users.id, users.username, users.fullname, users.email,
+            users.description, users.active, users.perm_templ, users.use_ldap, users.auth_method,
+            perm_templ.name AS perm_templ_name
+            FROM users
+            LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
+                 AND perm_templ.template_type = \'user\'
+            WHERE users.id = ?');
         $stmt->execute([$userId]);
 
         $userData = $stmt->fetch(PDO::FETCH_ASSOC);
         return $userData ?: null;
+    }
+
+    public function getFullNameById(int $userId): ?string
+    {
+        $stmt = $this->db->prepare("SELECT fullname FROM users WHERE id = :id");
+        $stmt->execute([':id' => $userId]);
+        $fullname = $stmt->fetchColumn();
+        return $fullname !== false ? (string)$fullname : null;
+    }
+
+    public function getZoneOwnerFullNames(int $domainId): string
+    {
+        // PARAM_INT: the canonical expression has no column affinity, so SQLite would compare as text
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones');
+        $stmt = $this->db->prepare("SELECT users.fullname FROM users, zones WHERE $canonicalId = :id AND zones.owner = users.id ORDER BY fullname");
+        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $names = [];
+        while ($row = $stmt->fetch()) {
+            $names[] = $row['fullname'];
+        }
+        return implode(', ', $names);
+    }
+
+    /**
+     * Check if a user owns a zone directly or via group membership
+     *
+     * @param int $userId User ID to check
+     * @param int $domainId Domain/zone ID
+     * @return bool True if the user owns the zone
+     */
+    public function userOwnsZone(int $userId, int $domainId): bool
+    {
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones');
+        $stmt = $this->db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND $canonicalId = :zoneid");
+        $stmt->bindValue(':userid', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':zoneid', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        if ($stmt->fetchColumn()) {
+            return true;
+        }
+
+        $stmt = $this->db->prepare("
+            SELECT zg.id
+            FROM zones_groups zg
+            INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+            WHERE ugm.user_id = :userid AND zg.domain_id = :zoneid
+        ");
+        $stmt->execute([
+            ':userid' => $userId,
+            ':zoneid' => $domainId
+        ]);
+        return (bool)$stmt->fetchColumn();
     }
 
     /**
@@ -96,15 +164,9 @@ class DbUserRepository implements UserRepository
      */
     public function getUserPermissions(int $userId): array
     {
-        // First get the user to check if they exist
-        $user = $this->getUserById($userId);
-        if (!$user) {
-            return [];
-        }
+        // Direct template and group permissions via UNION (dedupes overlaps, positional
+        // params avoid PDO binding issues); a missing user naturally yields no rows
 
-        // Query to get all permissions for the user from both direct template and groups
-        // UNION automatically removes duplicates if same permission exists in both sources
-        // Using positional parameters for UNION queries to avoid PDO binding issues
         $query = "
             SELECT perm_items.name AS permission
             FROM perm_templ_items
@@ -150,7 +212,6 @@ class DbUserRepository implements UserRepository
     public function hasAdminPermission(int $userId): bool
     {
         // Check both direct user permissions and group permissions
-        // Uses same logic as UserManager::isUserSuperuser for consistency
         // Using positional parameters for UNION queries to avoid PDO binding issues
         $query = "
             SELECT perm_items.name AS permission
@@ -197,9 +258,12 @@ class DbUserRepository implements UserRepository
             users.description AS description,
             users.active AS active,
             users.perm_templ AS perm_templ,
-            COUNT(zones.owner) AS zone_count 
+            perm_templ.name AS perm_templ_name,
+            COUNT(zones.owner) AS zone_count
             FROM users
             LEFT JOIN zones ON users.id = zones.owner
+            LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
+                 AND perm_templ.template_type = 'user'
             GROUP BY
             users.id,
             users.username,
@@ -207,6 +271,7 @@ class DbUserRepository implements UserRepository
             users.email,
             users.description,
             users.perm_templ,
+            perm_templ.name,
             users.active
             ORDER BY users.id
             LIMIT :limit OFFSET :offset";
@@ -226,6 +291,7 @@ class DbUserRepository implements UserRepository
                 'description' => $row['description'],
                 'active' => $row['active'],
                 'perm_templ' => $row['perm_templ'],
+                'perm_templ_name' => $row['perm_templ_name'],
                 'zone_count' => $row['zone_count']
             ];
         }
@@ -234,14 +300,278 @@ class DbUserRepository implements UserRepository
     }
 
     /**
+     * Get all users with the number of zones each one owns
+     *
+     * @return array Array of user rows [id, username, fullname, email, description, active, numdomains]
+     */
+    public function getUsersWithZoneCounts(): array
+    {
+        $query = "SELECT users.id AS id,
+            users.username AS username,
+            users.fullname AS fullname,
+            users.email AS email,
+            users.description AS description,
+            users.active AS active,
+            COUNT(zones.owner) AS zone_count
+            FROM users
+            LEFT JOIN zones ON users.id = zones.owner
+            GROUP BY users.id, users.username, users.fullname, users.email, users.description, users.active
+            ORDER BY users.fullname";
+
+        $stmt = $this->db->query($query);
+
+        $users = [];
+        while ($row = $stmt->fetch()) {
+            $users[] = [
+                'id' => $row['id'],
+                'username' => $row['username'],
+                'fullname' => $row['fullname'],
+                'email' => $row['email'],
+                'description' => $row['description'],
+                'active' => $row['active'],
+                'numdomains' => $row['zone_count'],
+            ];
+        }
+        return $users;
+    }
+
+    /**
+     * Search predicate over the user columns shown in the list. LOWER() is applied on both
+     * sides because PostgreSQL LIKE is case-sensitive while MySQL's default collation is not.
+     * Each column gets its own placeholder: repeating one name breaks native prepares.
+     *
+     * @return array{0: string, 1: array<string, string>} WHERE fragment and its bindings
+     */
+    private function buildUserSearchFilter(?string $search): array
+    {
+        $search = $search === null ? '' : trim($search);
+        if ($search === '') {
+            return ['', []];
+        }
+
+        $pattern = '%' . DbCompat::escapeLike($search) . '%';
+        $clauses = [];
+        $bindings = [];
+
+        foreach (['users.username', 'users.fullname', 'users.email', 'users.description'] as $index => $column) {
+            $placeholder = ':search' . $index;
+            $clauses[] = "LOWER($column) LIKE LOWER($placeholder) ESCAPE '!'";
+            $bindings[$placeholder] = $pattern;
+        }
+
+        return [' AND (' . implode(' OR ', $clauses) . ')', $bindings];
+    }
+
+    /**
+     * Get detailed user list with template, group, and MFA info
+     *
+     * @param bool $ldapUse Whether the LDAP column should be included
+     * @param int|null $restrictToUserId Return only this user (for users without view-others permission)
+     * @param int|null $specific User ID to fetch (overrides the restriction)
+     * @param int|null $limit Number of records to return (optional)
+     * @param int|null $offset Starting offset (optional)
+     * @param string|null $search Filter on username, full name, email or description
+     * @return array Array of user details
+     */
+    public function getUserDetailList(bool $ldapUse, ?int $restrictToUserId, ?int $specific = null, ?int $limit = null, ?int $offset = null, ?string $search = null): array
+    {
+        [$searchCondition, $searchBindings] = $this->buildUserSearchFilter($search);
+
+        if ($specific) {
+            $sql_add = "AND users.id = :specific";
+        } elseif ($restrictToUserId === null) {
+            $sql_add = "";
+        } else {
+            $sql_add = "AND users.id = :userid";
+        }
+
+        $query = "SELECT users.id AS uid,
+        username,
+        fullname,
+        email,
+        description AS descr,
+        active,
+        auth_method,";
+
+        if ($ldapUse) {
+            $query .= "use_ldap,";
+        }
+
+        // Restrict the join to user-type templates so users pointed at a deleted
+        // template or a group template are surfaced with a NULL tpl_id and routed
+        // through the broken-row fallback below.
+        $query .= "perm_templ.id AS tpl_id,
+        perm_templ.name AS tpl_name,
+        perm_templ.descr AS tpl_descr
+        FROM users
+        LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
+             AND perm_templ.template_type = 'user'
+        WHERE 1=1 " . $sql_add . $searchCondition . "
+        ORDER BY username";
+
+        if ($limit !== null) {
+            $query .= " LIMIT :limit OFFSET :offset";
+        }
+
+        $stmt = $this->db->prepare($query);
+
+        if ($specific) {
+            $stmt->bindValue(':specific', $specific, PDO::PARAM_INT);
+        } elseif ($restrictToUserId !== null) {
+            $stmt->bindValue(':userid', $restrictToUserId, PDO::PARAM_INT);
+        }
+
+        foreach ($searchBindings as $placeholder => $value) {
+            $stmt->bindValue($placeholder, $value, PDO::PARAM_STR);
+        }
+
+        if ($limit !== null) {
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset ?? 0, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+        $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $userGroups = $this->getUserGroupsMap();
+        $mfaStatus = $this->getUserMfaStatusMap();
+
+        // Resolve the fallback template only when at least one row has a dangling perm_templ.
+        // Using the minimum-permission user template keeps the dropdown's <option selected>
+        // pointing somewhere safe: a stale save lands on minimum permissions rather than
+        // letting the browser auto-pick the first <option> (which is typically Administrator).
+        $fallbackTplId = null;
+        $fallbackTplName = null;
+        foreach ($response as $user) {
+            if ($user['tpl_id'] === null) {
+                $templateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+                $fallbackTplId = $templateRepository->getMinimalPermissionTemplateId('user');
+                if ($fallbackTplId !== null) {
+                    $fallbackTplName = $this->getPermissionTemplateName($fallbackTplId);
+                }
+                break;
+            }
+        }
+
+        $userList = [];
+        foreach ($response as $user) {
+            $tplId = $user['tpl_id'];
+            $tplName = $user['tpl_name'];
+            $tplDescr = $user['tpl_descr'];
+            if ($tplId === null && $fallbackTplId !== null) {
+                $tplId = $fallbackTplId;
+                $tplName = $fallbackTplName;
+                $tplDescr = null;
+            }
+
+            $userList[] = [
+                "uid" => $user['uid'],
+                "username" => $user['username'],
+                "fullname" => $user['fullname'],
+                "email" => $user['email'],
+                "descr" => $user['descr'],
+                "active" => $user['active'],
+                "use_ldap" => $user['use_ldap'] ?? 0,
+                "auth_type" => $user['auth_method'] ?? 'sql',
+                "tpl_id" => $tplId,
+                "tpl_name" => $tplName,
+                "tpl_descr" => $tplDescr,
+                "groups" => $userGroups[$user['uid']] ?? [],
+                "mfa_enabled" => $mfaStatus[$user['uid']] ?? false
+            ];
+        }
+        return $userList;
+    }
+
+    /**
+     * Look up a permission template's display name by ID
+     */
+    private function getPermissionTemplateName(int $templId): ?string
+    {
+        $stmt = $this->db->prepare("SELECT name FROM perm_templ WHERE id = :id");
+        $stmt->execute([':id' => $templId]);
+        $name = $stmt->fetchColumn();
+        return $name === false ? null : (string)$name;
+    }
+
+    /**
+     * Get a map of user IDs to their group names
+     *
+     * @return array Map of user_id => array of group names
+     */
+    private function getUserGroupsMap(): array
+    {
+        $query = "SELECT ugm.user_id, ug.name AS group_name
+                  FROM user_group_members ugm
+                  INNER JOIN user_groups ug ON ugm.group_id = ug.id
+                  ORDER BY ugm.user_id, ug.name";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $userGroups = [];
+        foreach ($results as $row) {
+            $userGroups[$row['user_id']][] = $row['group_name'];
+        }
+
+        return $userGroups;
+    }
+
+    /**
+     * Get a map of user IDs to their MFA enabled status
+     *
+     * @return array Map of user_id => bool (true if MFA enabled)
+     */
+    private function getUserMfaStatusMap(): array
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT user_id, enabled FROM user_mfa WHERE enabled = 1");
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $mfaStatus = [];
+            foreach ($results as $row) {
+                $mfaStatus[$row['user_id']] = true;
+            }
+
+            return $mfaStatus;
+        } catch (\PDOException $e) {
+            // Table might not exist if MFA was never enabled
+            return [];
+        }
+    }
+
+    /**
      * Get total count of users in the system
      *
+     * @param int|null $restrictToUserId Count only this user (for users without view-others permission)
+     * @param string|null $search Filter on username, full name, email or description
      * @return int Total number of users
      */
-    public function getTotalUserCount(): int
+    public function getTotalUserCount(?int $restrictToUserId = null, ?string $search = null): int
     {
-        $query = "SELECT COUNT(*) FROM users";
-        $stmt = $this->db->query($query);
+        [$searchCondition, $searchBindings] = $this->buildUserSearchFilter($search);
+
+        if ($restrictToUserId === null && $searchCondition === '') {
+            $stmt = $this->db->query("SELECT COUNT(*) FROM users");
+            return (int)$stmt->fetchColumn();
+        }
+
+        $query = "SELECT COUNT(*) FROM users WHERE 1=1";
+        if ($restrictToUserId !== null) {
+            $query .= " AND users.id = :id";
+        }
+        $query .= $searchCondition;
+
+        $stmt = $this->db->prepare($query);
+        if ($restrictToUserId !== null) {
+            $stmt->bindValue(':id', $restrictToUserId, PDO::PARAM_INT);
+        }
+        foreach ($searchBindings as $placeholder => $value) {
+            $stmt->bindValue($placeholder, $value, PDO::PARAM_STR);
+        }
+        $stmt->execute();
         return (int)$stmt->fetchColumn();
     }
 
@@ -360,20 +690,6 @@ class DbUserRepository implements UserRepository
     }
 
     /**
-     * Unassign all zones owned by a user (not used anymore - kept for interface compatibility)
-     *
-     * @param int $userId User ID
-     * @return bool True if zones were unassigned successfully
-     * @deprecated Use transferUserZones() instead
-     */
-    public function unassignUserZones(int $userId): bool
-    {
-        // This method is deprecated - zones should be transferred to another user
-        // to avoid the NOT NULL constraint issue
-        return false;
-    }
-
-    /**
      * Count total number of uberusers (super admins) in the system
      *
      * @return int Number of uberusers
@@ -414,6 +730,28 @@ class DbUserRepository implements UserRepository
         return (bool)$stmt->fetchColumn();
     }
 
+    public function templateGrantsUberuser(int $permTemplId): bool
+    {
+        $query = "SELECT COUNT(*)
+                  FROM perm_templ_items
+                  JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
+                  WHERE perm_templ_items.templ_id = :templId
+                  AND perm_items.name = 'user_is_ueberuser'";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':templId' => $permTemplId]);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    public function getPermissionIdsByName(string $name): array
+    {
+        // Every row with this name grants it, matching templateGrantsUberuser()
+        $stmt = $this->db->prepare("SELECT id FROM perm_items WHERE name = :name ORDER BY id");
+        $stmt->execute([':name' => $name]);
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
     public function createUser(array $userData): ?int
     {
         $useLdap = (int)($userData['use_ldap'] ?? 0);
@@ -438,11 +776,11 @@ class DbUserRepository implements UserRepository
             ':active' => (int)($userData['active'] ?? 1),
             ':perm_templ' => $permTemplId,
             ':use_ldap' => $useLdap,
-            ':auth_method' => $useLdap ? 'ldap' : 'sql'
+            ':auth_method' => AuthMethod::resolve((bool)$useLdap, null)->value
         ]);
 
         if ($result) {
-            return (int)$this->db->lastInsertId();
+            return (int)$this->db->lastInsertId('users_id_seq');
         }
 
         return null;
@@ -450,7 +788,11 @@ class DbUserRepository implements UserRepository
 
     public function getUserByUsername(string $username): ?array
     {
-        $query = "SELECT * FROM users WHERE username = :username LIMIT 1";
+        $query = "SELECT users.*, perm_templ.name AS perm_templ_name
+                  FROM users
+                  LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
+                       AND perm_templ.template_type = 'user'
+                  WHERE users.username = :username LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':username' => $username]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -460,7 +802,11 @@ class DbUserRepository implements UserRepository
 
     public function getUserByEmail(string $email): ?array
     {
-        $query = "SELECT * FROM users WHERE email = :email LIMIT 1";
+        $query = "SELECT users.*, perm_templ.name AS perm_templ_name
+                  FROM users
+                  LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
+                       AND perm_templ.template_type = 'user'
+                  WHERE users.email = :email LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':email' => $email]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -508,16 +854,18 @@ class DbUserRepository implements UserRepository
         // when LDAP is being disabled.
         if (array_key_exists('use_ldap', $userData)) {
             $setFields[] = 'auth_method = :auth_method';
-            if ((int)$userData['use_ldap'] === 1) {
-                $params[':auth_method'] = 'ldap';
-            } else {
+            $useLdap = (int)$userData['use_ldap'] === 1;
+
+            // The current method is only needed to avoid downgrading an SSO
+            // account to sql when LDAP is switched off.
+            $currentAuthMethod = null;
+            if (!$useLdap) {
                 $currentStmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = :id');
                 $currentStmt->execute([':id' => $userId]);
                 $currentAuthMethod = (string)($currentStmt->fetchColumn() ?: 'sql');
-                $params[':auth_method'] = in_array($currentAuthMethod, ['oidc', 'saml'], true)
-                    ? $currentAuthMethod
-                    : 'sql';
             }
+
+            $params[':auth_method'] = AuthMethod::resolve($useLdap, $currentAuthMethod)->value;
         }
 
         if (empty($setFields)) {
@@ -552,7 +900,7 @@ class DbUserRepository implements UserRepository
      */
     public function permissionTemplateExists(int $permTemplId, ?string $templateType = null): bool
     {
-        if ($templateType !== null && in_array($templateType, ['user', 'group'], true)) {
+        if ($templateType !== null && PermissionTemplateType::isValid($templateType)) {
             $stmt = $this->db->prepare(
                 "SELECT COUNT(*) FROM perm_templ WHERE id = :permTemplId AND template_type = :templateType"
             );

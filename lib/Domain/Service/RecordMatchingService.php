@@ -22,16 +22,17 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 
 class RecordMatchingService
 {
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
     private RecordRepositoryInterface $recordRepository;
 
-    public function __construct(DnsRecord $dnsRecord, RecordRepositoryInterface $recordRepository)
+    public function __construct(DomainRepositoryInterface $domainRepository, RecordRepositoryInterface $recordRepository)
     {
-        $this->dnsRecord = $dnsRecord;
+        $this->domainRepository = $domainRepository;
         $this->recordRepository = $recordRepository;
     }
 
@@ -45,7 +46,7 @@ class RecordMatchingService
      */
     public function getMatchingForwardRecords(string $domain, int $networkAddress, int $hostCount): array
     {
-        $forward_domain_id = $this->dnsRecord->getDomainIdByName($domain);
+        $forward_domain_id = $this->domainRepository->getDomainIdByName($domain);
         if ($forward_domain_id === null) {
             return [];
         }
@@ -83,7 +84,7 @@ class RecordMatchingService
      */
     public function getMatchingIPv6ForwardRecords(string $domain, string $networkPrefix): array
     {
-        $forward_domain_id = $this->dnsRecord->getDomainIdByName($domain);
+        $forward_domain_id = $this->domainRepository->getDomainIdByName($domain);
         if ($forward_domain_id === null) {
             return [];
         }

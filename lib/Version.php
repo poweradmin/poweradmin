@@ -34,5 +34,5 @@ class Version
      *
      * @var string
      */
-    public final const VERSION = '4.4.2';
+    public final const VERSION = '4.5.0';
 }

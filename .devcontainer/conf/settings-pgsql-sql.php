@@ -108,6 +108,15 @@ return [
     'api' => [
         'enabled' => true,
         'docs_enabled' => true,
+        'basic_auth_enabled' => true,
+    ],
+
+    /**
+     * Health Check Settings
+     */
+    'health' => [
+        'enabled' => true,
+        'ping_enabled' => true,
     ],
 
     /**

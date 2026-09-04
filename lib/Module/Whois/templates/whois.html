@@ -1,10 +1,8 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">{% trans %}Tools{% endtrans %}</li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}WHOIS Lookup{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Tools'|trans},
+    {label: 'WHOIS Lookup'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -13,7 +11,7 @@
 
     <div class="card-body">
         <form method="post" action="{{ base_url_prefix }}/whois">
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {{ macros.csrf_field() }}
 
             <div class="row mb-3">
                 <div class="col-md-4">

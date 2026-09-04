@@ -1,37 +1,21 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item">
-            {% if idn_zone_name %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
-            {% else %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a>
-            {% endif %}
-        </li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Bulk add records{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: zone_display_name, url: base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit'},
+    {label: 'Bulk add records'|trans},
+]) }}
 
 {% if message %}
-<div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+{% include 'message_alert.html' with {message: message} only %}
 {% endif %}
 
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Bulk Add Records{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-plus-circle', 'Bulk add records'|trans) }}
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
 
                     <div class="mb-3">
                         <label for="records" class="form-label">
@@ -51,10 +35,21 @@
                         {% endif %}
                     </div>
 
+                    <div class="mb-3">
+                        <label for="change_comment" class="form-label">
+                            {% trans %}Reason for this change{% endtrans %}
+                            {% if not require_change_comment %}<small class="text-muted">({% trans %}optional{% endtrans %})</small>{% endif %}
+                        </label>
+                        <input type="text" class="form-control form-control-sm" id="change_comment" name="change_comment"
+                               value="{{ change_comment|default('') }}" maxlength="1000"{% if require_change_comment %} required{% endif %}>
+                        <div class="invalid-feedback">{% trans %}Describe why you are making this change.{% endtrans %}</div>
+                        <small class="form-text text-muted">{% trans %}Recorded in the change log.{% endtrans %}</small>
+                    </div>
+
                     <div class="d-flex justify-content-between">
                         <div>
-                            <button type="submit" class="btn btn-primary btn-sm" name="submit">
-                                <i class="bi bi-plus-circle-fill me-1 text-white"></i>{% trans %}Add Records{% endtrans %}
+                            <button type="submit" class="btn btn-primary btn-sm" name="submit" data-busy-text="{% trans %}Saving...{% endtrans %}">
+                                <i class="bi bi-plus-circle-fill me-1 text-white"></i>{% trans %}Add records{% endtrans %}
                             </button>
                             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
@@ -69,9 +64,7 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Instructions{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'Instructions'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">
@@ -96,9 +89,7 @@
         </div>
 
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-code-square me-2"></i>{% trans %}Record Type Examples{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-code-square', 'Record Type Examples'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">

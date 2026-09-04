@@ -26,8 +26,6 @@ use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 
 /**
@@ -51,22 +49,21 @@ class DnssecKeyExportController extends BaseController
 
         $zoneIdInt = (int) $zoneId;
         $permView = Permission::getViewPermission($this->db);
-        $permEdit = Permission::getEditPermission($this->db);
-        $userIsZoneOwner = UserManager::verifyUserIsOwnerZoneId($this->db, $zoneIdInt);
+        $userIsZoneOwner = $this->isZoneOwner($zoneIdInt);
 
         if ($permView === 'none' || ($permView === 'own' && !$userIsZoneOwner)) {
             $this->showError(_('You do not have permission to view this zone.'));
             return;
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zoneIdInt)) {
+        $domainRepository = $this->createDomainRepository();
+        if (!$domainRepository->zoneIdExists($zoneIdInt)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        // Exporting private key material is an edit-equivalent operation.
-        if ($permEdit !== 'all' && !($permEdit === 'own' && $userIsZoneOwner)) {
+        // Exporting private key material requires DNSSEC management permission.
+        if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zoneIdInt)) {
             $this->showError(_('You do not have permission to manage DNSSEC for this zone.'));
             return;
         }
@@ -77,8 +74,14 @@ class DnssecKeyExportController extends BaseController
             return;
         }
 
-        $domainName = $dnsRecord->getDomainNameById($zoneIdInt);
+        $domainName = $domainRepository->getDomainNameById($zoneIdInt);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+
+        if ($dnssecProvider->isZonePresigned($domainName)) {
+            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            $this->redirect('/zones/' . $zoneId . '/dnssec');
+            return;
+        }
 
         try {
             $pem = $dnssecProvider->exportZoneKeyPem($domainName, (int) $keyId);

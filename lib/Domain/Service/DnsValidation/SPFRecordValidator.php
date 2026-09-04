@@ -46,13 +46,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class SPFRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -179,7 +177,7 @@ class SPFRecordValidator implements DnsRecordValidatorInterface
         $hasAll = false;
         $hasRedirect = false;
 
-        foreach ($terms as $term) {
+        foreach ($terms as $termIndex => $term) {
             $type = $term['type'];
             $qualifier = $term['qualifier'] ?? '+'; // Default qualifier is "+"
             $value = $term['value'];
@@ -257,7 +255,7 @@ class SPFRecordValidator implements DnsRecordValidatorInterface
 
                 case 'all':
                     // 'all' mechanism should be last (RFC 7208 section 5.1)
-                    if (count($terms) > array_search($term, $terms) + 1) {
+                    if ($termIndex !== array_key_last($terms)) {
                         $warnings[] = _('The "all" mechanism should be the last mechanism in the record (RFC 7208 Section 5.1).');
                     }
                     break;
@@ -434,69 +432,5 @@ class SPFRecordValidator implements DnsRecordValidatorInterface
         }
 
         return true;
-    }
-
-    /**
-     * Build SPF regex pattern
-     *
-     * @return string Complete SPF validation regex pattern
-     */
-    private function buildSpfRegexPattern(): string
-    {
-        // Breaking the SPF regex into manageable parts
-        $versionPart = "[Vv]=[Ss][Pp][Ff]1";
-
-        $mechanismPrefix = "[-+?~]?";
-        $allMechanism = "([Aa][Ll][Ll]";
-
-        $macroString = "(%\\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\\}|%%|%_|%-|[!-$&-~])*";
-        $domainSpec = "(\\\.([A-Za-z]|[A-Za-z]([-0-9A-Za-z]?)*[0-9A-Za-z])|%\\{[CDHILOPR-Tcdhilopr-t]([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8])?[Rr]?[+-/=_]*\\})";
-
-        $includeMechanism = "|[Ii][Nn][Cc][Ll][Uu][Dd][Ee]:" . $macroString . $domainSpec;
-        $aMechanism = "|[Aa](:" . $macroString . $domainSpec . ")?((/([1-9]|1[0-9]|2[0-9]|3[0-2]))?(//([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8]))?)?";
-        $mxMechanism = "|[Mm][Xx](:" . $macroString . $domainSpec . ")?((/([1-9]|1[0-9]|2[0-9]|3[0-2]))?(//([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8]))?)?";
-        $ptrMechanism = "|[Pp][Tt][Rr](:" . $macroString . $domainSpec . ")?";
-
-        $ip4Mechanism = "|[Ii][Pp]4:([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([1-9]|1[0-9]|2[0-9]|3[0-2]))?";
-
-        $ip6Mechanism = "|[Ii][Pp]6:(::|([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|([0-9A-Fa-f]{1,4}:){1,8}:|([0-9A-Fa-f]{1,4}:){7}:"
-            . "[0-9A-Fa-f]{1,4}|([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}){1,2}|([0-9A-Fa-f]{1,4}:){5}(:[0-9A-Fa-f]{1,4}){1,3}|"
-            . "([0-9A-Fa-f]{1,4}:){4}(:[0-9A-Fa-f]{1,4}){1,4}|([0-9A-Fa-f]{1,4}:){3}(:[0-9A-Fa-f]{1,4}){1,5}|([0-9A-Fa-f]{1,4}:){2}"
-            . "(:[0-9A-Fa-f]{1,4}){1,6}|[0-9A-Fa-f]{1,4}:(:[0-9A-Fa-f]{1,4}){1,7}|:(:[0-9A-Fa-f]{1,4}){1,8}|([0-9A-Fa-f]{1,4}:){6}"
-            . "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|"
-            . "([0-9A-Fa-f]{1,4}:){6}:([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|"
-            . "([0-9A-Fa-f]{1,4}:){5}:([0-9A-Fa-f]{1,4}:)?([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|([0-9A-Fa-f]{1,4}:){4}:([0-9A-Fa-f]{1,4}:){0,2}"
-            . "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|"
-            . "([0-9A-Fa-f]{1,4}:){3}:([0-9A-Fa-f]{1,4}:){0,3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|([0-9A-Fa-f]{1,4}:){2}:([0-9A-Fa-f]{1,4}:){0,4}"
-            . "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|"
-            . "[0-9A-Fa-f]{1,4}::([0-9A-Fa-f]{1,4}:){0,5}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|::([0-9A-Fa-f]{1,4}:){0,6}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-            . "\\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))(/([1-9][0-9]?|10[0-9]|11[0-9]|12[0-8]))?";
-
-        $existsMechanism = "|[Ee][Xx][Ii][Ss][Tt][Ss]:" . $macroString . $domainSpec;
-
-        $redirectModifier = "|[Rr][Ee][Dd][Ii][Rr][Ee][Cc][Tt]=" . $macroString . $domainSpec;
-        $expModifier = "|[Ee][Xx][Pp]=" . $macroString . $domainSpec;
-        $customModifier = "|[A-Za-z][-.0-9A-Z_a-z]*=(" . $macroString . ")";
-
-        // Combine all parts
-        $mechanisms = "(" . $mechanismPrefix . $allMechanism . $includeMechanism . $aMechanism . $mxMechanism
-            . $ptrMechanism . $ip4Mechanism . $ip6Mechanism . $existsMechanism . $redirectModifier
-            . $expModifier . $customModifier . "))* *";
-
-        return $versionPart . "( +" . $mechanisms;
     }
 }

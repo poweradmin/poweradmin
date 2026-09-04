@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,17 +31,13 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Domain\Error\GroupNotFoundException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -57,9 +53,9 @@ class GroupsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $groupRepository = new DbUserGroupRepository($this->db);
-        $memberRepository = new DbUserGroupMemberRepository($this->db);
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
+        $groupRepository = $this->createUserGroupRepository();
+        $memberRepository = $this->createUserGroupMemberRepository();
+        $zoneGroupRepository = $this->createZoneGroupRepository();
 
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
@@ -156,6 +152,8 @@ class GroupsController extends PublicApiController
             }
 
             return $this->returnApiResponse(['groups' => $enrichedGroups], true, 'Groups retrieved successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -253,13 +251,18 @@ class GroupsController extends PublicApiController
             $members = $isAdmin ? $this->membershipService->listGroupMembers($groupId) : [];
             $zones = $this->zoneGroupService->listGroupZones($groupId);
 
+            // Do not disclose zones outside a zone-scoped key's allowlist (matches
+            // GroupZonesController::listZones); keep the count consistent with it.
+            $scope = $this->getApiKeyScope();
+            $zones = array_values(array_filter($zones, fn($z) => $scope->isZoneAllowed($z->getDomainId())));
+
             $data = [
                 'id' => $group->getId(),
                 'name' => $group->getName(),
                 'description' => $group->getDescription(),
                 'perm_templ_id' => $group->getPermTemplId(),
                 'member_count' => $details['memberCount'],
-                'zone_count' => $details['zoneCount'],
+                'zone_count' => count($zones),
                 'members' => array_map(fn($m) => [
                     'user_id' => $m->getUserId(),
                     'username' => $m->getUsername(),
@@ -272,6 +275,8 @@ class GroupsController extends PublicApiController
             ];
 
             return $this->returnApiResponse(['group' => $data], true, 'Group retrieved successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -323,7 +328,7 @@ class GroupsController extends PublicApiController
     #[OA\Response(response: 400, description: 'Invalid input')]
     private function createGroup(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->canManageGroups($this->authenticatedUserId)) {
             return $this->returnApiError('Only administrators can create groups', 403);
         }
 
@@ -335,7 +340,7 @@ class GroupsController extends PublicApiController
             }
 
             // Validate that the template is a group template
-            $permTemplateRepo = new DbPermissionTemplateRepository($this->db, $this->config);
+            $permTemplateRepo = $this->createPermissionTemplateRepository();
             if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
                 return $this->returnApiError('Invalid perm_templ_id: the specified permission template must be of type "group", not "user"', 400);
             }
@@ -351,6 +356,8 @@ class GroupsController extends PublicApiController
                 'id' => $group->getId(),
                 'name' => $group->getName(),
             ]], true, 'Group created successfully', 201);
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -414,7 +421,7 @@ class GroupsController extends PublicApiController
     #[OA\Response(response: 404, description: 'Group not found')]
     private function updateGroup(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->canManageGroups($this->authenticatedUserId)) {
             return $this->returnApiError('Only administrators can update groups', 403);
         }
 
@@ -424,7 +431,7 @@ class GroupsController extends PublicApiController
 
             // Validate that the template is a group template (if provided)
             if (isset($data['perm_templ_id'])) {
-                $permTemplateRepo = new DbPermissionTemplateRepository($this->db, $this->config);
+                $permTemplateRepo = $this->createPermissionTemplateRepository();
                 if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
                     return $this->returnApiError('Invalid permission template: must be a group template', 400);
                 }
@@ -437,10 +444,6 @@ class GroupsController extends PublicApiController
                 isset($data['perm_templ_id']) ? (int)$data['perm_templ_id'] : null
             );
 
-            if (!$group) {
-                return $this->returnApiError('Group not found or update failed', 404);
-            }
-
             return $this->returnApiResponse(['group' => [
                 'id' => $group->getId(),
                 'name' => $group->getName(),
@@ -449,6 +452,8 @@ class GroupsController extends PublicApiController
                 'created_at' => $group->getCreatedAt(),
                 'updated_at' => $group->getUpdatedAt(),
             ]], true, 'Group updated successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -462,7 +467,7 @@ class GroupsController extends PublicApiController
     #[OA\Delete(
         path: '/v2/groups/{id}',
         operationId: 'v2DeleteGroup',
-        description: 'Deletes a group',
+        description: 'Deletes a group. A group that still owns zones is refused with 409 unless confirm=true is supplied, because deleting it leaves those zones without an owner. Memberships are removed without confirmation.',
         summary: 'Delete group',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['groups'],
@@ -473,6 +478,13 @@ class GroupsController extends PublicApiController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
+            ),
+            new OA\Parameter(
+                name: 'confirm',
+                description: 'Proceed even though the group still owns zones',
+                in: 'query',
+                required: false,
+                schema: new OA\Schema(type: 'boolean', default: false)
             )
         ]
     )]
@@ -489,14 +501,28 @@ class GroupsController extends PublicApiController
         )
     )]
     #[OA\Response(response: 404, description: 'Group not found')]
+    #[OA\Response(response: 409, description: 'Group still owns zones and confirm was not supplied')]
     private function deleteGroup(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->canManageGroups($this->authenticatedUserId)) {
             return $this->returnApiError('Only administrators can delete groups', 403);
         }
 
         try {
             $groupId = (int)$this->pathParameters['id'];
+            $details = $this->groupService->getGroupDetails($groupId);
+
+            // Deleting a group cascades away its zone ownerships, leaving those zones
+            // without an owner. Memberships are not guarded: dropping them removes the
+            // association only, and the users themselves survive.
+            $confirmed = filter_var($this->request->query->get('confirm', 'false'), FILTER_VALIDATE_BOOLEAN);
+            if (!$confirmed && $details['zoneCount'] > 0) {
+                return $this->returnApiError(sprintf(
+                    'Group still owns %d zone(s). Deleting it leaves them without an owner. Repeat with confirm=true to proceed.',
+                    $details['zoneCount']
+                ), 409);
+            }
+
             $success = $this->groupService->deleteGroup($groupId);
 
             if (!$success) {
@@ -504,6 +530,8 @@ class GroupsController extends PublicApiController
             }
 
             return $this->returnApiResponse(null, true, 'Group deleted successfully');
+        } catch (GroupNotFoundException $e) {
+            return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }

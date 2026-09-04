@@ -35,9 +35,7 @@ use InvalidArgumentException;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -54,10 +52,10 @@ class AddGroupController extends BaseController
     {
         parent::__construct($request);
 
-        $groupRepository = new DbUserGroupRepository($this->db);
+        $groupRepository = $this->createUserGroupRepository();
         $this->groupService = new GroupService($groupRepository);
         $this->request = new Request();
-        $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
@@ -72,7 +70,7 @@ class AddGroupController extends BaseController
         // Only admin (überuser) can create groups
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isUserSuperuser($this->db, $userId)) {
+        if (!$this->createPermissionService()->canManageGroups($userId)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to create groups.'));
             $this->redirect('/groups');
             return;
@@ -80,7 +78,7 @@ class AddGroupController extends BaseController
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('add_group');
-        $this->setPageTitle(_('Add Group'));
+        $this->setPageTitle(_('Add group'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -116,7 +114,7 @@ class AddGroupController extends BaseController
             // Log group creation with template details
             $actorUsername = $this->getUserContextService()->getLoggedInUsername();
 
-            $permTemplates = UserManager::listPermissionTemplates($this->db);
+            $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates();
             $templateName = 'Unknown';
             foreach ($permTemplates as $template) {
                 if ($template['id'] == $permTemplId) {
@@ -147,10 +145,11 @@ class AddGroupController extends BaseController
 
     private function renderAddGroupForm(): void
     {
-        $permTemplates = UserManager::listPermissionTemplates($this->db, 'group');
+        $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates('group');
 
-        // Use minimal permission template as default (most secure)
-        $defaultTemplateId = UserManager::getMinimalPermissionTemplateId($this->db, 'group') ?? '';
+        // Use minimal permission template as default (most secure); preselect
+        // nothing rather than falling back to template id 1 (Administrator).
+        $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('group') ?? '';
 
         $this->render('add_group.html', [
             'name' => $this->request->getPostParam('name', ''),

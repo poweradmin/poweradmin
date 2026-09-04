@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class OidcCallbackController extends BaseController
 {
@@ -76,6 +77,15 @@ class OidcCallbackController extends BaseController
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
+    /**
+     * The identity provider posts here directly; the OIDC state parameter, not a
+     * form token, is what ties the response to this session.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
+    }
+
     public function run(): void
     {
         // Check if OIDC is enabled
@@ -85,13 +95,15 @@ class OidcCallbackController extends BaseController
             return;
         }
 
-        // Handle error responses from provider
-        $error = $this->httpRequest->getQueryParam('error');
+        // Handle error responses from provider (POST body when response_mode=form_post)
+        $error = $this->httpRequest->getParam('error');
         if (!empty($error)) {
-            $errorDescription = $this->httpRequest->getQueryParam('error_description', 'Unknown error');
+            $errorDescription = $this->httpRequest->getParam('error_description', 'Unknown error');
 
+            // operation:login_error (not login_failed) - IdP-side handshake error
+            // should not feed fail2ban brute-force counters.
             $this->auditLogger->logWarn(sprintf(
-                'client_ip:%s operation:oidc_login_failed error:%s',
+                'client_ip:%s operation:login_error auth_method:oidc error:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $error
             ));
@@ -108,11 +120,11 @@ class OidcCallbackController extends BaseController
         $this->oidcService->handleCallback();
 
         // Log successful OIDC login if session was established
-        if (isset($_SESSION['userid'])) {
+        if (isset($_SESSION[SessionKeys::USERID])) {
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:oidc_login_success',
                 $this->ipAddressRetriever->getClientIp(),
-                $_SESSION['userlogin'] ?? 'unknown'
+                $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown'
             ));
         }
     }

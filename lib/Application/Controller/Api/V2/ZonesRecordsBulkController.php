@@ -38,19 +38,21 @@ use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Error\ApiErrorException;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\SOARecordManager;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\RecordIdHelper;
-use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -59,16 +61,21 @@ class ZonesRecordsBulkController extends PublicApiController
     private ZoneRepositoryInterface $zoneRepository;
     private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
-    private SOARecordManager $soaRecordManager;
+    private SOARecordManagerInterface $soaRecordManager;
     private ApiPermissionService $permissionService;
     private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
+    private RecordChangeLogger $changeLogger;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
+    private ReverseTtlResolver $reverseTtlResolver;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $this->backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        $this->backendProvider = $this->createDnsBackendProvider();
+        $this->reverseTtlResolver = $this->createReverseTtlResolver();
         $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
@@ -77,18 +84,11 @@ class ZonesRecordsBulkController extends PublicApiController
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
-        // Initialize services using factory
-        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-        $this->soaRecordManager = new SOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
-        $domainRepository = $repositoryFactory->createDomainRepository();
-        $this->recordManager = new RecordManager(
-            $this->db,
-            $this->getConfig(),
-            $validationService,
-            $this->soaRecordManager,
-            $domainRepository,
-            $this->backendProvider
-        );
+        $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
+        $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
+        $this->changeLogger = new RecordChangeLogger($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     /**
@@ -105,6 +105,13 @@ class ZonesRecordsBulkController extends PublicApiController
 
         $response->send();
         exit;
+    }
+
+    // Each bulk item carries its own action, so the operation scope is enforced
+    // per action in bulkRecordOperations(), not by the request's HTTP method.
+    protected function requiredApiKeyOperations(): array
+    {
+        return [];
     }
 
     /**
@@ -149,6 +156,12 @@ class ZonesRecordsBulkController extends PublicApiController
                         type: 'object'
                     ),
                     description: 'Array of operations to perform'
+                ),
+                new OA\Property(
+                    property: 'comment',
+                    type: 'string',
+                    example: 'ticket-4821: move the web tier',
+                    description: 'Reason for this change, recorded in the change log.'
                 )
             ]
         )
@@ -194,6 +207,10 @@ class ZonesRecordsBulkController extends PublicApiController
                 return $this->returnApiError('Valid zone ID is required', 400);
             }
 
+            if (($scopeError = $this->enforceApiKeyZoneScope($zoneId)) !== null) {
+                return $scopeError;
+            }
+
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
             if (!$zone) {
@@ -203,7 +220,7 @@ class ZonesRecordsBulkController extends PublicApiController
             // Check if user has permission to edit records in this zone
             $zoneType = $zone['type'] ?? null;
             if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zoneType)) {
-                return $this->returnApiError('You do not have permission to edit this zone', 403);
+                return $this->returnApiError($this->zoneEditDeniedMessage($zoneType), 403);
             }
 
             $input = json_decode($this->request->getContent(), true);
@@ -213,6 +230,26 @@ class ZonesRecordsBulkController extends PublicApiController
 
             if (empty($input['operations'])) {
                 return $this->returnApiError("At least one operation is required", 400);
+            }
+
+            // The HTTP method (POST) does not determine the operation here: each item
+            // carries its own action. Enforce the API key's operation scope per action
+            // before mutating anything, so a create-only key cannot update or delete.
+            $scope = $this->getApiKeyScope();
+            foreach ($input['operations'] as $operation) {
+                $action = strtolower($operation['action'] ?? '');
+                $operationType = match ($action) {
+                    'create' => ApiKeyScope::OP_CREATE,
+                    'update' => ApiKeyScope::OP_UPDATE,
+                    'delete' => ApiKeyScope::OP_DELETE,
+                    default => null,
+                };
+                if ($operationType !== null && !$scope->isOperationTypeAllowed($operationType)) {
+                    return $this->returnApiError(
+                        "Forbidden: this API key is not permitted to perform the {$action} operation",
+                        403
+                    );
+                }
             }
 
             // Start transaction for atomic operations (SQL backend only).
@@ -235,6 +272,16 @@ class ZonesRecordsBulkController extends PublicApiController
             // Track if any non-SOA records were modified (for SOA serial update logic)
             $nonSOARecordModified = false;
 
+            // One request, one changeset, carrying the optional reason the caller gave.
+            $changeComment = (string)($input['comment'] ?? '');
+            if (trim($changeComment) === '' && RecordChangeLogger::changeCommentRequired()) {
+                if ($useTransaction) {
+                    $this->db->rollBack();
+                }
+                return $this->returnApiError("Field 'comment' is required: this installation requires a reason for every change", 400);
+            }
+            RecordChangeLogger::beginChangeset($zoneId, $changeComment);
+
             try {
                 foreach ($input['operations'] as $index => $operation) {
                     $action = strtolower($operation['action'] ?? '');
@@ -242,7 +289,7 @@ class ZonesRecordsBulkController extends PublicApiController
                     try {
                         switch ($action) {
                             case 'create':
-                                $recordType = $this->performCreateOperation($zoneId, $operation, $zoneType);
+                                $recordType = $this->performCreateOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
                                 $results['created']++;
                                 if ($recordType !== 'SOA') {
                                     $nonSOARecordModified = true;
@@ -250,7 +297,7 @@ class ZonesRecordsBulkController extends PublicApiController
                                 break;
 
                             case 'update':
-                                $recordType = $this->performUpdateOperation($zoneId, $operation, $zoneType);
+                                $recordType = $this->performUpdateOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
                                 $results['updated']++;
                                 if ($recordType !== 'SOA') {
                                     $nonSOARecordModified = true;
@@ -258,7 +305,7 @@ class ZonesRecordsBulkController extends PublicApiController
                                 break;
 
                             case 'delete':
-                                $recordType = $this->performDeleteOperation($zoneId, $operation, $zoneType);
+                                $recordType = $this->performDeleteOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
                                 $results['deleted']++;
                                 if ($recordType !== 'SOA') {
                                     $nonSOARecordModified = true;
@@ -287,12 +334,15 @@ class ZonesRecordsBulkController extends PublicApiController
                     $this->db->commit();
                 }
 
-                $message = 'Bulk operations completed successfully';
-                if ($results['failed'] > 0) {
-                    $message = 'Some operations failed';
-                }
+                $this->auditLogger->logInfo(sprintf(
+                    'client_ip:%s user:%s operation:api_bulk_records operations:%d',
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->getAuthenticatedUsername(),
+                    count($results)
+                ), $zoneId);
 
-                return $this->returnApiResponse($results, true, $message, 200);
+                // Any failed operation rethrows above, so reaching here means all succeeded
+                return $this->returnApiResponse($results, true, 'Bulk operations completed successfully', 200);
             } catch (\Throwable $e) {
                 if ($useTransaction) {
                     $this->db->rollBack();
@@ -304,6 +354,8 @@ class ZonesRecordsBulkController extends PublicApiController
                 }
 
                 throw $e;
+            } finally {
+                RecordChangeLogger::endChangeset();
             }
         } catch (ApiErrorException $e) {
             // Client validation errors - return detailed error response with appropriate 4xx status code
@@ -329,7 +381,7 @@ class ZonesRecordsBulkController extends PublicApiController
      * @return string The record type that was created
      * @throws Exception If operation fails
      */
-    private function performCreateOperation(int $zoneId, array $operation, ?string $zoneType = null): string
+    private function performCreateOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null): string
     {
         // Validate required fields
         $requiredFields = ['name', 'type', 'content'];
@@ -343,7 +395,13 @@ class ZonesRecordsBulkController extends PublicApiController
         $name = trim($this->inputString($operation, 'name', ''));
         $type = strtoupper(trim($this->inputString($operation, 'type', '')));
         $content = trim($this->inputString($operation, 'content', ''));
-        $ttl = $this->inputInt($operation, 'ttl', 3600);
+
+        if ($zoneName === null) {
+            throw new ApiErrorException('Zone not found', 404);
+        }
+        $isReverseZone = DnsHelper::isReverseZoneName($zoneName);
+
+        $ttl = $this->inputInt($operation, 'ttl', $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone));
         $priority = $this->inputInt($operation, 'priority', 0);
         $disabled = $this->inputIntFromBool($operation, 'disabled', 0);
 
@@ -351,22 +409,9 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException('Fields ttl, priority, and disabled must be numeric', 400);
         }
 
-        // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
-        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, $type, $zoneType)) {
-            throw new ApiErrorException('You do not have permission to edit this record type', 403);
-        }
-
         // Validate TTL
         if ($ttl < 1) {
             throw new ApiErrorException('TTL must be greater than 0', 400);
-        }
-
-        // Get zone name
-        $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-        $domainRepository = $repositoryFactory->createDomainRepository();
-        $zoneName = $domainRepository->getDomainNameById($zoneId);
-        if ($zoneName === null) {
-            throw new ApiErrorException('Zone not found', 404);
         }
 
         // Convert name to FQDN
@@ -376,17 +421,14 @@ class ZonesRecordsBulkController extends PublicApiController
         $hostnameValidator = new HostnameValidator($this->getConfig());
         $normalizedName = $hostnameValidator->normalizeRecordName($fqdn, $zoneName);
 
-        // Format content
-        $dnsFormatter = new DnsFormatter($this->getConfig());
-        $content = $dnsFormatter->formatContent($type, $content);
-
-        // Auto-quote TXT records (V2 API convention)
-        if ($type === 'TXT') {
-            $content = trim($content);
-            if (!str_starts_with($content, '"') || !str_ends_with($content, '"')) {
-                $content = '"' . $content . '"';
-            }
+        // Block SOA/NS edits for users limited to zone_content_edit_own_as_client;
+        // checked after normalization so the subzone NS exemption sees the FQDN
+        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, $type, $zoneType, $normalizedName, $zoneName)) {
+            throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }
+
+        // Format content, with V2 API always auto-quoting TXT records
+        $content = $this->formatV2RecordContent($type, $content);
 
         // Validate the record (pass backendProvider so CNAME/violation checks use correct backend)
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
@@ -421,6 +463,21 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new Exception('Failed to create record');
         }
 
+        try {
+            $this->changeLogger->logRecordCreate([
+                'id' => $newRecordId,
+                'name' => $normalizedName,
+                'type' => $type,
+                'content' => $validatedContent,
+                'ttl' => $validatedTtl,
+                'prio' => $validatedPriority,
+                'disabled' => (bool) $disabled,
+                'zone_name' => $zoneName,
+            ], $zoneId);
+        } catch (\Throwable $e) {
+            $this->logger->warning('Failed to write bulk record create log: {error}', ['error' => $e->getMessage()]);
+        }
+
         return $type;
     }
 
@@ -432,7 +489,7 @@ class ZonesRecordsBulkController extends PublicApiController
      * @return string The record type that was updated
      * @throws Exception If operation fails
      */
-    private function performUpdateOperation(int $zoneId, array $operation, ?string $zoneType = null): string
+    private function performUpdateOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null): string
     {
         if (!isset($operation['id'])) {
             throw new ApiErrorException("Field 'id' is required for update operation", 400);
@@ -448,14 +505,15 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
         $userId = $this->getAuthenticatedUserId();
-        if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zoneType)) {
+        $hostnameValidator = new HostnameValidator($this->getConfig());
+        if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zoneType, (string)$existingRecord['name'], $zoneName)) {
             throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }
+        // Block changing the record into one the user may not manage, e.g.
+        // retyping to SOA/NS or renaming a subzone NS onto the zone apex
         $newType = strtoupper(trim((string)($operation['type'] ?? $existingRecord['type'])));
-        if (
-            $newType !== strtoupper((string)$existingRecord['type'])
-            && !$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zoneType)
-        ) {
+        $newName = $hostnameValidator->normalizeRecordName(trim((string)($operation['name'] ?? $existingRecord['name'])), (string)$zoneName);
+        if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zoneType, $newName, $zoneName)) {
             throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }
 
@@ -469,6 +527,9 @@ class ZonesRecordsBulkController extends PublicApiController
         if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
             throw new ApiErrorException('Invalid field types in request body', 400);
         }
+        // Format content the same way create does so TXT records round-trip
+        // (GET strips the quotes V2 adds; an update echoing GET output must re-quote).
+        $content = $this->formatV2RecordContent($type, $content);
         $recordData = [
             'rid' => $recordId,
             'zid' => $zoneId,
@@ -479,6 +540,25 @@ class ZonesRecordsBulkController extends PublicApiController
             'prio' => $prio,
             'disabled' => $disabled
         ];
+
+        // Pre-validate so a rejected record reports the specific reason as 400.
+        // editRecord() otherwise swallows the validation message, leaving only a 500.
+        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
+        $normalizedEditName = $hostnameValidator->normalizeRecordName($recordData['name'], $zoneName);
+        $editValidation = $validationService->validateRecord(
+            $recordId,
+            $zoneId,
+            $recordData['type'],
+            $recordData['content'],
+            $normalizedEditName,
+            $recordData['prio'],
+            $recordData['ttl'],
+            $this->getConfig()->get('dns', 'hostmaster'),
+            (int)$this->getConfig()->get('dns', 'ttl')
+        );
+        if (!$editValidation->isValid()) {
+            throw new ApiErrorException($editValidation->getFirstError(), 400);
+        }
 
         // Use RecordManager to edit the record
         if (!$this->recordManager->editRecord($recordData)) {
@@ -496,7 +576,7 @@ class ZonesRecordsBulkController extends PublicApiController
      * @return string The record type that was deleted
      * @throws Exception If operation fails
      */
-    private function performDeleteOperation(int $zoneId, array $operation, ?string $zoneType = null): string
+    private function performDeleteOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null): string
     {
         if (!isset($operation['id'])) {
             throw new ApiErrorException("Field 'id' is required for delete operation", 400);
@@ -514,7 +594,7 @@ class ZonesRecordsBulkController extends PublicApiController
         $recordType = $existingRecord['type'];
 
         // Block SOA/NS deletes for users limited to zone_content_edit_own_as_client
-        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, (string)$recordType, $zoneType)) {
+        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, (string)$recordType, $zoneType, (string)$existingRecord['name'], $zoneName)) {
             throw new ApiErrorException('You do not have permission to delete this record type', 403);
         }
 

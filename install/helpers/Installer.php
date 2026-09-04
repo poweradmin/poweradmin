@@ -23,6 +23,7 @@
 namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Domain\Service\SessionKeys;
 use PoweradminInstall\Validators\AbstractStepValidator;
 use PoweradminInstall\Validators\CheckRequirementsValidator;
 use PoweradminInstall\Validators\ChooseLanguageValidator;
@@ -107,8 +108,8 @@ class Installer
             $currentStep--;
         }
 
-        $installToken = $this->csrfTokenService->generateToken();
-        $_SESSION['install_token'] = $installToken;
+        // Keep one token for the whole install session so back/refresh/duplicate-tab don't fail on a rotated token.
+        $this->csrfTokenService->ensureTokenExists(SessionKeys::INSTALL_TOKEN);
 
         $currentLanguage = $this->initializeLocaleHandler();
         $twigEnvironment = $this->initializeTwigEnvironment($currentLanguage);
@@ -215,7 +216,7 @@ class Installer
         $twigEnvironmentInitializer = new TwigEnvironmentInitializer($this->localeHandler);
         $environment = $twigEnvironmentInitializer->initialize($currentLanguage);
 
-        $environment->addGlobal('install_token', $_SESSION['install_token'] ?? '');
+        $environment->addGlobal('install_token', $_SESSION[SessionKeys::INSTALL_TOKEN] ?? '');
 
         return $environment;
     }

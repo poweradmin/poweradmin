@@ -33,6 +33,85 @@ class LoginAttemptServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    public function testMfaStageIsThrottledWhenAccountLockoutDisabled()
+    {
+        $this->configManagerMock->method('get')
+            ->willReturnMap([
+                ['security', 'account_lockout.enable_lockout', false, false],
+                ['security', 'account_lockout.blacklist_ip_addresses', [], []],
+                ['security', 'mfa.max_verify_attempts', 5, 5],
+                ['security', 'mfa.verify_lockout_duration', 15, 15],
+                ['database', 'type', null, 'mysql'],
+            ]);
+
+        $pdoStatementMock = $this->createMock(PDOStatement::class);
+        $pdoStatementMock->method('execute')->willReturn(true);
+        $pdoStatementMock->method('fetch')->willReturn(['id' => 1, 'attempts' => 5]);
+        $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
+
+        $result = $this->loginAttemptService->isAccountLocked(
+            'testuser',
+            '192.168.1.1',
+            LoginAttemptService::STAGE_MFA
+        );
+
+        $this->assertTrue($result, 'The second factor must throttle without opting into account lockout');
+    }
+
+    public function testMfaStageLocksWhenUsernameDoesNotResolve()
+    {
+        $this->configManagerMock->method('get')
+            ->willReturnMap([
+                ['security', 'account_lockout.enable_lockout', false, false],
+                ['security', 'account_lockout.blacklist_ip_addresses', [], []],
+                ['security', 'mfa.max_verify_attempts', 5, 5],
+                ['security', 'mfa.verify_lockout_duration', 15, 15],
+                ['database', 'type', null, 'mysql'],
+            ]);
+
+        // getUserId() finds nothing, so the attempt cannot be counted.
+        $pdoStatementMock = $this->createMock(PDOStatement::class);
+        $pdoStatementMock->method('execute')->willReturn(true);
+        $pdoStatementMock->method('fetch')->willReturn(false);
+        $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
+
+        $this->assertTrue(
+            $this->loginAttemptService->isAccountLocked('nosuchuser', '192.168.1.1', LoginAttemptService::STAGE_MFA),
+            'An uncountable second-factor attempt must fail closed, not drop the limit'
+        );
+
+        $this->assertFalse(
+            $this->loginAttemptService->isAccountLocked('nosuchuser', '192.168.1.1'),
+            'The password stage must still let unknown usernames reach the authenticator'
+        );
+    }
+
+    public function testMfaStageIgnoresWhitelistedIp()
+    {
+        $this->configManagerMock->method('get')
+            ->willReturnMap([
+                ['security', 'account_lockout.enable_lockout', false, false],
+                ['security', 'account_lockout.whitelist_ip_addresses', [], ['192.168.1.1']],
+                ['security', 'account_lockout.blacklist_ip_addresses', [], []],
+                ['security', 'mfa.max_verify_attempts', 5, 5],
+                ['security', 'mfa.verify_lockout_duration', 15, 15],
+                ['database', 'type', null, 'mysql'],
+            ]);
+
+        $pdoStatementMock = $this->createMock(PDOStatement::class);
+        $pdoStatementMock->method('execute')->willReturn(true);
+        $pdoStatementMock->method('fetch')->willReturn(['id' => 1, 'attempts' => 5]);
+        $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
+
+        $result = $this->loginAttemptService->isAccountLocked(
+            'testuser',
+            '192.168.1.1',
+            LoginAttemptService::STAGE_MFA
+        );
+
+        $this->assertTrue($result, 'A whitelisted address must not exempt the second factor from throttling');
+    }
+
     public function testWhitelistedIpIsNeverLocked()
     {
         // Configure ConfigurationManager to return necessary values

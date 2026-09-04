@@ -32,8 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 
 class ListSupermastersController extends BaseController
 {
@@ -47,11 +46,11 @@ class ListSupermastersController extends BaseController
 
     private function showSuperMasters(): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
         $this->render('list_supermasters.html', [
-            'perm_sm_add' => UserManager::verifyPermission($this->db, 'supermaster_add'),
-            'perm_sm_edit' => UserManager::verifyPermission($this->db, 'supermaster_edit'),
-            'supermasters' => $dnsRecord->getSupermasters()
+            'perm_sm_add' => $this->hasPermission('supermaster_add'),
+            'perm_sm_edit' => $this->hasPermission('supermaster_edit'),
+            'supermasters' => $supermasterManager->getSupermasters()
         ]);
     }
 }

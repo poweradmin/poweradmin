@@ -140,11 +140,10 @@ test.describe('Bulk and Batch Operations', () => {
           await page.locator('button').filter({ hasText: /Yes|Confirm/i }).click();
         }
 
-        // Verify domains were deleted
-        await page.waitForLoadState('networkidle');
-        const bodyText = await page.locator('body').textContent();
+        // Verify domains were deleted. Auto-retrying so the confirmation page,
+        // which lists the very domains being checked, cannot be read mid-post.
         for (const domain of testDomains) {
-          expect(bodyText).not.toContain(domain);
+          await expect(page.locator('body')).not.toContainText(domain);
         }
       }
     } else {

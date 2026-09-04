@@ -1,11 +1,9 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/groups">{% trans %}Groups{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/groups/{{ group.id }}/edit">{{ group.name }}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Manage zones{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Groups'|trans, url: base_url_prefix ~ '/groups'},
+    {label: group.name, url: base_url_prefix ~ '/groups/' ~ group.id ~ '/edit'},
+    {label: 'Manage zones'|trans},
+]) }}
 
 <div class="mb-3">
     <a href="{{ base_url_prefix }}/groups/{{ group.id }}/edit" class="btn btn-sm btn-outline-secondary">
@@ -24,11 +22,11 @@
                 {% if owned_zones is empty %}
                 <p class="text-muted text-center py-4">
                     <i class="bi bi-inbox fs-1"></i><br>
-                    {% trans %}This group doesn't own any zones yet{% endtrans %}
+                    {% trans %}This group doesn't own any zones yet.{% endtrans %}
                 </p>
                 {% else %}
                 <form method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/zones" id="remove-form">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="action" value="remove">
 
                     <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
@@ -80,7 +78,7 @@
                 </p>
                 {% else %}
                 <form method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/zones" id="add-form">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
                     <input type="hidden" name="action" value="add">
 
                     <div class="mb-3">

@@ -60,13 +60,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class RPRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -88,7 +86,7 @@ class RPRecordValidator implements DnsRecordValidatorInterface
         $warnings = [];
 
         // Validate hostname
-        if (!StringValidator::isValidPrintable($name)) {
+        if (!StringValidator::validatePrintable($name)->isValid()) {
             return ValidationResult::failure(_('Hostname contains invalid characters.'));
         }
 
@@ -155,7 +153,7 @@ class RPRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Check for valid printable characters
-        if (!StringValidator::isValidPrintable($content)) {
+        if (!StringValidator::validatePrintable($content)->isValid()) {
             return ValidationResult::failure(_('RP record contains invalid characters.'));
         }
 

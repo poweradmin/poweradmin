@@ -1,10 +1,9 @@
+{% import '_macros.html' as macros %}
 <div class="container-fluid">
   <div class="row justify-content-center">
     <div class="col-md-6 col-lg-4">
       <div class="card shadow-sm">
-        <div class="card-header py-3">
-          <strong><i class="bi bi-lock me-2"></i>{% trans %}Two-Factor Authentication{% endtrans %}</strong>
-        </div>
+        {{ macros.card_header('bi-lock', 'Two-Factor Authentication'|trans) }}
         <div class="card-body">
           {% if msg %}
           <div class="alert alert-{{ type }} bg-{{ type }} bg-opacity-10 py-2 border border-{{ type }} small" role="alert">
@@ -39,7 +38,7 @@
             
             <div class="d-grid gap-2">
               <button type="submit" name="verify_mfa" class="btn btn-sm btn-primary">{% trans %}Verify{% endtrans %}</button>
-              <a href="{{ base_url_prefix }}/auth/mfa/verify?logout=1" class="btn btn-sm btn-outline-secondary">{% trans %}Cancel{% endtrans %}</a>
+              <a href="{{ base_url_prefix }}/mfa/verify?logout=1" class="btn btn-sm btn-outline-secondary">{% trans %}Cancel{% endtrans %}</a>
             </div>
           </form>
           
@@ -93,8 +92,8 @@
           
           <div class="mb-3">
             <label for="recovery_code" class="form-label">{% trans %}Recovery Code{% endtrans %}</label>
-            <input type="text" class="form-control" id="recovery_code" name="mfa_code" 
-                   minlength="20" maxlength="20" autocomplete="off" required>
+            <input type="text" class="form-control" id="recovery_code" name="mfa_code"
+                   minlength="{{ recovery_code_length }}" maxlength="{{ recovery_code_length }}" autocomplete="off" required>
             <div class="valid-feedback">
               {% trans %}Looks good!{% endtrans %}
             </div>

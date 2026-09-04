@@ -55,11 +55,17 @@ class ListLogUsersController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
+        if (
+            !$this->hasPermission('user_is_ueberuser')
+            && !$this->hasPermission('user_logs_view')
+        ) {
+            $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
+            return;
+        }
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('list_log_users');
-        $this->setPageTitle(_('User Logs'));
+        $this->setPageTitle(_('User logs'));
 
         $this->showListLogUsers();
     }
@@ -90,11 +96,8 @@ class ListLogUsersController extends BaseController
     {
         $selected_page = 1;
         $start = $this->httpRequest->getQueryParam('start');
-        if ($start !== null) {
-            is_numeric($start) ? $selected_page = (int)$start : die(_('Invalid page number.'));
-            if ($selected_page < 1) {
-                die(_('Page number must be at least 1.'));
-            }
+        if ($start !== null && is_numeric($start)) {
+            $selected_page = max(1, (int)$start);
         }
 
         $configManager = ConfigurationManager::getInstance();
@@ -110,9 +113,10 @@ class ListLogUsersController extends BaseController
         }
 
         $number_of_logs = $this->dbUserLogger->countFilteredLogs($filters);
-        $number_of_pages = ceil($number_of_logs / $logs_per_page);
-        if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
-            die(_('Page number exceeds available pages.'));
+        $number_of_pages = (int)ceil($number_of_logs / $logs_per_page);
+        // Clamp to the last page rather than dying when the request is out of range.
+        if ($number_of_pages > 0 && $selected_page > $number_of_pages) {
+            $selected_page = $number_of_pages;
         }
         $offset = ($selected_page - 1) * $logs_per_page;
         $logs = $this->dbUserLogger->getFilteredLogs($filters, $logs_per_page, $offset);

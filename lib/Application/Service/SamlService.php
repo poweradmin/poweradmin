@@ -77,16 +77,20 @@ class SamlService extends LoggingService
         $this->authenticationService = new AuthenticationService($this->sessionService, $redirectService);
         $this->csrfTokenService = new CsrfTokenService();
         $this->userEventLogger = new UserEventLogger($db);
+    }
 
-        // Initialize MFA service
-        $userMfaRepository = new DbUserMfaRepository($db, $configManager);
-        $mailService = new MailService($configManager);
-        $this->mfaService = new MfaService(
-            $userMfaRepository,
-            $configManager,
-            $mailService,
+    /**
+     * Builds the MFA service on first use. The call site is already guarded by
+     * security.mfa.enabled, so installations without MFA never pay for the graph.
+     */
+    private function mfaService(): MfaService
+    {
+        return $this->mfaService ??= new MfaService(
+            new DbUserMfaRepository($this->db, $this->configManager),
+            $this->configManager,
+            new MailService($this->configManager),
             null,
-            UserTimezoneService::createDefault($db, $configManager)
+            UserTimezoneService::createDefault($this->db, $this->configManager)
         );
     }
 
@@ -199,9 +203,10 @@ class SamlService extends LoggingService
         $providerId = $this->getSessionValue('saml_provider', '');
 
         // If provider ID not in session, try to get it from RelayState
-        if (empty($providerId) && !empty($_POST['RelayState'])) {
+        $relayStateParam = $this->request->getPostParam('RelayState');
+        if (empty($providerId) && !empty($relayStateParam)) {
             try {
-                $relayState = json_decode(base64_decode($_POST['RelayState']), true);
+                $relayState = json_decode(base64_decode($relayStateParam), true);
                 if (isset($relayState['provider'])) {
                     $providerId = $relayState['provider'];
                     $this->logInfo('Retrieved provider ID from RelayState: {provider}', ['provider' => $providerId]);
@@ -220,11 +225,11 @@ class SamlService extends LoggingService
             return;
         }
 
-        try {
-            // Temporarily set environment for reverse proxy detection during SAML processing
-            $originalHttps = $_SERVER['HTTPS'] ?? null;
-            $originalPort = $_SERVER['SERVER_PORT'] ?? null;
+        // Captured outside the try so the catch block can always restore them
+        $originalHttps = $_SERVER['HTTPS'] ?? null;
+        $originalPort = $_SERVER['SERVER_PORT'] ?? null;
 
+        try {
             // Detect if we're behind a reverse proxy (like ngrok) and need HTTPS detection help
             if ($this->isReverseProxyEnvironment()) {
                 $_SERVER['HTTPS'] = 'on';
@@ -248,8 +253,8 @@ class SamlService extends LoggingService
             }
 
             // Debug SAML response
-            $this->logInfo('Processing SAML response. POST data keys: {keys}', ['keys' => array_keys($_POST)]);
-            $this->logInfo('SAML Response length: {length}', ['length' => strlen($_POST['SAMLResponse'] ?? '')]);
+            $this->logInfo('Processing SAML response. POST data keys: {keys}', ['keys' => array_keys($this->request->getPostParams())]);
+            $this->logInfo('SAML Response length: {length}', ['length' => strlen((string) $this->request->getPostParam('SAMLResponse', ''))]);
 
             // Process the SAML response
             $auth->processResponse();
@@ -300,10 +305,6 @@ class SamlService extends LoggingService
             if ($userId) {
                 $this->logInfo('Successfully authenticated SAML user: {username}', ['username' => $userInfo->getUsername()]);
 
-                // Issue a fresh session ID on successful login, matching the local
-                // login flow, so a pre-authentication session cannot be reused.
-                session_regenerate_id(true);
-
                 // Get the actual database username
                 $databaseUsername = $this->userProvisioningService->getDatabaseUsername($userId);
                 if (!$databaseUsername) {
@@ -319,6 +320,10 @@ class SamlService extends LoggingService
                 // Log successful authentication to database
                 $this->userEventLogger->logSuccessfulAuth(AuthMethod::SAML);
 
+                // Rotate session id before binding the user - matches SqlAuthenticator.
+                session_regenerate_id(true);
+                $this->logInfo('Session ID regenerated for SAML user {username}', ['username' => $databaseUsername]);
+
                 // Ensure a CSRF token exists for subsequent requests
                 $this->csrfTokenService->ensureTokenExists();
                 $this->logInfo('CSRF token ensured for SAML session.');
@@ -327,7 +332,7 @@ class SamlService extends LoggingService
                 $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
 
                 // Check if MFA is enabled for this user
-                $mfaRequired = $mfaGloballyEnabled && $this->mfaService->isMfaEnabled($userId);
+                $mfaRequired = $mfaGloballyEnabled && $this->mfaService()->isMfaEnabled($userId);
 
                 if ($mfaRequired) {
                     $this->logInfo('MFA is required for SAML user {username}', ['username' => $databaseUsername]);
@@ -364,7 +369,9 @@ class SamlService extends LoggingService
                     $this->setSessionValue('auth_used', UserProvisioningService::AUTH_METHOD_SAML);
                     $this->setSessionValue('auth_method_used', UserProvisioningService::AUTH_METHOD_SAML);
                     $this->setSessionValue('authenticated', true);
-                    $this->setSessionValue('mfa_required', false);
+                    // Clears any stale pending state from an abandoned MFA login,
+                    // which would otherwise bounce this session back to /mfa/verify.
+                    MfaSessionManager::setMfaNotRequired();
 
                     // Set SAML-specific session variables for logout detection
                     $this->setSessionValue('saml_authenticated', true);
@@ -386,35 +393,27 @@ class SamlService extends LoggingService
             }
 
             // Restore original $_SERVER values after successful processing
-            if (isset($originalHttps)) {
-                if ($originalHttps !== null) {
-                    $_SERVER['HTTPS'] = $originalHttps;
-                } else {
-                    unset($_SERVER['HTTPS']);
-                }
+            if ($originalHttps !== null) {
+                $_SERVER['HTTPS'] = $originalHttps;
+            } else {
+                unset($_SERVER['HTTPS']);
             }
-            if (isset($originalPort)) {
-                if ($originalPort !== null) {
-                    $_SERVER['SERVER_PORT'] = $originalPort;
-                } else {
-                    unset($_SERVER['SERVER_PORT']);
-                }
+            if ($originalPort !== null) {
+                $_SERVER['SERVER_PORT'] = $originalPort;
+            } else {
+                unset($_SERVER['SERVER_PORT']);
             }
         } catch (\Exception $e) {
             // Restore original $_SERVER values before handling error
-            if (isset($originalHttps)) {
-                if ($originalHttps !== null) {
-                    $_SERVER['HTTPS'] = $originalHttps;
-                } else {
-                    unset($_SERVER['HTTPS']);
-                }
+            if ($originalHttps !== null) {
+                $_SERVER['HTTPS'] = $originalHttps;
+            } else {
+                unset($_SERVER['HTTPS']);
             }
-            if (isset($originalPort)) {
-                if ($originalPort !== null) {
-                    $_SERVER['SERVER_PORT'] = $originalPort;
-                } else {
-                    unset($_SERVER['SERVER_PORT']);
-                }
+            if ($originalPort !== null) {
+                $_SERVER['SERVER_PORT'] = $originalPort;
+            } else {
+                unset($_SERVER['SERVER_PORT']);
             }
 
             $this->logError('SAML authentication error: {error}', ['error' => $e->getMessage()]);

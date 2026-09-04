@@ -24,20 +24,18 @@ namespace Poweradmin\Module\ZoneImportExport\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
-use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
+use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Enum\ZoneKind;
 
 class ZoneFileImportController extends BaseController
 {
@@ -69,7 +67,7 @@ class ZoneFileImportController extends BaseController
 
     private function checkImportPermission(): void
     {
-        $canAdd = UserManager::verifyPermission($this->db, 'zone_master_add');
+        $canAdd = $this->hasPermission('zone_master_add');
         $perm_edit = Permission::getEditPermission($this->db);
         $this->checkCondition(
             !$canAdd && $perm_edit === 'none',
@@ -89,8 +87,7 @@ class ZoneFileImportController extends BaseController
             $zoneName = $zoneRepository->getDomainNameById((int)$_GET['zone_id']);
             if ($zoneName) {
                 $userId = $this->userContextService->getLoggedInUserId();
-                $userRepository = new DbUserRepository($this->db, $this->getConfig());
-                $permissionService = new PermissionService($userRepository);
+                $permissionService = $this->createPermissionService();
                 $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, (int)$_GET['zone_id']);
                 if ($permEdit !== 'none') {
                     $targetZoneId = (int)$_GET['zone_id'];
@@ -102,7 +99,6 @@ class ZoneFileImportController extends BaseController
         $vars = array_merge([
             'max_file_size' => $maxFileSize,
             'max_file_size_human' => $this->formatBytes($maxFileSize),
-            'csrf_token' => $this->getCsrfToken(),
             'target_zone_id' => $targetZoneId,
             'target_zone_name' => $targetZoneName,
         ], $extra);
@@ -140,17 +136,17 @@ class ZoneFileImportController extends BaseController
             return;
         }
 
-        // Convert IDN names
+        // Convert IDN names. isIdn() is only true for names that are already
+        // punycode, so gating on it skipped exactly the UTF-8 names needing conversion.
+        // toPunycode() is a no-op for ASCII and already-encoded input.
         $records = [];
         foreach ($parsed->getRecords() as $record) {
-            if (DnsIdnService::isIdn($record->name)) {
-                $record->name = DnsIdnService::toPunycode($record->name);
-            }
+            $record->name = DnsIdnService::toPunycode($record->name);
             $records[] = $record;
         }
 
         $origin = $parsed->getOrigin();
-        if ($origin !== null && DnsIdnService::isIdn($origin)) {
+        if ($origin !== null) {
             $origin = DnsIdnService::toPunycode($origin);
         }
 
@@ -161,8 +157,7 @@ class ZoneFileImportController extends BaseController
         $existingZoneId = isset($_POST['existing_zone_id']) ? (int)$_POST['existing_zone_id'] : 0;
 
         $userId = $this->userContextService->getLoggedInUserId();
-        $userRepository = new DbUserRepository($this->db, $this->getConfig());
-        $permissionService = new PermissionService($userRepository);
+        $permissionService = $this->createPermissionService();
 
         // Verify permission when importing into an existing zone via POST
         if ($importMode === 'existing' && $existingZoneId > 0) {
@@ -174,9 +169,9 @@ class ZoneFileImportController extends BaseController
         }
 
         // Auto-detect existing zone when importing from the menu
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if ($importMode === 'new' && $origin !== null && $dnsRecord->domainExists($origin)) {
-            $existingZoneId = $dnsRecord->getZoneIdFromName($origin) ?? 0;
+        $domainRepository = $this->createDomainRepository();
+        if ($importMode === 'new' && $origin !== null && $domainRepository->domainExists($origin)) {
+            $existingZoneId = $domainRepository->getZoneIdFromName($origin) ?? 0;
             if ($existingZoneId > 0) {
                 $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, $existingZoneId);
                 if ($permEdit !== 'none') {
@@ -186,7 +181,7 @@ class ZoneFileImportController extends BaseController
         }
 
         // Store parsed data in session for the execute step
-        $_SESSION['zone_import_data'] = [
+        $_SESSION[SessionKeys::ZONE_IMPORT_DATA] = [
             'origin' => $origin,
             'records' => json_encode(array_map(fn($r) => [
                 'name' => $r->name,
@@ -232,8 +227,8 @@ class ZoneFileImportController extends BaseController
             // memberships at execute time.
             $ownershipMode = new ZoneOwnershipModeService($this->config);
             $userId = $this->userContextService->getLoggedInUserId();
-            $userGroupRepo = new DbUserGroupRepository($this->db);
-            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+            $userGroupRepo = $this->createUserGroupRepository();
+            $isAdmin = $this->hasPermission('user_is_ueberuser');
             $availableGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
 
             // Short-circuit a dead-end preview: in groups_only with no assignable
@@ -259,12 +254,12 @@ class ZoneFileImportController extends BaseController
 
     private function handleExecute(): void
     {
-        if (!isset($_SESSION['zone_import_data'])) {
+        if (!isset($_SESSION[SessionKeys::ZONE_IMPORT_DATA])) {
             $this->showError(_('Import session expired. Please upload the file again.'));
             return;
         }
 
-        $importData = $_SESSION['zone_import_data'];
+        $importData = $_SESSION[SessionKeys::ZONE_IMPORT_DATA];
         $records = json_decode($importData['records']);
         if (!is_array($records)) {
             $this->showError(_('Invalid import data. Please upload the file again.'));
@@ -278,7 +273,7 @@ class ZoneFileImportController extends BaseController
         $zoneName = $_POST['zone_name'] ?? $origin;
 
         // Handle IDN zone name
-        if ($zoneName && DnsIdnService::isIdn($zoneName)) {
+        if ($zoneName) {
             $zoneName = DnsIdnService::toPunycode($zoneName);
         }
 
@@ -287,7 +282,7 @@ class ZoneFileImportController extends BaseController
         $ipRetriever = new IpAddressRetriever($_SERVER);
         $clientIp = $ipRetriever->getClientIp();
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
 
         if ($importMode === 'existing' && $existingZoneId > 0) {
             // Verify the zone exists
@@ -299,12 +294,17 @@ class ZoneFileImportController extends BaseController
             }
 
             // Verify user has permission to edit this zone
-            $userRepository = new DbUserRepository($this->db, $this->getConfig());
-            $permissionService = new PermissionService($userRepository);
+            $permissionService = $this->createPermissionService();
             $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, $existingZoneId);
 
             if ($permEdit === 'none') {
                 $this->showError(_('You do not have permission to modify this zone.'));
+                return;
+            }
+
+            // Secondary and Consumer zones replicate from a primary - records cannot be imported
+            if (ZoneType::isReadOnly($domainRepository->getDomainType($existingZoneId))) {
+                $this->showError(_('You cannot import records into a read-only zone.'));
                 return;
             }
 
@@ -319,7 +319,7 @@ class ZoneFileImportController extends BaseController
                 $zoneName
             ), $zone_id);
         } else {
-            if (!UserManager::verifyPermission($this->db, 'zone_master_add')) {
+            if (!$this->hasPermission('zone_master_add')) {
                 $this->showError(_('You do not have permission to add zones.'));
                 return;
             }
@@ -329,12 +329,24 @@ class ZoneFileImportController extends BaseController
                 return;
             }
 
-            if ($dnsRecord->domainExists($zoneName)) {
+            // This path calls addDomain() directly, which does not validate, so an
+            // unconvertible name would otherwise be stored raw and never resolve.
+            $hostnameValidator = new HostnameValidator($this->config);
+            if (!$hostnameValidator->isValid($zoneName)) {
+                $this->showError(_('This is an invalid zone name.'));
+                return;
+            }
+
+            if ($domainRepository->domainExists($zoneName)) {
                 $this->showError(_('A zone with this name already exists.'));
                 return;
             }
 
-            $zoneType = $_POST['zone_type'] ?? 'MASTER';
+            $zoneType = strtoupper((string)($_POST['zone_type'] ?? 'MASTER'));
+            if (!in_array($zoneType, ZoneKind::basicValues(), true)) {
+                $this->showError(_('Invalid zone type.'));
+                return;
+            }
             $ownershipMode = new ZoneOwnershipModeService($this->config);
             $noUserOwnerRequested = !empty($_POST['no_user_owner']);
             if (!$ownershipMode->isUserOwnerAllowed()) {
@@ -347,14 +359,14 @@ class ZoneFileImportController extends BaseController
             $groupsForCreate = [];
             if ($ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups'])) {
                 $groupsForCreate = array_values(array_unique(array_map('intval', $_POST['groups'])));
-                $userGroupRepo = new DbUserGroupRepository($this->db);
+                $userGroupRepo = $this->createUserGroupRepository();
                 $existing = $userGroupRepo->findExistingIds($groupsForCreate);
                 $unknown = array_values(array_diff($groupsForCreate, $existing));
                 if (!empty($unknown)) {
                     $this->showError(sprintf(_('Unknown group ID(s): %s'), implode(',', $unknown)));
                     return;
                 }
-                if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+                if (!$this->hasPermission('user_is_ueberuser')) {
                     $allowedIds = array_map(fn($g) => $g->getId(), $userGroupRepo->findByUserId($userId));
                     $disallowed = array_values(array_diff($existing, $allowedIds));
                     if (!empty($disallowed)) {
@@ -368,12 +380,17 @@ class ZoneFileImportController extends BaseController
                 $this->showError(_('Cannot create a new zone via import: select at least one group, or leave "No user owner" unchecked.'));
                 return;
             }
-            if (!$dnsRecord->addDomain($this->db, $zoneName, $ownerForCreate, $zoneType, '', 'none', $groupsForCreate)) {
+            $overlapError = $this->getZoneOverlapError($zoneName);
+            if ($overlapError !== null) {
+                $this->showError($overlapError);
+                return;
+            }
+            if (!$this->createDomainManager()->addDomain($this->db, $zoneName, $ownerForCreate, $zoneType, '', 'none', $groupsForCreate)) {
                 $this->showError(_('Failed to create zone.'));
                 return;
             }
 
-            $zone_id = $dnsRecord->getZoneIdFromName($zoneName);
+            $zone_id = $domainRepository->getZoneIdFromName($zoneName);
             if (!$zone_id) {
                 $this->showError(_('Failed to retrieve created zone.'));
                 return;
@@ -397,13 +414,13 @@ class ZoneFileImportController extends BaseController
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
         $recordRepository = $repositoryFactory->createRecordRepository();
-        $commentSyncService = new RecordCommentSyncService($recordCommentService, $recordRepository, $backendProvider);
         $logger = new LegacyLogger($this->db);
+        $dnsRecordManager = $this->createRecordManager();
         $recordManager = new RecordManagerService(
             $this->db,
-            $dnsRecord,
+            $repositoryFactory->createDomainRepository(),
+            $dnsRecordManager,
             $recordCommentService,
-            $commentSyncService,
             $logger,
             $this->getConfig(),
             $backendProvider
@@ -428,7 +445,7 @@ class ZoneFileImportController extends BaseController
                     if (!isset($replacedRRSets[$rrsetKey])) {
                         $rrsetRecords = $recordRepository->getRRSetRecords($zone_id, $record->name, $record->type);
                         foreach ($rrsetRecords as $existing) {
-                            $dnsRecord->deleteRecord((int)$existing['id']);
+                            $dnsRecordManager->deleteRecord((int)$existing['id']);
                         }
                         $replacedRRSets[$rrsetKey] = true;
                     }
@@ -455,7 +472,7 @@ class ZoneFileImportController extends BaseController
         }
 
         // Clean up session data
-        unset($_SESSION['zone_import_data']);
+        unset($_SESSION[SessionKeys::ZONE_IMPORT_DATA]);
 
         $this->showForm([
             'result' => true,
@@ -463,7 +480,7 @@ class ZoneFileImportController extends BaseController
             'fail_count' => $failCount,
             'skip_count' => $skipCount,
             'zone_id' => $zone_id,
-            'zone_name' => $zoneName ?: $origin,
+            'zone_name' => $zoneName,
         ]);
     }
 
@@ -473,10 +490,5 @@ class ZoneFileImportController extends BaseController
             return round($bytes / 1048576, 1) . ' MB';
         }
         return round($bytes / 1024, 1) . ' KB';
-    }
-
-    private function getCsrfToken(): string
-    {
-        return $_SESSION['csrf_token'] ?? '';
     }
 }

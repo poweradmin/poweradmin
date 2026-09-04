@@ -41,14 +41,12 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class SVCBRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
     private IPAddressValidator $ipValidator;
 
     public function __construct(ConfigurationManager $config, ?IPAddressValidator $ipValidator = null)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
@@ -64,7 +62,7 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the SVCB record
      * @param string $name The name of the record
      * @param mixed $prio The priority value
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
@@ -72,12 +70,12 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
         // Validate hostname/name
-        if (!StringValidator::isValidPrintable($name)) {
+        if (!StringValidator::validatePrintable($name)->isValid()) {
             return ValidationResult::failure(_('Invalid characters in name field.'));
         }
 
         // Validate content
-        if (!StringValidator::isValidPrintable($content)) {
+        if (!StringValidator::validatePrintable($content)->isValid()) {
             return ValidationResult::failure(_('Invalid characters in content field.'));
         }
 

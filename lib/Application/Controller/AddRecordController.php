@@ -32,16 +32,16 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\RecordTypeService;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
@@ -51,12 +51,13 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Enum\AccessScope;
 
 class AddRecordController extends BaseController
 {
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
     private RecordManagerService $recordManager;
@@ -64,52 +65,56 @@ class AddRecordController extends BaseController
     private FormStateService $formStateService;
     private UserContextService $userContextService;
     private ReverseTtlResolver $reverseTtlResolver;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
-        // ConfigurationManager is now handled by the BaseController
+        $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->formStateService = new FormStateService();
 
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $recordCommentService = new RecordCommentService($recordCommentRepository);
-        $commentSyncService = new RecordCommentSyncService($recordCommentService, null, $backendProvider);
+        $this->domainRepository = $repositoryFactory->createDomainRepository();
+        $dnsRecordManager = $this->createRecordManager();
 
         $this->recordManager = new RecordManagerService(
             $this->db,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $dnsRecordManager,
             $recordCommentService,
-            $commentSyncService,
             $this->auditLogger,
             $this->getConfig(),
             $backendProvider
         );
 
         $this->recordTypeService = new RecordTypeService($this->getConfig());
+        $this->reverseTtlResolver = $this->createReverseTtlResolver();
 
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
-            $this->auditLogger,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $dnsRecordManager,
+            null,
+            $this->reverseTtlResolver,
         );
 
         $this->reverseRecordCreator = new ReverseRecordCreator(
             $this->db,
             $this->getConfig(),
             $this->auditLogger,
-            $this->dnsRecord,
+            $this->domainRepository,
+            $dnsRecordManager,
             $recordCommentService,
             $this->createDnsBackendProvider()
         );
 
         $this->userContextService = new UserContextService();
-        $this->reverseTtlResolver = new ReverseTtlResolver($this->getConfig());
     }
 
     public function run(): void
@@ -118,18 +123,18 @@ class AddRecordController extends BaseController
 
         $perm_edit = Permission::getEditPermission($this->db);
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
-        $zone_type = $this->dnsRecord->getDomainType($zone_id);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $zone_type = $this->domainRepository->getDomainType($zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
-        $this->checkCondition($zone_type == "SLAVE"
+        $this->checkCondition(ZoneType::isReadOnly($zone_type)
             || $perm_edit == "none"
-            || ($perm_edit == "own" || $perm_edit == "own_as_client")
+            || AccessScope::fromString($perm_edit)->isOwnedOnly()
             && !$user_is_zone_owner, _("You do not have the permission to add a record to this zone."));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            if (isset($_POST['multi_record_mode']) && isset($_POST['records']) && is_array($_POST['records'])) {
+            if ($this->request->getPostParam('multi_record_mode') !== null && is_array($this->request->getPostParam('records'))) {
                 $this->addMultipleRecords();
             } else {
                 $this->addRecord();
@@ -154,24 +159,27 @@ class AddRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        $postParams = $this->request->getPostParams();
+        if (!$this->doValidateRequest($postParams)) {
+            $this->showFirstValidationError($postParams);
         }
 
-        $name = $_POST['name'] ?? '';
-        $content = $_POST['content'];
-        $type = $_POST['type'];
-        $prio = isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0;
-        $comment = $_POST['comment'] ?? '';
+        $name = $this->request->getPostParam('name', '');
+        $content = $this->request->getPostParam('content');
+        $type = $this->request->getPostParam('type');
+        $prio = $this->request->getPostParam('prio');
+        $prio = $prio !== null && $prio !== '' ? (int)$prio : 0;
+        $comment = $this->request->getPostParam('comment', '');
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
 
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
             return;
         }
-        $isReverseZone = DnsHelper::isReverseZone($zone_name);
-        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
+        $ttl = $this->request->getPostParam('ttl');
+        $ttl = $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
 
         // Convert IDN record name and content to punycode
         $name = DnsIdnService::toPunycode($name);
@@ -233,11 +241,12 @@ class AddRecordController extends BaseController
         }
 
         // Clear form data if it exists in the session
-        if (isset($_POST['form_token'])) {
-            $this->formStateService->clearFormData($_POST['form_token']);
+        $formToken = $this->request->getPostParam('form_token');
+        if ($formToken !== null) {
+            $this->formStateService->clearFormData($formToken);
         }
 
-        if (isset($_POST['reverse'])) {
+        if ($this->request->getPostParam('reverse') !== null) {
             // When dns.ttl_reverse is configured it always wins for the auto-created PTR;
             // when unset, the PTR inherits the forward record's TTL (historical behavior).
             $ptrTtl = $this->reverseTtlResolver->resolvePtrTtl($ttl);
@@ -252,7 +261,7 @@ class AddRecordController extends BaseController
                     $message = _('Record successfully added. A matching PTR record was also created.');
                     $this->setMessage('edit', 'success', $message);
                 }
-            } elseif ($reverseResult && isset($reverseResult['success']) && !$reverseResult['success'] && isset($reverseResult['message'])) {
+            } elseif ($reverseResult && isset($reverseResult['success'], $reverseResult['message'])) {
                 // Reverse record creation failed with a specific message
                 $message = _('Record successfully added, but PTR record creation failed: ') . $reverseResult['message'];
                 $this->setMessage('edit', 'warning', $message);
@@ -260,7 +269,7 @@ class AddRecordController extends BaseController
                 // Reverse record creation failed without a specific message
                 $this->setMessage('edit', 'success', _('The record was successfully added, but PTR record creation failed.'));
             }
-        } elseif (isset($_POST['create_domain_record'])) {
+        } elseif ($this->request->getPostParam('create_domain_record') !== null) {
             $domainRecord = $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
             $message = $domainRecord ? _('Record successfully added. A matching A record was also created.') : _('The record was successfully added.');
             $this->setMessage('edit', 'success', $message);
@@ -275,8 +284,8 @@ class AddRecordController extends BaseController
     private function showForm(): void
     {
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
-        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
 
         // Pre-fill with the plain dns.ttl; JS updateTtlForType() swaps in dns.ttl_reverse
         // when the user selects PTR on a reverse zone, keeping the form consistent with
@@ -284,16 +293,13 @@ class AddRecordController extends BaseController
         $ttl = $this->reverseTtlResolver->getForwardTtl();
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
 
-        if ($zone_name !== null && str_starts_with($zone_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($zone_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
 
         // Retrieve form state data from session (e.g. after validation error redirect)
         $formData = null;
-        if (isset($_REQUEST['form_id']) && !empty($_REQUEST['form_id'])) {
-            $formData = $this->formStateService->getFormData($_REQUEST['form_id']);
+        $formId = $this->request->getQueryParam('form_id');
+        if ($formId) {
+            $formData = $this->formStateService->getFormData($formId);
         }
 
         // Build saved_records array for multi-row restore
@@ -303,8 +309,8 @@ class AddRecordController extends BaseController
         }
 
         $offeredTypes = $isReverseZone
-            ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities())
-            : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities());
+            ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities(), false)
+            : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities(), false);
 
         // Offer only what this caller may actually submit, so a restricted type is not
         // presented and then refused on save.
@@ -317,16 +323,18 @@ class AddRecordController extends BaseController
         $this->render('add_record.html', [
             'types' => $offeredTypes,
             'deprecated_types' => RecordType::DEPRECATED_TYPES,
-            'name' => $formData['name'] ?? $_POST['name'] ?? '',
-            'type' => $formData['type'] ?? $_POST['type'] ?? '',
-            'content' => $formData['content'] ?? $_POST['content'] ?? '',
-            'ttl' => $formData['ttl'] ?? $_POST['ttl'] ?? $ttl,
+            'name' => $formData['name'] ?? $this->request->getPostParam('name', ''),
+            'type' => $formData['type'] ?? $this->request->getPostParam('type', ''),
+            'content' => $formData['content'] ?? $this->request->getPostParam('content', ''),
+            'ttl' => $formData['ttl'] ?? $this->request->getPostParam('ttl', $ttl),
             'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),
             'ptr_default_ttl' => $this->reverseTtlResolver->getConfiguredReverseTtl(),
-            'prio' => $formData['prio'] ?? $_POST['prio'] ?? 0,
+            'type_default_ttls' => $this->reverseTtlResolver->getTypeDefaults(),
+            'prio' => $formData['prio'] ?? $this->request->getPostParam('prio', 0),
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => DnsIdnService::toDisplay($zone_name),
             'is_reverse_zone' => $isReverseZone,
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
@@ -349,8 +357,8 @@ class AddRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_GET)) {
-            $this->showFirstValidationError($_GET);
+        if (!$this->doValidateRequest($this->request->getQueryParams())) {
+            $this->showFirstValidationError($this->request->getQueryParams());
         }
     }
 
@@ -443,7 +451,7 @@ class AddRecordController extends BaseController
     private function addMultipleRecords(): void
     {
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
-        $records = $_POST['records'] ?? [];
+        $records = $this->request->getPostParam('records', []);
         $successCount = 0;
         $failureCount = 0;
         $matchingRecordCount = 0;
@@ -460,12 +468,12 @@ class AddRecordController extends BaseController
             return;
         }
 
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
             return;
         }
-        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
 
         foreach ($records as $record) {
             // Skip non-array or incomplete records
@@ -514,12 +522,13 @@ class AddRecordController extends BaseController
         }
 
         // Clear form data if it exists in the session
-        if (isset($_POST['form_token'])) {
-            $this->formStateService->clearFormData($_POST['form_token']);
+        $formToken = $this->request->getPostParam('form_token');
+        if ($formToken !== null) {
+            $this->formStateService->clearFormData($formToken);
         }
 
         if ($successCount > 0) {
-            $message = sprintf(_('%d record(s) were successfully added.'), $successCount);
+            $message = sprintf(_('%d record(s) have been added successfully.'), $successCount);
             if ($matchingRecordCount > 0) {
                 $message .= ' ' . sprintf(_('%d matching record(s) were also created.'), $matchingRecordCount);
             }

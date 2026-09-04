@@ -1,15 +1,11 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">{% trans %}Tools{% endtrans %}</li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Email Template Previews{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Tools'|trans},
+    {label: 'Email Template Previews'|trans},
+]) }}
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-envelope-fill me-2"></i>{% trans %}Email Template Previews{% endtrans %}</strong>
-    </div>
+    {{ macros.card_header('bi-envelope-fill', 'Email Template Previews'|trans) }}
     <div class="card-body">
         <p>{% trans %}Preview how email templates will appear to users in both light and dark modes. These previews use sample data to demonstrate the email formatting and styling.{% endtrans %}</p>
         

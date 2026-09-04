@@ -1,0 +1,18 @@
+# Templates allowed to differ between templates/default and templates/modern.
+# Every other template present in default must exist in modern and stay
+# byte-identical (enforced by composer lint:themes). Add a file here only
+# when a theme intentionally customizes it.
+add_perm_templ.html
+api_key_add.html
+api_key_created.html
+api_key_delete.html
+api_key_edit.html
+api_key_regenerate.html
+api_key_regenerated.html
+api_keys.html
+database_consistency.html
+edit_perm_templ.html
+footer.html
+header.html
+list_perm_templ.html
+pdns_status.html

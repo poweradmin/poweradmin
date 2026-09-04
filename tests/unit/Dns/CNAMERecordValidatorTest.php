@@ -359,18 +359,43 @@ class CNAMERecordValidatorTest extends TestCase
         $this->assertStringContainsString('Empty CNAME records', $result->getFirstError());
     }
 
-    public function testValidateWithInvalidFqdnTarget()
+    public function testValidateAllowsSingleLabelTargetWhenTopLevelTldCheckIsOff()
     {
-        $content = 'www'; // Invalid: single-label name
-        $name = 'alias.example.com';
-        $prio = 0;
-        $ttl = 3600;
-        $defaultTTL = 86400;
+        // Mirrors HostnameValidator, which permits single-label names with this
+        // setting off.
+        $result = $this->validator->validate('www', 'alias.example.com', 0, 3600, 86400);
 
-        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateRejectsSingleLabelTargetWhenTopLevelTldCheckIsOn()
+    {
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $configMock->method('get')
+            ->willReturnCallback(function ($section, $key, $default = null) {
+                if ($section === 'dns') {
+                    switch ($key) {
+                        case 'top_level_tld_check':
+                            return true;
+                        case 'strict_tld_check':
+                            return false;
+                        case 'custom_tlds':
+                            return [];
+                        default:
+                            return 'example.com';
+                    }
+                }
+                return $default ?? 'example.com';
+            });
+
+        $validator = new CNAMERecordValidator($configMock, $this->dbMock);
+
+        $result = $validator->validate('www', 'alias.example.com', 0, 3600, 86400);
 
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('CNAME target must be a fully qualified domain name', $result->getFirstError());
+        // Rejected by HostnameValidator, which owns this policy for both record
+        // names and CNAME targets.
+        $this->assertStringContainsString('Single-label hostnames are not allowed', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTldTarget()

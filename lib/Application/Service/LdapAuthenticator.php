@@ -28,8 +28,10 @@ use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserTimezoneService;
+use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -49,6 +51,8 @@ class LdapAuthenticator extends LoggingService
     private UserContextService $userContextService;
     private array $serverParams;
     private ?MfaService $mfaService = null;
+
+    /** Database driver name, used to build the LDAP username-match predicate. */
     private string $dbType = '';
 
     public function __construct(
@@ -74,16 +78,20 @@ class LdapAuthenticator extends LoggingService
         $this->userContextService = $userContextService;
         $this->serverParams = $serverParams ?: $_SERVER;
         $this->dbType = (string)$connection->getAttribute(PDO::ATTR_DRIVER_NAME);
+    }
 
-        // Initialize MFA service
-        $userMfaRepository = new DbUserMfaRepository($connection, $configManager);
-        $mailService = new MailService($configManager);
-        $this->mfaService = new MfaService(
-            $userMfaRepository,
-            $configManager,
-            $mailService,
+    /**
+     * Builds the MFA service on first use. The call site is already guarded by
+     * security.mfa.enabled, so installations without MFA never pay for the graph.
+     */
+    private function mfaService(): MfaService
+    {
+        return $this->mfaService ??= new MfaService(
+            new DbUserMfaRepository($this->db, $this->configManager),
+            $this->configManager,
+            new MailService($this->configManager),
             null,
-            UserTimezoneService::createDefault($connection, $configManager)
+            UserTimezoneService::createDefault($this->db, $this->configManager)
         );
     }
 
@@ -99,6 +107,9 @@ class LdapAuthenticator extends LoggingService
         // Check if the account is locked
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             $this->logWarning('Account is locked for LDAP user {username}', ['username' => $username]);
+            if (isset($_POST["authenticate"])) {
+                $this->ldapUserEventLogger->logLockout();
+            }
             $sessionEntity = new SessionEntity(_('Account is temporarily locked. Please try again later.'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return;
@@ -129,8 +140,15 @@ class LdapAuthenticator extends LoggingService
         $ldap_proto = $this->configManager->get('ldap', 'protocol_version', 3);
         $ldap_debug = $this->configManager->get('ldap', 'debug', false);
         $ldap_user_attribute = $this->configManager->get('ldap', 'user_attribute', 'uid');
+        $ldap_sync_user_info = (bool)$this->configManager->get('ldap', 'sync_user_info', false);
+        $ldap_fullname_attribute = $this->configManager->get('ldap', 'fullname_attribute', 'displayName');
+        $ldap_email_attribute = $this->configManager->get('ldap', 'email_attribute', 'mail');
+        $ldap_auto_provision = (bool)$this->configManager->get('ldap', 'auto_provision', false);
+        $ldap_groups_attribute = $this->configManager->get('ldap', 'groups_attribute', 'memberOf');
+        $ldap_group_sync = $this->configManager->get('ldap', 'permission_template_mapping', []) !== []
+            || $this->configManager->get('ldap', 'group_mapping', []) !== [];
 
-        if (!$this->userContextService->hasSessionData("userlogin") || !$this->userContextService->hasSessionData("userpwd")) {
+        if (!$this->userContextService->hasSessionData(SessionKeys::USERLOGIN) || !$this->userContextService->hasSessionData(SessionKeys::USERPWD)) {
             $this->logWarning('Session variables userlogin or userpwd are not set.');
             $sessionEntity = new SessionEntity('', 'danger');
             $this->authenticationService->auth($sessionEntity);
@@ -172,6 +190,12 @@ class LdapAuthenticator extends LoggingService
         }
 
         $attributes = array($ldap_user_attribute, 'dn');
+        if ($ldap_sync_user_info || $ldap_auto_provision) {
+            $attributes = array_merge($attributes, array_filter([$ldap_fullname_attribute, $ldap_email_attribute]));
+        }
+        if (($ldap_group_sync || $ldap_auto_provision) && $ldap_groups_attribute !== '') {
+            $attributes[] = $ldap_groups_attribute;
+        }
 
         // Properly escape user input to prevent LDAP injection
         $escaped_userlogin = ldap_escape($this->userContextService->getLoggedInUsername(), '', LDAP_ESCAPE_FILTER);
@@ -217,7 +241,7 @@ class LdapAuthenticator extends LoggingService
         $user_dn = $entries[0]["dn"];
 
         $passwordEncryptionService = new PasswordEncryptionService($session_key);
-        $session_pass = $passwordEncryptionService->decrypt($this->userContextService->getSessionData('userpwd'));
+        $session_pass = $passwordEncryptionService->decrypt($this->userContextService->getSessionData(SessionKeys::USERPWD));
         if (!@ldap_bind($ldapconn, $user_dn, $session_pass)) {
             $this->logWarning('LDAP authentication failed for user {username}', ['username' => $username]);
             if (isset($_POST["authenticate"])) {
@@ -232,14 +256,25 @@ class LdapAuthenticator extends LoggingService
 
         $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
 
-        // Directory usernames are accent-sensitive, so a folding collation here would
-        // let a look-alike directory account resolve to another user's local row.
+        $userInfo = LdapUserInfo::fromLdapEntry($entries[0], $username, $ldap_fullname_attribute, $ldap_email_attribute, $ldap_groups_attribute);
+        $provisioningService = new UserProvisioningService($this->db, $this->configManager, $this->logger);
+
+        // Accent-exact match, so a look-alike username cannot resolve to another account.
         $match = DbCompat::accentSensitiveEquals($this->dbType, 'username', ':username');
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
+        $stmt = $this->db->prepare("SELECT id, fullname, email FROM users WHERE $match AND active = 1 AND use_ldap = 1");
         $stmt->execute([
             'username' => $username
         ]);
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$rowObj && $ldap_auto_provision && $provisioningService->provisionUser($userInfo, 'ldap')) {
+            $stmt->execute(['username' => $username]);
+            $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->logInfo('Auto-provisioned LDAP user {username}', ['username' => $username]);
+        } elseif ($rowObj && ($ldap_sync_user_info || $ldap_group_sync)) {
+            $provisioningService->syncExistingUser((int)$rowObj['id'], $userInfo);
+            $rowObj['fullname'] = $userInfo->getDisplayName() ?: $rowObj['fullname'];
+        }
 
         if (!$rowObj) {
             $this->logWarning('No active LDAP user found with the provided username: {username}', ['username' => $username]);
@@ -255,8 +290,15 @@ class LdapAuthenticator extends LoggingService
         session_regenerate_id(true);
         $this->logInfo('Session ID regenerated for user {username}', ['username' => $username]);
 
-        if (!$this->userContextService->hasSessionData('csrf_token')) {
-            $this->userContextService->setSessionData('csrf_token', $this->csrfTokenService->generateToken());
+        // Email for MFA delivery. Only trust the LDAP directory's mail when user-info
+        // sync is on; otherwise the Poweradmin account email is authoritative so a
+        // self-editable directory attribute can't redirect MFA codes. A just
+        // auto-provisioned user already has users.email set from LDAP, so the DB
+        // fallback covers them without trusting LDAP for existing accounts.
+        $sessionEmail = ($ldap_sync_user_info ? $userInfo->getEmail() : '') ?: ($rowObj['email'] ?? '');
+
+        if (!$this->userContextService->hasSessionData(SessionKeys::CSRF_TOKEN)) {
+            $this->userContextService->setSessionData(SessionKeys::CSRF_TOKEN, $this->csrfTokenService->generateToken());
             $this->logInfo('CSRF token generated for user {username}', ['username' => $username]);
         }
 
@@ -264,16 +306,17 @@ class LdapAuthenticator extends LoggingService
         $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
 
         // Check if MFA is enabled for this user
-        $mfaRequired = $mfaGloballyEnabled && $this->mfaService->isMfaEnabled($rowObj['id']);
+        $mfaRequired = $mfaGloballyEnabled && $this->mfaService()->isMfaEnabled($rowObj['id']);
 
         if ($mfaRequired) {
             $this->logInfo('MFA is required for LDAP user {username}', ['username' => $username]);
 
             // Store user details temporarily for MFA verification - DO NOT set userid yet!
             // This prevents API requests from bypassing MFA by checking isAuthenticated()
-            $this->userContextService->setSessionData('pending_userid', $rowObj['id']);
-            $this->userContextService->setSessionData('pending_name', $rowObj['fullname']);
-            $this->userContextService->setSessionData('pending_auth_used', 'ldap');
+            $this->userContextService->setSessionData(SessionKeys::PENDING_USERID, $rowObj['id']);
+            $this->userContextService->setSessionData(SessionKeys::PENDING_NAME, $rowObj['fullname']);
+            $this->userContextService->setSessionData(SessionKeys::PENDING_EMAIL, $sessionEmail);
+            $this->userContextService->setSessionData(SessionKeys::PENDING_AUTH_USED, 'ldap');
 
             // Use our centralized MFA session manager to set MFA required
             MfaSessionManager::setMfaRequired($rowObj['id']);
@@ -299,11 +342,12 @@ class LdapAuthenticator extends LoggingService
         } else {
             // No MFA required, proceed with full authentication
             // NOW it's safe to set userid since MFA is not required
-            $this->userContextService->setSessionData('userid', $rowObj['id']);
-            $this->userContextService->setSessionData('name', $rowObj['fullname']);
-            $this->userContextService->setSessionData('auth_used', 'ldap');
-            $this->userContextService->setSessionData('authenticated', true);
-            $this->userContextService->setSessionData('mfa_required', false);
+            $this->userContextService->setSessionData(SessionKeys::USERID, $rowObj['id']);
+            $this->userContextService->setSessionData(SessionKeys::NAME, $rowObj['fullname']);
+            $this->userContextService->setSessionData(SessionKeys::EMAIL, $sessionEmail);
+            $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'ldap');
+            $this->userContextService->setSessionData(SessionKeys::AUTHENTICATED, true);
+            MfaSessionManager::setMfaNotRequired();
 
             // Update LDAP authentication cache BEFORE redirect (so next page load uses cache)
             $this->updateAuthenticationCache($ipAddress);
@@ -337,7 +381,7 @@ class LdapAuthenticator extends LoggingService
         // Check if user is fully authenticated (not pending MFA)
         // Must check both userid exists AND authenticated flag is strictly true
         // hasSessionData() only checks isset(), which returns true even for false values
-        if (!$this->userContextService->hasSessionData('userid')) {
+        if (!$this->userContextService->hasSessionData(SessionKeys::USERID)) {
             $this->logDebug('User ID not set, cache check skipped');
             return false;
         }
@@ -345,7 +389,7 @@ class LdapAuthenticator extends LoggingService
         // CRITICAL: Check authenticated flag is strictly true (not just set)
         // This prevents MFA bypass: MfaSessionManager sets authenticated=false while pending MFA
         // We must reject cache if authenticated is false, null, or any non-true value
-        $authenticatedValue = $this->userContextService->getSessionData('authenticated');
+        $authenticatedValue = $this->userContextService->getSessionData(SessionKeys::AUTHENTICATED);
         if ($authenticatedValue !== true) {
             $this->logDebug('User not fully authenticated (authenticated={value}), cache check skipped', [
                 'value' => var_export($authenticatedValue, true)
@@ -354,14 +398,14 @@ class LdapAuthenticator extends LoggingService
         }
 
         // Check if LDAP auth timestamp exists
-        if (!$this->userContextService->hasSessionData('ldap_auth_timestamp')) {
+        if (!$this->userContextService->hasSessionData(SessionKeys::LDAP_AUTH_TIMESTAMP)) {
             $this->logDebug('No LDAP auth timestamp found in session');
             return false;
         }
 
         // Check if login identity has changed (user trying to switch accounts)
         $currentUsername = $this->userContextService->getLoggedInUsername();
-        $cachedUsername = $this->userContextService->getSessionData('ldap_auth_username');
+        $cachedUsername = $this->userContextService->getSessionData(SessionKeys::LDAP_AUTH_USERNAME);
 
         if ($cachedUsername && $currentUsername !== $cachedUsername) {
             $this->logWarning('Username changed since LDAP authentication, invalidating cache (old: {oldUser}, new: {newUser})', [
@@ -372,7 +416,7 @@ class LdapAuthenticator extends LoggingService
             return false;
         }
 
-        $authTimestamp = $this->userContextService->getSessionData('ldap_auth_timestamp');
+        $authTimestamp = $this->userContextService->getSessionData(SessionKeys::LDAP_AUTH_TIMESTAMP);
         $currentTime = time();
         $timeSinceAuth = $currentTime - $authTimestamp;
 
@@ -388,7 +432,7 @@ class LdapAuthenticator extends LoggingService
         // Validate IP address hasn't changed (security measure)
         $ipRetriever = new IpAddressRetriever($this->serverParams);
         $currentIp = $ipRetriever->getClientIp() ?: '0.0.0.0';
-        $cachedIp = $this->userContextService->getSessionData('ldap_auth_ip');
+        $cachedIp = $this->userContextService->getSessionData(SessionKeys::LDAP_AUTH_IP);
 
         if ($cachedIp && $cachedIp !== $currentIp) {
             $this->logWarning('IP address changed since LDAP authentication, invalidating cache (old: {oldIp}, new: {newIp})', [
@@ -420,9 +464,9 @@ class LdapAuthenticator extends LoggingService
         // Only update cache if caching is enabled
         if ($cacheTimeout > 0) {
             $username = $this->userContextService->getLoggedInUsername();
-            $this->userContextService->setSessionData('ldap_auth_timestamp', time());
-            $this->userContextService->setSessionData('ldap_auth_ip', $ipAddress);
-            $this->userContextService->setSessionData('ldap_auth_username', $username);
+            $this->userContextService->setSessionData(SessionKeys::LDAP_AUTH_TIMESTAMP, time());
+            $this->userContextService->setSessionData(SessionKeys::LDAP_AUTH_IP, $ipAddress);
+            $this->userContextService->setSessionData(SessionKeys::LDAP_AUTH_USERNAME, $username);
             $this->logDebug('LDAP authentication cache updated for user {username} from IP {ip}', [
                 'username' => $username,
                 'ip' => $ipAddress
@@ -462,18 +506,18 @@ class LdapAuthenticator extends LoggingService
      */
     public function invalidateAuthenticationCache(): void
     {
-        if ($this->userContextService->hasSessionData('ldap_auth_timestamp')) {
-            $this->userContextService->unsetSessionData('ldap_auth_timestamp');
+        if ($this->userContextService->hasSessionData(SessionKeys::LDAP_AUTH_TIMESTAMP)) {
+            $this->userContextService->unsetSessionData(SessionKeys::LDAP_AUTH_TIMESTAMP);
             $this->logDebug('LDAP authentication timestamp cleared from session');
         }
 
-        if ($this->userContextService->hasSessionData('ldap_auth_ip')) {
-            $this->userContextService->unsetSessionData('ldap_auth_ip');
+        if ($this->userContextService->hasSessionData(SessionKeys::LDAP_AUTH_IP)) {
+            $this->userContextService->unsetSessionData(SessionKeys::LDAP_AUTH_IP);
             $this->logDebug('LDAP authentication IP cleared from session');
         }
 
-        if ($this->userContextService->hasSessionData('ldap_auth_username')) {
-            $this->userContextService->unsetSessionData('ldap_auth_username');
+        if ($this->userContextService->hasSessionData(SessionKeys::LDAP_AUTH_USERNAME)) {
+            $this->userContextService->unsetSessionData(SessionKeys::LDAP_AUTH_USERNAME);
             $this->logDebug('LDAP authentication username cleared from session');
         }
     }

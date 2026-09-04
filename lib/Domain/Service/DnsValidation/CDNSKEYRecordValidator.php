@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,13 +53,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class CDNSKEYRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -101,7 +99,7 @@ class CDNSKEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Check for warnings from content validation
-        if ($contentResult->isValid() && $contentResult->hasWarnings()) {
+        if ($contentResult->hasWarnings()) {
             $contentWarnings = $contentResult->getWarnings();
             if (!empty($contentWarnings)) {
                 $warnings = array_merge($warnings, $contentWarnings);

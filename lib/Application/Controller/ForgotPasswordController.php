@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
@@ -30,7 +31,6 @@ use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -38,6 +38,7 @@ use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class ForgotPasswordController extends BaseController
 {
@@ -48,10 +49,13 @@ class ForgotPasswordController extends BaseController
     private IpAddressRetriever $ipRetriever;
     private UserAgentService $userAgentService;
     private LegacyLogger $auditLogger;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request, false); // No authentication required for forgot password
+
+        $this->request = new Request();
 
         // Create our own CSRF token service
         $this->csrfTokenService = new CsrfTokenService();
@@ -59,7 +63,7 @@ class ForgotPasswordController extends BaseController
         // Create PasswordResetService with dependencies
         $configManager = ConfigurationManager::getInstance();
         $tokenRepository = new DbPasswordResetTokenRepository($this->db, $configManager);
-        $userRepository = new DbUserRepository($this->db, $configManager);
+        $userRepository = $this->createUserRepository();
         $mailService = new MailService($configManager, null);
         $authService = new UserAuthenticationService(
             $configManager->get('security', 'password_encryption', 'bcrypt'),
@@ -86,6 +90,15 @@ class ForgotPasswordController extends BaseController
         $this->recaptchaService = new RecaptchaService($this->config);
         $this->userContextService = new UserContextService();
         $this->auditLogger = new LegacyLogger($this->db);
+    }
+
+    /**
+     * This flow validates its own one-shot `password_reset_token` instead of the
+     * session-wide form token.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
     }
 
     public function run(): void
@@ -131,9 +144,9 @@ class ForgotPasswordController extends BaseController
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
-            $token = $_POST['password_reset_token'] ?? '';
+            $token = $this->request->getPostParam('password_reset_token', '');
 
-            if (!$this->csrfTokenService->validateToken($token, 'password_reset_token')) {
+            if (!$this->csrfTokenService->validateToken($token, SessionKeys::PASSWORD_RESET_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
                     'ip' => $ipAddress,
                     'user_agent' => $userAgent,
@@ -144,12 +157,12 @@ class ForgotPasswordController extends BaseController
             }
 
             // Clear the token after use
-            unset($_SESSION['password_reset_token']);
+            unset($_SESSION[SessionKeys::PASSWORD_RESET_TOKEN]);
         }
 
         // Verify reCAPTCHA if enabled
         if ($this->recaptchaService->isEnabled()) {
-            $recaptchaToken = $_POST['g-recaptcha-response'] ?? '';
+            $recaptchaToken = $this->request->getPostParam('g-recaptcha-response', '');
             if (!$this->recaptchaService->verify($recaptchaToken, $ipAddress, 'forgot_password')) {
                 $this->logger->warning('Password reset failed - reCAPTCHA verification failed', [
                     'ip' => $ipAddress,
@@ -161,7 +174,7 @@ class ForgotPasswordController extends BaseController
             }
         }
 
-        $email = trim($_POST['email'] ?? '');
+        $email = trim($this->request->getPostParam('email', ''));
 
         // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -178,7 +191,9 @@ class ForgotPasswordController extends BaseController
         // Check if user's authentication method allows password reset
         $canReset = $this->passwordResetService->canUserResetPassword($email);
         if (!$canReset['allowed']) {
-            $authMethod = strtoupper($canReset['auth_method'] ?? 'external');
+            // Respond exactly as for a normal request - revealing that the account
+            // exists or which backend it uses would defeat the anti-enumeration
+            // design. The reset simply does not proceed (no email is sent).
             $this->logger->info('Password reset blocked - user uses external authentication', [
                 'email' => $email,
                 'auth_method' => $canReset['auth_method'],
@@ -186,10 +201,7 @@ class ForgotPasswordController extends BaseController
                 'user_agent' => $userAgent,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
-            $this->showPasswordResetForm(
-                "This account uses {$authMethod} authentication. Password reset is not available. " .
-                "Please contact your system administrator for assistance."
-            );
+            $this->showSuccessMessage();
             return;
         }
 
@@ -232,7 +244,7 @@ class ForgotPasswordController extends BaseController
                 'email' => $email,
                 'ip' => $ipAddress,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'origin' => $e->getFile() . ':' . $e->getLine(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $this->showPasswordResetForm('An unexpected error occurred. Please try again later.');
@@ -252,7 +264,7 @@ class ForgotPasswordController extends BaseController
 
         // Generate a new token for password reset
         $passwordResetToken = $this->csrfTokenService->generateToken();
-        $_SESSION['password_reset_token'] = $passwordResetToken;
+        $_SESSION[SessionKeys::PASSWORD_RESET_TOKEN] = $passwordResetToken;
 
         $this->render('forgot_password.html', [
             'error' => $error,
@@ -268,6 +280,7 @@ class ForgotPasswordController extends BaseController
         $this->render('forgot_password.html', [
             'success' => true,
             'message' => 'If an account exists with that email address, you will receive a password reset link shortly.',
+            'recaptcha_enabled' => false,
         ]);
     }
 }

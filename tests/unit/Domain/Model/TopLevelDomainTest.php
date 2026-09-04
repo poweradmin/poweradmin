@@ -65,6 +65,14 @@ class TopLevelDomainTest extends TestCase
         $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('example.example'));
     }
 
+    public function testReservedSpecialUseTlds(): void
+    {
+        $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('printer.local'));
+        $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('service.onion'));
+        $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('host.alt'));
+        $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('corp.internal'));
+    }
+
     public function testInvalidTlds(): void
     {
         $this->assertFalse(TopLevelDomain::isValidTopLevelDomain('example.notarealtld'));
@@ -91,5 +99,17 @@ class TopLevelDomainTest extends TestCase
         $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('www.example.com'));
         $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('mail.server.example.org'));
         $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('deep.nested.subdomain.example.net'));
+    }
+
+    /**
+     * Nothing initializes the TLD table at startup any more, so the first lookup
+     * has to load it itself.
+     */
+    public function testIsValidTopLevelDomainInitializesLazily(): void
+    {
+        TopLevelDomain::resetCache();
+
+        $this->assertTrue(TopLevelDomain::isValidTopLevelDomain('example.com'));
+        $this->assertFalse(TopLevelDomain::isValidTopLevelDomain('example.invalidtld'));
     }
 }

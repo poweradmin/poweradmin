@@ -2,13 +2,13 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Routing\SymfonyRouter;
 use Symfony\Component\HttpFoundation\Request;
 
 class SymfonyRouterTest extends TestCase
 {
-    private SymfonyRouter $router;
 
     protected function setUp(): void
     {
@@ -20,8 +20,6 @@ class SymfonyRouterTest extends TestCase
         $_SERVER['SERVER_NAME'] = 'localhost';
         $_SERVER['SERVER_PORT'] = '80';
         $_SERVER['HTTPS'] = '';
-
-        $this->router = new SymfonyRouter();
     }
 
     public function testHomeRouteMatching(): void
@@ -75,59 +73,85 @@ class SymfonyRouterTest extends TestCase
         $this->assertEquals('record_edit', $routeInfo['route']);
     }
 
-    public function testApiV1ZonesRoute(): void
+    public function testApiV2ZonesRoute(): void
     {
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones';
 
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\Api\V1\ZonesController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Api\V2\ZonesController', $routeInfo['controller']);
         $this->assertEquals('run', $routeInfo['method']); // API routes use run method
-        $this->assertEquals('api_v1_zones', $routeInfo['route']);
+        $this->assertEquals('api_v2_zones', $routeInfo['route']);
     }
 
-    public function testApiV1ZoneWithIdRoute(): void
+    public function testApiV2ZoneWithIdRoute(): void
     {
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones/123';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones/123';
 
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\Api\V1\ZonesController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Api\V2\ZonesController', $routeInfo['controller']);
         $this->assertEquals('run', $routeInfo['method']);
         $this->assertEquals(['id' => '123'], $routeInfo['parameters']);
-        $this->assertEquals('api_v1_zone', $routeInfo['route']);
+        $this->assertEquals('api_v2_zone', $routeInfo['route']);
     }
 
-    public function testApiV1ZoneRecordsRoute(): void
+    public function testApiV2ZoneRecordsRoute(): void
     {
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones/123/records';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones/123/records';
 
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\Api\V1\ZonesRecordsController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Api\V2\ZonesRecordsController', $routeInfo['controller']);
         $this->assertEquals(['id' => '123'], $routeInfo['parameters']);
-        $this->assertEquals('api_v1_zone_records', $routeInfo['route']);
+        $this->assertEquals('api_v2_zone_records', $routeInfo['route']);
     }
 
-    public function testApiV1ZoneRecordWithIdRoute(): void
+    public function testApiV2ZoneRecordWithIdRoute(): void
     {
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones/123/records/456';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones/123/records/456';
 
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\Api\V1\ZonesRecordsController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Api\V2\ZonesRecordsController', $routeInfo['controller']);
         $this->assertEquals(['id' => '123', 'record_id' => '456'], $routeInfo['parameters']);
-        $this->assertEquals('api_v1_zone_record', $routeInfo['route']);
+        $this->assertEquals('api_v2_zone_record', $routeInfo['route']);
+    }
+
+    #[DataProvider('removedApiV1PathProvider')]
+    public function testRemovedApiV1PathsResolveToGoneController(string $method, string $path): void
+    {
+        $_SERVER['REQUEST_METHOD'] = $method;
+        $_SERVER['REQUEST_URI'] = $path;
+
+        $router = new SymfonyRouter();
+        $routeInfo = $router->match();
+
+        $this->assertEquals('Poweradmin\Application\Controller\Api\V1GoneController', $routeInfo['controller']);
+        $this->assertEquals('api_v1_gone', $routeInfo['route']);
+    }
+
+    public static function removedApiV1PathProvider(): array
+    {
+        return [
+            'bare root' => ['GET', '/api/v1'],
+            'trailing slash' => ['GET', '/api/v1/'],
+            'removed collection' => ['GET', '/api/v1/zones'],
+            'removed write' => ['POST', '/api/v1/zones'],
+            'removed update' => ['PUT', '/api/v1/users/1'],
+            'removed delete' => ['DELETE', '/api/v1/permission-templates/2'],
+            'unknown deep path' => ['PATCH', '/api/v1/anything/deep'],
+        ];
     }
 
     public function testHttpMethodMappingGet(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones';
 
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
@@ -138,7 +162,7 @@ class SymfonyRouterTest extends TestCase
     public function testHttpMethodMappingPost(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones';
 
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
@@ -149,7 +173,7 @@ class SymfonyRouterTest extends TestCase
     public function testHttpMethodMappingPut(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'PUT';
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones/123';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones/123';
 
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
@@ -160,7 +184,7 @@ class SymfonyRouterTest extends TestCase
     public function testHttpMethodMappingDelete(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'DELETE';
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones/123';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones/123';
 
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
@@ -183,7 +207,7 @@ class SymfonyRouterTest extends TestCase
 
     public function testIsApiRoute(): void
     {
-        $_SERVER['REQUEST_URI'] = '/api/v1/zones';
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones';
 
         $router = new SymfonyRouter();
 
@@ -216,8 +240,8 @@ class SymfonyRouterTest extends TestCase
         $url = $router->generateUrl('user_edit', ['id' => 123]);
         $this->assertEquals('/users/123/edit', $url);
 
-        $url = $router->generateUrl('api_v1_zone_record', ['id' => 456, 'record_id' => 789]);
-        $this->assertEquals('/api/v1/zones/456/records/789', $url);
+        $url = $router->generateUrl('api_v2_zone_record', ['id' => 456, 'record_id' => 789]);
+        $this->assertEquals('/api/v2/zones/456/records/789', $url);
     }
 
     public function testGetRequest(): void

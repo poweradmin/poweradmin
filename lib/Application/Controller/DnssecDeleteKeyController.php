@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -37,9 +37,7 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 
@@ -65,8 +63,7 @@ class DnssecDeleteKeyController extends BaseController
 
         // Early permission check - validate DNSSEC access before any operations
         $perm_view = Permission::getViewPermission($this->db);
-        $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         // Check view permission first
         if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
@@ -75,19 +72,25 @@ class DnssecDeleteKeyController extends BaseController
         }
 
         // Validate zone existence
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zone_id)) {
+        $domainRepository = $this->createDomainRepository();
+        if (!$domainRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        if ($perm_edit !== "all" && !($perm_edit === "own" && $user_is_zone_owner)) {
+        if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id)) {
             $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
             return;
         }
 
-        $domain_name = $dnsRecord->getDomainNameById($zone_id);
+        $domain_name = $domainRepository->getDomainNameById($zone_id);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+
+        if ($dnssecProvider->isZonePresigned($domain_name)) {
+            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            $this->redirect('/zones/' . $zone_id . '/dnssec');
+            return;
+        }
 
         if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -133,20 +136,17 @@ class DnssecDeleteKeyController extends BaseController
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
-        if (str_starts_with($domain_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($domain_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
 
         $this->render('dnssec_delete_key.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => DnsIdnService::toDisplay($domain_name),
             'key_id' => $key_id,
             'key_info' => $key_info,
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'zone_id' => $zone_id,
-            'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($domain_name),
         ]);
     }
 }

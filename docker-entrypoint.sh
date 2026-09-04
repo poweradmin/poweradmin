@@ -703,10 +703,16 @@ generate_config() {
     api_basic_auth_enabled=$(to_php_bool "${PA_API_BASIC_AUTH_ENABLED:-false}")
     local api_docs_enabled
     api_docs_enabled=$(to_php_bool "${PA_API_DOCS_ENABLED:-false}")
+    local health_enabled
+    health_enabled=$(to_php_bool "${PA_HEALTH_ENABLED:-false}")
+    local health_ping_enabled
+    health_ping_enabled=$(to_php_bool "${PA_HEALTH_PING_ENABLED:-false}")
     local ldap_enabled
     ldap_enabled=$(to_php_bool "${PA_LDAP_ENABLED:-false}")
 
     # Convert interface boolean values to lowercase
+    local web_enabled
+    web_enabled=$(to_php_bool "${PA_WEB_ENABLED:-true}")
     local show_record_id
     show_record_id=$(to_php_bool "${PA_SHOW_RECORD_ID:-true}")
     local position_record_form_top
@@ -719,6 +725,12 @@ generate_config() {
     show_record_comments=$(to_php_bool "${PA_SHOW_RECORD_COMMENTS:-false}")
     local display_serial_in_zone_list
     display_serial_in_zone_list=$(to_php_bool "${PA_DISPLAY_SERIAL_IN_ZONE_LIST:-false}")
+    local display_signed_serial_in_zone_list
+    display_signed_serial_in_zone_list=$(to_php_bool "${PA_DISPLAY_SIGNED_SERIAL_IN_ZONE_LIST:-false}")
+    local display_owner_in_zone_list
+    display_owner_in_zone_list=$(to_php_bool "${PA_DISPLAY_OWNER_IN_ZONE_LIST:-true}")
+    local display_group_in_zone_list
+    display_group_in_zone_list=$(to_php_bool "${PA_DISPLAY_GROUP_IN_ZONE_LIST:-true}")
     local display_template_in_zone_list
     display_template_in_zone_list=$(to_php_bool "${PA_DISPLAY_TEMPLATE_IN_ZONE_LIST:-false}")
     local display_fullname_in_zone_list
@@ -749,6 +761,8 @@ generate_config() {
     dns_prevent_duplicate_ptr=$(to_php_bool "${PA_DNS_PREVENT_DUPLICATE_PTR:-true}")
     local dns_sync_zone_owner_to_account
     dns_sync_zone_owner_to_account=$(to_php_bool "${PA_DNS_SYNC_ZONE_OWNER_TO_ACCOUNT:-false}")
+    local dns_parent_zone_ownership_check
+    dns_parent_zone_ownership_check=$(to_php_bool "${PA_DNS_PARENT_ZONE_OWNERSHIP_CHECK:-true}")
 
     # null means "no template", which '' would not: the setting reads an empty string as a
     # real value. The quotes therefore have to be conditional too.
@@ -768,6 +782,10 @@ generate_config() {
     logging_database_enabled=$(to_php_bool "${PA_LOGGING_DATABASE_ENABLED:-false}")
     local logging_syslog_enabled
     logging_syslog_enabled=$(to_php_bool "${PA_LOGGING_SYSLOG_ENABLED:-false}")
+    local logging_require_change_comment
+    logging_require_change_comment=$(to_php_bool "${PA_LOGGING_REQUIRE_CHANGE_COMMENT:-false}")
+    local logging_api_request_logging
+    logging_api_request_logging=$(to_php_bool "${PA_LOGGING_API_REQUEST_LOGGING:-false}")
 
     # Convert password policy boolean values to lowercase
     local password_rules_enabled
@@ -802,6 +820,27 @@ generate_config() {
     global_token_validation=$(to_php_bool "${PA_GLOBAL_TOKEN_VALIDATION:-true}")
     local mfa_enforced
     mfa_enforced=$(to_php_bool "${PA_MFA_ENFORCED:-false}")
+    local mfa_skip_for_external_auth
+    mfa_skip_for_external_auth=$(to_php_bool "${PA_MFA_SKIP_FOR_EXTERNAL_AUTH:-false}")
+
+    # Bridge the Caddy TRUSTED_PROXIES list into the PHP trusted-proxy allowlist so
+    # forwarded headers are honored even when the proxy uses a public (non-RFC1918)
+    # IP. The Caddy-only 'private_ranges' keyword is dropped (PHP trusts those
+    # automatically). PA_TRUSTED_PROXIES overrides if the two layers must differ;
+    # setting it to an empty string clears the application allowlist entirely.
+    local trusted_proxies_php="[]"
+    local trusted_proxies_src="${PA_TRUSTED_PROXIES-${TRUSTED_PROXIES:-}}"
+    if [ -n "${trusted_proxies_src}" ]; then
+        local proxy_items=""
+        local proxy_entry
+        for proxy_entry in $(echo "${trusted_proxies_src}" | tr ',' ' ' | tr -s ' '); do
+            [ "${proxy_entry}" = "private_ranges" ] && continue
+            proxy_items="${proxy_items}'${proxy_entry}', "
+        done
+        if [ -n "${proxy_items}" ]; then
+            trusted_proxies_php="[${proxy_items%, }]"
+        fi
+    fi
 
     # Convert notification boolean values to lowercase
     local notification_zone_access
@@ -822,6 +861,10 @@ generate_config() {
     show_record_delete_button=$(to_php_bool "${PA_SHOW_RECORD_DELETE_BUTTON:-false}")
     local show_forward_zone_associations
     show_forward_zone_associations=$(to_php_bool "${PA_SHOW_FORWARD_ZONE_ASSOCIATIONS:-true}")
+    local show_zone_record_count
+    show_zone_record_count=$(to_php_bool "${PA_SHOW_ZONE_RECORD_COUNT:-true}")
+    local wide_layout
+    wide_layout=$(to_php_bool "${PA_WIDE_LAYOUT:-false}")
 
     # Convert mail boolean values to lowercase
     local mail_auth
@@ -830,6 +873,12 @@ generate_config() {
     # Convert LDAP boolean values to lowercase
     local ldap_debug
     ldap_debug=$(to_php_bool "${PA_LDAP_DEBUG:-false}")
+    local ldap_sync_user_info
+    ldap_sync_user_info=$(to_php_bool "${PA_LDAP_SYNC_USER_INFO:-false}")
+    local ldap_auto_provision
+    ldap_auto_provision=$(to_php_bool "${PA_LDAP_AUTO_PROVISION:-false}")
+    local ldap_allow_superuser_provisioning
+    ldap_allow_superuser_provisioning=$(to_php_bool "${PA_LDAP_ALLOW_SUPERUSER_PROVISIONING:-false}")
 
     # Convert misc boolean values to lowercase
     local display_stats
@@ -840,6 +889,8 @@ generate_config() {
     display_errors=$(to_php_bool "${PA_DISPLAY_ERRORS:-false}")
     local show_generated_passwords
     show_generated_passwords=$(to_php_bool "${PA_SHOW_GENERATED_PASSWORDS:-true}")
+    local template_cache
+    template_cache=$(to_php_bool "${PA_TEMPLATE_CACHE:-false}")
 
     # Convert OIDC boolean values to lowercase
     local oidc_enabled
@@ -850,6 +901,8 @@ generate_config() {
     oidc_link_by_email=$(to_php_bool "${PA_OIDC_LINK_BY_EMAIL:-true}")
     local oidc_sync_user_info
     oidc_sync_user_info=$(to_php_bool "${PA_OIDC_SYNC_USER_INFO:-true}")
+    local oidc_allow_superuser_provisioning
+    oidc_allow_superuser_provisioning=$(to_php_bool "${PA_OIDC_ALLOW_SUPERUSER_PROVISIONING:-false}")
     local oidc_azure_enabled
     oidc_azure_enabled=$(to_php_bool "${PA_OIDC_AZURE_ENABLED:-false}")
     local oidc_azure_auto_discovery
@@ -872,6 +925,8 @@ generate_config() {
     saml_link_by_email=$(to_php_bool "${PA_SAML_LINK_BY_EMAIL:-true}")
     local saml_sync_user_info
     saml_sync_user_info=$(to_php_bool "${PA_SAML_SYNC_USER_INFO:-true}")
+    local saml_allow_superuser_provisioning
+    saml_allow_superuser_provisioning=$(to_php_bool "${PA_SAML_ALLOW_SUPERUSER_PROVISIONING:-false}")
     local saml_azure_enabled
     saml_azure_enabled=$(to_php_bool "${PA_SAML_AZURE_ENABLED:-false}")
     local saml_okta_enabled
@@ -992,6 +1047,17 @@ generate_config() {
         oidc_group_mapping="[$(parse_mapping "${PA_OIDC_GROUP_MAPPING}")]"
     fi
 
+    # Process LDAP permission template and group mappings
+    local ldap_permission_template_mapping="[]"
+    if [ -n "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING:-}" ]; then
+        ldap_permission_template_mapping="[$(parse_mapping "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING}")]"
+    fi
+
+    local ldap_group_mapping="[]"
+    if [ -n "${PA_LDAP_GROUP_MAPPING:-}" ]; then
+        ldap_group_mapping="[$(parse_mapping "${PA_LDAP_GROUP_MAPPING}")]"
+    fi
+
     # Process SAML permission template mapping
     local saml_permission_template_mapping="[]"
     if [ -n "${PA_SAML_PERMISSION_TEMPLATE_MAPPING}" ]; then
@@ -1078,9 +1144,12 @@ return [
         'soa_expire' => ${PA_DNS_SOA_EXPIRE:-604800},
         'soa_minimum' => ${PA_DNS_SOA_MINIMUM:-86400},
         'zone_type_default' => '${PA_DNS_ZONE_TYPE_DEFAULT:-MASTER}',
+        'soa_edit' => '${PA_DNS_SOA_EDIT:-}',
+        'soa_edit_api' => '${PA_DNS_SOA_EDIT_API:-}',
         'default_zone_template' => ${dns_default_zone_template},
         'zone_ownership_mode' => '${PA_DNS_ZONE_OWNERSHIP_MODE:-both}',
         'sync_zone_owner_to_account' => ${dns_sync_zone_owner_to_account},
+        'parent_zone_ownership_check' => ${dns_parent_zone_ownership_check},
         'strict_tld_check' => ${dns_strict_tld_check},
         'top_level_tld_check' => ${dns_top_level_tld_check},
         'third_level_check' => ${dns_third_level_check},
@@ -1100,6 +1169,7 @@ return [
         'password_cost' => ${PA_PASSWORD_COST:-12},
         'login_token_validation' => ${login_token_validation},
         'global_token_validation' => ${global_token_validation},
+        'trusted_proxies' => ${trusted_proxies_php},
         'password_policy' => [
             'enable_password_rules' => ${password_rules_enabled},
             'min_length' => ${PA_PASSWORD_MIN_LENGTH:-6},
@@ -1120,8 +1190,11 @@ return [
             'enforced' => ${mfa_enforced},
             'app_enabled' => ${mfa_app_enabled},
             'email_enabled' => ${mfa_email_enabled},
+            'skip_for_external_auth' => ${mfa_skip_for_external_auth},
             'recovery_codes' => ${PA_MFA_RECOVERY_CODES:-8},
             'recovery_code_length' => ${PA_MFA_RECOVERY_CODE_LENGTH:-10},
+            'max_verify_attempts' => ${PA_MFA_MAX_VERIFY_ATTEMPTS:-5},
+            'verify_lockout_duration' => ${PA_MFA_VERIFY_LOCKOUT_DURATION:-15},
         ],
         'password_reset' => [
             'enabled' => ${password_reset_enabled},
@@ -1175,6 +1248,7 @@ return [
         'logo_path' => '${logo_path_esc}',
         'base_url_prefix' => '${PA_BASE_URL_PREFIX:-}',
         'application_url' => '${PA_APPLICATION_URL:-}',
+        'web_enabled' => ${web_enabled},
         'show_record_id' => ${show_record_id},
         'show_add_record_form' => ${show_add_record_form},
         'show_record_edit_button' => ${show_record_edit_button},
@@ -1184,7 +1258,10 @@ return [
         'show_zone_comments' => ${show_zone_comments},
         'show_record_comments' => ${show_record_comments},
         'display_serial_in_zone_list' => ${display_serial_in_zone_list},
+        'display_signed_serial_in_zone_list' => ${display_signed_serial_in_zone_list},
         'display_template_in_zone_list' => ${display_template_in_zone_list},
+        'display_owner_in_zone_list' => ${display_owner_in_zone_list},
+        'display_group_in_zone_list' => ${display_group_in_zone_list},
         'display_fullname_in_zone_list' => ${display_fullname_in_zone_list},
         'search_group_records' => ${search_group_records},
         'reverse_zone_sort' => '${PA_REVERSE_ZONE_SORT:-natural}',
@@ -1194,6 +1271,8 @@ return [
         'display_hostname_only' => ${display_hostname_only},
         'enable_consistency_checks' => ${enable_consistency_checks},
         'show_forward_zone_associations' => ${show_forward_zone_associations},
+        'show_zone_record_count' => ${show_zone_record_count},
+        'wide_layout' => ${wide_layout},
     ],
     'api' => [
         'enabled' => ${api_enabled},
@@ -1201,6 +1280,12 @@ return [
         'basic_auth_realm' => '${PA_API_BASIC_AUTH_REALM:-Poweradmin API}',
         'docs_enabled' => ${api_docs_enabled},
         'max_keys_per_user' => ${PA_API_MAX_KEYS_PER_USER:-5},
+    ],
+    'health' => [
+        'enabled' => ${health_enabled},
+        'ping_enabled' => ${health_ping_enabled},
+        'db_timeout' => ${PA_HEALTH_DB_TIMEOUT:-2},
+        'pdns_timeout' => ${PA_HEALTH_PDNS_TIMEOUT:-2},
     ],
     'user_agreement' => [
         'enabled' => ${user_agreement_enabled},
@@ -1226,6 +1311,15 @@ return [
         'user_attribute' => '${PA_LDAP_USER_ATTRIBUTE:-uid}',
         'protocol_version' => ${PA_LDAP_PROTOCOL_VERSION:-3},
         'search_filter' => '${PA_LDAP_SEARCH_FILTER:-}',
+        'sync_user_info' => ${ldap_sync_user_info},
+        'fullname_attribute' => '${PA_LDAP_FULLNAME_ATTRIBUTE:-displayName}',
+        'email_attribute' => '${PA_LDAP_EMAIL_ATTRIBUTE:-mail}',
+        'auto_provision' => ${ldap_auto_provision},
+        'allow_superuser_provisioning' => ${ldap_allow_superuser_provisioning},
+        'default_permission_template' => '${PA_LDAP_DEFAULT_PERMISSION_TEMPLATE:-Guest}',
+        'groups_attribute' => '${PA_LDAP_GROUPS_ATTRIBUTE:-memberOf}',
+        'permission_template_mapping' => ${ldap_permission_template_mapping},
+        'group_mapping' => ${ldap_group_mapping},
         'session_cache_timeout' => ${PA_LDAP_SESSION_CACHE_TIMEOUT:-300},
     ],
     'logging' => [
@@ -1235,6 +1329,9 @@ return [
         'syslog_enabled' => ${logging_syslog_enabled},
         'syslog_identity' => '${PA_LOGGING_SYSLOG_IDENTITY:-poweradmin}',
         'syslog_facility' => ${PA_LOGGING_SYSLOG_FACILITY:-LOG_USER},
+        'require_change_comment' => ${logging_require_change_comment},
+        'api_request_logging' => ${logging_api_request_logging},
+        'api_log_retention_days' => ${PA_LOGGING_API_LOG_RETENTION_DAYS:-0},
     ],
     'misc' => [
         'display_stats' => ${display_stats},
@@ -1243,12 +1340,15 @@ return [
         'edit_conflict_resolution' => '${PA_EDIT_CONFLICT_RESOLUTION:-last_writer_wins}',
         'display_errors' => ${display_errors},
         'show_generated_passwords' => ${show_generated_passwords},
+        'template_cache' => ${template_cache},
+        'template_cache_path' => '${PA_TEMPLATE_CACHE_PATH:-}',
     ],
     'oidc' => [
         'enabled' => ${oidc_enabled},
         'auto_provision' => ${oidc_auto_provision},
         'link_by_email' => ${oidc_link_by_email},
         'sync_user_info' => ${oidc_sync_user_info},
+        'allow_superuser_provisioning' => ${oidc_allow_superuser_provisioning},
         'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-Guest}',
         'permission_template_mapping' => ${oidc_permission_template_mapping},
         'group_mapping' => ${oidc_group_mapping},
@@ -1338,6 +1438,7 @@ EOF
         'auto_provision' => ${saml_auto_provision},
         'link_by_email' => ${saml_link_by_email},
         'sync_user_info' => ${saml_sync_user_info},
+        'allow_superuser_provisioning' => ${saml_allow_superuser_provisioning},
         'default_permission_template' => '${PA_SAML_DEFAULT_PERMISSION_TEMPLATE:-Guest}',
         'permission_template_mapping' => ${saml_permission_template_mapping},
         'group_mapping' => ${saml_group_mapping},
@@ -1574,6 +1675,7 @@ print_config_summary() {
         log "Default Language: ${PA_DEFAULT_LANGUAGE:-en_EN}"
         log "Mail Enabled: ${PA_MAIL_ENABLED:-true}"
         log "API Enabled: ${PA_API_ENABLED:-false}"
+        log "Web Interface Enabled: ${PA_WEB_ENABLED:-true}"
         log "DNS Backend: ${PA_DNS_BACKEND:-sql}"
         log "LDAP Enabled: ${PA_LDAP_ENABLED:-false}"
         log "Timezone: ${PA_TIMEZONE:-UTC}"

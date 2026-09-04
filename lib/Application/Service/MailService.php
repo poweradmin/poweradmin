@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -70,7 +70,7 @@ class MailService implements MailServiceInterface
         }
 
         // Determine which transport to use
-        $transportType = $this->config->get('mail', 'transport', 'smtp');
+        $transportType = $this->config->get('mail', 'transport', 'php');
 
         // check if email is multipart and generate boundary
         if ($plainBody !== '') {
@@ -112,7 +112,7 @@ class MailService implements MailServiceInterface
     public function sendNewAccountEmail(
         string $to,
         string $username,
-        string $password,
+        #[\SensitiveParameter] string $password,
         string $fullname = ''
     ): bool {
         $templates = $this->templateService->renderNewAccountEmail($username, $password, $fullname);
@@ -355,7 +355,7 @@ class MailService implements MailServiceInterface
             return false;
         }
 
-        $transportType = $this->config->get('mail', 'transport', 'smtp');
+        $transportType = $this->config->get('mail', 'transport', 'php');
 
         // For SMTP transport, verify connection to mail server
         if ($transportType === 'smtp') {
@@ -426,10 +426,12 @@ class MailService implements MailServiceInterface
 
         $dsn .= $host . ':' . $port;
 
-        // Add encryption parameters
+        // Enforce STARTTLS when tls is configured. Symfony ignores a bare
+        // ?encryption param, so use require_tls: the connection then fails instead
+        // of silently falling back to a plaintext session (credentials, reset links).
         $options = [];
         if ($encryption === 'tls') {
-            $options['encryption'] = 'tls';
+            $options['require_tls'] = 'true';
         }
 
         if (!empty($options)) {

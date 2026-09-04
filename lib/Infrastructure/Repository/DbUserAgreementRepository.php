@@ -62,39 +62,31 @@ class DbUserAgreementRepository implements UserAgreementRepositoryInterface
     ): bool {
         $db_type = $this->config->get('database', 'type');
 
-        // Try to update existing record first
-        $updateStmt = $this->db->prepare(
-            "UPDATE user_agreements 
-             SET accepted_at = " . DbCompat::now($db_type) . ",
-                 ip_address = :ip_address,
-                 user_agent = :user_agent
-             WHERE user_id = :user_id AND agreement_version = :version"
-        );
+        // Branch on existence rather than the UPDATE's affected-row count: MySQL
+        // reports 0 changed rows for a no-op update (same-second double-submit),
+        // which would otherwise fall through to a duplicate INSERT.
+        if ($this->hasUserAcceptedAgreement($userId, $version)) {
+            $stmt = $this->db->prepare(
+                "UPDATE user_agreements
+                 SET accepted_at = " . DbCompat::now($db_type) . ",
+                     ip_address = :ip_address,
+                     user_agent = :user_agent
+                 WHERE user_id = :user_id AND agreement_version = :version"
+            );
+        } else {
+            $stmt = $this->db->prepare(
+                "INSERT INTO user_agreements
+                 (user_id, agreement_version, ip_address, user_agent)
+                 VALUES (:user_id, :version, :ip_address, :user_agent)"
+            );
+        }
 
-        $updateStmt->execute([
+        return $stmt->execute([
             ':user_id' => $userId,
             ':version' => $version,
             ':ip_address' => $ipAddress,
             ':user_agent' => $userAgent
         ]);
-
-        // If no rows were affected, insert new record
-        if ($updateStmt->rowCount() === 0) {
-            $insertStmt = $this->db->prepare(
-                "INSERT INTO user_agreements 
-                 (user_id, agreement_version, ip_address, user_agent) 
-                 VALUES (:user_id, :version, :ip_address, :user_agent)"
-            );
-
-            return $insertStmt->execute([
-                ':user_id' => $userId,
-                ':version' => $version,
-                ':ip_address' => $ipAddress,
-                ':user_agent' => $userAgent
-            ]);
-        }
-
-        return true;
     }
 
     public function getUserAgreements(int $userId): array

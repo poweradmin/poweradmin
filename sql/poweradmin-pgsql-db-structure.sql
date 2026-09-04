@@ -21,6 +21,8 @@ CREATE TABLE "public"."log_api" (
                                       CONSTRAINT "log_api_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
+CREATE INDEX "idx_log_api_created_at" ON "public"."log_api" USING btree ("created_at");
+
 
 CREATE SEQUENCE log_zones_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -50,6 +52,42 @@ CREATE TABLE "public"."log_groups" (
 CREATE INDEX "idx_log_groups_group_id" ON "public"."log_groups" USING btree ("group_id");
 
 
+CREATE SEQUENCE log_record_changes_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE SEQUENCE log_changesets_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."log_changesets" (
+                                       "id" integer DEFAULT nextval('log_changesets_id_seq') NOT NULL,
+                                       "zone_id" integer,
+                                       "user_id" integer,
+                                       "username" character varying(64) NOT NULL,
+                                       "comment" text,
+                                       "client_ip" character varying(64),
+                                       "created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                       CONSTRAINT "log_changesets_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+CREATE TABLE "public"."log_record_changes" (
+                                       "id" integer DEFAULT nextval('log_record_changes_id_seq1') NOT NULL,
+                                       "zone_id" integer,
+                                       "changeset_id" integer,
+                                       "record_id" text,
+                                       "action" character varying(32) NOT NULL,
+                                       "user_id" integer,
+                                       "username" character varying(64) NOT NULL,
+                                       "before_state" text,
+                                       "after_state" text,
+                                       "client_ip" character varying(64),
+                                       "created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                                       CONSTRAINT "log_record_changes_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+CREATE INDEX "idx_log_record_changes_created_at" ON "public"."log_record_changes" USING btree ("created_at");
+CREATE INDEX "idx_log_record_changes_zone_id" ON "public"."log_record_changes" USING btree ("zone_id");
+CREATE INDEX "idx_log_record_changes_action" ON "public"."log_record_changes" USING btree ("action");
+CREATE INDEX "idx_log_record_changes_changeset_id" ON "public"."log_record_changes" USING btree ("changeset_id");
+
+
 CREATE SEQUENCE perm_items_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
 CREATE TABLE "public"."perm_items" (
@@ -62,10 +100,10 @@ CREATE TABLE "public"."perm_items" (
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES
                                                      (41,	'zone_master_add',	'User is allowed to add new master zones.'),
                                                      (42,	'zone_slave_add',	'User is allowed to add new slave zones.'),
-                                                     (43,	'zone_content_view_own',	'User is allowed to see the content and meta data of zones he owns.'),
+                                                     (43,	'zone_content_view_own',	'User is allowed to see the content of zones he owns.'),
                                                      (44,	'zone_content_edit_own',	'User is allowed to edit the content of zones he owns.'),
                                                      (45,	'zone_meta_edit_own',	'User is allowed to edit the meta data of zones he owns.'),
-                                                     (46,	'zone_content_view_others',	'User is allowed to see the content and meta data of zones he does not own.'),
+                                                     (46,	'zone_content_view_others',	'User is allowed to see the content of zones he does not own.'),
                                                      (47,	'zone_content_edit_others',	'User is allowed to edit the content of zones he does not own.'),
                                                      (48,	'zone_meta_edit_others',	'User is allowed to edit the meta data of zones he does not own.'),
                                                      (49,	'search',	'User is allowed to perform searches.'),
@@ -87,7 +125,17 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES
                                                      (65,	'api_manage_keys',	'User is allowed to create and manage API keys.'),
                                                      (67,	'zone_delete_own',	'User is allowed to delete zones they own.'),
                                                      (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.'),
-                                                     (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.');
+                                                     (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.'),
+                                                     (70,	'zone_dnssec_manage_own',	'User is allowed to manage DNSSEC keys for zones he owns.'),
+                                                     (71,	'zone_logs_view_own',	'User is allowed to view activity logs for zones he owns.'),
+                                                     (72,	'zone_logs_view_others',	'User is allowed to view activity logs for zones he does not own.'),
+                                                     (73,	'user_logs_view',	'User is allowed to view the user activity logs.'),
+                                                     (74,	'group_logs_view',	'User is allowed to view the group activity logs.'),
+                                                     (75,	'zone_content_edit_ns_subzone',	'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.'),
+                                                     (76,	'zone_metadata_view_own',	'User is allowed to see the meta data of zones he owns.'),
+                                                     (77,	'zone_metadata_view_others',	'User is allowed to see the meta data of zones he does not own.'),
+                                                     (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.'),
+                                                     (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.');
 
 SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items));
 
@@ -164,7 +212,27 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
     (33,	8,	56),
     (34,	8,	62),
     (35,	9,	43),
-    (36,	9,	49);
+    (36,	9,	49),
+    (37,	2,	70),
+    (38,	7,	70),
+    (39,	2,	71),
+    (40,	3,	71),
+    (41,	4,	71),
+    (42,	7,	71),
+    (43,	8,	71),
+    (44,	9,	71),
+    (45,	2,	76),
+    (46,	3,	76),
+    (47,	4,	76),
+    (48,	7,	76),
+    (49,	8,	76),
+    (50,	9,	76),
+    (51,	2,	78),
+    (52,	3,	78),
+    (53,	4,	78),
+    (54,	7,	78),
+    (55,	8,	78),
+    (56,	9,	78);
 
 SELECT setval('perm_templ_items_id_seq', (SELECT MAX(id) FROM perm_templ_items));
 
@@ -179,6 +247,21 @@ CREATE TABLE "public"."records_zone_templ" (
 ) WITH (oids = false);
 
 ALTER SEQUENCE records_zone_templ_id_seq OWNED BY records_zone_templ.id;
+
+CREATE SEQUENCE records_zone_templ_api_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."records_zone_templ_api" (
+                                                   "id" integer DEFAULT nextval('records_zone_templ_api_id_seq') NOT NULL,
+                                                   "domain_id" integer NOT NULL,
+                                                   "record_id" character varying(255) NOT NULL,
+                                                   "zone_templ_id" integer NOT NULL,
+                                                   CONSTRAINT "records_zone_templ_api_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+ALTER SEQUENCE records_zone_templ_api_id_seq OWNED BY records_zone_templ_api.id;
+
+CREATE INDEX "idx_records_zone_templ_api_domain_id" ON "public"."records_zone_templ_api" USING btree ("domain_id");
+CREATE INDEX "idx_records_zone_templ_api_zone_templ_id" ON "public"."records_zone_templ_api" USING btree ("zone_templ_id");
 
 CREATE INDEX "idx_records_zone_templ_domain_id" ON "public"."records_zone_templ" USING btree ("domain_id");
 CREATE INDEX "idx_records_zone_templ_zone_templ_id" ON "public"."records_zone_templ" USING btree ("zone_templ_id");
@@ -211,6 +294,7 @@ CREATE TABLE "public"."login_attempts" (
     "ip_address" character varying(45) NOT NULL,
     "timestamp" integer NOT NULL,
     "successful" boolean NOT NULL,
+    "attempt_type" character varying(16) NOT NULL DEFAULT 'password',
     CONSTRAINT "login_attempts_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "fk_login_attempts_users" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) WITH (oids = false);
@@ -218,6 +302,7 @@ CREATE TABLE "public"."login_attempts" (
 CREATE INDEX "idx_login_attempts_user_id" ON "public"."login_attempts" USING btree ("user_id");
 CREATE INDEX "idx_login_attempts_ip_address" ON "public"."login_attempts" USING btree ("ip_address");
 CREATE INDEX "idx_login_attempts_timestamp" ON "public"."login_attempts" USING btree ("timestamp");
+CREATE INDEX "idx_login_attempts_attempt_type" ON "public"."login_attempts" USING btree ("attempt_type");
 
 CREATE SEQUENCE zone_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -242,7 +327,7 @@ CREATE TABLE "public"."zone_templ_records" (
                                                "id" integer DEFAULT nextval('zone_templ_records_id_seq') NOT NULL,
                                                "zone_templ_id" integer,
                                                "name" character varying(255),
-                                               "type" character varying(6),
+                                               "type" character varying(10),
                                                "content" character varying(2048),
                                                "ttl" integer,
                                                "prio" integer,
@@ -259,7 +344,7 @@ CREATE TABLE "public"."zones" (
                                   "domain_id" integer,
                                   "owner" integer DEFAULT NULL,
                                   "comment" character varying(1024),
-                                  "zone_templ_id" integer,
+                                  "zone_templ_id" integer DEFAULT 0 NOT NULL,
                                   "zone_name" character varying(255) DEFAULT NULL,
                                   "zone_type" character varying(8) DEFAULT NULL,
                                   "zone_master" character varying(255) DEFAULT NULL,
@@ -282,6 +367,8 @@ CREATE TABLE "public"."api_keys" (
     "last_used_at" timestamp,
     "disabled" boolean DEFAULT false NOT NULL,
     "expires_at" timestamp,
+    "is_readonly" boolean DEFAULT false NOT NULL,
+    "allowed_operations" character varying(255),
     CONSTRAINT "api_keys_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "fk_api_keys_users" FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 ) WITH (oids = false);
@@ -289,6 +376,22 @@ CREATE TABLE "public"."api_keys" (
 CREATE UNIQUE INDEX "idx_api_keys_secret_key" ON "public"."api_keys" USING btree ("secret_key");
 CREATE INDEX "idx_api_keys_created_by" ON "public"."api_keys" USING btree ("created_by");
 CREATE INDEX "idx_api_keys_disabled" ON "public"."api_keys" USING btree ("disabled");
+
+-- Zones an API key is restricted to. No rows for a key means no restriction
+-- (the key can reach every zone its creator may access).
+CREATE SEQUENCE api_key_zones_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."api_key_zones" (
+    "id" integer DEFAULT nextval('api_key_zones_id_seq') NOT NULL,
+    "api_key_id" integer NOT NULL,
+    "zone_id" integer NOT NULL,
+    CONSTRAINT "api_key_zones_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "idx_api_key_zones_unique" UNIQUE ("api_key_id", "zone_id"),
+    CONSTRAINT "fk_api_key_zones_api_key" FOREIGN KEY (api_key_id) REFERENCES api_keys(id) ON DELETE CASCADE
+) WITH (oids = false);
+
+CREATE INDEX "idx_api_key_zones_api_key_id" ON "public"."api_key_zones" USING btree ("api_key_id");
+CREATE INDEX "idx_api_key_zones_zone_id" ON "public"."api_key_zones" USING btree ("zone_id");
 
 CREATE SEQUENCE user_mfa_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -344,7 +447,7 @@ CREATE INDEX "idx_needs_sync" ON "public"."zone_template_sync" USING btree ("nee
 CREATE TABLE password_reset_tokens (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
-    token VARCHAR(64) NOT NULL,
+    token VARCHAR(128) NOT NULL,
     expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     used BOOLEAN NOT NULL DEFAULT FALSE,
@@ -481,3 +584,20 @@ CREATE TABLE record_comment_links (
 );
 
 CREATE INDEX idx_record_comment_links_comment ON record_comment_links(comment_id);
+
+CREATE TABLE record_type_defaults (
+    record_type varchar(20) NOT NULL,
+    ttl integer NOT NULL,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (record_type)
+);
+
+CREATE TABLE app_settings (
+    setting_key varchar(128) NOT NULL,
+    setting_value text NOT NULL,
+    value_type varchar(16) NOT NULL DEFAULT 'string',
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (setting_key)
+);

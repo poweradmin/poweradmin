@@ -84,10 +84,12 @@ class DnssecProviderFactory
      *
      * @param PDO $db Database connection
      * @param ConfigurationInterface $config Configuration object
+     * @param PowerdnsApiClient|null $apiClient Reuse a caller's client and its
+     *        per-request caches; one is built from config when omitted
      * @return DnssecProvider DNSSEC provider instance
      * @throws Exception When PowerDNS API is not configured
      */
-    public static function create(PDO $db, ConfigurationInterface $config): DnssecProvider
+    public static function create(PDO $db, ConfigurationInterface $config, ?PowerdnsApiClient $apiClient = null): DnssecProvider
     {
         $pdnsApiUrl = $config->get('pdns_api', 'url');
         $pdnsApiKey = $config->get('pdns_api', 'key');
@@ -96,13 +98,15 @@ class DnssecProviderFactory
             return new NullDnssecProvider();
         }
 
-        $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey);
+        if ($apiClient === null) {
+            $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey);
 
-        // Get the server name, with a default if not found
-        $serverNameFromConfig = $config->get('pdns_api', 'server_name');
-        $serverName = $serverNameFromConfig ?: 'localhost';
+            // Get the server name, with a default if not found
+            $serverNameFromConfig = $config->get('pdns_api', 'server_name');
+            $serverName = $serverNameFromConfig ?: 'localhost';
 
-        $apiClient = new PowerdnsApiClient($httpClient, $serverName);
+            $apiClient = new PowerdnsApiClient($httpClient, $serverName);
+        }
 
         $logger = new CompositeLegacyLogger();
 

@@ -1,20 +1,12 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item">
-        {% if is_reverse_zone %}
-        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
-        {% else %}
-        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
-        {% endif %}
-    </li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Add template{% endtrans %}</li>
-    </ol>
-</nav>
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: (is_reverse_zone ? 'Reverse Zones'|trans : 'Forward Zones'|trans), url: base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward')},
+    {label: 'Zone templates'|trans, url: base_url_prefix ~ '/zones/templates'},
+    {label: 'Add template'|trans},
+]) }}
 
 {% if message %}
-<div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+{% include 'message_alert.html' with {message: message} only %}
 {% endif %}
 
 <div class="row">
@@ -25,7 +17,7 @@
             </div>
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/templates/add" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    {{ macros.csrf_field() }}
 
                     <div class="mb-3">
                         <label for="templ_name" class="form-label">{% trans %}Name{% endtrans %} <span class="text-danger">*</span></label>
@@ -64,9 +56,7 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Template Information{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-info-circle', 'Template Information'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">
@@ -87,9 +77,7 @@
         </div>
         
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}Tips & Examples{% endtrans %}</strong>
-            </div>
+            {{ macros.card_header('bi-question-circle', 'Tips & Examples'|trans) }}
             <div class="card-body p-0">
                 <div class="list-group list-group-flush">
                     <div class="list-group-item">

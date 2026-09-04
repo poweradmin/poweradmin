@@ -29,7 +29,17 @@ interface DynamicDnsRepositoryInterface
 {
     public function findUserByUsernameWithDynamicDnsPermissions(string $username): ?User;
 
+    /**
+     * @return array<int, string> Map of PowerDNS domain_id to zone name for every zone the
+     *                            user owns (directly via zones.owner or via group membership
+     *                            through zones_groups + user_group_members).
+     */
     public function getUserZones(User $user): array;
+
+    /**
+     * @return string|null PowerDNS zone kind (MASTER, SLAVE, NATIVE, CONSUMER, ...) or null if unknown.
+     */
+    public function getZoneType(int $zoneId): ?string;
 
     public function getDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType): array;
 

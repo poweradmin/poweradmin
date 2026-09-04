@@ -6,7 +6,7 @@
 
 namespace OpenApi\Spec;
 
-use OpenApi\AttributeInterface;
+use OpenApi\Contracts\AttributeInterface;
 use OpenApi\Utils\SourceLocation;
 
 abstract class AbstractAttribute implements AttributeInterface
@@ -35,7 +35,7 @@ abstract class AbstractAttribute implements AttributeInterface
         return [];
     }
 
-    public function contains(): array
+    public function contained(): array
     {
         return [];
     }

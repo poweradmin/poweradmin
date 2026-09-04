@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Utility;
 
+use Poweradmin\Domain\Enum\SortDirection;
+
 class SortHelper
 {
     /**
@@ -35,11 +37,7 @@ class SortHelper
     public static function getZoneSortOrder(string $table, string $dbType, string $direction = 'ASC'): string
     {
         $nameField = "$table.name";
-        $direction = strtoupper($direction);
-
-        if (!in_array($direction, ['ASC', 'DESC'])) {
-            $direction = 'ASC';
-        }
+        $direction = SortDirection::fromRequest($direction)->value;
 
         $naturalSort = match ($dbType) {
             'mysql', 'mysqli', 'sqlite' => "$nameField+0<>0 $direction, $nameField+0 $direction, $nameField $direction",
@@ -61,11 +59,7 @@ class SortHelper
     public static function getRecordSortOrder(string $table, string $dbType, string $direction = 'ASC'): string
     {
         $nameField = "$table.name";
-        $direction = strtoupper($direction);
-
-        if (!in_array($direction, ['ASC', 'DESC'])) {
-            $direction = 'ASC';
-        }
+        $direction = SortDirection::fromRequest($direction)->value;
 
         $naturalSort = match ($dbType) {
             'mysql', 'mysqli', 'sqlite' => "$nameField+0<>0 $direction, $nameField+0 $direction, $nameField $direction",

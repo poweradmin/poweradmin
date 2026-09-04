@@ -40,8 +40,8 @@ interface DnsBackendProvider
      * Create a new zone in the DNS backend.
      *
      * @param string $domain Zone name (without trailing dot)
-     * @param string $type Zone type: NATIVE, MASTER, or SLAVE
-     * @param string $slaveMaster Master IP for SLAVE zones
+     * @param string $type Zone type: NATIVE, MASTER, SLAVE, PRODUCER, or CONSUMER
+     * @param string $slaveMaster Master IP for kinds that replicate from a primary (SLAVE, CONSUMER)
      * @return int|false The new domain ID, or false on failure
      */
     public function createZone(string $domain, string $type, string $slaveMaster = ''): int|false;
@@ -59,7 +59,9 @@ interface DnsBackendProvider
     public function deleteZone(int $domainId, string $zoneName): bool;
 
     /**
-     * Change zone type (NATIVE, MASTER, SLAVE).
+     * Change zone type (NATIVE, MASTER, SLAVE, PRODUCER, CONSUMER).
+     *
+     * Masters are cleared unless the new kind replicates from a primary.
      *
      * @param int $domainId Domain ID
      * @param string $type New zone type
@@ -77,6 +79,17 @@ interface DnsBackendProvider
     public function updateZoneMaster(int $domainId, string $masterIp): bool;
 
     /**
+     * Request an immediate AXFR transfer of a secondary (slave) zone from its master.
+     *
+     * Only the API backend can trigger this. The SQL backend returns false,
+     * since PowerDNS pulls secondaries on its own refresh schedule there.
+     *
+     * @param int $domainId Domain ID
+     * @return bool
+     */
+    public function retrieveZone(int $domainId): bool;
+
+    /**
      * Update zone account field.
      *
      * @param int $domainId Domain ID
@@ -84,6 +97,43 @@ interface DnsBackendProvider
      * @return bool
      */
     public function updateZoneAccount(int $domainId, string $account): bool;
+
+    /**
+     * Zones carrying the given catalog.
+     *
+     * PowerDNS only publishes a member whose kind is MASTER or PRODUCER and which
+     * has an enabled apex SOA, so the kind is returned for callers to flag the rest.
+     *
+     * @param string $catalogName Producer zone name, lowercase and without a trailing dot
+     * @return array<int, array{id: int, name: string, kind: string}>
+     */
+    public function getCatalogMembers(string $catalogName): array;
+
+    /**
+     * Zones of one kind, with the catalog each currently belongs to.
+     *
+     * @param string $kind A ZoneType constant
+     * @return array<int, array{id: int, name: string, catalog: string}>
+     */
+    public function getZonesByKind(string $kind): array;
+
+    /**
+     * Catalog the zone belongs to, lowercase and without a trailing dot, or '' when
+     * it is not a member.
+     *
+     * @param int $domainId Domain ID
+     * @return string
+     */
+    public function getZoneCatalog(int $domainId): string;
+
+    /**
+     * Join $catalogName, or leave the current catalog when it is ''.
+     *
+     * @param int $domainId Domain ID
+     * @param string $catalogName Producer zone name in canonical form, or '' to clear
+     * @return bool
+     */
+    public function updateZoneCatalog(int $domainId, string $catalogName): bool;
 
     // ---------------------------------------------------------------
     // Record operations
@@ -292,14 +342,16 @@ interface DnsBackendProvider
     public function getZoneIdFromRecordId(int|string $recordId): int;
 
     /**
-     * Get bulk zone stats (record count, DNSSEC state, SOA serial) keyed by zone name.
+     * Get bulk zone stats (DNSSEC state, SOA serials) keyed by zone name.
      *
      * SQL backends may return an empty array when this data is not needed;
      * API backends fetch it in a single call to avoid N+1 lookups in zone lists.
+     * Record counts are not included - the PowerDNS zone list carries none.
      *
-     * @return array<string, array{rrset_count: int, dnssec: bool, serial?: int}>
+     * @param bool $withDnssec Set false when neither the DNSSEC flag nor edited_serial is needed
+     * @return array<string, array{dnssec: bool, serial?: int, edited_serial?: int|null, notified_serial?: int|null}>
      */
-    public function getZoneStats(): array;
+    public function getZoneStats(bool $withDnssec = true): array;
 
     /**
      * Count non-ENT records in a zone.
@@ -345,6 +397,18 @@ interface DnsBackendProvider
     public function getRecordsByZoneId(int $domainId, ?string $type = null): array;
 
     /**
+     * Get the records at one name in a zone, optionally filtered by type.
+     *
+     * Names match case-insensitively, per RFC 4343.
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name, with or without a trailing dot
+     * @param string|null $type Optional record type filter
+     * @return array Array of record data
+     */
+    public function getRecordsByName(int $domainId, string $name, ?string $type = null): array;
+
+    /**
      * Get SOA record content for a zone.
      *
      * @param int $domainId Domain ID
@@ -370,9 +434,11 @@ interface DnsBackendProvider
      * Returns raw zone data without Poweradmin metadata (ownership, comments).
      * Each zone array contains: name, type, dnssec (bool), master (string).
      *
+     * @param bool $withDnssec Set false to skip DNSSEC state; API backends then
+     *                         avoid a per-zone lookup and report dnssec as false
      * @return array Array of zone data arrays
      */
-    public function getZones(): array;
+    public function getZones(bool $withDnssec = true): array;
 
     /**
      * Get a single zone by name with its type, master, and DNSSEC status.
@@ -436,4 +502,16 @@ interface DnsBackendProvider
      * Returns false for SQL backends (not applicable).
      */
     public function hasSoaEditApi(int $domainId): bool;
+
+    /**
+     * Set the zone's SOA serial policy metadata.
+     *
+     * Keys are the zone-object property names from
+     * MetadataDefinitions::SERIAL_POLICY_PROPERTY_KINDS. An empty string clears the
+     * policy. API backend updates the zone object; SQL backend replaces the
+     * matching domainmetadata rows.
+     *
+     * @param array<string, string> $properties
+     */
+    public function setZoneSerialPolicy(int $domainId, string $zoneName, array $properties): bool;
 }

@@ -12,7 +12,9 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
 // Helper to get a zone ID for testing
 async function getTestZoneId(page) {
   await page.goto('/zones/forward?letter=all');
-  const editLink = page.locator('a[href*="/edit"]').first();
+  // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
+  // which carries no zone id, so this helper used to return null for every test.
+  const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
   if (await editLink.count() > 0) {
     const href = await editLink.getAttribute('href');
     const match = href.match(/\/zones\/(\d+)\/edit/);
@@ -56,8 +58,9 @@ test.describe('Zone File Export Module', () => {
     // Try to download - module might not be enabled
     const downloadPromise = page.waitForEvent('download', { timeout: 5000 }).catch(() => null);
 
-    await page.goto(`/zones/${zoneId}/export/zonefile`);
-    await page.waitForLoadState('networkidle');
+    // Navigating to a download URL aborts the navigation once the transfer starts,
+    // so page.goto() rejects with "Download is starting" - the download still fires.
+    await page.goto(`/zones/${zoneId}/export/zonefile`).catch(() => {});
 
     const download = await downloadPromise;
 

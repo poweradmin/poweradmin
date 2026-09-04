@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\UserContextService;
 
-class PasswordChangeService
+readonly class PasswordChangeService
 {
     private const ERROR_MESSAGES = [
         'user_not_found' => 'User not found',
@@ -35,13 +35,13 @@ class PasswordChangeService
     ];
 
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly UserAuthenticationService $authService,
-        private readonly UserContextService $userContextService,
+        private UserRepository $userRepository,
+        private UserAuthenticationService $authService,
+        private UserContextService $userContextService,
     ) {
     }
 
-    public function changePassword(string $oldPassword, string $newPassword): array
+    public function changePassword(#[\SensitiveParameter] string $oldPassword, #[\SensitiveParameter] string $newPassword): array
     {
         $username = $this->userContextService->getLoggedInUsername();
         $user = $this->userRepository->findByUsername($username);

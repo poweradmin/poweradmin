@@ -33,6 +33,7 @@ class UserPreference
     public const KEY_DEFAULT_TTL = 'default_ttl';
     public const KEY_SHOW_ZONE_SERIAL = 'show_zone_serial';
     public const KEY_SHOW_ZONE_TEMPLATE = 'show_zone_template';
+    public const KEY_SHOW_ZONE_RECORD_COUNT = 'show_zone_record_count';
     public const KEY_RECORD_FORM_POSITION = 'record_form_position';
     public const KEY_SAVE_BUTTON_POSITION = 'save_button_position';
     public const KEY_DEFAULT_ZONE_VIEW = 'default_zone_view';
@@ -43,6 +44,7 @@ class UserPreference
     public const KEY_SHOW_RECORD_DELETE_BUTTON = 'show_record_delete_button';
     public const KEY_DISPLAY_HOSTNAME_ONLY = 'display_hostname_only';
     public const KEY_TIMEZONE = 'timezone';
+    public const KEY_WIDE_LAYOUT = 'wide_layout';
 
     /**
      * Valid preference keys
@@ -52,6 +54,7 @@ class UserPreference
         self::KEY_DEFAULT_TTL,
         self::KEY_SHOW_ZONE_SERIAL,
         self::KEY_SHOW_ZONE_TEMPLATE,
+        self::KEY_SHOW_ZONE_RECORD_COUNT,
         self::KEY_RECORD_FORM_POSITION,
         self::KEY_SAVE_BUTTON_POSITION,
         self::KEY_DEFAULT_ZONE_VIEW,
@@ -62,6 +65,24 @@ class UserPreference
         self::KEY_SHOW_RECORD_DELETE_BUTTON,
         self::KEY_DISPLAY_HOSTNAME_ONLY,
         self::KEY_TIMEZONE,
+        self::KEY_WIDE_LAYOUT,
+    ];
+
+    /**
+     * Preferences backed by a checkbox. An unchecked box is absent from the
+     * submitted form, so these resolve to 'false' rather than staying untouched.
+     * The key doubles as the form field name.
+     */
+    public const CHECKBOX_KEYS = [
+        self::KEY_SHOW_ZONE_SERIAL,
+        self::KEY_SHOW_ZONE_TEMPLATE,
+        self::KEY_SHOW_ZONE_RECORD_COUNT,
+        self::KEY_SHOW_RECORD_ID,
+        self::KEY_SHOW_ADD_RECORD_FORM,
+        self::KEY_SHOW_RECORD_EDIT_BUTTON,
+        self::KEY_SHOW_RECORD_DELETE_BUTTON,
+        self::KEY_DISPLAY_HOSTNAME_ONLY,
+        self::KEY_WIDE_LAYOUT,
     ];
 
     public function __construct(

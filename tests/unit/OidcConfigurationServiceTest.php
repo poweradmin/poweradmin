@@ -412,4 +412,52 @@ class OidcConfigurationServiceTest extends TestCase
 
         $this->assertCount(1, $this->service->validatePermissionTemplateMapping());
     }
+
+    public function testAutoProvisioningTemplateMissingWhenDefaultIsBlank(): void
+    {
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'enabled', false, true],
+                ['oidc', 'auto_provision', true, true],
+                ['oidc', 'default_permission_template', '', ''],
+            ]);
+
+        $this->assertTrue($this->service->isAutoProvisioningTemplateMissing());
+    }
+
+    public function testAutoProvisioningTemplateNotMissingWhenDefaultIsSet(): void
+    {
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'enabled', false, true],
+                ['oidc', 'auto_provision', true, true],
+                ['oidc', 'default_permission_template', '', 'Guest'],
+            ]);
+
+        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
+    }
+
+    public function testAutoProvisioningTemplateNotMissingWhenProvisioningIsOff(): void
+    {
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'enabled', false, true],
+                ['oidc', 'auto_provision', true, false],
+                ['oidc', 'default_permission_template', '', ''],
+            ]);
+
+        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
+    }
+
+    public function testAutoProvisioningTemplateNotMissingWhenOidcDisabled(): void
+    {
+        $this->configManager->method('get')
+            ->willReturnMap([
+                ['oidc', 'enabled', false, false],
+                ['oidc', 'auto_provision', true, true],
+                ['oidc', 'default_permission_template', '', ''],
+            ]);
+
+        $this->assertFalse($this->service->isAutoProvisioningTemplateMissing());
+    }
 }

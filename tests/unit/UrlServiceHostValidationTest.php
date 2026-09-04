@@ -329,6 +329,41 @@ class UrlServiceHostValidationTest extends TestCase
         $this->assertNull($urlService->getEmailUrl('/password/reset?token=abc'));
     }
 
+    public function testLoginUrlForEmailIgnoresForgedHostAndServerName(): void
+    {
+        // The username-recovery mail goes to the account owner, so a link built from
+        // request state would let an attacker phish a third party with a genuine mail.
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
+        $_SERVER['SERVER_PORT'] = '443';
+        $_SERVER['HTTPS'] = 'on';
+
+        $config = $this->createMockConfig([
+            'interface' => ['application_url' => '', 'base_url_prefix' => '']
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $this->assertNull($urlService->getEmailUrl('/login'));
+    }
+
+    public function testLoginUrlForEmailUsesApplicationUrlWhenConfigured(): void
+    {
+        $_SERVER['HTTP_HOST'] = 'evil.attacker.test';
+        $_SERVER['SERVER_NAME'] = 'evil.attacker.test';
+        $_SERVER['HTTPS'] = 'on';
+
+        $config = $this->createMockConfig([
+            'interface' => ['application_url' => 'https://configured.example']
+        ]);
+
+        $urlService = new UrlService($config);
+
+        $url = $urlService->getEmailUrl('/login');
+        $this->assertSame('https://configured.example/login', $url);
+        $this->assertStringNotContainsString('evil.attacker.test', (string) $url);
+    }
+
     public function testGetEmailUrlNormalizesSlashes(): void
     {
         $config = $this->createMockConfig([

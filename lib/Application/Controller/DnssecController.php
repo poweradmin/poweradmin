@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,27 +26,36 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\Dns\DomainManager;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class DnssecController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
 
     public function run(): void
     {
@@ -58,40 +67,43 @@ class DnssecController extends BaseController
 
         $zone_id = (int) $zone_id;
 
-        // Early permission check - validate DNSSEC access before any operations
+        // Early permission check - validate zone visibility before any operations.
+        // The DNSSEC page itself only requires view; per-action gates apply for mutations.
         $perm_view = Permission::getViewPermission($this->db);
-        $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
-        // Check view permission first
         if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
             $this->showError(_("You do not have permission to view this zone."));
             return;
         }
 
         // Validate zone existence
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zone_id)) {
+        $domainRepository = $this->createDomainRepository();
+        if (!$domainRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        if ($perm_edit !== "all" && !($perm_edit === "own" && $user_is_zone_owner)) {
-            $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
-            return;
-        }
+        ($this->hasPermission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
-        (UserManager::verifyPermission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
-
-        // Handle unsign zone action
-        if (isset($_POST['unsign_zone']) && $perm_edit != "none") {
+        // Handle unsign zone action - requires dedicated DNSSEC management permission.
+        if ($this->request->getPostParam('unsign_zone') !== null) {
+            if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id)) {
+                $this->setMessage('dnssec', 'error', _("You do not have permission to manage DNSSEC for this zone."));
+                $this->showDnsSecKeys($zone_id);
+                return;
+            }
             $this->validateCsrfToken();
 
-            $zone_name = $dnsRecord->getDomainNameById($zone_id);
+            $zone_name = $domainRepository->getDomainNameById($zone_id);
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
             // Check if zone is secured before attempting to unsecure
-            if ($zone_name === false || !$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
+            if ($zone_name === null) {
+                $this->setMessage('dnssec', 'info', _('Zone is not currently signed with DNSSEC.'));
+            } elseif ($dnssecProvider->isZonePresigned($zone_name)) {
+                $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            } elseif (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                 $this->setMessage('dnssec', 'info', _('Zone is not currently signed with DNSSEC.'));
             } else {
                 // Try to unsecure the zone
@@ -101,7 +113,7 @@ class DnssecController extends BaseController
                     // Verify the zone is now unsecured
                     if (!$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
                         // Update SOA serial after unsigning
-                        $dnsRecord->updateSOASerial($zone_id);
+                        DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zone_id);
                         $auditService = new AuditService($this->db);
                         $auditService->logDnssecUnsignZone($zone_id, (string)$zone_name);
                         $this->setMessage('dnssec', 'success', _('Zone has been unsigned successfully.'));
@@ -124,33 +136,35 @@ class DnssecController extends BaseController
 
     public function showDnsSecKeys(int $zone_id): void
     {
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $domain_name = $dnsRecord->getDomainNameById($zone_id);
-        if (str_starts_with($domain_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($domain_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $domainRepository = $this->createDomainRepository();
+        $domain_name = $domainRepository->getDomainNameById($zone_id);
+        $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
-        $perm_edit = Permission::getEditPermission($this->db);
+        $permissionService = $this->createPermissionService();
+        $can_manage_dnssec = $permissionService->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id);
+        // Kept for 4.4.0 theme forks that still gate the page on perm_edit
+        $perm_edit = $permissionService->getEditPermissionLevelForZone($this->db, $this->getCurrentUserId(), $zone_id);
 
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
-            'domain_type' => $dnsRecord->getDomainType($zone_id),
+            'zone_display_name' => DnsIdnService::toDisplay($domain_name),
+            'domain_type' => $domainRepository->getDomainType($zone_id),
             'keys' => $dnssecProvider->getKeys($domain_name),
             'pdnssec_use' => $this->config->get('dnssec', 'enabled', false),
-            'record_count' => $dnsRecord->countZoneRecords($zone_id),
+            'record_count' => $this->createRecordRepository()->countZoneRecords($zone_id),
             'zone_id' => $zone_id,
-            'zone_template_id' => DnsRecord::getZoneTemplate($this->db, $zone_id),
-            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
+            'zone_template_id' => DomainManager::getZoneTemplate($this->db, $zone_id),
+            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'algorithm_names' => DnssecAlgorithmName::getSupportedAlgorithmNamesForCapabilities($this->getPdnsCapabilities()),
+            'can_manage_dnssec' => $can_manage_dnssec,
             'perm_edit' => $perm_edit,
-            'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
+            'is_presigned' => $dnssecProvider->isZonePresigned($domain_name),
+            'signed_serial' => $dnssecProvider->getEditedSerial($domain_name),
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($domain_name),
         ]);
     }
 }

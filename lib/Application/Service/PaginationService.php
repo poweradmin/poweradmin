@@ -28,7 +28,16 @@ use Poweradmin\Domain\Service\UserPreferenceService;
 
 class PaginationService
 {
-    private array $allowedRowsPerPage = [10, 20, 50, 100];
+    /** Lower and upper bounds for a usable page size; shared with UserPreferenceService. */
+    public const MIN_ROWS_PER_PAGE = 5;
+    public const MAX_ROWS_PER_PAGE = 500;
+
+    /** Offered in the page-size dropdowns; any value within the bounds is still honoured. */
+    public const ROWS_PER_PAGE_PRESETS = [10, 20, 50, 100];
+
+    /** Used when nothing usable was supplied; matches interface.rows_per_page's default. */
+    public const DEFAULT_ROWS_PER_PAGE = 10;
+
     private ?UserPreferenceService $userPreferenceService;
 
     public function __construct(?UserPreferenceService $userPreferenceService = null)
@@ -80,14 +89,39 @@ class PaginationService
     }
 
     /**
-     * Validate that the requested items per page is one of the allowed values
+     * Clamp the requested page size into the supported range. A configured or stored
+     * value outside the presets is honoured rather than silently replaced.
      */
     private function getValidatedItemsPerPage(?int $itemsPerPage): int
     {
-        if ($itemsPerPage === null || !in_array($itemsPerPage, $this->allowedRowsPerPage)) {
-            return $this->allowedRowsPerPage[0]; // Default to first allowed value
+        if ($itemsPerPage === null) {
+            return self::DEFAULT_ROWS_PER_PAGE;
         }
 
-        return $itemsPerPage;
+        if ($itemsPerPage < self::MIN_ROWS_PER_PAGE) {
+            return self::MIN_ROWS_PER_PAGE;
+        }
+
+        return min($itemsPerPage, self::MAX_ROWS_PER_PAGE);
+    }
+
+    /**
+     * Page sizes to offer, so the current and configured values are always selectable.
+     *
+     * @return int[]
+     */
+    public function getRowsPerPageOptions(int ...$extra): array
+    {
+        $options = self::ROWS_PER_PAGE_PRESETS;
+        foreach ($extra as $value) {
+            if ($value >= self::MIN_ROWS_PER_PAGE && $value <= self::MAX_ROWS_PER_PAGE) {
+                $options[] = $value;
+            }
+        }
+
+        $options = array_values(array_unique($options));
+        sort($options);
+
+        return $options;
     }
 }

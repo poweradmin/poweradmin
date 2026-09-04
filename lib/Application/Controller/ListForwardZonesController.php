@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,14 +25,17 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\UserService;
@@ -40,21 +43,27 @@ use Poweradmin\Application\Service\ZoneService;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class ListForwardZonesController extends BaseController
 {
+    private ZoneSortingService $zoneSortingService;
+    private Request $request;
+
+    public function __construct(array $request, bool $authenticate = true)
+    {
+        parent::__construct($request, $authenticate);
+        $this->request = new Request();
+        $this->zoneSortingService = new ZoneSortingService();
+    }
+
     public function run(): void
     {
-        $perm_view_zone_own = UserManager::verifyPermission($this->db, 'zone_content_view_own');
-        $perm_view_zone_others = UserManager::verifyPermission($this->db, 'zone_content_view_others');
+        $perm_view_zone_own = $this->hasPermission('zone_content_view_own');
+        $perm_view_zone_others = $this->hasPermission('zone_content_view_others');
 
         $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
@@ -79,7 +88,7 @@ class ListForwardZonesController extends BaseController
             return;
         }
 
-        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        if (!$this->hasPermission('user_is_ueberuser')) {
             $this->setMessage('list_forward_zones', 'error', _('You do not have permission to sync zones from PowerDNS.'));
             $this->redirect('/zones/forward');
             return;
@@ -116,7 +125,12 @@ class ListForwardZonesController extends BaseController
         $userPreferenceService = $this->createUserPreferenceService();
         $userId = $this->getCurrentUserId();
         $iface_zonelist_serial = $userPreferenceService->getShowZoneSerial($userId);
+        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
+        // Signed serial data comes from the PowerDNS API zone list, so SQL backend cannot provide it
+        $iface_zonelist_signed_serial = $isApiBackend
+            && $this->config->get('interface', 'display_signed_serial_in_zone_list', false);
         $iface_zonelist_template = $userPreferenceService->getShowZoneTemplate($userId);
+        $iface_zonelist_record_count = $userPreferenceService->getShowZoneRecordCount($userId);
 
         // Create pagination service and get user preference
         $paginationService = $this->createPaginationService();
@@ -124,9 +138,10 @@ class ListForwardZonesController extends BaseController
         $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
 
         $row_start = 0;
-        if (isset($_GET['start'])) {
-            $start = (int)htmlspecialchars($_GET['start']);
-            $row_start = ($start - 1) * $iface_rowamount;
+        $start_param = $this->request->getQueryParam('start');
+        if ($start_param !== null) {
+            $start = (int)htmlspecialchars($start_param);
+            $row_start = max(0, ($start - 1) * $iface_rowamount);
         }
 
         $perm_view = Permission::getViewPermission($this->db);
@@ -141,60 +156,84 @@ class ListForwardZonesController extends BaseController
         $letter_start = 'all';
         if ($count_zones_view > $iface_rowamount) {
             $letter_start = 'a';
-            if (isset($_GET['letter'])) {
-                $letter_start = htmlspecialchars($_GET['letter']);
-                $_SESSION['letter'] = htmlspecialchars($_GET['letter']);
-            } elseif (isset($_SESSION['letter'])) {
-                $letter_start = $_SESSION['letter'];
+            $letter = $this->request->getQueryParam('letter');
+            if ($letter !== null) {
+                $letter_start = htmlspecialchars($letter);
+                $_SESSION[SessionKeys::LETTER] = htmlspecialchars($letter);
+            } elseif (isset($_SESSION[SessionKeys::LETTER])) {
+                $letter_start = $_SESSION[SessionKeys::LETTER];
             }
         }
 
         $count_zones_all_letterstart = $dnsDataService->countZones($perm_view, $letter_start);
 
         $ownershipMode = new ZoneOwnershipModeService($this->getConfig());
-        $isUserOwnerAllowed = $ownershipMode->isUserOwnerAllowed();
+        $perm_ownership_view = Permission::getZoneOwnershipViewPermission($this->db);
+        // The full-name column also lists zone owners, so it follows the same gate
+        $iface_zonelist_fullname = $iface_zonelist_fullname && $perm_ownership_view !== 'none';
+        $showOwnerColumn = $ownershipMode->isUserOwnerAllowed()
+            && $this->config->get('interface', 'display_owner_in_zone_list', true)
+            && $perm_ownership_view !== 'none';
         // Group sort relies on JOINs against Poweradmin tables, which the API-backed repository can't perform
-        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
-        $isGroupOwnerAllowed = $ownershipMode->isGroupOwnerAllowed();
-        $isGroupSortSupported = $isGroupOwnerAllowed && !$isApiBackend;
+        $showGroupColumn = $ownershipMode->isGroupOwnerAllowed()
+            && $this->config->get('interface', 'display_group_in_zone_list', true)
+            && $perm_ownership_view !== 'none';
+        // Sorting by owner/group data the user cannot fully see would leak
+        // ownership through row order, so it needs "all" scope, or "own" scope
+        // with a list that already contains only owned zones.
+        $ownershipSortAllowed = $perm_ownership_view === 'all'
+            || ($perm_ownership_view === 'own' && $perm_view === 'own');
+        $isOwnerSortSupported = $showOwnerColumn && $ownershipSortAllowed;
+        $isGroupSortSupported = $showGroupColumn && !$isApiBackend && $ownershipSortAllowed;
 
-        $allowedSort = ['name', 'type', 'count_records'];
-        if ($isUserOwnerAllowed) {
+        // In API mode record counts are resolved per page, so sorting on them
+        // would only order the rows already on screen
+        $isRecordCountSortSupported = $iface_zonelist_record_count && !$isApiBackend;
+
+        $allowedSort = ['name', 'type'];
+        if ($isRecordCountSortSupported) {
+            $allowedSort[] = 'count_records';
+        }
+        if ($isOwnerSortSupported) {
             $allowedSort[] = 'owner';
         }
         if ($isGroupSortSupported) {
             $allowedSort[] = 'group';
         }
 
-        list($zone_sort_by, $zone_sort_direction) = $this->getZoneSortOrder('zone_sort_by', $allowedSort);
+        list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder('zone_sort_by', $allowedSort);
 
         $effectiveLetterStart = ($count_zones_view <= $iface_rowamount || $letter_start == 'all') ? 'all' : $letter_start;
         $zones = $dnsDataService->getForwardZones(
             $perm_view,
-            $_SESSION['userid'],
+            $_SESSION[SessionKeys::USERID],
             $effectiveLetterStart,
             $row_start,
             $iface_rowamount,
             $zone_sort_by,
             $zone_sort_direction,
             $iface_zonelist_serial,
-            $iface_zonelist_template
+            $iface_zonelist_template,
+            $iface_zonelist_record_count
         );
 
         // Augment zones with group information
-        $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
-        $userGroupRepo = new DbUserGroupRepository($this->db);
-        $memberRepo = new DbUserGroupMemberRepository($this->db);
+        $zoneGroupRepo = $this->createZoneGroupRepository();
+        $userGroupRepo = $this->createUserGroupRepository();
         $allGroups = $userGroupRepo->findAll();
 
         // Resolve where the user can delete (direct vs. which groups grant it). Two
         // queries up front lets the per-row decision below stay in PHP, instead of
-        // running canUserPerformZoneAction once per rendered zone.
-        $hybridPermissions = new HybridPermissionService($this->db, $userGroupRepo, $memberRepo);
+        // running canPerformZoneAction once per rendered zone.
+        $hybridPermissions = new HybridPermissionService($this->db);
         $deleteSources = $perm_delete === 'own'
             ? $hybridPermissions->getPermissionSourcesForUser($userId, 'zone_delete_own')
             : ['has_direct' => false, 'group_ids' => []];
-        $username = $_SESSION['userlogin'];
+        $username = $_SESSION[SessionKeys::USERLOGIN];
+
+        $userGroupIds = $perm_ownership_view === 'own'
+            ? $userGroupRepo->getGroupIdsForUser($userId)
+            : [];
 
         foreach ($zones as &$zone) {
             $groupOwnerships = $zoneGroupRepo->findByDomainId($zone['id']);
@@ -222,6 +261,21 @@ class ListForwardZonesController extends BaseController
             } else {
                 $zone['user_can_delete'] = false;
             }
+
+            // At the "own" ownership view level, owner and group cells stay
+            // visible only for zones the user owns directly or via a group.
+            if ($perm_ownership_view === 'own') {
+                $ownsDirect = in_array($username, $zone['users'] ?? [], true);
+                $ownsViaGroup = !empty(array_intersect($userGroupIds, $zoneGroupIds));
+                if (!$ownsDirect && !$ownsViaGroup) {
+                    $zone['owners'] = [];
+                    $zone['full_names'] = [];
+                    $zone['groups'] = [];
+                }
+            }
+
+            $zone['owners_display'] = OwnerGroupColumnPresenter::presentOwners($zone['owners'] ?? [], $zone['full_names'] ?? []);
+            $zone['groups_display'] = OwnerGroupColumnPresenter::presentGroups($zone['groups']);
         }
         unset($zone); // Break the reference
 
@@ -240,27 +294,34 @@ class ListForwardZonesController extends BaseController
             'zone_sort_by' => $zone_sort_by,
             'zone_sort_direction' => $zone_sort_direction,
             'iface_zonelist_serial' => $iface_zonelist_serial,
+            'iface_zonelist_signed_serial' => $iface_zonelist_signed_serial,
             'iface_zonelist_template' => $iface_zonelist_template,
+            'iface_zonelist_record_count' => $iface_zonelist_record_count,
+            'is_record_count_sort_supported' => $isRecordCountSortSupported,
             'iface_zonelist_fullname' => $iface_zonelist_fullname,
-            'is_user_owner_allowed' => $isUserOwnerAllowed,
-            'is_group_owner_allowed' => $isGroupOwnerAllowed,
+            'show_owner_column' => $showOwnerColumn,
+            'show_group_column' => $showGroupColumn,
+            // Kept for 4.4.0 theme forks; mirror the gated flags so ownership view still applies
+            'is_user_owner_allowed' => $showOwnerColumn,
+            'is_group_owner_allowed' => $showGroupColumn,
+            'is_owner_sort_supported' => $isOwnerSortSupported,
             'is_group_sort_supported' => $isGroupSortSupported,
             'pdnssec_use' => $pdnssec_use,
-            'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION['userid']),
+            'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION[SessionKeys::USERID]),
             'pagination' => $this->createAndPresentPagination($count_zones_all_letterstart, $iface_rowamount),
-            'session_userlogin' => $_SESSION['userlogin'],
+            'session_userlogin' => $_SESSION[SessionKeys::USERLOGIN],
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
-            'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
-            'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
-            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
-            'is_api_backend' => DnsBackendProviderFactory::isApiBackend($this->getConfig()),
+            'perm_zone_master_add' => $this->hasPermission('zone_master_add'),
+            'perm_zone_slave_add' => $this->hasPermission('zone_slave_add'),
+            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
+            'is_api_backend' => $isApiBackend,
         ]);
     }
 
     private function getAvailableStartingLetters(string $letterStart, int $userId): string
     {
-        $userRepository = new DbUserRepository($this->db, $this->getConfig());
+        $userRepository = $this->createUserRepository();
         $userService = new UserService($userRepository);
         $allow_view_others = $userService->canUserViewOthersContent($userId);
 
@@ -276,7 +337,7 @@ class ListForwardZonesController extends BaseController
         return $presenter->present($availableChars, $digitsAvailable, $letterStart, $baseUrlPrefix);
     }
 
-    private function createAndPresentPagination(int $totalItems, string $itemsPerPage): string
+    private function createAndPresentPagination(int $totalItems, int $itemsPerPage): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();
@@ -287,37 +348,5 @@ class ListForwardZonesController extends BaseController
         $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/zones/forward?start={PageNumber}');
 
         return $presenter->present();
-    }
-
-    public function getZoneSortOrder(string $name, array $allowedValues): array
-    {
-        $zone_sort_by = 'name';
-        $zone_sort_direction = 'ASC';
-
-        if (isset($_GET[$name]) && preg_match("/^[a-z_]+$/", $_GET[$name])) {
-            $zone_sort_by = htmlspecialchars($_GET[$name]);
-            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_GET[$name]);
-        } elseif (isset($_POST[$name]) && preg_match("/^[a-z_]+$/", $_POST[$name])) {
-            $zone_sort_by = htmlspecialchars($_POST[$name]);
-            $_SESSION['list_zone_sort_by'] = htmlspecialchars($_POST[$name]);
-        } elseif (isset($_SESSION['list_zone_sort_by'])) {
-            $zone_sort_by = $_SESSION['list_zone_sort_by'];
-        }
-
-        if (!in_array($zone_sort_by, $allowedValues)) {
-            $zone_sort_by = 'name';
-        }
-
-        if (isset($_GET[$name . '_direction']) && in_array(strtoupper($_GET[$name . '_direction']), ['ASC', 'DESC'])) {
-            $zone_sort_direction = strtoupper($_GET[$name . '_direction']);
-            $_SESSION['list_zone_sort_by_direction'] = strtoupper($_GET[$name . '_direction']);
-        } elseif (isset($_POST[$name . '_direction']) && in_array(strtoupper($_POST[$name . '_direction']), ['ASC', 'DESC'])) {
-            $zone_sort_direction = strtoupper($_POST[$name . '_direction']);
-            $_SESSION['list_zone_sort_by_direction'] = strtoupper($_POST[$name . '_direction']);
-        } elseif (isset($_SESSION['list_zone_sort_by_direction'])) {
-            $zone_sort_direction = $_SESSION['list_zone_sort_by_direction'];
-        }
-
-        return [$zone_sort_by, $zone_sort_direction];
     }
 }

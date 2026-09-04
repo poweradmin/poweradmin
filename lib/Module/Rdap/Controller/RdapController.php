@@ -23,21 +23,21 @@
 namespace Poweradmin\Module\Rdap\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Module\Rdap\Service\RdapService;
 
 class RdapController extends BaseController
 {
     private RdapService $rdapService;
-    private DnsRecord $dnsRecord;
+    private DomainRepositoryInterface $domainRepository;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->rdapService = new RdapService();
-        $this->dnsRecord = new DnsRecord($this->db, $this->config);
+        $this->domainRepository = $this->createDomainRepository();
 
         $timeout = $this->getModuleConfig('rdap', 'request_timeout', 10);
         $this->rdapService->setRequestTimeout($timeout);
@@ -77,17 +77,14 @@ class RdapController extends BaseController
             $domain = trim($this->getRequest()['domain']);
 
             if (preg_match('/[^\x20-\x7E]/', $domain)) {
-                $punycode = DnsIdnService::toPunycode($domain);
-                if ($punycode !== false) {
-                    $domain = $punycode;
-                }
+                $domain = DnsIdnService::toPunycode($domain);
             }
         } elseif (isset($this->getRequest()['id'])) {
             $zone_id = (int)$this->getRequest()['id'];
-            $domain = $this->dnsRecord->getDomainNameById($zone_id) ?? '';
+            $domain = $this->domainRepository->getDomainNameById($zone_id) ?? '';
         } elseif (isset($this->getRequest()['zone_id'])) {
             $zone_id = (int)$this->getRequest()['zone_id'];
-            $domain = $this->dnsRecord->getDomainNameById($zone_id) ?? '';
+            $domain = $this->domainRepository->getDomainNameById($zone_id) ?? '';
         }
 
         return $domain;

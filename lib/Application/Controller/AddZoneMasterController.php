@@ -25,27 +25,31 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneMasterController extends BaseController
@@ -54,6 +58,11 @@ class AddZoneMasterController extends BaseController
     private LegacyLogger $auditLogger;
     private UserContextService $userContext;
     private IpAddressRetriever $ipAddressRetriever;
+    private Request $request;
+    private IPAddressValidator $ipAddressValidator;
+
+    /** @var array<int, string>|null */
+    private ?array $soaEditApiChoices = null;
 
     public function __construct(array $request)
     {
@@ -62,6 +71,8 @@ class AddZoneMasterController extends BaseController
         $this->auditLogger = new LegacyLogger($this->db);
         $this->userContext = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->request = new Request();
+        $this->ipAddressValidator = new IPAddressValidator();
     }
 
     public function run(): void
@@ -92,8 +103,8 @@ class AddZoneMasterController extends BaseController
         if ($ownershipMode->isUserOwnerAllowed()) {
             return null;
         }
-        $userGroupRepo = new DbUserGroupRepository($this->db);
-        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+        $userGroupRepo = $this->createUserGroupRepository();
+        if ($this->hasPermission('user_is_ueberuser')) {
             if (empty($userGroupRepo->findAll())) {
                 return _('Zone ownership mode is groups_only but no groups exist. Create a group before adding zones.');
             }
@@ -108,23 +119,25 @@ class AddZoneMasterController extends BaseController
     /**
      * Zone kinds this install may create.
      *
-     * Producer needs PowerDNS 4.7+, and an unknown version counts as unsupported:
-     * the 4.7 schema widened domains.type from VARCHAR(6) to VARCHAR(8), so an
-     * 8-character catalog kind would be truncated on an older one. Consumer is
-     * deliberately absent - this form collects no primaries, and addDomain() would
-     * seed the zone with an SOA and template records a consumer must not have.
-     *
      * @return array<string>
      */
     private function getAvailableZoneTypes(): array
     {
-        $types = array("MASTER", "NATIVE");
+        // A consumer replicates from a remote primary, which is what zone_slave_add governs.
+        return ZoneType::getCreatableTypes(
+            $this->supportsCatalogKinds(),
+            $this->hasPermission('zone_slave_add')
+        );
+    }
 
-        if ($this->getPdnsCapabilities()->supportsCatalogZones()) {
-            $types[] = "PRODUCER";
-        }
-
-        return $types;
+    /**
+     * Catalog kinds need PowerDNS 4.7+, and an unknown version must count as
+     * unsupported: the 4.7 schema widened domains.type from VARCHAR(6) to
+     * VARCHAR(8), so writing PRODUCER/CONSUMER to an older one truncates it.
+     */
+    private function supportsCatalogKinds(): bool
+    {
+        return $this->getPdnsCapabilities()->supportsCatalogZones();
     }
 
     private function addZone(): void
@@ -143,8 +156,9 @@ class AddZoneMasterController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_POST)) {
-            $this->showFirstValidationError($_POST);
+        $postData = $this->request->getPostParams();
+        if (!$this->doValidateRequest($postData)) {
+            $this->showFirstValidationError($postData);
         }
 
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
@@ -152,12 +166,12 @@ class AddZoneMasterController extends BaseController
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
-        $raw_domain = trim($_POST['domain']);
+        $raw_domain = trim((string)$this->request->getPostParam('domain', ''));
 
         // On the reverse-zone form, accept a network (e.g. 192.168.1.0/24,
         // 2001:db8::/48) and create the matching in-addr.arpa/ip6.arpa zone
         // instead of silently creating a forward zone with that literal name.
-        $is_reverse_context = (isset($_POST['type']) && $_POST['type'] === 'reverse');
+        $is_reverse_context = $this->request->getPostParam('type') === 'reverse';
         if ($is_reverse_context) {
             $reverse_zone = DnsHelper::resolveReverseZoneName($raw_domain);
             if ($reverse_zone === null) {
@@ -169,20 +183,32 @@ class AddZoneMasterController extends BaseController
         }
 
         $zone_name = DnsIdnService::toPunycode($raw_domain);
-        $dom_type = $_POST["dom_type"];
+        $dom_type = $this->request->getPostParam('dom_type', '');
 
-        // The dropdown only populates the form; without this a crafted POST could
-        // still ask for a kind this server does not support.
+        // The dropdown only populates the form; without this the submit path would
+        // accept any string, including kinds this server does not support.
         if (!in_array($dom_type, $this->getAvailableZoneTypes(), true)) {
             $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
             $this->showForm();
             return;
         }
 
-        $owner = $ownershipMode->isUserOwnerAllowed() && !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
-        $zone_template = $_POST['zone_template'] ?? "none";
-        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups']) ?
-            array_map('intval', $_POST['groups']) : [];
+        $ownerInput = $this->request->getPostParam('owner');
+        $owner = $ownershipMode->isUserOwnerAllowed() && !empty($ownerInput) ? (int)$ownerInput : null;
+        $zone_template = $this->request->getPostParam('zone_template', 'none');
+
+        // A consumer takes its catalog by transfer, so it needs a primary and gets
+        // neither template records nor a serial policy.
+        $replicates = ZoneType::replicatesFromPrimary($dom_type);
+        $slave_master = $replicates ? trim((string)$this->request->getPostParam('slave_master', '')) : '';
+        if ($replicates) {
+            $zone_template = 'none';
+        }
+
+        $soa_edit_api = $this->sanitizeSoaEditApiInput($this->request->getPostParam('soa_edit_api'));
+        $groupsInput = $this->request->getPostParam('groups');
+        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && is_array($groupsInput) ?
+            array_map('intval', $groupsInput) : [];
 
         // Validate: at least one owner (user or group) must be selected
         if ($owner === null && empty($selected_groups)) {
@@ -194,8 +220,8 @@ class AddZoneMasterController extends BaseController
         // Block assigning a zone to a different user without elevated permission
         $callerId = $this->userContext->getLoggedInUserId();
         if ($owner !== null && $owner !== $callerId) {
-            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-            if (!$isAdmin && !UserManager::verifyPermission($this->db, 'zone_content_edit_others')) {
+            $isAdmin = $this->hasPermission('user_is_ueberuser');
+            if (!$isAdmin && !$this->hasPermission('zone_content_edit_others')) {
                 $this->setMessage('add_zone_master', 'error', _('You do not have permission to create zones for other users.'));
                 $this->showForm();
                 return;
@@ -204,7 +230,7 @@ class AddZoneMasterController extends BaseController
 
         // Validate submitted group IDs against user's allowed groups
         if (!empty($selected_groups)) {
-            $userGroupRepo = new DbUserGroupRepository($this->db);
+            $userGroupRepo = $this->createUserGroupRepository();
             $existing = $userGroupRepo->findExistingIds($selected_groups);
             $unknown = array_values(array_diff($selected_groups, $existing));
             if (!empty($unknown)) {
@@ -214,7 +240,7 @@ class AddZoneMasterController extends BaseController
             }
             $selected_groups = $existing;
 
-            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+            $isAdmin = $this->hasPermission('user_is_ueberuser');
             if (!$isAdmin) {
                 $userId = $this->userContext->getLoggedInUserId();
                 $allowedGroups = $userGroupRepo->findByUserId($userId);
@@ -228,35 +254,44 @@ class AddZoneMasterController extends BaseController
             }
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = $this->createDomainRepository();
+        $recordRepository = $this->createRecordRepository();
         $hostnameValidator = new HostnameValidator($this->config);
         if (!$hostnameValidator->isValid($zone_name)) {
             // Don't add a generic error as the validation method already sets a specific one
             $this->showForm();
-        } elseif ($dns_third_level_check && DnsRecord::getDomainLevel($zone_name) > 2 && $dnsRecord->domainExists(DnsRecord::getSecondLevelDomain($zone_name))) {
+        } elseif ($dns_third_level_check && DomainUtility::getDomainLevel($zone_name) > 2 && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($zone_name))) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif ($dnsRecord->domainExists($zone_name) || $dnsRecord->recordNameExists($zone_name)) {
+        } elseif ($domainRepository->domainExists($zone_name) || $recordRepository->recordNameExists($zone_name)) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif ($dnsRecord->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template, $selected_groups)) {
-            $zone_id = $dnsRecord->getZoneIdFromName($zone_name);
+        } elseif (($overlapError = $this->getZoneOverlapError($zone_name)) !== null) {
+            $this->setMessage('add_zone_master', 'error', $overlapError);
+            $this->showForm();
+        } elseif ($replicates && !$this->ipAddressValidator->areMultipleValidIPs($slave_master)) {
+            $this->setMessage('add_zone_master', 'error', _('This is not a valid IPv4 or IPv6 address.'));
+            $this->showForm();
+        } elseif ($this->createDomainManager()->addDomain($this->db, $zone_name, $owner, $dom_type, $slave_master, $zone_template, $selected_groups, $soa_edit_api)) {
+            $zone_id = $domainRepository->getZoneIdFromName($zone_name);
 
             $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
+                'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $this->userContext->getLoggedInUsername(),
                 $zone_name,
                 $dom_type,
-                $zone_template
+                $zone_template,
+                $slave_master !== '' ? ' zone_master:' . $slave_master : ''
             ), $zone_id);
 
             $dnssecMessageSet = false;
 
-            if ($pdnssec_use) {
+            // Signing a zone whose records arrive by transfer is meaningless.
+            if ($pdnssec_use && !$replicates) {
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
-                if (isset($_POST['dnssec']) && $dnssecProvider->isDnssecEnabled()) {
+                if ($this->request->getPostParam('dnssec') !== null && $dnssecProvider->isDnssecEnabled()) {
                     // Pre-flight zone validation before DNSSEC signing
                     $zoneValidator = new ZoneValidationService($this->getRepositoryFactory()->createRecordRepository());
                     $validation = $zoneValidator->validateZoneForDnssec($zone_id, $zone_name);
@@ -264,17 +299,17 @@ class AddZoneMasterController extends BaseController
                     if (!$validation['valid']) {
                         // Show validation errors to user
                         $errorMsg = $zoneValidator->getFormattedErrorMessage($validation);
-                        $messageKey = DnsHelper::isReverseZone($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
+                        $messageKey = DnsHelper::isReverseZoneName($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
                         $this->setMessage($messageKey, 'warning', _('Zone was created successfully, but DNSSEC signing was skipped due to validation errors:') . "\n\n" . $errorMsg);
                         $this->logger->warning('DNSSEC pre-flight validation failed for newly created zone: {zone}', ['zone' => $zone_name]);
                         $dnssecMessageSet = true;
                     } else {
                         // Validation passed - proceed with signing
                         // Update SOA serial before signing
-                        $dnsRecord->updateSOASerial($zone_id);
+                        DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zone_id);
 
                         $secureResult = $dnssecProvider->secureZone($zone_name);
-                        $messageKey = DnsHelper::isReverseZone($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
+                        $messageKey = DnsHelper::isReverseZoneName($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
 
                         if (!$secureResult) {
                             $this->setMessage($messageKey, 'warning', _('Zone was created, but securing it with DNSSEC failed. Zone validation passed, but PowerDNS API returned an error. Check PowerDNS logs for details.'));
@@ -299,7 +334,7 @@ class AddZoneMasterController extends BaseController
             }
 
             // Check if the zone is a reverse zone and redirect accordingly
-            if (DnsHelper::isReverseZone($zone_name)) {
+            if (DnsHelper::isReverseZoneName($zone_name)) {
                 if (!$dnssecMessageSet) {
                     $this->setMessage('list_reverse_zones', 'success', _('Zone has been added successfully.'));
                 }
@@ -313,28 +348,55 @@ class AddZoneMasterController extends BaseController
         }
     }
 
+    /**
+     * SOA-EDIT-API values offered by the add-zone selector; an empty list
+     * hides the selector.
+     *
+     * @return array<int, string>
+     */
+    private function getSoaEditApiChoices(): array
+    {
+        return $this->soaEditApiChoices ??= MetadataDefinitions::getSoaEditApiChoices($this->config);
+    }
+
+    /**
+     * Keep only offered SOA-EDIT-API choices from the form; null means
+     * "server default" (the dns.soa_edit_api config default applies).
+     */
+    private function sanitizeSoaEditApiInput(?string $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return in_array($value, $this->getSoaEditApiChoices(), true) ? $value : null;
+    }
+
     private function showForm(): void
     {
-        $perm_view_others = UserManager::verifyPermission($this->db, 'user_view_others');
+        $perm_view_others = $this->hasPermission('user_view_others');
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
+        $users = $this->createUserRepository()->getUsersWithZoneCounts();
 
         // Keep the submitted zone name if there was an error
-        $domain_value = isset($_POST['domain']) ? htmlspecialchars($_POST['domain']) : '';
+        $domainInput = $this->request->getPostParam('domain');
+        $domain_value = $domainInput !== null ? htmlspecialchars($domainInput) : '';
 
         // Resolve the system-wide default template (DB flag → config setting → none)
         $default_template_id = $zone_templates->getDefaultTemplateId();
 
         // Safely handle the zone template value
-        if (isset($_POST['zone_template'])) {
+        $zoneTemplateInput = $this->request->getPostParam('zone_template');
+        if ($zoneTemplateInput !== null) {
             // If it's 'none', keep it as is
-            if ($_POST['zone_template'] === 'none') {
+            if ($zoneTemplateInput === 'none') {
                 $zone_template_value = 'none';
             } else {
                 // Otherwise, ensure it's a valid integer
-                $template_id = filter_var($_POST['zone_template'], FILTER_VALIDATE_INT);
+                $template_id = filter_var($zoneTemplateInput, FILTER_VALIDATE_INT);
                 // Get the list of valid template IDs
-                $templates = $zone_templates->getListZoneTempl($_SESSION['userid']);
+                $templates = $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]);
                 $valid_template_ids = array_column($templates, 'id');
                 $zone_template_value = ($template_id !== false && in_array($template_id, $valid_template_ids)) ?
                     $template_id : 'none';
@@ -344,38 +406,39 @@ class AddZoneMasterController extends BaseController
         }
 
         // Safely handle the owner value - ensure it's an integer or preserve empty selection
-        if (isset($_POST['owner'])) {
-            if ($_POST['owner'] === '') {
+        $ownerInput = $this->request->getPostParam('owner');
+        if ($ownerInput !== null) {
+            if ($ownerInput === '') {
                 // Empty value means "no user owner" was explicitly selected
                 $owner_value = '';
             } else {
-                $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
+                $owner_id = filter_var($ownerInput, FILTER_VALIDATE_INT);
                 // Verify that the owner ID exists among valid users
-                $valid_users = UserManager::showUsers($this->db);
-                $valid_owner_ids = array_column($valid_users, 'id');
-                $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
+                $valid_owner_ids = array_column($users, 'id');
+                $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION[SessionKeys::USERID];
             }
         } else {
             // No POST data, default to current user
-            $owner_value = $_SESSION['userid'];
+            $owner_value = $_SESSION[SessionKeys::USERID];
         }
 
         $valid_domain_types = $this->getAvailableZoneTypes();
-        $dom_type_value = isset($_POST['dom_type']) && in_array($_POST['dom_type'], $valid_domain_types, true) ?
-            $_POST['dom_type'] : $this->config->get('dns', 'zone_type_default', 'NATIVE');
+        $domTypeInput = $this->request->getPostParam('dom_type');
+        $dom_type_value = $domTypeInput !== null && in_array($domTypeInput, $valid_domain_types, true) ?
+            $domTypeInput : $this->config->get('dns', 'zone_type_default', 'MASTER');
 
-        $is_post_request = !empty($_POST);
+        $is_post_request = !empty($this->request->getPostParams());
 
         // Create a sanitized version of the DNSSEC checkbox status
-        $dnssec_checked = isset($_POST['dnssec']) && $_POST['dnssec'] == '1';
+        $dnssec_checked = $this->request->getPostParam('dnssec') == '1';
 
         // Get available templates for this user
         $userId = $this->userContext->getLoggedInUserId();
         $templates = $zone_templates->getListZoneTempl($userId);
 
         // Fetch groups for the dropdown - admins see all, others see only their own
-        $userGroupRepo = new DbUserGroupRepository($this->db);
-        $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $userGroupRepo = $this->createUserGroupRepository();
+        $isAdmin = $this->hasPermission('user_is_ueberuser');
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
 
         // Fetch member counts for all groups in a single query
@@ -383,31 +446,34 @@ class AddZoneMasterController extends BaseController
         $memberCounts = $userGroupRepo->getMemberCountsByGroupIds($groupIds);
 
         // Handle selected groups on error re-render
-        $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
-            array_map('intval', $_POST['groups']) : [];
+        $groupsInput = $this->request->getPostParam('groups');
+        $selected_groups = is_array($groupsInput) ? array_map('intval', $groupsInput) : [];
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         // Preserve reverse-zone context so the form returns to the reverse list
-        $is_reverse_zone = (isset($_GET['type']) && $_GET['type'] === 'reverse')
-            || (isset($_POST['type']) && $_POST['type'] === 'reverse');
+        $is_reverse_zone = $this->request->getQueryParam('type') === 'reverse'
+            || $this->request->getPostParam('type') === 'reverse';
 
         $this->render('add_zone_master.html', [
             'is_reverse_zone' => $is_reverse_zone,
             'perm_view_others' => $perm_view_others,
             'session_user_id' => $userId,
             'available_zone_types' => $valid_domain_types,
-            'users' => UserManager::showUsers($this->db),
+            'users' => $users,
             'zone_templates' => $templates,
             'can_use_templates' => !empty($templates),
             'default_template_id' => $default_template_id,
-            'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'NATIVE'),
+            'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'MASTER'),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
             'pdnssec_use' => $pdnssec_use,
             'domain_value' => $domain_value,
             'zone_template_value' => $zone_template_value,
             'owner_value' => $owner_value,
             'dom_type_value' => $dom_type_value,
+            'slave_master_value' => (string)$this->request->getPostParam('slave_master', ''),
+            'zone_replicates_from_primary' => ZoneType::replicatesFromPrimary($dom_type_value),
+            'replicating_zone_types' => ZoneType::getReplicatingTypes(),
             'is_post' => $is_post_request,
             'dnssec_checked' => $dnssec_checked,
             'all_groups' => $allGroups,
@@ -415,6 +481,11 @@ class AddZoneMasterController extends BaseController
             'selected_groups' => $selected_groups,
             'user_owner_allowed' => $ownershipMode->isUserOwnerAllowed(),
             'group_owner_allowed' => $ownershipMode->isGroupOwnerAllowed(),
+            'soa_edit_api_options' => $this->getSoaEditApiChoices(),
+            // Preselect the submitted value on error re-render, else the config default
+            'soa_edit_api_value' => $this->sanitizeSoaEditApiInput(
+                $this->request->getPostParam('soa_edit_api') ?? $this->config->get('dns', 'soa_edit_api', '')
+            ) ?? '',
             // Don't pass raw POST data to the template for security
         ]);
     }

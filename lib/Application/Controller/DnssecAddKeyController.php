@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,25 +25,32 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Domain\Enum\DnssecKeyType;
 
 class DnssecAddKeyController extends BaseController
 {
+    private Request $request;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->request = new Request();
+    }
 
     public function run(): void
     {
@@ -53,10 +60,11 @@ class DnssecAddKeyController extends BaseController
             return;
         }
 
+        $zone_id = (int) $zone_id;
+
         // Early permission check - validate DNSSEC access before any operations
         $perm_view = Permission::getViewPermission($this->db);
-        $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         // Check view permission first
         if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
@@ -65,29 +73,38 @@ class DnssecAddKeyController extends BaseController
         }
 
         // Validate zone existence
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if (!$dnsRecord->zoneIdExists($zone_id)) {
+        $domainRepository = $this->createDomainRepository();
+        if (!$domainRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        if ($perm_edit !== "all" && !($perm_edit === "own" && $user_is_zone_owner)) {
+        if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id)) {
             $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
             return;
         }
 
-        $key_type = "";
-        if (isset($_POST['key_type'])) {
-            $key_type = $_POST['key_type'];
+        $domain_name = $domainRepository->getDomainNameById($zone_id);
+        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
-            if ($key_type != 'ksk' && $key_type != 'zsk' && $key_type != 'csk') {
+        if ($dnssecProvider->isZonePresigned($domain_name)) {
+            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
+            $this->redirect('/zones/' . $zone_id . '/dnssec');
+            return;
+        }
+
+        $key_type = "";
+        if ($this->request->getPostParam('key_type') !== null) {
+            $key_type = $this->request->getPostParam('key_type');
+
+            if (!is_string($key_type) || !DnssecKeyType::isValid($key_type)) {
                 $this->showError(_('Invalid or unexpected input given.'));
             }
         }
 
         $bits = "";
-        if (isset($_POST["bits"])) {
-            $bits = $_POST["bits"];
+        if ($this->request->getPostParam('bits') !== null) {
+            $bits = $this->request->getPostParam('bits');
 
             $valid_values = array('2048', '1024', '768', '384', '256');
             if (!in_array($bits, $valid_values)) {
@@ -96,8 +113,8 @@ class DnssecAddKeyController extends BaseController
         }
 
         $algorithm = "";
-        if (isset($_POST["algorithm"])) {
-            $algorithm = $_POST["algorithm"];
+        if ($this->request->getPostParam('algorithm') !== null) {
+            $algorithm = $this->request->getPostParam('algorithm');
 
             // The dropdown is filtered against the connected server's
             // capabilities; validate against the same list so the form and
@@ -109,8 +126,6 @@ class DnssecAddKeyController extends BaseController
             }
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $domain_name = $dnsRecord->getDomainNameById($zone_id);
         // Function to validate algorithm and bit combinations
         $validateAlgorithmBitCombination = function ($algorithm, $bits) {
             // ECDSA algorithms should only use 256 or 384 bits
@@ -143,7 +158,7 @@ class DnssecAddKeyController extends BaseController
             return ['valid' => true, 'message' => ''];
         };
 
-        if (isset($_POST["submit"])) {
+        if ($this->request->getPostParam('submit') !== null) {
             $this->validateCsrfToken();
 
             // Validate combination of algorithm and bits before attempting to add the key
@@ -154,11 +169,10 @@ class DnssecAddKeyController extends BaseController
                     $this->setMessage('dnssec_add_key', 'error', $validation['message']);
                     // Don't redirect, let the form display again with the error message
                 } else {
-                    $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                     try {
-                        if ($dnssecProvider->addZoneKey($domain_name, $key_type, $bits, $algorithm)) {
+                        if ($dnssecProvider->addZoneKey($domain_name, $key_type, (int)$bits, $algorithm)) {
                             $auditService = new AuditService($this->db);
-                            $auditService->logDnssecAddKey((int)$zone_id, $domain_name, $key_type, $bits, $algorithm);
+                            $auditService->logDnssecAddKey($zone_id, $domain_name, $key_type, (string)$bits, $algorithm);
                             $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
                             $this->redirect('/zones/' . $zone_id . '/dnssec');
                         } else {
@@ -175,11 +189,7 @@ class DnssecAddKeyController extends BaseController
             }
         }
 
-        if (str_starts_with($domain_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($domain_name);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
 
         // Check PowerDNS version to determine if CSK should be the default
         $pdnsVersion = DnssecProviderFactory::getPowerDnsVersion($this->getConfig());
@@ -203,6 +213,7 @@ class DnssecAddKeyController extends BaseController
             'zone_id' => $zone_id,
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => DnsIdnService::toDisplay($domain_name),
             'key_type' => $key_type,
             'bits' => $bits,
             'algorithm' => $algorithm,

@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use ReflectionClass;
 use TestHelpers\SqliteIntegrationTestCase;
 
@@ -137,6 +138,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $domainRepository->method('getDomainType')->willReturn('MASTER');
         $domainRepository->method('getDomainNameById')->willReturn('attacker.example');
+        $changeLogger = $this->createMock(RecordChangeLogger::class);
 
         return new RecordManager(
             $this->db,
@@ -145,7 +147,8 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
             $soa,
             $domainRepository,
             $backend,
-            null
+            null,
+            $changeLogger
         );
     }
 

@@ -32,14 +32,19 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Domain\Model\Pagination;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\GroupReferenceResolver;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\SelfEditFieldGuard;
 use Poweradmin\Domain\Service\UserManagementService;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -68,18 +73,36 @@ use OpenApi\Attributes as OA;
 
 class UsersController extends PublicApiController
 {
+    /** Guards against a single request fanning out into thousands of membership queries. */
+    private const MAX_GROUPS_PER_REQUEST = 50;
+
     private UserManagementService $userManagementService;
     private ApiPermissionService $apiPermissionService;
-    private DbUserRepository $userRepository;
+    private UserRepository $userRepository;
+    private UserGroupRepositoryInterface $groupRepository;
+    private GroupMembershipService $membershipService;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $this->userRepository = new DbUserRepository($this->db, $this->config);
+        $this->userRepository = $this->createUserRepository();
+        $this->groupRepository = $this->createUserGroupRepository();
         $permissionService = new PermissionService($this->userRepository);
-        $this->userManagementService = new UserManagementService($this->userRepository, $permissionService);
+        $this->userManagementService = new UserManagementService(
+            $this->userRepository,
+            $permissionService,
+            $this->groupRepository
+        );
+        $this->membershipService = new GroupMembershipService(
+            $this->createUserGroupMemberRepository(),
+            $this->groupRepository
+        );
         $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     /**
@@ -148,6 +171,16 @@ class UsersController extends PublicApiController
                                     property: 'permissions',
                                     type: 'array',
                                     items: new OA\Items(type: 'string')
+                                ),
+                                new OA\Property(property: 'perm_templ', type: 'integer', example: 2, nullable: true),
+                                new OA\Property(property: 'perm_templ_name', type: 'string', example: 'Zone Manager', nullable: true),
+                                new OA\Property(
+                                    property: 'groups',
+                                    type: 'array',
+                                    items: new OA\Items(properties: [
+                                        new OA\Property(property: 'id', type: 'integer', example: 3),
+                                        new OA\Property(property: 'name', type: 'string', example: 'dns-operators')
+                                    ], type: 'object')
                                 ),
                                 new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00'),
                                 new OA\Property(property: 'updated_at', type: 'string', example: '2025-01-02 14:30:00')
@@ -287,7 +320,17 @@ class UsersController extends PublicApiController
                             new OA\Property(property: 'description', type: 'string', example: 'System Administrator'),
                             new OA\Property(property: 'active', type: 'boolean', example: true),
                             new OA\Property(property: 'zone_count', type: 'integer', example: 5),
-                            new OA\Property(property: 'is_admin', type: 'boolean', example: true)
+                            new OA\Property(property: 'is_admin', type: 'boolean', example: true),
+                            new OA\Property(property: 'perm_templ', type: 'integer', example: 2, nullable: true),
+                            new OA\Property(property: 'perm_templ_name', type: 'string', example: 'Zone Manager', nullable: true),
+                            new OA\Property(
+                                property: 'groups',
+                                type: 'array',
+                                items: new OA\Items(properties: [
+                                    new OA\Property(property: 'id', type: 'integer', example: 3),
+                                    new OA\Property(property: 'name', type: 'string', example: 'dns-operators')
+                                ], type: 'object')
+                            )
                         ],
                         type: 'object'
                     )
@@ -373,7 +416,7 @@ class UsersController extends PublicApiController
                         'current_page' => $page,
                         'per_page' => $perPage,
                         'total' => $totalCount,
-                        'last_page' => ceil($totalCount / $perPage)
+                        'last_page' => (int)ceil($totalCount / $perPage)
                     ],
                     'meta' => [
                         'timestamp' => date('Y-m-d H:i:s')
@@ -452,6 +495,17 @@ class UsersController extends PublicApiController
                     description: 'Whether the user should use LDAP authentication',
                     type: 'boolean',
                     example: false
+                ),
+                new OA\Property(
+                    property: 'groups',
+                    description: 'Groups to add the user to, given as integer IDs or exact group names. Requires the user_is_ueberuser permission. Names are matched exactly, including case.',
+                    type: 'array',
+                    items: new OA\Items(oneOf: [
+                        new OA\Schema(type: 'integer'),
+                        new OA\Schema(type: 'string')
+                    ]),
+                    example: [3, 'dns-operators'],
+                    maxItems: 50
                 )
             ]
         )
@@ -466,7 +520,16 @@ class UsersController extends PublicApiController
                 new OA\Property(
                     property: 'data',
                     properties: [
-                        new OA\Property(property: 'user_id', type: 'integer', example: 123)
+                        new OA\Property(property: 'user_id', type: 'integer', example: 123),
+                        new OA\Property(
+                            property: 'groups',
+                            description: 'Group memberships that were actually created',
+                            type: 'array',
+                            items: new OA\Items(properties: [
+                                new OA\Property(property: 'id', type: 'integer', example: 3),
+                                new OA\Property(property: 'name', type: 'string', example: 'dns-operators')
+                            ], type: 'object')
+                        )
                     ],
                     type: 'object'
                 ),
@@ -482,11 +545,22 @@ class UsersController extends PublicApiController
     )]
     #[OA\Response(
         response: 400,
-        description: 'Bad request - validation failed',
+        description: 'Bad request - validation failed or a group reference did not resolve',
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Username is required'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 403,
+        description: 'Forbidden - no permission to create users, or groups was supplied without user_is_ueberuser',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'You do not have permission to assign groups'),
                 new OA\Property(property: 'data', type: 'null')
             ]
         )
@@ -525,14 +599,27 @@ class UsersController extends PublicApiController
 
             $input = json_decode($this->request->getContent(), true);
 
-            if (!$input) {
+            // A truthy scalar body reached the array-typed guards below as a TypeError.
+            if (!is_array($input) || $input === []) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
+            }
+
+            // Resolve group references before the insert so a bad name cannot leave a
+            // created-but-ungrouped user behind.
+            $groups = [];
+            if (array_key_exists('groups', $input)) {
+                $groupGate = $this->resolveGroupReferences($currentUserId, $input['groups'], $groups);
+                if ($groupGate !== null) {
+                    return $groupGate;
+                }
+                unset($input['groups']);
             }
 
             $templateGate = $this->guardPermissionTemplateAssignment(
                 $currentUserId,
                 $input,
-                UserManager::getMinimalPermissionTemplateId($this->db, 'user')
+                $this->createPermissionTemplateRepository()->getMinimalPermissionTemplateId('user'),
+                null
             );
             if ($templateGate !== null) {
                 return $templateGate;
@@ -551,8 +638,10 @@ class UsersController extends PublicApiController
                 ]);
             }
 
+            $assignedGroups = $this->assignGroups((int)$result['user_id'], $input['username'], $groups);
+
             return $this->returnApiResponse(
-                ['user_id' => $result['user_id']],
+                ['user_id' => $result['user_id'], 'groups' => $assignedGroups],
                 true,
                 $result['message'],
                 201,
@@ -997,7 +1086,12 @@ class UsersController extends PublicApiController
 
             // canEditPermissionTemplates() alone would let a delegated template
             // manager put their own account on the Administrator template.
-            $templateGate = $this->guardPermissionTemplateAssignment($currentUserId, $input, null, $targetUserId);
+            $templateGate = $this->guardPermissionTemplateAssignment(
+                $currentUserId,
+                $input,
+                null,
+                $targetUserId
+            );
             if ($templateGate !== null) {
                 return $templateGate;
             }
@@ -1029,7 +1123,74 @@ class UsersController extends PublicApiController
         }
     }
 
-    private function guardPermissionTemplateAssignment(int $currentUserId, array &$input, ?int $defaultUserTemplateId, ?int $targetUserId = null): ?JsonResponse
+    /**
+     * Resolve the submitted group references, or return the response that rejects them
+     *
+     * @param mixed $submitted Raw value of the request body's groups key
+     * @param UserGroup[] $groups Resolved groups, keyed by group ID
+     */
+    private function resolveGroupReferences(int $currentUserId, mixed $submitted, array &$groups): ?JsonResponse
+    {
+        // Group membership carries permissions through user_groups.perm_templ, and the
+        // caller sets the new account's password. canCreateUser() is satisfied by plain
+        // user_add_new, so assigning groups needs the gate every other group write uses.
+        if (!$this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser')) {
+            return $this->returnApiError('You do not have permission to assign groups', 403);
+        }
+
+        $result = (new GroupReferenceResolver($this->groupRepository))
+            ->resolve($submitted, self::MAX_GROUPS_PER_REQUEST);
+
+        if (!$result['success']) {
+            return $this->returnApiError($result['message'], $result['status'] ?? 400);
+        }
+
+        $groups = $result['groups'];
+
+        return null;
+    }
+
+    /**
+     * Add the new user to the resolved groups and report what actually took effect
+     *
+     * @param UserGroup[] $groups
+     * @return list<array{id: int, name: string}>
+     */
+    private function assignGroups(int $userId, string $username, array $groups): array
+    {
+        $assigned = [];
+
+        foreach ($groups as $group) {
+            $groupId = (int)$group->getId();
+
+            try {
+                $this->membershipService->addUserToGroup($groupId, $userId);
+            } catch (\Throwable $e) {
+                // The user row is already committed, so report the partial result rather
+                // than failing the whole request. The response lists what actually stuck.
+                $this->logger->error('[API Error] UsersController::assignGroups - {class}: {message}', [
+                    'class' => get_class($e),
+                    'message' => $e->getMessage(),
+                ]);
+                continue;
+            }
+
+            $assigned[] = ['id' => $groupId, 'name' => $group->getName()];
+
+            $this->auditLogger->logGroupInfo(sprintf(
+                'client_ip:%s user:%s operation:api_add_members group:%s group_id:%d count:1 members:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->getAuthenticatedUsername(),
+                str_replace(' ', '_', $group->getName()),
+                $groupId,
+                $username
+            ), $groupId);
+        }
+
+        return $assigned;
+    }
+
+    private function guardPermissionTemplateAssignment(int $currentUserId, array &$input, ?int $defaultUserTemplateId, ?int $targetUserId): ?JsonResponse
     {
         $error = PermissionTemplateAssignmentGuard::apply(
             $this->apiPermissionService,

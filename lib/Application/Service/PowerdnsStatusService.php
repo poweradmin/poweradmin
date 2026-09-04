@@ -26,6 +26,7 @@ use Exception;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Error\ApiErrorException;
+use Poweradmin\Infrastructure\Network\ProxyContext;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -445,22 +446,6 @@ class PowerdnsStatusService
     }
 
     /**
-     * Validates that a URL uses only secure HTTP/HTTPS schemes
-     *
-     * @param string $url The URL to validate
-     * @return bool True if URL is valid and uses HTTP/HTTPS scheme
-     */
-    private function isSecureUrl(string $url): bool
-    {
-        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-            return false;
-        }
-
-        $parsedUrl = parse_url($url);
-        return isset($parsedUrl['scheme']) && in_array($parsedUrl['scheme'], ['http', 'https'], true);
-    }
-
-    /**
      * Validates URL to prevent SSRF and path traversal attacks
      * Only allows fetching from the same host/port as the configured PowerDNS API
      *
@@ -571,6 +556,8 @@ class PowerdnsStatusService
             $auth = base64_encode($this->webserverUsername . ':' . $this->webserverPassword);
             $options['http']['header'] = "Authorization: Basic $auth";
         }
+
+        $options = ProxyContext::applyTo($options, $url);
 
         return @file_get_contents($url, false, stream_context_create($options));
     }

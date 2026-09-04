@@ -11,6 +11,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { expectAccessDenied } from '../../helpers/access.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Serial mode: we create API keys to generate log entries, then verify them
@@ -399,12 +400,7 @@ test.describe('API Logs - Permission Checks', () => {
     test('should not have access to API logs', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
       await page.goto('/settings/api/logs');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().endsWith('/') ||
-                       page.url().includes('/?');
-      expect(hasError || !page.url().includes('settings/api/logs')).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
   });
 
@@ -412,12 +408,7 @@ test.describe('API Logs - Permission Checks', () => {
     test('should not have access to API logs', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.client.username, users.client.password);
       await page.goto('/settings/api/logs');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().endsWith('/') ||
-                       page.url().includes('/?');
-      expect(hasError || !page.url().includes('settings/api/logs')).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
   });
 
@@ -425,12 +416,7 @@ test.describe('API Logs - Permission Checks', () => {
     test('should not have access to API logs', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
       await page.goto('/settings/api/logs');
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('denied') ||
-                       page.url().endsWith('/') ||
-                       page.url().includes('/?');
-      expect(hasError || !page.url().includes('settings/api/logs')).toBeTruthy();
+      await expectAccessDenied(page, 'table');
     });
   });
 });

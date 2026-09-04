@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
@@ -29,7 +30,6 @@ use Poweradmin\Application\Service\UsernameRecoveryService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -37,6 +37,7 @@ use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
+use Poweradmin\Domain\Service\SessionKeys;
 
 class ForgotUsernameController extends BaseController
 {
@@ -47,10 +48,13 @@ class ForgotUsernameController extends BaseController
     private IpAddressRetriever $ipRetriever;
     private UserAgentService $userAgentService;
     private LegacyLogger $auditLogger;
+    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request, false); // No authentication required for forgot username
+
+        $this->request = new Request();
 
         // Create our own CSRF token service
         $this->csrfTokenService = new CsrfTokenService();
@@ -65,14 +69,12 @@ class ForgotUsernameController extends BaseController
 
         try {
             $recoveryRepository = new DbUsernameRecoveryRepository($this->db, $configManager);
-            $userRepository = new DbUserRepository($this->db, $configManager);
             $mailService = new MailService($configManager, null);
             $this->ipRetriever = new IpAddressRetriever($_SERVER);
             $this->userAgentService = new UserAgentService($_SERVER);
 
             $this->usernameRecoveryService = new UsernameRecoveryService(
                 $recoveryRepository,
-                $userRepository,
                 $mailService,
                 $configManager,
                 $this->ipRetriever,
@@ -86,10 +88,19 @@ class ForgotUsernameController extends BaseController
         } catch (\Exception $e) {
             $this->logger->error('Failed to initialize username recovery controller', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'origin' => $e->getFile() . ':' . $e->getLine()
             ]);
             throw $e; // Re-throw to let the application handle it
         }
+    }
+
+    /**
+     * This flow validates its own one-shot `username_recovery_token` instead of the
+     * session-wide form token.
+     */
+    protected function requiresCsrfValidation(): bool
+    {
+        return false;
     }
 
     public function run(): void
@@ -135,9 +146,9 @@ class ForgotUsernameController extends BaseController
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
-            $token = $_POST['username_recovery_token'] ?? '';
+            $token = $this->request->getPostParam('username_recovery_token', '');
 
-            if (!$this->csrfTokenService->validateToken($token, 'username_recovery_token')) {
+            if (!$this->csrfTokenService->validateToken($token, SessionKeys::USERNAME_RECOVERY_TOKEN)) {
                 $this->logger->warning('Username recovery failed - invalid CSRF token', [
                     'ip' => $ipAddress,
                     'user_agent' => $userAgent,
@@ -148,12 +159,12 @@ class ForgotUsernameController extends BaseController
             }
 
             // Clear the token after use
-            unset($_SESSION['username_recovery_token']);
+            unset($_SESSION[SessionKeys::USERNAME_RECOVERY_TOKEN]);
         }
 
         // Verify reCAPTCHA if enabled
         if ($this->recaptchaService->isEnabled()) {
-            $recaptchaToken = $_POST['g-recaptcha-response'] ?? '';
+            $recaptchaToken = $this->request->getPostParam('g-recaptcha-response', '');
             if (!$this->recaptchaService->verify($recaptchaToken, $ipAddress, 'forgot_username')) {
                 $this->logger->warning('Username recovery failed - reCAPTCHA verification failed', [
                     'ip' => $ipAddress,
@@ -165,7 +176,7 @@ class ForgotUsernameController extends BaseController
             }
         }
 
-        $email = trim($_POST['email'] ?? '');
+        $email = trim($this->request->getPostParam('email', ''));
 
         // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -218,7 +229,7 @@ class ForgotUsernameController extends BaseController
                 'email' => $email,
                 'ip' => $ipAddress,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'origin' => $e->getFile() . ':' . $e->getLine(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $this->showUsernameRecoveryForm('An unexpected error occurred. Please try again later.');
@@ -238,7 +249,7 @@ class ForgotUsernameController extends BaseController
 
         // Generate a new token for username recovery
         $usernameRecoveryToken = $this->csrfTokenService->generateToken();
-        $_SESSION['username_recovery_token'] = $usernameRecoveryToken;
+        $_SESSION[SessionKeys::USERNAME_RECOVERY_TOKEN] = $usernameRecoveryToken;
 
         $this->render('forgot_username.html', [
             'error' => $error,
@@ -254,6 +265,7 @@ class ForgotUsernameController extends BaseController
         $this->render('forgot_username.html', [
             'success' => true,
             'message' => 'If an account exists with that email address, you will receive your username shortly.',
+            'recaptcha_enabled' => false,
         ]);
     }
 }

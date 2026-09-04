@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Api;
 
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Network\ProxyContext;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
@@ -103,7 +104,7 @@ class HttpClient implements ApiClient
     private function performSingleRequest(string $url, string $method, array $options): array
     {
         try {
-            $context = stream_context_create($options);
+            $context = stream_context_create(ProxyContext::applyTo($options, $url));
             $response = @file_get_contents($url, false, $context);
 
             if ($response === false) {

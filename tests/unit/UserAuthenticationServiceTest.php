@@ -358,6 +358,28 @@ class UserAuthenticationServiceTest extends TestCase
         $this->userAuthService->verifyPassword('any-password', 'not-a-recognised-hash');
     }
 
+    /**
+     * #[\SensitiveParameter] does not inherit, so this asserts the annotation is
+     * on the frame that actually runs rather than only on a parent or interface.
+     */
+    public function testPasswordIsRedactedFromAStackTrace(): void
+    {
+        $ignoreArgs = (string) ini_get('zend.exception_ignore_args');
+        ini_set('zend.exception_ignore_args', '0');
+
+        try {
+            $service = new UserAuthenticationService('not-a-real-algorithm');
+            $service->hashPassword('hunter2');
+            $this->fail('Expected an unsupported encryption method to throw');
+        } catch (InvalidArgumentException $e) {
+            $trace = $e->getTraceAsString();
+            $this->assertStringNotContainsString('hunter2', $trace);
+            $this->assertStringContainsString('SensitiveParameterValue', $trace);
+        } finally {
+            ini_set('zend.exception_ignore_args', $ignoreArgs);
+        }
+    }
+
     public function testDummyVerificationHashIsAWellFormedBcryptHash(): void
     {
         $hash = (new UserAuthenticationService('bcrypt', 12))->dummyVerificationHash();

@@ -55,6 +55,7 @@ return [
         'password_cost' => 12,                   // Cost factor for bcrypt (added in 2.1.8)
         'login_token_validation' => true,        // Enable token validation for login form (added in 3.9.0)
         'global_token_validation' => true,       // Enable token validation for all forms (added in 3.9.0)
+        'trusted_proxies' => [],                 // Reverse proxy IPs/CIDRs/wildcards allowed to set X-Forwarded-For/X-Real-IP; private/loopback peers are always trusted (added in 4.5.0)
         /**
          * Password Policy Settings
          */
@@ -86,10 +87,13 @@ return [
         'mfa' => [
             'enabled' => false,                  // Enable MFA functionality
             'enforced' => false,                 // Enable MFA enforcement (requires user_enforce_mfa permission)
+            'skip_for_external_auth' => false,   // Skip MFA enforcement for LDAP/OIDC/SAML logins - the IdP is trusted to enforce MFA (added in 4.5.0)
             'app_enabled' => true,               // Enable authenticator app option
             'email_enabled' => true,             // Enable email verification option
             'recovery_codes' => 8,               // Number of recovery codes to generate
             'recovery_code_length' => 10,        // Length of recovery codes
+            'max_verify_attempts' => 5,          // Failed second-factor guesses before the code is refused (added in 4.5.0)
+            'verify_lockout_duration' => 15,     // Minutes to refuse further attempts once the limit is hit (added in 4.5.0)
         ],
         /**
          * Password Reset Settings
@@ -127,8 +131,8 @@ return [
      */
     // UI visibility only - backend always evaluates both; clean up existing assignments before disabling
     'permissions' => [
-        'show_user_access_templates' => true,  // Show per-user access template assignment (added in 4.3.0)
-        'show_group_access_templates' => true,  // Show group-based access template management (added in 4.3.0)
+        'show_user_access_templates' => true,  // Show per-user permission template assignment (added in 4.3.0)
+        'show_group_access_templates' => true,  // Show group-based permission template management (added in 4.3.0)
     ],
 
     /**
@@ -136,7 +140,7 @@ return [
      */
     'interface' => [
         'language' => 'en_EN',                // Default language for the interface
-        'enabled_languages' => 'cs_CZ,de_DE,en_EN,es_ES,et_EE,fi_FI,fr_FR,hr_HR,hu_HU,id_ID,it_IT,ja_JP,ko_KR,lt_LT,lv_LV,nb_NO,nl_NL,pl_PL,pt_PT,ro_RO,ru_RU,sk_SK,sr_RS,sv_SE,tr_TR,uk_UA,vi_VN,zh_CN', // Added in 3.8.0
+        'enabled_languages' => 'ar_SA,bg_BG,bs_BA,cs_CZ,da_DK,de_DE,el_GR,en_EN,es_ES,et_EE,fa_IR,fi_FI,fr_FR,ga_IE,he_IL,hi_IN,hr_HR,hu_HU,id_ID,it_IT,ja_JP,ko_KR,lt_LT,lv_LV,ms_MY,nb_NO,nl_NL,pl_PL,pt_BR,pt_PT,ro_RO,ru_RU,sk_SK,sl_SI,sq_AL,sr_RS,sv_SE,th_TH,tr_TR,uk_UA,vi_VN,zh_CN,zh_TW', // Added in 3.8.0
         'title' => 'Poweradmin',              // Application title (browser tab and header logo). Useful for distinguishing multiple server instances. (added in 2.1.5)
         'session_timeout' => 1800,            // Session timeout in seconds (30 minutes)
         'rows_per_page' => 10,
@@ -147,6 +151,7 @@ return [
         'logo_path' => '',                    // Custom header logo path or URL; empty uses the bundled assets/logo.png (added in 4.4.0)
         'base_url_prefix' => '',              // Base URL prefix for deployments (default: '', subdirectory example: '/poweradmin') (added in 4.1.0)
         'application_url' => '',              // Full application URL for emails and absolute links - required for password reset, OIDC and SAML (example: 'https://dns.example.com/poweradmin') (added in 4.1.0)
+        'web_enabled' => true,                // Serve the web interface; false runs API-only (headless) (added in 4.5.0)
 
         // UI Element Settings
         'show_record_id' => false,             // Show record ID column in edit mode (added in 3.9.0)
@@ -158,13 +163,18 @@ return [
         'show_zone_comments' => true,         // Show or hide zone comments (added in 2.2.3)
         'show_record_comments' => false,      // Show or hide record comments (added in 3.9.0)
         'display_serial_in_zone_list' => false,
+        'display_signed_serial_in_zone_list' => false, // Show serial served by PowerDNS (SOA-EDIT applied); requires API backend (added in 4.5.0)
         'display_template_in_zone_list' => false,
+        'display_owner_in_zone_list' => true,      // Show owner column in zone lists (added in 4.5.0)
+        'display_group_in_zone_list' => true,      // Show group column in zone lists (added in 4.5.0)
+        'show_zone_record_count' => true,     // Show record count column in zone lists (added in 4.5.0)
         'display_fullname_in_zone_list' => false,  // Show user's full name instead of username in zone lists (added in 4.0.0)
         'search_group_records' => false,      // Group records by name and content in search results (added in 3.8.0)
         'reverse_zone_sort' => 'natural',     // Reverse zone sorting algorithm: 'natural' (default) or 'hierarchical' (experimental) (added in 4.0.0)
         'show_pdns_status' => false,          // Show PowerDNS server status page and dashboard card (added in 4.0.0)
         'show_dashboard_stats' => true,      // Show zone, record, user, and group counts on dashboard (added in 4.3.0)
         'show_forward_zone_associations' => true, // Show associated forward zones in reverse zone list (added in 4.0.5)
+        'wide_layout' => false,               // Use full browser width instead of a fixed-width page (added in 4.5.0)
 
         // Zone Editing Features
         'add_reverse_record' => true,         // Enable checkbox to add PTR record from regular zone view (added in 2.1.7)
@@ -177,7 +187,6 @@ return [
         'avatar_gravatar_enabled' => false,   // Enable Gravatar integration (default: false)
         'avatar_priority' => 'oauth',         // Avatar priority when both enabled: 'oauth' or 'gravatar'
         'avatar_size' => 40,                  // Default avatar size in pixels
-        'avatar_cache_ttl' => 3600,           // Avatar cache TTL in seconds (1 hour)
     ],
 
     /**
@@ -198,6 +207,10 @@ return [
         'soa_retry' => 7200,                       // 2 hours
         'soa_expire' => 604800,                    // 1 week
         'soa_minimum' => 86400,                    // 24 hours (SOA settings added in 2.2.3)
+        'soa_edit' => '',                          // SOA-EDIT metadata for new zones, e.g. 'INCEPTION-INCREMENT'; empty = not set (added in 4.5.0)
+        'soa_edit_api' => '',                      // SOA-EDIT-API metadata for new zones, e.g. 'EPOCH'; 'OFF' disables, empty = server default (added in 4.5.0)
+        'soa_edit_api_options' => null,            // SOA-EDIT-API values offered in the add-zone selector and metadata editor; null = all, [] hides them (added in 4.5.0)
+        'soa_edit_options' => null,                // SOA-EDIT values offered in the metadata editor; null = all, [] hides the kind (added in 4.5.0)
 
         'zone_type_default' => 'MASTER',           // Options: 'MASTER', 'NATIVE' (added in 2.1.9)
         'default_zone_template' => null,           // Pre-selected template on the add-zone form. Template id (int) or name (string); null for "none" (added in 4.4.0)
@@ -208,9 +221,10 @@ return [
         'strict_tld_check' => false,               // Strict validation of TLDs
         'top_level_tld_check' => false,            // Prevent creation of top-level domains (added in 2.1.7)
         'third_level_check' => false,              // Prevent creation of third-level domains (added in 2.1.7)
+        'parent_zone_ownership_check' => true,     // Block creating a zone that overlaps an existing zone (forward or reverse) owned by another user (added in 4.5.0)
         'txt_auto_quote' => false,                 // Automatically quote TXT records (added in 3.9.2)
         'prevent_duplicate_ptr' => true,           // Prevent creation of multiple PTR records for same IP in batch operations (added in 4.0.0)
-        'custom_tlds' => [],                       // Custom TLDs to allow in CNAME targets (e.g., ['dn42', 'home', 'internal'])
+        'custom_tlds' => [],                       // Whitelist of non-IANA TLDs allowed in hostnames and CNAME targets when strict_tld_check is on (e.g., ['lan', 'corp', 'dn42'])
 
         // Record Type Settings (added in 4.0.0)
         // Set to null to use all default types, or provide an array of specific types to show
@@ -297,7 +311,8 @@ return [
      *
      * 1. Audit logging (who did what) - controlled by 'database_enabled' and 'syslog_enabled'.
      *    Tracks user, zone, and group changes (create/edit/delete operations, login/logout).
-     *    - database_enabled: writes audit events to log_users, log_zones, and log_groups tables
+     *    - database_enabled: writes audit events to log_users, log_zones, log_groups,
+     *      and log_record_changes (the structured change log with before/after diffs) tables
      *    - syslog_enabled: writes audit events to syslog
      *
      * 2. Diagnostic logging (application errors and debug info) - controlled by 'type' and 'level'.
@@ -310,7 +325,12 @@ return [
         'level' => 'info',                         // Options: 'debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency' (added in 3.9.0)
 
         // Audit logging - tracks user, zone, and group operations
-        'database_enabled' => false,               // Write audit events to database log tables (log_users, log_zones, log_groups) (added in 3.2.0)
+        'database_enabled' => false,               // Write audit events to database log tables (log_users, log_zones, log_groups, log_record_changes) (added in 3.2.0)
+        'require_change_comment' => false,         // Require a reason for bulk record changes (added in 4.5.0)
+
+        // Per-request API audit logging (writes to log_api; requires database_enabled)
+        'api_request_logging' => false,            // Log every public API request; permission violations (401/403) are logged regardless (added in 4.5.0)
+        'api_log_retention_days' => 0,             // Days to keep API log rows; 0 = keep forever (added in 4.5.0)
 
         // Syslog audit logging
         'syslog_enabled' => false,                 // Write audit events to syslog (added in 2.1.6)
@@ -335,6 +355,27 @@ return [
         'user_attribute' => 'uid',                      // User attribute (uid for OpenLDAP, sAMAccountName for Active Directory) (added in 2.1.7)
         'protocol_version' => 3,                        // LDAP protocol version (added in 2.1.7)
         'search_filter' => '',                          // Additional search filter (added in 2.1.7)
+        'sync_user_info' => false,                      // Sync fullname/email from LDAP on every login (added in 4.5.0)
+        'fullname_attribute' => 'displayName',          // LDAP attribute for full name (displayName for AD, cn for OpenLDAP) (added in 4.5.0)
+        'email_attribute' => 'mail',                    // LDAP attribute for email address (added in 4.5.0)
+        'auto_provision' => false,                      // Create missing users on first successful LDAP login (added in 4.5.0)
+        'allow_superuser_provisioning' => false,        // Let LDAP mappings grant user_is_ueberuser (added in 4.5.0)
+        'default_permission_template' => 'Guest',       // Template for auto-provisioned users when no mapping matches (added in 4.5.0)
+        'groups_attribute' => 'memberOf',               // LDAP attribute holding group memberships (added in 4.5.0)
+
+        // Maps LDAP groups (full DN or its first RDN value, e.g. 'dns-admins'
+        // from 'cn=dns-admins,ou=groups,dc=example,dc=com') to permission
+        // template names, same semantics as the oidc/saml sections (added in 4.5.0)
+        'permission_template_mapping' => [
+            // 'dns-admins' => 'Administrator',
+            // 'cn=dns-operators,ou=groups,dc=example,dc=com' => 'Viewer',
+        ],
+
+        // Maps LDAP groups to Poweradmin group name(s), 1:n supported (added in 4.5.0)
+        'group_mapping' => [
+            // 'dns-admins' => 'Administrators',
+            // 'dns-operators' => ['Zone Managers', 'Editors'],
+        ],
         'session_cache_timeout' => 300,                 // Session cache timeout in seconds (5 minutes). Set to 0 to disable caching. (added in 4.1.0)
         // Examples:
         // '(memberOf=cn=powerdns,ou=groups,dc=poweradmin,dc=org)'
@@ -353,6 +394,8 @@ return [
         'edit_conflict_resolution' => 'last_writer_wins', // Options: 'last_writer_wins', 'only_latest_version', '3_way_merge'
         'display_errors' => false,                     // Display PHP errors (false for production) (added in 4.0.0)
         'show_generated_passwords' => true,            // Show generated passwords on user creation (added in 4.0.0)
+        'template_cache' => false,                     // Cache compiled templates on disk for faster rendering (added in 4.5.0)
+        'template_cache_path' => '',                   // Compiled template directory; empty means var/cache/twig (added in 4.5.0)
     ],
 
     /**
@@ -364,6 +407,19 @@ return [
         'basic_auth_realm' => 'Poweradmin API',        // Realm name for HTTP Basic Authentication
         'docs_enabled' => false,                       // Enable API documentation at /api/docs endpoint
         'max_keys_per_user' => 5,                      // Maximum number of API keys per user (admin users have no limit)
+    ],
+
+    /**
+     * Health Check Settings
+     *
+     * Both endpoints answer without a session and without an API key, so they are
+     * disabled by default. Restrict them at the reverse proxy when enabling.
+     */
+    'health' => [
+        'enabled' => false,                            // Enable unauthenticated health endpoint at /api/health (added in 4.5.0)
+        'ping_enabled' => false,                       // Enable unauthenticated liveness endpoint at /ping (added in 4.5.0)
+        'db_timeout' => 2,                             // Database connect timeout in seconds used by the health check (added in 4.5.0)
+        'pdns_timeout' => 2,                           // PowerDNS API timeout in seconds used by the health check (added in 4.5.0)
     ],
 
     /**
@@ -382,6 +438,7 @@ return [
         'enabled' => false,                   // Enable OIDC authentication
         'auto_provision' => true,             // Automatically create user accounts from OIDC
         'link_by_email' => true,              // Link OIDC accounts to existing users by email
+        'allow_superuser_provisioning' => false, // Let OIDC mappings grant user_is_ueberuser (added in 4.5.0)
         'sync_user_info' => true,             // Sync user information (name, email) from OIDC provider
         'default_permission_template' => 'Guest',  // Default permission template for new OIDC users (minimal access until assigned proper role)
 
@@ -434,6 +491,7 @@ return [
                 'client_id' => '',                     // Application (client) ID from Azure
                 'client_secret' => '',                 // Client secret from Azure
                 'tenant' => 'common',                  // Tenant ID or 'common' for multi-tenant
+                'response_mode' => 'query',            // 'query' (default) or 'form_post' (HTTPS only, works with any provider; added in 4.5.0)
                 'auto_discovery' => true,
                 'metadata_url' => 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration',
                 'logout_url' => 'https://login.microsoftonline.com/{tenant}/oauth2/v2.0/logout',
@@ -602,6 +660,7 @@ return [
         'enabled' => false,                   // Enable SAML authentication
         'auto_provision' => true,             // Automatically create user accounts from SAML
         'link_by_email' => true,              // Link SAML accounts to existing users by email
+        'allow_superuser_provisioning' => false, // Let SAML mappings grant user_is_ueberuser (added in 4.5.0)
         'sync_user_info' => true,             // Sync user information (name, email) from SAML provider
         'default_permission_template' => 'Guest',  // Default permission template for new SAML users (minimal access until assigned proper role)
 
@@ -779,13 +838,6 @@ return [
                     'signatureAlgorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
                     'digestAlgorithm' => 'http://www.w3.org/2001/04/xmlenc#sha256',
                 ],
-
-                // Advanced settings (optional)
-                'settings' => [
-                    'compress_requests' => true,       // Compress SAML requests
-                    'compress_responses' => true,      // Compress SAML responses
-                    'allow_single_label_domains' => false, // Allow single-label domains
-                ],
             ],
             */
         ],
@@ -843,6 +895,9 @@ return [
                 // RFC 8659: ";" as the issuer domain forbids issuance by every CA
                 ';' => 'Disallow all CAs (no issuance permitted)',
             ],
+        ],
+        'secondary_zone_import' => [
+            'enabled' => false,                         // Import a zone from a live primary over AXFR (API backend only)
         ],
     ],
 ];

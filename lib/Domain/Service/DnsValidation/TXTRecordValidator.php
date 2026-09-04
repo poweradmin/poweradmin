@@ -161,7 +161,9 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
      */
     private function validateContent(string $content): ValidationResult
     {
-        if (!preg_match('/^[[:print:]]+$/', trim($content))) {
+        // Reject control characters but allow any printable UTF-8; the old byte-wise
+        // [[:print:]] rejected valid multi-byte content (accents, CJK, emoji).
+        if (!preg_match('/^\P{Cc}+$/u', trim($content))) {
             return ValidationResult::failure(_('Invalid characters in content field.'));
         }
 
