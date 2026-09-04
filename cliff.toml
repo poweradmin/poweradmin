@@ -47,7 +47,7 @@ body = """
 **{{ scope_icon }} {{ scope_name }}:**
 {% for commit in commits -%}
 {%- set msg = commit.message | split(pat="\n") | first | trim -%}
-* {{ msg }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/poweradmin/poweradmin/commit/{{ commit.id }}))
+* {{ msg }} ({{ commit.id | truncate(length=7, end="") }})
 {% endfor %}
 {% endfor %}
 {% endfor %}
