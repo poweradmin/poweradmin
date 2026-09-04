@@ -126,6 +126,7 @@ class DnsWizardFormController extends BaseController
 
         // Get form schema
         $schema = $wizard->getFormSchema();
+        $schema = $this->withSchemaDefaults($schema);
 
         // Initialize form data with defaults
         $formData = [];
@@ -277,5 +278,31 @@ class DnsWizardFormController extends BaseController
         // Success - redirect to zone edit page
         $this->setMessage('edit', 'success', _('The record was successfully added.'));
         $this->redirect('/zones/' . $zone_id . '/edit');
+    }
+
+    /**
+     * Fill in the optional section, field and option keys the form template reads.
+     *
+     * Wizards only declare the keys they use, and the template runs under Twig
+     * strict_variables when display_errors is on, where a missing key is fatal.
+     *
+     * @param array<string, mixed> $schema
+     * @return array<string, mixed>
+     */
+    private function withSchemaDefaults(array $schema): array
+    {
+        foreach ($schema['sections'] ?? [] as $i => $section) {
+            $section += ['type' => '', 'title' => '', 'description' => '', 'content' => '', 'fields' => []];
+            foreach ($section['fields'] as $j => $field) {
+                $field += ['label' => '', 'required' => false, 'help' => '', 'pattern' => '', 'placeholder' => '', 'default' => '', 'options' => []];
+                foreach ($field['options'] as $k => $option) {
+                    $field['options'][$k] = $option + ['description' => ''];
+                }
+                $section['fields'][$j] = $field;
+            }
+            $schema['sections'][$i] = $section;
+        }
+
+        return $schema;
     }
 }
