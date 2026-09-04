@@ -363,11 +363,8 @@ test.describe('Delete API Key', () => {
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
 
-        const bodyText = await page.locator('body').textContent();
-
-        const hasWarning = bodyText.toLowerCase().includes('warning') ||
-                           bodyText.toLowerCase().includes('cannot be undone');
-        expect(hasWarning).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/warning|cannot be undone/i);
       }
     });
 
@@ -395,10 +392,9 @@ test.describe('Delete API Key', () => {
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
 
+        // Auto-retrying assertion: the click navigation may still be in flight
         const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
-        const hasCancelBtn = await cancelBtn.count() > 0;
-
-        expect(hasCancelBtn).toBeTruthy();
+        await expect(cancelBtn.first()).toBeVisible();
       }
     });
   });
