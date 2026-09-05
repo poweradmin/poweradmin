@@ -78,15 +78,31 @@ class DnsValidateInputZoneBoundaryTest extends TestCase
         $this->assertSame('ample.com', $apex);
     }
 
-    private function validate(string &$name): bool
+    public function testControlCharactersInContentAreRejected(): void
     {
-        $content = '192.0.2.1';
+        $name = 'txt';
+
+        $this->assertFalse($this->validate($name, 'TXT', "\"a\nb\""));
+        $this->assertFalse($this->validate($name, 'SSHFP', "1\n2\naabbcc"));
+        $this->assertFalse($this->validate($name, 'A', "192.0.2.1\n"));
+        $this->assertTrue($this->validate($name, 'TXT', '"a b"'));
+    }
+
+    public function testTrailingNewlineInNameIsRejected(): void
+    {
+        $name = "www\n";
+
+        $this->assertFalse($this->validate($name));
+    }
+
+    private function validate(string &$name, string $type = 'A', string $content = '192.0.2.1'): bool
+    {
         $prio = 0;
         $ttl = 3600;
 
         ob_start();
         try {
-            return $this->dns->validate_input(0, self::ZONE_ID, 'A', $content, $name, $prio, $ttl, 'hostmaster.ample.com', 3600);
+            return $this->dns->validate_input(0, self::ZONE_ID, $type, $content, $name, $prio, $ttl, 'hostmaster.ample.com', 3600);
         } finally {
             ob_end_clean();
         }

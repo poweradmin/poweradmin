@@ -82,6 +82,16 @@ class Dns
         $dnsRecord = new DnsRecord($this->db, $this->config);
         $zone = $dnsRecord->get_domain_name_by_id($zid);    // TODO check for return
 
+        // No record type carries control characters; the per-type validators split on
+        // whitespace, which would otherwise let a newline through into the stored content
+        if (preg_match('/[\x00-\x1F\x7F]/', (string)$content)) {
+            $error = new ErrorMessage(_('Your content field doesnt have a legit value.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            return false;
+        }
+
         if (!DnsHelper::isWithinZone((string)$name, (string)$zone)) {
             if (isset($name) && $name != "") {
                 $name = $name . "." . $zone;
@@ -367,7 +377,7 @@ class Dns
 
         foreach ($hostname_labels as $hostname_label) {
             if ($wildcard == 1 && $is_first_label) {
-                if (!preg_match('/^(\*|[\w\-\/]+)$/', $hostname_label)) {
+                if (!preg_match('/^(\*|[\w\-\/]+)\z/', $hostname_label)) {
                     $error = new ErrorMessage(_('You have invalid characters in your hostname.'));
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
@@ -376,7 +386,7 @@ class Dns
                 }
                 $is_first_label = false;
             } else {
-                if (!preg_match('/^[\w\-\/]+$/', $hostname_label)) {
+                if (!preg_match('/^[\w\-\/]+\z/', $hostname_label)) {
                     $error = new ErrorMessage(_('You have invalid characters in your hostname.'));
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
