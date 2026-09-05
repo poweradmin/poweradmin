@@ -202,8 +202,11 @@ abstract class BaseController
                     default => '',
                 };
 
+                // Messages may echo request values (a posted record content), so they are text, not markup
+                $content = htmlspecialchars((string)$message['content'], ENT_QUOTES, 'UTF-8');
+
                 echo <<<EOF
-<div class="alert $alertClass alert-dismissible fade show" role="alert" data-testid="alert-message">{$message['content']}
+<div class="alert $alertClass alert-dismissible fade show" role="alert" data-testid="alert-message">{$content}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 EOF;
