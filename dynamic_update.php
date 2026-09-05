@@ -217,7 +217,19 @@ $userAuthService = new UserAuthenticationService(
     $config->get('password_encryption'),
     $config->get('password_encryption_cost')
 );
-if (!$user || !$userAuthService->verifyPassword($auth_password, $user['password'])) {
+$storedHash = (string)($user['password'] ?? '');
+
+// Spend a verification on an unknown user or an unusable hash too, so the
+// response time does not tell the caller which usernames exist
+if (!$user || password_get_info($storedHash)['algo'] === null) {
+    $userAuthService->verifyPassword($auth_password, $userAuthService->dummyVerificationHash());
+}
+try {
+    $authenticated = $user && $userAuthService->verifyPassword($auth_password, $storedHash);
+} catch (\InvalidArgumentException $e) {
+    $authenticated = false;
+}
+if (!$authenticated) {
     return status_exit('badauth2');
 }
 
