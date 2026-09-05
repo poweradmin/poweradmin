@@ -356,6 +356,15 @@ class EditController extends BaseController
 
     public function saveRecords(int $zone_id, string $zone_name): void
     {
+        // Runs before the page's view gate; without this check a save with no records
+        // would still bump the SOA serial of any zone id the caller names.
+        $perm_edit = Permission::getEditPermission($this->db);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $this->checkCondition(
+            !($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner)),
+            _("You do not have the permission to edit this zone.")
+        );
+
         $error = false;
         $one_record_changed = false;
         $serial_mismatch = false;
