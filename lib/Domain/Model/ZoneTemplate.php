@@ -579,7 +579,7 @@ class ZoneTemplate
             return true;
         }
 
-        return !in_array(strtoupper($type), array('SOA', 'NS'), true);
+        return !in_array(strtoupper($type), array('SOA', 'NS', 'LUA'), true);
     }
 
     /** Get list of all zones using template

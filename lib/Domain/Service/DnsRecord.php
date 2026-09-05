@@ -399,6 +399,14 @@ class DnsRecord
 
             return false;
         }
+        // LUA content runs inside the authoritative server, so it stays above the client level
+        if ($perm_edit == "own_as_client" && in_array('LUA', $affected_types, true)) {
+            $error = new ErrorMessage(_("You do not have the permission to edit this zone."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            return false;
+        }
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         if ($record['type'] === 'TXT' && $this->config->get('dns_txt_auto_quote')) {
@@ -464,6 +472,14 @@ class DnsRecord
         }
         if ($type == 'NS' && $perm_edit == "own_as_client") {
             $error = new ErrorMessage(_("You do not have the permission to add NS record."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            return false;
+        }
+        // LUA content runs inside the authoritative server, so it stays above the client level
+        if (strtoupper($type) == 'LUA' && $perm_edit == "own_as_client") {
+            $error = new ErrorMessage(_("You do not have the permission to add a record to this zone."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
