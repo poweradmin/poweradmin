@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,6 +50,14 @@ class MigrationsController extends BaseController
             return;
         }
 
+        // Migrations change the schema, so they run only from the confirmed form
+        // post, never from a plain link
+        if (!$this->isPost()) {
+            $this->render('migrations.html', ['output' => '']);
+            return;
+        }
+        $this->validateCsrfToken();
+
         try {
             $app = new PhinxApplication();
             $app->setAutoExit(false);
@@ -59,11 +67,10 @@ class MigrationsController extends BaseController
                 '--configuration' => self::PHINX_CONFIG_PATH,
             ]);
 
-            $output = new BufferedOutput();
-            $app->run($input, $output);
+            $buffer = new BufferedOutput();
+            $app->run($input, $buffer);
 
-            $migrationOutput = htmlspecialchars($output->fetch(), ENT_QUOTES, 'UTF-8');
-            $output = $migrationOutput;
+            $output = $buffer->fetch();
         } catch (Exception $e) {
             $output = $e->getMessage();
         }

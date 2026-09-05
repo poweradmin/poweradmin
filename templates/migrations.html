@@ -7,6 +7,13 @@
 
 <h5 class="mb-3" data-testid="migrations-heading">{% trans %}Migrations{% endtrans %}</h5>
 
+<form method="post" action="index.php?page=migrations" data-testid="migrations-form">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    <button type="submit" class="btn btn-primary btn-sm mb-3" data-testid="migrations-run-button">{% trans %}Update{% endtrans %}</button>
+</form>
+
+{% if output %}
 <pre data-testid="migrations-output">
     {{ output }}
 </pre>
+{% endif %}
