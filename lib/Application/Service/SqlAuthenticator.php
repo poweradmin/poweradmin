@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -134,7 +134,9 @@ class SqlAuthenticator extends LoggingService
         $_SESSION['name'] = $rowObj['fullname'];
         $_SESSION['auth_used'] = 'internal';
 
-        if (!isset($_SESSION['csrf_token'])) {
+        // A fresh token on login: one planted before authentication must not survive it.
+        // Later requests keep the token, or every open form would stop validating.
+        if (isset($_POST['authenticate']) || !isset($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
             $this->logInfo('CSRF token generated for user {username}', ['username' => $_SESSION["userlogin"]]);
         }

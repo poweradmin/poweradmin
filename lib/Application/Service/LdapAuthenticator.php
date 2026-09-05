@@ -188,7 +188,9 @@ class LdapAuthenticator extends LoggingService
         $_SESSION['name'] = $rowObj['fullname'];
         $_SESSION['auth_used'] = 'ldap';
 
-        if (!isset($_SESSION['csrf_token'])) {
+        // A fresh token on login: one planted before authentication must not survive it.
+        // Later requests keep the token, or every open form would stop validating.
+        if (isset($_POST['authenticate']) || !isset($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
             $this->logInfo('CSRF token generated for user {username}', ['username' => $_SESSION["userlogin"]]);
         }
