@@ -53,4 +53,24 @@ class PasswordEncryptionServiceTest extends TestCase
 
         $this->assertEquals('', $decryptedPassword);
     }
+
+    public function testZeroStringPasswordIsStillEncrypted()
+    {
+        $encryptedPassword = $this->passwordEncryptionService->encrypt('0');
+
+        $this->assertNotSame('', $encryptedPassword);
+    }
+
+    public function testZeroStringPasswordRoundTrips()
+    {
+        $encryptedPassword = $this->passwordEncryptionService->encrypt('0');
+
+        $this->assertSame('0', $this->passwordEncryptionService->decrypt($encryptedPassword));
+    }
+
+    public function testDecryptionWithMalformedInputReturnsEmptyString()
+    {
+        $this->assertSame('', $this->passwordEncryptionService->decrypt('0'));
+        $this->assertSame('', $this->passwordEncryptionService->decrypt('not-encrypted'));
+    }
 }
