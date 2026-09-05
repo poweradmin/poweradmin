@@ -13,6 +13,25 @@ class DnsHelperTest extends TestCase
         $this->assertTrue(DnsHelper::isReverseZone('0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa'), 'Should return true for IPv6 reverse zone.');
     }
 
+    public function testNameOutsideZoneIsNotWithinIt(): void
+    {
+        $this->assertFalse(DnsHelper::isWithinZone('www.example.com', 'ample.com'), 'A byte suffix without a label boundary is outside the zone.');
+        $this->assertFalse(DnsHelper::isWithinZone('wwwexample.com', 'example.com'));
+        $this->assertFalse(DnsHelper::isWithinZone('example.com.evil.net', 'example.com'));
+    }
+
+    public function testApexAndSubdomainAreWithinZone(): void
+    {
+        $this->assertTrue(DnsHelper::isWithinZone('example.com', 'example.com'));
+        $this->assertTrue(DnsHelper::isWithinZone('www.example.com', 'example.com'));
+        $this->assertTrue(DnsHelper::isWithinZone('a.b.example.com', 'example.com'));
+    }
+
+    public function testIsWithinZoneIgnoresCase(): void
+    {
+        $this->assertTrue(DnsHelper::isWithinZone('WWW.Example.COM', 'example.com'));
+    }
+
     public function testIsReverseZoneNegativeCases(): void
     {
         $this->assertFalse(DnsHelper::isReverseZone('example.com'), 'Should return false for a regular domain.');

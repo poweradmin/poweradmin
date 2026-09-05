@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -69,6 +69,23 @@ class DnsHelper
 
         $domainNameParts = array_slice($domainParts, 0, $domainPartsCount - 2);
         return implode('.', $domainNameParts);
+    }
+
+    /**
+     * Whether a record name is the zone apex or a subdomain of the zone.
+     *
+     * A byte suffix is not enough: "www.example.com" must not count as inside "ample.com".
+     *
+     * @param string $name Record name or hostname to test
+     * @param string $zoneName The zone name
+     * @return bool True if the name is the apex or ends with ".zone"
+     */
+    public static function isWithinZone(string $name, string $zoneName): bool
+    {
+        $name = strtolower($name);
+        $zoneName = strtolower($zoneName);
+
+        return $name === $zoneName || str_ends_with($name, '.' . $zoneName);
     }
 
     /**

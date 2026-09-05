@@ -27,6 +27,7 @@ use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Model\TopLevelDomain;
 use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorFactory;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
 /**
@@ -81,7 +82,7 @@ class Dns
         $dnsRecord = new DnsRecord($this->db, $this->config);
         $zone = $dnsRecord->get_domain_name_by_id($zid);    // TODO check for return
 
-        if (!self::endsWith(strtolower($zone), strtolower($name))) {
+        if (!DnsHelper::isWithinZone((string)$name, (string)$zone)) {
             if (isset($name) && $name != "") {
                 $name = $name . "." . $zone;
             } else {
