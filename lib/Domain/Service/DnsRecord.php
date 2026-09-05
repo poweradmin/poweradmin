@@ -1903,6 +1903,7 @@ class DnsRecord
         $records_table = $pdns_db_name ? "$pdns_db_name.records" : "records";
 
         $this->db->beginTransaction();
+        $any_deleted = false;
 
         foreach ($domains as $id) {
             $perm_edit = Permission::getEditPermission($this->db);
@@ -1910,6 +1911,7 @@ class DnsRecord
 
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if (is_numeric($id)) {
+                    $any_deleted = true;
                     $zone_type = $this->get_domain_type($id);
                     if ($pdnssec_use && $zone_type == 'MASTER') {
                         $pdns_api_url = $this->config->get('pdns_api_url');
@@ -1945,7 +1947,8 @@ class DnsRecord
 
         $this->db->commit();
 
-        return true;
+        // Callers act on the result (logging, comment cleanup), so a refused set must not read as success
+        return $any_deleted;
     }
 
     /** Check if record exists

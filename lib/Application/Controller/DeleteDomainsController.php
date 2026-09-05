@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -61,6 +61,15 @@ class DeleteDomainsController extends BaseController
             $this->setMessage('list_zones', 'error', _('No zone selected for deletion.'));
             $this->redirect('index.php', ['page' => 'list_zones']);
             return;
+        }
+
+        // Every selected zone is checked up front, so neither the confirmation
+        // page nor the deletion can be reached for a zone the user may not delete
+        $zone_ids = array_map('intval', (array)$zone_ids);
+        $perm_edit = Permission::getEditPermission($this->db);
+        foreach ($zone_ids as $zone_id) {
+            $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+            $this->checkCondition($perm_edit != "all" && ($perm_edit != "own" || !$user_is_zone_owner), _("You do not have the permission to delete a zone."));
         }
 
         if (isset($_POST['confirm'])) {
