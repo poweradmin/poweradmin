@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ class DeletePermTemplController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('user_edit_templ_perm', _("You do not have the permission to delete permission templates."));
+        $this->checkPermission('templ_perm_edit', _("You do not have the permission to delete permission templates."));
 
         if ($this->isPost()) {
             $this->handleFormSubmission();
