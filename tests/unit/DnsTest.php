@@ -2203,4 +2203,18 @@ class DnsTest extends TestCase
         $this->assertFalse(Dns::is_valid_svcb('1 -invalid.com', false));
         $this->assertFalse(Dns::is_valid_svcb('1 invalid-.com', false));
     }
+
+    public function testSpfContentRejectsLeadingJunk()
+    {
+        $this->assertTrue(Dns::is_valid_spf('v=spf1 -all', false));
+
+        $this->assertFalse(Dns::is_valid_spf("junk\nv=spf1 -all", false));
+        $this->assertFalse(Dns::is_valid_spf('JUNKv=spf1 -all', false));
+    }
+
+    public function testLocContentRejectsLeadingJunk()
+    {
+        $this->assertFalse(Dns::is_valid_loc("GARBAGE\n42 21 54 N 71 06 18 W -24m 30m"));
+        $this->assertFalse(Dns::is_valid_loc('x 42 21 54 N 71 06 18 W -24m 30m'));
+    }
 }
