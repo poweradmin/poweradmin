@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,7 +29,9 @@ class NativeLogHandler implements LogHandlerInterface
     {
         $output = self::DEFAULT_LOG_FORMAT;
         foreach ($context as $var => $val) {
-            $output = str_replace('%' . $var . '%', $val, $output);
+            // A newline inside a value (a username, a zone name) would forge extra log lines
+            $flat = str_replace(["\r", "\n"], ' ', (string)$val);
+            $output = str_replace('%' . $var . '%', $flat, $output);
         }
         error_log($output);
     }
