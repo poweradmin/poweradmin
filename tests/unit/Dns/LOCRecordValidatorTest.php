@@ -324,4 +324,13 @@ class LOCRecordValidatorTest extends TestCase
         }
         $this->assertTrue($foundEquatorWarning, 'Warning about Equator latitude not found');
     }
+
+    public function testLeadingJunkIsRejected(): void
+    {
+        $result = $this->validator->validate("GARBAGE\n42 21 54 N 71 06 18 W -24m 30m", 'loc.example.com', 0, 3600, 3600);
+        $this->assertFalse($result->isValid());
+
+        $result = $this->validator->validate('x 42 21 54 N 71 06 18 W -24m 30m', 'loc.example.com', 0, 3600, 3600);
+        $this->assertFalse($result->isValid());
+    }
 }
