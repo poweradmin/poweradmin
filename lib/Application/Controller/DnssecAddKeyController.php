@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
@@ -51,8 +52,8 @@ class DnssecAddKeyController extends BaseController
 
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
-        if ($user_is_zone_owner == "0") {
-            $this->showError(_("You do not have the permission to view this zone."));
+        if (!Permission::canManageDnssec(Permission::getEditPermission($this->db), $user_is_zone_owner)) {
+            $this->showError(_("You do not have the permission to edit this zone."));
         }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());

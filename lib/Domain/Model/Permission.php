@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -67,6 +67,21 @@ class Permission
         } else {
             return "none";
         }
+    }
+
+    /**
+     * Whether a user may add, delete or toggle DNSSEC keys of a zone.
+     *
+     * Follows the zone edit permission: editors of all zones, or owners holding the
+     * full own-zone edit right. Client-level editors and view-only owners may not.
+     *
+     * @param string $perm_edit Result of getEditPermission()
+     * @param bool $is_zone_owner Whether the user owns the zone
+     * @return bool True if the user may manage the zone's DNSSEC keys.
+     */
+    public static function canManageDnssec(string $perm_edit, bool $is_zone_owner): bool
+    {
+        return $perm_edit === 'all' || ($perm_edit === 'own' && $is_zone_owner);
     }
 
     /**
