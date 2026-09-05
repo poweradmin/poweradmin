@@ -494,6 +494,45 @@ class ZoneTemplate
         }
     }
 
+    /**
+     * Whether the user may apply a zone template to a zone.
+     *
+     * Mirrors the listing scope: own templates, global ones (owner 0) and, for an
+     * administrator, any template. "none", empty and 0 mean no template and are allowed.
+     *
+     * @param $db
+     * @param mixed $zone_templ_id Posted template id
+     * @param int $userid user id
+     *
+     * @return boolean true if the template may be used, false otherwise
+     */
+    public static function may_use_zone_templ($db, mixed $zone_templ_id, int $userid): bool
+    {
+        if ($zone_templ_id === null || $zone_templ_id === '' || $zone_templ_id === 'none') {
+            return true;
+        }
+
+        if (!is_numeric($zone_templ_id)) {
+            return false;
+        }
+
+        $zone_templ_id = (int)$zone_templ_id;
+        if ($zone_templ_id === 0) {
+            return true;
+        }
+
+        if (UserManager::verify_permission($db, 'user_is_ueberuser')) {
+            return true;
+        }
+
+        $owner = $db->queryOne("SELECT owner FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer'));
+        if ($owner === false || $owner === null) {
+            return false;
+        }
+
+        return (int)$owner === 0 || (int)$owner === $userid;
+    }
+
     /** Add a zone template from zone / another template
      *
      * @param $db

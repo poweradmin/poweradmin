@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -143,6 +143,7 @@ class EditController extends BaseController
             } else {
                 $new_zone_template = $_POST['zone_template'];
             }
+            $this->checkCondition(!ZoneTemplate::may_use_zone_templ($this->db, $new_zone_template, (int)$_SESSION['userid']), _('Invalid or unexpected input given.'));
             if ($_POST['current_zone_template'] != $new_zone_template) {
                 $dnsRecord->update_zone_records($this->config('db_type'), $this->config('dns_ttl'), $zone_id, $new_zone_template);
             }

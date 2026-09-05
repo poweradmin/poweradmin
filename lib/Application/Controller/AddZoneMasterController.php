@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -81,6 +81,7 @@ class AddZoneMasterController extends BaseController
         $dom_type = $_POST["dom_type"];
         $owner = $_POST['owner'];
         $zone_template = $_POST['zone_template'] ?? "none";
+        $this->checkCondition(!ZoneTemplate::may_use_zone_templ($this->db, $zone_template, (int)$_SESSION['userid']), _('Invalid or unexpected input given.'));
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $dns = new Dns($this->db, $this->getConfig());
