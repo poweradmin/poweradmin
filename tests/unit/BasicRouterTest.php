@@ -26,6 +26,15 @@ class BasicRouterTest extends TestCase
         $this->assertEquals('default_page', $router->getPageName());
     }
 
+    public function testArrayPageParameterFallsBackToDefault(): void
+    {
+        $router = new BasicRouter(['page' => ['valid_page']]);
+        $router->setPages(['valid_page']);
+        $router->setDefaultPage('default_page');
+
+        $this->assertEquals('default_page', $router->getPageName());
+    }
+
     public function testControllerClassNameIsFormattedCorrectly(): void
     {
         $router = new BasicRouter(['page' => 'valid_page']);
