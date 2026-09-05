@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,7 +35,8 @@ class PasswordEncryptionService
 
     public function encrypt(string $password): string
     {
-        if (empty($password)) {
+        // Only a zero-length password is skipped: "0" is a real password and must round-trip
+        if ($password === '') {
             return '';
         }
 
@@ -47,7 +48,7 @@ class PasswordEncryptionService
 
     public function decrypt(string $password): string
     {
-        if (empty($password)) {
+        if ($password === '' || !str_contains($password, ':')) {
             return '';
         }
 

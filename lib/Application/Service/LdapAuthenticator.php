@@ -218,7 +218,8 @@ class LdapAuthenticator extends LoggingService
 
         $passwordEncryptionService = new PasswordEncryptionService($session_key);
         $session_pass = $passwordEncryptionService->decrypt($this->userContextService->getSessionData('userpwd'));
-        if (!@ldap_bind($ldapconn, $user_dn, $session_pass)) {
+        // A zero-length credential would be an unauthenticated bind, which some directories accept
+        if ($session_pass === '' || !@ldap_bind($ldapconn, $user_dn, $session_pass)) {
             $this->logWarning('LDAP authentication failed for user {username}', ['username' => $username]);
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->logFailedIncorrectPass();
