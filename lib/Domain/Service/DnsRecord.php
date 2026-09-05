@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1995,5 +1995,29 @@ class DnsRecord
         $stmt->bindValue(':record_id', $record_id, PDO::PARAM_INT);
         $stmt->execute();
         return (bool)$stmt->fetchColumn();
+    }
+
+    /**
+     * Replace the content of one record, addressed by its id.
+     *
+     * Used by the dynamic DNS endpoint after it has resolved the record inside a zone
+     * the caller owns, so the write can never reach a same-named record elsewhere.
+     *
+     * @param int $record_id Record ID
+     * @param string $content New record content
+     *
+     * @return bool true if a row was updated
+     */
+    public function update_dynamic_record_content(int $record_id, string $content): bool
+    {
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $stmt = $this->db->prepare("UPDATE $records_table SET content = :content WHERE id = :record_id");
+        $stmt->bindValue(':content', $content, PDO::PARAM_STR);
+        $stmt->bindValue(':record_id', $record_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->rowCount() === 1;
     }
 }

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -225,20 +225,21 @@ $zones_query = $db->prepare('SELECT domain_id FROM zones WHERE owner=:user_id');
 $zones_query->execute([':user_id' => $user['id']]);
 $was_updated = false;
 $no_update_necessary = false;
+$dnsRecord = new DnsRecord($db, $config);
 
 while ($zone = $zones_query->fetch()) {
     $zone_updated = false;
-    $name_query = $db->prepare("SELECT name, type, content FROM $records_table WHERE domain_id=:domain_id and (type = 'A' OR type = 'AAAA')");
+    $name_query = $db->prepare("SELECT id, name, type, content FROM $records_table WHERE domain_id=:domain_id and (type = 'A' OR type = 'AAAA')");
     $name_query->execute([':domain_id' => $zone["domain_id"]]);
 
+    // Update by record id: a name-only match would also rewrite same-named records in other zones
     while ($record = $name_query->fetch()) {
         if ($hostname == $record['name']) {
             if (($record['type'] == 'A') && (valid_ip_address($ip) === 'A')) {
                 if ($ip == $record['content']) {
                     $no_update_necessary = true;
                 } else {
-                    $update_query = $db->prepare("UPDATE $records_table SET content =:ip where name=:record_name and type='A'");
-                    $update_query->execute([':ip' => $ip, ':record_name' => $record['name']]);
+                    $dnsRecord->update_dynamic_record_content((int)$record['id'], $ip);
                     $zone_updated = true;
                     $was_updated = true;
                 }
@@ -246,8 +247,7 @@ while ($zone = $zones_query->fetch()) {
                 if ($ip6 == $record['content']) {
                     $no_update_necessary = true;
                 } else {
-                    $update_query = $db->prepare("UPDATE $records_table SET content =:ip6 where name=:record_name and type='AAAA'");
-                    $update_query->execute([':ip6' => $ip6, ':record_name' => $record['name']]);
+                    $dnsRecord->update_dynamic_record_content((int)$record['id'], $ip6);
                     $zone_updated = true;
                     $was_updated = true;
                 }
@@ -255,7 +255,6 @@ while ($zone = $zones_query->fetch()) {
         }
     }
     if ($zone_updated) {
-        $dnsRecord = new DnsRecord($db, $config);
         $dnsRecord->update_soa_serial($zone['domain_id']);
     }
 }
