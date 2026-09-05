@@ -1,0 +1,49 @@
+# Poweradmin: keep internal directories and files out of reach of the web server.
+# Only index.php, dynamic_update.php, install/, addons/, assets/ and the Bootstrap files
+# under vendor/twbs/ need to be requestable.
+
+# Prevent directory listing
+Options -Indexes
+
+# Set default character set
+AddDefaultCharset UTF-8
+
+# Protect the .htaccess file
+<Files .htaccess>
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order Allow,Deny
+        Deny from all
+    </IfModule>
+</Files>
+
+# Deny access to internal directories, keeping the Bootstrap assets reachable
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} !/vendor/twbs/(bootstrap|bootstrap-icons)/
+    RewriteRule ^(inc|lib|sql|db|tests|templates|locale|vendor)/ - [F,L]
+</IfModule>
+
+# Deny access to hidden files and directories
+<Files ~ "^\..*">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order Allow,Deny
+        Deny from all
+    </IfModule>
+</Files>
+
+# Deny access to files that are never served to browsers
+<Files ~ "\.(sql|sqlite|sqlite3|db|md|log|yaml|yml|lock|json|dist|xml|twig|po|pot|mo)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order Allow,Deny
+        Deny from all
+    </IfModule>
+</Files>

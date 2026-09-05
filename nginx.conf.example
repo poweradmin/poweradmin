@@ -1,0 +1,40 @@
+# Nginx configuration example for Poweradmin 3.x
+# Place inside your server block. Adjust root and the PHP-FPM socket.
+
+server {
+    listen 80;
+    server_name your-domain.com;
+    root /path/to/poweradmin;
+    index index.php;
+
+    # Internal directories and files are never served. The Bootstrap assets
+    # under vendor/twbs/ are the only vendor files the pages need.
+    location ~ ^/vendor/twbs/(bootstrap|bootstrap-icons)/ {
+        expires max;
+        access_log off;
+    }
+
+    location ~ ^/(inc|lib|sql|db|tests|templates|locale|vendor)/ {
+        return 404;
+    }
+
+    location ~ /\. {
+        return 404;
+    }
+
+    location ~* \.(sql|sqlite|sqlite3|db|md|log|yaml|yml|lock|json|dist|xml|twig|po|pot|mo)$ {
+        return 404;
+    }
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires max;
+        log_not_found off;
+        access_log off;
+    }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_pass unix:/run/php/php-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}
