@@ -196,6 +196,12 @@ class AddZoneMasterController extends BaseController
         $ownerInput = $this->request->getPostParam('owner');
         $owner = $ownershipMode->isUserOwnerAllowed() && !empty($ownerInput) ? (int)$ownerInput : null;
         $zone_template = $this->request->getPostParam('zone_template', 'none');
+        $zoneTemplateModel = new ZoneTemplate($this->db, $this->getConfig());
+        if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
+            $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
+            $this->showForm();
+            return;
+        }
 
         // A consumer takes its catalog by transfer, so it needs a primary and gets
         // neither template records nor a serial policy.

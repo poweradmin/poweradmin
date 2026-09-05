@@ -94,6 +94,7 @@ class EditController extends BaseController
     private ReverseTtlResolver $reverseTtlResolver;
     private RecordManagerService $recordManager;
     private UserContextService $userContextService;
+    private ?ZoneTemplate $zoneTemplateModel = null;
     private IpAddressRetriever $ipAddressRetriever;
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
@@ -621,6 +622,11 @@ class EditController extends BaseController
         $this->setMessage('edit', $done ? 'success' : 'error', $message);
     }
 
+    private function zoneTemplateModel(): ZoneTemplate
+    {
+        return $this->zoneTemplateModel ??= new ZoneTemplate($this->db, $this->getConfig());
+    }
+
     private function handleZoneMetadataPost(int $zone_id): void
     {
         $domainManager = $this->domainManager ??= $this->createDomainManager();
@@ -656,6 +662,11 @@ class EditController extends BaseController
             $zone_template = $this->request->getPostParam('zone_template');
             $new_zone_template = ($zone_template === null || $zone_template === 'none') ? 0 : $zone_template;
             $current_zone_template = $this->request->getPostParam('current_zone_template', 0);
+
+            if (!$this->zoneTemplateModel()->canCurrentUserUseTemplate($new_zone_template)) {
+                $this->setMessage('edit', 'error', _('Invalid or unexpected input given.'));
+                return;
+            }
 
             if ($current_zone_template != $new_zone_template) {
                 $updated = $domainManager->updateZoneRecords(
