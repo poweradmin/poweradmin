@@ -138,15 +138,17 @@ function valid_ip_address(string $ip): int|string
     return $value;
 }
 
-// Grab username & password based on HTTP auth, alternatively the query string
+// Grab username & password based on HTTP auth, alternatively the query string.
+// Only strings are accepted: an array parameter must not reach the database layer.
+$auth_password = '';
 if (isset($_SERVER['PHP_AUTH_USER'])) {
     $auth_username = $_SERVER['PHP_AUTH_USER'];
-} elseif (isset($_REQUEST['username'])) {
+} elseif (isset($_REQUEST['username']) && is_string($_REQUEST['username'])) {
     $auth_username = $_REQUEST['username'];
 }
 if (isset($_SERVER['PHP_AUTH_PW'])) {
     $auth_password = $_SERVER['PHP_AUTH_PW'];
-} elseif (isset($_REQUEST['password'])) {
+} elseif (isset($_REQUEST['password']) && is_string($_REQUEST['password'])) {
     $auth_password = $_REQUEST['password'];
 }
 
@@ -158,7 +160,14 @@ if (!isset($auth_username)) {
 }
 
 $username = safe($db, $db_type, $auth_username);
-$hostname = safe($db, $db_type, $_REQUEST['hostname']);
+$hostname_param = $_REQUEST['hostname'] ?? '';
+$hostname = safe($db, $db_type, is_string($hostname_param) ? $hostname_param : '');
+
+if (!strlen($hostname)) {
+    return status_exit('notfqdn');
+}
+
+$remote_addr = (string)($_SERVER['REMOTE_ADDR'] ?? '');
 
 // Grab IP to use
 $given_ip = "";
@@ -178,30 +187,27 @@ if (valid_ip_address($given_ip) === 'AAAA') {
     $given_ip6 = $given_ip;
 }
 // Look for tag to grab the IP we're coming from
-if (($given_ip6 == "whatismyip") && (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA')) {
-    $given_ip6 = $_SERVER['REMOTE_ADDR'];
+if (($given_ip6 == "whatismyip") && (valid_ip_address($remote_addr) === 'AAAA')) {
+    $given_ip6 = $remote_addr;
 }
-if (($given_ip == "whatismyip") && (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'A')) {
-    $given_ip = $_SERVER['REMOTE_ADDR'];
-} elseif (($given_ip == "whatismyip") && (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA') && (!(valid_ip_address($given_ip6) === 'AAAA'))) {
-    $given_ip6 = $_SERVER['REMOTE_ADDR'];
+if (($given_ip == "whatismyip") && (valid_ip_address($remote_addr) === 'A')) {
+    $given_ip = $remote_addr;
+} elseif (($given_ip == "whatismyip") && (valid_ip_address($remote_addr) === 'AAAA') && (!(valid_ip_address($given_ip6) === 'AAAA'))) {
+    $given_ip6 = $remote_addr;
 }
 
 // Finally get safe version of the IP
-$ip = safe($db, $db_type, $given_ip);
-$ip6 = safe($db, $db_type, $given_ip6);
+$ip = safe($db, $db_type, is_string($given_ip) ? $given_ip : '');
+$ip6 = safe($db, $db_type, is_string($given_ip6) ? $given_ip6 : '');
 // Check it's ok...
 if ((!valid_ip_address($ip)) && (!valid_ip_address($ip6))) {
     return status_exit('dnserr');
 }
 
-if (!strlen($hostname)) {
-    return status_exit('notfqdn');
-}
-
 $user_query = $db->prepare("SELECT users.id, users.password FROM users, perm_templ, perm_templ_items, perm_items
                         WHERE users.username = :username
                         AND users.active = 1
+                        AND users.use_ldap = 0
                         AND perm_templ.id = users.perm_templ
                         AND perm_templ_items.templ_id = perm_templ.id
                         AND perm_items.id = perm_templ_items.perm_id
