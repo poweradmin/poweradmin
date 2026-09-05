@@ -147,8 +147,8 @@ class RecordSearch extends BaseSearch
             LEFT JOIN users u on z.owner = u.id" .
                 ($iface_record_comments ? " LEFT JOIN $comments_table c on $records_table.domain_id = c.domain_id AND $records_table.name = c.name AND $records_table.type = c.type" : "") . "
             WHERE
-                $whereConditions" .
-                ($iface_record_comments && $parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') .
+                ($whereConditions" .
+                ($iface_record_comments && $parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ')' .
                 ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
                 ' ORDER BY ' . $sort_records_by .
                 ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
@@ -208,9 +208,9 @@ class RecordSearch extends BaseSearch
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
 
         // Build WHERE conditions
-        $whereConditions = "($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
+        $whereConditions = "(($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
             ($parameters['reverse'] ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
-            ($parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') .
+            ($parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ')' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '');
 
         if ($iface_search_group_records) {
