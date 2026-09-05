@@ -751,10 +751,13 @@ class Dns
         }
 
         for ($i = 0; ($i < 2); $i++) {
-            if (!preg_match("/^([^\s]{1,1000})|\"([^\"]{1,998}\")$/i", $fields[$i])) {
-                $error = new ErrorMessage(_('Invalid value for content field of HINFO record.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
+            // One anchored alternation: a bare word or a quoted string, nothing before or after
+            if (!preg_match('/^(?:[^\s]{1,1000}|"[^"]{1,998}")$/i', $fields[$i])) {
+                if ($answer) {
+                    $error = new ErrorMessage(_('Invalid value for content field of HINFO record.'));
+                    $errorPresenter = new ErrorPresenter();
+                    $errorPresenter->present($error);
+                }
 
                 return false;
             }

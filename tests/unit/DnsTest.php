@@ -2217,4 +2217,16 @@ class DnsTest extends TestCase
         $this->assertFalse(Dns::is_valid_loc("GARBAGE\n42 21 54 N 71 06 18 W -24m 30m"));
         $this->assertFalse(Dns::is_valid_loc('x 42 21 54 N 71 06 18 W -24m 30m'));
     }
+
+    public function testHinfoAcceptsPlainAndQuotedFields()
+    {
+        $this->assertTrue(Dns::is_valid_rr_hinfo_content('PC UNIX', false));
+        $this->assertTrue(Dns::is_valid_rr_hinfo_content('"Intel PC" "Linux 6.1"', false));
+    }
+
+    public function testHinfoRejectsEmbeddedNewline()
+    {
+        $this->assertFalse(Dns::is_valid_rr_hinfo_content("PC\nINJECT UNIX", false));
+        $this->assertFalse(Dns::is_valid_rr_hinfo_content("\"PC\" \"Linux\"\nEVIL", false));
+    }
 }
