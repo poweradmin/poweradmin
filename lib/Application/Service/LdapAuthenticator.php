@@ -298,7 +298,8 @@ class LdapAuthenticator extends LoggingService
         // fallback covers them without trusting LDAP for existing accounts.
         $sessionEmail = ($ldap_sync_user_info ? $userInfo->getEmail() : '') ?: ($rowObj['email'] ?? '');
 
-        if (!$this->userContextService->hasSessionData(SessionKeys::CSRF_TOKEN)) {
+        // A fresh token on login: one planted before authentication must not survive it
+        if (isset($_POST['authenticate']) || !$this->userContextService->hasSessionData(SessionKeys::CSRF_TOKEN)) {
             $this->userContextService->setSessionData(SessionKeys::CSRF_TOKEN, $this->csrfTokenService->generateToken());
             $this->logInfo('CSRF token generated for user {username}', ['username' => $username]);
         }

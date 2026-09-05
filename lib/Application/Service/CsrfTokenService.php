@@ -55,4 +55,13 @@ class CsrfTokenService
             $_SESSION[$session_var] = $this->generateToken();
         }
     }
+
+    /**
+     * Replace the session token. Called on login so a token planted before
+     * authentication cannot be used after it.
+     */
+    public function regenerateToken(string $session_var = SessionKeys::CSRF_TOKEN): void
+    {
+        $_SESSION[$session_var] = $this->generateToken();
+    }
 }

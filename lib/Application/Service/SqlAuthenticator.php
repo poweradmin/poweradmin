@@ -187,7 +187,11 @@ class SqlAuthenticator extends LoggingService
             $this->logInfo('Session ID regenerated for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
         }
 
-        $this->csrfTokenService->ensureTokenExists();
+        if (isset($_POST['authenticate'])) {
+            $this->csrfTokenService->regenerateToken();
+        } else {
+            $this->csrfTokenService->ensureTokenExists();
+        }
         $this->logInfo('CSRF token ensured for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
 
         // Check if MFA is globally enabled
