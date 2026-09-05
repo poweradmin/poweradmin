@@ -17,6 +17,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\EditController;
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -191,6 +192,9 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $this->setProperty($controller, 'request', new Request());
         $this->setProperty($controller, 'domainManager', $domainManager);
         $this->setProperty($controller, 'domainRepository', $this->createMock(DomainRepositoryInterface::class));
+        $zoneTemplateModel = $this->createMock(ZoneTemplate::class);
+        $zoneTemplateModel->method('canCurrentUserUseTemplate')->willReturn(true);
+        $this->setProperty($controller, 'zoneTemplateModel', $zoneTemplateModel);
 
         $config = $this->primeConfig();
         $this->setBaseProperty($controller, 'config', $config);

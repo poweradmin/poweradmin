@@ -138,6 +138,13 @@ class BulkRegistrationController extends BaseController
             return;
         }
 
+        $zoneTemplateModel = new ZoneTemplate($this->db, $this->getConfig());
+        if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
+            $this->setMessage('bulk_registration', 'error', _('Invalid or unexpected input given.'));
+            $this->showBulkRegistrationForm();
+            return;
+        }
+
         $rawOwner = $this->request->getPostParam('owner', '');
         if ($ownershipMode->isUserOwnerAllowed() && $rawOwner !== '' && $rawOwner !== null) {
             if (!is_numeric($rawOwner)) {
