@@ -704,6 +704,14 @@ class DnsRecord
                 $errorPresenter->present($error);
                 return false;
             } else {
+                // Client-level editors may neither add nor edit these types, so deleting is refused too
+                if ($perm_edit == "own_as_client" && in_array(strtoupper((string)$record['type']), ['NS', 'LUA'], true)) {
+                    $error = new ErrorMessage(_("You do not have the permission to delete this record."));
+                    $errorPresenter = new ErrorPresenter();
+                    $errorPresenter->present($error);
+                    return false;
+                }
+
                 $pdns_db_name = $this->config->get('pdns_db_name');
                 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
