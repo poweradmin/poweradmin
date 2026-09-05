@@ -35,7 +35,8 @@ class PasswordEncryptionService
 
     public function encrypt(#[\SensitiveParameter] string $password): string
     {
-        if (empty($password)) {
+        // Only a zero-length password is skipped: "0" is a real password and must round-trip
+        if ($password === '') {
             return '';
         }
 
@@ -48,7 +49,7 @@ class PasswordEncryptionService
     public function decrypt(#[\SensitiveParameter] string $password): string
     {
         // Malformed or tampered input decrypts to an empty string.
-        if (empty($password) || !str_contains($password, ':')) {
+        if ($password === '' || !str_contains($password, ':')) {
             return '';
         }
 

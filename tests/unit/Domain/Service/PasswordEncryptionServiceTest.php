@@ -99,4 +99,19 @@ class PasswordEncryptionServiceTest extends TestCase
 
         $this->assertSame('', $this->service->decrypt($ciphertext . ':AAAA!AAAAAAAAAAAAAAAAAA=='));
     }
+
+    public function testZeroStringPasswordIsStillEncrypted(): void
+    {
+        $this->assertNotSame('', $this->service->encrypt('0'));
+    }
+
+    public function testZeroStringPasswordRoundTrips(): void
+    {
+        $this->assertSame('0', $this->service->decrypt($this->service->encrypt('0')));
+    }
+
+    public function testDecryptionOfBareZeroReturnsEmptyString(): void
+    {
+        $this->assertSame('', $this->service->decrypt('0'));
+    }
 }
