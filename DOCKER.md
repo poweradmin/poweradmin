@@ -17,7 +17,7 @@ Poweradmin official Docker images are available at:
 - **`lts`** - Long-term support line from `release/3.x` (bug fixes and security updates only)
 - **`latest`** - Latest build from the `master` branch (upcoming minor, not for production)
 - **`dev`** - Development build from the `develop` branch (experimental features, not for production)
-- **`v*`** - Specific, immutable version tags (e.g., `v4.2.5`, `v4.3.4`)
+- **`4.3.5`** - Specific, immutable version tags (e.g., `4.2.6`, `4.3.5`); image tags carry no `v` prefix
 - **`4`**, **`4.2`**, **`4.3`** - Semver aliases that track the newest patch in that series
 
 ### Moving the `stable` tag to a new release line
@@ -37,7 +37,7 @@ When the stable line changes:
    moves without waiting for the next tag build.
 4. Update the `stable` entry in the tag list above to name the new line.
 
-For production deployments, use the `stable` tag or pin a specific version tag (e.g., `v4.3.4`). The `lts` tag covers the 3.x line with bug fixes and security updates only. The `latest` and `dev` tags track in-development branches and should not be used in production.
+For production deployments, use the `stable` tag or pin a specific version tag (e.g., `4.3.5`). The `lts` tag covers the 3.x line with bug fixes and security updates only. The `latest` and `dev` tags track in-development branches and should not be used in production.
 
 ## Quick Start
 
