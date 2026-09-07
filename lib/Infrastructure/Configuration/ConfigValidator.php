@@ -41,6 +41,7 @@ class ConfigValidator
         $this->errors = [];
 
         $this->validateIfaceRowAmount();
+        $this->validateSessionTimeout();
         $this->validateIfaceLang();
         $this->validateTheme();
         $this->validateSyslogUse();
@@ -125,6 +126,15 @@ class ConfigValidator
                 PaginationService::MIN_ROWS_PER_PAGE,
                 PaginationService::MAX_ROWS_PER_PAGE
             );
+        }
+    }
+
+    private function validateSessionTimeout(): void
+    {
+        // 0 is not "no timeout": the expiry check would log every request out
+        $sessionTimeout = $this->getSetting('interface', 'session_timeout', 1800);
+        if (!is_int($sessionTimeout) || $sessionTimeout <= 0) {
+            $this->errors['interface.session_timeout'] = 'session_timeout must be a positive integer (seconds); the timeout cannot be disabled';
         }
     }
 
