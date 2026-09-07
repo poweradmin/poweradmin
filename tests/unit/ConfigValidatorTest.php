@@ -196,6 +196,71 @@ class ConfigValidatorTest extends TestCase
         $this->assertArrayHasKey('interface.language', $validator->getErrors());
     }
 
+    public function testInterfaceSessionTimeoutZeroIsInvalid(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'session_timeout' => 0,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $this->assertArrayHasKey('interface.session_timeout', $validator->getErrors());
+    }
+
+    public function testInterfaceSessionTimeoutMustBeInteger(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'session_timeout' => '1800',
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $this->assertArrayHasKey('interface.session_timeout', $validator->getErrors());
+    }
+
+    public function testInterfaceSessionTimeoutPositiveIsValid(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'session_timeout' => 86400,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+    }
+
     public function testInterfaceRowsPerPageIsInteger(): void
     {
         $config = [
