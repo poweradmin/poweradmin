@@ -14497,4 +14497,21 @@ msgid ""
 "Please contact your administrator."
 msgstr "設定地區設定失敗。所選的地區設定可能不受此系統支援。請聯絡您的管理員。"
 
+#: lib/Application/Controller/EditController.php:1044
+#, auto-english-fallback
+msgid "Not saved yet. The zone currently holds: %s"
+msgstr "Not saved yet. The zone currently holds: %s"
 
+#: templates/default/edit.html:236 templates/modern/edit.html:236
+#, auto-english-fallback
+msgid ""
+"Your changes to these records could not be restored, because they are no "
+"longer in this listing:"
+msgstr ""
+"Your changes to these records could not be restored, because they are no "
+"longer in this listing:"
+
+#: templates/default/edit.html:568 templates/modern/edit.html:568
+#, auto-english-fallback
+msgid "Not saved yet. The zone comment currently holds:"
+msgstr "Not saved yet. The zone comment currently holds:"

@@ -13950,3 +13950,17 @@ msgid ""
 "Failed to set locale. Selected locale may be unsupported on this system. "
 "Please contact your administrator."
 msgstr ""
+
+#: lib/Application/Controller/EditController.php:1044
+msgid "Not saved yet. The zone currently holds: %s"
+msgstr ""
+
+#: templates/default/edit.html:236 templates/modern/edit.html:236
+msgid ""
+"Your changes to these records could not be restored, because they are no "
+"longer in this listing:"
+msgstr ""
+
+#: templates/default/edit.html:568 templates/modern/edit.html:568
+msgid "Not saved yet. The zone comment currently holds:"
+msgstr ""
