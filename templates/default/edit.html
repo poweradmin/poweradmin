@@ -230,6 +230,17 @@
     </div>
 
     <div class="card-body">
+        {# Outside the record table: a rejected save can leave the listing empty. #}
+        {% if stale_form_dropped %}
+        <div class="alert alert-warning py-2 small" role="alert">
+            {% trans %}Your changes to these records could not be restored, because they are no longer in this listing:{% endtrans %}
+            <ul class="mb-0">
+                {% for dropped in stale_form_dropped %}
+                <li>{{ dropped }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
         {% if not records %}
             {% if search_term or record_type_filter or content_filter %}
                 <div class="d-flex align-items-center py-2 px-3 bg-light border rounded mb-3">
@@ -323,6 +334,9 @@
         <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate>
             {{ macros.csrf_field() }}
             <input type="hidden" name="serial" value="{{ serial }}">
+            {# Set by the unchanged-row filter below. Kept near the top of the form so
+               max_input_vars truncation cannot drop it. #}
+            <input type="hidden" name="changed_rows_only" value="0" id="changed-rows-only">
 
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm add-record-form">
@@ -404,14 +418,20 @@
         {% for r in records %}
         {% set record_url_base = base_url_prefix ~ '/zones/' ~ zone_id ~ '/records/' ~ r['id'] %}
         {% if not r['record_locked'] %}
-        <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}">
+        {# data-restored keeps a row the operator has not managed to save yet out of the
+           unchanged-row filter below, which would otherwise drop it from the next POST. #}
+        <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}"{% if r['unsaved_edit'] %} data-restored="{{ r['id'] }}"{% endif %}>
         <input type="hidden" name="record[{{ r['id'] }}][zid]" value="{{ zone_id }}">
         {% endif %}
-        <tr style="font-size: 14px;">
+        <tr style="font-size: 14px;"{% if r['unsaved_edit'] %} class="table-warning"{% endif %}>
             <td class="text-center">
                 {% if not r['record_locked'] %}
                 <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ r['id'] }}"
                        {% if not iface_show_record_edit_button %}data-edit-url="{{ record_url_base }}/edit"{% endif %}>
+                {% endif %}
+                {% if r['stored_summary'] %}
+                <i class="bi bi-exclamation-triangle text-warning" data-bs-toggle="tooltip" data-bs-placement="top"
+                   title="{{ r['stored_summary'] }}"></i>
                 {% endif %}
             </td>
             {% if iface_edit_show_id %}
@@ -543,6 +563,11 @@
                         <i class="bi bi-pencil-square text-primary"></i> {% trans %}Edit comment{% endtrans %}</a>
                     {% endif %}
                 </div>
+                {% if zone_comment_conflict %}
+                <div class="alert alert-warning py-2 small mt-2 mb-0" role="alert">
+                    {% trans %}Not saved yet. The zone comment currently holds:{% endtrans %} {{ stored_zone_comment ?: '-' }}
+                </div>
+                {% endif %}
             </div>
             {% endif %}
             {# Last field of the form; dropped if max_input_vars truncates the POST. #}
@@ -1223,10 +1248,22 @@
             (original[id] = original[id] || {})[field] = fieldValue(el);
         });
 
+        // Rows restored after a rejected save already differ from the zone, so they
+        // must go out again even though they match what was just rendered.
+        const restored = new Set();
+        form.querySelectorAll('[data-restored]').forEach((el) => restored.add(el.dataset.restored));
+
         form.addEventListener('submit', () => {
+            // Tells the server the rows it receives are the edited ones, so a rejected
+            // save can restore them without reverting rows nobody touched.
+            const marker = document.getElementById('changed-rows-only');
+            if (marker) {
+                marker.value = '1';
+            }
+
             Object.keys(original).forEach((id) => {
                 const fields = form.querySelectorAll('[name^="record[' + id + ']["]');
-                let changed = false;
+                let changed = restored.has(id);
                 fields.forEach((el) => {
                     const match = el.name.match(fieldPattern);
                     if (match && fieldValue(el) !== original[id][match[2]]) {

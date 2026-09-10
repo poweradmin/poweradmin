@@ -101,6 +101,9 @@ class EditController extends BaseController
     private RecordRepositoryInterface $recordRepository;
     private DomainRepositoryInterface $domainRepository;
     private Request $request;
+    /** Rows and comment from a submission rejected as stale, so the re-render can restore them. */
+    private array $rejectedRecords = [];
+    private ?string $rejectedZoneComment = null;
 
     public function __construct(array $request)
     {
@@ -435,11 +438,9 @@ class EditController extends BaseController
         $zone_template_id = DomainManager::getZoneTemplate($this->db, $zone_id);
         $zone_template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_template_id);
 
-        $zone_comment = '';
-        $raw_zone_comment = $this->zoneRepository->getZoneComment($zone_id);
-        if ($raw_zone_comment) {
-            $zone_comment = htmlspecialchars($raw_zone_comment);
-        }
+        // Twig escapes this for the textarea. Escaping it here as well would put the
+        // entities in front of the operator and save them back on the next submit.
+        $zone_comment = (string)$this->zoneRepository->getZoneComment($zone_id);
 
         $zone_name_to_display = $this->zoneRepository->getDomainNameById($zone_id);
         $idn_zone_name = DnsIdnService::toIdnAlias($zone_name_to_display);
@@ -487,6 +488,8 @@ class EditController extends BaseController
         foreach ($displayRecords as &$record) {
             $record['display_name'] ??= $record['name'];
             $record['editable_name'] ??= $record['name'];
+            $record['unsaved_edit'] = false;
+            $record['stored_summary'] = '';
             $nsRecordLocked = ZoneAccessPolicy::isNsRecordLocked(
                 $record['type'],
                 $perm_edit,
@@ -503,6 +506,16 @@ class EditController extends BaseController
         }
         unset($record);
 
+        $stale_form_dropped = $this->restoreRejectedEdits($displayRecords);
+        $stored_zone_comment = $zone_comment;
+        $zone_comment_conflict = false;
+        if ($this->rejectedZoneComment !== null) {
+            // The retry writes the submitted comment over the stored one, so say what
+            // the zone holds when another writer has changed it in the meantime.
+            $zone_comment_conflict = $stored_zone_comment !== $this->rejectedZoneComment;
+            $zone_comment = $this->rejectedZoneComment;
+        }
+
         $this->render('edit.html', [
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
@@ -510,6 +523,8 @@ class EditController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'zone_display_name' => DnsIdnService::toDisplay($zone_name_to_display),
             'zone_comment' => $zone_comment,
+            'zone_comment_conflict' => $zone_comment_conflict,
+            'stored_zone_comment' => $stored_zone_comment,
             'domain_type' => $domain_type,
             'slave_master' => $slave_master,
             'zone_types' => $types,
@@ -531,6 +546,7 @@ class EditController extends BaseController
             'record_count' => $record_count,
             'filtered_record_count' => $total_filtered_count,
             'records' => $displayRecords,
+            'stale_form_dropped' => $stale_form_dropped,
             'perm_view' => $perm_view,
             'perm_edit' => $perm_edit,
             'perm_edit_ns_subzone' => $perm_edit_ns_subzone,
@@ -774,7 +790,15 @@ class EditController extends BaseController
             $stale_form_rejected = $this->isSerialMismatch($current_serial)
                 && $conflictResolution === 'only_latest_version';
 
-            if (!$stale_form_rejected) {
+            if ($stale_form_rejected) {
+                // Without the client filter every displayed row is posted, so a row that
+                // differs from the zone need not be one the operator touched. Restoring
+                // those would revert the other writer, so only a filtered post is kept.
+                if ($this->request->getPostParam('changed_rows_only') === '1') {
+                    $this->rejectedRecords = $records ?? [];
+                    $this->rejectedZoneComment = $this->request->getPostParam('zone_comment');
+                }
+            } else {
                 foreach (($records ?? []) as &$record) {
                     // Rows end with a hidden _complete marker; max_input_vars truncation
                     // drops it, so skip such rows and flag the partial save.
@@ -852,7 +876,9 @@ class EditController extends BaseController
             }
         }
 
-        if (!$records_truncated && $this->config->get('interface', 'show_zone_comments', true)) {
+        // A rejected form is rejected whole: writing the comment would persist half of a
+        // submission the operator is being told to send again.
+        if (!$records_truncated && !$stale_form_rejected && $this->config->get('interface', 'show_zone_comments', true)) {
             $one_record_changed = $this->processZoneComment($zone_id, $one_record_changed);
         }
 
@@ -874,6 +900,149 @@ class EditController extends BaseController
         $this->finalizeSave($outcome, $zone_id, $zone_name);
     }
 
+    /**
+     * Put a rejected submission back into the rendered rows, so warning the operator
+     * that their form was stale does not also cost them their edits.
+     *
+     * @param array $displayRecords rows read back from the zone, edited in place
+     * @return array submitted rows the listing no longer holds, which cannot be restored
+     */
+    private function restoreRejectedEdits(array &$displayRecords): array
+    {
+        if ($this->rejectedRecords === []) {
+            return [];
+        }
+
+        $positions = [];
+        foreach ($displayRecords as $index => $displayRecord) {
+            $positions[(string)$displayRecord['id']] = $index;
+        }
+
+        $dropped = [];
+        foreach ($this->rejectedRecords as $key => $submitted) {
+            // Rows without the marker arrived truncated by max_input_vars. Restoring one
+            // would merge half a submission into the stored row and hide that it lost
+            // fields, so it stays as the zone has it.
+            if (!is_array($submitted) || !isset($submitted['_complete'])) {
+                continue;
+            }
+            $rid = (string)($submitted['rid'] ?? $key);
+
+            // A row can leave the listing by being deleted or by no longer matching an
+            // active filter. Either way it has nowhere to go back to, so report it.
+            if (!isset($positions[$rid])) {
+                $dropped[] = self::describeDroppedRow($submitted);
+                continue;
+            }
+
+            $index = $positions[$rid];
+            $row = $displayRecords[$index];
+
+            // The other writer turned this into something the user may not edit. Such a
+            // row renders read-only, so it has to keep the values the zone holds.
+            if (!empty($row['record_locked'])) {
+                $dropped[] = self::describeDroppedRow($submitted);
+                continue;
+            }
+
+            // A row matching the zone has nothing to restore. This is what keeps a
+            // submit with JavaScript off, which posts every row, from forcing rows the
+            // operator never touched into the retry.
+            $summary = self::describeStoredValues($row, $submitted);
+            if ($summary === '') {
+                continue;
+            }
+
+            $row['stored_summary'] = $summary;
+            $row['editable_name'] = $submitted['name'] ?? $row['editable_name'];
+            // The type is a hidden field here, so this is the type the row was edited
+            // against. Keeping the stored one would retry the edits against a type the
+            // operator never saw, which for a changed type is a different record.
+            $row['type'] = $submitted['type'] ?? $row['type'];
+            $row['content'] = $submitted['content'] ?? $row['content'];
+            $row['prio'] = $submitted['prio'] ?? $row['prio'];
+            $row['ttl'] = $submitted['ttl'] ?? $row['ttl'];
+            $row['comment'] = $submitted['comment'] ?? $row['comment'];
+            $row['disabled'] = isset($submitted['disabled']) && $submitted['disabled'] === 'on' ? 1 : 0;
+            $row['unsaved_edit'] = true;
+            $displayRecords[$index] = $row;
+        }
+
+        return $dropped;
+    }
+
+    /**
+     * A row that cannot be put back, as one line, so the operator still sees every field
+     * they typed rather than only enough to recognise the record.
+     */
+    private static function describeDroppedRow(array $submitted): string
+    {
+        $fields = [
+            _('Name') => $submitted['name'] ?? '',
+            _('Type') => $submitted['type'] ?? '',
+            _('Content') => $submitted['content'] ?? '',
+            _('Priority') => $submitted['prio'] ?? '',
+            _('TTL') => $submitted['ttl'] ?? '',
+            _('Comment') => $submitted['comment'] ?? '',
+        ];
+
+        $parts = [];
+        foreach ($fields as $label => $value) {
+            if ((string)$value !== '') {
+                $parts[] = sprintf('%s: %s', $label, $value);
+            }
+        }
+
+        if (isset($submitted['disabled']) && $submitted['disabled'] === 'on') {
+            $parts[] = sprintf('%s: %s', _('Disabled'), _('Yes'));
+        }
+
+        return implode(', ', $parts);
+    }
+
+    /**
+     * One line naming the stored value of every field the submission no longer agrees
+     * with, so the operator can see what the zone holds before saving again. An empty
+     * string means the submission and the zone agree on every editable field.
+     */
+    private static function describeStoredValues(array $stored, array $submitted): string
+    {
+        $fields = [
+            'name' => [_('Name'), $stored['editable_name'] ?? ''],
+            'type' => [_('Type'), $stored['type'] ?? ''],
+            'content' => [_('Content'), $stored['content'] ?? ''],
+            'ttl' => [_('TTL'), $stored['ttl'] ?? ''],
+            'comment' => [_('Comment'), $stored['comment'] ?? ''],
+        ];
+
+        // Compared verbatim: a comment is stored as typed, so trimming here would treat a
+        // whitespace-only edit as no edit and drop it.
+        $parts = [];
+        foreach ($fields as $field => [$label, $storedValue]) {
+            $value = (string)$storedValue;
+            if (isset($submitted[$field]) && $value !== (string)$submitted[$field]) {
+                $parts[] = sprintf('%s: %s', $label, $value === '' ? '-' : $value);
+            }
+        }
+
+        // Empty and zero are the same absent priority, so compare the two numerically
+        // and let only the types that really carry one report a change.
+        $storedPrio = (string)($stored['prio'] ?? '');
+        if (isset($submitted['prio']) && (int)$storedPrio !== (int)$submitted['prio']) {
+            $parts[] = sprintf('%s: %s', _('Priority'), $storedPrio === '' ? '-' : $storedPrio);
+        }
+
+        $submittedDisabled = isset($submitted['disabled']) && $submitted['disabled'] === 'on' ? 1 : 0;
+        if ((int)($stored['disabled'] ?? 0) !== $submittedDisabled) {
+            $parts[] = sprintf('%s: %s', _('Disabled'), $stored['disabled'] ? _('Yes') : _('No'));
+        }
+
+        if ($parts === []) {
+            return '';
+        }
+
+        return sprintf(_('Not saved yet. The zone currently holds: %s'), implode(', ', $parts));
+    }
 
     private function getDnsWizardActions(int $zone_id): array
     {
