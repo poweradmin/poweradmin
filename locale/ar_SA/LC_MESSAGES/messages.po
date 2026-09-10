@@ -15234,20 +15234,15 @@ msgstr ""
 "على هذا النظام. يُرجى الاتصال بالمسؤول."
 
 #: lib/Application/Controller/EditController.php:1044
-#, auto-english-fallback
 msgid "Not saved yet. The zone currently holds: %s"
-msgstr "Not saved yet. The zone currently holds: %s"
+msgstr "لم يتم الحفظ بعد. المنطقة تحتوي حاليًا على: %s"
 
 #: templates/default/edit.html:236 templates/modern/edit.html:236
-#, auto-english-fallback
 msgid ""
 "Your changes to these records could not be restored, because they are no "
 "longer in this listing:"
-msgstr ""
-"Your changes to these records could not be restored, because they are no "
-"longer in this listing:"
+msgstr "تعذر استعادة تغييراتك على هذه السجلات لأنها لم تعد موجودة في هذه القائمة:"
 
 #: templates/default/edit.html:568 templates/modern/edit.html:568
-#, auto-english-fallback
 msgid "Not saved yet. The zone comment currently holds:"
-msgstr "Not saved yet. The zone comment currently holds:"
+msgstr "لم يتم الحفظ بعد. تعليق المنطقة يحتوي حاليًا على:"

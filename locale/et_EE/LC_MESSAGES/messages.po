@@ -15212,20 +15212,17 @@ msgstr ""
 "olla toetatud. Palun võtke ühendust administraatoriga."
 
 #: lib/Application/Controller/EditController.php:1044
-#, auto-english-fallback
 msgid "Not saved yet. The zone currently holds: %s"
-msgstr "Not saved yet. The zone currently holds: %s"
+msgstr "Veel salvestamata. Tsoon sisaldab praegu: %s"
 
 #: templates/default/edit.html:236 templates/modern/edit.html:236
-#, auto-english-fallback
 msgid ""
 "Your changes to these records could not be restored, because they are no "
 "longer in this listing:"
 msgstr ""
-"Your changes to these records could not be restored, because they are no "
-"longer in this listing:"
+"Teie muudatusi nendes kirjetes ei saanud taastada, sest neid pole selles "
+"loendis enam:"
 
 #: templates/default/edit.html:568 templates/modern/edit.html:568
-#, auto-english-fallback
 msgid "Not saved yet. The zone comment currently holds:"
-msgstr "Not saved yet. The zone comment currently holds:"
+msgstr "Veel salvestamata. Tsooni kommentaar sisaldab praegu:"

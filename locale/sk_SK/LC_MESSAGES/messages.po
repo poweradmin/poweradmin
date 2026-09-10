@@ -15443,20 +15443,17 @@ msgstr ""
 "administrátora."
 
 #: lib/Application/Controller/EditController.php:1044
-#, auto-english-fallback
 msgid "Not saved yet. The zone currently holds: %s"
-msgstr "Not saved yet. The zone currently holds: %s"
+msgstr "Zatiaľ neuložené. Zóna teraz obsahuje: %s"
 
 #: templates/default/edit.html:236 templates/modern/edit.html:236
-#, auto-english-fallback
 msgid ""
 "Your changes to these records could not be restored, because they are no "
 "longer in this listing:"
 msgstr ""
-"Your changes to these records could not be restored, because they are no "
-"longer in this listing:"
+"Vaše zmeny týchto záznamov sa nepodarilo obnoviť, pretože sa už v tomto "
+"zozname nenachádzajú:"
 
 #: templates/default/edit.html:568 templates/modern/edit.html:568
-#, auto-english-fallback
 msgid "Not saved yet. The zone comment currently holds:"
-msgstr "Not saved yet. The zone comment currently holds:"
+msgstr "Zatiaľ neuložené. Komentár zóny teraz obsahuje:"

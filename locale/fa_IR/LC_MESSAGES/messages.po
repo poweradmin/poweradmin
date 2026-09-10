@@ -15399,20 +15399,17 @@ msgstr ""
 "پشتیبانی نشود. لطفاً با مدیر سیستم خود تماس بگیرید."
 
 #: lib/Application/Controller/EditController.php:1044
-#, auto-english-fallback
 msgid "Not saved yet. The zone currently holds: %s"
-msgstr "Not saved yet. The zone currently holds: %s"
+msgstr "هنوز ذخیره نشده است. منطقه در حال حاضر شامل این است: %s"
 
 #: templates/default/edit.html:236 templates/modern/edit.html:236
-#, auto-english-fallback
 msgid ""
 "Your changes to these records could not be restored, because they are no "
 "longer in this listing:"
 msgstr ""
-"Your changes to these records could not be restored, because they are no "
-"longer in this listing:"
+"تغییرات شما در این رکوردها قابل بازیابی نبود، زیرا دیگر در این فهرست وجود "
+"ندارند:"
 
 #: templates/default/edit.html:568 templates/modern/edit.html:568
-#, auto-english-fallback
 msgid "Not saved yet. The zone comment currently holds:"
-msgstr "Not saved yet. The zone comment currently holds:"
+msgstr "هنوز ذخیره نشده است. نظر منطقه در حال حاضر شامل این است:"

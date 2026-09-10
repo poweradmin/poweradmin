@@ -15311,20 +15311,15 @@ msgstr ""
 "있습니다. 관리자에게 문의하십시오."
 
 #: lib/Application/Controller/EditController.php:1044
-#, auto-english-fallback
 msgid "Not saved yet. The zone currently holds: %s"
-msgstr "Not saved yet. The zone currently holds: %s"
+msgstr "아직 저장되지 않았습니다. 존의 현재 값: %s"
 
 #: templates/default/edit.html:236 templates/modern/edit.html:236
-#, auto-english-fallback
 msgid ""
 "Your changes to these records could not be restored, because they are no "
 "longer in this listing:"
-msgstr ""
-"Your changes to these records could not be restored, because they are no "
-"longer in this listing:"
+msgstr "이 레코드에 대한 변경 사항을 복원할 수 없습니다. 목록에 더 이상 존재하지 않기 때문입니다:"
 
 #: templates/default/edit.html:568 templates/modern/edit.html:568
-#, auto-english-fallback
 msgid "Not saved yet. The zone comment currently holds:"
-msgstr "Not saved yet. The zone comment currently holds:"
+msgstr "아직 저장되지 않았습니다. 존 설명의 현재 값:"

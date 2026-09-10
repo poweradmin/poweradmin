@@ -14821,20 +14821,17 @@ msgstr ""
 "ไม่สามารถตั้งค่า locale ได้. locale ที่เลือกอาจไม่รองรับบนระบบนี้. กรุณาติดต่อผู้ดูแลระบบของคุณ."
 
 #: lib/Application/Controller/EditController.php:1044
-#, auto-english-fallback
 msgid "Not saved yet. The zone currently holds: %s"
-msgstr "Not saved yet. The zone currently holds: %s"
+msgstr "ยังไม่ได้บันทึก ขณะนี้โซนมีค่า: %s"
 
 #: templates/default/edit.html:236 templates/modern/edit.html:236
-#, auto-english-fallback
 msgid ""
 "Your changes to these records could not be restored, because they are no "
 "longer in this listing:"
 msgstr ""
-"Your changes to these records could not be restored, because they are no "
-"longer in this listing:"
+"ไม่สามารถกู้คืนการเปลี่ยนแปลงของคุณในระเบียนเหล่านี้ได้ "
+"เนื่องจากไม่มีอยู่ในรายการนี้แล้ว:"
 
 #: templates/default/edit.html:568 templates/modern/edit.html:568
-#, auto-english-fallback
 msgid "Not saved yet. The zone comment currently holds:"
-msgstr "Not saved yet. The zone comment currently holds:"
+msgstr "ยังไม่ได้บันทึก ขณะนี้หมายเหตุของโซนมีค่า:"

@@ -15850,20 +15850,17 @@ msgstr ""
 "mbështetet në këtë sistem. Ju lutemi kontaktoni administratorin tuaj."
 
 #: lib/Application/Controller/EditController.php:1044
-#, auto-english-fallback
 msgid "Not saved yet. The zone currently holds: %s"
-msgstr "Not saved yet. The zone currently holds: %s"
+msgstr "Ende e paruajtur. Zona aktualisht përmban: %s"
 
 #: templates/default/edit.html:236 templates/modern/edit.html:236
-#, auto-english-fallback
 msgid ""
 "Your changes to these records could not be restored, because they are no "
 "longer in this listing:"
 msgstr ""
-"Your changes to these records could not be restored, because they are no "
-"longer in this listing:"
+"Ndryshimet tuaja në këto regjistrime nuk mund të rikthehen, sepse nuk "
+"ndodhen më në këtë listë:"
 
 #: templates/default/edit.html:568 templates/modern/edit.html:568
-#, auto-english-fallback
 msgid "Not saved yet. The zone comment currently holds:"
-msgstr "Not saved yet. The zone comment currently holds:"
+msgstr "Ende e paruajtur. Komenti i zonës aktualisht përmban:"

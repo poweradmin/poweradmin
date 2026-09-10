@@ -15700,20 +15700,17 @@ msgstr ""
 "kapcsolatot a rendszergazdával."
 
 #: lib/Application/Controller/EditController.php:1044
-#, auto-english-fallback
 msgid "Not saved yet. The zone currently holds: %s"
-msgstr "Not saved yet. The zone currently holds: %s"
+msgstr "Még nincs mentve. A zóna jelenleg ezt tartalmazza: %s"
 
 #: templates/default/edit.html:236 templates/modern/edit.html:236
-#, auto-english-fallback
 msgid ""
 "Your changes to these records could not be restored, because they are no "
 "longer in this listing:"
 msgstr ""
-"Your changes to these records could not be restored, because they are no "
-"longer in this listing:"
+"A rekordokon végzett módosításait nem lehetett visszaállítani, mert már "
+"nem szerepelnek ebben a listában:"
 
 #: templates/default/edit.html:568 templates/modern/edit.html:568
-#, auto-english-fallback
 msgid "Not saved yet. The zone comment currently holds:"
-msgstr "Not saved yet. The zone comment currently holds:"
+msgstr "Még nincs mentve. A zóna megjegyzése jelenleg ezt tartalmazza:"

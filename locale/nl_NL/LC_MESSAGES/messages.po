@@ -15714,20 +15714,17 @@ msgstr ""
 "mogelijk niet ondersteund op dit systeem. Neem contact op met uw beheerder."
 
 #: lib/Application/Controller/EditController.php:1044
-#, auto-english-fallback
 msgid "Not saved yet. The zone currently holds: %s"
-msgstr "Not saved yet. The zone currently holds: %s"
+msgstr "Nog niet opgeslagen. De zone bevat nu: %s"
 
 #: templates/default/edit.html:236 templates/modern/edit.html:236
-#, auto-english-fallback
 msgid ""
 "Your changes to these records could not be restored, because they are no "
 "longer in this listing:"
 msgstr ""
-"Your changes to these records could not be restored, because they are no "
-"longer in this listing:"
+"Uw wijzigingen aan deze records konden niet worden hersteld, omdat ze niet "
+"meer in deze lijst staan:"
 
 #: templates/default/edit.html:568 templates/modern/edit.html:568
-#, auto-english-fallback
 msgid "Not saved yet. The zone comment currently holds:"
-msgstr "Not saved yet. The zone comment currently holds:"
+msgstr "Nog niet opgeslagen. De opmerking bij de zone bevat nu:"
