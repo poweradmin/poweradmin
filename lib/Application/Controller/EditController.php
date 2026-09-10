@@ -754,7 +754,8 @@ class EditController extends BaseController
 
         $error = false;
         $one_record_changed = false;
-        $serial_mismatch = false;
+        $stale_form_rejected = false;
+        $conflictResolution = $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins');
 
         $records = $this->request->getPostParam('record');
         $form_submitted = $this->request->getPostParam('form_complete') !== null;
@@ -768,9 +769,12 @@ class EditController extends BaseController
             $soa_record = $this->soaRecordManager->getSOARecord($zone_id);
             $current_serial = SOARecordManager::getSOASerial($soa_record);
 
-            if ($this->isSerialMismatch($current_serial)) {
-                $serial_mismatch = true;
-            } else {
+            // Only the strict strategy stops here. last_writer_wins is defined by saving
+            // over the other writer, so a stale form under it still has to be processed.
+            $stale_form_rejected = $this->isSerialMismatch($current_serial)
+                && $conflictResolution === 'only_latest_version';
+
+            if (!$stale_form_rejected) {
                 foreach (($records ?? []) as &$record) {
                     // Rows end with a hidden _complete marker; max_input_vars truncation
                     // drops it, so skip such rows and flag the partial save.
@@ -854,16 +858,15 @@ class EditController extends BaseController
 
         // A truncated save that changed nothing keeps the SOA serial untouched and
         // reports only the truncation warning, not a success message.
-        if ($records_truncated && !$one_record_changed && !$error && !$serial_mismatch) {
+        if ($records_truncated && !$one_record_changed && !$error && !$stale_form_rejected) {
             return;
         }
 
         // Collapse the flags into one outcome here, where all of them are in
         // scope; $error wins over a stale form, which wins over the record count.
-        $conflictResolution = $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins');
         $outcome = match (true) {
             $error => ZoneSaveOutcome::WRITE_FAILED,
-            $serial_mismatch && $conflictResolution === 'only_latest_version' => ZoneSaveOutcome::SERIAL_CONFLICT,
+            $stale_form_rejected => ZoneSaveOutcome::SERIAL_CONFLICT,
             $one_record_changed => ZoneSaveOutcome::UPDATED,
             default => ZoneSaveOutcome::NO_CHANGES,
         };
