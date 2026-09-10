@@ -330,12 +330,17 @@ class IndexEntryPointTest extends TestCase
             $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
         }
 
-        // RequestContext JSON detection
-        $_SERVER['REQUEST_URI'] = '/api/test';
+        // RequestContext JSON detection. The path has to name a real API family:
+        // isApiPath() matches per segment so web pages under /api/ still get HTML.
+        $_SERVER['HTTP_ACCEPT'] = 'text/html';
+
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones';
         $this->assertTrue(RequestContext::expectsJson());
 
+        $_SERVER['REQUEST_URI'] = '/api/test';
+        $this->assertFalse(RequestContext::expectsJson());
+
         $_SERVER['REQUEST_URI'] = '/dashboard';
-        $_SERVER['HTTP_ACCEPT'] = 'text/html';
         $this->assertFalse(RequestContext::expectsJson());
     }
 }
