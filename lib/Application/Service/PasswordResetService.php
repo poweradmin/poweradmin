@@ -168,16 +168,18 @@ class PasswordResetService
         $token = $this->generateToken();
         $expiresAt = time() + $this->config->get('security', 'password_reset.token_lifetime', 3600);
 
-        // Store token
+        // Use the address on file, not the spelling that was typed, so a look-alike
+        // mailbox cannot receive the link.
+        $storedEmail = $user['email'];
         $success = $this->tokenRepository->create([
-            'email' => $email,
+            'email' => $storedEmail,
             'token' => $token,
             'expires_at' => date('Y-m-d H:i:s', $expiresAt),
             'ip_address' => $ip
         ]);
 
         if ($success) {
-            $emailSent = $this->sendResetEmail($email, $token, $user['fullname'] ?? '');
+            $emailSent = $this->sendResetEmail($storedEmail, $token, $user['fullname'] ?? '');
 
             $this->logger->info('Password reset token created', [
                 'user_id' => $user['id'],

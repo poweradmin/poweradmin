@@ -313,6 +313,41 @@ class PasswordResetSecurityTest extends TestCase
     }
 
     /**
+     * The link must go to the address on file, not to the spelling the requester typed.
+     */
+    public function testResetLinkGoesToStoredEmailNotSubmittedSpelling(): void
+    {
+        $submitted = 'jose@example.com';
+        $stored = 'josé@example.com';
+
+        $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
+        $this->tokenRepository->method('getLastAttemptTime')->willReturn(null);
+        $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
+
+        $this->userRepository->method('getUserByEmail')
+            ->with($submitted)
+            ->willReturn([
+                'id' => 7,
+                'username' => 'jose',
+                'email' => $stored,
+                'fullname' => 'José',
+                'auth_method' => 'sql'
+            ]);
+
+        $this->tokenRepository->expects($this->once())
+            ->method('create')
+            ->with($this->callback(fn ($data) => $data['email'] === $stored))
+            ->willReturn(true);
+
+        $this->mailService->expects($this->once())
+            ->method('sendMail')
+            ->with($stored, $this->anything(), $this->anything(), $this->anything())
+            ->willReturn(true);
+
+        $this->assertTrue($this->passwordResetService->createResetRequest($submitted));
+    }
+
+    /**
      * Test that users with missing auth_method (defaults to 'sql') can reset password
      */
     public function testUserWithMissingAuthMethodCanResetPassword(): void
