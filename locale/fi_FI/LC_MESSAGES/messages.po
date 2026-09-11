@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:24+0300\n"
+"POT-Creation-Date: 2026-09-11 14:36+0300\n"
 "PO-Revision-Date: 2026-04-23 12:00+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: Finnish\n"
@@ -46,11 +46,11 @@ msgstr "Sinulla ei ole oikeutta lisätä tietueita tälle alueelle."
 msgid "Invalid wizard type."
 msgstr "Virheellinen ohjatun toiminnon tyyppi."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:204
 msgid "Validation failed:"
 msgstr "Vahvistus epäonnistui:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:228
 msgid "Failed to generate record:"
 msgstr "Tietueen luonti epäonnistui:"
 
@@ -327,7 +327,7 @@ msgid ""
 msgstr "Varmenteen tiedot vaikuttavat liian lyhyiltä. Anna täysi varmenne."
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:79 templates/modern/edit.html:684
+#: templates/modern/edit.html:79 templates/modern/edit.html:709
 msgid "Invalid hostname format"
 msgstr "Virheellinen palvelimen nimen muoto"
 
@@ -1111,7 +1111,7 @@ msgstr ""
 msgid "Priority & Load Balancing"
 msgstr "Prioriteetti ja kuormantasaus"
 
-#: lib/Module/DnsWizard/Service/SRVWizard.php:163
+#: lib/Application/Controller/EditController.php:1055
 #: lib/Module/ZoneImportExport/templates/import.html:80
 msgid "Priority"
 msgstr "Prioriteetti"
@@ -1217,7 +1217,7 @@ msgstr "Alueen nimi ja ensisijaisen palvelimen osoite ovat pakollisia."
 msgid "Invalid hostname."
 msgstr "Virheellinen palvelimen nimi."
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "There is already a zone with this name."
 msgstr "Tämän niminen alue on jo olemassa."
 
@@ -1245,21 +1245,21 @@ msgstr ""
 msgid "Zone has been converted to a primary zone."
 msgstr "Alue on muunnettu ensisijaiseksi alueeksi."
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "You do not have permission to create zones for other users."
 msgstr "Sinulla ei ole oikeutta luoda vyöhykkeitä muille käyttäjille."
 
-#: lib/Application/Controller/BulkRegistrationController.php:164
+#: lib/Application/Controller/BulkRegistrationController.php:171
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "Tuntematon ryhmätunnus: %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:176
+#: lib/Application/Controller/BulkRegistrationController.php:183
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "Voit määrittää vain ryhmiä, joihin kuulut (ei sallittu: %s)"
 
-#: lib/Application/Controller/BulkRegistrationController.php:184
+#: lib/Application/Controller/BulkRegistrationController.php:191
 msgid "At least one user or group must be selected as owner."
 msgstr "Vähintään yksi käyttäjä tai ryhmä on valittava omistajaksi."
 
@@ -1499,7 +1499,7 @@ msgstr "Alueen kommentit on poistettu käytöstä määrityksissä."
 msgid "You do not have the permission to view this comment."
 msgstr "Sinulla ei ole oikeutta tarkastella tätä kommenttia."
 
-#: lib/Domain/Service/Dns/RecordManager.php:599
+#: lib/Domain/Service/Dns/RecordManager.php:618
 msgid "You do not have the permission to edit this comment."
 msgstr "Sinulla ei ole oikeutta muokata tätä kommenttia."
 
@@ -1507,7 +1507,7 @@ msgstr "Sinulla ei ole oikeutta muokata tätä kommenttia."
 msgid "The comment has been updated successfully."
 msgstr "Kommentti päivitetty onnistuneesti."
 
-#: lib/Application/Controller/EditRecordController.php:103
+#: lib/Application/Controller/EditRecordController.php:104
 msgid "Invalid record ID."
 msgstr "Virheellinen tietueen tunnus."
 
@@ -1515,7 +1515,7 @@ msgstr "Virheellinen tietueen tunnus."
 msgid "You do not have permission to delete records in this zone."
 msgstr "Sinulla ei ole oikeutta poistaa tietueita tältä alueelta."
 
-#: lib/Domain/Service/Dns/RecordManager.php:503
+#: lib/Domain/Service/Dns/RecordManager.php:521
 msgid "Record not found."
 msgstr "Tietuetta ei löytynyt."
 
@@ -1552,7 +1552,7 @@ msgstr ""
 msgid "The record has been deleted successfully."
 msgstr "Tietue poistettu onnistuneesti."
 
-#: lib/Domain/Service/Dns/RecordManager.php:510
+#: lib/Domain/Service/Dns/RecordManager.php:528
 msgid "You cannot delete records from a read-only zone."
 msgstr "Et voi poistaa tietueita vain luku -alueesta."
 
@@ -1678,7 +1678,7 @@ msgstr "Vahvistuskoodi on pakollinen."
 msgid "MFA has been enabled successfully."
 msgstr "MFA on otettu käyttöön onnistuneesti."
 
-#: lib/Application/Controller/MfaVerifyController.php:316
+#: lib/Application/Controller/MfaVerifyController.php:330
 msgid "Invalid verification code. Please try again."
 msgstr "Virheellinen vahvistuskoodi. Yritä uudelleen."
 
@@ -1747,7 +1747,7 @@ msgstr "Sinulla ei ole oikeutta tarkastella supermastereita."
 msgid "You do not have the permission to view zone metadata."
 msgstr "Sinulla ei ole oikeutta tarkastella alueen metatietoja."
 
-#: lib/Domain/Service/Dns/DomainManager.php:822
+#: lib/Domain/Service/Dns/DomainManager.php:828
 msgid "You do not have the permission to edit zone metadata."
 msgstr "Sinulla ei ole oikeutta muokata alueen metatietoja."
 
@@ -1959,11 +1959,11 @@ msgstr "Käyttöoikeusmallin päivittäminen ei onnistunut."
 msgid "Groups"
 msgstr "Ryhmät"
 
-#: lib/Application/Controller/SearchController.php:62
+#: lib/Application/Controller/SearchController.php:63
 msgid "You do not have the permission to perform searches."
 msgstr "Sinulla ei ole oikeutta suorittaa hakuja."
 
-#: lib/Application/Controller/SearchController.php:66
+#: lib/Application/Controller/SearchController.php:67
 #: templates/modern/search.html:31 templates/modern/header.html:132
 msgid "Search"
 msgstr "Haku"
@@ -2006,7 +2006,7 @@ msgid "You do not have the permission to add a new user."
 msgstr "Sinulla ei ole oikeutta lisätä uutta käyttäjää."
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:109 templates/modern/header.html:223
+#: templates/modern/add_user.html:110 templates/modern/header.html:223
 msgid "Add user"
 msgstr "Lisää käyttäjä"
 
@@ -2045,7 +2045,7 @@ msgstr "Salasana luotiin, mutta sitä ei näytetä turvallisuussyistä."
 msgid "Please fill in all required fields correctly."
 msgstr "Täytä kaikki pakolliset kentät oikein."
 
-#: lib/Domain/Service/Dns/RecordManager.php:536
+#: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "Sinulla ei ole oikeutta poistaa tätä tietuetta."
 
@@ -2053,7 +2053,7 @@ msgstr "Sinulla ei ole oikeutta poistaa tätä tietuetta."
 msgid "The record could not be deleted."
 msgstr "Tietuetta ei voitu poistaa."
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
 msgstr "alueen lokit"
@@ -2075,7 +2075,7 @@ msgstr "Vain tuottaja-alueet julkaisevat katalogin."
 msgid "You do not have permission to access this zone."
 msgstr "Sinulla ei ole oikeutta tähän alueeseen."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:637
 msgid "You do not have permission to edit this zone."
 msgstr "Sinulla ei ole oikeutta muokata tätä aluetta."
 
@@ -2083,7 +2083,7 @@ msgstr "Sinulla ei ole oikeutta muokata tätä aluetta."
 msgid "The zone has been added to the catalog."
 msgstr "Alue on lisätty katalogiin."
 
-#: lib/Application/Controller/EditController.php:612
+#: lib/Application/Controller/EditController.php:631
 msgid "The zone has been removed from the catalog."
 msgstr "Alue on poistettu katalogista."
 
@@ -2120,7 +2120,7 @@ msgstr "Muokkaa aluemallia"
 msgid "There is no zone template with this ID."
 msgstr "Tätä tunnusta vastaavaa aluemallia ei ole."
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:156
+#: lib/Application/Controller/EditZoneTemplRecordController.php:161
 msgid "Zone template has been updated successfully."
 msgstr "Aluemalli on päivitetty onnistuneesti."
 
@@ -2139,7 +2139,7 @@ msgstr "Alueet on päivitetty onnistuneesti."
 msgid "You do not have permission to create new zone templates."
 msgstr "Sinulla ei ole oikeutta luoda uusia aluemalleja."
 
-#: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Tämän niminen aluemalli on jo olemassa, valitse toinen."
 
@@ -2223,7 +2223,7 @@ msgstr "Muokkaa aluetta"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Sinulla ei ole oikeutta hallita tämän alueen DNSSEC:iä."
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:340
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC ei ole käytössä palvelimella."
 
@@ -2234,15 +2234,15 @@ msgstr ""
 "Tämä alue on esiallekirjoitettu; DNSSEC-avaimia hallitaan ensisijaisella "
 "palvelimella."
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:345
 msgid "Zone is already signed with DNSSEC."
 msgstr "Alue on jo allekirjoitettu DNSSEC:llä."
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:367
 msgid "Zone has been signed successfully."
 msgstr "Alue on allekirjoitettu onnistuneesti."
 
-#: lib/Application/Controller/EditController.php:368
+#: lib/Application/Controller/EditController.php:372
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2250,7 +2250,7 @@ msgstr ""
 "Alueen allekirjoituspyyntö onnistui, mutta vahvistus epäonnistui. Tarkista "
 "DNSSEC-avaimet."
 
-#: lib/Application/Controller/EditController.php:372
+#: lib/Application/Controller/EditController.php:376
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2274,31 +2274,51 @@ msgstr "Allekirjoituksen poistopyyntö onnistui, mutta vahvistus epäonnistui."
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Alueen allekirjoituksen poisto epäonnistui. Tarkista PowerDNS-lokit."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:637
 msgid "The catalog has been changed successfully."
 msgstr "Katalogi on muutettu onnistuneesti."
 
-#: lib/Application/Controller/EditController.php:631
+#: lib/Application/Controller/EditController.php:655
 msgid "Zone type has been changed successfully."
 msgstr "Alueen tyyppi on muutettu onnistuneesti."
 
-#: lib/Application/Controller/EditController.php:638
+#: lib/Application/Controller/EditController.php:662
 msgid "Slave master has been changed successfully."
 msgstr "Toissijaisen alueen pää on vaihdettu onnistuneesti."
 
-#: lib/Application/Controller/EditController.php:652
+#: lib/Application/Controller/EditController.php:681
 msgid "You cannot apply a template to a read-only zone."
 msgstr "Et voi soveltaa mallia vain luku -alueeseen."
 
-#: lib/Application/Controller/EditController.php:669
+#: lib/Application/Controller/EditController.php:703
 msgid "Zone template has been changed successfully."
 msgstr "Aluemalli on muutettu onnistuneesti."
 
-#: lib/Application/Controller/EditRecordController.php:125
+#: lib/Application/Controller/EditController.php:714
+msgid ""
+"Retrieving a zone from its primary needs the PowerDNS API backend and a "
+"secondary zone."
+msgstr ""
+"Retrieving a zone from its primary needs the PowerDNS API backend and a "
+"secondary zone."
+
+#: lib/Application/Controller/EditController.php:719
+msgid "Zone transfer from the primary has been requested."
+msgstr "Zone transfer from the primary has been requested."
+
+#: lib/Application/Controller/EditController.php:721
+msgid ""
+"Failed to request a zone transfer from the primary. Check the PowerDNS logs "
+"for details."
+msgstr ""
+"Failed to request a zone transfer from the primary. Check the PowerDNS logs "
+"for details."
+
+#: lib/Application/Controller/EditRecordController.php:126
 msgid "You cannot edit records in a read-only zone."
 msgstr "Et voi muokata tietueita vain luku -alueessa."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:897
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2308,25 +2328,75 @@ msgstr ""
 "enimmäismäärän. Pyydä ylläpitäjää suurentamaan PHP:n \"max_input_vars\"-"
 "asetusta."
 
-#: lib/Application/Controller/EditController.php:944
+#: lib/Application/Controller/EditController.php:1034
+#: lib/Module/ZoneImportExport/templates/import.html:76
+msgid "Name"
+msgstr "Nimi"
+
+#: lib/Application/Controller/EditController.php:1035
+#: lib/Module/ZoneImportExport/templates/import.html:77
+msgid "Type"
+msgstr "Tyyppi"
+
+#: lib/Application/Controller/EditController.php:1036
+#: lib/Module/ZoneImportExport/templates/import.html:78
+msgid "Content"
+msgstr "Sisältö"
+
+#: lib/Application/Controller/EditController.php:1037
+#: lib/Module/ZoneImportExport/templates/import.html:79
+msgid "TTL"
+msgstr "TTL"
+
+#: lib/Application/Controller/EditController.php:1038
+#: templates/modern/add_record.html:55
+msgid "Comment"
+msgstr "Kommentti"
+
+#: lib/Application/Controller/EditController.php:1060
+#: templates/modern/api_key_delete.html:48
+msgid "Disabled"
+msgstr "Pois käytöstä"
+
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:455
+#: templates/modern/users.html:222
+msgid "Yes"
+msgstr "Kyllä"
+
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:455
+#: templates/modern/users.html:224
+msgid "No"
+msgstr "Ei"
+
+#: lib/Application/Controller/EditController.php:1067
+#, php-format
+msgid "Not saved yet. The zone currently holds: %s"
+msgstr "Ei vielä tallennettu. Alue sisältää tällä hetkellä: %s"
+
+#: lib/Application/Controller/EditController.php:1150
 msgid "Zone has not been updated successfully."
 msgstr "Aluetta ei päivitetty onnistuneesti."
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:1151
 msgid "Request has expired, please try again."
 msgstr "Pyyntö vanheni, yritä uudelleen."
 
-#: lib/Application/Controller/EditController.php:954
+#: lib/Application/Controller/EditController.php:1162
+#, auto-english-fallback
+msgid "Zone saved successfully. No record changes were made."
+msgstr "Zone saved successfully. No record changes were made."
+
+#: lib/Application/Controller/EditController.php:1169
 msgid "Zone has been updated successfully."
 msgstr "Alue on päivitetty onnistuneesti."
 
-#: lib/Application/Controller/EditController.php:955
+#: lib/Application/Controller/EditController.php:1170
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
 msgstr "Alue tallennettu. Ei muutoksia, mutta SOA-sarjanumero kasvatettiin."
 
-#: lib/Application/Controller/EditController.php:987
+#: lib/Application/Controller/EditController.php:1202
 msgid "Please provide all required fields."
 msgstr "Anna kaikki pakolliset kentät."
 
@@ -2350,19 +2420,19 @@ msgstr "Tietue lisätty onnistuneesti. Myös vastaava A-tietue luotiin."
 msgid "Invalid security token. Please try again."
 msgstr "Virheellinen suojaustunniste. Yritä uudelleen."
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:329
 msgid "Too many failed attempts. Please try again later."
 msgstr "Liian monta epäonnistunutta yritystä. Yritä myöhemmin uudelleen."
 
-#: lib/Application/Controller/MfaVerifyController.php:163
+#: lib/Application/Controller/MfaVerifyController.php:177
 msgid "No MFA record found. Please contact administrator."
 msgstr "MFA-tietuetta ei löydy. Ota yhteyttä ylläpitäjään."
 
-#: lib/Application/Controller/MfaVerifyController.php:168
+#: lib/Application/Controller/MfaVerifyController.php:182
 msgid "An error occurred. Please try again."
 msgstr "Tapahtui virhe. Yritä uudelleen."
 
-#: lib/Application/Controller/MfaVerifyController.php:388
+#: lib/Application/Controller/MfaVerifyController.php:402
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2370,15 +2440,15 @@ msgstr ""
 "Sähköpostivahvistus ei ole käytettävissä, koska sähköpostipalvelu on "
 "poistettu käytöstä. Käytä palautuskoodia."
 
-#: lib/Application/Controller/MfaVerifyController.php:398
+#: lib/Application/Controller/MfaVerifyController.php:412
 msgid "A new verification code has been sent to your email."
 msgstr "Uusi vahvistuskoodi on lähetetty sähköpostiisi."
 
-#: lib/Application/Controller/MfaVerifyController.php:404
+#: lib/Application/Controller/MfaVerifyController.php:418
 msgid "Please use a recovery code instead."
 msgstr "Käytä sen sijaan palautuskoodia."
 
-#: lib/Application/Controller/MfaVerifyController.php:409
+#: lib/Application/Controller/MfaVerifyController.php:423
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2386,7 +2456,7 @@ msgstr ""
 "Vahvistuskoodin lähettäminen sähköpostiisi ei onnistunut. Käytä sen sijaan "
 "palautuskoodia."
 
-#: lib/Domain/Service/Dns/RecordManager.php:286
+#: lib/Domain/Service/Dns/RecordManager.php:287
 msgid "You do not have the permission to add a record to this zone."
 msgstr "Sinulla ei ole oikeutta lisätä tietuetta tälle alueelle."
 
@@ -2424,7 +2494,7 @@ msgstr "Tietueita ei voitu lisätä. Ne voivat sisältää virheellistä dataa."
 msgid "No zone selected for deletion."
 msgstr "Yhtään aluetta ei ole valittu poistettavaksi."
 
-#: lib/Domain/Service/Dns/DomainManager.php:1001
+#: lib/Domain/Service/Dns/DomainManager.php:1010
 msgid "You do not have the permission to delete a zone."
 msgstr "Sinulla ei ole oikeutta poistaa aluetta."
 
@@ -2522,14 +2592,14 @@ msgstr ""
 "Anna verkko CIDR-muodossa (esimerkiksi 192.168.1.0/24 tai 2001:db8::/48) tai "
 "käänteisen alueen nimi, joka päättyy päätteeseen in-addr.arpa tai ip6.arpa."
 
-#: lib/Application/Controller/AddZoneMasterController.php:303
+#: lib/Application/Controller/AddZoneMasterController.php:309
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
 "Alue luotu, mutta DNSSEC-allekirjoitus ohitettiin vahvistusvirheiden takia:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:315
+#: lib/Application/Controller/AddZoneMasterController.php:321
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2538,11 +2608,11 @@ msgstr ""
 "meni läpi, mutta PowerDNS-API palautti virheen. Katso lisätiedot PowerDNS-"
 "lokeista."
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:327
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "Alue on luotu ja allekirjoitettu DNSSEC:llä onnistuneesti."
 
-#: lib/Application/Controller/AddZoneMasterController.php:325
+#: lib/Application/Controller/AddZoneMasterController.php:331
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2820,38 +2890,60 @@ msgid "Assigned %d zones; %d failed"
 msgstr "Määritetty %d aluetta; %d epäonnistui"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Zone canonical ID repaired"
+msgstr "Zone canonical ID repaired"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Failed to repair zone canonical ID"
+msgstr "Failed to repair zone canonical ID"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:149
+msgid "No zones without a canonical ID to fix"
+msgstr "No zones without a canonical ID to fix"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#, php-format
+msgid "Repaired the canonical ID of %d zones"
+msgstr "Repaired the canonical ID of %d zones"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:157
+#, php-format
+msgid "Repaired %d zones; %d failed"
+msgstr "Repaired %d zones; %d failed"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
 msgstr "Toissijainen alue poistettu onnistuneesti"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:145
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Failed to delete slave zone"
 msgstr "Toissijaisen alueen poisto epäonnistui"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Orphaned record deleted successfully"
 msgstr "Orpotietue poistettu onnistuneesti"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Failed to delete orphaned record"
 msgstr "Orpotietueen poisto epäonnistui"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Duplicate SOA records fixed successfully"
 msgstr "Kaksoiskappaleet SOA-tietueista korjattu"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Failed to fix duplicate SOA records"
 msgstr "Kaksoiskappaleiden SOA-tietueiden korjaus epäonnistui"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Default SOA record created successfully"
 msgstr "Oletus-SOA-tietue luotu onnistuneesti"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Failed to create default SOA record"
 msgstr "Oletus-SOA-tietueen luonti epäonnistui"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:171
+#: lib/Application/Controller/DatabaseConsistencyController.php:196
 msgid "Invalid check type"
 msgstr "Virheellinen tarkistustyyppi"
 
@@ -2859,7 +2951,7 @@ msgstr "Virheellinen tarkistustyyppi"
 msgid "You have logged out."
 msgstr "Olet kirjautunut ulos."
 
-#: lib/Domain/Model/ZoneTemplate.php:361 lib/Domain/Model/ZoneTemplate.php:893
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
 msgid "You do not have the permission to add a zone template."
 msgstr "Sinulla ei ole oikeutta lisätä aluemallia."
 
@@ -2892,7 +2984,7 @@ msgstr "Sinulla ei ole oikeutta lisätä toissijaista aluetta."
 msgid "Add Secondary Zone"
 msgstr "Lisää toissijainen alue"
 
-#: lib/Domain/Model/ZoneTemplate.php:462 lib/Domain/Model/ZoneTemplate.php:508
+#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
 msgid "You do not have the permission to delete zone templates."
 msgstr "Sinulla ei ole oikeutta poistaa aluemalleja."
 
@@ -3124,19 +3216,19 @@ msgstr "Sinut on kirjattu ulos"
 msgid "Logout completed (with warnings): "
 msgstr "Uloskirjautuminen valmis (varoituksin): "
 
-#: lib/Application/Controller/EditRecordController.php:116
+#: lib/Application/Controller/EditRecordController.php:117
 msgid "You do not have permission to view this record."
 msgstr "Sinulla ei ole oikeutta tarkastella tätä tietuetta."
 
-#: lib/Domain/Service/Dns/RecordManager.php:426
+#: lib/Domain/Service/Dns/RecordManager.php:444
 msgid "You do not have permission to edit this record."
 msgstr "Sinulla ei ole oikeutta muokata tätä tietuetta."
 
-#: lib/Application/Controller/EditRecordController.php:345
+#: lib/Application/Controller/EditRecordController.php:353
 msgid "The record has been updated successfully."
 msgstr "Tietue päivitetty onnistuneesti."
 
-#: lib/Application/Controller/EditRecordController.php:390
+#: lib/Application/Controller/EditRecordController.php:398
 msgid "The record was updated, but the PTR record could not be updated: "
 msgstr "Tietue päivitettiin, mutta PTR-tietuetta ei voitu päivittää: "
 
@@ -3243,19 +3335,19 @@ msgstr "Supermaster on poistettu onnistuneesti."
 msgid "Bulk Registration"
 msgstr "Joukkorekisteröinti"
 
-#: lib/Application/Controller/BulkRegistrationController.php:144
+#: lib/Application/Controller/BulkRegistrationController.php:151
 msgid "Owner must be a numeric user ID."
 msgstr "Omistajan on oltava numeerinen käyttäjätunnus."
 
-#: lib/Application/Controller/BulkRegistrationController.php:224
+#: lib/Application/Controller/BulkRegistrationController.php:231
 msgid "Failed to add zone."
 msgstr "Alueen lisääminen epäonnistui."
 
-#: lib/Application/Controller/BulkRegistrationController.php:229
+#: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
 msgstr "Alueet on lisätty onnistuneesti."
 
-#: lib/Application/Controller/BulkRegistrationController.php:232
+#: lib/Application/Controller/BulkRegistrationController.php:239
 msgid "Some zone(s) could not be added."
 msgstr "Joitain alueita ei voitu lisätä."
 
@@ -3407,25 +3499,15 @@ msgstr "Kenttä %s on pakollinen."
 msgid "The %s field must be a number."
 msgstr "Kentän %s on oltava numero."
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
-#: templates/modern/users.html:222
-msgid "Yes"
-msgstr "Kyllä"
-
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
-#: templates/modern/users.html:224
-msgid "No"
-msgstr "Ei"
-
 #: lib/Application/Service/LdapAuthenticator.php:113
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Tili on tilapäisesti lukittu. Yritä myöhemmin uudelleen."
 
-#: lib/Application/Service/SqlAuthenticator.php:155
+#: lib/Application/Service/SqlAuthenticator.php:167
 msgid "The user account is disabled."
 msgstr "Käyttäjätili on poistettu käytöstä."
 
-#: lib/Application/Service/SqlAuthenticator.php:244
+#: lib/Application/Service/SqlAuthenticator.php:260
 msgid "Authentication failed!"
 msgstr "Todennus epäonnistui!"
 
@@ -3453,7 +3535,7 @@ msgstr "Todennus epäonnistui: Virheellinen istunto"
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Todennus epäonnistui: Käyttäjätilin luonti tai päivitys epäonnistui"
 
-#: lib/Application/Service/LdapAuthenticator.php:284
+#: lib/Application/Service/LdapAuthenticator.php:285
 msgid "LDAP Authentication failed!"
 msgstr "LDAP-todennus epäonnistui!"
 
@@ -3684,7 +3766,6 @@ msgstr ""
 "asetustiedostossasi."
 
 #: lib/Infrastructure/Web/PageRenderer.php:136
-#, auto-english-fallback
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -3754,43 +3835,43 @@ msgstr "Sähköpostiosoite on jo olemassa, valitse toinen."
 msgid "Enter a valid user name."
 msgstr "Anna kelvollinen käyttäjänimi."
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Zone template not found."
 msgstr "Vyöhykemallia ei löytynyt."
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:309
 msgid "Only global zone templates can be set as the default."
 msgstr "Vain yleiset vyöhykemallit voidaan asettaa oletukseksi."
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:325
 msgid "Error setting default zone template: "
 msgstr "Virhe asetettaessa oletusvyöhykemallia: "
 
-#: lib/Domain/Model/ZoneTemplate.php:343
+#: lib/Domain/Model/ZoneTemplate.php:344
 msgid "Error clearing default zone template: "
 msgstr "Virhe poistettaessa oletusvyöhykemallia: "
 
-#: lib/Domain/Model/ZoneTemplate.php:389 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
 msgid "Error creating zone template: "
 msgstr "Virhe aluemallin luonnissa: "
 
-#: lib/Domain/Model/ZoneTemplate.php:425
+#: lib/Domain/Model/ZoneTemplate.php:426
 msgid "Error adding default SOA record to template: "
 msgstr "Virhe oletus-SOA-tietueen lisäämisessä malliin: "
 
-#: lib/Domain/Model/ZoneTemplate.php:492
+#: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "Virhe aluemallin poistossa: "
 
-#: lib/Domain/Model/ZoneTemplate.php:516
+#: lib/Domain/Model/ZoneTemplate.php:518
 msgid "Error deleting user zone templates: "
 msgstr "Virhe käyttäjän aluemallien poistossa: "
 
-#: lib/Domain/Model/ZoneTemplate.php:644
+#: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "Sinulla ei ole oikeutta lisätä tietuetta tähän aluemalliin."
 
-#: lib/Domain/Model/ZoneTemplate.php:649 lib/Domain/Model/ZoneTemplate.php:761
+#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "Sinulla ei ole oikeutta lisätä tätä tietuetyyppiä aluemalliin."
@@ -3803,33 +3884,33 @@ msgstr "Sisältökentässä ei ole kelvollista arvoa."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV-prioriteetin on oltava numero välillä 0-65535."
 
-#: lib/Domain/Model/ZoneTemplate.php:693
+#: lib/Domain/Model/ZoneTemplate.php:695
 msgid "Error adding zone template record: "
 msgstr "Virhe lisättäessä aluemallin tietuetta: "
 
-#: lib/Domain/Model/ZoneTemplate.php:751 lib/Domain/Model/ZoneTemplate.php:836
+#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
 msgid "The record does not belong to this zone template."
 msgstr "Tietue ei kuulu tähän aluemalliin."
 
-#: lib/Domain/Model/ZoneTemplate.php:813
+#: lib/Domain/Model/ZoneTemplate.php:815
 msgid "Error updating zone template record: "
 msgstr "Virhe aluemallin tietueen päivityksessä: "
 
-#: lib/Domain/Model/ZoneTemplate.php:842
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "Sinulla ei ole oikeutta poistaa tätä tietuetyyppiä aluemallista."
 
-#: lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:853
 msgid "Error deleting zone template record: "
 msgstr "Virhe aluemallin tietueen poistossa: "
 
-#: lib/Domain/Model/ZoneTemplate.php:873
+#: lib/Domain/Model/ZoneTemplate.php:919
 msgid "Error checking template ownership: "
 msgstr "Virhe mallin omistuksen tarkistamisessa: "
 
-#: lib/Domain/Model/ZoneTemplate.php:959
+#: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3837,35 +3918,35 @@ msgid ""
 msgstr ""
 "Nämä tietuetyypit jätettiin pois mallista, koska et voi lisätä niitä: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1098
+#: lib/Domain/Model/ZoneTemplate.php:1144
 msgid "Error retrieving zones using template: "
 msgstr "Virhe haettaessa mallia käyttäviä alueita: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1198
+#: lib/Domain/Model/ZoneTemplate.php:1244
 msgid "Failed to get list of zones using template: "
 msgstr "Mallia käyttävien alueiden listan haku epäonnistui: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1216
+#: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "Sinulla ei ole oikeutta muokata aluemallia."
 
-#: lib/Domain/Model/ZoneTemplate.php:1264
+#: lib/Domain/Model/ZoneTemplate.php:1311
 msgid "Error unlinking zone from template: "
 msgstr "Virhe alueen linkityksen poistossa mallista: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1313
+#: lib/Domain/Model/ZoneTemplate.php:1360
 msgid "Error retrieving zones: "
 msgstr "Virhe alueiden haussa: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1332
+#: lib/Domain/Model/ZoneTemplate.php:1379
 msgid "Error checking template name existence: "
 msgstr "Virhe mallin nimen olemassaolon tarkistamisessa: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1353
+#: lib/Domain/Model/ZoneTemplate.php:1400
 msgid "Error looking up template by name: "
 msgstr "Virhe mallin haussa nimen mukaan: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1376
+#: lib/Domain/Model/ZoneTemplate.php:1423
 msgid "Error checking template existence: "
 msgstr "Virhe mallin olemassaolon tarkistamisessa: "
 
@@ -3925,50 +4006,59 @@ msgstr ""
 "Näkymät edellyttävät asetusta \"views=yes\" tiedostossa pdns.conf. "
 "Yhdistetyssä palvelimessa ne on poistettu käytöstä."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:154
+#: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
 msgstr "Kaikilla alueilla on omistajat"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:161
+#: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
 msgstr "Löytyi %d aluetta ilman omistajia"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:212
+#: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
 msgstr "Kaikilla toissijaisilla alueilla on pää-IP-osoitteet"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:219
+#: lib/Domain/Service/DatabaseConsistencyService.php:220
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "Löytyi %d toissijaista aluetta ilman pää-IP-osoitteita"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:264
+#: lib/Domain/Service/DatabaseConsistencyService.php:265
 msgid "All records belong to existing zones"
 msgstr "Kaikki tietueet kuuluvat olemassa oleviin alueisiin"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:271
+#: lib/Domain/Service/DatabaseConsistencyService.php:272
 #, php-format
 msgid "%d orphaned records found"
 msgstr "Löytyi %d orpotietuetta"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:331
+#: lib/Domain/Service/DatabaseConsistencyService.php:332
 msgid "No duplicate SOA records found"
 msgstr "Kaksoiskappaleita SOA-tietueista ei löytynyt"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:338
+#: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d alueella on kaksoiskappaleita SOA-tietueista"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:398
+#: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
 msgstr "Kaikilla alueilla on SOA-tietueet"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:405
+#: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "Löytyi %d aluetta ilman SOA-tietueita"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:486
+msgid "All zones have a canonical ID"
+msgstr "All zones have a canonical ID"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:487
+#, php-format
+msgid "%d zones found without a canonical ID"
+msgstr "%d zones found without a canonical ID"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -9397,19 +9487,19 @@ msgstr "PTR-päivitys ohitettiin: tietuetyyppi ei ole A tai AAAA."
 msgid "Stale PTR record removed."
 msgstr "Vanhentunut PTR-tietue poistettu."
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:323
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Tällä palvelinnimellä, tyypillä ja sisällöllä tietue on jo olemassa."
 
-#: lib/Domain/Service/Dns/RecordManager.php:223
+#: lib/Domain/Service/Dns/RecordManager.php:224
 msgid "Failed to add record to DNS backend."
 msgstr "Tietueen lisäys DNS-taustajärjestelmään epäonnistui."
 
-#: lib/Domain/Service/Dns/RecordManager.php:459
+#: lib/Domain/Service/Dns/RecordManager.php:477
 msgid "Failed to update record in DNS backend."
 msgstr "Tietueen päivitys DNS-taustajärjestelmässä epäonnistui."
 
-#: lib/Domain/Service/Dns/DomainManager.php:888
+#: lib/Domain/Service/Dns/DomainManager.php:896
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Virheellisiä argumentteja funktiolle %s %s"
@@ -9441,33 +9531,33 @@ msgstr "%s-tietueen luonti alueelle epäonnistui."
 msgid "Invalid argument(s) given to function %s"
 msgstr "Virheellisiä argumentteja funktiolle %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:565
+#: lib/Domain/Service/Dns/DomainManager.php:567
 msgid "Failed to delete zone from DNS backend."
 msgstr "Alueen poisto DNS-taustajärjestelmästä epäonnistui."
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:524
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "Alueen metatietojen siivous epäonnistui: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:611
+#: lib/Domain/Service/Dns/DomainManager.php:615
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "Alueen metatietojen poisto epäonnistui: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:783
+#: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "Alueen tyypin päivitys DNS-taustajärjestelmässä epäonnistui."
 
-#: lib/Domain/Service/Dns/DomainManager.php:837
+#: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "Alueen pään päivitys DNS-taustajärjestelmässä epäonnistui."
 
-#: lib/Domain/Service/Dns/DomainManager.php:883
+#: lib/Domain/Service/Dns/DomainManager.php:891
 msgid "The selected user already owns the zone."
 msgstr "Valittu käyttäjä omistaa jo alueen."
 
-#: lib/Domain/Service/Dns/DomainManager.php:1185
+#: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "Alueen tietueiden päivittäminen epäonnistui: %s"
@@ -9519,10 +9609,6 @@ msgstr "Ei koskaan"
 #: templates/modern/api_key_regenerated.html:55
 msgid "Status:"
 msgstr "Tila:"
-
-#: templates/modern/api_key_delete.html:48
-msgid "Disabled"
-msgstr "Pois käytöstä"
 
 #: templates/modern/api_keys.html:55 templates/modern/api_key_delete.html:50
 msgid "Expired"
@@ -9600,10 +9686,6 @@ msgstr "Avaimen tiedot"
 msgid "Key ID"
 msgstr "Avaimen tunnus"
 
-#: lib/Module/ZoneImportExport/templates/import.html:77
-msgid "Type"
-msgstr "Tyyppi"
-
 #: templates/modern/dnssec_delete_key.html:70
 msgid "Algorithm"
 msgstr "Algoritmi"
@@ -9627,10 +9709,6 @@ msgstr "Peruuta"
 #: templates/modern/api_key_edit.html:5 templates/modern/api_key_edit.html:12
 msgid "Edit API Key"
 msgstr "Muokkaa API-avainta"
-
-#: lib/Module/ZoneImportExport/templates/import.html:76
-msgid "Name"
-msgstr "Nimi"
 
 #: templates/modern/api_key_edit.html:21 templates/modern/api_key_add.html:21
 msgid "Provide a name for this API key"
@@ -9771,17 +9849,9 @@ msgstr "Kelvollinen alue: 0-65535"
 msgid "Only for MX, SRV, KX, NAPTR"
 msgstr "Vain MX, SRV, KX, NAPTR:ille"
 
-#: lib/Module/ZoneImportExport/templates/import.html:79
-msgid "TTL"
-msgstr "TTL"
-
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
 msgstr "Kelvollinen alue: 0-2147483647"
-
-#: lib/Module/ZoneImportExport/templates/import.html:78
-msgid "Content"
-msgstr "Sisältö"
 
 #: templates/modern/add_zone_templ_record.html:70
 msgid "Provide content for your zone record"
@@ -9812,7 +9882,7 @@ msgstr ""
 msgid "Update record"
 msgstr "Update record"
 
-#: templates/modern/edit.html:561 templates/modern/users.html:252
+#: templates/modern/edit.html:586 templates/modern/users.html:252
 msgid "Reset"
 msgstr "Nollaa"
 
@@ -9942,7 +10012,7 @@ msgstr "Anna palvelimen nimi"
 msgid "Account"
 msgstr "Tili"
 
-#: templates/modern/edit.html:176 templates/modern/edit.html:558
+#: templates/modern/edit.html:176 templates/modern/edit.html:583
 msgid "Save changes"
 msgstr "Tallenna muutokset"
 
@@ -9992,11 +10062,11 @@ msgstr "Haluatko varmasti poistaa alueen allekirjoituksen"
 msgid "Unsign zone"
 msgstr "poista alueen allekirjoitus"
 
-#: templates/modern/edit.html:912 templates/modern/list_forward_zones.html:124
+#: templates/modern/edit.html:945 templates/modern/list_forward_zones.html:124
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
 msgstr "PowerDNSin tarjoama sarjanumero, SOA-EDIT sovellettuna"
 
-#: templates/modern/edit.html:912 templates/modern/list_forward_zones.html:124
+#: templates/modern/edit.html:945 templates/modern/list_forward_zones.html:124
 msgid "Signed serial"
 msgstr "Allekirjoitettu sarjanumero"
 
@@ -10008,11 +10078,11 @@ msgstr "DNSSEC-avaimet alueelle"
 msgid "Add new key"
 msgstr "Lisää uusi avain"
 
-#: templates/modern/dnssec.html:65 templates/modern/edit.html:905
+#: templates/modern/dnssec.html:65 templates/modern/edit.html:938
 msgid "Show DS and DNSKEY"
 msgstr "Näytä DS ja DNSKEY"
 
-#: templates/modern/edit.html:337
+#: templates/modern/edit.html:351
 msgid "ID"
 msgstr "Tunnus"
 
@@ -10147,7 +10217,7 @@ msgstr "Lähetä palautuslinkki"
 msgid "Group Management"
 msgstr "Ryhmähallinta"
 
-#: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
+#: templates/modern/edit_user.html:270 templates/modern/add_user.html:183
 msgid "No groups found"
 msgstr "Ryhmiä ei löytynyt"
 
@@ -10178,10 +10248,6 @@ msgstr "Muokkaa tietuetta alueella"
 #: templates/default/edit_record.html:21 templates/modern/edit_record.html:21
 msgid "Modify DNS record properties"
 msgstr "Muokkaa DNS-tietueen ominaisuuksia"
-
-#: templates/modern/add_record.html:55
-msgid "Comment"
-msgstr "Kommentti"
 
 #: templates/modern/edit_record.html:41 templates/modern/edit_record.html:119
 msgid "Update PTR"
@@ -10232,7 +10298,7 @@ msgid ""
 "Group members inherit these permissions only for zones owned by this group"
 msgstr "Ryhmän jäsenet perivät oikeudet vain ryhmän omistamille alueille"
 
-#: templates/modern/edit_group.html:46 templates/modern/add_group.html:37
+#: templates/modern/edit_group.html:46 templates/modern/add_group.html:38
 msgid "Select a permission template"
 msgstr "Valitse käyttöoikeusmalli"
 
@@ -10523,7 +10589,7 @@ msgstr ""
 msgid "(for PTRs in reverse zones) or"
 msgstr "(PTR-tietueille käänteisalueilla) tai"
 
-#: templates/modern/edit_comment.html:5 templates/modern/edit.html:543
+#: templates/modern/edit_comment.html:5 templates/modern/edit.html:563
 msgid "Edit comment"
 msgstr "Muokkaa kommenttia"
 
@@ -10637,7 +10703,7 @@ msgstr "Kaikki käyttäjät"
 msgid "All events"
 msgstr "Kaikki tapahtumat"
 
-#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:595
+#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:620
 msgid "Logs"
 msgstr "Lokit"
 
@@ -11015,23 +11081,19 @@ msgstr "Kyllä, luo tämä API-avain uudelleen"
 msgid "No, keep current key"
 msgstr "Ei, säilytä nykyinen avain"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "Nollaa salasana"
 
 #: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "Siirry kirjautumiseen"
-
-#: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "Pyydä uusi palautuslinkki"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "Salasana ei täytä vaatimuksia"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "Syötä uusi salasana käyttäjälle"
 
@@ -11039,44 +11101,44 @@ msgstr "Syötä uusi salasana käyttäjälle"
 msgid "New password"
 msgstr "uusi salasana"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
 msgstr "Anna salasana"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "Vahvista salasana"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "Salasanat eivät täsmää"
 
-#: templates/modern/add_user.html:128
+#: templates/modern/add_user.html:129
 msgid "Password Requirements"
 msgstr "Salasanan vaatimukset"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "Minimum length"
 msgstr "Vähimmäispituus"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "characters"
 msgstr "merkkiä"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "Vähintään yksi iso kirjain"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "Vähintään yksi pieni kirjain"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "Vähintään yksi numero"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "Vähintään yksi erikoismerkki"
 
@@ -11169,7 +11231,6 @@ msgid "No SOA"
 msgstr "Ei SOA"
 
 #: templates/modern/list_forward_zones.html:158
-#, auto-english-fallback
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
 msgstr ""
@@ -11363,16 +11424,16 @@ msgstr ""
 "Tämän mallin käyttöoikeudet ovat voimassa yleisesti koko järjestelmässä "
 "tälle käyttäjälle"
 
-#: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
+#: templates/modern/edit_user.html:84 templates/modern/add_user.html:86
 msgid "Optional information about this user"
 msgstr "Valinnaiset tiedot tästä käyttäjästä"
 
-#: templates/modern/users.html:78 templates/modern/add_user.html:91
+#: templates/modern/users.html:78 templates/modern/add_user.html:92
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "Käytössä"
 
-#: templates/modern/edit_user.html:104 templates/modern/add_user.html:100
+#: templates/modern/edit_user.html:104 templates/modern/add_user.html:101
 msgid "LDAP Authentication"
 msgstr "LDAP-todennus"
 
@@ -11380,7 +11441,7 @@ msgstr "LDAP-todennus"
 msgid "Authentication settings can only be changed by an administrator"
 msgstr "Todennusasetuksia voi muuttaa vain ylläpitäjä"
 
-#: templates/modern/edit_user.html:109 templates/modern/add_user.html:102
+#: templates/modern/edit_user.html:109 templates/modern/add_user.html:103
 msgid "Use external LDAP directory for authentication"
 msgstr "Käytä todennukseen ulkoista LDAP-hakemistoa"
 
@@ -11392,7 +11453,7 @@ msgstr "Takaisin etusivulle"
 msgid "Back to Users"
 msgstr "Takaisin käyttäjiin"
 
-#: templates/modern/edit_user.html:142 templates/modern/add_user.html:124
+#: templates/modern/edit_user.html:142 templates/modern/add_user.html:125
 msgid "Account Information"
 msgstr "Tilin tiedot"
 
@@ -11416,7 +11477,7 @@ msgstr "Täytyy sisältää erikoismerkkejä"
 msgid "No specific password requirements"
 msgstr "Ei erityisiä salasanavaatimuksia"
 
-#: templates/modern/add_user.html:155 templates/modern/edit_perm_templ.html:158
+#: templates/modern/add_user.html:156 templates/modern/edit_perm_templ.html:158
 msgid "User Permissions"
 msgstr "Käyttäjän oikeudet"
 
@@ -11432,7 +11493,7 @@ msgstr "Tämän mallin perusteella käyttäjällä on seuraavat oikeudet"
 msgid "No permissions are assigned to this template"
 msgstr "Tälle mallille ei ole määritetty oikeuksia"
 
-#: templates/modern/edit_user.html:214 templates/modern/add_user.html:166
+#: templates/modern/edit_user.html:214 templates/modern/add_user.html:167
 msgid "Group Memberships"
 msgstr "Ryhmän jäsenyydet"
 
@@ -11448,7 +11509,7 @@ msgstr "Näytä ryhmän tiedot"
 msgid "This user is not a member of any groups."
 msgstr "Tämä käyttäjä ei ole minkään ryhmän jäsen."
 
-#: templates/modern/edit_user.html:252 templates/modern/add_user.html:168
+#: templates/modern/edit_user.html:252 templates/modern/add_user.html:169
 msgid "Add to Groups"
 msgstr "Lisää ryhmiin"
 
@@ -11456,7 +11517,7 @@ msgstr "Lisää ryhmiin"
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr "Valitse ryhmät ja napsauta \"Lisää valitut ryhmät\"."
 
-#: templates/modern/edit_user.html:261 templates/modern/add_user.html:173
+#: templates/modern/edit_user.html:261 templates/modern/add_user.html:174
 msgid "Search available groups..."
 msgstr "Hae saatavilla olevia ryhmiä..."
 
@@ -12073,71 +12134,71 @@ msgstr "Jos kadotat avaimen, sinun on luotava se uudelleen."
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: templates/modern/edit.html:11 templates/modern/edit.html:615
+#: templates/modern/edit.html:11 templates/modern/edit.html:640
 msgid "Add new record"
 msgstr "Lisää uusi tietue"
 
-#: templates/modern/edit.html:189 templates/modern/edit.html:619
+#: templates/modern/edit.html:189 templates/modern/edit.html:644
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "Ohjatut toiminnot DMARC-, SPF-, DKIM-, CAA-, TLSA- ja SRV-tietueille"
 
-#: templates/modern/edit.html:21 templates/modern/edit.html:625
+#: templates/modern/edit.html:21 templates/modern/edit.html:650
 msgid "Multi-record mode"
 msgstr "Moniteutuetapa"
 
-#: templates/modern/edit.html:568 templates/modern/edit.html:628
+#: templates/modern/edit.html:593 templates/modern/edit.html:653
 msgid "Bulk add"
 msgstr "Joukkolisäys"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:640
+#: templates/modern/edit.html:36 templates/modern/edit.html:665
 msgid "Failed to add"
 msgstr "Lisäys epäonnistui"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:640
+#: templates/modern/edit.html:36 templates/modern/edit.html:665
 msgid "record(s). Please check the record format."
 msgstr "tietuetta. Tarkista tietueen muoto."
 
-#: templates/modern/edit.html:38 templates/modern/edit.html:642
+#: templates/modern/edit.html:38 templates/modern/edit.html:667
 msgid "Failed to add records. Please check the record format."
 msgstr "Tietueiden lisäys epäonnistui. Tarkista muoto."
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:645
+#: templates/modern/edit.html:41 templates/modern/edit.html:670
 msgid "Content validation failed:"
 msgstr "Sisällön vahvistus epäonnistui:"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:645
+#: templates/modern/edit.html:41 templates/modern/edit.html:670
 msgid "Invalid value for record type"
 msgstr "Virheellinen arvo tietuetyypille"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:647
+#: templates/modern/edit.html:43 templates/modern/edit.html:672
 msgid "Please provide all required information."
 msgstr "Anna kaikki tarvittavat tiedot."
 
-#: templates/modern/edit.html:670 templates/modern/add_record.html:58
+#: templates/modern/edit.html:695 templates/modern/add_record.html:58
 msgid "Add PTR"
 msgstr "Lisää PTR"
 
-#: templates/modern/edit.html:673 templates/modern/add_record.html:61
+#: templates/modern/edit.html:698 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
 msgstr "Lisää A/AAAA"
 
-#: templates/modern/edit.html:107 templates/modern/edit.html:712
+#: templates/modern/edit.html:107 templates/modern/edit.html:737
 msgid "This record already exists"
 msgstr "Tämä tietue on jo olemassa"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:724
+#: templates/modern/edit.html:119 templates/modern/edit.html:749
 msgid "Invalid priority"
 msgstr "Virheellinen prioriteetti"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:731
+#: templates/modern/edit.html:126 templates/modern/edit.html:756
 msgid "Invalid TTL value"
 msgstr "Virheellinen TTL-arvo"
 
-#: templates/modern/edit.html:128 templates/modern/edit.html:733
+#: templates/modern/edit.html:128 templates/modern/edit.html:758
 msgid "Provide TTL"
 msgstr "Anna TTL"
 
-#: templates/modern/edit.html:759 templates/modern/add_record.html:193
+#: templates/modern/edit.html:784 templates/modern/add_record.html:193
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -12153,79 +12214,91 @@ msgstr "Metatiedot"
 msgid "View Metadata"
 msgstr "Näytä metatiedot"
 
-#: templates/default/edit.html:237 templates/modern/edit.html:237
+#: templates/default/edit.html:236 templates/modern/edit.html:236
+msgid ""
+"Your changes to these records could not be restored, because they are no "
+"longer in this listing:"
+msgstr ""
+"Muutoksiasi näihin tietueisiin ei voitu palauttaa, koska ne eivät ole enää "
+"tässä luettelossa:"
+
+#: templates/default/edit.html:248 templates/modern/edit.html:248
 msgid "No records match your filter criteria."
 msgstr "Mikään tietue ei vastaa suodatuskriteerejä."
 
-#: templates/default/edit.html:245 templates/modern/edit.html:245
+#: templates/default/edit.html:256 templates/modern/edit.html:256
 msgid "This zone does not have any records."
 msgstr "Tässä alueessa ei ole yhtään tietuetta."
 
-#: templates/modern/edit.html:257 templates/modern/users.html:26
+#: templates/modern/edit.html:268 templates/modern/users.html:26
 msgid "Filter:"
 msgstr "Suodatin:"
 
-#: templates/default/edit.html:263 templates/modern/edit.html:263
+#: templates/default/edit.html:274 templates/modern/edit.html:274
 msgid "Search by name or content"
 msgstr "Hae nimellä tai sisällöllä"
 
-#: templates/default/edit.html:269 templates/modern/edit.html:269
+#: templates/default/edit.html:280 templates/modern/edit.html:280
 msgid "All Types"
 msgstr "Kaikki tyypit"
 
-#: templates/default/edit.html:279 templates/modern/edit.html:279
+#: templates/default/edit.html:290 templates/modern/edit.html:290
 msgid "Filter by content"
 msgstr "Suodata sisällön mukaan"
 
-#: templates/modern/edit.html:285 templates/modern/users.html:34
+#: templates/modern/edit.html:296 templates/modern/users.html:34
 msgid "Apply"
 msgstr "Käytä"
 
-#: templates/default/edit.html:318 templates/modern/edit.html:318
+#: templates/default/edit.html:329 templates/modern/edit.html:329
 msgid "Showing"
 msgstr "Näytetään"
 
-#: templates/default/edit.html:318 templates/modern/edit.html:318
+#: templates/default/edit.html:329 templates/modern/edit.html:329
 msgid "of"
 msgstr "/"
 
-#: templates/default/edit.html:318 templates/modern/edit.html:318
+#: templates/default/edit.html:329 templates/modern/edit.html:329
 msgid "total records"
 msgstr "total records"
 
-#: templates/default/edit.html:396 templates/modern/edit.html:396
+#: templates/default/edit.html:410 templates/modern/edit.html:410
 msgid "Last modified"
 msgstr "Viimeksi muokattu"
 
-#: templates/modern/edit.html:431 templates/modern/edit.html:471
+#: templates/modern/edit.html:451 templates/modern/edit.html:491
 msgid "Last edited by %account% on %date%"
 msgstr "Viimeksi muokannut %account% %date%"
 
-#: templates/default/edit.html:526 templates/modern/edit.html:526
+#: templates/default/edit.html:546 templates/modern/edit.html:546
 msgid "Edit selected"
 msgstr "Muokkaa valittua"
 
-#: templates/modern/edit.html:530 templates/modern/search.html:481
+#: templates/modern/edit.html:550 templates/modern/search.html:481
 msgid "Delete record(s)"
 msgstr "Poista tietue(et)"
 
-#: templates/modern/edit.html:538 templates/modern/search.html:89
+#: templates/modern/edit.html:558 templates/modern/search.html:89
 msgid "Comments"
 msgstr "Kommentit"
 
-#: templates/default/edit.html:572 templates/modern/edit.html:572
+#: templates/default/edit.html:568 templates/modern/edit.html:568
+msgid "Not saved yet. The zone comment currently holds:"
+msgstr "Ei vielä tallennettu. Alueen kommentti sisältää tällä hetkellä:"
+
+#: templates/default/edit.html:597 templates/modern/edit.html:597
 msgid "Import"
 msgstr "Tuo"
 
-#: templates/default/edit.html:589 templates/modern/edit.html:589
+#: templates/default/edit.html:614 templates/modern/edit.html:614
 msgid "Generate PTR"
 msgstr "Luo PTR"
 
-#: templates/modern/edit.html:774 templates/modern/add_zone_master.html:16
+#: templates/modern/edit.html:799 templates/modern/add_zone_master.html:16
 msgid "Zone Configuration"
 msgstr "Alueen määritys"
 
-#: templates/modern/edit.html:844 templates/modern/edit.html:877
+#: templates/modern/edit.html:877 templates/modern/edit.html:910
 msgid "Change"
 msgstr "Muuta"
 
@@ -12233,31 +12306,39 @@ msgstr "Muuta"
 msgid "IP address of master NS"
 msgstr "Pää-NS:n IP-osoite"
 
-#: templates/default/edit.html:862 templates/modern/edit.html:862
+#: templates/default/edit.html:850 templates/modern/edit.html:850
+msgid "Requesting..."
+msgstr "Requesting..."
+
+#: templates/default/edit.html:851 templates/modern/edit.html:851
+msgid "Retrieve from primary"
+msgstr "Retrieve from primary"
+
+#: templates/default/edit.html:895 templates/modern/edit.html:895
 msgid "Catalog"
 msgstr "Katalogi"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:903 templates/modern/edit.html:903
 msgid "not managed here"
 msgstr "ei hallinnoida täällä"
 
-#: templates/default/edit.html:901 templates/modern/edit.html:901
+#: templates/default/edit.html:934 templates/modern/edit.html:934
 msgid "Manage DNSSEC"
 msgstr "Hallitse DNSSEC"
 
-#: templates/default/edit.html:909 templates/modern/edit.html:909
+#: templates/default/edit.html:942 templates/modern/edit.html:942
 msgid "DNSSEC keys are managed at the primary server"
 msgstr "DNSSEC-avaimia hallitaan ensisijaisella palvelimella"
 
-#: templates/default/edit.html:909 templates/modern/edit.html:909
+#: templates/default/edit.html:942 templates/modern/edit.html:942
 msgid "Presigned"
 msgstr "Esiallekirjoitettu"
 
-#: templates/default/edit.html:919 templates/modern/edit.html:919
+#: templates/default/edit.html:952 templates/modern/edit.html:952
 msgid "Sign zone"
 msgstr "Allekirjoita alue"
 
-#: templates/default/edit.html:923 templates/modern/edit.html:923
+#: templates/default/edit.html:956 templates/modern/edit.html:956
 msgid "Not signed"
 msgstr "Ei allekirjoitettu"
 
@@ -12451,63 +12532,79 @@ msgstr "Alueen nimi"
 msgid "Assign owner"
 msgstr "Määritä omistaja"
 
-#: templates/modern/database_consistency.html:284
+#: templates/modern/database_consistency.html:339
 msgid "Fix"
 msgstr "Korjaa"
 
 #: templates/modern/database_consistency.html:104
+msgid "Zones Without A Canonical ID"
+msgstr "Zones Without A Canonical ID"
+
+#: templates/modern/database_consistency.html:113
+msgid "Repair the canonical ID of all listed zones?"
+msgstr "Repair the canonical ID of all listed zones?"
+
+#: templates/modern/database_consistency.html:118
+msgid "Repair all"
+msgstr "Repair all"
+
+#: templates/modern/database_consistency.html:142
+msgid "Repair canonical ID"
+msgstr "Repair canonical ID"
+
+#: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"
 msgstr "Toissijaiset alueet ilman pää-IP-osoitteita"
 
-#: templates/modern/database_consistency.html:117
+#: templates/modern/database_consistency.html:172
 msgid "Master IP"
 msgstr "Pää-IP"
 
-#: templates/modern/database_consistency.html:135
+#: templates/modern/database_consistency.html:190
 msgid "Delete slave zone"
 msgstr "Poista toissijainen alue"
 
-#: templates/modern/database_consistency.html:154
+#: templates/modern/database_consistency.html:209
 msgid "Records Not Belonging to Any Zone"
 msgstr "Tietueet, jotka eivät kuulu mihinkään alueeseen"
 
-#: templates/modern/database_consistency.html:165
+#: templates/modern/database_consistency.html:220
 msgid "Record ID"
 msgstr "Tietueen tunnus"
 
-#: templates/modern/database_consistency.html:189
+#: templates/modern/database_consistency.html:244
 msgid "Delete orphaned record"
 msgstr "Poista orpotietue"
 
-#: templates/modern/database_consistency.html:205
+#: templates/modern/database_consistency.html:260
 msgid "Zones with Duplicate SOA Records"
 msgstr "Alueet, joissa on kaksoiskappaleita SOA-tietueista"
 
-#: templates/modern/database_consistency.html:218
+#: templates/modern/database_consistency.html:273
 msgid "SOA Count"
 msgstr "SOA-määrä"
 
-#: templates/modern/database_consistency.html:234
+#: templates/modern/database_consistency.html:289
 msgid "Keep first SOA, delete duplicates"
 msgstr "Säilytä ensimmäinen SOA, poista kaksoiskappaleet"
 
-#: templates/modern/database_consistency.html:254
+#: templates/modern/database_consistency.html:309
 msgid "Zones Without SOA Records"
 msgstr "Alueet ilman SOA-tietueita"
 
-#: templates/modern/database_consistency.html:283
+#: templates/modern/database_consistency.html:338
 msgid "Create default SOA record"
 msgstr "Luo oletus-SOA-tietue"
 
-#: templates/modern/database_consistency.html:322
+#: templates/modern/database_consistency.html:377
 msgid "Are you sure you want to delete the slave zone"
 msgstr "Haluatko varmasti poistaa toissijaisen alueen"
 
-#: templates/modern/database_consistency.html:325
+#: templates/modern/database_consistency.html:380
 msgid "Are you sure you want to delete the orphaned record"
 msgstr "Haluatko varmasti poistaa orpotietueen"
 
-#: templates/modern/database_consistency.html:328
+#: templates/modern/database_consistency.html:383
 msgid "Are you sure you want to delete this item?"
 msgstr "Haluatko varmasti poistaa tämän?"
 
@@ -12546,15 +12643,15 @@ msgstr "Lähetä salasana sähköpostitse"
 msgid "Send login credentials to user's email address"
 msgstr "Lähetä kirjautumistiedot käyttäjän sähköpostiin"
 
-#: templates/modern/add_user.html:68 templates/modern/add_group.html:31
+#: templates/modern/add_user.html:69 templates/modern/add_group.html:32
 msgid "Select a template..."
 msgstr "Valitse malli..."
 
-#: templates/default/add_user.html:78 templates/modern/add_user.html:78
+#: templates/default/add_user.html:79 templates/modern/add_user.html:79
 msgid "Select permissions for this user"
 msgstr "Valitse oikeudet tälle käyttäjälle"
 
-#: templates/default/add_user.html:157 templates/modern/add_user.html:157
+#: templates/default/add_user.html:158 templates/modern/add_user.html:158
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -12563,7 +12660,7 @@ msgstr ""
 "Uusi käyttäjä saa oikeudet valitun mallin perusteella. Voit muuttaa näitä "
 "oikeuksia myöhemmin muokkaamalla käyttäjää."
 
-#: templates/default/add_user.html:169 templates/modern/add_user.html:169
+#: templates/default/add_user.html:170 templates/modern/add_user.html:170
 msgid "Select groups to add the new user to upon creation."
 msgstr "Valitse ryhmät, joihin uusi käyttäjä lisätään."
 
@@ -14241,25 +14338,25 @@ msgstr ""
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Olet poistamassa DNSSEC-avainta (tunnus"
 
-#: templates/default/add_group.html:36 templates/modern/add_group.html:36
+#: templates/default/add_group.html:37 templates/modern/add_group.html:37
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
 msgstr "Kaikki ryhmän jäsenet perivät nämä oikeudet ryhmän alueille"
 
-#: templates/default/add_group.html:42 templates/modern/add_group.html:42
+#: templates/default/add_group.html:43 templates/modern/add_group.html:43
 msgid "Create Group"
 msgstr "Luo ryhmä"
 
-#: templates/default/add_group.html:55 templates/modern/add_group.html:55
+#: templates/default/add_group.html:56 templates/modern/add_group.html:56
 msgid "About Groups"
 msgstr "Ryhmistä"
 
-#: templates/default/add_group.html:57 templates/modern/add_group.html:57
+#: templates/default/add_group.html:58 templates/modern/add_group.html:58
 msgid "What are Groups?"
 msgstr "Mitä ryhmät ovat?"
 
-#: templates/default/add_group.html:58 templates/modern/add_group.html:58
+#: templates/default/add_group.html:59 templates/modern/add_group.html:59
 msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
@@ -14268,11 +14365,11 @@ msgstr ""
 "käyttöoikeuksia keskitetysti. Jäsenet perivät ryhmän oikeudet kaikkiin "
 "ryhmän omistamiin alueisiin."
 
-#: templates/default/add_group.html:59 templates/modern/add_group.html:59
+#: templates/default/add_group.html:60 templates/modern/add_group.html:60
 msgid "How to Use Groups"
 msgstr "Kuinka käyttää ryhmiä"
 
-#: templates/default/add_group.html:60 templates/modern/add_group.html:60
+#: templates/default/add_group.html:61 templates/modern/add_group.html:61
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
@@ -15322,18 +15419,4 @@ msgstr ""
 "Kieliasetuksen määrittäminen epäonnistui. Valittua kieliasetusta ei ehkä "
 "tueta tässä järjestelmässä. Ota yhteyttä ylläpitäjään."
 
-#: lib/Application/Controller/EditController.php:1044
-msgid "Not saved yet. The zone currently holds: %s"
-msgstr "Ei vielä tallennettu. Alue sisältää tällä hetkellä: %s"
 
-#: templates/default/edit.html:236 templates/modern/edit.html:236
-msgid ""
-"Your changes to these records could not be restored, because they are no "
-"longer in this listing:"
-msgstr ""
-"Muutoksiasi näihin tietueisiin ei voitu palauttaa, koska ne eivät ole enää "
-"tässä luettelossa:"
-
-#: templates/default/edit.html:568 templates/modern/edit.html:568
-msgid "Not saved yet. The zone comment currently holds:"
-msgstr "Ei vielä tallennettu. Alueen kommentti sisältää tällä hetkellä:"

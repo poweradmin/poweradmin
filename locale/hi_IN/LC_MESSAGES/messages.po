@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:24+0300\n"
+"POT-Creation-Date: 2026-09-11 14:36+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -46,11 +46,11 @@ msgstr "आपको इस ज़ोन में रिकॉर्ड जो�
 msgid "Invalid wizard type."
 msgstr "अमान्य विज़ार्ड प्रकार।"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:204
 msgid "Validation failed:"
 msgstr "सत्यापन विफल रहा:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:228
 msgid "Failed to generate record:"
 msgstr "रिकॉर्ड उत्पन्न करने में विफल:"
 
@@ -329,7 +329,7 @@ msgstr ""
 "पूर्ण प्रमाणपत्र डेटा बहुत कम लगता है। सुनिश्चित करें कि आपने पूरा प्रमाणपत्र प्रदान किया है।"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:79 templates/modern/edit.html:684
+#: templates/modern/edit.html:79 templates/modern/edit.html:709
 msgid "Invalid hostname format"
 msgstr "अमान्य होस्टनाम प्रारूप"
 
@@ -1112,7 +1112,7 @@ msgstr "पोर्ट संख्या जहां सेवा सुन �
 msgid "Priority & Load Balancing"
 msgstr "प्राथमिकता और लोड संतुलन"
 
-#: lib/Module/DnsWizard/Service/SRVWizard.php:163
+#: lib/Application/Controller/EditController.php:1055
 #: lib/Module/ZoneImportExport/templates/import.html:80
 msgid "Priority"
 msgstr "प्राथमिकता"
@@ -1221,7 +1221,7 @@ msgstr "ज़ोन नाम और प्राथमिक सर्वर �
 msgid "Invalid hostname."
 msgstr "अमान्य होस्टनाम।"
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "There is already a zone with this name."
 msgstr "इस नाम का एक ज़ोन पहले से मौजूद है।"
 
@@ -1249,21 +1249,21 @@ msgstr ""
 msgid "Zone has been converted to a primary zone."
 msgstr "ज़ोन को प्राथमिक ज़ोन में परिवर्तित कर दिया गया है।"
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "You do not have permission to create zones for other users."
 msgstr "आपको अन्य उपयोगकर्ताओं के लिए ज़ोन बनाने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/BulkRegistrationController.php:164
+#: lib/Application/Controller/BulkRegistrationController.php:171
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "अज्ञात समूह ID: %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:176
+#: lib/Application/Controller/BulkRegistrationController.php:183
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "आप केवल उन समूहों को असाइन कर सकते हैं जिनके आप सदस्य हैं (अननुमत: %s)"
 
-#: lib/Application/Controller/BulkRegistrationController.php:184
+#: lib/Application/Controller/BulkRegistrationController.php:191
 msgid "At least one user or group must be selected as owner."
 msgstr "कम से कम एक उपयोगकर्ता या समूह को मालिक के रूप में चुना जाना चाहिए।"
 
@@ -1502,7 +1502,7 @@ msgstr "ज़ोन टिप्पणियों की सुविधा �
 msgid "You do not have the permission to view this comment."
 msgstr "आपको इस टिप्पणी को देखने की अनुमति नहीं है।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:599
+#: lib/Domain/Service/Dns/RecordManager.php:618
 msgid "You do not have the permission to edit this comment."
 msgstr "आपको इस टिप्पणी को संपादित करने की अनुमति नहीं है।"
 
@@ -1510,7 +1510,7 @@ msgstr "आपको इस टिप्पणी को संपादित �
 msgid "The comment has been updated successfully."
 msgstr "टिप्पणी को सफलतापूर्वक अद्यतन किया गया है।"
 
-#: lib/Application/Controller/EditRecordController.php:103
+#: lib/Application/Controller/EditRecordController.php:104
 msgid "Invalid record ID."
 msgstr "अमान्य रिकॉर्ड ID।"
 
@@ -1518,7 +1518,7 @@ msgstr "अमान्य रिकॉर्ड ID।"
 msgid "You do not have permission to delete records in this zone."
 msgstr "आपको इस ज़ोन में रिकॉर्ड हटाने की अनुमति नहीं है।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:503
+#: lib/Domain/Service/Dns/RecordManager.php:521
 msgid "Record not found."
 msgstr "रिकॉर्ड नहीं मिला।"
 
@@ -1554,7 +1554,7 @@ msgstr "रिकॉर्ड सफलतापूर्वक हटा दि
 msgid "The record has been deleted successfully."
 msgstr "रिकॉर्ड सफलतापूर्वक हटा दिया गया है।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:510
+#: lib/Domain/Service/Dns/RecordManager.php:528
 msgid "You cannot delete records from a read-only zone."
 msgstr "आप केवल-पढ़ने के लिए ज़ोन से रिकॉर्ड हटा नहीं सकते।"
 
@@ -1680,7 +1680,7 @@ msgstr "सत्यापन कोड की आवश्यकता है�
 msgid "MFA has been enabled successfully."
 msgstr "MFA को सफलतापूर्वक सक्षम किया गया है।"
 
-#: lib/Application/Controller/MfaVerifyController.php:316
+#: lib/Application/Controller/MfaVerifyController.php:330
 msgid "Invalid verification code. Please try again."
 msgstr "अमान्य सत्यापन कोड। फिर से प्रयास करें।"
 
@@ -1749,7 +1749,7 @@ msgstr "आपको supermasters देखने की अनुमति न�
 msgid "You do not have the permission to view zone metadata."
 msgstr "आपको ज़ोन मेटाडाटा देखने की अनुमति नहीं है।"
 
-#: lib/Domain/Service/Dns/DomainManager.php:822
+#: lib/Domain/Service/Dns/DomainManager.php:828
 msgid "You do not have the permission to edit zone metadata."
 msgstr "आपके पास ज़ोन मेटाडाटा को संपादित करने की अनुमति नहीं है।"
 
@@ -1959,11 +1959,11 @@ msgstr "अनुमति टेम्पलेट अद्यतन नही
 msgid "Groups"
 msgstr "समूह"
 
-#: lib/Application/Controller/SearchController.php:62
+#: lib/Application/Controller/SearchController.php:63
 msgid "You do not have the permission to perform searches."
 msgstr "आपको खोज करने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/SearchController.php:66
+#: lib/Application/Controller/SearchController.php:67
 #: templates/modern/search.html:31 templates/modern/header.html:132
 msgid "Search"
 msgstr "खोज"
@@ -2006,7 +2006,7 @@ msgid "You do not have the permission to add a new user."
 msgstr "आपके पास एक नया उपयोगकर्ता जोड़ने की अनुमति नहीं है।"
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:109 templates/modern/header.html:223
+#: templates/modern/add_user.html:110 templates/modern/header.html:223
 msgid "Add user"
 msgstr "उपयोगकर्ता जोड़ें"
 
@@ -2043,7 +2043,7 @@ msgstr "एक पासवर्ड उत्पन्न किया गय�
 msgid "Please fill in all required fields correctly."
 msgstr "कृपया सभी आवश्यक फ़ील्ड को सही ढंग से भरें।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:536
+#: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "आपको इस रिकॉर्ड को हटाने की अनुमति नहीं है।"
 
@@ -2051,7 +2051,7 @@ msgstr "आपको इस रिकॉर्ड को हटाने की 
 msgid "The record could not be deleted."
 msgstr "रिकॉर्ड हटाया नहीं जा सकता।"
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
 msgstr "ज़ोन लॉग"
@@ -2073,7 +2073,7 @@ msgstr "केवल निर्माता ज़ोन ही कैटल�
 msgid "You do not have permission to access this zone."
 msgstr "आपको इस ज़ोन तक पहुंचने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:637
 msgid "You do not have permission to edit this zone."
 msgstr "आपके पास इस ज़ोन को संपादित करने की अनुमति नहीं है।"
 
@@ -2081,7 +2081,7 @@ msgstr "आपके पास इस ज़ोन को संपादित 
 msgid "The zone has been added to the catalog."
 msgstr "ज़ोन कैटलॉग में जोड़ दिया गया है।"
 
-#: lib/Application/Controller/EditController.php:612
+#: lib/Application/Controller/EditController.php:631
 msgid "The zone has been removed from the catalog."
 msgstr "ज़ोन कैटलॉग से हटा दिया गया है।"
 
@@ -2118,7 +2118,7 @@ msgstr "एडिट ज़ोन टेम्पलेट"
 msgid "There is no zone template with this ID."
 msgstr "इस ID के साथ कोई ज़ोन टेम्पलेट नहीं है।"
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:156
+#: lib/Application/Controller/EditZoneTemplRecordController.php:161
 msgid "Zone template has been updated successfully."
 msgstr "ज़ोन टेम्पलेट को सफलतापूर्वक अद्यतन किया गया है।"
 
@@ -2137,7 +2137,7 @@ msgstr "ज़ोन सफलतापूर्वक अद्यतन कि
 msgid "You do not have permission to create new zone templates."
 msgstr "आपको नए ज़ोन टेम्प्लेट बनाने की अनुमति नहीं है।"
 
-#: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "इस नाम का ज़ोन टेम्पलेट पहले से मौजूद है, कृपया कोई दूसरा नाम चुनें।"
 
@@ -2221,7 +2221,7 @@ msgstr "एडिट ज़ोन"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "आपको इस ज़ोन के लिए DNSSEC का प्रबंधन करने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:340
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC सर्वर पर सक्षम नहीं है।"
 
@@ -2230,15 +2230,15 @@ msgstr "DNSSEC सर्वर पर सक्षम नहीं है।"
 msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
 msgstr "यह ज़ोन पूर्व-हस्ताक्षरित है; DNSSEC कुंजियाँ प्राथमिक सर्वर पर प्रबंधित की जाती हैं।"
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:345
 msgid "Zone is already signed with DNSSEC."
 msgstr "ज़ोन पहले से ही DNSSEC के साथ हस्ताक्षरित है।"
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:367
 msgid "Zone has been signed successfully."
 msgstr "ज़ोन पर सफलतापूर्वक हस्ताक्षर किए गए हैं।"
 
-#: lib/Application/Controller/EditController.php:368
+#: lib/Application/Controller/EditController.php:372
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -2246,7 +2246,7 @@ msgstr ""
 "ज़ोन पर हस्ताक्षर करने का अनुरोध सफलतापूर्वक किया गया, लेकिन सत्यापन विफल रहा। DNSSEC "
 "कुंजियों की जाँच करें।"
 
-#: lib/Application/Controller/EditController.php:372
+#: lib/Application/Controller/EditController.php:376
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2270,31 +2270,51 @@ msgstr "ज़ोन से हस्ताक्षर हटाने का �
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "ज़ोन से हस्ताक्षर हटाने में विफल रहा। विवरण के लिए PowerDNS लॉग की जाँच करें।"
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:637
 msgid "The catalog has been changed successfully."
 msgstr "कैटलॉग सफलतापूर्वक बदल दिया गया है।"
 
-#: lib/Application/Controller/EditController.php:631
+#: lib/Application/Controller/EditController.php:655
 msgid "Zone type has been changed successfully."
 msgstr "ज़ोन प्रकार को सफलतापूर्वक बदल दिया गया है।"
 
-#: lib/Application/Controller/EditController.php:638
+#: lib/Application/Controller/EditController.php:662
 msgid "Slave master has been changed successfully."
 msgstr "स्लेव मास्टर सफलतापूर्वक बदल दिया गया है।"
 
-#: lib/Application/Controller/EditController.php:652
+#: lib/Application/Controller/EditController.php:681
 msgid "You cannot apply a template to a read-only zone."
 msgstr "आप केवल-पढ़ने के लिए ज़ोन पर टेम्पलेट लागू नहीं कर सकते।"
 
-#: lib/Application/Controller/EditController.php:669
+#: lib/Application/Controller/EditController.php:703
 msgid "Zone template has been changed successfully."
 msgstr "ज़ोन टेम्पलेट सफलतापूर्वक बदल गया है।"
 
-#: lib/Application/Controller/EditRecordController.php:125
+#: lib/Application/Controller/EditController.php:714
+msgid ""
+"Retrieving a zone from its primary needs the PowerDNS API backend and a "
+"secondary zone."
+msgstr ""
+"Retrieving a zone from its primary needs the PowerDNS API backend and a "
+"secondary zone."
+
+#: lib/Application/Controller/EditController.php:719
+msgid "Zone transfer from the primary has been requested."
+msgstr "Zone transfer from the primary has been requested."
+
+#: lib/Application/Controller/EditController.php:721
+msgid ""
+"Failed to request a zone transfer from the primary. Check the PowerDNS logs "
+"for details."
+msgstr ""
+"Failed to request a zone transfer from the primary. Check the PowerDNS logs "
+"for details."
+
+#: lib/Application/Controller/EditRecordController.php:126
 msgid "You cannot edit records in a read-only zone."
 msgstr "आप केवल-पढ़ने के लिए ज़ोन में रिकॉर्ड संपादित नहीं कर सकते।"
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:897
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2303,19 +2323,69 @@ msgstr ""
 "कुछ रिकॉर्ड सहेजे नहीं गए क्योंकि फ़ॉर्म ने फ़ील्ड की संख्या पर सर्वर सीमा को पार कर दिया। "
 "अपने व्यवस्थापक से PHP \"max_input_vars\" सेटिंग बढ़ाने के लिए कहें।"
 
-#: lib/Application/Controller/EditController.php:944
+#: lib/Application/Controller/EditController.php:1034
+#: lib/Module/ZoneImportExport/templates/import.html:76
+msgid "Name"
+msgstr "नाम"
+
+#: lib/Application/Controller/EditController.php:1035
+#: lib/Module/ZoneImportExport/templates/import.html:77
+msgid "Type"
+msgstr "प्रकार"
+
+#: lib/Application/Controller/EditController.php:1036
+#: lib/Module/ZoneImportExport/templates/import.html:78
+msgid "Content"
+msgstr "सामग्री"
+
+#: lib/Application/Controller/EditController.php:1037
+#: lib/Module/ZoneImportExport/templates/import.html:79
+msgid "TTL"
+msgstr "TTL"
+
+#: lib/Application/Controller/EditController.php:1038
+#: templates/modern/add_record.html:55
+msgid "Comment"
+msgstr "टिप्पणी"
+
+#: lib/Application/Controller/EditController.php:1060
+#: templates/modern/api_key_delete.html:48
+msgid "Disabled"
+msgstr "अक्षम"
+
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:455
+#: templates/modern/users.html:222
+msgid "Yes"
+msgstr "हाँ"
+
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:455
+#: templates/modern/users.html:224
+msgid "No"
+msgstr "नहीं"
+
+#: lib/Application/Controller/EditController.php:1067
+#, php-format
+msgid "Not saved yet. The zone currently holds: %s"
+msgstr "अभी सहेजा नहीं गया। ज़ोन में इस समय यह है: %s"
+
+#: lib/Application/Controller/EditController.php:1150
 msgid "Zone has not been updated successfully."
 msgstr "ज़ोन सफलतापूर्वक अद्यतन नहीं किया गया है।"
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:1151
 msgid "Request has expired, please try again."
 msgstr "अनुरोध समाप्त हो गया है, कृपया फिर से प्रयास करें।"
 
-#: lib/Application/Controller/EditController.php:954
+#: lib/Application/Controller/EditController.php:1162
+#, auto-english-fallback
+msgid "Zone saved successfully. No record changes were made."
+msgstr "Zone saved successfully. No record changes were made."
+
+#: lib/Application/Controller/EditController.php:1169
 msgid "Zone has been updated successfully."
 msgstr "ज़ोन सफलतापूर्वक अद्यतन किया गया है।"
 
-#: lib/Application/Controller/EditController.php:955
+#: lib/Application/Controller/EditController.php:1170
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2323,7 +2393,7 @@ msgstr ""
 "ज़ोन सफलतापूर्वक सहेजा गया। कोई रिकॉर्ड परिवर्तन नहीं किया गया, लेकिन SOA सीरियल में "
 "वृद्धि हुई।"
 
-#: lib/Application/Controller/EditController.php:987
+#: lib/Application/Controller/EditController.php:1202
 msgid "Please provide all required fields."
 msgstr "कृपया सभी आवश्यक फ़ील्ड प्रदान करें।"
 
@@ -2347,34 +2417,34 @@ msgstr "रिकॉर्ड सफलतापूर्वक जोड़ा 
 msgid "Invalid security token. Please try again."
 msgstr "अमान्य सुरक्षा टोकन। कृपया फिर से प्रयास करें।"
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:329
 msgid "Too many failed attempts. Please try again later."
 msgstr "बहुत अधिक विफल प्रयास। कृपया बाद में पुनः प्रयास करें।"
 
-#: lib/Application/Controller/MfaVerifyController.php:163
+#: lib/Application/Controller/MfaVerifyController.php:177
 msgid "No MFA record found. Please contact administrator."
 msgstr "कोई MFA रिकॉर्ड नहीं मिला। कृपया व्यवस्थापक से संपर्क करें।"
 
-#: lib/Application/Controller/MfaVerifyController.php:168
+#: lib/Application/Controller/MfaVerifyController.php:182
 msgid "An error occurred. Please try again."
 msgstr "एक त्रुटि हुई। फिर से प्रयास करें।"
 
-#: lib/Application/Controller/MfaVerifyController.php:388
+#: lib/Application/Controller/MfaVerifyController.php:402
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
 msgstr ""
 "ईमेल सत्यापन उपलब्ध नहीं है क्योंकि मेल सेवा अक्षम है। कृपया पुनर्प्राप्ति कोड का उपयोग करें।"
 
-#: lib/Application/Controller/MfaVerifyController.php:398
+#: lib/Application/Controller/MfaVerifyController.php:412
 msgid "A new verification code has been sent to your email."
 msgstr "एक नया सत्यापन कोड आपके ईमेल पर भेजा गया है।"
 
-#: lib/Application/Controller/MfaVerifyController.php:404
+#: lib/Application/Controller/MfaVerifyController.php:418
 msgid "Please use a recovery code instead."
 msgstr "कृपया इसके बजाय पुनर्प्राप्ति कोड का उपयोग करें।"
 
-#: lib/Application/Controller/MfaVerifyController.php:409
+#: lib/Application/Controller/MfaVerifyController.php:423
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2382,7 +2452,7 @@ msgstr ""
 "आपके ईमेल पर सत्यापन कोड नहीं भेजा जा सका। कृपया इसके बजाय पुनर्प्राप्ति कोड का उपयोग "
 "करें।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:286
+#: lib/Domain/Service/Dns/RecordManager.php:287
 msgid "You do not have the permission to add a record to this zone."
 msgstr "आपको इस ज़ोन में रिकॉर्ड जोड़ने की अनुमति नहीं है।"
 
@@ -2419,7 +2489,7 @@ msgstr "किसी भी रिकॉर्ड को जोड़ने म�
 msgid "No zone selected for deletion."
 msgstr "विलोपन के लिए कोई ज़ोन नहीं चुना गया।"
 
-#: lib/Domain/Service/Dns/DomainManager.php:1001
+#: lib/Domain/Service/Dns/DomainManager.php:1010
 msgid "You do not have the permission to delete a zone."
 msgstr "आपको किसी ज़ोन को हटाने की अनुमति नहीं है।"
 
@@ -2516,7 +2586,7 @@ msgstr ""
 "CIDR नोटेशन में एक नेटवर्क दर्ज करें (उदाहरण के लिए 192.168.1.0/24 या 2001:db8::/48) "
 "या in-addr.arpa या ip6.arpa पर समाप्त होने वाला रिवर्स ज़ोन नाम।"
 
-#: lib/Application/Controller/AddZoneMasterController.php:303
+#: lib/Application/Controller/AddZoneMasterController.php:309
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
@@ -2524,7 +2594,7 @@ msgstr ""
 "ज़ोन सफलतापूर्वक बनाया गया था, लेकिन DNSSEC हस्ताक्षर सत्यापन त्रुटियों के कारण छोड़ "
 "दिया गया था:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:315
+#: lib/Application/Controller/AddZoneMasterController.php:321
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2533,11 +2603,11 @@ msgstr ""
 "पारित हो गया, लेकिन PowerDNS API ने एक त्रुटि लौटाई। विवरण के लिए PowerDNS लॉग की "
 "जाँच करें।"
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:327
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "सफलतापूर्वक DNSSEC के साथ ज़ोन बनाया गया है और हस्ताक्षर किया गया है।"
 
-#: lib/Application/Controller/AddZoneMasterController.php:325
+#: lib/Application/Controller/AddZoneMasterController.php:331
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2812,38 +2882,60 @@ msgid "Assigned %d zones; %d failed"
 msgstr "%d ज़ोन सौंपे गए; %d विफल रहे"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Zone canonical ID repaired"
+msgstr "Zone canonical ID repaired"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Failed to repair zone canonical ID"
+msgstr "Failed to repair zone canonical ID"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:149
+msgid "No zones without a canonical ID to fix"
+msgstr "No zones without a canonical ID to fix"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#, php-format
+msgid "Repaired the canonical ID of %d zones"
+msgstr "Repaired the canonical ID of %d zones"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:157
+#, php-format
+msgid "Repaired %d zones; %d failed"
+msgstr "Repaired %d zones; %d failed"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
 msgstr "स्लेव ज़ोन सफलतापूर्वक हटा दिया गया"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:145
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Failed to delete slave zone"
 msgstr "स्लेव ज़ोन को हटाने में विफल"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Orphaned record deleted successfully"
 msgstr "अनाथ रिकॉर्ड सफलतापूर्वक हटा दिया"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Failed to delete orphaned record"
 msgstr "अनाथ रिकॉर्ड को हटाने में विफल"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Duplicate SOA records fixed successfully"
 msgstr "डुप्लिकेट SOA रिकॉर्ड सफलतापूर्वक तय"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Failed to fix duplicate SOA records"
 msgstr "डुप्लिकेट SOA रिकॉर्ड को ठीक करने में विफल"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Default SOA record created successfully"
 msgstr "डिफ़ॉल्ट SOA रिकॉर्ड सफलतापूर्वक बनाया"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Failed to create default SOA record"
 msgstr "डिफ़ॉल्ट SOA रिकॉर्ड बनाने में विफल"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:171
+#: lib/Application/Controller/DatabaseConsistencyController.php:196
 msgid "Invalid check type"
 msgstr "अमान्य जांच प्रकार"
 
@@ -2851,7 +2943,7 @@ msgstr "अमान्य जांच प्रकार"
 msgid "You have logged out."
 msgstr "आपने लॉग आउट किया है।"
 
-#: lib/Domain/Model/ZoneTemplate.php:361 lib/Domain/Model/ZoneTemplate.php:893
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
 msgid "You do not have the permission to add a zone template."
 msgstr "आपके पास एक ज़ोन टेम्पलेट जोड़ने की अनुमति नहीं है।"
 
@@ -2884,7 +2976,7 @@ msgstr "आपको स्लेव ज़ोन जोड़ने की अ�
 msgid "Add Secondary Zone"
 msgstr "माध्यमिक ज़ोन जोड़ें"
 
-#: lib/Domain/Model/ZoneTemplate.php:462 lib/Domain/Model/ZoneTemplate.php:508
+#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
 msgid "You do not have the permission to delete zone templates."
 msgstr "आपके पास ज़ोन टेम्प्लेट को हटाने की अनुमति नहीं है।"
 
@@ -3111,19 +3203,19 @@ msgstr "आपने लॉग आउट किया है"
 msgid "Logout completed (with warnings): "
 msgstr "लॉगआउट पूरा हुआ (चेतावनियों के साथ): "
 
-#: lib/Application/Controller/EditRecordController.php:116
+#: lib/Application/Controller/EditRecordController.php:117
 msgid "You do not have permission to view this record."
 msgstr "आपको इस रिकॉर्ड को देखने की अनुमति नहीं है।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:426
+#: lib/Domain/Service/Dns/RecordManager.php:444
 msgid "You do not have permission to edit this record."
 msgstr "आपको इस रिकॉर्ड को संपादित करने की अनुमति नहीं है।"
 
-#: lib/Application/Controller/EditRecordController.php:345
+#: lib/Application/Controller/EditRecordController.php:353
 msgid "The record has been updated successfully."
 msgstr "रिकॉर्ड सफलतापूर्वक अद्यतन किया गया है।"
 
-#: lib/Application/Controller/EditRecordController.php:390
+#: lib/Application/Controller/EditRecordController.php:398
 msgid "The record was updated, but the PTR record could not be updated: "
 msgstr "रिकॉर्ड अद्यतन कर दिया गया, लेकिन PTR रिकॉर्ड अद्यतन नहीं किया जा सका: "
 
@@ -3231,19 +3323,19 @@ msgstr "supermaster को सफलतापूर्वक हटा दिय
 msgid "Bulk Registration"
 msgstr "थोक पंजीकरण"
 
-#: lib/Application/Controller/BulkRegistrationController.php:144
+#: lib/Application/Controller/BulkRegistrationController.php:151
 msgid "Owner must be a numeric user ID."
 msgstr "मालिक को एक संख्यात्मक उपयोगकर्ता आईडी होना चाहिए।"
 
-#: lib/Application/Controller/BulkRegistrationController.php:224
+#: lib/Application/Controller/BulkRegistrationController.php:231
 msgid "Failed to add zone."
 msgstr "ज़ोन जोड़ने में विफल।"
 
-#: lib/Application/Controller/BulkRegistrationController.php:229
+#: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
 msgstr "ज़ोन सफलतापूर्वक जोड़ा गया है।"
 
-#: lib/Application/Controller/BulkRegistrationController.php:232
+#: lib/Application/Controller/BulkRegistrationController.php:239
 msgid "Some zone(s) could not be added."
 msgstr "कुछ ज़ोनों को जोड़ा नहीं जा सका।"
 
@@ -3389,25 +3481,15 @@ msgstr "%s क्षेत्र की आवश्यकता है।"
 msgid "The %s field must be a number."
 msgstr "%s क्षेत्र एक संख्या होना चाहिए।"
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
-#: templates/modern/users.html:222
-msgid "Yes"
-msgstr "हाँ"
-
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
-#: templates/modern/users.html:224
-msgid "No"
-msgstr "नहीं"
-
 #: lib/Application/Service/LdapAuthenticator.php:113
 msgid "Account is temporarily locked. Please try again later."
 msgstr "खाता अस्थायी रूप से बंद है। बाद में फिर से प्रयास करें।"
 
-#: lib/Application/Service/SqlAuthenticator.php:155
+#: lib/Application/Service/SqlAuthenticator.php:167
 msgid "The user account is disabled."
 msgstr "उपयोगकर्ता खाता अक्षम है।"
 
-#: lib/Application/Service/SqlAuthenticator.php:244
+#: lib/Application/Service/SqlAuthenticator.php:260
 msgid "Authentication failed!"
 msgstr "प्रमाणीकरण विफल रहा!"
 
@@ -3435,7 +3517,7 @@ msgstr "प्रमाणीकरण विफल रहा: अवैध स�
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "प्रमाणीकरण विफल रहा: उपयोगकर्ता खाता बनाने या अद्यतन करने में असमर्थ"
 
-#: lib/Application/Service/LdapAuthenticator.php:284
+#: lib/Application/Service/LdapAuthenticator.php:285
 msgid "LDAP Authentication failed!"
 msgstr "LDAP प्रमाणीकरण विफल रहा!"
 
@@ -3663,7 +3745,6 @@ msgstr ""
 "सेट करें।"
 
 #: lib/Infrastructure/Web/PageRenderer.php:136
-#, auto-english-fallback
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -3731,43 +3812,43 @@ msgstr "ईमेल पता पहले से मौजूद है, क�
 msgid "Enter a valid user name."
 msgstr "एक वैध उपयोगकर्ता नाम दर्ज करें।"
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Zone template not found."
 msgstr "ज़ोन टेम्पलेट नहीं मिला।"
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:309
 msgid "Only global zone templates can be set as the default."
 msgstr "केवल वैश्विक ज़ोन टेम्पलेट डिफ़ॉल्ट के रूप में सेट किए जा सकते हैं।"
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:325
 msgid "Error setting default zone template: "
 msgstr "डिफ़ॉल्ट ज़ोन टेम्पलेट सेट करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:343
+#: lib/Domain/Model/ZoneTemplate.php:344
 msgid "Error clearing default zone template: "
 msgstr "डिफ़ॉल्ट ज़ोन टेम्पलेट को साफ़ करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:389 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
 msgid "Error creating zone template: "
 msgstr "ज़ोन टेम्पलेट बनाने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:425
+#: lib/Domain/Model/ZoneTemplate.php:426
 msgid "Error adding default SOA record to template: "
 msgstr "टेम्पलेट में डिफ़ॉल्ट SOA रिकॉर्ड जोड़ने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:492
+#: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "ज़ोन टेम्पलेट को हटाने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:516
+#: lib/Domain/Model/ZoneTemplate.php:518
 msgid "Error deleting user zone templates: "
 msgstr "उपयोगकर्ता ज़ोन टेम्प्लेट को हटाने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:644
+#: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "आपको इस ज़ोन टेम्पलेट में रिकॉर्ड जोड़ने की अनुमति नहीं है।"
 
-#: lib/Domain/Model/ZoneTemplate.php:649 lib/Domain/Model/ZoneTemplate.php:761
+#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "आपको इस रिकॉर्ड प्रकार को ज़ोन टेम्पलेट में जोड़ने की अनुमति नहीं है।"
@@ -3780,68 +3861,68 @@ msgstr "आपकी सामग्री क्षेत्र में व�
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV रिकॉर्ड के लिए प्राथमिकता 0 और 65535 के बीच एक नंबर होना चाहिए।"
 
-#: lib/Domain/Model/ZoneTemplate.php:693
+#: lib/Domain/Model/ZoneTemplate.php:695
 msgid "Error adding zone template record: "
 msgstr "ज़ोन टेम्पलेट रिकॉर्ड जोड़ने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:751 lib/Domain/Model/ZoneTemplate.php:836
+#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
 msgid "The record does not belong to this zone template."
 msgstr "यह रिकॉर्ड इस ज़ोन टेम्पलेट से संबंधित नहीं है।"
 
-#: lib/Domain/Model/ZoneTemplate.php:813
+#: lib/Domain/Model/ZoneTemplate.php:815
 msgid "Error updating zone template record: "
 msgstr "ज़ोन टेम्पलेट रिकॉर्ड अद्यतन करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:842
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "आपको इस रिकॉर्ड प्रकार को ज़ोन टेम्पलेट से हटाने की अनुमति नहीं है।"
 
-#: lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:853
 msgid "Error deleting zone template record: "
 msgstr "ज़ोन टेम्पलेट रिकॉर्ड को हटाने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:873
+#: lib/Domain/Model/ZoneTemplate.php:919
 msgid "Error checking template ownership: "
 msgstr "टेम्पलेट स्वामित्व की जांच करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:959
+#: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
 "them: %s"
 msgstr "ये रिकॉर्ड प्रकार टेम्पलेट में शामिल नहीं किए गए क्योंकि आप इन्हें जोड़ नहीं सकते: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1098
+#: lib/Domain/Model/ZoneTemplate.php:1144
 msgid "Error retrieving zones using template: "
 msgstr "टेम्पलेट का उपयोग करके ज़ोनों को पुनः प्राप्त करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1198
+#: lib/Domain/Model/ZoneTemplate.php:1244
 msgid "Failed to get list of zones using template: "
 msgstr "टेम्पलेट का उपयोग करके ज़ोनों की सूची प्राप्त करने में विफल: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1216
+#: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "आपको किसी ज़ोन टेम्पलेट को संपादित करने की अनुमति नहीं है।"
 
-#: lib/Domain/Model/ZoneTemplate.php:1264
+#: lib/Domain/Model/ZoneTemplate.php:1311
 msgid "Error unlinking zone from template: "
 msgstr "टेम्पलेट से ज़ोन को अनलिंक करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1313
+#: lib/Domain/Model/ZoneTemplate.php:1360
 msgid "Error retrieving zones: "
 msgstr "ज़ोनों को पुनः प्राप्त करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1332
+#: lib/Domain/Model/ZoneTemplate.php:1379
 msgid "Error checking template name existence: "
 msgstr "टेम्पलेट नाम अस्तित्व की जांच करने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1353
+#: lib/Domain/Model/ZoneTemplate.php:1400
 msgid "Error looking up template by name: "
 msgstr "नाम से टेम्पलेट देखने में त्रुटि: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1376
+#: lib/Domain/Model/ZoneTemplate.php:1423
 msgid "Error checking template existence: "
 msgstr "टेम्पलेट अस्तित्व की जाँच करने में त्रुटि: "
 
@@ -3899,50 +3980,59 @@ msgid ""
 "disabled."
 msgstr "दृश्यों के लिए pdns.conf में \"views=yes\" आवश्यक है। जुड़े हुए सर्वर पर वे अक्षम हैं।"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:154
+#: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
 msgstr "सभी ज़ोनों में मालिक हैं"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:161
+#: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
 msgstr "%d ज़ोन मालिकों के बिना पाया"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:212
+#: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
 msgstr "सभी स्लेव ज़ोन में मास्टर IP पते हैं"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:219
+#: lib/Domain/Service/DatabaseConsistencyService.php:220
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "%d दास ज़ोन मास्टर IP पते के बिना पाया"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:264
+#: lib/Domain/Service/DatabaseConsistencyService.php:265
 msgid "All records belong to existing zones"
 msgstr "सभी रिकॉर्ड मौजूदा ज़ोनों से संबंधित हैं"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:271
+#: lib/Domain/Service/DatabaseConsistencyService.php:272
 #, php-format
 msgid "%d orphaned records found"
 msgstr "%d अनाथ रिकॉर्ड पाया"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:331
+#: lib/Domain/Service/DatabaseConsistencyService.php:332
 msgid "No duplicate SOA records found"
 msgstr "कोई डुप्लिकेट SOA रिकॉर्ड नहीं मिला"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:338
+#: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d ज़ोनों में डुप्लिकेट SOA रिकॉर्ड हैं"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:398
+#: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
 msgstr "सभी ज़ोनों में SOA रिकॉर्ड हैं"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:405
+#: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "%d ज़ोन SOA रिकॉर्ड के बिना पाया"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:486
+msgid "All zones have a canonical ID"
+msgstr "All zones have a canonical ID"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:487
+#, php-format
+msgid "%d zones found without a canonical ID"
+msgstr "%d zones found without a canonical ID"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -7386,8 +7476,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:189
 msgid "Empty value is not allowed. Use \";\" to disallow all CAs."
 msgstr ""
-"खाली मान की अनुमति नहीं है। सभी CA को अस्वीकार करने के लिए \";\" का उपयोग "
-"करें।"
+"खाली मान की अनुमति नहीं है। सभी CA को अस्वीकार करने के लिए \";\" का उपयोग करें।"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:201
 msgid "Invalid CA domain in issue tag."
@@ -9359,19 +9448,19 @@ msgstr "PTR अद्यतन छोड़ दिया: रिकॉर्ड 
 msgid "Stale PTR record removed."
 msgstr "पुराना PTR रिकॉर्ड हटा दिया गया।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:323
 msgid "A record with this hostname, type, and content already exists."
 msgstr "इस होस्टनाम, प्रकार और सामग्री के साथ पहले से ही एक रिकॉर्ड मौजूद है।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:223
+#: lib/Domain/Service/Dns/RecordManager.php:224
 msgid "Failed to add record to DNS backend."
 msgstr "DNS बैकेंड में रिकॉर्ड जोड़ने में विफल रहा।"
 
-#: lib/Domain/Service/Dns/RecordManager.php:459
+#: lib/Domain/Service/Dns/RecordManager.php:477
 msgid "Failed to update record in DNS backend."
 msgstr "DNS बैकेंड में रिकॉर्ड अद्यतन करने में विफल रहा।"
 
-#: lib/Domain/Service/Dns/DomainManager.php:888
+#: lib/Domain/Service/Dns/DomainManager.php:896
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "फ़ंक्शन %s %s को दिए गए अमान्य तर्क"
@@ -9403,33 +9492,33 @@ msgstr "ज़ोन के लिए %s रिकॉर्ड बनाने �
 msgid "Invalid argument(s) given to function %s"
 msgstr "फ़ंक्शन %s को दिए गए अमान्य तर्क"
 
-#: lib/Domain/Service/Dns/DomainManager.php:565
+#: lib/Domain/Service/Dns/DomainManager.php:567
 msgid "Failed to delete zone from DNS backend."
 msgstr "DNS बैकएंड से ज़ोन को हटाने में विफल रहा।"
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:524
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "ज़ोन मेटाडाटा को साफ करने में विफल: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:611
+#: lib/Domain/Service/Dns/DomainManager.php:615
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "ज़ोन मेटाडाटा को हटाने में विफल: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:783
+#: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "DNS बैकएंड में ज़ोन टाइप को अपडेट करने में विफल रहा।"
 
-#: lib/Domain/Service/Dns/DomainManager.php:837
+#: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "DNS बैकेंड में ज़ोन मास्टर को अपडेट करने में विफल रहा।"
 
-#: lib/Domain/Service/Dns/DomainManager.php:883
+#: lib/Domain/Service/Dns/DomainManager.php:891
 msgid "The selected user already owns the zone."
 msgstr "चयनित उपयोगकर्ता पहले से ही ज़ोन का मालिक है।"
 
-#: lib/Domain/Service/Dns/DomainManager.php:1185
+#: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "ज़ोन के रिकॉर्ड अद्यतन करने में विफल: %s"
@@ -9481,10 +9570,6 @@ msgstr "कभी नहीं"
 #: templates/modern/api_key_regenerated.html:55
 msgid "Status:"
 msgstr "स्थिति:"
-
-#: templates/modern/api_key_delete.html:48
-msgid "Disabled"
-msgstr "अक्षम"
 
 #: templates/modern/api_keys.html:55 templates/modern/api_key_delete.html:50
 msgid "Expired"
@@ -9562,10 +9647,6 @@ msgstr "कुंजी विवरण"
 msgid "Key ID"
 msgstr "कुंजी ID"
 
-#: lib/Module/ZoneImportExport/templates/import.html:77
-msgid "Type"
-msgstr "प्रकार"
-
 #: templates/modern/dnssec_delete_key.html:70
 msgid "Algorithm"
 msgstr "एल्गोरिथ्म"
@@ -9589,10 +9670,6 @@ msgstr "रद्द करना"
 #: templates/modern/api_key_edit.html:5 templates/modern/api_key_edit.html:12
 msgid "Edit API Key"
 msgstr "API कुंजी संपादित करें"
-
-#: lib/Module/ZoneImportExport/templates/import.html:76
-msgid "Name"
-msgstr "नाम"
 
 #: templates/modern/api_key_edit.html:21 templates/modern/api_key_add.html:21
 msgid "Provide a name for this API key"
@@ -9731,17 +9808,9 @@ msgstr "वैधता रेंज: 0-65535"
 msgid "Only for MX, SRV, KX, NAPTR"
 msgstr "केवल MX, SRV, KX, NAPTR के लिए"
 
-#: lib/Module/ZoneImportExport/templates/import.html:79
-msgid "TTL"
-msgstr "TTL"
-
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
 msgstr "वैधता रेंज: 0-2147483647"
-
-#: lib/Module/ZoneImportExport/templates/import.html:78
-msgid "Content"
-msgstr "सामग्री"
 
 #: templates/modern/add_zone_templ_record.html:70
 msgid "Provide content for your zone record"
@@ -9771,7 +9840,7 @@ msgstr ""
 msgid "Update record"
 msgstr "अपडेट रिकॉर्ड"
 
-#: templates/modern/edit.html:561 templates/modern/users.html:252
+#: templates/modern/edit.html:586 templates/modern/users.html:252
 msgid "Reset"
 msgstr "रीसेट करें"
 
@@ -9902,7 +9971,7 @@ msgstr "होस्ट नाम प्रदान करें"
 msgid "Account"
 msgstr "खाता"
 
-#: templates/modern/edit.html:176 templates/modern/edit.html:558
+#: templates/modern/edit.html:176 templates/modern/edit.html:583
 msgid "Save changes"
 msgstr "परिवर्तन सहेजें"
 
@@ -9953,11 +10022,11 @@ msgstr "क्या आप वाकई ज़ोन को अनसाइन 
 msgid "Unsign zone"
 msgstr "ज़ोन अनसाइन करें"
 
-#: templates/modern/edit.html:912 templates/modern/list_forward_zones.html:124
+#: templates/modern/edit.html:945 templates/modern/list_forward_zones.html:124
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
 msgstr "PowerDNS द्वारा परोसे गए अनुसार सीरियल, SOA-EDIT लागू के साथ"
 
-#: templates/modern/edit.html:912 templates/modern/list_forward_zones.html:124
+#: templates/modern/edit.html:945 templates/modern/list_forward_zones.html:124
 msgid "Signed serial"
 msgstr "हस्ताक्षरित सीरियल"
 
@@ -9969,11 +10038,11 @@ msgstr "ज़ोन के लिए DNSSEC कुंजी"
 msgid "Add new key"
 msgstr "नई कुंजी जोड़ें"
 
-#: templates/modern/dnssec.html:65 templates/modern/edit.html:905
+#: templates/modern/dnssec.html:65 templates/modern/edit.html:938
 msgid "Show DS and DNSKEY"
 msgstr "DS और DNSKEY दिखाएँ"
 
-#: templates/modern/edit.html:337
+#: templates/modern/edit.html:351
 msgid "ID"
 msgstr "आईडी"
 
@@ -10108,7 +10177,7 @@ msgstr "रीसेट लिंक भेजें"
 msgid "Group Management"
 msgstr "समूह प्रबंधन"
 
-#: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
+#: templates/modern/edit_user.html:270 templates/modern/add_user.html:183
 msgid "No groups found"
 msgstr "कोई समूह नहीं मिला"
 
@@ -10139,10 +10208,6 @@ msgstr "ज़ोन में रिकॉर्ड संपादित क�
 #: templates/default/edit_record.html:21 templates/modern/edit_record.html:21
 msgid "Modify DNS record properties"
 msgstr "DNS रिकॉर्ड गुण संशोधित करें"
-
-#: templates/modern/add_record.html:55
-msgid "Comment"
-msgstr "टिप्पणी"
 
 #: templates/modern/edit_record.html:41 templates/modern/edit_record.html:119
 msgid "Update PTR"
@@ -10195,7 +10260,7 @@ msgid ""
 msgstr ""
 "समूह के सदस्यों को केवल इस समूह के स्वामित्व वाले ज़ोनों के लिए इन अनुमतियों को प्राप्त होता है"
 
-#: templates/modern/edit_group.html:46 templates/modern/add_group.html:37
+#: templates/modern/edit_group.html:46 templates/modern/add_group.html:38
 msgid "Select a permission template"
 msgstr "एक अनुमति टेम्पलेट चुनें"
 
@@ -10481,7 +10546,7 @@ msgstr ""
 msgid "(for PTRs in reverse zones) or"
 msgstr "(रिवर्स ज़ोन में PTR के लिए) या"
 
-#: templates/modern/edit_comment.html:5 templates/modern/edit.html:543
+#: templates/modern/edit_comment.html:5 templates/modern/edit.html:563
 msgid "Edit comment"
 msgstr "टिप्पणी संपादित करें"
 
@@ -10594,7 +10659,7 @@ msgstr "सभी उपयोगकर्ता"
 msgid "All events"
 msgstr "सभी घटनाओं"
 
-#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:595
+#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:620
 msgid "Logs"
 msgstr "लॉग"
 
@@ -10973,23 +11038,19 @@ msgstr "हां, इस API कुंजी को फिर से उत्�
 msgid "No, keep current key"
 msgstr "नहीं, वर्तमान कुंजी रखना"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "पासवर्ड रीसेट करें"
 
 #: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "लॉग इन करें"
-
-#: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "नए रीसेट लिंक का अनुरोध करें"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "पासवर्ड आवश्यकताओं को पूरा नहीं करता है"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "अपना नया पासवर्ड दर्ज करें"
 
@@ -10997,44 +11058,44 @@ msgstr "अपना नया पासवर्ड दर्ज करें"
 msgid "New password"
 msgstr "नया पासवर्ड"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
 msgstr "पासवर्ड प्रदान करें"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "पासवर्ड की पुष्टि"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "पासवर्ड मैच नहीं करते"
 
-#: templates/modern/add_user.html:128
+#: templates/modern/add_user.html:129
 msgid "Password Requirements"
 msgstr "पासवर्ड आवश्यकता"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "Minimum length"
 msgstr "न्यूनतम लंबाई"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "characters"
 msgstr "वर्ण"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "कम से कम एक अपरकेस अक्षर"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "कम से कम एक लोअरकेस अक्षर"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "कम से कम एक संख्या"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "कम से कम एक विशेष वर्ण"
 
@@ -11127,7 +11188,6 @@ msgid "No SOA"
 msgstr "कोई SOA नहीं"
 
 #: templates/modern/list_forward_zones.html:158
-#, auto-english-fallback
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
 msgstr ""
@@ -11317,16 +11377,16 @@ msgid ""
 "for this user"
 msgstr "इस टेम्पलेट से अनुमति वैश्विक रूप से इस उपयोगकर्ता के लिए पूरे सिस्टम में लागू होगी"
 
-#: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
+#: templates/modern/edit_user.html:84 templates/modern/add_user.html:86
 msgid "Optional information about this user"
 msgstr "इस उपयोगकर्ता के बारे में वैकल्पिक जानकारी"
 
-#: templates/modern/users.html:78 templates/modern/add_user.html:91
+#: templates/modern/users.html:78 templates/modern/add_user.html:92
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "सक्षम"
 
-#: templates/modern/edit_user.html:104 templates/modern/add_user.html:100
+#: templates/modern/edit_user.html:104 templates/modern/add_user.html:101
 msgid "LDAP Authentication"
 msgstr "LDAP प्रमाणीकरण"
 
@@ -11334,7 +11394,7 @@ msgstr "LDAP प्रमाणीकरण"
 msgid "Authentication settings can only be changed by an administrator"
 msgstr "प्रमाणीकरण सेटिंग्स केवल एक व्यवस्थापक द्वारा बदली जा सकती हैं"
 
-#: templates/modern/edit_user.html:109 templates/modern/add_user.html:102
+#: templates/modern/edit_user.html:109 templates/modern/add_user.html:103
 msgid "Use external LDAP directory for authentication"
 msgstr "प्रमाणीकरण के लिए बाहरी LDAP निर्देशिका का उपयोग करें"
 
@@ -11346,7 +11406,7 @@ msgstr "होम पर वापस जाएं"
 msgid "Back to Users"
 msgstr "उपयोगकर्ताओं पर वापस जाएं"
 
-#: templates/modern/edit_user.html:142 templates/modern/add_user.html:124
+#: templates/modern/edit_user.html:142 templates/modern/add_user.html:125
 msgid "Account Information"
 msgstr "खाता जानकारी"
 
@@ -11370,7 +11430,7 @@ msgstr "विशेष वर्ण होना चाहिए"
 msgid "No specific password requirements"
 msgstr "कोई विशिष्ट पासवर्ड आवश्यकता नहीं"
 
-#: templates/modern/add_user.html:155 templates/modern/edit_perm_templ.html:158
+#: templates/modern/add_user.html:156 templates/modern/edit_perm_templ.html:158
 msgid "User Permissions"
 msgstr "उपयोगकर्ता अनुमति"
 
@@ -11386,7 +11446,7 @@ msgstr "इस टेम्पलेट के आधार पर, इस उ�
 msgid "No permissions are assigned to this template"
 msgstr "इस टेम्पलेट को कोई अनुमति नहीं दी जाती है"
 
-#: templates/modern/edit_user.html:214 templates/modern/add_user.html:166
+#: templates/modern/edit_user.html:214 templates/modern/add_user.html:167
 msgid "Group Memberships"
 msgstr "समूह सदस्यता"
 
@@ -11402,7 +11462,7 @@ msgstr "समूह विवरण देखें"
 msgid "This user is not a member of any groups."
 msgstr "यह उपयोगकर्ता किसी भी समूह का सदस्य नहीं है।"
 
-#: templates/modern/edit_user.html:252 templates/modern/add_user.html:168
+#: templates/modern/edit_user.html:252 templates/modern/add_user.html:169
 msgid "Add to Groups"
 msgstr "समूह में जोड़ें"
 
@@ -11410,7 +11470,7 @@ msgstr "समूह में जोड़ें"
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr "एक या अधिक समूहों का चयन करें और \"चुने समूह जोड़ें\" बटन पर क्लिक करें।"
 
-#: templates/modern/edit_user.html:261 templates/modern/add_user.html:173
+#: templates/modern/edit_user.html:261 templates/modern/add_user.html:174
 msgid "Search available groups..."
 msgstr "उपलब्ध समूह खोजें..."
 
@@ -12032,71 +12092,71 @@ msgstr "यदि आप कुंजी खो देते हैं, तो �
 msgid "Edit"
 msgstr "संपादित करें"
 
-#: templates/modern/edit.html:11 templates/modern/edit.html:615
+#: templates/modern/edit.html:11 templates/modern/edit.html:640
 msgid "Add new record"
 msgstr "नया रिकॉर्ड जोड़ें"
 
-#: templates/modern/edit.html:189 templates/modern/edit.html:619
+#: templates/modern/edit.html:189 templates/modern/edit.html:644
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "DMARC, SPF, DKIM, CAA, TLSA और SRV रिकॉर्ड के लिए निर्देशित विज़ार्ड"
 
-#: templates/modern/edit.html:21 templates/modern/edit.html:625
+#: templates/modern/edit.html:21 templates/modern/edit.html:650
 msgid "Multi-record mode"
 msgstr "बहु रिकॉर्ड मोड"
 
-#: templates/modern/edit.html:568 templates/modern/edit.html:628
+#: templates/modern/edit.html:593 templates/modern/edit.html:653
 msgid "Bulk add"
 msgstr "थोक जोड़ें"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:640
+#: templates/modern/edit.html:36 templates/modern/edit.html:665
 msgid "Failed to add"
 msgstr "जोड़ने में विफल"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:640
+#: templates/modern/edit.html:36 templates/modern/edit.html:665
 msgid "record(s). Please check the record format."
 msgstr "रिकॉर्ड(s). कृपया रिकॉर्ड प्रारूप की जांच करें।"
 
-#: templates/modern/edit.html:38 templates/modern/edit.html:642
+#: templates/modern/edit.html:38 templates/modern/edit.html:667
 msgid "Failed to add records. Please check the record format."
 msgstr "रिकॉर्ड जोड़ने में विफल रहा। कृपया रिकॉर्ड प्रारूप की जांच करें।"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:645
+#: templates/modern/edit.html:41 templates/modern/edit.html:670
 msgid "Content validation failed:"
 msgstr "सामग्री सत्यापन विफल:"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:645
+#: templates/modern/edit.html:41 templates/modern/edit.html:670
 msgid "Invalid value for record type"
 msgstr "रिकॉर्ड प्रकार के लिए अमान्य मूल्य"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:647
+#: templates/modern/edit.html:43 templates/modern/edit.html:672
 msgid "Please provide all required information."
 msgstr "कृपया सभी आवश्यक जानकारी प्रदान करें।"
 
-#: templates/modern/edit.html:670 templates/modern/add_record.html:58
+#: templates/modern/edit.html:695 templates/modern/add_record.html:58
 msgid "Add PTR"
 msgstr "PTR जोड़ें"
 
-#: templates/modern/edit.html:673 templates/modern/add_record.html:61
+#: templates/modern/edit.html:698 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
 msgstr "A/AAAA जोड़ें"
 
-#: templates/modern/edit.html:107 templates/modern/edit.html:712
+#: templates/modern/edit.html:107 templates/modern/edit.html:737
 msgid "This record already exists"
 msgstr "यह रिकॉर्ड पहले से ही मौजूद है"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:724
+#: templates/modern/edit.html:119 templates/modern/edit.html:749
 msgid "Invalid priority"
 msgstr "अमान्य प्राथमिकता"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:731
+#: templates/modern/edit.html:126 templates/modern/edit.html:756
 msgid "Invalid TTL value"
 msgstr "अमान्य TTL मान"
 
-#: templates/modern/edit.html:128 templates/modern/edit.html:733
+#: templates/modern/edit.html:128 templates/modern/edit.html:758
 msgid "Provide TTL"
 msgstr "TTL प्रदान करें"
 
-#: templates/modern/edit.html:759 templates/modern/add_record.html:193
+#: templates/modern/edit.html:784 templates/modern/add_record.html:193
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -12112,79 +12172,90 @@ msgstr "मेटाडाटा"
 msgid "View Metadata"
 msgstr "मेटाडाटा देखें"
 
-#: templates/default/edit.html:237 templates/modern/edit.html:237
+#: templates/default/edit.html:236 templates/modern/edit.html:236
+msgid ""
+"Your changes to these records could not be restored, because they are no "
+"longer in this listing:"
+msgstr ""
+"इन रिकॉर्ड में किए गए आपके बदलाव बहाल नहीं किए जा सके, क्योंकि वे अब इस सूची में नहीं हैं:"
+
+#: templates/default/edit.html:248 templates/modern/edit.html:248
 msgid "No records match your filter criteria."
 msgstr "कोई रिकॉर्ड आपके फिल्टर मानदंडों से मेल नहीं खाता है।"
 
-#: templates/default/edit.html:245 templates/modern/edit.html:245
+#: templates/default/edit.html:256 templates/modern/edit.html:256
 msgid "This zone does not have any records."
 msgstr "इस ज़ोन में कोई रिकॉर्ड नहीं है।"
 
-#: templates/modern/edit.html:257 templates/modern/users.html:26
+#: templates/modern/edit.html:268 templates/modern/users.html:26
 msgid "Filter:"
 msgstr "फ़िल्टर:"
 
-#: templates/default/edit.html:263 templates/modern/edit.html:263
+#: templates/default/edit.html:274 templates/modern/edit.html:274
 msgid "Search by name or content"
 msgstr "नाम या सामग्री द्वारा खोजें"
 
-#: templates/default/edit.html:269 templates/modern/edit.html:269
+#: templates/default/edit.html:280 templates/modern/edit.html:280
 msgid "All Types"
 msgstr "सभी प्रकार"
 
-#: templates/default/edit.html:279 templates/modern/edit.html:279
+#: templates/default/edit.html:290 templates/modern/edit.html:290
 msgid "Filter by content"
 msgstr "सामग्री द्वारा फ़िल्टर करें"
 
-#: templates/modern/edit.html:285 templates/modern/users.html:34
+#: templates/modern/edit.html:296 templates/modern/users.html:34
 msgid "Apply"
 msgstr "लागू करें"
 
-#: templates/default/edit.html:318 templates/modern/edit.html:318
+#: templates/default/edit.html:329 templates/modern/edit.html:329
 msgid "Showing"
 msgstr "दिखा रहे हैं"
 
-#: templates/default/edit.html:318 templates/modern/edit.html:318
+#: templates/default/edit.html:329 templates/modern/edit.html:329
 msgid "of"
 msgstr "का"
 
-#: templates/default/edit.html:318 templates/modern/edit.html:318
+#: templates/default/edit.html:329 templates/modern/edit.html:329
 msgid "total records"
 msgstr "कुल रिकॉर्ड"
 
-#: templates/default/edit.html:396 templates/modern/edit.html:396
+#: templates/default/edit.html:410 templates/modern/edit.html:410
 msgid "Last modified"
 msgstr "अंतिम संशोधित"
 
-#: templates/modern/edit.html:431 templates/modern/edit.html:471
+#: templates/modern/edit.html:451 templates/modern/edit.html:491
 msgid "Last edited by %account% on %date%"
 msgstr "अंतिम बार %account% द्वारा %date% को संपादित किया गया"
 
-#: templates/default/edit.html:526 templates/modern/edit.html:526
+#: templates/default/edit.html:546 templates/modern/edit.html:546
 msgid "Edit selected"
 msgstr "चयनित संपादित करें"
 
-#: templates/modern/edit.html:530 templates/modern/search.html:481
+#: templates/modern/edit.html:550 templates/modern/search.html:481
 msgid "Delete record(s)"
 msgstr "डिलीट रिकॉर्ड"
 
-#: templates/modern/edit.html:538 templates/modern/search.html:89
+#: templates/modern/edit.html:558 templates/modern/search.html:89
 msgid "Comments"
 msgstr "टिप्पणियाँ"
 
-#: templates/default/edit.html:572 templates/modern/edit.html:572
+#: templates/default/edit.html:568 templates/modern/edit.html:568
+msgid "Not saved yet. The zone comment currently holds:"
+msgstr "अभी सहेजा नहीं गया। ज़ोन टिप्पणी में इस समय यह है:"
+
+#: templates/default/edit.html:597 templates/modern/edit.html:597
 msgid "Import"
 msgstr "आयात"
 
-#: templates/default/edit.html:589 templates/modern/edit.html:589
+#: templates/default/edit.html:614 templates/modern/edit.html:614
 msgid "Generate PTR"
 msgstr "जनरेट PTR"
 
-#: templates/modern/edit.html:774 templates/modern/add_zone_master.html:16
+#: templates/modern/edit.html:799 templates/modern/add_zone_master.html:16
 msgid "Zone Configuration"
 msgstr "ज़ोन विन्यास"
 
-#: templates/modern/edit.html:844 templates/modern/edit.html:877
+#: templates/modern/edit.html:877 templates/modern/edit.html:910
 msgid "Change"
 msgstr "परिवर्तन"
 
@@ -12192,31 +12263,39 @@ msgstr "परिवर्तन"
 msgid "IP address of master NS"
 msgstr "मास्टर NS का IP पता"
 
-#: templates/default/edit.html:862 templates/modern/edit.html:862
+#: templates/default/edit.html:850 templates/modern/edit.html:850
+msgid "Requesting..."
+msgstr "Requesting..."
+
+#: templates/default/edit.html:851 templates/modern/edit.html:851
+msgid "Retrieve from primary"
+msgstr "Retrieve from primary"
+
+#: templates/default/edit.html:895 templates/modern/edit.html:895
 msgid "Catalog"
 msgstr "कैटलॉग"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:903 templates/modern/edit.html:903
 msgid "not managed here"
 msgstr "यहाँ प्रबंधित नहीं"
 
-#: templates/default/edit.html:901 templates/modern/edit.html:901
+#: templates/default/edit.html:934 templates/modern/edit.html:934
 msgid "Manage DNSSEC"
 msgstr "DNSSEC प्रबंधित करें"
 
-#: templates/default/edit.html:909 templates/modern/edit.html:909
+#: templates/default/edit.html:942 templates/modern/edit.html:942
 msgid "DNSSEC keys are managed at the primary server"
 msgstr "DNSSEC कुंजियाँ प्राथमिक सर्वर पर प्रबंधित की जाती हैं"
 
-#: templates/default/edit.html:909 templates/modern/edit.html:909
+#: templates/default/edit.html:942 templates/modern/edit.html:942
 msgid "Presigned"
 msgstr "पूर्व-हस्ताक्षरित"
 
-#: templates/default/edit.html:919 templates/modern/edit.html:919
+#: templates/default/edit.html:952 templates/modern/edit.html:952
 msgid "Sign zone"
 msgstr "साइन ज़ोन"
 
-#: templates/default/edit.html:923 templates/modern/edit.html:923
+#: templates/default/edit.html:956 templates/modern/edit.html:956
 msgid "Not signed"
 msgstr "हस्ताक्षर नहीं"
 
@@ -12412,63 +12491,79 @@ msgstr "ज़ोन का नाम"
 msgid "Assign owner"
 msgstr "मालिक असाइन करें"
 
-#: templates/modern/database_consistency.html:284
+#: templates/modern/database_consistency.html:339
 msgid "Fix"
 msgstr "फिक्स"
 
 #: templates/modern/database_consistency.html:104
+msgid "Zones Without A Canonical ID"
+msgstr "Zones Without A Canonical ID"
+
+#: templates/modern/database_consistency.html:113
+msgid "Repair the canonical ID of all listed zones?"
+msgstr "Repair the canonical ID of all listed zones?"
+
+#: templates/modern/database_consistency.html:118
+msgid "Repair all"
+msgstr "Repair all"
+
+#: templates/modern/database_consistency.html:142
+msgid "Repair canonical ID"
+msgstr "Repair canonical ID"
+
+#: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"
 msgstr "मास्टर आईपी पते के बिना स्लेव ज़ोन"
 
-#: templates/modern/database_consistency.html:117
+#: templates/modern/database_consistency.html:172
 msgid "Master IP"
 msgstr "मास्टर आईपी"
 
-#: templates/modern/database_consistency.html:135
+#: templates/modern/database_consistency.html:190
 msgid "Delete slave zone"
 msgstr "स्लेव ज़ोन हटाएं"
 
-#: templates/modern/database_consistency.html:154
+#: templates/modern/database_consistency.html:209
 msgid "Records Not Belonging to Any Zone"
 msgstr "रिकॉर्ड्स किसी भी ज़ोन में नहीं"
 
-#: templates/modern/database_consistency.html:165
+#: templates/modern/database_consistency.html:220
 msgid "Record ID"
 msgstr "रिकॉर्ड ID"
 
-#: templates/modern/database_consistency.html:189
+#: templates/modern/database_consistency.html:244
 msgid "Delete orphaned record"
 msgstr "अनाथ रिकॉर्ड हटाएं"
 
-#: templates/modern/database_consistency.html:205
+#: templates/modern/database_consistency.html:260
 msgid "Zones with Duplicate SOA Records"
 msgstr "डुप्लिकेट SOA रिकॉर्ड्स के साथ ज़ोन"
 
-#: templates/modern/database_consistency.html:218
+#: templates/modern/database_consistency.html:273
 msgid "SOA Count"
 msgstr "SOA गिनती"
 
-#: templates/modern/database_consistency.html:234
+#: templates/modern/database_consistency.html:289
 msgid "Keep first SOA, delete duplicates"
 msgstr "पहले SOA रखें, डुप्लिकेट हटाएं"
 
-#: templates/modern/database_consistency.html:254
+#: templates/modern/database_consistency.html:309
 msgid "Zones Without SOA Records"
 msgstr "SOA रिकॉर्ड्स के बिना ज़ोन"
 
-#: templates/modern/database_consistency.html:283
+#: templates/modern/database_consistency.html:338
 msgid "Create default SOA record"
 msgstr "डिफ़ॉल्ट SOA रिकॉर्ड बनाएँ"
 
-#: templates/modern/database_consistency.html:322
+#: templates/modern/database_consistency.html:377
 msgid "Are you sure you want to delete the slave zone"
 msgstr "क्या आपको यकीन है कि आप स्लेव ज़ोन को हटाना चाहते हैं"
 
-#: templates/modern/database_consistency.html:325
+#: templates/modern/database_consistency.html:380
 msgid "Are you sure you want to delete the orphaned record"
 msgstr "क्या आपको यकीन है कि आप अनाथ रिकॉर्ड को हटाना चाहते हैं"
 
-#: templates/modern/database_consistency.html:328
+#: templates/modern/database_consistency.html:383
 msgid "Are you sure you want to delete this item?"
 msgstr "क्या आप इस मद को हटाना चाहते हैं?"
 
@@ -12507,15 +12602,15 @@ msgstr "ईमेल द्वारा पासवर्ड भेजें"
 msgid "Send login credentials to user's email address"
 msgstr "उपयोगकर्ता के ईमेल पते पर लॉगिन क्रेडेंशियल भेजें"
 
-#: templates/modern/add_user.html:68 templates/modern/add_group.html:31
+#: templates/modern/add_user.html:69 templates/modern/add_group.html:32
 msgid "Select a template..."
 msgstr "एक टेम्पलेट चुनें..."
 
-#: templates/default/add_user.html:78 templates/modern/add_user.html:78
+#: templates/default/add_user.html:79 templates/modern/add_user.html:79
 msgid "Select permissions for this user"
 msgstr "इस उपयोगकर्ता के लिए अनुमतियां चुनिए"
 
-#: templates/default/add_user.html:157 templates/modern/add_user.html:157
+#: templates/default/add_user.html:158 templates/modern/add_user.html:158
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -12524,7 +12619,7 @@ msgstr ""
 "एक नया उपयोगकर्ता बनाते समय, उन्हें चयनित टेम्पलेट के आधार पर अनुमति प्राप्त होगी। बाद में "
 "उपयोगकर्ता को संपादित करके आप इन अनुमतियों को संशोधित कर सकते हैं।"
 
-#: templates/default/add_user.html:169 templates/modern/add_user.html:169
+#: templates/default/add_user.html:170 templates/modern/add_user.html:170
 msgid "Select groups to add the new user to upon creation."
 msgstr "नए उपयोगकर्ता को निर्माण पर जोड़ने के लिए समूहों का चयन करें।"
 
@@ -14205,26 +14300,26 @@ msgstr ""
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "आप एक DNSSEC कुंजी हटाने वाले हैं (ID"
 
-#: templates/default/add_group.html:36 templates/modern/add_group.html:36
+#: templates/default/add_group.html:37 templates/modern/add_group.html:37
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
 msgstr ""
 "सभी समूह सदस्यों को इस समूह के स्वामित्व वाले ज़ोन के लिए इन अनुमतियों को प्राप्त होगा"
 
-#: templates/default/add_group.html:42 templates/modern/add_group.html:42
+#: templates/default/add_group.html:43 templates/modern/add_group.html:43
 msgid "Create Group"
 msgstr "समूह बनाना"
 
-#: templates/default/add_group.html:55 templates/modern/add_group.html:55
+#: templates/default/add_group.html:56 templates/modern/add_group.html:56
 msgid "About Groups"
 msgstr "समूह के बारे में"
 
-#: templates/default/add_group.html:57 templates/modern/add_group.html:57
+#: templates/default/add_group.html:58 templates/modern/add_group.html:58
 msgid "What are Groups?"
 msgstr "समूह क्या हैं?"
 
-#: templates/default/add_group.html:58 templates/modern/add_group.html:58
+#: templates/default/add_group.html:59 templates/modern/add_group.html:59
 msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
@@ -14232,11 +14327,11 @@ msgstr ""
 "समूह आपको उपयोगकर्ताओं को व्यवस्थित करने और सामूहिक रूप से ज़ोन एक्सेस का प्रबंधन करने की "
 "अनुमति देता है। सदस्य समूह के स्वामित्व वाले सभी ज़ोन के लिए समूह की अनुमति प्राप्त करते हैं।"
 
-#: templates/default/add_group.html:59 templates/modern/add_group.html:59
+#: templates/default/add_group.html:60 templates/modern/add_group.html:60
 msgid "How to Use Groups"
 msgstr "समूह का उपयोग कैसे करें"
 
-#: templates/default/add_group.html:60 templates/modern/add_group.html:60
+#: templates/default/add_group.html:61 templates/modern/add_group.html:61
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
@@ -15259,18 +15354,4 @@ msgstr ""
 "लोकेल सेट करने में विफल। चयनित लोकेल इस सिस्टम पर समर्थित नहीं हो सकता है। कृपया अपने "
 "प्रशासक से संपर्क करें।"
 
-#: lib/Application/Controller/EditController.php:1044
-msgid "Not saved yet. The zone currently holds: %s"
-msgstr "अभी सहेजा नहीं गया। ज़ोन में इस समय यह है: %s"
 
-#: templates/default/edit.html:236 templates/modern/edit.html:236
-msgid ""
-"Your changes to these records could not be restored, because they are no "
-"longer in this listing:"
-msgstr ""
-"इन रिकॉर्ड में किए गए आपके बदलाव बहाल नहीं किए जा सके, क्योंकि वे अब इस "
-"सूची में नहीं हैं:"
-
-#: templates/default/edit.html:568 templates/modern/edit.html:568
-msgid "Not saved yet. The zone comment currently holds:"
-msgstr "अभी सहेजा नहीं गया। ज़ोन टिप्पणी में इस समय यह है:"

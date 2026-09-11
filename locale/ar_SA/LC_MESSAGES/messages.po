@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2026-08-25 09:24+0300\n"
+"POT-Creation-Date: 2026-09-11 14:36+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -47,11 +47,11 @@ msgstr "ليس لديك إذن لإضافة سجلات لهذه المنطقة"
 msgid "Invalid wizard type."
 msgstr "نوع المعالج غير صالح."
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:203
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:204
 msgid "Validation failed:"
 msgstr "فشل التحقق:"
 
-#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:227
+#: lib/Module/DnsWizard/Controller/DnsWizardFormController.php:228
 msgid "Failed to generate record:"
 msgstr "فشل إنشاء السجل:"
 
@@ -332,7 +332,7 @@ msgid ""
 msgstr "بيانات الشهادة الكاملة تبدو قصيرة جداً تأكد من أنك قدمت شهادة كاملة"
 
 #: lib/Module/DnsWizard/Service/TLSAWizard.php:274
-#: templates/modern/edit.html:79 templates/modern/edit.html:684
+#: templates/modern/edit.html:79 templates/modern/edit.html:709
 msgid "Invalid hostname format"
 msgstr "تنسيق اسم المضيف غير صالح"
 
@@ -1116,7 +1116,7 @@ msgstr "رقم المنفذ الذي تستمع عليه الخدمة (يُمل�
 msgid "Priority & Load Balancing"
 msgstr "الأولوية وموازنة الحِمل"
 
-#: lib/Module/DnsWizard/Service/SRVWizard.php:163
+#: lib/Application/Controller/EditController.php:1055
 #: lib/Module/ZoneImportExport/templates/import.html:80
 msgid "Priority"
 msgstr "الأولوية"
@@ -1224,7 +1224,7 @@ msgstr "اسم المنطقة وعنوان الخادم الرئيسي مطلو�
 msgid "Invalid hostname."
 msgstr "اسم مضيف غير صالح."
 
-#: lib/Application/Controller/BulkRegistrationController.php:209
+#: lib/Application/Controller/BulkRegistrationController.php:216
 msgid "There is already a zone with this name."
 msgstr "هناك بالفعل منطقة بهذا الاسم"
 
@@ -1252,21 +1252,21 @@ msgstr ""
 msgid "Zone has been converted to a primary zone."
 msgstr "تم تحويل المنطقة إلى منطقة رئيسية."
 
-#: lib/Application/Controller/BulkRegistrationController.php:194
+#: lib/Application/Controller/BulkRegistrationController.php:201
 msgid "You do not have permission to create zones for other users."
 msgstr "ليس لديك إذن لإنشاء مناطق لمستعملين آخرين"
 
-#: lib/Application/Controller/BulkRegistrationController.php:164
+#: lib/Application/Controller/BulkRegistrationController.php:171
 #, php-format
 msgid "Unknown group ID(s): %s"
 msgstr "معرّفات مجموعات غير معروفة: %s"
 
-#: lib/Application/Controller/BulkRegistrationController.php:176
+#: lib/Application/Controller/BulkRegistrationController.php:183
 #, php-format
 msgid "You can only assign groups you are a member of (disallowed: %s)"
 msgstr "يمكنك تعيين المجموعات التي أنت عضو فيها فقط (غير مسموح: %s)"
 
-#: lib/Application/Controller/BulkRegistrationController.php:184
+#: lib/Application/Controller/BulkRegistrationController.php:191
 msgid "At least one user or group must be selected as owner."
 msgstr "ويجب اختيار مستخدم أو مجموعة على الأقل كمالك."
 
@@ -1504,7 +1504,7 @@ msgstr "ميزة تعليقات المنطقة معطَّلة في الإعدا�
 msgid "You do not have the permission to view this comment."
 msgstr "ليس لديك الإذن لمشاهدة هذا التعليق"
 
-#: lib/Domain/Service/Dns/RecordManager.php:599
+#: lib/Domain/Service/Dns/RecordManager.php:618
 msgid "You do not have the permission to edit this comment."
 msgstr "ليس لديك الإذن لتحرير هذا التعليق"
 
@@ -1512,7 +1512,7 @@ msgstr "ليس لديك الإذن لتحرير هذا التعليق"
 msgid "The comment has been updated successfully."
 msgstr "تم تحديث التعليق بنجاح."
 
-#: lib/Application/Controller/EditRecordController.php:103
+#: lib/Application/Controller/EditRecordController.php:104
 msgid "Invalid record ID."
 msgstr "معرّف سجل غير صالح."
 
@@ -1520,7 +1520,7 @@ msgstr "معرّف سجل غير صالح."
 msgid "You do not have permission to delete records in this zone."
 msgstr "ليس لديك إذن لحذف السجلات في هذه المنطقة"
 
-#: lib/Domain/Service/Dns/RecordManager.php:503
+#: lib/Domain/Service/Dns/RecordManager.php:521
 msgid "Record not found."
 msgstr "لم يتم العثور على السجل."
 
@@ -1556,7 +1556,7 @@ msgstr "تم حذف السجل بنجاح. لم يتم العثور على سج�
 msgid "The record has been deleted successfully."
 msgstr "تم حذف السجل بنجاح."
 
-#: lib/Domain/Service/Dns/RecordManager.php:510
+#: lib/Domain/Service/Dns/RecordManager.php:528
 msgid "You cannot delete records from a read-only zone."
 msgstr "لا يمكنك حذف السجلات من منطقة للقراءة فقط."
 
@@ -1698,7 +1698,7 @@ msgstr "رمز التحقق مطلوب."
 msgid "MFA has been enabled successfully."
 msgstr "تم تفعيل MFA بنجاح."
 
-#: lib/Application/Controller/MfaVerifyController.php:316
+#: lib/Application/Controller/MfaVerifyController.php:330
 msgid "Invalid verification code. Please try again."
 msgstr "رمز التحقق غير صالح. حاول مرة أخرى"
 
@@ -1770,7 +1770,7 @@ msgstr "ليس لديك الإذن لعرض supermasters"
 msgid "You do not have the permission to view zone metadata."
 msgstr "ليس لديك الإذن لرؤية البيانات الوصفية للمنطقة"
 
-#: lib/Domain/Service/Dns/DomainManager.php:822
+#: lib/Domain/Service/Dns/DomainManager.php:828
 msgid "You do not have the permission to edit zone metadata."
 msgstr "ليس لديك الإذن لتحرير البيانات الوصفية للمنطقة"
 
@@ -1974,11 +1974,11 @@ msgstr "تعذر تحديث قالب الصلاحيات."
 msgid "Groups"
 msgstr "المجموعات"
 
-#: lib/Application/Controller/SearchController.php:62
+#: lib/Application/Controller/SearchController.php:63
 msgid "You do not have the permission to perform searches."
 msgstr "ليس لديك الإذن للقيام بعمليات البحث"
 
-#: lib/Application/Controller/SearchController.php:66
+#: lib/Application/Controller/SearchController.php:67
 #: templates/modern/search.html:31 templates/modern/header.html:132
 msgid "Search"
 msgstr "البحث"
@@ -2021,7 +2021,7 @@ msgid "You do not have the permission to add a new user."
 msgstr "ليس لديك الإذن بإضافة مستعمل جديد"
 
 #: lib/Application/Controller/AddUserController.php:93
-#: templates/modern/add_user.html:109 templates/modern/header.html:223
+#: templates/modern/add_user.html:110 templates/modern/header.html:223
 msgid "Add user"
 msgstr "إضافة مستعمل"
 
@@ -2058,7 +2058,7 @@ msgstr "تم إنشاء كلمة مرور ولكن لا تُعرض لأسباب 
 msgid "Please fill in all required fields correctly."
 msgstr "يرجى ملء جميع الحقول المطلوبة بشكل صحيح."
 
-#: lib/Domain/Service/Dns/RecordManager.php:536
+#: lib/Domain/Service/Dns/RecordManager.php:554
 msgid "You do not have the permission to delete this record."
 msgstr "ليس لديك الإذن لحذف هذا السجل"
 
@@ -2066,7 +2066,7 @@ msgstr "ليس لديك الإذن لحذف هذا السجل"
 msgid "The record could not be deleted."
 msgstr "تعذّر حذف السجل."
 
-#: lib/Application/Controller/ListLogZonesController.php:72
+#: lib/Application/Controller/ListLogZonesController.php:73
 #: templates/modern/list_log_zones.html:8 templates/modern/header.html:189
 msgid "Zone logs"
 msgstr "سجلات المناطق"
@@ -2088,7 +2088,7 @@ msgstr "مناطق المنتج وحدها هي التي تنشر فهرساً."
 msgid "You do not have permission to access this zone."
 msgstr "ليس لديك إذن للدخول إلى هذه المنطقة"
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:637
 msgid "You do not have permission to edit this zone."
 msgstr "ليس لديك إذن لتحرير هذه المنطقة."
 
@@ -2096,7 +2096,7 @@ msgstr "ليس لديك إذن لتحرير هذه المنطقة."
 msgid "The zone has been added to the catalog."
 msgstr "تمت إضافة المنطقة إلى الفهرس."
 
-#: lib/Application/Controller/EditController.php:612
+#: lib/Application/Controller/EditController.php:631
 msgid "The zone has been removed from the catalog."
 msgstr "تمت إزالة المنطقة من الفهرس."
 
@@ -2133,7 +2133,7 @@ msgstr "تعديل قالب المنطقة"
 msgid "There is no zone template with this ID."
 msgstr "لا يوجد نموذج منطقة بهذا المعرِّف."
 
-#: lib/Application/Controller/EditZoneTemplRecordController.php:156
+#: lib/Application/Controller/EditZoneTemplRecordController.php:161
 msgid "Zone template has been updated successfully."
 msgstr "وتم تحديث نموذج المنطقة بنجاح."
 
@@ -2156,7 +2156,7 @@ msgstr "تم تحديث المناطق بنجاح."
 msgid "You do not have permission to create new zone templates."
 msgstr "ليس لديك إذن لإنشاء نماذج منطقة جديدة."
 
-#: lib/Domain/Model/ZoneTemplate.php:364 lib/Domain/Model/ZoneTemplate.php:1219
+#: lib/Domain/Model/ZoneTemplate.php:365 lib/Domain/Model/ZoneTemplate.php:1265
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "نموذج المنطقة مع هذا الاسم موجود بالفعل، يرجى اختيار واحد آخر."
 
@@ -2248,7 +2248,7 @@ msgstr "تعديل المنطقة"
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "ليس لديك إذن لإدارة DNSSEC لهذه المنطقة."
 
-#: lib/Application/Controller/EditController.php:336
+#: lib/Application/Controller/EditController.php:340
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC غير مُفعَّل على الخادم."
 
@@ -2257,21 +2257,21 @@ msgstr "DNSSEC غير مُفعَّل على الخادم."
 msgid "This zone is presigned; DNSSEC keys are managed at the primary server."
 msgstr "هذه المنطقة موقَّعة مسبقًا؛ تُدار مفاتيح DNSSEC في الخادم الرئيسي."
 
-#: lib/Application/Controller/EditController.php:341
+#: lib/Application/Controller/EditController.php:345
 msgid "Zone is already signed with DNSSEC."
 msgstr "المنطقة موقَّعة بالفعل باستخدام DNSSEC."
 
-#: lib/Application/Controller/EditController.php:363
+#: lib/Application/Controller/EditController.php:367
 msgid "Zone has been signed successfully."
 msgstr "تم التوقيع على المنطقة بنجاح"
 
-#: lib/Application/Controller/EditController.php:368
+#: lib/Application/Controller/EditController.php:372
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr "طلب توقيع المنطقة بنجاح، ولكن التحقق فشل. تحقق من مفاتيح DNSSEC."
 
-#: lib/Application/Controller/EditController.php:372
+#: lib/Application/Controller/EditController.php:376
 msgid ""
 "Failed to sign zone. Zone validation passed, but PowerDNS API returned an "
 "error. Check PowerDNS logs for details."
@@ -2295,31 +2295,51 @@ msgstr "تم طلب إلغاء توقيع المنطقة بنجاح، ولكن �
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "فشل إلغاء توقيع المنطقة. راجع سجلات PowerDNS للتفاصيل."
 
-#: lib/Application/Controller/EditController.php:618
+#: lib/Application/Controller/EditController.php:637
 msgid "The catalog has been changed successfully."
 msgstr "تم تغيير الفهرس بنجاح."
 
-#: lib/Application/Controller/EditController.php:631
+#: lib/Application/Controller/EditController.php:655
 msgid "Zone type has been changed successfully."
 msgstr "تغير نوع المنطقة بنجاح."
 
-#: lib/Application/Controller/EditController.php:638
+#: lib/Application/Controller/EditController.php:662
 msgid "Slave master has been changed successfully."
 msgstr "تم تغيير خادم master بنجاح."
 
-#: lib/Application/Controller/EditController.php:652
+#: lib/Application/Controller/EditController.php:681
 msgid "You cannot apply a template to a read-only zone."
 msgstr "لا يمكنك تطبيق قالب على منطقة للقراءة فقط."
 
-#: lib/Application/Controller/EditController.php:669
+#: lib/Application/Controller/EditController.php:703
 msgid "Zone template has been changed successfully."
 msgstr "تغير نموذج المنطقة بنجاح."
 
-#: lib/Application/Controller/EditRecordController.php:125
+#: lib/Application/Controller/EditController.php:714
+msgid ""
+"Retrieving a zone from its primary needs the PowerDNS API backend and a "
+"secondary zone."
+msgstr ""
+"Retrieving a zone from its primary needs the PowerDNS API backend and a "
+"secondary zone."
+
+#: lib/Application/Controller/EditController.php:719
+msgid "Zone transfer from the primary has been requested."
+msgstr "Zone transfer from the primary has been requested."
+
+#: lib/Application/Controller/EditController.php:721
+msgid ""
+"Failed to request a zone transfer from the primary. Check the PowerDNS logs "
+"for details."
+msgstr ""
+"Failed to request a zone transfer from the primary. Check the PowerDNS logs "
+"for details."
+
+#: lib/Application/Controller/EditRecordController.php:126
 msgid "You cannot edit records in a read-only zone."
 msgstr "لا يمكنك تحرير السجلات في منطقة للقراءة فقط."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:897
 msgid ""
 "Some records were not saved because the form exceeded the server limit on "
 "the number of fields. Ask your administrator to increase the PHP "
@@ -2328,19 +2348,69 @@ msgstr ""
 "لم تُحفظ بعض السجلات لأن النموذج تجاوز حد الخادم لعدد الحقول. اطلب من المسؤول "
 "زيادة إعداد PHP \"max_input_vars\"."
 
-#: lib/Application/Controller/EditController.php:944
+#: lib/Application/Controller/EditController.php:1034
+#: lib/Module/ZoneImportExport/templates/import.html:76
+msgid "Name"
+msgstr "الاسم"
+
+#: lib/Application/Controller/EditController.php:1035
+#: lib/Module/ZoneImportExport/templates/import.html:77
+msgid "Type"
+msgstr "النوع"
+
+#: lib/Application/Controller/EditController.php:1036
+#: lib/Module/ZoneImportExport/templates/import.html:78
+msgid "Content"
+msgstr "المضمون"
+
+#: lib/Application/Controller/EditController.php:1037
+#: lib/Module/ZoneImportExport/templates/import.html:79
+msgid "TTL"
+msgstr "TTL"
+
+#: lib/Application/Controller/EditController.php:1038
+#: templates/modern/add_record.html:55
+msgid "Comment"
+msgstr "التعليق"
+
+#: lib/Application/Controller/EditController.php:1060
+#: templates/modern/api_key_delete.html:48
+msgid "Disabled"
+msgstr "معطّل"
+
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:455
+#: templates/modern/users.html:222
+msgid "Yes"
+msgstr "نعم"
+
+#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:455
+#: templates/modern/users.html:224
+msgid "No"
+msgstr "لا"
+
+#: lib/Application/Controller/EditController.php:1067
+#, php-format
+msgid "Not saved yet. The zone currently holds: %s"
+msgstr "لم يتم الحفظ بعد. المنطقة تحتوي حاليًا على: %s"
+
+#: lib/Application/Controller/EditController.php:1150
 msgid "Zone has not been updated successfully."
 msgstr "لم يتم تحديث المنطقة بنجاح."
 
-#: lib/Application/Controller/EditController.php:945
+#: lib/Application/Controller/EditController.php:1151
 msgid "Request has expired, please try again."
 msgstr "الطلب انتهى، من فضلك حاول مرة أخرى."
 
-#: lib/Application/Controller/EditController.php:954
+#: lib/Application/Controller/EditController.php:1162
+#, auto-english-fallback
+msgid "Zone saved successfully. No record changes were made."
+msgstr "Zone saved successfully. No record changes were made."
+
+#: lib/Application/Controller/EditController.php:1169
 msgid "Zone has been updated successfully."
 msgstr "تم تحديث المنطقة بنجاح."
 
-#: lib/Application/Controller/EditController.php:955
+#: lib/Application/Controller/EditController.php:1170
 msgid ""
 "Zone saved successfully. No record changes were made, but SOA serial was "
 "incremented."
@@ -2348,7 +2418,7 @@ msgstr ""
 "تم حفظ المنطقة بنجاح. لم تُجرَ أي تغييرات على السجلات، ولكن تمت زيادة الرقم "
 "التسلسلي لسجل SOA."
 
-#: lib/Application/Controller/EditController.php:987
+#: lib/Application/Controller/EditController.php:1202
 msgid "Please provide all required fields."
 msgstr "يرجى تقديم جميع الميادين المطلوبة."
 
@@ -2372,19 +2442,19 @@ msgstr "تمت إضافة السجل بنجاح. وأُنشئ أيضًا سجل 
 msgid "Invalid security token. Please try again."
 msgstr "رمز أمان غير صالح. يرجى المحاولة مرة أخرى."
 
-#: lib/Application/Controller/MfaVerifyController.php:315
+#: lib/Application/Controller/MfaVerifyController.php:329
 msgid "Too many failed attempts. Please try again later."
 msgstr "عدد كبير جدًا من المحاولات الفاشلة. يُرجى المحاولة مرة أخرى لاحقًا."
 
-#: lib/Application/Controller/MfaVerifyController.php:163
+#: lib/Application/Controller/MfaVerifyController.php:177
 msgid "No MFA record found. Please contact administrator."
 msgstr "لم يتم العثور على سجل MFA. يرجى الاتصال بالمسؤول."
 
-#: lib/Application/Controller/MfaVerifyController.php:168
+#: lib/Application/Controller/MfaVerifyController.php:182
 msgid "An error occurred. Please try again."
 msgstr "حدث خطأ حاول مرة أخرى"
 
-#: lib/Application/Controller/MfaVerifyController.php:388
+#: lib/Application/Controller/MfaVerifyController.php:402
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
@@ -2392,15 +2462,15 @@ msgstr ""
 "التحقق عبر البريد الإلكتروني غير متاح لأن خدمة البريد معطَّلة. يرجى استخدام "
 "رمز استرداد."
 
-#: lib/Application/Controller/MfaVerifyController.php:398
+#: lib/Application/Controller/MfaVerifyController.php:412
 msgid "A new verification code has been sent to your email."
 msgstr "تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني."
 
-#: lib/Application/Controller/MfaVerifyController.php:404
+#: lib/Application/Controller/MfaVerifyController.php:418
 msgid "Please use a recovery code instead."
 msgstr "يرجى استخدام رمز استرداد بدلاً من ذلك."
 
-#: lib/Application/Controller/MfaVerifyController.php:409
+#: lib/Application/Controller/MfaVerifyController.php:423
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
@@ -2408,7 +2478,7 @@ msgstr ""
 "تعذّر إرسال رمز التحقق إلى بريدك الإلكتروني. يرجى استخدام رمز استرداد بدلاً من "
 "ذلك."
 
-#: lib/Domain/Service/Dns/RecordManager.php:286
+#: lib/Domain/Service/Dns/RecordManager.php:287
 msgid "You do not have the permission to add a record to this zone."
 msgstr "ليس لديك الإذن بإضافة سجل لهذه المنطقة"
 
@@ -2446,7 +2516,7 @@ msgstr "فشل في إضافة أي سجلات قد تحتوي على بيانا
 msgid "No zone selected for deletion."
 msgstr "لا توجد منطقة مختارة للحذف."
 
-#: lib/Domain/Service/Dns/DomainManager.php:1001
+#: lib/Domain/Service/Dns/DomainManager.php:1010
 msgid "You do not have the permission to delete a zone."
 msgstr "ليس لديك الإذن لحذف منطقة"
 
@@ -2542,14 +2612,14 @@ msgstr ""
 "أدخل شبكة بتدوين CIDR (على سبيل المثال 192.168.1.0/24 أو 2001:db8::/48) أو "
 "اسم منطقة عكسية ينتهي بـ in-addr.arpa أو ip6.arpa."
 
-#: lib/Application/Controller/AddZoneMasterController.php:303
+#: lib/Application/Controller/AddZoneMasterController.php:309
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
 msgstr ""
 "تم إنشاء المنطقة بنجاح، ولكن تم تخطي التوقيع بـ DNSSEC بسبب أخطاء في التحقق:"
 
-#: lib/Application/Controller/AddZoneMasterController.php:315
+#: lib/Application/Controller/AddZoneMasterController.php:321
 msgid ""
 "Zone was created, but securing it with DNSSEC failed. Zone validation "
 "passed, but PowerDNS API returned an error. Check PowerDNS logs for details."
@@ -2557,11 +2627,11 @@ msgstr ""
 "تم إنشاء المنطقة، ولكن فشل تأمينها باستخدام DNSSEC. اجتاز التحقق من المنطقة، "
 "لكن PowerDNS API أعاد خطأ. راجع سجلات PowerDNS للتفاصيل."
 
-#: lib/Application/Controller/AddZoneMasterController.php:321
+#: lib/Application/Controller/AddZoneMasterController.php:327
 msgid "Zone has been created and signed with DNSSEC successfully."
 msgstr "تم إنشاء المنطقة وتوقيعها باستخدام DNSSEC بنجاح."
 
-#: lib/Application/Controller/AddZoneMasterController.php:325
+#: lib/Application/Controller/AddZoneMasterController.php:331
 msgid ""
 "Zone was created and signing was requested, but verification failed. Check "
 "DNSSEC keys."
@@ -2850,38 +2920,60 @@ msgid "Assigned %d zones; %d failed"
 msgstr "تم إسناد %d منطقة؛ فشل %d"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Zone canonical ID repaired"
+msgstr "Zone canonical ID repaired"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:145
+msgid "Failed to repair zone canonical ID"
+msgstr "Failed to repair zone canonical ID"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:149
+msgid "No zones without a canonical ID to fix"
+msgstr "No zones without a canonical ID to fix"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#, php-format
+msgid "Repaired the canonical ID of %d zones"
+msgstr "Repaired the canonical ID of %d zones"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:157
+#, php-format
+msgid "Repaired %d zones; %d failed"
+msgstr "Repaired %d zones; %d failed"
+
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
 msgstr "تم حذف المنطقة التابعة بنجاح"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:145
+#: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Failed to delete slave zone"
 msgstr "فشل حذف المنطقة التابعة"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Orphaned record deleted successfully"
 msgstr "تم حذف السجل اليتيم بنجاح"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:152
+#: lib/Application/Controller/DatabaseConsistencyController.php:177
 msgid "Failed to delete orphaned record"
 msgstr "فشل حذف السجل اليتيم"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Duplicate SOA records fixed successfully"
 msgstr "تم إصلاح سجلات SOA المكررة بنجاح"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:159
+#: lib/Application/Controller/DatabaseConsistencyController.php:184
 msgid "Failed to fix duplicate SOA records"
 msgstr "فشل إصلاح سجلات SOA المكررة"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Default SOA record created successfully"
 msgstr "تم إنشاء سجل SOA الافتراضي بنجاح"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:166
+#: lib/Application/Controller/DatabaseConsistencyController.php:191
 msgid "Failed to create default SOA record"
 msgstr "فشل إنشاء سجل SOA الافتراضي"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:171
+#: lib/Application/Controller/DatabaseConsistencyController.php:196
 msgid "Invalid check type"
 msgstr "نوع فحص غير صالح"
 
@@ -2889,7 +2981,7 @@ msgstr "نوع فحص غير صالح"
 msgid "You have logged out."
 msgstr "لقد سجلت الخروج."
 
-#: lib/Domain/Model/ZoneTemplate.php:361 lib/Domain/Model/ZoneTemplate.php:893
+#: lib/Domain/Model/ZoneTemplate.php:362 lib/Domain/Model/ZoneTemplate.php:939
 msgid "You do not have the permission to add a zone template."
 msgstr "ليس لديك الإذن بإضافة نموذج المنطقة"
 
@@ -2922,7 +3014,7 @@ msgstr "ليس لديك الإذن بإضافة منطقة تابعة"
 msgid "Add Secondary Zone"
 msgstr "إضافة منطقة ثانوية"
 
-#: lib/Domain/Model/ZoneTemplate.php:462 lib/Domain/Model/ZoneTemplate.php:508
+#: lib/Domain/Model/ZoneTemplate.php:464 lib/Domain/Model/ZoneTemplate.php:510
 msgid "You do not have the permission to delete zone templates."
 msgstr "ليس لديك الإذن بحذف نماذج المنطقة"
 
@@ -3161,19 +3253,19 @@ msgstr "تم تسجيل خروجك"
 msgid "Logout completed (with warnings): "
 msgstr "تم إكمال تسجيل الخروج (مع تحذيرات): "
 
-#: lib/Application/Controller/EditRecordController.php:116
+#: lib/Application/Controller/EditRecordController.php:117
 msgid "You do not have permission to view this record."
 msgstr "ليس لديك الإذن لمشاهدة هذا السجل"
 
-#: lib/Domain/Service/Dns/RecordManager.php:426
+#: lib/Domain/Service/Dns/RecordManager.php:444
 msgid "You do not have permission to edit this record."
 msgstr "ليس لديك إذن لتحرير هذا السجل"
 
-#: lib/Application/Controller/EditRecordController.php:345
+#: lib/Application/Controller/EditRecordController.php:353
 msgid "The record has been updated successfully."
 msgstr "وقد تم تحديث السجل بنجاح."
 
-#: lib/Application/Controller/EditRecordController.php:390
+#: lib/Application/Controller/EditRecordController.php:398
 msgid "The record was updated, but the PTR record could not be updated: "
 msgstr "تم تحديث السجل، لكن تعذّر تحديث سجل PTR: "
 
@@ -3279,19 +3371,19 @@ msgstr "تم حذف supermaster بنجاح"
 msgid "Bulk Registration"
 msgstr "التسجيل المجمّع"
 
-#: lib/Application/Controller/BulkRegistrationController.php:144
+#: lib/Application/Controller/BulkRegistrationController.php:151
 msgid "Owner must be a numeric user ID."
 msgstr "المالك يجب أن يكون رقم هوية المستخدم"
 
-#: lib/Application/Controller/BulkRegistrationController.php:224
+#: lib/Application/Controller/BulkRegistrationController.php:231
 msgid "Failed to add zone."
 msgstr "فشلت إضافة المنطقة."
 
-#: lib/Application/Controller/BulkRegistrationController.php:229
+#: lib/Application/Controller/BulkRegistrationController.php:236
 msgid "Zones have been added successfully."
 msgstr "أضيفت المناطق بنجاح"
 
-#: lib/Application/Controller/BulkRegistrationController.php:232
+#: lib/Application/Controller/BulkRegistrationController.php:239
 msgid "Some zone(s) could not be added."
 msgstr "تعذّر إضافة بعض المناطق."
 
@@ -3438,25 +3530,15 @@ msgstr "حقل %s مطلوب."
 msgid "The %s field must be a number."
 msgstr "حقل %s يجب أن يكون رقماً."
 
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
-#: templates/modern/users.html:222
-msgid "Yes"
-msgstr "نعم"
-
-#: lib/Application/Query/RecordSearch.php:228 templates/modern/edit.html:435
-#: templates/modern/users.html:224
-msgid "No"
-msgstr "لا"
-
 #: lib/Application/Service/LdapAuthenticator.php:113
 msgid "Account is temporarily locked. Please try again later."
 msgstr "الحساب مغلق مؤقتاً حاول مرة أخرى لاحقاً"
 
-#: lib/Application/Service/SqlAuthenticator.php:155
+#: lib/Application/Service/SqlAuthenticator.php:167
 msgid "The user account is disabled."
 msgstr "حساب المستخدم معطَّل"
 
-#: lib/Application/Service/SqlAuthenticator.php:244
+#: lib/Application/Service/SqlAuthenticator.php:260
 msgid "Authentication failed!"
 msgstr "فشل التوثيق!"
 
@@ -3484,7 +3566,7 @@ msgstr "فشل التوثيق: الجلسة غير صالحة"
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "فشل التوثيق: عدم القدرة على إنشاء حساب للمستعمل أو تحديثه"
 
-#: lib/Application/Service/LdapAuthenticator.php:284
+#: lib/Application/Service/LdapAuthenticator.php:285
 msgid "LDAP Authentication failed!"
 msgstr "فشل توثيق LDAP!"
 
@@ -3709,7 +3791,6 @@ msgstr ""
 "بك."
 
 #: lib/Infrastructure/Web/PageRenderer.php:136
-#, auto-english-fallback
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
@@ -3775,43 +3856,43 @@ msgstr "عنوان البريد الإلكتروني موجود بالفعل، �
 msgid "Enter a valid user name."
 msgstr "أدخل اسم المستخدم الصحيح"
 
-#: lib/Domain/Model/ZoneTemplate.php:304
+#: lib/Domain/Model/ZoneTemplate.php:305
 msgid "Zone template not found."
 msgstr "نموذج المنطقة لم يعثر عليه"
 
-#: lib/Domain/Model/ZoneTemplate.php:308
+#: lib/Domain/Model/ZoneTemplate.php:309
 msgid "Only global zone templates can be set as the default."
 msgstr "يمكن تعيين نماذج المناطق العامة فقط كنموذج افتراضي."
 
-#: lib/Domain/Model/ZoneTemplate.php:324
+#: lib/Domain/Model/ZoneTemplate.php:325
 msgid "Error setting default zone template: "
 msgstr "خطأ في تعيين نموذج المنطقة الافتراضي: "
 
-#: lib/Domain/Model/ZoneTemplate.php:343
+#: lib/Domain/Model/ZoneTemplate.php:344
 msgid "Error clearing default zone template: "
 msgstr "خطأ في إلغاء نموذج المنطقة الافتراضي: "
 
-#: lib/Domain/Model/ZoneTemplate.php:389 lib/Domain/Model/ZoneTemplate.php:967
+#: lib/Domain/Model/ZoneTemplate.php:390 lib/Domain/Model/ZoneTemplate.php:1013
 msgid "Error creating zone template: "
 msgstr "خطأ في إنشاء نموذج المنطقة: "
 
-#: lib/Domain/Model/ZoneTemplate.php:425
+#: lib/Domain/Model/ZoneTemplate.php:426
 msgid "Error adding default SOA record to template: "
 msgstr "خطأ في إضافة سجل SOA الافتراضي إلى القالب: "
 
-#: lib/Domain/Model/ZoneTemplate.php:492
+#: lib/Domain/Model/ZoneTemplate.php:494
 msgid "Error deleting zone template: "
 msgstr "خطأ في حذف نموذج المنطقة: "
 
-#: lib/Domain/Model/ZoneTemplate.php:516
+#: lib/Domain/Model/ZoneTemplate.php:518
 msgid "Error deleting user zone templates: "
 msgstr "خطأ في حذف نماذج مناطق المستخدم: "
 
-#: lib/Domain/Model/ZoneTemplate.php:644
+#: lib/Domain/Model/ZoneTemplate.php:646
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "ليس لديك الإذن بإضافة سجل لنموذج المنطقة"
 
-#: lib/Domain/Model/ZoneTemplate.php:649 lib/Domain/Model/ZoneTemplate.php:761
+#: lib/Domain/Model/ZoneTemplate.php:651 lib/Domain/Model/ZoneTemplate.php:763
 msgid ""
 "You do not have the permission to add this record type to a zone template."
 msgstr "ليست لديك صلاحية إضافة هذا النوع من السجلات إلى قالب منطقة."
@@ -3824,33 +3905,33 @@ msgstr "حقل المحتوى لا يحتوي على قيمة صالحة."
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "ويجب أن تكون الأولوية لسجلات MX/SRV هي رقم يتراوح بين 0 و 65535."
 
-#: lib/Domain/Model/ZoneTemplate.php:693
+#: lib/Domain/Model/ZoneTemplate.php:695
 msgid "Error adding zone template record: "
 msgstr "خطأ في إضافة سجل نموذج المنطقة: "
 
-#: lib/Domain/Model/ZoneTemplate.php:751 lib/Domain/Model/ZoneTemplate.php:836
+#: lib/Domain/Model/ZoneTemplate.php:753 lib/Domain/Model/ZoneTemplate.php:838
 msgid "The record does not belong to this zone template."
 msgstr "لا ينتمي السجل إلى قالب المنطقة هذا."
 
-#: lib/Domain/Model/ZoneTemplate.php:813
+#: lib/Domain/Model/ZoneTemplate.php:815
 msgid "Error updating zone template record: "
 msgstr "خطأ في تحديث سجل نموذج المنطقة: "
 
-#: lib/Domain/Model/ZoneTemplate.php:842
+#: lib/Domain/Model/ZoneTemplate.php:844
 msgid ""
 "You do not have the permission to delete this record type from a zone "
 "template."
 msgstr "ليست لديك صلاحية حذف هذا النوع من السجلات من قالب منطقة."
 
-#: lib/Domain/Model/ZoneTemplate.php:851
+#: lib/Domain/Model/ZoneTemplate.php:853
 msgid "Error deleting zone template record: "
 msgstr "خطأ في حذف سجل نموذج المنطقة: "
 
-#: lib/Domain/Model/ZoneTemplate.php:873
+#: lib/Domain/Model/ZoneTemplate.php:919
 msgid "Error checking template ownership: "
 msgstr "خطأ في التحقق من ملكية النموذج: "
 
-#: lib/Domain/Model/ZoneTemplate.php:959
+#: lib/Domain/Model/ZoneTemplate.php:1005
 #, php-format
 msgid ""
 "These record types were left out of the template because you may not add "
@@ -3858,35 +3939,35 @@ msgid ""
 msgstr ""
 "تم استثناء أنواع السجلات التالية من القالب لأنه لا يُسمح لك بإضافتها: %s"
 
-#: lib/Domain/Model/ZoneTemplate.php:1098
+#: lib/Domain/Model/ZoneTemplate.php:1144
 msgid "Error retrieving zones using template: "
 msgstr "خطأ في استرجاع المناطق باستخدام النموذج: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1198
+#: lib/Domain/Model/ZoneTemplate.php:1244
 msgid "Failed to get list of zones using template: "
 msgstr "عدم الحصول على قائمة المناطق باستخدام النماذج: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1216
+#: lib/Domain/Model/ZoneTemplate.php:1262
 msgid "You do not have the permission to edit a zone template."
 msgstr "ليس لديك الإذن لتحرير نموذج المنطقة"
 
-#: lib/Domain/Model/ZoneTemplate.php:1264
+#: lib/Domain/Model/ZoneTemplate.php:1311
 msgid "Error unlinking zone from template: "
 msgstr "خطأ في إلغاء ربط المنطقة بالنموذج: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1313
+#: lib/Domain/Model/ZoneTemplate.php:1360
 msgid "Error retrieving zones: "
 msgstr "خطأ في استرجاع المناطق: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1332
+#: lib/Domain/Model/ZoneTemplate.php:1379
 msgid "Error checking template name existence: "
 msgstr "خطأ في التحقق من وجود اسم النموذج: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1353
+#: lib/Domain/Model/ZoneTemplate.php:1400
 msgid "Error looking up template by name: "
 msgstr "خطأ في البحث عن النموذج بالاسم: "
 
-#: lib/Domain/Model/ZoneTemplate.php:1376
+#: lib/Domain/Model/ZoneTemplate.php:1423
 msgid "Error checking template existence: "
 msgstr "خطأ في التحقق من وجود النموذج: "
 
@@ -3943,50 +4024,59 @@ msgid ""
 "disabled."
 msgstr "تتطلب العروض \"views=yes\" في pdns.conf. الخادم المتصل معطّلة فيه."
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:154
+#: lib/Domain/Service/DatabaseConsistencyService.php:155
 msgid "All zones have owners"
 msgstr "جميع المناطق لديها مالكون"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:161
+#: lib/Domain/Service/DatabaseConsistencyService.php:162
 #, php-format
 msgid "%d zones found without owners"
 msgstr "مناطق %d وجدت بدون مالكين"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:212
+#: lib/Domain/Service/DatabaseConsistencyService.php:213
 msgid "All slave zones have master IP addresses"
 msgstr "جميع المناطق التابعة لديها عناوين IP رئيسية"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:219
+#: lib/Domain/Service/DatabaseConsistencyService.php:220
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "تم العثور على %d منطقة تابعة بدون عناوين IP رئيسية"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:264
+#: lib/Domain/Service/DatabaseConsistencyService.php:265
 msgid "All records belong to existing zones"
 msgstr "جميع السجلات تنتمي إلى المناطق القائمة"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:271
+#: lib/Domain/Service/DatabaseConsistencyService.php:272
 #, php-format
 msgid "%d orphaned records found"
 msgstr "تم العثور على %d سجل معزول"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:331
+#: lib/Domain/Service/DatabaseConsistencyService.php:332
 msgid "No duplicate SOA records found"
 msgstr "لم يتم العثور على سجلات SOA مكررة"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:338
+#: lib/Domain/Service/DatabaseConsistencyService.php:339
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d منطقة تحتوي على سجلات SOA مكرَّرة"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:398
+#: lib/Domain/Service/DatabaseConsistencyService.php:399
 msgid "All zones have SOA records"
 msgstr "جميع المناطق لديها سجلات SOA"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:405
+#: lib/Domain/Service/DatabaseConsistencyService.php:406
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "%d منطقة تم العثور عليها بدون سجلات SOA"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:486
+msgid "All zones have a canonical ID"
+msgstr "All zones have a canonical ID"
+
+#: lib/Domain/Service/DatabaseConsistencyService.php:487
+#, php-format
+msgid "%d zones found without a canonical ID"
+msgstr "%d zones found without a canonical ID"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -9346,19 +9436,19 @@ msgstr "تم تخطي تحديث PTR: نوع السجل ليس A أو AAAA."
 msgid "Stale PTR record removed."
 msgstr "تمت إزالة سجل PTR القديم."
 
-#: lib/Domain/Service/Dns/RecordManager.php:322
+#: lib/Domain/Service/Dns/RecordManager.php:323
 msgid "A record with this hostname, type, and content already exists."
 msgstr "سجل بهذا الاسم المضيف، النوع والمحتوى موجود بالفعل"
 
-#: lib/Domain/Service/Dns/RecordManager.php:223
+#: lib/Domain/Service/Dns/RecordManager.php:224
 msgid "Failed to add record to DNS backend."
 msgstr "فشل في إضافة السجل إلى الواجهة الخلفية لـ DNS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:459
+#: lib/Domain/Service/Dns/RecordManager.php:477
 msgid "Failed to update record in DNS backend."
 msgstr "فشل في تحديث السجل في الواجهة الخلفية لـ DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:888
+#: lib/Domain/Service/Dns/DomainManager.php:896
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "معامِلات غير صالحة مُرسَلة إلى الدالة %s %s"
@@ -9390,33 +9480,33 @@ msgstr "فشل في إنشاء سجل %s في المنطقة."
 msgid "Invalid argument(s) given to function %s"
 msgstr "معامِلات غير صالحة مُرسَلة إلى الدالة %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:565
+#: lib/Domain/Service/Dns/DomainManager.php:567
 msgid "Failed to delete zone from DNS backend."
 msgstr "فشل في حذف المنطقة من الواجهة الخلفية لـ DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:522
+#: lib/Domain/Service/Dns/DomainManager.php:524
 #, php-format
 msgid "Failed to clean up zone metadata: %s"
 msgstr "فشل تنظيف البيانات الوصفية للمنطقة: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:611
+#: lib/Domain/Service/Dns/DomainManager.php:615
 #, php-format
 msgid "Failed to delete zone metadata: %s"
 msgstr "فشل في حذف البيانات الوصفية للمنطقة: %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:783
+#: lib/Domain/Service/Dns/DomainManager.php:789
 msgid "Failed to update zone type in DNS backend."
 msgstr "فشل في تحديث نوع المنطقة في الواجهة الخلفية لـ DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:837
+#: lib/Domain/Service/Dns/DomainManager.php:843
 msgid "Failed to update zone master in DNS backend."
 msgstr "فشل في تحديث الخادم الرئيسي للمنطقة في الواجهة الخلفية لـ DNS."
 
-#: lib/Domain/Service/Dns/DomainManager.php:883
+#: lib/Domain/Service/Dns/DomainManager.php:891
 msgid "The selected user already owns the zone."
 msgstr "المستخدم المختار يمتلك المنطقة بالفعل"
 
-#: lib/Domain/Service/Dns/DomainManager.php:1185
+#: lib/Domain/Service/Dns/DomainManager.php:1194
 #, php-format
 msgid "Failed to update zone records: %s"
 msgstr "تعذر تحديث سجلات المنطقة: %s"
@@ -9468,10 +9558,6 @@ msgstr "أبداً"
 #: templates/modern/api_key_regenerated.html:55
 msgid "Status:"
 msgstr "الحالة:"
-
-#: templates/modern/api_key_delete.html:48
-msgid "Disabled"
-msgstr "معطّل"
 
 #: templates/modern/api_keys.html:55 templates/modern/api_key_delete.html:50
 msgid "Expired"
@@ -9547,10 +9633,6 @@ msgstr "تفاصيل المفتاح"
 msgid "Key ID"
 msgstr "معرّف المفتاح"
 
-#: lib/Module/ZoneImportExport/templates/import.html:77
-msgid "Type"
-msgstr "النوع"
-
 #: templates/modern/dnssec_delete_key.html:70
 msgid "Algorithm"
 msgstr "الخوارزمية"
@@ -9574,10 +9656,6 @@ msgstr "إلغاء"
 #: templates/modern/api_key_edit.html:5 templates/modern/api_key_edit.html:12
 msgid "Edit API Key"
 msgstr "تعديل مفتاح API"
-
-#: lib/Module/ZoneImportExport/templates/import.html:76
-msgid "Name"
-msgstr "الاسم"
 
 #: templates/modern/api_key_edit.html:21 templates/modern/api_key_add.html:21
 msgid "Provide a name for this API key"
@@ -9716,17 +9794,9 @@ msgstr "النطاق الصالح: 0-65535"
 msgid "Only for MX, SRV, KX, NAPTR"
 msgstr "فقط ل MX, SRV, KX, NAPTR"
 
-#: lib/Module/ZoneImportExport/templates/import.html:79
-msgid "TTL"
-msgstr "TTL"
-
 #: templates/modern/add_zone_templ_record.html:62
 msgid "Valid range: 0-2147483647"
 msgstr "النطاق الصالح: 0-2147483647"
-
-#: lib/Module/ZoneImportExport/templates/import.html:78
-msgid "Content"
-msgstr "المضمون"
 
 #: templates/modern/add_zone_templ_record.html:70
 msgid "Provide content for your zone record"
@@ -9755,7 +9825,7 @@ msgstr ""
 msgid "Update record"
 msgstr "تحديث السجل"
 
-#: templates/modern/edit.html:561 templates/modern/users.html:252
+#: templates/modern/edit.html:586 templates/modern/users.html:252
 msgid "Reset"
 msgstr "إعادة تعيين"
 
@@ -9885,7 +9955,7 @@ msgstr "قدم اسم المضيف"
 msgid "Account"
 msgstr "الحساب"
 
-#: templates/modern/edit.html:176 templates/modern/edit.html:558
+#: templates/modern/edit.html:176 templates/modern/edit.html:583
 msgid "Save changes"
 msgstr "حفظ التغييرات"
 
@@ -9935,11 +10005,11 @@ msgstr "هل أنت متأكد أنك تريد إلغاء توقيع المنط�
 msgid "Unsign zone"
 msgstr "إلغاء توقيع المنطقة"
 
-#: templates/modern/edit.html:912 templates/modern/list_forward_zones.html:124
+#: templates/modern/edit.html:945 templates/modern/list_forward_zones.html:124
 msgid "Serial as served by PowerDNS, with SOA-EDIT applied"
 msgstr "الرقم التسلسلي كما يقدّمه PowerDNS، مع تطبيق SOA-EDIT"
 
-#: templates/modern/edit.html:912 templates/modern/list_forward_zones.html:124
+#: templates/modern/edit.html:945 templates/modern/list_forward_zones.html:124
 msgid "Signed serial"
 msgstr "الرقم التسلسلي الموقَّع"
 
@@ -9951,11 +10021,11 @@ msgstr "مفاتيح DNSSEC للمنطقة"
 msgid "Add new key"
 msgstr "إضافة مفتاح جديد"
 
-#: templates/modern/dnssec.html:65 templates/modern/edit.html:905
+#: templates/modern/dnssec.html:65 templates/modern/edit.html:938
 msgid "Show DS and DNSKEY"
 msgstr "عرض DS و DNSKEY"
 
-#: templates/modern/edit.html:337
+#: templates/modern/edit.html:351
 msgid "ID"
 msgstr "المعرّف"
 
@@ -10089,7 +10159,7 @@ msgstr "إرسال رابط إعادة التعيين"
 msgid "Group Management"
 msgstr "إدارة المجموعات"
 
-#: templates/modern/edit_user.html:270 templates/modern/add_user.html:182
+#: templates/modern/edit_user.html:270 templates/modern/add_user.html:183
 msgid "No groups found"
 msgstr "لا توجد مجموعات"
 
@@ -10120,10 +10190,6 @@ msgstr "تعديل السجل في المنطقة"
 #: templates/default/edit_record.html:21 templates/modern/edit_record.html:21
 msgid "Modify DNS record properties"
 msgstr "تعديل خصائص سجل DNS"
-
-#: templates/modern/add_record.html:55
-msgid "Comment"
-msgstr "التعليق"
 
 #: templates/modern/edit_record.html:41 templates/modern/edit_record.html:119
 msgid "Update PTR"
@@ -10174,7 +10240,7 @@ msgid ""
 "Group members inherit these permissions only for zones owned by this group"
 msgstr "ويرث أعضاء المجموعة هذه التصاريح فقط للمناطق التي تملكها هذه المجموعة"
 
-#: templates/modern/edit_group.html:46 templates/modern/add_group.html:37
+#: templates/modern/edit_group.html:46 templates/modern/add_group.html:38
 msgid "Select a permission template"
 msgstr "اختيار نموذج الأذونات"
 
@@ -10464,7 +10530,7 @@ msgstr ""
 msgid "(for PTRs in reverse zones) or"
 msgstr "(بالنسبة لسجلات PTR في المناطق العكسية) أو"
 
-#: templates/modern/edit_comment.html:5 templates/modern/edit.html:543
+#: templates/modern/edit_comment.html:5 templates/modern/edit.html:563
 msgid "Edit comment"
 msgstr "تعديل التعليق"
 
@@ -10577,7 +10643,7 @@ msgstr "جميع المستعملين"
 msgid "All events"
 msgstr "جميع الأحداث"
 
-#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:595
+#: templates/modern/list_log_zones.html:6 templates/modern/edit.html:620
 msgid "Logs"
 msgstr "السجلات"
 
@@ -10952,23 +11018,19 @@ msgstr "نعم، أعد توليد مفتاح API هذا"
 msgid "No, keep current key"
 msgstr "لا، احتفظ بالمفتاح الحالي"
 
-#: templates/modern/reset_password.html:84
+#: templates/modern/reset_password.html:77
 msgid "Reset Password"
 msgstr "إعادة تعيين كلمة المرور"
 
 #: templates/modern/reset_password.html:12
-msgid "Go to Login"
-msgstr "الذهاب إلى تسجيل الدخول"
-
-#: templates/modern/reset_password.html:19
 msgid "Request New Reset Link"
 msgstr "طلب رابط إعادة تعيين جديد"
 
-#: templates/modern/reset_password.html:30
+#: templates/modern/reset_password.html:23
 msgid "Password does not meet requirements"
 msgstr "كلمة السر لا تفي بالمتطلبات"
 
-#: templates/modern/reset_password.html:39
+#: templates/modern/reset_password.html:32
 msgid "Enter your new password for"
 msgstr "أدخل كلمة السر الجديدة لـ"
 
@@ -10976,44 +11038,44 @@ msgstr "أدخل كلمة السر الجديدة لـ"
 msgid "New password"
 msgstr "كلمة سر جديدة"
 
-#: templates/modern/reset_password.html:49 templates/modern/login.html:27
+#: templates/modern/reset_password.html:42 templates/modern/login.html:27
 #: install/templates/step4.html.twig:250
 msgid "Provide a password"
 msgstr "توفير كلمة سر"
 
-#: templates/modern/reset_password.html:54
+#: templates/modern/reset_password.html:47
 msgid "Confirm Password"
 msgstr "تأكيد كلمة السر"
 
-#: templates/modern/reset_password.html:119
+#: templates/modern/reset_password.html:112
 msgid "Passwords do not match"
 msgstr "كلمات السر لا تتطابق"
 
-#: templates/modern/add_user.html:128
+#: templates/modern/add_user.html:129
 msgid "Password Requirements"
 msgstr "متطلبات كلمة السر"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "Minimum length"
 msgstr "الحد الأدنى للطول"
 
-#: templates/modern/add_user.html:132 templates/modern/change_password.html:71
+#: templates/modern/add_user.html:133 templates/modern/change_password.html:71
 msgid "characters"
 msgstr "أحرف"
 
-#: templates/modern/reset_password.html:68
+#: templates/modern/reset_password.html:61
 msgid "At least one uppercase letter"
 msgstr "حرف كبير واحد على الأقل"
 
-#: templates/modern/reset_password.html:71
+#: templates/modern/reset_password.html:64
 msgid "At least one lowercase letter"
 msgstr "حرف صغير واحد على الأقل"
 
-#: templates/modern/reset_password.html:74
+#: templates/modern/reset_password.html:67
 msgid "At least one number"
 msgstr "على الأقل رقم واحد"
 
-#: templates/modern/reset_password.html:77
+#: templates/modern/reset_password.html:70
 msgid "At least one special character"
 msgstr "حرف خاص واحد على الأقل"
 
@@ -11106,7 +11168,6 @@ msgid "No SOA"
 msgstr "لا يوجد SOA"
 
 #: templates/modern/list_forward_zones.html:158
-#, auto-english-fallback
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
 msgstr ""
@@ -11293,16 +11354,16 @@ msgid ""
 "for this user"
 msgstr "ستُطبَّق أذونات هذا القالب على مستوى النظام بأكمله لهذا المستخدم"
 
-#: templates/modern/edit_user.html:84 templates/modern/add_user.html:85
+#: templates/modern/edit_user.html:84 templates/modern/add_user.html:86
 msgid "Optional information about this user"
 msgstr "المعلومات الاختيارية عن هذا المستخدم"
 
-#: templates/modern/users.html:78 templates/modern/add_user.html:91
+#: templates/modern/users.html:78 templates/modern/add_user.html:92
 #: install/templates/step2.html.twig:113
 msgid "Enabled"
 msgstr "مفعل"
 
-#: templates/modern/edit_user.html:104 templates/modern/add_user.html:100
+#: templates/modern/edit_user.html:104 templates/modern/add_user.html:101
 msgid "LDAP Authentication"
 msgstr "مصادقة LDAP"
 
@@ -11310,7 +11371,7 @@ msgstr "مصادقة LDAP"
 msgid "Authentication settings can only be changed by an administrator"
 msgstr "لا يمكن تغيير إعدادات المصادقة إلا بواسطة مسؤول"
 
-#: templates/modern/edit_user.html:109 templates/modern/add_user.html:102
+#: templates/modern/edit_user.html:109 templates/modern/add_user.html:103
 msgid "Use external LDAP directory for authentication"
 msgstr "استخدم دليل LDAP الخارجي للمصادقة"
 
@@ -11322,7 +11383,7 @@ msgstr "العودة إلى الصفحة الرئيسية"
 msgid "Back to Users"
 msgstr "العودة إلى المستخدمين"
 
-#: templates/modern/edit_user.html:142 templates/modern/add_user.html:124
+#: templates/modern/edit_user.html:142 templates/modern/add_user.html:125
 msgid "Account Information"
 msgstr "معلومات الحساب"
 
@@ -11346,7 +11407,7 @@ msgstr "يجب أن تحتوي على رموز خاصة"
 msgid "No specific password requirements"
 msgstr "لا توجد متطلبات محددة لكلمة المرور"
 
-#: templates/modern/add_user.html:155 templates/modern/edit_perm_templ.html:158
+#: templates/modern/add_user.html:156 templates/modern/edit_perm_templ.html:158
 msgid "User Permissions"
 msgstr "أذونات المستخدم"
 
@@ -11362,7 +11423,7 @@ msgstr "استناداً إلى هذا القالب، يمتلك هذا المس
 msgid "No permissions are assigned to this template"
 msgstr "لا توجد أذونات معيّنة لهذا النموذج"
 
-#: templates/modern/edit_user.html:214 templates/modern/add_user.html:166
+#: templates/modern/edit_user.html:214 templates/modern/add_user.html:167
 msgid "Group Memberships"
 msgstr "عضويات المجموعات"
 
@@ -11378,7 +11439,7 @@ msgstr "عرض تفاصيل المجموعة"
 msgid "This user is not a member of any groups."
 msgstr "هذا المستعمل ليس عضوا في أي مجموعة."
 
-#: templates/modern/edit_user.html:252 templates/modern/add_user.html:168
+#: templates/modern/edit_user.html:252 templates/modern/add_user.html:169
 msgid "Add to Groups"
 msgstr "إضافة إلى المجموعات"
 
@@ -11386,7 +11447,7 @@ msgstr "إضافة إلى المجموعات"
 msgid "Select one or more groups and click \"Add Selected Groups\" button."
 msgstr "حدّد مجموعة واحدة أو أكثر ثم انقر زر \"إضافة المجموعات المحددة\"."
 
-#: templates/modern/edit_user.html:261 templates/modern/add_user.html:173
+#: templates/modern/edit_user.html:261 templates/modern/add_user.html:174
 msgid "Search available groups..."
 msgstr "ابحث عن المجموعات المتاحة..."
 
@@ -12006,71 +12067,71 @@ msgstr "إذا فقدت المفتاح، سوف تحتاج إلى تجديده."
 msgid "Edit"
 msgstr "تعديل"
 
-#: templates/modern/edit.html:11 templates/modern/edit.html:615
+#: templates/modern/edit.html:11 templates/modern/edit.html:640
 msgid "Add new record"
 msgstr "إضافة سجل جديد"
 
-#: templates/modern/edit.html:189 templates/modern/edit.html:619
+#: templates/modern/edit.html:189 templates/modern/edit.html:644
 msgid "Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records"
 msgstr "معالجات موجَّهة لسجلات DMARC وSPF وDKIM وCAA وTLSA وSRV"
 
-#: templates/modern/edit.html:21 templates/modern/edit.html:625
+#: templates/modern/edit.html:21 templates/modern/edit.html:650
 msgid "Multi-record mode"
 msgstr "وضع السجلات المتعددة"
 
-#: templates/modern/edit.html:568 templates/modern/edit.html:628
+#: templates/modern/edit.html:593 templates/modern/edit.html:653
 msgid "Bulk add"
 msgstr "إضافة جماعية"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:640
+#: templates/modern/edit.html:36 templates/modern/edit.html:665
 msgid "Failed to add"
 msgstr "فشل في إضافة"
 
-#: templates/modern/edit.html:36 templates/modern/edit.html:640
+#: templates/modern/edit.html:36 templates/modern/edit.html:665
 msgid "record(s). Please check the record format."
 msgstr "سجل (سجلات). يرجى التحقق من تنسيق السجل."
 
-#: templates/modern/edit.html:38 templates/modern/edit.html:642
+#: templates/modern/edit.html:38 templates/modern/edit.html:667
 msgid "Failed to add records. Please check the record format."
 msgstr "فشل في إضافة السجلات. يرجى التحقق من تنسيق السجل."
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:645
+#: templates/modern/edit.html:41 templates/modern/edit.html:670
 msgid "Content validation failed:"
 msgstr "فشل التحقق من صحة المحتوى:"
 
-#: templates/modern/edit.html:41 templates/modern/edit.html:645
+#: templates/modern/edit.html:41 templates/modern/edit.html:670
 msgid "Invalid value for record type"
 msgstr "قيمة غير صالحة لنوع السجل"
 
-#: templates/modern/edit.html:43 templates/modern/edit.html:647
+#: templates/modern/edit.html:43 templates/modern/edit.html:672
 msgid "Please provide all required information."
 msgstr "يرجى تقديم جميع المعلومات المطلوبة."
 
-#: templates/modern/edit.html:670 templates/modern/add_record.html:58
+#: templates/modern/edit.html:695 templates/modern/add_record.html:58
 msgid "Add PTR"
 msgstr "إضافة PTR"
 
-#: templates/modern/edit.html:673 templates/modern/add_record.html:61
+#: templates/modern/edit.html:698 templates/modern/add_record.html:61
 msgid "Add A/AAAA"
 msgstr "إضافة A/AAAA"
 
-#: templates/modern/edit.html:107 templates/modern/edit.html:712
+#: templates/modern/edit.html:107 templates/modern/edit.html:737
 msgid "This record already exists"
 msgstr "هذا السجل موجود بالفعل"
 
-#: templates/modern/edit.html:119 templates/modern/edit.html:724
+#: templates/modern/edit.html:119 templates/modern/edit.html:749
 msgid "Invalid priority"
 msgstr "أولوية غير صالحة"
 
-#: templates/modern/edit.html:126 templates/modern/edit.html:731
+#: templates/modern/edit.html:126 templates/modern/edit.html:756
 msgid "Invalid TTL value"
 msgstr "قيمة TTL غير صالحة"
 
-#: templates/modern/edit.html:128 templates/modern/edit.html:733
+#: templates/modern/edit.html:128 templates/modern/edit.html:758
 msgid "Provide TTL"
 msgstr "قدم TTL"
 
-#: templates/modern/edit.html:759 templates/modern/add_record.html:193
+#: templates/modern/edit.html:784 templates/modern/add_record.html:193
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
@@ -12086,79 +12147,90 @@ msgstr "البيانات الوصفية"
 msgid "View Metadata"
 msgstr "عرض البيانات الوصفية"
 
-#: templates/default/edit.html:237 templates/modern/edit.html:237
+#: templates/default/edit.html:236 templates/modern/edit.html:236
+msgid ""
+"Your changes to these records could not be restored, because they are no "
+"longer in this listing:"
+msgstr ""
+"تعذر استعادة تغييراتك على هذه السجلات لأنها لم تعد موجودة في هذه القائمة:"
+
+#: templates/default/edit.html:248 templates/modern/edit.html:248
 msgid "No records match your filter criteria."
 msgstr "لا توجد سجلات تتطابق مع معايير مرشحك"
 
-#: templates/default/edit.html:245 templates/modern/edit.html:245
+#: templates/default/edit.html:256 templates/modern/edit.html:256
 msgid "This zone does not have any records."
 msgstr "هذه المنطقة ليس لديها أي سجلات"
 
-#: templates/modern/edit.html:257 templates/modern/users.html:26
+#: templates/modern/edit.html:268 templates/modern/users.html:26
 msgid "Filter:"
 msgstr "التصفية:"
 
-#: templates/default/edit.html:263 templates/modern/edit.html:263
+#: templates/default/edit.html:274 templates/modern/edit.html:274
 msgid "Search by name or content"
 msgstr "البحث بالاسم أو المحتوى"
 
-#: templates/default/edit.html:269 templates/modern/edit.html:269
+#: templates/default/edit.html:280 templates/modern/edit.html:280
 msgid "All Types"
 msgstr "جميع الأنواع"
 
-#: templates/default/edit.html:279 templates/modern/edit.html:279
+#: templates/default/edit.html:290 templates/modern/edit.html:290
 msgid "Filter by content"
 msgstr "التصفية حسب المحتوى"
 
-#: templates/modern/edit.html:285 templates/modern/users.html:34
+#: templates/modern/edit.html:296 templates/modern/users.html:34
 msgid "Apply"
 msgstr "تطبيق"
 
-#: templates/default/edit.html:318 templates/modern/edit.html:318
+#: templates/default/edit.html:329 templates/modern/edit.html:329
 msgid "Showing"
 msgstr "عرض"
 
-#: templates/default/edit.html:318 templates/modern/edit.html:318
+#: templates/default/edit.html:329 templates/modern/edit.html:329
 msgid "of"
 msgstr "من"
 
-#: templates/default/edit.html:318 templates/modern/edit.html:318
+#: templates/default/edit.html:329 templates/modern/edit.html:329
 msgid "total records"
 msgstr "مجموع السجلات"
 
-#: templates/default/edit.html:396 templates/modern/edit.html:396
+#: templates/default/edit.html:410 templates/modern/edit.html:410
 msgid "Last modified"
 msgstr "آخر تعديل"
 
-#: templates/modern/edit.html:431 templates/modern/edit.html:471
+#: templates/modern/edit.html:451 templates/modern/edit.html:491
 msgid "Last edited by %account% on %date%"
 msgstr "آخر تحرير بواسطة %account% في %date%"
 
-#: templates/default/edit.html:526 templates/modern/edit.html:526
+#: templates/default/edit.html:546 templates/modern/edit.html:546
 msgid "Edit selected"
 msgstr "تعديل المحدد"
 
-#: templates/modern/edit.html:530 templates/modern/search.html:481
+#: templates/modern/edit.html:550 templates/modern/search.html:481
 msgid "Delete record(s)"
 msgstr "حذف السجل (السجلات)"
 
-#: templates/modern/edit.html:538 templates/modern/search.html:89
+#: templates/modern/edit.html:558 templates/modern/search.html:89
 msgid "Comments"
 msgstr "التعليقات"
 
-#: templates/default/edit.html:572 templates/modern/edit.html:572
+#: templates/default/edit.html:568 templates/modern/edit.html:568
+msgid "Not saved yet. The zone comment currently holds:"
+msgstr "لم يتم الحفظ بعد. تعليق المنطقة يحتوي حاليًا على:"
+
+#: templates/default/edit.html:597 templates/modern/edit.html:597
 msgid "Import"
 msgstr "استيراد"
 
-#: templates/default/edit.html:589 templates/modern/edit.html:589
+#: templates/default/edit.html:614 templates/modern/edit.html:614
 msgid "Generate PTR"
 msgstr "إنشاء PTR"
 
-#: templates/modern/edit.html:774 templates/modern/add_zone_master.html:16
+#: templates/modern/edit.html:799 templates/modern/add_zone_master.html:16
 msgid "Zone Configuration"
 msgstr "إعدادات المنطقة"
 
-#: templates/modern/edit.html:844 templates/modern/edit.html:877
+#: templates/modern/edit.html:877 templates/modern/edit.html:910
 msgid "Change"
 msgstr "التغيير"
 
@@ -12166,31 +12238,39 @@ msgstr "التغيير"
 msgid "IP address of master NS"
 msgstr "عنوان IP الخاص بـ NS الرئيسي"
 
-#: templates/default/edit.html:862 templates/modern/edit.html:862
+#: templates/default/edit.html:850 templates/modern/edit.html:850
+msgid "Requesting..."
+msgstr "Requesting..."
+
+#: templates/default/edit.html:851 templates/modern/edit.html:851
+msgid "Retrieve from primary"
+msgstr "Retrieve from primary"
+
+#: templates/default/edit.html:895 templates/modern/edit.html:895
 msgid "Catalog"
 msgstr "الفهرس"
 
-#: templates/default/edit.html:870 templates/modern/edit.html:870
+#: templates/default/edit.html:903 templates/modern/edit.html:903
 msgid "not managed here"
 msgstr "لا تُدار هنا"
 
-#: templates/default/edit.html:901 templates/modern/edit.html:901
+#: templates/default/edit.html:934 templates/modern/edit.html:934
 msgid "Manage DNSSEC"
 msgstr "إدارة DNSSEC"
 
-#: templates/default/edit.html:909 templates/modern/edit.html:909
+#: templates/default/edit.html:942 templates/modern/edit.html:942
 msgid "DNSSEC keys are managed at the primary server"
 msgstr "تُدار مفاتيح DNSSEC في الخادم الرئيسي"
 
-#: templates/default/edit.html:909 templates/modern/edit.html:909
+#: templates/default/edit.html:942 templates/modern/edit.html:942
 msgid "Presigned"
 msgstr "موقَّعة مسبقًا"
 
-#: templates/default/edit.html:919 templates/modern/edit.html:919
+#: templates/default/edit.html:952 templates/modern/edit.html:952
 msgid "Sign zone"
 msgstr "توقيع المنطقة"
 
-#: templates/default/edit.html:923 templates/modern/edit.html:923
+#: templates/default/edit.html:956 templates/modern/edit.html:956
 msgid "Not signed"
 msgstr "غير موقَّعة"
 
@@ -12386,63 +12466,79 @@ msgstr "اسم المنطقة"
 msgid "Assign owner"
 msgstr "تعيين مالك"
 
-#: templates/modern/database_consistency.html:284
+#: templates/modern/database_consistency.html:339
 msgid "Fix"
 msgstr "إصلاح"
 
 #: templates/modern/database_consistency.html:104
+msgid "Zones Without A Canonical ID"
+msgstr "Zones Without A Canonical ID"
+
+#: templates/modern/database_consistency.html:113
+msgid "Repair the canonical ID of all listed zones?"
+msgstr "Repair the canonical ID of all listed zones?"
+
+#: templates/modern/database_consistency.html:118
+msgid "Repair all"
+msgstr "Repair all"
+
+#: templates/modern/database_consistency.html:142
+msgid "Repair canonical ID"
+msgstr "Repair canonical ID"
+
+#: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"
 msgstr "المناطق التابعة بدون عناوين IP للخادم الرئيسي"
 
-#: templates/modern/database_consistency.html:117
+#: templates/modern/database_consistency.html:172
 msgid "Master IP"
 msgstr "IP الرئيسي"
 
-#: templates/modern/database_consistency.html:135
+#: templates/modern/database_consistency.html:190
 msgid "Delete slave zone"
 msgstr "حذف المنطقة التابعة"
 
-#: templates/modern/database_consistency.html:154
+#: templates/modern/database_consistency.html:209
 msgid "Records Not Belonging to Any Zone"
 msgstr "السجلات التي لا ترتبط بأي منطقة"
 
-#: templates/modern/database_consistency.html:165
+#: templates/modern/database_consistency.html:220
 msgid "Record ID"
 msgstr "معرّف السجل"
 
-#: templates/modern/database_consistency.html:189
+#: templates/modern/database_consistency.html:244
 msgid "Delete orphaned record"
 msgstr "حذف السجل اليتيم"
 
-#: templates/modern/database_consistency.html:205
+#: templates/modern/database_consistency.html:260
 msgid "Zones with Duplicate SOA Records"
 msgstr "المناطق ذات سجلات SOA المكررة"
 
-#: templates/modern/database_consistency.html:218
+#: templates/modern/database_consistency.html:273
 msgid "SOA Count"
 msgstr "عدد SOA"
 
-#: templates/modern/database_consistency.html:234
+#: templates/modern/database_consistency.html:289
 msgid "Keep first SOA, delete duplicates"
 msgstr "احتفظ بأول سجل SOA واحذف المكرر"
 
-#: templates/modern/database_consistency.html:254
+#: templates/modern/database_consistency.html:309
 msgid "Zones Without SOA Records"
 msgstr "المناطق بدون سجلات SOA"
 
-#: templates/modern/database_consistency.html:283
+#: templates/modern/database_consistency.html:338
 msgid "Create default SOA record"
 msgstr "إنشاء سجل SOA افتراضي"
 
-#: templates/modern/database_consistency.html:322
+#: templates/modern/database_consistency.html:377
 msgid "Are you sure you want to delete the slave zone"
 msgstr "هل أنت متأكد أنك تريد حذف المنطقة التابعة"
 
-#: templates/modern/database_consistency.html:325
+#: templates/modern/database_consistency.html:380
 msgid "Are you sure you want to delete the orphaned record"
 msgstr "هل أنت متأكد أنك تريد حذف السجل اليتيم"
 
-#: templates/modern/database_consistency.html:328
+#: templates/modern/database_consistency.html:383
 msgid "Are you sure you want to delete this item?"
 msgstr "هل أنت متأكد أنك تريد حذف هذا البند؟"
 
@@ -12481,15 +12577,15 @@ msgstr "إرسال كلمة السر عبر البريد الإلكتروني"
 msgid "Send login credentials to user's email address"
 msgstr "إرسال بيانات اعتماد الدخول إلى عنوان البريد الإلكتروني للمستخدم"
 
-#: templates/modern/add_user.html:68 templates/modern/add_group.html:31
+#: templates/modern/add_user.html:69 templates/modern/add_group.html:32
 msgid "Select a template..."
 msgstr "اختيار نموذج..."
 
-#: templates/default/add_user.html:78 templates/modern/add_user.html:78
+#: templates/default/add_user.html:79 templates/modern/add_user.html:79
 msgid "Select permissions for this user"
 msgstr "اختر الأذونات لهذا المستخدم"
 
-#: templates/default/add_user.html:157 templates/modern/add_user.html:157
+#: templates/default/add_user.html:158 templates/modern/add_user.html:158
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -12498,7 +12594,7 @@ msgstr ""
 "عند إنشاء مستخدم جديد، سيحصل على الأذونات بناءً على النموذج المحدد. يمكنك "
 "تعديل هذه الأذونات لاحقًا بتحرير المستخدم."
 
-#: templates/default/add_user.html:169 templates/modern/add_user.html:169
+#: templates/default/add_user.html:170 templates/modern/add_user.html:170
 msgid "Select groups to add the new user to upon creation."
 msgstr "اختر المجموعات التي سيُضاف إليها المستخدم الجديد عند إنشائه."
 
@@ -14173,26 +14269,26 @@ msgstr "حذف مفتاح نشط سيؤثر على أمان منطقتك وقد 
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "أنت على وشك حذف مفتاح DNSSEC (المعرّف"
 
-#: templates/default/add_group.html:36 templates/modern/add_group.html:36
+#: templates/default/add_group.html:37 templates/modern/add_group.html:37
 msgid ""
 "All group members will inherit these permissions for zones owned by this "
 "group"
 msgstr ""
 "سيرث جميع أعضاء المجموعة هذه الصلاحيات للمناطق التي تملكها هذه المجموعة"
 
-#: templates/default/add_group.html:42 templates/modern/add_group.html:42
+#: templates/default/add_group.html:43 templates/modern/add_group.html:43
 msgid "Create Group"
 msgstr "إنشاء مجموعة"
 
-#: templates/default/add_group.html:55 templates/modern/add_group.html:55
+#: templates/default/add_group.html:56 templates/modern/add_group.html:56
 msgid "About Groups"
 msgstr "بشأن المجموعات"
 
-#: templates/default/add_group.html:57 templates/modern/add_group.html:57
+#: templates/default/add_group.html:58 templates/modern/add_group.html:58
 msgid "What are Groups?"
 msgstr "ما هي المجموعات؟"
 
-#: templates/default/add_group.html:58 templates/modern/add_group.html:58
+#: templates/default/add_group.html:59 templates/modern/add_group.html:59
 msgid ""
 "Groups allow you to organize users and manage zone access collectively. "
 "Members inherit the group's permissions for all zones owned by the group."
@@ -14200,11 +14296,11 @@ msgstr ""
 "تسمح لك المجموعات بتنظيم المستخدمين وإدارة الوصول إلى المناطق بشكل جماعي. "
 "يرث الأعضاء صلاحيات المجموعة لجميع المناطق التي تملكها المجموعة."
 
-#: templates/default/add_group.html:59 templates/modern/add_group.html:59
+#: templates/default/add_group.html:60 templates/modern/add_group.html:60
 msgid "How to Use Groups"
 msgstr "كيفية استخدام المجموعات"
 
-#: templates/default/add_group.html:60 templates/modern/add_group.html:60
+#: templates/default/add_group.html:61 templates/modern/add_group.html:61
 msgid ""
 "After creating the group, you can add members and assign zones to it. All "
 "members will automatically get access to the group's zones."
@@ -15233,16 +15329,4 @@ msgstr ""
 "تعذر تعيين الإعدادات المحلية. قد تكون الإعدادات المحلية المحددة غير مدعومة "
 "على هذا النظام. يُرجى الاتصال بالمسؤول."
 
-#: lib/Application/Controller/EditController.php:1044
-msgid "Not saved yet. The zone currently holds: %s"
-msgstr "لم يتم الحفظ بعد. المنطقة تحتوي حاليًا على: %s"
 
-#: templates/default/edit.html:236 templates/modern/edit.html:236
-msgid ""
-"Your changes to these records could not be restored, because they are no "
-"longer in this listing:"
-msgstr "تعذر استعادة تغييراتك على هذه السجلات لأنها لم تعد موجودة في هذه القائمة:"
-
-#: templates/default/edit.html:568 templates/modern/edit.html:568
-msgid "Not saved yet. The zone comment currently holds:"
-msgstr "لم يتم الحفظ بعد. تعليق المنطقة يحتوي حاليًا على:"
