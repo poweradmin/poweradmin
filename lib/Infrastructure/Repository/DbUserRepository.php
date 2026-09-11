@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -802,11 +802,13 @@ class DbUserRepository implements UserRepository
 
     public function getUserByEmail(string $email): ?array
     {
+        // Accent-exact match, so a look-alike email cannot resolve to another account.
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'users.email', ':email');
         $query = "SELECT users.*, perm_templ.name AS perm_templ_name
                   FROM users
                   LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
                        AND perm_templ.template_type = 'user'
-                  WHERE users.email = :email LIMIT 1";
+                  WHERE $match LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':email' => $email]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -816,7 +818,8 @@ class DbUserRepository implements UserRepository
 
     public function countUsersByEmail(string $email): int
     {
-        $query = "SELECT COUNT(*) FROM users WHERE email = :email";
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
+        $query = "SELECT COUNT(*) FROM users WHERE $match";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':email' => $email]);
 

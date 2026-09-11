@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -198,6 +198,22 @@ class DbUserRepositoryTest extends TestCase
         $this->assertNull($result);
     }
 
+    #[Test]
+    public function testGetUserByEmailMatchesAccentExactOnMySql(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(false);
+
+        // A default ai_ci collation would let jose@ resolve josé@; the lookup must not rely on it.
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->stringContains('WHERE LOWER(CONVERT(users.email USING utf8mb4)) COLLATE utf8mb4_bin = LOWER(:email) LIMIT 1'))
+            ->willReturn($stmt);
+
+        $this->assertNull($this->repository->getUserByEmail('jose@example.com'));
+    }
+
     // ========== countUsersByEmail tests ==========
 
     #[Test]
@@ -208,7 +224,7 @@ class DbUserRepositoryTest extends TestCase
         $stmt->method('fetchColumn')->willReturn(2);
 
         $this->db->method('prepare')
-            ->with($this->stringContains('SELECT COUNT(*) FROM users WHERE email'))
+            ->with($this->stringContains('SELECT COUNT(*) FROM users WHERE LOWER(CONVERT(email USING utf8mb4)) COLLATE utf8mb4_bin = LOWER(:email)'))
             ->willReturn($stmt);
 
         $this->assertSame(2, $this->repository->countUsersByEmail('shared@example.com'));
