@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ class DbUserRepositoryTest extends TestCase
         parent::setUp();
 
         $this->db = $this->createMock(PDOCommon::class);
+        $this->db->method('getAttribute')->willReturn('mysql');
         $this->config = $this->createMock(ConfigurationManager::class);
         $this->repository = new DbUserRepository($this->db, $this->config);
     }
@@ -196,6 +197,22 @@ class DbUserRepositoryTest extends TestCase
         $result = $this->repository->getUserByEmail('nonexistent@example.com');
 
         $this->assertNull($result);
+    }
+
+    #[Test]
+    public function testGetUserByEmailMatchesAccentExactOnMySql(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(false);
+
+        // A default ai_ci collation would let jose@ resolve josé@; the lookup must not rely on it.
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->stringContains('WHERE LOWER(CONVERT(users.email USING utf8mb4)) COLLATE utf8mb4_bin = LOWER(:email) LIMIT 1'))
+            ->willReturn($stmt);
+
+        $this->assertNull($this->repository->getUserByEmail('jose@example.com'));
     }
 
     // ========== updatePassword tests ==========
