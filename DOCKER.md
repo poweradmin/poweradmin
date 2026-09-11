@@ -172,6 +172,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `DB_PASS` | Database password (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_NAME` | Database name (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_FILE` | SQLite database file path (unused for MySQL/PostgreSQL) | `/db/pdns.db` | No |
+| `DB_CHARSET` | Character set used when Poweradmin creates its MySQL tables: `latin1` or `utf8` | `latin1` | No |
 | `PA_PDNS_DB_NAME` | Separate PowerDNS database name (**MySQL only**) | Empty | No |
 | `DB_SSL` | Enable SSL/TLS connection (**MySQL/PostgreSQL only**) | `false` | No |
 | `DB_SSL_VERIFY` | Verify server SSL certificate (requires `DB_SSL=true`) | `false` | No |
@@ -227,10 +228,12 @@ docker run -d --name poweradmin -p 80:80 \
 |----------|-------------|---------|----------|
 | `PA_DNS_DOMAIN_RECORD_TYPES` | Comma-separated list of allowed domain zone record types | All defaults | No |
 | `PA_DNS_REVERSE_RECORD_TYPES` | Comma-separated list of allowed reverse zone record types | All defaults | No |
+| `PA_DNS_TOP_RECORD_TYPES` | Comma-separated record types listed first in the type selector, ahead of the alphabetical rest | Alphabetical only | No |
 
 **Examples:**
 - `PA_DNS_DOMAIN_RECORD_TYPES=A,AAAA,CNAME,MX,TXT`
 - `PA_DNS_REVERSE_RECORD_TYPES=PTR,NS,SOA,TXT`
+- `PA_DNS_TOP_RECORD_TYPES=A,AAAA,CNAME,TXT,MX`
 
 ### DNSSEC Configuration
 
@@ -273,6 +276,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_PASSWORD_REQUIRE_LOWERCASE` | Require at least one lowercase letter | `true` | No |
 | `PA_PASSWORD_REQUIRE_NUMBERS` | Require at least one number | `true` | No |
 | `PA_PASSWORD_REQUIRE_SPECIAL` | Require at least one special character | `false` | No |
+| `PA_PASSWORD_SPECIAL_CHARACTERS` | Characters that count as special for the rule above | `!@#$%^&*()+-=[]{}\|;:,.<>?` | No |
 
 ### Account Lockout
 
@@ -283,6 +287,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LOCKOUT_DURATION` | Lockout duration in minutes | `15` | No |
 | `PA_LOCKOUT_TRACK_IP` | Lock accounts based on IP address | `true` | No |
 | `PA_LOCKOUT_CLEAR_ON_SUCCESS` | Clear failed attempts after successful login | `true` | No |
+| `PA_LOCKOUT_WHITELIST_IPS` | Comma-separated IPs, CIDRs or wildcards that are never locked out; wins over the blacklist | Empty | No |
+| `PA_LOCKOUT_BLACKLIST_IPS` | Comma-separated IPs, CIDRs or wildcards that are always blocked | Empty | No |
 
 ### Multi-Factor Authentication (MFA)
 
@@ -405,6 +411,23 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_SHOW_FORWARD_ZONE_ASSOCIATIONS` | Show associated forward zones in reverse zone list | `true` | No |
 | `PA_SHOW_ZONE_RECORD_COUNT` | Show record count column in zone lists | `true` | No |
 | `PA_WIDE_LAYOUT` | Use full browser width instead of a fixed-width page | `false` | No |
+| `PA_SHOW_DASHBOARD_STATS` | Show zone, record, user and group counts on the dashboard | `true` | No |
+
+### User Avatars
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_AVATAR_OAUTH_ENABLED` | Show the avatar supplied by the OAuth provider | `false` | No |
+| `PA_AVATAR_GRAVATAR_ENABLED` | Show Gravatar images | `false` | No |
+| `PA_AVATAR_PRIORITY` | Source used when both are enabled: `oauth` or `gravatar` | `oauth` | No |
+| `PA_AVATAR_SIZE` | Avatar size in pixels | `40` | No |
+
+### Permission Templates
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_SHOW_USER_ACCESS_TEMPLATES` | Show per-user permission template assignment | `true` | No |
+| `PA_SHOW_GROUP_ACCESS_TEMPLATES` | Show group-based permission template management | `true` | No |
 
 ### API Configuration
 

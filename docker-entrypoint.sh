@@ -743,6 +743,18 @@ generate_config() {
     add_reverse_record=$(to_php_bool "${PA_ADD_REVERSE_RECORD:-true}")
     local add_domain_record
     add_domain_record=$(to_php_bool "${PA_ADD_DOMAIN_RECORD:-true}")
+    local show_dashboard_stats
+    show_dashboard_stats=$(to_php_bool "${PA_SHOW_DASHBOARD_STATS:-true}")
+    local avatar_oauth_enabled
+    avatar_oauth_enabled=$(to_php_bool "${PA_AVATAR_OAUTH_ENABLED:-false}")
+    local avatar_gravatar_enabled
+    avatar_gravatar_enabled=$(to_php_bool "${PA_AVATAR_GRAVATAR_ENABLED:-false}")
+
+    # Convert permission template visibility values to lowercase
+    local show_user_access_templates
+    show_user_access_templates=$(to_php_bool "${PA_SHOW_USER_ACCESS_TEMPLATES:-true}")
+    local show_group_access_templates
+    show_group_access_templates=$(to_php_bool "${PA_SHOW_GROUP_ACCESS_TEMPLATES:-true}")
     local display_hostname_only
     display_hostname_only=$(to_php_bool "${PA_DISPLAY_HOSTNAME_ONLY:-false}")
     local enable_consistency_checks
@@ -798,6 +810,24 @@ generate_config() {
     password_require_numbers=$(to_php_bool "${PA_PASSWORD_REQUIRE_NUMBERS:-true}")
     local password_require_special
     password_require_special=$(to_php_bool "${PA_PASSWORD_REQUIRE_SPECIAL:-false}")
+
+    # Lockout IP lists - comma-separated IPs, CIDRs or wildcards to a PHP array
+    local lockout_whitelist_ips="[]"
+    if [ -n "${PA_LOCKOUT_WHITELIST_IPS:-}" ]; then
+        lockout_whitelist_ips="['$(echo "${PA_LOCKOUT_WHITELIST_IPS}" | sed "s/ *, */,/g; s/,/','/g")']"
+    fi
+    local lockout_blacklist_ips="[]"
+    if [ -n "${PA_LOCKOUT_BLACKLIST_IPS:-}" ]; then
+        lockout_blacklist_ips="['$(echo "${PA_LOCKOUT_BLACKLIST_IPS}" | sed "s/ *, */,/g; s/,/','/g")']"
+    fi
+
+    # The default contains } so it cannot sit inside a ${VAR:-default} expansion
+    local password_special_characters='!@#$%^&*()+-=[]{}|;:,.<>?'
+    if [ -n "${PA_PASSWORD_SPECIAL_CHARACTERS:-}" ]; then
+        password_special_characters="${PA_PASSWORD_SPECIAL_CHARACTERS}"
+    fi
+    local password_special_characters_esc
+    password_special_characters_esc=$(php_sq_escape "${password_special_characters}")
 
     # Convert account lockout boolean values to lowercase
     local lockout_enabled
@@ -984,6 +1014,11 @@ generate_config() {
         dns_wizards_types="['$(echo "${PA_MODULE_DNS_WIZARDS_TYPES}" | sed "s/,/','/g")']"
     fi
 
+    local top_record_types="null"
+    if [ -n "${PA_DNS_TOP_RECORD_TYPES:-}" ]; then
+        top_record_types="['$(echo "${PA_DNS_TOP_RECORD_TYPES}" | sed "s/ *, */,/g; s/,/','/g")']"
+    fi
+
     # Process custom TLDs - convert comma-separated values to PHP array format or empty array
     local custom_tlds="[]"
     if [ -n "${PA_DNS_CUSTOM_TLDS}" ]; then
@@ -1123,6 +1158,7 @@ return [
         'password' => '${db_pass_esc}',
         'name' => '${db_name_esc}',
         'file' => '${DB_FILE:-/db/pdns.db}',
+        'charset' => '${DB_CHARSET:-latin1}',
         'pdns_db_name' => '${PA_PDNS_DB_NAME:-}',
         'ssl' => ${db_ssl},
         'ssl_verify' => ${db_ssl_verify},
@@ -1158,6 +1194,7 @@ return [
         'custom_tlds' => ${custom_tlds},
         'domain_record_types' => ${domain_record_types},
         'reverse_record_types' => ${reverse_record_types},
+        'top_record_types' => ${top_record_types},
     ],
     'dnssec' => [
         'enabled' => ${dnssec_enabled},
@@ -1177,6 +1214,7 @@ return [
             'require_lowercase' => ${password_require_lowercase},
             'require_numbers' => ${password_require_numbers},
             'require_special' => ${password_require_special},
+            'special_characters' => '${password_special_characters_esc}',
         ],
         'account_lockout' => [
             'enable_lockout' => ${lockout_enabled},
@@ -1184,6 +1222,8 @@ return [
             'lockout_duration' => ${PA_LOCKOUT_DURATION:-15},
             'track_ip_address' => ${lockout_track_ip},
             'clear_attempts_on_success' => ${lockout_clear_on_success},
+            'whitelist_ip_addresses' => ${lockout_whitelist_ips},
+            'blacklist_ip_addresses' => ${lockout_blacklist_ips},
         ],
         'mfa' => [
             'enabled' => ${mfa_enabled},
@@ -1231,6 +1271,10 @@ return [
         'auth' => ${mail_auth},
         'sendmail_path' => '${PA_SENDMAIL_PATH:-/usr/sbin/sendmail -t -i}',
     ],
+    'permissions' => [
+        'show_user_access_templates' => ${show_user_access_templates},
+        'show_group_access_templates' => ${show_group_access_templates},
+    ],
     'notifications' => [
         'zone_access_enabled' => ${notification_zone_access},
     ],
@@ -1270,6 +1314,11 @@ return [
         'add_domain_record' => ${add_domain_record},
         'display_hostname_only' => ${display_hostname_only},
         'enable_consistency_checks' => ${enable_consistency_checks},
+        'show_dashboard_stats' => ${show_dashboard_stats},
+        'avatar_oauth_enabled' => ${avatar_oauth_enabled},
+        'avatar_gravatar_enabled' => ${avatar_gravatar_enabled},
+        'avatar_priority' => '${PA_AVATAR_PRIORITY:-oauth}',
+        'avatar_size' => ${PA_AVATAR_SIZE:-40},
         'show_forward_zone_associations' => ${show_forward_zone_associations},
         'show_zone_record_count' => ${show_zone_record_count},
         'wide_layout' => ${wide_layout},
