@@ -373,6 +373,23 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
+     * Whether two stored copies of a record differ in any field that PowerDNS serves.
+     *
+     * @param array<string, mixed> $before Record row as stored before the edit
+     * @param array<string, mixed> $after Record row as stored after the edit
+     */
+    public static function recordFieldsDiffer(array $before, array $after): bool
+    {
+        // Rows come back as strings from PDO and as ints from the API, so compare by value
+        return strtolower((string)($before['name'] ?? '')) !== strtolower((string)($after['name'] ?? ''))
+            || strtoupper((string)($before['type'] ?? '')) !== strtoupper((string)($after['type'] ?? ''))
+            || (string)($before['content'] ?? '') !== (string)($after['content'] ?? '')
+            || (int)($before['ttl'] ?? 0) !== (int)($after['ttl'] ?? 0)
+            || (int)($before['prio'] ?? 0) !== (int)($after['prio'] ?? 0)
+            || (int)($before['disabled'] ?? 0) !== (int)($after['disabled'] ?? 0);
+    }
+
+    /**
      * Edit a record
      *
      * This function validates it if correct it inserts it into the database.
@@ -445,6 +462,23 @@ class RecordManager implements RecordManagerInterface
                 $name = strtolower($validatedData['name']); // powerdns only searches for lower case records
                 $validatedTtl = $validatedData['ttl'];
                 $validatedPrio = $validatedData['prio'];
+
+                $submitted = [
+                    'name' => $name,
+                    'type' => $record['type'],
+                    'content' => $content,
+                    'ttl' => $validatedTtl,
+                    'prio' => $validatedPrio,
+                    'disabled' => $record['disabled'] ?? 0,
+                ];
+                // On the API backend the write itself makes PowerDNS bump the serial through
+                // SOA-EDIT-API, so an opted-out install must not send an identical replacement
+                if (
+                    !$this->config->get('dns', 'bump_serial_on_unchanged_save', true)
+                    && !self::recordFieldsDiffer($recordDetails, $submitted)
+                ) {
+                    return true;
+                }
 
                 if (
                     !$this->backendProvider->editRecord(

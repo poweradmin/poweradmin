@@ -771,6 +771,8 @@ generate_config() {
     dns_txt_auto_quote=$(to_php_bool "${PA_DNS_TXT_AUTO_QUOTE:-false}")
     local dns_prevent_duplicate_ptr
     dns_prevent_duplicate_ptr=$(to_php_bool "${PA_DNS_PREVENT_DUPLICATE_PTR:-true}")
+    local dns_bump_serial_on_unchanged_save
+    dns_bump_serial_on_unchanged_save=$(to_php_bool "${PA_DNS_BUMP_SERIAL_ON_UNCHANGED_SAVE:-true}")
     local dns_sync_zone_owner_to_account
     dns_sync_zone_owner_to_account=$(to_php_bool "${PA_DNS_SYNC_ZONE_OWNER_TO_ACCOUNT:-false}")
     local dns_parent_zone_ownership_check
@@ -1191,6 +1193,7 @@ return [
         'third_level_check' => ${dns_third_level_check},
         'txt_auto_quote' => ${dns_txt_auto_quote},
         'prevent_duplicate_ptr' => ${dns_prevent_duplicate_ptr},
+        'bump_serial_on_unchanged_save' => ${dns_bump_serial_on_unchanged_save},
         'custom_tlds' => ${custom_tlds},
         'domain_record_types' => ${domain_record_types},
         'reverse_record_types' => ${reverse_record_types},

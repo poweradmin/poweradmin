@@ -224,6 +224,7 @@ return [
         'parent_zone_ownership_check' => true,     // Block creating a zone that overlaps an existing zone (forward or reverse) owned by another user (added in 4.5.0)
         'txt_auto_quote' => false,                 // Automatically quote TXT records (added in 3.9.2)
         'prevent_duplicate_ptr' => true,           // Prevent creation of multiple PTR records for same IP in batch operations (added in 4.0.0)
+        'bump_serial_on_unchanged_save' => true,   // false = leave the SOA serial alone when a save changes no record; true keeps save-to-NOTIFY (added in 4.6.0)
         'custom_tlds' => [],                       // Whitelist of non-IANA TLDs allowed in hostnames and CNAME targets when strict_tld_check is on (e.g., ['lan', 'corp', 'dn42'])
 
         // Record Type Settings (added in 4.0.0)

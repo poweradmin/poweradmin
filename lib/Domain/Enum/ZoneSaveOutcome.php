@@ -37,7 +37,7 @@ enum ZoneSaveOutcome
     /** Records changed and the SOA serial was bumped. */
     case UPDATED;
 
-    /** Nothing changed, but the SOA serial was still bumped. */
+    /** Nothing changed; the serial is bumped only if dns.bump_serial_on_unchanged_save allows it. */
     case NO_CHANGES;
 
     /** At least one record failed to write. */
@@ -47,8 +47,8 @@ enum ZoneSaveOutcome
     case SERIAL_CONFLICT;
 
     /**
-     * Whether the zone was actually written, and so needs a serial bump and
-     * a DNSSEC rectify.
+     * Whether the save was accepted, as opposed to refused by a write failure
+     * or a stale form. An accepted save may still have written no record.
      */
     public function wasWritten(): bool
     {

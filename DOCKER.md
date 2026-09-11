@@ -210,6 +210,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_DNS_ZONE_OWNERSHIP_MODE` | Zone ownership model: `both`, `users_only` or `groups_only` | `both` | No |
 | `PA_DNS_SYNC_ZONE_OWNER_TO_ACCOUNT` | Mirror the oldest zone owner's username into the PowerDNS account field | `false` | No |
 | `PA_DNS_PARENT_ZONE_OWNERSHIP_CHECK` | Block creating a zone that overlaps a zone owned by another user | `true` | No |
+| `PA_DNS_BUMP_SERIAL_ON_UNCHANGED_SAVE` | Bump the SOA serial even when a save changes no record, so saving can force a NOTIFY; `false` leaves the serial alone | `true` | No |
 
 ### DNS Validation Settings
 

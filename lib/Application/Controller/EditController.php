@@ -1154,6 +1154,15 @@ class EditController extends BaseController
             return;
         }
 
+        // A no-change save bumps the serial by default so operators can force a NOTIFY (#762)
+        $bumpSerial = $outcome === ZoneSaveOutcome::UPDATED
+            || $this->config->get('dns', 'bump_serial_on_unchanged_save', true);
+
+        if (!$bumpSerial) {
+            $this->setMessage('edit', 'info', _('Zone saved successfully. No record changes were made.'));
+            return;
+        }
+
         $this->soaRecordManager->updateSOASerial($zone_id);
 
         match ($outcome) {

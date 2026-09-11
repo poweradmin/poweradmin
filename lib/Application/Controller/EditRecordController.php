@@ -43,6 +43,7 @@ use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\RecordTypeService;
@@ -195,6 +196,17 @@ class EditRecordController extends BaseController
         ]);
     }
 
+    /**
+     * Whether the stored row differs from its pre-edit copy. In API mode the record
+     * ID changes with name, type, content or prio, so a missing row is itself a change.
+     */
+    private function savedRecordDiffers(RecordRepositoryInterface $recordRepository, int|string $rid, array $old_record_info): bool
+    {
+        $saved_record_info = $recordRepository->getRecordFromId($rid);
+
+        return $saved_record_info === null || RecordManager::recordFieldsDiffer($old_record_info, $saved_record_info);
+    }
+
     public function saveRecord($zid): bool
     {
         $recordRepository = $this->createRecordRepository();
@@ -250,7 +262,14 @@ class EditRecordController extends BaseController
             return false;
         }
 
-        $this->createSOARecordManager()->updateSOASerial($zid);
+        // Compare before the bump so an SOA edit compares cleanly; the default setting
+        // bumps regardless, so the extra read only happens when it decides anything
+        if (
+            $this->config->get('dns', 'bump_serial_on_unchanged_save', true)
+            || $this->savedRecordDiffers($recordRepository, $rid, $old_record_info)
+        ) {
+            $this->createSOARecordManager()->updateSOASerial($zid);
+        }
 
         $this->syncReverseRecord($zid, $old_record_info, $postData);
 
