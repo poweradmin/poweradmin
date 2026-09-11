@@ -26,8 +26,8 @@ use ReflectionClass;
 
 /**
  * Tests for EditController::handleZoneMetadataPost(), which dispatches the
- * three meta-edit POST actions (type change, slave master change, template
- * change) using the Request wrapper instead of $_POST.
+ * meta-edit POST actions (type change, slave master change, zone retrieval,
+ * template change) using the Request wrapper instead of $_POST.
  *
  * The test invokes the private method via reflection with the rest of the
  * controller's dependency graph stubbed - the goal is to confirm the
@@ -173,6 +173,40 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $this->invokeHandler($domainManager, 42);
     }
 
+    public function testRetrieveZonePostDispatchesRetrieveZoneOnApiBackend(): void
+    {
+        $_POST = ['retrieve_zone' => '1'];
+
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->once())
+            ->method('retrieveZone')
+            ->with(42)
+            ->willReturn(true);
+
+        $this->invokeHandler($domainManager, 42, $this->domainRepositoryOfType('SLAVE'), ['dns' => ['backend' => 'api']]);
+    }
+
+    public function testRetrieveZoneIsRefusedOnSqlBackend(): void
+    {
+        $_POST = ['retrieve_zone' => '1'];
+
+        // SqlDnsBackendProvider::retrieveZone() always returns false, so the request is refused up front
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->never())->method('retrieveZone');
+
+        $this->invokeHandler($domainManager, 42, $this->domainRepositoryOfType('SLAVE'), ['dns' => ['backend' => 'sql']]);
+    }
+
+    public function testRetrieveZoneIsRefusedForNonSecondaryZone(): void
+    {
+        $_POST = ['retrieve_zone' => '1'];
+
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->never())->method('retrieveZone');
+
+        $this->invokeHandler($domainManager, 42, $this->domainRepositoryOfType('MASTER'), ['dns' => ['backend' => 'api']]);
+    }
+
     public function testNoZoneMetaPostKeysIsNoop(): void
     {
         $_POST = ['unrelated_field' => 'foo'];
@@ -181,22 +215,35 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $domainManager->expects($this->never())->method('changeZoneType');
         $domainManager->expects($this->never())->method('changeZoneSlaveMaster');
         $domainManager->expects($this->never())->method('updateZoneRecords');
+        $domainManager->expects($this->never())->method('retrieveZone');
 
         $this->invokeHandler($domainManager, 42);
     }
 
-    private function invokeHandler(DomainManagerInterface $domainManager, int $zone_id): void
+    private function domainRepositoryOfType(string $type): DomainRepositoryInterface
     {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getDomainType')->willReturn($type);
+
+        return $domainRepository;
+    }
+
+    private function invokeHandler(
+        DomainManagerInterface $domainManager,
+        int $zone_id,
+        ?DomainRepositoryInterface $domainRepository = null,
+        array $configOverrides = []
+    ): void {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
 
         $this->setProperty($controller, 'request', new Request());
         $this->setProperty($controller, 'domainManager', $domainManager);
-        $this->setProperty($controller, 'domainRepository', $this->createMock(DomainRepositoryInterface::class));
+        $this->setProperty($controller, 'domainRepository', $domainRepository ?? $this->createMock(DomainRepositoryInterface::class));
         $zoneTemplateModel = $this->createMock(ZoneTemplate::class);
         $zoneTemplateModel->method('canCurrentUserUseTemplate')->willReturn(true);
         $this->setProperty($controller, 'zoneTemplateModel', $zoneTemplateModel);
 
-        $config = $this->primeConfig();
+        $config = $this->primeConfig($configOverrides);
         $this->setBaseProperty($controller, 'config', $config);
         $this->setBaseProperty($controller, 'messageService', new MessageService());
 
@@ -205,7 +252,7 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $method->invoke($controller, $zone_id);
     }
 
-    private function primeConfig(): ConfigurationManager
+    private function primeConfig(array $overrides = []): ConfigurationManager
     {
         $config = ConfigurationManager::getInstance();
         $reflection = new ReflectionClass(ConfigurationManager::class);
@@ -214,11 +261,11 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $initializedProperty = $reflection->getProperty('initialized');
         $initializedProperty->setAccessible(true);
 
-        $settingsProperty->setValue($config, [
+        $settingsProperty->setValue($config, array_replace_recursive([
             'database' => ['type' => 'mysql'],
-            'dns' => ['ttl' => 86400],
+            'dns' => ['ttl' => 86400, 'backend' => 'sql'],
             'security' => ['global_token_validation' => false],
-        ]);
+        ], $overrides));
         $initializedProperty->setValue($config, true);
 
         return $config;

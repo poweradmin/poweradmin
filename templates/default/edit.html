@@ -844,6 +844,14 @@
                         {% else %}
                         <p><code>{{ slave_master }}</code></p>
                         {% endif %}
+                        {% if meta_edit and can_retrieve_zone %}
+                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post" class="mt-2">
+                            {{ macros.csrf_field() }}
+                            <button class="btn btn-outline-secondary btn-sm" type="submit" name="retrieve_zone" data-busy-text="{% trans %}Requesting...{% endtrans %}">
+                                <i class="bi bi-cloud-download text-secondary"></i> {% trans %}Retrieve from primary{% endtrans %}
+                            </button>
+                        </form>
+                        {% endif %}
                     </div>
                     {% endif %}
 

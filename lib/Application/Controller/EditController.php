@@ -181,8 +181,8 @@ class EditController extends BaseController
         $iface_edit_save_changes_top = $userPreferenceService->getSaveButtonPosition($userId) === 'top';
         // API-backend records have no numeric ID, only an opaque composite identifier;
         // showing it as a column is unreadable, so suppress it regardless of preference.
-        $iface_show_id = $userPreferenceService->getShowRecordId($userId)
-            && !DnsBackendProviderFactory::isApiBackend($this->getConfig());
+        $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
+        $iface_show_id = $userPreferenceService->getShowRecordId($userId) && !$isApiBackend;
         $iface_show_add_record_form = $userPreferenceService->getShowAddRecordForm($userId);
         $iface_show_record_edit_button = $userPreferenceService->getShowRecordEditButton($userId);
         $iface_show_record_delete_button = $userPreferenceService->getShowRecordDeleteButton($userId);
@@ -529,6 +529,8 @@ class EditController extends BaseController
             'slave_master' => $slave_master,
             'zone_types' => $types,
             'zone_replicates_from_primary' => ZoneType::replicatesFromPrimary($domain_type),
+            // Only the API backend can ask PowerDNS for a transfer, so the button is hidden otherwise
+            'can_retrieve_zone' => $isApiBackend && $domain_type === ZoneType::SLAVE && ($slave_master ?? '') !== '',
             // Catalog kinds are absent from $types, so the browser would preselect the
             // first option and one click would silently retype the zone.
             'zone_type_change_allowed' => in_array($domain_type, $types, true),
@@ -661,6 +663,11 @@ class EditController extends BaseController
             }
         }
 
+        if ($this->request->getPostParam('retrieve_zone') !== null) {
+            $this->validateCsrfToken();
+            $this->handleRetrieveZone($zone_id, $domainManager);
+        }
+
         if ($this->request->getPostParam('catalog_change') !== null) {
             $this->validateCsrfToken();
             $this->handleCatalogChange($zone_id);
@@ -696,6 +703,22 @@ class EditController extends BaseController
                     $this->setMessage('edit', 'success', _('Zone template has been changed successfully.'));
                 }
             }
+        }
+    }
+
+    private function handleRetrieveZone(int $zone_id, DomainManagerInterface $domainManager): void
+    {
+        // The SQL backend cannot trigger a transfer, and only a secondary has a primary to pull from
+        $isSecondary = $this->domainRepository->getDomainType($zone_id) === ZoneType::SLAVE;
+        if (!DnsBackendProviderFactory::isApiBackend($this->getConfig()) || !$isSecondary) {
+            $this->setMessage('edit', 'error', _('Retrieving a zone from its primary needs the PowerDNS API backend and a secondary zone.'));
+            return;
+        }
+
+        if ($domainManager->retrieveZone($zone_id)) {
+            $this->setMessage('edit', 'success', _('Zone transfer from the primary has been requested.'));
+        } else {
+            $this->setMessage('edit', 'error', _('Failed to request a zone transfer from the primary. Check the PowerDNS logs for details.'));
         }
     }
 
