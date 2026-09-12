@@ -26,7 +26,7 @@ jobs:
 
       - name: Apply keyword-based labels
         if: github.event.issue.title != 'Dependency Dashboard'
-        uses: github/issue-labeler@c1b0f9f52a63158c4adc09425e858e87b32e9685 # v3.4
+        uses: github/issue-labeler@ccca1e16fcb66762200e616fc29b57b940c1cb67 # v3.5
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/issue-labeler.yml
