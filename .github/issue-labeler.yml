@@ -55,7 +55,7 @@ installer:
 
 # === Internationalization ===
 i18n:
-  - '(translation|locale|language.support|i18n|internationalization|gettext|transifex|\.po\b|\.mo\b|localization)'
+  - '(translation|locale|language.support|i18n|internationalization|gettext|\.po\b|\.mo\b|localization)'
 
 # === Documentation ===
 docs:

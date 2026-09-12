@@ -6,7 +6,7 @@ Thank you for your interest in contributing to Poweradmin! We welcome contributi
 
 - **Bug reports and small UI fixes** are always welcome.
 - **Good first issues**: filter the [issue tracker](https://github.com/poweradmin/poweradmin/issues) by the `good first issue` label.
-- **Translations**: handled via Transifex - see [Translations](#translations). No PHP knowledge required.
+- **Translations**: edit the `.po` file for your language and open a pull request - see [Translations](#translations). No PHP knowledge required.
 - **Larger features**: open an issue first to discuss approach and target branch before writing code.
 
 ## Project Architecture
@@ -104,13 +104,14 @@ Test files live in `tests/unit/` and `tests/integration/`. See existing tests fo
 
 ### Translations
 
-Translations flow through [Transifex](https://www.transifex.com/) and are merged into the repository via automated pull requests (branches named `tx_translations_*`). To contribute translations:
+Translations are gettext catalogues in `locale/<locale>/LC_MESSAGES/messages.po`. Many of them were produced with automated tools and contain mistakes that only a native speaker can spot, so corrections are welcome. To contribute:
 
-1. Request access to the Poweradmin project on Transifex
-2. Translate strings through the Transifex web UI
-3. The Transifex sync opens a PR with the updated `.po` files
+1. Open the `.po` file for your language in a PO editor such as [Poedit](https://poedit.net/), or any text editor
+2. Fix or add translations, keeping `%s`/`%d` placeholders and HTML tags intact
+3. Rebuild the compiled catalogue: `msgfmt locale/<locale>/LC_MESSAGES/messages.po -o locale/<locale>/LC_MESSAGES/messages.mo`
+4. Open a pull request against `develop` with both the `.po` and `.mo` files
 
-Please do not submit hand-edited `.po` files via pull request - they will be overwritten by the next Transifex sync.
+See the [translations guide](https://docs.poweradmin.org/contributing/translations/) for details on plural forms and format strings.
 
 ## Contribution Guidelines
 
