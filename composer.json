@@ -123,7 +123,6 @@
       ".devcontainer",
       "phpcs.xml",
       "phpdoc.dist.xml",
-      "transifex.yml",
       "package.json",
       "cypress/"
     ]
