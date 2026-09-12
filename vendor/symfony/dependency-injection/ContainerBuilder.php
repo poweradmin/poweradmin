@@ -1092,7 +1092,7 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
      */
     private function createService(Definition $definition, array &$inlineServices, bool $isConstructorArgument = false, ?string $id = null, bool|object $tryProxy = true): mixed
     {
-        if (null === $id && isset($inlineServices[$h = spl_object_hash($definition)])) {
+        if (null === $id && isset($inlineServices[$h = "\0".spl_object_id($definition)])) {
             return $inlineServices[$h];
         }
 
@@ -1122,7 +1122,7 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
             if (\is_array($callable) && (
                 'Closure' !== $class
                 || $callable[0] instanceof Reference
-                || $callable[0] instanceof Definition && !isset($inlineServices[spl_object_hash($callable[0])])
+                || $callable[0] instanceof Definition && !isset($inlineServices["\0".spl_object_id($callable[0])])
             )) {
                 $initializer = function () use ($callable, &$inlineServices) {
                     return $this->doResolveServices($callable[0], $inlineServices);
@@ -1153,7 +1153,7 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
         }
 
         if (null !== $definition->getFile()) {
-            require_once $parameterBag->resolveValue($definition->getFile());
+            require_once $parameterBag->unescapeValue($parameterBag->resolveValue($definition->getFile()));
         }
 
         $arguments = $definition->getArguments();
@@ -1255,7 +1255,7 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
             // evict the partially-configured instance, but only if this frame shared it; in the
             // proxy-initializer frame, the cached proxy must stay so a retry re-runs the initializer
             if (true === $tryProxy || !$definition->isLazy()) {
-                unset($inlineServices[$id ?? spl_object_hash($definition)]);
+                unset($inlineServices[$id ?? "\0".spl_object_id($definition)]);
 
                 if (null !== $id) {
                     unset($this->services[$id], $this->privates[$id]);
@@ -1408,6 +1408,11 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
                 throw new InvalidArgumentException(\sprintf('The resource "%s" tagged "%s" is missing the "container.excluded" tag.', $id, $tagName));
             }
             $class = $this->parameterBag->resolveValue($definition->getClass());
+            if ($class && $throwOnAbstract && $definition->isAbstract() && ($r = $this->getReflectionClass($class, false)) && ($r->isAbstract() || $r->isInterface())) {
+                // an abstract class or interface matches autoconfiguration rules on behalf
+                // of its subtypes but is not a resource itself: skip it, don't throw
+                continue;
+            }
             if (!$class || $throwOnAbstract && $definition->isAbstract()) {
                 throw new InvalidArgumentException(\sprintf('The resource "%s" tagged "%s" must have a class and not be abstract.', $id, $tagName));
             }
@@ -1817,7 +1822,7 @@ class ContainerBuilder extends Container implements TaggedContainerInterface
 
     private function shareService(Definition $definition, mixed $service, ?string $id, array &$inlineServices): void
     {
-        $inlineServices[$id ?? spl_object_hash($definition)] = $service;
+        $inlineServices[$id ?? "\0".spl_object_id($definition)] = $service;
 
         if (null !== $id && $definition->isShared()) {
             if ($definition->isPrivate() && $this->isCompiled()) {
