@@ -50,6 +50,8 @@ class Builder
 
     protected ?CompilerInterface $compiler = null;
 
+    protected ?Resolver $resolver = null;
+
     /**
      * @var Utils\Pipeline<Specification>|null
      */
@@ -106,6 +108,25 @@ class Builder
     public function setCompiler(CompilerInterface $compiler): static
     {
         $this->compiler = $compiler;
+
+        return $this;
+    }
+
+    public function getResolver(): Resolver
+    {
+        $this->resolver ??= new Resolver();
+
+        return $this->resolver;
+    }
+
+    /**
+     * Configure the resolver via callable.
+     *
+     * @param callable(Resolver): (Resolver|void) $hook
+     */
+    public function withResolver(callable $hook): static
+    {
+        $hook($this->getResolver());
 
         return $this;
     }
@@ -231,6 +252,8 @@ class Builder
 
         $specification = $assembler->getSpecification();
 
+        $this->getResolver()->resolve($assembler);
+
         if ($hybrid) {
             $this->doHybridAssemble($specification);
         }
@@ -281,10 +304,11 @@ class Builder
 
     protected function resolveCompiler(string $version): CompilerInterface
     {
+        $logger = $this->getLogger();
         $compilers = [
-            new Compiler\OpenApi30Compiler(),
-            new Compiler\OpenApi31Compiler(),
-            new Compiler\OpenApi32Compiler(),
+            new Compiler\OpenApi30Compiler($logger),
+            new Compiler\OpenApi31Compiler($logger),
+            new Compiler\OpenApi32Compiler($logger),
         ];
 
         foreach ($compilers as $compiler) {
