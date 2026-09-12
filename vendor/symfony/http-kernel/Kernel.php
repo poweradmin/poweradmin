@@ -74,11 +74,11 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
      */
     private static array $freshCache = [];
 
-    public const VERSION = '7.4.16';
-    public const VERSION_ID = 70416;
+    public const VERSION = '7.4.18';
+    public const VERSION_ID = 70418;
     public const MAJOR_VERSION = 7;
     public const MINOR_VERSION = 4;
-    public const RELEASE_VERSION = 16;
+    public const RELEASE_VERSION = 18;
     public const EXTRA_VERSION = '';
 
     public const END_OF_MAINTENANCE = '11/2028';
@@ -433,6 +433,8 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
         }
 
         $oldContainer = \is_object($this->container) ? new \ReflectionClass($this->container) : $this->container = null;
+
+        $lock = null;
 
         try {
             is_dir($buildDir) ?: mkdir($buildDir, 0o777, true);
