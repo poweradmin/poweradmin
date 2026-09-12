@@ -151,8 +151,7 @@
       "phpdoc.dist.xml",
       "phpstan.neon",
       "phpunit.xml.dist",
-      "psalm.xml",
-      "transifex.yml"
+      "psalm.xml"
     ]
   }
 }

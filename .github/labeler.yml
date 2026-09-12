@@ -128,7 +128,6 @@ i18n:
     - any-glob-to-any-file:
       - 'locale/**'
       - 'lib/Application/Service/LocaleService.php'
-      - 'transifex.yml'
 
 docs:
   - changed-files:

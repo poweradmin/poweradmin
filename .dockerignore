@@ -34,7 +34,6 @@ docs
 **/.DS_Store
 .devcontainer
 scripts
-transifex.yml
 # Keep README.md but exclude other markdown files
 DONORS.md
 
@@ -69,5 +68,4 @@ psalm.xml
 nginx.conf.example
 .htaccess
 .hadolint.yaml
-transifex.yml
 cliff.toml
