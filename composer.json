@@ -191,8 +191,7 @@
       "phpstan-baseline.neon",
       "phpstan.neon",
       "phpunit.xml.dist",
-      "psalm.xml",
-      "transifex.yml"
+      "psalm.xml"
     ]
   }
 }
