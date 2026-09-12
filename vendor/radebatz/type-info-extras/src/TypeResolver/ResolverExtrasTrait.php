@@ -40,7 +40,7 @@ trait ResolverExtrasTrait
     }
 
     /**
-     * @param array<BaseType> $variableTypes
+     * @param list<BaseType> $variableTypes
      */
     protected function tryAsClassLike(BaseType $type, array $variableTypes): ?ClassLikeType
     {
@@ -53,7 +53,7 @@ trait ResolverExtrasTrait
         return null;
     }
 
-    public function reduceToBuiltinType(?BaseType $type)
+    public function reduceToBuiltinType(?BaseType $type): ?BaseType
     {
         return $type instanceof ExplicitType
             ? $type->getBuiltinType()
