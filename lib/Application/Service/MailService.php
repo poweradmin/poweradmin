@@ -510,18 +510,4 @@ class MailService
             error_log('[POWERADMIN MAILER] WARNING: ' . $message);
         }
     }
-
-    /**
-     * Sends a plain-text email with default headers.
-     *
-     * @param string $to The recipient's email address
-     * @param string $subject The email subject
-     * @param string $body The email body
-     * @return bool True if the email was sent successfully, false otherwise
-     */
-    public function sendEmail(string $to, string $subject, string $body): bool
-    {
-        // Use the existing sendMail method but with defaults for plainBody and headers
-        return $this->sendMail($to, $subject, $body);
-    }
 }

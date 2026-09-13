@@ -29,7 +29,6 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\User;
-use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
@@ -490,38 +489,6 @@ class DbUserRepositoryTest extends TestCase
         ]);
 
         $this->assertTrue($result);
-    }
-
-    // ========== canViewOthersContent tests ==========
-
-    #[Test]
-    public function testCanViewOthersContentReturnsTrueWhenPermissionExists(): void
-    {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(1);
-
-        $this->db->method('prepare')->willReturn($stmt);
-
-        $userId = new UserId(1);
-        $result = $this->repository->canViewOthersContent($userId);
-
-        $this->assertTrue($result);
-    }
-
-    #[Test]
-    public function testCanViewOthersContentReturnsFalseWhenNoPermission(): void
-    {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchColumn')->willReturn(false);
-
-        $this->db->method('prepare')->willReturn($stmt);
-
-        $userId = new UserId(1);
-        $result = $this->repository->canViewOthersContent($userId);
-
-        $this->assertFalse($result);
     }
 
     // ========== getUserPermissions tests ==========

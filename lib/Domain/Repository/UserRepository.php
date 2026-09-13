@@ -23,18 +23,9 @@
 namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\User;
-use Poweradmin\Domain\Model\UserId;
 
 interface UserRepository
 {
-    /**
-     * Check if a user can view other users' content
-     *
-     * @param UserId $user User ID to check
-     * @return bool True if the user can view others' content
-     */
-    public function canViewOthersContent(UserId $user): bool;
-
     /**
      * Find a user by username
      *

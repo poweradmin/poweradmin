@@ -203,10 +203,8 @@ class DomainManager implements DomainManagerInterface
                 : (bool)($domain && $zone_template);
 
             if ($hasRequiredArgs) {
-                // Create zone BEFORE starting the transaction. In API mode,
-                // createZone() polls the DB to discover the new domain ID.
-                // If called inside a transaction, snapshot isolation can hide
-                // the row that PowerDNS wrote on a different connection.
+                // Create the zone before the outer transaction: in API mode
+                // createZone() commits its own placeholder row when no transaction is open.
                 try {
                     $domain_id = $this->backendProvider->createZone($domain, $type, $slave_master);
                 } catch (\Exception $e) {
@@ -334,10 +332,8 @@ class DomainManager implements DomainManagerInterface
                         } elseif ($domain_id && is_numeric($zone_template)) {
                             $isApiBackend = $this->backendProvider->isApiBackend();
                             if ($isApiBackend) {
-                                // Commit zones + zones_groups before template records.
-                                // addRecordGetId() polls the DB for records that PowerDNS
-                                // writes via a separate connection. Snapshot isolation
-                                // inside this transaction would hide those rows.
+                                // Commit zones + zones_groups before template records: in API mode
+                                // they go through PowerDNS HTTP calls this transaction cannot roll back.
                                 $db->commit();
                             }
 

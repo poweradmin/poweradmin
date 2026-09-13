@@ -35,9 +35,9 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -268,7 +268,7 @@ class ListForwardZonesController extends BaseController
             'is_owner_sort_supported' => $isOwnerSortSupported,
             'is_group_sort_supported' => $isGroupSortSupported,
             'pdnssec_use' => $pdnssec_use,
-            'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION[SessionKeys::USERID]),
+            'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION[SessionKeys::USERID], $dnsDataService),
             'pagination' => $this->presentPagination($count_zones_all_letterstart, $iface_rowamount, '/zones/forward?start={PageNumber}'),
             'session_userlogin' => $_SESSION[SessionKeys::USERLOGIN],
             'perm_edit' => $perm_edit,
@@ -281,11 +281,9 @@ class ListForwardZonesController extends BaseController
         ]);
     }
 
-    private function getAvailableStartingLetters(string $letterStart, int $userId): string
+    private function getAvailableStartingLetters(string $letterStart, int $userId, DnsDataService $dnsDataService): string
     {
-        $allow_view_others = $this->createUserRepository()->canViewOthersContent(new UserId($userId));
-
-        $dnsDataService = $this->createDnsDataService();
+        $allow_view_others = $this->hasPermission('zone_content_view_others');
         $availableChars = $dnsDataService->getDistinctStartingLetters($userId, $allow_view_others);
 
         $digitsAvailable = (bool)array_filter($availableChars, 'is_numeric');

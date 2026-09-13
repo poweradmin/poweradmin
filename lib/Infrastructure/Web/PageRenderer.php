@@ -448,12 +448,7 @@ class PageRenderer
             return null;
         }
 
-        $avatarService = new AvatarService($this->config);
-        if (!$avatarService->isAvatarEnabled()) {
-            return null;
-        }
-
-        return $avatarService->getAvatarUrl(
+        return (new AvatarService($this->config))->getAvatarUrl(
             $this->userContextService->getUserEmail(),
             $this->userContextService->getOAuthAvatarUrl()
         );
