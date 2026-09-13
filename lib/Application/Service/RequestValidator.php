@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Service;
 
+use InvalidArgumentException;
+use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validation;
@@ -63,23 +65,44 @@ class RequestValidator
     {
         $constraints = [];
 
-        // Convert rules to Symfony validator constraints
-        if (isset($rules['required'])) {
-            foreach ($rules['required'] as $field) {
-                $constraints[$field] = new Assert\NotBlank(['message' => sprintf(_('The %s field is required.'), $field)]);
-            }
-        }
-
-        if (isset($rules['integer'])) {
-            foreach ($rules['integer'] as $field) {
-                $constraints[$field] = new Assert\Type([
-                    'type' => 'numeric',
-                    'message' => sprintf(_('The %s field must be a number.'), $field)
-                ]);
+        foreach ($rules as $rule => $fields) {
+            foreach ($fields as $spec) {
+                [$field, $constraint] = $this->ruleToConstraint($rule, $spec);
+                $constraints[$field][] = $constraint;
             }
         }
 
         $this->constraints = $constraints;
+    }
+
+    /**
+     * Maps one rule entry to a Symfony constraint. Unknown rule names throw so a
+     * misspelled rule fails loudly instead of silently validating nothing.
+     *
+     * @return array{0: string, 1: Constraint}
+     */
+    private function ruleToConstraint(string $rule, string|array $spec): array
+    {
+        return match ($rule) {
+            'required' => [$spec, new Assert\NotBlank(['message' => sprintf(_('The %s field is required.'), $spec)])],
+            'integer' => [$spec, new Assert\Type([
+                'type' => 'numeric',
+                'message' => sprintf(_('The %s field must be a number.'), $spec),
+            ])],
+            'array' => [$spec, new Assert\Type([
+                'type' => 'array',
+                'message' => sprintf(_('The %s field must be a list.'), $spec),
+            ])],
+            'lengthMax' => [$spec[0], new Assert\Length(
+                max: $spec[1],
+                maxMessage: sprintf(_('The %s field must be at most %d characters.'), $spec[0], $spec[1]),
+            )],
+            'in' => [$spec[0], new Assert\Choice(
+                choices: $spec[1],
+                message: sprintf(_('The %s field has an invalid value.'), $spec[0]),
+            )],
+            default => throw new InvalidArgumentException("Unknown validation rule: $rule"),
+        };
     }
 
     /**
