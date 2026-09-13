@@ -65,6 +65,44 @@ class ZoneManagementService
     }
 
     /**
+     * Resolves a template given by name or numeric id and checks the acting user
+     * may apply it (own, global, or ueberuser - the same rule the web UI enforces).
+     *
+     * @return array{id: string}|array{success: false, message: string, status: int}
+     */
+    public function resolveZoneTemplate(string $zoneTemplate, ?int $actingUserId): array
+    {
+        if ($zoneTemplate === 'none' || $zoneTemplate === '') {
+            return ['id' => 'none'];
+        }
+
+        $zoneTemplateModel = new ZoneTemplate($this->db, $this->config);
+        if (is_numeric($zoneTemplate)) {
+            if (!ZoneTemplate::zoneTemplIdExists($this->db, (int)$zoneTemplate)) {
+                return ['success' => false, 'message' => 'Zone template not found', 'status' => 404];
+            }
+            $templateId = (int)$zoneTemplate;
+        } else {
+            $matchingIds = $zoneTemplateModel->getZoneTemplIdsByName($zoneTemplate);
+            if (count($matchingIds) === 0) {
+                return ['success' => false, 'message' => 'Zone template not found', 'status' => 404];
+            } elseif (count($matchingIds) > 1) {
+                return ['success' => false, 'message' => 'Multiple zone templates found with this name, please use template ID instead', 'status' => 409];
+            }
+            $templateId = (int)$matchingIds[0];
+        }
+
+        if ($actingUserId !== null) {
+            $isAdmin = (new ApiPermissionService($this->db))->userHasPermission($actingUserId, 'user_is_ueberuser');
+            if (!$zoneTemplateModel->canUseTemplate($templateId, $actingUserId, $isAdmin)) {
+                return ['success' => false, 'message' => 'You do not have permission to use this zone template', 'status' => 403];
+            }
+        }
+
+        return ['id' => (string)$templateId];
+    }
+
+    /**
      * Create a new DNS zone
      *
      * @param string $domain Domain name
@@ -149,24 +187,11 @@ class ZoneManagementService
             }
         }
 
-        // Resolve zone template: accept both name and numeric ID
-        if ($zoneTemplate !== 'none' && $zoneTemplate !== '') {
-            if (is_numeric($zoneTemplate)) {
-                if (!ZoneTemplate::zoneTemplIdExists($this->db, (int)$zoneTemplate)) {
-                    return ['success' => false, 'message' => 'Zone template not found', 'status' => 404];
-                }
-                $zoneTemplate = (string)(int)$zoneTemplate;
-            } else {
-                $zoneTemplateModel = new ZoneTemplate($this->db, $this->config);
-                $matchingIds = $zoneTemplateModel->getZoneTemplIdsByName($zoneTemplate);
-                if (count($matchingIds) === 0) {
-                    return ['success' => false, 'message' => 'Zone template not found', 'status' => 404];
-                } elseif (count($matchingIds) > 1) {
-                    return ['success' => false, 'message' => 'Multiple zone templates found with this name, please use template ID instead', 'status' => 409];
-                }
-                $zoneTemplate = (string)$matchingIds[0];
-            }
+        $resolvedTemplate = $this->resolveZoneTemplate($zoneTemplate, $actingUserId);
+        if (!isset($resolvedTemplate['id'])) {
+            return $resolvedTemplate;
         }
+        $zoneTemplate = $resolvedTemplate['id'];
 
         $this->logger->info(
             '[ZoneManagementService] Creating zone: {domain}, Type: {type}, Owner: {owner}, Groups: {groups}',
