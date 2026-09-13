@@ -497,7 +497,8 @@ class ZonesController extends PublicApiController
                 $slaveMaster,
                 $zoneTemplate,
                 $enableDnssec,
-                $groupIds
+                $groupIds,
+                $userId
             );
 
             if (!$result['success']) {

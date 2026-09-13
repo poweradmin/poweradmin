@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,6 +54,19 @@ class ZoneManagementService
         $this->logger = $logger ?? new NullLogger();
     }
 
+    private function canUseTemplate(int $templateId, int $userId): bool
+    {
+        if ((new ApiPermissionService($this->db))->userHasPermission($userId, 'user_is_ueberuser')) {
+            return true;
+        }
+
+        $stmt = $this->db->prepare("SELECT owner FROM zone_templ WHERE id = :id");
+        $stmt->execute([':id' => $templateId]);
+        $templateOwner = $stmt->fetchColumn();
+
+        return $templateOwner !== false && ((int)$templateOwner === 0 || (int)$templateOwner === $userId);
+    }
+
     /**
      * Create a new DNS zone
      *
@@ -64,6 +77,7 @@ class ZoneManagementService
      * @param string $zoneTemplate Zone template to use
      * @param bool $enableDnssec Whether to enable DNSSEC
      * @param array<int> $groupIds Optional list of group IDs to assign as owners
+     * @param int|null $actingUserId User performing the creation; when given, the template must be usable by them
      * @return array Result array with success status and zone ID or error message
      */
     public function createZone(
@@ -73,7 +87,8 @@ class ZoneManagementService
         string $slaveMaster = '',
         string $zoneTemplate = 'none',
         bool $enableDnssec = false,
-        array $groupIds = []
+        array $groupIds = [],
+        ?int $actingUserId = null
     ): array {
         if ($owner === null && empty($groupIds)) {
             return ['success' => false, 'message' => 'At least one user or group must be assigned as owner', 'status' => 400];
@@ -128,6 +143,11 @@ class ZoneManagementService
                     return ['success' => false, 'message' => 'Multiple zone templates found with this name, please use template ID instead', 'status' => 409];
                 }
                 $zoneTemplate = (string)$matchingIds[0];
+            }
+
+            // A template is usable when it is global (owner 0), the caller's own, or the caller is ueberuser.
+            if ($actingUserId !== null && !$this->canUseTemplate((int)$zoneTemplate, $actingUserId)) {
+                return ['success' => false, 'message' => 'You do not have permission to use this zone template', 'status' => 403];
             }
         }
 
