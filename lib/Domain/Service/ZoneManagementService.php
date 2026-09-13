@@ -30,6 +30,7 @@ use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
@@ -131,17 +132,35 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'At least one user or group must be assigned as owner', 'status' => 400];
         }
 
+        // Stored names are punycode, as the web form writes them.
+        $domain = DnsIdnService::toPunycode(trim($domain));
+
         // Validate domain name
         $hostnameValidator = new HostnameValidator($this->config);
         if (!$hostnameValidator->isValid($domain)) {
             return ['success' => false, 'message' => 'Invalid domain name', 'status' => 400];
         }
 
+        // The validator tolerates the absolute-name dot; the existence and parent
+        // checks below compare against stored names, which carry none (root stays ".").
+        if ($domain !== '.') {
+            $domain = preg_replace('/\.$/', '', $domain);
+        }
+
         $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config);
         $repositoryFactory = new RepositoryFactory($this->db, $this->config, $backendProvider);
+        $domainRepository = $repositoryFactory->createDomainRepository();
 
         // Check if domain already exists
-        if ($repositoryFactory->createDomainRepository()->domainExists($domain)) {
+        if ($domainRepository->domainExists($domain)) {
+            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
+        }
+
+        if (
+            $this->config->get('dns', 'third_level_check', false)
+            && DomainUtility::getDomainLevel($domain) > 2
+            && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($domain))
+        ) {
             return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
         }
 

@@ -29,21 +29,26 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
- * API zone creation must apply the same template-usability rule as the web UI:
- * a template is usable when it is global (owner 0), owned by the caller, or the
- * caller is ueberuser.
+ * API zone creation must apply the same name and template rules as the web UI:
+ * names are stored as punycode, dns.third_level_check refuses subzones of an
+ * existing zone, and a template is usable when it is global (owner 0), owned
+ * by the caller, or the caller is ueberuser.
  */
 #[CoversClass(ZoneManagementService::class)]
-class ZoneManagementServiceTemplateTest extends SqliteIntegrationTestCase
+class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
 {
     private const OTHER_USER = 2;
     private const PRIVATE_TEMPLATE = 10;
     private const GLOBAL_TEMPLATE = 11;
 
+    private bool $thirdLevelCheck = false;
+
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, type TEXT NOT NULL)");
+        $this->db->exec("INSERT INTO domains (name, type) VALUES ('xn--bcher-kva.example', 'MASTER'), ('parent.example', 'MASTER')");
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '', owner INTEGER NOT NULL DEFAULT 0, created_by INTEGER)");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (2, 'Client')");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::OTHER_USER . ", 'client', 2)");
@@ -57,9 +62,41 @@ class ZoneManagementServiceTemplateTest extends SqliteIntegrationTestCase
     private function service(): ZoneManagementService
     {
         $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(fn(string $group, string $key, $default = null) => $default);
+        $config->method('get')->willReturnCallback(function (string $group, string $key, $default = null) {
+            if ($group === 'dns' && $key === 'third_level_check') {
+                return $this->thirdLevelCheck;
+            }
+            return $default;
+        });
 
         return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db);
+    }
+
+    public function testCreateZoneLooksUpTheNameAsPunycode(): void
+    {
+        $result = $this->service()->createZone('bücher.example', 'MASTER', self::ADMIN_USER_ID);
+
+        $this->assertSame(409, $result['status']);
+        $this->assertSame('Domain already exists', $result['message']);
+    }
+
+    public function testCreateZoneRejectsDoubledTrailingDot(): void
+    {
+        $result = $this->service()->createZone('new.example..', 'MASTER', self::ADMIN_USER_ID);
+
+        $this->assertSame(400, $result['status']);
+    }
+
+    public function testCreateZoneRefusesSubzoneOfExistingZoneWhenThirdLevelCheckIsOn(): void
+    {
+        $this->thirdLevelCheck = true;
+
+        foreach (['sub.parent.example', 'sub.parent.example.'] as $name) {
+            $result = $this->service()->createZone($name, 'MASTER', self::ADMIN_USER_ID);
+
+            $this->assertSame(409, $result['status'], $name);
+            $this->assertSame('Domain already exists', $result['message']);
+        }
     }
 
     public function testNoTemplateResolvesToNone(): void
