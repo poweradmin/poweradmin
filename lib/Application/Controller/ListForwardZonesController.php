@@ -35,10 +35,9 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\UserService;
-use Poweradmin\Application\Service\ZoneService;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -284,16 +283,12 @@ class ListForwardZonesController extends BaseController
 
     private function getAvailableStartingLetters(string $letterStart, int $userId): string
     {
-        $userRepository = $this->createUserRepository();
-        $userService = new UserService($userRepository);
-        $allow_view_others = $userService->canUserViewOthersContent($userId);
+        $allow_view_others = $this->createUserRepository()->canViewOthersContent(new UserId($userId));
 
         $dnsDataService = $this->createDnsDataService();
         $availableChars = $dnsDataService->getDistinctStartingLetters($userId, $allow_view_others);
 
-        $zoneRepository = $this->createZoneRepository();
-        $zoneService = new ZoneService($zoneRepository);
-        $digitsAvailable = $zoneService->checkDigitsAvailable($availableChars);
+        $digitsAvailable = (bool)array_filter($availableChars, 'is_numeric');
 
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
         $presenter = new ZoneStartingLettersPresenter();

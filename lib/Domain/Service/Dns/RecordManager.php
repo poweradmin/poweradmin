@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Service\Dns;
 use Exception;
 use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
@@ -260,16 +259,11 @@ class RecordManager implements RecordManagerInterface
             $this->db->beginTransaction();
         }
         try {
-            try {
-                // Disabled records need the disabled flag persisted atomically with the
-                // insert; the regular insert path has no disabled support.
-                $recordId = $disabled
-                    ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled)
-                    : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
-            } catch (RecordIdNotFoundException $e) {
-                $this->logger->error('Failed to get record ID after creation: {error}', ['error' => $e->getMessage()]);
-                $recordId = null;
-            }
+            // Disabled records need the disabled flag persisted atomically with the
+            // insert; the regular insert path has no disabled support.
+            $recordId = $disabled
+                ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled)
+                : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
             if ($recordId === null) {
                 if ($ownTransaction) {
                     $this->db->rollBack();

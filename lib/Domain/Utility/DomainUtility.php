@@ -48,7 +48,7 @@ class DomainUtility
     public static function convertIPv6AddrToPtrRec(string $ip): string
     {
         // Taken from: http://stackoverflow.com/questions/6619682/convert-ipv6-to-nibble-format-for-ptr-records
-        $addr = NetworkUtility::inetPton($ip);
+        $addr = inet_pton($ip);
         $unpack = unpack('H*hex', $addr);
         $hex = $unpack['hex'];
         return implode('.', array_reverse(str_split($hex))) . '.ip6.arpa';

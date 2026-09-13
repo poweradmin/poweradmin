@@ -22,28 +22,34 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Utility\MemoryUsage;
-use Poweradmin\Domain\Utility\SizeFormatter;
-use Poweradmin\Domain\Utility\Timer;
-
 class StatsDisplayService
 {
-    private MemoryUsage $memoryUsage;
-    private Timer $timer;
-    private SizeFormatter $sizeFormatter;
+    private const UNITS = ['B', 'KB', 'MB', 'GB'];
 
-    public function __construct(MemoryUsage $memoryUsage, Timer $timer, SizeFormatter $sizeFormatter)
+    private int $startMemory;
+    private float $startTime;
+
+    public function __construct()
     {
-        $this->memoryUsage = $memoryUsage;
-        $this->timer = $timer;
-        $this->sizeFormatter = $sizeFormatter;
+        $this->startMemory = memory_get_usage();
+        $this->startTime = microtime(true);
     }
 
     public function displayStats(): string
     {
-        $memoryUsage = $this->sizeFormatter->humanReadable($this->memoryUsage->calculateCurrentUsage());
-        $elapsedTime = sprintf("%.5f", $this->timer->elapsedTime());
+        $memoryUsage = self::humanReadable(memory_get_usage() - $this->startMemory);
+        $elapsedTime = sprintf("%.5f", microtime(true) - $this->startTime);
 
         return "<div class=\"container\"><samp>Memory usage: $memoryUsage, elapsed time: $elapsedTime</samp></div>";
+    }
+
+    private static function humanReadable(int $size): string
+    {
+        if ($size < 1024) {
+            return $size . ' B';
+        }
+
+        $index = (int)floor(log($size, 1024));
+        return round($size / pow(1024, $index), 2) . ' ' . self::UNITS[$index];
     }
 }

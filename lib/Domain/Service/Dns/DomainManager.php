@@ -29,8 +29,6 @@ use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Error\RecordIdNotFoundException;
-use Poweradmin\Domain\Error\ZoneIdNotFoundException;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
@@ -211,11 +209,6 @@ class DomainManager implements DomainManagerInterface
                 // the row that PowerDNS wrote on a different connection.
                 try {
                     $domain_id = $this->backendProvider->createZone($domain, $type, $slave_master);
-                } catch (ZoneIdNotFoundException $e) {
-                    // Zone was created via API but DB ID lookup timed out.
-                    // Clean up the orphaned zone to avoid unmanaged state.
-                    $this->cleanupZoneOnFailure(0, $domain);
-                    return ZoneWriteResult::backendFailure(_('Failed to create zone in DNS backend.'));
                 } catch (\Exception $e) {
                     return ZoneWriteResult::backendFailure(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
                 }
@@ -366,15 +359,7 @@ class DomainManager implements DomainManagerInterface
                                             $ttl = $dns_ttl;
                                         }
 
-                                        try {
-                                            $record_id = $this->backendProvider->addRecordGetId($domain_id, $name, $recordType, $content, (int)$ttl, $prio);
-                                        } catch (RecordIdNotFoundException $e) {
-                                            // Record was created via API but DB ID not found.
-                                            // Skip template linkage for this record to avoid
-                                            // storing a synthetic ID that breaks cleanup JOINs.
-                                            $this->logger->error('Failed to get record ID after API creation: {error}', ['error' => $e->getMessage()]);
-                                            continue;
-                                        }
+                                        $record_id = $this->backendProvider->addRecordGetId($domain_id, $name, $recordType, $content, (int)$ttl, $prio);
                                         if ($record_id === null && $isApiBackend) {
                                             $this->cleanupZoneOnFailure($domain_id, $domain);
                                             $this->cleanupZoneMetadata($domain_id);
@@ -953,12 +938,7 @@ class DomainManager implements DomainManagerInterface
                             // Only insert if the record doesn't already exist
                             if (!$recordExists) {
                                 if ($isApiBackend) {
-                                    try {
-                                        $record_id = $this->backendProvider->addRecordGetId($zone_id, $name, $recordType, $content, (int)$ttl, $prio);
-                                    } catch (RecordIdNotFoundException $e) {
-                                        $this->logger->error('Failed to get record ID after API creation: {error}', ['error' => $e->getMessage()]);
-                                        continue;
-                                    }
+                                    $record_id = $this->backendProvider->addRecordGetId($zone_id, $name, $recordType, $content, (int)$ttl, $prio);
                                     if ($record_id === null) {
                                         continue;
                                     }

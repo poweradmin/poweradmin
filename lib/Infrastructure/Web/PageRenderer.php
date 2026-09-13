@@ -25,12 +25,12 @@ namespace Poweradmin\Infrastructure\Web;
 use Closure;
 use Poweradmin\AppManager;
 use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Application\Service\AvatarService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
-use Poweradmin\Domain\Service\UserAvatarService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
@@ -444,7 +444,18 @@ class PageRenderer
      */
     private function getUserAvatarUrl(): ?string
     {
-        $userAvatarService = new UserAvatarService($this->userContextService, $this->config);
-        return $userAvatarService->getCurrentUserAvatarUrl();
+        if (!$this->userContextService->isAuthenticated()) {
+            return null;
+        }
+
+        $avatarService = new AvatarService($this->config);
+        if (!$avatarService->isAvatarEnabled()) {
+            return null;
+        }
+
+        return $avatarService->getAvatarUrl(
+            $this->userContextService->getUserEmail(),
+            $this->userContextService->getOAuthAvatarUrl()
+        );
     }
 }

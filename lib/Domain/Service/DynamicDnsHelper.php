@@ -22,9 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
-
 /**
  * Helper functions for dynamic DNS updates
  *
@@ -67,93 +64,5 @@ class DynamicDnsHelper
         }
         echo "$status\n";
         return false;
-    }
-
-    /**
-     * Check whether the given address is an IP address
-     *
-     * @param string $ip Given IP address
-     *
-     * @return int|string A if IPv4, AAAA if IPv6 or 0 if invalid
-     */
-    public static function validIpAddress(string $ip): int|string
-    {
-        static $ipValidator = null;
-        if ($ipValidator === null) {
-            $ipValidator = new IPAddressValidator();
-        }
-
-        if ($ipValidator->isValidIPv4($ip)) {
-            $value = RecordType::A;
-        } elseif ($ipValidator->isValidIPv6($ip)) {
-            $value = RecordType::AAAA;
-        } else {
-            $value = 0;
-        }
-        return $value;
-    }
-
-    /**
-     * Parse, trim and validate a comma-separated list of IPs by type.
-     *
-     * @param string $raw_ip_input Comma-separated IP string
-     * @param string $type 'A' or 'AAAA'
-     *
-     * @return array Filtered list of valid IPs
-     */
-    public static function extractValidIps(string $raw_ip_input, string $type): array
-    {
-        $ip_array = array_map('trim', explode(',', $raw_ip_input));
-        return array_filter($ip_array, function ($ip) use ($type) {
-            return self::validIpAddress($ip) === $type;
-        });
-    }
-
-    /**
-     * Synchronize A or AAAA DNS records with a new set of IP addresses
-     *
-     * @param object $db PDO database connection
-     * @param string $records_table Name of the records table
-     * @param int $domain_id ID of the domain/zone
-     * @param string $hostname Fully-qualified domain name to update
-     * @param string $type Record type ('A' or 'AAAA')
-     * @param array $new_ips List of new IP addresses to apply
-     *
-     * @return bool True if any changes were made, false otherwise
-     */
-    public static function syncDnsRecords($db, $records_table, int $domain_id, string $hostname, string $type, array $new_ips): bool
-    {
-        $zone_updated = false;
-
-        $existing = [];
-        $query = $db->prepare("SELECT id, content FROM $records_table WHERE domain_id = :domain_id AND name = :hostname AND type = :type");
-        $query->execute([':domain_id' => $domain_id, ':hostname' => $hostname, ':type' => $type]);
-        while ($row = $query->fetch()) {
-            $existing[$row['content']] = $row['id'];
-        }
-
-        foreach ($new_ips as $ip) {
-            if (isset($existing[$ip])) {
-                unset($existing[$ip]);
-            } else {
-                $insert = $db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio)
-                    VALUES (:domain_id, :hostname, :type, :ip, 60, NULL)");
-                $insert->execute([
-                    ':domain_id' => $domain_id,
-                    ':hostname' => $hostname,
-                    ':type' => $type,
-                    ':ip' => $ip
-                ]);
-                $zone_updated = true;
-            }
-        }
-
-        foreach ($existing as $ip => $record_id) {
-            $delete = $db->prepare("DELETE FROM $records_table WHERE id = :id");
-            $delete->execute([':id' => $record_id]);
-            $zone_updated = true;
-        }
-
-        return $zone_updated;
     }
 }

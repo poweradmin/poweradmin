@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Service;
 
 use Exception;
-use Poweradmin\Domain\Service\MailService as MailServiceInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Mailer;
@@ -33,7 +32,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class MailService implements MailServiceInterface
+class MailService
 {
     private ConfigurationManager $config;
     private ?LoggerInterface $logger;
@@ -513,7 +512,7 @@ class MailService implements MailServiceInterface
     }
 
     /**
-     * Implements the MailService interface method
+     * Sends a plain-text email with default headers.
      *
      * @param string $to The recipient's email address
      * @param string $subject The email subject

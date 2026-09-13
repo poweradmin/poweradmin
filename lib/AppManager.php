@@ -28,12 +28,9 @@ use Poweradmin\Application\Service\StatsDisplayService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\TemplateCacheResolver;
-use Poweradmin\Domain\Utility\MemoryUsage;
-use Poweradmin\Domain\Utility\Timer;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
 use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
-use Poweradmin\Infrastructure\Utility\SimpleSizeFormatter;
 use Poweradmin\Infrastructure\Web\BadgeTwigExtension;
 use Poweradmin\Module\ModuleRegistry;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
@@ -250,7 +247,7 @@ class AppManager
             return null;
         }
 
-        return new StatsDisplayService(new MemoryUsage(), new Timer(), new SimpleSizeFormatter());
+        return new StatsDisplayService();
     }
 
     /**

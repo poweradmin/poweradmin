@@ -36,7 +36,7 @@ interface ZoneRepositoryInterface
     public function getAllZones(?int $offset = null, ?int $limit = null): array;
 
     /**
-     * Get total count of zones
+     * Get the total number of zones
      *
      * @return int Total number of zones
      */

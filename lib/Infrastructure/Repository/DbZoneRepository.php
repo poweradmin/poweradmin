@@ -1206,7 +1206,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneCount(): int
     {
-
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT COUNT(*) FROM $domains_table";
