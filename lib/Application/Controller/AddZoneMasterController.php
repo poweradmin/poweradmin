@@ -211,7 +211,13 @@ class AddZoneMasterController extends BaseController
             $zone_template = 'none';
         }
 
-        $soa_edit_api = $this->sanitizeSoaEditApiInput($this->request->getPostParam('soa_edit_api'));
+        $soa_edit_api_input = $this->request->getPostParam('soa_edit_api');
+        if (!$this->isOfferedSoaEditApiInput($soa_edit_api_input)) {
+            $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
+            $this->showForm();
+            return;
+        }
+        $soa_edit_api = $this->sanitizeSoaEditApiInput($soa_edit_api_input);
         $groupsInput = $this->request->getPostParam('groups');
         $selected_groups = $ownershipMode->isGroupOwnerAllowed() && is_array($groupsInput) ?
             array_map('intval', $groupsInput) : [];
@@ -376,6 +382,15 @@ class AddZoneMasterController extends BaseController
         }
 
         return in_array($value, $this->getSoaEditApiChoices(), true) ? $value : null;
+    }
+
+    /**
+     * Empty means "server default"; anything else must be an offered choice,
+     * as the API requires, instead of being silently dropped.
+     */
+    private function isOfferedSoaEditApiInput(?string $value): bool
+    {
+        return $value === null || $value === '' || in_array($value, $this->getSoaEditApiChoices(), true);
     }
 
     private function showForm(): void

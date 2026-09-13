@@ -84,6 +84,17 @@ class AddZoneMasterControllerSoaEditApiTest extends TestCase
         $this->assertSame([], $this->invoke($controller, 'getSoaEditApiChoices'));
     }
 
+    public function testUnknownSubmittedValueIsAnError(): void
+    {
+        $controller = $this->createController(['DEFAULT']);
+
+        $this->assertTrue($this->invoke($controller, 'isOfferedSoaEditApiInput', [null]));
+        $this->assertTrue($this->invoke($controller, 'isOfferedSoaEditApiInput', ['']));
+        $this->assertTrue($this->invoke($controller, 'isOfferedSoaEditApiInput', ['DEFAULT']));
+        $this->assertFalse($this->invoke($controller, 'isOfferedSoaEditApiInput', ['EPOCH']));
+        $this->assertFalse($this->invoke($controller, 'isOfferedSoaEditApiInput', ['bogus']));
+    }
+
     public function testSanitizeRejectsValueOutsideConfiguredChoices(): void
     {
         $controller = $this->createController(['DEFAULT']);
