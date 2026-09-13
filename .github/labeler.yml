@@ -22,7 +22,6 @@ dns:
       - 'lib/**/Repository/*Record*.php'
       - 'lib/**/Repository/*Zone*.php'
       - 'lib/Domain/Service/DnsRecordValidationService.php'
-      - 'lib/Domain/Service/DnssecService.php'
       - 'tests/**/*Record*.php'
       - 'tests/**/*Zone*.php'
 
@@ -30,7 +29,6 @@ dnssec:
   - changed-files:
     - any-glob-to-any-file:
       - 'lib/**/*Dnssec*.php'
-      - 'lib/Domain/Service/DnssecService.php'
       - 'tests/**/*Dnssec*.php'
       - 'docs/**/*dnssec*.md'
       - 'docs/**/*DNSSEC*.md'
@@ -104,7 +102,6 @@ core:
       - 'lib/Domain/**'
       - 'lib/Application/Controller/*.php'
       - 'lib/Application/Service/UserManager.php'
-      - 'lib/Application/Service/ZoneService.php'
       - 'lib/Application/Service/RecordManager.php'
       - 'index.php'
       - 'dynamic_update.php'

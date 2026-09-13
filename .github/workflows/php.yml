@@ -114,11 +114,8 @@ jobs:
     - name: Check code style
       run: composer check:all
 
-    - name: Check E2E navigation paths resolve to routes
-      run: composer lint:e2e-routes
-
-    - name: Check template, SQL and logging conventions
-      run: composer lint:twig && composer lint:themes && composer lint:zone-ids && composer lint:sensitive-params && composer lint:error-traces && composer lint:e2e-urls
+    - name: Run convention lints
+      run: composer lint:all
 
   phpstan:
     name: PHPStan Analysis
