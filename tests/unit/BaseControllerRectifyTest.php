@@ -82,7 +82,8 @@ class BaseControllerRectifyTest extends TestCase
 
     public function testRectifiesTheZoneWhenDnssecIsEnabled(): void
     {
-        $this->dnssecProvider->expects($this->once())->method('rectifyZone')->with('example.com');
+        $this->dnssecProvider->expects($this->once())->method('rectifyZone')->with('example.com')->willReturn(true);
+        $this->logger->expects($this->never())->method('warning');
 
         $this->rectify(true, 'example.com');
     }
@@ -92,6 +93,14 @@ class BaseControllerRectifyTest extends TestCase
         $this->dnssecProvider->expects($this->never())->method('rectifyZone');
 
         $this->rectify(false, 'example.com');
+    }
+
+    public function testRectifyRefusalIsLogged(): void
+    {
+        $this->dnssecProvider->method('rectifyZone')->willReturn(false);
+        $this->logger->expects($this->once())->method('warning');
+
+        $this->rectify(true, 'example.com');
     }
 
     public function testRectifyFailureIsLoggedNotThrown(): void

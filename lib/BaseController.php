@@ -564,7 +564,9 @@ abstract class BaseController
         }
 
         try {
-            $this->createDnssecProvider()->rectifyZone($zoneName);
+            if (!$this->createDnssecProvider()->rectifyZone($zoneName)) {
+                $this->logger->warning('Failed to rectify zone {zone}', ['zone' => $zoneName]);
+            }
         } catch (\Throwable $e) {
             $this->logger->warning('Failed to rectify zone {zone}: {message}', ['zone' => $zoneName, 'message' => $e->getMessage()]);
         }
