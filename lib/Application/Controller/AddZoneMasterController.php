@@ -275,7 +275,7 @@ class AddZoneMasterController extends BaseController
         } elseif ($dns_third_level_check && DomainUtility::getDomainLevel($zone_name) > 2 && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($zone_name))) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif ($domainRepository->domainExists($zone_name) || $recordRepository->recordNameExists($zone_name)) {
+        } elseif ($domainRepository->domainExists($zone_name) || $recordRepository->hasNonDelegationRecords($zone_name)) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif (($overlapError = $this->getZoneOverlapError($zone_name)) !== null) {
