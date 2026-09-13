@@ -20,6 +20,8 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use ReflectionClass;
@@ -92,6 +94,19 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $domainManager->expects($this->never())->method('updateZoneRecords');
 
         $this->invokeHandler($domainManager, 42);
+    }
+
+    public function testTypeChangeNeedsTheCreateGrantForTheTargetType(): void
+    {
+        $_POST = [
+            'type_change' => '1',
+            'newtype' => 'SLAVE',
+        ];
+
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->never())->method('changeZoneType');
+
+        $this->invokeHandler($domainManager, 42, canCreateZone: false);
     }
 
     public function testTypeChangeIgnoresUnknownType(): void
@@ -232,7 +247,8 @@ class EditControllerZoneMetadataPostTest extends TestCase
         DomainManagerInterface $domainManager,
         int $zone_id,
         ?DomainRepositoryInterface $domainRepository = null,
-        array $configOverrides = []
+        array $configOverrides = [],
+        bool $canCreateZone = true
     ): void {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
 
@@ -242,6 +258,10 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $zoneTemplateModel = $this->createMock(ZoneTemplate::class);
         $zoneTemplateModel->method('canCurrentUserUseTemplate')->willReturn(true);
         $this->setProperty($controller, 'zoneTemplateModel', $zoneTemplateModel);
+        $permissionService = $this->createMock(PermissionService::class);
+        $permissionService->method('canCreateZone')->willReturn($canCreateZone);
+        $this->setProperty($controller, 'permissionService', $permissionService);
+        $this->setBaseProperty($controller, 'userContextService', new UserContextService());
 
         $config = $this->primeConfig($configOverrides);
         $this->setBaseProperty($controller, 'config', $config);

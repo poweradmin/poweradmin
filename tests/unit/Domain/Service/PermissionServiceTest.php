@@ -485,7 +485,7 @@ class PermissionServiceTest extends TestCase
     }
 
     #[Test]
-    public function testCanAddZones(): void
+    public function testCanCreateZoneNeedsTheGrantForTheKind(): void
     {
         $this->userRepository->method('hasAdminPermission')
             ->willReturnMap([
@@ -498,12 +498,21 @@ class PermissionServiceTest extends TestCase
             ->willReturnMap([
                 [1, []],
                 [2, ['zone_master_add']],
-                [3, []],
+                [3, ['zone_slave_add']],
             ]);
 
-        $this->assertTrue($this->service->canAddZones(1)); // admin
-        $this->assertTrue($this->service->canAddZones(2)); // has permission
-        $this->assertFalse($this->service->canAddZones(3)); // no permission
+        foreach (['MASTER', 'NATIVE', 'SLAVE', 'PRODUCER', 'CONSUMER'] as $kind) {
+            $this->assertTrue($this->service->canCreateZone(1, $kind), "admin $kind");
+        }
+        $this->assertTrue($this->service->canCreateZone(2, 'MASTER'));
+        $this->assertTrue($this->service->canCreateZone(2, 'native'));
+        $this->assertTrue($this->service->canCreateZone(2, 'PRODUCER'));
+        $this->assertFalse($this->service->canCreateZone(2, 'SLAVE'));
+        $this->assertFalse($this->service->canCreateZone(2, 'CONSUMER'));
+        $this->assertTrue($this->service->canCreateZone(3, 'SLAVE'));
+        $this->assertTrue($this->service->canCreateZone(3, 'CONSUMER'));
+        $this->assertFalse($this->service->canCreateZone(3, 'MASTER'));
+        $this->assertFalse($this->service->canCreateZone(1, 'BOGUS'));
     }
 
     #[Test]

@@ -651,6 +651,11 @@ class EditController extends BaseController
         $new_type = htmlspecialchars($this->request->getPostParam('newtype', ''));
         if ($this->request->getPostParam('type_change') !== null && in_array($new_type, ZoneType::getTypes())) {
             $this->validateCsrfToken();
+            // Converting a zone is equivalent to creating one of the target type.
+            if (!$this->permissionService->canCreateZone((int)$this->getCurrentUserId(), $new_type)) {
+                $this->setMessage('edit', 'error', _('You do not have permission to change this zone to that type.'));
+                return;
+            }
             if ($domainManager->changeZoneType($new_type, $zone_id)) {
                 $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
             }
