@@ -40,7 +40,6 @@ use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -318,7 +317,7 @@ class ZonesRRSetsController extends PublicApiController
             $zoneName = $domainRepository->getDomainNameById($zoneId);
 
             // Convert name to FQDN
-            $fqdn = DnsHelper::restoreZoneSuffix($name, $zoneName);
+            $fqdn = $this->normalizeV2RecordName($name, $zoneName);
 
             // Get all records matching this name and type
             $records = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
@@ -497,7 +496,7 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Convert name to FQDN
-            $fqdn = DnsHelper::restoreZoneSuffix($name, $zoneName);
+            $fqdn = $this->normalizeV2RecordName($name, $zoneName);
 
             // Block SOA/NS RRSet edits for users limited to zone_content_edit_own_as_client;
             // checked after FQDN conversion so the subzone NS exemption sees the full name
@@ -518,7 +517,6 @@ class ZonesRRSetsController extends PublicApiController
                 // This prevents data loss when validation fails after records have been deleted.
                 $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
                 $hostnameValidator = new HostnameValidator($this->getConfig());
-                $dnsFormatter = new DnsFormatter($this->getConfig());
                 $normalizedName = $hostnameValidator->normalizeRecordName($fqdn, $zoneName);
                 $dns_hostmaster = $this->getConfig()->get('dns', 'hostmaster');
                 $dns_ttl = $this->getConfig()->get('dns', 'ttl');
@@ -543,14 +541,7 @@ class ZonesRRSetsController extends PublicApiController
                         return $this->returnApiError("Invalid 'disabled' or 'priority' value in record", 400);
                     }
 
-                    $content = $dnsFormatter->formatContent($type, $content);
-
-                    if ($type === 'TXT') {
-                        $content = trim($content);
-                        if (!str_starts_with($content, '"') || !str_ends_with($content, '"')) {
-                            $content = '"' . $content . '"';
-                        }
-                    }
+                    $content = $this->formatV2RecordContent($type, $content);
 
                     $validationResult = $validationService->validateRecord(
                         -1,
@@ -774,7 +765,7 @@ class ZonesRRSetsController extends PublicApiController
             $zoneName = $domainRepository->getDomainNameById($zoneId);
 
             // Convert name to FQDN
-            $fqdn = DnsHelper::restoreZoneSuffix($name, $zoneName);
+            $fqdn = $this->normalizeV2RecordName($name, $zoneName);
 
             // Block SOA/NS RRSet deletes for users limited to zone_content_edit_own_as_client;
             // checked after FQDN conversion so the subzone NS exemption sees the full name

@@ -46,6 +46,8 @@ use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\DnsFormatter;
+use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -482,6 +484,8 @@ abstract class PublicApiController extends AbstractApiController
     protected function formatV2RecordContent(string $type, string $content): string
     {
         $type = strtoupper($type);
+        // Stored content is punycode, as the web forms write it.
+        $content = DnsIdnService::convertContentToPunycode($type, $content);
         $content = (new DnsFormatter($this->getConfig()))->formatContent($type, $content);
         if ($type === 'TXT') {
             $content = trim($content);
@@ -490,6 +494,14 @@ abstract class PublicApiController extends AbstractApiController
             }
         }
         return $content;
+    }
+
+    /**
+     * Record names are stored as punycode and always carry the zone suffix.
+     */
+    protected function normalizeV2RecordName(string $name, string $zoneName): string
+    {
+        return DnsHelper::restoreZoneSuffix(DnsIdnService::toPunycode(trim($name)), $zoneName);
     }
 
     /**

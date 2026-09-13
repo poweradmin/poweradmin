@@ -416,11 +416,11 @@ class ZonesRecordsBulkController extends PublicApiController
         }
 
         // Convert name to FQDN
-        $fqdn = DnsHelper::restoreZoneSuffix($name, $zoneName);
+        $fqdn = $this->normalizeV2RecordName($name, $zoneName);
 
-        // Normalize the hostname
+        // Lowercased once here so the duplicate check and the insert agree.
         $hostnameValidator = new HostnameValidator($this->getConfig());
-        $normalizedName = $hostnameValidator->normalizeRecordName($fqdn, $zoneName);
+        $normalizedName = strtolower($hostnameValidator->normalizeRecordName($fqdn, $zoneName));
 
         // Block SOA/NS edits for users limited to zone_content_edit_own_as_client;
         // checked after normalization so the subzone NS exemption sees the FQDN
@@ -457,6 +457,10 @@ class ZonesRecordsBulkController extends PublicApiController
         $validatedContent = $validatedData['content'] ?? $content;
         $validatedTtl = $validatedData['ttl'] ?? $ttl;
         $validatedPriority = $validatedData['prio'] ?? $priority;
+
+        if ($this->recordRepository->recordExists($zoneId, $normalizedName, $type, $validatedContent)) {
+            throw new ApiErrorException('A record with this hostname, type, and content already exists', 409);
+        }
 
         // Insert record via backend provider
         $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $validatedContent, $validatedTtl, $validatedPriority, $disabled);
@@ -528,6 +532,7 @@ class ZonesRecordsBulkController extends PublicApiController
         if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
             throw new ApiErrorException('Invalid field types in request body', 400);
         }
+        $name = $this->normalizeV2RecordName($name, (string)$zoneName);
         // Format content the same way create does so TXT records round-trip
         // (GET strips the quotes V2 adds; an update echoing GET output must re-quote).
         $content = $this->formatV2RecordContent($type, $content);

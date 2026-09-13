@@ -407,6 +407,17 @@ class ZonesRecordsController extends PublicApiController
             ]
         )
     )]
+    #[OA\Response(
+        response: 409,
+        description: 'An identical record (name, type and content) already exists',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'A record with this hostname, type, and content already exists'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
+    )]
     private function createRecord(): JsonResponse
     {
         try {
@@ -479,13 +490,13 @@ class ZonesRecordsController extends PublicApiController
             // Validate the record using the validation service
             $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
 
-            // Normalize record name to full FQDN (always, regardless of display setting)
-            // This converts @ to zone apex and ensures proper zone suffix
-            $name = DnsHelper::restoreZoneSuffix($name, $zoneName);
+            // Punycode plus the zone suffix, so @ becomes the apex and IDN labels match storage
+            $name = $this->normalizeV2RecordName($name, $zoneName);
 
             // Normalize the hostname
+            // Lowercased once here so the duplicate check and the insert agree.
             $hostnameValidator = new HostnameValidator($this->getConfig());
-            $normalizedName = $hostnameValidator->normalizeRecordName($name, $zoneName);
+            $normalizedName = strtolower($hostnameValidator->normalizeRecordName($name, $zoneName));
 
             // Block SOA/NS edits for users limited to zone_content_edit_own_as_client;
             // checked after normalization so the subzone NS exemption sees the FQDN
@@ -522,6 +533,10 @@ class ZonesRecordsController extends PublicApiController
             $validatedContent = $validatedData['content'] ?? $content;
             $validatedTtl = $validatedData['ttl'] ?? $ttl;
             $validatedPriority = $validatedData['prio'] ?? $priority;
+
+            if ($this->recordRepository->recordExists($zoneId, $normalizedName, $type, $validatedContent)) {
+                return $this->returnApiError('A record with this hostname, type, and content already exists', 409);
+            }
 
             // If validation passes, insert the record via backend provider
             // Wrap insert + SOA update in a transaction for atomicity (SQL backend only).
@@ -779,6 +794,7 @@ class ZonesRecordsController extends PublicApiController
             if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
+            $name = $this->normalizeV2RecordName($name, (string)$zone['name']);
 
             $oldType = strtoupper((string)$existingRecord['type']);
             $oldContent = (string)$existingRecord['content'];
@@ -857,7 +873,6 @@ class ZonesRecordsController extends PublicApiController
             if ($updatePtr && ($oldType === 'A' || $oldType === 'AAAA' || $recordData['type'] === 'A' || $recordData['type'] === 'AAAA')) {
                 try {
                     $newName = $updatedRecord['name'] ?? $recordData['name'];
-                    $newName = DnsHelper::restoreZoneSuffix($newName, $zoneName ?: '');
                     $newContent = $updatedRecord['content'] ?? $recordData['content'];
 
                     $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $this->createDomainRepository(), $this->createRecordManager(), $this->recordCommentService, $this->createDnsBackendProvider());
@@ -905,7 +920,7 @@ class ZonesRecordsController extends PublicApiController
                 // caller an identifier that 404s on its next request.
                 $newRecordId = $this->recordRepository->getNewRecordId(
                     $zoneId,
-                    DnsHelper::restoreZoneSuffix($recordData['name'], $zoneName ?: ''),
+                    $recordData['name'],
                     $recordData['type'],
                     $recordData['content']
                 ) ?? $recordId;
