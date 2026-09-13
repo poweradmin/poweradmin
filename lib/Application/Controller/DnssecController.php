@@ -38,7 +38,6 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
@@ -69,7 +68,7 @@ class DnssecController extends BaseController
 
         // Early permission check - validate zone visibility before any operations.
         // The DNSSEC page itself only requires view; per-action gates apply for mutations.
-        $perm_view = Permission::getViewPermission($this->db);
+        $perm_view = $this->createPermissionService()->getViewPermissionLevel((int)$this->getCurrentUserId());
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {

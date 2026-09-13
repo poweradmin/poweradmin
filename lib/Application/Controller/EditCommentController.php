@@ -35,7 +35,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
@@ -61,8 +60,10 @@ class EditCommentController extends BaseController
             $this->showError(_("Zone comments feature is disabled in configuration."));
         }
 
-        $perm_view = Permission::getViewPermission($this->db);
-        $perm_edit = Permission::getEditPermission($this->db);
+        $permissionService = $this->createPermissionService();
+        $userId = (int)$this->getCurrentUserId();
+        $perm_view = $permissionService->getViewPermissionLevel($userId);
+        $perm_edit = $permissionService->getEditPermissionLevel($userId);
 
         $zone_id = $this->getSafeRequestValue('id');
         if (!$zone_id || !Validator::isNumber($zone_id)) {

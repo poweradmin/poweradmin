@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Validator;
 
 class DnssecToggleKeyController extends BaseController
@@ -64,7 +63,7 @@ class DnssecToggleKeyController extends BaseController
         $this->validateCsrfToken();
 
         // Validate permissions
-        $perm_view = Permission::getViewPermission($this->db);
+        $perm_view = $this->createPermissionService()->getViewPermissionLevel((int)$this->getCurrentUserId());
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {

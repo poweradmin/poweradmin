@@ -482,7 +482,7 @@ class EditController extends BaseController
         $zone_is_read_only = ZoneType::isReadOnly($domain_type);
         $user_can_edit_zone = ZoneAccessPolicy::canEditZone($perm_edit, $user_is_zone_owner);
         $zone_is_editable = $user_can_edit_zone && !$zone_is_read_only;
-        $log_permission = Permission::getZoneLogPermission($this->db);
+        $log_permission = $this->permissionService->getZoneLogPermissionLevel($userId);
         $can_view_zone_logs = ZoneAccessPolicy::levelAppliesToZone($log_permission, $user_is_zone_owner);
 
         foreach ($displayRecords as &$record) {

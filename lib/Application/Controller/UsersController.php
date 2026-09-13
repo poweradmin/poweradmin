@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
@@ -127,8 +126,8 @@ class UsersController extends BaseController
 
     private function showUsers(): void
     {
-        $permissions = Permission::getPermissions(
-            $this->db,
+        $permissions = $this->createPermissionService()->getPermissionFlags(
+            (int)$this->getCurrentUserId(),
             [
                 'user_view_others',
                 'user_edit_own',

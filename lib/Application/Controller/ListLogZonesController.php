@@ -36,7 +36,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -60,7 +59,7 @@ class ListLogZonesController extends BaseController
 
     public function run(): void
     {
-        $logPermission = Permission::getZoneLogPermission($this->db);
+        $logPermission = $this->createPermissionService()->getZoneLogPermissionLevel((int)$this->getCurrentUserId());
 
         if ($logPermission === 'none') {
             // Existing deny path: logs the access denial via AuditService and halts.

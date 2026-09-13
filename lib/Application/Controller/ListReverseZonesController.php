@@ -38,7 +38,6 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
@@ -111,15 +110,16 @@ class ListReverseZonesController extends BaseController
             $row_start = max(0, ($start - 1) * $iface_rowamount);
         }
 
-        $perm_view = Permission::getViewPermission($this->db);
-        $perm_edit = Permission::getEditPermission($this->db);
-        $perm_delete = Permission::getDeletePermission($this->db);
+        $permissionService = $this->createPermissionService();
+        $perm_view = $permissionService->getViewPermissionLevel((int)$userId);
+        $perm_edit = $permissionService->getEditPermissionLevel((int)$userId);
+        $perm_delete = $permissionService->getDeletePermissionLevel((int)$userId);
         $count_zones_view = $this->dnsDataService->countZones($perm_view, 'all', 'reverse');
         $count_zones_edit = $this->dnsDataService->countZones($perm_edit, 'all', 'reverse');
         $count_zones_delete = $this->dnsDataService->countZones($perm_delete, 'all', 'reverse');
 
         $ownershipMode = new ZoneOwnershipModeService($this->getConfig());
-        $perm_ownership_view = Permission::getZoneOwnershipViewPermission($this->db);
+        $perm_ownership_view = $permissionService->getZoneOwnershipViewPermissionLevel((int)$userId);
         // The full-name column also lists zone owners, so it follows the same gate
         $iface_zonelist_fullname = $iface_zonelist_fullname && $perm_ownership_view !== 'none';
         $showOwnerColumn = $ownershipMode->isUserOwnerAllowed()

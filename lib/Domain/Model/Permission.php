@@ -197,57 +197,6 @@ class Permission
     }
 
     /**
-     * Get zone metadata view permission.
-     *
-     * Determines whose zone metadata (zone type, master, template, PowerDNS
-     * metadata) the user may see. Holders of zone_meta_edit_* may always see
-     * what they are allowed to edit.
-     *
-     * @return string Returns "all", "own", or "none".
-     */
-    public static function getZoneMetadataViewPermission($db): string
-    {
-        if (
-            self::currentUserHasPermission($db, 'zone_metadata_view_others')
-            || self::currentUserHasPermission($db, 'zone_meta_edit_others')
-        ) {
-            return "all";
-        } elseif (
-            self::currentUserHasPermission($db, 'zone_metadata_view_own')
-            || self::currentUserHasPermission($db, 'zone_meta_edit_own')
-        ) {
-            return "own";
-        } else {
-            return "none";
-        }
-    }
-
-    /**
-     * Get zone ownership view permission.
-     *
-     * Determines whose zone owner lists the user may see. Holders of
-     * zone_meta_edit_* may always see what they are allowed to edit.
-     *
-     * @return string Returns "all", "own", or "none".
-     */
-    public static function getZoneOwnershipViewPermission($db): string
-    {
-        if (
-            self::currentUserHasPermission($db, 'zone_ownership_view_others')
-            || self::currentUserHasPermission($db, 'zone_meta_edit_others')
-        ) {
-            return "all";
-        } elseif (
-            self::currentUserHasPermission($db, 'zone_ownership_view_own')
-            || self::currentUserHasPermission($db, 'zone_meta_edit_own')
-        ) {
-            return "own";
-        } else {
-            return "none";
-        }
-    }
-
-    /**
      * Get edit permission.
      *
      * This method determines the user's permission to edit content.
@@ -284,49 +233,5 @@ class Permission
         } else {
             return "none";
         }
-    }
-
-    /**
-     * Get zone log view permission.
-     *
-     * Determines how much of the zone activity log the user may see. Ueberusers
-     * and holders of zone_logs_view_others see every zone's log; zone_logs_view_own
-     * holders are limited to zones they own (directly or via a group).
-     *
-     * @param PDO $db The database connection.
-     * @return string Returns "all", "own", or "none".
-     */
-    public static function getZoneLogPermission($db): string
-    {
-        if (
-            self::currentUserHasPermission($db, 'user_is_ueberuser')
-            || self::currentUserHasPermission($db, 'zone_logs_view_others')
-        ) {
-            return "all";
-        } elseif (self::currentUserHasPermission($db, 'zone_logs_view_own')) {
-            return "own";
-        } else {
-            return "none";
-        }
-    }
-
-    /**
-     * Get permissions.
-     *
-     * This method checks a set of permissions for the user.
-     *
-     * @param PDO $db The database connection.
-     * @param array $permissions An array containing the permission keys to check.
-     * @return array An associative array containing the permission key and its corresponding boolean value.
-     */
-    public static function getPermissions(PDO $db, array $permissions): array
-    {
-        $result = [];
-
-        foreach ($permissions as $permissionName) {
-            $result[$permissionName] = self::currentUserHasPermission($db, $permissionName);
-        }
-
-        return $result;
     }
 }

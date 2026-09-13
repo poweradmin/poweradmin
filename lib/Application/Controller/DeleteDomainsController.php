@@ -193,7 +193,7 @@ class DeleteDomainsController extends BaseController
 
         $permissionService = $this->createPermissionService();
         $userId = $this->userContextService->getLoggedInUserId();
-        // Same "all"/"own"/"none" contract as Permission::getDeletePermission(), but off
+        // Same "all"/"own"/"none" contract as PermissionService::getDeletePermissionLevel(), but off
         // the request-cached service the delete check above already warmed
         $perm_delete = $permissionService->getDeletePermissionLevel($userId);
         foreach ($zones as &$zone) {

@@ -35,7 +35,6 @@ use Exception;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Application\Service\AuditService;
@@ -63,7 +62,7 @@ class DnssecAddKeyController extends BaseController
         $zone_id = (int) $zone_id;
 
         // Early permission check - validate DNSSEC access before any operations
-        $perm_view = Permission::getViewPermission($this->db);
+        $perm_view = $this->createPermissionService()->getViewPermissionLevel((int)$this->getCurrentUserId());
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         // Check view permission first

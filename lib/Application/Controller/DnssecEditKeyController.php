@@ -35,7 +35,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -74,7 +73,7 @@ class DnssecEditKeyController extends BaseController
 
         // Early permission check - this page is the confirmation entry for toggling a key,
         // so it requires the dedicated DNSSEC management permission.
-        $perm_view = Permission::getViewPermission($this->db);
+        $perm_view = $this->createPermissionService()->getViewPermissionLevel((int)$this->getCurrentUserId());
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {

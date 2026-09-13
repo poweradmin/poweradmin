@@ -121,7 +121,7 @@ class AddRecordController extends BaseController
     {
         $this->checkId();
 
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
         $zone_type = $this->domainRepository->getDomainType($zone_id);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
@@ -314,7 +314,7 @@ class AddRecordController extends BaseController
 
         // Offer only what this caller may actually submit, so a restricted type is not
         // presented and then refused on save.
-        $permEdit = Permission::getEditPermission($this->db);
+        $permEdit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $offeredTypes = array_values(array_filter(
             $offeredTypes,
             fn(string $type): bool => !Permission::isRecordTypeRestrictedForClient($type, $permEdit)

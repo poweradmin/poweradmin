@@ -26,7 +26,6 @@ use Exception;
 use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -347,7 +346,7 @@ class DnsWizardApiController extends InternalApiController
             // Check user has permission to edit this zone
             $domainRepository = $this->createDomainRepository();
             $zone_type = $domainRepository->getDomainType($zone_id);
-            $perm_edit = Permission::getEditPermission($this->db);
+            $perm_edit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
             $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
             // Same permission check as AddRecordController

@@ -36,7 +36,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -86,9 +85,11 @@ class SearchController extends BaseController
         // Sorting by owner data the user cannot fully see would leak ownership
         // through row order, so it needs "all" scope, or "own" scope with
         // results already limited to owned zones.
-        $ownershipViewPermission = Permission::getZoneOwnershipViewPermission($this->db);
+        $permissionService = $this->createPermissionService();
+        $userId = (int)$this->getCurrentUserId();
+        $ownershipViewPermission = $permissionService->getZoneOwnershipViewPermissionLevel($userId);
         $ownerSortAllowed = $ownershipViewPermission === 'all'
-            || ($ownershipViewPermission === 'own' && Permission::getViewPermission($this->db) === 'own');
+            || ($ownershipViewPermission === 'own' && $permissionService->getViewPermissionLevel($userId) === 'own');
         // In API mode record counts are resolved per page, so sorting on them
         // would only order the rows already on screen
         $isRecordCountSortSupported = !DnsBackendProviderFactory::isApiBackend($this->getConfig());
@@ -116,7 +117,6 @@ class SearchController extends BaseController
 
         // Create pagination service and get user preference
         $paginationService = $this->createPaginationService();
-        $userId = $this->getCurrentUserId();
 
         // Get zones rows per page
         $zone_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
@@ -222,7 +222,7 @@ class SearchController extends BaseController
 
             $zones_page = max(1, (int)$this->request->getPostParam('zones_page', 1));
 
-            $permission_view = Permission::getViewPermission($this->db);
+            $permission_view = $permissionService->getViewPermissionLevel($userId);
 
             $dnsDataService = $this->createDnsDataService();
 
@@ -258,8 +258,8 @@ class SearchController extends BaseController
             $searchResultRecords = $this->shortenIPv6InRecords($searchResultRecords);
         }
 
-        $editPermission = Permission::getEditPermission($this->db);
-        $deletePermission = Permission::getDeletePermission($this->db);
+        $editPermission = $permissionService->getEditPermissionLevel($userId);
+        $deletePermission = $permissionService->getDeletePermissionLevel($userId);
 
         // Per-row eligibility must include group ownership; otherwise zones owned only
         // via a group lose their edit/delete buttons even when the user has the action.

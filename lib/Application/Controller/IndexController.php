@@ -37,7 +37,6 @@ use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
@@ -73,7 +72,7 @@ class IndexController extends BaseController
         $userlogin = $this->userContextService->getLoggedInUsername();
         $userId = $this->userContextService->getLoggedInUserId();
 
-        $permissions = Permission::getPermissions($this->db, [
+        $permissions = $this->createPermissionService()->getPermissionFlags((int)$userId, [
             'search',
             'zone_content_view_own',
             'zone_content_view_others',

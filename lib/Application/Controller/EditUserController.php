@@ -35,7 +35,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Application\Service\AuditService;
@@ -493,7 +492,7 @@ class EditUserController extends BaseController
             'edit_templ_perm' => $this->hasPermission('user_edit_templ_perm'),
             'passwd_edit_others' => $this->hasPermission('user_passwd_edit_others'),
             'edit_own' => $this->hasPermission('user_edit_own'),
-            'is_admin' => Permission::getPermissions($this->db, ['user_is_ueberuser'])['user_is_ueberuser']
+            'is_admin' => $this->hasPermission('user_is_ueberuser')
                 && $isCurrentUser
         ];
     }

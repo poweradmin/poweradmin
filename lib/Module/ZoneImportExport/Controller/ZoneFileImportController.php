@@ -23,7 +23,6 @@
 namespace Poweradmin\Module\ZoneImportExport\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -68,7 +67,7 @@ class ZoneFileImportController extends BaseController
     private function checkImportPermission(): void
     {
         $canAdd = $this->hasPermission('zone_master_add');
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $this->checkCondition(
             !$canAdd && $perm_edit === 'none',
             _('You do not have permission to import zones.')

@@ -26,7 +26,6 @@ use Exception;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -294,8 +293,8 @@ class BatchPtrRecordController extends BaseController
         $zoneRepository = $this->createZoneRepository();
 
         // Get permission type and user ID
-        $perm_view = Permission::getViewPermission($this->db);
         $userId = $this->userContextService->getLoggedInUserId();
+        $perm_view = $this->permissionService->getViewPermissionLevel((int)$userId);
 
         // Get all reverse zones (using a high limit to get all zones for the dropdown).
         // The dropdown renders neither badges nor record counts, so skip both

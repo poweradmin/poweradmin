@@ -508,6 +508,27 @@ class PermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testZoneLogLevelAndPermissionFlags(): void
+    {
+        $this->userRepository->method('hasAdminPermission')->willReturnMap([[1, true], [2, false], [3, false]]);
+        $this->userRepository->method('getUserPermissions')->willReturnMap([
+            [1, []],
+            [2, ['zone_logs_view_own', 'search']],
+            [3, []],
+        ]);
+
+        $this->assertSame('all', $this->service->getZoneLogPermissionLevel(1));
+        $this->assertSame('own', $this->service->getZoneLogPermissionLevel(2));
+        $this->assertSame('none', $this->service->getZoneLogPermissionLevel(3));
+
+        $this->assertSame(
+            ['search' => true, 'user_is_ueberuser' => false],
+            $this->service->getPermissionFlags(2, ['search', 'user_is_ueberuser'])
+        );
+        $this->assertSame(['search' => true], $this->service->getPermissionFlags(1, ['search']));
+    }
+
+    #[Test]
     public function testCanCreateZoneNeedsTheGrantForTheKind(): void
     {
         $this->userRepository->method('hasAdminPermission')

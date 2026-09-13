@@ -28,7 +28,6 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Enum\DnssecKeyType;
 
@@ -56,7 +55,7 @@ class DnssecKeyImportController extends BaseController
         }
 
         $zoneIdInt = (int) $zoneId;
-        $permView = Permission::getViewPermission($this->db);
+        $permView = $this->createPermissionService()->getViewPermissionLevel((int)$this->getCurrentUserId());
         $userIsZoneOwner = $this->isZoneOwner($zoneIdInt);
 
         if ($permView === 'none' || ($permView === 'own' && !$userIsZoneOwner)) {

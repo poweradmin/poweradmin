@@ -330,6 +330,38 @@ class PermissionService
     }
 
     /**
+     * Zone log access level: "all" (others or admin), "own", or "none".
+     */
+    public function getZoneLogPermissionLevel(int $userId): string
+    {
+        $permissions = $this->getUserPermissions($userId);
+
+        if (in_array('zone_logs_view_others', $permissions) || $this->isAdmin($userId)) {
+            return 'all';
+        } elseif (in_array('zone_logs_view_own', $permissions)) {
+            return 'own';
+        }
+
+        return 'none';
+    }
+
+    /**
+     * Several permissions at once, as name => granted, for templates that branch on them.
+     *
+     * @param string[] $permissionNames
+     * @return array<string, bool>
+     */
+    public function getPermissionFlags(int $userId, array $permissionNames): array
+    {
+        $flags = [];
+        foreach ($permissionNames as $name) {
+            $flags[$name] = $this->hasPermission($userId, $name);
+        }
+
+        return $flags;
+    }
+
+    /**
      * Get delete permission level for a user
      *
      * @param int $userId User ID to check

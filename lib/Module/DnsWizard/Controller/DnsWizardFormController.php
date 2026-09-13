@@ -25,7 +25,6 @@ namespace Poweradmin\Module\DnsWizard\Controller;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
@@ -99,7 +98,7 @@ class DnsWizardFormController extends BaseController
         }
 
         // Check permissions
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 

@@ -41,7 +41,6 @@ use Poweradmin\Application\Service\UserService;
 use Poweradmin\Application\Service\ZoneService;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
@@ -144,9 +143,10 @@ class ListForwardZonesController extends BaseController
             $row_start = max(0, ($start - 1) * $iface_rowamount);
         }
 
-        $perm_view = Permission::getViewPermission($this->db);
-        $perm_edit = Permission::getEditPermission($this->db);
-        $perm_delete = Permission::getDeletePermission($this->db);
+        $permissionService = $this->createPermissionService();
+        $perm_view = $permissionService->getViewPermissionLevel((int)$userId);
+        $perm_edit = $permissionService->getEditPermissionLevel((int)$userId);
+        $perm_delete = $permissionService->getDeletePermissionLevel((int)$userId);
         $dnsDataService = $this->createDnsDataService();
 
         $count_zones_view = $dnsDataService->countZones($perm_view);
@@ -168,7 +168,7 @@ class ListForwardZonesController extends BaseController
         $count_zones_all_letterstart = $dnsDataService->countZones($perm_view, $letter_start);
 
         $ownershipMode = new ZoneOwnershipModeService($this->getConfig());
-        $perm_ownership_view = Permission::getZoneOwnershipViewPermission($this->db);
+        $perm_ownership_view = $permissionService->getZoneOwnershipViewPermissionLevel((int)$userId);
         // The full-name column also lists zone owners, so it follows the same gate
         $iface_zonelist_fullname = $iface_zonelist_fullname && $perm_ownership_view !== 'none';
         $showOwnerColumn = $ownershipMode->isUserOwnerAllowed()
