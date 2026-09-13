@@ -43,6 +43,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 class ZoneOwnershipController extends BaseController
 {
@@ -86,7 +87,7 @@ class ZoneOwnershipController extends BaseController
             return;
         }
 
-        $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
+        $meta_edit = ZoneAccessPolicy::levelAppliesToZone($perm_meta_edit, $user_is_zone_owner);
 
         // Get zone information
         $zone_name = $this->zoneRepository->getDomainNameById($zone_id);

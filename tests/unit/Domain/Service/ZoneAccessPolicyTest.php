@@ -30,6 +30,24 @@ use Poweradmin\Domain\Service\ZoneAccessPolicy;
 #[CoversClass(ZoneAccessPolicy::class)]
 class ZoneAccessPolicyTest extends TestCase
 {
+    public static function levelProvider(): array
+    {
+        return [
+            ['all', false, true],
+            ['all', true, true],
+            ['own', true, true],
+            ['own', false, false],
+            ['own_as_client', true, false],
+            ['none', true, false],
+        ];
+    }
+
+    #[DataProvider('levelProvider')]
+    public function testLevelAppliesToZone(string $level, bool $owner, bool $expected): void
+    {
+        $this->assertSame($expected, ZoneAccessPolicy::levelAppliesToZone($level, $owner));
+    }
+
     public static function canEditZoneProvider(): array
     {
         return [

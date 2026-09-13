@@ -304,13 +304,13 @@ class EditController extends BaseController
         // Permission levels - use zone-aware checking for group permission support
         $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zone_id);
         $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
-        $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
+        $meta_edit = ZoneAccessPolicy::levelAppliesToZone($perm_meta_edit, $user_is_zone_owner);
         $can_manage_dnssec = $this->permissionService->canManageDnssecForZone($userId, $zone_id);
 
         $perm_metadata_view = $this->permissionService->getZoneMetadataViewPermissionLevel($userId);
         $perm_ownership_view = $this->permissionService->getZoneOwnershipViewPermissionLevel($userId);
-        $metadata_view = $perm_metadata_view === 'all' || ($perm_metadata_view === 'own' && $user_is_zone_owner == "1");
-        $ownership_view = $perm_ownership_view === 'all' || ($perm_ownership_view === 'own' && $user_is_zone_owner == "1");
+        $metadata_view = ZoneAccessPolicy::levelAppliesToZone($perm_metadata_view, $user_is_zone_owner);
+        $ownership_view = ZoneAccessPolicy::levelAppliesToZone($perm_ownership_view, $user_is_zone_owner);
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have permission to view this zone."));
@@ -483,7 +483,7 @@ class EditController extends BaseController
         $user_can_edit_zone = ZoneAccessPolicy::canEditZone($perm_edit, $user_is_zone_owner);
         $zone_is_editable = $user_can_edit_zone && !$zone_is_read_only;
         $log_permission = Permission::getZoneLogPermission($this->db);
-        $can_view_zone_logs = $log_permission === 'all' || ($log_permission === 'own' && $user_is_zone_owner);
+        $can_view_zone_logs = ZoneAccessPolicy::levelAppliesToZone($log_permission, $user_is_zone_owner);
 
         foreach ($displayRecords as &$record) {
             $record['display_name'] ??= $record['name'];

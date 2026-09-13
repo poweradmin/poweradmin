@@ -46,6 +46,7 @@ use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 class ListForwardZonesController extends BaseController
 {
@@ -246,7 +247,7 @@ class ListForwardZonesController extends BaseController
             // or via any group) so the button only appears when the action is permitted.
             $ownsZone = in_array($username, $zone['users'] ?? [], true)
                 || !empty(array_intersect($userGroupIds, $zoneGroupIds));
-            $zone['user_can_delete'] = $perm_delete === 'all' || ($perm_delete === 'own' && $ownsZone);
+            $zone['user_can_delete'] = ZoneAccessPolicy::levelAppliesToZone($perm_delete, $ownsZone);
 
             // At the "own" ownership view level, owner and group cells stay
             // visible only for zones the user owns directly or via a group.

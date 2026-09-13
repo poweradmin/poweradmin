@@ -46,6 +46,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
  * Service class for managing domains/zones
@@ -462,7 +463,7 @@ class DomainManager implements DomainManagerInterface
         $perm_delete = Permission::getDeletePermission($this->db);
         $user_is_zone_owner = self::currentUserOwnsZone($this->db, $id);
 
-        if ($perm_delete == "all" || ($perm_delete == "own" && $user_is_zone_owner == "1")) {
+        if (ZoneAccessPolicy::levelAppliesToZone($perm_delete, $user_is_zone_owner)) {
             // Get zone name for backend deletion.
             $zoneName = $this->domainRepository->getDomainNameById($id);
 
@@ -551,7 +552,7 @@ class DomainManager implements DomainManagerInterface
             $perm_delete = Permission::getDeletePermission($this->db);
             $user_is_zone_owner = self::currentUserOwnsZone($this->db, $id);
 
-            if ($perm_delete == "all" || ($perm_delete == "own" && $user_is_zone_owner == "1")) {
+            if (ZoneAccessPolicy::levelAppliesToZone($perm_delete, $user_is_zone_owner)) {
                 // Get zone name for backend deletion.
                 $zoneName = $this->domainRepository->getDomainNameById($id);
 
@@ -960,7 +961,7 @@ class DomainManager implements DomainManagerInterface
         $this->db->beginTransaction();
         try {
             if ($zone_template_id != 0) {
-                if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+                if (ZoneAccessPolicy::levelAppliesToZone($perm_edit, $user_is_zone_owner)) {
                     if ($isApiBackend) {
                         // API mode: encoded RecordIdentifier IDs are kept in the
                         // string-keyed records_zone_templ_api table so we can

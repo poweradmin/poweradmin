@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
  * Service for managing user permissions
@@ -363,6 +364,6 @@ class PermissionService
 
         $deleteLevel = $this->getDeletePermissionLevel($userId);
 
-        return $deleteLevel === 'all' || ($deleteLevel === 'own' && $isOwner);
+        return ZoneAccessPolicy::levelAppliesToZone($deleteLevel, $isOwner);
     }
 }

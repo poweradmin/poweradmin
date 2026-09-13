@@ -37,6 +37,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
  * Handles reading and replacing raw PowerDNS domain metadata for a single zone.
@@ -110,7 +111,7 @@ class EditZoneMetadataController extends BaseController
 
         // The helper folds meta-edit in, so editors always retain view access.
         $permMetadataView = Permission::getZoneMetadataViewPermission($this->db);
-        $canViewMetadata = $permMetadataView === 'all' || ($permMetadataView === 'own' && $isOwner);
+        $canViewMetadata = ZoneAccessPolicy::levelAppliesToZone($permMetadataView, $isOwner);
 
         $this->checkCondition(!$canViewMetadata, _('You do not have the permission to view zone metadata.'));
 

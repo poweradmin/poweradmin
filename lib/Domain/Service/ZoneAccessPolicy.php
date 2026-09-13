@@ -33,6 +33,15 @@ use Poweradmin\Domain\Model\Permission;
 final class ZoneAccessPolicy
 {
     /**
+     * Whether an "all" / "own" / "none" permission level applies to a zone the
+     * user does or does not own. Every *_own permission shares this algebra.
+     */
+    public static function levelAppliesToZone(string $level, bool $userIsZoneOwner): bool
+    {
+        return $level === 'all' || ($level === 'own' && $userIsZoneOwner);
+    }
+
+    /**
      * Whether the user's edit permission level grants editing this zone at all,
      * independent of the zone type being read-only.
      */
