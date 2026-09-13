@@ -784,6 +784,15 @@ class EditController extends BaseController
 
     public function saveRecords(int $zone_id, string $zone_name): void
     {
+        // The page gate only proves view access; records are re-checked per row
+        // but the zone comment write and the SOA serial bump are not.
+        $userId = (int)$this->getCurrentUserId();
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
+        if (!ZoneAccessPolicy::canEditZone($perm_edit, $this->permissionService->userOwnsZone($userId, $zone_id))) {
+            $this->setMessage('edit', 'error', _('You do not have permission to edit this zone.'));
+            return;
+        }
+
         // Secondary and Consumer zones replicate from a primary - reject any save
         // (records, comment, or SOA serial bump) server-side, not just in the UI
         if (ZoneType::isReadOnly($this->zoneRepository->getDomainType($zone_id))) {
