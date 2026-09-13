@@ -106,7 +106,7 @@ class DnssecAddKeyController extends BaseController
         if ($this->request->getPostParam('bits') !== null) {
             $bits = $this->request->getPostParam('bits');
 
-            $valid_values = array('2048', '1024', '768', '384', '256');
+            $valid_values = array('2048', '1024', '384', '256');
             if (!in_array($bits, $valid_values)) {
                 $this->showError(_('Invalid or unexpected input given.'));
             }
