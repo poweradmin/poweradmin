@@ -128,9 +128,26 @@ class PermissionServiceTest extends TestCase
 
         $db = $this->createMock(\PDO::class);
 
-        // Admin short-circuit must not touch the hybrid permission query path
-        $db->expects($this->never())->method('prepare');
+        // Admin short-circuit must not consult ownership
+        $this->userRepository->expects($this->never())->method('userOwnsZone');
         $this->assertTrue($this->service->canPerformZoneAction($db, $userId, 100, 'zone_delete_own'));
+    }
+
+    #[Test]
+    public function testCanPerformZoneActionNeedsGrantFromAnySourceAndOwnership(): void
+    {
+        $this->userRepository->method('hasAdminPermission')->willReturn(false);
+        // getUserPermissions already unions the user's template with every group template
+        $this->userRepository->method('getUserPermissions')->with(5)->willReturn(['zone_delete_own']);
+        $this->userRepository->method('userOwnsZone')->willReturnMap([
+            [5, 100, true],
+            [5, 200, false],
+        ]);
+        $db = $this->createMock(\PDO::class);
+
+        $this->assertTrue($this->service->canPerformZoneAction($db, 5, 100, 'zone_delete_own'));
+        $this->assertFalse($this->service->canPerformZoneAction($db, 5, 200, 'zone_delete_own'));
+        $this->assertFalse($this->service->canPerformZoneAction($db, 5, 100, 'zone_dnssec_manage_own'));
     }
 
     #[Test]
@@ -342,6 +359,24 @@ class PermissionServiceTest extends TestCase
         $db = $this->createMock(\PDO::class);
 
         $this->assertEquals('all', $this->service->getEditPermissionLevelForZone($db, $userId, $domainId));
+    }
+
+    #[Test]
+    public function testGetEditPermissionLevelForZoneNeedsOwnershipForOwnLevels(): void
+    {
+        $this->userRepository->method('hasAdminPermission')->willReturn(false);
+        $this->userRepository->method('getUserPermissions')->willReturnMap([
+            [1, ['zone_content_edit_own']],
+            [2, ['zone_content_edit_own_as_client']],
+            [3, []],
+        ]);
+        $this->userRepository->method('userOwnsZone')->willReturnCallback(fn(int $userId, int $domainId) => $domainId === 100);
+        $db = $this->createMock(\PDO::class);
+
+        $this->assertSame('own', $this->service->getEditPermissionLevelForZone($db, 1, 100));
+        $this->assertSame('none', $this->service->getEditPermissionLevelForZone($db, 1, 200));
+        $this->assertSame('own_as_client', $this->service->getEditPermissionLevelForZone($db, 2, 100));
+        $this->assertSame('none', $this->service->getEditPermissionLevelForZone($db, 3, 100));
     }
 
     #[Test]

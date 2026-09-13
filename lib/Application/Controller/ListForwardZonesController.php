@@ -36,7 +36,6 @@ use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\UserService;
 use Poweradmin\Application\Service\ZoneService;
@@ -222,16 +221,10 @@ class ListForwardZonesController extends BaseController
         $userGroupRepo = $this->createUserGroupRepository();
         $allGroups = $userGroupRepo->findAll();
 
-        // Resolve where the user can delete (direct vs. which groups grant it). Two
-        // queries up front lets the per-row decision below stay in PHP, instead of
-        // running canPerformZoneAction once per rendered zone.
-        $hybridPermissions = new HybridPermissionService($this->db);
-        $deleteSources = $perm_delete === 'own'
-            ? $hybridPermissions->getPermissionSourcesForUser($userId, 'zone_delete_own')
-            : ['has_direct' => false, 'group_ids' => []];
+        // The per-row delete and ownership decisions need the user's groups; one
+        // query up front instead of a lookup per rendered zone.
         $username = $_SESSION[SessionKeys::USERLOGIN];
-
-        $userGroupIds = $perm_ownership_view === 'own'
+        $userGroupIds = ($perm_delete === 'own' || $perm_ownership_view === 'own')
             ? $userGroupRepo->getGroupIdsForUser($userId)
             : [];
 
@@ -249,29 +242,18 @@ class ListForwardZonesController extends BaseController
             }, $groupOwnerships);
 
             // Delete eligibility for the per-row delete control: must mirror the
-            // hybrid check the delete endpoint runs so the button only appears when
-            // the action will actually be permitted.
-            if ($perm_delete === 'all') {
-                $zone['user_can_delete'] = true;
-            } elseif ($perm_delete === 'own') {
-                $directGrants = $deleteSources['has_direct']
-                    && in_array($username, $zone['users'] ?? [], true);
-                $groupGrants = !empty(array_intersect($deleteSources['group_ids'], $zoneGroupIds));
-                $zone['user_can_delete'] = $directGrants || $groupGrants;
-            } else {
-                $zone['user_can_delete'] = false;
-            }
+            // check the delete endpoint runs (grant from any source, ownership direct
+            // or via any group) so the button only appears when the action is permitted.
+            $ownsZone = in_array($username, $zone['users'] ?? [], true)
+                || !empty(array_intersect($userGroupIds, $zoneGroupIds));
+            $zone['user_can_delete'] = $perm_delete === 'all' || ($perm_delete === 'own' && $ownsZone);
 
             // At the "own" ownership view level, owner and group cells stay
             // visible only for zones the user owns directly or via a group.
-            if ($perm_ownership_view === 'own') {
-                $ownsDirect = in_array($username, $zone['users'] ?? [], true);
-                $ownsViaGroup = !empty(array_intersect($userGroupIds, $zoneGroupIds));
-                if (!$ownsDirect && !$ownsViaGroup) {
-                    $zone['owners'] = [];
-                    $zone['full_names'] = [];
-                    $zone['groups'] = [];
-                }
+            if ($perm_ownership_view === 'own' && !$ownsZone) {
+                $zone['owners'] = [];
+                $zone['full_names'] = [];
+                $zone['groups'] = [];
             }
 
             $zone['owners_display'] = OwnerGroupColumnPresenter::presentOwners($zone['owners'] ?? [], $zone['full_names'] ?? []);

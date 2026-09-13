@@ -54,152 +54,35 @@ class SearchControllerPermissionFlagsTest extends TestCase
         return $method->invokeArgs($controller, $args);
     }
 
-    private function invokeMerge(SearchController $controller, array $a, array $b): array
-    {
-        $method = $this->reflection->getMethod('mergePermissionSources');
-        return $method->invokeArgs($controller, [$a, $b]);
-    }
-
     public function testCanActAlwaysGrantsForAllPermission(): void
     {
-        $controller = $this->createController();
-
-        $result = $this->invokeCanActOnZone($controller, [
-            42,
-            7,
-            'all',
-            ['has_direct' => false, 'group_ids' => []],
-            [],
-            [],
-        ]);
-
-        $this->assertTrue($result);
+        $this->assertTrue($this->invokeCanActOnZone($this->createController(), [42, 7, 'all', [], [], []]));
     }
 
     public function testCanActDeniesForNonePermission(): void
     {
-        $controller = $this->createController();
-
-        $result = $this->invokeCanActOnZone($controller, [
-            42,
-            7,
-            'none',
-            ['has_direct' => true, 'group_ids' => [1]],
-            [42 => [7]],
-            [42 => [1]],
-        ]);
-
-        $this->assertFalse($result);
+        // The level already says the user holds no edit grant; ownership cannot help.
+        $this->assertFalse($this->invokeCanActOnZone($this->createController(), [42, 7, 'none', [1], [42 => [7]], [42 => [1]]]));
     }
 
-    public function testCanActAllowsDirectOwnerWithDirectGrant(): void
+    public function testCanActAllowsDirectOwner(): void
     {
-        $controller = $this->createController();
-
-        $result = $this->invokeCanActOnZone($controller, [
-            42,
-            7,
-            'own',
-            ['has_direct' => true, 'group_ids' => []],
-            [42 => [7]],
-            [],
-        ]);
-
-        $this->assertTrue($result);
+        $this->assertTrue($this->invokeCanActOnZone($this->createController(), [42, 7, 'own', [], [42 => [7]], []]));
     }
 
-    public function testCanActDeniesDirectOwnerWithoutDirectGrant(): void
+    public function testCanActAllowsOwnerViaAnyGroup(): void
     {
-        // User directly owns the zone, but their direct permission template
-        // does not grant the action; group sources do not match either.
-        $controller = $this->createController();
-
-        $result = $this->invokeCanActOnZone($controller, [
-            42,
-            7,
-            'own',
-            ['has_direct' => false, 'group_ids' => [3]],
-            [42 => [7]],
-            [42 => [9]],
-        ]);
-
-        $this->assertFalse($result);
+        // Union rule: the grant may come from one group while another group owns the zone.
+        $this->assertTrue($this->invokeCanActOnZone($this->createController(), [42, 7, 'own', [3, 5], [42 => [99]], [42 => [5]]]));
     }
 
-    public function testCanActAllowsGroupOwnerWithGroupGrant(): void
+    public function testCanActDeniesNonOwner(): void
     {
-        $controller = $this->createController();
-
-        $result = $this->invokeCanActOnZone($controller, [
-            42,
-            7,
-            'own',
-            ['has_direct' => false, 'group_ids' => [3, 5]],
-            [42 => [99]],
-            [42 => [5]],
-        ]);
-
-        $this->assertTrue($result);
-    }
-
-    public function testCanActDeniesGroupOwnerWhenUserGroupsDoNotMatch(): void
-    {
-        $controller = $this->createController();
-
-        $result = $this->invokeCanActOnZone($controller, [
-            42,
-            7,
-            'own',
-            ['has_direct' => false, 'group_ids' => [1, 2]],
-            [],
-            [42 => [99]],
-        ]);
-
-        $this->assertFalse($result);
+        $this->assertFalse($this->invokeCanActOnZone($this->createController(), [42, 7, 'own', [1, 2], [42 => [99]], [42 => [9]]]));
     }
 
     public function testCanActAcceptsOwnAsClientLikeOwn(): void
     {
-        $controller = $this->createController();
-
-        $result = $this->invokeCanActOnZone($controller, [
-            42,
-            7,
-            'own_as_client',
-            ['has_direct' => true, 'group_ids' => []],
-            [42 => [7]],
-            [],
-        ]);
-
-        $this->assertTrue($result);
-    }
-
-    public function testMergePermissionSourcesUnionsDirectAndGroupSources(): void
-    {
-        $controller = $this->createController();
-
-        $merged = $this->invokeMerge(
-            $controller,
-            ['has_direct' => true, 'group_ids' => [1, 2]],
-            ['has_direct' => false, 'group_ids' => [2, 3]]
-        );
-
-        $this->assertTrue($merged['has_direct']);
-        sort($merged['group_ids']);
-        $this->assertSame([1, 2, 3], $merged['group_ids']);
-    }
-
-    public function testMergePermissionSourcesPreservesEmpty(): void
-    {
-        $controller = $this->createController();
-
-        $merged = $this->invokeMerge(
-            $controller,
-            ['has_direct' => false, 'group_ids' => []],
-            ['has_direct' => false, 'group_ids' => []]
-        );
-
-        $this->assertFalse($merged['has_direct']);
-        $this->assertSame([], $merged['group_ids']);
+        $this->assertTrue($this->invokeCanActOnZone($this->createController(), [42, 7, 'own_as_client', [], [42 => [7]], []]));
     }
 }

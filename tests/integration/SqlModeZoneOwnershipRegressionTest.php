@@ -25,8 +25,8 @@ namespace Poweradmin\Tests\Integration;
 use PDO;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
@@ -57,7 +57,7 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
     private PDO $db;
     private DbUserRepository $userRepository;
     private ApiPermissionService $apiPermissions;
-    private HybridPermissionService $hybridPermissions;
+    private PermissionService $permissions;
 
     protected function setUp(): void
     {
@@ -77,7 +77,7 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
 
         $this->userRepository = new DbUserRepository($this->db, ConfigurationManager::getInstance());
         $this->apiPermissions = new ApiPermissionService($this->db);
-        $this->hybridPermissions = new HybridPermissionService($this->db);
+        $this->permissions = new PermissionService($this->userRepository);
     }
 
     /**
@@ -152,11 +152,11 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
     }
 
     #[DataProvider('ownershipMatrix')]
-    public function testHybridPermissionsAgreeWithOwnership(int $userId, int $zoneId, bool $owns): void
+    public function testZoneEditLevelFollowsOwnership(int $userId, int $zoneId, bool $owns): void
     {
-        $permissions = $this->hybridPermissions->getUserPermissionsForZone($userId, $zoneId)['permissions'];
+        $level = $this->permissions->getEditPermissionLevelForZone($this->db, $userId, $zoneId);
 
-        $this->assertSame($owns, in_array('zone_content_edit_own', $permissions, true));
+        $this->assertSame($owns ? 'own' : 'none', $level);
     }
 
     /**
@@ -181,17 +181,6 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
         $daveVisible = $this->apiPermissions->getUserVisibleZoneIds(self::DAVE);
         sort($daveVisible);
         $this->assertSame([101], $daveVisible, 'group-owned zones must still resolve');
-    }
-
-    public function testAccessibleZonesReportTheDomainsIds(): void
-    {
-        $alice = $this->hybridPermissions->getUserAccessibleZones(self::ALICE);
-        $this->assertSame([100], $alice['user_zones']);
-        $this->assertSame([], $alice['group_zones']);
-
-        $dave = $this->hybridPermissions->getUserAccessibleZones(self::DAVE);
-        $this->assertSame([], $dave['user_zones']);
-        $this->assertSame([101], $dave['group_zones']);
     }
 
     public function testNoZonesRowGainedAFabricatedDomainId(): void

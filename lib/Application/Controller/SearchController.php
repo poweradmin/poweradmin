@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use PDO;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -400,10 +399,8 @@ class SearchController extends BaseController
      * Stamp `user_can_edit` / `user_can_delete` onto each search result so the
      * template can render per-row controls without re-running permission checks.
      *
-     * Direct ownership and group ownership are both honored: a user with
-     * `*_own` permission via a group whose zone is listed must still see the
-     * edit/delete controls. Two upfront SQL queries (zone-group ownership +
-     * direct owners) replace per-row hybrid lookups.
+     * Direct ownership and group ownership are both honored. Two upfront SQL
+     * queries (zone-group ownership + direct owners) replace per-row lookups.
      *
      * @return array{0: array, 1: array} Augmented zones and records.
      */
@@ -416,20 +413,6 @@ class SearchController extends BaseController
         string $ownershipViewPermission
     ): array {
         $userGroupRepo = $this->createUserGroupRepository();
-        $hybridPermissions = new HybridPermissionService($this->db);
-
-        // 'own' and 'own_as_client' may come from different sources (e.g. direct
-        // template grants one, a group template the other). Union both so a zone
-        // is editable whenever any source grants any *_edit_own permission.
-        $editSources = ($editPermission === 'own' || $editPermission === 'own_as_client')
-            ? $this->mergePermissionSources(
-                $hybridPermissions->getPermissionSourcesForUser($userId, 'zone_content_edit_own'),
-                $hybridPermissions->getPermissionSourcesForUser($userId, 'zone_content_edit_own_as_client')
-            )
-            : ['has_direct' => false, 'group_ids' => []];
-        $deleteSources = $deletePermission === 'own'
-            ? $hybridPermissions->getPermissionSourcesForUser($userId, 'zone_delete_own')
-            : ['has_direct' => false, 'group_ids' => []];
 
         $zoneIds = array_values(array_unique(array_filter(array_merge(
             array_map(fn($z) => (int)($z['id'] ?? 0), $zones),
@@ -438,28 +421,13 @@ class SearchController extends BaseController
         $zoneGroupMap = $this->fetchZoneGroupOwnership($zoneIds);
         $zoneOwnerMap = $this->fetchDirectZoneOwners($zoneIds);
 
-        $userGroupIds = $ownershipViewPermission === 'own' && !empty($zones)
-            ? $userGroupRepo->getGroupIdsForUser($userId)
-            : [];
+        // Group membership only matters when a listed zone is group-owned.
+        $userGroupIds = $zoneGroupMap === [] ? [] : $userGroupRepo->getGroupIdsForUser($userId);
 
         foreach ($zones as &$zone) {
             $domainId = (int)($zone['id'] ?? 0);
-            $zone['user_can_edit'] = $this->canActOnZone(
-                $domainId,
-                $userId,
-                $editPermission,
-                $editSources,
-                $zoneOwnerMap,
-                $zoneGroupMap
-            );
-            $zone['user_can_delete'] = $this->canActOnZone(
-                $domainId,
-                $userId,
-                $deletePermission,
-                $deleteSources,
-                $zoneOwnerMap,
-                $zoneGroupMap
-            );
+            $zone['user_can_edit'] = $this->canActOnZone($domainId, $userId, $editPermission, $userGroupIds, $zoneOwnerMap, $zoneGroupMap);
+            $zone['user_can_delete'] = $this->canActOnZone($domainId, $userId, $deletePermission, $userGroupIds, $zoneOwnerMap, $zoneGroupMap);
 
             // At the "own" ownership view level, owner cells stay visible only
             // for zones the user owns directly or via a group.
@@ -476,32 +444,12 @@ class SearchController extends BaseController
 
         foreach ($records as &$record) {
             $domainId = (int)($record['domain_id'] ?? 0);
-            $record['user_can_edit'] = $this->canActOnZone(
-                $domainId,
-                $userId,
-                $editPermission,
-                $editSources,
-                $zoneOwnerMap,
-                $zoneGroupMap
-            );
+            $record['user_can_edit'] = $this->canActOnZone($domainId, $userId, $editPermission, $userGroupIds, $zoneOwnerMap, $zoneGroupMap);
             $record['display_name'] ??= $record['name'] ?? '';
         }
         unset($record);
 
         return [$zones, $records];
-    }
-
-    /**
-     * @param array{has_direct: bool, group_ids: int[]} $a
-     * @param array{has_direct: bool, group_ids: int[]} $b
-     * @return array{has_direct: bool, group_ids: int[]}
-     */
-    private function mergePermissionSources(array $a, array $b): array
-    {
-        return [
-            'has_direct' => $a['has_direct'] || $b['has_direct'],
-            'group_ids' => array_values(array_unique(array_merge($a['group_ids'], $b['group_ids']))),
-        ];
     }
 
     /**
@@ -555,7 +503,10 @@ class SearchController extends BaseController
     }
 
     /**
-     * @param array{has_direct: bool, group_ids: int[]} $permissionSources
+     * The level already reflects the user's grants (own template or any group);
+     * an "_own" level additionally needs ownership, direct or via any group.
+     *
+     * @param int[] $userGroupIds
      * @param array<int, int[]> $zoneOwnerMap
      * @param array<int, int[]> $zoneGroupMap
      */
@@ -563,7 +514,7 @@ class SearchController extends BaseController
         int $domainId,
         int $userId,
         string $permission,
-        array $permissionSources,
+        array $userGroupIds,
         array $zoneOwnerMap,
         array $zoneGroupMap
     ): bool {
@@ -573,12 +524,9 @@ class SearchController extends BaseController
         if ($permission !== 'own' && $permission !== 'own_as_client') {
             return false;
         }
-        $isDirectOwner = in_array($userId, $zoneOwnerMap[$domainId] ?? [], true);
-        if ($permissionSources['has_direct'] && $isDirectOwner) {
-            return true;
-        }
-        $zoneGroupIds = $zoneGroupMap[$domainId] ?? [];
-        return !empty(array_intersect($permissionSources['group_ids'], $zoneGroupIds));
+
+        return in_array($userId, $zoneOwnerMap[$domainId] ?? [], true)
+            || !empty(array_intersect($userGroupIds, $zoneGroupMap[$domainId] ?? []));
     }
 
     /**

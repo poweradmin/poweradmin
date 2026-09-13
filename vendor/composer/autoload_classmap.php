@@ -1163,7 +1163,6 @@ return array(
     'Poweradmin\\Application\\Service\\EmailTemplateService' => $baseDir . '/lib/Application/Service/EmailTemplateService.php',
     'Poweradmin\\Application\\Service\\GroupMembershipService' => $baseDir . '/lib/Application/Service/GroupMembershipService.php',
     'Poweradmin\\Application\\Service\\GroupService' => $baseDir . '/lib/Application/Service/GroupService.php',
-    'Poweradmin\\Application\\Service\\HybridPermissionService' => $baseDir . '/lib/Application/Service/HybridPermissionService.php',
     'Poweradmin\\Application\\Service\\LdapAuthenticator' => $baseDir . '/lib/Application/Service/LdapAuthenticator.php',
     'Poweradmin\\Application\\Service\\LocaleResolver' => $baseDir . '/lib/Application/Service/LocaleResolver.php',
     'Poweradmin\\Application\\Service\\LoggingService' => $baseDir . '/lib/Application/Service/LoggingService.php',
