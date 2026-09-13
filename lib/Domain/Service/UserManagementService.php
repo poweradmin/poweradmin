@@ -399,17 +399,12 @@ class UserManagementService
         }
 
         // Check if trying to disable the last remaining uberuser
-        if (array_key_exists('active', $userData) && !$userData['active']) {
-            if ($this->userRepository->isUberuser($userId)) {
-                $uberuserCount = $this->userRepository->countUberusers();
-                if ($uberuserCount <= 1) {
-                    return [
-                        'success' => false,
-                        'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
-                        'status' => 409
-                    ];
-                }
-            }
+        if (array_key_exists('active', $userData) && !$userData['active'] && $this->userRepository->isLastUberuser($userId)) {
+            return [
+                'success' => false,
+                'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
+                'status' => 409
+            ];
         }
 
         try {
@@ -460,15 +455,12 @@ class UserManagementService
         }
 
         // Check if this is the last uberuser - prevent deletion to avoid system lockout
-        if ($this->userRepository->isUberuser($userId)) {
-            $uberuserCount = $this->userRepository->countUberusers();
-            if ($uberuserCount <= 1) {
-                return [
-                    'success' => false,
-                    'message' => 'Cannot delete the last remaining super admin user. At least one super admin must exist in the system.',
-                    'status' => 409
-                ];
-            }
+        if ($this->userRepository->isLastUberuser($userId)) {
+            return [
+                'success' => false,
+                'message' => 'Cannot delete the last remaining super admin user. At least one super admin must exist in the system.',
+                'status' => 409
+            ];
         }
 
         // Get user's zones
@@ -574,8 +566,7 @@ class UserManagementService
         // only remaining ueberuser and the new template drops that permission, the
         // system would be left with zero super admins.
         if (
-            $this->userRepository->isUberuser($userId)
-            && $this->userRepository->countUberusers() <= 1
+            $this->userRepository->isLastUberuser($userId)
             && !$this->userRepository->templateGrantsUberuser($permTemplId)
         ) {
             return [

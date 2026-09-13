@@ -773,12 +773,9 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserById')
             ->willReturn(['id' => 1]);
 
-        $this->userRepository->method('isUberuser')
+        $this->userRepository->method('isLastUberuser')
             ->with(1)
             ->willReturn(true);
-
-        $this->userRepository->method('countUberusers')
-            ->willReturn(1);
 
         $result = $this->service->updateUser(1, ['active' => false]);
 
@@ -793,12 +790,9 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserById')
             ->willReturn(['id' => 1, 'auth_method' => 'sql']);
 
-        $this->userRepository->method('isUberuser')
+        $this->userRepository->method('isLastUberuser')
             ->with(1)
-            ->willReturn(true);
-
-        $this->userRepository->method('countUberusers')
-            ->willReturn(2);
+            ->willReturn(false);
 
         $this->userRepository->method('updateUser')
             ->willReturn(true);
@@ -971,12 +965,9 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserById')
             ->willReturn(['id' => 1]);
 
-        $this->userRepository->method('isUberuser')
+        $this->userRepository->method('isLastUberuser')
             ->with(1)
             ->willReturn(true);
-
-        $this->userRepository->method('countUberusers')
-            ->willReturn(1);
 
         $result = $this->service->deleteUser(1);
 
@@ -991,7 +982,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserById')
             ->willReturn(['id' => 1]);
 
-        $this->userRepository->method('isUberuser')
+        $this->userRepository->method('isLastUberuser')
             ->willReturn(false);
 
         $this->userRepository->method('getUserZones')
@@ -1014,7 +1005,7 @@ class UserManagementServiceTest extends TestCase
                 [999, null]
             ]);
 
-        $this->userRepository->method('isUberuser')
+        $this->userRepository->method('isLastUberuser')
             ->willReturn(false);
 
         $this->userRepository->method('getUserZones')
@@ -1032,7 +1023,7 @@ class UserManagementServiceTest extends TestCase
     public function testDeleteUserRejectsTransferToSelf(): void
     {
         $this->userRepository->method('getUserById')->with(1)->willReturn(['id' => 1]);
-        $this->userRepository->method('isUberuser')->willReturn(false);
+        $this->userRepository->method('isLastUberuser')->willReturn(false);
         $this->userRepository->method('getUserZones')->with(1)->willReturn([['id' => 1]]);
 
         // Transferring to the deleted user would orphan the zones - must be rejected
@@ -1056,7 +1047,7 @@ class UserManagementServiceTest extends TestCase
                 [2, ['id' => 2]]
             ]);
 
-        $this->userRepository->method('isUberuser')
+        $this->userRepository->method('isLastUberuser')
             ->willReturn(false);
 
         $this->userRepository->method('getUserZones')
@@ -1084,7 +1075,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('getUserById')
             ->willReturn(['id' => 1]);
 
-        $this->userRepository->method('isUberuser')
+        $this->userRepository->method('isLastUberuser')
             ->willReturn(false);
 
         $this->userRepository->method('getUserZones')
@@ -1180,8 +1171,7 @@ class UserManagementServiceTest extends TestCase
     {
         $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
         $this->userRepository->method('permissionTemplateExists')->with(5, 'user')->willReturn(true);
-        $this->userRepository->method('isUberuser')->with(1)->willReturn(true);
-        $this->userRepository->method('countUberusers')->willReturn(1);
+        $this->userRepository->method('isLastUberuser')->with(1)->willReturn(true);
         $this->userRepository->method('templateGrantsUberuser')->with(5)->willReturn(false);
 
         // The last super admin must not be demoted via a template swap.
@@ -1198,8 +1188,7 @@ class UserManagementServiceTest extends TestCase
     {
         $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
         $this->userRepository->method('permissionTemplateExists')->with(5, 'user')->willReturn(true);
-        $this->userRepository->method('isUberuser')->with(1)->willReturn(true);
-        $this->userRepository->method('countUberusers')->willReturn(2);
+        $this->userRepository->method('isLastUberuser')->with(1)->willReturn(false);
         $this->userRepository->method('assignPermissionTemplate')->with(1, 5)->willReturn(true);
 
         $result = $this->service->assignPermissionTemplate(1, 5);

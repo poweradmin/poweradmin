@@ -590,29 +590,27 @@ class DbUserRepository implements UserRepository
             // Delete related OIDC/SAML authentication links first
             $this->cleanupExternalAuthLinks($userId);
 
-            // Delete user preferences
-            $stmt = $this->db->prepare("DELETE FROM user_preferences WHERE user_id = :userId");
-            $stmt->execute([':userId' => $userId]);
+            // Private zone templates die with their owner, as they always did in the web UI.
+            (new DbZoneTemplateRepository($this->db, $this->config))->deleteZoneTemplatesOwnedBy($userId);
 
-            // Delete MFA settings
-            $stmt = $this->db->prepare("DELETE FROM user_mfa WHERE user_id = :userId");
-            $stmt->execute([':userId' => $userId]);
-
-            // Delete login attempts
-            $stmt = $this->db->prepare("DELETE FROM login_attempts WHERE user_id = :userId");
-            $stmt->execute([':userId' => $userId]);
-
-            // Finally delete the user
-            $stmt = $this->db->prepare("DELETE FROM users WHERE id = :userId");
-            $result = $stmt->execute([':userId' => $userId]);
-
-            if ($result) {
-                $this->db->commit();
-                return true;
-            } else {
-                $this->db->rollback();
-                return false;
+            // Memberships and ownership rows are cleared explicitly: the FK cascade
+            // is not guaranteed on every schema.
+            foreach (
+                [
+                    "DELETE FROM user_preferences WHERE user_id = :userId",
+                    "DELETE FROM user_mfa WHERE user_id = :userId",
+                    "DELETE FROM login_attempts WHERE user_id = :userId",
+                    "DELETE FROM user_group_members WHERE user_id = :userId",
+                    "DELETE FROM zones WHERE owner = :userId",
+                    "DELETE FROM users WHERE id = :userId",
+                ] as $query
+            ) {
+                $stmt = $this->db->prepare($query);
+                $stmt->execute([':userId' => $userId]);
             }
+
+            $this->db->commit();
+            return true;
         } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
@@ -714,6 +712,11 @@ class DbUserRepository implements UserRepository
      * @param int $userId User ID to check
      * @return bool True if user is an uberuser
      */
+    public function isLastUberuser(int $userId): bool
+    {
+        return $this->isUberuser($userId) && $this->countUberusers() <= 1;
+    }
+
     public function isUberuser(int $userId): bool
     {
         $query = "SELECT COUNT(*)

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -178,6 +178,11 @@ interface UserRepository
      * @return bool True if user is an uberuser
      */
     public function isUberuser(int $userId): bool;
+
+    /**
+     * Whether removing or demoting this user would leave no active uberuser.
+     */
+    public function isLastUberuser(int $userId): bool;
 
     /**
      * Check whether a permission template grants the uberuser permission

@@ -498,30 +498,6 @@ class ZoneTemplate
     }
 
     /**
-     * Delete all zone templates for specific user
-     *
-     * @param int $userid User ID
-     *
-     * @return boolean true on success, false otherwise
-     */
-    public function deleteZoneTemplUserId(int $userid): bool
-    {
-        if (!($this->currentUserHasPermission('zone_templ_edit'))) {
-            $this->messageService->addSystemError(_("You do not have the permission to delete zone templates."));
-            return false;
-        } else {
-            try {
-                $stmt = $this->db->prepare("DELETE FROM zone_templ WHERE owner = :owner");
-                $stmt->execute([':owner' => $userid]);
-                return true;
-            } catch (Exception $e) {
-                $this->messageService->addSystemError(_('Error deleting user zone templates: ') . $e->getMessage());
-                return false;
-            }
-        }
-    }
-
-    /**
      * Count zone template records
      *
      * @param $db

@@ -43,12 +43,18 @@ class UserManager
     private MessageService $messageService;
     private ?PermissionService $permissionService = null;
     private ?ApiPermissionService $apiPermissionService = null;
+    private ?DbUserRepository $userRepository = null;
 
     public function __construct(PDO $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;
         $this->messageService = new MessageService();
+    }
+
+    private function userRepository(): DbUserRepository
+    {
+        return $this->userRepository ??= new DbUserRepository($this->db, $this->config);
     }
 
     /**
@@ -60,7 +66,7 @@ class UserManager
         if ($userId === null) {
             return false;
         }
-        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
+        $this->permissionService ??= new PermissionService($this->userRepository());
         return $this->permissionService->hasPermission($userId, $permission);
     }
 
@@ -180,30 +186,25 @@ class UserManager
             $this->messageService->addSystemError(_("You do not have the permission to delete this user."));
 
             return false;
-        } else {
-            $domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config);
-            foreach ($zones as $zone) {
-                if ($zone ['target'] == "delete") {
-                    $domainManager->deleteDomain($zone ['zid']);
-                } elseif ($zone ['target'] == "new_owner") {
-                    DomainManager::addOwnerToZone($this->db, $zone ['zid'], $zone ['newowner']);
-                }
-            }
-
-            $stmt = $this->db->prepare("DELETE FROM zones WHERE owner = :uid");
-            $stmt->execute([':uid' => $uid]);
-
-            // Clean up external authentication links
-            $stmt = $this->db->prepare("DELETE FROM oidc_user_links WHERE user_id = :uid");
-            $stmt->execute([':uid' => $uid]);
-
-            $stmt = $this->db->prepare("DELETE FROM users WHERE id = :uid");
-            $stmt->execute([':uid' => $uid]);
-
-            $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-            $zoneTemplate->deleteZoneTemplUserId($uid);
         }
-        return true;
+
+        if ($this->userRepository()->isLastUberuser($uid)) {
+            $this->messageService->addSystemError(_('Cannot delete the last remaining super admin user.'));
+
+            return false;
+        }
+
+        $domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config);
+        foreach ($zones as $zone) {
+            if ($zone ['target'] == "delete") {
+                $domainManager->deleteDomain($zone ['zid']);
+            } elseif ($zone ['target'] == "new_owner") {
+                DomainManager::addOwnerToZone($this->db, $zone ['zid'], $zone ['newowner']);
+            }
+        }
+
+        // Row cleanup (auth links, preferences, MFA, memberships, templates) is shared with the API.
+        return $this->userRepository()->deleteUser($uid);
     }
 
     /**
@@ -571,7 +572,7 @@ class UserManager
         if ($mayAssignTemplate) {
             $stmt->bindValue(':perm_templ', $details['perm_templ'], PDO::PARAM_INT);
         } else {
-            $userRepository = new DbUserRepository($this->db, $this->config);
+            $userRepository = $this->userRepository();
             $current_user = $userRepository->getUserDetailList((bool)$ldap_use, null, (int)$_SESSION[SessionKeys::USERID]);
             $stmt->bindValue(':perm_templ', $current_user[0]['tpl_id'], PDO::PARAM_INT);
         }
