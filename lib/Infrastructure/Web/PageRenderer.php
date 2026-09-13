@@ -39,6 +39,7 @@ use Poweradmin\Infrastructure\Service\StyleManager;
 use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Version;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Model\RecordType;
 
 /**
  * Renders the shared page chrome (header, footer, Twig globals) around
@@ -113,6 +114,9 @@ class PageRenderer
         $this->app->addTwigGlobal('pdns_server_info', $pdnsInfo);
         $this->app->addTwigGlobal('user_logged_in', $this->userContextService->isAuthenticated());
         $this->app->addTwigGlobal('file_version', $this->getAssetVersion());
+        // Record forms read these in JS; one source keeps them in step with the validators.
+        $this->app->addTwigGlobal('record_types_with_priority', RecordType::TYPES_WITH_PRIORITY);
+        $this->app->addTwigGlobal('deprecated_record_types', RecordType::DEPRECATED_TYPES);
         // Page-size choices, so the dropdowns offer the configured value rather than
         // a hardcoded list that silently excludes it.
         $this->app->addTwigGlobal('rows_per_page_options', (new PaginationService())->getRowsPerPageOptions(

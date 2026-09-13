@@ -143,7 +143,7 @@
 
 <script>
     // Record types that support priority field
-    const RECORD_TYPES_WITH_PRIORITY = ['MX', 'SRV', 'KX', 'NAPTR'];
+    const RECORD_TYPES_WITH_PRIORITY = {{ record_types_with_priority|json_encode|raw }};
     
     // Function to check if a record type supports priority
     function supportsPriority(recordType) {
@@ -170,7 +170,7 @@
     }
     
     // Deprecated record types
-    const DEPRECATED_RECORD_TYPES = ['SPF', 'DLV', 'AFSDB', 'KEY', 'MR', 'MINFO'];
+    const DEPRECATED_RECORD_TYPES = {{ deprecated_record_types|json_encode|raw }};
 
     // Check if a deprecated record type is selected
     function checkDeprecatedTypeWarning() {

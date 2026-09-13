@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
@@ -42,6 +43,22 @@ class DnsCommonValidatorTest extends TestCase
         $this->dbMock = $this->createMock(PDO::class);
         $this->configMock = $this->createMock(ConfigurationManager::class);
         $this->validator = new DnsCommonValidator($this->dbMock, $this->configMock);
+    }
+
+    /**
+     * The record forms enable the priority field from RecordType::TYPES_WITH_PRIORITY;
+     * the list must match what the common validator actually stores.
+     */
+    public function testTypesWithPriorityMatchTheValidator(): void
+    {
+        foreach (['MX', 'SRV'] as $type) {
+            $this->assertContains($type, RecordType::TYPES_WITH_PRIORITY);
+            $this->assertSame(10, $this->validator->validatePriority('10', $type)->getData());
+        }
+        // KX validates its own preference; NAPTR carries it inside the content.
+        $this->assertContains('KX', RecordType::TYPES_WITH_PRIORITY);
+        $this->assertNotContains('NAPTR', RecordType::TYPES_WITH_PRIORITY);
+        $this->assertSame(0, $this->validator->validatePriority('10', 'NAPTR')->getData());
     }
 
     /**

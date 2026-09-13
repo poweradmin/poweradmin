@@ -125,6 +125,14 @@ class RecordType
         self::ZONEMD,
     ];
 
+    // Types whose preference lives in the separate prio column. NAPTR keeps its
+    // order and preference inside the content and must store prio 0.
+    public const TYPES_WITH_PRIORITY = [
+        self::MX,
+        self::SRV,
+        self::KX,
+    ];
+
     // Deprecated, obsolete, or experimental record types
     public const DEPRECATED_TYPES = [
         self::AFSDB,
