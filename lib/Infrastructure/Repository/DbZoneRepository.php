@@ -1053,6 +1053,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
         $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
 
         // Wrap the dependent deletes in one transaction so a mid-sequence failure
         // rolls back instead of leaving a half-deleted zone.
@@ -1061,6 +1062,9 @@ class DbZoneRepository implements ZoneRepositoryInterface
         try {
             foreach (
                 [
+                    // Comment links are Poweradmin-native, so no cascade reaches them.
+                    "DELETE FROM record_comment_links WHERE comment_id IN (SELECT id FROM $comments_table WHERE domain_id = :domain_id)",
+                    "DELETE FROM $comments_table WHERE domain_id = :domain_id",
                     "DELETE FROM $records_table WHERE domain_id = :domain_id",
                     // Mapping tables cannot carry a foreign key: in API mode their domain_id
                     // is a canonical zone id, not a local domains.id. Delete them here.
