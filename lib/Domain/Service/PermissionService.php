@@ -330,6 +330,17 @@ class PermissionService
     }
 
     /**
+     * Whether the user may open a zone: view_others (or admin), or view_own on a
+     * zone owned directly or via any group.
+     */
+    public function canViewZone(int $userId, int $domainId): bool
+    {
+        $level = $this->getViewPermissionLevel($userId);
+
+        return $level === 'all' || ($level === 'own' && $this->userOwnsZone($userId, $domainId));
+    }
+
+    /**
      * Zone log access level: "all" (others or admin), "own", or "none".
      */
     public function getZoneLogPermissionLevel(int $userId): string

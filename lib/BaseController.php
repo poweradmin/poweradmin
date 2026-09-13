@@ -508,6 +508,17 @@ abstract class BaseController
         return $userId !== null && $this->createPermissionService()->userOwnsZone($userId, $zoneId);
     }
 
+    /**
+     * Stops the request unless the current user may open the zone (showError exits).
+     */
+    protected function requireZoneView(int $zoneId): void
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        if ($userId === null || !$this->createPermissionService()->canViewZone($userId, $zoneId)) {
+            $this->showError(_('You do not have permission to view this zone.'));
+        }
+    }
+
     protected function createUserGroupRepository(): UserGroupRepositoryInterface
     {
         return $this->services()->userGroupRepository();

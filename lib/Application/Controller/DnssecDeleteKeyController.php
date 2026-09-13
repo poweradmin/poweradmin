@@ -61,14 +61,7 @@ class DnssecDeleteKeyController extends BaseController
 
 
         // Early permission check - validate DNSSEC access before any operations
-        $perm_view = $this->createPermissionService()->getViewPermissionLevel((int)$this->getCurrentUserId());
-        $user_is_zone_owner = $this->isZoneOwner($zone_id);
-
-        // Check view permission first
-        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
-            $this->showError(_("You do not have permission to view this zone."));
-            return;
-        }
+        $this->requireZoneView($zone_id);
 
         // Validate zone existence
         $domainRepository = $this->createDomainRepository();

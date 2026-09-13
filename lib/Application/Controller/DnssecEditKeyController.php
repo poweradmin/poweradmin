@@ -73,13 +73,7 @@ class DnssecEditKeyController extends BaseController
 
         // Early permission check - this page is the confirmation entry for toggling a key,
         // so it requires the dedicated DNSSEC management permission.
-        $perm_view = $this->createPermissionService()->getViewPermissionLevel((int)$this->getCurrentUserId());
-        $user_is_zone_owner = $this->isZoneOwner($zone_id);
-
-        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
-            $this->showError(_("You do not have permission to view this zone."));
-            return;
-        }
+        $this->requireZoneView($zone_id);
 
         // Validate zone existence
         $domainRepository = $this->createDomainRepository();
@@ -124,7 +118,7 @@ class DnssecEditKeyController extends BaseController
             'key_id' => $key_id,
             'key_info' => $dnssecProvider->getZoneKey($domain_name, $key_id),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
-            'user_is_zone_owner' => $user_is_zone_owner,
+            'user_is_zone_owner' => $this->isZoneOwner($zone_id),
             'zone_id' => $zone_id,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($domain_name),
         ]);

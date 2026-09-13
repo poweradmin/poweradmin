@@ -63,13 +63,7 @@ class DnssecToggleKeyController extends BaseController
         $this->validateCsrfToken();
 
         // Validate permissions
-        $perm_view = $this->createPermissionService()->getViewPermissionLevel((int)$this->getCurrentUserId());
-        $user_is_zone_owner = $this->isZoneOwner($zone_id);
-
-        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
-            $this->showError(_("You do not have permission to view this zone."));
-            return;
-        }
+        $this->requireZoneView($zone_id);
 
         if (!$this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zone_id)) {
             $this->showError(_("You do not have permission to manage DNSSEC for this zone."));

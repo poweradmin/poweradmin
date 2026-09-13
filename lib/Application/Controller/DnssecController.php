@@ -68,13 +68,7 @@ class DnssecController extends BaseController
 
         // Early permission check - validate zone visibility before any operations.
         // The DNSSEC page itself only requires view; per-action gates apply for mutations.
-        $perm_view = $this->createPermissionService()->getViewPermissionLevel((int)$this->getCurrentUserId());
-        $user_is_zone_owner = $this->isZoneOwner($zone_id);
-
-        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
-            $this->showError(_("You do not have permission to view this zone."));
-            return;
-        }
+        $this->requireZoneView($zone_id);
 
         // Validate zone existence
         $domainRepository = $this->createDomainRepository();

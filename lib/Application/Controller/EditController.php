@@ -312,9 +312,7 @@ class EditController extends BaseController
         $metadata_view = ZoneAccessPolicy::levelAppliesToZone($perm_metadata_view, $user_is_zone_owner);
         $ownership_view = ZoneAccessPolicy::levelAppliesToZone($perm_ownership_view, $user_is_zone_owner);
 
-        if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            $this->showError(_("You do not have permission to view this zone."));
-        }
+        $this->requireZoneView($zone_id);
 
         if (!$this->zoneRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));

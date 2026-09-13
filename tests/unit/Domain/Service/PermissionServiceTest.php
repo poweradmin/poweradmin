@@ -508,6 +508,25 @@ class PermissionServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCanViewZoneNeedsOwnershipForViewOwn(): void
+    {
+        $this->userRepository->method('hasAdminPermission')->willReturnMap([[1, true], [2, false], [3, false], [4, false]]);
+        $this->userRepository->method('getUserPermissions')->willReturnMap([
+            [1, []],
+            [2, ['zone_content_view_others']],
+            [3, ['zone_content_view_own']],
+            [4, []],
+        ]);
+        $this->userRepository->method('userOwnsZone')->willReturnCallback(fn(int $userId, int $domainId) => $domainId === 100);
+
+        $this->assertTrue($this->service->canViewZone(1, 200));
+        $this->assertTrue($this->service->canViewZone(2, 200));
+        $this->assertTrue($this->service->canViewZone(3, 100));
+        $this->assertFalse($this->service->canViewZone(3, 200));
+        $this->assertFalse($this->service->canViewZone(4, 100));
+    }
+
+    #[Test]
     public function testZoneLogLevelAndPermissionFlags(): void
     {
         $this->userRepository->method('hasAdminPermission')->willReturnMap([[1, true], [2, false], [3, false]]);

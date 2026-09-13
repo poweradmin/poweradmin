@@ -55,13 +55,7 @@ class DnssecKeyImportController extends BaseController
         }
 
         $zoneIdInt = (int) $zoneId;
-        $permView = $this->createPermissionService()->getViewPermissionLevel((int)$this->getCurrentUserId());
-        $userIsZoneOwner = $this->isZoneOwner($zoneIdInt);
-
-        if ($permView === 'none' || ($permView === 'own' && !$userIsZoneOwner)) {
-            $this->showError(_('You do not have permission to view this zone.'));
-            return;
-        }
+        $this->requireZoneView($zoneIdInt);
 
         $domainRepository = $this->createDomainRepository();
         if (!$domainRepository->zoneIdExists($zoneIdInt)) {
