@@ -72,7 +72,7 @@ class DnssecDsDnskeyController extends BaseController
             return;
         }
 
-        $can_manage_dnssec = $this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id);
+        $can_manage_dnssec = $this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zone_id);
 
         $this->showKeys($zone_id, $pdnssec_use, $can_manage_dnssec);
     }

@@ -256,7 +256,7 @@ class DeleteRecordsController extends BaseController
                 $zone_info = $domainRepository->getZoneInfoFromId($zid);
 
                 $userId = $this->userContextService->getLoggedInUserId();
-                $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $domain_id);
+                $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $domain_id);
 
                 if (ZoneType::isReadOnly($zone_info['type']) || $perm_edit === 'none') {
                     continue;

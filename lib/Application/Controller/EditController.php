@@ -302,10 +302,10 @@ class EditController extends BaseController
         }
 
         // Permission levels - use zone-aware checking for group permission support
-        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zone_id);
         $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
-        $can_manage_dnssec = $this->permissionService->canManageDnssecForZone($this->db, $userId, $zone_id);
+        $can_manage_dnssec = $this->permissionService->canManageDnssecForZone($userId, $zone_id);
 
         $perm_metadata_view = $this->permissionService->getZoneMetadataViewPermissionLevel($userId);
         $perm_ownership_view = $this->permissionService->getZoneOwnershipViewPermissionLevel($userId);
@@ -792,7 +792,7 @@ class EditController extends BaseController
         // The page gate only proves view access; records are re-checked per row
         // but the zone comment write and the SOA serial bump are not.
         $userId = (int)$this->getCurrentUserId();
-        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zone_id);
         if (!ZoneAccessPolicy::canEditZone($perm_edit, $this->permissionService->userOwnsZone($userId, $zone_id))) {
             $this->setMessage('edit', 'error', _('You do not have permission to edit this zone.'));
             return;

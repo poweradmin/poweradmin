@@ -88,7 +88,7 @@ class ZoneFileImportController extends BaseController
             if ($zoneName) {
                 $userId = $this->userContextService->getLoggedInUserId();
                 $permissionService = $this->createPermissionService();
-                $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, (int)$_GET['zone_id']);
+                $permEdit = $permissionService->getEditPermissionLevelForZone($userId, (int)$_GET['zone_id']);
                 if ($permEdit !== 'none') {
                     $targetZoneId = (int)$_GET['zone_id'];
                     $targetZoneName = $zoneName;
@@ -161,7 +161,7 @@ class ZoneFileImportController extends BaseController
 
         // Verify permission when importing into an existing zone via POST
         if ($importMode === 'existing' && $existingZoneId > 0) {
-            $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, $existingZoneId);
+            $permEdit = $permissionService->getEditPermissionLevelForZone($userId, $existingZoneId);
             if ($permEdit === 'none') {
                 $this->showError(_('You do not have permission to modify this zone.'));
                 return;
@@ -173,7 +173,7 @@ class ZoneFileImportController extends BaseController
         if ($importMode === 'new' && $origin !== null && $domainRepository->domainExists($origin)) {
             $existingZoneId = $domainRepository->getZoneIdFromName($origin) ?? 0;
             if ($existingZoneId > 0) {
-                $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, $existingZoneId);
+                $permEdit = $permissionService->getEditPermissionLevelForZone($userId, $existingZoneId);
                 if ($permEdit !== 'none') {
                     $importMode = 'existing';
                 }
@@ -295,7 +295,7 @@ class ZoneFileImportController extends BaseController
 
             // Verify user has permission to edit this zone
             $permissionService = $this->createPermissionService();
-            $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, $existingZoneId);
+            $permEdit = $permissionService->getEditPermissionLevelForZone($userId, $existingZoneId);
 
             if ($permEdit === 'none') {
                 $this->showError(_('You do not have permission to modify this zone.'));

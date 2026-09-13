@@ -154,7 +154,7 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
     #[DataProvider('ownershipMatrix')]
     public function testZoneEditLevelFollowsOwnership(int $userId, int $zoneId, bool $owns): void
     {
-        $level = $this->permissions->getEditPermissionLevelForZone($this->db, $userId, $zoneId);
+        $level = $this->permissions->getEditPermissionLevelForZone($userId, $zoneId);
 
         $this->assertSame($owns ? 'own' : 'none', $level);
     }

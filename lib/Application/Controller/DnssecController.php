@@ -88,7 +88,7 @@ class DnssecController extends BaseController
 
         // Handle unsign zone action - requires dedicated DNSSEC management permission.
         if ($this->request->getPostParam('unsign_zone') !== null) {
-            if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id)) {
+            if (!$this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zone_id)) {
                 $this->setMessage('dnssec', 'error', _("You do not have permission to manage DNSSEC for this zone."));
                 $this->showDnsSecKeys($zone_id);
                 return;
@@ -143,9 +143,9 @@ class DnssecController extends BaseController
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $permissionService = $this->createPermissionService();
-        $can_manage_dnssec = $permissionService->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zone_id);
+        $can_manage_dnssec = $permissionService->canManageDnssecForZone($this->getCurrentUserId(), $zone_id);
         // Kept for 4.4.0 theme forks that still gate the page on perm_edit
-        $perm_edit = $permissionService->getEditPermissionLevelForZone($this->db, $this->getCurrentUserId(), $zone_id);
+        $perm_edit = $permissionService->getEditPermissionLevelForZone($this->getCurrentUserId(), $zone_id);
 
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,

@@ -102,7 +102,7 @@ class DeleteDomainsController extends BaseController
 
         foreach ((array)$zone_ids as $zone_id) {
             $canDelete = $canDeleteOthers
-                || $this->createPermissionService()->canPerformZoneAction($this->db, $userId, (int)$zone_id, 'zone_delete_own');
+                || $this->createPermissionService()->canPerformZoneAction($userId, (int)$zone_id, 'zone_delete_own');
             $this->checkCondition(!$canDelete, _("You do not have the permission to delete a zone."));
         }
     }

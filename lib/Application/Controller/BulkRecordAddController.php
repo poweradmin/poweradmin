@@ -97,7 +97,7 @@ class BulkRecordAddController extends BaseController
         $zone_type = $this->domainRepository->getDomainType($zone_id);
         $userId = $this->userContextService->getLoggedInUserId();
 
-        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zone_id);
 
         $this->checkCondition(
             ZoneType::isReadOnly($zone_type) || $perm_edit === 'none',

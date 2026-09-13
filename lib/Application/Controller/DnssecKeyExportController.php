@@ -63,7 +63,7 @@ class DnssecKeyExportController extends BaseController
         }
 
         // Exporting private key material requires DNSSEC management permission.
-        if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zoneIdInt)) {
+        if (!$this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zoneIdInt)) {
             $this->showError(_('You do not have permission to manage DNSSEC for this zone.'));
             return;
         }

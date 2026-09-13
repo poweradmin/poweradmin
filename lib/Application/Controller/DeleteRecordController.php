@@ -114,7 +114,7 @@ class DeleteRecordController extends BaseController
         $user_is_zone_owner = $this->isZoneOwner($zid);
 
         // Check zone-specific edit permission (includes group permissions)
-        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zid);
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zid);
 
         if ($perm_edit === "none") {
             $this->showError(_('You do not have permission to delete records in this zone.'));

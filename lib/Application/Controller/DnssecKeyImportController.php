@@ -70,7 +70,7 @@ class DnssecKeyImportController extends BaseController
             return;
         }
 
-        if (!$this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zoneIdInt)) {
+        if (!$this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zoneIdInt)) {
             $this->showError(_('You do not have permission to manage DNSSEC for this zone.'));
             return;
         }

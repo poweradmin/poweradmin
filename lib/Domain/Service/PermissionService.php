@@ -122,12 +122,11 @@ class PermissionService
     /**
      * Whether the user may perform an "_own" action on a zone: the grant comes from
      * the user's template or any of their groups (union), and the zone is owned
-     * directly or through any group. The $db argument is unused and goes with
-     * the next permission commit.
+     * directly or through any group.
      *
      * @param string $permissionName Permission name (e.g. 'zone_delete_own')
      */
-    public function canPerformZoneAction(\PDO $db, int $userId, int $domainId, string $permissionName): bool
+    public function canPerformZoneAction(int $userId, int $domainId, string $permissionName): bool
     {
         if ($this->isAdmin($userId)) {
             return true;
@@ -180,12 +179,11 @@ class PermissionService
 
     /**
      * The user's edit level narrowed to one zone: "own" levels apply only when
-     * the zone is owned directly or via any group. The $db argument is unused
-     * and goes with the next permission commit.
+     * the zone is owned directly or via any group.
      *
      * @return string "all", "own", "own_as_client", or "none"
      */
-    public function getEditPermissionLevelForZone(\PDO $db, int $userId, int $domainId): string
+    public function getEditPermissionLevelForZone(int $userId, int $domainId): string
     {
         $level = $this->getEditPermissionLevel($userId);
         if ($level === 'all' || $level === 'none') {
@@ -323,16 +321,11 @@ class PermissionService
     }
 
     /**
-     * Check if a user may manage DNSSEC keys for a zone (includes group permissions).
-     *
-     * @param \PDO $db Database connection
-     * @param int $userId User ID to check
-     * @param int $domainId Zone/Domain ID
-     * @return bool True if the user may manage DNSSEC for this zone
+     * DNSSEC key management on a zone: zone_dnssec_manage_own plus ownership (admins always).
      */
-    public function canManageDnssecForZone(\PDO $db, int $userId, int $domainId): bool
+    public function canManageDnssecForZone(int $userId, int $domainId): bool
     {
-        return $this->canPerformZoneAction($db, $userId, $domainId, 'zone_dnssec_manage_own');
+        return $this->canPerformZoneAction($userId, $domainId, 'zone_dnssec_manage_own');
     }
 
     /**

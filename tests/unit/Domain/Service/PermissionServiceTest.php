@@ -126,11 +126,9 @@ class PermissionServiceTest extends TestCase
             ->with($userId)
             ->willReturn(true);
 
-        $db = $this->createMock(\PDO::class);
-
         // Admin short-circuit must not consult ownership
         $this->userRepository->expects($this->never())->method('userOwnsZone');
-        $this->assertTrue($this->service->canPerformZoneAction($db, $userId, 100, 'zone_delete_own'));
+        $this->assertTrue($this->service->canPerformZoneAction($userId, 100, 'zone_delete_own'));
     }
 
     #[Test]
@@ -143,11 +141,9 @@ class PermissionServiceTest extends TestCase
             [5, 100, true],
             [5, 200, false],
         ]);
-        $db = $this->createMock(\PDO::class);
-
-        $this->assertTrue($this->service->canPerformZoneAction($db, 5, 100, 'zone_delete_own'));
-        $this->assertFalse($this->service->canPerformZoneAction($db, 5, 200, 'zone_delete_own'));
-        $this->assertFalse($this->service->canPerformZoneAction($db, 5, 100, 'zone_dnssec_manage_own'));
+        $this->assertTrue($this->service->canPerformZoneAction(5, 100, 'zone_delete_own'));
+        $this->assertFalse($this->service->canPerformZoneAction(5, 200, 'zone_delete_own'));
+        $this->assertFalse($this->service->canPerformZoneAction(5, 100, 'zone_dnssec_manage_own'));
     }
 
     #[Test]
@@ -159,10 +155,8 @@ class PermissionServiceTest extends TestCase
             ->with($userId)
             ->willReturn(true);
 
-        $db = $this->createMock(\PDO::class);
-
-        $db->expects($this->never())->method('prepare');
-        $this->assertTrue($this->service->canManageDnssecForZone($db, $userId, 100));
+        $this->userRepository->expects($this->never())->method('userOwnsZone');
+        $this->assertTrue($this->service->canManageDnssecForZone($userId, 100));
     }
 
     #[Test]
@@ -337,9 +331,7 @@ class PermissionServiceTest extends TestCase
             ->with($userId)
             ->willReturn([]);
 
-        $db = $this->createMock(\PDO::class);
-
-        $this->assertEquals('all', $this->service->getEditPermissionLevelForZone($db, $userId, $domainId));
+        $this->assertEquals('all', $this->service->getEditPermissionLevelForZone($userId, $domainId));
     }
 
     #[Test]
@@ -356,9 +348,7 @@ class PermissionServiceTest extends TestCase
             ->with($userId)
             ->willReturn(['zone_content_edit_others']);
 
-        $db = $this->createMock(\PDO::class);
-
-        $this->assertEquals('all', $this->service->getEditPermissionLevelForZone($db, $userId, $domainId));
+        $this->assertEquals('all', $this->service->getEditPermissionLevelForZone($userId, $domainId));
     }
 
     #[Test]
@@ -371,12 +361,10 @@ class PermissionServiceTest extends TestCase
             [3, []],
         ]);
         $this->userRepository->method('userOwnsZone')->willReturnCallback(fn(int $userId, int $domainId) => $domainId === 100);
-        $db = $this->createMock(\PDO::class);
-
-        $this->assertSame('own', $this->service->getEditPermissionLevelForZone($db, 1, 100));
-        $this->assertSame('none', $this->service->getEditPermissionLevelForZone($db, 1, 200));
-        $this->assertSame('own_as_client', $this->service->getEditPermissionLevelForZone($db, 2, 100));
-        $this->assertSame('none', $this->service->getEditPermissionLevelForZone($db, 3, 100));
+        $this->assertSame('own', $this->service->getEditPermissionLevelForZone(1, 100));
+        $this->assertSame('none', $this->service->getEditPermissionLevelForZone(1, 200));
+        $this->assertSame('own_as_client', $this->service->getEditPermissionLevelForZone(2, 100));
+        $this->assertSame('none', $this->service->getEditPermissionLevelForZone(3, 100));
     }
 
     #[Test]
