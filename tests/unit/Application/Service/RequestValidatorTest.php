@@ -46,6 +46,42 @@ class RequestValidatorTest extends TestCase
         $this->assertGreaterThan(0, $validator->validate(['zone_id' => 'abc'])->count());
     }
 
+    public function testLengthMaxArrayAndInRulesAreEnforced(): void
+    {
+        $validator = new RequestValidator();
+        $validator->setRules([
+            'lengthMax' => [['name', 3]],
+            'array' => ['perm_id'],
+            'in' => [['type', ['user', 'group']]],
+        ]);
+
+        $this->assertSame(0, $validator->validate(['name' => 'abc', 'perm_id' => [1], 'type' => 'user'])->count());
+        $this->assertGreaterThan(0, $validator->validate(['name' => 'abcd'])->count());
+        $this->assertGreaterThan(0, $validator->validate(['perm_id' => '1'])->count());
+        $this->assertGreaterThan(0, $validator->validate(['type' => 'admin'])->count());
+    }
+
+    public function testMultipleRulesOnOneFieldAllApply(): void
+    {
+        $validator = new RequestValidator();
+        $validator->setRules([
+            'required' => ['name'],
+            'lengthMax' => [['name', 3]],
+        ]);
+
+        $this->assertSame(0, $validator->validate(['name' => 'abc'])->count());
+        $this->assertGreaterThan(0, $validator->validate(['name' => 'abcd'])->count());
+        $this->assertGreaterThan(0, $validator->validate(['name' => null])->count());
+    }
+
+    public function testUnknownRuleThrows(): void
+    {
+        $validator = new RequestValidator();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $validator->setRules(['maxLength' => [['name', 3]]]);
+    }
+
     public function testEmptyStringValuesAreFilteredBeforeTypeChecks(): void
     {
         $validator = new RequestValidator();
