@@ -503,6 +503,7 @@ class ZonesRecordsController extends PublicApiController
             if ($useTransaction) {
                 $this->db->commit();
             }
+            $this->rectifyZoneAfterWrite($zoneId);
 
             $responseData = [
                 'record_id' => $newRecordId,
@@ -675,6 +676,7 @@ class ZonesRecordsController extends PublicApiController
             if ($recordData['type'] !== 'SOA') {
                 $this->updateSOASerial($zoneId);
             }
+            $this->rectifyZoneAfterWrite($zoneId);
 
             return $this->returnApiResponse(null, true, 'Record updated successfully', 200);
         } catch (Exception $e) {
@@ -786,6 +788,7 @@ class ZonesRecordsController extends PublicApiController
             if ($recordType !== 'SOA') {
                 $this->updateSOASerial($zoneId);
             }
+            $this->rectifyZoneAfterWrite($zoneId);
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204);
         } catch (Exception $e) {

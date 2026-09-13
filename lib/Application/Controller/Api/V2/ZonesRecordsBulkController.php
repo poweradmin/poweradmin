@@ -286,6 +286,7 @@ class ZonesRecordsBulkController extends PublicApiController
                 if ($useTransaction) {
                     $this->db->commit();
                 }
+                $this->rectifyZoneAfterWrite($zoneId);
 
                 $message = 'Bulk operations completed successfully';
                 if ($results['failed'] > 0) {

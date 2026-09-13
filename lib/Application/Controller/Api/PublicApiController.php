@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Service\DatabaseService;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
@@ -191,6 +192,31 @@ abstract class PublicApiController extends AbstractApiController
      *
      * @return bool True if V2 controller, false if V1
      */
+    /**
+     * Rebuilds ordername/auth after a record write so signed zones keep answering.
+     * Call after the transaction commits: the rectifier reads committed rows.
+     */
+    protected function rectifyZoneAfterWrite(int $zoneId): void
+    {
+        $config = $this->getConfig();
+        if (!$config->get('dnssec', 'enabled', false)) {
+            return;
+        }
+
+        // Best effort: the record is already committed, so nothing here may fail the request.
+        try {
+            $zoneName = $this->getRepositoryFactory()->createDomainRepository()->getDomainNameById($zoneId);
+            if ($zoneName === null) {
+                return;
+            }
+            if (!DnssecProviderFactory::create($this->db, $config)->rectifyZone($zoneName)) {
+                $this->logger->warning('Failed to rectify zone {zone}', ['zone' => $zoneName]);
+            }
+        } catch (\Throwable $e) {
+            $this->logger->warning('Failed to rectify zone {zone_id}: {message}', ['zone_id' => $zoneId, 'message' => $e->getMessage()]);
+        }
+    }
+
     protected function isV2Controller(): bool
     {
         return str_contains(get_class($this), '\\V2\\');
