@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\HybridPermissionService;
+use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Repository\UserRepository;
 
 /**
@@ -346,14 +347,19 @@ class PermissionService
     }
 
     /**
-     * Check if user can add zones
-     *
-     * @param int $userId User ID to check
-     * @return bool True if user can add zones
+     * Whether the user may create (or convert a zone into) the given kind.
+     * Kinds that replicate from a primary (SLAVE, CONSUMER) are governed by
+     * zone_slave_add, the rest by zone_master_add; the add forms use the same split.
      */
-    public function canAddZones(int $userId): bool
+    public function canCreateZone(int $userId, string $zoneType): bool
     {
-        return $this->hasPermission($userId, 'zone_master_add') || $this->isAdmin($userId);
+        $kind = ZoneKind::tryFromName($zoneType);
+        if ($kind === null) {
+            return false;
+        }
+        $grant = $kind->replicatesFromPrimary() ? 'zone_slave_add' : 'zone_master_add';
+
+        return $this->hasPermission($userId, $grant) || $this->isAdmin($userId);
     }
 
     /**
