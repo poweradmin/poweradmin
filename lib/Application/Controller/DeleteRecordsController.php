@@ -205,11 +205,7 @@ class DeleteRecordsController extends BaseController
         foreach (array_keys($affected_zones) as $zone_id) {
             $soaRecordManager->updateSOASerial($zone_id);
 
-            if ($this->config->get('dnssec', 'enabled', false)) {
-                $zone_name = $domainRepository->getDomainNameById($zone_id);
-                $dnssecProvider = $this->createDnssecProvider();
-                $dnssecProvider->rectifyZone($zone_name);
-            }
+            $this->rectifyZoneAfterWrite((string)$domainRepository->getDomainNameById($zone_id));
         }
 
         $redirectPage = 'search';

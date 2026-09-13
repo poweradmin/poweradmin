@@ -553,6 +553,23 @@ abstract class BaseController
         return $this->services()->dnssecProvider();
     }
 
+    /**
+     * Rebuilds ordername/auth after a record write so signed zones keep answering.
+     * Call after the transaction commits: the rectifier reads committed rows.
+     */
+    protected function rectifyZoneAfterWrite(string $zoneName): void
+    {
+        if (!$this->config->get('dnssec', 'enabled', false)) {
+            return;
+        }
+
+        try {
+            $this->createDnssecProvider()->rectifyZone($zoneName);
+        } catch (\Throwable $e) {
+            $this->logger->warning('Failed to rectify zone {zone}: {message}', ['zone' => $zoneName, 'message' => $e->getMessage()]);
+        }
+    }
+
     protected function createDomainManager(): DomainManagerInterface
     {
         return $this->services()->domainManager();

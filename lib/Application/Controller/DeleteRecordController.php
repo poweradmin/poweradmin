@@ -197,11 +197,7 @@ class DeleteRecordController extends BaseController
                     );
                 }
 
-                if ($this->config->get('dnssec', 'enabled', false)) {
-                    $zone_name = $domainRepository->getDomainNameById($zid);
-                    $dnssecProvider = $this->createDnssecProvider();
-                    $dnssecProvider->rectifyZone($zone_name);
-                }
+                $this->rectifyZoneAfterWrite((string)$domainRepository->getDomainNameById($zid));
 
                 // Delete comment for this specific record (per-record comment by record_id)
                 $this->recordCommentService->deleteCommentByRecordId($record_id);

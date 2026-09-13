@@ -334,12 +334,9 @@ class EditRecordController extends BaseController
             }
         }
 
-        if ($this->config->get('dnssec', 'enabled', false)) {
-            $zone_name = $domainRepository->getDomainNameById($zid);
-            if ($zone_name !== null) {
-                $dnssecProvider = $this->createDnssecProvider();
-                $dnssecProvider->rectifyZone($zone_name);
-            }
+        $zone_name = $domainRepository->getDomainNameById($zid);
+        if ($zone_name !== null) {
+            $this->rectifyZoneAfterWrite($zone_name);
         }
 
         $this->setMessage('edit', 'success', _('The record has been updated successfully.'));

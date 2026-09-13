@@ -639,6 +639,7 @@ class ZonesRRSetsController extends PublicApiController
                 if ($useTransaction) {
                     $this->db->commit();
                 }
+                $this->rectifyZoneAfterWrite($zoneName);
 
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:api_replace_rrset name:%s type:%s records:%d',
@@ -822,6 +823,7 @@ class ZonesRRSetsController extends PublicApiController
                 }
 
                 $this->db->commit();
+                $this->rectifyZoneAfterWrite($zoneName);
 
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:api_delete_rrset name:%s type:%s records:%d',

@@ -549,6 +549,7 @@ class ZonesRecordsController extends PublicApiController
             if ($useTransaction) {
                 $this->db->commit();
             }
+            $this->rectifyZoneAfterWrite($zoneName);
 
             try {
                 $zoneName = $this->backendProvider->getZoneNameById($zoneId);
@@ -839,6 +840,7 @@ class ZonesRecordsController extends PublicApiController
             if ($recordData['type'] !== 'SOA') {
                 $this->updateSOASerial($zoneId);
             }
+            $this->rectifyZoneAfterWrite((string)$zone['name']);
 
             // Get the updated record to return.
             // In API mode the record ID may change when name/type/content/prio change,
@@ -1044,6 +1046,7 @@ class ZonesRecordsController extends PublicApiController
             if ($recordType !== 'SOA') {
                 $this->updateSOASerial($zoneId);
             }
+            $this->rectifyZoneAfterWrite((string)$zone['name']);
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:api_delete_record name:%s type:%s content:%s',

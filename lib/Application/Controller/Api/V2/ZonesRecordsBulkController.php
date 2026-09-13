@@ -333,6 +333,7 @@ class ZonesRecordsBulkController extends PublicApiController
                 if ($useTransaction) {
                     $this->db->commit();
                 }
+                $this->rectifyZoneAfterWrite((string)$zone['name']);
 
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:api_bulk_records operations:%d',

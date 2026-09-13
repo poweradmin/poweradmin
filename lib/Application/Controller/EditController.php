@@ -969,9 +969,7 @@ class EditController extends BaseController
             default => $this->setMessage('edit', 'info', _('Zone saved successfully. No record changes were made, but SOA serial was incremented.')),
         };
 
-        if ($this->config->get('dnssec', 'enabled', false)) {
-            $this->createDnssecProvider()->rectifyZone($zone_name);
-        }
+        $this->rectifyZoneAfterWrite($zone_name);
     }
 
     /**
