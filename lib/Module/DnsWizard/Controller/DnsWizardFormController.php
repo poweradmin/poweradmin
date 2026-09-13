@@ -251,7 +251,7 @@ class DnsWizardFormController extends BaseController
         $ipRetriever = new IpAddressRetriever($_SERVER);
         $clientIp = $ipRetriever->getClientIp();
 
-        $success = $this->recordManager->createRecord(
+        $result = $this->recordManager->createRecord(
             $zone_id,
             $name,
             $type,
@@ -263,8 +263,8 @@ class DnsWizardFormController extends BaseController
             $clientIp
         );
 
-        if (!$success) {
-            $this->setMessage('dns_wizard_form', 'error', _('This record was not valid and could not be added. It may already exist or contain invalid data.'));
+        if (!$result->success) {
+            $this->setMessage('dns_wizard_form', 'error', (string)$result->message);
 
             // Save form data so it can be repopulated
             $formId = $this->formStateService->generateFormId('dns_wizard_form');

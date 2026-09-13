@@ -26,6 +26,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -61,22 +62,26 @@ class RecordManagerService
         $this->backendProvider = $backendProvider;
     }
 
-    public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, string $clientIp, int $disabled = 0): bool
+    /**
+     * Creates the record and, on success, logs, rectifies and stores the comment.
+     * Failures come back as the result; nothing is written to MessageService.
+     */
+    public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, string $clientIp, int $disabled = 0): RecordWriteResult
     {
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
         // All creates go through RecordManager so permission gates and record
         // validation apply to disabled records as well.
-        $recordId = $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio, $disabled);
-        if ($recordId === null) {
-            return false;
+        $result = $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio, $disabled);
+        if (!$result->success) {
+            return $result;
         }
 
         $this->logRecordCreation($clientIp, $userlogin, $type, $name, $zone_name, $content, $ttl, $prio, $zone_id);
         $this->handleDnssec($zone_name);
-        $this->handleCommentsWithId($zone_id, $name, $type, $content, $comment, $userlogin, $zone_name, $recordId);
+        $this->handleCommentsWithId($zone_id, $name, $type, $content, $comment, $userlogin, $zone_name, $result->recordId);
 
-        return true;
+        return $result;
     }
 
     private function logRecordCreation(string $clientIp, string $userlogin, string $type, string $name, string $zone_name, string $content, int $ttl, int $prio, int $zone_id): void

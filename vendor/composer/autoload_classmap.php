@@ -1353,6 +1353,7 @@ return array(
     'Poweradmin\\Domain\\Service\\Dns\\DomainManagerInterface' => $baseDir . '/lib/Domain/Service/Dns/DomainManagerInterface.php',
     'Poweradmin\\Domain\\Service\\Dns\\RecordManager' => $baseDir . '/lib/Domain/Service/Dns/RecordManager.php',
     'Poweradmin\\Domain\\Service\\Dns\\RecordManagerInterface' => $baseDir . '/lib/Domain/Service/Dns/RecordManagerInterface.php',
+    'Poweradmin\\Domain\\Service\\Dns\\RecordWriteResult' => $baseDir . '/lib/Domain/Service/Dns/RecordWriteResult.php',
     'Poweradmin\\Domain\\Service\\Dns\\SOARecordManager' => $baseDir . '/lib/Domain/Service/Dns/SOARecordManager.php',
     'Poweradmin\\Domain\\Service\\Dns\\SOARecordManagerInterface' => $baseDir . '/lib/Domain/Service/Dns/SOARecordManagerInterface.php',
     'Poweradmin\\Domain\\Service\\Dns\\SupermasterManager' => $baseDir . '/lib/Domain/Service/Dns/SupermasterManager.php',

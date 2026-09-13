@@ -211,20 +211,19 @@ class BulkRecordAddController extends BaseController
                         $content .= '.';
                     }
 
-                    if (
-                        $this->recordManager->createRecord(
-                            $zone_id,
-                            $name,
-                            $type,
-                            $content,
-                            $ttl,
-                            $prio,
-                            $comment,
-                            $this->userContextService->getLoggedInUsername(),
-                            $this->ipAddressRetriever->getClientIp(),
-                            $disabled
-                        )
-                    ) {
+                    $result = $this->recordManager->createRecord(
+                        $zone_id,
+                        $name,
+                        $type,
+                        $content,
+                        $ttl,
+                        $prio,
+                        $comment,
+                        $this->userContextService->getLoggedInUsername(),
+                        $this->ipAddressRetriever->getClientIp(),
+                        $disabled
+                    );
+                    if ($result->success) {
                         $success_count++;
 
                         // Log the record creation
@@ -239,7 +238,7 @@ class BulkRecordAddController extends BaseController
                             $prio
                         ), $zone_id);
                     } else {
-                        $failed_records[] = $line . " - " . _('Record could not be added.');
+                        $failed_records[] = $line . " - " . $result->message;
                     }
                 } catch (Exception $e) {
                     $failed_records[] = $line . " - " . $e->getMessage();

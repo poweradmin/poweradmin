@@ -32,7 +32,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Exception;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Utility\RecordIdHelper;
@@ -54,6 +53,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -1241,34 +1241,13 @@ class EditController extends BaseController
         $ttl = $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
         $name = DnsHelper::restoreZoneSuffix($name, $zone_name_for_record);
 
-        try {
-            if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
-                // Get system errors that were generated during validation
-                $systemErrors = $this->getSystemErrors();
-                $errorMessage = !empty($systemErrors) ? end($systemErrors) :
-                    _('This record was not valid and could not be added. It may already exist or contain invalid data.');
-
-                // Determine which field has an error
-                $fieldWithError = $this->determineFieldWithError($errorMessage);
-
-                // Store validation error directly in session
-                $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
-                    'error' => true,
-                    'errorMessage' => $errorMessage,
-                    'fieldError' => $fieldWithError
-                ];
-                return false;
-            }
-        } catch (Exception $e) {
-            // Handle exceptions from the validation process
-            $errorMessage = $e->getMessage();
-            $fieldWithError = $this->determineFieldWithError($errorMessage);
-
+        $result = $this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment);
+        if (!$result->success) {
             // Store validation error directly in session
             $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
                 'error' => true,
-                'errorMessage' => $errorMessage,
-                'fieldError' => $fieldWithError
+                'errorMessage' => $result->message,
+                'fieldError' => $result->field
             ];
             return false;
         }
@@ -1323,9 +1302,8 @@ class EditController extends BaseController
      * @param int $ttl TTL value
      * @param int $prio Priority value
      * @param string $comment Record comment
-     * @return bool True if record was created successfully
      */
-    private function createRecord(int $zone_id, $name, $type, $content, $ttl, $prio, $comment): bool
+    private function createRecord(int $zone_id, $name, $type, $content, $ttl, $prio, $comment): RecordWriteResult
     {
         return $this->recordManager->createRecord(
             $zone_id,
@@ -1401,37 +1379,6 @@ class EditController extends BaseController
         }
     }
 
-    /**
-     * Determine which field has an error based on the error message
-     *
-     * @param string $errorMessage The error message
-     * @return string The name of the field with an error
-     */
-    private function determineFieldWithError(string $errorMessage): string
-    {
-        $lowerError = strtolower($errorMessage);
-
-        // Check for specific field mentions in the error message
-        if (strpos($lowerError, 'name') !== false && strpos($lowerError, 'invalid') !== false) {
-            return 'name';
-        } elseif (
-            strpos($lowerError, 'content') !== false ||
-                 strpos($lowerError, 'value') !== false ||
-                 strpos($lowerError, 'address') !== false ||
-                 strpos($lowerError, 'hostname') !== false
-        ) {
-            return 'content';
-        } elseif (strpos($lowerError, 'ttl') !== false) {
-            return 'ttl';
-        } elseif (strpos($lowerError, 'prio') !== false || strpos($lowerError, 'priority') !== false) {
-            return 'prio';
-        } elseif (strpos($lowerError, 'already exists') !== false) {
-            return 'name-content-duplicate';
-        }
-
-        // Default to content field as that's the most common error source
-        return 'content';
-    }
 
     /**
      * Clear form data from session if zone has changed

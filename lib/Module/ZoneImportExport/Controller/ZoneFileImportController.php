@@ -463,7 +463,7 @@ class ZoneFileImportController extends BaseController
                 $clientIp
             );
 
-            if ($result) {
+            if ($result->success) {
                 $successCount++;
             } else {
                 $failCount++;

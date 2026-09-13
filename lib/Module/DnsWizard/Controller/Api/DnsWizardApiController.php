@@ -381,7 +381,7 @@ class DnsWizardApiController extends InternalApiController
             $userlogin = $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown';
             $clientIp = $this->request->getClientIp() ?? '0.0.0.0';
 
-            $success = $recordManager->createRecord(
+            $result = $recordManager->createRecord(
                 $zone_id,
                 $name,
                 $type,
@@ -393,8 +393,8 @@ class DnsWizardApiController extends InternalApiController
                 $clientIp
             );
 
-            if (!$success) {
-                return $this->returnApiError(_('This record was not valid and could not be added. It may already exist or contain invalid data.'), 400);
+            if (!$result->success) {
+                return $this->returnApiError((string)$result->message, $result->status);
             }
 
             // Set success message for display after page reload

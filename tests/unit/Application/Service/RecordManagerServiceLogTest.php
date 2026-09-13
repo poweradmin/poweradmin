@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
@@ -42,12 +43,12 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
  */
 class RecordManagerServiceLogTest extends TestCase
 {
-    private function makeService(LegacyLogger $logger): RecordManagerService
+    private function makeService(LegacyLogger $logger, ?RecordWriteResult $write = null, ?RecordCommentService $comments = null): RecordManagerService
     {
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $recordManager = $this->createMock(RecordManagerInterface::class);
         $domainRepository->method('getDomainNameById')->willReturn('example.com');
-        $recordManager->method('addRecordGetId')->willReturn(1);
+        $recordManager->method('addRecordGetId')->willReturn($write ?? RecordWriteResult::created(1));
 
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturn(false);
@@ -56,7 +57,7 @@ class RecordManagerServiceLogTest extends TestCase
             $this->createMock(PDO::class),
             $domainRepository,
             $recordManager,
-            $this->createMock(RecordCommentService::class),
+            $comments ?? $this->createMock(RecordCommentService::class),
             $logger,
             $config,
             null
@@ -83,6 +84,26 @@ class RecordManagerServiceLogTest extends TestCase
 
         $service = $this->makeService($logger);
         $service->createRecord(1, $inputName, 'A', '192.0.2.1', 3600, 0, '', 'admin', '127.0.0.1');
+    }
+
+    /**
+     * A refused write returns the manager's result untouched: no audit line, no
+     * comment, and the reason travels with the result rather than the session.
+     */
+    public function testRefusedWriteIsReturnedWithoutLoggingOrComments(): void
+    {
+        $logger = $this->createMock(LegacyLogger::class);
+        $logger->expects($this->never())->method('logInfo');
+        $comments = $this->createMock(RecordCommentService::class);
+        $comments->expects($this->never())->method('createCommentForRecord');
+
+        $service = $this->makeService($logger, RecordWriteResult::failure('Invalid IP address', 400), $comments);
+        $result = $service->createRecord(1, 'host', 'A', 'not-an-ip', 3600, 0, 'a comment', 'admin', '127.0.0.1');
+
+        $this->assertFalse($result->success);
+        $this->assertSame('Invalid IP address', $result->message);
+        $this->assertSame(400, $result->status);
+        $this->assertSame(RecordWriteResult::FIELD_CONTENT, $result->field);
     }
 
     public static function recordNameProvider(): array

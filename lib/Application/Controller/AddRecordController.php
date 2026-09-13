@@ -31,7 +31,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Exception;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
@@ -40,6 +39,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\RecordTypeService;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DomainRecordCreator;
@@ -189,41 +189,11 @@ class AddRecordController extends BaseController
         // This converts @ to zone apex and ensures proper zone suffix
         $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
-        try {
-            if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
-                // Get system errors that were generated during validation
-                $systemErrors = $this->getSystemErrors();
-                $errorMessage = !empty($systemErrors) ? end($systemErrors) :
-                    _('This record was not valid and could not be added. It may already exist or contain invalid data.');
-
-                // Determine which field has an error
-                $fieldWithError = $this->determineFieldWithError($errorMessage);
-
-                // Generate a form ID and store the invalid form data with validation error
-                $formId = $this->formStateService->generateFormId('add_record');
-                $formData = [
-                    'name' => $name,
-                    'content' => $content,
-                    'type' => $type,
-                    'prio' => $prio,
-                    'ttl' => $ttl,
-                    'comment' => $comment,
-                    'error' => true,
-                    'errorMessage' => $errorMessage,
-                    'fieldError' => $fieldWithError
-                ];
-                $this->formStateService->saveFormData($formId, $formData);
-
-                $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);
-                return;
-            }
-        } catch (Exception $e) {
-            // Handle exceptions from the validation process
-            $errorMessage = $e->getMessage();
-            $fieldWithError = $this->determineFieldWithError($errorMessage);
-
+        $result = $this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment);
+        if (!$result->success) {
+            // Keep the submitted values and point at the field the reason names
             $formId = $this->formStateService->generateFormId('add_record');
-            $formData = [
+            $this->formStateService->saveFormData($formId, [
                 'name' => $name,
                 'content' => $content,
                 'type' => $type,
@@ -231,10 +201,9 @@ class AddRecordController extends BaseController
                 'ttl' => $ttl,
                 'comment' => $comment,
                 'error' => true,
-                'errorMessage' => $errorMessage,
-                'fieldError' => $fieldWithError
-            ];
-            $this->formStateService->saveFormData($formId, $formData);
+                'errorMessage' => $result->message,
+                'fieldError' => $result->field,
+            ]);
 
             $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);
             return;
@@ -362,7 +331,7 @@ class AddRecordController extends BaseController
         }
     }
 
-    private function createRecord(int $zone_id, $name, $type, $content, $ttl, $prio, $comment): bool
+    private function createRecord(int $zone_id, $name, $type, $content, $ttl, $prio, $comment): RecordWriteResult
     {
         return $this->recordManager->createRecord(
             $zone_id,
@@ -416,44 +385,12 @@ class AddRecordController extends BaseController
         }
     }
 
-    /**
-     * Determine which field has an error based on the error message
-     *
-     * @param string $errorMessage The error message
-     * @return string The name of the field with an error
-     */
-    private function determineFieldWithError(string $errorMessage): string
-    {
-        $lowerError = strtolower($errorMessage);
-
-        // Check for specific field mentions in the error message
-        if (strpos($lowerError, 'name') !== false && strpos($lowerError, 'invalid') !== false) {
-            return 'name';
-        } elseif (
-            strpos($lowerError, 'content') !== false ||
-                 strpos($lowerError, 'value') !== false ||
-                 strpos($lowerError, 'address') !== false ||
-                 strpos($lowerError, 'hostname') !== false
-        ) {
-            return 'content';
-        } elseif (strpos($lowerError, 'ttl') !== false) {
-            return 'ttl';
-        } elseif (strpos($lowerError, 'prio') !== false || strpos($lowerError, 'priority') !== false) {
-            return 'prio';
-        } elseif (strpos($lowerError, 'already exists') !== false) {
-            return 'name-content-duplicate';
-        }
-
-        // Default to content field as that's the most common error source
-        return 'content';
-    }
-
     private function addMultipleRecords(): void
     {
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
         $records = $this->request->getPostParam('records', []);
         $successCount = 0;
-        $failureCount = 0;
+        $failureReasons = [];
         $matchingRecordCount = 0;
         $ptrWarnings = [];
         $formId = $this->formStateService->generateFormId('add_record');
@@ -488,36 +425,28 @@ class AddRecordController extends BaseController
             $ttl = isset($record['ttl']) && $record['ttl'] !== '' ? (int)$record['ttl'] : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
             $comment = $record['comment'] ?? '';
 
-            // A refused record type arrives as an exception; count it like any other
-            // failed row so the rest of the batch still saves and the reason is shown.
-            try {
-                $created = $this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment);
-            } catch (Exception $e) {
-                $this->messageService->addSystemError($e->getMessage());
-                $failureCount++;
+            $result = $this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment);
+            if (!$result->success) {
+                $failureReasons[] = $result->message;
                 continue;
             }
 
-            if ($created) {
-                $successCount++;
+            $successCount++;
 
-                // Handle reverse or domain record creation for individual records
-                if (isset($record['reverse']) && $record['reverse']) {
-                    $ptrTtl = $this->reverseTtlResolver->resolvePtrTtl($ttl);
-                    $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ptrTtl, $prio, $comment);
-                    if (!empty($reverseResult['success'])) {
-                        $matchingRecordCount++;
-                    }
-                    if (isset($reverseResult['type']) && $reverseResult['type'] === 'warning') {
-                        $ptrWarnings[] = $reverseResult['message'];
-                    }
-                } elseif (isset($record['create_domain_record']) && $record['create_domain_record']) {
-                    if ($this->createDomainRecord($name, $type, $content, $zone_id, $comment)) {
-                        $matchingRecordCount++;
-                    }
+            // Handle reverse or domain record creation for individual records
+            if (isset($record['reverse']) && $record['reverse']) {
+                $ptrTtl = $this->reverseTtlResolver->resolvePtrTtl($ttl);
+                $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ptrTtl, $prio, $comment);
+                if (!empty($reverseResult['success'])) {
+                    $matchingRecordCount++;
                 }
-            } else {
-                $failureCount++;
+                if (isset($reverseResult['type']) && $reverseResult['type'] === 'warning') {
+                    $ptrWarnings[] = $reverseResult['message'];
+                }
+            } elseif (isset($record['create_domain_record']) && $record['create_domain_record']) {
+                if ($this->createDomainRecord($name, $type, $content, $zone_id, $comment)) {
+                    $matchingRecordCount++;
+                }
             }
         }
 
@@ -532,20 +461,16 @@ class AddRecordController extends BaseController
             if ($matchingRecordCount > 0) {
                 $message .= ' ' . sprintf(_('%d matching record(s) were also created.'), $matchingRecordCount);
             }
-            if ($failureCount > 0) {
-                $message .= ' ' . sprintf(_('%d record(s) failed to be added.'), $failureCount);
-
-                // Get system errors that were generated during validation
-                $systemErrors = $this->getSystemErrors();
-                $errorMessage = !empty($systemErrors) ? end($systemErrors) :
-                    _('Some records could not be added. They may already exist or contain invalid data.');
+            if ($failureReasons !== []) {
+                $message .= ' ' . sprintf(_('%d record(s) failed to be added.'), count($failureReasons));
+                $errorMessage = end($failureReasons);
 
                 // Store form data with error flag for failed records
                 $formId = $this->formStateService->generateFormId('add_record');
                 $formData = [
                     'error' => true,
                     'multi_record_error' => true,
-                    'failure_count' => $failureCount,
+                    'failure_count' => count($failureReasons),
                     'errorMessage' => $errorMessage
                 ];
                 $this->formStateService->saveFormData($formId, $formData);
@@ -565,10 +490,7 @@ class AddRecordController extends BaseController
                 $this->setMessage('edit', 'success', $message);
             }
         } else {
-            // Get system errors that were generated during validation
-            $systemErrors = $this->getSystemErrors();
-            $errorMessage = !empty($systemErrors) ? end($systemErrors) :
-                _('Failed to add any records. They may contain invalid data.');
+            $errorMessage = end($failureReasons) ?: _('Failed to add any records. They may contain invalid data.');
 
             // Store form data with error flag for all failed records
             // Include all records so the form can be fully restored
@@ -577,7 +499,7 @@ class AddRecordController extends BaseController
             $formData = [
                 'error' => true,
                 'multi_record_error' => true,
-                'failure_count' => $failureCount,
+                'failure_count' => count($failureReasons),
                 'errorMessage' => $errorMessage,
                 'name' => is_array($firstRecord) ? ($firstRecord['name'] ?? '') : '',
                 'type' => is_array($firstRecord) ? ($firstRecord['type'] ?? '') : '',

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,8 +22,6 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
-use Exception;
-
 /**
  * Interface for DNS record management operations
  */
@@ -40,7 +38,6 @@ interface RecordManagerInterface
      * @param mixed $prio Priority of record
      *
      * @return boolean true if successful
-     * @throws Exception
      */
     public function addRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): bool;
 
@@ -55,10 +52,9 @@ interface RecordManagerInterface
      * @param mixed $prio Priority of record
      * @param int $disabled Whether the record is created in disabled state (0 or 1)
      *
-     * @return int|string|null The new record ID, or null on failure
-     * @throws Exception
+     * @return RecordWriteResult The new record id, or the reason the write was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0): int|string|null;
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0): RecordWriteResult;
 
     /**
      * Edit a record

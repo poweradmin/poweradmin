@@ -168,93 +168,16 @@ class RecordManager implements RecordManagerInterface
      * @param mixed $prio Priority of record
      *
      * @return boolean true if successful
-     * @throws Exception
      */
     public function addRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): bool
     {
-        $perm_edit = Permission::getEditPermission($this->db);
-
-        $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
-        $zone_type = $this->domainRepository->getDomainType($zone_id);
-
-        [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
-
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
-            throw new Exception(_("You do not have the permission to add a record to this zone."));
+        // Callers on this signature still read failures from MessageService.
+        $result = $this->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
+        if (!$result->success) {
+            $this->messageService->addSystemError((string)$result->message);
         }
 
-        $dns_hostmaster = $this->config->get('dns', 'hostmaster');
-        $dns_ttl = $this->config->get('dns', 'ttl');
-
-        // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
-        $content = $this->dnsFormatter->formatContent($type, $content);
-
-        // Now validate the input with normalized name using the validation service
-        $validationResult = $this->validationService->validateRecord(
-            -1,
-            $zone_id,
-            $type,
-            $content,
-            $name,
-            $prio,
-            $ttl,
-            $dns_hostmaster,
-            (int)$dns_ttl
-        );
-        if (!$validationResult->isValid()) {
-            $this->messageService->addSystemError($validationResult->getFirstError());
-            return false;
-        }
-
-        // Extract validated values
-        $validatedData = $validationResult->getData();
-        $content = $validatedData['content'];
-        $name = strtolower($validatedData['name']); // powerdns only searches for lower case records
-        $validatedTtl = $validatedData['ttl'];
-        $validatedPrio = $validatedData['prio'];
-
-        // Create RecordRepository to check if record exists
-        $recordRepository = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
-        if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
-            $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
-            return false;
-        }
-
-        if (!$this->backendProvider->addRecord($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio)) {
-            $this->messageService->addSystemError(_('Failed to add record to DNS backend.'));
-            return false;
-        }
-
-        $this->captureChange(function () use ($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio): void {
-            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-            $this->changeLogger->logRecordCreate([
-                'name' => $name,
-                'type' => $type,
-                'content' => $content,
-                'ttl' => $validatedTtl,
-                'prio' => $validatedPrio,
-                'zone_name' => is_string($zone_name) ? $zone_name : null,
-            ], $zone_id);
-        });
-
-        if ($type != 'SOA') {
-            $this->soaRecordManager->updateSOASerial($zone_id);
-        }
-
-        $pdnssec_use = $this->config->get('dnssec', 'enabled');
-        if ($pdnssec_use) {
-            $dnssecProvider = DnssecProviderFactory::create(
-                $this->db,
-                $this->config,
-                DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
-            );
-            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-            if (is_string($zone_name)) {
-                $dnssecProvider->rectifyZone($zone_name);
-            }
-        }
-
-        return true;
+        return $result->success;
     }
 
     /**
@@ -271,20 +194,23 @@ class RecordManager implements RecordManagerInterface
      * @param mixed $prio Priority of record
      * @param int $disabled Whether the record is created in disabled state (0 or 1)
      *
-     * @return int|string|null The new record ID, or null on failure
-     * @throws Exception
+     * @return RecordWriteResult Carries the new record id, or the reason it was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0): int|string|null
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0): RecordWriteResult
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
         $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
+        try {
+            [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
+        } catch (Exception $e) {
+            return RecordWriteResult::forbidden($e->getMessage());
+        }
 
         if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
-            throw new Exception(_("You do not have the permission to add a record to this zone."));
+            return RecordWriteResult::forbidden(_("You do not have the permission to add a record to this zone."));
         }
 
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
@@ -306,8 +232,7 @@ class RecordManager implements RecordManagerInterface
             (int)$dns_ttl
         );
         if (!$validationResult->isValid()) {
-            $this->messageService->addSystemError($validationResult->getFirstError());
-            return null;
+            return RecordWriteResult::failure($validationResult->getFirstError());
         }
 
         // Extract validated values
@@ -320,8 +245,7 @@ class RecordManager implements RecordManagerInterface
         // Create RecordRepository to check if record exists
         $recordRepository = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
         if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
-            $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
-            return null;
+            return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), 409, RecordWriteResult::FIELD_DUPLICATE);
         }
 
         try {
@@ -332,10 +256,10 @@ class RecordManager implements RecordManagerInterface
                 : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
         } catch (RecordIdNotFoundException $e) {
             $this->logger->error('Failed to get record ID after creation: {error}', ['error' => $e->getMessage()]);
-            return null;
+            return RecordWriteResult::failure(_('Failed to add record to DNS backend.'), 500);
         }
         if ($recordId === null) {
-            return null;
+            return RecordWriteResult::failure(_('Failed to add record to DNS backend.'), 500);
         }
 
         $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled): void {
@@ -369,7 +293,7 @@ class RecordManager implements RecordManagerInterface
             }
         }
 
-        return $recordId;
+        return RecordWriteResult::created($recordId);
     }
 
     /**
