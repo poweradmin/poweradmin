@@ -38,17 +38,17 @@ class ZoneOverlapService
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private ApiPermissionService $permissionService;
+    private PermissionService $permissionService;
     private TableNameService $tableNameService;
 
     public function __construct(
         object $db,
         ConfigurationInterface $config,
-        ?ApiPermissionService $permissionService = null
+        ?PermissionService $permissionService = null
     ) {
         $this->db = $db;
         $this->config = $config;
-        $this->permissionService = $permissionService ?? new ApiPermissionService($db);
+        $this->permissionService = $permissionService ?? (new ApiPermissionService($db))->permissions();
         $this->tableNameService = new TableNameService($config);
     }
 
@@ -64,7 +64,7 @@ class ZoneOverlapService
             return null;
         }
 
-        if ($this->permissionService->userHasPermission($userId, 'user_is_ueberuser')) {
+        if ($this->permissionService->isAdmin($userId)) {
             return null;
         }
 

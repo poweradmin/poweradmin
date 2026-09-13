@@ -24,16 +24,18 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\BuildsPermissionService;
 
 #[CoversClass(ZoneCreateOwnershipResolver::class)]
 class ZoneCreateOwnershipResolverTest extends TestCase
 {
+    use BuildsPermissionService;
+
     private const CALLER_ID = 7;
 
     private function buildMode(string $mode): ZoneOwnershipModeService
@@ -46,28 +48,30 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     }
 
     /**
-     * @return ApiPermissionService&MockObject
+     * @param array<string, bool> $perms permissions the caller holds
+     * @param int[] $groupMembership groups the caller belongs to
+     * @param int[]|null $existingGroups group ids that exist (defaults to every requested id)
      */
-    private function buildPermissions(
-        array $perms = [],
-        array $groupMembership = [],
-        ?array $existingGroups = null
-    ): ApiPermissionService {
-        $service = $this->createMock(ApiPermissionService::class);
-        $service->method('userHasPermission')
-            ->willReturnCallback(fn(int $uid, string $name) => $perms[$name] ?? false);
-        $service->method('getUserGroupIds')->willReturn($groupMembership);
+    private function buildResolver(string $mode, array $perms = [], array $groupMembership = [], ?array $existingGroups = null): ZoneCreateOwnershipResolver
+    {
+        $permissions = $this->buildPermissionService(
+            permissionsByUser: [self::CALLER_ID => array_keys(array_filter($perms))],
+            adminUserIds: !empty($perms['user_is_ueberuser']) ? [self::CALLER_ID] : []
+        );
+        $groups = $this->createMock(UserGroupRepositoryInterface::class);
+        $groups->method('getGroupIdsForUser')->willReturn($groupMembership);
         // By default, treat every requested group_id as existing so unrelated tests
         // don't need to set this up. Pass an explicit list to test the missing path.
-        $service->method('getExistingGroupIds')
+        $groups->method('findExistingIds')
             ->willReturnCallback(fn(array $ids) => $existingGroups ?? $ids);
-        return $service;
+
+        return new ZoneCreateOwnershipResolver($this->buildMode($mode), $permissions, $groups);
     }
 
     #[Test]
     public function defaultsOwnerToCallerInBothMode(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver($this->buildMode('both'), $this->buildPermissions());
+        $resolver = $this->buildResolver('both');
 
         $result = $resolver->resolve([], self::CALLER_ID);
 
@@ -79,7 +83,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function rejectsGroupIdsThatAreNotAnArray(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver($this->buildMode('both'), $this->buildPermissions());
+        $resolver = $this->buildResolver('both');
 
         $result = $resolver->resolve(['group_ids' => 'nope'], self::CALLER_ID);
 
@@ -91,7 +95,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function rejectsGroupIdsWithNonIntegerEntries(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver($this->buildMode('both'), $this->buildPermissions());
+        $resolver = $this->buildResolver('both');
 
         $result = $resolver->resolve(['group_ids' => [1, 'two']], self::CALLER_ID);
 
@@ -103,10 +107,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function deduplicatesGroupIdsAndCoercesNumericStrings(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('both'),
-            $this->buildPermissions(['user_is_ueberuser' => true])
-        );
+        $resolver = $this->buildResolver('both', ['user_is_ueberuser' => true]);
 
         $result = $resolver->resolve(['group_ids' => [3, '3', 5]], self::CALLER_ID);
 
@@ -116,10 +117,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function rejectsGroupsInUsersOnlyMode(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('users_only'),
-            $this->buildPermissions(['user_is_ueberuser' => true])
-        );
+        $resolver = $this->buildResolver('users_only', ['user_is_ueberuser' => true]);
 
         $result = $resolver->resolve(['group_ids' => [2]], self::CALLER_ID);
 
@@ -131,10 +129,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function rejectsExplicitOwnerInGroupsOnlyMode(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('groups_only'),
-            $this->buildPermissions(['user_is_ueberuser' => true])
-        );
+        $resolver = $this->buildResolver('groups_only', ['user_is_ueberuser' => true]);
 
         $result = $resolver->resolve(
             ['owner_user_id' => 2, 'group_ids' => [4]],
@@ -149,10 +144,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function forcesOwnerNullInGroupsOnlyModeEvenWhenOwnerOmitted(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('groups_only'),
-            $this->buildPermissions(['user_is_ueberuser' => true])
-        );
+        $resolver = $this->buildResolver('groups_only', ['user_is_ueberuser' => true]);
 
         $result = $resolver->resolve(['group_ids' => [4]], self::CALLER_ID);
 
@@ -167,10 +159,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
         // Backward-compat: omitting owner_user_id keeps the existing default
         // (caller is user owner). To create a group-only zone via API, the
         // client must send owner_user_id: null explicitly.
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('both'),
-            $this->buildPermissions(['user_is_ueberuser' => true])
-        );
+        $resolver = $this->buildResolver('both', ['user_is_ueberuser' => true]);
 
         $result = $resolver->resolve(['group_ids' => [9]], self::CALLER_ID);
 
@@ -182,10 +171,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function honorsExplicitNullOwnerWhenGroupsAreSet(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('both'),
-            $this->buildPermissions(['user_is_ueberuser' => true])
-        );
+        $resolver = $this->buildResolver('both', ['user_is_ueberuser' => true]);
 
         $result = $resolver->resolve(
             ['owner_user_id' => null, 'group_ids' => [11]],
@@ -200,10 +186,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function rejectsWhenNeitherOwnerNorGroupsResolve(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('groups_only'),
-            $this->buildPermissions()
-        );
+        $resolver = $this->buildResolver('groups_only');
 
         // groups_only forces owner=null and groups stay empty -> nothing assigned.
         $result = $resolver->resolve([], self::CALLER_ID);
@@ -216,10 +199,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function rejectsAssigningOtherUserWithoutPermission(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('both'),
-            $this->buildPermissions()
-        );
+        $resolver = $this->buildResolver('both');
 
         $result = $resolver->resolve(['owner_user_id' => 99], self::CALLER_ID);
 
@@ -231,10 +211,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function allowsUeberuserToAssignAnyGroups(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('both'),
-            $this->buildPermissions(['user_is_ueberuser' => true])
-        );
+        $resolver = $this->buildResolver('both', ['user_is_ueberuser' => true]);
 
         $result = $resolver->resolve(
             ['owner_user_id' => self::CALLER_ID, 'group_ids' => [42]],
@@ -249,10 +226,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function allowsNonAdminToAssignGroupsTheyBelongTo(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('both'),
-            $this->buildPermissions([], [3, 4, 5])
-        );
+        $resolver = $this->buildResolver('both', [], [3, 4, 5]);
 
         $result = $resolver->resolve(['group_ids' => [3, 4]], self::CALLER_ID);
 
@@ -266,10 +240,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     public function treatsOwnerUserIdZeroAsNoUserOwner(): void
     {
         // owner_user_id = 0 must not produce an orphaned zone in either mode.
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('both'),
-            $this->buildPermissions()
-        );
+        $resolver = $this->buildResolver('both');
 
         $result = $resolver->resolve(['owner_user_id' => 0], self::CALLER_ID);
 
@@ -281,10 +252,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function ownerUserIdZeroWithGroupsBehavesAsExplicitNull(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('both'),
-            $this->buildPermissions(['user_is_ueberuser' => true])
-        );
+        $resolver = $this->buildResolver('both', ['user_is_ueberuser' => true]);
 
         $result = $resolver->resolve(
             ['owner_user_id' => 0, 'group_ids' => [9]],
@@ -299,10 +267,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function rejectsUnknownGroupIds(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('both'),
-            $this->buildPermissions(['user_is_ueberuser' => true], [], [3])
-        );
+        $resolver = $this->buildResolver('both', ['user_is_ueberuser' => true], [], [3]);
 
         $result = $resolver->resolve(['group_ids' => [3, 99]], self::CALLER_ID);
 
@@ -314,10 +279,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     #[Test]
     public function rejectsNonAdminAssigningForeignGroups(): void
     {
-        $resolver = new ZoneCreateOwnershipResolver(
-            $this->buildMode('both'),
-            $this->buildPermissions([], [3])
-        );
+        $resolver = $this->buildResolver('both', [], [3]);
 
         $result = $resolver->resolve(['group_ids' => [3, 9]], self::CALLER_ID);
 

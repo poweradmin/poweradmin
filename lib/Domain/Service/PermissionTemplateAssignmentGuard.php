@@ -48,7 +48,7 @@ class PermissionTemplateAssignmentGuard
      * @return ?string Error message to surface as 403, or null if the input passes.
      */
     public static function apply(
-        ApiPermissionService $permissionService,
+        PermissionService $permissionService,
         ?int $defaultUserTemplateId,
         int $callerId,
         array &$input,

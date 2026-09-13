@@ -23,8 +23,9 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Enum\ZoneKind;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\UserRepository;
-use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
  * Service for managing user permissions
@@ -34,6 +35,10 @@ use Poweradmin\Domain\Service\ZoneAccessPolicy;
  */
 class PermissionService
 {
+    public const TEMPLATE_ASSIGN_DENIED = 'Setting perm_templ requires user_edit_templ_perm or user_is_ueberuser';
+    public const TEMPLATE_SELF_ASSIGN_DENIED = 'Changing your own permission template requires user_edit_others';
+    public const TEMPLATE_SUPERUSER_DENIED = 'Assigning a superuser permission template requires user_is_ueberuser';
+
     private UserRepository $userRepository;
 
     /** @var array<int, array<string>> */
@@ -338,6 +343,130 @@ class PermissionService
         $level = $this->getViewPermissionLevel($userId);
 
         return $level === 'all' || ($level === 'own' && $this->userOwnsZone($userId, $domainId));
+    }
+
+    /**
+     * Whether the user holds a content-edit grant that applies to the zone: edit_others
+     * (or admin), or edit_own on an owned zone. own_as_client is NOT included, so this
+     * is the gate for record types clients may not touch and never for zone metadata.
+     */
+    public function hasZoneContentEditPermission(int $userId, int $domainId): bool
+    {
+        $permissions = $this->getUserPermissions($userId);
+
+        if (in_array('zone_content_edit_others', $permissions) || $this->isAdmin($userId)) {
+            return true;
+        }
+
+        return in_array('zone_content_edit_own', $permissions) && $this->userOwnsZone($userId, $domainId);
+    }
+
+    /**
+     * Whether the user may edit records in the zone. Secondary and Consumer zones
+     * replicate from a primary and reject every content edit when the type is known.
+     */
+    public function canEditZoneContent(int $userId, int $domainId, ?string $zoneType = null): bool
+    {
+        if ($zoneType !== null && ZoneType::isReadOnly($zoneType)) {
+            return false;
+        }
+
+        return $this->getEditPermissionLevelForZone($userId, $domainId) !== 'none';
+    }
+
+    /**
+     * canEditZoneContent() plus the own_as_client record-type restriction: SOA/NS/LUA
+     * need edit_own or better, except subzone NS records for zone_content_edit_ns_subzone
+     * holders. Pass the record and zone names (FQDN) to enable that exemption.
+     */
+    public function canEditZoneRecord(
+        int $userId,
+        int $domainId,
+        string $recordType,
+        ?string $zoneType = null,
+        ?string $recordName = null,
+        ?string $zoneName = null
+    ): bool {
+        if (!$this->canEditZoneContent($userId, $domainId, $zoneType)) {
+            return false;
+        }
+
+        if (!in_array(strtoupper($recordType), Permission::RESTRICTED_TYPES_FOR_CLIENT, true)) {
+            return true;
+        }
+
+        if ($this->hasZoneContentEditPermission($userId, $domainId)) {
+            return true;
+        }
+
+        return Permission::isSubzoneNsRecord($recordType, $recordName, $zoneName)
+            && $this->hasPermission($userId, Permission::PERM_EDIT_NS_SUBZONE);
+    }
+
+    /**
+     * Zone metadata (name, type, primaries): meta_edit_others (or admin), or meta_edit_own on an owned zone.
+     */
+    public function canEditZoneMeta(int $userId, int $domainId): bool
+    {
+        return ZoneAccessPolicy::levelAppliesToZone(
+            $this->getZoneMetaEditPermissionLevel($userId),
+            $this->userOwnsZone($userId, $domainId)
+        );
+    }
+
+    public function canViewZoneMetadata(int $userId, int $domainId): bool
+    {
+        return ZoneAccessPolicy::levelAppliesToZone(
+            $this->getZoneMetadataViewPermissionLevel($userId),
+            $this->userOwnsZone($userId, $domainId)
+        );
+    }
+
+    public function canViewZoneOwnership(int $userId, int $domainId): bool
+    {
+        return ZoneAccessPolicy::levelAppliesToZone(
+            $this->getZoneOwnershipViewPermissionLevel($userId),
+            $this->userOwnsZone($userId, $domainId)
+        );
+    }
+
+    public function templateGrantsUberuser(int $permTemplId): bool
+    {
+        return $this->userRepository->templateGrantsUberuser($permTemplId);
+    }
+
+    /**
+     * Why the actor may not put the target on this permission template, or null
+     * when allowed. Echoing back an unchanged ordinary template is not a change.
+     * The strings are API contract.
+     */
+    public function checkPermissionTemplateAssignment(int $actorId, ?int $targetUserId, int $permTemplId): ?string
+    {
+        if ($this->isAdmin($actorId)) {
+            return null;
+        }
+
+        if ($targetUserId !== null) {
+            $target = $this->userRepository->getUserById($targetUserId);
+            $currentTemplId = isset($target['perm_templ']) ? (int)$target['perm_templ'] : null;
+            if ($currentTemplId === $permTemplId && !$this->userRepository->templateGrantsUberuser($permTemplId)) {
+                return null;
+            }
+        }
+
+        if (!$this->hasPermission($actorId, 'user_edit_templ_perm')) {
+            return self::TEMPLATE_ASSIGN_DENIED;
+        }
+
+        if ($actorId === $targetUserId && !$this->hasPermission($actorId, 'user_edit_others')) {
+            return self::TEMPLATE_SELF_ASSIGN_DENIED;
+        }
+
+        if ($this->templateGrantsUberuser($permTemplId)) {
+            return self::TEMPLATE_SUPERUSER_DENIED;
+        }
+
+        return null;
     }
 
     /**

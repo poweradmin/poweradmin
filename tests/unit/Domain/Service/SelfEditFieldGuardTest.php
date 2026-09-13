@@ -23,11 +23,17 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\SelfEditFieldGuard;
+use TestHelpers\BuildsPermissionService;
 
 class SelfEditFieldGuardTest extends TestCase
 {
+    use BuildsPermissionService;
+
+    // Callers in these cases are user 4 (editing 7) or user 7 (editing themselves).
+    private const CALLERS = [4, 7];
+
     private const STORED_USER = [
         'id' => 7,
         'username' => 'jdoe',
@@ -35,21 +41,14 @@ class SelfEditFieldGuardTest extends TestCase
         'active' => 1,
     ];
 
-    private function permissionService(bool $isUeberuser = false, bool $canEditOthers = false): ApiPermissionService
+    private function permissionService(bool $isUeberuser = false, bool $canEditOthers = false): PermissionService
     {
-        $svc = $this->createMock(ApiPermissionService::class);
-        $svc->method('userHasPermission')->willReturnCallback(
-            static function (int $userId, string $perm) use ($isUeberuser, $canEditOthers): bool {
-                if ($perm === 'user_is_ueberuser') {
-                    return $isUeberuser;
-                }
-                if ($perm === 'user_edit_others') {
-                    return $canEditOthers;
-                }
-                return false;
-            }
+        $grants = $canEditOthers ? ['user_edit_others'] : [];
+
+        return $this->buildPermissionService(
+            permissionsByUser: array_fill_keys(self::CALLERS, $grants),
+            adminUserIds: $isUeberuser ? self::CALLERS : []
         );
-        return $svc;
     }
 
     public function testEditingAnotherUserIsNotGated(): void

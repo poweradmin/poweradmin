@@ -825,7 +825,7 @@ class UsersController extends PublicApiController
             $currentUser = $this->userRepository->getUserById($targetUserId);
             if ($currentUser !== null) {
                 $selfEditGate = SelfEditFieldGuard::apply(
-                    $this->apiPermissionService,
+                    $this->apiPermissionService->permissions(),
                     $currentUserId,
                     $targetUserId,
                     $currentUser,
@@ -1191,7 +1191,7 @@ class UsersController extends PublicApiController
     private function guardPermissionTemplateAssignment(int $currentUserId, array &$input, ?int $defaultUserTemplateId, ?int $targetUserId): ?JsonResponse
     {
         $error = PermissionTemplateAssignmentGuard::apply(
-            $this->apiPermissionService,
+            $this->apiPermissionService->permissions(),
             $defaultUserTemplateId,
             $currentUserId,
             $input,

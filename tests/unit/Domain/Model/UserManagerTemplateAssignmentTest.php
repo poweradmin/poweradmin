@@ -22,12 +22,14 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Model;
 
+use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\SessionKeys;
 use ReflectionClass;
 use ReflectionMethod;
+use TestHelpers\BuildsPermissionService;
 
 /**
  * The web edit/create paths gate perm_templ the same way the API does: holding
@@ -36,6 +38,8 @@ use ReflectionMethod;
  */
 class UserManagerTemplateAssignmentTest extends TestCase
 {
+    use BuildsPermissionService;
+
     private const CALLER_ID = 7;
 
     protected function tearDown(): void
@@ -126,16 +130,15 @@ class UserManagerTemplateAssignmentTest extends TestCase
         // Only the two leaf lookups are stubbed, so the real policy in
         // checkPermissionTemplateAssignment() runs and this asserts the web mapping
         // against it rather than against a restated copy of the rules.
-        $apiPermissionService = $this->createPartialMock(
-            ApiPermissionService::class,
-            ['userHasPermission', 'templateGrantsSuperuser', 'getUserPermissionTemplateId']
-        );
-        $apiPermissionService->method('userHasPermission')
-            ->willReturnCallback(fn(int $userId, string $permission): bool => $permissions[$permission] ?? false);
-        $apiPermissionService->method('templateGrantsSuperuser')->willReturn($templateIsSuperuser);
-        // Every scenario here assigns template 3 to an account holding a different one,
+        // Every scenario here assigns template 3 to an account holding template 9,
         // so the unchanged-template exemption never applies.
-        $apiPermissionService->method('getUserPermissionTemplateId')->willReturn(9);
+        $permissionService = $this->buildPermissionService(
+            permissionsByUser: [self::CALLER_ID => array_keys(array_filter($permissions))],
+            adminUserIds: !empty($permissions['user_is_ueberuser']) ? [self::CALLER_ID] : [],
+            templateByUser: [self::CALLER_ID => 9, 42 => 9],
+            superuserTemplateIds: $templateIsSuperuser ? [3] : []
+        );
+        $apiPermissionService = new ApiPermissionService($this->createMock(PDO::class), $permissionService);
 
         $manager = (new ReflectionClass(UserManager::class))->newInstanceWithoutConstructor();
         $this->setProperty($manager, 'apiPermissionService', $apiPermissionService);

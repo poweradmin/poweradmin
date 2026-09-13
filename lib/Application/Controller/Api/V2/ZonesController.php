@@ -531,7 +531,8 @@ class ZonesController extends PublicApiController
 
             $resolver = new ZoneCreateOwnershipResolver(
                 new ZoneOwnershipModeService($this->getConfig()),
-                $this->permissionService
+                $this->permissionService->permissions(),
+                $this->createUserGroupRepository()
             );
             $resolved = $resolver->resolve($input, $userId);
             if ($resolved->hasError()) {

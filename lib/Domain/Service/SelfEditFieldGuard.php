@@ -44,7 +44,7 @@ class SelfEditFieldGuard
      * @return ?string Error message to surface as 403, or null if the input passes.
      */
     public static function apply(
-        ApiPermissionService $permissionService,
+        PermissionService $permissionService,
         int $callerId,
         int $targetUserId,
         array $currentUser,
@@ -55,8 +55,7 @@ class SelfEditFieldGuard
         }
 
         if (
-            $permissionService->userHasPermission($callerId, 'user_is_ueberuser')
-            || $permissionService->userHasPermission($callerId, 'user_edit_others')
+            $permissionService->hasPermission($callerId, 'user_edit_others')
         ) {
             return null;
         }

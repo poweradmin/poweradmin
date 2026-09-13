@@ -23,14 +23,18 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
+use TestHelpers\BuildsPermissionService;
 
 class PermissionTemplateAssignmentGuardTest extends TestCase
 {
+    use BuildsPermissionService;
+
     /**
-     * Partial mock: only the two database-backed lookups are stubbed, so the
-     * assignment rules in checkPermissionTemplateAssignment() are exercised for real.
+     * A real PermissionService over scripted facts, so the assignment rules in
+     * checkPermissionTemplateAssignment() are exercised for real. The caller is
+     * user 7; targets are 7 (self) or 9.
      *
      * @param int[] $superuserTemplateIds Templates that carry user_is_ueberuser
      */
@@ -40,26 +44,19 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         bool $canEditOthers = false,
         array $superuserTemplateIds = [],
         ?int $currentTemplateId = null
-    ): ApiPermissionService {
-        $svc = $this->createPartialMock(
-            ApiPermissionService::class,
-            ['userHasPermission', 'templateGrantsSuperuser', 'getUserPermissionTemplateId']
+    ): PermissionService {
+        $grants = array_keys(array_filter([
+            'user_edit_templ_perm' => $canEditTemplPerm,
+            'user_edit_others' => $canEditOthers,
+        ]));
+        $templates = $currentTemplateId === null ? [] : [7 => $currentTemplateId, 9 => $currentTemplateId];
+
+        return $this->buildPermissionService(
+            permissionsByUser: [7 => $grants],
+            adminUserIds: $isUeberuser ? [7] : [],
+            templateByUser: $templates,
+            superuserTemplateIds: $superuserTemplateIds
         );
-        $svc->method('getUserPermissionTemplateId')->willReturn($currentTemplateId);
-        $svc->method('userHasPermission')->willReturnCallback(
-            static function (int $userId, string $perm) use ($isUeberuser, $canEditTemplPerm, $canEditOthers): bool {
-                return match ($perm) {
-                    'user_is_ueberuser' => $isUeberuser,
-                    'user_edit_templ_perm' => $canEditTemplPerm,
-                    'user_edit_others' => $canEditOthers,
-                    default => false,
-                };
-            }
-        );
-        $svc->method('templateGrantsSuperuser')->willReturnCallback(
-            static fn(int $templId): bool => in_array($templId, $superuserTemplateIds, true)
-        );
-        return $svc;
     }
 
     public function testUeberuserMayPassAnyTemplate(): void
@@ -91,7 +88,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
 
         $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
-        $this->assertSame(ApiPermissionService::TEMPLATE_ASSIGN_DENIED, $error);
+        $this->assertSame(PermissionService::TEMPLATE_ASSIGN_DENIED, $error);
     }
 
     public function testNonPrivilegedCallerWithSuppliedTemplateAsStringIsRejected(): void
@@ -102,7 +99,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
 
         $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
-        $this->assertSame(ApiPermissionService::TEMPLATE_ASSIGN_DENIED, $error);
+        $this->assertSame(PermissionService::TEMPLATE_ASSIGN_DENIED, $error);
     }
 
     public function testNonPrivilegedCallerWithoutTemplateGetsMinimalDefault(): void
@@ -190,7 +187,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
 
         $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, 7);
 
-        $this->assertSame(ApiPermissionService::TEMPLATE_SELF_ASSIGN_DENIED, $error);
+        $this->assertSame(PermissionService::TEMPLATE_SELF_ASSIGN_DENIED, $error);
     }
 
     public function testTemplPermHolderWithEditOthersMayRetemplateOwnAccount(): void
@@ -215,7 +212,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
 
         $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, 9);
 
-        $this->assertSame(ApiPermissionService::TEMPLATE_SUPERUSER_DENIED, $error);
+        $this->assertSame(PermissionService::TEMPLATE_SUPERUSER_DENIED, $error);
     }
 
     public function testUeberuserMayAssignSuperuserTemplate(): void
@@ -264,7 +261,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
 
         $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, 9);
 
-        $this->assertSame(ApiPermissionService::TEMPLATE_SUPERUSER_DENIED, $error);
+        $this->assertSame(PermissionService::TEMPLATE_SUPERUSER_DENIED, $error);
     }
 
     public function testUnchangedTemplateOnAnotherAccountNeedsNoTemplatePermission(): void
@@ -297,6 +294,6 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
 
         $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
-        $this->assertSame(ApiPermissionService::TEMPLATE_SUPERUSER_DENIED, $error);
+        $this->assertSame(PermissionService::TEMPLATE_SUPERUSER_DENIED, $error);
     }
 }

@@ -620,7 +620,7 @@ abstract class BaseController
             return null;
         }
 
-        $service = new ZoneOverlapService($this->db, $this->getConfig());
+        $service = new ZoneOverlapService($this->db, $this->getConfig(), $this->createPermissionService());
         if ($service->findConflictingZone($zoneName, $userId) === null) {
             return null;
         }

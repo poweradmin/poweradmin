@@ -26,13 +26,15 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneOverlapService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\BuildsPermissionService;
 
 #[CoversClass(ZoneOverlapService::class)]
 class ZoneOverlapServiceTest extends TestCase
 {
+    use BuildsPermissionService;
+
     private const USER_ID = 2;
 
     /**
@@ -69,10 +71,9 @@ class ZoneOverlapServiceTest extends TestCase
             }
         );
 
-        $permission = $this->createMock(ApiPermissionService::class);
-        $permission->method('userHasPermission')->willReturn($isAdmin);
-        $permission->method('userOwnsZone')->willReturnCallback(
-            fn(int $userId, int $zoneId): bool => in_array($zoneId, $ownedZoneIds, true)
+        $permission = $this->buildPermissionService(
+            adminUserIds: $isAdmin ? [self::USER_ID] : [],
+            ownedZonesByUser: [self::USER_ID => $ownedZoneIds]
         );
 
         $db = $this->createMock(PDO::class);

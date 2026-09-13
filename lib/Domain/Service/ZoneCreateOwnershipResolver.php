@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+
 /**
  * Resolves the user-owner and group-owner assignment for an API zone-create
  * request, applying the active zone_ownership_mode and permission rules.
@@ -29,12 +31,14 @@ namespace Poweradmin\Domain\Service;
 class ZoneCreateOwnershipResolver
 {
     private ZoneOwnershipModeService $mode;
-    private ApiPermissionService $permissions;
+    private PermissionService $permissions;
+    private UserGroupRepositoryInterface $groups;
 
-    public function __construct(ZoneOwnershipModeService $mode, ApiPermissionService $permissions)
+    public function __construct(ZoneOwnershipModeService $mode, PermissionService $permissions, UserGroupRepositoryInterface $groups)
     {
         $this->mode = $mode;
         $this->permissions = $permissions;
+        $this->groups = $groups;
     }
 
     /**
@@ -60,7 +64,7 @@ class ZoneCreateOwnershipResolver
             $groupIds = array_values(array_unique($groupIds));
 
             if (!empty($groupIds)) {
-                $existing = $this->permissions->getExistingGroupIds($groupIds);
+                $existing = $this->groups->findExistingIds($groupIds);
                 $missing = array_values(array_diff($groupIds, $existing));
                 if (!empty($missing)) {
                     return ZoneOwnershipResolution::error(
@@ -115,10 +119,7 @@ class ZoneCreateOwnershipResolver
         }
 
         if ($owner !== null && $owner !== $callerUserId) {
-            if (
-                !$this->permissions->userHasPermission($callerUserId, 'user_is_ueberuser') &&
-                !$this->permissions->userHasPermission($callerUserId, 'zone_content_edit_others')
-            ) {
+            if (!$this->permissions->hasPermission($callerUserId, 'zone_content_edit_others')) {
                 return ZoneOwnershipResolution::error(
                     'You do not have permission to create zones for other users',
                     403
@@ -126,8 +127,8 @@ class ZoneCreateOwnershipResolver
             }
         }
 
-        if (!empty($groupIds) && !$this->permissions->userHasPermission($callerUserId, 'user_is_ueberuser')) {
-            $allowed = $this->permissions->getUserGroupIds($callerUserId);
+        if (!empty($groupIds) && !$this->permissions->isAdmin($callerUserId)) {
+            $allowed = $this->groups->getGroupIdsForUser($callerUserId);
             $disallowed = array_values(array_diff($groupIds, $allowed));
             if (!empty($disallowed)) {
                 return ZoneOwnershipResolution::error(

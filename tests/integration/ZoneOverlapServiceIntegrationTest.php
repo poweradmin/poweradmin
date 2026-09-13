@@ -25,7 +25,8 @@ namespace Poweradmin\Tests\Integration;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ZoneOverlapService;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 
@@ -91,13 +92,14 @@ class ZoneOverlapServiceIntegrationTest extends TestCase
             'database' => ['pdns_db_name' => null],
         ]);
 
-        $permission = $this->createMock(ApiPermissionService::class);
-        $permission->method('userHasPermission')->willReturn(false);
-        $permission->method('userOwnsZone')->willReturnCallback(
+        $repository = $this->createMock(UserRepository::class);
+        $repository->method('getUserPermissions')->willReturn([]);
+        $repository->method('hasAdminPermission')->willReturn(false);
+        $repository->method('userOwnsZone')->willReturnCallback(
             fn(int $userId, int $zoneId): bool => in_array($zoneId, $ownedIds, true)
         );
 
-        return new ZoneOverlapService($this->db, $config, $permission);
+        return new ZoneOverlapService($this->db, $config, new PermissionService($repository));
     }
 
     public function testDetectsAncestorZone(): void
@@ -171,10 +173,11 @@ class ZoneOverlapServiceIntegrationTest extends TestCase
             $config = new FakeConfiguration([
                 'dns' => ['parent_zone_ownership_check' => true, 'backend' => 'api'],
             ]);
-            $permission = $this->createMock(ApiPermissionService::class);
-            $permission->method('userHasPermission')->willReturn(false);
-            $permission->method('userOwnsZone')->willReturn(false);
-            $service = new ZoneOverlapService($pwDb, $config, $permission);
+            $repository = $this->createMock(UserRepository::class);
+            $repository->method('getUserPermissions')->willReturn([]);
+            $repository->method('hasAdminPermission')->willReturn(false);
+            $repository->method('userOwnsZone')->willReturn(false);
+            $service = new ZoneOverlapService($pwDb, $config, new PermissionService($repository));
 
             $conflict = $service->findConflictingZone('child.' . $parent, self::USER_ID);
 
