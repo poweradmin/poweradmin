@@ -36,9 +36,9 @@ use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
-use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Service\SessionKeys;
 
 class UsersController extends BaseController
@@ -120,8 +120,10 @@ class UsersController extends BaseController
             return false;
         }
 
+        // The same address rule as the single-user form
         $email = (string)($posted['email'] ?? '');
-        if (!(new Validator($this->config))->isValidEmail($email)) {
+        $this->setValidationConstraints(['email' => [new Assert\NotBlank(), new Assert\Email()]]);
+        if (!$this->doValidateRequest(['email' => $email])) {
             $this->setMessage('users', 'error', _('Enter a valid email address.'));
             return false;
         }
@@ -139,9 +141,6 @@ class UsersController extends BaseController
                 $this->setMessage('users', 'error', UserFormMessages::templateAssignmentError($templateError));
                 return false;
             }
-        }
-        if ($this->hasPermission('user_is_ueberuser')) {
-            $input['use_ldap'] = ($posted['use_ldap'] ?? '') == '1';
         }
 
         $updated = $this->createUserManagementService()->updateUser($targetId, $input);

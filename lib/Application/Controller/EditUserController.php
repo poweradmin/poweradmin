@@ -123,19 +123,20 @@ class EditUserController extends BaseController
 
         $updated = $this->createUserManagementService()->updateUser($editId, $input);
         if ($updated['success']) {
+            $username = (string)($input['username'] ?? $stored['username']);
             $oldPermTempl = (int)$stored['tpl_id'];
             $newPermTempl = (int)($input['perm_templ'] ?? $oldPermTempl);
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:edit_user target_user:%s perm_template:%s auth_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $this->userContextService->getLoggedInUsername(),
-                $input['username'],
+                $username,
                 $newPermTempl,
-                $input['use_ldap'] ? 'ldap' : 'sql'
+                $this->useLdapAfterEdit($editId, $stored) ? 'ldap' : 'sql'
             ));
 
             if ($oldPermTempl !== $newPermTempl) {
-                $this->auditService->logPermTemplateChange($input['username'], $oldPermTempl, $newPermTempl);
+                $this->auditService->logPermTemplateChange($username, $oldPermTempl, $newPermTempl);
             }
 
             $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
@@ -173,13 +174,7 @@ class EditUserController extends BaseController
         // anyway and requiring it would block all edits when the IdP supplied none.
         // A user being converted to a local account (LDAP unchecked) is no longer
         // managed, so the email requirement applies again.
-        $auth = self::resolveAuthFields(
-            $stored,
-            $this->isRestrictedSelfEdit($editId),
-            '',
-            $this->request->getPostParam('use_ldap') === '1'
-        );
-        if (!self::isIdpManaged($stored['auth_type'] ?? null, $auth['use_ldap'] && $this->isLdapSyncEnabled())) {
+        if (!self::isIdpManaged($stored['auth_type'] ?? null, $this->useLdapAfterEdit($editId, $stored) && $this->isLdapSyncEnabled())) {
             $constraints['email'] = [
                 new Assert\NotBlank(),
                 new Assert\Email()
@@ -227,6 +222,37 @@ class EditUserController extends BaseController
     }
 
     /**
+     * Whether the form offered the LDAP checkbox for this edit: it is hidden while
+     * LDAP is off or on a superuser's own profile, and disabled on a restricted
+     * self-edit (#1327). An unchecked box and a missing one post the same nothing,
+     * so only a shown, enabled box counts as the user's answer.
+     */
+    private function ldapControlEditable(int $editId): bool
+    {
+        $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
+
+        return $this->config->get('ldap', 'enabled', false)
+            && !($isOwnProfile && $this->hasPermission('user_is_ueberuser'))
+            && !$this->isRestrictedSelfEdit($editId);
+    }
+
+    /**
+     * The LDAP flag the account will carry after this edit: the stored one unless
+     * the form offered the choice.
+     *
+     * @param array<string, mixed> $stored
+     */
+    private function useLdapAfterEdit(int $editId, array $stored): bool
+    {
+        if ($this->ldapControlEditable($editId)) {
+            return $this->request->getPostParam('use_ldap') === '1';
+        }
+
+        // With LDAP switched off the row is loaded without use_ldap; auth_type still says
+        return (bool)($stored['use_ldap'] ?? (($stored['auth_type'] ?? '') === 'ldap'));
+    }
+
+    /**
      * The fields this edit may write, from the form and the caller's rights.
      * Fields the caller may not change are left out so the stored values stay.
      *
@@ -237,14 +263,8 @@ class EditUserController extends BaseController
     {
         $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
         $canEditOthers = $this->hasPermission('user_edit_others');
-
-        // Keep stored username and LDAP flag on self-edit (#1327)
-        $auth = self::resolveAuthFields(
-            $stored,
-            $isOwnProfile && !$canEditOthers,
-            htmlspecialchars($this->request->getPostParam('username')),
-            $this->request->getPostParam('use_ldap') === '1'
-        );
+        $restrictedSelfEdit = $isOwnProfile && !$canEditOthers;
+        $useLdap = $this->useLdapAfterEdit($editId, $stored);
 
         // OIDC/SAML users have their identity fields owned by the IdP
         // (overwritten on the next sync), so ignore any submitted changes to them.
@@ -252,16 +272,22 @@ class EditUserController extends BaseController
             $stored,
             htmlspecialchars($this->request->getPostParam('fullname')),
             htmlspecialchars($this->request->getPostParam('email')),
-            $auth['use_ldap'] && $this->isLdapSyncEnabled()
+            $useLdap && $this->isLdapSyncEnabled()
         );
 
         $input = [
-            'username' => $auth['username'],
             'fullname' => $identity['fullname'],
             'email' => $identity['email'],
             'description' => htmlspecialchars($this->request->getPostParam('description')),
-            'use_ldap' => $auth['use_ldap'],
         ];
+
+        // Username and the LDAP flag are auth-critical, not self-service (#1327)
+        if (!$restrictedSelfEdit) {
+            $input['username'] = htmlspecialchars($this->request->getPostParam('username'));
+        }
+        if ($this->ldapControlEditable($editId)) {
+            $input['use_ldap'] = $useLdap;
+        }
 
         // Nobody deactivates themselves from their own profile
         if (!$isOwnProfile) {
@@ -272,7 +298,7 @@ class EditUserController extends BaseController
         // the posted password is ignored and the other fields still save. An LDAP
         // account has no local password to set.
         $password = (string)$this->request->getPostParam('password', '');
-        if ($password !== '' && !$auth['use_ldap'] && $this->createApiPermissionService()->canEditUserPassword($callerId, $editId)) {
+        if ($password !== '' && !$useLdap && $this->createApiPermissionService()->canEditUserPassword($callerId, $editId)) {
             $input['password'] = $password;
         }
 
@@ -305,33 +331,6 @@ class EditUserController extends BaseController
     private function isLdapSyncEnabled(): bool
     {
         return (bool)$this->config->get('ldap', 'sync_user_info', false);
-    }
-
-    /**
-     * Resolve the username/use_ldap to persist for a user edit (#1327).
-     *
-     * On a restricted self-edit (own profile without user_edit_others) the
-     * stored username and LDAP flag win over the submitted values - they are
-     * auth-critical, not self-service. A row without a use_ldap column
-     * (LDAP disabled in config) keeps the submitted flag, as before.
-     *
-     * @return array{username: string, use_ldap: bool}
-     */
-    public static function resolveAuthFields(array $userData, bool $restrictedSelfEdit, string $submittedUsername, bool $submittedUseLdap): array
-    {
-        if (!$restrictedSelfEdit) {
-            return [
-                'username' => $submittedUsername,
-                'use_ldap' => $submittedUseLdap,
-            ];
-        }
-
-        return [
-            'username' => (string)($userData['username'] ?? ''),
-            'use_ldap' => array_key_exists('use_ldap', $userData)
-                ? (bool)$userData['use_ldap']
-                : $submittedUseLdap,
-        ];
     }
 
     /**
