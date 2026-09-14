@@ -802,7 +802,7 @@ class EditController extends BaseController
                         $one_record_changed = true;
                     }
 
-                    $edit_record = $this->dnsRecordManager->editRecord($record);
+                    $edit_record = $this->dnsRecordManager->editRecord($record, false);
                     if (!$edit_record->success) {
                         $this->addSystemMessage('error', (string)$edit_record->message);
                         $error = true;
@@ -1103,14 +1103,12 @@ class EditController extends BaseController
             return;
         }
 
-        $this->soaRecordManager->updateSOASerial($zone_id);
+        $this->dnsRecordManager->finalizeZone($zone_id);
 
         match ($outcome) {
             ZoneSaveOutcome::UPDATED => $this->setMessage('edit', 'success', _('Zone has been updated successfully.')),
             default => $this->setMessage('edit', 'info', _('Zone saved successfully. No record changes were made, but SOA serial was incremented.')),
         };
-
-        $this->rectifyZoneAfterWrite($zone_name);
     }
 
     /**

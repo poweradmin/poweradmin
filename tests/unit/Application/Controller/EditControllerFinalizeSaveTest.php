@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\EditController;
 use Poweradmin\Domain\Enum\ZoneSaveOutcome;
-use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use ReflectionClass;
@@ -66,10 +66,10 @@ class EditControllerFinalizeSaveTest extends TestCase
     #[Test]
     public function testUnchangedSaveBumpsSerialByDefault(): void
     {
-        $soa = $this->createMock(SOARecordManagerInterface::class);
-        $soa->expects($this->once())->method('updateSOASerial')->with(42);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->once())->method('finalizeZone')->with(42);
 
-        $messages = $this->finalize($soa, ZoneSaveOutcome::NO_CHANGES, []);
+        $messages = $this->finalize($recordManager, ZoneSaveOutcome::NO_CHANGES, []);
 
         $this->assertSame('info', $messages[0]['type']);
         $this->assertStringContainsString('SOA serial was incremented', $messages[0]['content']);
@@ -78,10 +78,10 @@ class EditControllerFinalizeSaveTest extends TestCase
     #[Test]
     public function testUnchangedSaveLeavesSerialAloneWhenDisabled(): void
     {
-        $soa = $this->createMock(SOARecordManagerInterface::class);
-        $soa->expects($this->never())->method('updateSOASerial');
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->never())->method('finalizeZone');
 
-        $messages = $this->finalize($soa, ZoneSaveOutcome::NO_CHANGES, ['bump_serial_on_unchanged_save' => false]);
+        $messages = $this->finalize($recordManager, ZoneSaveOutcome::NO_CHANGES, ['bump_serial_on_unchanged_save' => false]);
 
         $this->assertSame('info', $messages[0]['type']);
         $this->assertSame('Zone saved successfully. No record changes were made.', $messages[0]['content']);
@@ -90,10 +90,10 @@ class EditControllerFinalizeSaveTest extends TestCase
     #[Test]
     public function testChangedSaveBumpsSerialEvenWhenDisabled(): void
     {
-        $soa = $this->createMock(SOARecordManagerInterface::class);
-        $soa->expects($this->once())->method('updateSOASerial')->with(42);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->once())->method('finalizeZone')->with(42);
 
-        $messages = $this->finalize($soa, ZoneSaveOutcome::UPDATED, ['bump_serial_on_unchanged_save' => false]);
+        $messages = $this->finalize($recordManager, ZoneSaveOutcome::UPDATED, ['bump_serial_on_unchanged_save' => false]);
 
         $this->assertSame('success', $messages[0]['type']);
     }
@@ -101,10 +101,10 @@ class EditControllerFinalizeSaveTest extends TestCase
     #[Test]
     public function testRefusedSaveNeverBumpsSerial(): void
     {
-        $soa = $this->createMock(SOARecordManagerInterface::class);
-        $soa->expects($this->never())->method('updateSOASerial');
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->never())->method('finalizeZone');
 
-        $messages = $this->finalize($soa, ZoneSaveOutcome::SERIAL_CONFLICT, []);
+        $messages = $this->finalize($recordManager, ZoneSaveOutcome::SERIAL_CONFLICT, []);
 
         $this->assertSame('warning', $messages[0]['type']);
     }
@@ -113,14 +113,14 @@ class EditControllerFinalizeSaveTest extends TestCase
      * @param array<string, mixed> $dnsOverrides
      * @return array<int, array{type: string, content: string}>
      */
-    private function finalize(SOARecordManagerInterface $soa, ZoneSaveOutcome $outcome, array $dnsOverrides): array
+    private function finalize(RecordManagerInterface $recordManager, ZoneSaveOutcome $outcome, array $dnsOverrides): array
     {
         $reflection = new ReflectionClass(EditController::class);
         $controller = $reflection->newInstanceWithoutConstructor();
 
-        $property = $reflection->getProperty('soaRecordManager');
+        $property = $reflection->getProperty('dnsRecordManager');
         $property->setAccessible(true);
-        $property->setValue($controller, $soa);
+        $property->setValue($controller, $recordManager);
 
         [$settings, $initialized] = $this->configProperties();
         $config = ConfigurationManager::getInstance();

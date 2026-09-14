@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
@@ -346,11 +345,6 @@ class ReverseRecordCreator
                 $ttl,
                 $prio
             ), (int)$zone_rev_id);
-
-            if ($this->config->get('dnssec', 'enabled')) {
-                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
-                $dnssecProvider->rectifyZone($this->domainRepository->getDomainNameById((int)$zone_rev_id));
-            }
 
             return true;
         }

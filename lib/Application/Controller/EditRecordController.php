@@ -46,11 +46,11 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class EditRecordController extends BaseController
@@ -62,7 +62,6 @@ class EditRecordController extends BaseController
     private RecordTypeService $recordTypeService;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
-    private RecordRepositoryInterface $recordRepository;
     private PermissionService $permissionService;
     private Request $request;
 
@@ -77,8 +76,7 @@ class EditRecordController extends BaseController
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
-        $this->recordRepository = $repositoryFactory->createRecordRepository();
-        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
+        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $repositoryFactory->createRecordRepository(), $backendProvider);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();
         $this->permissionService = $this->createPermissionService();
@@ -263,11 +261,12 @@ class EditRecordController extends BaseController
             return false;
         }
 
-        // Compare before the bump so an SOA edit compares cleanly; the default setting
-        // bumps regardless, so the extra read only happens when it decides anything
+        // The manager bumps the serial for every other type; an edited SOA carries
+        // the placeholder-expanded serial, which is bumped here (#1360) unless the
+        // install opted out of bumping and the manager skipped an unchanged save
         if (
-            $this->config->get('dns', 'bump_serial_on_unchanged_save', true)
-            || $this->savedRecordDiffers($recordRepository, $rid, $old_record_info)
+            ($postData['type'] ?? '') === RecordType::SOA
+            && ($this->config->get('dns', 'bump_serial_on_unchanged_save', true) || $this->savedRecordDiffers($recordRepository, $rid, $old_record_info))
         ) {
             $this->createSOARecordManager()->updateSOASerial($zid);
         }
@@ -354,10 +353,6 @@ class EditRecordController extends BaseController
             }
         }
 
-        $zone_name = $domainRepository->getDomainNameById($zid);
-        if ($zone_name !== null) {
-            $this->rectifyZoneAfterWrite($zone_name);
-        }
 
         $this->setMessage('edit', 'success', _('The record has been updated successfully.'));
         $this->redirect('/zones/' . $zid . '/edit');

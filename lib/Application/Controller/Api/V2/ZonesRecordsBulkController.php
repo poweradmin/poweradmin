@@ -40,7 +40,6 @@ use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -60,7 +59,6 @@ class ZonesRecordsBulkController extends PublicApiController
     private ZoneRepositoryInterface $zoneRepository;
     private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
-    private SOARecordManagerInterface $soaRecordManager;
     private ApiPermissionService $permissionService;
     private DnsBackendProvider $backendProvider;
     private LegacyLogger $auditLogger;
@@ -78,7 +76,6 @@ class ZonesRecordsBulkController extends PublicApiController
         $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->permissionService = new ApiPermissionService($this->db);
 
-        $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
         $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
@@ -317,16 +314,16 @@ class ZonesRecordsBulkController extends PublicApiController
                     }
                 }
 
-                // Update SOA serial only if non-SOA records were modified
-                // This prevents overwriting user-supplied SOA serial values
+                // The serial moves with the records, inside the transaction, and only when
+                // non-SOA records changed so a user-supplied SOA serial stays; the rectify
+                // waits for the commit since PowerDNS reads committed rows.
                 if ($nonSOARecordModified) {
-                    $this->soaRecordManager->updateSOASerial($zoneId);
+                    $this->createSOARecordManager()->updateSOASerial($zoneId);
                 }
-
                 if ($useTransaction) {
                     $this->db->commit();
                 }
-                $this->rectifyZoneAfterWrite((string)$zone['name']);
+                $this->recordManager->finalizeZone($zoneId, false);
 
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:api_bulk_records operations:%d',
@@ -495,7 +492,7 @@ class ZonesRecordsBulkController extends PublicApiController
             'disabled' => $disabled
         ];
 
-        $result = $this->recordManager->editRecord($recordData);
+        $result = $this->recordManager->editRecord($recordData, false);
         if (!$result->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
             if ($result->status === 500) {

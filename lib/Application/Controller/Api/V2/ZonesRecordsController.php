@@ -35,7 +35,6 @@ use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -56,7 +55,6 @@ class ZonesRecordsController extends PublicApiController
     private ZoneRepositoryInterface $zoneRepository;
     private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
-    private SOARecordManagerInterface $soaRecordManager;
     private ApiPermissionService $permissionService;
     private DnsBackendProvider $backendProvider;
     private LegacyLogger $auditLogger;
@@ -74,7 +72,6 @@ class ZonesRecordsController extends PublicApiController
         $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->permissionService = new ApiPermissionService($this->db);
 
-        $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
         $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
 
         $this->auditLogger = new LegacyLogger($this->db);
@@ -751,12 +748,6 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError($this->recordWriteErrorMessage($result, 'Failed to update record'), $result->status);
             }
 
-            // Update SOA serial after editing the record (except for SOA records themselves)
-            if ($recordData['type'] !== 'SOA') {
-                $this->updateSOASerial($zoneId);
-            }
-            $this->rectifyZoneAfterWrite((string)$zone['name']);
-
             // Get the updated record to return.
             // In API mode the record ID may change when name/type/content/prio change,
             // so fall back to the submitted data if the old ID no longer resolves.
@@ -971,22 +962,5 @@ class ZonesRecordsController extends PublicApiController
     private function formatRecordId(mixed $id): int|string
     {
         return RecordIdHelper::normalizeId($id);
-    }
-
-    /**
-     * Update SOA serial for a zone
-     *
-     * Delegates to SOARecordManager which handles all edge cases:
-     * - 100+ changes per day (increments date instead of breaking)
-     * - Non-date based serials (simple increment)
-     * - Future-dated serials (preserved)
-     * - Overflow protection at 1979999999
-     *
-     * @param int $zoneId Zone ID
-     * @return void
-     */
-    private function updateSOASerial(int $zoneId): void
-    {
-        $this->soaRecordManager->updateSOASerial($zoneId);
     }
 }

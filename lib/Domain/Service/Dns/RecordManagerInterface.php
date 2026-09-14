@@ -58,12 +58,22 @@ interface RecordManagerInterface
     public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true): RecordWriteResult;
 
     /**
-     * Edit a record. Callers bump the serial themselves, since whether an
-     * unchanged save bumps it is their dns.bump_serial_on_unchanged_save call.
+     * Edit a record. An unchanged save is skipped entirely when
+     * dns.bump_serial_on_unchanged_save is off, so nothing bumps the serial then.
      *
      * @param array $record Record structure to update
+     * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
      */
-    public function editRecord(array $record): RecordWriteResult;
+    public function editRecord(array $record, bool $finalizeZone = true): RecordWriteResult;
+
+    /**
+     * What every single write ends with: bump the serial (unless told not to) and
+     * rectify. Batch callers pass finalizeZone=false to the writes and call this
+     * once when they are done; one holding a transaction bumps the serial inside
+     * it and calls this with bumpSerial=false after the commit, since PowerDNS
+     * rectifies from committed rows.
+     */
+    public function finalizeZone(int $zoneId, bool $bumpSerial = true): void;
 
     /**
      * Delete a record and everything that pointed at it (template link, comments)

@@ -184,12 +184,8 @@ class DeleteRecordsController extends BaseController
             RecordChangeLogger::endChangeset();
         }
 
-        // Update SOA serials and rectify zones
-        $soaRecordManager = $this->createSOARecordManager();
         foreach (array_keys($affected_zones) as $zone_id) {
-            $soaRecordManager->updateSOASerial($zone_id);
-
-            $this->rectifyZoneAfterWrite((string)$domainRepository->getDomainNameById($zone_id));
+            $recordManager->finalizeZone($zone_id);
         }
 
         $redirectPage = 'search';

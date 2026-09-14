@@ -33,11 +33,10 @@ use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
- * A batch caller (bulk operations, RRSet replace) bumps the serial and rectifies
- * once itself, so a create with finalizeZone off must leave those to it while
- * still validating, refusing duplicates and logging the change.
+ * Every single write ends by bumping the serial; a batch caller (bulk operations,
+ * RRSet replace) passes finalizeZone off and calls finalizeZone() once itself.
  */
-class RecordManagerAddRecordBatchTest extends SqliteIntegrationTestCase
+class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
 {
     private const ZONE_ID = 10;
 
@@ -111,6 +110,32 @@ class RecordManagerAddRecordBatchTest extends SqliteIntegrationTestCase
 
         $this->assertFalse($result->success);
         $this->assertSame(409, $result->status);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnEditBumpsTheSerialUnlessTheCallerFinalises(): void
+    {
+        $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio) VALUES (7, " . self::ZONE_ID . ", 'www.example.com', 'A', '192.0.2.9', 3600, 0)");
+        $soa = $this->createMock(SOARecordManagerInterface::class);
+        $soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID);
+        $backend = $this->dnsBackendStub(false);
+        $backend->method('editRecord')->willReturn(true);
+        $manager = $this->makeRecordManager($soa, $this->createMock(RecordChangeLogger::class), $backend);
+        $record = ['rid' => 7, 'zid' => self::ZONE_ID, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0];
+
+        $this->assertTrue($manager->editRecord($record, false)->success);
+        $this->assertTrue($manager->editRecord($record)->success);
+    }
+
+    #[RunInSeparateProcess]
+    public function testFinalizeZoneBumpsTheSerialUnlessToldTheSoaWasWritten(): void
+    {
+        $soa = $this->createMock(SOARecordManagerInterface::class);
+        $soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID);
+        $manager = $this->makeRecordManager($soa, $this->createMock(RecordChangeLogger::class));
+
+        $manager->finalizeZone(self::ZONE_ID);
+        $manager->finalizeZone(self::ZONE_ID, false);
     }
 
     private function makeRecordManager(SOARecordManagerInterface $soa, RecordChangeLogger $changeLogger, ?DnsBackendProvider $backend = null): RecordManager

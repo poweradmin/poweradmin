@@ -78,7 +78,6 @@ class RecordManagerService
         }
 
         $this->logRecordCreation($clientIp, $userlogin, $type, $name, $zone_name, $content, $ttl, $prio, $zone_id);
-        $this->handleDnssec($zone_name);
         $this->handleCommentsWithId($zone_id, $name, $type, $content, $comment, $userlogin, $zone_name, $result->recordId);
 
         return $result;
@@ -96,14 +95,6 @@ class RecordManagerService
             $ttl,
             $prio
         ), $zone_id);
-    }
-
-    private function handleDnssec(string $zone_name): void
-    {
-        if ($this->config->get('dnssec', 'enabled')) {
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
-            $dnssecProvider->rectifyZone($zone_name);
-        }
     }
 
     /**

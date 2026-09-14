@@ -38,7 +38,6 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -57,7 +56,6 @@ class ZonesRRSetsController extends PublicApiController
     private ZoneRepositoryInterface $zoneRepository;
     private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
-    private SOARecordManagerInterface $soaRecordManager;
     private ApiPermissionService $permissionService;
     private DnsBackendProvider $backendProvider;
     private LegacyLogger $auditLogger;
@@ -75,7 +73,6 @@ class ZonesRRSetsController extends PublicApiController
         $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->permissionService = new ApiPermissionService($this->db);
 
-        $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
         $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
@@ -610,15 +607,14 @@ class ZonesRRSetsController extends PublicApiController
                     $recordsCreated++;
                 }
 
-                // Update SOA serial
+                // The serial moves inside the transaction; the rectify waits for the commit
                 if ($type !== 'SOA') {
-                    $this->soaRecordManager->updateSOASerial($zoneId);
+                    $this->createSOARecordManager()->updateSOASerial($zoneId);
                 }
-
                 if ($useTransaction) {
                     $this->db->commit();
                 }
-                $this->rectifyZoneAfterWrite($zoneName);
+                $this->recordManager->finalizeZone($zoneId, false);
 
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:api_replace_rrset name:%s type:%s records:%d',
@@ -795,13 +791,11 @@ class ZonesRRSetsController extends PublicApiController
                     );
                 }
 
-                // Update SOA serial
                 if ($type !== 'SOA') {
-                    $this->soaRecordManager->updateSOASerial($zoneId);
+                    $this->createSOARecordManager()->updateSOASerial($zoneId);
                 }
-
                 $this->db->commit();
-                $this->rectifyZoneAfterWrite($zoneName);
+                $this->recordManager->finalizeZone($zoneId, false);
 
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:api_delete_rrset name:%s type:%s records:%d',

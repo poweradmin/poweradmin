@@ -301,13 +301,9 @@ class RecordManager implements RecordManagerInterface
             throw $e;
         }
 
-        if (!$finalizeZone) {
-            return RecordWriteResult::ok($recordId);
-        }
-
-        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-        if (is_string($zone_name)) {
-            $this->rectifyZone($zone_name);
+        if ($finalizeZone) {
+            // The serial already moved inside the transaction above
+            $this->finalizeZone($zone_id, false);
         }
 
         return RecordWriteResult::ok($recordId);
@@ -337,7 +333,7 @@ class RecordManager implements RecordManagerInterface
      *
      * @param array $record Record structure to update
      */
-    public function editRecord(array $record): RecordWriteResult
+    public function editRecord(array $record, bool $finalizeZone = true): RecordWriteResult
     {
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
         $perm_edit = Permission::getEditPermission($this->db);
@@ -452,6 +448,10 @@ class RecordManager implements RecordManagerInterface
             $this->changeLogger->logRecordEdit($beforeForLog, $afterRecord, $record['zid']);
         });
 
+        if ($finalizeZone) {
+            $this->finalizeZone((int)$record['zid'], $record['type'] !== 'SOA');
+        }
+
         return RecordWriteResult::ok();
     }
 
@@ -509,18 +509,22 @@ class RecordManager implements RecordManagerInterface
             $comments->delete($zoneId, (string)$record['name'], (string)$record['type']);
         }
 
-        if (!$finalizeZone) {
-            return RecordWriteResult::ok();
-        }
-
-        if ($record['type'] !== 'SOA') {
-            $this->soaRecordManager->updateSOASerial($zoneId);
-        }
-        if (is_string($zone)) {
-            $this->rectifyZone($zone);
+        if ($finalizeZone) {
+            $this->finalizeZone($zoneId, $record['type'] !== 'SOA');
         }
 
         return RecordWriteResult::ok();
+    }
+
+    public function finalizeZone(int $zoneId, bool $bumpSerial = true): void
+    {
+        if ($bumpSerial) {
+            $this->soaRecordManager->updateSOASerial($zoneId);
+        }
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
+        if (is_string($zoneName)) {
+            $this->rectifyZone($zoneName);
+        }
     }
 
     /**
