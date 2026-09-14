@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -133,6 +133,13 @@ interface DomainRepositoryInterface
      * @return array
      */
     public function getZoneInfoFromIds(array $zones): array;
+
+    /**
+     * Every zone as a picker entry, sorted by name, regardless of who owns it.
+     *
+     * @return list<array{id: int, name: string, type: string}>
+     */
+    public function listZoneNames(): array;
 
     /**
      * Get Best Matching in-addr.arpa Zone ID from Domain Name

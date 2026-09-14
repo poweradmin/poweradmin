@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\RequestValidator;
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\DashboardStatsService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
@@ -603,6 +604,11 @@ abstract class BaseController
     protected function createPermissionTemplateWriteService(): PermissionTemplateWriteService
     {
         return $this->services()->permissionTemplateWriteService();
+    }
+
+    protected function createDashboardStatsService(): DashboardStatsService
+    {
+        return $this->services()->dashboardStatsService();
     }
 
     protected function createZoneListPermissionService(): ZoneListPermissionService

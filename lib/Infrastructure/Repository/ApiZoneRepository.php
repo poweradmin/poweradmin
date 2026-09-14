@@ -696,6 +696,25 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $owners;
     }
 
+    public function getOwnedZoneIds(int $userId): array
+    {
+        // API-mode zones with no domain_id are keyed by zones.id, which the canonical
+        // expression resolves; zones_groups already stores that same value
+        $stmt = $this->db->prepare(
+            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS zone_id FROM zones z WHERE z.owner = :uid
+             UNION
+             SELECT DISTINCT zg.domain_id AS zone_id
+             FROM zones_groups zg
+             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+             WHERE ugm.user_id = :uid2"
+        );
+        $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
     public function getZoneOwners(int $zoneId): array
     {
         $canonical = $this->resolveCanonicalRow($zoneId);

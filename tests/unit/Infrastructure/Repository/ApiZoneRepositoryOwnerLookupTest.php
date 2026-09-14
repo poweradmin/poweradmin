@@ -43,6 +43,8 @@ class ApiZoneRepositoryOwnerLookupTest extends TestCase
     {
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, zone_name TEXT, owner INTEGER)");
+        $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER, group_id INTEGER)");
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, owner) VALUES
             (1, 100, 'migrated.example.com', 10),
             (55, 0, 'stranded.example.com', 20),
@@ -73,6 +75,19 @@ class ApiZoneRepositoryOwnerLookupTest extends TestCase
     public function testReturnsAnEmptyMapForNoIds(): void
     {
         $this->assertSame([], $this->repository->getOwnerIdsByZoneIds([]));
+    }
+
+    public function testOwnedZoneIdsUseTheLogIdSpaceAndIncludeGroupZones(): void
+    {
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (100, 3)");
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (20, 3)");
+
+        $owned = $this->repository->getOwnedZoneIds(20);
+        sort($owned);
+
+        $this->assertSame([55, 100], $owned, 'stranded zone keyed by its row id plus the group-owned zone');
+        $this->assertSame([56], $this->repository->getOwnedZoneIds(30));
+        $this->assertSame([], $this->repository->getOwnedZoneIds(99));
     }
 
     public function testAggregatesSeveralOwnersOfOneZone(): void

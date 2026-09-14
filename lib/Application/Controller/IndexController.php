@@ -31,7 +31,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\PowerdnsStatusService;
@@ -120,7 +119,7 @@ class IndexController extends BaseController
         $dashboardStats = null;
         $showDashboardStats = $this->config->get('interface', 'show_dashboard_stats', true);
         if ($permissions['user_is_ueberuser'] && $showDashboardStats) {
-            $dashboardStats = $this->getDashboardStats();
+            $dashboardStats = $this->createDashboardStatsService()->stats((int)$this->getCurrentUserId(), $this->hasPermission('user_view_others'));
         }
 
         // Dashboard owns the version refresh so other pages read from cache only.
@@ -200,64 +199,6 @@ class IndexController extends BaseController
 
         return (new OidcConfigurationService($this->config, $logger))->isAutoProvisioningTemplateMissing()
             || (new SamlConfigurationService($this->config, $logger))->isAutoProvisioningTemplateMissing();
-    }
-
-    private function getDashboardStats(): array
-    {
-        $userRepository = $this->createUserRepository();
-        $userCount = $this->hasPermission('user_view_others')
-            ? $userRepository->getTotalUserCount()
-            : $userRepository->getTotalUserCount($this->getCurrentUserId() ?? 0);
-        $groupCount = (int) $this->db->query("SELECT COUNT(*) FROM user_groups")->fetchColumn();
-
-        if (DnsBackendProviderFactory::isApiBackend($this->config)) {
-            // Count via API for freshness (local zones table lags until sync runs);
-            // fall back to local count on API outage rather than showing a misleading 0.
-            try {
-                $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
-                $zoneCount = count($backendProvider->getZones());
-                if ($zoneCount === 0 && (new ApiStatusService())->getLastError() !== null) {
-                    // Empty result was a swallowed API failure - use the local cache instead.
-                    $zoneCount = (int) $this->db->query(
-                        "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL"
-                    )->fetchColumn();
-                }
-            } catch (\Throwable $e) {
-                $this->logger->warning('Dashboard zone count via API failed: {error}', ['error' => $e->getMessage()]);
-                $zoneCount = (int) $this->db->query(
-                    "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL"
-                )->fetchColumn();
-            }
-            return [
-                'zones' => $zoneCount,
-                'records' => null,
-                'users' => $userCount,
-                'groups' => $groupCount,
-            ];
-        }
-
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
-        $records_table = $pdns_db_name ? "$pdns_db_name.records" : "records";
-
-        // The PowerDNS tables may be absent or ungranted (e.g. PowerDNS not yet
-        // deployed, or its schema in a separate database). Don't let that fatal
-        // the whole dashboard - show no zone/record counts instead.
-        try {
-            $zoneCount = (int) $this->db->query("SELECT COUNT(*) FROM $domains_table")->fetchColumn();
-            $recordCount = (int) $this->db->query("SELECT COUNT(*) FROM $records_table")->fetchColumn();
-        } catch (\Throwable $e) {
-            $this->logger->warning('Dashboard zone/record count failed: {error}', ['error' => $e->getMessage()]);
-            $zoneCount = null;
-            $recordCount = null;
-        }
-
-        return [
-            'zones' => $zoneCount,
-            'records' => $recordCount,
-            'users' => $userCount,
-            'groups' => $groupCount,
-        ];
     }
 
     private function getModuleNavItemsForDashboard(): array

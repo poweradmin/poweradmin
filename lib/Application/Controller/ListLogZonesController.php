@@ -31,7 +31,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use PDO;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
@@ -42,7 +41,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 class ListLogZonesController extends BaseController
 {
@@ -183,36 +181,15 @@ class ListLogZonesController extends BaseController
     }
 
     /**
-     * IDs that match log_zones.zone_id for zones the current non-admin user owns.
-     *
-     * The logger keys log rows by the canonical zone id, so API-mode
-     * zones with a NULL zones.domain_id must be matched on zones.id. zones_groups
-     * already stores the same COALESCE value, so it needs no additional translation.
+     * Ids that match log_zones.zone_id for zones the current non-admin user owns.
      *
      * @return int[]
      */
     private function resolveOwnedZoneIds(): array
     {
         $userId = $this->getCurrentUserId() ?? 0;
-        if ($userId <= 0) {
-            return [];
-        }
 
-        $stmt = $this->db->prepare(
-            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS log_zone_id
-             FROM zones z
-             WHERE z.owner = :uid
-             UNION
-             SELECT DISTINCT zg.domain_id AS log_zone_id
-             FROM zones_groups zg
-             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-             WHERE ugm.user_id = :uid2"
-        );
-        $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        return $userId > 0 ? $this->createZoneRepository()->getOwnedZoneIds($userId) : [];
     }
 
     private function createAndPresentPagination(int $totalItems, int $itemsPerPage, array $filters = []): string

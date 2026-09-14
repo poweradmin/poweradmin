@@ -556,6 +556,18 @@ class SqlDomainRepository implements DomainRepositoryInterface
         return $zone_infos;
     }
 
+    public function listZoneNames(): array
+    {
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $rows = $this->db->query("SELECT id, name, type FROM $domains_table ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn(array $row): array => [
+            'id' => (int)$row['id'],
+            'name' => (string)$row['name'],
+            'type' => (string)$row['type'],
+        ], $rows);
+    }
+
     public function getBestMatchingZoneIdFromName(string $domain): int
     {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);

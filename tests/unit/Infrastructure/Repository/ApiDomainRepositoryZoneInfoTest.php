@@ -57,6 +57,24 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
     }
 
     #[Test]
+    public function listZoneNamesReadsTheLiveListSortedWithoutTrailingDots(): void
+    {
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('getZones')->willReturn([
+            ['id' => 101, 'name' => 'two.example.com.', 'kind' => 'Master'],
+            ['id' => 0, 'name' => 'unresolved.example.com.', 'type' => 'NATIVE'],
+            ['id' => 100, 'name' => 'One.example.com.', 'type' => 'NATIVE'],
+        ]);
+
+        $zones = (new ApiDomainRepository($this->db, $this->config, $backend))->listZoneNames();
+
+        $this->assertSame([
+            ['id' => 100, 'name' => 'One.example.com', 'type' => 'NATIVE'],
+            ['id' => 101, 'name' => 'two.example.com', 'type' => 'Master'],
+        ], $zones);
+    }
+
+    #[Test]
     public function getZoneInfoFromIdsUsesOneBulkZoneListCall(): void
     {
         $backend = $this->createMock(DnsBackendProvider::class);

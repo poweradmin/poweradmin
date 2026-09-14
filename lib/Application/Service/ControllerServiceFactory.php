@@ -288,6 +288,18 @@ class ControllerServiceFactory
         return new PermissionTemplateWriteService($this->permissionTemplateRepository(), $this->userRepository());
     }
 
+    public function dashboardStatsService(): DashboardStatsService
+    {
+        return new DashboardStatsService(
+            $this->db,
+            $this->config,
+            $this->logger,
+            $this->userRepository(),
+            $this->userGroupRepository(),
+            $this->dnsBackendProvider()
+        );
+    }
+
     public function zoneListPermissionService(): ZoneListPermissionService
     {
         return new ZoneListPermissionService($this->zoneRepository(), $this->zoneGroupRepository(), $this->userGroupRepository());

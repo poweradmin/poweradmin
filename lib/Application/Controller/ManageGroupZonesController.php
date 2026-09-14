@@ -33,12 +33,9 @@ namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Domain\Utility\IpHelper;
 
 class ManageGroupZonesController extends BaseController
@@ -315,26 +312,8 @@ class ManageGroupZonesController extends BaseController
                 usort($ownedZones, fn($a, $b) => strcasecmp($a['name'], $b['name']));
             }
 
-            // Get all zones for selection
-            $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config);
-            if ($backendProvider->isApiBackend()) {
-                $apiZones = $backendProvider->getZones();
-                $allZones = array_filter(array_map(fn($z) => [
-                    'id' => (int)($z['id'] ?? 0),
-                    'name' => rtrim($z['name'] ?? '', '.'),
-                    'type' => $z['type'] ?? $z['kind'] ?? '',
-                ], $apiZones), fn($z) => $z['id'] > 0);
-                usort($allZones, fn($a, $b) => strcasecmp($a['name'], $b['name']));
-            } else {
-                $tableNameService = new TableNameService($this->config);
-                $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
-                $query = "SELECT id, name, type FROM $domainsTable ORDER BY name ASC";
-                $stmt = $this->db->query($query);
-                $allZones = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            }
-
-            // Filter out owned zones from available zones and shorten IPv6 zones
-            $availableZones = array_filter($allZones, function ($zone) use ($ownedDomainIds) {
+            // Zones the group does not own yet, for the picker
+            $availableZones = array_filter($domainRepository->listZoneNames(), function ($zone) use ($ownedDomainIds) {
                 return !in_array($zone['id'], $ownedDomainIds);
             });
 

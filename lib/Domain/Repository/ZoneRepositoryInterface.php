@@ -162,6 +162,14 @@ interface ZoneRepositoryInterface
     public function getOwnerIdsByZoneIds(array $zoneIds): array;
 
     /**
+     * Ids of every zone the user owns directly or through a group, in the id
+     * space the zone logs and zones_groups use.
+     *
+     * @return list<int>
+     */
+    public function getOwnedZoneIds(int $userId): array;
+
+    /**
      * Add owner to zone
      *
      * @param int $zoneId The zone ID

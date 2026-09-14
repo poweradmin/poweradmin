@@ -358,6 +358,26 @@ class ApiDomainRepository implements DomainRepositoryInterface
         return $zone_infos;
     }
 
+    public function listZoneNames(): array
+    {
+        // Read the live list rather than the local zones table, which lags until sync runs
+        $zones = [];
+        foreach ($this->backendProvider->getZones() as $zone) {
+            $id = (int)($zone['id'] ?? 0);
+            if ($id <= 0) {
+                continue;
+            }
+            $zones[] = [
+                'id' => $id,
+                'name' => rtrim((string)($zone['name'] ?? ''), '.'),
+                'type' => (string)($zone['type'] ?? $zone['kind'] ?? ''),
+            ];
+        }
+        usort($zones, fn(array $a, array $b): int => strcasecmp($a['name'], $b['name']));
+
+        return $zones;
+    }
+
     public function getBestMatchingZoneIdFromName(string $domain): int
     {
         return $this->backendProvider->getBestMatchingReverseZoneId($domain);

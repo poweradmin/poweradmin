@@ -78,6 +78,14 @@ class ZoneListPermissionServiceIntegrationTest extends SqliteIntegrationTestCase
         $this->assertFalse($index->allows('none', 2));
     }
 
+    public function testOwnedZoneIdsCoverDirectAndGroupOwnership(): void
+    {
+        $owned = (new DbZoneRepository($this->db, $this->config))->getOwnedZoneIds(self::ALICE);
+        sort($owned);
+
+        $this->assertSame([1, 2], $owned);
+    }
+
     public function testEmptyPageNeedsNoQueries(): void
     {
         $index = $this->makeService()->index(self::ALICE, []);

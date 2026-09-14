@@ -1155,6 +1155,7 @@ return array(
     'Poweradmin\\Application\\Service\\AvatarService' => $baseDir . '/lib/Application/Service/AvatarService.php',
     'Poweradmin\\Application\\Service\\ControllerServiceFactory' => $baseDir . '/lib/Application/Service/ControllerServiceFactory.php',
     'Poweradmin\\Application\\Service\\CsrfTokenService' => $baseDir . '/lib/Application/Service/CsrfTokenService.php',
+    'Poweradmin\\Application\\Service\\DashboardStatsService' => $baseDir . '/lib/Application/Service/DashboardStatsService.php',
     'Poweradmin\\Application\\Service\\DatabaseService' => $baseDir . '/lib/Application/Service/DatabaseService.php',
     'Poweradmin\\Application\\Service\\DnsBackendProviderFactory' => $baseDir . '/lib/Application/Service/DnsBackendProviderFactory.php',
     'Poweradmin\\Application\\Service\\DnsDataService' => $baseDir . '/lib/Application/Service/DnsDataService.php',
