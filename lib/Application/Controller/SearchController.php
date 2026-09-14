@@ -99,14 +99,16 @@ class SearchController extends BaseController
         }
 
         list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
-            'zone_sort_by',
             $allowedZoneSort,
-            SessionKeys::SEARCH_ZONE_SORT_BY
+            SessionKeys::SEARCH_ZONE_SORT_BY,
+            submittedSortBy: $this->request->getPostParam('zone_sort_by') ?? $this->request->getQueryParam('zone_sort_by'),
+            submittedDirection: $this->request->getPostParam('zone_sort_by_direction') ?? $this->request->getQueryParam('zone_sort_by_direction')
         );
         list($record_sort_by, $record_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
-            'record_sort_by',
             ['name', 'type', 'prio', 'content', 'ttl', 'disabled'],
-            SessionKeys::SEARCH_RECORD_SORT_BY
+            SessionKeys::SEARCH_RECORD_SORT_BY,
+            submittedSortBy: $this->request->getPostParam('record_sort_by') ?? $this->request->getQueryParam('record_sort_by'),
+            submittedDirection: $this->request->getPostParam('record_sort_by_direction') ?? $this->request->getQueryParam('record_sort_by_direction')
         );
 
         // Get default rows per page from config

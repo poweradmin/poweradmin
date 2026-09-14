@@ -144,7 +144,6 @@ parameters:
         - lib/Application/Service/LdapAuthenticator.php
         - lib/Application/Service/PaginationService.php
         - lib/Application/Service/SqlAuthenticator.php
-        - lib/Domain/Service/ZoneSortingService.php
         - lib/Infrastructure/Service/HttpPaginationParameters.php
         - lib/Infrastructure/Service/SessionAuthenticator.php
         - lib/Module/DnsWizard/Controller/DnsWizardFormController.php
@@ -233,7 +232,6 @@ parameters:
         - lib/Domain/Model/RecordLog.php
         - lib/Domain/Service/BatchReverseRecordCreator.php
         - lib/Domain/Service/ReverseRecordCreator.php
-        - lib/Domain/ValueObject/DynamicDnsRequest.php
   disallowedStaticCalls:
     # Services take ConfigurationInterface; the singleton is for bootstrap.
     -
@@ -298,7 +296,6 @@ parameters:
         # Not yet migrated. Delete each entry as its file is done.
         - lib/Domain/Service/AuthenticationService.php
         - lib/Domain/Service/MfaService.php
-        - lib/Domain/ValueObject/DynamicDnsRequest.php
     -
       namespace: 'Symfony\Component\HttpFoundation\*'
       message: 'lib/Domain must not depend on HTTP or Twig; move the dependency to the caller'
@@ -320,7 +317,6 @@ parameters:
         # Not yet migrated. Delete each entry as its file is done.
         - lib/Domain/Service/AuthenticationService.php
         - lib/Domain/Service/MfaService.php
-        - lib/Domain/ValueObject/DynamicDnsRequest.php
     -
       namespace: 'Poweradmin\Infrastructure\Web\*'
       message: 'lib/Domain must not depend on HTTP or Twig; move the dependency to the caller'
@@ -342,7 +338,6 @@ parameters:
         # Not yet migrated. Delete each entry as its file is done.
         - lib/Domain/Service/AuthenticationService.php
         - lib/Domain/Service/MfaService.php
-        - lib/Domain/ValueObject/DynamicDnsRequest.php
     -
       namespace: 'Poweradmin\Application\Http\*'
       message: 'lib/Domain must not depend on HTTP or Twig; move the dependency to the caller'
@@ -364,4 +359,3 @@ parameters:
         # Not yet migrated. Delete each entry as its file is done.
         - lib/Domain/Service/AuthenticationService.php
         - lib/Domain/Service/MfaService.php
-        - lib/Domain/ValueObject/DynamicDnsRequest.php

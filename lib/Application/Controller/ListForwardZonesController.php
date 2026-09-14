@@ -197,7 +197,11 @@ class ListForwardZonesController extends BaseController
             $allowedSort[] = 'group';
         }
 
-        list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder('zone_sort_by', $allowedSort);
+        list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
+            $allowedSort,
+            submittedSortBy: $this->request->getPostParam('zone_sort_by') ?? $this->request->getQueryParam('zone_sort_by'),
+            submittedDirection: $this->request->getPostParam('zone_sort_by_direction') ?? $this->request->getQueryParam('zone_sort_by_direction')
+        );
 
         $effectiveLetterStart = ($count_zones_view <= $iface_rowamount || $letter_start == 'all') ? 'all' : $letter_start;
         $zones = $dnsDataService->getForwardZones(

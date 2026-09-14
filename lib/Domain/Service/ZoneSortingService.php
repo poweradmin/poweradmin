@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,26 +47,26 @@ class ZoneSortingService
     }
 
     /**
-     * Get zone sort order from session/request. Callers pass distinct
+     * Get zone sort order from session/submitted values. Callers pass distinct
      * $sessionKey values (see {@see SessionKeys}) to keep buckets isolated.
      *
-     * @param string $name Parameter name read from $_GET/$_POST
      * @param array $allowedValues Allowed sort values
      * @param string $sessionKey Session bucket (direction stored under $sessionKey . '_direction')
      * @param string $defaultSortBy Fallback sort column when nothing valid is supplied
-     * @param string|null $directionName Request parameter for the direction; defaults to $name . '_direction'
+     * @param mixed $submittedSortBy Sort column as submitted (POST first, then GET); anything but a string is ignored
+     * @param mixed $submittedDirection Sort direction as submitted; anything but a string is ignored
      * @return array [sortBy, sortDirection]
      */
     public function getZoneSortOrder(
-        string $name,
         array $allowedValues,
         string $sessionKey = SessionKeys::LIST_ZONE_SORT_BY,
         string $defaultSortBy = 'name',
-        ?string $directionName = null
+        mixed $submittedSortBy = null,
+        mixed $submittedDirection = null
     ): array {
         $directionSessionKey = $sessionKey . '_direction';
 
-        $zone_sort_by = $this->resolveSortBy($name, $sessionKey)
+        $zone_sort_by = $this->resolveSortBy($submittedSortBy, $sessionKey)
             ?? $this->userContextService->getSessionData($sessionKey)
             ?? $defaultSortBy;
 
@@ -74,37 +74,31 @@ class ZoneSortingService
             $zone_sort_by = $defaultSortBy;
         }
 
-        $zone_sort_direction = $this->resolveSortDirection($directionName ?? $name . '_direction', $directionSessionKey)
+        $zone_sort_direction = $this->resolveSortDirection($submittedDirection, $directionSessionKey)
             ?? $this->userContextService->getSessionData($directionSessionKey)
             ?? 'ASC';
 
         return [$zone_sort_by, $zone_sort_direction];
     }
 
-    private function resolveSortBy(string $name, string $sessionKey): ?string
+    private function resolveSortBy(mixed $submittedValue, string $sessionKey): ?string
     {
-        // POST first so a fresh form submission overrides any stale `?sort=` left
-        // in the URL bar; list views are GET-only so this swap is a no-op for them.
-        foreach ([$_POST[$name] ?? null, $_GET[$name] ?? null] as $candidate) {
-            if ($candidate !== null && preg_match("/^[a-z_]+$/", $candidate)) {
-                $value = htmlspecialchars($candidate);
-                $this->userContextService->setSessionData($sessionKey, $value);
-                return $value;
-            }
+        if (is_string($submittedValue) && preg_match("/^[a-z_]+$/", $submittedValue)) {
+            $value = htmlspecialchars($submittedValue);
+            $this->userContextService->setSessionData($sessionKey, $value);
+            return $value;
         }
         return null;
     }
 
-    private function resolveSortDirection(string $key, string $sessionKey): ?string
+    private function resolveSortDirection(mixed $submittedValue, string $sessionKey): ?string
     {
         // tryFrom rather than fromRequest: null here means "nothing supplied",
         // which the caller distinguishes from an explicit direction.
-        foreach ([$_POST[$key] ?? null, $_GET[$key] ?? null] as $candidate) {
-            $direction = is_string($candidate) ? SortDirection::tryFrom(strtoupper($candidate)) : null;
-            if ($direction !== null) {
-                $this->userContextService->setSessionData($sessionKey, $direction->value);
-                return $direction->value;
-            }
+        $direction = is_string($submittedValue) ? SortDirection::tryFrom(strtoupper($submittedValue)) : null;
+        if ($direction !== null) {
+            $this->userContextService->setSessionData($sessionKey, $direction->value);
+            return $direction->value;
         }
         return null;
     }
@@ -146,16 +140,16 @@ class ZoneSortingService
     }
 
     /**
-     * Get reverse zone type filter from request/session
+     * Get reverse zone type filter from a submitted value, falling back to session.
      *
+     * @param mixed $submittedType Filter value as submitted; anything but a string is ignored
      * @return string
      */
-    public function getReverseZoneTypeFilter(): string
+    public function getReverseZoneTypeFilter(mixed $submittedType = null): string
     {
         // tryFrom, not fromRequest: an unknown request value must leave a valid
         // stored filter alone rather than resetting it to ALL.
-        $requested = $_GET['reverse_type'] ?? null;
-        $filter = is_string($requested) ? ReverseZoneFilter::tryFrom($requested) : null;
+        $filter = is_string($submittedType) ? ReverseZoneFilter::tryFrom($submittedType) : null;
 
         if ($filter !== null) {
             $this->userContextService->setSessionData(SessionKeys::REVERSE_ZONE_TYPE, $filter->value);

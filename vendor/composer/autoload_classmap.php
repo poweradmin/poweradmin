@@ -1161,6 +1161,7 @@ return array(
     'Poweradmin\\Application\\Service\\DnsDataService' => $baseDir . '/lib/Application/Service/DnsDataService.php',
     'Poweradmin\\Application\\Service\\DnssecProviderFactory' => $baseDir . '/lib/Application/Service/DnssecProviderFactory.php',
     'Poweradmin\\Application\\Service\\DnssecService' => $baseDir . '/lib/Application/Service/DnssecService.php',
+    'Poweradmin\\Application\\Service\\DynamicDnsRequestFactory' => $baseDir . '/lib/Application/Service/DynamicDnsRequestFactory.php',
     'Poweradmin\\Application\\Service\\EmailTemplateService' => $baseDir . '/lib/Application/Service/EmailTemplateService.php',
     'Poweradmin\\Application\\Service\\GroupMembershipService' => $baseDir . '/lib/Application/Service/GroupMembershipService.php',
     'Poweradmin\\Application\\Service\\GroupService' => $baseDir . '/lib/Application/Service/GroupService.php',

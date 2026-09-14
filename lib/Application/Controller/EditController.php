@@ -154,11 +154,10 @@ class EditController extends BaseController
         }
 
         [$record_sort_by, $sort_direction] = (new ZoneSortingService($this->userContextService))->getZoneSortOrder(
-            'record_sort_by',
             ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled'],
             SessionKeys::EDIT_RECORD_SORT_BY,
-            'name',
-            'sort_direction'
+            submittedSortBy: $this->request->getPostParam('record_sort_by') ?? $this->request->getQueryParam('record_sort_by'),
+            submittedDirection: $this->request->getPostParam('sort_direction') ?? $this->request->getQueryParam('sort_direction')
         );
 
         $zone_id = $this->getSafeRequestValue('id');

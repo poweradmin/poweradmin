@@ -42,8 +42,6 @@ class ZoneSortingServiceTest extends TestCase
             $_SESSION = [];
         }
         $_SESSION = [];
-        $_GET = [];
-        $_POST = [];
 
         $this->service = new ZoneSortingService(new UserContextService());
     }
@@ -51,27 +49,26 @@ class ZoneSortingServiceTest extends TestCase
     protected function tearDown(): void
     {
         $_SESSION = [];
-        $_GET = [];
-        $_POST = [];
         parent::tearDown();
     }
 
     #[Test]
     public function getZoneSortOrderReturnsDefaultsWhenNoInputOrSession(): void
     {
-        [$sortBy, $sortDirection] = $this->service->getZoneSortOrder('zone_sort_by', ['name', 'type']);
+        [$sortBy, $sortDirection] = $this->service->getZoneSortOrder(['name', 'type']);
 
         $this->assertSame('name', $sortBy);
         $this->assertSame('ASC', $sortDirection);
     }
 
     #[Test]
-    public function getZoneSortOrderPersistsGetParamsToSession(): void
+    public function getZoneSortOrderPersistsSubmittedValuesToSession(): void
     {
-        $_GET['zone_sort_by'] = 'type';
-        $_GET['zone_sort_by_direction'] = 'desc';
-
-        [$sortBy, $sortDirection] = $this->service->getZoneSortOrder('zone_sort_by', ['name', 'type']);
+        [$sortBy, $sortDirection] = $this->service->getZoneSortOrder(
+            ['name', 'type'],
+            submittedSortBy: 'type',
+            submittedDirection: 'desc'
+        );
 
         $this->assertSame('type', $sortBy);
         $this->assertSame('DESC', $sortDirection);
@@ -80,12 +77,12 @@ class ZoneSortingServiceTest extends TestCase
     }
 
     #[Test]
-    public function getZoneSortOrderFallsBackToSessionWhenNoRequestParam(): void
+    public function getZoneSortOrderFallsBackToSessionWhenNoSubmittedValue(): void
     {
         $_SESSION[SessionKeys::LIST_ZONE_SORT_BY] = 'type';
         $_SESSION[SessionKeys::LIST_ZONE_SORT_BY . '_direction'] = 'DESC';
 
-        [$sortBy, $sortDirection] = $this->service->getZoneSortOrder('zone_sort_by', ['name', 'type']);
+        [$sortBy, $sortDirection] = $this->service->getZoneSortOrder(['name', 'type']);
 
         $this->assertSame('type', $sortBy);
         $this->assertSame('DESC', $sortDirection);
@@ -94,54 +91,35 @@ class ZoneSortingServiceTest extends TestCase
     #[Test]
     public function getZoneSortOrderRejectsValueNotInAllowedList(): void
     {
-        $_GET['zone_sort_by'] = 'malicious';
-
-        [$sortBy] = $this->service->getZoneSortOrder('zone_sort_by', ['name', 'type']);
+        [$sortBy] = $this->service->getZoneSortOrder(
+            ['name', 'type'],
+            submittedSortBy: 'malicious'
+        );
 
         $this->assertSame('name', $sortBy);
     }
 
     #[Test]
-    public function getZoneSortOrderFallsThroughToPostWhenGetParamIsInvalid(): void
+    public function getZoneSortOrderIgnoresMalformedSubmittedValue(): void
     {
-        $_GET['zone_sort_by'] = '!!!invalid!!!';
-        $_GET['zone_sort_by_direction'] = 'sideways';
-        $_POST['zone_sort_by'] = 'type';
-        $_POST['zone_sort_by_direction'] = 'desc';
+        [$sortBy, $sortDirection] = $this->service->getZoneSortOrder(
+            ['name', 'type'],
+            submittedSortBy: '!!!invalid!!!',
+            submittedDirection: 'sideways'
+        );
 
-        [$sortBy, $sortDirection] = $this->service->getZoneSortOrder('zone_sort_by', ['name', 'type']);
-
-        $this->assertSame('type', $sortBy);
-        $this->assertSame('DESC', $sortDirection);
-    }
-
-    #[Test]
-    public function postSortChoiceTakesPrecedenceOverStaleGetParam(): void
-    {
-        // Regression: SearchController posts a hidden zone_sort_by field on every
-        // header click. If a `?zone_sort_by=...` was ever appended to the URL it
-        // must not mask the new POSTed value, or sort headers stop working.
-        $_GET['zone_sort_by'] = 'name';
-        $_GET['zone_sort_by_direction'] = 'ASC';
-        $_POST['zone_sort_by'] = 'type';
-        $_POST['zone_sort_by_direction'] = 'desc';
-
-        [$sortBy, $direction] = $this->service->getZoneSortOrder('zone_sort_by', ['name', 'type']);
-
-        $this->assertSame('type', $sortBy);
-        $this->assertSame('DESC', $direction);
+        $this->assertSame('name', $sortBy);
+        $this->assertSame('ASC', $sortDirection);
     }
 
     #[Test]
     public function getZoneSortOrderHonoursCustomSessionKey(): void
     {
-        $_GET['zone_sort_by'] = 'type';
-        $_GET['zone_sort_by_direction'] = 'desc';
-
         [$sortBy, $direction] = $this->service->getZoneSortOrder(
-            'zone_sort_by',
             ['name', 'type'],
-            SessionKeys::SEARCH_ZONE_SORT_BY
+            SessionKeys::SEARCH_ZONE_SORT_BY,
+            submittedSortBy: 'type',
+            submittedDirection: 'desc'
         );
 
         $this->assertSame('type', $sortBy);
@@ -162,7 +140,6 @@ class ZoneSortingServiceTest extends TestCase
         $_SESSION[SessionKeys::LIST_ZONE_SORT_BY] = 'type';
 
         [$sortBy, $direction] = $this->service->getZoneSortOrder(
-            'record_sort_by',
             ['name', 'type', 'prio'],
             SessionKeys::SEARCH_RECORD_SORT_BY
         );
@@ -178,7 +155,6 @@ class ZoneSortingServiceTest extends TestCase
         $_SESSION[SessionKeys::LIST_ZONE_SORT_BY] = 'count_records';
 
         [$sortBy] = $this->service->getZoneSortOrder(
-            'zone_sort_by',
             ['name', 'type']
         );
 
@@ -189,7 +165,6 @@ class ZoneSortingServiceTest extends TestCase
     public function getZoneSortOrderRespectsCustomDefaultSortBy(): void
     {
         [$sortBy] = $this->service->getZoneSortOrder(
-            'zone_sort_by',
             ['type', 'name'],
             SessionKeys::LIST_ZONE_SORT_BY,
             'type'
@@ -199,18 +174,16 @@ class ZoneSortingServiceTest extends TestCase
     }
 
     #[Test]
-    public function getReverseZoneTypeFilterPersistsGetParamToSession(): void
+    public function getReverseZoneTypeFilterPersistsSubmittedValueToSession(): void
     {
-        $_GET['reverse_type'] = 'ipv4';
-
-        $filter = $this->service->getReverseZoneTypeFilter();
+        $filter = $this->service->getReverseZoneTypeFilter('ipv4');
 
         $this->assertSame('ipv4', $filter);
         $this->assertSame('ipv4', $_SESSION[SessionKeys::REVERSE_ZONE_TYPE]);
     }
 
     #[Test]
-    public function getReverseZoneTypeFilterReadsFromSessionWhenNoRequestParam(): void
+    public function getReverseZoneTypeFilterReadsFromSessionWhenNoSubmittedValue(): void
     {
         $_SESSION[SessionKeys::REVERSE_ZONE_TYPE] = 'ipv6';
 
@@ -224,21 +197,18 @@ class ZoneSortingServiceTest extends TestCase
     }
 
     #[Test]
-    public function getReverseZoneTypeFilterRejectsUnknownRequestValue(): void
+    public function getReverseZoneTypeFilterRejectsUnknownSubmittedValue(): void
     {
-        $_GET['reverse_type'] = 'bogus';
-
-        $this->assertSame('all', $this->service->getReverseZoneTypeFilter());
+        $this->assertSame('all', $this->service->getReverseZoneTypeFilter('bogus'));
         $this->assertArrayNotHasKey(SessionKeys::REVERSE_ZONE_TYPE, $_SESSION);
     }
 
     #[Test]
-    public function getReverseZoneTypeFilterKeepsStoredValueWhenRequestValueIsInvalid(): void
+    public function getReverseZoneTypeFilterKeepsStoredValueWhenSubmittedValueIsInvalid(): void
     {
         $_SESSION[SessionKeys::REVERSE_ZONE_TYPE] = 'ipv6';
-        $_GET['reverse_type'] = 'bogus';
 
-        $this->assertSame('ipv6', $this->service->getReverseZoneTypeFilter());
+        $this->assertSame('ipv6', $this->service->getReverseZoneTypeFilter('bogus'));
     }
 
     #[Test]
@@ -247,5 +217,18 @@ class ZoneSortingServiceTest extends TestCase
         $_SESSION[SessionKeys::REVERSE_ZONE_TYPE] = 'bogus';
 
         $this->assertSame('all', $this->service->getReverseZoneTypeFilter());
+    }
+
+    public function testArrayValuedParametersAreIgnoredLikeBefore(): void
+    {
+        [$sortBy, $direction] = $this->service->getZoneSortOrder(
+            ['name', 'type'],
+            submittedSortBy: ['type'],
+            submittedDirection: ['DESC']
+        );
+
+        $this->assertSame('name', $sortBy);
+        $this->assertSame('ASC', $direction);
+        $this->assertSame('all', $this->service->getReverseZoneTypeFilter(['ipv4']));
     }
 }

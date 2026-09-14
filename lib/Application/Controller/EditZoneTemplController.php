@@ -124,9 +124,10 @@ class EditZoneTemplController extends BaseController
         $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $this->getCurrentUserId());
         $row_start = $this->getRowStart($iface_rowamount);
         [$record_sort_by] = (new ZoneSortingService($this->userContext))->getZoneSortOrder(
-            'record_sort_by',
             ['name', 'type', 'content', 'ttl', 'prio'],
-            SessionKeys::ZONE_TEMPL_RECORD_SORT_BY
+            SessionKeys::ZONE_TEMPL_RECORD_SORT_BY,
+            submittedSortBy: $this->request->getPostParam('record_sort_by') ?? $this->request->getQueryParam('record_sort_by'),
+            submittedDirection: $this->request->getPostParam('record_sort_by_direction') ?? $this->request->getQueryParam('record_sort_by_direction')
         );
         $record_count = ZoneTemplate::countZoneTemplRecords($this->db, $zone_templ_id);
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);

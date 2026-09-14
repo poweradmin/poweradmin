@@ -4,6 +4,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\DynamicDnsRequestFactory;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Application\Service\UserAuthenticationService;
@@ -12,7 +13,6 @@ use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsHelper;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
-use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
@@ -53,5 +53,5 @@ $updateService = new DynamicDnsUpdateService(
     new IpAddressRetriever($_SERVER)
 );
 
-$result = $updateService->processUpdate(DynamicDnsRequest::fromHttpRequest($request));
+$result = $updateService->processUpdate(DynamicDnsRequestFactory::fromHttpRequest($request));
 DynamicDnsHelper::statusExit($result, $request->query->has('verbose'));
