@@ -72,16 +72,18 @@ async function findZoneIdBySearch(page, zoneName) {
   await page.waitForLoadState('networkidle');
 
   // Search results show zone name as text in <td> and edit link in the same <tr>
-  // Verify the zone name matches before returning the ID
+  // Verify the zone name matches before returning the ID. IDN zones are shown in
+  // Unicode, so the fixture's displayName counts as a match as well.
+  const displayName = Object.values(zones).find(z => z.name === zoneName)?.displayName;
+  const wanted = [zoneName, displayName].filter(Boolean).map(n => n.toLowerCase());
   const resultRows = page.locator('table tbody tr');
   const rowCount = await resultRows.count();
 
   for (let i = 0; i < rowCount; i++) {
     const row = resultRows.nth(i);
-    const rowText = (await row.textContent()) || '';
+    const rowText = ((await row.textContent()) || '').toLowerCase();
 
-    // Check if this row contains our zone name (case-insensitive)
-    if (rowText.toLowerCase().includes(zoneName.toLowerCase())) {
+    if (wanted.some(n => rowText.includes(n))) {
       const editLink = row.locator('a[href*="/zones/"][href*="/edit"]').first();
       if (await editLink.count() > 0) {
         const href = await editLink.getAttribute('href');
