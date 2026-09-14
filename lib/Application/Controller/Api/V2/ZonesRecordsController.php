@@ -48,7 +48,6 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -63,7 +62,6 @@ class ZonesRecordsController extends PublicApiController
     private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
     private LegacyLogger $auditLogger;
-    private RecordChangeLogger $changeLogger;
     private IpAddressRetriever $ipAddressRetriever;
     private ReverseTtlResolver $reverseTtlResolver;
 
@@ -85,7 +83,6 @@ class ZonesRecordsController extends PublicApiController
         $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
 
         $this->auditLogger = new LegacyLogger($this->db);
-        $this->changeLogger = new RecordChangeLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
@@ -487,14 +484,10 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Disabled field must be 0 or 1', 400);
             }
 
-            // Validate the record using the validation service
-            $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-
             // Punycode plus the zone suffix, so @ becomes the apex and IDN labels match storage
             $name = $this->normalizeV2RecordName($name, $zoneName);
 
-            // Normalize the hostname
-            // Lowercased once here so the duplicate check and the insert agree.
+            // Normalize the hostname so the record-type permission check sees the FQDN
             $hostnameValidator = new HostnameValidator($this->getConfig());
             $normalizedName = strtolower($hostnameValidator->normalizeRecordName($name, $zoneName));
 
@@ -507,83 +500,19 @@ class ZonesRecordsController extends PublicApiController
             // Format content, with V2 API always auto-quoting TXT records
             $content = $this->formatV2RecordContent($type, $content);
 
-            // Validate the record
-            $dns_hostmaster = $this->getConfig()->get('dns', 'hostmaster');
-            $dns_ttl = $this->getConfig()->get('dns', 'ttl');
-
-            $validationResult = $validationService->validateRecord(
-                -1,
-                $zoneId,
-                $type,
-                $content,
-                $normalizedName,
-                $priority,
-                $ttl,
-                $dns_hostmaster,
-                (int)$dns_ttl
-            );
-
-            if (!$validationResult->isValid()) {
-                $errorMessage = $validationResult->getFirstError();
-                return $this->returnApiError($errorMessage, 400);
+            // Validation, the duplicate check, the serial bump, the change log and the
+            // rectify are the record manager's, as on the web.
+            $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled);
+            if (!$created->success) {
+                return $this->returnApiError($this->recordWriteErrorMessage($created, 'Failed to create record'), $created->status);
             }
+            $newRecordId = $created->recordId;
 
-            // Get validated and normalized values from validation result
-            $validatedData = $validationResult->getData();
-            $validatedContent = $validatedData['content'] ?? $content;
-            $validatedTtl = $validatedData['ttl'] ?? $ttl;
-            $validatedPriority = $validatedData['prio'] ?? $priority;
-
-            if ($this->recordRepository->recordExists($zoneId, $normalizedName, $type, $validatedContent)) {
-                return $this->returnApiError('A record with this hostname, type, and content already exists', 409);
-            }
-
-            // If validation passes, insert the record via backend provider
-            // Wrap insert + SOA update in a transaction for atomicity (SQL backend only).
-            // API backend polls the DB for the new record ID after the HTTP call;
-            // opening a transaction before that would hide the row due to MVCC snapshot isolation.
-            $useTransaction = !$this->backendProvider->isApiBackend();
-            if ($useTransaction) {
-                $this->db->beginTransaction();
-            }
-
-            $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $validatedContent, $validatedTtl, $validatedPriority, $disabled);
-
-            if ($newRecordId === null) {
-                if ($useTransaction) {
-                    $this->db->rollBack();
-                }
-                return $this->returnApiError('Failed to create record', 500);
-            }
-
-            // Update SOA serial for the zone
-            if ($type !== 'SOA') {
-                $this->updateSOASerial($zoneId);
-            }
-
-            if ($useTransaction) {
-                $this->db->commit();
-            }
-            $this->rectifyZoneAfterWrite($zoneName);
-
-            try {
-                $zoneName = $this->backendProvider->getZoneNameById($zoneId);
-                $this->changeLogger->logRecordCreate([
-                    'id' => $newRecordId,
-                    'name' => $normalizedName,
-                    'type' => $type,
-                    'content' => $validatedContent,
-                    'ttl' => $validatedTtl,
-                    'prio' => $validatedPriority,
-                    'disabled' => (bool) $disabled,
-                    'zone_name' => is_string($zoneName) ? $zoneName : null,
-                ], $zoneId);
-            } catch (\Throwable $e) {
-                $this->logger->warning('Failed to write record create log: {error}', ['error' => $e->getMessage()]);
-            }
-
-            // Fetch the newly created record
+            // Fetch the newly created record; the stored values are what the manager validated
             $newRecord = $this->recordRepository->getRecordById($newRecordId);
+            $validatedContent = (string)($newRecord['content'] ?? $content);
+            $validatedTtl = (int)($newRecord['ttl'] ?? $ttl);
+            $validatedPriority = (int)($newRecord['prio'] ?? $priority);
 
             // Create PTR record if requested and record type is A or AAAA
             $ptrCreated = false;
@@ -643,9 +572,6 @@ class ZonesRecordsController extends PublicApiController
             $message = 'Record created successfully' . $ptrMessage;
             return $this->returnApiResponse(['record' => $responseData], true, $message, 201);
         } catch (\Throwable $e) {
-            if ($this->db->inTransaction()) {
-                $this->db->rollBack();
-            }
             return $this->handleException($e, 'ZonesRecordsController::createRecord', 'Failed to create record');
         }
     }
@@ -827,8 +753,7 @@ class ZonesRecordsController extends PublicApiController
 
             $result = $this->recordManager->editRecord($recordData);
             if (!$result->success) {
-                // Backend faults keep the generic contract string; refusals carry their reason
-                return $this->returnApiError($result->status === 500 ? 'Failed to update record' : (string)$result->message, $result->status);
+                return $this->returnApiError($this->recordWriteErrorMessage($result, 'Failed to update record'), $result->status);
             }
 
             // Update SOA serial after editing the record (except for SOA records themselves)
@@ -1065,28 +990,6 @@ class ZonesRecordsController extends PublicApiController
     private function formatRecordId(mixed $id): int|string
     {
         return RecordIdHelper::normalizeId($id);
-    }
-
-    /**
-     * Insert a validated record directly into the database (API-specific method)
-     *
-     * @param int $zoneId Zone ID
-     * @param string $name Record name (already normalized)
-     * @param string $type Record type
-     * @param string $content Record content (already validated)
-     * @param int $ttl TTL value
-     * @param int $priority Priority value
-     * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
-     * @return int|string|null The new record ID, or null on failure
-     */
-    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): int|string|null
-    {
-        try {
-            return $this->backendProvider->createRecordAtomic($zoneId, $name, $type, $content, $ttl, $priority, $disabled);
-        } catch (\Throwable $e) {
-            $this->logger->error('Failed to insert record: {message}', ['message' => $e->getMessage()]);
-            return null;
-        }
     }
 
     /**

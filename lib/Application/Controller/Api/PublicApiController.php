@@ -36,6 +36,7 @@ use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
@@ -494,6 +495,19 @@ abstract class PublicApiController extends AbstractApiController
             }
         }
         return $content;
+    }
+
+    /**
+     * The API wording for a refused record write: a duplicate and a backend fault
+     * keep the contract strings, every other refusal carries the manager's reason.
+     */
+    protected function recordWriteErrorMessage(RecordWriteResult $result, string $backendFailureText): string
+    {
+        return match (true) {
+            $result->status === 409 => 'A record with this hostname, type, and content already exists',
+            $result->status === 500 => $backendFailureText,
+            default => (string)$result->message,
+        };
     }
 
     /**

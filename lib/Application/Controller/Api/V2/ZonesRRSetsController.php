@@ -48,7 +48,6 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -61,7 +60,6 @@ class ZonesRRSetsController extends PublicApiController
     private SOARecordManagerInterface $soaRecordManager;
     private ApiPermissionService $permissionService;
     private DnsBackendProvider $backendProvider;
-    private RecordChangeLogger $changeLogger;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
     private ReverseTtlResolver $reverseTtlResolver;
@@ -79,7 +77,6 @@ class ZonesRRSetsController extends PublicApiController
 
         $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
         $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
-        $this->changeLogger = new RecordChangeLogger($this->db);
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
@@ -578,6 +575,16 @@ class ZonesRRSetsController extends PublicApiController
                     return $this->returnApiError('No valid records to create', 400);
                 }
 
+                // The manager refuses a duplicate on insert; on the API backend that would
+                // land after the old set is gone, so refuse a repeated content up front.
+                $contents = array_column($validatedRecords, 'content');
+                if (count($contents) !== count(array_unique($contents))) {
+                    if ($useTransaction) {
+                        $this->db->rollBack();
+                    }
+                    return $this->returnApiError('A record with this hostname, type, and content already exists', 409);
+                }
+
                 // All validation passed - now safe to delete existing records
                 $existingRecords = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
                 foreach ($existingRecords as $record) {
@@ -589,36 +596,18 @@ class ZonesRRSetsController extends PublicApiController
                     }
                 }
 
-                // Insert validated records
+                // Insert the validated records; the manager writes the change log and the
+                // RRSet bumps the serial and rectifies once below.
                 $recordsCreated = 0;
-                $createdForLog = [];
                 foreach ($validatedRecords as $vr) {
-                    $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $vr['content'], $vr['ttl'], $vr['priority'], $vr['disabled']);
-                    if ($newRecordId === null) {
+                    $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $vr['content'], $vr['ttl'], $vr['priority'], $vr['disabled'], false);
+                    if (!$created->success) {
                         if ($useTransaction) {
                             $this->db->rollBack();
                         }
-                        return $this->returnApiError('Failed to insert record: ' . $vr['content'], 500);
+                        return $this->returnApiError($this->recordWriteErrorMessage($created, 'Failed to insert record: ' . $vr['content']), $created->status);
                     }
                     $recordsCreated++;
-                    $createdForLog[] = ['id' => $newRecordId, 'vr' => $vr];
-                }
-
-                foreach ($createdForLog as $entry) {
-                    try {
-                        $this->changeLogger->logRecordCreate([
-                            'id' => $entry['id'],
-                            'name' => $normalizedName,
-                            'type' => $type,
-                            'content' => $entry['vr']['content'],
-                            'ttl' => $entry['vr']['ttl'],
-                            'prio' => $entry['vr']['priority'],
-                            'disabled' => (bool) $entry['vr']['disabled'],
-                            'zone_name' => $zoneName,
-                        ], $zoneId);
-                    } catch (\Throwable $e) {
-                        $this->logger->warning('Failed to write RRSet record create log: {error}', ['error' => $e->getMessage()]);
-                    }
                 }
 
                 // Update SOA serial
@@ -912,27 +901,5 @@ class ZonesRRSetsController extends PublicApiController
                 ];
             }, $validRecords)
         ];
-    }
-
-    /**
-     * Insert a validated record via the DNS backend provider
-     *
-     * @param int $zoneId Zone ID
-     * @param string $name Record name (already normalized)
-     * @param string $type Record type
-     * @param string $content Record content (already validated)
-     * @param int $ttl TTL value
-     * @param int $priority Priority value
-     * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
-     * @return int|string|null Record ID if successful (int for SQL, encoded string for API mode), null on failure
-     */
-    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): int|string|null
-    {
-        try {
-            return $this->backendProvider->createRecordAtomic($zoneId, $name, $type, $content, $ttl, $priority, $disabled);
-        } catch (\Throwable $e) {
-            $this->logger->error('Failed to insert record: {message}', ['message' => $e->getMessage()]);
-            return null;
-        }
     }
 }

@@ -193,10 +193,11 @@ class RecordManager implements RecordManagerInterface
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
      * @param int $disabled Whether the record is created in disabled state (0 or 1)
+     * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
      *
      * @return RecordWriteResult Carries the new record id, or the reason it was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0): RecordWriteResult
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true): RecordWriteResult
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
@@ -248,36 +249,60 @@ class RecordManager implements RecordManagerInterface
             return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), 409, RecordWriteResult::FIELD_DUPLICATE);
         }
 
+        // On the SQL backend the row and the serial bump land together. The API
+        // backend polls for the new id, which an open transaction would hide, and a
+        // batch caller already holds its own.
+        $ownTransaction = $finalizeZone && !$this->backendProvider->isApiBackend() && !$this->db->inTransaction();
+        if ($ownTransaction) {
+            $this->db->beginTransaction();
+        }
         try {
-            // Disabled records need the disabled flag persisted atomically with the
-            // insert; the regular insert path has no disabled support.
-            $recordId = $disabled
-                ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled)
-                : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
-        } catch (RecordIdNotFoundException $e) {
-            $this->logger->error('Failed to get record ID after creation: {error}', ['error' => $e->getMessage()]);
-            return RecordWriteResult::backendFailure(_('Failed to add record to DNS backend.'));
-        }
-        if ($recordId === null) {
-            return RecordWriteResult::backendFailure(_('Failed to add record to DNS backend.'));
+            try {
+                // Disabled records need the disabled flag persisted atomically with the
+                // insert; the regular insert path has no disabled support.
+                $recordId = $disabled
+                    ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled)
+                    : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
+            } catch (RecordIdNotFoundException $e) {
+                $this->logger->error('Failed to get record ID after creation: {error}', ['error' => $e->getMessage()]);
+                $recordId = null;
+            }
+            if ($recordId === null) {
+                if ($ownTransaction) {
+                    $this->db->rollBack();
+                }
+                return RecordWriteResult::backendFailure(_('Failed to add record to DNS backend.'));
+            }
+
+            $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled): void {
+                $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+                $this->changeLogger->logRecordCreate([
+                    'id' => $recordId,
+                    'name' => $name,
+                    'type' => $type,
+                    'content' => $content,
+                    'ttl' => $validatedTtl,
+                    'prio' => $validatedPrio,
+                    'disabled' => (bool)$disabled,
+                    'zone_name' => is_string($zone_name) ? $zone_name : null,
+                ], $zone_id);
+            });
+
+            if ($finalizeZone && $type != 'SOA') {
+                $this->soaRecordManager->updateSOASerial($zone_id);
+            }
+            if ($ownTransaction) {
+                $this->db->commit();
+            }
+        } catch (\Throwable $e) {
+            if ($ownTransaction && $this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
         }
 
-        $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled): void {
-            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-            $this->changeLogger->logRecordCreate([
-                'id' => $recordId,
-                'name' => $name,
-                'type' => $type,
-                'content' => $content,
-                'ttl' => $validatedTtl,
-                'prio' => $validatedPrio,
-                'disabled' => (bool)$disabled,
-                'zone_name' => is_string($zone_name) ? $zone_name : null,
-            ], $zone_id);
-        });
-
-        if ($type != 'SOA') {
-            $this->soaRecordManager->updateSOASerial($zone_id);
+        if (!$finalizeZone) {
+            return RecordWriteResult::ok($recordId);
         }
 
         $pdnssec_use = $this->config->get('dnssec', 'enabled');

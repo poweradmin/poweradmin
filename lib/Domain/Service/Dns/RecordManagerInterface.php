@@ -51,10 +51,11 @@ interface RecordManagerInterface
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
      * @param int $disabled Whether the record is created in disabled state (0 or 1)
+     * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
      *
      * @return RecordWriteResult The new record id, or the reason the write was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0): RecordWriteResult;
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true): RecordWriteResult;
 
     /**
      * Edit a record

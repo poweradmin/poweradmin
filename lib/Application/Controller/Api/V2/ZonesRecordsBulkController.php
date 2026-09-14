@@ -65,7 +65,6 @@ class ZonesRecordsBulkController extends PublicApiController
     private ApiPermissionService $permissionService;
     private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
-    private RecordChangeLogger $changeLogger;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
     private ReverseTtlResolver $reverseTtlResolver;
@@ -86,7 +85,6 @@ class ZonesRecordsBulkController extends PublicApiController
 
         $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
         $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
-        $this->changeLogger = new RecordChangeLogger($this->db);
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
@@ -418,7 +416,7 @@ class ZonesRecordsBulkController extends PublicApiController
         // Convert name to FQDN
         $fqdn = $this->normalizeV2RecordName($name, $zoneName);
 
-        // Lowercased once here so the duplicate check and the insert agree.
+        // Normalized so the record-type permission check sees the FQDN
         $hostnameValidator = new HostnameValidator($this->getConfig());
         $normalizedName = strtolower($hostnameValidator->normalizeRecordName($fqdn, $zoneName));
 
@@ -431,56 +429,11 @@ class ZonesRecordsBulkController extends PublicApiController
         // Format content, with V2 API always auto-quoting TXT records
         $content = $this->formatV2RecordContent($type, $content);
 
-        // Validate the record (pass backendProvider so CNAME/violation checks use correct backend)
-        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-        $dns_hostmaster = $this->getConfig()->get('dns', 'hostmaster');
-        $dns_ttl = $this->getConfig()->get('dns', 'ttl');
-
-        $validationResult = $validationService->validateRecord(
-            -1,
-            $zoneId,
-            $type,
-            $content,
-            $normalizedName,
-            $priority,
-            $ttl,
-            $dns_hostmaster,
-            (int)$dns_ttl
-        );
-
-        if (!$validationResult->isValid()) {
-            throw new ApiErrorException($validationResult->getFirstError(), 400);
-        }
-
-        // Get validated values
-        $validatedData = $validationResult->getData();
-        $validatedContent = $validatedData['content'] ?? $content;
-        $validatedTtl = $validatedData['ttl'] ?? $ttl;
-        $validatedPriority = $validatedData['prio'] ?? $priority;
-
-        if ($this->recordRepository->recordExists($zoneId, $normalizedName, $type, $validatedContent)) {
-            throw new ApiErrorException('A record with this hostname, type, and content already exists', 409);
-        }
-
-        // Insert record via backend provider
-        $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $validatedContent, $validatedTtl, $validatedPriority, $disabled);
-        if ($newRecordId === null) {
-            throw new Exception('Failed to create record');
-        }
-
-        try {
-            $this->changeLogger->logRecordCreate([
-                'id' => $newRecordId,
-                'name' => $normalizedName,
-                'type' => $type,
-                'content' => $validatedContent,
-                'ttl' => $validatedTtl,
-                'prio' => $validatedPriority,
-                'disabled' => (bool) $disabled,
-                'zone_name' => $zoneName,
-            ], $zoneId);
-        } catch (\Throwable $e) {
-            $this->logger->warning('Failed to write bulk record create log: {error}', ['error' => $e->getMessage()]);
+        // Validation, the duplicate check and the change log are the record manager's;
+        // the batch bumps the serial and rectifies once at the end.
+        $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled, false);
+        if (!$created->success) {
+            throw new ApiErrorException($this->recordWriteErrorMessage($created, 'Failed to create record'), $created->status);
         }
 
         return $type;
@@ -608,27 +561,5 @@ class ZonesRecordsBulkController extends PublicApiController
         }
 
         return $recordType;
-    }
-
-    /**
-     * Insert a validated record via the DNS backend provider
-     *
-     * @param int $zoneId Zone ID
-     * @param string $name Record name (already normalized)
-     * @param string $type Record type
-     * @param string $content Record content (already validated)
-     * @param int $ttl TTL value
-     * @param int $priority Priority value
-     * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
-     * @return int|string|null Record ID if successful, null on failure
-     */
-    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): int|string|null
-    {
-        try {
-            return $this->backendProvider->createRecordAtomic($zoneId, $name, $type, $content, $ttl, $priority, $disabled);
-        } catch (\Throwable $e) {
-            $this->logger->error('Failed to insert record: {message}', ['message' => $e->getMessage()]);
-            return null;
-        }
     }
 }
