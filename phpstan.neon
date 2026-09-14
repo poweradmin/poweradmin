@@ -170,7 +170,6 @@ parameters:
         - lib/Application/Service/SqlAuthenticator.php
         - lib/Application/Controller/LoginController.php
         - lib/Application/Controller/LogoutController.php
-        - lib/Application/Controller/MfaVerifyController.php
         - lib/Application/Controller/OidcCallbackController.php
         - lib/Application/Controller/SamlCallbackController.php
         - lib/Application/Controller/ForgotPasswordController.php
@@ -228,10 +227,6 @@ parameters:
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
-        # Not yet migrated. Delete each entry as its file is done.
-        - lib/Domain/Model/RecordLog.php
-        - lib/Domain/Service/BatchReverseRecordCreator.php
-        - lib/Domain/Service/ReverseRecordCreator.php
   disallowedStaticCalls:
     # Services take ConfigurationInterface; the singleton is for bootstrap.
     -
