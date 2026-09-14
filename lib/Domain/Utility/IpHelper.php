@@ -358,6 +358,21 @@ class IpHelper
     }
 
     /**
+     * Shorten a zone name for display, collapsing ip6.arpa reverse zones to IPv6 notation
+     *
+     * @param string $name The zone or record name
+     * @return string Shortened IPv6 form for ip6.arpa names, otherwise the name unchanged
+     */
+    public static function displayZoneName(string $name): string
+    {
+        if (!str_ends_with($name, '.ip6.arpa')) {
+            return $name;
+        }
+
+        return self::shortenIPv6ReverseZone($name) ?? $name;
+    }
+
+    /**
      * Extract the first valid IP address from a PowerDNS master field value
      *
      * PowerDNS master field can contain various formats:

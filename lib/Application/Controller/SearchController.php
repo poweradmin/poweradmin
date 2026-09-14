@@ -444,11 +444,8 @@ class SearchController extends BaseController
             }
 
             // Shorten IPv6 reverse zone names (PTR records) for display
-            if (isset($record['name']) && str_ends_with($record['name'], '.ip6.arpa')) {
-                $shortened = IpHelper::shortenIPv6ReverseZone($record['name']);
-                if ($shortened !== null) {
-                    $record['display_name'] = $shortened;
-                }
+            if (isset($record['name'])) {
+                $record['display_name'] = IpHelper::displayZoneName($record['name']);
             }
         }
         return $records;

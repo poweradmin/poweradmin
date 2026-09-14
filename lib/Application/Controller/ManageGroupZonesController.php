@@ -266,7 +266,7 @@ class ManageGroupZonesController extends BaseController
                 return 'ID:' . $id;
             }
 
-            return str_ends_with($name, '.ip6.arpa') ? (IpHelper::shortenIPv6ReverseZone($name) ?? $name) : $name;
+            return IpHelper::displayZoneName($name);
         }, array_values($zoneIds));
     }
 
@@ -299,10 +299,7 @@ class ManageGroupZonesController extends BaseController
                     if ($name === '') {
                         continue;
                     }
-                    if (str_ends_with($name, '.ip6.arpa')) {
-                        $shortened = IpHelper::shortenIPv6ReverseZone($name);
-                        $name = $shortened ?? $name;
-                    }
+                    $name = IpHelper::displayZoneName($name);
                     $ownedZones[] = [
                         'id' => (int)($zoneInfo['id'] ?? 0),
                         'name' => $name,
@@ -319,10 +316,7 @@ class ManageGroupZonesController extends BaseController
 
             // Shorten IPv6 reverse zones for display
             foreach ($availableZones as &$zone) {
-                if (str_ends_with($zone['name'], '.ip6.arpa')) {
-                    $shortened = IpHelper::shortenIPv6ReverseZone($zone['name']);
-                    $zone['name'] = $shortened ?? $zone['name'];
-                }
+                $zone['name'] = IpHelper::displayZoneName($zone['name']);
             }
             unset($zone);
 

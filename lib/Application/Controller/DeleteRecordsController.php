@@ -220,11 +220,8 @@ class DeleteRecordsController extends BaseController
                 }
 
                 // Shorten IPv6 reverse zone names (PTR records) for display
-                if (isset($record_info['name']) && str_ends_with($record_info['name'], '.ip6.arpa')) {
-                    $shortened = IpHelper::shortenIPv6ReverseZone($record_info['name']);
-                    if ($shortened !== null) {
-                        $record_info['display_name'] = $shortened;
-                    }
+                if (isset($record_info['name'])) {
+                    $record_info['display_name'] = IpHelper::displayZoneName($record_info['name']);
                 }
 
                 $records[] = $record_info;
