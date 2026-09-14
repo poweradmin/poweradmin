@@ -30,17 +30,13 @@ use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use RuntimeException;
 
 class MfaSetupController extends BaseController
 {
     private MfaService $mfaService;
     private UserContextService $userContextService;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
     private Request $request;
 
     public function __construct(array $request)
@@ -53,8 +49,6 @@ class MfaSetupController extends BaseController
         $mailService = new MailService($this->config);
         $this->mfaService = new MfaService($userMfaRepository, $this->config, $mailService, null, $this->createUserTimezoneService());
         $this->userContextService = new UserContextService();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -191,11 +185,7 @@ class MfaSetupController extends BaseController
             // Enable MFA
             $this->mfaService->enableMfa($userId);
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:mfa_enable mfa_type:app',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername()
-            ));
+            $this->createAuditService()->logMfaEnable('app');
 
             // Generate recovery codes if they don't exist
             $recoveryCodes = $userMfa->getRecoveryCodesAsArray();
@@ -309,11 +299,7 @@ class MfaSetupController extends BaseController
             // Enable MFA
             $this->mfaService->enableMfa($userId, UserMfa::TYPE_EMAIL);
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:mfa_enable mfa_type:email',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername()
-            ));
+            $this->createAuditService()->logMfaEnable('email');
 
             // Generate recovery codes
             $recoveryCodes = $this->mfaService->regenerateRecoveryCodes($userId);
@@ -349,11 +335,7 @@ class MfaSetupController extends BaseController
         // Disable MFA
         $this->mfaService->disableMfa($userId);
 
-        $this->auditLogger->logInfo(sprintf(
-            'client_ip:%s user:%s operation:mfa_disable',
-            $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername()
-        ));
+        $this->createAuditService()->logMfaDisable();
 
         $this->addSystemMessage('success', _('MFA has been disabled.'));
         $this->displayMfaSetup();
@@ -378,11 +360,7 @@ class MfaSetupController extends BaseController
         // Generate new recovery codes
         $recoveryCodes = $this->mfaService->regenerateRecoveryCodes($userId);
 
-        $this->auditLogger->logInfo(sprintf(
-            'client_ip:%s user:%s operation:mfa_regenerate_codes',
-            $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername()
-        ));
+        $this->createAuditService()->logMfaRecoveryCodesRegenerate();
 
         $this->addSystemMessage('success', _('Recovery codes have been regenerated. Please save them in a safe place.'));
         $this->displayRecoveryCodes($recoveryCodes);

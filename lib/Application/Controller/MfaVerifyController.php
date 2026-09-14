@@ -32,7 +32,6 @@ use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use RuntimeException;
@@ -42,7 +41,6 @@ class MfaVerifyController extends BaseController
     private MfaService $mfaService;
     private CsrfTokenService $csrfTokenService;
     private UserContextService $userContextService;
-    private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
     private LoginAttemptService $loginAttemptService;
     private Request $request;
@@ -59,7 +57,6 @@ class MfaVerifyController extends BaseController
 
         $this->csrfTokenService = new CsrfTokenService();
         $this->userContextService = new UserContextService();
-        $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->loginAttemptService = new LoginAttemptService($this->db, $this->config);
     }
@@ -157,12 +154,7 @@ class MfaVerifyController extends BaseController
             if (!$recovered) {
                 $this->logger->warning('[MfaVerifyController] Account locked, refusing MFA attempt for user ID: {user_id}', ['user_id' => $userId]);
                 // Audited like any wrong code, but not counted, so a bot cannot hold the window open
-                $this->auditLogger->logWarn(sprintf(
-                    'client_ip:%s user:%s operation:mfa_failed mfa_type:%s',
-                    $this->ipAddressRetriever->getClientIp(),
-                    $username !== '' ? $username : 'unknown',
-                    $this->mfaService->getMfaType($userId) ?? 'unknown'
-                ));
+                $this->createAuditService()->logMfaFailed($this->mfaService->getMfaType($userId) ?? 'unknown');
                 $this->displayMfaForm(_('Too many failed attempts. Please try again later.'), 'danger');
                 return;
             }
@@ -195,12 +187,7 @@ class MfaVerifyController extends BaseController
         } else {
             $this->logger->warning('[MfaVerifyController] Verification failed for user ID: {user_id}', ['user_id' => $userId]);
             // Structured audit entry so fail2ban can react to wrong-code brute force.
-            $this->auditLogger->logWarn(sprintf(
-                'client_ip:%s user:%s operation:mfa_failed mfa_type:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername() ?? $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown',
-                $userMfa->getType()
-            ));
+            $this->createAuditService()->logMfaFailed($userMfa->getType());
         }
 
         if ($isValid) {
@@ -279,12 +266,7 @@ class MfaVerifyController extends BaseController
             // Use the centralized session manager to mark MFA as verified
             MfaSessionManager::setMfaVerified();
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:mfa_verify mfa_type:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername() ?? $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown',
-                $this->mfaService->getMfaType($userId) ?? 'unknown'
-            ));
+            $this->createAuditService()->logMfaVerify($this->mfaService->getMfaType($userId) ?? 'unknown');
 
             // Populate LDAP authentication cache for LDAP users (if auth_used is ldap)
             // This ensures LDAP+MFA users benefit from session caching

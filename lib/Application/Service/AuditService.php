@@ -163,6 +163,83 @@ class AuditService
         $this->logger->logInfo($this->anonymousLine('username_recovery', ['email' => $email]));
     }
 
+    // Sign-in
+
+    public function logMfaEnable(string $mfaType): void
+    {
+        $this->logger->logInfo($this->line('mfa_enable', ['mfa_type' => $mfaType]));
+    }
+
+    public function logMfaDisable(): void
+    {
+        $this->logger->logInfo($this->line('mfa_disable'));
+    }
+
+    public function logMfaRecoveryCodesRegenerate(): void
+    {
+        $this->logger->logInfo($this->line('mfa_regenerate_codes'));
+    }
+
+    public function logMfaVerify(string $mfaType): void
+    {
+        $this->logger->logInfo($this->line('mfa_verify', ['mfa_type' => $mfaType]));
+    }
+
+    public function logMfaFailed(string $mfaType): void
+    {
+        $this->logger->logWarn($this->line('mfa_failed', ['mfa_type' => $mfaType]));
+    }
+
+    /**
+     * An identity-provider handshake error. Logged as login_error, not
+     * login_failed, so it does not feed fail2ban brute-force counters.
+     */
+    public function logSsoLoginError(string $authMethod, string $error): void
+    {
+        $this->logger->logWarn($this->anonymousLine('login_error', ['auth_method' => $authMethod, 'error' => $error]));
+    }
+
+    public function logSsoLoginSuccess(string $authMethod): void
+    {
+        $this->logger->logInfo($this->line($authMethod . '_login_success'));
+    }
+
+    public function logSamlLogout(): void
+    {
+        $this->logger->logInfo($this->line('saml_logout'));
+    }
+
+    // API keys
+
+    public function logApiKeyCreate(int $keyId, string $keyName): void
+    {
+        $this->logger->logApiInfo($this->line('api_key_create', ['key_id' => $keyId, 'key_name' => $keyName]));
+    }
+
+    public function logApiKeyEdit(int $keyId, string $keyName): void
+    {
+        $this->logger->logApiInfo($this->line('api_key_edit', ['key_id' => $keyId, 'key_name' => $keyName]));
+    }
+
+    public function logApiKeyDelete(int $keyId, string $keyName): void
+    {
+        $this->logger->logApiInfo($this->line('api_key_delete', ['key_id' => $keyId, 'key_name' => $keyName]));
+    }
+
+    public function logApiKeyRegenerate(int $keyId, string $keyName): void
+    {
+        $this->logger->logApiInfo($this->line('api_key_regenerate', ['key_id' => $keyId, 'key_name' => $keyName]));
+    }
+
+    public function logApiKeyToggle(int $keyId, string $keyName, bool $disabled): void
+    {
+        $this->logger->logApiInfo($this->line('api_key_toggle', [
+            'key_id' => $keyId,
+            'key_name' => $keyName,
+            'status' => $disabled ? 'disabled' : 'enabled',
+        ]));
+    }
+
     // Permission templates
 
     public function logPermTemplateAdd(string $name): void

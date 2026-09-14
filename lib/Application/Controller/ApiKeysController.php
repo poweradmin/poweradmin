@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,9 +29,7 @@ use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -44,8 +42,6 @@ class ApiKeysController extends BaseController
     private ApiKeyService $apiKeyService;
     private ApiKeyRepositoryInterface $apiKeyRepository;
     private ZoneRepositoryInterface $zoneRepository;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
 
     /**
      * Matched route name, captured before setCurrentPage() overwrites the 'page' key.
@@ -72,8 +68,6 @@ class ApiKeysController extends BaseController
             $this->messageService
         );
         $this->zoneRepository = $this->createZoneRepository();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     /**
@@ -200,13 +194,7 @@ class ApiKeysController extends BaseController
             );
 
             if ($apiKey !== null) {
-                $this->auditLogger->logApiInfo(sprintf(
-                    'client_ip:%s user:%s operation:api_key_create key_id:%d key_name:%s',
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
-                    $apiKey->getId(),
-                    $apiKey->getName()
-                ));
+                $this->createAuditService()->logApiKeyCreate((int)$apiKey->getId(), $apiKey->getName());
 
                 // Show confirmation with the secret key - user needs to save it
                 $this->render('api_key_created.html', [
@@ -279,13 +267,7 @@ class ApiKeysController extends BaseController
             );
 
             if ($apiKey !== null) {
-                $this->auditLogger->logApiInfo(sprintf(
-                    'client_ip:%s user:%s operation:api_key_edit key_id:%d key_name:%s',
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
-                    $id,
-                    $apiKey->getName()
-                ));
+                $this->createAuditService()->logApiKeyEdit($id, $apiKey->getName());
 
                 $this->messageService->addMessage('api_keys', 'success', _('API key updated successfully.'));
                 $this->redirect('/settings/api-keys');
@@ -324,13 +306,7 @@ class ApiKeysController extends BaseController
             $success = $this->apiKeyService->deleteApiKey($id);
 
             if ($success) {
-                $this->auditLogger->logApiInfo(sprintf(
-                    'client_ip:%s user:%s operation:api_key_delete key_id:%d key_name:%s',
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
-                    $id,
-                    $keyName
-                ));
+                $this->createAuditService()->logApiKeyDelete($id, $keyName);
 
                 $this->messageService->addMessage('api_keys', 'success', _('API key deleted successfully.'));
             }
@@ -368,13 +344,7 @@ class ApiKeysController extends BaseController
             $apiKey = $this->apiKeyService->regenerateSecretKey($id);
 
             if ($apiKey !== null) {
-                $this->auditLogger->logApiInfo(sprintf(
-                    'client_ip:%s user:%s operation:api_key_regenerate key_id:%d key_name:%s',
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
-                    $id,
-                    $apiKey->getName()
-                ));
+                $this->createAuditService()->logApiKeyRegenerate($id, $apiKey->getName());
 
                 // Show confirmation with the new secret key
                 $this->render('api_key_regenerated.html', [
@@ -414,16 +384,7 @@ class ApiKeysController extends BaseController
         $apiKey = $this->apiKeyService->toggleApiKey($id, $disable);
 
         if ($apiKey !== null) {
-            $status = $disable ? 'disabled' : 'enabled';
-
-            $this->auditLogger->logApiInfo(sprintf(
-                'client_ip:%s user:%s operation:api_key_toggle key_id:%d key_name:%s status:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getUserContextService()->getLoggedInUsername(),
-                $id,
-                $apiKey->getName(),
-                $status
-            ));
+            $this->createAuditService()->logApiKeyToggle($id, $apiKey->getName(), $disable);
 
             $translatedStatus = $disable ? _('disabled') : _('enabled');
             $this->messageService->addMessage('api_keys', 'success', sprintf(_('API key %s successfully.'), $translatedStatus));

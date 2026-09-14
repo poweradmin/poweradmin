@@ -149,6 +149,16 @@ class AuditServiceTest extends TestCase
         $this->assertSame('client_ip:192.0.2.10 operation:password_reset user_id:12', $this->lines[1][1]);
     }
 
+    public function testApiKeyEventsGoToTheApiLog(): void
+    {
+        $service = $this->makeService();
+        $service->logApiKeyToggle(4, 'ci', true);
+        $service->logSsoLoginError('oidc', 'access_denied');
+
+        $this->assertSame(['logApiInfo', 'client_ip:192.0.2.10 user:alice operation:api_key_toggle key_id:4 key_name:ci status:disabled', null], $this->lines[0]);
+        $this->assertSame(['logWarn', 'client_ip:192.0.2.10 operation:login_error auth_method:oidc error:access_denied', null], $this->lines[1]);
+    }
+
     public function testActorFallsBackToUnknownWithoutASession(): void
     {
         $logger = $this->createMock(LegacyLogger::class);
