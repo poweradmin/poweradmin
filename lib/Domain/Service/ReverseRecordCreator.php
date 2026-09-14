@@ -171,7 +171,7 @@ class ReverseRecordCreator
             foreach ($records as $r) {
                 if ($r['name'] === $contentRev && ($r['content'] === $name || str_starts_with($r['content'], "$name."))) {
                     $recordId = $r['id'] ?? 0;
-                    if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)) {
+                    if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)->success) {
                         $this->recordCommentService?->deleteCommentByRecordId($recordId);
                         if ($this->config->get('dnssec', 'enabled')) {
                             $zone_name = $this->domainRepository->getDomainNameById($zoneRevId);
@@ -201,7 +201,7 @@ class ReverseRecordCreator
             $recordId = (int)$result['id'];
             $domainId = $result['domain_id'];
 
-            if ($this->recordManager->deleteRecord($recordId)) {
+            if ($this->recordManager->deleteRecord($recordId)->success) {
                 $this->recordCommentService?->deleteCommentByRecordId($recordId);
 
                 $this->soaRecordManager->updateSOASerial($domainId);
@@ -285,7 +285,7 @@ class ReverseRecordCreator
                 if ($r['type'] === $recordType && $r['content'] === $ipAddress && ($r['name'] === $hostname || str_starts_with($r['name'], "$hostname."))) {
                     $recordId = $r['id'] ?? 0;
                     $domainId = $r['domain_id'] ?? 0;
-                    if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)) {
+                    if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)->success) {
                         $this->recordCommentService?->deleteCommentByRecordId($recordId);
                         if ($this->config->get('dnssec', 'enabled') && !empty($domainId)) {
                             $zone_name = $this->domainRepository->getDomainNameById($domainId);
@@ -315,7 +315,7 @@ class ReverseRecordCreator
             $recordId = (int)$result['id'];
             $domainId = $result['domain_id'];
 
-            if ($this->recordManager->deleteRecord($recordId)) {
+            if ($this->recordManager->deleteRecord($recordId)->success) {
                 $this->recordCommentService?->deleteCommentByRecordId($recordId);
 
                 $this->soaRecordManager->updateSOASerial($domainId);

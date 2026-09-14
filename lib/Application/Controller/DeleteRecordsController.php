@@ -147,7 +147,8 @@ class DeleteRecordsController extends BaseController
                         $hasPtrRecord = true;
                     }
 
-                    if ($recordManager->deleteRecord($record_id)) {
+                    $deleted = $recordManager->deleteRecord($record_id);
+                    if ($deleted->success) {
                         $deleted_count++;
                         $affected_zones[$zid] = true;
 
@@ -193,6 +194,8 @@ class DeleteRecordsController extends BaseController
                         if (!$recordRepository->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
                             $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                         }
+                    } else {
+                        $this->addSystemMessage('error', (string)$deleted->message);
                     }
                 }
             }

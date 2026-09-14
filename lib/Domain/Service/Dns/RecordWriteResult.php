@@ -44,7 +44,8 @@ final readonly class RecordWriteResult
     ) {
     }
 
-    public static function created(int|string $recordId): self
+    /** @param int|string|null $recordId The new id on create; edits and deletes carry none */
+    public static function ok(int|string|null $recordId = null): self
     {
         return new self(true, null, 200, null, $recordId);
     }
@@ -54,7 +55,7 @@ final readonly class RecordWriteResult
      */
     public static function failure(string $message, int $status = 400, ?string $field = null): self
     {
-        return new self(false, $message, $status, $field ?? self::fieldFromMessage($message), null);
+        return new self(false, $message, $status, $field ?? self::fieldForMessage($message), null);
     }
 
     public static function forbidden(string $message): self
@@ -62,11 +63,21 @@ final readonly class RecordWriteResult
         return new self(false, $message, 403, null, null);
     }
 
+    public static function notFound(string $message): self
+    {
+        return new self(false, $message, 404, null, null);
+    }
+
+    public static function backendFailure(string $message): self
+    {
+        return new self(false, $message, 500, null, null);
+    }
+
     /**
      * Validators report a message, not a field; this keeps the one heuristic the
      * forms used to carry each, until ValidationResult names the field itself.
      */
-    private static function fieldFromMessage(string $message): string
+    public static function fieldForMessage(string $message): string
     {
         $lower = strtolower($message);
 

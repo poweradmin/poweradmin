@@ -876,7 +876,8 @@ class EditController extends BaseController
                     }
 
                     $edit_record = $this->dnsRecordManager->editRecord($record);
-                    if (false === $edit_record) {
+                    if (!$edit_record->success) {
+                        $this->addSystemMessage('error', (string)$edit_record->message);
                         $error = true;
                     } else {
                         $log->logAfter($record['rid'], $record);

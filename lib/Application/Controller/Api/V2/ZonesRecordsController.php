@@ -825,31 +825,10 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Disabled field must be 0 or 1', 400);
             }
 
-            // Pre-validate here so a rejected record returns 400 with the specific
-            // reason. editRecord() otherwise swallows the validation message and the
-            // caller can only report a generic 500.
-            $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-            $normalizedEditName = $hostnameValidator->normalizeRecordName($recordData['name'], (string)$zone['name']);
-            $editValidation = $validationService->validateRecord(
-                $recordId,
-                $zoneId,
-                $recordData['type'],
-                $recordData['content'],
-                $normalizedEditName,
-                $recordData['prio'],
-                $recordData['ttl'],
-                $this->getConfig()->get('dns', 'hostmaster'),
-                (int)$this->getConfig()->get('dns', 'ttl')
-            );
-            if (!$editValidation->isValid()) {
-                return $this->returnApiError($editValidation->getFirstError(), 400);
-            }
-
-            // Use RecordManager to edit the record
-            $success = $this->recordManager->editRecord($recordData);
-
-            if (!$success) {
-                return $this->returnApiError('Failed to update record', 500);
+            $result = $this->recordManager->editRecord($recordData);
+            if (!$result->success) {
+                // Backend faults keep the generic contract string; refusals carry their reason
+                return $this->returnApiError($result->status === 500 ? 'Failed to update record' : (string)$result->message, $result->status);
             }
 
             // Update SOA serial after editing the record (except for SOA records themselves)
@@ -1042,11 +1021,10 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('You do not have permission to delete this record type', 403);
             }
 
-            // Use RecordManager to delete the record
-            $success = $this->recordManager->deleteRecord($recordId);
-
-            if (!$success) {
-                return $this->returnApiError('Failed to delete record', 500);
+            $result = $this->recordManager->deleteRecord($recordId);
+            if (!$result->success) {
+                // Backend faults keep the generic contract string; refusals carry their reason
+                return $this->returnApiError($result->status === 500 ? 'Failed to delete record' : (string)$result->message, $result->status);
             }
 
             // Delete comment for this specific record (per-record comment by record_id)

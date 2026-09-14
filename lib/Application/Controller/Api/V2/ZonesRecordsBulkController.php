@@ -547,28 +547,13 @@ class ZonesRecordsBulkController extends PublicApiController
             'disabled' => $disabled
         ];
 
-        // Pre-validate so a rejected record reports the specific reason as 400.
-        // editRecord() otherwise swallows the validation message, leaving only a 500.
-        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-        $normalizedEditName = $hostnameValidator->normalizeRecordName($recordData['name'], $zoneName);
-        $editValidation = $validationService->validateRecord(
-            $recordId,
-            $zoneId,
-            $recordData['type'],
-            $recordData['content'],
-            $normalizedEditName,
-            $recordData['prio'],
-            $recordData['ttl'],
-            $this->getConfig()->get('dns', 'hostmaster'),
-            (int)$this->getConfig()->get('dns', 'ttl')
-        );
-        if (!$editValidation->isValid()) {
-            throw new ApiErrorException($editValidation->getFirstError(), 400);
-        }
-
-        // Use RecordManager to edit the record
-        if (!$this->recordManager->editRecord($recordData)) {
-            throw new Exception('Failed to update record');
+        $result = $this->recordManager->editRecord($recordData);
+        if (!$result->success) {
+            // Backend faults keep the generic contract string; refusals carry their reason
+            if ($result->status === 500) {
+                throw new Exception('Failed to update record');
+            }
+            throw new ApiErrorException((string)$result->message, $result->status);
         }
 
         return $recordData['type'];
@@ -604,9 +589,13 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException('You do not have permission to delete this record type', 403);
         }
 
-        // Use RecordManager to delete the record
-        if (!$this->recordManager->deleteRecord($recordId)) {
-            throw new Exception('Failed to delete record');
+        $result = $this->recordManager->deleteRecord($recordId);
+        if (!$result->success) {
+            // Backend faults keep the generic contract string; refusals carry their reason
+            if ($result->status === 500) {
+                throw new Exception('Failed to delete record');
+            }
+            throw new ApiErrorException((string)$result->message, $result->status);
         }
 
         // Clean up per-record comment

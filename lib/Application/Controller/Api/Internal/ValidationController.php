@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller\Api\Internal;
 use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
@@ -147,46 +148,8 @@ class ValidationController extends InternalApiController
             return $this->returnJsonResponse([
                 'valid' => false,
                 'errors' => $result->getErrors(),
-                'field' => $this->determineFieldWithError($result->getFirstError())
+                'field' => RecordWriteResult::fieldForMessage($result->getFirstError())
             ]);
         }
-    }
-
-    /**
-     * Determine which field has an error based on the error message
-     *
-     * @param string $errorMessage The error message
-     * @return string The name of the field with an error
-     */
-    private function determineFieldWithError(string $errorMessage): string
-    {
-        $lowerError = strtolower($errorMessage);
-
-        // Check for specific field mentions in the error message
-        if (strpos($lowerError, 'name') !== false && strpos($lowerError, 'invalid') !== false) {
-            return 'name';
-        } elseif (
-            strpos($lowerError, 'content') !== false ||
-                 strpos($lowerError, 'value') !== false ||
-                 strpos($lowerError, 'address') !== false ||
-                 strpos($lowerError, 'hostname') !== false
-        ) {
-            return 'content';
-        } elseif (strpos($lowerError, 'ttl') !== false) {
-            return 'ttl';
-        } elseif (strpos($lowerError, 'prio') !== false || strpos($lowerError, 'priority') !== false) {
-            return 'prio';
-        } elseif (strpos($lowerError, 'already exists') !== false) {
-            return 'name-content-duplicate';
-        } elseif (strpos($lowerError, 'multiple cname') !== false || strpos($lowerError, 'dns violation') !== false) {
-            return 'dns-violation';
-        } elseif (strpos($lowerError, 'conflicts with') !== false) {
-            return 'record-conflict';
-        } elseif (strpos($lowerError, 'cname record cannot coexist') !== false) {
-            return 'cname-conflict';
-        }
-
-        // Default to content field as that's the most common error source
-        return 'content';
     }
 }

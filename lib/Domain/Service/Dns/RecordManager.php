@@ -256,10 +256,10 @@ class RecordManager implements RecordManagerInterface
                 : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
         } catch (RecordIdNotFoundException $e) {
             $this->logger->error('Failed to get record ID after creation: {error}', ['error' => $e->getMessage()]);
-            return RecordWriteResult::failure(_('Failed to add record to DNS backend.'), 500);
+            return RecordWriteResult::backendFailure(_('Failed to add record to DNS backend.'));
         }
         if ($recordId === null) {
-            return RecordWriteResult::failure(_('Failed to add record to DNS backend.'), 500);
+            return RecordWriteResult::backendFailure(_('Failed to add record to DNS backend.'));
         }
 
         $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled): void {
@@ -293,7 +293,7 @@ class RecordManager implements RecordManagerInterface
             }
         }
 
-        return RecordWriteResult::created($recordId);
+        return RecordWriteResult::ok($recordId);
     }
 
     /**
@@ -319,10 +319,8 @@ class RecordManager implements RecordManagerInterface
      * This function validates it if correct it inserts it into the database.
      *
      * @param array $record Record structure to update
-     *
-     * @return boolean true if successful
      */
-    public function editRecord(array $record): bool
+    public function editRecord(array $record): RecordWriteResult
     {
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
         $perm_edit = Permission::getEditPermission($this->db);
@@ -332,8 +330,7 @@ class RecordManager implements RecordManagerInterface
         $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
         $recordDetails = $recordRepository->getRecordDetailsFromRecordId($record['rid']);
         if (empty($recordDetails)) {
-            $this->messageService->addSystemError(_("Record not found."));
-            return false;
+            return RecordWriteResult::notFound(_("Record not found."));
         }
         $record['zid'] = (int)$recordDetails['zid'];
 
@@ -354,9 +351,8 @@ class RecordManager implements RecordManagerInterface
             // Name the type that actually triggered the refusal: reporting the posted
             // type would call a LUA-to-A retype an SOA denial.
             $refusedType = $storedIsRestricted ? $recordDetails['type'] : $record['type'];
-            $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($refusedType, 'edit'));
 
-            return false;
+            return RecordWriteResult::forbidden(Permission::restrictedRecordTypeMessage($refusedType, 'edit'));
         }
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
@@ -365,93 +361,89 @@ class RecordManager implements RecordManagerInterface
         $dns_ttl = $this->config->get('dns', 'ttl');
 
         if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
-            $this->messageService->addSystemError(_("You do not have permission to edit this record."));
-        } else {
-            // Now validate the input with normalized name using the validation service
-            $validationResult = $this->validationService->validateRecord(
-                $record['rid'],
-                $record['zid'],
-                $record['type'],
-                $record['content'],
-                $record['name'],
-                (int)$record['prio'],
-                (int)$record['ttl'],
-                $dns_hostmaster,
-                (int)$dns_ttl
-            );
-            if ($validationResult->isValid()) {
-                // Extract validated values
-                $validatedData = $validationResult->getData();
-                $content = $validatedData['content'];
-                $name = strtolower($validatedData['name']); // powerdns only searches for lower case records
-                $validatedTtl = $validatedData['ttl'];
-                $validatedPrio = $validatedData['prio'];
-
-                $submitted = [
-                    'name' => $name,
-                    'type' => $record['type'],
-                    'content' => $content,
-                    'ttl' => $validatedTtl,
-                    'prio' => $validatedPrio,
-                    'disabled' => $record['disabled'] ?? 0,
-                ];
-                // On the API backend the write itself makes PowerDNS bump the serial through
-                // SOA-EDIT-API, so an opted-out install must not send an identical replacement
-                if (
-                    !$this->config->get('dns', 'bump_serial_on_unchanged_save', true)
-                    && !self::recordFieldsDiffer($recordDetails, $submitted)
-                ) {
-                    return true;
-                }
-
-                if (
-                    !$this->backendProvider->editRecord(
-                        $record['rid'],
-                        $name,
-                        $record['type'],
-                        $content,
-                        $validatedTtl,
-                        $validatedPrio,
-                        $record['disabled']
-                    )
-                ) {
-                    $this->messageService->addSystemError(_('Failed to update record in DNS backend.'));
-                    return false;
-                }
-
-                $afterRecord = [
-                    'id' => $record['rid'],
-                    'name' => $name,
-                    'type' => $record['type'],
-                    'content' => $content,
-                    'ttl' => $validatedTtl,
-                    'prio' => $validatedPrio,
-                    'disabled' => $record['disabled'] ?? false,
-                    'zone_name' => is_string($zone) ? $zone : null,
-                ];
-                $beforeForLog = $recordDetails;
-                $beforeForLog['id'] = $record['rid'];
-                $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
-                $this->captureChange(function () use ($beforeForLog, $afterRecord, $record): void {
-                    $this->changeLogger->logRecordEdit($beforeForLog, $afterRecord, $record['zid']);
-                });
-
-                return true;
-            } else {
-                $this->messageService->addSystemError($validationResult->getFirstError());
-            }
+            return RecordWriteResult::forbidden(_("You do not have permission to edit this record."));
         }
-        return false;
+
+        // Now validate the input with normalized name using the validation service
+        $validationResult = $this->validationService->validateRecord(
+            $record['rid'],
+            $record['zid'],
+            $record['type'],
+            $record['content'],
+            $record['name'],
+            (int)$record['prio'],
+            (int)$record['ttl'],
+            $dns_hostmaster,
+            (int)$dns_ttl
+        );
+        if (!$validationResult->isValid()) {
+            return RecordWriteResult::failure($validationResult->getFirstError());
+        }
+
+        // Extract validated values
+        $validatedData = $validationResult->getData();
+        $content = $validatedData['content'];
+        $name = strtolower($validatedData['name']); // powerdns only searches for lower case records
+        $validatedTtl = $validatedData['ttl'];
+        $validatedPrio = $validatedData['prio'];
+
+        $submitted = [
+            'name' => $name,
+            'type' => $record['type'],
+            'content' => $content,
+            'ttl' => $validatedTtl,
+            'prio' => $validatedPrio,
+            'disabled' => $record['disabled'] ?? 0,
+        ];
+        // On the API backend the write itself makes PowerDNS bump the serial through
+        // SOA-EDIT-API, so an opted-out install must not send an identical replacement
+        if (
+            !$this->config->get('dns', 'bump_serial_on_unchanged_save', true)
+            && !self::recordFieldsDiffer($recordDetails, $submitted)
+        ) {
+            return RecordWriteResult::ok();
+        }
+
+        if (
+            !$this->backendProvider->editRecord(
+                $record['rid'],
+                $name,
+                $record['type'],
+                $content,
+                $validatedTtl,
+                $validatedPrio,
+                $record['disabled']
+            )
+        ) {
+            return RecordWriteResult::backendFailure(_('Failed to update record in DNS backend.'));
+        }
+
+        $afterRecord = [
+            'id' => $record['rid'],
+            'name' => $name,
+            'type' => $record['type'],
+            'content' => $content,
+            'ttl' => $validatedTtl,
+            'prio' => $validatedPrio,
+            'disabled' => $record['disabled'] ?? false,
+            'zone_name' => is_string($zone) ? $zone : null,
+        ];
+        $beforeForLog = $recordDetails;
+        $beforeForLog['id'] = $record['rid'];
+        $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
+        $this->captureChange(function () use ($beforeForLog, $afterRecord, $record): void {
+            $this->changeLogger->logRecordEdit($beforeForLog, $afterRecord, $record['zid']);
+        });
+
+        return RecordWriteResult::ok();
     }
 
     /**
      * Delete a record by a given record id
      *
      * @param int|string $rid Record ID
-     *
-     * @return boolean true on success
      */
-    public function deleteRecord(int|string $rid): bool
+    public function deleteRecord(int|string $rid): RecordWriteResult
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
@@ -459,42 +451,38 @@ class RecordManager implements RecordManagerInterface
         $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
         $record = $recordRepository->getRecordDetailsFromRecordId($rid);
         if (empty($record)) {
-            $this->messageService->addSystemError(_("Record not found."));
-            return false;
+            return RecordWriteResult::notFound(_("Record not found."));
         }
         $user_is_zone_owner = $this->userIsZoneOwner($record['zid']);
 
         // Secondary and Consumer zones replicate records from a primary - records are read-only
         if (ZoneType::isReadOnly($this->domainRepository->getDomainType($record['zid']))) {
-            $this->messageService->addSystemError(_("You cannot delete records from a read-only zone."));
-            return false;
+            return RecordWriteResult::forbidden(_("You cannot delete records from a read-only zone."));
         }
 
-        if ($perm_edit == "all" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "1")) {
-            $zone = $this->domainRepository->getDomainNameById($record['zid']);
-            $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
-            if (Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)) {
-                $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($record['type'], 'delete'));
-                return false;
-            }
-
-            $deleted = $this->backendProvider->deleteRecord($rid);
-
-            if ($deleted) {
-                $this->captureChange(function () use ($record, $rid, $zone): void {
-                    $zoneId = isset($record['zid']) ? (int) $record['zid'] : null;
-                    $beforeForLog = $record;
-                    $beforeForLog['id'] = $rid;
-                    $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
-                    $this->changeLogger->logRecordDelete($beforeForLog, $zoneId);
-                });
-            }
-
-            return $deleted;
-        } else {
-            $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
-            return false;
+        if (!($perm_edit == "all" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "1"))) {
+            return RecordWriteResult::forbidden(_("You do not have the permission to delete this record."));
         }
+
+        $zone = $this->domainRepository->getDomainNameById($record['zid']);
+        $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
+        if (Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)) {
+            return RecordWriteResult::forbidden(Permission::restrictedRecordTypeMessage($record['type'], 'delete'));
+        }
+
+        if (!$this->backendProvider->deleteRecord($rid)) {
+            return RecordWriteResult::backendFailure(_('Failed to delete record from DNS backend.'));
+        }
+
+        $this->captureChange(function () use ($record, $rid, $zone): void {
+            $zoneId = isset($record['zid']) ? (int) $record['zid'] : null;
+            $beforeForLog = $record;
+            $beforeForLog['id'] = $rid;
+            $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
+            $this->changeLogger->logRecordDelete($beforeForLog, $zoneId);
+        });
+
+        return RecordWriteResult::ok();
     }
 
     /**

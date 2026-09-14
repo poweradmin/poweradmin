@@ -257,8 +257,9 @@ class EditRecordController extends BaseController
             $postData['disabled'] = 0;
         }
 
-        $ret_val = $this->createRecordManager()->editRecord($postData);
-        if (!$ret_val) {
+        $result = $this->createRecordManager()->editRecord($postData);
+        if (!$result->success) {
+            $this->addSystemMessage('error', (string)$result->message);
             return false;
         }
 

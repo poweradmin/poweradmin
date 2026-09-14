@@ -30,9 +30,9 @@ use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 #[CoversClass(RecordWriteResult::class)]
 class RecordWriteResultTest extends TestCase
 {
-    public function testCreatedCarriesTheRecordId(): void
+    public function testOkCarriesTheRecordId(): void
     {
-        $result = RecordWriteResult::created(42);
+        $result = RecordWriteResult::ok(42);
 
         $this->assertTrue($result->success);
         $this->assertSame(42, $result->recordId);
@@ -41,13 +41,17 @@ class RecordWriteResultTest extends TestCase
         $this->assertNull($result->field);
     }
 
-    public function testForbiddenIs403WithoutAField(): void
+    public function testRefusalsCarryAStatusAndNoField(): void
     {
-        $result = RecordWriteResult::forbidden('You do not have the permission to add a record to this zone.');
+        $forbidden = RecordWriteResult::forbidden('You do not have the permission to add a record to this zone.');
+        $missing = RecordWriteResult::notFound('Record not found.');
+        $backend = RecordWriteResult::backendFailure('Failed to add record to DNS backend.');
 
-        $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
-        $this->assertNull($result->field);
+        foreach ([[$forbidden, 403], [$missing, 404], [$backend, 500]] as [$result, $status]) {
+            $this->assertFalse($result->success);
+            $this->assertSame($status, $result->status);
+            $this->assertNull($result->field);
+        }
     }
 
     public function testExplicitFieldWins(): void

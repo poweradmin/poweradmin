@@ -73,6 +73,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
         $this->assertForgedEditRejected(
             self::VICTIM_RECORD_ID,
             'pwned.attacker.example',
+            403,
             'editRecord must reject a record whose real zone the caller does not own, even when the request carries an owned zid.'
         );
     }
@@ -80,14 +81,40 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testEditRejectsUnknownRecordId(): void
     {
-        $this->assertForgedEditRejected(9999, 'ghost.attacker.example');
+        $this->assertForgedEditRejected(9999, 'ghost.attacker.example', 404);
+    }
+
+    #[RunInSeparateProcess]
+    public function testDeleteOfForeignRecordIsForbidden(): void
+    {
+        $_SESSION['userid'] = self::ATTACKER_USER_ID;
+        $backend = $this->dnsBackendStub(false);
+        $backend->expects($this->never())->method('deleteRecord');
+
+        $result = $this->makeRecordManager($backend)->deleteRecord(self::VICTIM_RECORD_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(403, $result->status);
+    }
+
+    #[RunInSeparateProcess]
+    public function testDeleteOfUnknownRecordIsNotFound(): void
+    {
+        $_SESSION['userid'] = self::ATTACKER_USER_ID;
+        $backend = $this->dnsBackendStub(false);
+        $backend->expects($this->never())->method('deleteRecord');
+
+        $result = $this->makeRecordManager($backend)->deleteRecord(9999);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(404, $result->status);
     }
 
     /**
      * Drive editRecord() as the attacker with a request that always claims the
      * attacker's own zone id, and assert the write never reaches the backend.
      */
-    private function assertForgedEditRejected(int $rid, string $name, string $message = ''): void
+    private function assertForgedEditRejected(int $rid, string $name, int $expectedStatus, string $message = ''): void
     {
         $_SESSION['userid'] = self::ATTACKER_USER_ID;
 
@@ -107,7 +134,9 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
 
         $manager = $this->makeRecordManager($backend);
 
-        $this->assertFalse($manager->editRecord($record), $message);
+        $result = $manager->editRecord($record);
+        $this->assertFalse($result->success, $message);
+        $this->assertSame($expectedStatus, $result->status, $message);
     }
 
     private function seedAttackerAsClient(): void

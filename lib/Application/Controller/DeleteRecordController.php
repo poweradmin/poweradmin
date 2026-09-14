@@ -151,7 +151,8 @@ class DeleteRecordController extends BaseController
                 $hasForwardRecord = true;
             }
 
-            if ($recordManager->deleteRecord($record_id)) {
+            $deleted = $recordManager->deleteRecord($record_id);
+            if ($deleted->success) {
                 if (isset($record_info['prio'])) {
                     $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
@@ -223,6 +224,8 @@ class DeleteRecordController extends BaseController
                 }
 
                 $this->redirect('/zones/' . $zid . '/edit');
+            } else {
+                $this->addSystemMessage('error', (string)$deleted->message);
             }
         }
 

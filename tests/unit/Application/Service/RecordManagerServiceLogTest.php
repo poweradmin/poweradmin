@@ -48,7 +48,7 @@ class RecordManagerServiceLogTest extends TestCase
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $recordManager = $this->createMock(RecordManagerInterface::class);
         $domainRepository->method('getDomainNameById')->willReturn('example.com');
-        $recordManager->method('addRecordGetId')->willReturn($write ?? RecordWriteResult::created(1));
+        $recordManager->method('addRecordGetId')->willReturn($write ?? RecordWriteResult::ok(1));
 
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturn(false);

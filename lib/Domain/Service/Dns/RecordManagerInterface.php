@@ -60,19 +60,15 @@ interface RecordManagerInterface
      * Edit a record
      *
      * @param array $record Record structure to update
-     *
-     * @return boolean true if successful
      */
-    public function editRecord(array $record): bool;
+    public function editRecord(array $record): RecordWriteResult;
 
     /**
      * Delete a record by a given record id
      *
      * @param int|string $rid Record ID
-     *
-     * @return boolean true on success
      */
-    public function deleteRecord(int|string $rid): bool;
+    public function deleteRecord(int|string $rid): RecordWriteResult;
 
     /**
      * Delete record reference to zone template
