@@ -937,7 +937,7 @@ class EditController extends BaseController
             $prio,
             $comment,
             (string)$this->userContextService->getLoggedInUsername(),
-            $this->requestedCompanion()
+            RecordAddResult::companionFrom($this->request->getPostParams())
         );
         if (!$added->isOk()) {
             // Store validation error directly in session
@@ -963,19 +963,6 @@ class EditController extends BaseController
         $this->setMessage('edit', $messageType, $message);
 
         return true;
-    }
-
-    /**
-     * Which companion record the inline form asked for: a PTR for the address,
-     * or an A record for a PTR entered in a reverse zone.
-     */
-    private function requestedCompanion(): string
-    {
-        if ($this->request->getPostParam('reverse') !== null) {
-            return RecordAddResult::COMPANION_PTR;
-        }
-
-        return $this->request->getPostParam('create_domain_record') !== null ? RecordAddResult::COMPANION_A : '';
     }
 
     /**

@@ -219,7 +219,7 @@ class ListForwardZonesController extends BaseController
         // Ownership is resolved once for the page: the per-row delete control must
         // mirror the check the delete endpoint runs (ownership direct or via any group).
         $ownership = $this->createZoneListPermissionService()->index($userId, array_column($zones, 'id'));
-        $groupNames = $this->groupNamesById();
+        $groupNames = $ownership->hasGroupOwners() ? $this->groupNamesById() : [];
 
         foreach ($zones as &$zone) {
             $zoneId = (int)$zone['id'];

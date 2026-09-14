@@ -75,7 +75,7 @@ class AuditService
      *
      * @param array<string, int|string|null> $fields
      */
-    private function lineAs(string $username, string $operation, array $fields = []): string
+    private function lineAs(?string $username, string $operation, array $fields = []): string
     {
         return $this->join($this->contextFor($username), $operation, $fields);
     }
@@ -216,9 +216,9 @@ class AuditService
     }
 
     /**
-     * @param string $username Captured before SLO processing, which clears the session
+     * @param string|null $username Captured before SLO processing, which clears the session
      */
-    public function logSamlLogout(string $username): void
+    public function logSamlLogout(?string $username): void
     {
         $this->logger->logInfo($this->lineAs($username, 'saml_logout'));
     }

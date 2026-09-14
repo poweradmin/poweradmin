@@ -244,19 +244,26 @@ class ManageGroupZonesController extends BaseController
     }
 
     /**
-     * Zone names for the audit line, one per touched zone: unresolvable ids
-     * (zones_groups has no domain foreign key) are kept as "ID: n" so the count
-     * still reflects every row that changed.
+     * Zone names for the audit line, one per touched zone. An id that no longer
+     * resolves (zones_groups has no domain foreign key) is kept as "ID:n" so the
+     * count still reflects every row that changed.
      *
      * @param list<int|string> $zoneIds
      * @return list<string>
      */
     private function zoneLogNames(DomainRepositoryInterface $domainRepository, array $zoneIds): array
     {
-        return array_map(function ($id) use ($domainRepository): string {
-            $name = $domainRepository->getDomainNameById((int)$id);
-            if ($name === null || $name === '') {
-                return "ID: $id";
+        $names = [];
+        foreach ($domainRepository->getZoneInfoFromIds($zoneIds) as $info) {
+            if (isset($info['id'], $info['name']) && $info['name'] !== '') {
+                $names[(int)$info['id']] = (string)$info['name'];
+            }
+        }
+
+        return array_map(function ($id) use ($names): string {
+            $name = $names[(int)$id] ?? null;
+            if ($name === null) {
+                return 'ID:' . $id;
             }
 
             return str_ends_with($name, '.ip6.arpa') ? (IpHelper::shortenIPv6ReverseZone($name) ?? $name) : $name;

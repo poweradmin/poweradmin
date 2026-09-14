@@ -56,8 +56,9 @@ enum ZoneSaveOutcome
     case NOTHING_SAVED;
 
     /**
-     * Whether the save was accepted, as opposed to refused by a write failure
-     * or a stale form. An accepted save may still have written no record.
+     * Whether the save was accepted, as opposed to refused (permission, read-only
+     * zone, write failure, stale form) or dropped as a truncated no-op. An
+     * accepted save may still have written no record.
      */
     public function wasWritten(): bool
     {

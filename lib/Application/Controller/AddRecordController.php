@@ -144,7 +144,7 @@ class AddRecordController extends BaseController
             $prio,
             $comment,
             (string)$this->userContextService->getLoggedInUsername(),
-            $this->requestedCompanion($this->request->getPostParams())
+            RecordAddResult::companionFrom($this->request->getPostParams())
         );
         if (!$added->isOk()) {
             // Keep the submitted values and point at the field the reason names
@@ -176,21 +176,6 @@ class AddRecordController extends BaseController
 
         // Redirect back to zone edit page
         $this->redirect('/zones/' . $zone_id . '/edit');
-    }
-
-    /**
-     * Which companion record the form asked for: a PTR for the address, or an A
-     * record for a PTR entered in a reverse zone.
-     *
-     * @param array<string, mixed> $fields The submitted record fields
-     */
-    private function requestedCompanion(array $fields): string
-    {
-        if (!empty($fields['reverse'])) {
-            return RecordAddResult::COMPANION_PTR;
-        }
-
-        return !empty($fields['create_domain_record']) ? RecordAddResult::COMPANION_A : '';
     }
 
     private function showForm(): void
@@ -317,7 +302,7 @@ class AddRecordController extends BaseController
                 isset($record['prio']) && $record['prio'] !== '' ? (int)$record['prio'] : 0,
                 (string)($record['comment'] ?? ''),
                 $username,
-                $this->requestedCompanion($record)
+                RecordAddResult::companionFrom($record)
             );
             if (!$added->isOk()) {
                 $failureReasons[] = $added->record->message;

@@ -299,6 +299,7 @@ class ControllerServiceFactory
             $this->logger,
             $this->userRepository(),
             $this->userGroupRepository(),
+            $this->zoneRepository(),
             $this->dnsBackendProvider()
         );
     }

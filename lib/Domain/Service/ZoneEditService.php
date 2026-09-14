@@ -32,6 +32,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -98,24 +99,8 @@ class ZoneEditService
                     $rejectedZoneComment = $submission->zoneComment;
                 }
             } else {
-                foreach (($records ?? []) as $record) {
-                    // Rows end with a hidden _complete marker; max_input_vars truncation
-                    // drops it, so skip such rows and flag the partial save
-                    if (!is_array($record) || !isset($record['_complete'])) {
-                        $truncated = true;
-                        continue;
-                    }
-                    unset($record['_complete']);
-
-                    $written = $this->saveRow($submission, $record);
-                    if ($written === null) {
-                        continue;
-                    }
-                    $changed = true;
-                    if ($written !== '') {
-                        $errors[] = $written;
-                    }
-                }
+                [$changed, $errors, $rowsTruncated] = $this->saveRows($submission, $records ?? []);
+                $truncated = $truncated || $rowsTruncated;
             }
         }
 
@@ -127,7 +112,7 @@ class ZoneEditService
 
         // A truncated save that changed nothing keeps the serial untouched
         if ($truncated && !$changed && $errors === [] && !$staleFormRejected) {
-            return new ZoneSaveResult(ZoneSaveOutcome::NOTHING_SAVED, false, true);
+            return new ZoneSaveResult(ZoneSaveOutcome::NOTHING_SAVED, truncated: true);
         }
 
         $outcome = match (true) {
@@ -139,12 +124,46 @@ class ZoneEditService
 
         return new ZoneSaveResult(
             $outcome,
-            $this->finalize($outcome, $submission->zoneId),
-            $truncated,
-            $errors,
-            $rejectedRecords,
-            $rejectedZoneComment
+            serialBumped: $this->finalize($outcome, $submission->zoneId),
+            truncated: $truncated,
+            errors: $errors,
+            rejectedRecords: $rejectedRecords,
+            rejectedZoneComment: $rejectedZoneComment
         );
+    }
+
+    /**
+     * Writes the rows that differ from the zone.
+     *
+     * @param array<int|string, mixed> $records
+     * @return array{0: bool, 1: list<string>, 2: bool} Whether any row differed, the refusals, whether rows were truncated
+     */
+    private function saveRows(ZoneEditSubmission $submission, array $records): array
+    {
+        $changed = false;
+        $errors = [];
+        $truncated = false;
+
+        foreach ($records as $record) {
+            // Rows end with a hidden _complete marker; max_input_vars truncation
+            // drops it, so skip such rows and flag the partial save
+            if (!is_array($record) || !isset($record['_complete'])) {
+                $truncated = true;
+                continue;
+            }
+            unset($record['_complete']);
+
+            $written = $this->saveRow($submission, $record);
+            if ($written === null) {
+                continue;
+            }
+            $changed = true;
+            if (!$written->success) {
+                $errors[] = (string)$written->message;
+            }
+        }
+
+        return [$changed, $errors, $truncated];
     }
 
     /**
@@ -168,9 +187,9 @@ class ZoneEditService
      * Writes one edited row.
      *
      * @param array<string, mixed> $record
-     * @return string|null Null when the row matched the zone, '' when it was written, else the reason it was refused
+     * @return RecordWriteResult|null The write, or null when the row matched the zone
      */
-    private function saveRow(ZoneEditSubmission $submission, array $record): ?string
+    private function saveRow(ZoneEditSubmission $submission, array $record): ?RecordWriteResult
     {
         // Always the full name, so "@" and bare labels compare against what the zone holds
         if (isset($record['name'])) {
@@ -194,7 +213,7 @@ class ZoneEditService
 
         $edited = $this->recordManager->editRecord($record, false);
         if (!$edited->success) {
-            return (string)$edited->message;
+            return $edited;
         }
 
         $log->logAfter($record['rid'], $record);
@@ -215,7 +234,7 @@ class ZoneEditService
             }
         }
 
-        return '';
+        return $edited;
     }
 
     private function saveZoneComment(ZoneEditSubmission $submission): bool

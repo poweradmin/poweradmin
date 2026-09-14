@@ -48,6 +48,21 @@ final readonly class RecordAddResult
     ) {
     }
 
+    /**
+     * Which companion a form asked for: the "reverse" box wants a PTR for the
+     * address, "create_domain_record" wants an A record for a PTR in a reverse zone.
+     *
+     * @param array<string, mixed> $fields The submitted record fields
+     */
+    public static function companionFrom(array $fields): string
+    {
+        if (!empty($fields['reverse'])) {
+            return self::COMPANION_PTR;
+        }
+
+        return !empty($fields['create_domain_record']) ? self::COMPANION_A : '';
+    }
+
     public static function refused(RecordWriteResult $record): self
     {
         return new self($record);

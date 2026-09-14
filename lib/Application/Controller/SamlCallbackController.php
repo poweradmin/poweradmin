@@ -131,7 +131,7 @@ class SamlCallbackController extends BaseController
     private function handleSingleLogout(): void
     {
         // Captured first: a successful LogoutResponse clears the session during processing
-        $username = $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown';
+        $username = $this->getUserContextService()->getLoggedInUsername();
 
         try {
             // Process SAML Single Logout

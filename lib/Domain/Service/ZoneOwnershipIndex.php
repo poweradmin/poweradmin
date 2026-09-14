@@ -30,6 +30,7 @@ namespace Poweradmin\Domain\Service;
 final readonly class ZoneOwnershipIndex
 {
     /**
+     * @param int $userId The user the index answers for
      * @param list<int> $userGroupIds Groups the user belongs to
      * @param array<int, list<int>> $ownersByZone Zone id => direct owner user ids
      * @param array<int, list<int>> $groupsByZone Zone id => owning group ids
@@ -46,6 +47,12 @@ final readonly class ZoneOwnershipIndex
     {
         return in_array($this->userId, $this->ownersByZone[$zoneId] ?? [], true)
             || array_intersect($this->userGroupIds, $this->groupsByZone[$zoneId] ?? []) !== [];
+    }
+
+    /** Whether any zone on the page is group-owned, so group names are worth loading. */
+    public function hasGroupOwners(): bool
+    {
+        return $this->groupsByZone !== [];
     }
 
     /** @return list<int> */

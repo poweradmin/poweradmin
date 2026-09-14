@@ -415,24 +415,11 @@ class DnsDataService
     }
 
     /**
-     * Get all domain IDs owned by a user (direct or group ownership).
-     *
      * @return int[]
      */
     private function getOwnedDomainIds(int $userId): array
     {
-        $stmt = $this->db->prepare(
-            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE owner = :uid
-             UNION
-             SELECT DISTINCT zg.domain_id FROM zones_groups zg
-             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-             WHERE ugm.user_id = :uid2"
-        );
-        $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        return $this->repositoryFactory->createZoneRepository()->getOwnedZoneIds($userId);
     }
 
     // ---------------------------------------------------------------

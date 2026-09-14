@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -46,6 +47,7 @@ class DashboardStatsService
         private readonly LoggerInterface $logger,
         private readonly UserRepository $users,
         private readonly UserGroupRepositoryInterface $groups,
+        private readonly ZoneRepositoryInterface $zones,
         private readonly DnsBackendProvider $backend
     ) {
         $this->tables = new TableNameService($config);
@@ -69,8 +71,8 @@ class DashboardStatsService
         // The PowerDNS tables may be absent or ungranted (PowerDNS not yet deployed,
         // or its schema in a separate database); show no counts rather than fail
         try {
-            $zones = $this->count($this->tables->getTable(PdnsTable::DOMAINS));
-            $records = $this->count($this->tables->getTable(PdnsTable::RECORDS));
+            $zones = $this->zones->getZoneCount();
+            $records = (int)$this->db->query('SELECT COUNT(*) FROM ' . $this->tables->getTable(PdnsTable::RECORDS))->fetchColumn();
         } catch (Throwable $e) {
             $this->logger->warning('Dashboard zone/record count failed: {error}', ['error' => $e->getMessage()]);
             $zones = null;
@@ -82,7 +84,7 @@ class DashboardStatsService
 
     /**
      * Counts through the API for freshness (the local zones table lags until sync
-     * runs) and falls back to the local cache on an outage instead of showing 0.
+     * runs) and falls back to the local cache count on an outage instead of showing 0.
      */
     private function apiZoneCount(): int
     {
@@ -95,11 +97,6 @@ class DashboardStatsService
             $this->logger->warning('Dashboard zone count via API failed: {error}', ['error' => $e->getMessage()]);
         }
 
-        return (int)$this->db->query('SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL')->fetchColumn();
-    }
-
-    private function count(string $table): int
-    {
-        return (int)$this->db->query("SELECT COUNT(*) FROM $table")->fetchColumn();
+        return $this->zones->getZoneCount();
     }
 }

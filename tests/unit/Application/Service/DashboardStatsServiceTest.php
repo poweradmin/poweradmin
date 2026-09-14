@@ -27,6 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\DashboardStatsService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Psr\Log\LoggerInterface;
@@ -40,8 +41,6 @@ class DashboardStatsServiceTest extends TestCase
     {
         $_SESSION = [];
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, zone_name TEXT)");
-        $this->db->exec("INSERT INTO zones (zone_name) VALUES ('a.example'), ('b.example'), (NULL)");
     }
 
     protected function tearDown(): void
@@ -51,9 +50,7 @@ class DashboardStatsServiceTest extends TestCase
 
     public function testSqlModeCountsThePowerdnsTables(): void
     {
-        $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY)");
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY)");
-        $this->db->exec("INSERT INTO domains (id) VALUES (1), (2)");
         $this->db->exec("INSERT INTO records (id) VALUES (1), (2), (3)");
 
         $stats = $this->makeService(false)->stats(5, true);
@@ -63,7 +60,10 @@ class DashboardStatsServiceTest extends TestCase
 
     public function testMissingPowerdnsTablesLeaveTheCountsEmpty(): void
     {
-        $stats = $this->makeService(false)->stats(5, false);
+        $zones = $this->createMock(ZoneRepositoryInterface::class);
+        $zones->method('getZoneCount')->willThrowException(new RuntimeException('no such table: domains'));
+
+        $stats = $this->makeService(false, null, $zones)->stats(5, false);
 
         $this->assertNull($stats['zones']);
         $this->assertNull($stats['records']);
@@ -101,11 +101,15 @@ class DashboardStatsServiceTest extends TestCase
         $this->assertSame(2, $this->makeService(true, $backend)->stats(5, true)['zones']);
     }
 
-    private function makeService(bool $apiBackend, ?DnsBackendProvider $backend = null): DashboardStatsService
+    private function makeService(bool $apiBackend, ?DnsBackendProvider $backend = null, ?ZoneRepositoryInterface $zones = null): DashboardStatsService
     {
         if ($backend === null) {
             $backend = $this->createMock(DnsBackendProvider::class);
             $backend->method('isApiBackend')->willReturn($apiBackend);
+        }
+        if ($zones === null) {
+            $zones = $this->createMock(ZoneRepositoryInterface::class);
+            $zones->method('getZoneCount')->willReturn(2);
         }
         $users = $this->createMock(UserRepository::class);
         $users->method('getTotalUserCount')->willReturnCallback(fn(?int $restrictTo = null): int => $restrictTo === null ? 9 : 1);
@@ -118,6 +122,7 @@ class DashboardStatsServiceTest extends TestCase
             $this->createMock(LoggerInterface::class),
             $users,
             $groups,
+            $zones,
             $backend
         );
     }
