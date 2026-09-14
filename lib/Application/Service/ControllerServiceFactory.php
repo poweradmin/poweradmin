@@ -33,6 +33,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\PdnsCapabilities;
@@ -43,6 +44,8 @@ use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\ZoneSigningService;
+use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -69,7 +72,9 @@ class ControllerServiceFactory
 
     private ?DnsBackendProvider $dnsBackendProvider = null;
     private ?PermissionService $permissionService = null;
+    private ?ApiPermissionService $apiPermissionService = null;
     private ?ZoneOwnershipModeService $zoneOwnershipModeService = null;
+    private ?ZoneSigningService $zoneSigningService = null;
     private ?CatalogZoneService $catalogZoneService = null;
     private ?UserPreferenceService $userPreferenceService = null;
     private ?RepositoryFactory $repositoryFactory = null;
@@ -177,6 +182,14 @@ class ControllerServiceFactory
         return $this->permissionService ??= new PermissionService($this->userRepository());
     }
 
+    /**
+     * The permission rules that need group or template lookups beyond PermissionService
+     */
+    public function apiPermissionService(): ApiPermissionService
+    {
+        return $this->apiPermissionService ??= new ApiPermissionService($this->db, $this->permissionService());
+    }
+
     public function userGroupRepository(): UserGroupRepositoryInterface
     {
         return new DbUserGroupRepository($this->db);
@@ -184,7 +197,19 @@ class ControllerServiceFactory
 
     public function zoneManagementService(?PdnsCapabilities $capabilities = null): ZoneManagementService
     {
-        return new ZoneManagementService($this->zoneRepository(), $this->config, $this->db, $this->logger, null, $capabilities);
+        return new ZoneManagementService($this->zoneRepository(), $this->config, $this->db, $this->logger, null, $capabilities, $this->zoneSigningService());
+    }
+
+    public function zoneSigningService(): ZoneSigningService
+    {
+        return $this->zoneSigningService ??= new ZoneSigningService(
+            $this->dnssecProvider(),
+            new ZoneValidationService($this->recordRepository()),
+            $this->soaRecordManager(),
+            new AuditService($this->db),
+            $this->config,
+            $this->logger
+        );
     }
 
     public function zoneOwnershipModeService(): ZoneOwnershipModeService

@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\RepositoryFactory;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
@@ -43,6 +44,7 @@ use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
+use Poweradmin\Domain\Service\ZoneSigningService;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -485,6 +487,11 @@ abstract class BaseController
         return $this->services()->permissionService();
     }
 
+    protected function createApiPermissionService(): ApiPermissionService
+    {
+        return $this->services()->apiPermissionService();
+    }
+
     /**
      * Check if the logged-in user has the given permission
      */
@@ -534,6 +541,11 @@ abstract class BaseController
     protected function createZoneManagementService(): ZoneManagementService
     {
         return $this->services()->zoneManagementService($this->getPdnsCapabilities());
+    }
+
+    protected function createZoneSigningService(): ZoneSigningService
+    {
+        return $this->services()->zoneSigningService();
     }
 
     protected function createZoneCreateOwnershipResolver(): ZoneCreateOwnershipResolver

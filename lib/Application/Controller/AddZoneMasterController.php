@@ -32,8 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
@@ -41,10 +39,9 @@ use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Domain\Service\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -220,15 +217,24 @@ class AddZoneMasterController extends BaseController
         $owner = $ownership->owner;
         $selected_groups = $ownership->groupIds;
 
+        // Signing a zone whose records arrive by transfer is meaningless.
+        $signRequested = $pdnssec_use && !$replicates && $this->request->getPostParam('dnssec') !== null;
+        $callerId = (int)$this->getCurrentUserId();
+        if ($signRequested && !$this->createApiPermissionService()->canManageDnssecForNewZone($callerId, $owner, $selected_groups)) {
+            $this->setMessage('add_zone_master', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
+            $this->showForm();
+            return;
+        }
+
         $created = $this->createZoneManagementService()->createZone(
             $zone_name,
             $dom_type,
             $owner,
             $slave_master,
             $zone_template,
-            false,
+            $signRequested,
             $selected_groups,
-            $this->getCurrentUserId(),
+            $callerId,
             $soa_edit_api
         );
         if (!$created['success']) {
@@ -248,66 +254,23 @@ class AddZoneMasterController extends BaseController
             $slave_master !== '' ? ' zone_master:' . $slave_master : ''
         ), $zone_id);
 
-        $dnssecMessageSet = false;
-
-        // Signing a zone whose records arrive by transfer is meaningless.
-        if ($pdnssec_use && !$replicates) {
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-
-            if ($this->request->getPostParam('dnssec') !== null && $dnssecProvider->isDnssecEnabled()) {
-                // Pre-flight zone validation before DNSSEC signing
-                $zoneValidator = new ZoneValidationService($this->getRepositoryFactory()->createRecordRepository());
-                $validation = $zoneValidator->validateZoneForDnssec($zone_id, $zone_name);
-
-                if (!$validation['valid']) {
-                    // Show validation errors to user
-                    $errorMsg = $zoneValidator->getFormattedErrorMessage($validation);
-                    $messageKey = DnsHelper::isReverseZoneName($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
-                    $this->setMessage($messageKey, 'warning', _('Zone was created successfully, but DNSSEC signing was skipped due to validation errors:') . "\n\n" . $errorMsg);
-                    $this->logger->warning('DNSSEC pre-flight validation failed for newly created zone: {zone}', ['zone' => $zone_name]);
-                    $dnssecMessageSet = true;
-                } else {
-                    // Validation passed - proceed with signing
-                    // Update SOA serial before signing
-                    DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zone_id);
-
-                    $secureResult = $dnssecProvider->secureZone($zone_name);
-                    $messageKey = DnsHelper::isReverseZoneName($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
-
-                    if (!$secureResult) {
-                        $this->setMessage($messageKey, 'warning', _('Zone was created, but securing it with DNSSEC failed. Zone validation passed, but PowerDNS API returned an error. Check PowerDNS logs for details.'));
-                        $this->logger->error('DNSSEC signing failed for newly created zone: {zone}', ['zone' => $zone_name]);
-                        $dnssecMessageSet = true;
-                    } else {
-                        // Verify the zone is now secured
-                        if ($dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
-                            $this->setMessage($messageKey, 'success', _('Zone has been created and signed with DNSSEC successfully.'));
-                            (new AuditService($this->db))->logDnssecSignZone($zone_id, $zone_name);
-                            $dnssecMessageSet = true;
-                        } else {
-                            $this->setMessage($messageKey, 'warning', _('Zone was created and signing was requested, but verification failed. Check DNSSEC keys.'));
-                            $this->logger->warning('DNSSEC signing verification failed for newly created zone: {zone}', ['zone' => $zone_name]);
-                            $dnssecMessageSet = true;
-                        }
-                    }
-                }
-            }
-
-            $dnssecProvider->rectifyZone($zone_name);
+        $signed = $created['dnssec'];
+        $dnssecMessage = $signed === null ? null : match ($signed->outcome) {
+            ZoneSigningOutcome::SIGNED => ['success', _('Zone has been created and signed with DNSSEC successfully.')],
+            ZoneSigningOutcome::INVALID_ZONE => ['warning', _('Zone was created successfully, but DNSSEC signing was skipped due to validation errors:') . "\n\n" . $signed->detail],
+            ZoneSigningOutcome::SECURE_FAILED => ['warning', _('Zone was created, but securing it with DNSSEC failed. Zone validation passed, but PowerDNS API returned an error. Check PowerDNS logs for details.')],
+            ZoneSigningOutcome::VERIFY_FAILED => ['warning', _('Zone was created and signing was requested, but verification failed. Check DNSSEC keys.')],
+            default => null,
+        };
+        // Signing rectifies on its own; every other new primary is rectified here.
+        if ($pdnssec_use && !$replicates && $signed?->outcome !== ZoneSigningOutcome::SIGNED) {
+            $this->createDnssecProvider()->rectifyZone($zone_name);
         }
 
-        // Check if the zone is a reverse zone and redirect accordingly
-        if (DnsHelper::isReverseZoneName($zone_name)) {
-            if (!$dnssecMessageSet) {
-                $this->setMessage('list_reverse_zones', 'success', _('Zone has been added successfully.'));
-            }
-            $this->redirect('/zones/reverse');
-        } else {
-            if (!$dnssecMessageSet) {
-                $this->setMessage('list_forward_zones', 'success', _('Zone has been added successfully.'));
-            }
-            $this->redirect('/zones/forward');
-        }
+        $messageKey = DnsHelper::isReverseZoneName($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
+        [$messageType, $message] = $dnssecMessage ?? ['success', _('Zone has been added successfully.')];
+        $this->setMessage($messageKey, $messageType, $message);
+        $this->redirect($messageKey === 'list_reverse_zones' ? '/zones/reverse' : '/zones/forward');
     }
 
     /**

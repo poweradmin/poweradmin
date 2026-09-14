@@ -24,7 +24,6 @@ namespace Poweradmin\Domain\Service;
 
 use Exception;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -69,6 +68,7 @@ class ZoneManagementService
     private LoggerInterface $logger;
     private RecordChangeLogger $changeLogger;
     private ?PdnsCapabilities $capabilities;
+    private ?ZoneSigningService $signing;
     private ?DnsBackendProvider $backendProvider = null;
     private ?RepositoryFactory $repositoryFactory = null;
     private ?DomainManagerInterface $domainManager = null;
@@ -79,6 +79,7 @@ class ZoneManagementService
 
     /**
      * @param PdnsCapabilities|null $capabilities What the connected server supports; null admits only the basic kinds
+     * @param ZoneSigningService|null $signing Needed for enable_dnssec; without it a create is never signed
      */
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
@@ -86,7 +87,8 @@ class ZoneManagementService
         object $db,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
-        ?PdnsCapabilities $capabilities = null
+        ?PdnsCapabilities $capabilities = null,
+        ?ZoneSigningService $signing = null
     ) {
         $this->zoneRepository = $zoneRepository;
         $this->config = $config;
@@ -94,6 +96,7 @@ class ZoneManagementService
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
         $this->capabilities = $capabilities;
+        $this->signing = $signing;
     }
 
     /**
@@ -156,7 +159,7 @@ class ZoneManagementService
      * @param array<int> $groupIds Optional list of group IDs to assign as owners
      * @param int|null $actingUserId User performing the creation, used for the overlap check
      * @param string|null $soaEditApi Per-zone SOA-EDIT-API choice; null applies the dns.soa_edit_api default
-     * @return array{success: true, zone_id: int, domain: string, type: string}|array{success: false, message: string, status: int, code: string}
+     * @return array{success: true, zone_id: int, domain: string, type: string, dnssec: ?ZoneSigningResult}|array{success: false, message: string, status: int, code: string}
      */
     public function createZone(
         string $domain,
@@ -278,18 +281,14 @@ class ZoneManagementService
 
         $zoneId = (int)$created->zoneId;
 
-        // Enable DNSSEC if requested and supported
-        if ($enableDnssec) {
+        // The zone exists either way; a refused or failed signing is reported, not an error.
+        $signed = null;
+        if ($enableDnssec && $this->signing !== null) {
             try {
-                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
-
-                if ($dnssecProvider->isDnssecEnabled()) {
-                    $dnssecProvider->secureZone($domain);
-                    $dnssecProvider->rectifyZone($domain);
-                }
+                $signed = $this->signing->sign($zoneId, $domain);
             } catch (Exception $e) {
                 $this->logger->error('[ZoneManagementService] Failed to secure zone with DNSSEC: {error}', ['error' => $e->getMessage()]);
-                // We don't return an error since the zone was created successfully
+                $signed = new ZoneSigningResult(ZoneSigningOutcome::SECURE_FAILED);
             }
         }
 
@@ -297,7 +296,8 @@ class ZoneManagementService
             'success' => true,
             'zone_id' => $zoneId,
             'domain' => $domain,
-            'type' => $type
+            'type' => $type,
+            'dnssec' => $signed,
         ];
     }
 

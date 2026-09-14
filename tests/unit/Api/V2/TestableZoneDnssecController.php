@@ -6,6 +6,7 @@ use Poweradmin\Application\Controller\Api\V2\ZoneDnssecController;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Service\ZoneSigningService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,6 +22,7 @@ class TestableZoneDnssecController extends ZoneDnssecController
     public ?array $loggedChange = null;
     public array $soaBumps = [];
     public ?string $signingValidationError = null;
+    private ZoneSigningService $zoneSigningService;
 
     /**
      * @phpstan-ignore-next-line constructor.unusedParameter
@@ -68,18 +70,13 @@ class TestableZoneDnssecController extends ZoneDnssecController
         return $this->setStatus();
     }
 
-    protected function validateZoneForSigning(int $zoneId, string $zoneName): ?string
+    public function setZoneSigningService(ZoneSigningService $service): void
     {
-        return $this->signingValidationError;
+        $this->zoneSigningService = $service;
     }
 
-    protected function bumpSoaSerial(int $zoneId): void
+    protected function zoneSigningService(): ZoneSigningService
     {
-        $this->soaBumps[] = $zoneId;
-    }
-
-    protected function logDnssecChange(int $zoneId, string $zoneName, bool $enabled): void
-    {
-        $this->loggedChange = ['zoneId' => $zoneId, 'zoneName' => $zoneName, 'enabled' => $enabled];
+        return $this->zoneSigningService;
     }
 }

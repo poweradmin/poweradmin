@@ -58,7 +58,7 @@ class ZonesController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $this->zoneRepository = $this->createZoneRepository();
-        $this->permissionService = new ApiPermissionService($this->db);
+        $this->permissionService = $this->createApiPermissionService();
         $this->ipAddressValidator = new IPAddressValidator();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
 
@@ -563,7 +563,13 @@ class ZonesController extends PublicApiController
                 $type
             ), $zoneId);
 
-            return $this->returnApiResponse(['zone_id' => $zoneId], true, 'Zone created successfully', 201);
+            // Signing is best effort; the outcome tells a client whether it happened
+            $payload = ['zone_id' => $zoneId];
+            if ($result['dnssec'] !== null) {
+                $payload['dnssec'] = $result['dnssec']->outcome->value;
+            }
+
+            return $this->returnApiResponse($payload, true, 'Zone created successfully', 201);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZonesController::createZone', 'Failed to create zone');
         }

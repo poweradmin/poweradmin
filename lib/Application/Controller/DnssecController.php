@@ -33,15 +33,14 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\ZoneSigningMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Domain\Service\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -89,37 +88,16 @@ class DnssecController extends BaseController
             $this->validateCsrfToken();
 
             $zone_name = $domainRepository->getDomainNameById($zone_id);
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-
-            // Check if zone is secured before attempting to unsecure
             if ($zone_name === null) {
                 $this->setMessage('dnssec', 'info', _('Zone is not currently signed with DNSSEC.'));
-            } elseif ($dnssecProvider->isZonePresigned($zone_name)) {
-                $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
-            } elseif (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
-                $this->setMessage('dnssec', 'info', _('Zone is not currently signed with DNSSEC.'));
             } else {
-                // Try to unsecure the zone
-                $result = $dnssecProvider->unsecureZone((string)$zone_name);
-
-                if ($result) {
-                    // Verify the zone is now unsecured
-                    if (!$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
-                        // Update SOA serial after unsigning
-                        DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zone_id);
-                        $auditService = new AuditService($this->db);
-                        $auditService->logDnssecUnsignZone($zone_id, (string)$zone_name);
-                        $this->setMessage('dnssec', 'success', _('Zone has been unsigned successfully.'));
-                        // Redirect to edit page since DNSSEC is no longer relevant
-                        $this->redirect('/zones/' . $zone_id . '/edit');
-                        return;
-                    } else {
-                        $this->setMessage('dnssec', 'warning', _('Zone unsigning requested successfully, but verification failed.'));
-                        $this->logger->warning('DNSSEC unsigning verification failed for zone: {zone} - API returned success but zone still secured', ['zone' => $zone_name]);
-                    }
-                } else {
-                    $this->setMessage('dnssec', 'error', _('Failed to unsign zone. Check PowerDNS logs for details.'));
-                    $this->logger->error('DNSSEC unsigning failed for zone: {zone}', ['zone' => $zone_name]);
+                $unsigned = $this->createZoneSigningService()->unsign($zone_id, $zone_name);
+                [$type, $message] = ZoneSigningMessages::forUnsign($unsigned);
+                $this->setMessage('dnssec', $type, $message);
+                if ($unsigned->outcome === ZoneSigningOutcome::UNSIGNED) {
+                    // Redirect to edit page since DNSSEC is no longer relevant
+                    $this->redirect('/zones/' . $zone_id . '/edit');
+                    return;
                 }
             }
         }
@@ -133,7 +111,7 @@ class DnssecController extends BaseController
         $domain_name = $domainRepository->getDomainNameById($zone_id);
         $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
 
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $dnssecProvider = $this->createDnssecProvider();
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
         $permissionService = $this->createPermissionService();
         $can_manage_dnssec = $permissionService->canManageDnssecForZone($this->getCurrentUserId(), $zone_id);

@@ -27,7 +27,13 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Service\ZoneSigningService;
+use Poweradmin\Domain\Service\ZoneValidationService;
+use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Psr\Log\NullLogger;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
 class ZoneDnssecControllerTest extends TestCase
@@ -52,6 +58,34 @@ class ZoneDnssecControllerTest extends TestCase
         $controller->setApiPermissionService($this->permissionService);
         $controller->setDnssecProvider($this->dnssecProvider);
         $controller->setApiClient($withApiClient ? $this->apiClient : null);
+
+        // The signing steps record what they did on the controller, keeping the assertions below simple.
+        $validator = $this->createMock(ZoneValidationService::class);
+        $validator->method('validateZoneForDnssec')
+            ->willReturnCallback(fn(): array => ['valid' => $controller->signingValidationError === null, 'issues' => []]);
+        $validator->method('getFormattedErrorMessage')
+            ->willReturnCallback(fn(): string => (string)$controller->signingValidationError);
+        $soaRecordManager = $this->createMock(SOARecordManagerInterface::class);
+        $soaRecordManager->method('updateSOASerial')->willReturnCallback(function (int $zoneId) use ($controller): bool {
+            $controller->soaBumps[] = $zoneId;
+            return true;
+        });
+        $audit = $this->createMock(AuditService::class);
+        $audit->method('logDnssecSignZone')->willReturnCallback(function (int $zoneId, string $zoneName) use ($controller): void {
+            $controller->loggedChange = ['zoneId' => $zoneId, 'zoneName' => $zoneName, 'enabled' => true];
+        });
+        $audit->method('logDnssecUnsignZone')->willReturnCallback(function (int $zoneId, string $zoneName) use ($controller): void {
+            $controller->loggedChange = ['zoneId' => $zoneId, 'zoneName' => $zoneName, 'enabled' => false];
+        });
+        $controller->setZoneSigningService(new ZoneSigningService(
+            $this->dnssecProvider,
+            $validator,
+            $soaRecordManager,
+            $audit,
+            ConfigurationManager::getInstance(),
+            new NullLogger()
+        ));
+
         return $controller;
     }
 
@@ -139,8 +173,8 @@ class ZoneDnssecControllerTest extends TestCase
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
         $this->dnssecProvider->expects($this->once())->method('secureZone')->with('example.com')->willReturn(true);
         $this->dnssecProvider->expects($this->once())->method('rectifyZone')->with('example.com')->willReturn(true);
-        // First call (no-op guard) reports unsigned, post-sign call reports signed.
-        $this->dnssecProvider->method('isZoneSecured')->willReturnOnConsecutiveCalls(false, true);
+        // The no-op guard sees unsigned; the post-sign verification and the status payload see signed.
+        $this->dnssecProvider->method('isZoneSecured')->willReturnOnConsecutiveCalls(false, true, true);
         $ksk = new CryptoKey(1, 'ksk', 256, '13', true, '257 3 13 KSKKEY', ['12345 13 2 ABC123DEF456']);
         $this->apiClient->method('getZoneKeys')->willReturn([$ksk]);
 
@@ -164,8 +198,8 @@ class ZoneDnssecControllerTest extends TestCase
         $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->expects($this->once())->method('unsecureZone')->with('example.com')->willReturn(true);
         $this->dnssecProvider->expects($this->never())->method('rectifyZone');
-        // First call (no-op guard) reports signed, post-unsign call reports unsigned.
-        $this->dnssecProvider->method('isZoneSecured')->willReturnOnConsecutiveCalls(true, false);
+        // The no-op guard sees signed; the post-unsign verification and the status payload see unsigned.
+        $this->dnssecProvider->method('isZoneSecured')->willReturnOnConsecutiveCalls(true, false, false);
 
         $controller = $this->createController();
         $controller->setRequestBody(json_encode(['enabled' => false]));
