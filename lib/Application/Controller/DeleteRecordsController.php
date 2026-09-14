@@ -32,13 +32,11 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -48,7 +46,6 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 class DeleteRecordsController extends BaseController
 {
     private LegacyLogger $auditLogger;
-    private RecordCommentService $recordCommentService;
     private ReverseRecordCreator $reverseRecordCreator;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
@@ -64,9 +61,6 @@ class DeleteRecordsController extends BaseController
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
-
         $domainRepository = $repositoryFactory->createDomainRepository();
         $dnsRecordManager = $this->createRecordManager();
         $this->reverseRecordCreator = new ReverseRecordCreator(
@@ -75,7 +69,6 @@ class DeleteRecordsController extends BaseController
             $this->auditLogger,
             $domainRepository,
             $dnsRecordManager,
-            $this->recordCommentService,
             $this->createDnsBackendProvider()
         );
         $this->userContextService = new UserContextService();
@@ -136,8 +129,6 @@ class DeleteRecordsController extends BaseController
 
                 // 0 means the record no longer exists
                 if ($zid > 0) {
-                    $domain_id = $recordRepository->recidToDomid($record_id);
-
                     // Check if this is an A or AAAA record that might have a corresponding PTR record
                     $hasPtrRecord = false;
                     if (
@@ -147,7 +138,7 @@ class DeleteRecordsController extends BaseController
                         $hasPtrRecord = true;
                     }
 
-                    $deleted = $recordManager->deleteRecord($record_id);
+                    $deleted = $recordManager->deleteRecord($record_id, false);
                     if ($deleted->success) {
                         $deleted_count++;
                         $affected_zones[$zid] = true;
@@ -175,8 +166,6 @@ class DeleteRecordsController extends BaseController
                             ), $zid);
                         }
 
-                        RecordManager::deleteRecordZoneTempl($this->db, $record_id);
-
                         // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
                         $delete_ptr = $this->request->getPostParam('delete_ptr') === '1';
                         if ($hasPtrRecord && $delete_ptr) {
@@ -185,14 +174,6 @@ class DeleteRecordsController extends BaseController
                                 $record_info['content'],
                                 $record_info['name']
                             );
-                        }
-
-                        // Delete comment for this specific record (per-record comment by record_id)
-                        $this->recordCommentService->deleteCommentByRecordId($record_id);
-
-                        // For backward compatibility, also clean up RRset-based comments if no similar records remain
-                        if (!$recordRepository->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
-                            $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                         }
                     } else {
                         $this->addSystemMessage('error', (string)$deleted->message);

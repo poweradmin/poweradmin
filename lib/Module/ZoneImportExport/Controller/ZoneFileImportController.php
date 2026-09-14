@@ -412,7 +412,7 @@ class ZoneFileImportController extends BaseController
                     if (!isset($replacedRRSets[$rrsetKey])) {
                         $rrsetRecords = $recordRepository->getRRSetRecords($zone_id, $record->name, $record->type);
                         foreach ($rrsetRecords as $existing) {
-                            $dnsRecordManager->deleteRecord((int)$existing['id']);
+                            $dnsRecordManager->deleteRecord((int)$existing['id'], false);
                         }
                         $replacedRRSets[$rrsetKey] = true;
                     }

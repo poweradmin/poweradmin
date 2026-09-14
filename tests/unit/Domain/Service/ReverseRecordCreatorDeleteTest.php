@@ -60,7 +60,6 @@ class ReverseRecordCreatorDeleteTest extends TestCase
             $this->createMock(LegacyLogger::class),
             $domainRepository,
             $recordManager,
-            null,
             $backendProvider
         );
     }

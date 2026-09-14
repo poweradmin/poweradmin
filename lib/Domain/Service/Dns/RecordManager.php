@@ -305,17 +305,9 @@ class RecordManager implements RecordManagerInterface
             return RecordWriteResult::ok($recordId);
         }
 
-        $pdnssec_use = $this->config->get('dnssec', 'enabled');
-        if ($pdnssec_use) {
-            $dnssecProvider = DnssecProviderFactory::create(
-                $this->db,
-                $this->config,
-                DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
-            );
-            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-            if (is_string($zone_name)) {
-                $dnssecProvider->rectifyZone($zone_name);
-            }
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+        if (is_string($zone_name)) {
+            $this->rectifyZone($zone_name);
         }
 
         return RecordWriteResult::ok($recordId);
@@ -468,12 +460,12 @@ class RecordManager implements RecordManagerInterface
      *
      * @param int|string $rid Record ID
      */
-    public function deleteRecord(int|string $rid): RecordWriteResult
+    public function deleteRecord(int|string $rid, bool $finalizeZone = true): RecordWriteResult
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        // Create RecordRepository to get record details
-        $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
+        $repositoryFactory = new RepositoryFactory($this->db, $this->config, $this->backendProvider);
+        $recordRepository = $repositoryFactory->createRecordRepository();
         $record = $recordRepository->getRecordDetailsFromRecordId($rid);
         if (empty($record)) {
             return RecordWriteResult::notFound(_("Record not found."));
@@ -507,7 +499,51 @@ class RecordManager implements RecordManagerInterface
             $this->changeLogger->logRecordDelete($beforeForLog, $zoneId);
         });
 
+        // Nothing points at the row any more: the template link, the record's own
+        // comment, and the RRset comment once no sibling record is left to carry it.
+        $zoneId = (int)$record['zid'];
+        self::deleteRecordZoneTempl($this->db, $rid);
+        $comments = $repositoryFactory->createRecordCommentRepository();
+        $comments->deleteByRecordId($rid);
+        if (!$recordRepository->hasSimilarRecords($zoneId, (string)$record['name'], (string)$record['type'], $rid)) {
+            $comments->delete($zoneId, (string)$record['name'], (string)$record['type']);
+        }
+
+        if (!$finalizeZone) {
+            return RecordWriteResult::ok();
+        }
+
+        if ($record['type'] !== 'SOA') {
+            $this->soaRecordManager->updateSOASerial($zoneId);
+        }
+        if (is_string($zone)) {
+            $this->rectifyZone($zone);
+        }
+
         return RecordWriteResult::ok();
+    }
+
+    /**
+     * Rectify after a write when DNSSEC is in use, so signatures cover the change.
+     * The write is already committed, so a failure here is logged, not raised.
+     */
+    private function rectifyZone(string $zoneName): void
+    {
+        if (!$this->config->get('dnssec', 'enabled')) {
+            return;
+        }
+        try {
+            $dnssecProvider = DnssecProviderFactory::create(
+                $this->db,
+                $this->config,
+                DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
+            );
+            if (!$dnssecProvider->rectifyZone($zoneName)) {
+                $this->logger->warning('Zone rectify refused for {zone}', ['zone' => $zoneName]);
+            }
+        } catch (\Throwable $e) {
+            $this->logger->warning('Zone rectify failed for {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
+        }
     }
 
     /**

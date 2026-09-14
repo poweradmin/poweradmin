@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -59,7 +58,6 @@ class ZonesRecordsController extends PublicApiController
     private RecordManagerInterface $recordManager;
     private SOARecordManagerInterface $soaRecordManager;
     private ApiPermissionService $permissionService;
-    private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
@@ -75,9 +73,6 @@ class ZonesRecordsController extends PublicApiController
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->permissionService = new ApiPermissionService($this->db);
-
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
         $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
         $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
@@ -519,7 +514,7 @@ class ZonesRecordsController extends PublicApiController
             $ptrMessage = '';
             if ($createPtr && ($type === 'A' || $type === 'AAAA')) {
                 try {
-                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $this->createDomainRepository(), $this->createRecordManager(), $this->recordCommentService, $this->createDnsBackendProvider());
+                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $this->createDomainRepository(), $this->createRecordManager(), $this->createDnsBackendProvider());
 
                     $ptrResult = $reverseRecordCreator->createReverseRecord(
                         $name,
@@ -779,7 +774,7 @@ class ZonesRecordsController extends PublicApiController
                     $newName = $updatedRecord['name'] ?? $recordData['name'];
                     $newContent = $updatedRecord['content'] ?? $recordData['content'];
 
-                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $this->createDomainRepository(), $this->createRecordManager(), $this->recordCommentService, $this->createDnsBackendProvider());
+                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $this->createDomainRepository(), $this->createRecordManager(), $this->createDnsBackendProvider());
 
                     $ptrResult = $reverseRecordCreator->updateReverseRecord(
                         $oldType,
@@ -938,7 +933,7 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Record not found in this zone', 404);
             }
 
-            // Get record type before deletion (for SOA serial update logic)
+            // The stored type decides which records a client-limited caller may touch
             $recordType = $existingRecord['type'];
 
             // Block SOA/NS deletes for users limited to zone_content_edit_own_as_client
@@ -951,20 +946,6 @@ class ZonesRecordsController extends PublicApiController
                 // Backend faults keep the generic contract string; refusals carry their reason
                 return $this->returnApiError($result->status === 500 ? 'Failed to delete record' : (string)$result->message, $result->status);
             }
-
-            // Delete comment for this specific record (per-record comment by record_id)
-            $this->recordCommentService->deleteCommentByRecordId($recordId);
-
-            // For backward compatibility, also clean up RRset-based comments if no similar records remain
-            if (!$this->recordRepository->hasSimilarRecords($zoneId, $existingRecord['name'], $existingRecord['type'], $recordId)) {
-                $this->recordCommentService->deleteComment($zoneId, $existingRecord['name'], $existingRecord['type']);
-            }
-
-            // Update SOA serial after deleting the record (except for SOA records themselves)
-            if ($recordType !== 'SOA') {
-                $this->updateSOASerial($zoneId);
-            }
-            $this->rectifyZoneAfterWrite((string)$zone['name']);
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:api_delete_record name:%s type:%s content:%s',

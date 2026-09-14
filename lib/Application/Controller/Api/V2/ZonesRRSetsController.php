@@ -588,7 +588,7 @@ class ZonesRRSetsController extends PublicApiController
                 // All validation passed - now safe to delete existing records
                 $existingRecords = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
                 foreach ($existingRecords as $record) {
-                    if (!$this->recordManager->deleteRecord($record['id'])->success) {
+                    if (!$this->recordManager->deleteRecord($record['id'], false)->success) {
                         if ($useTransaction) {
                             $this->db->rollBack();
                         }
@@ -776,7 +776,7 @@ class ZonesRRSetsController extends PublicApiController
                 $totalRecords = count($records);
 
                 foreach ($records as $record) {
-                    if (!$this->recordManager->deleteRecord($record['id'])->success) {
+                    if (!$this->recordManager->deleteRecord($record['id'], false)->success) {
                         $this->db->rollBack();
                         return $this->returnApiError(
                             'Failed to delete record with ID ' . $record['id'] . ' (name: ' . $record['name'] . ', type: ' . $type . ')',

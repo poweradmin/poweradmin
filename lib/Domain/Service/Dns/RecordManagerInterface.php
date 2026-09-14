@@ -58,27 +58,20 @@ interface RecordManagerInterface
     public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true): RecordWriteResult;
 
     /**
-     * Edit a record
+     * Edit a record. Callers bump the serial themselves, since whether an
+     * unchanged save bumps it is their dns.bump_serial_on_unchanged_save call.
      *
      * @param array $record Record structure to update
      */
     public function editRecord(array $record): RecordWriteResult;
 
     /**
-     * Delete a record by a given record id
+     * Delete a record and everything that pointed at it (template link, comments)
      *
      * @param int|string $rid Record ID
+     * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
      */
-    public function deleteRecord(int|string $rid): RecordWriteResult;
-
-    /**
-     * Delete record reference to zone template
-     *
-     * @param int $rid Record ID
-     *
-     * @return boolean true on success
-     */
-    public static function deleteRecordZoneTempl($db, int|string $rid): bool;
+    public function deleteRecord(int|string $rid, bool $finalizeZone = true): RecordWriteResult;
 
     /**
      * Get Zone comment

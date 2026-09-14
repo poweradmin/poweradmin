@@ -110,7 +110,6 @@ class AddRecordController extends BaseController
             $this->auditLogger,
             $this->domainRepository,
             $dnsRecordManager,
-            $recordCommentService,
             $this->createDnsBackendProvider()
         );
 

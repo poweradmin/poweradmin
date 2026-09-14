@@ -36,7 +36,6 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -63,7 +62,6 @@ class ZonesRecordsBulkController extends PublicApiController
     private RecordManagerInterface $recordManager;
     private SOARecordManagerInterface $soaRecordManager;
     private ApiPermissionService $permissionService;
-    private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
@@ -79,9 +77,6 @@ class ZonesRecordsBulkController extends PublicApiController
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->permissionService = new ApiPermissionService($this->db);
-
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
         $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
         $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
@@ -534,7 +529,7 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException("Record not found in this zone", 404);
         }
 
-        // Store record type before deletion (for SOA serial update logic)
+        // The stored type decides which records a client-limited caller may touch
         $recordType = $existingRecord['type'];
 
         // Block SOA/NS deletes for users limited to zone_content_edit_own_as_client
@@ -542,22 +537,13 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException('You do not have permission to delete this record type', 403);
         }
 
-        $result = $this->recordManager->deleteRecord($recordId);
+        $result = $this->recordManager->deleteRecord($recordId, false);
         if (!$result->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
             if ($result->status === 500) {
                 throw new Exception('Failed to delete record');
             }
             throw new ApiErrorException((string)$result->message, $result->status);
-        }
-
-        // Clean up per-record comment
-        $this->recordCommentService->deleteCommentByRecordId($recordId);
-
-        // Clean up legacy RRset comments if no similar records remain
-        $similarRecords = $this->recordRepository->getRRSetRecords($zoneId, $existingRecord['name'], $recordType);
-        if (empty($similarRecords)) {
-            $this->recordCommentService->deleteComment($zoneId, $existingRecord['name'], $recordType);
         }
 
         return $recordType;

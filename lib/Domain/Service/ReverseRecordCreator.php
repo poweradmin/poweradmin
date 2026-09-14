@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
@@ -33,8 +32,6 @@ use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -47,8 +44,6 @@ class ReverseRecordCreator
     private LegacyLogger $logger;
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
-    private SOARecordManagerInterface $soaRecordManager;
-    private ?RecordCommentService $recordCommentService;
     private ?DnsBackendProvider $backendProvider;
     private IpAddressRetriever $ipAddressRetriever;
     private UserContextService $userContextService;
@@ -59,7 +54,6 @@ class ReverseRecordCreator
         LegacyLogger $logger,
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,
-        ?RecordCommentService $recordCommentService = null,
         ?DnsBackendProvider $backendProvider = null
     ) {
         $this->db = $db;
@@ -67,9 +61,7 @@ class ReverseRecordCreator
         $this->logger = $logger;
         $this->domainRepository = $domainRepository;
         $this->recordManager = $recordManager;
-        $this->recordCommentService = $recordCommentService;
         $this->backendProvider = $backendProvider;
-        $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($db, $config, $backendProvider);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->userContextService = new UserContextService();
     }
@@ -171,13 +163,8 @@ class ReverseRecordCreator
             foreach ($records as $r) {
                 if ($r['name'] === $contentRev && ($r['content'] === $name || str_starts_with($r['content'], "$name."))) {
                     $recordId = $r['id'] ?? 0;
+                    // The manager takes the comment along and finalises the reverse zone
                     if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)->success) {
-                        $this->recordCommentService?->deleteCommentByRecordId($recordId);
-                        if ($this->config->get('dnssec', 'enabled')) {
-                            $zone_name = $this->domainRepository->getDomainNameById($zoneRevId);
-                            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
-                            $dnssecProvider->rectifyZone($zone_name);
-                        }
                         return true;
                     }
                 }
@@ -189,7 +176,7 @@ class ReverseRecordCreator
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         // Look for a PTR record pointing to this name
-        $query = "SELECT id, domain_id FROM $records_table
+        $query = "SELECT id FROM $records_table
                   WHERE type = 'PTR' AND name = ?
                   AND (content = ? OR content LIKE ? ESCAPE '!')";
 
@@ -199,19 +186,8 @@ class ReverseRecordCreator
         $result = $stmt->fetch();
         if ($result) {
             $recordId = (int)$result['id'];
-            $domainId = $result['domain_id'];
 
             if ($this->recordManager->deleteRecord($recordId)->success) {
-                $this->recordCommentService?->deleteCommentByRecordId($recordId);
-
-                $this->soaRecordManager->updateSOASerial($domainId);
-
-                if ($this->config->get('dnssec', 'enabled')) {
-                    $zone_name = $this->domainRepository->getDomainNameById($domainId);
-                    $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
-                    $dnssecProvider->rectifyZone($zone_name);
-                }
-
                 return true;
             }
         }
@@ -284,14 +260,7 @@ class ReverseRecordCreator
             foreach ($result['records'] as $r) {
                 if ($r['type'] === $recordType && $r['content'] === $ipAddress && ($r['name'] === $hostname || str_starts_with($r['name'], "$hostname."))) {
                     $recordId = $r['id'] ?? 0;
-                    $domainId = $r['domain_id'] ?? 0;
                     if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)->success) {
-                        $this->recordCommentService?->deleteCommentByRecordId($recordId);
-                        if ($this->config->get('dnssec', 'enabled') && !empty($domainId)) {
-                            $zone_name = $this->domainRepository->getDomainNameById($domainId);
-                            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
-                            $dnssecProvider->rectifyZone($zone_name);
-                        }
                         return true;
                     }
                 }
@@ -303,7 +272,7 @@ class ReverseRecordCreator
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         // Look for A or AAAA record with matching hostname and IP address
-        $query = "SELECT id, domain_id FROM $records_table
+        $query = "SELECT id FROM $records_table
                   WHERE type = ? AND content = ?
                   AND (name = ? OR name LIKE ? ESCAPE '!')";
 
@@ -313,19 +282,8 @@ class ReverseRecordCreator
         $result = $stmt->fetch();
         if ($result) {
             $recordId = (int)$result['id'];
-            $domainId = $result['domain_id'];
 
             if ($this->recordManager->deleteRecord($recordId)->success) {
-                $this->recordCommentService?->deleteCommentByRecordId($recordId);
-
-                $this->soaRecordManager->updateSOASerial($domainId);
-
-                if ($this->config->get('dnssec', 'enabled')) {
-                    $zone_name = $this->domainRepository->getDomainNameById($domainId);
-                    $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
-                    $dnssecProvider->rectifyZone($zone_name);
-                }
-
                 return true;
             }
         }

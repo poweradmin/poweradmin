@@ -32,12 +32,10 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\UserContextService;
@@ -52,7 +50,6 @@ class DeleteRecordController extends BaseController
 {
 
     private LegacyLogger $auditLogger;
-    private RecordCommentService $recordCommentService;
     private ReverseRecordCreator $reverseRecordCreator;
     private UserContextService $userContextService;
     private PermissionService $permissionService;
@@ -68,9 +65,6 @@ class DeleteRecordController extends BaseController
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
-
         $domainRepository = $repositoryFactory->createDomainRepository();
         $dnsRecordManager = $this->createRecordManager();
         $this->reverseRecordCreator = new ReverseRecordCreator(
@@ -79,7 +73,6 @@ class DeleteRecordController extends BaseController
             $this->auditLogger,
             $domainRepository,
             $dnsRecordManager,
-            $this->recordCommentService,
             $this->createDnsBackendProvider()
         );
 
@@ -176,9 +169,6 @@ class DeleteRecordController extends BaseController
                     ), $zid);
                 }
 
-                RecordManager::deleteRecordZoneTempl($this->db, $record_id);
-                $this->createSOARecordManager()->updateSOASerial($zid);
-
                 // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
                 $delete_ptr = $this->request->getPostParam('delete_ptr') === '1';
                 if ($hasPtrRecord && $delete_ptr) {
@@ -196,17 +186,6 @@ class DeleteRecordController extends BaseController
                         $record_info['name'],
                         $record_info['content']
                     );
-                }
-
-                $this->rectifyZoneAfterWrite((string)$domainRepository->getDomainNameById($zid));
-
-                // Delete comment for this specific record (per-record comment by record_id)
-                $this->recordCommentService->deleteCommentByRecordId($record_id);
-
-                // For backward compatibility, also clean up RRset-based comments if no similar records remain
-                $hasSimilarRecords = $recordRepository->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id);
-                if (!$hasSimilarRecords) {
-                    $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                 }
 
                 if ($deletedPtrRecord && $deletedForwardRecord) {

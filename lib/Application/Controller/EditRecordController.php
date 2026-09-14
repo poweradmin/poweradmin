@@ -387,7 +387,6 @@ class EditRecordController extends BaseController
             $this->auditLogger,
             $this->createDomainRepository(),
             $this->createRecordManager(),
-            $this->recordCommentService,
             $this->createDnsBackendProvider()
         );
 
