@@ -321,6 +321,9 @@ class SearchController extends BaseController
         $recordTypeService = new RecordTypeService($this->getConfig());
         $recordTypes = $recordTypeService->getAllTypes($this->getRecordTypeCapabilities());
 
+        $can_bulk_delete_zones = $deletePermission === 'all' || $deletePermission === 'own';
+        $can_bulk_delete_records = $editPermission === 'all' || $editPermission === 'own' || $editPermission === 'own_as_client';
+
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,
             'zone_sort_direction' => $zone_sort_direction,
@@ -351,6 +354,8 @@ class SearchController extends BaseController
             'iface_record_comments' => $iface_record_comments,
             'edit_permission' => $editPermission,
             'delete_permission' => $deletePermission,
+            'can_bulk_delete_zones' => $can_bulk_delete_zones,
+            'can_bulk_delete_records' => $can_bulk_delete_records,
             'user_id' => $_SESSION[SessionKeys::USERID],
             'show_zone_owners' => $ownershipViewPermission !== 'none',
             'is_owner_sort_supported' => $ownerSortAllowed,

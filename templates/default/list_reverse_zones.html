@@ -301,7 +301,7 @@
         </form>
     </div>
     
-    {% if perm_delete == "all" or perm_delete == "own" %}
+    {% if can_bulk_delete_zones %}
     <div class="card-footer py-3">
         <button type="submit" name="commit" form="delete-zones-form" class="btn btn-danger btn-sm" id="delete-zones-btn" disabled>
             <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete zone(s){% endtrans %}

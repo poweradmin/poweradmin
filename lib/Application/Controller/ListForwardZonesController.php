@@ -143,6 +143,7 @@ class ListForwardZonesController extends BaseController
         $perm_view = $permissionService->getViewPermissionLevel((int)$userId);
         $perm_edit = $permissionService->getEditPermissionLevel((int)$userId);
         $perm_delete = $permissionService->getDeletePermissionLevel((int)$userId);
+        $can_bulk_delete_zones = $perm_delete === 'all' || $perm_delete === 'own';
         $dnsDataService = $this->createDnsDataService();
 
         $count_zones_view = $dnsDataService->countZones($perm_view);
@@ -273,6 +274,7 @@ class ListForwardZonesController extends BaseController
             'session_userlogin' => $_SESSION[SessionKeys::USERLOGIN],
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
+            'can_bulk_delete_zones' => $can_bulk_delete_zones,
             'perm_zone_master_add' => $this->hasPermission('zone_master_add'),
             'perm_zone_slave_add' => $this->hasPermission('zone_slave_add'),
             'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),

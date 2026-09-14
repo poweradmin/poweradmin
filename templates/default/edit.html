@@ -171,7 +171,7 @@
             {% endif %}
         </strong>
         <div>
-            {% if perm_edit != "none" and iface_edit_save_changes_top and not zone_is_read_only %}
+            {% if zone_is_editable and iface_edit_save_changes_top %}
             <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
                 <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
             </button>
@@ -558,7 +558,7 @@
                 <label class="form-label"><strong>{% trans %}Comments{% endtrans %}:</strong></label>
                 <div class="d-flex gap-2 align-items-start">
                     <textarea class="form-control form-control-sm" rows="5" name="zone_comment">{{ zone_comment }}</textarea>
-                    {% if perm_edit != "none" %}
+                    {% if can_edit_records %}
                     <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/comment/edit">
                         <i class="bi bi-pencil-square text-primary"></i> {% trans %}Edit comment{% endtrans %}</a>
                     {% endif %}
@@ -575,10 +575,10 @@
 
     {% endif %}
 
-{% if (perm_edit != "none" and not iface_edit_save_changes_top) or (dblog_use and can_view_zone_logs) %}
+{% if (can_edit_records and not iface_edit_save_changes_top) or (dblog_use and can_view_zone_logs) %}
 <div class="card-footer py-3 d-flex justify-content-between align-items-center">
     <div>
-        {% if perm_edit != "none" and not iface_edit_save_changes_top and not zone_is_read_only %}
+        {% if zone_is_editable and not iface_edit_save_changes_top %}
         <button class="btn btn-primary btn-sm" type="submit" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
             <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
         </button>
@@ -609,7 +609,7 @@
             </ul>
         </div>
         {% endif %}
-        {% if not is_reverse_zone and perm_edit != "none" %}
+        {% if not is_reverse_zone and can_edit_records %}
         <a href="{{ base_url_prefix }}/zones/batch-ptr?id={{ zone_id }}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-repeat me-1 text-secondary"></i>{% trans %}Generate PTR{% endtrans %}
         </a>

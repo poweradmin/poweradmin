@@ -110,6 +110,7 @@ class ListReverseZonesController extends BaseController
         $perm_view = $permissionService->getViewPermissionLevel((int)$userId);
         $perm_edit = $permissionService->getEditPermissionLevel((int)$userId);
         $perm_delete = $permissionService->getDeletePermissionLevel((int)$userId);
+        $can_bulk_delete_zones = $perm_delete === 'all' || $perm_delete === 'own';
         $count_zones_view = $this->dnsDataService->countZones($perm_view, 'all', 'reverse');
         $count_zones_edit = $this->dnsDataService->countZones($perm_edit, 'all', 'reverse');
         $count_zones_delete = $this->dnsDataService->countZones($perm_delete, 'all', 'reverse');
@@ -259,6 +260,7 @@ class ListReverseZonesController extends BaseController
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
+            'can_bulk_delete_zones' => $can_bulk_delete_zones,
             'perm_zone_master_add' => $this->hasPermission('zone_master_add'),
             'perm_zone_slave_add' => $this->hasPermission('zone_slave_add'),
             'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
