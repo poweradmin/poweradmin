@@ -40,8 +40,6 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DomainHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -50,8 +48,6 @@ class BulkRegistrationController extends BaseController
     /** Bulk creation only makes sense for locally served zones. */
     private const AVAILABLE_ZONE_TYPES = [ZoneType::MASTER, ZoneType::NATIVE];
 
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
     private UserContextService $userContextService;
     private Request $request;
 
@@ -60,8 +56,6 @@ class BulkRegistrationController extends BaseController
         parent::__construct($request);
 
         $this->request = new Request();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->userContextService = new UserContextService();
     }
 
@@ -139,6 +133,7 @@ class BulkRegistrationController extends BaseController
         $added_domains = [];
         $failed_domains = [];
         $zoneService = $this->createZoneManagementService();
+        $audit = $this->createAuditService();
         $callerId = $this->getCurrentUserId();
         foreach ($domains as $domain) {
             $created = $zoneService->createZone($domain, $dom_type, $owner, '', $zone_template, false, $selected_groups, $callerId);
@@ -147,14 +142,7 @@ class BulkRegistrationController extends BaseController
                 continue;
             }
             $added_domains[] = $domain;
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername(),
-                $domain,
-                $dom_type,
-                $zone_template
-            ), $created['zone_id']);
+            $audit->logZoneAdd($created['zone_id'], $domain, $dom_type, $zone_template);
         }
 
         if (!$failed_domains) {

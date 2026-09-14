@@ -10,7 +10,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Application\Service\AuditService;
 
 class BatchReverseRecordCreatorTest extends TestCase
 {
@@ -21,7 +21,7 @@ class BatchReverseRecordCreatorTest extends TestCase
         ?RecordRepositoryInterface $recordRepository = null
     ): BatchReverseRecordCreator {
         $db = $this->createMock(PDO::class);
-        $logger = $this->createMock(LegacyLogger::class);
+        $audit = $this->createMock(AuditService::class);
 
         if ($config === null) {
             $config = $this->createMock(ConfigurationManager::class);
@@ -46,7 +46,7 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $ipValidator = new IPAddressValidator();
 
-        return new BatchReverseRecordCreator($db, $config, $logger, $domainRepository, $recordManager, $ipValidator, $recordRepository);
+        return new BatchReverseRecordCreator($db, $config, $audit, $domainRepository, $recordManager, $ipValidator, $recordRepository);
     }
 
     public function testCreateIPv6NetworkGeneratesCorrectPtrNames(): void

@@ -32,7 +32,6 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use PDO;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class RecordManagerService
 {
@@ -40,7 +39,7 @@ class RecordManagerService
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
     private RecordCommentService $recordCommentService;
-    private LegacyLogger $logger;
+    private AuditService $audit;
     private ConfigurationManager $config;
     private ?DnsBackendProvider $backendProvider;
 
@@ -49,7 +48,7 @@ class RecordManagerService
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,
         RecordCommentService $recordCommentService,
-        LegacyLogger $logger,
+        AuditService $audit,
         ConfigurationManager $config,
         ?DnsBackendProvider $backendProvider = null
     ) {
@@ -57,7 +56,7 @@ class RecordManagerService
         $this->domainRepository = $domainRepository;
         $this->recordManager = $recordManager;
         $this->recordCommentService = $recordCommentService;
-        $this->logger = $logger;
+        $this->audit = $audit;
         $this->config = $config;
         $this->backendProvider = $backendProvider;
     }
@@ -66,7 +65,7 @@ class RecordManagerService
      * Creates the record and, on success, logs, rectifies and stores the comment.
      * Failures come back as the result; nothing is written to MessageService.
      */
-    public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, string $clientIp, int $disabled = 0): RecordWriteResult
+    public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, int $disabled = 0): RecordWriteResult
     {
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
@@ -77,24 +76,10 @@ class RecordManagerService
             return $result;
         }
 
-        $this->logRecordCreation($clientIp, $userlogin, $type, $name, $zone_name, $content, $ttl, $prio, $zone_id);
+        $this->audit->logRecordAdd($zone_id, $type, DnsHelper::restoreZoneSuffix($name, $zone_name), $content, $ttl, $prio);
         $this->handleCommentsWithId($zone_id, $name, $type, $content, $comment, $userlogin, $zone_name, $result->recordId);
 
         return $result;
-    }
-
-    private function logRecordCreation(string $clientIp, string $userlogin, string $type, string $name, string $zone_name, string $content, int $ttl, int $prio, int $zone_id): void
-    {
-        $this->logger->logInfo(sprintf(
-            'client_ip:%s user:%s operation:add_record record_type:%s record:%s content:%s ttl:%s priority:%s',
-            $clientIp,
-            $userlogin,
-            $type,
-            DnsHelper::restoreZoneSuffix($name, $zone_name),
-            $content,
-            $ttl,
-            $prio
-        ), $zone_id);
     }
 
     /**

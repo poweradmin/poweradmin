@@ -36,7 +36,6 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -45,8 +44,6 @@ use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -57,8 +54,6 @@ class ZonesRecordsController extends PublicApiController
     private RecordManagerInterface $recordManager;
     private ApiPermissionService $permissionService;
     private DnsBackendProvider $backendProvider;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
     private ReverseTtlResolver $reverseTtlResolver;
 
     public function __construct(array $request, array $pathParameters = [])
@@ -73,9 +68,6 @@ class ZonesRecordsController extends PublicApiController
         $this->permissionService = new ApiPermissionService($this->db);
 
         $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
-
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     /**
@@ -511,7 +503,7 @@ class ZonesRecordsController extends PublicApiController
             $ptrMessage = '';
             if ($createPtr && ($type === 'A' || $type === 'AAAA')) {
                 try {
-                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $this->createDomainRepository(), $this->createRecordManager(), $this->createDnsBackendProvider());
+                    $reverseRecordCreator = $this->createReverseRecordCreator();
 
                     $ptrResult = $reverseRecordCreator->createReverseRecord(
                         $name,
@@ -552,14 +544,7 @@ class ZonesRecordsController extends PublicApiController
                 'ptr_created' => $ptrCreated
             ];
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_add_record name:%s type:%s content:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $name,
-                $type,
-                $content
-            ), $zoneId);
+            $this->createAuditService()->logApiRecordAdd($zoneId, $name, $type, $content);
 
             $message = 'Record created successfully' . $ptrMessage;
             return $this->returnApiResponse(['record' => $responseData], true, $message, 201);
@@ -765,7 +750,7 @@ class ZonesRecordsController extends PublicApiController
                     $newName = $updatedRecord['name'] ?? $recordData['name'];
                     $newContent = $updatedRecord['content'] ?? $recordData['content'];
 
-                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $this->createDomainRepository(), $this->createRecordManager(), $this->createDnsBackendProvider());
+                    $reverseRecordCreator = $this->createReverseRecordCreator();
 
                     $ptrResult = $reverseRecordCreator->updateReverseRecord(
                         $oldType,
@@ -829,14 +814,7 @@ class ZonesRecordsController extends PublicApiController
                 ];
             }
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_edit_record name:%s type:%s content:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $formattedRecord['name'],
-                $formattedRecord['type'],
-                $formattedRecord['content']
-            ), $zoneId);
+            $this->createAuditService()->logApiRecordEdit($zoneId, $formattedRecord['name'], $formattedRecord['type'], $formattedRecord['content']);
 
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record updated successfully' . $ptrMessage, 200);
         } catch (\Throwable $e) {
@@ -938,14 +916,7 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError($result->status === 500 ? 'Failed to delete record' : (string)$result->message, $result->status);
             }
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_delete_record name:%s type:%s content:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $existingRecord['name'] ?? '',
-                $existingRecord['type'] ?? '',
-                $existingRecord['content'] ?? ''
-            ), $zoneId);
+            $this->createAuditService()->logApiRecordDelete($zoneId, $existingRecord['name'] ?? '', $existingRecord['type'] ?? '', $existingRecord['content'] ?? '');
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204);
         } catch (\Throwable $e) {

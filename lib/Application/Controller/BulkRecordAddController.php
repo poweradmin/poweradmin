@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
@@ -44,19 +43,15 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class BulkRecordAddController extends BaseController
 {
-    private LegacyLogger $auditLogger;
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerService $recordManager;
     private RecordTypeService $recordTypeService;
     private UserContextService $userContextService;
-    private IpAddressRetriever $ipAddressRetriever;
     private PermissionService $permissionService;
     private Request $request;
 
@@ -65,25 +60,8 @@ class BulkRecordAddController extends BaseController
         parent::__construct($request);
 
         $this->request = new Request();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-
-        $backendProvider = $this->createDnsBackendProvider();
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $this->domainRepository = $repositoryFactory->createDomainRepository();
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $recordCommentService = new RecordCommentService($recordCommentRepository);
-
-        $this->recordManager = new RecordManagerService(
-            $this->db,
-            $this->domainRepository,
-            $this->createRecordManager(),
-            $recordCommentService,
-            $this->auditLogger,
-            $this->getConfig(),
-            $backendProvider
-        );
-
+        $this->domainRepository = $this->createDomainRepository();
+        $this->recordManager = $this->createRecordManagerService();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();
         $this->permissionService = $this->createPermissionService();
@@ -220,23 +198,10 @@ class BulkRecordAddController extends BaseController
                         $prio,
                         $comment,
                         $this->userContextService->getLoggedInUsername(),
-                        $this->ipAddressRetriever->getClientIp(),
                         $disabled
                     );
                     if ($result->success) {
                         $success_count++;
-
-                        // Log the record creation
-                        $this->auditLogger->logInfo(sprintf(
-                            'client_ip:%s user:%s operation:add_record name:%s type:%s content:%s ttl:%s prio:%s',
-                            $this->ipAddressRetriever->getClientIp(),
-                            $this->userContextService->getLoggedInUsername(),
-                            $name,
-                            $type,
-                            $content,
-                            $ttl,
-                            $prio
-                        ), $zone_id);
                     } else {
                         $failed_records[] = $line . " - " . $result->message;
                     }

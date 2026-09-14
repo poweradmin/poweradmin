@@ -38,6 +38,8 @@ use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\BatchReverseRecordCreator;
+use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
@@ -79,6 +81,7 @@ class ControllerServiceFactory
     private ?UserManagementService $userManagementService = null;
     private ?ZoneOwnershipModeService $zoneOwnershipModeService = null;
     private ?ZoneSigningService $zoneSigningService = null;
+    private ?AuditService $auditService = null;
     private ?CatalogZoneService $catalogZoneService = null;
     private ?UserPreferenceService $userPreferenceService = null;
     private ?RepositoryFactory $repositoryFactory = null;
@@ -223,13 +226,18 @@ class ControllerServiceFactory
         return new ZoneManagementService($this->zoneRepository(), $this->config, $this->db, $this->logger, null, $capabilities, $this->zoneSigningService());
     }
 
+    public function auditService(): AuditService
+    {
+        return $this->auditService ??= new AuditService($this->db);
+    }
+
     public function zoneMetadataService(): ZoneMetadataService
     {
         return new ZoneMetadataService(
             $this->zoneRepository(),
             $this->config,
             $this->permissionService(),
-            new AuditService($this->db),
+            $this->auditService(),
             new RecordChangeLogger($this->db),
             $this->apiClient(),
             $this->logger
@@ -242,7 +250,7 @@ class ControllerServiceFactory
             $this->dnssecProvider(),
             new ZoneValidationService($this->recordRepository()),
             $this->soaRecordManager(),
-            new AuditService($this->db),
+            $this->auditService(),
             $this->config,
             $this->logger
         );
@@ -293,6 +301,46 @@ class ControllerServiceFactory
         return DnsServiceFactory::createRecordManager($this->db, $this->config, $this->dnsBackendProvider());
     }
 
+    public function recordManagerService(): RecordManagerService
+    {
+        $repositories = $this->repositoryFactory();
+
+        return new RecordManagerService(
+            $this->db,
+            $repositories->createDomainRepository(),
+            $this->recordManager(),
+            new RecordCommentService($repositories->createRecordCommentRepository()),
+            $this->auditService(),
+            $this->config,
+            $this->dnsBackendProvider()
+        );
+    }
+
+    public function reverseRecordCreator(): ReverseRecordCreator
+    {
+        return new ReverseRecordCreator(
+            $this->db,
+            $this->config,
+            $this->auditService(),
+            $this->domainRepository(),
+            $this->recordManager(),
+            $this->dnsBackendProvider()
+        );
+    }
+
+    public function batchReverseRecordCreator(): BatchReverseRecordCreator
+    {
+        return new BatchReverseRecordCreator(
+            $this->db,
+            $this->config,
+            $this->auditService(),
+            $this->domainRepository(),
+            $this->recordManager(),
+            null,
+            $this->recordRepository()
+        );
+    }
+
     public function domainManager(): DomainManagerInterface
     {
         return DnsServiceFactory::createDomainManager($this->db, $this->config, $this->dnsBackendProvider());
@@ -303,7 +351,7 @@ class ControllerServiceFactory
         return $this->catalogZoneService ??= new CatalogZoneService(
             $this->dnsBackendProvider(),
             $this->permissionService(),
-            new AuditService($this->db),
+            $this->auditService(),
             $this->repositoryFactory()->createZoneRepository()
         );
     }

@@ -24,12 +24,9 @@ namespace Poweradmin\Module\DnsWizard\Controller\Api;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\InternalApiController;
-use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Service\SessionKeys;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -362,26 +359,9 @@ class DnsWizardApiController extends InternalApiController
             // This ensures records match the zone apex even when display_hostname_only is disabled
             $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
-            // Create the record using RecordManagerService
-            $logger = new LegacyLogger($this->db);
-            $backendProvider = $this->createDnsBackendProvider();
-            $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-            $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-            $recordCommentService = new RecordCommentService($recordCommentRepository);
-            $recordManager = new RecordManagerService(
-                $this->db,
-                $domainRepository,
-                $this->createRecordManager(),
-                $recordCommentService,
-                $logger,
-                $this->config,
-                $backendProvider
-            );
-
             $userlogin = $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown';
-            $clientIp = $this->request->getClientIp() ?? '0.0.0.0';
 
-            $result = $recordManager->createRecord(
+            $result = $this->createRecordManagerService()->createRecord(
                 $zone_id,
                 $name,
                 $type,
@@ -389,8 +369,7 @@ class DnsWizardApiController extends InternalApiController
                 $ttl,
                 $prio,
                 $comment,
-                $userlogin,
-                $clientIp
+                $userlogin
             );
 
             if (!$result->success) {

@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Module\DnsWizard\Controller;
 
-use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
@@ -30,10 +29,8 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Enum\AccessScope;
 
 /**
@@ -57,22 +54,8 @@ class DnsWizardFormController extends BaseController
         $this->zoneRepository = $this->createZoneRepository();
         $this->formStateService = new FormStateService();
 
-        $logger = new LegacyLogger($this->db);
-        $backendProvider = $this->createDnsBackendProvider();
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $this->domainRepository = $repositoryFactory->createDomainRepository();
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $recordCommentService = new RecordCommentService($recordCommentRepository);
-
-        $this->recordManager = new RecordManagerService(
-            $this->db,
-            $this->domainRepository,
-            $this->createRecordManager(),
-            $recordCommentService,
-            $logger,
-            $this->getConfig(),
-            $backendProvider
-        );
+        $this->domainRepository = $this->createDomainRepository();
+        $this->recordManager = $this->createRecordManagerService();
     }
 
     public function run(): void
@@ -248,8 +231,6 @@ class DnsWizardFormController extends BaseController
         // Create the record
         $userContextService = new UserContextService();
         $userlogin = $userContextService->getLoggedInUsername() ?? 'unknown';
-        $ipRetriever = new IpAddressRetriever($_SERVER);
-        $clientIp = $ipRetriever->getClientIp();
 
         $result = $this->recordManager->createRecord(
             $zone_id,
@@ -259,8 +240,7 @@ class DnsWizardFormController extends BaseController
             $ttl,
             $prio,
             '',
-            $userlogin,
-            $clientIp
+            $userlogin
         );
 
         if (!$result->success) {

@@ -36,27 +36,18 @@ use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneSlaveController extends BaseController
 {
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
-    private UserContextService $userContextService;
     private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $this->userContextService = new UserContextService();
         $this->request = new Request();
     }
 
@@ -139,13 +130,7 @@ class AddZoneSlaveController extends BaseController
         }
         $zone_id = $created['zone_id'];
 
-        $this->auditLogger->logInfo(sprintf(
-            'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
-            $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername(),
-            $zone,
-            $master
-        ), $zone_id);
+        $this->createAuditService()->logZoneAdd($zone_id, $zone, $type, null, $master);
 
         // Check if the zone is a reverse zone and redirect accordingly
         if (DnsHelper::isReverseZoneName($zone)) {

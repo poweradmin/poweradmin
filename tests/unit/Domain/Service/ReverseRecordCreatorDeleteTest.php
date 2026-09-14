@@ -9,7 +9,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Application\Service\AuditService;
 use PDO;
 use PDOStatement;
 
@@ -46,7 +46,7 @@ class ReverseRecordCreatorDeleteTest extends TestCase
         return new ReverseRecordCreator(
             $db,
             $this->createConfig(),
-            $this->createMock(LegacyLogger::class),
+            $this->createMock(AuditService::class),
             $domainRepository ?? $this->createMock(DomainRepositoryInterface::class),
             $recordManager ?? $this->createMock(RecordManagerInterface::class)
         );
@@ -57,7 +57,7 @@ class ReverseRecordCreatorDeleteTest extends TestCase
         return new ReverseRecordCreator(
             $this->createMock(PDO::class),
             $this->createConfig(),
-            $this->createMock(LegacyLogger::class),
+            $this->createMock(AuditService::class),
             $domainRepository,
             $recordManager,
             $backendProvider

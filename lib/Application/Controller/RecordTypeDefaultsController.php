@@ -24,8 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 
 /**
@@ -92,9 +90,7 @@ class RecordTypeDefaultsController extends BaseController
             return;
         }
 
-        $auditLogger = new LegacyLogger($this->db);
-        $userContextService = new UserContextService();
-        $actor = $userContextService->getLoggedInUsername() ?? 'unknown';
+        $audit = $this->createAuditService();
 
         $allowed = array_flip($this->managedRecordTypes());
         $saved = 0;
@@ -111,7 +107,7 @@ class RecordTypeDefaultsController extends BaseController
             }
             if ($value === '') {
                 $repository->delete($type);
-                $auditLogger->logInfo(sprintf('user:%s operation:delete_record_type_default record_type:%s', $actor, $type));
+                $audit->logRecordTypeDefaultDelete($type);
                 $removed++;
                 continue;
             }
@@ -125,7 +121,7 @@ class RecordTypeDefaultsController extends BaseController
                 continue;
             }
             $repository->save($type, $ttl);
-            $auditLogger->logInfo(sprintf('user:%s operation:save_record_type_default record_type:%s ttl:%d', $actor, $type, $ttl));
+            $audit->logRecordTypeDefaultSave($type, $ttl);
             $saved++;
         }
 

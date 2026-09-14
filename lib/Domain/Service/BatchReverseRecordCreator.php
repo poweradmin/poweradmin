@@ -28,8 +28,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -41,19 +40,17 @@ class BatchReverseRecordCreator
 {
     private PDO $db;
     private ConfigurationManager $config;
-    private LegacyLogger $logger;
+    private AuditService $audit;
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
     private IPAddressValidator $ipValidator;
     private RecordRepositoryInterface $recordRepository;
     private RecordMatchingService $recordMatchingService;
-    private IpAddressRetriever $ipAddressRetriever;
-    private UserContextService $userContextService;
 
     public function __construct(
         PDO $db,
         ConfigurationManager $config,
-        LegacyLogger $logger,
+        AuditService $audit,
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,
         ?IPAddressValidator $ipValidator = null,
@@ -61,14 +58,12 @@ class BatchReverseRecordCreator
     ) {
         $this->db = $db;
         $this->config = $config;
-        $this->logger = $logger;
+        $this->audit = $audit;
         $this->domainRepository = $domainRepository;
         $this->recordManager = $recordManager;
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
         $this->recordRepository = $recordRepository ?? new SqlRecordRepository($db, $config);
         $this->recordMatchingService = new RecordMatchingService($domainRepository, $this->recordRepository);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $this->userContextService = new UserContextService();
     }
 
     /**
@@ -623,15 +618,7 @@ class BatchReverseRecordCreator
             $result = $this->recordManager->addRecord($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio);
 
             if ($result) {
-                $this->logger->logInfo(sprintf(
-                    'client_ip:%s user:%s operation:add_batch_ptr_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
-                    $this->ipAddressRetriever->getClientIp() ?: 'unknown',
-                    $this->userContextService->getLoggedInUsername() ?? 'unknown',
-                    $content_rev,
-                    $fqdn_name,
-                    $ttl,
-                    $prio
-                ), $zone_rev_id);
+                $this->audit->logBatchPtrRecordAdd($zone_rev_id, $content_rev, $fqdn_name, $ttl, $prio);
 
                 $isDnssecEnabled = $this->config->get('dnssec', 'enabled');
 

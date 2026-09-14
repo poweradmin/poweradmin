@@ -37,25 +37,19 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class DeleteDomainController extends BaseController
 {
 
-    private LegacyLogger $auditLogger;
     private UserContextService $userContextService;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
-        $this->auditLogger = new LegacyLogger($this->db);
         $this->userContextService = new UserContextService();
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -101,13 +95,7 @@ class DeleteDomainController extends BaseController
         // The zone service deletes keys, comments, records and metadata with the zone, as the API does
         $deleted = $this->createZoneManagementService()->deleteZone($zone_id);
         if ($deleted['success']) {
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername(),
-                $zone_info['name'],
-                $zone_info['type']
-            ), $zone_id);
+            $this->createAuditService()->logZoneDelete($zone_id, (string)$zone_info['name'], (string)$zone_info['type']);
 
             // Check if the zone is a reverse zone and redirect accordingly
             if (!empty($zone_info['name']) && DnsHelper::isReverseZoneName($zone_info['name'])) {

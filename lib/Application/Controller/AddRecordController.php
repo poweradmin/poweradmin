@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -48,15 +47,11 @@ use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Enum\AccessScope;
 
 class AddRecordController extends BaseController
 {
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
     private DomainRepositoryInterface $domainRepository;
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
@@ -72,47 +67,21 @@ class AddRecordController extends BaseController
         parent::__construct($request);
 
         $this->request = new Request();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->formStateService = new FormStateService();
-
-        $backendProvider = $this->createDnsBackendProvider();
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $recordCommentService = new RecordCommentService($recordCommentRepository);
-        $this->domainRepository = $repositoryFactory->createDomainRepository();
-        $dnsRecordManager = $this->createRecordManager();
-
-        $this->recordManager = new RecordManagerService(
-            $this->db,
-            $this->domainRepository,
-            $dnsRecordManager,
-            $recordCommentService,
-            $this->auditLogger,
-            $this->getConfig(),
-            $backendProvider
-        );
-
+        $this->domainRepository = $this->createDomainRepository();
+        $this->recordManager = $this->createRecordManagerService();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
 
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
             $this->domainRepository,
-            $dnsRecordManager,
+            $this->createRecordManager(),
             null,
             $this->reverseTtlResolver,
         );
 
-        $this->reverseRecordCreator = new ReverseRecordCreator(
-            $this->db,
-            $this->getConfig(),
-            $this->auditLogger,
-            $this->domainRepository,
-            $dnsRecordManager,
-            $this->createDnsBackendProvider()
-        );
-
+        $this->reverseRecordCreator = $this->createReverseRecordCreator();
         $this->userContextService = new UserContextService();
     }
 
@@ -340,8 +309,7 @@ class AddRecordController extends BaseController
             $ttl,
             $prio,
             $comment,
-            $this->userContextService->getLoggedInUsername(),
-            $this->ipAddressRetriever->getClientIp()
+            $this->userContextService->getLoggedInUsername()
         );
     }
 

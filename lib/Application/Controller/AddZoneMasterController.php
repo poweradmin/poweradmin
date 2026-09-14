@@ -43,17 +43,13 @@ use Poweradmin\Domain\Service\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneMasterController extends BaseController
 {
 
-    private LegacyLogger $auditLogger;
     private UserContextService $userContext;
-    private IpAddressRetriever $ipAddressRetriever;
     private Request $request;
 
     /** @var array<int, string>|null */
@@ -63,9 +59,7 @@ class AddZoneMasterController extends BaseController
     {
         parent::__construct($request);
 
-        $this->auditLogger = new LegacyLogger($this->db);
         $this->userContext = new UserContextService();
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->request = new Request();
     }
 
@@ -226,15 +220,7 @@ class AddZoneMasterController extends BaseController
         }
         $zone_id = $created['zone_id'];
 
-        $this->auditLogger->logInfo(sprintf(
-            'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s%s',
-            $this->ipAddressRetriever->getClientIp(),
-            $this->userContext->getLoggedInUsername(),
-            $zone_name,
-            $dom_type,
-            $zone_template,
-            $slave_master !== '' ? ' zone_master:' . $slave_master : ''
-        ), $zone_id);
+        $this->createAuditService()->logZoneAdd($zone_id, $zone_name, $dom_type, $zone_template, $slave_master !== '' ? $slave_master : null);
 
         $signed = $created['dnssec'];
         $dnssecMessage = $signed === null ? null : match ($signed->outcome) {

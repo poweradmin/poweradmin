@@ -22,11 +22,10 @@
 
 namespace unit\Domain\Model;
 
-use PDO;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\RecordLog;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use ReflectionMethod;
 
 /**
  * Regression coverage for issue #1326: editing a record in the zone UI while the
@@ -35,17 +34,23 @@ use ReflectionMethod;
  */
 class RecordLogTest extends TestCase
 {
+    /** @var array{0: int, 1: array, 2: array}|null The last logRecordEdit call */
+    private ?array $written = null;
+
     private function makeRecordLog(array $store): RecordLog
     {
-        $db = $this->createMock(PDO::class);
+        $audit = $this->createMock(AuditService::class);
+        $audit->method('logRecordEdit')->willReturnCallback(function (int $zoneId, array $before, array $after): void {
+            $this->written = [$zoneId, $before, $after];
+        });
         $recordRepository = $this->createMock(RecordRepositoryInterface::class);
 
-        return new class ($db, $recordRepository, $store) extends RecordLog {
+        return new class ($audit, $recordRepository, $store) extends RecordLog {
             private array $store;
 
-            public function __construct(PDO $db, RecordRepositoryInterface $recordRepository, array $store)
+            public function __construct(AuditService $audit, RecordRepositoryInterface $recordRepository, array $store)
             {
-                parent::__construct($db, $recordRepository);
+                parent::__construct($audit, $recordRepository);
                 $this->store = $store;
             }
 
@@ -54,13 +59,6 @@ class RecordLogTest extends TestCase
                 return $this->store[$rid] ?? null;
             }
         };
-    }
-
-    private function buildMessage(RecordLog $log): string
-    {
-        $method = new ReflectionMethod(RecordLog::class, 'buildLogMessage');
-
-        return (string)$method->invoke($log);
     }
 
     public function testWriteDoesNotEmitWarningsWhenAfterRecordMissing(): void
@@ -86,14 +84,16 @@ class RecordLogTest extends TestCase
         });
 
         try {
-            $message = $this->buildMessage($log);
+            $log->write();
         } finally {
             restore_error_handler();
         }
 
         $this->assertSame([], $errors, 'write() must not emit warnings when the after-record is null');
-        $this->assertStringContainsString('old_record_type:A', $message);
-        $this->assertStringContainsString('old_content:192.0.2.1', $message);
+        $this->assertSame(5, $this->written[0]);
+        $this->assertSame('A', $this->written[1]['type']);
+        $this->assertSame('192.0.2.1', $this->written[1]['content']);
+        $this->assertSame([], $this->written[2]);
     }
 
     public function testHasChangedDoesNotWarnWhenNamesAreNull(): void
@@ -169,10 +169,10 @@ class RecordLogTest extends TestCase
         $log->logPrior('old-id', 5, '');
         $log->logAfter('new-id', $submitted);
 
-        $message = $this->buildMessage($log);
+        $log->write();
 
         // The "after" side of the audit entry reflects the submitted values.
-        $this->assertStringContainsString('content:192.0.2.99', $message);
-        $this->assertStringContainsString('ttl:7200', $message);
+        $this->assertSame('192.0.2.99', $this->written[2]['content']);
+        $this->assertSame(7200, $this->written[2]['ttl']);
     }
 }

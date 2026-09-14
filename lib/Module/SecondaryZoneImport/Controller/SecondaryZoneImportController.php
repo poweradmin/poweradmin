@@ -30,8 +30,6 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
  * Imports a zone from a live primary by creating a secondary, triggering an
@@ -40,17 +38,13 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
  */
 class SecondaryZoneImportController extends BaseController
 {
-    private LegacyLogger $auditLogger;
     private UserContextService $userContextService;
-    private IpAddressRetriever $ipAddressRetriever;
     private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->auditLogger = new LegacyLogger($this->db);
         $this->userContextService = new UserContextService();
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->request = new Request();
     }
 
@@ -164,13 +158,7 @@ class SecondaryZoneImportController extends BaseController
 
         $zoneId = $created['zone_id'];
         $domainManager = $this->createDomainManager();
-        $this->auditLogger->logInfo(sprintf(
-            'client_ip:%s user:%s operation:import_secondary_zone zone:%s zone_master:%s',
-            $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername(),
-            $zone,
-            $master
-        ), $zoneId);
+        $this->createAuditService()->logSecondaryZoneImport($zoneId, $zone, $master);
 
         // Ask PowerDNS to pull the zone now instead of waiting for the refresh.
         $retrieved = $zoneId ? $domainManager->retrieveZone($zoneId) : false;

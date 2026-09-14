@@ -28,10 +28,9 @@ use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use PDO;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Domain\Service\DnsBackendProvider;
@@ -40,29 +39,25 @@ class ReverseRecordCreator
 {
     private PDO $db;
     private ConfigurationManager $config;
-    private LegacyLogger $logger;
+    private AuditService $audit;
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
     private ?DnsBackendProvider $backendProvider;
-    private IpAddressRetriever $ipAddressRetriever;
-    private UserContextService $userContextService;
 
     public function __construct(
         PDO $db,
         ConfigurationManager $config,
-        LegacyLogger $logger,
+        AuditService $audit,
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,
         ?DnsBackendProvider $backendProvider = null
     ) {
         $this->db = $db;
         $this->config = $config;
-        $this->logger = $logger;
+        $this->audit = $audit;
         $this->domainRepository = $domainRepository;
         $this->recordManager = $recordManager;
         $this->backendProvider = $backendProvider;
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $this->userContextService = new UserContextService();
     }
 
     private function isApiBackend(): bool
@@ -333,18 +328,7 @@ class ReverseRecordCreator
         // Duplicate check moved to the main createReverseRecord method
 
         if ($this->recordManager->addRecord($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
-            // Determine username for logging - API auth uses userid without userlogin
-            $username = $this->userContextService->getLoggedInUsername() ?? 'api_user_' . ($this->userContextService->getLoggedInUserId() ?? 'unknown');
-
-            $this->logger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
-                $this->ipAddressRetriever->getClientIp() ?: 'unknown',
-                $username,
-                $content_rev,
-                $fqdn_name,
-                $ttl,
-                $prio
-            ), (int)$zone_rev_id);
+            $this->audit->logRecordAdd((int)$zone_rev_id, RecordType::PTR, $content_rev, $fqdn_name, $ttl, $prio);
 
             return true;
         }

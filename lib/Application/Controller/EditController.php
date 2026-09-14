@@ -69,8 +69,6 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -84,7 +82,6 @@ class EditController extends BaseController
     private RecordCommentSyncService $commentSyncService;
     private RecordTypeService $recordTypeService;
     private FormStateService $formStateService;
-    private LegacyLogger $auditLogger;
     private SOARecordManagerInterface $soaRecordManager;
     private RecordManagerInterface $dnsRecordManager;
     private ?DomainManagerInterface $domainManager = null;
@@ -94,7 +91,6 @@ class EditController extends BaseController
     private RecordManagerService $recordManager;
     private UserContextService $userContextService;
     private ?ZoneTemplate $zoneTemplateModel = null;
-    private IpAddressRetriever $ipAddressRetriever;
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
     private RecordRepositoryInterface $recordRepository;
@@ -118,21 +114,9 @@ class EditController extends BaseController
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->formStateService = new FormStateService();
 
-        // Initialize services for record addition
-        $this->auditLogger = new LegacyLogger($this->db);
         $this->soaRecordManager = $this->createSOARecordManager();
-
         $this->dnsRecordManager = $this->createRecordManager();
-        $this->recordManager = new RecordManagerService(
-            $this->db,
-            $this->domainRepository,
-            $this->dnsRecordManager,
-            $this->recordCommentService,
-            $this->auditLogger,
-            $this->getConfig(),
-            $backendProvider
-        );
-
+        $this->recordManager = $this->createRecordManagerService();
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
 
         $this->domainRecordCreator = new DomainRecordCreator(
@@ -143,17 +127,8 @@ class EditController extends BaseController
             $this->reverseTtlResolver,
         );
 
-        $this->reverseRecordCreator = new ReverseRecordCreator(
-            $this->db,
-            $this->getConfig(),
-            $this->auditLogger,
-            $this->domainRepository,
-            $this->dnsRecordManager,
-            $this->createDnsBackendProvider()
-        );
-
+        $this->reverseRecordCreator = $this->createReverseRecordCreator();
         $this->userContextService = new UserContextService();
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->zoneRepository = $this->createZoneRepository();
 
         $this->permissionService = $this->createPermissionService();
@@ -777,7 +752,7 @@ class EditController extends BaseController
                         $record['name'] = DnsHelper::restoreZoneSuffix($record['name'], $zone_name);
                     }
 
-                    $log = new RecordLog($this->db, $this->recordRepository);
+                    $log = new RecordLog($this->createAuditService(), $this->recordRepository);
 
                     if (isset($record['disabled']) && $record['disabled'] == 'on') {
                         $record["disabled"] = 1;
@@ -1239,8 +1214,7 @@ class EditController extends BaseController
             $ttl,
             $prio,
             $comment,
-            $this->userContextService->getLoggedInUsername(),
-            $this->ipAddressRetriever->getClientIp()
+            $this->userContextService->getLoggedInUsername()
         );
     }
 

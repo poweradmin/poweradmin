@@ -38,8 +38,6 @@ use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Poweradmin\Domain\Enum\ZoneKind;
@@ -50,8 +48,6 @@ class ZonesController extends PublicApiController
     private ZoneManagementService $zoneManagementService;
     private ApiPermissionService $permissionService;
     private IPAddressValidator $ipAddressValidator;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -60,11 +56,8 @@ class ZonesController extends PublicApiController
         $this->zoneRepository = $this->createZoneRepository();
         $this->permissionService = $this->createApiPermissionService();
         $this->ipAddressValidator = new IPAddressValidator();
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
 
         $this->zoneManagementService = $this->createZoneManagementService();
-
-        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     /**
@@ -555,13 +548,7 @@ class ZonesController extends PublicApiController
                 $this->updateDomainAccount($zoneId, $account);
             }
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_add_zone zone_name:%s zone_type:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $domain,
-                $type
-            ), $zoneId);
+            $this->createAuditService()->logApiZoneAdd($zoneId, $domain, $type);
 
             // Signing is best effort; the outcome tells a client whether it happened
             $payload = ['zone_id' => $zoneId];
@@ -899,12 +886,7 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_delete_zone zone_name:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $zoneName
-            ), $zoneId);
+            $this->createAuditService()->logApiZoneDelete($zoneId, $zoneName);
 
             return $this->returnApiResponse(null, true, 'Zone deleted successfully', 204);
         } catch (\Throwable $e) {

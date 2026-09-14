@@ -32,7 +32,6 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
@@ -40,7 +39,6 @@ use Poweradmin\Domain\Model\Constants;
 
 class BatchPtrRecordController extends BaseController
 {
-    private LegacyLogger $auditLogger;
     private DomainRepositoryInterface $domainRepository;
     private BatchReverseRecordCreator $batchReverseRecordCreator;
     private UserContextService $userContextService;
@@ -53,21 +51,8 @@ class BatchPtrRecordController extends BaseController
         parent::__construct($request);
 
         $this->request = new Request();
-        $this->auditLogger = new LegacyLogger($this->db);
-
-        $recordRepository = $this->createRecordRepository();
         $this->domainRepository = $this->createDomainRepository();
-        $recordManager = $this->createRecordManager();
-
-        $this->batchReverseRecordCreator = new BatchReverseRecordCreator(
-            $this->db,
-            $this->getConfig(),
-            $this->auditLogger,
-            $this->domainRepository,
-            $recordManager,
-            null,
-            $recordRepository
-        );
+        $this->batchReverseRecordCreator = $this->createBatchReverseRecordCreator();
         $this->userContextService = new UserContextService();
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
         $this->permissionService = $this->createPermissionService();

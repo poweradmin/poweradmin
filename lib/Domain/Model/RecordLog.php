@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,11 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Service\UserContextService;
-use PDO;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class RecordLog
 {
@@ -34,17 +31,13 @@ class RecordLog
     private ?array $record_after = null;
 
     private bool $record_changed = false;
-    private LegacyLogger $logger;
+    private AuditService $audit;
     private RecordRepositoryInterface $recordRepository;
-    private IpAddressRetriever $ipAddressRetriever;
-    private UserContextService $userContextService;
 
-    public function __construct(PDO $db, RecordRepositoryInterface $recordRepository)
+    public function __construct(AuditService $audit, RecordRepositoryInterface $recordRepository)
     {
         $this->recordRepository = $recordRepository;
-        $this->logger = new LegacyLogger($db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $this->userContextService = new UserContextService();
+        $this->audit = $audit;
     }
 
     public function logPrior($rid, $zid, $comment): void
@@ -110,30 +103,6 @@ class RecordLog
 
     public function write(): void
     {
-        $this->logger->logInfo($this->buildLogMessage(), $this->record_prior['zid'] ?? null);
-    }
-
-    protected function buildLogMessage(): string
-    {
-        $prior = $this->record_prior ?? [];
-        $after = $this->record_after ?? [];
-
-        return sprintf(
-            'client_ip:%s user:%s operation:edit_record'
-            . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
-            . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
-            $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername(),
-            $prior['type'] ?? '',
-            $prior['name'] ?? '',
-            $prior['content'] ?? '',
-            $prior['ttl'] ?? '',
-            $prior['prio'] ?? '',
-            $after['type'] ?? '',
-            $after['name'] ?? '',
-            $after['content'] ?? '',
-            $after['ttl'] ?? '',
-            $after['prio'] ?? ''
-        );
+        $this->audit->logRecordEdit((int)($this->record_prior['zid'] ?? 0), $this->record_prior ?? [], $this->record_after ?? []);
     }
 }

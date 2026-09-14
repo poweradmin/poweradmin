@@ -25,13 +25,13 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PDO;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 /**
  * Issue #1332: the zone log event for a record add showed the record name
@@ -43,7 +43,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
  */
 class RecordManagerServiceLogTest extends TestCase
 {
-    private function makeService(LegacyLogger $logger, ?RecordWriteResult $write = null, ?RecordCommentService $comments = null): RecordManagerService
+    private function makeService(AuditService $audit, ?RecordWriteResult $write = null, ?RecordCommentService $comments = null): RecordManagerService
     {
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $recordManager = $this->createMock(RecordManagerInterface::class);
@@ -58,7 +58,7 @@ class RecordManagerServiceLogTest extends TestCase
             $domainRepository,
             $recordManager,
             $comments ?? $this->createMock(RecordCommentService::class),
-            $logger,
+            $audit,
             $config,
             null
         );
@@ -71,19 +71,13 @@ class RecordManagerServiceLogTest extends TestCase
     #[DataProvider('recordNameProvider')]
     public function testRecordNameIsLoggedOnceAsFqdn(string $inputName): void
     {
-        $logger = $this->createMock(LegacyLogger::class);
-        $logger->expects($this->once())
-            ->method('logInfo')
-            ->with(
-                $this->logicalAnd(
-                    $this->stringContains('record:host.example.com content:'),
-                    $this->logicalNot($this->stringContains('example.com.example.com'))
-                ),
-                1
-            );
+        $audit = $this->createMock(AuditService::class);
+        $audit->expects($this->once())
+            ->method('logRecordAdd')
+            ->with(1, 'A', 'host.example.com', '192.0.2.1', 3600, 0);
 
-        $service = $this->makeService($logger);
-        $service->createRecord(1, $inputName, 'A', '192.0.2.1', 3600, 0, '', 'admin', '127.0.0.1');
+        $service = $this->makeService($audit);
+        $service->createRecord(1, $inputName, 'A', '192.0.2.1', 3600, 0, '', 'admin');
     }
 
     /**
@@ -92,13 +86,13 @@ class RecordManagerServiceLogTest extends TestCase
      */
     public function testRefusedWriteIsReturnedWithoutLoggingOrComments(): void
     {
-        $logger = $this->createMock(LegacyLogger::class);
-        $logger->expects($this->never())->method('logInfo');
+        $audit = $this->createMock(AuditService::class);
+        $audit->expects($this->never())->method('logRecordAdd');
         $comments = $this->createMock(RecordCommentService::class);
         $comments->expects($this->never())->method('createCommentForRecord');
 
-        $service = $this->makeService($logger, RecordWriteResult::failure('Invalid IP address', 400), $comments);
-        $result = $service->createRecord(1, 'host', 'A', 'not-an-ip', 3600, 0, 'a comment', 'admin', '127.0.0.1');
+        $service = $this->makeService($audit, RecordWriteResult::failure('Invalid IP address', 400), $comments);
+        $result = $service->createRecord(1, 'host', 'A', 'not-an-ip', 3600, 0, 'a comment', 'admin');
 
         $this->assertFalse($result->success);
         $this->assertSame('Invalid IP address', $result->message);

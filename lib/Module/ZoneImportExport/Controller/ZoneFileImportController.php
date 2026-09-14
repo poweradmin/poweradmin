@@ -28,12 +28,8 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
-use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Enum\ZoneKind;
@@ -280,8 +276,7 @@ class ZoneFileImportController extends BaseController
 
         $userId = $this->userContextService->getLoggedInUserId();
         $userLogin = $this->userContextService->getLoggedInUsername();
-        $ipRetriever = new IpAddressRetriever($_SERVER);
-        $clientIp = $ipRetriever->getClientIp();
+        $audit = $this->createAuditService();
 
         $domainRepository = $this->createDomainRepository();
 
@@ -312,13 +307,7 @@ class ZoneFileImportController extends BaseController
             $zone_id = $existingZoneId;
             $zoneName = $existingZoneName;
 
-            $logger = new LegacyLogger($this->db);
-            $logger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:zone_import_records zone_name:%s',
-                $clientIp,
-                $userLogin,
-                $zoneName
-            ), $zone_id);
+            $audit->logZoneImport($zone_id, (string)$zoneName, true);
         } else {
             if (!$this->hasPermission('zone_master_add')) {
                 $this->showError(_('You do not have permission to add zones.'));
@@ -363,35 +352,16 @@ class ZoneFileImportController extends BaseController
             }
             $zone_id = $created['zone_id'];
 
-            $logger = new LegacyLogger($this->db);
-            $logger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:zone_import zone_name:%s',
-                $clientIp,
-                $userLogin,
-                $zoneName
-            ), $zone_id);
+            $audit->logZoneImport($zone_id, (string)$zoneName, false);
 
             // New zone: no conflicts possible
             $conflictStrategy = 'add_all';
         }
 
         // Import records
-        $backendProvider = $this->createDnsBackendProvider();
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $recordCommentService = new RecordCommentService($recordCommentRepository);
-        $recordRepository = $repositoryFactory->createRecordRepository();
-        $logger = new LegacyLogger($this->db);
+        $recordRepository = $this->createRecordRepository();
         $dnsRecordManager = $this->createRecordManager();
-        $recordManager = new RecordManagerService(
-            $this->db,
-            $repositoryFactory->createDomainRepository(),
-            $dnsRecordManager,
-            $recordCommentService,
-            $logger,
-            $this->getConfig(),
-            $backendProvider
-        );
+        $recordManager = $this->createRecordManagerService();
 
         $successCount = 0;
         $failCount = 0;
@@ -427,8 +397,7 @@ class ZoneFileImportController extends BaseController
                 $record->ttl,
                 $record->priority,
                 '',
-                $userLogin,
-                $clientIp
+                $userLogin
             );
 
             if ($result->success) {

@@ -37,16 +37,12 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeleteDomainsController extends BaseController
 {
 
-    private LegacyLogger $auditLogger;
     private UserContextService $userContextService;
-    private IpAddressRetriever $ipAddressRetriever;
     private Request $request;
 
     public function __construct(array $request)
@@ -54,9 +50,7 @@ class DeleteDomainsController extends BaseController
         parent::__construct($request);
 
         $this->request = new Request();
-        $this->auditLogger = new LegacyLogger($this->db);
         $this->userContextService = new UserContextService();
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -127,15 +121,10 @@ class DeleteDomainsController extends BaseController
         $route = $all_reverse ? '/zones/reverse' : '/zones/forward';
 
         if (!$failed) {
+            $audit = $this->createAuditService();
             foreach ($deleted_zones as $deleted_zone) {
                 if (!empty($deleted_zone['name'])) {
-                    $this->auditLogger->logInfo(sprintf(
-                        'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
-                        $this->ipAddressRetriever->getClientIp(),
-                        $this->userContextService->getLoggedInUsername(),
-                        $deleted_zone['name'],
-                        $deleted_zone['type']
-                    ), $deleted_zone['id']);
+                    $audit->logZoneDelete((int)$deleted_zone['id'], (string)$deleted_zone['name'], (string)$deleted_zone['type']);
                 }
             }
 

@@ -43,17 +43,13 @@ use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeleteRecordController extends BaseController
 {
 
-    private LegacyLogger $auditLogger;
     private ReverseRecordCreator $reverseRecordCreator;
     private UserContextService $userContextService;
     private PermissionService $permissionService;
-    private IpAddressRetriever $ipAddressRetriever;
     private Request $request;
 
     public function __construct(array $request)
@@ -61,21 +57,7 @@ class DeleteRecordController extends BaseController
         parent::__construct($request);
 
         $this->request = new Request();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $backendProvider = $this->createDnsBackendProvider();
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $domainRepository = $repositoryFactory->createDomainRepository();
-        $dnsRecordManager = $this->createRecordManager();
-        $this->reverseRecordCreator = new ReverseRecordCreator(
-            $this->db,
-            $this->getConfig(),
-            $this->auditLogger,
-            $domainRepository,
-            $dnsRecordManager,
-            $this->createDnsBackendProvider()
-        );
-
+        $this->reverseRecordCreator = $this->createReverseRecordCreator();
         $this->userContextService = new UserContextService();
         $this->permissionService = $this->createPermissionService();
     }
@@ -146,28 +128,14 @@ class DeleteRecordController extends BaseController
 
             $deleted = $recordManager->deleteRecord($record_id);
             if ($deleted->success) {
-                if (isset($record_info['prio'])) {
-                    $this->auditLogger->logInfo(sprintf(
-                        'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
-                        $this->ipAddressRetriever->getClientIp(),
-                        $this->userContextService->getLoggedInUsername(),
-                        $record_info['type'],
-                        $record_info['name'],
-                        $record_info['content'],
-                        $record_info['ttl'],
-                        $record_info['prio']
-                    ), $zid);
-                } else {
-                    $this->auditLogger->logInfo(sprintf(
-                        'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
-                        $this->ipAddressRetriever->getClientIp(),
-                        $this->userContextService->getLoggedInUsername(),
-                        $record_info['type'],
-                        $record_info['name'],
-                        $record_info['content'],
-                        $record_info['ttl']
-                    ), $zid);
-                }
+                $this->createAuditService()->logRecordDelete(
+                    (int)$zid,
+                    (string)$record_info['type'],
+                    (string)$record_info['name'],
+                    (string)$record_info['content'],
+                    $record_info['ttl'],
+                    $record_info['prio'] ?? null
+                );
 
                 // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
                 $delete_ptr = $this->request->getPostParam('delete_ptr') === '1';

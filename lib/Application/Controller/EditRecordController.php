@@ -35,7 +35,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -50,18 +49,14 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class EditRecordController extends BaseController
 {
 
-    private LegacyLogger $auditLogger;
     private RecordCommentService $recordCommentService;
     private RecordCommentSyncService $commentSyncService;
     private RecordTypeService $recordTypeService;
     private UserContextService $userContextService;
-    private IpAddressRetriever $ipAddressRetriever;
     private PermissionService $permissionService;
     private Request $request;
 
@@ -70,8 +65,6 @@ class EditRecordController extends BaseController
         parent::__construct($request);
 
         $this->request = new Request();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
@@ -286,26 +279,7 @@ class EditRecordController extends BaseController
             ];
         }
 
-        $this->auditLogger->logInfo(
-            sprintf(
-                'client_ip:%s user:%s operation:edit_record'
-                . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
-                . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername(),
-                $old_record_info['type'],
-                $old_record_info['name'],
-                $old_record_info['content'],
-                $old_record_info['ttl'],
-                $old_record_info['prio'],
-                $new_record_info['type'],
-                $new_record_info['name'],
-                $new_record_info['content'],
-                $new_record_info['ttl'],
-                $new_record_info['prio']
-            ),
-            $zid
-        );
+        $this->createAuditService()->logRecordEdit((int)$zid, $old_record_info, $new_record_info);
 
         $showRecordComments = $this->config->get('interface', 'show_record_comments', false);
         $nameOrTypeChanged = ($old_record_info['name'] !== $new_record_info['name'] ||
@@ -376,16 +350,7 @@ class EditRecordController extends BaseController
             return;
         }
 
-        $reverseRecordCreator = new ReverseRecordCreator(
-            $this->db,
-            $this->getConfig(),
-            $this->auditLogger,
-            $this->createDomainRepository(),
-            $this->createRecordManager(),
-            $this->createDnsBackendProvider()
-        );
-
-        $result = $reverseRecordCreator->updateReverseRecord(
+        $result = $this->createReverseRecordCreator()->updateReverseRecord(
             $oldType,
             (string)($oldRecord['content'] ?? ''),
             (string)($oldRecord['name'] ?? ''),

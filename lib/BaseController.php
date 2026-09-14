@@ -34,6 +34,7 @@ use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Application\Service\PdnsVersionService;
+use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\MfaSessionManager;
@@ -60,6 +61,8 @@ use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\BatchReverseRecordCreator;
+use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
@@ -550,6 +553,11 @@ abstract class BaseController
         return $this->services()->zoneManagementService($this->getPdnsCapabilities());
     }
 
+    protected function createAuditService(): AuditService
+    {
+        return $this->services()->auditService();
+    }
+
     protected function createZoneMetadataService(): ZoneMetadataService
     {
         return $this->services()->zoneMetadataService();
@@ -640,6 +648,21 @@ abstract class BaseController
         }
     }
 
+    protected function createRecordManagerService(): RecordManagerService
+    {
+        return $this->services()->recordManagerService();
+    }
+
+    protected function createReverseRecordCreator(): ReverseRecordCreator
+    {
+        return $this->services()->reverseRecordCreator();
+    }
+
+    protected function createBatchReverseRecordCreator(): BatchReverseRecordCreator
+    {
+        return $this->services()->batchReverseRecordCreator();
+    }
+
     protected function createDomainManager(): DomainManagerInterface
     {
         return $this->services()->domainManager();
@@ -713,8 +736,7 @@ abstract class BaseController
     public function checkPermission(string $permission, string $errorMessage): void
     {
         if (!$this->hasPermission($permission)) {
-            $auditService = new AuditService($this->db);
-            $auditService->logAccessDenied($permission, $_SERVER['REQUEST_URI'] ?? '');
+            $this->createAuditService()->logAccessDenied($permission, $_SERVER['REQUEST_URI'] ?? '');
 
             // Check if this request expects JSON
             if (RequestContext::expectsJson()) {
