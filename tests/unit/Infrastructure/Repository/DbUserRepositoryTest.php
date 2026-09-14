@@ -411,6 +411,24 @@ class DbUserRepositoryTest extends TestCase
     }
 
     #[Test]
+    public function testUpdateUserMarksAHandPickedTemplateAsAdminAssigned(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+
+        // Otherwise the SSO group mapping would treat the template as its own and revoke it on login.
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->logicalAnd(
+                $this->stringContains('perm_templ = :perm_templ'),
+                $this->stringContains("perm_templ_source = 'admin'")
+            ))
+            ->willReturn($stmt);
+
+        $this->assertTrue($this->repository->updateUser(1, ['perm_templ' => 3]));
+    }
+
+    #[Test]
     public function testUpdateUserResetsAuthMethodToSqlWhenUseLdapDisabled(): void
     {
         $selectStmt = $this->createMock(PDOStatement::class);

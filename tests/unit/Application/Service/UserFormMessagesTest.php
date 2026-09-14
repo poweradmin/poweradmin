@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserFormMessages;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserManagementService;
 
 #[CoversClass(UserFormMessages::class)]
@@ -40,7 +41,14 @@ class UserFormMessagesTest extends TestCase
     {
         $result = ['message' => 'Failed to create user: SQLSTATE[23000] users_email_key', 'code' => UserManagementService::ERR_WRITE];
 
-        $this->assertSame('Failed to create user.', UserFormMessages::errorMessage($result));
+        $this->assertSame('The user could not be saved.', UserFormMessages::errorMessage($result));
+    }
+
+    public function testTemplateRefusalsAreWordedForThePage(): void
+    {
+        $this->assertStringContainsString('administrator rights', UserFormMessages::templateAssignmentError(PermissionService::TEMPLATE_SUPERUSER_DENIED));
+        $this->assertStringContainsString('your own permission template', UserFormMessages::templateAssignmentError(PermissionService::TEMPLATE_SELF_ASSIGN_DENIED));
+        $this->assertStringContainsString('do not have the permission', UserFormMessages::templateAssignmentError(PermissionService::TEMPLATE_ASSIGN_DENIED));
     }
 
     public function testPolicyMessagesPassThrough(): void

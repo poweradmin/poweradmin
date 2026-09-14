@@ -47,6 +47,9 @@ class UserManagementService
     public const ERR_EMAIL_EXISTS = 'email_exists';
     public const ERR_NO_TEMPLATE = 'no_template';
     public const ERR_TEMPLATE_NOT_FOUND = 'template_not_found';
+    public const ERR_NOT_FOUND = 'not_found';
+    public const ERR_PASSWORD_FORBIDDEN = 'password_forbidden';
+    public const ERR_LAST_ADMIN = 'last_admin';
     public const ERR_WRITE = 'write';
 
     private UserRepository $userRepository;
@@ -325,7 +328,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'User not found',
-                'status' => 404
+                'status' => 404,
+                'code' => self::ERR_NOT_FOUND,
             ];
         }
 
@@ -357,7 +361,8 @@ class UserManagementService
                     strtoupper($targetMethod->value),
                     strtoupper($targetMethod->value)
                 ),
-                'status' => 400
+                'status' => 400,
+                'code' => self::ERR_PASSWORD_FORBIDDEN,
             ];
         }
 
@@ -369,7 +374,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Password is required when disabling LDAP authentication',
-                'status' => 400
+                'status' => 400,
+                'code' => self::ERR_PASSWORD_REQUIRED,
             ];
         }
 
@@ -377,26 +383,30 @@ class UserManagementService
             return $policyError;
         }
 
-        // Check if username already exists (exclude current user)
-        if (!empty($userData['username'])) {
+        // A changed username must be free; an unchanged one is not looked up, since
+        // legacy data may hold it twice and the lookup could land on the other row.
+        if (!empty($userData['username']) && (string)$userData['username'] !== (string)($user['username'] ?? '')) {
             $existingUser = $this->userRepository->getUserByUsername($userData['username']);
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
                 return [
                     'success' => false,
                     'message' => 'Username already exists',
-                    'status' => 409
+                    'status' => 409,
+                    'code' => self::ERR_USERNAME_EXISTS,
                 ];
             }
         }
 
-        // Check if email already exists (exclude current user)
-        if (!empty($userData['email'])) {
+        // A changed email must be free; an unchanged one stays editable even where
+        // older data already holds duplicates.
+        if (!empty($userData['email']) && strcasecmp((string)$userData['email'], (string)($user['email'] ?? '')) !== 0) {
             $existingUser = $this->userRepository->getUserByEmail($userData['email']);
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
                 return [
                     'success' => false,
                     'message' => 'Email already exists',
-                    'status' => 409
+                    'status' => 409,
+                    'code' => self::ERR_EMAIL_EXISTS,
                 ];
             }
         }
@@ -411,7 +421,8 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Permission template not found',
-                    'status' => 400
+                    'status' => 400,
+                    'code' => self::ERR_TEMPLATE_NOT_FOUND,
                 ];
             }
             $userData['perm_templ'] = $permTemplId;
@@ -422,7 +433,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
-                'status' => 409
+                'status' => 409,
+                'code' => self::ERR_LAST_ADMIN,
             ];
         }
 
@@ -437,7 +449,8 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Failed to update user',
-                    'status' => 500
+                    'status' => 500,
+                    'code' => self::ERR_WRITE,
                 ];
             }
 
@@ -450,7 +463,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Failed to update user: ' . $e->getMessage(),
-                'status' => 500
+                'status' => 500,
+                'code' => self::ERR_WRITE,
             ];
         }
     }
@@ -726,7 +740,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Username cannot be empty',
-                'status' => 400
+                'status' => 400,
+                'code' => self::ERR_USERNAME_REQUIRED,
             ];
         }
         return null;

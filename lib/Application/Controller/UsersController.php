@@ -34,7 +34,9 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Application\Service\UserFormMessages;
+use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
+use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -79,7 +81,6 @@ class UsersController extends BaseController
         $blocked = false;
         $currentIsSuperuser = $this->hasPermission('user_is_ueberuser');
         $permissionService = $this->createPermissionService();
-        $legacyUsers = new UserManager($this->db, $this->getConfig());
         foreach ($this->request->getPostParam('user') as $user) {
             if (!is_array($user)) {
                 continue;
@@ -92,8 +93,7 @@ class UsersController extends BaseController
                 }
                 continue;
             }
-            $result = $legacyUsers->updateUserDetails($user);
-            if ($result) {
+            if ($this->updateUserRow($user)) {
                 $success = true;
             }
         }
@@ -103,6 +103,54 @@ class UsersController extends BaseController
         if ($blocked) {
             $this->setMessage('users', 'error', _('You do not have permission to edit a superuser account.'));
         }
+    }
+
+    /**
+     * Save one row of the bulk edit form. Fields the caller may not change are
+     * left out so the stored values stay; refusals are flashed and the row skipped.
+     *
+     * @param array<string, mixed> $posted
+     */
+    private function updateUserRow(array $posted): bool
+    {
+        $callerId = (int)$this->getCurrentUserId();
+        $targetId = (int)($posted['uid'] ?? 0);
+        if (!$this->createApiPermissionService()->canEditUser($callerId, $targetId)) {
+            $this->setMessage('users', 'error', _('You do not have the permission to edit this user.'));
+            return false;
+        }
+
+        $email = (string)($posted['email'] ?? '');
+        if (!(new Validator($this->config))->isValidEmail($email)) {
+            $this->setMessage('users', 'error', _('Enter a valid email address.'));
+            return false;
+        }
+
+        $input = [
+            'username' => (string)($posted['username'] ?? ''),
+            'fullname' => (string)($posted['fullname'] ?? ''),
+            'email' => $email,
+            'active' => ($posted['active'] ?? '') == 'on' ? 1 : 0,
+        ];
+        if ($this->hasPermission('user_edit_templ_perm') && isset($posted['templ_id'])) {
+            $input['perm_templ'] = $posted['templ_id'];
+            $templateError = PermissionTemplateAssignmentGuard::apply($this->createPermissionService(), null, $callerId, $input, $targetId);
+            if ($templateError !== null) {
+                $this->setMessage('users', 'error', UserFormMessages::templateAssignmentError($templateError));
+                return false;
+            }
+        }
+        if ($this->hasPermission('user_is_ueberuser')) {
+            $input['use_ldap'] = ($posted['use_ldap'] ?? '') == '1';
+        }
+
+        $updated = $this->createUserManagementService()->updateUser($targetId, $input);
+        if (!$updated['success']) {
+            $this->setMessage('users', 'error', UserFormMessages::errorMessage($updated));
+            return false;
+        }
+
+        return true;
     }
 
     private function superuserRowEdited(array $posted): bool

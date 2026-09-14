@@ -27,8 +27,8 @@ use Poweradmin\Domain\Service\UserManagementService;
 
 /**
  * Words a refused UserManagementService write for the user forms. The
- * service's own message is the API wording; password policy and field length
- * messages are the same on both sides and pass through.
+ * service's own message is the API wording; password policy, field length and
+ * external-auth password messages are the same on both sides and pass through.
  */
 class UserFormMessages
 {
@@ -45,8 +45,10 @@ class UserFormMessages
             UserManagementService::ERR_NO_TEMPLATE => _('No non-superuser permission template is available to assign.'),
             UserManagementService::ERR_TEMPLATE_NOT_FOUND => _('Invalid permission template: must be a user template'),
             UserManagementService::ERR_INVALID_LDAP => _('Invalid or unexpected input given.'),
+            UserManagementService::ERR_NOT_FOUND => _('User does not exist.'),
+            UserManagementService::ERR_LAST_ADMIN => _('Cannot disable the last remaining super admin user.'),
             // The write message carries the driver's text, which is for the log, not the page.
-            UserManagementService::ERR_WRITE => _('Failed to create user.'),
+            UserManagementService::ERR_WRITE => _('The user could not be saved.'),
             default => (string)($result['message'] ?? ''),
         };
     }

@@ -754,14 +754,43 @@ class UserManagementServiceTest extends TestCase
     }
 
     #[Test]
+    public function testUpdateUserLeavesAnUnchangedEmailAloneEvenWhenDuplicated(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql', 'email' => 'Shared@example.com']);
+        // Older data may hold the same address twice; echoing it back is not a change.
+        $this->userRepository->expects($this->never())->method('getUserByEmail');
+        $this->userRepository->method('updateUser')->willReturn(true);
+
+        $result = $this->service->updateUser(1, ['email' => 'shared@example.com']);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserRefusesAChangedEmailAnotherAccountHolds(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql', 'email' => 'old@example.com']);
+        $this->userRepository->method('getUserByEmail')
+            ->with('taken@example.com')
+            ->willReturn(['id' => 2]);
+
+        $result = $this->service->updateUser(1, ['email' => 'taken@example.com']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(409, $result['status']);
+        $this->assertSame(UserManagementService::ERR_EMAIL_EXISTS, $result['code']);
+    }
+
+    #[Test]
     public function testUpdateUserAllowsSameUsernameForSameUser(): void
     {
         $this->userRepository->method('getUserById')
-            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+            ->willReturn(['id' => 1, 'auth_method' => 'sql', 'username' => 'sameuser']);
 
-        $this->userRepository->method('getUserByUsername')
-            ->with('sameuser')
-            ->willReturn(['id' => 1]); // Same user
+        // Legacy data may hold the name twice; echoing it back must not look it up
+        $this->userRepository->expects($this->never())->method('getUserByUsername');
 
         $this->userRepository->method('updateUser')
             ->willReturn(true);

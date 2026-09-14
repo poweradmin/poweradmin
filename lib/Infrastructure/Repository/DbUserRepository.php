@@ -864,6 +864,11 @@ class DbUserRepository implements UserRepository
             }
         }
 
+        // A template set by hand is no longer the SSO mapping's to revoke on the next login.
+        if (array_key_exists('perm_templ', $userData)) {
+            $setFields[] = "perm_templ_source = 'admin'";
+        }
+
         // Keep auth_method in sync with use_ldap; preserve external methods (oidc, saml)
         // when LDAP is being disabled.
         if (array_key_exists('use_ldap', $userData)) {

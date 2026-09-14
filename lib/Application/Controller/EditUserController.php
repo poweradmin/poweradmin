@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -34,8 +34,9 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\PasswordPolicyService;
+use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -101,59 +102,40 @@ class EditUserController extends BaseController
 
     private function updateUser(int $editId, array $policyConfig): void
     {
-        if (!$this->validateInput($editId)) {
+        $stored = $this->getUserDetails($editId);
+        if (!$this->validateInput($editId, $stored)) {
             $this->showUserEditForm($editId, $policyConfig);
             return;
         }
 
-        if (!$this->validatePasswordPolicy($editId)) {
-            $this->showUserEditForm($editId, $policyConfig);
-            return;
+        $callerId = (int)$this->getCurrentUserId();
+        $input = $this->prepareUserData($editId, $stored, $callerId);
+
+        // Same gate as the API: a chosen template must stay within the caller's own authority.
+        if (array_key_exists('perm_templ', $input)) {
+            $templateError = PermissionTemplateAssignmentGuard::apply($this->createPermissionService(), null, $callerId, $input, $editId);
+            if ($templateError !== null) {
+                $this->setMessage('edit_user', 'error', UserFormMessages::templateAssignmentError($templateError));
+                $this->showUserEditForm($editId, $policyConfig);
+                return;
+            }
         }
 
-        try {
-            $params = $this->prepareUserData($editId);
-        } catch (\InvalidArgumentException $e) {
-            $this->setMessage('edit_user', 'error', $e->getMessage());
-            $this->showUserEditForm($editId, $policyConfig);
-            return;
-        }
-
-        $legacyUsers = new UserManager($this->db, $this->getConfig());
-
-        // Fetch old permission template before edit for audit logging
-        $stmt = $this->db->prepare("SELECT perm_templ FROM users WHERE id = :id");
-        $stmt->execute([':id' => $editId]);
-        $oldPermTempl = (int)($stmt->fetchColumn() ?: 0);
-
-        if (
-            $legacyUsers->editUser(
-                $editId,
-                $params['username'],
-                $params['fullname'],
-                $params['email'],
-                $params['perm_templ'],
-                $params['description'],
-                $params['active'],
-                $params['password'],
-                $params['use_ldap']
-            )
-        ) {
+        $updated = $this->createUserManagementService()->updateUser($editId, $input);
+        if ($updated['success']) {
+            $oldPermTempl = (int)$stored['tpl_id'];
+            $newPermTempl = (int)($input['perm_templ'] ?? $oldPermTempl);
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:edit_user target_user:%s perm_template:%s auth_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $this->userContextService->getLoggedInUsername(),
-                $params['username'],
-                $params['perm_templ'],
-                $params['use_ldap'] ? 'ldap' : 'sql'
+                $input['username'],
+                $newPermTempl,
+                $input['use_ldap'] ? 'ldap' : 'sql'
             ));
 
-            if ($oldPermTempl !== (int)$params['perm_templ']) {
-                $this->auditService->logPermTemplateChange(
-                    $params['username'],
-                    $oldPermTempl,
-                    (int)$params['perm_templ']
-                );
+            if ($oldPermTempl !== $newPermTempl) {
+                $this->auditService->logPermTemplateChange($input['username'], $oldPermTempl, $newPermTempl);
             }
 
             $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
@@ -170,12 +152,15 @@ class EditUserController extends BaseController
                 $this->redirect('/users');
             }
         } else {
-            $this->setMessage('edit_user', 'error', _('The user could not be updated.'));
+            $this->setMessage('edit_user', 'error', UserFormMessages::errorMessage($updated));
             $this->showUserEditForm($editId, $policyConfig);
         }
     }
 
-    private function validateInput(int $editId): bool
+    /**
+     * @param array<string, mixed> $stored The user's row as getUserDetails() returns it
+     */
+    private function validateInput(int $editId, array $stored): bool
     {
         $constraints = [
             'username' => [
@@ -188,14 +173,13 @@ class EditUserController extends BaseController
         // anyway and requiring it would block all edits when the IdP supplied none.
         // A user being converted to a local account (LDAP unchecked) is no longer
         // managed, so the email requirement applies again.
-        $user = $this->getUserDetails($editId);
         $auth = self::resolveAuthFields(
-            $user,
+            $stored,
             $this->isRestrictedSelfEdit($editId),
             '',
             $this->request->getPostParam('use_ldap') === '1'
         );
-        if (!self::isIdpManaged($user['auth_type'] ?? null, $auth['use_ldap'] && $this->isLdapSyncEnabled())) {
+        if (!self::isIdpManaged($stored['auth_type'] ?? null, $auth['use_ldap'] && $this->isLdapSyncEnabled())) {
             $constraints['email'] = [
                 new Assert\NotBlank(),
                 new Assert\Email()
@@ -207,38 +191,6 @@ class EditUserController extends BaseController
 
         if (!$this->doValidateRequest($data)) {
             $this->setMessage('edit_user', 'error', _('Please fill in all required fields correctly.'));
-            return false;
-        }
-
-        return true;
-    }
-
-    private function validatePasswordPolicy(int $editId): bool
-    {
-        $password = $this->request->getPostParam('password');
-        if (empty($password)) {
-            return true;
-        }
-
-        // Judge by the use_ldap value that will be persisted, not the raw
-        // posted flag - a self-editor must not dodge the policy with use_ldap=1.
-        $user = $this->getUserDetails($editId);
-        $auth = self::resolveAuthFields(
-            $user,
-            $this->isRestrictedSelfEdit($editId),
-            '',
-            $this->request->getPostParam('use_ldap') === '1'
-        );
-        if ($auth['use_ldap']) {
-            return true;
-        }
-        if (AuthMethod::fromDb($user['auth_type'] ?? null)->isExternal()) {
-            return true;
-        }
-
-        $policyErrors = $this->policyService->validatePassword($password);
-        if (!empty($policyErrors)) {
-            $this->setMessage('edit_user', 'error', array_shift($policyErrors));
             return false;
         }
 
@@ -274,42 +226,21 @@ class EditUserController extends BaseController
             && !$this->hasPermission('user_edit_others');
     }
 
-    private function prepareUserData(int $editId): array
+    /**
+     * The fields this edit may write, from the form and the caller's rights.
+     * Fields the caller may not change are left out so the stored values stay.
+     *
+     * @param array<string, mixed> $stored The user's row as getUserDetails() returns it
+     * @return array<string, mixed>
+     */
+    private function prepareUserData(int $editId, array $stored, int $callerId): array
     {
         $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
         $canEditOthers = $this->hasPermission('user_edit_others');
-        $userData = null;
-
-        // Force active state to true if user is editing their own profile
-        $active = $isOwnProfile ? true : $this->request->getPostParam('active') === '1';
-
-        // Determine permission template
-        $permTempl = $this->request->getPostParam('perm_templ');
-
-        // When user permission templates are hidden, always preserve existing template
-        $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
-        if (!$showUserAccessTemplates) {
-            $userData = $this->getUserDetails($editId);
-            $permTempl = $userData['tpl_id'];
-        }
-
-        // If editing own profile and not an admin, maintain existing template
-        if ($isOwnProfile && !$canEditOthers) {
-            $userData = $userData ?? $this->getUserDetails($editId);
-            $permTempl = $userData['tpl_id'];
-        }
-
-        // Validate that the template is a user template (skip if maintaining existing template)
-        if ($permTempl && (!$isOwnProfile || $canEditOthers)) {
-            if (!$this->permissionTemplateRepository->validateTemplateType((int)$permTempl, 'user')) {
-                throw new \InvalidArgumentException(_('Invalid permission template: must be a user template'));
-            }
-        }
 
         // Keep stored username and LDAP flag on self-edit (#1327)
-        $userData = $userData ?? $this->getUserDetails($editId);
         $auth = self::resolveAuthFields(
-            $userData,
+            $stored,
             $isOwnProfile && !$canEditOthers,
             htmlspecialchars($this->request->getPostParam('username')),
             $this->request->getPostParam('use_ldap') === '1'
@@ -318,22 +249,44 @@ class EditUserController extends BaseController
         // OIDC/SAML users have their identity fields owned by the IdP
         // (overwritten on the next sync), so ignore any submitted changes to them.
         $identity = self::resolveIdentityFields(
-            $userData,
+            $stored,
             htmlspecialchars($this->request->getPostParam('fullname')),
             htmlspecialchars($this->request->getPostParam('email')),
             $auth['use_ldap'] && $this->isLdapSyncEnabled()
         );
 
-        return [
+        $input = [
             'username' => $auth['username'],
             'fullname' => $identity['fullname'],
             'email' => $identity['email'],
             'description' => htmlspecialchars($this->request->getPostParam('description')),
-            'password' => $this->request->getPostParam('password', ''),
-            'perm_templ' => $permTempl,
-            'active' => $active,
-            'use_ldap' => $auth['use_ldap']
+            'use_ldap' => $auth['use_ldap'],
         ];
+
+        // Nobody deactivates themselves from their own profile
+        if (!$isOwnProfile) {
+            $input['active'] = $this->request->getPostParam('active') === '1' ? 1 : 0;
+        }
+
+        // Changing another user's password needs user_passwd_edit_others; without it
+        // the posted password is ignored and the other fields still save. An LDAP
+        // account has no local password to set.
+        $password = (string)$this->request->getPostParam('password', '');
+        if ($password !== '' && !$auth['use_ldap'] && $this->createApiPermissionService()->canEditUserPassword($callerId, $editId)) {
+            $input['password'] = $password;
+        }
+
+        // The template is written only by callers who may pick one, and never on a
+        // limited self-edit or while the picker is hidden.
+        $permTempl = $this->request->getPostParam('perm_templ');
+        $mayPickTemplate = $this->hasPermission('user_edit_templ_perm')
+            && $this->config->get('permissions', 'show_user_access_templates', true)
+            && !($isOwnProfile && !$canEditOthers);
+        if ($mayPickTemplate && $permTempl !== null && $permTempl !== '') {
+            $input['perm_templ'] = $permTempl;
+        }
+
+        return $input;
     }
 
     /**
@@ -354,18 +307,6 @@ class EditUserController extends BaseController
         return (bool)$this->config->get('ldap', 'sync_user_info', false);
     }
 
-    /**
-     * Resolve the fullname/email to persist for a user edit.
-     *
-     * When the account is IdP-managed, the identity provider owns these fields
-     * (overwritten on the next sync), so the stored values are kept and
-     * submitted changes discarded. Otherwise the submitted values are used.
-     *
-     * @param array $userData The persisted user record (expects auth_type, fullname, email)
-     * @param string $submittedFullname Fullname from the form
-     * @param string $submittedEmail Email from the form
-     * @return array{fullname: string, email: string}
-     */
     /**
      * Resolve the username/use_ldap to persist for a user edit (#1327).
      *
@@ -393,6 +334,18 @@ class EditUserController extends BaseController
         ];
     }
 
+    /**
+     * Resolve the fullname/email to persist for a user edit.
+     *
+     * When the account is IdP-managed, the identity provider owns these fields
+     * (overwritten on the next sync), so the stored values are kept and
+     * submitted changes discarded. Otherwise the submitted values are used.
+     *
+     * @param array $userData The persisted user record (expects auth_type, fullname, email)
+     * @param string $submittedFullname Fullname from the form
+     * @param string $submittedEmail Email from the form
+     * @return array{fullname: string, email: string}
+     */
     public static function resolveIdentityFields(array $userData, string $submittedFullname, string $submittedEmail, bool $ldapSynced = false): array
     {
         if (self::isIdpManaged($userData['auth_type'] ?? null, $ldapSynced)) {
