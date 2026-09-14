@@ -27,7 +27,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
-use Poweradmin\Domain\Service\FormStateService;
+use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;

@@ -36,7 +36,7 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Infrastructure\Session\SessionService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;

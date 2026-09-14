@@ -29,7 +29,7 @@ use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\MfaService;
-use Poweradmin\Domain\Service\MfaSessionManager;
+use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Service;
+namespace Poweradmin\Infrastructure\Session;
 
 /**
  * Service class for managing form state across requests
@@ -28,7 +28,7 @@ namespace Poweradmin\Domain\Service;
  * This service handles storing and retrieving form data when validation errors occur,
  * allowing form fields to retain their values after a failed submission.
  *
- * @package Poweradmin\Domain\Service
+ * @package Poweradmin\Infrastructure\Session
  */
 class FormStateService
 {

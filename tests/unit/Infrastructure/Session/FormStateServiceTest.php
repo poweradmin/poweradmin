@@ -1,11 +1,11 @@
 <?php
 
-namespace Poweradmin\Tests\Unit;
+namespace Poweradmin\Tests\Unit\Infrastructure\Session;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\FormStateService;
+use Poweradmin\Infrastructure\Session\FormStateService;
 
 #[CoversClass(FormStateService::class)]
 class FormStateServiceTest extends TestCase

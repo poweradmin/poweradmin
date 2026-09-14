@@ -38,7 +38,7 @@ use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
-use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Infrastructure\Session\SessionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;

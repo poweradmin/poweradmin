@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Infrastructure\Session\SessionService;
 
 class AuthenticationService
 {

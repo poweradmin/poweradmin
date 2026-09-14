@@ -16,8 +16,8 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\AuthenticationService;
-use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Infrastructure\Session\SessionService;
 use ReflectionMethod;
 
 /**
