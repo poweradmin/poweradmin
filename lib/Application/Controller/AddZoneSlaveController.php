@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -214,8 +214,9 @@ class AddZoneSlaveController extends BaseController
             $this->setMessage('add_zone_slave', 'error', _('This is not a valid IPv4 or IPv6 address.'));
             $this->showForm();
         } else {
-            if ($this->createDomainManager()->addDomain($this->db, $zone, $owner, $type, $master, 'none', $selected_groups)) {
-                $zone_id = $domainRepository->getZoneIdFromName($zone);
+            $created = $this->createDomainManager()->addDomain($this->db, $zone, $owner, $type, $master, 'none', $selected_groups);
+            if ($created->success) {
+                $zone_id = $created->zoneId;
 
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
@@ -233,6 +234,9 @@ class AddZoneSlaveController extends BaseController
                     $this->setMessage('list_forward_zones', 'success', _('Zone has been added successfully.'));
                     $this->redirect('/zones/forward');
                 }
+            } else {
+                $this->setMessage('add_zone_slave', 'error', (string)$created->message);
+                $this->showForm();
             }
         }
     }

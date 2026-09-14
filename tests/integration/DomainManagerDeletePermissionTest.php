@@ -18,9 +18,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use ReflectionClass;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -67,7 +65,7 @@ class DomainManagerDeletePermissionTest extends SqliteIntegrationTestCase
         $manager = $this->makeDomainManager($backend);
 
         $this->assertFalse(
-            $manager->deleteDomain(self::ZONE_DOMAIN_ID),
+            $manager->deleteDomain(self::ZONE_DOMAIN_ID)->success,
             'A zone owner holding only zone_content_edit_own must not be able to delete the zone.'
         );
     }
@@ -83,7 +81,7 @@ class DomainManagerDeletePermissionTest extends SqliteIntegrationTestCase
 
         $manager = $this->makeDomainManager($backend);
 
-        $this->assertFalse($manager->deleteDomain(self::ZONE_DOMAIN_ID));
+        $this->assertFalse($manager->deleteDomain(self::ZONE_DOMAIN_ID)->success);
     }
 
     #[RunInSeparateProcess]
@@ -100,7 +98,7 @@ class DomainManagerDeletePermissionTest extends SqliteIntegrationTestCase
 
         $manager = $this->makeDomainManager($backend);
 
-        $this->assertTrue($manager->deleteDomain(self::ZONE_DOMAIN_ID));
+        $this->assertTrue($manager->deleteDomain(self::ZONE_DOMAIN_ID)->success);
     }
 
     #[RunInSeparateProcess]
@@ -118,7 +116,7 @@ class DomainManagerDeletePermissionTest extends SqliteIntegrationTestCase
 
         $manager = $this->makeDomainManager($backend);
 
-        $this->assertTrue($manager->deleteDomain(self::ZONE_DOMAIN_ID));
+        $this->assertTrue($manager->deleteDomain(self::ZONE_DOMAIN_ID)->success);
     }
 
     private function seedZoneOwnedBy(int $userId): void
@@ -158,7 +156,7 @@ class DomainManagerDeletePermissionTest extends SqliteIntegrationTestCase
 
     private function makeDomainManager(?object $backend = null): DomainManager
     {
-        $config = $this->primeConfig();
+        $config = $this->primeConfigurationManager();
         $soa = $this->createMock(SOARecordManagerInterface::class);
         $repo = $this->createMock(DomainRepositoryInterface::class);
         $repo->method('getDomainNameById')->willReturn('example.com');
@@ -174,22 +172,5 @@ class DomainManagerDeletePermissionTest extends SqliteIntegrationTestCase
             null,
             $changeLogger
         );
-    }
-
-    private function primeConfig(): ConfigurationManager
-    {
-        $config = ConfigurationManager::getInstance();
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $settingsProperty->setValue($config, [
-            'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
-        ]);
-        $initializedProperty->setValue($config, true);
-
-        return $config;
     }
 }

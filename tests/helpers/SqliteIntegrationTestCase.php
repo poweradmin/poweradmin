@@ -26,7 +26,9 @@ use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
+use ReflectionClass;
 
 /**
  * Base test case for integration tests that need a throwaway in-memory SQLite
@@ -74,6 +76,24 @@ abstract class SqliteIntegrationTestCase extends TestCase
     protected function tearDown(): void
     {
         unset($_SESSION['userid']);
+    }
+
+    /**
+     * Points the ConfigurationManager singleton at the sqlite settings, for code
+     * that reads it directly instead of taking a ConfigurationInterface.
+     *
+     * @param array<string, array<string, mixed>> $overrides extra sections, e.g. ['dns' => [...]]
+     */
+    protected function primeConfigurationManager(array $overrides = []): ConfigurationManager
+    {
+        $config = ConfigurationManager::getInstance();
+        $reflection = new ReflectionClass(ConfigurationManager::class);
+        $reflection->getProperty('settings')->setValue($config, array_merge([
+            'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
+        ], $overrides));
+        $reflection->getProperty('initialized')->setValue($config, true);
+
+        return $config;
     }
 
     /**

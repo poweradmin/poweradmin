@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Model;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\SqliteIntegrationTestCase;
@@ -35,6 +36,8 @@ use TestHelpers\SqliteIntegrationTestCase;
 class UserManagerDeleteUserTest extends SqliteIntegrationTestCase
 {
     private const SECOND_ADMIN = 3;
+    private const USER_ADMIN = 4;
+    private const TARGET = 5;
 
     protected function setUp(): void
     {
@@ -48,6 +51,7 @@ class UserManagerDeleteUserTest extends SqliteIntegrationTestCase
                 "CREATE TABLE user_mfa (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE login_attempts (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)",
+                "CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL)",
                 "CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER)",
                 "CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER)",
                 "CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
@@ -87,6 +91,25 @@ class UserManagerDeleteUserTest extends SqliteIntegrationTestCase
         $this->assertSame(0, $this->rows('user_group_members WHERE user_id = ' . self::SECOND_ADMIN));
         $this->assertSame(0, $this->rows('zone_templ WHERE owner = ' . self::SECOND_ADMIN));
         $this->assertSame(1, $this->rows('users WHERE id = ' . self::ADMIN_USER_ID));
+    }
+
+    #[RunInSeparateProcess]
+    public function testARefusedZoneDeletionKeepsTheUserAndTouchesNoZone(): void
+    {
+        $this->primeConfigurationManager();
+        // The acting user may delete users and their own zones, but not zones owned by others.
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (44, 'user_edit_others'), (50, 'zone_delete_own')");
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (20, 'User admin')");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (20, 44), (20, 50)");
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::USER_ADMIN . ", 'useradmin', 20), (" . self::TARGET . ", 'target', 20)");
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (10, " . self::USER_ADMIN . "), (11, " . self::TARGET . ")");
+        $_SESSION['userid'] = self::USER_ADMIN;
+
+        $decisions = [['zid' => 10, 'target' => 'delete'], ['zid' => 11, 'target' => 'delete']];
+        $this->assertFalse($this->manager()->deleteUser(self::TARGET, $decisions));
+
+        $this->assertSame(1, $this->rows('users WHERE id = ' . self::TARGET));
+        $this->assertSame(2, $this->rows('zones'));
     }
 
     private function rows(string $fromWhere): int

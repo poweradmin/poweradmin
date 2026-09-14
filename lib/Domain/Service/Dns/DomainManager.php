@@ -172,16 +172,13 @@ class DomainManager implements DomainManagerInterface
      * @param int|string $zone_template ID of zone template ['none' or int]
      * @param array $groupIds Group IDs to assign as zone owners
      * @param string|null $soaEditApi SOA-EDIT-API policy for the new zone; 'OFF' disables, null uses the dns.soa_edit_api config default
-     *
-     * @return boolean true on success
      */
-    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): bool
+    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): ZoneWriteResult
     {
         // Last-resort guard: not every caller whitelists the kind, and an unknown
         // string would otherwise be written straight into the zone type.
         if (!in_array(strtoupper($type), ZoneType::getAllTypes(), true)) {
-            $this->messageService->addSystemError(_('Invalid or unexpected input given.'));
-            return false;
+            return ZoneWriteResult::failure(_('Invalid or unexpected input given.'));
         }
 
         $zone_master_add = $this->userHasPermission('zone_master_add');
@@ -213,18 +210,15 @@ class DomainManager implements DomainManagerInterface
                     // Zone was created via API but DB ID lookup timed out.
                     // Clean up the orphaned zone to avoid unmanaged state.
                     $this->cleanupZoneOnFailure(0, $domain);
-                    $this->messageService->addSystemError(_('Failed to create zone in DNS backend.'));
-                    return false;
+                    return ZoneWriteResult::backendFailure(_('Failed to create zone in DNS backend.'));
                 } catch (\Exception $e) {
-                    $this->messageService->addSystemError(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
-                    return false;
+                    return ZoneWriteResult::backendFailure(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
                 }
                 if ($domain_id === false) {
                     // API call was rejected (duplicate zone, validation error, etc.)
                     // Zone was NOT created - do not attempt cleanup as it could
                     // delete an existing zone with the same name.
-                    $this->messageService->addSystemError(_('Failed to create zone in DNS backend.'));
-                    return false;
+                    return ZoneWriteResult::backendFailure(_('Failed to create zone in DNS backend.'));
                 }
 
                 if (!ZoneType::replicatesFromPrimary($type)) {
@@ -290,7 +284,7 @@ class DomainManager implements DomainManagerInterface
                                 'owner' => $owner,
                             ]);
                         });
-                        return true;
+                        return ZoneWriteResult::ok((int)$domain_id);
                     } else {
                         if ($zone_template == "none" && $domain_id) {
                             $isApiBackend = $this->backendProvider->isApiBackend();
@@ -325,8 +319,7 @@ class DomainManager implements DomainManagerInterface
                                 if ($isApiBackend) {
                                     $this->cleanupZoneMetadata($domain_id);
                                 }
-                                $this->messageService->addSystemError(_('Failed to create SOA record for zone.'));
-                                return false;
+                                return ZoneWriteResult::backendFailure(_('Failed to create SOA record for zone.'));
                             }
                             if (!$isApiBackend) {
                                 $db->commit();
@@ -339,7 +332,7 @@ class DomainManager implements DomainManagerInterface
                                     'owner' => $owner,
                                 ]);
                             });
-                            return true;
+                            return ZoneWriteResult::ok((int)$domain_id);
                         } elseif ($domain_id && is_numeric($zone_template)) {
                             $isApiBackend = $this->backendProvider->isApiBackend();
                             if ($isApiBackend) {
@@ -380,8 +373,7 @@ class DomainManager implements DomainManagerInterface
                                         if ($record_id === null && $isApiBackend) {
                                             $this->cleanupZoneOnFailure($domain_id, $domain);
                                             $this->cleanupZoneMetadata($domain_id);
-                                            $this->messageService->addSystemError(sprintf(_('Failed to create %s record for zone.'), $recordType));
-                                            return false;
+                                            return ZoneWriteResult::backendFailure(sprintf(_('Failed to create %s record for zone.'), $recordType));
                                         }
                                         if ($record_id === null) {
                                             $record_id = 0;
@@ -420,11 +412,10 @@ class DomainManager implements DomainManagerInterface
                                     'owner' => $owner,
                                 ]);
                             });
-                            return true;
+                            return ZoneWriteResult::ok((int)$domain_id);
                         } else {
                             $db->rollBack();
-                            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "addDomain", "could not create zone"));
-                            return false;
+                            return ZoneWriteResult::backendFailure(sprintf(_('Invalid argument(s) given to function %s %s'), "addDomain", "could not create zone"));
                         }
                     }
                 } catch (\Exception $e) {
@@ -438,16 +429,13 @@ class DomainManager implements DomainManagerInterface
                     if (!$wasInTransaction || $this->backendProvider->isApiBackend()) {
                         $this->cleanupZoneMetadata($domain_id);
                     }
-                    $this->messageService->addSystemError(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
-                    return false;
+                    return ZoneWriteResult::backendFailure(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
                 }
             } else {
-                $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s'), "addDomain"));
-                return false;
+                return ZoneWriteResult::failure(sprintf(_('Invalid argument(s) given to function %s'), "addDomain"));
             }
         } else {
-            $this->messageService->addSystemError(_("You do not have the permission to add a master zone."));
-            return false;
+            return ZoneWriteResult::forbidden(_("You do not have the permission to add a master zone."));
         }
     }
 
@@ -455,10 +443,8 @@ class DomainManager implements DomainManagerInterface
      * Deletes a domain by a given id
      *
      * @param int $id Zone ID
-     *
-     * @return boolean true on success
      */
-    public function deleteDomain(int $id): bool
+    public function deleteDomain(int $id): ZoneWriteResult
     {
         $perm_delete = Permission::getDeletePermission($this->db);
         $user_is_zone_owner = self::currentUserOwnsZone($this->db, $id);
@@ -476,8 +462,7 @@ class DomainManager implements DomainManagerInterface
                 // This must happen before local cleanup so that a failure
                 // does not leave Poweradmin metadata deleted while DNS zone remains.
                 if (!$this->backendProvider->deleteZone($id, $zoneName)) {
-                    $this->messageService->addSystemError(_('Failed to delete zone from DNS backend.'));
-                    return false;
+                    return ZoneWriteResult::backendFailure(_('Failed to delete zone from DNS backend.'));
                 }
             } elseif (!$this->backendProvider->isApiBackend()) {
                 // Domain name row is gone (out-of-band delete or partial failure)
@@ -522,18 +507,16 @@ class DomainManager implements DomainManagerInterface
                 if ($this->db->inTransaction()) {
                     $this->db->rollBack();
                 }
-                $this->messageService->addSystemError(sprintf(_('Failed to clean up zone metadata: %s'), $e->getMessage()));
-                return false;
+                return ZoneWriteResult::backendFailure(sprintf(_('Failed to clean up zone metadata: %s'), $e->getMessage()));
             }
 
             $this->captureChange(function () use ($zoneSnapshot, $recordCountBefore): void {
                 $this->changeLogger->logZoneDelete($zoneSnapshot, $recordCountBefore);
             });
 
-            return true;
+            return ZoneWriteResult::ok($id);
         } else {
-            $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
-            return false;
+            return ZoneWriteResult::forbidden(_("You do not have the permission to delete a zone."));
         }
     }
 

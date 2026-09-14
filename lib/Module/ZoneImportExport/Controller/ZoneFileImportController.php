@@ -384,12 +384,13 @@ class ZoneFileImportController extends BaseController
                 $this->showError($overlapError);
                 return;
             }
-            if (!$this->createDomainManager()->addDomain($this->db, $zoneName, $ownerForCreate, $zoneType, '', 'none', $groupsForCreate)) {
-                $this->showError(_('Failed to create zone.'));
+            $created = $this->createDomainManager()->addDomain($this->db, $zoneName, $ownerForCreate, $zoneType, '', 'none', $groupsForCreate);
+            if (!$created->success) {
+                $this->showError((string)$created->message);
                 return;
             }
 
-            $zone_id = $domainRepository->getZoneIdFromName($zoneName);
+            $zone_id = $created->zoneId;
             if (!$zone_id) {
                 $this->showError(_('Failed to retrieve created zone.'));
                 return;

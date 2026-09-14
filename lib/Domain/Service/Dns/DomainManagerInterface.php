@@ -38,19 +38,15 @@ interface DomainManagerInterface
      * @param int|string $zone_template ID of zone template ['none' or int]
      * @param int[] $groupIds Group IDs for group ownership (assigned atomically within the same transaction)
      * @param string|null $soaEditApi SOA-EDIT-API policy for the new zone; 'OFF' disables, null uses the dns.soa_edit_api config default
-     *
-     * @return boolean true on success
      */
-    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): bool;
+    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): ZoneWriteResult;
 
     /**
      * Deletes a domain by a given id
      *
      * @param int $id Zone ID
-     *
-     * @return boolean true on success
      */
-    public function deleteDomain(int $id): bool;
+    public function deleteDomain(int $id): ZoneWriteResult;
 
     /**
      * Delete array of domains

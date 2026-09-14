@@ -66,8 +66,23 @@ class UserManager
         if ($userId === null) {
             return false;
         }
-        $this->permissionService ??= new PermissionService($this->userRepository());
-        return $this->permissionService->hasPermission($userId, $permission);
+
+        return $this->permissions()->hasPermission($userId, $permission);
+    }
+
+    private function canDeleteZone(int $zoneId): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+
+        return $this->permissions()->canDeleteZone($userId, $this->permissions()->userOwnsZone($userId, $zoneId));
+    }
+
+    private function permissions(): PermissionService
+    {
+        return $this->permissionService ??= new PermissionService($this->userRepository());
     }
 
     /**
@@ -194,10 +209,24 @@ class UserManager
             return false;
         }
 
+        // Refuse up front so a later zone cannot fail after earlier ones were already removed.
+        foreach ($zones as $zone) {
+            if ($zone ['target'] == "delete" && !$this->canDeleteZone((int)$zone ['zid'])) {
+                $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
+
+                return false;
+            }
+        }
+
         $domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config);
         foreach ($zones as $zone) {
             if ($zone ['target'] == "delete") {
-                $domainManager->deleteDomain($zone ['zid']);
+                $deleted = $domainManager->deleteDomain($zone ['zid']);
+                if (!$deleted->success) {
+                    $this->messageService->addSystemError((string)$deleted->message);
+
+                    return false;
+                }
             } elseif ($zone ['target'] == "new_owner") {
                 DomainManager::addOwnerToZone($this->db, $zone ['zid'], $zone ['newowner']);
             }

@@ -218,15 +218,17 @@ class ZoneManagementService
         );
 
         $domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config, $backendProvider);
-        $success = $domainManager->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds, $soaEditApi);
-
-        if (!$success) {
-            return ['success' => false, 'message' => 'Failed to create zone', 'status' => 500];
+        $created = $domainManager->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds, $soaEditApi);
+        if (!$created->success) {
+            // Backend faults keep the generic contract string; refusals carry their reason
+            return [
+                'success' => false,
+                'message' => $created->status === 500 ? 'Failed to create zone' : (string)$created->message,
+                'status' => $created->status,
+            ];
         }
 
-        // Get the ID of the newly created zone
-        $zoneId = $this->zoneRepository->getZoneIdByName($domain);
-
+        $zoneId = $created->zoneId;
         if (!$zoneId) {
             return ['success' => false, 'message' => 'Failed to retrieve zone ID', 'status' => 500];
         }

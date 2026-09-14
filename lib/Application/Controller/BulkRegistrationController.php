@@ -216,9 +216,9 @@ class BulkRegistrationController extends BaseController
                 $failed_domains[] = ['name' => $domain, 'reason' => _('There is already a zone with this name.')];
             } elseif (($overlapError = $this->getZoneOverlapError($domain)) !== null) {
                 $failed_domains[] = ['name' => $domain, 'reason' => $overlapError];
-            } elseif ($domainManager->addDomain($this->db, $domain, $owner, $dom_type, '', $zone_template, $selected_groups)) {
+            } elseif (($created = $domainManager->addDomain($this->db, $domain, $owner, $dom_type, '', $zone_template, $selected_groups))->success) {
                 $added_domains[] = $domain;
-                $zone_id = $domainRepository->getZoneIdFromName($domain);
+                $zone_id = $created->zoneId;
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                     $this->ipAddressRetriever->getClientIp(),
@@ -228,7 +228,7 @@ class BulkRegistrationController extends BaseController
                     $zone_template
                 ), $zone_id);
             } else {
-                $failed_domains[] = ['name' => $domain, 'reason' => _('Failed to add zone.')];
+                $failed_domains[] = ['name' => $domain, 'reason' => (string)$created->message];
             }
         }
 

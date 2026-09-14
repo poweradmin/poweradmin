@@ -18,9 +18,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use ReflectionClass;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -178,7 +176,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertFalse(
-            $domainManager->addDomain($this->db, 'new.example.com', null, 'MASTER', '', 'none')
+            $domainManager->addDomain($this->db, 'new.example.com', null, 'MASTER', '', 'none')->success
         );
     }
 
@@ -222,7 +220,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
 
     private function makeDomainManager(?object $backend = null): DomainManager
     {
-        $config = $this->primeConfig();
+        $config = $this->primeConfigurationManager();
         $soa = $this->createMock(SOARecordManagerInterface::class);
         $repo = $this->createMock(DomainRepositoryInterface::class);
         $changeLogger = $this->createMock(RecordChangeLogger::class);
@@ -236,22 +234,5 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
             null,
             $changeLogger
         );
-    }
-
-    private function primeConfig(): ConfigurationManager
-    {
-        $config = ConfigurationManager::getInstance();
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $settingsProperty->setValue($config, [
-            'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
-        ]);
-        $initializedProperty->setValue($config, true);
-
-        return $config;
     }
 }

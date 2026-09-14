@@ -284,8 +284,8 @@ class AddZoneMasterController extends BaseController
         } elseif ($replicates && !$this->ipAddressValidator->areMultipleValidIPs($slave_master)) {
             $this->setMessage('add_zone_master', 'error', _('This is not a valid IPv4 or IPv6 address.'));
             $this->showForm();
-        } elseif ($this->createDomainManager()->addDomain($this->db, $zone_name, $owner, $dom_type, $slave_master, $zone_template, $selected_groups, $soa_edit_api)) {
-            $zone_id = $domainRepository->getZoneIdFromName($zone_name);
+        } elseif (($created = $this->createDomainManager()->addDomain($this->db, $zone_name, $owner, $dom_type, $slave_master, $zone_template, $selected_groups, $soa_edit_api))->success) {
+            $zone_id = $created->zoneId;
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s%s',
@@ -357,6 +357,9 @@ class AddZoneMasterController extends BaseController
                 }
                 $this->redirect('/zones/forward');
             }
+        } else {
+            $this->setMessage('add_zone_master', 'error', (string)$created->message);
+            $this->showForm();
         }
     }
 

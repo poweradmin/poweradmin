@@ -29,9 +29,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use ReflectionClass;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -151,7 +149,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
 
     private function makeRecordManager(DnsBackendProvider $backend): RecordManager
     {
-        $config = $this->primeConfig();
+        $config = $this->primeConfigurationManager(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
 
         // The validation and zone-name lookups are stubbed to succeed so that, on
         // vulnerable code, nothing but the ownership check stands between the forged
@@ -179,23 +177,5 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
             null,
             $changeLogger
         );
-    }
-
-    private function primeConfig(): ConfigurationManager
-    {
-        $config = ConfigurationManager::getInstance();
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $settingsProperty->setValue($config, [
-            'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
-            'dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600],
-        ]);
-        $initializedProperty->setValue($config, true);
-
-        return $config;
     }
 }

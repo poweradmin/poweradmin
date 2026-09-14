@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -115,7 +115,8 @@ class DeleteDomainController extends BaseController
             }
         }
 
-        if ($this->createDomainManager()->deleteDomain($zone_id)) {
+        $deleted = $this->createDomainManager()->deleteDomain($zone_id);
+        if ($deleted->success) {
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
@@ -140,6 +141,10 @@ class DeleteDomainController extends BaseController
                 $this->setMessage('list_forward_zones', 'success', _('Zone has been deleted successfully.'));
                 $this->redirect('/zones/forward');
             }
+        } else {
+            // The backend may already have dropped the zone, so leave the page instead of re-rendering it.
+            $this->addSystemMessage('error', (string)$deleted->message);
+            $this->redirect(!empty($zone_info['name']) && DnsHelper::isReverseZoneName($zone_info['name']) ? '/zones/reverse' : '/zones/forward');
         }
     }
 

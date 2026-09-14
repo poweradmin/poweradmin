@@ -198,13 +198,14 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
 
-        if (!$domainManager->addDomain($this->db, $zone, $owner, 'SLAVE', $master, 'none', $groups)) {
-            $this->setMessage('import', 'error', _('Failed to create the secondary zone.'));
+        $created = $domainManager->addDomain($this->db, $zone, $owner, 'SLAVE', $master, 'none', $groups);
+        if (!$created->success) {
+            $this->setMessage('import', 'error', (string)$created->message);
             $this->showForm();
             return;
         }
 
-        $zoneId = $domainRepository->getZoneIdFromName($zone);
+        $zoneId = $created->zoneId;
         $this->auditLogger->logInfo(sprintf(
             'client_ip:%s user:%s operation:import_secondary_zone zone:%s zone_master:%s',
             $this->ipAddressRetriever->getClientIp(),
