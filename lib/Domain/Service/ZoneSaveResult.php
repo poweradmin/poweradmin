@@ -20,30 +20,29 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace Poweradmin\Domain\Service;
 
-namespace Poweradmin\Tests\Unit\Domain\Enum;
-
-use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Enum\ZoneSaveOutcome;
 
-class ZoneSaveOutcomeTest extends TestCase
+/**
+ * How a zone editor save ended, with what the page needs to report it and,
+ * for a refused stale form, the rows to put back in front of the operator.
+ */
+final readonly class ZoneSaveResult
 {
     /**
-     * Only these two bump the SOA serial and trigger a DNSSEC rectify.
+     * @param bool $serialBumped Whether the SOA serial was incremented
+     * @param bool $truncated max_input_vars dropped part of the post
+     * @param list<string> $errors Reasons for the rows that failed to write
+     * @param array<int|string, mixed> $rejectedRecords Rows to restore after a serial conflict
      */
-    public function testOnlyWrittenOutcomesCountAsWritten(): void
-    {
-        $this->assertTrue(ZoneSaveOutcome::UPDATED->wasWritten());
-        $this->assertTrue(ZoneSaveOutcome::NO_CHANGES->wasWritten());
-        $this->assertFalse(ZoneSaveOutcome::WRITE_FAILED->wasWritten());
-        $this->assertFalse(ZoneSaveOutcome::SERIAL_CONFLICT->wasWritten());
-        $this->assertFalse(ZoneSaveOutcome::FORBIDDEN->wasWritten());
-        $this->assertFalse(ZoneSaveOutcome::READ_ONLY->wasWritten());
-        $this->assertFalse(ZoneSaveOutcome::NOTHING_SAVED->wasWritten());
-    }
-
-    public function testEveryCaseIsClassified(): void
-    {
-        $this->assertCount(7, ZoneSaveOutcome::cases());
+    public function __construct(
+        public ZoneSaveOutcome $outcome,
+        public bool $serialBumped = false,
+        public bool $truncated = false,
+        public array $errors = [],
+        public array $rejectedRecords = [],
+        public ?string $rejectedZoneComment = null
+    ) {
     }
 }

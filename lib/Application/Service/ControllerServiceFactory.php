@@ -42,6 +42,7 @@ use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Domain\Service\ZoneEditService;
 use Poweradmin\Domain\Service\ZoneListPermissionService;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
@@ -85,6 +86,7 @@ class ControllerServiceFactory
     private ?ZoneSigningService $zoneSigningService = null;
     private ?AuditService $auditService = null;
     private ?RecordManagerInterface $recordManager = null;
+    private ?RecordCommentService $recordCommentService = null;
     private ?CatalogZoneService $catalogZoneService = null;
     private ?UserPreferenceService $userPreferenceService = null;
     private ?RepositoryFactory $repositoryFactory = null;
@@ -321,13 +323,36 @@ class ControllerServiceFactory
         return $this->recordManager ??= DnsServiceFactory::createRecordManager($this->db, $this->config, $this->dnsBackendProvider());
     }
 
+    public function recordCommentService(): RecordCommentService
+    {
+        return $this->recordCommentService ??= new RecordCommentService($this->repositoryFactory()->createRecordCommentRepository());
+    }
+
+    public function zoneEditService(): ZoneEditService
+    {
+        $comments = $this->recordCommentService();
+
+        return new ZoneEditService(
+            $this->config,
+            $this->permissionService(),
+            $this->zoneRepository(),
+            $this->domainRepository(),
+            $this->recordRepository(),
+            $this->recordManager(),
+            $this->soaRecordManager(),
+            $comments,
+            new RecordCommentSyncService($comments, $this->recordRepository(), $this->dnsBackendProvider()),
+            $this->auditService()
+        );
+    }
+
     public function recordManagerService(): RecordManagerService
     {
         return new RecordManagerService(
             $this->db,
             $this->domainRepository(),
             $this->recordManager(),
-            new RecordCommentService($this->repositoryFactory()->createRecordCommentRepository()),
+            $this->recordCommentService(),
             $this->auditService(),
             $this->config,
             $this->dnsBackendProvider()

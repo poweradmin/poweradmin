@@ -46,6 +46,7 @@ use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
+use Poweradmin\Domain\Service\ZoneEditService;
 use Poweradmin\Domain\Service\ZoneListPermissionService;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneMetadataService;
@@ -610,6 +611,11 @@ abstract class BaseController
     protected function createDashboardStatsService(): DashboardStatsService
     {
         return $this->services()->dashboardStatsService();
+    }
+
+    protected function createZoneEditService(): ZoneEditService
+    {
+        return $this->services()->zoneEditService();
     }
 
     protected function createZoneListPermissionService(): ZoneListPermissionService

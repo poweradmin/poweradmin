@@ -34,27 +34,24 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
-use Poweradmin\Application\Service\RecordCommentService;
+use Poweradmin\Application\Service\ZoneSaveMessages;
 use Poweradmin\Application\Service\ZoneSigningMessages;
-use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\RecordLog;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\ZoneEditSubmission;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
-use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\FormStateService;
@@ -72,16 +69,12 @@ use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Enum\SortDirection;
-use Poweradmin\Domain\Enum\ZoneSaveOutcome;
 
 class EditController extends BaseController
 {
-    private RecordCommentService $recordCommentService;
-    private RecordCommentSyncService $commentSyncService;
     private RecordTypeService $recordTypeService;
     private FormStateService $formStateService;
     private SOARecordManagerInterface $soaRecordManager;
-    private RecordManagerInterface $dnsRecordManager;
     private ?DomainManagerInterface $domainManager = null;
     private ReverseTtlResolver $reverseTtlResolver;
     private UserContextService $userContextService;
@@ -99,18 +92,11 @@ class EditController extends BaseController
     {
         parent::__construct($request);
         $this->request = new Request();
-        $backendProvider = $this->createDnsBackendProvider();
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
-        $this->recordRepository = $repositoryFactory->createRecordRepository();
-        $this->domainRepository = $repositoryFactory->createDomainRepository();
-        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
+        $this->recordRepository = $this->createRecordRepository();
+        $this->domainRepository = $this->createDomainRepository();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->formStateService = new FormStateService();
-
         $this->soaRecordManager = $this->createSOARecordManager();
-        $this->dnsRecordManager = $this->createRecordManager();
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
         $this->userContextService = new UserContextService();
         $this->zoneRepository = $this->createZoneRepository();
@@ -673,153 +659,35 @@ class EditController extends BaseController
 
     public function saveRecords(int $zone_id, string $zone_name): void
     {
-        // The page gate only proves view access; records are re-checked per row
-        // but the zone comment write and the SOA serial bump are not.
-        $userId = (int)$this->getCurrentUserId();
-        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zone_id);
-        if (!ZoneAccessPolicy::canEditZone($perm_edit, $this->permissionService->userOwnsZone($userId, $zone_id))) {
-            $this->setMessage('edit', 'error', _('You do not have permission to edit this zone.'));
-            return;
-        }
-
-        // Secondary and Consumer zones replicate from a primary - reject any save
-        // (records, comment, or SOA serial bump) server-side, not just in the UI
-        if (ZoneType::isReadOnly($this->zoneRepository->getDomainType($zone_id))) {
-            $this->setMessage('edit', 'error', _('You cannot edit records in a read-only zone.'));
-            return;
-        }
-
-        $error = false;
-        $one_record_changed = false;
-        $stale_form_rejected = false;
-        $conflictResolution = $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins');
-
         $records = $this->request->getPostParam('record');
-        $form_submitted = $this->request->getPostParam('form_complete') !== null;
-        // A truncated POST (max_input_vars) drops the form's trailing fields, so the
-        // zone comment must not be processed either - it would be saved as empty.
-        $records_truncated = $records !== null && !$form_submitted;
+        $serial = $this->request->getPostParam('serial');
+        $zoneComment = $this->request->getPostParam('zone_comment');
 
-        // The client omits unchanged rows but always sends form_complete, so treat
-        // either as an edit-form save and run the stale-form serial check for both.
-        if ($records !== null || $form_submitted) {
-            $soa_record = $this->soaRecordManager->getSOARecord($zone_id);
-            $current_serial = SOARecordManager::getSOASerial($soa_record);
+        $result = $this->createZoneEditService()->save(new ZoneEditSubmission(
+            $zone_id,
+            $zone_name,
+            (int)$this->getCurrentUserId(),
+            (string)$this->userContextService->getLoggedInUsername(),
+            is_array($records) ? $records : null,
+            $this->request->getPostParam('form_complete') !== null,
+            $serial === null ? null : (string)$serial,
+            $this->request->getPostParam('changed_rows_only') === '1',
+            $zoneComment === null ? null : (string)$zoneComment
+        ));
 
-            // Only the strict strategy stops here. last_writer_wins is defined by saving
-            // over the other writer, so a stale form under it still has to be processed.
-            $stale_form_rejected = $this->isSerialMismatch($current_serial)
-                && $conflictResolution === 'only_latest_version';
-
-            if ($stale_form_rejected) {
-                // Without the client filter every displayed row is posted, so a row that
-                // differs from the zone need not be one the operator touched. Restoring
-                // those would revert the other writer, so only a filtered post is kept.
-                if ($this->request->getPostParam('changed_rows_only') === '1') {
-                    $this->rejectedRecords = $records ?? [];
-                    $this->rejectedZoneComment = $this->request->getPostParam('zone_comment');
-                }
-            } else {
-                foreach (($records ?? []) as &$record) {
-                    // Rows end with a hidden _complete marker; max_input_vars truncation
-                    // drops it, so skip such rows and flag the partial save.
-                    if (!isset($record['_complete'])) {
-                        $records_truncated = true;
-                        continue;
-                    }
-                    unset($record['_complete']);
-
-
-                    // Normalize record name to full FQDN (always, regardless of display setting)
-                    // This converts @ to zone apex and ensures proper zone suffix
-                    if (isset($record['name'])) {
-                        $record['name'] = DnsHelper::restoreZoneSuffix($record['name'], $zone_name);
-                    }
-
-                    $log = new RecordLog($this->createAuditService(), $this->recordRepository);
-
-                    if (isset($record['disabled']) && $record['disabled'] == 'on') {
-                        $record["disabled"] = 1;
-                    } else {
-                        $record["disabled"] = 0;
-                    }
-
-                    $comment = '';
-                    if ($this->config->get('interface', 'show_record_comments', false)) {
-                        $recordComment = $this->recordCommentService->findCommentByRecordId(RecordIdHelper::normalizeId($record['rid']));
-                        if ($recordComment === null) {
-                            $recordComment = $this->recordCommentService->findComment($zone_id, $record['name'], $record['type']);
-                        }
-                        $comment = $recordComment ? $recordComment->getComment() : '';
-                    }
-
-                    $log->logPrior($record['rid'], $record['zid'], $comment);
-
-                    if (!$log->hasChanged($record)) {
-                        continue;
-                    } else {
-                        $one_record_changed = true;
-                    }
-
-                    $edit_record = $this->dnsRecordManager->editRecord($record, false);
-                    if (!$edit_record->success) {
-                        $this->addSystemMessage('error', (string)$edit_record->message);
-                        $error = true;
-                    } else {
-                        $log->logAfter($record['rid'], $record);
-                        $log->write();
-
-                        if ($this->config->get('interface', 'show_record_comments', false)) {
-                            // Use per-record comment (linked by record ID via record_comment_links table)
-                            $this->recordCommentService->updateCommentForRecord(
-                                $zone_id,
-                                $record['name'],
-                                $record['type'],
-                                $record['comment'] ?? '',
-                                RecordIdHelper::normalizeId($record['rid']),
-                                $this->userContextService->getLoggedInUsername()
-                            );
-
-                            if ($this->config->get('misc', 'record_comments_sync')) {
-                                $this->commentSyncService->updateRelatedRecordComments(
-                                    $this->domainRepository,
-                                    $record,
-                                    $record['comment'] ?? '',
-                                    $this->userContextService->getLoggedInUsername()
-                                );
-                            }
-                        }
-                    }
-                }
-
-                if ($records_truncated) {
-                    $this->setMessage('edit', 'warning', _('Some records were not saved because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP "max_input_vars" setting.'));
-                }
-            }
+        foreach ($result->errors as $error) {
+            $this->addSystemMessage('error', $error);
         }
-
-        // A rejected form is rejected whole: writing the comment would persist half of a
-        // submission the operator is being told to send again.
-        if (!$records_truncated && !$stale_form_rejected && $this->config->get('interface', 'show_zone_comments', true)) {
-            $one_record_changed = $this->processZoneComment($zone_id, $one_record_changed);
+        if ($result->truncated) {
+            $this->setMessage('edit', 'warning', ZoneSaveMessages::truncated());
         }
+        $this->rejectedRecords = $result->rejectedRecords;
+        $this->rejectedZoneComment = $result->rejectedZoneComment;
 
-        // A truncated save that changed nothing keeps the SOA serial untouched and
-        // reports only the truncation warning, not a success message.
-        if ($records_truncated && !$one_record_changed && !$error && !$stale_form_rejected) {
-            return;
+        $message = ZoneSaveMessages::forResult($result);
+        if ($message !== null) {
+            $this->setMessage('edit', $message[0], $message[1]);
         }
-
-        // Collapse the flags into one outcome here, where all of them are in
-        // scope; $error wins over a stale form, which wins over the record count.
-        $outcome = match (true) {
-            $error => ZoneSaveOutcome::WRITE_FAILED,
-            $stale_form_rejected => ZoneSaveOutcome::SERIAL_CONFLICT,
-            $one_record_changed => ZoneSaveOutcome::UPDATED,
-            default => ZoneSaveOutcome::NO_CHANGES,
-        };
-
-        $this->finalizeSave($outcome, $zone_id, $zone_name);
     }
 
     /**
@@ -1007,67 +875,6 @@ class EditController extends BaseController
             }
         }
         return false;
-    }
-
-    /**
-     * Check if the serial is mismatched
-     *
-     * @param string $current_serial
-     * @return bool
-     */
-    public function isSerialMismatch(string $current_serial): bool
-    {
-        $serial = $this->request->getPostParam('serial');
-        return $serial !== null && $serial != $current_serial;
-    }
-
-    /**
-     * Process zone comment
-     *
-     * @param int $zone_id
-     * @param bool $one_record_changed
-     * @return bool
-     */
-    public function processZoneComment(int $zone_id, bool $one_record_changed): bool
-    {
-        $raw_zone_comment = $this->zoneRepository->getZoneComment($zone_id);
-        $zone_comment = $this->request->getPostParam('zone_comment', '');
-        if ($raw_zone_comment != $zone_comment) {
-            $this->zoneRepository->updateZoneComment($zone_id, $zone_comment);
-            $one_record_changed = true;
-        }
-        return $one_record_changed;
-    }
-
-    /**
-     * Report the result of a zone-edit save, bumping the serial when one happened.
-     */
-    public function finalizeSave(ZoneSaveOutcome $outcome, int $zone_id, string $zone_name): void
-    {
-        if (!$outcome->wasWritten()) {
-            match ($outcome) {
-                ZoneSaveOutcome::WRITE_FAILED => $this->setMessage('edit', 'error', _('Zone has not been updated successfully.')),
-                ZoneSaveOutcome::SERIAL_CONFLICT => $this->setMessage('edit', 'warning', _('Request has expired, please try again.')),
-                default => null,
-            };
-            return;
-        }
-
-        // A no-change save bumps the serial by default so operators can force a NOTIFY (#762)
-        $bumpSerial = $outcome === ZoneSaveOutcome::UPDATED
-            || $this->config->get('dns', 'bump_serial_on_unchanged_save', true);
-
-        if (!$bumpSerial) {
-            $this->setMessage('edit', 'info', _('Zone saved successfully. No record changes were made.'));
-            return;
-        }
-
-        $this->dnsRecordManager->finalizeZone($zone_id);
-
-        match ($outcome) {
-            ZoneSaveOutcome::UPDATED => $this->setMessage('edit', 'success', _('Zone has been updated successfully.')),
-            default => $this->setMessage('edit', 'info', _('Zone saved successfully. No record changes were made, but SOA serial was incremented.')),
-        };
     }
 
     /**

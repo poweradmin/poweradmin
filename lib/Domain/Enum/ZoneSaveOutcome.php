@@ -46,6 +46,15 @@ enum ZoneSaveOutcome
     /** The form was stale and misc.edit_conflict_resolution refuses the write. */
     case SERIAL_CONFLICT;
 
+    /** The user may not edit this zone. */
+    case FORBIDDEN;
+
+    /** Secondary and consumer zones replicate from a primary and take no edits. */
+    case READ_ONLY;
+
+    /** A truncated submission changed nothing; only the truncation is reported. */
+    case NOTHING_SAVED;
+
     /**
      * Whether the save was accepted, as opposed to refused by a write failure
      * or a stale form. An accepted save may still have written no record.
