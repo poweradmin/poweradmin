@@ -247,28 +247,33 @@ class ApiRecordCommentRepository implements RecordCommentRepositoryInterface
             return false;
         }
 
-        $currentRecords = [];
-        $currentTtl = 3600;
+        $current = null;
         foreach ($zoneData['rrsets'] ?? [] as $rrset) {
             if ($rrset['name'] === $apiRecordName && $rrset['type'] === $type) {
-                $currentRecords = $rrset['records'] ?? [];
-                $currentTtl = $rrset['ttl'] ?? 3600;
+                $current = $rrset;
                 break;
             }
         }
 
         // If no records exist for this RRset, we can't attach comments
-        if (empty($currentRecords)) {
+        if (empty($current['records'])) {
             return false;
+        }
+
+        // A no-op PATCH still makes PowerDNS bump the SOA serial under SOA-EDIT-API;
+        // modified_at is a write timestamp, so compare content and author only
+        $identity = fn(array $c): array => ['content' => $c['content'] ?? '', 'account' => $c['account'] ?? ''];
+        if (array_map($identity, $current['comments'] ?? []) === array_map($identity, $comments)) {
+            return true;
         }
 
         return $this->apiClient->patchZoneRRsets($apiZoneName, [
             [
                 'name' => $apiRecordName,
                 'type' => $type,
-                'ttl' => $currentTtl,
+                'ttl' => $current['ttl'] ?? 3600,
                 'changetype' => 'REPLACE',
-                'records' => $currentRecords,
+                'records' => $current['records'],
                 'comments' => $comments,
             ]
         ]);

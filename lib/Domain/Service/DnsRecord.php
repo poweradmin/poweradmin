@@ -242,12 +242,13 @@ class DnsRecord
      * This function validates it if correct it inserts it into the database.
      *
      * @param array $record Record structure to update
+     * @param array|null $comment RRset comment ['content' => string, 'account' => string], see RecordManager
      *
      * @return boolean true if successful
      */
-    public function editRecord(array $record): bool
+    public function editRecord(array $record, ?array $comment = null): bool
     {
-        return $this->recordManager->editRecord($record);
+        return $this->recordManager->editRecord($record, $comment);
     }
 
     /** Add a record

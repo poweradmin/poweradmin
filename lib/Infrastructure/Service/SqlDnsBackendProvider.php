@@ -228,7 +228,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return null;
     }
 
-    public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled): bool
+    public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled, ?array $comment = null): bool
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
