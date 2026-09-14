@@ -1650,7 +1650,6 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Model\\UserGroup' => __DIR__ . '/../..' . '/lib/Domain/Model/UserGroup.php',
         'Poweradmin\\Domain\\Model\\UserGroupMember' => __DIR__ . '/../..' . '/lib/Domain/Model/UserGroupMember.php',
         'Poweradmin\\Domain\\Model\\UserId' => __DIR__ . '/../..' . '/lib/Domain/Model/UserId.php',
-        'Poweradmin\\Domain\\Model\\UserManager' => __DIR__ . '/../..' . '/lib/Domain/Model/UserManager.php',
         'Poweradmin\\Domain\\Model\\UserMfa' => __DIR__ . '/../..' . '/lib/Domain/Model/UserMfa.php',
         'Poweradmin\\Domain\\Model\\UserPreference' => __DIR__ . '/../..' . '/lib/Domain/Model/UserPreference.php',
         'Poweradmin\\Domain\\Model\\Zone' => __DIR__ . '/../..' . '/lib/Domain/Model/Zone.php',

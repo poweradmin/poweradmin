@@ -28,10 +28,13 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\PermissionService;
+use TestHelpers\BuildsPermissionService;
 
 #[CoversClass(PermissionService::class)]
 class PermissionServiceTest extends TestCase
 {
+    use BuildsPermissionService;
+
     private PermissionService $service;
     private UserRepository&MockObject $userRepository;
 
@@ -645,6 +648,19 @@ class PermissionServiceTest extends TestCase
 
         $this->assertTrue($this->service->canDeleteZone($userId, true)); // is owner
         $this->assertFalse($this->service->canDeleteZone($userId, false)); // not owner
+    }
+
+    public function testCanDeleteZoneByIdLooksUpOwnershipOnlyForTheOwnLevel(): void
+    {
+        $service = $this->buildPermissionService(
+            permissionsByUser: [7 => ['zone_delete_own'], 8 => ['zone_delete_others']],
+            ownedZonesByUser: [7 => [42]]
+        );
+
+        $this->assertTrue($service->canDeleteZoneById(7, 42));
+        $this->assertFalse($service->canDeleteZoneById(7, 43));
+        $this->assertTrue($service->canDeleteZoneById(8, 43));
+        $this->assertFalse($service->canDeleteZoneById(9, 42));
     }
 
     #[Test]

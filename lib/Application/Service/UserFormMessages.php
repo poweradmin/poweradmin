@@ -54,6 +54,23 @@ class UserFormMessages
     }
 
     /**
+     * Words a refused deletion; the same codes as errorMessage(), read for that page.
+     *
+     * @param array{message?: string, code?: string} $result
+     */
+    public static function deleteErrorMessage(array $result): string
+    {
+        return match ($result['code'] ?? null) {
+            UserManagementService::ERR_LAST_ADMIN => _('Cannot delete the last remaining super admin user.'),
+            UserManagementService::ERR_ZONE_DELETE_FORBIDDEN => _('You do not have the permission to delete a zone.'),
+            UserManagementService::ERR_ZONE_META_FORBIDDEN => _('You do not have the permission to edit zone metadata.'),
+            UserManagementService::ERR_WRITE => _('The user could not be deleted.'),
+            // ERR_ZONE_WRITE carries DomainManager's translated reason and falls through
+            default => self::errorMessage($result),
+        };
+    }
+
+    /**
      * Words a refused permission template assignment from PermissionTemplateAssignmentGuard.
      */
     public static function templateAssignmentError(string $error): string

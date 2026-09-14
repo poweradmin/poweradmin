@@ -32,10 +32,10 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\UserEntity;
-use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -97,12 +97,12 @@ class DeleteUserController extends BaseController
 
     public function deleteUser(string $uid): void
     {
-        if ($this->createUserRepository()->getUserById((int)$uid) === null) {
+        $target = $this->createUserRepository()->getUserById((int)$uid);
+        if ($target === null) {
             $this->showError(_('User does not exist.'));
         }
-
-        // Capture username before deletion since user won't exist after
-        $targetUsername = UserEntity::getUserNameById($this->db, $uid);
+        // Captured before deletion since the user won't exist after
+        $targetUsername = (string)$target['username'];
 
         $zones = array();
         $zone = $this->request->getPostParam('zone');
@@ -131,23 +131,26 @@ class DeleteUserController extends BaseController
             $zones = $zone;
         }
 
-        $legacyUsers = new UserManager($this->db, $this->getConfig());
-        if ($legacyUsers->deleteUser((int)$uid, $zones)) {
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:delete_user target_user:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername(),
-                $targetUsername
-            ));
-
-            $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
-            $this->redirect('/users');
+        $deleted = $this->createUserManagementService()->deleteUserWithZoneDecisions((int)$this->getCurrentUserId(), (int)$uid, $zones);
+        if (!$deleted['success']) {
+            $this->setMessage('delete_user', 'error', UserFormMessages::deleteErrorMessage($deleted));
+            return;
         }
+
+        $this->auditLogger->logInfo(sprintf(
+            'client_ip:%s user:%s operation:delete_user target_user:%s',
+            $this->ipAddressRetriever->getClientIp(),
+            $this->userContextService->getLoggedInUsername(),
+            $targetUsername
+        ));
+
+        $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
+        $this->redirect('/users');
     }
 
     /**
      * Parses the JSON zone-decision field into the per-zone array shape used by
-     * UserManager::deleteUser(). Returns null when the payload is malformed.
+     * UserManagementService::deleteUserWithZoneDecisions(). Returns null when the payload is malformed.
      */
     public static function parseZoneDecisions(string $json): ?array
     {

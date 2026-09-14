@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Enum\AuthMethod;
 
@@ -50,13 +51,19 @@ class UserManagementService
     public const ERR_NOT_FOUND = 'not_found';
     public const ERR_PASSWORD_FORBIDDEN = 'password_forbidden';
     public const ERR_LAST_ADMIN = 'last_admin';
+    public const ERR_TRANSFER_TARGET = 'transfer_target';
+    public const ERR_ZONE_DELETE_FORBIDDEN = 'zone_delete_forbidden';
+    public const ERR_ZONE_META_FORBIDDEN = 'zone_meta_forbidden';
+    public const ERR_ZONE_WRITE = 'zone_write';
     public const ERR_WRITE = 'write';
 
     private UserRepository $userRepository;
+    private PermissionService $permissions;
     private UserProfileAssembler $profileAssembler;
     private UserAuthenticationService $authService;
     private PasswordPolicyService $passwordPolicy;
     private bool $ldapEnabled;
+    private DomainManagerInterface $domainManager;
 
     public function __construct(
         UserRepository $userRepository,
@@ -64,13 +71,16 @@ class UserManagementService
         UserGroupRepositoryInterface $groupRepository,
         UserAuthenticationService $authService,
         PasswordPolicyService $passwordPolicy,
-        bool $ldapEnabled = false
+        bool $ldapEnabled,
+        DomainManagerInterface $domainManager
     ) {
         $this->userRepository = $userRepository;
+        $this->permissions = $permissionService;
         $this->profileAssembler = new UserProfileAssembler($permissionService, $groupRepository);
         $this->authService = $authService;
         $this->passwordPolicy = $passwordPolicy;
         $this->ldapEnabled = $ldapEnabled;
+        $this->domainManager = $domainManager;
     }
 
     /**
@@ -478,22 +488,8 @@ class UserManagementService
      */
     public function deleteUser(int $userId, ?int $transferToUserId = null): array
     {
-        // Check if user exists
-        if (!$this->userExists($userId)) {
-            return [
-                'success' => false,
-                'message' => 'User not found',
-                'status' => 404
-            ];
-        }
-
-        // Check if this is the last uberuser - prevent deletion to avoid system lockout
-        if ($this->userRepository->isLastUberuser($userId)) {
-            return [
-                'success' => false,
-                'message' => 'Cannot delete the last remaining super admin user. At least one super admin must exist in the system.',
-                'status' => 409
-            ];
+        if (($refusal = $this->deleteRefusal($userId)) !== null) {
+            return $refusal;
         }
 
         // Get user's zones
@@ -507,7 +503,8 @@ class UserManagementService
                     return [
                         'success' => false,
                         'message' => 'User owns zones. Please specify transfer_to_user_id to transfer zones to another user.',
-                        'status' => 400
+                        'status' => 400,
+                        'code' => self::ERR_TRANSFER_TARGET,
                     ];
                 }
 
@@ -518,7 +515,8 @@ class UserManagementService
                     return [
                         'success' => false,
                         'message' => 'Cannot transfer zones to the user being deleted. Specify a different transfer_to_user_id.',
-                        'status' => 400
+                        'status' => 400,
+                        'code' => self::ERR_TRANSFER_TARGET,
                     ];
                 }
 
@@ -527,7 +525,8 @@ class UserManagementService
                     return [
                         'success' => false,
                         'message' => 'Transfer target user not found',
-                        'status' => 404
+                        'status' => 404,
+                        'code' => self::ERR_TRANSFER_TARGET,
                     ];
                 }
 
@@ -536,7 +535,8 @@ class UserManagementService
                     return [
                         'success' => false,
                         'message' => 'Failed to transfer zones to target user',
-                        'status' => 500
+                        'status' => 500,
+                        'code' => self::ERR_ZONE_WRITE,
                     ];
                 }
             }
@@ -546,7 +546,8 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Failed to delete user',
-                    'status' => 500
+                    'status' => 500,
+                    'code' => self::ERR_WRITE,
                 ];
             }
 
@@ -563,9 +564,83 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Failed to delete user: ' . $e->getMessage(),
-                'status' => 500
+                'status' => 500,
+                'code' => self::ERR_WRITE,
             ];
         }
+    }
+
+    /**
+     * Delete a user, deciding zone by zone what happens to what they own: each
+     * decision names a zone id and a target, 'delete' or 'new_owner' (with
+     * 'newowner'); any other target leaves the zone as it is. Every decision is
+     * checked against the acting user's zone rights before any zone is touched,
+     * so a later refusal cannot leave the earlier ones half applied. That the
+     * acting user may delete this user at all is the caller's check.
+     *
+     * @param list<mixed> $zoneDecisions Entries that are not a decision (no zid, unknown target) are ignored
+     * @return array{success: true, message: string, zones_affected: int}|array{success: false, message: string, status: int, code: string}
+     */
+    public function deleteUserWithZoneDecisions(int $actingUserId, int $userId, array $zoneDecisions): array
+    {
+        if (($refusal = $this->deleteRefusal($userId)) !== null) {
+            return $refusal;
+        }
+
+        $zoneDecisions = array_values(array_filter(
+            $zoneDecisions,
+            fn(mixed $decision): bool => is_array($decision) && isset($decision['zid']) && in_array($decision['target'] ?? null, ['delete', 'new_owner'], true)
+        ));
+        foreach ($zoneDecisions as $decision) {
+            $zoneId = (int)$decision['zid'];
+            if ($decision['target'] === 'delete' && !$this->permissions->canDeleteZoneById($actingUserId, $zoneId)) {
+                return ['success' => false, 'message' => 'You do not have permission to delete zone ' . $zoneId, 'status' => 403, 'code' => self::ERR_ZONE_DELETE_FORBIDDEN];
+            }
+            if ($decision['target'] === 'new_owner' && !$this->permissions->canEditZoneMeta($actingUserId, $zoneId)) {
+                return ['success' => false, 'message' => 'You do not have permission to reassign zone ' . $zoneId, 'status' => 403, 'code' => self::ERR_ZONE_META_FORBIDDEN];
+            }
+        }
+
+        foreach ($zoneDecisions as $decision) {
+            $zoneId = (int)$decision['zid'];
+            $result = $decision['target'] === 'delete'
+                ? $this->domainManager->deleteDomain($zoneId)
+                : $this->domainManager->addOwnerToZone($zoneId, (int)($decision['newowner'] ?? 0));
+            if (!$result->success) {
+                return ['success' => false, 'message' => (string)$result->message, 'status' => $result->status, 'code' => self::ERR_ZONE_WRITE];
+            }
+        }
+
+        // Row cleanup (auth links, preferences, MFA, memberships, templates) is shared with the API.
+        if (!$this->userRepository->deleteUser($userId)) {
+            return ['success' => false, 'message' => 'Failed to delete user', 'status' => 500, 'code' => self::ERR_WRITE];
+        }
+
+        return ['success' => true, 'message' => 'User deleted successfully', 'zones_affected' => count($zoneDecisions)];
+    }
+
+    /**
+     * Why the user cannot be deleted at all, or null: unknown, or the last super admin.
+     *
+     * @return array{success: false, message: string, status: int, code: string}|null
+     */
+    private function deleteRefusal(int $userId): ?array
+    {
+        if (!$this->userExists($userId)) {
+            return ['success' => false, 'message' => 'User not found', 'status' => 404, 'code' => self::ERR_NOT_FOUND];
+        }
+
+        // The last super admin cannot go, or nobody could administer the system.
+        if ($this->userRepository->isLastUberuser($userId)) {
+            return [
+                'success' => false,
+                'message' => 'Cannot delete the last remaining super admin user. At least one super admin must exist in the system.',
+                'status' => 409,
+                'code' => self::ERR_LAST_ADMIN,
+            ];
+        }
+
+        return null;
     }
 
     /**

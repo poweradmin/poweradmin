@@ -178,7 +178,6 @@ parameters:
         - lib/Application/Controller/ForgotUsernameController.php
         - lib/Application/Controller/ResetPasswordController.php
         # Not yet migrated. Delete each entry as its file is done.
-        - lib/Domain/Model/UserManager.php
         - lib/Domain/Service/FormStateService.php
         - lib/Domain/Service/MfaSessionManager.php
         - lib/Domain/Service/SessionService.php
@@ -260,7 +259,6 @@ parameters:
         - lib/Module/SecondaryZoneImport/SecondaryZoneImportModule.php
         # Not yet migrated. Delete each entry as its file is done.
         - lib/Domain/Model/Permission.php
-        - lib/Domain/Model/UserManager.php
         - lib/Domain/Model/ZoneTemplate.php
         - lib/Domain/Service/ApiPermissionService.php
         - lib/Domain/Service/AuthenticationService.php

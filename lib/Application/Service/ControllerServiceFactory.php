@@ -206,7 +206,8 @@ class ControllerServiceFactory
                 $this->config->get('security', 'password_cost', 12)
             ),
             new PasswordPolicyService($this->config),
-            (bool)$this->config->get('ldap', 'enabled', false)
+            (bool)$this->config->get('ldap', 'enabled', false),
+            $this->domainManager()
         );
     }
 

@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -53,7 +54,9 @@ class UserManagementServicePasswordTest extends TestCase
             $this->permissionService,
             $this->groupRepository,
             new UserAuthenticationService('bcrypt', 4),
-            $passwordPolicy
+            $passwordPolicy,
+            false,
+            $this->createMock(DomainManagerInterface::class)
         );
     }
 

@@ -138,7 +138,7 @@ class ApiPermissionService
 
     public function canDeleteZone(int $userId, int $zoneId): bool
     {
-        return $this->permissions->canDeleteZone($userId, $this->permissions->userOwnsZone($userId, $zoneId));
+        return $this->permissions->canDeleteZoneById($userId, $zoneId);
     }
 
     /**

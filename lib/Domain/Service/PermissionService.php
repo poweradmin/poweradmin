@@ -538,4 +538,21 @@ class PermissionService
 
         return ZoneAccessPolicy::levelAppliesToZone($deleteLevel, $isOwner);
     }
+
+    /**
+     * Whether the user may delete this zone; ownership is looked up only when
+     * their delete level depends on it.
+     */
+    public function canDeleteZoneById(int $userId, int $domainId): bool
+    {
+        if ($this->isAdmin($userId)) {
+            return true;
+        }
+
+        return match ($this->getDeletePermissionLevel($userId)) {
+            'all' => true,
+            'own' => $this->userOwnsZone($userId, $domainId),
+            default => false,
+        };
+    }
 }

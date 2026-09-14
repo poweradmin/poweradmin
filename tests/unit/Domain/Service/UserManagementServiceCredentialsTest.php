@@ -33,6 +33,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\UserManagementService;
 
 /**
@@ -73,7 +74,8 @@ class UserManagementServiceCredentialsTest extends TestCase
             $this->createMock(UserGroupRepositoryInterface::class),
             $this->hasher,
             $this->passwordPolicy,
-            $ldapEnabled
+            $ldapEnabled,
+            $this->createMock(DomainManagerInterface::class)
         );
     }
 

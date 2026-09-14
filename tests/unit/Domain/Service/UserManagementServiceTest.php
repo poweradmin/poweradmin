@@ -34,6 +34,7 @@ use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\UserManagementService;
 
 #[CoversClass(UserManagementService::class)]
@@ -59,7 +60,9 @@ class UserManagementServiceTest extends TestCase
             $this->permissionService,
             $this->groupRepository,
             new UserAuthenticationService('bcrypt', 4),
-            $passwordPolicy
+            $passwordPolicy,
+            false,
+            $this->createMock(DomainManagerInterface::class)
         );
     }
 

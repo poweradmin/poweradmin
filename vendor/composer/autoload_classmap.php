@@ -1244,7 +1244,6 @@ return array(
     'Poweradmin\\Domain\\Model\\UserGroup' => $baseDir . '/lib/Domain/Model/UserGroup.php',
     'Poweradmin\\Domain\\Model\\UserGroupMember' => $baseDir . '/lib/Domain/Model/UserGroupMember.php',
     'Poweradmin\\Domain\\Model\\UserId' => $baseDir . '/lib/Domain/Model/UserId.php',
-    'Poweradmin\\Domain\\Model\\UserManager' => $baseDir . '/lib/Domain/Model/UserManager.php',
     'Poweradmin\\Domain\\Model\\UserMfa' => $baseDir . '/lib/Domain/Model/UserMfa.php',
     'Poweradmin\\Domain\\Model\\UserPreference' => $baseDir . '/lib/Domain/Model/UserPreference.php',
     'Poweradmin\\Domain\\Model\\Zone' => $baseDir . '/lib/Domain/Model/Zone.php',
