@@ -196,10 +196,12 @@ class RecordManager implements RecordManagerInterface
      * @param mixed $prio Priority of record
      * @param int $disabled Whether the record is created in disabled state (0 or 1)
      * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
+     * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
+     *                            backend writes it in the same PATCH as the record, SQL ignores it
      *
      * @return RecordWriteResult Carries the new record id, or the reason it was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true): RecordWriteResult
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null): RecordWriteResult
     {
         $perm_edit = Permission::getEditPermission($this->db, $this->config);
 
@@ -262,8 +264,8 @@ class RecordManager implements RecordManagerInterface
             // Disabled records need the disabled flag persisted atomically with the
             // insert; the regular insert path has no disabled support.
             $recordId = $disabled
-                ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled)
-                : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
+                ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled, $comment)
+                : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $comment);
             if ($recordId === null) {
                 if ($ownTransaction) {
                     $this->db->rollBack();
