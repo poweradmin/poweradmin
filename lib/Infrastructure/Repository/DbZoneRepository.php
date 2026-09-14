@@ -885,6 +885,27 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getOwnerIdsByZoneIds(array $zoneIds): array
+    {
+        if ($zoneIds === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
+        $stmt = $this->db->prepare("SELECT domain_id, owner FROM zones WHERE domain_id IN ($placeholders)");
+        foreach (array_values($zoneIds) as $i => $zoneId) {
+            $stmt->bindValue($i + 1, (int)$zoneId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $owners = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $owners[(int)$row['domain_id']][] = (int)$row['owner'];
+        }
+
+        return $owners;
+    }
+
     /**
      * Add owner to zone
      *

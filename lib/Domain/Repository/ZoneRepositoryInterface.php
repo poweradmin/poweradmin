@@ -154,6 +154,14 @@ interface ZoneRepositoryInterface
     public function getZoneOwners(int $zoneId): array;
 
     /**
+     * Direct owners of several zones in one query, for list pages.
+     *
+     * @param int[] $zoneIds
+     * @return array<int, list<int>> Zone id => owner user ids; zones without a row are absent
+     */
+    public function getOwnerIdsByZoneIds(array $zoneIds): array;
+
+    /**
      * Add owner to zone
      *
      * @param int $zoneId The zone ID

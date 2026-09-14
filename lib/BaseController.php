@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
+use Poweradmin\Domain\Service\ZoneListPermissionService;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
@@ -602,6 +603,26 @@ abstract class BaseController
     protected function createPermissionTemplateWriteService(): PermissionTemplateWriteService
     {
         return $this->services()->permissionTemplateWriteService();
+    }
+
+    protected function createZoneListPermissionService(): ZoneListPermissionService
+    {
+        return $this->services()->zoneListPermissionService();
+    }
+
+    /**
+     * Group names keyed by id, for the group column of the zone lists.
+     *
+     * @return array<int, string>
+     */
+    protected function groupNamesById(): array
+    {
+        $names = [];
+        foreach ($this->createUserGroupRepository()->findAll() as $group) {
+            $names[(int)$group->getId()] = $group->getName();
+        }
+
+        return $names;
     }
 
     protected function createZoneGroupRepository(): ZoneGroupRepositoryInterface

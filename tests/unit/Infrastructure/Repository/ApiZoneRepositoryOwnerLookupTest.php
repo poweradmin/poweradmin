@@ -20,25 +20,24 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Controller\SearchController;
-use ReflectionClass;
-use ReflectionMethod;
-use ReflectionProperty;
+use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 
 /**
- * fetchDirectZoneOwners() drives the search page's owner column and its edit/delete
- * controls. It matches on the canonical id expression, which carries no column affinity,
- * so ids bound as strings matched nothing on SQLite and every directly owned zone looked
- * unowned.
+ * getOwnerIdsByZoneIds() drives the owner column and the edit/delete controls of
+ * the zone lists. It matches on the canonical id expression, which carries no column
+ * affinity, so ids bound as strings matched nothing on SQLite and every directly
+ * owned zone looked unowned.
  */
-class SearchControllerZoneOwnerLookupTest extends TestCase
+class ApiZoneRepositoryOwnerLookupTest extends TestCase
 {
     private PDO $db;
-    private SearchController $controller;
+    private ApiZoneRepository $repository;
 
     protected function setUp(): void
     {
@@ -49,27 +48,17 @@ class SearchControllerZoneOwnerLookupTest extends TestCase
             (55, 0, 'stranded.example.com', 20),
             (56, NULL, 'nulled.example.com', 30)");
 
-        $this->controller = (new ReflectionClass(SearchController::class))->newInstanceWithoutConstructor();
-        $db = new ReflectionProperty($this->controller, 'db');
-        $db->setAccessible(true);
-        $db->setValue($this->controller, $this->db);
-    }
-
-    /**
-     * @param int[] $zoneIds
-     * @return array<int, int[]>
-     */
-    private function fetchDirectZoneOwners(array $zoneIds): array
-    {
-        $method = new ReflectionMethod($this->controller, 'fetchDirectZoneOwners');
-        $method->setAccessible(true);
-
-        return $method->invoke($this->controller, $zoneIds);
+        $this->repository = new ApiZoneRepository(
+            $this->db,
+            $this->createMock(DnsBackendProvider::class),
+            'sqlite',
+            $this->createMock(ConfigurationManager::class)
+        );
     }
 
     public function testResolvesOwnersForEveryDomainIdShape(): void
     {
-        $map = $this->fetchDirectZoneOwners([100, 55, 56]);
+        $map = $this->repository->getOwnerIdsByZoneIds([100, 55, 56]);
 
         $this->assertSame([10], $map[100] ?? [], 'migrated zone lost its owner');
         $this->assertSame([20], $map[55] ?? [], 'stranded zone lost its owner');
@@ -78,21 +67,19 @@ class SearchControllerZoneOwnerLookupTest extends TestCase
 
     public function testDoesNotResolveAMigratedZoneByItsRowId(): void
     {
-        $map = $this->fetchDirectZoneOwners([1]);
-
-        $this->assertSame([], $map, 'the canonical fallback fired on a populated domain_id');
+        $this->assertSame([], $this->repository->getOwnerIdsByZoneIds([1]), 'the canonical fallback fired on a populated domain_id');
     }
 
     public function testReturnsAnEmptyMapForNoIds(): void
     {
-        $this->assertSame([], $this->fetchDirectZoneOwners([]));
+        $this->assertSame([], $this->repository->getOwnerIdsByZoneIds([]));
     }
 
     public function testAggregatesSeveralOwnersOfOneZone(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, owner) VALUES (57, 55, NULL, 40)");
 
-        $owners = $this->fetchDirectZoneOwners([55])[55];
+        $owners = $this->repository->getOwnerIdsByZoneIds([55])[55];
         sort($owners);
 
         $this->assertSame([20, 40], $owners);

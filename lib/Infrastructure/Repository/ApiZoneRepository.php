@@ -670,6 +670,32 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $stmt->execute();
     }
 
+    public function getOwnerIdsByZoneIds(array $zoneIds): array
+    {
+        if ($zoneIds === []) {
+            return [];
+        }
+
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn();
+        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
+        $stmt = $this->db->prepare(
+            "SELECT $canonicalId AS domain_id, owner FROM zones WHERE $canonicalId IN ($placeholders)"
+        );
+        // The canonical id is an expression with no column affinity, so the ids go in as
+        // integers or SQLite compares them as text and matches none
+        foreach (array_values($zoneIds) as $i => $zoneId) {
+            $stmt->bindValue($i + 1, (int)$zoneId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $owners = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $owners[(int)$row['domain_id']][] = (int)$row['owner'];
+        }
+
+        return $owners;
+    }
+
     public function getZoneOwners(int $zoneId): array
     {
         $canonical = $this->resolveCanonicalRow($zoneId);

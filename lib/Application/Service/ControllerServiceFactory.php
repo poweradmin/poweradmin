@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Domain\Service\ZoneListPermissionService;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
@@ -285,6 +286,11 @@ class ControllerServiceFactory
     public function permissionTemplateWriteService(): PermissionTemplateWriteService
     {
         return new PermissionTemplateWriteService($this->permissionTemplateRepository(), $this->userRepository());
+    }
+
+    public function zoneListPermissionService(): ZoneListPermissionService
+    {
+        return new ZoneListPermissionService($this->zoneRepository(), $this->zoneGroupRepository(), $this->userGroupRepository());
     }
 
     public function zoneGroupRepository(): ZoneGroupRepositoryInterface

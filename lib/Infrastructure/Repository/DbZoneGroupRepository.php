@@ -53,6 +53,27 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
         return array_map(fn($row) => $this->mapRowToEntity($row), $results);
     }
 
+    public function findGroupIdsByDomainIds(array $domainIds): array
+    {
+        if ($domainIds === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($domainIds), '?'));
+        $stmt = $this->db->prepare("SELECT domain_id, group_id FROM zones_groups WHERE domain_id IN ($placeholders)");
+        foreach (array_values($domainIds) as $i => $domainId) {
+            $stmt->bindValue($i + 1, (int)$domainId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $groups = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $groups[(int)$row['domain_id']][] = (int)$row['group_id'];
+        }
+
+        return $groups;
+    }
+
     public function findByGroupId(int $groupId): array
     {
         if (!$this->isApiBackend && $this->tableNameService !== null) {

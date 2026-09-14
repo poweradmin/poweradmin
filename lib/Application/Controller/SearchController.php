@@ -31,7 +31,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use PDO;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
@@ -42,7 +41,6 @@ use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Module\ModuleRegistry;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 class SearchController extends BaseController
 {
@@ -399,9 +397,6 @@ class SearchController extends BaseController
      * Stamp `user_can_edit` / `user_can_delete` onto each search result so the
      * template can render per-row controls without re-running permission checks.
      *
-     * Direct ownership and group ownership are both honored. Two upfront SQL
-     * queries (zone-group ownership + direct owners) replace per-row lookups.
-     *
      * @return array{0: array, 1: array} Augmented zones and records.
      */
     private function attachPermissionFlags(
@@ -412,121 +407,32 @@ class SearchController extends BaseController
         string $deletePermission,
         string $ownershipViewPermission
     ): array {
-        $userGroupRepo = $this->createUserGroupRepository();
-
-        $zoneIds = array_values(array_unique(array_filter(array_merge(
+        $ownership = $this->createZoneListPermissionService()->index($userId, array_merge(
             array_map(fn($z) => (int)($z['id'] ?? 0), $zones),
             array_map(fn($r) => (int)($r['domain_id'] ?? 0), $records)
-        ))));
-        $zoneGroupMap = $this->fetchZoneGroupOwnership($zoneIds);
-        $zoneOwnerMap = $this->fetchDirectZoneOwners($zoneIds);
-
-        // Group membership only matters when a listed zone is group-owned.
-        $userGroupIds = $zoneGroupMap === [] ? [] : $userGroupRepo->getGroupIdsForUser($userId);
+        ));
 
         foreach ($zones as &$zone) {
             $domainId = (int)($zone['id'] ?? 0);
-            $zone['user_can_edit'] = $this->canActOnZone($domainId, $userId, $editPermission, $userGroupIds, $zoneOwnerMap, $zoneGroupMap);
-            $zone['user_can_delete'] = $this->canActOnZone($domainId, $userId, $deletePermission, $userGroupIds, $zoneOwnerMap, $zoneGroupMap);
+            $zone['user_can_edit'] = $ownership->allows($editPermission, $domainId);
+            $zone['user_can_delete'] = $ownership->allows($deletePermission, $domainId);
 
             // At the "own" ownership view level, owner cells stay visible only
             // for zones the user owns directly or via a group.
-            if ($ownershipViewPermission === 'own') {
-                $ownsDirect = in_array($userId, $zoneOwnerMap[$domainId] ?? [], true);
-                $ownsViaGroup = !empty(array_intersect($userGroupIds, $zoneGroupMap[$domainId] ?? []));
-                if (!$ownsDirect && !$ownsViaGroup) {
-                    unset($zone['owner_fullnames'], $zone['owner_usernames']);
-                    $zone['fullname'] = '';
-                }
+            if ($ownershipViewPermission === 'own' && !$ownership->owns($domainId)) {
+                unset($zone['owner_fullnames'], $zone['owner_usernames']);
+                $zone['fullname'] = '';
             }
         }
         unset($zone);
 
         foreach ($records as &$record) {
-            $domainId = (int)($record['domain_id'] ?? 0);
-            $record['user_can_edit'] = $this->canActOnZone($domainId, $userId, $editPermission, $userGroupIds, $zoneOwnerMap, $zoneGroupMap);
+            $record['user_can_edit'] = $ownership->allows($editPermission, (int)($record['domain_id'] ?? 0));
             $record['display_name'] ??= $record['name'] ?? '';
         }
         unset($record);
 
         return [$zones, $records];
-    }
-
-    /**
-     * @param int[] $zoneIds
-     * @return array<int, int[]> Map of domain_id => list of group_ids that own it.
-     */
-    private function fetchZoneGroupOwnership(array $zoneIds): array
-    {
-        if (empty($zoneIds)) {
-            return [];
-        }
-        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
-        $stmt = $this->db->prepare(
-            "SELECT domain_id, group_id FROM zones_groups WHERE domain_id IN ($placeholders)"
-        );
-        foreach (array_values($zoneIds) as $i => $zoneId) {
-            $stmt->bindValue($i + 1, (int)$zoneId, PDO::PARAM_INT);
-        }
-        $stmt->execute();
-        $map = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $map[(int)$row['domain_id']][] = (int)$row['group_id'];
-        }
-        return $map;
-    }
-
-    /**
-     * @param int[] $zoneIds
-     * @return array<int, int[]> Map of domain_id => list of direct owner user_ids.
-     */
-    private function fetchDirectZoneOwners(array $zoneIds): array
-    {
-        if (empty($zoneIds)) {
-            return [];
-        }
-        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
-        $stmt = $this->db->prepare(
-            "SELECT " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id, owner FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " IN ($placeholders)"
-        );
-        // The canonical id is an expression, which carries no column affinity, so the ids
-        // have to go in as integers or SQLite compares them as text and matches none.
-        foreach (array_values($zoneIds) as $i => $zoneId) {
-            $stmt->bindValue($i + 1, (int)$zoneId, PDO::PARAM_INT);
-        }
-        $stmt->execute();
-        $map = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $map[(int)$row['domain_id']][] = (int)$row['owner'];
-        }
-        return $map;
-    }
-
-    /**
-     * The level already reflects the user's grants (own template or any group);
-     * an "_own" level additionally needs ownership, direct or via any group.
-     *
-     * @param int[] $userGroupIds
-     * @param array<int, int[]> $zoneOwnerMap
-     * @param array<int, int[]> $zoneGroupMap
-     */
-    private function canActOnZone(
-        int $domainId,
-        int $userId,
-        string $permission,
-        array $userGroupIds,
-        array $zoneOwnerMap,
-        array $zoneGroupMap
-    ): bool {
-        if ($permission === 'all') {
-            return true;
-        }
-        if ($permission !== 'own' && $permission !== 'own_as_client') {
-            return false;
-        }
-
-        return in_array($userId, $zoneOwnerMap[$domainId] ?? [], true)
-            || !empty(array_intersect($userGroupIds, $zoneGroupMap[$domainId] ?? []));
     }
 
     /**

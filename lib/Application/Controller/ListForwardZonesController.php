@@ -45,7 +45,6 @@ use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 class ListForwardZonesController extends BaseController
 {
@@ -217,41 +216,19 @@ class ListForwardZonesController extends BaseController
             $iface_zonelist_record_count
         );
 
-        // Augment zones with group information
-        $zoneGroupRepo = $this->createZoneGroupRepository();
-        $userGroupRepo = $this->createUserGroupRepository();
-        $allGroups = $userGroupRepo->findAll();
-
-        // The per-row delete and ownership decisions need the user's groups; one
-        // query up front instead of a lookup per rendered zone.
-        $username = $_SESSION[SessionKeys::USERLOGIN];
-        $userGroupIds = ($perm_delete === 'own' || $perm_ownership_view === 'own')
-            ? $userGroupRepo->getGroupIdsForUser($userId)
-            : [];
+        // Ownership is resolved once for the page: the per-row delete control must
+        // mirror the check the delete endpoint runs (ownership direct or via any group).
+        $ownership = $this->createZoneListPermissionService()->index($userId, array_column($zones, 'id'));
+        $groupNames = $this->groupNamesById();
 
         foreach ($zones as &$zone) {
-            $groupOwnerships = $zoneGroupRepo->findByDomainId($zone['id']);
-            $zoneGroupIds = array_map(fn($zg) => $zg->getGroupId(), $groupOwnerships);
-            $zone['groups'] = array_map(function ($zg) use ($allGroups) {
-                $groupId = $zg->getGroupId();
-                foreach ($allGroups as $group) {
-                    if ($group->getId() === $groupId) {
-                        return $group->getName();
-                    }
-                }
-                return 'Group #' . $groupId;
-            }, $groupOwnerships);
-
-            // Delete eligibility for the per-row delete control: must mirror the
-            // check the delete endpoint runs (grant from any source, ownership direct
-            // or via any group) so the button only appears when the action is permitted.
-            $ownsZone = in_array($username, $zone['users'] ?? [], true)
-                || !empty(array_intersect($userGroupIds, $zoneGroupIds));
-            $zone['user_can_delete'] = ZoneAccessPolicy::levelAppliesToZone($perm_delete, $ownsZone);
+            $zoneId = (int)$zone['id'];
+            $zone['groups'] = array_map(fn(int $groupId): string => $groupNames[$groupId] ?? 'Group #' . $groupId, $ownership->groupIds($zoneId));
+            $zone['user_can_delete'] = $ownership->allows($perm_delete, $zoneId);
 
             // At the "own" ownership view level, owner and group cells stay
             // visible only for zones the user owns directly or via a group.
-            if ($perm_ownership_view === 'own' && !$ownsZone) {
+            if ($perm_ownership_view === 'own' && !$ownership->owns($zoneId)) {
                 $zone['owners'] = [];
                 $zone['full_names'] = [];
                 $zone['groups'] = [];
