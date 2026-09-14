@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,14 +36,14 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class ZoneCountService
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private ?UserContextService $userContext;
+    private UserContextService $userContext;
     private TableNameService $tableNameService;
     private ?DnsBackendProvider $backendProvider;
 
@@ -51,7 +51,7 @@ class ZoneCountService
     {
         $this->db = $db;
         $this->config = $config;
-        $this->userContext = $userContext;
+        $this->userContext = $userContext ?? new UserContextService();
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
     }
@@ -87,8 +87,7 @@ class ZoneCountService
         }
 
         if ($perm == "own") {
-            // Use UserContextService if provided, otherwise fall back to $_SESSION
-            $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION[SessionKeys::USERID] ?? null);
+            $userId = $this->userContext->getLoggedInUserId();
 
             if ($userId) {
                 // Include zones accessible via direct ownership or group membership.
@@ -156,7 +155,7 @@ class ZoneCountService
 
         // Filter by ownership
         if ($perm === 'own') {
-            $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION[SessionKeys::USERID] ?? null);
+            $userId = $this->userContext->getLoggedInUserId();
             if (!$userId) {
                 return 0;
             }

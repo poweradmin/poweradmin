@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\RedirectService;
 
@@ -31,13 +32,13 @@ class AuthenticationService
 {
     private SessionService $sessionService;
     private RedirectService $redirectService;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
-    public function __construct(SessionService $sessionService, RedirectService $redirectService)
+    public function __construct(SessionService $sessionService, RedirectService $redirectService, ?ConfigurationInterface $config = null)
     {
         $this->sessionService = $sessionService;
         $this->redirectService = $redirectService;
-        $this->config = ConfigurationManager::getInstance();
+        $this->config = $config ?? ConfigurationManager::getInstance();
     }
 
     public function logout(SessionEntity $sessionEntity): void

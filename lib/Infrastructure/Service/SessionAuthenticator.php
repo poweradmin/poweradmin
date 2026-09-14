@@ -74,7 +74,7 @@ class SessionAuthenticator extends LoggingService
 
         $sessionService = new SessionService();
         $this->redirectService = new RedirectService();
-        $this->authService = new AuthenticationService($sessionService, $this->redirectService);
+        $this->authService = new AuthenticationService($sessionService, $this->redirectService, $this->configManager);
         $this->csrfTokenService = new CsrfTokenService();
 
         $this->loginAttemptService = new LoginAttemptService($connection, $this->configManager);

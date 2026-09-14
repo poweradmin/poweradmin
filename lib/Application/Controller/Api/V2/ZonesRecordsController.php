@@ -65,7 +65,7 @@ class ZonesRecordsController extends PublicApiController
         $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
-        $this->permissionService = new ApiPermissionService($this->db);
+        $this->permissionService = new ApiPermissionService($this->db, config: $this->config);
 
         $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
     }

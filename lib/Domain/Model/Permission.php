@@ -26,7 +26,7 @@ use PDO;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
@@ -52,13 +52,13 @@ class Permission
      * Check the logged-in user's permission (admins always pass). The memoized
      * service keeps repeated level lookups at one query set per request.
      */
-    private static function currentUserHasPermission($db, string $permission): bool
+    private static function currentUserHasPermission($db, ConfigurationInterface $config, string $permission): bool
     {
         $userId = (new UserContextService())->getLoggedInUserId();
         if ($userId === null) {
             return false;
         }
-        self::$permissionService ??= new PermissionService(new DbUserRepository($db, ConfigurationManager::getInstance()));
+        self::$permissionService ??= new PermissionService(new DbUserRepository($db, $config));
         return self::$permissionService->hasPermission($userId, $permission);
     }
 
@@ -185,11 +185,11 @@ class Permission
      *
      * @return string Returns "all", "own", or "none" depending on the user's view permission.
      */
-    public static function getViewPermission($db): string
+    public static function getViewPermission($db, ConfigurationInterface $config): string
     {
-        if (self::currentUserHasPermission($db, 'zone_content_view_others')) {
+        if (self::currentUserHasPermission($db, $config, 'zone_content_view_others')) {
             return "all";
-        } elseif (self::currentUserHasPermission($db, 'zone_content_view_own')) {
+        } elseif (self::currentUserHasPermission($db, $config, 'zone_content_view_own')) {
             return "own";
         } else {
             return "none";
@@ -203,13 +203,13 @@ class Permission
      *
      * @return string Returns "all", "own", "own_as_client" or "none" depending on the user's edit permission.
      */
-    public static function getEditPermission($db): string
+    public static function getEditPermission($db, ConfigurationInterface $config): string
     {
-        if (self::currentUserHasPermission($db, 'zone_content_edit_others')) {
+        if (self::currentUserHasPermission($db, $config, 'zone_content_edit_others')) {
             return "all";
-        } elseif (self::currentUserHasPermission($db, 'zone_content_edit_own')) {
+        } elseif (self::currentUserHasPermission($db, $config, 'zone_content_edit_own')) {
             return "own";
-        } elseif (self::currentUserHasPermission($db, 'zone_content_edit_own_as_client')) {
+        } elseif (self::currentUserHasPermission($db, $config, 'zone_content_edit_own_as_client')) {
             return "own_as_client";
         } else {
             return "none";
@@ -224,11 +224,11 @@ class Permission
      * @param PDO $db The database connection.
      * @return string Returns "all", "own", or "none" depending on the user's delete permission.
      */
-    public static function getDeletePermission(PDO $db): string
+    public static function getDeletePermission(PDO $db, ConfigurationInterface $config): string
     {
-        if (self::currentUserHasPermission($db, 'zone_delete_others')) {
+        if (self::currentUserHasPermission($db, $config, 'zone_delete_others')) {
             return "all";
-        } elseif (self::currentUserHasPermission($db, 'zone_delete_own')) {
+        } elseif (self::currentUserHasPermission($db, $config, 'zone_delete_own')) {
             return "own";
         } else {
             return "none";

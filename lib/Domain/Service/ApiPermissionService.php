@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service;
 use PDO;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -48,11 +49,11 @@ class ApiPermissionService
     private PDO $db;
     private PermissionService $permissions;
 
-    public function __construct(PDO $db, ?PermissionService $permissions = null)
+    public function __construct(PDO $db, ?PermissionService $permissions = null, ?ConfigurationInterface $config = null)
     {
         $this->db = $db;
         $this->permissions = $permissions
-            ?? new PermissionService(new DbUserRepository($db, ConfigurationManager::getInstance()));
+            ?? new PermissionService(new DbUserRepository($db, $config ?? ConfigurationManager::getInstance()));
     }
 
     /**

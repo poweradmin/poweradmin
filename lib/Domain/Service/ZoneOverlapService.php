@@ -48,7 +48,7 @@ class ZoneOverlapService
     ) {
         $this->db = $db;
         $this->config = $config;
-        $this->permissionService = $permissionService ?? (new ApiPermissionService($db))->permissions();
+        $this->permissionService = $permissionService ?? (new ApiPermissionService($db, config: $this->config))->permissions();
         $this->tableNameService = new TableNameService($config);
     }
 

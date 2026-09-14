@@ -60,7 +60,7 @@ class GroupsController extends PublicApiController
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
-        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->apiPermissionService = new ApiPermissionService($this->db, config: $this->config);
     }
 
     /**

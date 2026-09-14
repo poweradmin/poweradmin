@@ -54,7 +54,7 @@ class GroupZonesController extends PublicApiController
         $zoneGroupRepository = $this->createZoneGroupRepository();
         $groupRepository = $this->createUserGroupRepository();
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
-        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->apiPermissionService = new ApiPermissionService($this->db, config: $this->config);
         $this->zoneRepository = $this->createZoneRepository();
     }
 

@@ -82,7 +82,7 @@ class OidcService extends LoggingService
         // Initialize services following existing patterns
         $this->sessionService = new SessionService();
         $redirectService = new RedirectService();
-        $this->authenticationService = new AuthenticationService($this->sessionService, $redirectService);
+        $this->authenticationService = new AuthenticationService($this->sessionService, $redirectService, $this->configManager);
         $this->csrfTokenService = new CsrfTokenService();
         $this->userEventLogger = new UserEventLogger($db);
     }

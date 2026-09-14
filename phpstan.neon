@@ -182,7 +182,6 @@ parameters:
         - lib/Domain/Service/MfaSessionManager.php
         - lib/Domain/Service/SessionService.php
         - lib/Domain/Service/UserContextService.php
-        - lib/Domain/Service/ZoneCountService.php
         - lib/Application/Service/ApiStatusService.php
         - lib/Application/Service/DnsDataService.php
         - lib/Application/Service/PdnsVersionService.php
@@ -258,11 +257,9 @@ parameters:
         - lib/Application/Controller/PingController.php
         - lib/Module/SecondaryZoneImport/SecondaryZoneImportModule.php
         # Not yet migrated. Delete each entry as its file is done.
-        - lib/Domain/Model/Permission.php
         - lib/Domain/Model/ZoneTemplate.php
         - lib/Domain/Service/ApiPermissionService.php
         - lib/Domain/Service/AuthenticationService.php
-        - lib/Domain/Service/Dns/DomainManager.php
         - lib/Application/Service/LoginAttemptService.php
         - lib/Application/Service/PasswordGenerationService.php
         - lib/Application/Service/PasswordPolicyService.php

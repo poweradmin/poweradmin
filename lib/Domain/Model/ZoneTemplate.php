@@ -85,7 +85,7 @@ class ZoneTemplate
         if ($userId === null) {
             return false;
         }
-        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, ConfigurationManager::getInstance()));
+        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
         return $this->permissionService->hasPermission($userId, $permission);
     }
 
@@ -684,7 +684,7 @@ class ZoneTemplate
      */
     private function canStoreTemplateRecordType(string $type): bool
     {
-        return !Permission::isTemplateRecordTypeRestricted($type, Permission::getEditPermission($this->db));
+        return !Permission::isTemplateRecordTypeRestricted($type, Permission::getEditPermission($this->db, $this->config));
     }
 
     /**
@@ -1003,7 +1003,7 @@ class ZoneTemplate
     public function getListZoneUseTempl(int $zone_templ_id, int $userid): array
     {
         if ($this->isApiBackend()) {
-            $perm_edit = Permission::getEditPermission($this->db);
+            $perm_edit = Permission::getEditPermission($this->db, $this->config);
             $params = [':zone_templ_id' => $zone_templ_id];
             $sql_add = '';
 
@@ -1023,7 +1023,7 @@ class ZoneTemplate
             }
         }
 
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db, $this->config);
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -1081,7 +1081,7 @@ class ZoneTemplate
      */
     public function getZoneAndDomainIdsByTemplate(int $zone_templ_id, int $userid): array
     {
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db, $this->config);
         $params = [':zone_templ_id' => $zone_templ_id];
 
         if ($this->isApiBackend()) {
@@ -1133,7 +1133,7 @@ class ZoneTemplate
     public function getZonesUsingTemplate(int $zone_templ_id, int $userid): array
     {
         if ($this->isApiBackend()) {
-            $perm_edit = Permission::getEditPermission($this->db);
+            $perm_edit = Permission::getEditPermission($this->db, $this->config);
             $params = [':zone_templ_id' => $zone_templ_id];
             $sql_add = '';
 
@@ -1178,7 +1178,7 @@ class ZoneTemplate
             }
         }
 
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db, $this->config);
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);

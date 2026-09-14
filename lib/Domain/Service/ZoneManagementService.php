@@ -140,7 +140,7 @@ class ZoneManagementService
         }
 
         if ($actingUserId !== null) {
-            $isAdmin = (new ApiPermissionService($this->db))->userHasPermission($actingUserId, 'user_is_ueberuser');
+            $isAdmin = (new ApiPermissionService($this->db, config: $this->config))->userHasPermission($actingUserId, 'user_is_ueberuser');
             if (!$zoneTemplateModel->canUseTemplate($templateId, $actingUserId, $isAdmin)) {
                 return ['success' => false, 'message' => 'You do not have permission to use this zone template', 'status' => 403, 'code' => self::ERR_TEMPLATE_FORBIDDEN];
             }

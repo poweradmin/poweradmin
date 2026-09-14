@@ -46,7 +46,7 @@ class PermissionsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
         $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
-        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->apiPermissionService = new ApiPermissionService($this->db, config: $this->config);
     }
 
     /**

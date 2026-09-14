@@ -63,6 +63,7 @@ class DomainManager implements DomainManagerInterface
     private RecordChangeLogger $changeLogger;
     private ?PermissionService $permissionService = null;
     private ?DbUserRepository $userRepository = null;
+    private UserContextService $userContext;
 
     /**
      * Constructor
@@ -80,7 +81,8 @@ class DomainManager implements DomainManagerInterface
         DomainRepositoryInterface $domainRepository,
         ?DnsBackendProvider $backendProvider = null,
         ?LoggerInterface $logger = null,
-        ?RecordChangeLogger $changeLogger = null
+        ?RecordChangeLogger $changeLogger = null,
+        ?UserContextService $userContext = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -90,6 +92,7 @@ class DomainManager implements DomainManagerInterface
         $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
+        $this->userContext = $userContext ?? new UserContextService();
     }
 
     private function captureChange(callable $callback): void
@@ -106,7 +109,7 @@ class DomainManager implements DomainManagerInterface
      */
     private function currentUserOwnsZone(int $zoneId): bool
     {
-        $userId = (new UserContextService())->getLoggedInUserId();
+        $userId = $this->userContext->getLoggedInUserId();
         if ($userId === null) {
             return false;
         }
@@ -118,7 +121,7 @@ class DomainManager implements DomainManagerInterface
      */
     private function userHasPermission(string $permission): bool
     {
-        $userId = (new UserContextService())->getLoggedInUserId();
+        $userId = $this->userContext->getLoggedInUserId();
         if ($userId === null) {
             return false;
         }
@@ -128,7 +131,7 @@ class DomainManager implements DomainManagerInterface
 
     private function userRepository(): DbUserRepository
     {
-        return $this->userRepository ??= new DbUserRepository($this->db, ConfigurationManager::getInstance());
+        return $this->userRepository ??= new DbUserRepository($this->db, $this->config);
     }
 
     /**
@@ -448,7 +451,7 @@ class DomainManager implements DomainManagerInterface
      */
     public function deleteDomain(int $id): ZoneWriteResult
     {
-        $perm_delete = Permission::getDeletePermission($this->db);
+        $perm_delete = Permission::getDeletePermission($this->db, $this->config);
         $user_is_zone_owner = $this->currentUserOwnsZone($id);
 
         if (ZoneAccessPolicy::levelAppliesToZone($perm_delete, $user_is_zone_owner)) {
@@ -810,7 +813,7 @@ class DomainManager implements DomainManagerInterface
         // Without content-edit rights the previous template's records stay, so the
         // caller must not report success over a zone holding records from both templates.
         $canRemoveOldTemplateRecords = $zone_template_id == 0
-            || ZoneAccessPolicy::levelAppliesToZone(Permission::getEditPermission($this->db), $this->currentUserOwnsZone($zone_id));
+            || ZoneAccessPolicy::levelAppliesToZone(Permission::getEditPermission($this->db, $this->config), $this->currentUserOwnsZone($zone_id));
 
         $zone_master_add = $this->userHasPermission('zone_master_add');
         $zone_slave_add = $this->userHasPermission('zone_slave_add');

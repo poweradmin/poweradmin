@@ -65,7 +65,7 @@ class DynamicDnsController extends PublicApiController
             new LegacyLogger($this->db),
             new IpAddressRetriever($_SERVER)
         );
-        $this->permissionService = new ApiPermissionService($this->db);
+        $this->permissionService = new ApiPermissionService($this->db, config: $this->config);
     }
 
     public function run(): void

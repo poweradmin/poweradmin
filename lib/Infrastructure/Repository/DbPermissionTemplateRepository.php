@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Throwable;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
@@ -32,7 +32,7 @@ class DbPermissionTemplateRepository
     private object $db;
 
     // $config is unused but kept so every Db*Repository is constructed alike.
-    public function __construct($db, ConfigurationManager $config)
+    public function __construct($db, ConfigurationInterface $config)
     {
         $this->db = $db;
     }

@@ -25,16 +25,16 @@ namespace Poweradmin\Infrastructure\Repository;
 use Exception;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsFormatter;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 class DbZoneTemplateRepository
 {
     private object $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private DnsFormatter $dnsFormatter;
 
-    public function __construct(object $db, ConfigurationManager $config)
+    public function __construct(object $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;

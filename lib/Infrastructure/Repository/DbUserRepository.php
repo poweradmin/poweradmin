@@ -26,7 +26,7 @@ use PDO;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Domain\Repository\UserRepository;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
@@ -35,9 +35,9 @@ use Poweradmin\Domain\Enum\AuthMethod;
 class DbUserRepository implements UserRepository
 {
     private object $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
-    public function __construct($db, ConfigurationManager $config)
+    public function __construct($db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;

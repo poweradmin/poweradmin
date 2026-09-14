@@ -60,7 +60,7 @@ class ChangePasswordController extends BaseController
         $this->request = new Request();
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
-        $this->authService = new AuthenticationService($sessionService, $redirectService);
+        $this->authService = new AuthenticationService($sessionService, $redirectService, $this->config);
         $this->policyService = new PasswordPolicyService();
 
         // Get password encryption settings with fallback to defaults

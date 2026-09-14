@@ -63,6 +63,7 @@ class RecordManager implements RecordManagerInterface
     private LoggerInterface $logger;
     private RecordChangeLogger $changeLogger;
     private ?PermissionService $permissionService = null;
+    private UserContextService $userContext;
 
     /**
      * Constructor
@@ -82,7 +83,8 @@ class RecordManager implements RecordManagerInterface
         DomainRepositoryInterface $domainRepository,
         ?DnsBackendProvider $backendProvider = null,
         ?LoggerInterface $logger = null,
-        ?RecordChangeLogger $changeLogger = null
+        ?RecordChangeLogger $changeLogger = null,
+        ?UserContextService $userContext = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -94,6 +96,7 @@ class RecordManager implements RecordManagerInterface
         $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
+        $this->userContext = $userContext ?? new UserContextService();
     }
 
     private function captureChange(callable $callback): void
@@ -110,7 +113,7 @@ class RecordManager implements RecordManagerInterface
      */
     private function userIsZoneOwner(int $zoneId): bool
     {
-        $userId = (new UserContextService())->getLoggedInUserId();
+        $userId = $this->userContext->getLoggedInUserId();
         if ($userId === null) {
             return false;
         }
@@ -124,7 +127,7 @@ class RecordManager implements RecordManagerInterface
      */
     private function userHasPermission(string $permission): bool
     {
-        $userId = (new UserContextService())->getLoggedInUserId();
+        $userId = $this->userContext->getLoggedInUserId();
         if ($userId === null) {
             return false;
         }
@@ -199,7 +202,7 @@ class RecordManager implements RecordManagerInterface
      */
     public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true): RecordWriteResult
     {
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db, $this->config);
 
         $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
@@ -336,7 +339,7 @@ class RecordManager implements RecordManagerInterface
     public function editRecord(array $record, bool $finalizeZone = true): RecordWriteResult
     {
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db, $this->config);
 
         // Derive the zone from the record id; a caller-supplied zid could name an
         // owned zone to pass the ownership check while editing another zone's record.
@@ -462,7 +465,7 @@ class RecordManager implements RecordManagerInterface
      */
     public function deleteRecord(int|string $rid, bool $finalizeZone = true): RecordWriteResult
     {
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db, $this->config);
 
         $repositoryFactory = new RepositoryFactory($this->db, $this->config, $this->backendProvider);
         $recordRepository = $repositoryFactory->createRecordRepository();
@@ -603,7 +606,7 @@ class RecordManager implements RecordManagerInterface
      */
     public function editZoneComment(int $zone_id, string $comment): bool
     {
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db, $this->config);
 
         $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);

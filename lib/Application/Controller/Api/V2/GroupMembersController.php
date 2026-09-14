@@ -51,7 +51,7 @@ class GroupMembersController extends PublicApiController
         $memberRepository = $this->createUserGroupMemberRepository();
         $groupRepository = $this->createUserGroupRepository();
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
-        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->apiPermissionService = new ApiPermissionService($this->db, config: $this->config);
     }
 
     /**

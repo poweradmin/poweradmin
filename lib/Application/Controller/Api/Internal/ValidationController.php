@@ -64,7 +64,7 @@ class ValidationController extends InternalApiController
             $this->zoneRepository,
             $dnsViolationValidator
         );
-        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->apiPermissionService = new ApiPermissionService($this->db, config: $this->config);
         $this->userContextService = new UserContextService();
     }
 

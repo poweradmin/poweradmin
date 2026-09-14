@@ -67,7 +67,7 @@ class OidcLoginController extends BaseController
         // Initialize authentication service
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
-        $this->authService = new AuthenticationService($sessionService, $redirectService);
+        $this->authService = new AuthenticationService($sessionService, $redirectService, $this->config);
     }
 
     public function run(): void

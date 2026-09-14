@@ -513,7 +513,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
 
     public function getZoneInfoFromId(int $zid): array
     {
-        $perm_view = Permission::getViewPermission($this->db);
+        $perm_view = Permission::getViewPermission($this->db, $this->config);
 
         if ($perm_view == "none") {
             $this->messageService->addSystemError(_("You do not have permission to view this zone."));

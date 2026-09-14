@@ -49,7 +49,7 @@ class ZoneTemplateRecordsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
         $this->repository = new DbZoneTemplateRepository($this->db, $this->config);
-        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->apiPermissionService = new ApiPermissionService($this->db, config: $this->config);
     }
 
     /**
