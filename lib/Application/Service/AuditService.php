@@ -181,6 +181,19 @@ class AuditService
         ), $zoneId);
     }
 
+    /**
+     * @param list<string> $kinds The kinds the zone carries after the edit
+     */
+    public function logZoneMetadataEdit(int $zoneId, string $zoneName, array $kinds): void
+    {
+        $this->logger->logInfo(sprintf(
+            '%s operation:edit_zone_metadata zone:%s kinds:%s',
+            $this->getContext(),
+            $zoneName,
+            implode(',', $kinds)
+        ), $zoneId);
+    }
+
     public function logDnssecSignZone(int $zoneId, string $zoneName): void
     {
         $this->logger->logInfo(sprintf(

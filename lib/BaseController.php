@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneManagementService;
+use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 use Poweradmin\Domain\Service\ZoneSigningService;
 use PDO;
@@ -547,6 +548,11 @@ abstract class BaseController
     protected function createZoneManagementService(): ZoneManagementService
     {
         return $this->services()->zoneManagementService($this->getPdnsCapabilities());
+    }
+
+    protected function createZoneMetadataService(): ZoneMetadataService
+    {
+        return $this->services()->zoneMetadataService();
     }
 
     protected function createZoneSigningService(): ZoneSigningService

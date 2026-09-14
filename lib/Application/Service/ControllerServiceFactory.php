@@ -44,12 +44,14 @@ use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneManagementService;
+use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSigningService;
 use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
@@ -219,6 +221,19 @@ class ControllerServiceFactory
     public function zoneManagementService(?PdnsCapabilities $capabilities = null): ZoneManagementService
     {
         return new ZoneManagementService($this->zoneRepository(), $this->config, $this->db, $this->logger, null, $capabilities, $this->zoneSigningService());
+    }
+
+    public function zoneMetadataService(): ZoneMetadataService
+    {
+        return new ZoneMetadataService(
+            $this->zoneRepository(),
+            $this->config,
+            $this->permissionService(),
+            new AuditService($this->db),
+            new RecordChangeLogger($this->db),
+            $this->apiClient(),
+            $this->logger
+        );
     }
 
     public function zoneSigningService(): ZoneSigningService
