@@ -111,15 +111,17 @@ interface DnsBackendProvider
      * @param string $content Record content
      * @param int $ttl Time-to-live
      * @param int $prio Priority
+     * @param array|null $comment RRset comment ['content' => string, 'account' => string]; null leaves
+     *                            comments untouched. SQL mode ignores it.
      * @return int|string|null The new record ID (int for SQL mode, encoded string for API mode), or null on failure
      */
-    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): int|string|null;
+    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, ?array $comment = null): int|string|null;
 
     /**
      * Create a DNS record atomically with optional disabled flag.
      *
      * In SQL mode, wraps the INSERT in a transaction with deadlock retry.
-     * In API mode, delegates to addRecordGetId + optional editRecord.
+     * In API mode, one RRset REPLACE carries the record and the disabled flag.
      *
      * @param int $domainId Domain ID
      * @param string $name Record name
@@ -128,9 +130,10 @@ interface DnsBackendProvider
      * @param int $ttl Time-to-live
      * @param int $prio Priority
      * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
+     * @param array|null $comment RRset comment as for addRecordGetId()
      * @return int|string|null The new record ID, or null on failure
      */
-    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0): int|string|null;
+    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0, ?array $comment = null): int|string|null;
 
     /**
      * Edit an existing DNS record.

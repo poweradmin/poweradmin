@@ -156,7 +156,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return true;
     }
 
-    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): int|string|null
+    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, ?array $comment = null): int|string|null
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -172,7 +172,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return (int)$this->db->lastInsertId();
     }
 
-    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0): int|string|null
+    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0, ?array $comment = null): int|string|null
     {
         // If already inside a caller's transaction (e.g. RRSet replace, bulk ops),
         // just do the INSERT without managing the transaction ourselves.

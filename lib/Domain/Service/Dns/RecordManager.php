@@ -200,11 +200,13 @@ class RecordManager implements RecordManagerInterface
      * @param string $content Content of record
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
+     * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
+     *                            backend writes it in the same PATCH as the record, SQL ignores it
      *
      * @return int|string|null The new record ID, or null on failure
      * @throws Exception
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): int|string|null
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, ?array $comment = null): int|string|null
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
@@ -272,7 +274,7 @@ class RecordManager implements RecordManagerInterface
         }
 
         try {
-            $recordId = $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
+            $recordId = $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $comment);
         } catch (RecordIdNotFoundException $e) {
             $this->logger->error('Failed to get record ID after creation: {error}', ['error' => $e->getMessage()]);
             return null;
