@@ -34,9 +34,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Application\Service\RejectedZoneEditPresenter;
@@ -67,7 +65,6 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -453,7 +450,11 @@ class EditController extends BaseController
             'row_amount' => $iface_rowamount,
             'record_sort_by' => $record_sort_by,
             'sort_direction' => $sort_direction,
-            'pagination' => $this->createAndPresentPagination($total_filtered_count, $iface_rowamount, $zone_id, $paginationService),
+            'pagination' => $this->presentPagination($total_filtered_count, $iface_rowamount, '/zones/' . $zone_id . '/edit?start={PageNumber}', [
+                'search' => $this->request->getQueryParam('search'),
+                'record_type' => $this->request->getQueryParam('record_type'),
+                'content' => $this->request->getQueryParam('content'),
+            ]),
             'pdnssec_use' => $isDnsSecEnabled,
             'is_secured' => $is_secured,
             'is_presigned' => $is_presigned,
@@ -594,36 +595,6 @@ class EditController extends BaseController
         } else {
             $this->setMessage('edit', 'error', _('Failed to request a zone transfer from the primary. Check the PowerDNS logs for details.'));
         }
-    }
-
-    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, int $id, PaginationService $paginationService): string
-    {
-        $httpParameters = new HttpPaginationParameters();
-        $currentPage = $httpParameters->getCurrentPage();
-
-        $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-
-        // Build base URL with any active filters
-        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-        $baseUrl = $baseUrlPrefix . '/zones/' . $id . '/edit?start={PageNumber}';
-
-        // Add filters to pagination links if they exist
-        $search = $this->request->getQueryParam('search');
-        if (!empty($search)) {
-            $baseUrl .= '&search=' . urlencode($search);
-        }
-        $recordType = $this->request->getQueryParam('record_type');
-        if (!empty($recordType)) {
-            $baseUrl .= '&record_type=' . urlencode($recordType);
-        }
-        $content = $this->request->getQueryParam('content');
-        if (!empty($content)) {
-            $baseUrl .= '&content=' . urlencode($content);
-        }
-
-        $presenter = new PaginationPresenter($pagination, $baseUrl);
-
-        return $presenter->present();
     }
 
     public function saveRecords(int $zone_id, string $zone_name): void

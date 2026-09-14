@@ -33,16 +33,13 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
-use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
-use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
-use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Utility\IpHelper;
 
 class ListReverseZonesController extends BaseController
@@ -251,7 +248,10 @@ class ListReverseZonesController extends BaseController
             'is_group_sort_supported' => $isGroupSortSupported,
             'is_api_backend' => $isApiBackend,
             'pdnssec_use' => $pdnssec_use,
-            'pagination' => $this->createAndPresentPagination($pagination_count, $iface_rowamount),
+            'pagination' => $this->presentPagination($pagination_count, $iface_rowamount, '/zones/reverse?start={PageNumber}', [
+                'reverse_type' => $this->request->getQueryParam('reverse_type'),
+                'rows_per_page' => $this->request->getQueryParam('rows_per_page'),
+            ]),
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
@@ -265,33 +265,5 @@ class ListReverseZonesController extends BaseController
             'associated_forward_zones' => $associatedForwardZones,
             'show_forward_zone_associations' => $showForwardZoneAssociations,
         ]);
-    }
-
-    private function createAndPresentPagination(int $totalItems, int $itemsPerPage): string
-    {
-        $httpParameters = new HttpPaginationParameters();
-        $currentPage = $httpParameters->getCurrentPage();
-
-        $paginationService = new PaginationService();
-        $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-
-        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-        $paginationUrl = $baseUrlPrefix . '/zones/reverse?start={PageNumber}';
-
-        // Add reverse_type parameter if it exists
-        $reverse_type = $this->request->getQueryParam('reverse_type');
-        if ($reverse_type !== null) {
-            $paginationUrl .= '&reverse_type=' . htmlspecialchars($reverse_type);
-        }
-
-        // Add rows_per_page parameter if it exists
-        $rows_per_page = $this->request->getQueryParam('rows_per_page');
-        if ($rows_per_page !== null) {
-            $paginationUrl .= '&rows_per_page=' . htmlspecialchars($rows_per_page);
-        }
-
-        $presenter = new PaginationPresenter($pagination, $paginationUrl);
-
-        return $presenter->present();
     }
 }

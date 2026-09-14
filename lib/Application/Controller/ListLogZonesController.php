@@ -32,14 +32,11 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Presenter\PaginationPresenter;
-use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
-use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 class ListLogZonesController extends BaseController
@@ -127,7 +124,7 @@ class ListLogZonesController extends BaseController
                 $ownedZoneIds = [$requestedZoneId];
             }
             // DbZoneLogger ignores unknown filter keys; including zone_id here only
-            // affects pagination URL generation in createAndPresentPagination().
+            // affects pagination URL generation via presentPagination().
             $filters['zone_id'] = (string) $requestedZoneId;
         }
 
@@ -174,7 +171,7 @@ class ListLogZonesController extends BaseController
             'data' => $logs,
             'selected_page' => $selected_page,
             'logs_per_page' => $logs_per_page,
-            'pagination' => $this->createAndPresentPagination($number_of_logs, $logs_per_page, $filters),
+            'pagination' => $this->presentPagination($number_of_logs, $logs_per_page, '/zones/logs?start={PageNumber}', $filters),
             'iface_edit_show_id' => $configManager->get('interface', 'show_record_id', false),
             'is_owner_view' => $applyOwnerFilter,
         ]);
@@ -190,25 +187,6 @@ class ListLogZonesController extends BaseController
         $userId = $this->getCurrentUserId() ?? 0;
 
         return $userId > 0 ? $this->createZoneRepository()->getOwnedZoneIds($userId) : [];
-    }
-
-    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, array $filters = []): string
-    {
-        $httpParameters = new HttpPaginationParameters();
-        $currentPage = $httpParameters->getCurrentPage();
-
-        $paginationService = new PaginationService();
-        $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-
-        $queryParams = '';
-        foreach ($filters as $key => $value) {
-            $queryParams .= '&' . urlencode($key) . '=' . urlencode($value);
-        }
-
-        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/zones/logs?start={PageNumber}' . $queryParams);
-
-        return $presenter->present();
     }
 
     private function exportLogs(array $filters, string $format, ?array $zoneIds): void

@@ -25,6 +25,7 @@ namespace Poweradmin;
 use InvalidArgumentException;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Http\RequestContext;
+use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\RequestValidator;
@@ -76,6 +77,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Web\PageRenderer;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -461,6 +463,36 @@ abstract class BaseController
     protected function createPaginationService(): PaginationService
     {
         return $this->services()->paginationService();
+    }
+
+    /**
+     * Renders a pagination widget for a paginated listing.
+     *
+     * $path is the route with the `{PageNumber}` placeholder already in place
+     * (e.g. '/zones/forward?start={PageNumber}'). $queryParams are extra
+     * key => value pairs appended urlencoded, in order, skipping absent and blank values.
+     */
+    protected function presentPagination(int $totalItems, int $itemsPerPage, string $path, array $queryParams = []): string
+    {
+        $httpParameters = new HttpPaginationParameters();
+        $currentPage = $httpParameters->getCurrentPage();
+
+        $pagination = $this->createPaginationService()->createPagination($totalItems, $itemsPerPage, $currentPage);
+
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+        $url = $baseUrlPrefix . $path;
+
+        foreach ($queryParams as $key => $value) {
+            // "0" is a real filter value (a comment of 0); only absent or blank ones are dropped
+            if ($value === null || $value === '') {
+                continue;
+            }
+            $url .= '&' . urlencode((string) $key) . '=' . urlencode((string) $value);
+        }
+
+        $presenter = new PaginationPresenter($pagination, $url);
+
+        return $presenter->present();
     }
 
     protected function createDnsBackendProvider(): DnsBackendProvider

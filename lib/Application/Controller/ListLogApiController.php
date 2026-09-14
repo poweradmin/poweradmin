@@ -23,12 +23,9 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Presenter\PaginationPresenter;
-use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
-use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 class ListLogApiController extends BaseController
@@ -116,28 +113,9 @@ class ListLogApiController extends BaseController
             'data' => $logs,
             'selected_page' => $selected_page,
             'logs_per_page' => $logs_per_page,
-            'pagination' => $this->createAndPresentPagination($number_of_logs, $logs_per_page, $filters),
+            'pagination' => $this->presentPagination($number_of_logs, $logs_per_page, '/settings/api/logs?start={PageNumber}', $filters),
             'iface_edit_show_id' => $configManager->get('interface', 'show_record_id', false),
         ]);
-    }
-
-    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, array $filters = []): string
-    {
-        $httpParameters = new HttpPaginationParameters();
-        $currentPage = $httpParameters->getCurrentPage();
-
-        $paginationService = new PaginationService();
-        $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-
-        $queryParams = '';
-        foreach ($filters as $key => $value) {
-            $queryParams .= '&' . urlencode($key) . '=' . urlencode($value);
-        }
-
-        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/settings/api/logs?start={PageNumber}' . $queryParams);
-
-        return $presenter->present();
     }
 
     private function exportLogs(array $filters, string $format): void

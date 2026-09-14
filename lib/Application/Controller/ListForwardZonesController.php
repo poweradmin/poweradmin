@@ -33,17 +33,14 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
-use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\UserService;
 use Poweradmin\Application\Service\ZoneService;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
-use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 
 class ListForwardZonesController extends BaseController
@@ -268,7 +265,7 @@ class ListForwardZonesController extends BaseController
             'is_group_sort_supported' => $isGroupSortSupported,
             'pdnssec_use' => $pdnssec_use,
             'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION[SessionKeys::USERID]),
-            'pagination' => $this->createAndPresentPagination($count_zones_all_letterstart, $iface_rowamount),
+            'pagination' => $this->presentPagination($count_zones_all_letterstart, $iface_rowamount, '/zones/forward?start={PageNumber}'),
             'session_userlogin' => $_SESSION[SessionKeys::USERLOGIN],
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
@@ -295,18 +292,5 @@ class ListForwardZonesController extends BaseController
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
         $presenter = new ZoneStartingLettersPresenter();
         return $presenter->present($availableChars, $digitsAvailable, $letterStart, $baseUrlPrefix);
-    }
-
-    private function createAndPresentPagination(int $totalItems, int $itemsPerPage): string
-    {
-        $httpParameters = new HttpPaginationParameters();
-        $currentPage = $httpParameters->getCurrentPage();
-
-        $paginationService = new PaginationService();
-        $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/zones/forward?start={PageNumber}');
-
-        return $presenter->present();
     }
 }

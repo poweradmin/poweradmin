@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,19 +25,16 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Presenter\PaginationPresenter;
-use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbUserLogger;
-use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 class ListLogUsersController extends BaseController
@@ -132,28 +129,9 @@ class ListLogUsersController extends BaseController
             'data' => $logs,
             'selected_page' => $selected_page,
             'logs_per_page' => $logs_per_page,
-            'pagination' => $this->createAndPresentPagination($number_of_logs, $logs_per_page, $filters),
+            'pagination' => $this->presentPagination($number_of_logs, $logs_per_page, '/users/logs?start={PageNumber}', $filters),
             'iface_edit_show_id' => $configManager->get('interface', 'show_record_id', false),
         ]);
-    }
-
-    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, array $filters = []): string
-    {
-        $httpParameters = new HttpPaginationParameters();
-        $currentPage = $httpParameters->getCurrentPage();
-
-        $paginationService = new PaginationService();
-        $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-
-        $queryParams = '';
-        foreach ($filters as $key => $value) {
-            $queryParams .= '&' . urlencode($key) . '=' . urlencode($value);
-        }
-
-        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/users/logs?start={PageNumber}' . $queryParams);
-
-        return $presenter->present();
     }
 
     private function exportLogs(array $filters, string $format): void

@@ -32,14 +32,11 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Presenter\PaginationPresenter;
-use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
-use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -145,7 +142,7 @@ class EditZoneTemplController extends BaseController
 
         $this->render('edit_zone_templ.html', [
             'templ_details' => $templ_details,
-            'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_templ_id),
+            'pagination' => $this->presentPagination($record_count, $iface_rowamount, '/zones/templates/' . $zone_templ_id . '/edit?start={PageNumber}', ['id' => $zone_templ_id]),
             'records' => ZoneTemplate::getZoneTemplRecords($this->db, $zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
             'zones_linked_count' => $zones_linked_count,
@@ -153,19 +150,6 @@ class EditZoneTemplController extends BaseController
             'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
             'perm_zone_templ_add' => $this->hasPermission('zone_templ_add'),
         ]);
-    }
-
-    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, int $id): string
-    {
-        $httpParameters = new HttpPaginationParameters();
-        $currentPage = $httpParameters->getCurrentPage();
-
-        $paginationService = new PaginationService();
-        $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/zones/templates/' . $id . '/edit?start={PageNumber}', (string)$id);
-
-        return $presenter->present();
     }
 
     public function getRowStart($rowAmount)

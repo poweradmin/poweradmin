@@ -26,12 +26,9 @@ use DateTimeImmutable;
 use DateInterval;
 use DateTimeZone;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Presenter\PaginationPresenter;
-use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 class ListRecordChangesController extends BaseController
@@ -185,28 +182,9 @@ class ListRecordChangesController extends BaseController
             'comment_filter' => htmlspecialchars((string) $this->httpRequest->getQueryParam('comment', '')),
             'selected_page' => $selectedPage,
             'logs_per_page' => $logsPerPage,
-            'pagination' => $this->createAndPresentPagination($totalLogs, $logsPerPage, $urlFilters),
+            'pagination' => $this->presentPagination($totalLogs, $logsPerPage, '/zones/changes?start={PageNumber}', $urlFilters),
             'iface_edit_show_id' => $configManager->get('interface', 'show_record_id', false),
         ]);
-    }
-
-    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, array $urlFilters = []): string
-    {
-        $httpParameters = new HttpPaginationParameters();
-        $currentPage = $httpParameters->getCurrentPage();
-
-        $paginationService = new PaginationService();
-        $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-
-        $queryParams = '';
-        foreach ($urlFilters as $key => $value) {
-            $queryParams .= '&' . urlencode((string) $key) . '=' . urlencode((string) $value);
-        }
-
-        $presenter = new PaginationPresenter($pagination, $baseUrlPrefix . '/zones/changes?start={PageNumber}' . $queryParams);
-
-        return $presenter->present();
     }
 
     /**
