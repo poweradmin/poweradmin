@@ -323,7 +323,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         return RecordIdentifier::encode($zoneName, $name, $type, $content, $prio);
     }
 
-    public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled): bool
+    public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled, ?array $comment = null): bool
     {
         // Decode the encoded record ID to get the old record identity
         if (!RecordIdentifier::isEncoded($recordId)) {
@@ -389,13 +389,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                 'disabled' => (bool)$disabled,
             ];
 
-            $rrsets[] = [
-                'name' => self::ensureTrailingDot($name),
-                'type' => $type,
-                'ttl' => $ttl,
-                'changetype' => 'REPLACE',
-                'records' => $newRecords,
-            ];
+            $targetRecords = $newRecords;
         } else {
             // Same name+type: rebuild the RRset with the modified record
             $rrsetData = $this->getRRsetFromApi($apiZoneName, self::ensureTrailingDot($name), $type);
@@ -427,14 +421,26 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                 return false;
             }
 
-            $rrsets[] = [
-                'name' => self::ensureTrailingDot($name),
-                'type' => $type,
-                'ttl' => $ttl,
-                'changetype' => 'REPLACE',
-                'records' => $records,
-            ];
+            $targetRecords = $records;
         }
+
+        $target = [
+            'name' => self::ensureTrailingDot($name),
+            'type' => $type,
+            'ttl' => $ttl,
+            'changetype' => 'REPLACE',
+            'records' => $targetRecords,
+        ];
+        // Carry the comment in the same PATCH: a second comments-only PATCH would
+        // make PowerDNS bump the SOA serial twice under SOA-EDIT-API
+        if ($comment !== null) {
+            $target['comments'] = $comment['content'] === '' ? [] : [[
+                'content' => $comment['content'],
+                'account' => $comment['account'],
+                'modified_at' => time(),
+            ]];
+        }
+        $rrsets[] = $target;
 
         return $this->client->patchZoneRRsets($apiZoneName, $rrsets);
     }

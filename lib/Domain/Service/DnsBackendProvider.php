@@ -142,9 +142,11 @@ interface DnsBackendProvider
      * @param int $ttl New TTL
      * @param int $prio New priority
      * @param int $disabled Whether record is disabled (0 or 1)
+     * @param array|null $comment RRset comment ['content' => string, 'account' => string]; null leaves
+     *                            comments untouched, empty content clears them. SQL mode ignores it.
      * @return bool
      */
-    public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled): bool;
+    public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled, ?array $comment = null): bool;
 
     /**
      * Delete a DNS record by ID.

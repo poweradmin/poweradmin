@@ -301,10 +301,12 @@ class RecordManager implements RecordManagerInterface
      * This function validates it if correct it inserts it into the database.
      *
      * @param array $record Record structure to update
+     * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
+     *                            backend writes it in the same PATCH as the record, SQL ignores it
      *
      * @return boolean true if successful
      */
-    public function editRecord(array $record): bool
+    public function editRecord(array $record, ?array $comment = null): bool
     {
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
         $perm_edit = Permission::getEditPermission($this->db);
@@ -382,7 +384,8 @@ class RecordManager implements RecordManagerInterface
                         $content,
                         $validatedTtl,
                         $validatedPrio,
-                        $record['disabled']
+                        $record['disabled'],
+                        $comment
                     )
                 ) {
                     $this->messageService->addSystemError(_('Failed to update record in DNS backend.'));

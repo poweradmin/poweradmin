@@ -38,7 +38,7 @@ class ApiRecordCommentRepositoryTest extends TestCase
         return new RecordComment(0, self::DOMAIN_ID, $name, $type, time(), 'admin', $text);
     }
 
-    private function stubZoneData(string $name = 'www.example.com.', string $type = 'A'): void
+    private function stubZoneData(string $name = 'www.example.com.', string $type = 'A', array $comments = []): void
     {
         $this->apiClient->method('getZoneRrset')
             ->willReturn([
@@ -48,7 +48,7 @@ class ApiRecordCommentRepositoryTest extends TestCase
                         'type' => $type,
                         'ttl' => 300,
                         'records' => [['content' => '1.2.3.4', 'disabled' => false]],
-                        'comments' => [],
+                        'comments' => $comments,
                     ]
                 ]
             ]);
@@ -156,7 +156,7 @@ class ApiRecordCommentRepositoryTest extends TestCase
     #[Test]
     public function addForRecordEmptyCommentClearsApi(): void
     {
-        $this->stubZoneData();
+        $this->stubZoneData('www.example.com.', 'A', [['content' => 'stale', 'account' => 'admin', 'modified_at' => 1]]);
         $comment = $this->makeComment('www.example.com', 'A', '');
 
         $this->apiClient->expects($this->once())
@@ -227,7 +227,7 @@ class ApiRecordCommentRepositoryTest extends TestCase
     #[Test]
     public function deleteClearsRRsetComments(): void
     {
-        $this->stubZoneData();
+        $this->stubZoneData('www.example.com.', 'A', [['content' => 'stale', 'account' => 'admin', 'modified_at' => 1]]);
 
         $this->apiClient->expects($this->once())
             ->method('patchZoneRRsets')
@@ -241,6 +241,43 @@ class ApiRecordCommentRepositoryTest extends TestCase
 
         $result = $this->repo->delete(self::DOMAIN_ID, 'www.example.com', 'A');
         $this->assertTrue($result);
+    }
+
+    // Issue #1556: the record PATCH already carries the comment, so a second
+    // comments-only PATCH would only make PowerDNS bump the SOA serial again.
+    #[Test]
+    public function addForRecordSkipsPatchWhenRRsetAlreadyHasTheComment(): void
+    {
+        $this->stubZoneData('www.example.com.', 'A', [
+            ['content' => 'test comment', 'account' => 'admin', 'modified_at' => 1],
+        ]);
+
+        $this->apiClient->expects($this->never())->method('patchZoneRRsets');
+
+        $result = $this->repo->addForRecord('rec-123', $this->makeComment());
+        $this->assertInstanceOf(RecordComment::class, $result);
+    }
+
+    #[Test]
+    public function addForRecordPatchesWhenOnlyTheAuthorDiffers(): void
+    {
+        $this->stubZoneData('www.example.com.', 'A', [
+            ['content' => 'test comment', 'account' => 'someone-else', 'modified_at' => 1],
+        ]);
+
+        $this->apiClient->expects($this->once())->method('patchZoneRRsets')->willReturn(true);
+
+        $this->repo->addForRecord('rec-123', $this->makeComment());
+    }
+
+    #[Test]
+    public function deleteSkipsPatchWhenRRsetHasNoComments(): void
+    {
+        $this->stubZoneData();
+
+        $this->apiClient->expects($this->never())->method('patchZoneRRsets');
+
+        $this->assertTrue($this->repo->delete(self::DOMAIN_ID, 'www.example.com', 'A'));
     }
 
     #[Test]

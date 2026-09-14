@@ -63,10 +63,12 @@ interface RecordManagerInterface
      * Edit a record
      *
      * @param array $record Record structure to update
+     * @param array|null $comment RRset comment ['content' => string, 'account' => string] to
+     *                            store with the record where the backend keeps them together
      *
      * @return boolean true if successful
      */
-    public function editRecord(array $record): bool;
+    public function editRecord(array $record, ?array $comment = null): bool;
 
     /**
      * Delete a record by a given record id
