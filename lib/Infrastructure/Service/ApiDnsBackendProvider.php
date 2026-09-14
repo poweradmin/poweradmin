@@ -215,9 +215,27 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function addRecord(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
+        return $this->appendRecord($domainId, $name, $type, $content, $ttl, $prio, 0, null) !== null;
+    }
+
+    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, ?array $comment = null): int|string|null
+    {
+        return $this->appendRecord($domainId, $name, $type, $content, $ttl, $prio, 0, $comment);
+    }
+
+    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0, ?array $comment = null): int|string|null
+    {
+        return $this->appendRecord($domainId, $name, $type, $content, $ttl, $prio, $disabled, $comment);
+    }
+
+    /**
+     * REPLACE the RRset with the existing records plus the new one and return its encoded ID.
+     */
+    private function appendRecord(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled, ?array $comment): ?string
+    {
         $zoneName = $this->getZoneNameByLocalId($domainId);
         if ($zoneName === null) {
-            return false;
+            return null;
         }
 
         $apiZoneName = self::ensureTrailingDot($zoneName);
@@ -229,25 +247,15 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             $this->logger->error("Failed to fetch current RRset for '{name} {type}' from API - aborting to prevent data loss", [
                 'name' => $apiRecordName, 'type' => $type,
             ]);
-            return false;
+            return null;
         }
 
-        // Build the full RRset including existing records + new record.
-        // SOA is a singleton type - replace the existing record instead of appending.
-        if ($type === 'SOA') {
-            $records = [
-                [
-                    'content' => $this->formatRecordContent($type, $content, $prio),
-                    'disabled' => false,
-                ],
-            ];
-        } else {
-            $records = $rrsetData['records'];
-            $records[] = [
-                'content' => $this->formatRecordContent($type, $content, $prio),
-                'disabled' => false,
-            ];
-        }
+        $newRecord = [
+            'content' => $this->formatRecordContent($type, $content, $prio),
+            'disabled' => (bool)$disabled,
+        ];
+        // SOA is a singleton type - replace the existing record instead of appending
+        $records = $type === 'SOA' ? [$newRecord] : [...$rrsetData['records'], $newRecord];
 
         $rrset = [
             'name' => $apiRecordName,
@@ -256,65 +264,11 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             'changetype' => 'REPLACE',
             'records' => $records,
         ];
-
-        return $this->client->patchZoneRRsets($apiZoneName, [$rrset]);
-    }
-
-    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): int|string|null
-    {
-        if (!$this->addRecord($domainId, $name, $type, $content, $ttl, $prio)) {
-            return null;
+        // Same PATCH as the record: a separate comments-only PATCH would make
+        // PowerDNS bump the SOA serial twice under SOA-EDIT-API
+        if ($comment !== null) {
+            $rrset['comments'] = self::rrsetComments($comment);
         }
-
-        $zoneName = $this->getZoneNameByLocalId($domainId);
-        if ($zoneName === null) {
-            return null;
-        }
-
-        return RecordIdentifier::encode($zoneName, $name, $type, $content, $prio);
-    }
-
-    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0): int|string|null
-    {
-        $zoneName = $this->getZoneNameByLocalId($domainId);
-        if ($zoneName === null) {
-            return null;
-        }
-
-        $apiZoneName = self::ensureTrailingDot($zoneName);
-        $apiRecordName = self::ensureTrailingDot($name);
-
-        // Read existing RRset from the API
-        $rrsetData = $this->getRRsetFromApi($apiZoneName, $apiRecordName, $type);
-        if ($rrsetData === null) {
-            $this->logger->error("Failed to fetch current RRset for '{name} {type}' from API", [
-                'name' => $apiRecordName, 'type' => $type,
-            ]);
-            return null;
-        }
-
-        if ($type === 'SOA') {
-            $records = [
-                [
-                    'content' => $this->formatRecordContent($type, $content, $prio),
-                    'disabled' => (bool)$disabled,
-                ],
-            ];
-        } else {
-            $records = $rrsetData['records'];
-            $records[] = [
-                'content' => $this->formatRecordContent($type, $content, $prio),
-                'disabled' => (bool)$disabled,
-            ];
-        }
-
-        $rrset = [
-            'name' => $apiRecordName,
-            'type' => $type,
-            'ttl' => $ttl,
-            'changetype' => 'REPLACE',
-            'records' => $records,
-        ];
 
         if (!$this->client->patchZoneRRsets($apiZoneName, [$rrset])) {
             return null;
@@ -434,15 +388,27 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         // Carry the comment in the same PATCH: a second comments-only PATCH would
         // make PowerDNS bump the SOA serial twice under SOA-EDIT-API
         if ($comment !== null) {
-            $target['comments'] = $comment['content'] === '' ? [] : [[
-                'content' => $comment['content'],
-                'account' => $comment['account'],
-                'modified_at' => time(),
-            ]];
+            $target['comments'] = self::rrsetComments($comment);
         }
         $rrsets[] = $target;
 
         return $this->client->patchZoneRRsets($apiZoneName, $rrsets);
+    }
+
+    /**
+     * PowerDNS comments list for a REPLACE; empty content clears the RRset comment.
+     */
+    private static function rrsetComments(array $comment): array
+    {
+        if ($comment['content'] === '') {
+            return [];
+        }
+
+        return [[
+            'content' => $comment['content'],
+            'account' => $comment['account'],
+            'modified_at' => time(),
+        ]];
     }
 
     public function deleteRecord(int|string $recordId): bool

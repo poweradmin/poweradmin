@@ -1035,6 +1035,89 @@ class ApiDnsBackendProviderTest extends TestCase
     // createRecordAtomic
     // ---------------------------------------------------------------
 
+    // Issue #1556: a new record's comment rides along in the same PATCH
+    public function testAddRecordGetIdWritesCommentInTheSamePatch(): void
+    {
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
+
+        $this->mockClient->method('getZoneRrset')
+            ->with('example.com.')
+            ->willReturn(['rrsets' => [$this->rrset('www.example.com.', 'A', [['content' => '10.0.0.1', 'disabled' => false]])]]);
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', $this->callback(function (array $rrsets): bool {
+                $this->assertCount(1, $rrsets);
+                $this->assertSame([
+                    ['content' => '10.0.0.1', 'disabled' => false],
+                    ['content' => '192.168.1.1', 'disabled' => false],
+                ], $rrsets[0]['records']);
+                $this->assertSame('new host', $rrsets[0]['comments'][0]['content']);
+                $this->assertSame('admin', $rrsets[0]['comments'][0]['account']);
+                return true;
+            }))
+            ->willReturn(true);
+
+        $result = $this->provider->addRecordGetId(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0, [
+            'content' => 'new host',
+            'account' => 'admin',
+        ]);
+
+        $this->assertTrue(RecordIdentifier::isEncoded($result));
+    }
+
+    public function testAddRecordGetIdWithoutCommentLeavesRRsetCommentsAlone(): void
+    {
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
+
+        $this->mockClient->method('getZoneRrset')->with('example.com.')->willReturn(['rrsets' => []]);
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', $this->callback(function (array $rrsets): bool {
+                $this->assertArrayNotHasKey('comments', $rrsets[0]);
+                return true;
+            }))
+            ->willReturn(true);
+
+        $this->provider->addRecordGetId(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
+    }
+
+    public function testCreateRecordAtomicWritesCommentWithDisabledRecord(): void
+    {
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
+
+        $this->mockClient->method('getZoneRrset')->with('example.com.')->willReturn(['rrsets' => []]);
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', $this->callback(function (array $rrsets): bool {
+                $this->assertSame([['content' => '192.168.1.1', 'disabled' => true]], $rrsets[0]['records']);
+                $this->assertSame('parked', $rrsets[0]['comments'][0]['content']);
+                return true;
+            }))
+            ->willReturn(true);
+
+        $result = $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 1, [
+            'content' => 'parked',
+            'account' => 'admin',
+        ]);
+
+        $this->assertTrue(RecordIdentifier::isEncoded($result));
+    }
+
     public function testCreateRecordAtomicReturnsEncodedIdOnSuccess(): void
     {
         // Mock getZoneNameByLocalId

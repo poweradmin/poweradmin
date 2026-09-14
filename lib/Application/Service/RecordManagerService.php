@@ -63,9 +63,12 @@ class RecordManagerService
     {
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
 
+        // API backend: carry the comment in the record PATCH; null rather than ''
+        // so an empty form field does not clear an existing RRset comment
+        $rrsetComment = $comment === '' ? null : ['content' => $comment, 'account' => $userlogin];
         $recordId = ($disabled && $this->backendProvider !== null)
-            ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $ttl, $prio, $disabled)
-            : $this->dnsRecord->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
+            ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $ttl, $prio, $disabled, $rrsetComment)
+            : $this->dnsRecord->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio, $rrsetComment);
         if ($recordId === null) {
             return false;
         }
