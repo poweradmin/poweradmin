@@ -117,22 +117,6 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
     }
 
     #[RunInSeparateProcess]
-    public function testDeletingSeveralZonesReportsEachOne(): void
-    {
-        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::NEW_DOMAIN_ID . ", " . self::ADMIN_USER_ID . "), (78, " . self::ADMIN_USER_ID . ")");
-        $backend = $this->dnsBackendStub(false);
-        $backend->method('deleteZone')->willReturnCallback(fn(int $id): bool => $id === self::NEW_DOMAIN_ID);
-
-        $results = $this->makeDomainManager($backend)->deleteDomains([self::NEW_DOMAIN_ID, 78]);
-
-        $this->assertTrue($results[self::NEW_DOMAIN_ID]->success);
-        $this->assertFalse($results[78]->success);
-        $this->assertSame(500, $results[78]->status);
-        $this->assertSame(0, (int)$this->db->query('SELECT COUNT(*) FROM zones WHERE domain_id = ' . self::NEW_DOMAIN_ID)->fetchColumn());
-        $this->assertSame(1, (int)$this->db->query('SELECT COUNT(*) FROM zones WHERE domain_id = 78')->fetchColumn());
-    }
-
-    #[RunInSeparateProcess]
     public function testChangingTheMasterToAnInvalidAddressIsRefused(): void
     {
         $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::NEW_DOMAIN_ID . ", " . self::ADMIN_USER_ID . ")");

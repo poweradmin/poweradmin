@@ -49,14 +49,6 @@ interface DomainManagerInterface
     public function deleteDomain(int $id): ZoneWriteResult;
 
     /**
-     * Delete several domains, one result per domain id
-     *
-     * @param int[] $domains Domain IDs to delete
-     * @return array<int, ZoneWriteResult>
-     */
-    public function deleteDomains(array $domains): array;
-
-    /**
      * Change Zone Type
      *
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]

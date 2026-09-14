@@ -61,6 +61,7 @@ class ZoneManagementService
     public const ERR_TEMPLATE_AMBIGUOUS = 'template_ambiguous';
     public const ERR_TEMPLATE_FORBIDDEN = 'template_forbidden';
     public const ERR_ZONE_WRITE = 'zone_write';
+    public const ERR_NOT_FOUND = 'not_found';
 
     private ZoneRepositoryInterface $zoneRepository;
     private ConfigurationManager $config;
@@ -358,7 +359,7 @@ class ZoneManagementService
     {
         // Check if zone exists
         if (!$this->zoneRepository->zoneIdExists($zoneId)) {
-            return ['success' => false, 'message' => 'Zone not found', 'status' => 404];
+            return ['success' => false, 'message' => 'Zone not found', 'status' => 404, 'code' => self::ERR_NOT_FOUND];
         }
 
         // Snapshot the zone for the audit log before any state is touched.
@@ -381,7 +382,7 @@ class ZoneManagementService
         $success = $this->zoneRepository->deleteZone($zoneId);
 
         if (!$success) {
-            return ['success' => false, 'message' => 'Failed to delete zone', 'status' => 500];
+            return ['success' => false, 'message' => 'Failed to delete zone', 'status' => 500, 'code' => self::ERR_ZONE_WRITE];
         }
 
         if ($zoneSnapshot !== null) {

@@ -523,23 +523,6 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
-     * Delete several domains; each id maps to its own result so a bulk caller can
-     * report every refusal, not just the first.
-     *
-     * @param int[] $domains Domain IDs to delete
-     * @return array<int, ZoneWriteResult>
-     */
-    public function deleteDomains(array $domains): array
-    {
-        $results = [];
-        foreach ($domains as $id) {
-            $results[$id] = $this->deleteDomain($id);
-        }
-
-        return $results;
-    }
-
-    /**
      * Apply the SOA serial policy (SOA-EDIT / SOA-EDIT-API) to a new zone.
      *
      * The per-zone SOA-EDIT-API choice wins over the dns.soa_edit_api config

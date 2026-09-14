@@ -209,6 +209,7 @@ class ZoneManagementServiceTest extends TestCase
         $this->assertFalse($result['success']);
         $this->assertEquals('Zone not found', $result['message']);
         $this->assertEquals(404, $result['status']);
+        $this->assertSame(ZoneManagementService::ERR_NOT_FOUND, $result['code']);
     }
 
     #[Test]

@@ -31,11 +31,10 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -47,7 +46,6 @@ class DeleteDomainController extends BaseController
 {
 
     private LegacyLogger $auditLogger;
-    private RecordCommentService $recordCommentService;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
 
@@ -56,10 +54,6 @@ class DeleteDomainController extends BaseController
         parent::__construct($request);
 
         $this->auditLogger = new LegacyLogger($this->db);
-        $backendProvider = $this->createDnsBackendProvider();
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->userContextService = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
@@ -102,21 +96,11 @@ class DeleteDomainController extends BaseController
 
     private function deleteDomain(int $zone_id): void
     {
-        $domainRepository = $this->createDomainRepository();
-        $zone_info = $domainRepository->getZoneInfoFromId($zone_id);
-        $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
+        $zone_info = $this->createDomainRepository()->getZoneInfoFromId($zone_id);
 
-        if ($pdnssec_use && $zone_info['type'] == 'MASTER') {
-            $zone_name = $domainRepository->getDomainNameById($zone_id);
-
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-            if ($dnssecProvider->isZoneSecured($zone_name, $this->config)) {
-                $dnssecProvider->unsecureZone($zone_name);
-            }
-        }
-
-        $deleted = $this->createDomainManager()->deleteDomain($zone_id);
-        if ($deleted->success) {
+        // The zone service deletes keys, comments, records and metadata with the zone, as the API does
+        $deleted = $this->createZoneManagementService()->deleteZone($zone_id);
+        if ($deleted['success']) {
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
@@ -124,14 +108,6 @@ class DeleteDomainController extends BaseController
                 $zone_info['name'],
                 $zone_info['type']
             ), $zone_id);
-
-            // Delete associated comments - wrapped in try-catch to prevent
-            // comment deletion failures from breaking zone deletion
-            try {
-                $this->recordCommentService->deleteCommentsByDomainId($zone_id);
-            } catch (\Exception $e) {
-                $this->logger->error('Failed to delete comments for zone {zone_id}: {error}', ['zone_id' => $zone_id, 'error' => $e->getMessage()]);
-            }
 
             // Check if the zone is a reverse zone and redirect accordingly
             if (!empty($zone_info['name']) && DnsHelper::isReverseZoneName($zone_info['name'])) {
@@ -143,7 +119,9 @@ class DeleteDomainController extends BaseController
             }
         } else {
             // The backend may already have dropped the zone, so leave the page instead of re-rendering it.
-            $this->addSystemMessage('error', (string)$deleted->message);
+            $this->addSystemMessage('error', ($deleted['code'] ?? null) === ZoneManagementService::ERR_NOT_FOUND
+                ? _('There is no zone with this ID.')
+                : _('The zone could not be deleted.'));
             $this->redirect(!empty($zone_info['name']) && DnsHelper::isReverseZoneName($zone_info['name']) ? '/zones/reverse' : '/zones/forward');
         }
     }

@@ -32,11 +32,8 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
@@ -48,7 +45,6 @@ class DeleteDomainsController extends BaseController
 {
 
     private LegacyLogger $auditLogger;
-    private RecordCommentService $recordCommentService;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
     private Request $request;
@@ -59,10 +55,6 @@ class DeleteDomainsController extends BaseController
 
         $this->request = new Request();
         $this->auditLogger = new LegacyLogger($this->db);
-        $backendProvider = $this->createDnsBackendProvider();
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->userContextService = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
@@ -113,22 +105,15 @@ class DeleteDomainsController extends BaseController
         $domainRepository = $this->createDomainRepository();
         $deleted_zones = $domainRepository->getZoneInfoFromIds($zone_ids);
 
-        // Handle DNSSEC before deletion - PowerDNS API modifies records directly,
-        // which would conflict with the deletion transaction
-        $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
-        if ($pdnssec_use) {
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-            // Permission for every zone was already established by verifyDeletePermission()
-            foreach ($deleted_zones as $zone) {
-                if ($zone['type'] == 'MASTER' && !empty($zone['name'])) {
-                    if ($dnssecProvider->isZoneSecured($zone['name'], $this->config)) {
-                        $dnssecProvider->unsecureZone($zone['name']);
-                    }
-                }
+        // Permission for every zone was already established by verifyDeletePermission();
+        // the zone service deletes keys, comments, records and metadata with each zone.
+        $zoneService = $this->createZoneManagementService();
+        $failed = false;
+        foreach ($zone_ids as $zone_id) {
+            if (!$zoneService->deleteZone((int)$zone_id)['success']) {
+                $failed = true;
             }
         }
-
-        $failures = array_filter($this->createDomainManager()->deleteDomains($zone_ids), fn(ZoneWriteResult $result): bool => !$result->success);
 
         // Determine if we should redirect to reverse or forward zones page
         $all_reverse = true;
@@ -141,7 +126,7 @@ class DeleteDomainsController extends BaseController
         $return_page = $all_reverse ? 'list_reverse_zones' : 'list_forward_zones';
         $route = $all_reverse ? '/zones/reverse' : '/zones/forward';
 
-        if ($failures === []) {
+        if (!$failed) {
             foreach ($deleted_zones as $deleted_zone) {
                 if (!empty($deleted_zone['name'])) {
                     $this->auditLogger->logInfo(sprintf(
@@ -154,18 +139,6 @@ class DeleteDomainsController extends BaseController
                 }
             }
 
-            // Delete associated comments - wrapped in try-catch to prevent
-            // comment deletion failures from breaking zone deletion
-            foreach ($zone_ids as $zone_id) {
-                try {
-                    $this->recordCommentService->deleteCommentsByDomainId($zone_id);
-                } catch (\Exception $e) {
-                    // Log the error but continue - zone deletion should not fail
-                    // because of comment cleanup issues
-                    $this->logger->error('Failed to delete comments for zone {zone_id}: {error}', ['zone_id' => $zone_id, 'error' => $e->getMessage()]);
-                }
-            }
-
             if (count($deleted_zones) == 1) {
                 $this->setMessage($return_page, 'success', _('Zone has been deleted successfully.'));
             } else {
@@ -173,9 +146,7 @@ class DeleteDomainsController extends BaseController
             }
         } else {
             // Some zones may already be gone, so report and leave rather than re-render the confirm page.
-            foreach (array_unique(array_map(fn(ZoneWriteResult $result): string => (string)$result->message, $failures)) as $message) {
-                $this->setMessage($return_page, 'error', $message);
-            }
+            $this->setMessage($return_page, 'error', _('Some zones could not be deleted.'));
         }
         $this->redirect($route);
     }
