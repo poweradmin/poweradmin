@@ -149,4 +149,21 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $this->assertSame(1, $count);
         $this->assertCount(1, $this->visibleTo(2));
     }
+
+    #[Test]
+    public function migratedZonesAreListedUnderTheirCanonicalIdWithEveryOwner(): void
+    {
+        // Zone id 7, canonical id 4011, with a second owner stored against the
+        // canonical id. The list must use the id the rest of the application
+        // uses, so the per-row ownership index and the links agree with it.
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id) VALUES
+            (7, 4011, '1.168.192.in-addr.arpa', 'MASTER', '', '', 1, 0),
+            (8, 4011, NULL, NULL, NULL, NULL, 2, 0)");
+
+        $zones = array_values($this->repository()->getReverseZones('all', 1, 'all', 0, 25, 'name', 'ASC'));
+
+        $this->assertSame(4011, $zones[0]['id']);
+        $this->assertSame(['admin', 'member'], $zones[0]['owners']);
+        $this->assertSame([4011 => [1, 2]], $this->repository()->getOwnerIdsByZoneIds([4011]));
+    }
 }
