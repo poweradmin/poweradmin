@@ -65,6 +65,15 @@ class UserContextService
         return $_SESSION[SessionKeys::USERID] ?? self::$apiUserId;
     }
 
+    /**
+     * The name to record as the actor of this request. An API request that also
+     * carries a browser session is attributed to the API principal, not the session.
+     */
+    public function getActingUsername(): ?string
+    {
+        return self::$apiUsername ?? ($_SESSION[SessionKeys::USERLOGIN] ?? null);
+    }
+
     public function getDisplayName(): ?string
     {
         return $_SESSION[SessionKeys::NAME] ?? $this->getLoggedInUsername();

@@ -50,7 +50,7 @@ class AuditServiceTest extends TestCase
         $ip = $this->createMock(IpAddressRetriever::class);
         $ip->method('getClientIp')->willReturn('192.0.2.10');
         $user = $this->createMock(UserContextService::class);
-        $user->method('getLoggedInUsername')->willReturn('alice');
+        $user->method('getActingUsername')->willReturn('alice');
 
         return new AuditService($this->createMock(PDO::class), $logger, $ip, $user);
     }
@@ -159,6 +159,13 @@ class AuditServiceTest extends TestCase
         $this->assertSame(['logWarn', 'client_ip:192.0.2.10 operation:login_error auth_method:oidc error:access_denied', null], $this->lines[1]);
     }
 
+    public function testSamlLogoutUsesTheActorCapturedBeforeTheSessionWasCleared(): void
+    {
+        $this->makeService()->logSamlLogout('bob');
+
+        $this->assertSame('client_ip:192.0.2.10 user:bob operation:saml_logout', $this->lines[0][1]);
+    }
+
     public function testActorFallsBackToUnknownWithoutASession(): void
     {
         $logger = $this->createMock(LegacyLogger::class);
@@ -167,7 +174,7 @@ class AuditServiceTest extends TestCase
         $ip = $this->createMock(IpAddressRetriever::class);
         $ip->method('getClientIp')->willReturn('192.0.2.10');
         $user = $this->createMock(UserContextService::class);
-        $user->method('getLoggedInUsername')->willReturn(null);
+        $user->method('getActingUsername')->willReturn(null);
 
         (new AuditService($this->createMock(PDO::class), $logger, $ip, $user))
             ->logAccessDenied('zone_master_add', '/zones/add/master');

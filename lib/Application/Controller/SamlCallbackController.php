@@ -130,11 +130,14 @@ class SamlCallbackController extends BaseController
 
     private function handleSingleLogout(): void
     {
+        // Captured first: a successful LogoutResponse clears the session during processing
+        $username = $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown';
+
         try {
             // Process SAML Single Logout
             $this->samlService->handleSingleLogout();
 
-            $this->createAuditService()->logSamlLogout();
+            $this->createAuditService()->logSamlLogout($username);
 
             // Clear the session and redirect to login
             $sessionEntity = new SessionEntity(_('You have been logged out'), 'info');

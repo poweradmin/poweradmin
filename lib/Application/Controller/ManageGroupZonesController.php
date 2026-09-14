@@ -36,6 +36,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\IpHelper;
 
 class ManageGroupZonesController extends BaseController
@@ -162,21 +163,7 @@ class ManageGroupZonesController extends BaseController
                 );
                 $this->setMessage('manage_group_zones', 'success', $message);
 
-                // Get zone names for successful additions
-                $zoneNames = array_filter(array_map(
-                    fn($id) => $domainRepository->getDomainNameById((int)$id),
-                    $results['success']
-                ));
-
-                // Shorten IPv6 zones for logging
-                $displayNames = array_map(function ($name) {
-                    if (str_ends_with($name, '.ip6.arpa')) {
-                        return IpHelper::shortenIPv6ReverseZone($name) ?? $name;
-                    }
-                    return $name;
-                }, $zoneNames);
-
-                $this->createAuditService()->logGroupZonesAdd($groupId, $groupName, array_values($displayNames));
+                $this->createAuditService()->logGroupZonesAdd($groupId, $groupName, $this->zoneLogNames($domainRepository, $results['success']));
             }
 
             if (!empty($results['failed'])) {
@@ -233,21 +220,7 @@ class ManageGroupZonesController extends BaseController
                 );
                 $this->setMessage('manage_group_zones', 'success', $message);
 
-                // Get zone names for successful removals
-                $zoneNames = array_filter(array_map(
-                    fn($id) => $domainRepository->getDomainNameById((int)$id),
-                    $results['success']
-                ));
-
-                // Shorten IPv6 zones for logging
-                $displayNames = array_map(function ($name) {
-                    if (str_ends_with($name, '.ip6.arpa')) {
-                        return IpHelper::shortenIPv6ReverseZone($name) ?? $name;
-                    }
-                    return $name;
-                }, $zoneNames);
-
-                $this->createAuditService()->logGroupZonesRemove($groupId, $groupName, array_values($displayNames));
+                $this->createAuditService()->logGroupZonesRemove($groupId, $groupName, $this->zoneLogNames($domainRepository, $results['success']));
             }
 
             if (!empty($results['failed'])) {
@@ -268,6 +241,26 @@ class ManageGroupZonesController extends BaseController
             $this->setMessage('manage_group_zones', 'error', $e->getMessage());
             $this->showManageZones($groupId);
         }
+    }
+
+    /**
+     * Zone names for the audit line, one per touched zone: unresolvable ids
+     * (zones_groups has no domain foreign key) are kept as "ID: n" so the count
+     * still reflects every row that changed.
+     *
+     * @param list<int|string> $zoneIds
+     * @return list<string>
+     */
+    private function zoneLogNames(DomainRepositoryInterface $domainRepository, array $zoneIds): array
+    {
+        return array_map(function ($id) use ($domainRepository): string {
+            $name = $domainRepository->getDomainNameById((int)$id);
+            if ($name === null || $name === '') {
+                return "ID: $id";
+            }
+
+            return str_ends_with($name, '.ip6.arpa') ? (IpHelper::shortenIPv6ReverseZone($name) ?? $name) : $name;
+        }, array_values($zoneIds));
     }
 
     private function showManageZones(int $groupId): void

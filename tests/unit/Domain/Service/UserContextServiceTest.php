@@ -75,4 +75,16 @@ class UserContextServiceTest extends TestCase
         $this->assertSame(11, $service->getLoggedInUserId());
         $this->assertNull($service->getLoggedInUsername());
     }
+
+    public function testActingUsernameIsTheApiPrincipalEvenWithASessionAlongside(): void
+    {
+        $_SESSION['userlogin'] = 'web-alice';
+        UserContextService::setApiUserContext(99, 'api-bob');
+
+        $service = new UserContextService();
+        $this->assertSame('api-bob', $service->getActingUsername());
+
+        UserContextService::clearApiUserContext();
+        $this->assertSame('web-alice', $service->getActingUsername());
+    }
 }

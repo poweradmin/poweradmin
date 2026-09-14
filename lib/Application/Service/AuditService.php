@@ -51,14 +51,14 @@ class AuditService
 
     private function getContext(): string
     {
-        // API requests are stateless, so read the actor through UserContextService
-        // rather than the session, which would attribute every API call to "unknown".
-        $username = $this->userContext->getLoggedInUsername() ?? 'unknown';
-        return sprintf(
-            'client_ip:%s user:%s',
-            $this->ipRetriever->getClientIp(),
-            $username
-        );
+        // API requests are stateless, so the actor comes through UserContextService,
+        // which names the API principal even when a browser session rides along
+        return $this->contextFor($this->userContext->getActingUsername());
+    }
+
+    private function contextFor(?string $username): string
+    {
+        return sprintf('client_ip:%s user:%s', $this->ipRetriever->getClientIp(), $username ?? 'unknown');
     }
 
     /**
@@ -67,6 +67,17 @@ class AuditService
     private function line(string $operation, array $fields = []): string
     {
         return $this->join($this->getContext(), $operation, $fields);
+    }
+
+    /**
+     * For events logged after the session is gone (single logout), with the
+     * actor captured beforehand.
+     *
+     * @param array<string, int|string|null> $fields
+     */
+    private function lineAs(string $username, string $operation, array $fields = []): string
+    {
+        return $this->join($this->contextFor($username), $operation, $fields);
     }
 
     /**
@@ -204,9 +215,12 @@ class AuditService
         $this->logger->logInfo($this->line($authMethod . '_login_success'));
     }
 
-    public function logSamlLogout(): void
+    /**
+     * @param string $username Captured before SLO processing, which clears the session
+     */
+    public function logSamlLogout(string $username): void
     {
-        $this->logger->logInfo($this->line('saml_logout'));
+        $this->logger->logInfo($this->lineAs($username, 'saml_logout'));
     }
 
     // API keys
