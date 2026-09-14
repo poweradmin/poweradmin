@@ -4,7 +4,6 @@ namespace Poweradmin\Tests\Unit\Domain\ValueObject;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\ValueObject\IpAddressList;
-use Poweradmin\Domain\Model\RecordType;
 use InvalidArgumentException;
 
 class IpAddressListTest extends TestCase
@@ -15,10 +14,8 @@ class IpAddressListTest extends TestCase
 
         $this->assertEmpty($ipList->getIpv4Addresses());
         $this->assertEmpty($ipList->getIpv6Addresses());
-        $this->assertEmpty($ipList->getAllAddresses());
         $this->assertFalse($ipList->hasIpv4Addresses());
         $this->assertFalse($ipList->hasIpv6Addresses());
-        $this->assertFalse($ipList->hasAnyAddresses());
         $this->assertTrue($ipList->isEmpty());
     }
 
@@ -29,10 +26,8 @@ class IpAddressListTest extends TestCase
 
         $this->assertEquals($ipv4Addresses, $ipList->getIpv4Addresses());
         $this->assertEmpty($ipList->getIpv6Addresses());
-        $this->assertEquals($ipv4Addresses, $ipList->getAllAddresses());
         $this->assertTrue($ipList->hasIpv4Addresses());
         $this->assertFalse($ipList->hasIpv6Addresses());
-        $this->assertTrue($ipList->hasAnyAddresses());
         $this->assertFalse($ipList->isEmpty());
     }
 
@@ -43,10 +38,8 @@ class IpAddressListTest extends TestCase
 
         $this->assertEmpty($ipList->getIpv4Addresses());
         $this->assertEquals($ipv6Addresses, $ipList->getIpv6Addresses());
-        $this->assertEquals($ipv6Addresses, $ipList->getAllAddresses());
         $this->assertFalse($ipList->hasIpv4Addresses());
         $this->assertTrue($ipList->hasIpv6Addresses());
-        $this->assertTrue($ipList->hasAnyAddresses());
         $this->assertFalse($ipList->isEmpty());
     }
 
@@ -58,10 +51,8 @@ class IpAddressListTest extends TestCase
 
         $this->assertEquals($ipv4Addresses, $ipList->getIpv4Addresses());
         $this->assertEquals($ipv6Addresses, $ipList->getIpv6Addresses());
-        $this->assertEquals(['192.168.1.1', '10.0.0.1', '2001:db8::1', '::1'], $ipList->getAllAddresses());
         $this->assertTrue($ipList->hasIpv4Addresses());
         $this->assertTrue($ipList->hasIpv6Addresses());
-        $this->assertTrue($ipList->hasAnyAddresses());
         $this->assertFalse($ipList->isEmpty());
     }
 
@@ -118,17 +109,6 @@ class IpAddressListTest extends TestCase
         $this->assertEmpty($ipList->getIpv4Addresses());
         $this->assertEmpty($ipList->getIpv6Addresses());
         $this->assertTrue($ipList->isEmpty());
-    }
-
-    public function testGetAddressesByType(): void
-    {
-        $ipv4Addresses = ['192.168.1.1', '10.0.0.1'];
-        $ipv6Addresses = ['2001:db8::1', '::1'];
-        $ipList = new IpAddressList($ipv4Addresses, $ipv6Addresses);
-
-        $this->assertEquals($ipv4Addresses, $ipList->getAddressesByType(RecordType::A));
-        $this->assertEquals($ipv6Addresses, $ipList->getAddressesByType(RecordType::AAAA));
-        $this->assertEquals([], $ipList->getAddressesByType('CNAME'));
     }
 
     public function testGetSortedAddresses(): void

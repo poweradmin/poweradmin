@@ -101,10 +101,10 @@ class WizardRegistry
      * Get a wizard instance by type
      *
      * @param string $type Wizard type identifier (e.g., 'DMARC', 'SPF')
-     * @return DnsWizardInterface|null Wizard instance or null if not found
+     * @return AbstractDnsWizard|null Wizard instance or null if not found
      * @throws \RuntimeException If wizard class doesn't exist or isn't available
      */
-    public function getWizard(string $type): ?DnsWizardInterface
+    public function getWizard(string $type): ?AbstractDnsWizard
     {
         if (!$this->isEnabled()) {
             throw new \RuntimeException('DNS wizards are not enabled in configuration');
@@ -128,8 +128,8 @@ class WizardRegistry
 
         $wizard = new $className($this->config);
 
-        if (!$wizard instanceof DnsWizardInterface) {
-            throw new \RuntimeException(sprintf('Wizard class "%s" must implement DnsWizardInterface', $className));
+        if (!$wizard instanceof AbstractDnsWizard) {
+            throw new \RuntimeException(sprintf('Wizard class "%s" must extend AbstractDnsWizard', $className));
         }
 
         // Cache the instance

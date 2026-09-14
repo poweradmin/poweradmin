@@ -127,13 +127,11 @@ class SymfonyRouter
 
             $controller = $parameters['_controller'];
 
-            // Parse controller string (e.g., "App\Controller\HomeController::index")
-            if (strpos($controller, '::') !== false) {
-                [$controllerClass, $method] = explode('::', $controller);
-            } else {
-                $controllerClass = $controller;
-                $method = $this->getMethodFromHttpVerb();
+            // Every route names its method ("Controller::run"); a bare class is a config error.
+            if (!str_contains($controller, '::')) {
+                throw new Exception("Route controller \"$controller\" must name a method", 500);
             }
+            [$controllerClass, $method] = explode('::', $controller, 2);
 
             // Remove route-specific parameters to get clean parameters
             $cleanParameters = array_filter($parameters, function ($key) {
@@ -206,20 +204,6 @@ class SymfonyRouter
 
         // Execute controller method
         $controller->$method();
-    }
-
-    /**
-     * Determine HTTP method to controller method mapping.
-     */
-    private function getMethodFromHttpVerb(): string
-    {
-        return match ($this->request->getMethod()) {
-            'GET' => 'index',
-            'POST' => 'create',
-            'PUT', 'PATCH' => 'update',
-            'DELETE' => 'delete',
-            default => 'run'
-        };
     }
 
     /**

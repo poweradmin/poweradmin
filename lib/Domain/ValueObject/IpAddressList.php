@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\ValueObject;
 
 use InvalidArgumentException;
-use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 
 readonly class IpAddressList
@@ -84,11 +83,6 @@ readonly class IpAddressList
         return $this->ipv6Addresses;
     }
 
-    public function getAllAddresses(): array
-    {
-        return array_merge($this->ipv4Addresses, $this->ipv6Addresses);
-    }
-
     public function hasIpv4Addresses(): bool
     {
         return !empty($this->ipv4Addresses);
@@ -99,23 +93,9 @@ readonly class IpAddressList
         return !empty($this->ipv6Addresses);
     }
 
-    public function hasAnyAddresses(): bool
-    {
-        return $this->hasIpv4Addresses() || $this->hasIpv6Addresses();
-    }
-
     public function isEmpty(): bool
     {
-        return !$this->hasAnyAddresses();
-    }
-
-    public function getAddressesByType(string $recordType): array
-    {
-        return match ($recordType) {
-            RecordType::A => $this->ipv4Addresses,
-            RecordType::AAAA => $this->ipv6Addresses,
-            default => []
-        };
+        return empty($this->ipv4Addresses) && empty($this->ipv6Addresses);
     }
 
     public function getSortedIpv4Addresses(): array

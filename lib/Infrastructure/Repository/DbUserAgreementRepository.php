@@ -22,12 +22,11 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use Poweradmin\Domain\Repository\UserAgreementRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use PDO;
 
-class DbUserAgreementRepository implements UserAgreementRepositoryInterface
+class DbUserAgreementRepository
 {
     private PDO $db;
     private ConfigurationManager $config;

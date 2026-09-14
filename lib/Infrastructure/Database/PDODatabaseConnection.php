@@ -25,9 +25,8 @@ namespace Poweradmin\Infrastructure\Database;
 use Exception;
 use PDO;
 use PDOException;
-use Poweradmin\Domain\Service\DatabaseConnection;
 
-class PDODatabaseConnection implements DatabaseConnection
+class PDODatabaseConnection
 {
     public function connect(array $credentials): PDO
     {

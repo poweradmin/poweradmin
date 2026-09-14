@@ -32,7 +32,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
  *
  * @package Poweradmin\Module\DnsWizard\Service
  */
-abstract class AbstractDnsWizard implements DnsWizardInterface
+abstract class AbstractDnsWizard
 {
     protected ConfigurationInterface $config;
     protected string $recordType;

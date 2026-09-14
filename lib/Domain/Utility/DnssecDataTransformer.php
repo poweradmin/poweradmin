@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Utility;
 
-class DnssecDataTransformer implements DnssecTransformer
+class DnssecDataTransformer
 {
     public function transformKey(mixed $key): array
     {

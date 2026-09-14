@@ -32,7 +32,6 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
-use Poweradmin\Domain\Service\Dns\SupermasterManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
@@ -150,7 +149,7 @@ class DnsServiceFactory
         PDO $db,
         ConfigurationManager $config,
         ?DnsBackendProvider $backendProvider = null
-    ): SupermasterManagerInterface {
+    ): SupermasterManager {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         return new SupermasterManager($db, $config, $backendProvider);
     }

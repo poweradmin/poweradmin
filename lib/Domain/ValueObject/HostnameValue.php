@@ -70,14 +70,4 @@ readonly class HostnameValue
     {
         return $this->value;
     }
-
-    public function __toString(): string
-    {
-        return $this->value;
-    }
-
-    public function equals(HostnameValue $other): bool
-    {
-        return $this->value === $other->value;
-    }
 }

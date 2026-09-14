@@ -26,7 +26,7 @@ use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\DnssecProvider;
-use Poweradmin\Domain\Utility\DnssecTransformer;
+use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
 
@@ -34,7 +34,7 @@ class DnsSecApiProvider implements DnssecProvider
 {
     private PowerdnsApiClient $client;
     private LegacyLoggerInterface $logger;
-    private DnssecTransformer $transformer;
+    private DnssecDataTransformer $transformer;
     private string $clientIp;
     private string $userLogin;
 
@@ -44,7 +44,7 @@ class DnsSecApiProvider implements DnssecProvider
     public function __construct(
         PowerdnsApiClient $client,
         LegacyLoggerInterface $logger,
-        DnssecTransformer $transformer,
+        DnssecDataTransformer $transformer,
         string $clientIp,
         string $userLogin
     ) {

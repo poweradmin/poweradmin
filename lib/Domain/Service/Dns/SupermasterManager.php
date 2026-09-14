@@ -36,7 +36,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 /**
  * Service class for managing PowerDNS supermasters
  */
-class SupermasterManager implements SupermasterManagerInterface
+class SupermasterManager
 {
     private PDO $db;
     private ConfigurationManager $config;

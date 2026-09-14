@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
-use Poweradmin\Domain\Utility\DnssecTransformer;
+use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
@@ -21,7 +21,7 @@ class DnsSecApiProviderTest extends TestCase
     {
         $this->mockApiClient = $this->createMock(PowerdnsApiClient::class);
         $this->mockLogger = $this->createMock(LegacyLoggerInterface::class);
-        $this->mockTransformer = $this->createMock(DnssecTransformer::class);
+        $this->mockTransformer = $this->createMock(DnssecDataTransformer::class);
 
         $this->provider = new DnsSecApiProvider(
             $this->mockApiClient,

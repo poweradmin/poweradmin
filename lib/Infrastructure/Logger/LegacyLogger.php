@@ -54,9 +54,7 @@ class LegacyLogger
         }
 
         if ($dblog_use) {
-            $logType = $zone_id !== null ? LogType::ZONE : LogType::USER;
-
-            if ($logType === LogType::ZONE) {
+            if ($zone_id !== null) {
                 $dbZoneLogger = new DbZoneLogger($this->db, $this->backendProvider);
                 $dbZoneLogger->doLog($message, $zone_id, $priority);
             } else {

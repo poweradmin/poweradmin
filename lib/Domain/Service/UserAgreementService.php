@@ -22,16 +22,16 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Repository\UserAgreementRepositoryInterface;
+use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class UserAgreementService
 {
-    private UserAgreementRepositoryInterface $repository;
+    private DbUserAgreementRepository $repository;
     private ConfigurationManager $config;
 
     public function __construct(
-        UserAgreementRepositoryInterface $repository,
+        DbUserAgreementRepository $repository,
         ConfigurationManager $config
     ) {
         $this->repository = $repository;

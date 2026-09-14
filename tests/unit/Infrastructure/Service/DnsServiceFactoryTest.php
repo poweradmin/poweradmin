@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\SupermasterManagerInterface;
+use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 
@@ -82,7 +82,7 @@ class DnsServiceFactoryTest extends TestCase
     {
         $db = $this->createMock(PDO::class);
         $this->assertInstanceOf(
-            SupermasterManagerInterface::class,
+            SupermasterManager::class,
             DnsServiceFactory::createSupermasterManager($db, $this->makeConfig())
         );
     }

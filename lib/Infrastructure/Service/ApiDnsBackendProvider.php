@@ -396,6 +396,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
         $zoneName = $this->getZoneNameByLocalId($domainId);
         if ($zoneName === null) {
+            $this->logger->error('Record was written but zone id {id} has no local zones row; no record identifier can be returned', ['id' => $domainId]);
             return null;
         }
 
@@ -406,6 +407,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     {
         $zoneName = $this->getZoneNameByLocalId($domainId);
         if ($zoneName === null) {
+            $this->logger->error('Cannot create record: zone id {id} has no local zones row', ['id' => $domainId]);
             return null;
         }
 

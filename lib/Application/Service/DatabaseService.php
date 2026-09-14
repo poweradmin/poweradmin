@@ -23,15 +23,15 @@
 namespace Poweradmin\Application\Service;
 
 use Exception;
-use Poweradmin\Domain\Service\DatabaseConnection;
+use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use PDO;
 use RuntimeException;
 
 class DatabaseService
 {
-    private DatabaseConnection $databaseConnection;
+    private PDODatabaseConnection $databaseConnection;
 
-    public function __construct(DatabaseConnection $databaseConnection)
+    public function __construct(PDODatabaseConnection $databaseConnection)
     {
         $this->databaseConnection = $databaseConnection;
     }
