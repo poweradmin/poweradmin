@@ -245,7 +245,11 @@ class EditRecordController extends BaseController
             $postData['disabled'] = 0;
         }
 
-        $ret_val = $this->createRecordManager()->editRecord($postData);
+        $showRecordComments = $this->config->get('interface', 'show_record_comments', false);
+        $ret_val = $this->createRecordManager()->editRecord($postData, $showRecordComments ? [
+            'content' => (string)$this->request->getPostParam('comment', ''),
+            'account' => $this->userContextService->getLoggedInUsername() ?? '',
+        ] : null);
         if (!$ret_val) {
             return false;
         }
@@ -288,7 +292,6 @@ class EditRecordController extends BaseController
             $zid
         );
 
-        $showRecordComments = $this->config->get('interface', 'show_record_comments', false);
         $nameOrTypeChanged = ($old_record_info['name'] !== $new_record_info['name'] ||
                               $old_record_info['type'] !== $new_record_info['type']);
 

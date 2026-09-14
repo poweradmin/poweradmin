@@ -784,6 +784,7 @@ class EditController extends BaseController
                 && $conflictResolution === 'only_latest_version';
 
             if (!$stale_form_rejected) {
+                $showRecordComments = $this->config->get('interface', 'show_record_comments', false);
                 foreach (($records ?? []) as &$record) {
                     // Rows end with a hidden _complete marker; max_input_vars truncation
                     // drops it, so skip such rows and flag the partial save.
@@ -809,7 +810,7 @@ class EditController extends BaseController
                     }
 
                     $comment = '';
-                    if ($this->config->get('interface', 'show_record_comments', false)) {
+                    if ($showRecordComments) {
                         $recordComment = $this->recordCommentService->findCommentByRecordId(RecordIdHelper::normalizeId($record['rid']));
                         if ($recordComment === null) {
                             $recordComment = $this->recordCommentService->findComment($zone_id, $record['name'], $record['type']);
@@ -825,14 +826,17 @@ class EditController extends BaseController
                         $one_record_changed = true;
                     }
 
-                    $edit_record = $this->dnsRecordManager->editRecord($record);
+                    $edit_record = $this->dnsRecordManager->editRecord($record, $showRecordComments ? [
+                        'content' => (string)($record['comment'] ?? ''),
+                        'account' => $this->userContextService->getLoggedInUsername() ?? '',
+                    ] : null);
                     if (false === $edit_record) {
                         $error = true;
                     } else {
                         $log->logAfter($record['rid'], $record);
                         $log->write();
 
-                        if ($this->config->get('interface', 'show_record_comments', false)) {
+                        if ($showRecordComments) {
                             // Use per-record comment (linked by record ID via record_comment_links table)
                             $this->recordCommentService->updateCommentForRecord(
                                 $zone_id,
