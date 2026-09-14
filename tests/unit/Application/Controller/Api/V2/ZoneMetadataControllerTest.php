@@ -86,12 +86,12 @@ class ZoneMetadataControllerTest extends TestCase
     {
         $cases = [
             [new ZoneMetadataResult(ZoneMetadataOutcome::SINGLE_VALUE_ONLY, 'SOA-EDIT'), 400, 'Metadata kind SOA-EDIT accepts only a single value'],
-            [new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_VALUE, 'SOA-EDIT-API', ['options' => ['DEFAULT', 'INCREASE']]), 422, 'Invalid value for SOA-EDIT-API. Allowed values: DEFAULT, INCREASE'],
-            [new ZoneMetadataResult(ZoneMetadataOutcome::COMPANION_REQUIRED, 'NSEC3NARROW', ['companion' => 'NSEC3PARAM']), 422, 'Metadata kind NSEC3NARROW only takes effect together with NSEC3PARAM'],
+            [new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_VALUE, 'SOA-EDIT-API', ['DEFAULT', 'INCREASE']), 422, 'Invalid value for SOA-EDIT-API. Allowed values: DEFAULT, INCREASE'],
+            [new ZoneMetadataResult(ZoneMetadataOutcome::COMPANION_REQUIRED, 'NSEC3NARROW', null, 'NSEC3PARAM'), 422, 'Metadata kind NSEC3NARROW only takes effect together with NSEC3PARAM'],
             [new ZoneMetadataResult(ZoneMetadataOutcome::OPERATOR_ONLY, 'LUA-AXFR-SCRIPT'), 403, 'Metadata kind LUA-AXFR-SCRIPT can only be set by an administrator'],
             [new ZoneMetadataResult(ZoneMetadataOutcome::SERVER_MANAGED, 'CATALOG-HASH'), 403, 'Metadata kind CATALOG-HASH is maintained by PowerDNS'],
             [new ZoneMetadataResult(ZoneMetadataOutcome::NO_API_ROUTE, 'PRESIGNED'), 403, 'Metadata kind PRESIGNED is read-only'],
-            [new ZoneMetadataResult(ZoneMetadataOutcome::CUSTOM_PREFIX, 'MY-KIND', ['prefix' => 'X-']), 422, 'Custom metadata kind MY-KIND must start with X-'],
+            [new ZoneMetadataResult(ZoneMetadataOutcome::CUSTOM_PREFIX, 'MY-KIND'), 422, 'Custom metadata kind MY-KIND must start with X-'],
             [new ZoneMetadataResult(ZoneMetadataOutcome::EMPTY_VALUES, 'X-NOTE'), 400, 'Values array must not be empty. Use DELETE to remove metadata.'],
             [new ZoneMetadataResult(ZoneMetadataOutcome::WRITE_FAILED, 'X-NOTE'), 500, 'Failed to update metadata'],
         ];

@@ -297,6 +297,7 @@ class ZoneMetadataController extends PublicApiController
     #[OA\Response(response: 401, description: 'Unauthorized')]
     #[OA\Response(response: 403, description: 'Forbidden or read-only metadata kind')]
     #[OA\Response(response: 404, description: 'Zone not found')]
+    #[OA\Response(response: 422, description: 'Value outside the kind vocabulary, missing companion kind, or custom kind without the X- prefix')]
     private function updateMetadataKind(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
@@ -369,9 +370,11 @@ class ZoneMetadataController extends PublicApiController
             type: 'object'
         )
     )]
+    #[OA\Response(response: 400, description: 'Invalid metadata kind')]
     #[OA\Response(response: 401, description: 'Unauthorized')]
     #[OA\Response(response: 403, description: 'Forbidden or read-only metadata kind')]
     #[OA\Response(response: 404, description: 'Zone not found')]
+    #[OA\Response(response: 422, description: 'Another kind still depends on this one')]
     private function deleteMetadataKind(): JsonResponse
     {
         $zoneId = (int)$this->pathParameters['id'];
@@ -413,12 +416,12 @@ class ZoneMetadataController extends PublicApiController
             ZoneMetadataOutcome::INVALID_KIND => $this->returnApiError('Invalid metadata kind', 400),
             ZoneMetadataOutcome::EMPTY_VALUES => $this->returnApiError('Values array must not be empty. Use DELETE to remove metadata.', 400),
             ZoneMetadataOutcome::SINGLE_VALUE_ONLY => $this->returnApiError('Metadata kind ' . $kind . ' accepts only a single value', 400),
-            ZoneMetadataOutcome::INVALID_VALUE => $this->returnApiError('Invalid value for ' . $kind . '. Allowed values: ' . implode(', ', $result->detail['options'] ?? []), 422),
-            ZoneMetadataOutcome::COMPANION_REQUIRED => $this->returnApiError('Metadata kind ' . $kind . ' only takes effect together with ' . ($result->detail['companion'] ?? ''), 422),
+            ZoneMetadataOutcome::INVALID_VALUE => $this->returnApiError('Invalid value for ' . $kind . '. Allowed values: ' . implode(', ', $result->options ?? []), 422),
+            ZoneMetadataOutcome::COMPANION_REQUIRED => $this->returnApiError('Metadata kind ' . $kind . ' only takes effect together with ' . (string)$result->companion, 422),
             ZoneMetadataOutcome::OPERATOR_ONLY => $this->returnApiError('Metadata kind ' . $kind . ' can only be set by an administrator', 403),
             ZoneMetadataOutcome::SERVER_MANAGED => $this->returnApiError('Metadata kind ' . $kind . ' is maintained by PowerDNS', 403),
             ZoneMetadataOutcome::NO_API_ROUTE => $this->returnApiError('Metadata kind ' . $kind . ' is read-only', 403),
-            ZoneMetadataOutcome::CUSTOM_PREFIX => $this->returnApiError('Custom metadata kind ' . $kind . ' must start with ' . ($result->detail['prefix'] ?? MetadataDefinitions::CUSTOM_KIND_API_PREFIX), 422),
+            ZoneMetadataOutcome::CUSTOM_PREFIX => $this->returnApiError('Custom metadata kind ' . $kind . ' must start with ' . MetadataDefinitions::CUSTOM_KIND_API_PREFIX, 422),
             default => $this->returnApiError($writeFailureText, 500),
         };
     }

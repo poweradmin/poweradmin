@@ -23,20 +23,15 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\ZoneMetadataFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
-use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
-use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
  * Handles reading and replacing raw PowerDNS domain metadata for a single zone.
@@ -51,19 +46,14 @@ class EditZoneMetadataController extends BaseController
     private Request $request;
 
     /**
-     * Repository used for loading zones and replacing domainmetadata rows.
+     * Repository used for loading the zone.
      */
     private ZoneRepositoryInterface $zoneRepository;
 
     /**
-     * Cached PowerDNS version used to hide metadata kinds unsupported by the current server.
+     * The rules and the persistence, shared with the API.
      */
-    private ?string $powerDnsVersion = null;
-
-    /**
-     * Cached API client for metadata operations in API mode.
-     */
-    private ?PowerdnsApiClient $apiClient = null;
+    private ZoneMetadataService $metadataService;
 
     /**
      * @param array<string, mixed> $request
@@ -72,10 +62,8 @@ class EditZoneMetadataController extends BaseController
     {
         parent::__construct($request);
         $this->request = new Request();
-        $this->zoneRepository = $this->getRepositoryFactory()->createZoneRepository();
-        if (DnsBackendProviderFactory::isApiBackend($this->getConfig())) {
-            $this->apiClient = DnsBackendProviderFactory::createApiClient($this->getConfig(), $this->logger);
-        }
+        $this->zoneRepository = $this->createZoneRepository();
+        $this->metadataService = $this->createZoneMetadataService();
     }
 
     /**
@@ -104,13 +92,11 @@ class EditZoneMetadataController extends BaseController
             return;
         }
 
-        $isOwner = $this->isZoneOwner($zoneId);
-        $canEditMetadata = $this->hasPermission('zone_meta_edit_others')
-            || ($this->hasPermission('zone_meta_edit_own') && $isOwner);
-
-        // The helper folds meta-edit in, so editors always retain view access.
-        $permMetadataView = $this->createPermissionService()->getZoneMetadataViewPermissionLevel((int)$this->getCurrentUserId());
-        $canViewMetadata = ZoneAccessPolicy::levelAppliesToZone($permMetadataView, $isOwner);
+        $permissions = $this->createPermissionService();
+        $userId = (int)$this->getCurrentUserId();
+        $canEditMetadata = $permissions->canEditZoneMeta($userId, $zoneId);
+        // The view level folds meta-edit in, so editors always retain view access.
+        $canViewMetadata = $permissions->canViewZoneMetadata($userId, $zoneId);
 
         $this->checkCondition(!$canViewMetadata, _('You do not have the permission to view zone metadata.'));
 
@@ -123,66 +109,19 @@ class EditZoneMetadataController extends BaseController
             $this->validateCsrfToken();
             $submittedMetadata = $this->normalizeSubmittedMetadata($this->request->getPostParam('metadata', []));
 
-            // Cheap in-memory checks first; loadMetadata() costs two PowerDNS API
-            // calls in API-backend mode and is only needed past this point.
-            $validationErrors = $this->validateMetadataRows($submittedMetadata);
-
-            if (!empty($validationErrors)) {
-                $this->setMessage('edit_zone_metadata', 'error', $validationErrors[0]);
+            $result = $this->metadataService->replaceAll($zoneId, $zone['name'], $submittedMetadata, (int)$this->getCurrentUserId());
+            if (!$result->isOk()) {
+                $this->setMessage('edit_zone_metadata', 'error', ZoneMetadataFormMessages::errorMessage($result));
                 $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
                 return;
             }
 
-            // Capture the current metadata state for the change-log diff and for
-            // the operator-only comparison. Done before the write so we record
-            // what was actually replaced.
-            $beforeMetadata = $this->loadMetadata($zoneId, $zone['name']);
-
-            $changedKinds = $this->changedKinds($submittedMetadata, $beforeMetadata);
-            $restrictionErrors = array_merge(
-                $this->operatorOnlyViolations($changedKinds),
-                $this->restrictedKindViolations($changedKinds)
-            );
-            if (!empty($restrictionErrors)) {
-                $this->setMessage('edit_zone_metadata', 'error', $restrictionErrors[0]);
-                $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
-                return;
-            }
-
-            $saveResult = $this->saveMetadata($zone, $submittedMetadata);
-
-            if ($saveResult['success']) {
-                $kinds = array_unique(array_column($submittedMetadata, 'kind'));
-                $auditLogger = new LegacyLogger($this->db);
-                $ipRetriever = new IpAddressRetriever($_SERVER);
-                $auditLogger->logInfo(sprintf(
-                    'client_ip:%s user:%s operation:edit_zone_metadata zone:%s kinds:%s',
-                    $ipRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
-                    $zone['name'],
-                    implode(',', $kinds)
-                ), $zoneId);
-
-                try {
-                    (new RecordChangeLogger($this->db))->logZoneMetadataEdit(
-                        ['id' => $zoneId, 'name' => $zone['name'], 'metadata' => $beforeMetadata],
-                        ['id' => $zoneId, 'name' => $zone['name'], 'metadata' => $submittedMetadata]
-                    );
-                } catch (\Throwable $e) {
-                    $this->logger->warning('Failed to write zone metadata edit log: {error}', ['error' => $e->getMessage()]);
-                }
-
-                $this->setMessage('edit_zone_metadata', 'success', _('Zone metadata has been updated successfully.'));
-                $this->redirect('/zones/' . $zoneId . '/metadata');
-                return;
-            }
-
-            $this->setMessage('edit_zone_metadata', 'error', _('Failed to update zone metadata.'));
-            $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
+            $this->setMessage('edit_zone_metadata', 'success', _('Zone metadata has been updated successfully.'));
+            $this->redirect('/zones/' . $zoneId . '/metadata');
             return;
         }
 
-        $this->renderPage($zoneId, $zone, $this->loadMetadata($zoneId, $zone['name']), $canEditMetadata);
+        $this->renderPage($zoneId, $zone, $this->metadataService->load($zoneId, $zone['name']), $canEditMetadata);
     }
 
     /**
@@ -201,7 +140,7 @@ class EditZoneMetadataController extends BaseController
         $this->setCurrentPage('zone_metadata');
         $this->setPageTitle($canEdit ? _('Edit Zone Metadata') : _('Zone Metadata'));
 
-        $definitions = $this->getMetadataDefinitionsForTemplate($this->hasPermission('user_is_ueberuser'));
+        $definitions = $this->getMetadataDefinitionsForTemplate($this->hasPermission('user_is_ueberuser'), $this->serverCapabilities());
 
         $this->render('edit_zone_metadata.html', [
             'zone_id' => $zoneId,
@@ -219,128 +158,6 @@ class EditZoneMetadataController extends BaseController
     }
 
     /**
-     * Load raw PowerDNS domainmetadata rows for the given zone.
-     *
-     * @return array<int, array<string, string>>
-     */
-    private function loadMetadata(int $zoneId, string $zoneName): array
-    {
-        if ($this->apiClient !== null) {
-            return $this->loadMetadataViaApi($zoneName);
-        }
-
-        return $this->zoneRepository->getDomainMetadata($zoneId);
-    }
-
-    /**
-     * Load metadata via the PowerDNS API.
-     *
-     * @return array<int, array<string, string>>
-     */
-    private function loadMetadataViaApi(string $zoneName): array
-    {
-        $apiName = str_ends_with($zoneName, '.') ? $zoneName : $zoneName . '.';
-        $rows = MetadataDefinitions::rowsFromApiPayload(
-            $this->apiClient->getZoneMetadata(new Zone($apiName)),
-            $this->apiClient->getZone($apiName, false)
-        );
-
-        usort($rows, fn($a, $b) => strcmp($a['kind'], $b['kind']));
-        return $rows;
-    }
-
-    /**
-     * Replace all stored metadata rows for the zone.
-     *
-     * @param array<string, mixed> $zone
-     * @param array<int, array<string, string>> $metadataRows
-     * @return array<string, bool|string>
-     */
-    private function saveMetadata(array $zone, array $metadataRows): array
-    {
-        if ($this->apiClient !== null) {
-            return $this->saveMetadataViaApi($zone['name'], $metadataRows);
-        }
-
-        return [
-            'success' => $this->zoneRepository->replaceDomainMetadata((int) $zone['id'], $metadataRows),
-        ];
-    }
-
-    /**
-     * Save metadata via the PowerDNS API.
-     *
-     * Groups rows by kind and uses PUT per kind. Kinds PowerDNS refuses on the
-     * /metadata endpoint go through the zone properties endpoint instead.
-     * Deletes kinds that were removed. Kinds the API cannot store are skipped -
-     * restrictedKindViolations() has already rejected any change to them.
-     *
-     * @param array<int, array<string, string>> $metadataRows
-     * @return array<string, bool|string>
-     */
-    private function saveMetadataViaApi(string $zoneName, array $metadataRows): array
-    {
-        $zone = new Zone($zoneName);
-
-        // Group submitted rows by kind
-        $grouped = [];
-        foreach ($metadataRows as $row) {
-            $grouped[$row['kind']][] = $row['content'];
-        }
-
-        // Load current metadata to detect removed kinds
-        $currentMetadata = $this->apiClient->getZoneMetadata($zone);
-        $currentKinds = [];
-        foreach ($currentMetadata as $entry) {
-            $currentKinds[] = $entry['kind'] ?? '';
-        }
-
-        // Zone-object-backed kinds are set (or cleared, when removed from the
-        // form) through a single zone properties update.
-        $properties = [];
-        $zoneData = null;
-        foreach (MetadataDefinitions::ZONE_PROPERTY_KINDS as $kind => $property) {
-            if (isset($grouped[$kind])) {
-                $properties[$property] = MetadataDefinitions::toZonePropertyValue($kind, $grouped[$kind][0]);
-                unset($grouped[$kind]);
-                continue;
-            }
-
-            $zoneData ??= $this->apiClient->getZone($zoneName, false);
-            if (!empty($zoneData[$property])) {
-                $properties[$property] = MetadataDefinitions::toZonePropertyValue($kind, '');
-            }
-        }
-
-        $success = true;
-        if ($properties !== []) {
-            $success = $this->apiClient->updateZoneProperties($zoneName, $properties);
-        }
-
-        // Update or create each metadata kind
-        foreach ($grouped as $kind => $values) {
-            if (MetadataDefinitions::writeRejection($kind, true) !== null) {
-                continue;
-            }
-            $result = $this->apiClient->updateZoneMetadata($zone, $kind, $values);
-            $success = $success && $result;
-        }
-
-        // Delete kinds that were removed
-        foreach ($currentKinds as $kind) {
-            if ($kind === '' || isset($grouped[$kind]) || isset(MetadataDefinitions::ZONE_PROPERTY_KINDS[$kind])) {
-                continue;
-            }
-            if (MetadataDefinitions::writeRejection($kind, true) !== null) {
-                continue;
-            }
-            $this->apiClient->deleteZoneMetadata($zone, $kind);
-        }
-
-        return ['success' => $success];
-    }
-
-    /**
      * Convert submitted rows into a compact list of valid domainmetadata entries.
      *
      * Empty rows are ignored and partially filled rows are dropped so the editor can
@@ -352,26 +169,11 @@ class EditZoneMetadataController extends BaseController
     private function normalizeSubmittedMetadata(array $submittedMetadata): array
     {
         $rows = [];
-
         foreach ($submittedMetadata as $row) {
-            $kind = $this->resolveSubmittedKind($row);
-            $content = trim((string) ($row['content'] ?? ''));
-
-            if ($kind === '' && $content === '') {
-                continue;
-            }
-
-            if ($kind === '' || $content === '') {
-                continue;
-            }
-
-            $rows[] = [
-                'kind' => substr($kind, 0, 32),
-                'content' => $content,
-            ];
+            $rows[] = ['kind' => $this->resolveSubmittedKind($row), 'content' => $row['content'] ?? ''];
         }
 
-        return $rows;
+        return ZoneMetadataService::normalizeRows($rows);
     }
 
     /**
@@ -390,167 +192,21 @@ class EditZoneMetadataController extends BaseController
     }
 
     /**
-     * Validate metadata rows against single-value metadata constraints.
-     *
-     * @param array<int, array{kind: string, content: string}> $rows
-     * @return array<int, string>
-     */
-    private function validateMetadataRows(array $rows): array
-    {
-        $errors = [];
-        $countsByKind = [];
-
-        foreach ($rows as $row) {
-            $kind = $row['kind'];
-            $countsByKind[$kind] = ($countsByKind[$kind] ?? 0) + 1;
-
-            if (!MetadataDefinitions::isMultiValue($kind) && $countsByKind[$kind] > 1) {
-                $errors[] = sprintf(_('Metadata kind %s accepts only a single value. Add only one row for this kind.'), $kind);
-            }
-
-            // PowerDNS stores an unknown policy string without complaint and
-            // then ignores it, so the vocabulary has to be enforced here.
-            $options = MetadataDefinitions::getAllowedValues($kind, $this->getConfig());
-            if ($options !== null && !in_array($row['content'], $options, true)) {
-                $errors[] = sprintf(_('Invalid value for %s. Allowed values: %s.'), $kind, implode(', ', $options));
-            }
-        }
-
-        foreach ($rows as $row) {
-            $companion = MetadataDefinitions::requiredCompanionKind($row['kind'], $row['content']);
-            if ($companion !== null && !isset($countsByKind[$companion])) {
-                $errors[] = sprintf(
-                    _('Metadata kind %s only takes effect together with %s. Add a %s row as well.'),
-                    $row['kind'],
-                    $companion,
-                    $companion
-                );
-            }
-        }
-
-        return array_values(array_unique($errors));
-    }
-
-    /**
-     * Reject changes to operator-only metadata kinds by non-superusers.
-     *
-     * These kinds make PowerDNS evaluate Lua, which reaches every zone the server
-     * hosts, so a zone-level editor must not set them. Rows that already exist are
-     * compared rather than rejected outright, so an administrator-set value does
-     * not lock the zone's own editor out of saving unrelated metadata.
-     *
-     * @param array<int, string> $changedKinds
-     * @return array<int, string>
-     */
-    private function operatorOnlyViolations(array $changedKinds): array
-    {
-        if ($this->hasPermission('user_is_ueberuser')) {
-            return [];
-        }
-
-        $errors = [];
-        foreach ($changedKinds as $kind) {
-            if (MetadataDefinitions::isOperatorOnly($kind)) {
-                $errors[] = sprintf(
-                    _('Metadata kind %s can only be changed by an administrator.'),
-                    $kind
-                );
-            }
-        }
-
-        return $errors;
-    }
-
-    /**
-     * Reject metadata changes the active backend cannot store.
-     *
-     * Rows that already exist are compared rather than rejected outright, so a
-     * value set out of band does not lock the editor out of saving the rest of
-     * the zone's metadata.
-     *
-     * @param array<int, string> $changedKinds
-     * @return array<int, string>
-     */
-    private function restrictedKindViolations(array $changedKinds): array
-    {
-        $errors = [];
-        foreach ($changedKinds as $kind) {
-            $errors[] = match (MetadataDefinitions::writeRejection($kind, $this->apiClient !== null)) {
-                MetadataDefinitions::REJECT_SERVER_MANAGED => sprintf(
-                    _('Metadata kind %s is maintained by PowerDNS and cannot be changed here.'),
-                    $kind
-                ),
-                MetadataDefinitions::REJECT_NO_API_ROUTE => sprintf(
-                    _('Metadata kind %s cannot be changed while the PowerDNS API backend is in use.'),
-                    $kind
-                ),
-                MetadataDefinitions::REJECT_CUSTOM_PREFIX => sprintf(
-                    _('Custom metadata kind %s must start with %s to be accepted by the PowerDNS API.'),
-                    $kind,
-                    MetadataDefinitions::CUSTOM_KIND_API_PREFIX
-                ),
-                default => null,
-            };
-        }
-
-        return array_values(array_filter($errors));
-    }
-
-    /**
-     * List the kinds whose value set differs between two metadata snapshots.
-     *
-     * @param array<int, array{kind: string, content: string}> $submitted
-     * @param array<int, array{kind: string, content: string}> $current
-     * @return array<int, string>
-     */
-    private function changedKinds(array $submitted, array $current): array
-    {
-        $collect = static function (array $rows): array {
-            $byKind = [];
-            foreach ($rows as $row) {
-                $kind = (string)($row['kind'] ?? '');
-                if ($kind !== '') {
-                    $byKind[$kind][] = (string)($row['content'] ?? '');
-                }
-            }
-            foreach ($byKind as $kind => $values) {
-                sort($values);
-                $byKind[$kind] = $values;
-            }
-            return $byKind;
-        };
-
-        $before = $collect($current);
-        $after = $collect($submitted);
-
-        $changed = [];
-        foreach (array_keys($before + $after) as $kind) {
-            if (($before[$kind] ?? []) !== ($after[$kind] ?? [])) {
-                $changed[] = (string) $kind;
-            }
-        }
-
-        return $changed;
-    }
-
-    /**
      * Build metadata definitions for the template, already localized for display.
      *
      * @param bool $includeOperatorOnly Whether the caller may set operator-only kinds
      * @return array<int, array<string, mixed>>
      */
-    private function getMetadataDefinitionsForTemplate(bool $includeOperatorOnly = true): array
+    private function getMetadataDefinitionsForTemplate(bool $includeOperatorOnly, PdnsCapabilities $caps): array
     {
         $definitions = [];
-        $caps = PdnsCapabilities::fromVersion($this->getPowerDnsVersion());
 
         foreach (MetadataDefinitions::DEFINITIONS as $kind => $definition) {
-            $support = $this->classifyDefinitionSupport($definition, $caps);
-            // Strict mode: hide kinds whose support cannot be confirmed (no API
-            // client, or version detection failed). Older known-but-unsupported
-            // kinds remain visible but disabled, so admins can still see what
-            // newer servers add.
-            if ($support === 'unknown') {
+            $support = $this->metadataService->kindSupport($definition, $caps);
+            // Strict mode: hide kinds whose support cannot be confirmed (version
+            // detection failed). Older known-but-unsupported kinds remain visible
+            // but disabled, so admins can still see what newer servers add.
+            if ($support === ZoneMetadataService::SUPPORT_UNKNOWN) {
                 continue;
             }
 
@@ -573,7 +229,7 @@ class EditZoneMetadataController extends BaseController
                 'placeholder' => $definition['placeholder'],
                 'help' => _($definition['help']),
                 'badges' => $this->buildBadgeDescriptors($kind, $definition),
-                'disabled' => $support === 'unsupported_known',
+                'disabled' => $support === ZoneMetadataService::SUPPORT_UNSUPPORTED_KNOWN,
                 'min_version' => $definition['min_version'] ?? null,
                 'options' => $options,
             ];
@@ -650,35 +306,6 @@ class EditZoneMetadataController extends BaseController
     }
 
     /**
-     * Tri-state classification used by the metadata editor.
-     *
-     * Returns 'supported' when the kind is known to work on the connected
-     * server, 'unsupported_known' when we have a version and it's too old,
-     * and 'unknown' when there's no way to tell (no API client, or version
-     * detection failed). Templates use this to render disabled options
-     * instead of hiding them outright.
-     *
-     * @param array<string, mixed> $definition
-     */
-    private function classifyDefinitionSupport(array $definition, PdnsCapabilities $caps): string
-    {
-        if ($this->apiClient === null) {
-            return 'supported';
-        }
-
-        $minVersion = $definition['min_version'] ?? null;
-        if (!is_string($minVersion) || $minVersion === '') {
-            return 'supported';
-        }
-
-        if (!$caps->isKnown()) {
-            return 'unknown';
-        }
-
-        return $caps->supportsMetadataKind($minVersion) ? 'supported' : 'unsupported_known';
-    }
-
-    /**
      * Build UI badges describing whether a kind is custom, single-value, multi-value, or version-gated.
      *
      * @param array<string, mixed> $definition
@@ -688,7 +315,7 @@ class EditZoneMetadataController extends BaseController
     {
         $badges = [];
 
-        if ($kind !== '' && MetadataDefinitions::writeRejection($kind, $this->apiClient !== null) !== null) {
+        if ($kind !== '' && $this->metadataService->writeRejection($kind) !== null) {
             $badges[] = [
                 'label' => _('Read-only'),
                 'class' => 'bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle',
@@ -715,24 +342,16 @@ class EditZoneMetadataController extends BaseController
     }
 
     /**
-     * Get and cache the PowerDNS version string returned by the API.
+     * What the connected PowerDNS supports, from the session cache the version
+     * probe keeps; the SQL backend has no version to ask for.
      */
-    private function getPowerDnsVersion(): string
+    private function serverCapabilities(): PdnsCapabilities
     {
-        if ($this->powerDnsVersion !== null) {
-            return $this->powerDnsVersion;
+        if (!$this->metadataService->isApiBackend()) {
+            return PdnsCapabilities::fromVersion(null);
         }
+        $this->refreshPdnsCapabilities();
 
-        if ($this->apiClient === null) {
-            $this->powerDnsVersion = '';
-            return $this->powerDnsVersion;
-        }
-
-        $serverInfo = $this->apiClient->getServerInfo();
-        $version = (string) ($serverInfo['version'] ?? '');
-        $version = preg_replace('/^[^0-9]*/', '', $version);
-        $this->powerDnsVersion = $version ?: '';
-
-        return $this->powerDnsVersion;
+        return $this->getPdnsCapabilities();
     }
 }

@@ -262,10 +262,12 @@ class ZoneMetadataService
 
         $before = $this->load($zoneId, $zoneName);
         $after = self::replaceKindIn($before, $kind, []);
-        // A kind another one depends on cannot go while the dependant stays
-        $refusal = $this->validateCompanions($after, $after);
-        if ($refusal !== null) {
-            return $refusal;
+        // A kind another one depends on cannot go while the dependant stays; rows
+        // already inconsistent for other reasons are not this delete's concern
+        foreach ($after as $row) {
+            if (MetadataDefinitions::requiredCompanionKind($row['kind'], $row['content']) === $kind) {
+                return new ZoneMetadataResult(ZoneMetadataOutcome::COMPANION_REQUIRED, $row['kind'], null, $kind);
+            }
         }
 
         if (!$this->persistKind($zoneId, $zoneName, $kind, [], $before)) {
@@ -284,12 +286,23 @@ class ZoneMetadataService
     private function validateSet(array $rows): ?ZoneMetadataResult
     {
         foreach ($rows as $row) {
-            if ($row['kind'] === '' || strlen($row['kind']) > self::MAX_KIND_LENGTH) {
-                return new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_KIND, $row['kind']);
+            $refusal = self::kindShapeRefusal($row['kind']);
+            if ($refusal !== null) {
+                return $refusal;
             }
         }
 
         return $this->validateValues($rows) ?? $this->validateCompanions($rows, $rows);
+    }
+
+    /** domainmetadata.kind is VARCHAR(32), so a longer kind cannot be stored as typed */
+    private static function kindShapeRefusal(string $kind): ?ZoneMetadataResult
+    {
+        if ($kind === '' || strlen($kind) > self::MAX_KIND_LENGTH) {
+            return new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_KIND, $kind);
+        }
+
+        return null;
     }
 
     /**
@@ -309,7 +322,7 @@ class ZoneMetadataService
             // ignores it, so the vocabulary has to be enforced here.
             $options = MetadataDefinitions::getAllowedValues($kind, $this->config);
             if ($options !== null && !in_array($row['content'], $options, true)) {
-                return new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_VALUE, $kind, ['options' => $options]);
+                return new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_VALUE, $kind, $options);
             }
         }
 
@@ -329,7 +342,7 @@ class ZoneMetadataService
         foreach ($rows as $row) {
             $companion = MetadataDefinitions::requiredCompanionKind($row['kind'], $row['content']);
             if ($companion !== null && !isset($present[$companion])) {
-                return new ZoneMetadataResult(ZoneMetadataOutcome::COMPANION_REQUIRED, $row['kind'], ['companion' => $companion]);
+                return new ZoneMetadataResult(ZoneMetadataOutcome::COMPANION_REQUIRED, $row['kind'], null, $companion);
             }
         }
 
@@ -343,8 +356,9 @@ class ZoneMetadataService
      */
     private function kindRefusal(string $kind, int $actingUserId): ?ZoneMetadataResult
     {
-        if ($kind === '' || strlen($kind) > self::MAX_KIND_LENGTH) {
-            return new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_KIND, $kind);
+        $refusal = self::kindShapeRefusal($kind);
+        if ($refusal !== null) {
+            return $refusal;
         }
 
         $rejection = match ($this->writeRejection($kind)) {
@@ -354,10 +368,10 @@ class ZoneMetadataService
             default => null,
         };
         if ($rejection !== null) {
-            return new ZoneMetadataResult($rejection, $kind, ['prefix' => MetadataDefinitions::CUSTOM_KIND_API_PREFIX]);
+            return new ZoneMetadataResult($rejection, $kind);
         }
 
-        if (MetadataDefinitions::isOperatorOnly($kind) && !$this->permissions->hasPermission($actingUserId, 'user_is_ueberuser')) {
+        if (MetadataDefinitions::isOperatorOnly($kind) && !$this->permissions->isAdmin($actingUserId)) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::OPERATOR_ONLY, $kind);
         }
 
@@ -380,10 +394,7 @@ class ZoneMetadataService
         foreach ($rows as $row) {
             $grouped[$row['kind']][] = $row['content'];
         }
-        $beforeByKind = [];
-        foreach ($before as $row) {
-            $beforeByKind[$row['kind']] = true;
-        }
+        $beforeByKind = array_flip(array_column($before, 'kind'));
 
         // Zone-object-backed kinds are set, or cleared when they left the set,
         // through one zone properties update.

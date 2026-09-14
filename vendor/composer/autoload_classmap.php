@@ -1199,6 +1199,7 @@ return array(
     'Poweradmin\\Application\\Service\\ZoneAccessNotificationService' => $baseDir . '/lib/Application/Service/ZoneAccessNotificationService.php',
     'Poweradmin\\Application\\Service\\ZoneCreateFormMessages' => $baseDir . '/lib/Application/Service/ZoneCreateFormMessages.php',
     'Poweradmin\\Application\\Service\\ZoneGroupService' => $baseDir . '/lib/Application/Service/ZoneGroupService.php',
+    'Poweradmin\\Application\\Service\\ZoneMetadataFormMessages' => $baseDir . '/lib/Application/Service/ZoneMetadataFormMessages.php',
     'Poweradmin\\Application\\Service\\ZoneOwnershipFormResolver' => $baseDir . '/lib/Application/Service/ZoneOwnershipFormResolver.php',
     'Poweradmin\\Application\\Service\\ZoneService' => $baseDir . '/lib/Application/Service/ZoneService.php',
     'Poweradmin\\Application\\Service\\ZoneSigningMessages' => $baseDir . '/lib/Application/Service/ZoneSigningMessages.php',

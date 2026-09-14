@@ -26,10 +26,15 @@ final readonly class ZoneMetadataResult
 {
     /**
      * @param string $kind The kind the refusal is about; empty on success
-     * @param array<string, mixed> $detail What the refusal needs to be worded: 'options', 'companion' or 'prefix'
+     * @param list<string>|null $options The vocabulary, when a value fell outside it
+     * @param string|null $companion The kind the refused one needs next to it
      */
-    public function __construct(public ZoneMetadataOutcome $outcome, public string $kind = '', public array $detail = [])
-    {
+    public function __construct(
+        public ZoneMetadataOutcome $outcome,
+        public string $kind = '',
+        public ?array $options = null,
+        public ?string $companion = null
+    ) {
     }
 
     public static function ok(): self

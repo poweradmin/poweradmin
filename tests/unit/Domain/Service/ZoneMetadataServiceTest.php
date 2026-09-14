@@ -95,7 +95,7 @@ class ZoneMetadataServiceTest extends TestCase
 
         $this->assertSame(ZoneMetadataOutcome::INVALID_VALUE, $result->outcome);
         $this->assertSame('SOA-EDIT-API', $result->kind);
-        $this->assertContains('INCREASE', $result->detail['options']);
+        $this->assertContains('INCREASE', $result->options);
     }
 
     public function testConfiguredVocabularyNarrowsAcceptedValues(): void
@@ -135,7 +135,7 @@ class ZoneMetadataServiceTest extends TestCase
 
         $alone = $service->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'NSEC3NARROW', 'content' => '1']], self::ADMIN);
         $this->assertSame(ZoneMetadataOutcome::COMPANION_REQUIRED, $alone->outcome);
-        $this->assertSame('NSEC3PARAM', $alone->detail['companion']);
+        $this->assertSame('NSEC3PARAM', $alone->companion);
 
         // Per kind, the companion may already be stored
         $this->assertSame(ZoneMetadataOutcome::COMPANION_REQUIRED, $service->replaceKind(self::ZONE_ID, self::ZONE, 'NSEC3NARROW', ['1'], self::ADMIN)->outcome);
@@ -153,6 +153,17 @@ class ZoneMetadataServiceTest extends TestCase
 
         $this->assertSame(ZoneMetadataOutcome::COMPANION_REQUIRED, $result->outcome);
         $this->assertSame('NSEC3NARROW', $result->kind);
+    }
+
+    public function testAnUnrelatedDeleteIgnoresAnAlreadyInconsistentSet(): void
+    {
+        $this->zoneRepository->method('getDomainMetadata')->willReturn([
+            ['kind' => 'NSEC3NARROW', 'content' => '1'],
+            ['kind' => 'IXFR', 'content' => '1'],
+        ]);
+        $this->zoneRepository->method('replaceDomainMetadata')->willReturn(true);
+
+        $this->assertTrue($this->sqlService()->deleteKind(self::ZONE_ID, self::ZONE, 'IXFR', self::ADMIN)->isOk());
     }
 
     public function testOperatorOnlyKindsAreGatedOnlyWhenTheyChange(): void
