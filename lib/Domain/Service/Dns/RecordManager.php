@@ -270,11 +270,13 @@ class RecordManager implements RecordManagerInterface
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
      * @param int $disabled Whether the record is created in disabled state (0 or 1)
+     * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
+     *                            backend writes it in the same PATCH as the record, SQL ignores it
      *
      * @return int|string|null The new record ID, or null on failure
      * @throws Exception
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0): int|string|null
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, ?array $comment = null): int|string|null
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
@@ -328,8 +330,8 @@ class RecordManager implements RecordManagerInterface
             // Disabled records need the disabled flag persisted atomically with the
             // insert; the regular insert path has no disabled support.
             $recordId = $disabled
-                ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled)
-                : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio);
+                ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled, $comment)
+                : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $comment);
         } catch (RecordIdNotFoundException $e) {
             $this->logger->error('Failed to get record ID after creation: {error}', ['error' => $e->getMessage()]);
             return null;

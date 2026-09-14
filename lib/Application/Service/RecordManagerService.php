@@ -67,7 +67,10 @@ class RecordManagerService
 
         // All creates go through RecordManager so permission gates and record
         // validation apply to disabled records as well.
-        $recordId = $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio, $disabled);
+        // API backend: carry the comment in the record PATCH; null rather than ''
+        // so an empty form field does not clear an existing RRset comment
+        $rrsetComment = $comment === '' ? null : ['content' => $comment, 'account' => $userlogin];
+        $recordId = $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio, $disabled, $rrsetComment);
         if ($recordId === null) {
             return false;
         }

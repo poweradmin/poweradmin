@@ -54,11 +54,13 @@ interface RecordManagerInterface
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
      * @param int $disabled Whether the record is created in disabled state (0 or 1)
+     * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
+     *                            backend writes it in the same PATCH as the record, SQL ignores it
      *
      * @return int|string|null The new record ID, or null on failure
      * @throws Exception
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0): int|string|null;
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, ?array $comment = null): int|string|null;
 
     /**
      * Edit a record

@@ -105,4 +105,30 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
     expect(serialAfter - serialBefore).toBe(1);
     await expect(commentField).toHaveValue('why this record exists');
   });
+
+  test('inline add record with a comment should increment SOA serial by exactly 1', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    const zoneId = await createIsolatedZone(page, 'DEFAULT');
+    expect(zoneId).not.toBeNull();
+
+    await page.goto(`/zones/${zoneId}/edit`);
+    await page.waitForLoadState('domcontentloaded');
+
+    const serialBefore = parseInt(await page.locator('input[name="serial"]').inputValue(), 10);
+    expect(serialBefore).toBeGreaterThan(0);
+
+    const addForm = page.locator('form[action*="/edit"]').first();
+    await addForm.locator('input[name="name"]').fill('with-comment');
+    await addForm.locator('select[name="type"]').selectOption('A');
+    await addForm.locator('input[name="content"]').fill('192.0.2.12');
+    await addForm.locator('input[name="comment"]').fill('added together with the record');
+    await addForm.locator('[name="commit"]').click();
+    await page.waitForLoadState('domcontentloaded');
+    await expect(page.locator('body')).toContainText('successfully added');
+
+    const serialAfter = parseInt(await page.locator('input[name="serial"]').inputValue(), 10);
+    expect(serialAfter - serialBefore).toBe(1);
+    const newRow = page.locator('tr', { has: page.locator('input[name$="[content]"][value="192.0.2.12"]') });
+    await expect(newRow.locator('input[name$="[comment]"]')).toHaveValue('added together with the record');
+  });
 });
