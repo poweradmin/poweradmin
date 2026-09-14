@@ -31,10 +31,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -42,9 +39,6 @@ use Poweradmin\Domain\Service\SessionKeys;
 class LogoutController extends BaseController
 {
     private AuthenticationService $authService;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
-    private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
@@ -53,19 +47,12 @@ class LogoutController extends BaseController
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authService = new AuthenticationService($sessionService, $redirectService);
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
     {
         // Log before logout since session data is destroyed during logout
-        $this->auditLogger->logInfo(sprintf(
-            'client_ip:%s user:%s operation:logout',
-            $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername() ?? 'unknown'
-        ));
+        $this->createAuditService()->logLogout();
 
         // Check if user was authenticated via external auth
         $authMethod = $_SESSION[SessionKeys::AUTH_METHOD_USED] ?? null;

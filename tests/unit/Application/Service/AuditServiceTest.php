@@ -41,7 +41,7 @@ class AuditServiceTest extends TestCase
     private function makeService(): AuditService
     {
         $logger = $this->createMock(LegacyLogger::class);
-        foreach (['logInfo', 'logWarn', 'logNotice', 'logGroupInfo', 'logApiInfo'] as $method) {
+        foreach (['logInfo', 'logWarn', 'logNotice', 'logGroupInfo', 'logGroupWarning', 'logApiInfo'] as $method) {
             $logger->method($method)->willReturnCallback(function (string $message, ?int $id = null) use ($method): void {
                 $this->lines[] = [$method, $message, $id];
             });
@@ -116,6 +116,37 @@ class AuditServiceTest extends TestCase
             'client_ip:192.0.2.10 user:alice operation:api_add_zone_template_record template_id:2 record_id:9 record_name:mail_server record_type:MX',
             $this->lines[1][1]
         );
+    }
+
+    public function testGroupEventsGoToTheGroupLog(): void
+    {
+        $service = $this->makeService();
+        $service->logGroupMembersAdd(3, 'DNS admins', ['bob', 'carol']);
+        $service->logGroupZonesRemove(3, 'DNS admins', ['example.com']);
+        $service->logGroupDelete(3, 'DNS admins', 2, 1);
+
+        $this->assertSame(
+            ['logGroupInfo', 'client_ip:192.0.2.10 user:alice operation:add_members group:DNS_admins group_id:3 count:2 members:bob,carol', 3],
+            $this->lines[0]
+        );
+        $this->assertSame(
+            ['logGroupInfo', 'client_ip:192.0.2.10 user:alice operation:remove_zones group:DNS_admins group_id:3 count:1 zones:example.com', 3],
+            $this->lines[1]
+        );
+        $this->assertSame(
+            ['logGroupWarning', 'client_ip:192.0.2.10 user:alice operation:delete_group group:DNS_admins group_id:3 members_affected:2 zones_affected:1', null],
+            $this->lines[2]
+        );
+    }
+
+    public function testAnonymousAccountFlowsCarryNoActor(): void
+    {
+        $service = $this->makeService();
+        $service->logPasswordResetRequest('bob@example.com');
+        $service->logPasswordReset(12);
+
+        $this->assertSame('client_ip:192.0.2.10 operation:password_reset_request email:bob@example.com', $this->lines[0][1]);
+        $this->assertSame('client_ip:192.0.2.10 operation:password_reset user_id:12', $this->lines[1][1]);
     }
 
     public function testActorFallsBackToUnknownWithoutASession(): void

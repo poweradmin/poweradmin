@@ -36,10 +36,7 @@ use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\UserEntity;
-use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\SessionKeys;
 
 class DeleteUserController extends BaseController
@@ -48,9 +45,6 @@ class DeleteUserController extends BaseController
     // lazily, since zones x users options can exhaust the PHP memory limit
     private const MAX_INLINE_OWNER_OPTIONS = 10000;
 
-    private LegacyLogger $auditLogger;
-    private UserContextService $userContextService;
-    private IpAddressRetriever $ipAddressRetriever;
     private Request $request;
 
     public function __construct(array $request)
@@ -58,10 +52,6 @@ class DeleteUserController extends BaseController
         parent::__construct($request);
 
         $this->request = new Request();
-
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->userContextService = new UserContextService();
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -137,12 +127,7 @@ class DeleteUserController extends BaseController
             return;
         }
 
-        $this->auditLogger->logInfo(sprintf(
-            'client_ip:%s user:%s operation:delete_user target_user:%s',
-            $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername(),
-            $targetUsername
-        ));
+        $this->createAuditService()->logUserDelete($targetUsername);
 
         $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
         $this->redirect('/users');

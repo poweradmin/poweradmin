@@ -39,9 +39,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Enum\AuthMethod;
 
@@ -51,8 +49,6 @@ class EditUserController extends BaseController
     private PasswordPolicyService $policyService;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
     private readonly UserContextService $userContextService;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
     private AuditService $auditService;
 
     public function __construct(
@@ -64,9 +60,7 @@ class EditUserController extends BaseController
         $this->policyService = new PasswordPolicyService();
         $this->userContextService = new UserContextService();
         $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
-        $this->auditService = new AuditService($this->db);
+        $this->auditService = $this->createAuditService();
     }
 
     public function run(): void
@@ -126,14 +120,7 @@ class EditUserController extends BaseController
             $username = (string)($input['username'] ?? $stored['username']);
             $oldPermTempl = (int)$stored['tpl_id'];
             $newPermTempl = (int)($input['perm_templ'] ?? $oldPermTempl);
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:edit_user target_user:%s perm_template:%s auth_type:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername(),
-                $username,
-                $newPermTempl,
-                $this->useLdapAfterEdit($editId, $stored) ? 'ldap' : 'sql'
-            ));
+            $this->auditService->logUserEdit($username, $newPermTempl, $this->useLdapAfterEdit($editId, $stored) ? 'ldap' : 'sql');
 
             if ($oldPermTempl !== $newPermTempl) {
                 $this->auditService->logPermTemplateChange($username, $oldPermTempl, $newPermTempl);
@@ -510,17 +497,8 @@ class EditUserController extends BaseController
             );
             $this->setMessage('edit_user', 'success', $message);
 
-            // Log the additions for each group
             foreach ($successfulGroups as $groupInfo) {
-                $logMessage = sprintf(
-                    "client_ip:%s user:%s operation:add_members group:%s group_id:%d count:1 members:%s",
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->userContextService->getLoggedInUsername(),
-                    str_replace(' ', '_', $groupInfo['name']),
-                    $groupInfo['id'],
-                    $targetUsername
-                );
-                $this->auditLogger->logGroupInfo($logMessage, $groupInfo['id']);
+                $this->auditService->logGroupMembersAdd((int)$groupInfo['id'], (string)$groupInfo['name'], [(string)$targetUsername]);
             }
         }
 

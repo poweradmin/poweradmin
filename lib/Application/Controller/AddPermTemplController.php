@@ -35,18 +35,14 @@ use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 
 class AddPermTemplController extends BaseController
 {
     private DbPermissionTemplateRepository $permissionTemplate;
     private PermissionTemplateWriteService $permissionTemplateWriteService;
-    private LegacyLogger $auditLogger;
     private UserContextService $userContextService;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -54,9 +50,7 @@ class AddPermTemplController extends BaseController
 
         $this->permissionTemplate = $this->createPermissionTemplateRepository();
         $this->permissionTemplateWriteService = $this->createPermissionTemplateWriteService();
-        $this->auditLogger = new LegacyLogger($this->db);
         $this->userContextService = new UserContextService();
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -90,12 +84,7 @@ class AddPermTemplController extends BaseController
             return;
         }
 
-        $this->auditLogger->logInfo(sprintf(
-            'client_ip:%s user:%s operation:add_perm_template name:%s',
-            $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername(),
-            $this->getSafeRequestValue('templ_name')
-        ));
+        $this->createAuditService()->logPermTemplateAdd((string)$this->getSafeRequestValue('templ_name'));
 
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));
         $this->redirect('/permissions/templates');

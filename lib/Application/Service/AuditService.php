@@ -66,7 +66,24 @@ class AuditService
      */
     private function line(string $operation, array $fields = []): string
     {
-        $parts = [$this->getContext(), 'operation:' . $operation];
+        return $this->join($this->getContext(), $operation, $fields);
+    }
+
+    /**
+     * For flows with no signed-in actor (password reset, username recovery)
+     * the line carries the client address only.
+     *
+     * @param array<string, int|string|null> $fields
+     */
+    private function anonymousLine(string $operation, array $fields = []): string
+    {
+        return $this->join('client_ip:' . $this->ipRetriever->getClientIp(), $operation, $fields);
+    }
+
+    /** @param array<string, int|string|null> $fields */
+    private function join(string $context, string $operation, array $fields): string
+    {
+        $parts = [$context, 'operation:' . $operation];
         foreach ($fields as $name => $value) {
             if ($value !== null) {
                 $parts[] = $name . ':' . $value;
@@ -98,6 +115,69 @@ class AuditService
     public function logAccessDenied(string $permission, string $requestUri): void
     {
         $this->logger->logWarn($this->line('access_denied', ['permission' => $permission, 'uri' => $requestUri]));
+    }
+
+    // Accounts
+
+    public function logUserAdd(string $username, string $email): void
+    {
+        $this->logger->logInfo($this->line('add_user', ['username' => $username, 'email' => $email]));
+    }
+
+    public function logUserEdit(string $targetUser, int $permTemplateId, string $authType): void
+    {
+        $this->logger->logInfo($this->line('edit_user', [
+            'target_user' => $targetUser,
+            'perm_template' => $permTemplateId,
+            'auth_type' => $authType,
+        ]));
+    }
+
+    public function logUserDelete(string $targetUser): void
+    {
+        $this->logger->logInfo($this->line('delete_user', ['target_user' => $targetUser]));
+    }
+
+    public function logPasswordChange(): void
+    {
+        $this->logger->logInfo($this->line('change_password'));
+    }
+
+    public function logLogout(): void
+    {
+        $this->logger->logInfo($this->line('logout'));
+    }
+
+    public function logPasswordResetRequest(string $email): void
+    {
+        $this->logger->logInfo($this->anonymousLine('password_reset_request', ['email' => $email]));
+    }
+
+    public function logPasswordReset(int $userId): void
+    {
+        $this->logger->logInfo($this->anonymousLine('password_reset', ['user_id' => $userId]));
+    }
+
+    public function logUsernameRecovery(string $email): void
+    {
+        $this->logger->logInfo($this->anonymousLine('username_recovery', ['email' => $email]));
+    }
+
+    // Permission templates
+
+    public function logPermTemplateAdd(string $name): void
+    {
+        $this->logger->logInfo($this->line('add_perm_template', ['name' => $name]));
+    }
+
+    public function logPermTemplateEdit(int $templateId, string $name): void
+    {
+        $this->logger->logInfo($this->line('edit_perm_template', ['id' => $templateId, 'name' => $name]));
+    }
+
+    public function logPermTemplateDelete(int $templateId, string $name): void
+    {
+        $this->logger->logInfo($this->line('delete_perm_template', ['id' => $templateId, 'name' => $name]));
     }
 
     // Zones
@@ -311,11 +391,96 @@ class AuditService
         $this->logger->logInfo($this->line('dnssec_unsign_zone', ['zone' => $zoneName]), $zoneId);
     }
 
-    // Group membership
+    // Groups
+
+    public function logGroupCreate(int $groupId, string $groupName, string $templateName, int $templateId): void
+    {
+        $this->logger->logGroupInfo($this->line('create_group', [
+            'group' => self::token($groupName),
+            'group_id' => $groupId,
+            'perm_template' => $templateName,
+            'perm_template_id' => $templateId,
+        ]), $groupId);
+    }
+
+    /**
+     * @param list<string> $changes Human-readable "field: old -> new" entries
+     */
+    public function logGroupEdit(int $groupId, string $groupName, array $changes): void
+    {
+        $this->logger->logGroupInfo($this->line('edit_group', [
+            'group' => self::token($groupName),
+            'group_id' => $groupId,
+            'changes' => implode('; ', $changes),
+        ]), $groupId);
+    }
+
+    /**
+     * Written to the general log: the group row is gone, so there is nothing to attach it to.
+     */
+    public function logGroupDelete(int $groupId, string $groupName, int $membersAffected, int $zonesAffected): void
+    {
+        $this->logger->logGroupWarning($this->line('delete_group', [
+            'group' => self::token($groupName),
+            'group_id' => $groupId,
+            'members_affected' => $membersAffected,
+            'zones_affected' => $zonesAffected,
+        ]), null);
+    }
+
+    /** @param list<string> $usernames */
+    public function logGroupMembersAdd(int $groupId, string $groupName, array $usernames): void
+    {
+        $this->logger->logGroupInfo($this->membersLine('add_members', $groupId, $groupName, $usernames), $groupId);
+    }
+
+    /** @param list<string> $usernames */
+    public function logGroupMembersRemove(int $groupId, string $groupName, array $usernames): void
+    {
+        $this->logger->logGroupInfo($this->membersLine('remove_members', $groupId, $groupName, $usernames), $groupId);
+    }
+
+    public function logApiGroupMemberAdd(int $groupId, string $groupName, string $username): void
+    {
+        $this->logger->logGroupInfo($this->membersLine('api_add_members', $groupId, $groupName, [$username]), $groupId);
+    }
+
+    /** @param list<string> $zoneNames */
+    public function logGroupZonesAdd(int $groupId, string $groupName, array $zoneNames): void
+    {
+        $this->logger->logGroupInfo($this->line('add_zones', [
+            'group' => self::token($groupName),
+            'group_id' => $groupId,
+            'count' => count($zoneNames),
+            'zones' => implode(',', $zoneNames),
+        ]), $groupId);
+    }
+
+    /** @param list<string> $zoneNames */
+    public function logGroupZonesRemove(int $groupId, string $groupName, array $zoneNames): void
+    {
+        $this->logger->logGroupInfo($this->line('remove_zones', [
+            'group' => self::token($groupName),
+            'group_id' => $groupId,
+            'count' => count($zoneNames),
+            'zones' => implode(',', $zoneNames),
+        ]), $groupId);
+    }
 
     public function logGroupMemberRemove(int $groupId, int $userId): void
     {
         $this->logger->logGroupInfo($this->line('remove_members', ['group_id' => $groupId, 'user_id' => $userId]), $groupId);
+    }
+
+    /** @param list<string> $usernames */
+    private function membersLine(string $operation, int $groupId, string $groupName, array $usernames): string
+    {
+        return $this->line($operation, [
+            'group' => self::token($groupName),
+            'group_id' => $groupId,
+            'count' => count($usernames),
+            'members' => implode(',', $usernames),
+        ]);
     }
 
     // Zone templates

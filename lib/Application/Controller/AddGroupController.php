@@ -35,9 +35,7 @@ use InvalidArgumentException;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddGroupController extends BaseController
@@ -45,8 +43,6 @@ class AddGroupController extends BaseController
     private GroupService $groupService;
     private Request $request;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -56,8 +52,6 @@ class AddGroupController extends BaseController
         $this->groupService = new GroupService($groupRepository);
         $this->request = new Request();
         $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -112,8 +106,6 @@ class AddGroupController extends BaseController
             $group = $this->groupService->createGroup($name, $permTemplId, $description, $userId);
 
             // Log group creation with template details
-            $actorUsername = $this->getUserContextService()->getLoggedInUsername();
-
             $permTemplates = $this->permissionTemplateRepository->listPermissionTemplates();
             $templateName = 'Unknown';
             foreach ($permTemplates as $template) {
@@ -123,17 +115,7 @@ class AddGroupController extends BaseController
                 }
             }
 
-            $logMessage = sprintf(
-                "client_ip:%s user:%s operation:create_group group:%s group_id:%d perm_template:%s perm_template_id:%d",
-                $this->ipAddressRetriever->getClientIp(),
-                $actorUsername,
-                str_replace(' ', '_', $name),
-                $group->getId(),
-                $templateName,
-                $permTemplId
-            );
-
-            $this->auditLogger->logGroupInfo($logMessage, $group->getId());
+            $this->createAuditService()->logGroupCreate($group->getId(), (string)$name, (string)$templateName, $permTemplId);
 
             $this->setMessage('list_groups', 'success', _('Group has been created successfully.'));
             $this->redirect('/groups');

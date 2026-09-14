@@ -39,8 +39,6 @@ use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Utility\IpHelper;
 
 class ManageGroupZonesController extends BaseController
@@ -48,8 +46,6 @@ class ManageGroupZonesController extends BaseController
     private ZoneGroupService $zoneGroupService;
     private GroupService $groupService;
     private Request $request;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -61,8 +57,6 @@ class ManageGroupZonesController extends BaseController
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
         $this->request = new Request();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -171,10 +165,6 @@ class ManageGroupZonesController extends BaseController
                 );
                 $this->setMessage('manage_group_zones', 'success', $message);
 
-                // Get current admin username
-                $currentUser = $this->createUserRepository()->getUserById($currentUserId);
-                $actorUsername = $currentUser !== null ? $currentUser['username'] : "ID: $currentUserId";
-
                 // Get zone names for successful additions
                 $zoneNames = array_filter(array_map(
                     fn($id) => $domainRepository->getDomainNameById((int)$id),
@@ -189,17 +179,7 @@ class ManageGroupZonesController extends BaseController
                     return $name;
                 }, $zoneNames);
 
-                $logMessage = sprintf(
-                    "client_ip:%s user:%s operation:add_zones group:%s group_id:%d count:%d zones:%s",
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
-                    str_replace(' ', '_', $groupName),
-                    $groupId,
-                    count($results['success']),
-                    implode(',', $displayNames)
-                );
-
-                $this->auditLogger->logGroupInfo($logMessage, $groupId);
+                $this->createAuditService()->logGroupZonesAdd($groupId, $groupName, array_values($displayNames));
             }
 
             if (!empty($results['failed'])) {
@@ -256,10 +236,6 @@ class ManageGroupZonesController extends BaseController
                 );
                 $this->setMessage('manage_group_zones', 'success', $message);
 
-                // Get current admin username
-                $currentUser = $this->createUserRepository()->getUserById($currentUserId);
-                $actorUsername = $currentUser !== null ? $currentUser['username'] : "ID: $currentUserId";
-
                 // Get zone names for successful removals
                 $zoneNames = array_filter(array_map(
                     fn($id) => $domainRepository->getDomainNameById((int)$id),
@@ -274,17 +250,7 @@ class ManageGroupZonesController extends BaseController
                     return $name;
                 }, $zoneNames);
 
-                $logMessage = sprintf(
-                    "client_ip:%s user:%s operation:remove_zones group:%s group_id:%d count:%d zones:%s",
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
-                    str_replace(' ', '_', $groupName),
-                    $groupId,
-                    count($results['success']),
-                    implode(',', $displayNames)
-                );
-
-                $this->auditLogger->logGroupInfo($logMessage, $groupId);
+                $this->createAuditService()->logGroupZonesRemove($groupId, $groupName, array_values($displayNames));
             }
 
             if (!empty($results['failed'])) {

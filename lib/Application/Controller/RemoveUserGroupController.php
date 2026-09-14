@@ -35,12 +35,10 @@ use InvalidArgumentException;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class RemoveUserGroupController extends BaseController
 {
     private GroupMembershipService $membershipService;
-    private LegacyLogger $auditLogger;
 
     public function __construct(array $request)
     {
@@ -49,7 +47,6 @@ class RemoveUserGroupController extends BaseController
         $memberRepository = $this->createUserGroupMemberRepository();
         $groupRepository = $this->createUserGroupRepository();
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
-        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     public function run(): void
@@ -103,19 +100,7 @@ class RemoveUserGroupController extends BaseController
             if ($success) {
                 $this->setMessage('edit_user', 'success', _('User removed from group successfully.'));
 
-                // Log the removal in the same format as group management
-                $currentUser = $userRepository->getUserById($userId);
-                $actorUsername = $currentUser !== null ? $currentUser['username'] : "ID: $userId";
-
-                $logMessage = sprintf(
-                    "Removed 1 user(s) from group '%s' (ID: %d) by %s: %s",
-                    $groupName,
-                    $groupId,
-                    $actorUsername,
-                    $targetUsername
-                );
-
-                $this->auditLogger->logGroupInfo($logMessage, $groupId);
+                $this->createAuditService()->logGroupMembersRemove($groupId, $groupName, [(string)$targetUsername]);
             } else {
                 $this->setMessage('edit_user', 'warning', _('User was not a member of this group.'));
             }

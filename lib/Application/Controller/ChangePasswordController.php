@@ -40,8 +40,6 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -53,8 +51,6 @@ class ChangePasswordController extends BaseController
     private PasswordPolicyService $policyService;
     protected Request $request;
     private PasswordChangeService $passwordService;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
     private UserContextService $userContextService;
 
     public function __construct(array $request)
@@ -78,8 +74,6 @@ class ChangePasswordController extends BaseController
         $userRepository = $this->createUserRepository();
         $this->userContextService = new UserContextService();
         $this->passwordService = new PasswordChangeService($userRepository, $userAuthService, $this->userContextService);
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -172,11 +166,7 @@ class ChangePasswordController extends BaseController
         );
 
         if ($success) {
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:change_password',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername() ?? 'unknown'
-            ));
+            $this->createAuditService()->logPasswordChange();
 
             $sessionEntity = new SessionEntity($message, 'success');
             $this->authService->logout($sessionEntity);

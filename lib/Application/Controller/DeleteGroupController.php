@@ -36,16 +36,12 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeleteGroupController extends BaseController
 {
     private GroupService $groupService;
     private ZoneGroupService $zoneGroupService;
     private Request $request;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -57,8 +53,6 @@ class DeleteGroupController extends BaseController
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
         $this->request = new Request();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -121,18 +115,7 @@ class DeleteGroupController extends BaseController
 
             $this->groupService->deleteGroup($groupId);
 
-            // Log group deletion with impact details
-            $logMessage = sprintf(
-                "client_ip:%s user:%s operation:delete_group group:%s group_id:%d members_affected:%d zones_affected:%d",
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getUserContextService()->getLoggedInUsername(),
-                str_replace(' ', '_', $groupName),
-                $groupId,
-                $memberCount,
-                $zoneCount
-            );
-
-            $this->auditLogger->logGroupWarning($logMessage, null);
+            $this->createAuditService()->logGroupDelete($groupId, $groupName, (int)$memberCount, (int)$zoneCount);
 
             $this->setMessage('list_groups', 'success', _('Group has been deleted successfully.'));
             $this->redirect('/groups');

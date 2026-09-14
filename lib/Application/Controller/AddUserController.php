@@ -39,13 +39,10 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
-use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddUserController extends BaseController
@@ -56,9 +53,6 @@ class AddUserController extends BaseController
     private DbPermissionTemplateRepository $permissionTemplateRepository;
     private UserGroupRepositoryInterface $groupRepository;
     private UserGroupMemberRepositoryInterface $memberRepository;
-    private UserContextService $userContextService;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
     protected Request $request;
 
 
@@ -80,9 +74,6 @@ class AddUserController extends BaseController
         // Initialize group repositories for group membership management
         $this->groupRepository = $this->createUserGroupRepository();
         $this->memberRepository = $this->createUserGroupMemberRepository();
-        $this->userContextService = new UserContextService();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -196,13 +187,7 @@ class AddUserController extends BaseController
                 }
             }
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:add_user username:%s email:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername(),
-                $input['username'],
-                $input['email']
-            ));
+            $this->createAuditService()->logUserAdd((string)$input['username'], (string)$input['email']);
 
             $this->setMessage('users', 'success', $successMessage);
             $this->redirect('/users');
@@ -330,19 +315,9 @@ class AddUserController extends BaseController
             }
         }
 
-        // Log the additions
-        if (!empty($successfulGroups)) {
-            foreach ($successfulGroups as $groupInfo) {
-                $logMessage = sprintf(
-                    "client_ip:%s user:%s operation:add_members group:%s group_id:%d count:1 members:%s",
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->userContextService->getLoggedInUsername(),
-                    str_replace(' ', '_', $groupInfo['name']),
-                    $groupInfo['id'],
-                    $username
-                );
-                $this->auditLogger->logGroupInfo($logMessage, $groupInfo['id']);
-            }
+        $audit = $this->createAuditService();
+        foreach ($successfulGroups as $groupInfo) {
+            $audit->logGroupMembersAdd((int)$groupInfo['id'], (string)$groupInfo['name'], [$username]);
         }
     }
 }

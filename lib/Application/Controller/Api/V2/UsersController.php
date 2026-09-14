@@ -42,8 +42,6 @@ use Poweradmin\Domain\Service\SelfEditFieldGuard;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -80,8 +78,6 @@ class UsersController extends PublicApiController
     private UserRepository $userRepository;
     private UserGroupRepositoryInterface $groupRepository;
     private GroupMembershipService $membershipService;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -95,8 +91,6 @@ class UsersController extends PublicApiController
             $this->groupRepository
         );
         $this->apiPermissionService = $this->createApiPermissionService();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     /**
@@ -1160,14 +1154,7 @@ class UsersController extends PublicApiController
 
             $assigned[] = ['id' => $groupId, 'name' => $group->getName()];
 
-            $this->auditLogger->logGroupInfo(sprintf(
-                'client_ip:%s user:%s operation:api_add_members group:%s group_id:%d count:1 members:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                str_replace(' ', '_', $group->getName()),
-                $groupId,
-                $username
-            ), $groupId);
+            $this->createAuditService()->logApiGroupMemberAdd($groupId, $group->getName(), $username);
         }
 
         return $assigned;

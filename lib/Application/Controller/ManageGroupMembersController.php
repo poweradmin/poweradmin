@@ -36,16 +36,12 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class ManageGroupMembersController extends BaseController
 {
     private GroupMembershipService $membershipService;
     private GroupService $groupService;
     private Request $request;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -57,8 +53,6 @@ class ManageGroupMembersController extends BaseController
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->request = new Request();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -169,17 +163,7 @@ class ManageGroupMembersController extends BaseController
 
                 // Build detailed log message with usernames
                 $addedUsernames = array_map(fn($id) => $userMap[$id] ?? "ID: $id", $results['success']);
-                $logMessage = sprintf(
-                    "client_ip:%s user:%s operation:add_members group:%s group_id:%d count:%d members:%s",
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
-                    str_replace(' ', '_', $groupName),
-                    $groupId,
-                    count($results['success']),
-                    implode(',', $addedUsernames)
-                );
-
-                $this->auditLogger->logGroupInfo($logMessage, $groupId);
+                $this->createAuditService()->logGroupMembersAdd($groupId, $groupName, array_values($addedUsernames));
             }
 
             if (!empty($results['failed'])) {
@@ -238,17 +222,7 @@ class ManageGroupMembersController extends BaseController
 
                 // Build detailed log message with usernames
                 $removedUsernames = array_map(fn($id) => $userMap[$id] ?? "ID: $id", $results['success']);
-                $logMessage = sprintf(
-                    "client_ip:%s user:%s operation:remove_members group:%s group_id:%d count:%d members:%s",
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
-                    str_replace(' ', '_', $groupName),
-                    $groupId,
-                    count($results['success']),
-                    implode(',', $removedUsernames)
-                );
-
-                $this->auditLogger->logGroupInfo($logMessage, $groupId);
+                $this->createAuditService()->logGroupMembersRemove($groupId, $groupName, array_values($removedUsernames));
             }
 
             if (!empty($results['failed'])) {

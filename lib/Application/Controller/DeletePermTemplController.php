@@ -33,17 +33,11 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class DeletePermTemplController extends BaseController
 {
     private DbPermissionTemplateRepository $permissionTemplate;
-    private LegacyLogger $auditLogger;
-    private UserContextService $userContextService;
-    private IpAddressRetriever $ipAddressRetriever;
     private Request $request;
 
     public function __construct(array $request)
@@ -53,9 +47,6 @@ class DeletePermTemplController extends BaseController
         $this->request = new Request();
 
         $this->permissionTemplate = $this->createPermissionTemplateRepository();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->userContextService = new UserContextService();
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -80,13 +71,7 @@ class DeletePermTemplController extends BaseController
         $templDetails = $this->permissionTemplate->getPermissionTemplateDetails($id);
 
         if ($this->permissionTemplate->deletePermissionTemplate($id)) {
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:delete_perm_template id:%s name:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername(),
-                $id,
-                $templDetails['name'] ?? 'unknown'
-            ));
+            $this->createAuditService()->logPermTemplateDelete($id, (string)($templDetails['name'] ?? 'unknown'));
 
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been deleted successfully.'));
         } else {

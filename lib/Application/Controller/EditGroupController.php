@@ -37,9 +37,7 @@ use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditGroupController extends BaseController
@@ -49,8 +47,6 @@ class EditGroupController extends BaseController
     private ZoneGroupService $zoneGroupService;
     private Request $request;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -65,8 +61,6 @@ class EditGroupController extends BaseController
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
         $this->request = new Request();
         $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -164,18 +158,8 @@ class EditGroupController extends BaseController
             // Update the group
             $this->groupService->updateGroup($groupId, $name, $description, $permTemplId);
 
-            // Log group update with details
             if (!empty($changes)) {
-                $logMessage = sprintf(
-                    "client_ip:%s user:%s operation:edit_group group:%s group_id:%d changes:%s",
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
-                    str_replace(' ', '_', $name),
-                    $groupId,
-                    implode('; ', $changes)
-                );
-
-                $this->auditLogger->logGroupInfo($logMessage, $groupId);
+                $this->createAuditService()->logGroupEdit($groupId, (string)$name, $changes);
             }
 
             $this->setMessage('list_groups', 'success', _('Group has been updated successfully.'));

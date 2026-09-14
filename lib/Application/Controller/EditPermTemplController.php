@@ -35,18 +35,14 @@ use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 
 class EditPermTemplController extends BaseController
 {
     private DbPermissionTemplateRepository $permissionTemplate;
     private PermissionTemplateWriteService $permissionTemplateWriteService;
-    private LegacyLogger $auditLogger;
     private UserContextService $userContextService;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request)
     {
@@ -54,9 +50,7 @@ class EditPermTemplController extends BaseController
 
         $this->permissionTemplate = $this->createPermissionTemplateRepository();
         $this->permissionTemplateWriteService = $this->createPermissionTemplateWriteService();
-        $this->auditLogger = new LegacyLogger($this->db);
         $this->userContextService = new UserContextService();
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }
 
     public function run(): void
@@ -116,13 +110,7 @@ class EditPermTemplController extends BaseController
             return;
         }
 
-        $this->auditLogger->logInfo(sprintf(
-            'client_ip:%s user:%s operation:edit_perm_template id:%s name:%s',
-            $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername(),
-            $this->getSafeRequestValue('id'),
-            $this->getSafeRequestValue('templ_name')
-        ));
+        $this->createAuditService()->logPermTemplateEdit($templateId, (string)$this->getSafeRequestValue('templ_name'));
 
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
         $this->redirect('/permissions/templates');
