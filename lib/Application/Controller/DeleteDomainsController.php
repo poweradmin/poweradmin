@@ -36,6 +36,7 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
@@ -127,9 +128,20 @@ class DeleteDomainsController extends BaseController
             }
         }
 
-        $delete_domains = $this->createDomainManager()->deleteDomains($zone_ids);
+        $failures = array_filter($this->createDomainManager()->deleteDomains($zone_ids), fn(ZoneWriteResult $result): bool => !$result->success);
 
-        if ($delete_domains) {
+        // Determine if we should redirect to reverse or forward zones page
+        $all_reverse = true;
+        foreach ($deleted_zones as $zone) {
+            if (empty($zone['name']) || !DnsHelper::isReverseZoneName($zone['name'])) {
+                $all_reverse = false;
+                break;
+            }
+        }
+        $return_page = $all_reverse ? 'list_reverse_zones' : 'list_forward_zones';
+        $route = $all_reverse ? '/zones/reverse' : '/zones/forward';
+
+        if ($failures === []) {
             foreach ($deleted_zones as $deleted_zone) {
                 if (!empty($deleted_zone['name'])) {
                     $this->auditLogger->logInfo(sprintf(
@@ -154,25 +166,18 @@ class DeleteDomainsController extends BaseController
                 }
             }
 
-            // Determine if we should redirect to reverse or forward zones page
-            $all_reverse = true;
-            foreach ($deleted_zones as $zone) {
-                if (empty($zone['name']) || !DnsHelper::isReverseZoneName($zone['name'])) {
-                    $all_reverse = false;
-                    break;
-                }
-            }
-
-            $return_page = $all_reverse ? 'list_reverse_zones' : 'list_forward_zones';
-
             if (count($deleted_zones) == 1) {
                 $this->setMessage($return_page, 'success', _('Zone has been deleted successfully.'));
             } else {
                 $this->setMessage($return_page, 'success', _('Zones have been deleted successfully.'));
             }
-            $route = $return_page === 'list_reverse_zones' ? '/zones/reverse' : '/zones/forward';
-            $this->redirect($route);
+        } else {
+            // Some zones may already be gone, so report and leave rather than re-render the confirm page.
+            foreach (array_unique(array_map(fn(ZoneWriteResult $result): string => (string)$result->message, $failures)) as $message) {
+                $this->setMessage($return_page, 'error', $message);
+            }
         }
+        $this->redirect($route);
     }
 
     public function showDomains($zone_ids): void

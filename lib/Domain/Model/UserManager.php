@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Model;
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
@@ -73,11 +72,15 @@ class UserManager
     private function canDeleteZone(int $zoneId): bool
     {
         $userId = (new UserContextService())->getLoggedInUserId();
-        if ($userId === null) {
-            return false;
-        }
 
-        return $this->permissions()->canDeleteZone($userId, $this->permissions()->userOwnsZone($userId, $zoneId));
+        return $userId !== null && $this->permissions()->canDeleteZone($userId, $this->permissions()->userOwnsZone($userId, $zoneId));
+    }
+
+    private function canEditZoneMeta(int $zoneId): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+
+        return $userId !== null && $this->permissions()->canEditZoneMeta($userId, $zoneId);
     }
 
     private function permissions(): PermissionService
@@ -209,10 +212,15 @@ class UserManager
             return false;
         }
 
-        // Refuse up front so a later zone cannot fail after earlier ones were already removed.
+        // Refuse up front so a later zone cannot fail after earlier ones were already changed.
         foreach ($zones as $zone) {
             if ($zone ['target'] == "delete" && !$this->canDeleteZone((int)$zone ['zid'])) {
                 $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
+
+                return false;
+            }
+            if ($zone ['target'] == "new_owner" && !$this->canEditZoneMeta((int)$zone ['zid'])) {
+                $this->messageService->addSystemError(_('You do not have the permission to edit zone metadata.'));
 
                 return false;
             }
@@ -220,15 +228,15 @@ class UserManager
 
         $domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config);
         foreach ($zones as $zone) {
-            if ($zone ['target'] == "delete") {
-                $deleted = $domainManager->deleteDomain($zone ['zid']);
-                if (!$deleted->success) {
-                    $this->messageService->addSystemError((string)$deleted->message);
+            $result = match ($zone ['target']) {
+                'delete' => $domainManager->deleteDomain((int)$zone ['zid']),
+                'new_owner' => $domainManager->addOwnerToZone((int)$zone ['zid'], (int)$zone ['newowner']),
+                default => null,
+            };
+            if ($result !== null && !$result->success) {
+                $this->messageService->addSystemError((string)$result->message);
 
-                    return false;
-                }
-            } elseif ($zone ['target'] == "new_owner") {
-                DomainManager::addOwnerToZone($this->db, $zone ['zid'], $zone ['newowner']);
+                return false;
             }
         }
 

@@ -30,8 +30,8 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
- * DomainManager::addDomain()/deleteDomain() report refusals through the result
- * (status and reason) and hand back the new zone id on success.
+ * DomainManager write methods report refusals through the result (status and
+ * reason) and hand back the zone id on success.
  */
 class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
 {
@@ -43,8 +43,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
     {
         parent::setUp();
 
-        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
-        $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL, created_at TEXT)");
+        $this->createZoneTables();
 
         // A user holding no zone_*_add and no delete grant at all.
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (" . self::CLIENT_PERM_TEMPL_ID . ", 'Client')");
@@ -115,6 +114,63 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
 
         $this->assertFalse($result->success);
         $this->assertSame(403, $result->status);
+    }
+
+    #[RunInSeparateProcess]
+    public function testDeletingSeveralZonesReportsEachOne(): void
+    {
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::NEW_DOMAIN_ID . ", " . self::ADMIN_USER_ID . "), (78, " . self::ADMIN_USER_ID . ")");
+        $backend = $this->dnsBackendStub(false);
+        $backend->method('deleteZone')->willReturnCallback(fn(int $id): bool => $id === self::NEW_DOMAIN_ID);
+
+        $results = $this->makeDomainManager($backend)->deleteDomains([self::NEW_DOMAIN_ID, 78]);
+
+        $this->assertTrue($results[self::NEW_DOMAIN_ID]->success);
+        $this->assertFalse($results[78]->success);
+        $this->assertSame(500, $results[78]->status);
+        $this->assertSame(0, (int)$this->db->query('SELECT COUNT(*) FROM zones WHERE domain_id = ' . self::NEW_DOMAIN_ID)->fetchColumn());
+        $this->assertSame(1, (int)$this->db->query('SELECT COUNT(*) FROM zones WHERE domain_id = 78')->fetchColumn());
+    }
+
+    #[RunInSeparateProcess]
+    public function testChangingTheMasterToAnInvalidAddressIsRefused(): void
+    {
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::NEW_DOMAIN_ID . ", " . self::ADMIN_USER_ID . ")");
+        $backend = $this->dnsBackendStub(false);
+        $backend->expects($this->never())->method('updateZoneMaster');
+
+        $result = $this->makeDomainManager($backend)->changeZoneSlaveMaster(self::NEW_DOMAIN_ID, 'not-an-ip');
+
+        $this->assertFalse($result->success);
+        $this->assertSame(400, $result->status);
+        $this->assertStringContainsString('not-an-ip', (string)$result->message);
+    }
+
+    #[RunInSeparateProcess]
+    public function testAddingAnOwnerWithoutTheMetaGrantIsForbidden(): void
+    {
+        $_SESSION['userid'] = self::CLIENT_USER_ID;
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::NEW_DOMAIN_ID . ", " . self::ADMIN_USER_ID . ")");
+
+        $result = $this->makeDomainManager($this->dnsBackendStub(false))->addOwnerToZone(self::NEW_DOMAIN_ID, self::CLIENT_USER_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(403, $result->status);
+        $this->assertSame(1, (int)$this->db->query('SELECT COUNT(*) FROM zones WHERE domain_id = ' . self::NEW_DOMAIN_ID)->fetchColumn());
+    }
+
+    #[RunInSeparateProcess]
+    public function testAddingAnOwnerTwiceKeepsOneRowAndStillSucceeds(): void
+    {
+        $this->db->exec("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (" . self::NEW_DOMAIN_ID . ", " . self::ADMIN_USER_ID . ", 9)");
+        $manager = $this->makeDomainManager($this->dnsBackendStub(false));
+
+        $this->assertTrue($manager->addOwnerToZone(self::NEW_DOMAIN_ID, self::CLIENT_USER_ID)->success);
+        $this->assertTrue($manager->addOwnerToZone(self::NEW_DOMAIN_ID, self::CLIENT_USER_ID)->success);
+        $this->assertSame(
+            [[self::ADMIN_USER_ID, 9], [self::CLIENT_USER_ID, 9]],
+            array_map(fn(array $row): array => [(int)$row[0], (int)$row[1]], $this->db->query('SELECT owner, zone_templ_id FROM zones WHERE domain_id = ' . self::NEW_DOMAIN_ID . ' ORDER BY owner')->fetchAll(\PDO::FETCH_NUM))
+        );
     }
 
     private function makeDomainManager(DnsBackendProvider $backend): DomainManager

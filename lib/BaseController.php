@@ -56,6 +56,7 @@ use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnssecProvider;
@@ -613,6 +614,15 @@ abstract class BaseController
      * another user, or null when creation is allowed. The conflicting name is
      * not disclosed, to avoid leaking another owner's zone.
      */
+    /**
+     * Flash the outcome of a zone write to a page: the given text on success,
+     * the result's reason on failure.
+     */
+    protected function reportZoneWrite(string $script, ZoneWriteResult $result, string $successMessage): void
+    {
+        $this->setMessage($script, $result->success ? 'success' : 'error', $result->success ? $successMessage : (string)$result->message);
+    }
+
     protected function getZoneOverlapError(string $zoneName): ?string
     {
         $userId = $this->getCurrentUserId();

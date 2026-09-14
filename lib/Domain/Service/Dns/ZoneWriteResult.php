@@ -23,8 +23,9 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 /**
- * Outcome of a zone create or delete. Callers read the reason and HTTP status
- * from here instead of the session; success carries the zone id.
+ * Outcome of a zone write (create, delete, metadata, owner or template change).
+ * Callers read the reason and HTTP status from here instead of the session;
+ * success carries the zone id.
  */
 final readonly class ZoneWriteResult
 {

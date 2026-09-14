@@ -20,6 +20,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -89,7 +90,7 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $domainManager->expects($this->once())
             ->method('changeZoneType')
             ->with('MASTER', 42)
-            ->willReturn(true);
+            ->willReturn(ZoneWriteResult::ok(42));
         $domainManager->expects($this->never())->method('changeZoneSlaveMaster');
         $domainManager->expects($this->never())->method('updateZoneRecords');
 
@@ -134,7 +135,7 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $domainManager->expects($this->once())
             ->method('changeZoneSlaveMaster')
             ->with(42, '192.0.2.10')
-            ->willReturn(true);
+            ->willReturn(ZoneWriteResult::ok(42));
         $domainManager->expects($this->never())->method('updateZoneRecords');
 
         $this->invokeHandler($domainManager, 42);
@@ -153,7 +154,8 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $domainManager->expects($this->never())->method('changeZoneSlaveMaster');
         $domainManager->expects($this->once())
             ->method('updateZoneRecords')
-            ->with('mysql', 86400, 42, '7');
+            ->with('mysql', 86400, 42, '7')
+            ->willReturn(ZoneWriteResult::ok(42));
 
         $this->invokeHandler($domainManager, 42);
     }
@@ -169,7 +171,8 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $domainManager = $this->createMock(DomainManagerInterface::class);
         $domainManager->expects($this->once())
             ->method('updateZoneRecords')
-            ->with('mysql', 86400, 42, 0);
+            ->with('mysql', 86400, 42, 0)
+            ->willReturn(ZoneWriteResult::ok(42));
 
         $this->invokeHandler($domainManager, 42);
     }

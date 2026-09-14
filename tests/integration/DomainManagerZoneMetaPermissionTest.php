@@ -49,8 +49,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     {
         parent::setUp();
 
-        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
-        $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL, created_at TEXT)");
+        $this->createZoneTables();
 
         $this->seedZoneOwnedBy(self::META_EDIT_OWN_USER_ID);
         $this->seedAlternatePermSets();
@@ -64,7 +63,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager();
 
         $this->assertFalse(
-            $domainManager->changeZoneType('MASTER', self::ZONE_DOMAIN_ID),
+            $domainManager->changeZoneType('MASTER', self::ZONE_DOMAIN_ID)->success,
             'changeZoneType must reject callers lacking zone_meta_edit permissions even when the controller gate is bypassed.'
         );
     }
@@ -83,7 +82,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertTrue(
-            $domainManager->changeZoneType('MASTER', self::ZONE_DOMAIN_ID)
+            $domainManager->changeZoneType('MASTER', self::ZONE_DOMAIN_ID)->success
         );
     }
 
@@ -101,7 +100,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertTrue(
-            $domainManager->changeZoneType('MASTER', self::ZONE_DOMAIN_ID)
+            $domainManager->changeZoneType('MASTER', self::ZONE_DOMAIN_ID)->success
         );
     }
 
@@ -116,7 +115,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertFalse(
-            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, '192.0.2.10')
+            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, '192.0.2.10')->success
         );
     }
 
@@ -134,7 +133,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertTrue(
-            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, '192.0.2.10')
+            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, '192.0.2.10')->success
         );
     }
 
@@ -152,7 +151,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertTrue(
-            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, ' 192.0.2.10 , 2001:db8::1 ')
+            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, ' 192.0.2.10 , 2001:db8::1 ')->success
         );
     }
 

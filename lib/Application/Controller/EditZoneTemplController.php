@@ -225,30 +225,36 @@ class EditZoneTemplController extends BaseController
         $domainManager = $this->createDomainManager();
         $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
 
+        $dbType = $this->config->get('database', 'type', 'mysql');
+        $defaultTtl = $this->config->get('dns', 'ttl', 86400);
         $syncedZoneIds = [];
-        $failedZones = 0;
+        $failures = [];
         foreach ($zones as $zone) {
             // PowerDNS record updates use domain_id; sync tracking uses Poweradmin zones.id.
             // Only mark a zone as synced once its records actually took, otherwise a
             // failed zone is recorded as up to date and never retried.
-            if ($domainManager->updateZoneRecords($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone['domain_id'], $zone_templ_id)) {
+            $updated = $domainManager->updateZoneRecords($dbType, $defaultTtl, $zone['domain_id'], $zone_templ_id);
+            if ($updated->success) {
                 $syncedZoneIds[] = $zone['zone_id'];
             } else {
-                $failedZones++;
+                $failures[] = (string)$updated->message;
             }
         }
 
         $syncService->markZonesAsSynced($syncedZoneIds, $zone_templ_id);
 
-        if ($failedZones > 0) {
+        if ($failures !== []) {
             $this->setMessage('edit_zone_templ', 'warning', sprintf(
                 ngettext(
                     '%d zone could not be updated.',
                     '%d zones could not be updated.',
-                    $failedZones
+                    count($failures)
                 ),
-                $failedZones
+                count($failures)
             ));
+            foreach (array_unique($failures) as $reason) {
+                $this->addSystemMessage('error', $reason);
+            }
         } else {
             $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
         }

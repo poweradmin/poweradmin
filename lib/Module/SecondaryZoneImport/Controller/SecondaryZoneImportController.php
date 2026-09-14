@@ -242,8 +242,9 @@ class SecondaryZoneImportController extends BaseController
 
         // changeZoneType() enforces the metadata-edit permission and ownership
         // and writes its own audit entry, so no extra gating is needed here.
-        $domainManager = $this->createDomainManager();
-        if (!$domainManager->changeZoneType('NATIVE', $zoneId)) {
+        $converted = $this->createDomainManager()->changeZoneType('NATIVE', $zoneId);
+        if (!$converted->success) {
+            $this->setMessage('import', 'error', (string)$converted->message);
             $this->showForm();
             return;
         }

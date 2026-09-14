@@ -45,21 +45,17 @@ class UserManagerDeleteUserTest extends SqliteIntegrationTestCase
 
         foreach (
             [
-                "ALTER TABLE users ADD COLUMN active INTEGER NOT NULL DEFAULT 1",
                 "CREATE TABLE oidc_user_links (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE user_preferences (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE user_mfa (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE login_attempts (id INTEGER PRIMARY KEY, user_id INTEGER)",
-                "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)",
-                "CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL)",
                 "CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER)",
                 "CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER)",
-                "CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
-                "CREATE TABLE records_zone_templ_api (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
             ] as $sql
         ) {
             $this->db->exec($sql);
         }
+        $this->createZoneTables();
     }
 
     private function manager(): UserManager
@@ -110,6 +106,24 @@ class UserManagerDeleteUserTest extends SqliteIntegrationTestCase
 
         $this->assertSame(1, $this->rows('users WHERE id = ' . self::TARGET));
         $this->assertSame(2, $this->rows('zones'));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAReassignmentWithoutTheMetaGrantKeepsTheUser(): void
+    {
+        $this->primeConfigurationManager();
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (44, 'user_edit_others')");
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (20, 'User admin')");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (20, 44)");
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::USER_ADMIN . ", 'useradmin', 20), (" . self::TARGET . ", 'target', 20)");
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (10, " . self::TARGET . ")");
+        $_SESSION['userid'] = self::USER_ADMIN;
+
+        $decisions = [['zid' => 10, 'target' => 'new_owner', 'newowner' => self::USER_ADMIN]];
+        $this->assertFalse($this->manager()->deleteUser(self::TARGET, $decisions));
+
+        $this->assertSame(1, $this->rows('users WHERE id = ' . self::TARGET));
+        $this->assertSame(0, $this->rows('zones WHERE owner = ' . self::USER_ADMIN));
     }
 
     private function rows(string $fromWhere): int

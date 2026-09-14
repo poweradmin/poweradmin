@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -40,7 +41,6 @@ use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Psr\Log\LoggerInterface;
@@ -55,7 +55,6 @@ class DomainManager implements DomainManagerInterface
 {
     private PDO $db;
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private SOARecordManagerInterface $soaRecordManager;
     private DomainRepositoryInterface $domainRepository;
     private IPAddressValidator $ipAddressValidator;
@@ -63,6 +62,7 @@ class DomainManager implements DomainManagerInterface
     private LoggerInterface $logger;
     private RecordChangeLogger $changeLogger;
     private ?PermissionService $permissionService = null;
+    private ?DbUserRepository $userRepository = null;
 
     /**
      * Constructor
@@ -84,7 +84,6 @@ class DomainManager implements DomainManagerInterface
     ) {
         $this->db = $db;
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->soaRecordManager = $soaRecordManager;
         $this->domainRepository = $domainRepository;
         $this->ipAddressValidator = new IPAddressValidator();
@@ -104,16 +103,14 @@ class DomainManager implements DomainManagerInterface
 
     /**
      * Check if the logged-in user owns the zone directly or via group membership.
-     * Static so the static owner-management methods can share it.
      */
-    private static function currentUserOwnsZone($db, int $zoneId): bool
+    private function currentUserOwnsZone(int $zoneId): bool
     {
         $userId = (new UserContextService())->getLoggedInUserId();
         if ($userId === null) {
             return false;
         }
-        $userRepository = new DbUserRepository($db, ConfigurationManager::getInstance());
-        return $userRepository->userOwnsZone($userId, $zoneId);
+        return $this->userRepository()->userOwnsZone($userId, $zoneId);
     }
 
     /**
@@ -125,8 +122,13 @@ class DomainManager implements DomainManagerInterface
         if ($userId === null) {
             return false;
         }
-        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, ConfigurationManager::getInstance()));
+        $this->permissionService ??= new PermissionService($this->userRepository());
         return $this->permissionService->hasPermission($userId, $permission);
+    }
+
+    private function userRepository(): DbUserRepository
+    {
+        return $this->userRepository ??= new DbUserRepository($this->db, ConfigurationManager::getInstance());
     }
 
     /**
@@ -447,7 +449,7 @@ class DomainManager implements DomainManagerInterface
     public function deleteDomain(int $id): ZoneWriteResult
     {
         $perm_delete = Permission::getDeletePermission($this->db);
-        $user_is_zone_owner = self::currentUserOwnsZone($this->db, $id);
+        $user_is_zone_owner = $this->currentUserOwnsZone($id);
 
         if (ZoneAccessPolicy::levelAppliesToZone($perm_delete, $user_is_zone_owner)) {
             // Get zone name for backend deletion.
@@ -521,91 +523,20 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
-     * Delete array of domains
+     * Delete several domains; each id maps to its own result so a bulk caller can
+     * report every refusal, not just the first.
      *
-     * @param int[] $domains Array of Domain IDs to delete
-     *
-     * @return boolean true on success
+     * @param int[] $domains Domain IDs to delete
+     * @return array<int, ZoneWriteResult>
      */
-    public function deleteDomains(array $domains): bool
+    public function deleteDomains(array $domains): array
     {
-        $allSucceeded = true;
-
+        $results = [];
         foreach ($domains as $id) {
-            $perm_delete = Permission::getDeletePermission($this->db);
-            $user_is_zone_owner = self::currentUserOwnsZone($this->db, $id);
-
-            if (ZoneAccessPolicy::levelAppliesToZone($perm_delete, $user_is_zone_owner)) {
-                // Get zone name for backend deletion.
-                $zoneName = $this->domainRepository->getDomainNameById($id);
-
-                // Snapshot for audit log
-                $zoneSnapshot = $this->snapshotZoneForLog($id, $zoneName);
-                $recordCountBefore = $this->countRecordsForZone($id);
-
-                if ($zoneName !== null) {
-                    // Delete DNS data BEFORE the transaction. API deletions are
-                    // irreversible, so they must not be inside a transaction that
-                    // could roll back and leave metadata pointing to a deleted zone.
-                    if (!$this->backendProvider->deleteZone($id, $zoneName)) {
-                        $this->messageService->addSystemError(_('Failed to delete zone from DNS backend.'));
-                        $allSucceeded = false;
-                        continue;
-                    }
-                } elseif (!$this->backendProvider->isApiBackend()) {
-                    // Domain name row is gone but SQL backend can still
-                    // clean up by domain ID.
-                    $this->backendProvider->deleteZone($id, '');
-                }
-
-                // Clean up Poweradmin metadata in a transaction
-                $this->db->beginTransaction();
-                try {
-                    // Get zone_id before deleting zones record for sync cleanup
-                    $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
-                    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-                    $stmt->execute();
-                    $zoneId = $stmt->fetchColumn();
-
-                    // Clean up zone template sync records if zone exists
-                    if ($zoneId) {
-                        $syncService = new ZoneTemplateSyncService($this->db, $this->config, $this->backendProvider);
-                        $syncService->cleanupZoneSyncRecords($zoneId);
-                    }
-
-                    // Clean up Poweradmin-internal tables (always SQL)
-                    $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
-                    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-                    $stmt->execute();
-
-                    $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
-                    $stmt->execute([':id' => $id]);
-
-                    $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
-                    $stmt->execute([':id' => $id]);
-
-                    $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :id");
-                    $stmt->execute([':id' => $id]);
-
-                    $this->db->commit();
-
-                    $this->captureChange(function () use ($zoneSnapshot, $recordCountBefore): void {
-                        $this->changeLogger->logZoneDelete($zoneSnapshot, $recordCountBefore);
-                    });
-                } catch (\Exception $e) {
-                    if ($this->db->inTransaction()) {
-                        $this->db->rollBack();
-                    }
-                    $this->messageService->addSystemError(sprintf(_('Failed to delete zone metadata: %s'), $e->getMessage()));
-                    $allSucceeded = false;
-                }
-            } else {
-                $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
-                $allSucceeded = false;
-            }
+            $results[$id] = $this->deleteDomain($id);
         }
 
-        return $allSucceeded;
+        return $results;
     }
 
     /**
@@ -737,7 +668,7 @@ class DomainManager implements DomainManagerInterface
         }
         if (
             $this->userHasPermission('zone_meta_edit_own')
-            && self::currentUserOwnsZone($this->db, $zoneId)
+            && $this->currentUserOwnsZone($zoneId)
         ) {
             return true;
         }
@@ -760,18 +691,16 @@ class DomainManager implements DomainManagerInterface
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]
      * @param int $id Zone ID
      */
-    public function changeZoneType(string $type, int $id): bool
+    public function changeZoneType(string $type, int $id): ZoneWriteResult
     {
         if (!$this->userCanEditZoneMetadata($id)) {
-            $this->messageService->addSystemError(_('You do not have the permission to edit zone metadata.'));
-            return false;
+            return ZoneWriteResult::forbidden(_('You do not have the permission to edit zone metadata.'));
         }
 
         $beforeZone = $this->snapshotZoneMetadataForLog($id);
 
         if (!$this->backendProvider->updateZoneType($id, $type)) {
-            $this->messageService->addSystemError(_('Failed to update zone type in DNS backend.'));
-            return false;
+            return ZoneWriteResult::backendFailure(_('Failed to update zone type in DNS backend.'));
         }
 
         if ($beforeZone !== null) {
@@ -781,7 +710,7 @@ class DomainManager implements DomainManagerInterface
             });
         }
 
-        return true;
+        return ZoneWriteResult::ok($id);
     }
 
     /**
@@ -806,17 +735,15 @@ class DomainManager implements DomainManagerInterface
      * @param int $zone_id Zone ID
      * @param string $ip_slave_master Master IP Address
      */
-    public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master): bool
+    public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master): ZoneWriteResult
     {
         if (!$this->userCanEditZoneMetadata($zone_id)) {
-            $this->messageService->addSystemError(_('You do not have the permission to edit zone metadata.'));
-            return false;
+            return ZoneWriteResult::forbidden(_('You do not have the permission to edit zone metadata.'));
         }
 
         $normalized = $this->normalizeMasterList($ip_slave_master);
         if ($normalized === null) {
-            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "changeZoneSlaveMaster", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
-            return false;
+            return ZoneWriteResult::failure(sprintf(_('Invalid argument(s) given to function %s %s'), "changeZoneSlaveMaster", "This is not a valid IPv4 or IPv6 address: $ip_slave_master"));
         }
 
         $ip_slave_master = $normalized;
@@ -824,8 +751,7 @@ class DomainManager implements DomainManagerInterface
         $beforeZone = $this->snapshotZoneMetadataForLog($zone_id);
 
         if (!$this->backendProvider->updateZoneMaster($zone_id, $ip_slave_master)) {
-            $this->messageService->addSystemError(_('Failed to update zone master in DNS backend.'));
-            return false;
+            return ZoneWriteResult::backendFailure(_('Failed to update zone master in DNS backend.'));
         }
 
         if ($beforeZone !== null) {
@@ -835,54 +761,28 @@ class DomainManager implements DomainManagerInterface
             });
         }
 
-        return true;
+        return ZoneWriteResult::ok($zone_id);
     }
 
     /**
-     * Change owner of a domain
-     *
-     * @param int $zone_id Zone ID
-     * @param int $user_id User ID
-     *
-     * @return boolean true when succesful
+     * Add a user as an owner of a zone. An existing owner is left as is and
+     * reported as success.
      */
-    public static function addOwnerToZone($db, int $zone_id, int $user_id): bool
+    public function addOwnerToZone(int $zone_id, int $user_id): ZoneWriteResult
     {
-        $currentUserId = (new UserContextService())->getLoggedInUserId();
-        $permissionService = new PermissionService(new DbUserRepository($db, ConfigurationManager::getInstance()));
-        $canEditMeta = $currentUserId !== null && ($permissionService->hasPermission($currentUserId, 'zone_meta_edit_others')
-            || ($permissionService->hasPermission($currentUserId, 'zone_meta_edit_own') && $permissionService->userOwnsZone($currentUserId, $zone_id)));
-
-        if ($canEditMeta) {
-            $userRepository = new DbUserRepository($db, ConfigurationManager::getInstance());
-            if ($userRepository->getUserById($user_id) !== null) {
-                $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE owner = ? AND domain_id = ?");
-                $stmt->bindValue(1, $user_id, PDO::PARAM_INT);
-                $stmt->bindValue(2, $zone_id, PDO::PARAM_INT);
-                $stmt->execute();
-                if ($stmt->fetchColumn() == 0) {
-                    $zone_templ_id = self::getZoneTemplate($db, $zone_id);
-                    if ($zone_templ_id == null) {
-                        $zone_templ_id = 0;
-                    }
-                    $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES(?, ?, ?)");
-                    $stmt->execute([$zone_id, $user_id, $zone_templ_id]);
-
-                    self::syncZoneAccountStatic($db, $zone_id);
-                    return true;
-                } else {
-                    $messageService = new MessageService();
-                    $messageService->addSystemError(_('The selected user already owns the zone.'));
-                    return false;
-                }
-            } else {
-                $messageService = new MessageService();
-                $messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "addOwnerToZone", "$zone_id / $user_id"));
-                return false;
-            }
-        } else {
-            return false;
+        if (!$this->userCanEditZoneMetadata($zone_id)) {
+            return ZoneWriteResult::forbidden(_('You do not have the permission to edit zone metadata.'));
         }
+        if ($this->userRepository()->getUserById($user_id) === null) {
+            return ZoneWriteResult::failure(sprintf(_('Invalid argument(s) given to function %s %s'), "addOwnerToZone", "$zone_id / $user_id"));
+        }
+
+        $zoneRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createZoneRepository();
+        if (!$zoneRepository->isUserZoneOwner($zone_id, $user_id) && !$zoneRepository->addOwnerToZone($zone_id, $user_id)) {
+            return ZoneWriteResult::backendFailure(_('Failed to add the owner to the zone.'));
+        }
+
+        return ZoneWriteResult::ok($zone_id);
     }
 
     /**
@@ -916,16 +816,18 @@ class DomainManager implements DomainManagerInterface
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
      */
-    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): bool
+    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): ZoneWriteResult
     {
         // Secondary and Consumer zones replicate from a primary - applying a
         // template would write replicated records, so skip them entirely
         if (ZoneType::isReadOnly($this->domainRepository->getDomainType($zone_id))) {
-            return true;
+            return ZoneWriteResult::ok($zone_id);
         }
 
-        $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = self::currentUserOwnsZone($this->db, $zone_id);
+        // Without content-edit rights the previous template's records stay, so the
+        // caller must not report success over a zone holding records from both templates.
+        $canRemoveOldTemplateRecords = $zone_template_id == 0
+            || ZoneAccessPolicy::levelAppliesToZone(Permission::getEditPermission($this->db), $this->currentUserOwnsZone($zone_id));
 
         $zone_master_add = $this->userHasPermission('zone_master_add');
         $zone_slave_add = $this->userHasPermission('zone_slave_add');
@@ -937,14 +839,10 @@ class DomainManager implements DomainManagerInterface
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
-        // Set when the previous template's records could not be removed, so the caller
-        // does not report success over a zone left holding records from both templates.
-        $templateRecordsRefused = false;
-
         $this->db->beginTransaction();
         try {
             if ($zone_template_id != 0) {
-                if (ZoneAccessPolicy::levelAppliesToZone($perm_edit, $user_is_zone_owner)) {
+                if ($canRemoveOldTemplateRecords) {
                     if ($isApiBackend) {
                         // API mode: encoded RecordIdentifier IDs are kept in the
                         // string-keyed records_zone_templ_api table so we can
@@ -989,9 +887,6 @@ class DomainManager implements DomainManagerInterface
                             });
                         }
                     }
-                } else {
-                    $templateRecordsRefused = true;
-                    $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
                 }
 
                 // Use the permissions we already checked earlier
@@ -1170,13 +1065,14 @@ class DomainManager implements DomainManagerInterface
                 $this->db->commit();
             }
 
-            return !$templateRecordsRefused;
+            return $canRemoveOldTemplateRecords
+                ? ZoneWriteResult::ok($zone_id)
+                : ZoneWriteResult::forbidden(_('You do not have permission to edit this zone.'));
         } catch (\Exception $e) {
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
             }
-            $this->messageService->addSystemError(sprintf(_('Failed to update zone records: %s'), $e->getMessage()));
-            return false;
+            return ZoneWriteResult::backendFailure(sprintf(_('Failed to update zone records: %s'), $e->getMessage()));
         }
     }
 
@@ -1269,17 +1165,5 @@ class DomainManager implements DomainManagerInterface
     private static function isIpv4ReverseZone(string $domain): bool
     {
         return stripos($domain, 'in-addr.arpa') !== false;
-    }
-
-    /** Account sync entry point for the static owner-management methods */
-    private static function syncZoneAccountStatic(PDO $db, int $domainId): void
-    {
-        $config = ConfigurationManager::getInstance();
-        if (!$config->get('dns', 'sync_zone_owner_to_account', false)) {
-            return;
-        }
-        $backendProvider = DnsBackendProviderFactory::create($db, $config);
-        $accountSync = new ZoneAccountSyncService($db, $config, $backendProvider);
-        $accountSync->syncZoneAccount($domainId);
     }
 }

@@ -654,16 +654,12 @@ class EditController extends BaseController
                 $this->setMessage('edit', 'error', _('You do not have permission to change this zone to that type.'));
                 return;
             }
-            if ($domainManager->changeZoneType($new_type, $zone_id)) {
-                $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
-            }
+            $this->reportZoneWrite('edit', $domainManager->changeZoneType($new_type, $zone_id), _('Zone type has been changed successfully.'));
         }
 
         if ($this->request->getPostParam('slave_master_change') !== null) {
             $this->validateCsrfToken();
-            if ($domainManager->changeZoneSlaveMaster($zone_id, $this->request->getPostParam('new_master', ''))) {
-                $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
-            }
+            $this->reportZoneWrite('edit', $domainManager->changeZoneSlaveMaster($zone_id, $this->request->getPostParam('new_master', '')), _('Slave master has been changed successfully.'));
         }
 
         if ($this->request->getPostParam('retrieve_zone') !== null) {
@@ -701,10 +697,7 @@ class EditController extends BaseController
                     $zone_id,
                     $new_zone_template
                 );
-
-                if ($updated) {
-                    $this->setMessage('edit', 'success', _('Zone template has been changed successfully.'));
-                }
+                $this->reportZoneWrite('edit', $updated, _('Zone template has been changed successfully.'));
             }
         }
     }
