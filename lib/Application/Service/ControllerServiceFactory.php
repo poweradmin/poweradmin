@@ -39,6 +39,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
+use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\ZoneListPermissionService;
@@ -330,6 +331,18 @@ class ControllerServiceFactory
             $this->auditService(),
             $this->config,
             $this->dnsBackendProvider()
+        );
+    }
+
+    public function recordAddService(): RecordAddService
+    {
+        $ttlResolver = $this->reverseTtlResolver();
+
+        return new RecordAddService(
+            $this->recordManagerService(),
+            $this->reverseRecordCreator(),
+            new DomainRecordCreator($this->config, $this->domainRepository(), $this->recordManager(), null, $ttlResolver),
+            $ttlResolver
         );
     }
 

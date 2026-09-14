@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Application\Service\PdnsVersionService;
+use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -678,6 +679,11 @@ abstract class BaseController
     protected function createRecordManagerService(): RecordManagerService
     {
         return $this->services()->recordManagerService();
+    }
+
+    protected function createRecordAddService(): RecordAddService
+    {
+        return $this->services()->recordAddService();
     }
 
     protected function createReverseRecordCreator(): ReverseRecordCreator

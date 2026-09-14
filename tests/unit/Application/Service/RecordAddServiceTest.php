@@ -1,0 +1,138 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Tests\Unit\Application\Service;
+
+use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\RecordAddMessages;
+use Poweradmin\Application\Service\RecordAddResult;
+use Poweradmin\Application\Service\RecordAddService;
+use Poweradmin\Application\Service\RecordManagerService;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
+use Poweradmin\Domain\Service\DomainRecordCreator;
+use Poweradmin\Domain\Service\ReverseRecordCreator;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
+
+/**
+ * Both add-record forms go through one flow: IDN input is stored as punycode,
+ * bare names get the zone suffix, the type default fills a missing TTL, and the
+ * companion PTR or A record is only attempted after the record itself is in.
+ */
+class RecordAddServiceTest extends TestCase
+{
+    public function testNormalisesNameAndContentBeforeWriting(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->expects($this->once())->method('createRecord')
+            ->with(5, 'xn--bcher-kva.example.com', 'CNAME', 'xn--mnchen-3ya.example.com', 300, 0, 'note', 'alice')
+            ->willReturn(RecordWriteResult::ok(1));
+        $ttl = $this->createMock(ReverseTtlResolver::class);
+        $ttl->method('resolveTtlForType')->with('CNAME', false)->willReturn(300);
+
+        $result = $this->makeService($records, null, null, $ttl)
+            ->add(5, 'example.com', 'bücher', 'CNAME', 'münchen.example.com', null, 0, 'note', 'alice');
+
+        $this->assertTrue($result->isOk());
+        $this->assertNull($result->companion);
+    }
+
+    public function testRefusedWriteSkipsTheCompanion(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->method('createRecord')->willReturn(RecordWriteResult::failure('Invalid IP address'));
+        $reverse = $this->createMock(ReverseRecordCreator::class);
+        $reverse->expects($this->never())->method('createReverseRecord');
+
+        $result = $this->makeService($records, $reverse)
+            ->add(5, 'example.com', 'www', 'A', 'bad', 60, 0, '', 'alice', RecordAddResult::COMPANION_PTR);
+
+        $this->assertFalse($result->isOk());
+        $this->assertSame('Invalid IP address', $result->record->message);
+        $this->assertSame(RecordWriteResult::FIELD_CONTENT, $result->record->field);
+    }
+
+    public function testPtrCompanionUsesTheReverseTtlAndReportsWarnings(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->method('createRecord')->willReturn(RecordWriteResult::ok(1));
+        $ttl = $this->createMock(ReverseTtlResolver::class);
+        $ttl->method('resolvePtrTtl')->with(60)->willReturn(900);
+        $reverse = $this->createMock(ReverseRecordCreator::class);
+        $reverse->expects($this->once())->method('createReverseRecord')
+            ->with('www.example.com', 'A', '192.0.2.1', 5, 900, 0, '', 'alice')
+            ->willReturn(['success' => true, 'type' => 'warning', 'message' => 'A PTR record already points elsewhere.']);
+
+        $result = $this->makeService($records, $reverse, null, $ttl)
+            ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, '', 'alice', RecordAddResult::COMPANION_PTR);
+
+        $this->assertTrue($result->companionCreated);
+        $this->assertTrue($result->companionWarning);
+        $this->assertSame(['warning', 'Record successfully added. A PTR record already points elsewhere.'], RecordAddMessages::forAdded($result));
+    }
+
+    public function testFailedPtrCompanionKeepsTheRecordAndWordsTheFailure(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->method('createRecord')->willReturn(RecordWriteResult::ok(1));
+        $reverse = $this->createMock(ReverseRecordCreator::class);
+        $reverse->method('createReverseRecord')->willReturn(['success' => false, 'type' => 'error', 'message' => 'There is no matching reverse-zone for: 1.2.0.192.in-addr.arpa.']);
+
+        $result = $this->makeService($records, $reverse)
+            ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, '', 'alice', RecordAddResult::COMPANION_PTR);
+
+        $this->assertTrue($result->isOk());
+        $this->assertFalse($result->companionCreated);
+        $this->assertSame(
+            ['warning', 'Record successfully added, but PTR record creation failed: There is no matching reverse-zone for: 1.2.0.192.in-addr.arpa.'],
+            RecordAddMessages::forAdded($result)
+        );
+    }
+
+    public function testACompanionIsReportedOnlyWhenCreated(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->method('createRecord')->willReturn(RecordWriteResult::ok(1));
+        $domain = $this->createMock(DomainRecordCreator::class);
+        $domain->method('addDomainRecord')->willReturn(['success' => false, 'type' => 'error', 'message' => 'no zone']);
+
+        $result = $this->makeService($records, null, $domain)
+            ->add(9, '2.0.192.in-addr.arpa', '1', 'PTR', 'www.example.com', 60, 0, '', 'alice', RecordAddResult::COMPANION_A);
+
+        $this->assertSame(RecordAddResult::COMPANION_A, $result->companion);
+        $this->assertSame('no zone', $result->companionMessage);
+        $this->assertSame(['success', 'The record was successfully added.'], RecordAddMessages::forAdded($result));
+    }
+
+    private function makeService(
+        RecordManagerService $records,
+        ?ReverseRecordCreator $reverse = null,
+        ?DomainRecordCreator $domain = null,
+        ?ReverseTtlResolver $ttl = null
+    ): RecordAddService {
+        return new RecordAddService(
+            $records,
+            $reverse ?? $this->createMock(ReverseRecordCreator::class),
+            $domain ?? $this->createMock(DomainRecordCreator::class),
+            $ttl ?? $this->createMock(ReverseTtlResolver::class)
+        );
+    }
+}

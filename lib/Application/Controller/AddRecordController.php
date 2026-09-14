@@ -32,18 +32,17 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\RecordManagerService;
+use Poweradmin\Application\Service\RecordAddMessages;
+use Poweradmin\Application\Service\RecordAddResult;
+use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\RecordTypeService;
-use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
-use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -53,9 +52,7 @@ use Poweradmin\Domain\Enum\AccessScope;
 class AddRecordController extends BaseController
 {
     private DomainRepositoryInterface $domainRepository;
-    private DomainRecordCreator $domainRecordCreator;
-    private ReverseRecordCreator $reverseRecordCreator;
-    private RecordManagerService $recordManager;
+    private RecordAddService $recordAdd;
     private RecordTypeService $recordTypeService;
     private FormStateService $formStateService;
     private UserContextService $userContextService;
@@ -69,19 +66,9 @@ class AddRecordController extends BaseController
         $this->request = new Request();
         $this->formStateService = new FormStateService();
         $this->domainRepository = $this->createDomainRepository();
-        $this->recordManager = $this->createRecordManagerService();
+        $this->recordAdd = $this->createRecordAddService();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
-
-        $this->domainRecordCreator = new DomainRecordCreator(
-            $this->getConfig(),
-            $this->domainRepository,
-            $this->createRecordManager(),
-            null,
-            $this->reverseTtlResolver,
-        );
-
-        $this->reverseRecordCreator = $this->createReverseRecordCreator();
         $this->userContextService = new UserContextService();
     }
 
@@ -132,12 +119,12 @@ class AddRecordController extends BaseController
             $this->showFirstValidationError($postParams);
         }
 
-        $name = $this->request->getPostParam('name', '');
-        $content = $this->request->getPostParam('content');
-        $type = $this->request->getPostParam('type');
+        $name = (string)$this->request->getPostParam('name', '');
+        $content = (string)$this->request->getPostParam('content');
+        $type = (string)$this->request->getPostParam('type');
         $prio = $this->request->getPostParam('prio');
         $prio = $prio !== null && $prio !== '' ? (int)$prio : 0;
-        $comment = $this->request->getPostParam('comment', '');
+        $comment = (string)$this->request->getPostParam('comment', '');
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
 
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
@@ -145,20 +132,21 @@ class AddRecordController extends BaseController
             $this->showError(_('Zone not found.'));
             return;
         }
-        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
         $ttl = $this->request->getPostParam('ttl');
-        $ttl = $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
 
-        // Convert IDN record name and content to punycode
-        $name = DnsIdnService::toPunycode($name);
-        $content = DnsIdnService::convertContentToPunycode($type, $content);
-
-        // Normalize record name to full FQDN (always, regardless of display setting)
-        // This converts @ to zone apex and ensures proper zone suffix
-        $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
-
-        $result = $this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment);
-        if (!$result->success) {
+        $added = $this->recordAdd->add(
+            $zone_id,
+            $zone_name,
+            $name,
+            $type,
+            $content,
+            $ttl !== null && $ttl !== '' ? (int)$ttl : null,
+            $prio,
+            $comment,
+            (string)$this->userContextService->getLoggedInUsername(),
+            $this->requestedCompanion($this->request->getPostParams())
+        );
+        if (!$added->isOk()) {
             // Keep the submitted values and point at the field the reason names
             $formId = $this->formStateService->generateFormId('add_record');
             $this->formStateService->saveFormData($formId, [
@@ -169,8 +157,8 @@ class AddRecordController extends BaseController
                 'ttl' => $ttl,
                 'comment' => $comment,
                 'error' => true,
-                'errorMessage' => $result->message,
-                'fieldError' => $result->field,
+                'errorMessage' => $added->record->message,
+                'fieldError' => $added->record->field,
             ]);
 
             $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);
@@ -183,39 +171,26 @@ class AddRecordController extends BaseController
             $this->formStateService->clearFormData($formToken);
         }
 
-        if ($this->request->getPostParam('reverse') !== null) {
-            // When dns.ttl_reverse is configured it always wins for the auto-created PTR;
-            // when unset, the PTR inherits the forward record's TTL (historical behavior).
-            $ptrTtl = $this->reverseTtlResolver->resolvePtrTtl($ttl);
-            $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ptrTtl, $prio, $comment);
-
-            if ($reverseResult && isset($reverseResult['success']) && $reverseResult['success']) {
-                // Check if this is a warning (duplicate PTR exists for different hostname)
-                if (isset($reverseResult['type']) && $reverseResult['type'] === 'warning') {
-                    $message = _('Record successfully added.') . ' ' . $reverseResult['message'];
-                    $this->setMessage('edit', 'warning', $message);
-                } else {
-                    $message = _('Record successfully added. A matching PTR record was also created.');
-                    $this->setMessage('edit', 'success', $message);
-                }
-            } elseif ($reverseResult && isset($reverseResult['success'], $reverseResult['message'])) {
-                // Reverse record creation failed with a specific message
-                $message = _('Record successfully added, but PTR record creation failed: ') . $reverseResult['message'];
-                $this->setMessage('edit', 'warning', $message);
-            } else {
-                // Reverse record creation failed without a specific message
-                $this->setMessage('edit', 'success', _('The record was successfully added, but PTR record creation failed.'));
-            }
-        } elseif ($this->request->getPostParam('create_domain_record') !== null) {
-            $domainRecord = $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
-            $message = $domainRecord ? _('Record successfully added. A matching A record was also created.') : _('The record was successfully added.');
-            $this->setMessage('edit', 'success', $message);
-        } else {
-            $this->setMessage('edit', 'success', _('The record was successfully added.'));
-        }
+        [$messageType, $message] = RecordAddMessages::forAdded($added);
+        $this->setMessage('edit', $messageType, $message);
 
         // Redirect back to zone edit page
         $this->redirect('/zones/' . $zone_id . '/edit');
+    }
+
+    /**
+     * Which companion record the form asked for: a PTR for the address, or an A
+     * record for a PTR entered in a reverse zone.
+     *
+     * @param array<string, mixed> $fields The submitted record fields
+     */
+    private function requestedCompanion(array $fields): string
+    {
+        if (!empty($fields['reverse'])) {
+            return RecordAddResult::COMPANION_PTR;
+        }
+
+        return !empty($fields['create_domain_record']) ? RecordAddResult::COMPANION_A : '';
     }
 
     private function showForm(): void
@@ -299,59 +274,6 @@ class AddRecordController extends BaseController
         }
     }
 
-    private function createRecord(int $zone_id, $name, $type, $content, $ttl, $prio, $comment): RecordWriteResult
-    {
-        return $this->recordManager->createRecord(
-            $zone_id,
-            $name,
-            $type,
-            $content,
-            $ttl,
-            $prio,
-            $comment,
-            $this->userContextService->getLoggedInUsername()
-        );
-    }
-
-    private function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment): array
-    {
-        $result = $this->reverseRecordCreator->createReverseRecord(
-            $name,
-            $type,
-            $content,
-            $zone_id,
-            $ttl,
-            $prio,
-            $comment,
-            $this->userContextService->getLoggedInUsername()
-        );
-
-        if (isset($result['success']) && !$result['success']) {
-            $this->setMessage('add_record', 'error', $result['message']);
-        }
-
-        return $result;
-    }
-
-    private function createDomainRecord(string $name, string $type, string $content, int $zone_id, string $comment): bool
-    {
-        $result = $this->domainRecordCreator->addDomainRecord(
-            $name,
-            $type,
-            $content,
-            $zone_id,
-            $comment,
-            $this->userContextService->getLoggedInUsername()
-        );
-
-        if ($result['success']) {
-            return true;
-        } else {
-            $this->setMessage('add_record', 'error', $result['message']);
-            return false;
-        }
-    }
-
     private function addMultipleRecords(): void
     {
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
@@ -377,7 +299,7 @@ class AddRecordController extends BaseController
             $this->showError(_('Zone not found.'));
             return;
         }
-        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
+        $username = (string)$this->userContextService->getLoggedInUsername();
 
         foreach ($records as $record) {
             // Skip non-array or incomplete records
@@ -385,35 +307,29 @@ class AddRecordController extends BaseController
                 continue;
             }
 
-            $name = DnsHelper::restoreZoneSuffix($record['name'] ?? '', $zone_name);
-            $content = $record['content'];
-            $type = $record['type'];
-            $prio = isset($record['prio']) && $record['prio'] !== '' ? (int)$record['prio'] : 0;
-            $ttl = isset($record['ttl']) && $record['ttl'] !== '' ? (int)$record['ttl'] : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
-            $comment = $record['comment'] ?? '';
-
-            $result = $this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment);
-            if (!$result->success) {
-                $failureReasons[] = $result->message;
+            $added = $this->recordAdd->add(
+                $zone_id,
+                $zone_name,
+                (string)($record['name'] ?? ''),
+                (string)$record['type'],
+                (string)$record['content'],
+                isset($record['ttl']) && $record['ttl'] !== '' ? (int)$record['ttl'] : null,
+                isset($record['prio']) && $record['prio'] !== '' ? (int)$record['prio'] : 0,
+                (string)($record['comment'] ?? ''),
+                $username,
+                $this->requestedCompanion($record)
+            );
+            if (!$added->isOk()) {
+                $failureReasons[] = $added->record->message;
                 continue;
             }
 
             $successCount++;
-
-            // Handle reverse or domain record creation for individual records
-            if (isset($record['reverse']) && $record['reverse']) {
-                $ptrTtl = $this->reverseTtlResolver->resolvePtrTtl($ttl);
-                $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ptrTtl, $prio, $comment);
-                if (!empty($reverseResult['success'])) {
-                    $matchingRecordCount++;
-                }
-                if (isset($reverseResult['type']) && $reverseResult['type'] === 'warning') {
-                    $ptrWarnings[] = $reverseResult['message'];
-                }
-            } elseif (isset($record['create_domain_record']) && $record['create_domain_record']) {
-                if ($this->createDomainRecord($name, $type, $content, $zone_id, $comment)) {
-                    $matchingRecordCount++;
-                }
+            if ($added->companionCreated) {
+                $matchingRecordCount++;
+            }
+            if ($added->companionWarning) {
+                $ptrWarnings[] = $added->companionMessage;
             }
         }
 
