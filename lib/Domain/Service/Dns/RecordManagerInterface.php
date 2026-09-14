@@ -52,10 +52,12 @@ interface RecordManagerInterface
      * @param mixed $prio Priority of record
      * @param int $disabled Whether the record is created in disabled state (0 or 1)
      * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
+     * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
+     *                            backend writes it in the same PATCH as the record, SQL ignores it
      *
      * @return RecordWriteResult The new record id, or the reason the write was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true): RecordWriteResult;
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null): RecordWriteResult;
 
     /**
      * Edit a record. An unchanged save is skipped entirely when
