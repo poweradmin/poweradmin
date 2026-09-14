@@ -39,6 +39,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
+use Poweradmin\Application\Service\RejectedZoneEditPresenter;
 use Poweradmin\Application\Service\ZoneSaveMessages;
 use Poweradmin\Application\Service\ZoneSigningMessages;
 use Poweradmin\BaseController;
@@ -50,6 +51,8 @@ use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\ZoneEditSubmission;
+use Poweradmin\Domain\Service\ZoneManagementService;
+use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
@@ -64,11 +67,9 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
-use Poweradmin\Domain\Enum\SortDirection;
 
 class EditController extends BaseController
 {
@@ -78,7 +79,6 @@ class EditController extends BaseController
     private ?DomainManagerInterface $domainManager = null;
     private ReverseTtlResolver $reverseTtlResolver;
     private UserContextService $userContextService;
-    private ?ZoneTemplate $zoneTemplateModel = null;
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
     private RecordRepositoryInterface $recordRepository;
@@ -156,8 +156,13 @@ class EditController extends BaseController
             $row_start = max(0, ((int)$start - 1) * $iface_rowamount);
         }
 
-        $record_sort_by = $this->getSortBy('record_sort_by', ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled']);
-        $sort_direction = $this->getSortDirection('sort_direction');
+        [$record_sort_by, $sort_direction] = (new ZoneSortingService($this->userContextService))->getZoneSortOrder(
+            'record_sort_by',
+            ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled'],
+            SessionKeys::EDIT_RECORD_SORT_BY,
+            'name',
+            'sort_direction'
+        );
 
         $zone_id = $this->getSafeRequestValue('id');
         if (!$zone_id || !Validator::isNumber($zone_id)) {
@@ -383,7 +388,7 @@ class EditController extends BaseController
         }
         unset($record);
 
-        $stale_form_dropped = $this->restoreRejectedEdits($displayRecords);
+        $stale_form_dropped = RejectedZoneEditPresenter::restore($displayRecords, $this->rejectedRecords);
         $stored_zone_comment = $zone_comment;
         $zone_comment_conflict = false;
         if ($this->rejectedZoneComment !== null) {
@@ -473,17 +478,17 @@ class EditController extends BaseController
             'iface_record_comments' => $iface_record_comments,
             'iface_zone_comments' => $iface_zone_comments,
             'serial' => SOARecordManager::getSOASerial($soa_record),
-            'whois_actions' => $this->getWhoisActions($zone_id),
-            'rdap_actions' => $this->getRdapActions($zone_id),
+            'whois_actions' => $this->moduleCapabilityData('whois_lookup', ['zone_id' => $zone_id]),
+            'rdap_actions' => $this->moduleCapabilityData('rdap_lookup', ['zone_id' => $zone_id]),
             'form_token' => $formToken,
             'form_data' => $formData,
             'search_term' => $searchTerm,
             'record_type_filter' => $recordTypeFilter,
             'content_filter' => $contentFilter,
             'display_hostname_only' => $display_hostname_only,
-            'dns_wizard_actions' => $this->getDnsWizardActions($zone_id),
-            'export_formats' => $this->getExportFormats($zone_id),
-            'import_enabled' => $this->isImportEnabled(),
+            'dns_wizard_actions' => $this->moduleCapabilityData('dns_wizard', ['zone_id' => $zone_id]),
+            'export_formats' => $this->moduleCapabilityData('zone_export', ['zone_id' => $zone_id]),
+            'import_enabled' => $this->moduleProvides('zone_import'),
         ]);
     }
 
@@ -517,11 +522,6 @@ class EditController extends BaseController
         $this->setMessage('edit', $done ? 'success' : 'error', $message);
     }
 
-    private function zoneTemplateModel(): ZoneTemplate
-    {
-        return $this->zoneTemplateModel ??= new ZoneTemplate($this->db, $this->getConfig());
-    }
-
     private function handleZoneMetadataPost(int $zone_id): void
     {
         $domainManager = $this->domainManager ??= $this->createDomainManager();
@@ -553,32 +553,31 @@ class EditController extends BaseController
 
         if ($this->request->getPostParam('template_change') !== null) {
             $this->validateCsrfToken();
-
-            // Applying a template writes records, which read-only zones cannot accept
-            if (ZoneType::isReadOnly($this->domainRepository->getDomainType($zone_id))) {
-                $this->setMessage('edit', 'error', _('You cannot apply a template to a read-only zone.'));
-                return;
-            }
-
-            $zone_template = $this->request->getPostParam('zone_template');
-            $new_zone_template = ($zone_template === null || $zone_template === 'none') ? 0 : $zone_template;
-            $current_zone_template = $this->request->getPostParam('current_zone_template', 0);
-
-            if (!$this->zoneTemplateModel()->canCurrentUserUseTemplate($new_zone_template)) {
-                $this->setMessage('edit', 'error', _('Invalid or unexpected input given.'));
-                return;
-            }
-
-            if ($current_zone_template != $new_zone_template) {
-                $updated = $domainManager->updateZoneRecords(
-                    $this->config->get('database', 'type', 'mysql'),
-                    $this->config->get('dns', 'ttl', 86400),
-                    $zone_id,
-                    $new_zone_template
-                );
-                $this->reportZoneWrite('edit', $updated, _('Zone template has been changed successfully.'));
-            }
+            $this->handleTemplateChange($zone_id);
         }
+    }
+
+    private function handleTemplateChange(int $zone_id): void
+    {
+        $zone_template = (string)($this->request->getPostParam('zone_template') ?? 'none');
+        $new_zone_template = $zone_template === 'none' ? 0 : $zone_template;
+        if ($this->request->getPostParam('current_zone_template', 0) == $new_zone_template) {
+            return;
+        }
+
+        $applied = $this->createZoneManagementService()->applyTemplate($zone_id, $zone_template, (int)$this->getCurrentUserId());
+        if ($applied['success']) {
+            $this->setMessage('edit', 'success', _('Zone template has been changed successfully.'));
+            return;
+        }
+
+        $this->setMessage('edit', 'error', match ($applied['code']) {
+            ZoneManagementService::ERR_READ_ONLY => _('You cannot apply a template to a read-only zone.'),
+            ZoneManagementService::ERR_TEMPLATE_NOT_FOUND,
+            ZoneManagementService::ERR_TEMPLATE_AMBIGUOUS,
+            ZoneManagementService::ERR_TEMPLATE_FORBIDDEN => _('Invalid or unexpected input given.'),
+            default => $applied['message'],
+        });
     }
 
     private function handleRetrieveZone(int $zone_id, DomainManagerInterface $domainManager): void
@@ -627,36 +626,6 @@ class EditController extends BaseController
         return $presenter->present();
     }
 
-    public function getSortBy(string $name, array $allowedValues): string
-    {
-        $sortOrder = 'name';
-
-        foreach ([$this->request->getQueryParams(), $this->request->getPostParams(), $_SESSION] as $source) {
-            if (isset($source[$name]) && in_array($source[$name], $allowedValues)) {
-                $sortOrder = $source[$name];
-                $_SESSION[$name] = $source[$name];
-                break;
-            }
-        }
-
-        return $sortOrder;
-    }
-
-    private function getSortDirection(string $name): string
-    {
-        $sortDirection = 'ASC';
-
-        foreach ([$this->request->getQueryParams(), $this->request->getPostParams(), $_SESSION] as $source) {
-            if (isset($source[$name]) && is_string($source[$name]) && SortDirection::isValid($source[$name])) {
-                $sortDirection = $source[$name];
-                $_SESSION[$name] = $source[$name];
-                break;
-            }
-        }
-
-        return $sortDirection;
-    }
-
     public function saveRecords(int $zone_id, string $zone_name): void
     {
         $records = $this->request->getPostParam('record');
@@ -688,193 +657,6 @@ class EditController extends BaseController
         if ($message !== null) {
             $this->setMessage('edit', $message[0], $message[1]);
         }
-    }
-
-    /**
-     * Put a rejected submission back into the rendered rows, so warning the operator
-     * that their form was stale does not also cost them their edits.
-     *
-     * @param array $displayRecords rows read back from the zone, edited in place
-     * @return array submitted rows the listing no longer holds, which cannot be restored
-     */
-    private function restoreRejectedEdits(array &$displayRecords): array
-    {
-        if ($this->rejectedRecords === []) {
-            return [];
-        }
-
-        $positions = [];
-        foreach ($displayRecords as $index => $displayRecord) {
-            $positions[(string)$displayRecord['id']] = $index;
-        }
-
-        $dropped = [];
-        foreach ($this->rejectedRecords as $key => $submitted) {
-            // Rows without the marker arrived truncated by max_input_vars. Restoring one
-            // would merge half a submission into the stored row and hide that it lost
-            // fields, so it stays as the zone has it.
-            if (!is_array($submitted) || !isset($submitted['_complete'])) {
-                continue;
-            }
-            $rid = (string)($submitted['rid'] ?? $key);
-
-            // A row can leave the listing by being deleted or by no longer matching an
-            // active filter. Either way it has nowhere to go back to, so report it.
-            if (!isset($positions[$rid])) {
-                $dropped[] = self::describeDroppedRow($submitted);
-                continue;
-            }
-
-            $index = $positions[$rid];
-            $row = $displayRecords[$index];
-
-            // The other writer turned this into something the user may not edit. Such a
-            // row renders read-only, so it has to keep the values the zone holds.
-            if (!empty($row['record_locked'])) {
-                $dropped[] = self::describeDroppedRow($submitted);
-                continue;
-            }
-
-            // A row matching the zone has nothing to restore. This is what keeps a
-            // submit with JavaScript off, which posts every row, from forcing rows the
-            // operator never touched into the retry.
-            $summary = self::describeStoredValues($row, $submitted);
-            if ($summary === '') {
-                continue;
-            }
-
-            $row['stored_summary'] = $summary;
-            $row['editable_name'] = $submitted['name'] ?? $row['editable_name'];
-            // The type is a hidden field here, so this is the type the row was edited
-            // against. Keeping the stored one would retry the edits against a type the
-            // operator never saw, which for a changed type is a different record.
-            $row['type'] = $submitted['type'] ?? $row['type'];
-            $row['content'] = $submitted['content'] ?? $row['content'];
-            $row['prio'] = $submitted['prio'] ?? $row['prio'];
-            $row['ttl'] = $submitted['ttl'] ?? $row['ttl'];
-            $row['comment'] = $submitted['comment'] ?? $row['comment'];
-            $row['disabled'] = isset($submitted['disabled']) && $submitted['disabled'] === 'on' ? 1 : 0;
-            $row['unsaved_edit'] = true;
-            $displayRecords[$index] = $row;
-        }
-
-        return $dropped;
-    }
-
-    /**
-     * A row that cannot be put back, as one line, so the operator still sees every field
-     * they typed rather than only enough to recognise the record.
-     */
-    private static function describeDroppedRow(array $submitted): string
-    {
-        $fields = [
-            _('Name') => $submitted['name'] ?? '',
-            _('Type') => $submitted['type'] ?? '',
-            _('Content') => $submitted['content'] ?? '',
-            _('Priority') => $submitted['prio'] ?? '',
-            _('TTL') => $submitted['ttl'] ?? '',
-            _('Comment') => $submitted['comment'] ?? '',
-        ];
-
-        $parts = [];
-        foreach ($fields as $label => $value) {
-            if ((string)$value !== '') {
-                $parts[] = sprintf('%s: %s', $label, $value);
-            }
-        }
-
-        if (isset($submitted['disabled']) && $submitted['disabled'] === 'on') {
-            $parts[] = sprintf('%s: %s', _('Disabled'), _('Yes'));
-        }
-
-        return implode(', ', $parts);
-    }
-
-    /**
-     * One line naming the stored value of every field the submission no longer agrees
-     * with, so the operator can see what the zone holds before saving again. An empty
-     * string means the submission and the zone agree on every editable field.
-     */
-    private static function describeStoredValues(array $stored, array $submitted): string
-    {
-        $fields = [
-            'name' => [_('Name'), $stored['editable_name'] ?? ''],
-            'type' => [_('Type'), $stored['type'] ?? ''],
-            'content' => [_('Content'), $stored['content'] ?? ''],
-            'ttl' => [_('TTL'), $stored['ttl'] ?? ''],
-            'comment' => [_('Comment'), $stored['comment'] ?? ''],
-        ];
-
-        // Compared verbatim: a comment is stored as typed, so trimming here would treat a
-        // whitespace-only edit as no edit and drop it.
-        $parts = [];
-        foreach ($fields as $field => [$label, $storedValue]) {
-            $value = (string)$storedValue;
-            if (isset($submitted[$field]) && $value !== (string)$submitted[$field]) {
-                $parts[] = sprintf('%s: %s', $label, $value === '' ? '-' : $value);
-            }
-        }
-
-        // Empty and zero are the same absent priority, so compare the two numerically
-        // and let only the types that really carry one report a change.
-        $storedPrio = (string)($stored['prio'] ?? '');
-        if (isset($submitted['prio']) && (int)$storedPrio !== (int)$submitted['prio']) {
-            $parts[] = sprintf('%s: %s', _('Priority'), $storedPrio === '' ? '-' : $storedPrio);
-        }
-
-        $submittedDisabled = isset($submitted['disabled']) && $submitted['disabled'] === 'on' ? 1 : 0;
-        if ((int)($stored['disabled'] ?? 0) !== $submittedDisabled) {
-            $parts[] = sprintf('%s: %s', _('Disabled'), $stored['disabled'] ? _('Yes') : _('No'));
-        }
-
-        if ($parts === []) {
-            return '';
-        }
-
-        return sprintf(_('Not saved yet. The zone currently holds: %s'), implode(', ', $parts));
-    }
-
-    private function getDnsWizardActions(int $zone_id): array
-    {
-        $isAdmin = $this->hasPermission('user_is_ueberuser');
-        $registry = new ModuleRegistry($this->config);
-        $registry->loadModules();
-        return $registry->getCapabilityData('dns_wizard', ['zone_id' => $zone_id], $isAdmin);
-    }
-
-    private function getWhoisActions(int $zone_id): array
-    {
-        $isAdmin = $this->hasPermission('user_is_ueberuser');
-        $registry = new ModuleRegistry($this->config);
-        $registry->loadModules();
-        return $registry->getCapabilityData('whois_lookup', ['zone_id' => $zone_id], $isAdmin);
-    }
-
-    private function getRdapActions(int $zone_id): array
-    {
-        $isAdmin = $this->hasPermission('user_is_ueberuser');
-        $registry = new ModuleRegistry($this->config);
-        $registry->loadModules();
-        return $registry->getCapabilityData('rdap_lookup', ['zone_id' => $zone_id], $isAdmin);
-    }
-
-    private function getExportFormats(int $zone_id): array
-    {
-        $registry = new ModuleRegistry($this->config);
-        $registry->loadModules();
-        return $registry->getCapabilityData('zone_export', ['zone_id' => $zone_id]);
-    }
-
-    private function isImportEnabled(): bool
-    {
-        $registry = new ModuleRegistry($this->config);
-        $registry->loadModules();
-        foreach ($registry->getEnabledModules() as $module) {
-            if (in_array('zone_import', $module->getCapabilities(), true)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

@@ -12,26 +12,18 @@
  *  (at your option) any later version.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Service;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Controller\EditController;
-use ReflectionClass;
+use Poweradmin\Application\Service\RejectedZoneEditPresenter;
 
 /**
- * Tests for EditController::restoreRejectedEdits(), which puts the rows of a
+ * Tests for RejectedZoneEditPresenter::restore(), which puts the rows of a
  * submission rejected as stale back into the freshly read zone listing so the
  * operator does not lose their edits along with the warning.
  */
-class EditControllerRestoreRejectedEditsTest extends TestCase
+class RejectedZoneEditPresenterTest extends TestCase
 {
-    private ReflectionClass $controllerReflection;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->controllerReflection = new ReflectionClass(EditController::class);
-    }
 
     public function testSubmittedValuesReplaceTheStoredOnesOnTheMatchingRow(): void
     {
@@ -240,15 +232,6 @@ class EditControllerRestoreRejectedEditsTest extends TestCase
 
     private function restore(array &$records, array $rejected): array
     {
-        $controller = $this->controllerReflection->newInstanceWithoutConstructor();
-
-        $rejectedProperty = $this->controllerReflection->getProperty('rejectedRecords');
-        $rejectedProperty->setAccessible(true);
-        $rejectedProperty->setValue($controller, $rejected);
-
-        $method = $this->controllerReflection->getMethod('restoreRejectedEdits');
-        $method->setAccessible(true);
-
-        return $method->invokeArgs($controller, [&$records]);
+        return RejectedZoneEditPresenter::restore($records, $rejected);
     }
 }

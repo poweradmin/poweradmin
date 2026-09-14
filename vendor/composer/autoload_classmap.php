@@ -1186,6 +1186,7 @@ return array(
     'Poweradmin\\Application\\Service\\RecordCommentService' => $baseDir . '/lib/Application/Service/RecordCommentService.php',
     'Poweradmin\\Application\\Service\\RecordCommentSyncService' => $baseDir . '/lib/Application/Service/RecordCommentSyncService.php',
     'Poweradmin\\Application\\Service\\RecordManagerService' => $baseDir . '/lib/Application/Service/RecordManagerService.php',
+    'Poweradmin\\Application\\Service\\RejectedZoneEditPresenter' => $baseDir . '/lib/Application/Service/RejectedZoneEditPresenter.php',
     'Poweradmin\\Application\\Service\\RepositoryFactory' => $baseDir . '/lib/Application/Service/RepositoryFactory.php',
     'Poweradmin\\Application\\Service\\RequestValidator' => $baseDir . '/lib/Application/Service/RequestValidator.php',
     'Poweradmin\\Application\\Service\\ResultPaginator' => $baseDir . '/lib/Application/Service/ResultPaginator.php',

@@ -62,7 +62,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             (13, 'dup', 0)");
     }
 
-    private function service(?PdnsCapabilities $capabilities = null): ZoneManagementService
+    private function service(?PdnsCapabilities $capabilities = null, ?ZoneRepositoryInterface $zones = null): ZoneManagementService
     {
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(function (string $group, string $key, $default = null) {
@@ -72,7 +72,16 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             return $default;
         });
 
-        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, null, null, $capabilities);
+        return new ZoneManagementService($zones ?? $this->createMock(ZoneRepositoryInterface::class), $config, $this->db, null, null, $capabilities);
+    }
+
+    private function existingZoneOfType(string $type): ZoneRepositoryInterface
+    {
+        $zones = $this->createMock(ZoneRepositoryInterface::class);
+        $zones->method('zoneIdExists')->willReturn(true);
+        $zones->method('getDomainType')->willReturn($type);
+
+        return $zones;
     }
 
     public function testRefusalsCarryACodeForTheForms(): void
@@ -132,6 +141,24 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             $this->assertSame(409, $result['status'], $name);
             $this->assertSame('Domain already exists', $result['message']);
         }
+    }
+
+    public function testApplyTemplateRefusesUnknownAndReadOnlyZones(): void
+    {
+        $this->assertSame(ZoneManagementService::ERR_NOT_FOUND, $this->service()->applyTemplate(99, 'none', self::ADMIN_USER_ID)['code']);
+
+        $refused = $this->service(null, $this->existingZoneOfType('SLAVE'))->applyTemplate(1, (string)self::GLOBAL_TEMPLATE, self::ADMIN_USER_ID);
+
+        $this->assertSame(ZoneManagementService::ERR_READ_ONLY, $refused['code']);
+        $this->assertSame(400, $refused['status']);
+    }
+
+    public function testApplyTemplateEnforcesTheTemplateRules(): void
+    {
+        $service = $this->service(null, $this->existingZoneOfType('MASTER'));
+
+        $this->assertSame(ZoneManagementService::ERR_TEMPLATE_FORBIDDEN, $service->applyTemplate(1, (string)self::PRIVATE_TEMPLATE, self::OTHER_USER)['code']);
+        $this->assertSame(ZoneManagementService::ERR_TEMPLATE_NOT_FOUND, $service->applyTemplate(1, '999', self::ADMIN_USER_ID)['code']);
     }
 
     public function testNoTemplateResolvesToNone(): void

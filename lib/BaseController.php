@@ -79,6 +79,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Web\PageRenderer;
 use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Module\ModuleRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -101,6 +102,7 @@ abstract class BaseController
     private string $pageTitle = '';
     protected LoggerInterface $logger;
     private ?ControllerServiceFactory $serviceFactory = null;
+    private ?ModuleRegistry $moduleRegistry = null;
     private ?PageRenderer $pageRenderer = null;
 
     /**
@@ -555,6 +557,42 @@ abstract class BaseController
     protected function createZoneManagementService(): ZoneManagementService
     {
         return $this->services()->zoneManagementService($this->getPdnsCapabilities());
+    }
+
+    /**
+     * Enabled modules, loaded once per request.
+     */
+    protected function moduleRegistry(): ModuleRegistry
+    {
+        if ($this->moduleRegistry === null) {
+            $this->moduleRegistry = new ModuleRegistry($this->config);
+            $this->moduleRegistry->loadModules();
+        }
+
+        return $this->moduleRegistry;
+    }
+
+    /**
+     * What the enabled modules offer for a capability (wizard actions, lookup
+     * links, export formats), honouring each module's admin restriction.
+     *
+     * @param array<string, mixed> $context Placeholders for the modules' url patterns, e.g. zone_id
+     * @return array<array<string, string>>
+     */
+    protected function moduleCapabilityData(string $capability, array $context = []): array
+    {
+        return $this->moduleRegistry()->getCapabilityData($capability, $context, $this->hasPermission('user_is_ueberuser'));
+    }
+
+    protected function moduleProvides(string $capability): bool
+    {
+        foreach ($this->moduleRegistry()->getEnabledModules() as $module) {
+            if (in_array($capability, $module->getCapabilities(), true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function createAuditService(): AuditService

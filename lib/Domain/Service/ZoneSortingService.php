@@ -54,13 +54,15 @@ class ZoneSortingService
      * @param array $allowedValues Allowed sort values
      * @param string $sessionKey Session bucket (direction stored under $sessionKey . '_direction')
      * @param string $defaultSortBy Fallback sort column when nothing valid is supplied
+     * @param string|null $directionName Request parameter for the direction; defaults to $name . '_direction'
      * @return array [sortBy, sortDirection]
      */
     public function getZoneSortOrder(
         string $name,
         array $allowedValues,
         string $sessionKey = SessionKeys::LIST_ZONE_SORT_BY,
-        string $defaultSortBy = 'name'
+        string $defaultSortBy = 'name',
+        ?string $directionName = null
     ): array {
         $directionSessionKey = $sessionKey . '_direction';
 
@@ -72,7 +74,7 @@ class ZoneSortingService
             $zone_sort_by = $defaultSortBy;
         }
 
-        $zone_sort_direction = $this->resolveSortDirection($name . '_direction', $directionSessionKey)
+        $zone_sort_direction = $this->resolveSortDirection($directionName ?? $name . '_direction', $directionSessionKey)
             ?? $this->userContextService->getSessionData($directionSessionKey)
             ?? 'ASC';
 

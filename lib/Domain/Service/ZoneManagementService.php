@@ -62,6 +62,7 @@ class ZoneManagementService
     public const ERR_TEMPLATE_FORBIDDEN = 'template_forbidden';
     public const ERR_ZONE_WRITE = 'zone_write';
     public const ERR_NOT_FOUND = 'not_found';
+    public const ERR_READ_ONLY = 'read_only';
 
     private ZoneRepositoryInterface $zoneRepository;
     private ConfigurationManager $config;
@@ -268,8 +269,7 @@ class ZoneManagementService
             ['domain' => $domain, 'type' => $type, 'owner' => $owner ?? 'none', 'groups' => implode(',', $groupIds) ?: 'none']
         );
 
-        $this->domainManager ??= DnsServiceFactory::createDomainManager($this->db, $this->config, $this->backendProvider());
-        $created = $this->domainManager->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds, $soaEditApi);
+        $created = $this->domainManager()->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds, $soaEditApi);
         if (!$created->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
             return [
@@ -435,6 +435,49 @@ class ZoneManagementService
             'domain_id' => $domainId,
             'user_id' => $userId
         ];
+    }
+
+    /**
+     * Applies a zone template (or "none" to unlink) to an existing zone, replacing
+     * the template-managed records. The caller must be allowed to use the template.
+     *
+     * @return array{success: true, template_id: int}|array{success: false, message: string, status: int, code: string}
+     */
+    public function applyTemplate(int $zoneId, string $template, int $actingUserId): array
+    {
+        if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+            return ['success' => false, 'message' => 'Zone not found', 'status' => 404, 'code' => self::ERR_NOT_FOUND];
+        }
+
+        // Applying a template writes records, which read-only zones cannot accept
+        if (ZoneType::isReadOnly($this->zoneRepository->getDomainType($zoneId))) {
+            return ['success' => false, 'message' => 'Cannot apply a template to a read-only zone', 'status' => 400, 'code' => self::ERR_READ_ONLY];
+        }
+
+        $resolved = $this->resolveZoneTemplate($template, $actingUserId);
+        $resolvedId = $resolved['id'] ?? null;
+        if ($resolvedId === null) {
+            // @phan-suppress-next-line PhanTypeMismatchReturn union shape narrowing
+            return $resolved;
+        }
+        $templateId = $resolvedId === 'none' ? 0 : (int)$resolvedId;
+
+        $written = $this->domainManager()->updateZoneRecords(
+            (string)$this->config->get('database', 'type', 'mysql'),
+            (int)$this->config->get('dns', 'ttl', 86400),
+            $zoneId,
+            $templateId
+        );
+        if (!$written->success) {
+            return ['success' => false, 'message' => (string)$written->message, 'status' => $written->status, 'code' => self::ERR_ZONE_WRITE];
+        }
+
+        return ['success' => true, 'template_id' => $templateId];
+    }
+
+    private function domainManager(): DomainManagerInterface
+    {
+        return $this->domainManager ??= DnsServiceFactory::createDomainManager($this->db, $this->config, $this->backendProvider());
     }
 
     private function backendProvider(): DnsBackendProvider

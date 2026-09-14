@@ -36,6 +36,8 @@ final class SessionKeys
     public const LIST_ZONE_SORT_BY = 'list_zone_sort_by';
     public const SEARCH_ZONE_SORT_BY = 'zone_sort_by';
     public const SEARCH_RECORD_SORT_BY = 'record_sort_by';
+    public const EDIT_RECORD_SORT_BY = 'edit_record_sort_by';
+    public const ZONE_TEMPL_RECORD_SORT_BY = 'zone_templ_record_sort_by';
     public const REVERSE_ZONE_TYPE = 'reverse_zone_type';
     public const LETTER = 'letter';
 

@@ -39,7 +39,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
-use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Domain\Enum\AuthMethod;
 
 class IndexController extends BaseController
@@ -203,11 +202,7 @@ class IndexController extends BaseController
 
     private function getModuleNavItemsForDashboard(): array
     {
-        $registry = new ModuleRegistry($this->config);
-        $registry->loadModules();
-
-        $isAdmin = $this->hasPermission('user_is_ueberuser');
-        $items = $registry->getNavItems($isAdmin);
+        $items = $this->moduleRegistry()->getNavItems($this->hasPermission('user_is_ueberuser'));
 
         return array_values(array_filter($items, function (array $item): bool {
             if (!empty($item['permission'])) {

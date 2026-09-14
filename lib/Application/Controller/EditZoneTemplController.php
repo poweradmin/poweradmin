@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -125,7 +126,11 @@ class EditZoneTemplController extends BaseController
         $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
         $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $this->getCurrentUserId());
         $row_start = $this->getRowStart($iface_rowamount);
-        $record_sort_by = $this->getSortBy('record_sort_by', ['name', 'type', 'content', 'ttl', 'prio']);
+        [$record_sort_by] = (new ZoneSortingService($this->userContext))->getZoneSortOrder(
+            'record_sort_by',
+            ['name', 'type', 'content', 'ttl', 'prio'],
+            SessionKeys::ZONE_TEMPL_RECORD_SORT_BY
+        );
         $record_count = ZoneTemplate::countZoneTemplRecords($this->db, $zone_templ_id);
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
@@ -173,21 +178,6 @@ class EditZoneTemplController extends BaseController
         }
 
         return $row_start;
-    }
-
-    public function getSortBy(string $name, array $allowedValues): string
-    {
-        $sortOrder = 'name';
-
-        foreach ([$this->request->getQueryParams(), $this->request->getPostParams(), $_SESSION] as $source) {
-            if (isset($source[$name]) && in_array($source[$name], $allowedValues)) {
-                $sortOrder = $source[$name];
-                $_SESSION[$name] = $source[$name];
-                break;
-            }
-        }
-
-        return $sortOrder;
     }
 
     public function updateZoneTemplateDetails(int $zone_templ_id): void

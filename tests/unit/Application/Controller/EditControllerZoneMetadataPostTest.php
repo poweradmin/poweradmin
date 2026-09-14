@@ -17,11 +17,12 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\EditController;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
+use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -75,6 +76,7 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $initializedProperty->setValue($config, $this->configInitializedBackup);
 
         $_POST = $this->postBackup;
+        unset($_SESSION['userid']);
 
         parent::tearDown();
     }
@@ -141,7 +143,7 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $this->invokeHandler($domainManager, 42);
     }
 
-    public function testTemplateChangePostDispatchesUpdateZoneRecords(): void
+    public function testTemplateChangePostAppliesTheTemplateThroughTheZoneService(): void
     {
         $_POST = [
             'template_change' => '1',
@@ -152,15 +154,15 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $domainManager = $this->createMock(DomainManagerInterface::class);
         $domainManager->expects($this->never())->method('changeZoneType');
         $domainManager->expects($this->never())->method('changeZoneSlaveMaster');
-        $domainManager->expects($this->once())
-            ->method('updateZoneRecords')
-            ->with('mysql', 86400, 42, '7')
-            ->willReturn(ZoneWriteResult::ok(42));
+        $zoneService = $this->createMock(ZoneManagementService::class);
+        $zoneService->expects($this->once())->method('applyTemplate')->with(42, '7', 7)->willReturn(['success' => true, 'template_id' => 7]);
 
-        $this->invokeHandler($domainManager, 42);
+        $messages = $this->invokeHandler($domainManager, 42, zoneService: $zoneService);
+
+        $this->assertSame('success', $messages[0]['type']);
     }
 
-    public function testTemplateChangeNoneIsTreatedAsZero(): void
+    public function testTemplateChangeNonePassesNoneAndWordsARefusal(): void
     {
         $_POST = [
             'template_change' => '1',
@@ -168,13 +170,14 @@ class EditControllerZoneMetadataPostTest extends TestCase
             'current_zone_template' => '3',
         ];
 
-        $domainManager = $this->createMock(DomainManagerInterface::class);
-        $domainManager->expects($this->once())
-            ->method('updateZoneRecords')
-            ->with('mysql', 86400, 42, 0)
-            ->willReturn(ZoneWriteResult::ok(42));
+        $zoneService = $this->createMock(ZoneManagementService::class);
+        $zoneService->expects($this->once())->method('applyTemplate')->with(42, 'none', 7)
+            ->willReturn(['success' => false, 'message' => 'Cannot apply a template to a read-only zone', 'status' => 400, 'code' => ZoneManagementService::ERR_READ_ONLY]);
 
-        $this->invokeHandler($domainManager, 42);
+        $messages = $this->invokeHandler($this->createMock(DomainManagerInterface::class), 42, zoneService: $zoneService);
+
+        $this->assertSame('error', $messages[0]['type']);
+        $this->assertStringContainsString('read-only', $messages[0]['content']);
     }
 
     public function testTemplateChangeSkippedWhenUnchanged(): void
@@ -185,10 +188,10 @@ class EditControllerZoneMetadataPostTest extends TestCase
             'current_zone_template' => '3',
         ];
 
-        $domainManager = $this->createMock(DomainManagerInterface::class);
-        $domainManager->expects($this->never())->method('updateZoneRecords');
+        $zoneService = $this->createMock(ZoneManagementService::class);
+        $zoneService->expects($this->never())->method('applyTemplate');
 
-        $this->invokeHandler($domainManager, 42);
+        $this->invokeHandler($this->createMock(DomainManagerInterface::class), 42, zoneService: $zoneService);
     }
 
     public function testRetrieveZonePostDispatchesRetrieveZoneOnApiBackend(): void
@@ -246,33 +249,42 @@ class EditControllerZoneMetadataPostTest extends TestCase
         return $domainRepository;
     }
 
+    /**
+     * @return array<int, array{type: string, content: string}> The messages set for the edit page
+     */
     private function invokeHandler(
         DomainManagerInterface $domainManager,
         int $zone_id,
         ?DomainRepositoryInterface $domainRepository = null,
         array $configOverrides = [],
-        bool $canCreateZone = true
-    ): void {
+        bool $canCreateZone = true,
+        ?ZoneManagementService $zoneService = null
+    ): array {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
 
         $this->setProperty($controller, 'request', new Request());
         $this->setProperty($controller, 'domainManager', $domainManager);
         $this->setProperty($controller, 'domainRepository', $domainRepository ?? $this->createMock(DomainRepositoryInterface::class));
-        $zoneTemplateModel = $this->createMock(ZoneTemplate::class);
-        $zoneTemplateModel->method('canCurrentUserUseTemplate')->willReturn(true);
-        $this->setProperty($controller, 'zoneTemplateModel', $zoneTemplateModel);
         $permissionService = $this->createMock(PermissionService::class);
         $permissionService->method('canCreateZone')->willReturn($canCreateZone);
         $this->setProperty($controller, 'permissionService', $permissionService);
+        $_SESSION['userid'] = 7;
         $this->setBaseProperty($controller, 'userContextService', new UserContextService());
+
+        $factory = $this->createMock(ControllerServiceFactory::class);
+        $factory->method('zoneManagementService')->willReturn($zoneService ?? $this->createMock(ZoneManagementService::class));
+        $this->setBaseProperty($controller, 'serviceFactory', $factory);
 
         $config = $this->primeConfig($configOverrides);
         $this->setBaseProperty($controller, 'config', $config);
-        $this->setBaseProperty($controller, 'messageService', new MessageService());
+        $messages = new MessageService();
+        $this->setBaseProperty($controller, 'messageService', $messages);
 
         $method = $this->controllerReflection->getMethod('handleZoneMetadataPost');
         $method->setAccessible(true);
         $method->invoke($controller, $zone_id);
+
+        return $messages->getMessages('edit') ?? [];
     }
 
     private function primeConfig(array $overrides = []): ConfigurationManager

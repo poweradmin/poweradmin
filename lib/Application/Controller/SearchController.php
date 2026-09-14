@@ -40,7 +40,6 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Module\ModuleRegistry;
 
 class SearchController extends BaseController
 {
@@ -353,8 +352,8 @@ class SearchController extends BaseController
             'user_id' => $_SESSION[SessionKeys::USERID],
             'show_zone_owners' => $ownershipViewPermission !== 'none',
             'is_owner_sort_supported' => $ownerSortAllowed,
-            'whois_action_patterns' => $this->getModuleActionPatterns('whois_lookup'),
-            'rdap_action_patterns' => $this->getModuleActionPatterns('rdap_lookup'),
+            'whois_action_patterns' => $this->moduleCapabilityData('whois_lookup'),
+            'rdap_action_patterns' => $this->moduleCapabilityData('rdap_lookup'),
             'record_types' => $recordTypes,
         ]);
     }
@@ -383,14 +382,6 @@ class SearchController extends BaseController
             'show_leading_break' => $currentPage > $halfVisiblePages + 1,
             'show_trailing_break' => $totalPages > $endPage,
         ];
-    }
-
-    private function getModuleActionPatterns(string $capability): array
-    {
-        $isAdmin = $this->hasPermission('user_is_ueberuser');
-        $registry = new ModuleRegistry($this->config);
-        $registry->loadModules();
-        return $registry->getCapabilityData($capability, [], $isAdmin);
     }
 
     /**

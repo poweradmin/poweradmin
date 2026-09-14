@@ -1592,6 +1592,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Service\\RecordCommentService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordCommentService.php',
         'Poweradmin\\Application\\Service\\RecordCommentSyncService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordCommentSyncService.php',
         'Poweradmin\\Application\\Service\\RecordManagerService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordManagerService.php',
+        'Poweradmin\\Application\\Service\\RejectedZoneEditPresenter' => __DIR__ . '/../..' . '/lib/Application/Service/RejectedZoneEditPresenter.php',
         'Poweradmin\\Application\\Service\\RepositoryFactory' => __DIR__ . '/../..' . '/lib/Application/Service/RepositoryFactory.php',
         'Poweradmin\\Application\\Service\\RequestValidator' => __DIR__ . '/../..' . '/lib/Application/Service/RequestValidator.php',
         'Poweradmin\\Application\\Service\\ResultPaginator' => __DIR__ . '/../..' . '/lib/Application/Service/ResultPaginator.php',
