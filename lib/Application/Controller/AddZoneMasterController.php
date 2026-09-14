@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
@@ -41,9 +42,6 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Domain\Utility\DomainUtility;
-use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneValidationService;
@@ -60,7 +58,6 @@ class AddZoneMasterController extends BaseController
     private UserContextService $userContext;
     private IpAddressRetriever $ipAddressRetriever;
     private Request $request;
-    private IPAddressValidator $ipAddressValidator;
 
     /** @var array<int, string>|null */
     private ?array $soaEditApiChoices = null;
@@ -73,7 +70,6 @@ class AddZoneMasterController extends BaseController
         $this->userContext = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->request = new Request();
-        $this->ipAddressValidator = new IPAddressValidator();
     }
 
     public function run(): void
@@ -163,7 +159,6 @@ class AddZoneMasterController extends BaseController
         }
 
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
-        $dns_third_level_check = $this->config->get('dns', 'third_level_check', false);
 
         $raw_domain = trim((string)$this->request->getPostParam('domain', ''));
 
@@ -225,100 +220,93 @@ class AddZoneMasterController extends BaseController
         $owner = $ownership->owner;
         $selected_groups = $ownership->groupIds;
 
-        $domainRepository = $this->createDomainRepository();
-        $recordRepository = $this->createRecordRepository();
-        $hostnameValidator = new HostnameValidator($this->config);
-        if (!$hostnameValidator->isValid($zone_name)) {
-            // Don't add a generic error as the validation method already sets a specific one
+        $created = $this->createZoneManagementService()->createZone(
+            $zone_name,
+            $dom_type,
+            $owner,
+            $slave_master,
+            $zone_template,
+            false,
+            $selected_groups,
+            $this->getCurrentUserId(),
+            $soa_edit_api
+        );
+        if (!$created['success']) {
+            $this->setMessage('add_zone_master', 'error', ZoneCreateFormMessages::errorMessage($created));
             $this->showForm();
-        } elseif ($dns_third_level_check && DomainUtility::getDomainLevel($zone_name) > 2 && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($zone_name))) {
-            $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
-            $this->showForm();
-        } elseif ($domainRepository->domainExists($zone_name) || $recordRepository->hasNonDelegationRecords($zone_name)) {
-            $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
-            $this->showForm();
-        } elseif (($overlapError = $this->getZoneOverlapError($zone_name)) !== null) {
-            $this->setMessage('add_zone_master', 'error', $overlapError);
-            $this->showForm();
-        } elseif ($replicates && !$this->ipAddressValidator->areMultipleValidIPs($slave_master)) {
-            $this->setMessage('add_zone_master', 'error', _('This is not a valid IPv4 or IPv6 address.'));
-            $this->showForm();
-        } elseif (($created = $this->createDomainManager()->addDomain($this->db, $zone_name, $owner, $dom_type, $slave_master, $zone_template, $selected_groups, $soa_edit_api))->success) {
-            $zone_id = $created->zoneId;
+            return;
+        }
+        $zone_id = $created['zone_id'];
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->userContext->getLoggedInUsername(),
-                $zone_name,
-                $dom_type,
-                $zone_template,
-                $slave_master !== '' ? ' zone_master:' . $slave_master : ''
-            ), $zone_id);
+        $this->auditLogger->logInfo(sprintf(
+            'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s%s',
+            $this->ipAddressRetriever->getClientIp(),
+            $this->userContext->getLoggedInUsername(),
+            $zone_name,
+            $dom_type,
+            $zone_template,
+            $slave_master !== '' ? ' zone_master:' . $slave_master : ''
+        ), $zone_id);
 
-            $dnssecMessageSet = false;
+        $dnssecMessageSet = false;
 
-            // Signing a zone whose records arrive by transfer is meaningless.
-            if ($pdnssec_use && !$replicates) {
-                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        // Signing a zone whose records arrive by transfer is meaningless.
+        if ($pdnssec_use && !$replicates) {
+            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
-                if ($this->request->getPostParam('dnssec') !== null && $dnssecProvider->isDnssecEnabled()) {
-                    // Pre-flight zone validation before DNSSEC signing
-                    $zoneValidator = new ZoneValidationService($this->getRepositoryFactory()->createRecordRepository());
-                    $validation = $zoneValidator->validateZoneForDnssec($zone_id, $zone_name);
+            if ($this->request->getPostParam('dnssec') !== null && $dnssecProvider->isDnssecEnabled()) {
+                // Pre-flight zone validation before DNSSEC signing
+                $zoneValidator = new ZoneValidationService($this->getRepositoryFactory()->createRecordRepository());
+                $validation = $zoneValidator->validateZoneForDnssec($zone_id, $zone_name);
 
-                    if (!$validation['valid']) {
-                        // Show validation errors to user
-                        $errorMsg = $zoneValidator->getFormattedErrorMessage($validation);
-                        $messageKey = DnsHelper::isReverseZoneName($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
-                        $this->setMessage($messageKey, 'warning', _('Zone was created successfully, but DNSSEC signing was skipped due to validation errors:') . "\n\n" . $errorMsg);
-                        $this->logger->warning('DNSSEC pre-flight validation failed for newly created zone: {zone}', ['zone' => $zone_name]);
+                if (!$validation['valid']) {
+                    // Show validation errors to user
+                    $errorMsg = $zoneValidator->getFormattedErrorMessage($validation);
+                    $messageKey = DnsHelper::isReverseZoneName($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
+                    $this->setMessage($messageKey, 'warning', _('Zone was created successfully, but DNSSEC signing was skipped due to validation errors:') . "\n\n" . $errorMsg);
+                    $this->logger->warning('DNSSEC pre-flight validation failed for newly created zone: {zone}', ['zone' => $zone_name]);
+                    $dnssecMessageSet = true;
+                } else {
+                    // Validation passed - proceed with signing
+                    // Update SOA serial before signing
+                    DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zone_id);
+
+                    $secureResult = $dnssecProvider->secureZone($zone_name);
+                    $messageKey = DnsHelper::isReverseZoneName($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
+
+                    if (!$secureResult) {
+                        $this->setMessage($messageKey, 'warning', _('Zone was created, but securing it with DNSSEC failed. Zone validation passed, but PowerDNS API returned an error. Check PowerDNS logs for details.'));
+                        $this->logger->error('DNSSEC signing failed for newly created zone: {zone}', ['zone' => $zone_name]);
                         $dnssecMessageSet = true;
                     } else {
-                        // Validation passed - proceed with signing
-                        // Update SOA serial before signing
-                        DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig())->updateSOASerial($zone_id);
-
-                        $secureResult = $dnssecProvider->secureZone($zone_name);
-                        $messageKey = DnsHelper::isReverseZoneName($zone_name) ? 'list_reverse_zones' : 'list_forward_zones';
-
-                        if (!$secureResult) {
-                            $this->setMessage($messageKey, 'warning', _('Zone was created, but securing it with DNSSEC failed. Zone validation passed, but PowerDNS API returned an error. Check PowerDNS logs for details.'));
-                            $this->logger->error('DNSSEC signing failed for newly created zone: {zone}', ['zone' => $zone_name]);
+                        // Verify the zone is now secured
+                        if ($dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
+                            $this->setMessage($messageKey, 'success', _('Zone has been created and signed with DNSSEC successfully.'));
+                            (new AuditService($this->db))->logDnssecSignZone($zone_id, $zone_name);
                             $dnssecMessageSet = true;
                         } else {
-                            // Verify the zone is now secured
-                            if ($dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
-                                $this->setMessage($messageKey, 'success', _('Zone has been created and signed with DNSSEC successfully.'));
-                                (new AuditService($this->db))->logDnssecSignZone($zone_id, $zone_name);
-                                $dnssecMessageSet = true;
-                            } else {
-                                $this->setMessage($messageKey, 'warning', _('Zone was created and signing was requested, but verification failed. Check DNSSEC keys.'));
-                                $this->logger->warning('DNSSEC signing verification failed for newly created zone: {zone}', ['zone' => $zone_name]);
-                                $dnssecMessageSet = true;
-                            }
+                            $this->setMessage($messageKey, 'warning', _('Zone was created and signing was requested, but verification failed. Check DNSSEC keys.'));
+                            $this->logger->warning('DNSSEC signing verification failed for newly created zone: {zone}', ['zone' => $zone_name]);
+                            $dnssecMessageSet = true;
                         }
                     }
                 }
-
-                $dnssecProvider->rectifyZone($zone_name);
             }
 
-            // Check if the zone is a reverse zone and redirect accordingly
-            if (DnsHelper::isReverseZoneName($zone_name)) {
-                if (!$dnssecMessageSet) {
-                    $this->setMessage('list_reverse_zones', 'success', _('Zone has been added successfully.'));
-                }
-                $this->redirect('/zones/reverse');
-            } else {
-                if (!$dnssecMessageSet) {
-                    $this->setMessage('list_forward_zones', 'success', _('Zone has been added successfully.'));
-                }
-                $this->redirect('/zones/forward');
+            $dnssecProvider->rectifyZone($zone_name);
+        }
+
+        // Check if the zone is a reverse zone and redirect accordingly
+        if (DnsHelper::isReverseZoneName($zone_name)) {
+            if (!$dnssecMessageSet) {
+                $this->setMessage('list_reverse_zones', 'success', _('Zone has been added successfully.'));
             }
+            $this->redirect('/zones/reverse');
         } else {
-            $this->setMessage('add_zone_master', 'error', (string)$created->message);
-            $this->showForm();
+            if (!$dnssecMessageSet) {
+                $this->setMessage('list_forward_zones', 'success', _('Zone has been added successfully.'));
+            }
+            $this->redirect('/zones/forward');
         }
     }
 

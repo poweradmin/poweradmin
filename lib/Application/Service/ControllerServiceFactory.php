@@ -35,11 +35,13 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
+use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -178,6 +180,11 @@ class ControllerServiceFactory
     public function userGroupRepository(): UserGroupRepositoryInterface
     {
         return new DbUserGroupRepository($this->db);
+    }
+
+    public function zoneManagementService(?PdnsCapabilities $capabilities = null): ZoneManagementService
+    {
+        return new ZoneManagementService($this->zoneRepository(), $this->config, $this->db, $this->logger, null, $capabilities);
     }
 
     public function zoneOwnershipModeService(): ZoneOwnershipModeService

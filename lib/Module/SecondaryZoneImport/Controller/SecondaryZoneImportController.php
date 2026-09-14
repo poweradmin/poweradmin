@@ -23,12 +23,10 @@
 namespace Poweradmin\Module\SecondaryZoneImport\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Utility\DomainUtility;
-use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -42,7 +40,6 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 class SecondaryZoneImportController extends BaseController
 {
     private LegacyLogger $auditLogger;
-    private IPAddressValidator $ipAddressValidator;
     private UserContextService $userContextService;
     private IpAddressRetriever $ipAddressRetriever;
     private Request $request;
@@ -51,7 +48,6 @@ class SecondaryZoneImportController extends BaseController
     {
         parent::__construct($request);
         $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressValidator = new IPAddressValidator();
         $this->userContextService = new UserContextService();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->request = new Request();
@@ -168,46 +164,15 @@ class SecondaryZoneImportController extends BaseController
         $owner = $ownership->owner;
         $groups = $ownership->groupIds;
 
-        $domainRepository = $this->createDomainRepository();
-        $recordRepository = $this->createRecordRepository();
+        $created = $this->createZoneManagementService()->createZone($zone, 'SLAVE', $owner, $master, 'none', false, $groups, $this->getCurrentUserId());
+        if (!$created['success']) {
+            $this->setMessage('import', 'error', ZoneCreateFormMessages::errorMessage($created));
+            $this->showForm();
+            return;
+        }
+
+        $zoneId = $created['zone_id'];
         $domainManager = $this->createDomainManager();
-        $hostnameValidator = new HostnameValidator($this->config);
-
-        if (!$hostnameValidator->isValid($zone)) {
-            $this->setMessage('import', 'error', _('Invalid hostname.'));
-            $this->showForm();
-            return;
-        }
-        $thirdLevelCheck = $this->config->get('dns', 'third_level_check', false);
-        if ($thirdLevelCheck && DomainUtility::getDomainLevel($zone) > 2 && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($zone))) {
-            $this->setMessage('import', 'error', _('There is already a zone with this name.'));
-            $this->showForm();
-            return;
-        }
-        if ($domainRepository->domainExists($zone) || $recordRepository->hasNonDelegationRecords($zone)) {
-            $this->setMessage('import', 'error', _('There is already a zone with this name.'));
-            $this->showForm();
-            return;
-        }
-        if (($overlapError = $this->getZoneOverlapError($zone)) !== null) {
-            $this->setMessage('import', 'error', $overlapError);
-            $this->showForm();
-            return;
-        }
-        if (!$this->ipAddressValidator->areMultipleValidIPs($master)) {
-            $this->setMessage('import', 'error', _('This is not a valid IPv4 or IPv6 address.'));
-            $this->showForm();
-            return;
-        }
-
-        $created = $domainManager->addDomain($this->db, $zone, $owner, 'SLAVE', $master, 'none', $groups);
-        if (!$created->success) {
-            $this->setMessage('import', 'error', (string)$created->message);
-            $this->showForm();
-            return;
-        }
-
-        $zoneId = $created->zoneId;
         $this->auditLogger->logInfo(sprintf(
             'client_ip:%s user:%s operation:import_secondary_zone zone:%s zone_master:%s',
             $this->ipAddressRetriever->getClientIp(),

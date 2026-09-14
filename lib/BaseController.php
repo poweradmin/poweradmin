@@ -41,8 +41,8 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
+use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
-use Poweradmin\Domain\Service\ZoneOverlapService;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -528,6 +528,14 @@ abstract class BaseController
         return $this->services()->userGroupRepository();
     }
 
+    /**
+     * The zone service the API uses, told what the connected server supports.
+     */
+    protected function createZoneManagementService(): ZoneManagementService
+    {
+        return $this->services()->zoneManagementService($this->getPdnsCapabilities());
+    }
+
     protected function createZoneCreateOwnershipResolver(): ZoneCreateOwnershipResolver
     {
         return $this->services()->zoneCreateOwnershipResolver();
@@ -626,32 +634,12 @@ abstract class BaseController
     }
 
     /**
-     * Error message when the new zone would overlap an existing zone owned by
-     * another user, or null when creation is allowed. The conflicting name is
-     * not disclosed, to avoid leaking another owner's zone.
-     */
-    /**
      * Flash the outcome of a zone write to a page: the given text on success,
      * the result's reason on failure.
      */
     protected function reportZoneWrite(string $script, ZoneWriteResult $result, string $successMessage): void
     {
         $this->setMessage($script, $result->success ? 'success' : 'error', $result->success ? $successMessage : (string)$result->message);
-    }
-
-    protected function getZoneOverlapError(string $zoneName): ?string
-    {
-        $userId = $this->getCurrentUserId();
-        if ($userId === null) {
-            return null;
-        }
-
-        $service = new ZoneOverlapService($this->db, $this->getConfig(), $this->createPermissionService());
-        if ($service->findConflictingZone($zoneName, $userId) === null) {
-            return null;
-        }
-
-        return _('Cannot create this zone because it overlaps an existing zone owned by another user.');
     }
 
     /**

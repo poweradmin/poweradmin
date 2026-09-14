@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\SqliteIntegrationTestCase;
@@ -48,6 +49,8 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         parent::setUp();
 
         $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, type TEXT NOT NULL)");
+        $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0)");
+        $this->createZoneTables();
         $this->db->exec("INSERT INTO domains (name, type) VALUES ('xn--bcher-kva.example', 'MASTER'), ('parent.example', 'MASTER')");
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '', owner INTEGER NOT NULL DEFAULT 0, created_by INTEGER)");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (2, 'Client')");
@@ -59,7 +62,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             (13, 'dup', 0)");
     }
 
-    private function service(): ZoneManagementService
+    private function service(?PdnsCapabilities $capabilities = null): ZoneManagementService
     {
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(function (string $group, string $key, $default = null) {
@@ -69,7 +72,39 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             return $default;
         });
 
-        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db);
+        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, null, null, $capabilities);
+    }
+
+    public function testRefusalsCarryACodeForTheForms(): void
+    {
+        $this->assertSame(ZoneManagementService::ERR_EXISTS, $this->service()->createZone('parent.example', 'MASTER', self::ADMIN_USER_ID)['code']);
+        $this->assertSame(ZoneManagementService::ERR_INVALID_NAME, $this->service()->createZone('new.example..', 'MASTER', self::ADMIN_USER_ID)['code']);
+        $this->assertSame(ZoneManagementService::ERR_NO_OWNER, $this->service()->createZone('new.example', 'MASTER', null)['code']);
+    }
+
+    public function testAReplicatingZoneNeedsAValidPrimary(): void
+    {
+        $missing = $this->service()->createZone('new.example', 'SLAVE', self::ADMIN_USER_ID);
+        $this->assertSame(400, $missing['status']);
+        $this->assertSame(ZoneManagementService::ERR_MASTER_REQUIRED, $missing['code']);
+
+        $invalid = $this->service()->createZone('new.example', 'SLAVE', self::ADMIN_USER_ID, 'not-an-ip');
+        $this->assertSame(400, $invalid['status']);
+        $this->assertSame(ZoneManagementService::ERR_INVALID_MASTER, $invalid['code']);
+        $this->assertStringContainsString('Invalid master servers format', $invalid['message']);
+
+        // A master list is checked whenever one is given, whatever the kind.
+        $this->assertSame(ZoneManagementService::ERR_INVALID_MASTER, $this->service()->createZone('new.example', 'MASTER', self::ADMIN_USER_ID, 'not-an-ip')['code']);
+    }
+
+    public function testCatalogKindsNeedAServerThatHasThem(): void
+    {
+        $tooOld = $this->service(PdnsCapabilities::fromVersion('4.6.0'))->createZone('catalog.example', 'PRODUCER', self::ADMIN_USER_ID);
+        $this->assertSame(ZoneManagementService::ERR_INVALID_TYPE, $tooOld['code']);
+
+        // A consumer replicates like a secondary, so it needs a primary too.
+        $consumer = $this->service(PdnsCapabilities::fromVersion('4.7.0'))->createZone('catalog.example', 'CONSUMER', self::ADMIN_USER_ID);
+        $this->assertSame(ZoneManagementService::ERR_MASTER_REQUIRED, $consumer['code']);
     }
 
     public function testCreateZoneLooksUpTheNameAsPunycode(): void

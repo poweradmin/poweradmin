@@ -25,12 +25,12 @@ namespace Poweradmin\Module\ZoneImportExport\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
+use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -330,19 +330,6 @@ class ZoneFileImportController extends BaseController
                 return;
             }
 
-            // This path calls addDomain() directly, which does not validate, so an
-            // unconvertible name would otherwise be stored raw and never resolve.
-            $hostnameValidator = new HostnameValidator($this->config);
-            if (!$hostnameValidator->isValid($zoneName)) {
-                $this->showError(_('This is an invalid zone name.'));
-                return;
-            }
-
-            if ($domainRepository->domainExists($zoneName)) {
-                $this->showError(_('A zone with this name already exists.'));
-                return;
-            }
-
             $zoneType = strtoupper((string)($_POST['zone_type'] ?? 'MASTER'));
             if (!in_array($zoneType, ZoneKind::basicValues(), true)) {
                 $this->showError(_('Invalid zone type.'));
@@ -369,23 +356,12 @@ class ZoneFileImportController extends BaseController
                 $this->showError(ZoneOwnershipFormResolver::errorMessage($ownership));
                 return;
             }
-            $groupsForCreate = $ownership->groupIds;
-            $overlapError = $this->getZoneOverlapError($zoneName);
-            if ($overlapError !== null) {
-                $this->showError($overlapError);
+            $created = $this->createZoneManagementService()->createZone($zoneName, $zoneType, $ownerForCreate, '', 'none', false, $ownership->groupIds, $userId);
+            if (!$created['success']) {
+                $this->showError(ZoneCreateFormMessages::errorMessage($created));
                 return;
             }
-            $created = $this->createDomainManager()->addDomain($this->db, $zoneName, $ownerForCreate, $zoneType, '', 'none', $groupsForCreate);
-            if (!$created->success) {
-                $this->showError((string)$created->message);
-                return;
-            }
-
-            $zone_id = $created->zoneId;
-            if (!$zone_id) {
-                $this->showError(_('Failed to retrieve created zone.'));
-                return;
-            }
+            $zone_id = $created['zone_id'];
 
             $logger = new LegacyLogger($this->db);
             $logger->logInfo(sprintf(

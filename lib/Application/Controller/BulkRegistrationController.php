@@ -32,11 +32,11 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DomainHelper;
@@ -156,30 +156,23 @@ class BulkRegistrationController extends BaseController
 
         $added_domains = [];
         $failed_domains = [];
-        $domainRepository = $this->createDomainRepository();
-        $domainManager = $this->createDomainManager();
-        $hostnameValidator = new HostnameValidator($this->config);
+        $zoneService = $this->createZoneManagementService();
+        $callerId = $this->getCurrentUserId();
         foreach ($domains as $domain) {
-            if (!$hostnameValidator->isValid($domain)) {
-                $failed_domains[] = ['name' => $domain, 'reason' => _('Invalid hostname.')];
-            } elseif ($domainRepository->domainExists($domain)) {
-                $failed_domains[] = ['name' => $domain, 'reason' => _('There is already a zone with this name.')];
-            } elseif (($overlapError = $this->getZoneOverlapError($domain)) !== null) {
-                $failed_domains[] = ['name' => $domain, 'reason' => $overlapError];
-            } elseif (($created = $domainManager->addDomain($this->db, $domain, $owner, $dom_type, '', $zone_template, $selected_groups))->success) {
-                $added_domains[] = $domain;
-                $zone_id = $created->zoneId;
-                $this->auditLogger->logInfo(sprintf(
-                    'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->userContextService->getLoggedInUsername(),
-                    $domain,
-                    $dom_type,
-                    $zone_template
-                ), $zone_id);
-            } else {
-                $failed_domains[] = ['name' => $domain, 'reason' => (string)$created->message];
+            $created = $zoneService->createZone($domain, $dom_type, $owner, '', $zone_template, false, $selected_groups, $callerId);
+            if (!$created['success']) {
+                $failed_domains[] = ['name' => $domain, 'reason' => ZoneCreateFormMessages::errorMessage($created)];
+                continue;
             }
+            $added_domains[] = $domain;
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                $this->userContextService->getLoggedInUsername(),
+                $domain,
+                $dom_type,
+                $zone_template
+            ), $created['zone_id']);
         }
 
         if (!$failed_domains) {

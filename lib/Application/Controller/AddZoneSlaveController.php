@@ -32,12 +32,10 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Utility\DomainUtility;
-use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -49,7 +47,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class AddZoneSlaveController extends BaseController
 {
     private LegacyLogger $auditLogger;
-    private IPAddressValidator $ipAddressValidator;
     private IpAddressRetriever $ipAddressRetriever;
     private UserContextService $userContextService;
     private Request $request;
@@ -58,7 +55,6 @@ class AddZoneSlaveController extends BaseController
     {
         parent::__construct($request);
         $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressValidator = new IPAddressValidator();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->userContextService = new UserContextService();
         $this->request = new Request();
@@ -123,8 +119,6 @@ class AddZoneSlaveController extends BaseController
             $this->showFirstValidationError($postData);
         }
 
-        $dns_third_level_check = $this->config->get('dns', 'third_level_check', false);
-
         $type = "SLAVE";
         $master = (string)$this->request->getPostParam('slave_master', '');
 
@@ -155,49 +149,29 @@ class AddZoneSlaveController extends BaseController
         $owner = $ownership->owner;
         $selected_groups = $ownership->groupIds;
 
-        $domainRepository = $this->createDomainRepository();
-        $recordRepository = $this->createRecordRepository();
-        $hostnameValidator = new HostnameValidator($this->config);
-        if (!$hostnameValidator->isValid($zone)) {
-            $this->setMessage('add_zone_slave', 'error', _('Invalid hostname.'));
+        $created = $this->createZoneManagementService()->createZone($zone, $type, $owner, $master, 'none', false, $selected_groups, $this->getCurrentUserId());
+        if (!$created['success']) {
+            $this->setMessage('add_zone_slave', 'error', ZoneCreateFormMessages::errorMessage($created));
             $this->showForm();
-        } elseif ($dns_third_level_check && DomainUtility::getDomainLevel($zone) > 2 && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($zone))) {
-            $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
-            $this->showForm();
-        } elseif ($domainRepository->domainExists($zone) || $recordRepository->hasNonDelegationRecords($zone)) {
-            $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
-            $this->showForm();
-        } elseif (($overlapError = $this->getZoneOverlapError($zone)) !== null) {
-            $this->setMessage('add_zone_slave', 'error', $overlapError);
-            $this->showForm();
-        } elseif (!$this->ipAddressValidator->areMultipleValidIPs($master)) {
-            $this->setMessage('add_zone_slave', 'error', _('This is not a valid IPv4 or IPv6 address.'));
-            $this->showForm();
+            return;
+        }
+        $zone_id = $created['zone_id'];
+
+        $this->auditLogger->logInfo(sprintf(
+            'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
+            $this->ipAddressRetriever->getClientIp(),
+            $this->userContextService->getLoggedInUsername(),
+            $zone,
+            $master
+        ), $zone_id);
+
+        // Check if the zone is a reverse zone and redirect accordingly
+        if (DnsHelper::isReverseZoneName($zone)) {
+            $this->setMessage('list_reverse_zones', 'success', _('Zone has been added successfully.'));
+            $this->redirect('/zones/reverse');
         } else {
-            $created = $this->createDomainManager()->addDomain($this->db, $zone, $owner, $type, $master, 'none', $selected_groups);
-            if ($created->success) {
-                $zone_id = $created->zoneId;
-
-                $this->auditLogger->logInfo(sprintf(
-                    'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
-                    $this->ipAddressRetriever->getClientIp(),
-                    $this->userContextService->getLoggedInUsername(),
-                    $zone,
-                    $master
-                ), $zone_id);
-
-                // Check if the zone is a reverse zone and redirect accordingly
-                if (DnsHelper::isReverseZoneName($zone)) {
-                    $this->setMessage('list_reverse_zones', 'success', _('Zone has been added successfully.'));
-                    $this->redirect('/zones/reverse');
-                } else {
-                    $this->setMessage('list_forward_zones', 'success', _('Zone has been added successfully.'));
-                    $this->redirect('/zones/forward');
-                }
-            } else {
-                $this->setMessage('add_zone_slave', 'error', (string)$created->message);
-                $this->showForm();
-            }
+            $this->setMessage('list_forward_zones', 'success', _('Zone has been added successfully.'));
+            $this->redirect('/zones/forward');
         }
     }
 

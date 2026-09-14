@@ -62,12 +62,7 @@ class ZonesController extends PublicApiController
         $this->ipAddressValidator = new IPAddressValidator();
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
 
-        // Initialize zone management service
-        $this->zoneManagementService = new ZoneManagementService(
-            $this->zoneRepository,
-            $this->getConfig(),
-            $this->db
-        );
+        $this->zoneManagementService = $this->createZoneManagementService();
 
         $this->auditLogger = new LegacyLogger($this->db);
     }
@@ -508,20 +503,6 @@ class ZonesController extends PublicApiController
             // An omitted field and an empty one both mean "apply the config default".
             $soaEditApi = $soaEditApi === '' ? null : $soaEditApi;
 
-            // Validate master servers format if provided
-            if (!empty($slaveMaster)) {
-                $validation = $this->validateMasterServers($slaveMaster);
-                if (!$validation['valid']) {
-                    return $this->returnApiError('Invalid master servers format: ' . $validation['message'], 400);
-                }
-                $slaveMaster = $validation['normalized'];
-            }
-
-            // A SLAVE zone is meaningless without a master to replicate from.
-            if ($type === 'SLAVE' && trim($slaveMaster) === '') {
-                return $this->returnApiError('A SLAVE zone requires at least one master server', 400);
-            }
-
             // Check if user has permission to create zones
             if (!$this->permissionService->canCreateZone($userId, $type)) {
                 return $this->returnApiError('You do not have permission to create zones of this type', 403);
@@ -555,9 +536,7 @@ class ZonesController extends PublicApiController
             );
 
             if (!$result['success']) {
-                $statusCode = $result['status'] ?? 400;
-
-                return $this->returnApiError($result['message'], $statusCode, null, [
+                return $this->returnApiError($result['message'], $result['status'], null, [
                     'meta' => [
                         'timestamp' => date('Y-m-d H:i:s')
                     ]
@@ -584,12 +563,7 @@ class ZonesController extends PublicApiController
                 $type
             ), $zoneId);
 
-            return $this->returnApiResponse(
-                ['zone_id' => $zoneId],
-                true,
-                $result['message'] ?? 'Zone created successfully',
-                201
-            );
+            return $this->returnApiResponse(['zone_id' => $zoneId], true, 'Zone created successfully', 201);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZonesController::createZone', 'Failed to create zone');
         }

@@ -28,7 +28,10 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -41,35 +44,63 @@ use Throwable;
 use Poweradmin\Domain\Enum\ZoneKind;
 
 /**
- * Service for managing DNS zones
+ * Service for managing DNS zones. Failures come back as
+ * ['success' => false, 'message' => ..., 'status' => ..., 'code' => ...]: the
+ * message is the API wording, the code lets the web forms word it themselves.
  */
 class ZoneManagementService
 {
+    public const ERR_NO_OWNER = 'no_owner';
+    public const ERR_INVALID_NAME = 'invalid_name';
+    public const ERR_EXISTS = 'exists';
+    public const ERR_OVERLAP = 'overlap';
+    public const ERR_INVALID_TYPE = 'invalid_type';
+    public const ERR_MASTER_REQUIRED = 'master_required';
+    public const ERR_INVALID_MASTER = 'invalid_master';
+    public const ERR_INVALID_SOA_EDIT_API = 'invalid_soa_edit_api';
+    public const ERR_TEMPLATE_NOT_FOUND = 'template_not_found';
+    public const ERR_TEMPLATE_AMBIGUOUS = 'template_ambiguous';
+    public const ERR_TEMPLATE_FORBIDDEN = 'template_forbidden';
+    public const ERR_ZONE_WRITE = 'zone_write';
+
     private ZoneRepositoryInterface $zoneRepository;
     private ConfigurationManager $config;
     private PDO $db;
     private LoggerInterface $logger;
     private RecordChangeLogger $changeLogger;
+    private ?PdnsCapabilities $capabilities;
+    private ?DnsBackendProvider $backendProvider = null;
+    private ?RepositoryFactory $repositoryFactory = null;
+    private ?DomainManagerInterface $domainManager = null;
+    private ?ZoneOverlapService $overlapService = null;
+    private ?HostnameValidator $hostnameValidator = null;
+    /** @var array<string, array{id: string}|array{success: false, message: string, status: int, code: string}> */
+    private array $resolvedTemplates = [];
 
+    /**
+     * @param PdnsCapabilities|null $capabilities What the connected server supports; null admits only the basic kinds
+     */
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
         ConfigurationManager $config,
         object $db,
         ?LoggerInterface $logger = null,
-        ?RecordChangeLogger $changeLogger = null
+        ?RecordChangeLogger $changeLogger = null,
+        ?PdnsCapabilities $capabilities = null
     ) {
         $this->zoneRepository = $zoneRepository;
         $this->config = $config;
         $this->db = $db;
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
+        $this->capabilities = $capabilities;
     }
 
     /**
      * Resolves a template given by name or numeric id and checks the acting user
      * may apply it (own, global, or ueberuser - the same rule the web UI enforces).
      *
-     * @return array{id: string}|array{success: false, message: string, status: int}
+     * @return array{id: string}|array{success: false, message: string, status: int, code: string}
      */
     public function resolveZoneTemplate(string $zoneTemplate, ?int $actingUserId): array
     {
@@ -77,18 +108,28 @@ class ZoneManagementService
             return ['id' => 'none'];
         }
 
+        // Bulk registration resolves the same template for every domain.
+        return $this->resolvedTemplates["$zoneTemplate:$actingUserId"] ??= $this->lookUpZoneTemplate($zoneTemplate, $actingUserId);
+    }
+
+    /**
+     * @return array{id: string}|array{success: false, message: string, status: int, code: string}
+     */
+    private function lookUpZoneTemplate(string $zoneTemplate, ?int $actingUserId): array
+    {
+
         $zoneTemplateModel = new ZoneTemplate($this->db, $this->config);
         if (is_numeric($zoneTemplate)) {
             if (!ZoneTemplate::zoneTemplIdExists($this->db, (int)$zoneTemplate)) {
-                return ['success' => false, 'message' => 'Zone template not found', 'status' => 404];
+                return ['success' => false, 'message' => 'Zone template not found', 'status' => 404, 'code' => self::ERR_TEMPLATE_NOT_FOUND];
             }
             $templateId = (int)$zoneTemplate;
         } else {
             $matchingIds = $zoneTemplateModel->getZoneTemplIdsByName($zoneTemplate);
             if (count($matchingIds) === 0) {
-                return ['success' => false, 'message' => 'Zone template not found', 'status' => 404];
+                return ['success' => false, 'message' => 'Zone template not found', 'status' => 404, 'code' => self::ERR_TEMPLATE_NOT_FOUND];
             } elseif (count($matchingIds) > 1) {
-                return ['success' => false, 'message' => 'Multiple zone templates found with this name, please use template ID instead', 'status' => 409];
+                return ['success' => false, 'message' => 'Multiple zone templates found with this name, please use template ID instead', 'status' => 409, 'code' => self::ERR_TEMPLATE_AMBIGUOUS];
             }
             $templateId = (int)$matchingIds[0];
         }
@@ -96,7 +137,7 @@ class ZoneManagementService
         if ($actingUserId !== null) {
             $isAdmin = (new ApiPermissionService($this->db))->userHasPermission($actingUserId, 'user_is_ueberuser');
             if (!$zoneTemplateModel->canUseTemplate($templateId, $actingUserId, $isAdmin)) {
-                return ['success' => false, 'message' => 'You do not have permission to use this zone template', 'status' => 403];
+                return ['success' => false, 'message' => 'You do not have permission to use this zone template', 'status' => 403, 'code' => self::ERR_TEMPLATE_FORBIDDEN];
             }
         }
 
@@ -115,7 +156,7 @@ class ZoneManagementService
      * @param array<int> $groupIds Optional list of group IDs to assign as owners
      * @param int|null $actingUserId User performing the creation, used for the overlap check
      * @param string|null $soaEditApi Per-zone SOA-EDIT-API choice; null applies the dns.soa_edit_api default
-     * @return array Result array with success status and zone ID or error message
+     * @return array{success: true, zone_id: int, domain: string, type: string}|array{success: false, message: string, status: int, code: string}
      */
     public function createZone(
         string $domain,
@@ -129,16 +170,15 @@ class ZoneManagementService
         ?string $soaEditApi = null
     ): array {
         if ($owner === null && empty($groupIds)) {
-            return ['success' => false, 'message' => 'At least one user or group must be assigned as owner', 'status' => 400];
+            return ['success' => false, 'message' => 'At least one user or group must be assigned as owner', 'status' => 400, 'code' => self::ERR_NO_OWNER];
         }
 
         // Stored names are punycode, as the web form writes them.
         $domain = DnsIdnService::toPunycode(trim($domain));
 
-        // Validate domain name
-        $hostnameValidator = new HostnameValidator($this->config);
-        if (!$hostnameValidator->isValid($domain)) {
-            return ['success' => false, 'message' => 'Invalid domain name', 'status' => 400];
+        $this->hostnameValidator ??= new HostnameValidator($this->config);
+        if (!$this->hostnameValidator->isValid($domain)) {
+            return ['success' => false, 'message' => 'Invalid domain name', 'status' => 400, 'code' => self::ERR_INVALID_NAME];
         }
 
         // The validator tolerates the absolute-name dot; the existence and parent
@@ -147,13 +187,11 @@ class ZoneManagementService
             $domain = preg_replace('/\.$/', '', $domain);
         }
 
-        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->config);
-        $repositoryFactory = new RepositoryFactory($this->db, $this->config, $backendProvider);
-        $domainRepository = $repositoryFactory->createDomainRepository();
+        $domainRepository = $this->repositoryFactory()->createDomainRepository();
 
         // Check if domain already exists
         if ($domainRepository->domainExists($domain)) {
-            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
+            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409, 'code' => self::ERR_EXISTS];
         }
 
         if (
@@ -161,36 +199,43 @@ class ZoneManagementService
             && DomainUtility::getDomainLevel($domain) > 2
             && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($domain))
         ) {
-            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
+            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409, 'code' => self::ERR_EXISTS];
         }
 
         // Check if non-delegation records exist (prevents zone hijacking)
         // Only delegation records (NS, DS) are allowed
-        if ($repositoryFactory->createRecordRepository()->hasNonDelegationRecords($domain)) {
-            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
+        if ($this->repositoryFactory()->createRecordRepository()->hasNonDelegationRecords($domain)) {
+            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409, 'code' => self::ERR_EXISTS];
         }
 
         // Block a zone that would overlap an existing zone owned by another user.
         if ($actingUserId !== null) {
-            $overlapService = new ZoneOverlapService($this->db, $this->config);
-            if ($overlapService->findConflictingZone($domain, $actingUserId) !== null) {
-                return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'status' => 409];
+            $this->overlapService ??= new ZoneOverlapService($this->db, $this->config);
+            if ($this->overlapService->findConflictingZone($domain, $actingUserId) !== null) {
+                return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'status' => 409, 'code' => self::ERR_OVERLAP];
             }
         }
 
-        // Validate zone type
-        $validTypes = ZoneKind::basicValues();
-        if (!in_array($type, $validTypes)) {
+        // Catalog kinds need a server that has them; an unknown server counts as too old.
+        $validTypes = $this->capabilities?->supportsCatalogZones() ? ZoneKind::values() : ZoneKind::basicValues();
+        if (!in_array($type, $validTypes, true)) {
             return [
                 'success' => false,
                 'message' => 'Invalid zone type. Must be one of: ' . implode(', ', $validTypes),
-                'status' => 400
+                'status' => 400,
+                'code' => self::ERR_INVALID_TYPE,
             ];
         }
 
-        // For SLAVE zones, ensure master IP is provided
-        if ($type === 'SLAVE' && empty($slaveMaster)) {
-            return ['success' => false, 'message' => 'Master IP address is required for SLAVE zones', 'status' => 400];
+        // A zone that replicates from a primary needs one; any master list given is stored normalised.
+        if (trim($slaveMaster) !== '') {
+            $masters = (new IPAddressValidator())->validateMultipleIPs($slaveMaster);
+            if (!$masters->isValid()) {
+                return ['success' => false, 'message' => 'Invalid master servers format: ' . implode('; ', $masters->getErrors()), 'status' => 400, 'code' => self::ERR_INVALID_MASTER];
+            }
+            $slaveMaster = implode(',', $masters->getData());
+        } elseif (ZoneType::replicatesFromPrimary($type)) {
+            return ['success' => false, 'message' => 'Master IP address is required for ' . $type . ' zones', 'status' => 400, 'code' => self::ERR_MASTER_REQUIRED];
         }
 
         // applySerialPolicy() only logs and ignores an unoffered value, which would quietly
@@ -201,15 +246,17 @@ class ZoneManagementService
                 return [
                     'success' => false,
                     'message' => 'Invalid soa_edit_api value. Must be one of: ' . implode(', ', $soaEditApiChoices),
-                    'status' => 400
+                    'status' => 400,
+                    'code' => self::ERR_INVALID_SOA_EDIT_API,
                 ];
             }
         }
 
         $resolvedTemplate = $this->resolveZoneTemplate($zoneTemplate, $actingUserId);
-        if (!isset($resolvedTemplate['id'])) {
+        if (isset($resolvedTemplate['success'])) {
             return $resolvedTemplate;
         }
+        // @phan-suppress-next-line PhanTypeInvalidDimOffset - Phan narrows the union shape to the failure arm here
         $zoneTemplate = $resolvedTemplate['id'];
 
         $this->logger->info(
@@ -217,21 +264,19 @@ class ZoneManagementService
             ['domain' => $domain, 'type' => $type, 'owner' => $owner ?? 'none', 'groups' => implode(',', $groupIds) ?: 'none']
         );
 
-        $domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config, $backendProvider);
-        $created = $domainManager->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds, $soaEditApi);
+        $this->domainManager ??= DnsServiceFactory::createDomainManager($this->db, $this->config, $this->backendProvider());
+        $created = $this->domainManager->addDomain($this->db, $domain, $owner, $type, $slaveMaster, $zoneTemplate, $groupIds, $soaEditApi);
         if (!$created->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
             return [
                 'success' => false,
                 'message' => $created->status === 500 ? 'Failed to create zone' : (string)$created->message,
                 'status' => $created->status,
+                'code' => self::ERR_ZONE_WRITE,
             ];
         }
 
-        $zoneId = $created->zoneId;
-        if (!$zoneId) {
-            return ['success' => false, 'message' => 'Failed to retrieve zone ID', 'status' => 500];
-        }
+        $zoneId = (int)$created->zoneId;
 
         // Enable DNSSEC if requested and supported
         if ($enableDnssec) {
@@ -389,5 +434,15 @@ class ZoneManagementService
             'domain_id' => $domainId,
             'user_id' => $userId
         ];
+    }
+
+    private function backendProvider(): DnsBackendProvider
+    {
+        return $this->backendProvider ??= DnsBackendProviderFactory::create($this->db, $this->config);
+    }
+
+    private function repositoryFactory(): RepositoryFactory
+    {
+        return $this->repositoryFactory ??= new RepositoryFactory($this->db, $this->config, $this->backendProvider());
     }
 }
