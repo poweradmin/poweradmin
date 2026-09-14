@@ -73,7 +73,7 @@ class BulkRegistrationController extends BaseController
         $this->setCurrentPage('bulk_registration');
         $this->setPageTitle(_('Bulk Registration'));
 
-        $blocker = $this->getOwnerOptionsBlocker();
+        $blocker = $this->zoneOwnerOptionsBlocker();
         if ($blocker !== null) {
             $this->showError($blocker);
             return;
@@ -87,24 +87,6 @@ class BulkRegistrationController extends BaseController
         }
     }
 
-    private function getOwnerOptionsBlocker(): ?string
-    {
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
-        if ($ownershipMode->isUserOwnerAllowed()) {
-            return null;
-        }
-        $userGroupRepo = $this->createUserGroupRepository();
-        if ($this->hasPermission('user_is_ueberuser')) {
-            if (empty($userGroupRepo->findAll())) {
-                return _('Zone ownership mode is groups_only but no groups exist. Create a group before adding zones.');
-            }
-            return null;
-        }
-        if (empty($userGroupRepo->findByUserId($this->userContextService->getLoggedInUserId()))) {
-            return _('Zone ownership mode is groups_only but you are not a member of any group. Ask an administrator to add you to a group before creating zones.');
-        }
-        return null;
-    }
 
     private function doBulkRegistration(): void
     {

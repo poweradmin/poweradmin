@@ -40,6 +40,18 @@ class ZoneOwnershipFormResolver
     ) {
     }
 
+    /**
+     * The page-level refusal for a user who could not pick any owner, or null.
+     */
+    public function blocker(int $callerUserId): ?string
+    {
+        return match ($this->resolver->ownerOptionsBlocker($callerUserId)) {
+            ZoneOwnershipResolution::NO_GROUPS_EXIST => _('Zone ownership mode is groups_only but no groups exist. Create a group before adding zones.'),
+            ZoneOwnershipResolution::NOT_IN_ANY_GROUP => _('Zone ownership mode is groups_only but you are not a member of any group. Ask an administrator to add you to a group before creating zones.'),
+            default => null,
+        };
+    }
+
     public function resolve(Request $request, int $callerUserId): ZoneOwnershipResolution
     {
         // An empty, zero or malformed owner means "no user owner", as zones.owner=0 does elsewhere.

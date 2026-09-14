@@ -294,6 +294,16 @@ class ZoneCreateOwnershipResolverTest extends TestCase
     }
 
     #[Test]
+    public function groupsOnlyModeBlocksUsersWhoCouldNotPickAnyOwner(): void
+    {
+        $this->assertNull($this->buildResolver('both')->ownerOptionsBlocker(self::CALLER_ID));
+        $this->assertSame(ZoneOwnershipResolution::NOT_IN_ANY_GROUP, $this->buildResolver('groups_only')->ownerOptionsBlocker(self::CALLER_ID));
+        $this->assertNull($this->buildResolver('groups_only', [], [3])->ownerOptionsBlocker(self::CALLER_ID));
+        // An admin may pick any group, so only an empty group list blocks them.
+        $this->assertSame(ZoneOwnershipResolution::NO_GROUPS_EXIST, $this->buildResolver('groups_only', ['user_is_ueberuser' => true])->ownerOptionsBlocker(self::CALLER_ID));
+    }
+
+    #[Test]
     public function resolveOwnershipAppliesTheSharedRulesToParsedInput(): void
     {
         $resolver = $this->buildResolver('both', [], [3]);

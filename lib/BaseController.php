@@ -554,6 +554,14 @@ abstract class BaseController
     }
 
     /**
+     * Why the current user cannot pick any zone owner (groups_only mode), or null.
+     */
+    protected function zoneOwnerOptionsBlocker(): ?string
+    {
+        return $this->services()->zoneOwnershipFormResolver()->blocker((int)$this->getCurrentUserId());
+    }
+
+    /**
      * Owner and groups of the add-zone forms, checked against the shared ownership rules.
      */
     protected function resolveZoneOwnershipFromForm(HttpRequest $request): ZoneOwnershipResolution

@@ -36,6 +36,8 @@ final readonly class ZoneOwnershipResolution
     public const INVALID_INPUT = 'invalid_input';
     public const USER_OWNER_DISABLED = 'user_owner_disabled';
     public const GROUP_OWNER_DISABLED = 'group_owner_disabled';
+    public const NO_GROUPS_EXIST = 'no_groups_exist';
+    public const NOT_IN_ANY_GROUP = 'not_in_any_group';
 
     /**
      * @param int|null   $owner    Resolved user owner (null when no user owner).

@@ -43,6 +43,22 @@ class ZoneCreateOwnershipResolver
     }
 
     /**
+     * Why a user cannot pick any owner for a new zone in groups_only mode:
+     * no group exists at all, or the user belongs to none. Null when they can.
+     */
+    public function ownerOptionsBlocker(int $callerUserId): ?string
+    {
+        if ($this->mode->isUserOwnerAllowed()) {
+            return null;
+        }
+        if ($this->permissions->isAdmin($callerUserId)) {
+            return $this->groups->findAll() === [] ? ZoneOwnershipResolution::NO_GROUPS_EXIST : null;
+        }
+
+        return $this->groups->getGroupIdsForUser($callerUserId) === [] ? ZoneOwnershipResolution::NOT_IN_ANY_GROUP : null;
+    }
+
+    /**
      * @param array<string, mixed> $input  Decoded JSON body.
      * @param int                  $callerUserId  Authenticated caller.
      */

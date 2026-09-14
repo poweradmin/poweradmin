@@ -29,6 +29,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
@@ -126,21 +127,11 @@ class SecondaryZoneImportController extends BaseController
      */
     private function getOwnerOptionsBlocker(): ?string
     {
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
-        if ($ownershipMode->isUserOwnerAllowed()) {
-            return null;
-        }
-        $userGroupRepo = $this->createUserGroupRepository();
-        if ($this->hasPermission('user_is_ueberuser')) {
-            if (empty($userGroupRepo->findAll())) {
-                return _('Zone ownership mode is groups_only but no groups exist. Create a group before importing zones.');
-            }
-            return null;
-        }
-        if (empty($userGroupRepo->findByUserId($this->userContextService->getLoggedInUserId()))) {
-            return _('Zone ownership mode is groups_only but you are not a member of any group. Ask an administrator to add you to a group before importing zones.');
-        }
-        return null;
+        return match ($this->createZoneCreateOwnershipResolver()->ownerOptionsBlocker((int)$this->getCurrentUserId())) {
+            ZoneOwnershipResolution::NO_GROUPS_EXIST => _('Zone ownership mode is groups_only but no groups exist. Create a group before importing zones.'),
+            ZoneOwnershipResolution::NOT_IN_ANY_GROUP => _('Zone ownership mode is groups_only but you are not a member of any group. Ask an administrator to add you to a group before importing zones.'),
+            default => null,
+        };
     }
 
     private function handleImport(): void

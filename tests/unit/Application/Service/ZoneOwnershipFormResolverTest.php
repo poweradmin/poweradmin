@@ -91,6 +91,12 @@ class ZoneOwnershipFormResolverTest extends TestCase
         $this->assertSame('You can only assign groups you are a member of (disallowed: 9)', ZoneOwnershipFormResolver::errorMessage($result));
     }
 
+    public function testTheBlockerIsWordedForThePage(): void
+    {
+        $this->assertNull($this->resolver('both')->blocker(self::CALLER_ID));
+        $this->assertStringContainsString('not a member of any group', (string)$this->resolver('groups_only')->blocker(self::CALLER_ID));
+    }
+
     public function testUnmappedCodesFallBackToTheResolutionText(): void
     {
         $result = ZoneOwnershipResolution::error('api wording', 400, ZoneOwnershipResolution::INVALID_INPUT);
