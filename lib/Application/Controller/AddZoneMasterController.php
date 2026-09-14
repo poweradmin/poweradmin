@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -164,8 +165,6 @@ class AddZoneMasterController extends BaseController
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
         $dns_third_level_check = $this->config->get('dns', 'third_level_check', false);
 
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
-
         $raw_domain = trim((string)$this->request->getPostParam('domain', ''));
 
         // On the reverse-zone form, accept a network (e.g. 192.168.1.0/24,
@@ -193,8 +192,6 @@ class AddZoneMasterController extends BaseController
             return;
         }
 
-        $ownerInput = $this->request->getPostParam('owner');
-        $owner = $ownershipMode->isUserOwnerAllowed() && !empty($ownerInput) ? (int)$ownerInput : null;
         $zone_template = $this->request->getPostParam('zone_template', 'none');
         $zoneTemplateModel = new ZoneTemplate($this->db, $this->getConfig());
         if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
@@ -218,53 +215,15 @@ class AddZoneMasterController extends BaseController
             return;
         }
         $soa_edit_api = $this->sanitizeSoaEditApiInput($soa_edit_api_input);
-        $groupsInput = $this->request->getPostParam('groups');
-        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && is_array($groupsInput) ?
-            array_map('intval', $groupsInput) : [];
 
-        // Validate: at least one owner (user or group) must be selected
-        if ($owner === null && empty($selected_groups)) {
-            $this->setMessage('add_zone_master', 'error', _('At least one user or group must be selected as owner.'));
+        $ownership = $this->resolveZoneOwnershipFromForm($this->request);
+        if ($ownership->hasError()) {
+            $this->setMessage('add_zone_master', 'error', ZoneOwnershipFormResolver::errorMessage($ownership));
             $this->showForm();
             return;
         }
-
-        // Block assigning a zone to a different user without elevated permission
-        $callerId = $this->userContext->getLoggedInUserId();
-        if ($owner !== null && $owner !== $callerId) {
-            $isAdmin = $this->hasPermission('user_is_ueberuser');
-            if (!$isAdmin && !$this->hasPermission('zone_content_edit_others')) {
-                $this->setMessage('add_zone_master', 'error', _('You do not have permission to create zones for other users.'));
-                $this->showForm();
-                return;
-            }
-        }
-
-        // Validate submitted group IDs against user's allowed groups
-        if (!empty($selected_groups)) {
-            $userGroupRepo = $this->createUserGroupRepository();
-            $existing = $userGroupRepo->findExistingIds($selected_groups);
-            $unknown = array_values(array_diff($selected_groups, $existing));
-            if (!empty($unknown)) {
-                $this->setMessage('add_zone_master', 'error', sprintf(_('Unknown group ID(s): %s'), implode(',', $unknown)));
-                $this->showForm();
-                return;
-            }
-            $selected_groups = $existing;
-
-            $isAdmin = $this->hasPermission('user_is_ueberuser');
-            if (!$isAdmin) {
-                $userId = $this->userContext->getLoggedInUserId();
-                $allowedGroups = $userGroupRepo->findByUserId($userId);
-                $allowedGroupIds = array_map(fn($g) => $g->getId(), $allowedGroups);
-                $disallowed = array_values(array_diff($selected_groups, $allowedGroupIds));
-                if (!empty($disallowed)) {
-                    $this->setMessage('add_zone_master', 'error', sprintf(_('You can only assign groups you are a member of (disallowed: %s)'), implode(',', $disallowed)));
-                    $this->showForm();
-                    return;
-                }
-            }
-        }
+        $owner = $ownership->owner;
+        $selected_groups = $ownership->groupIds;
 
         $domainRepository = $this->createDomainRepository();
         $recordRepository = $this->createRecordRepository();

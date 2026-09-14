@@ -23,22 +23,35 @@
 namespace Poweradmin\Domain\Service;
 
 /**
- * Outcome of {@see ZoneCreateOwnershipResolver::resolve()}: either a resolved
- * owner/group assignment for the new zone, or an error with HTTP status.
+ * Outcome of {@see ZoneCreateOwnershipResolver}: either a resolved owner/group
+ * assignment for the new zone, or an error with HTTP status. The error carries
+ * a code so the web forms can word it themselves; the message is the API text.
  */
 final readonly class ZoneOwnershipResolution
 {
+    public const NO_OWNER = 'no_owner';
+    public const OTHER_OWNER_FORBIDDEN = 'other_owner_forbidden';
+    public const UNKNOWN_GROUPS = 'unknown_groups';
+    public const GROUPS_NOT_MEMBER = 'groups_not_member';
+    public const INVALID_INPUT = 'invalid_input';
+    public const USER_OWNER_DISABLED = 'user_owner_disabled';
+    public const GROUP_OWNER_DISABLED = 'group_owner_disabled';
+
     /**
      * @param int|null   $owner    Resolved user owner (null when no user owner).
      * @param list<int>  $groupIds Resolved unique group ids (empty when none).
      * @param string|null $error   Error message; null on success.
      * @param int        $status   HTTP status code to return on error.
+     * @param string|null $code    One of the class constants; null on success.
+     * @param list<int>  $ids      The group ids the error is about, if any.
      */
     private function __construct(
         public ?int $owner,
         public array $groupIds,
         public ?string $error,
         public int $status,
+        public ?string $code,
+        public array $ids,
     ) {
     }
 
@@ -47,12 +60,15 @@ final readonly class ZoneOwnershipResolution
      */
     public static function success(?int $owner, array $groupIds): self
     {
-        return new self($owner, $groupIds, null, 200);
+        return new self($owner, $groupIds, null, 200, null, []);
     }
 
-    public static function error(string $message, int $status): self
+    /**
+     * @param list<int> $ids
+     */
+    public static function error(string $message, int $status, string $code, array $ids = []): self
     {
-        return new self(null, [], $message, $status);
+        return new self(null, [], $message, $status, $code, $ids);
     }
 
     public function hasError(): bool

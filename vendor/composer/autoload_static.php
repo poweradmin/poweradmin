@@ -1603,6 +1603,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Service\\UsernameRecoveryService' => __DIR__ . '/../..' . '/lib/Application/Service/UsernameRecoveryService.php',
         'Poweradmin\\Application\\Service\\ZoneAccessNotificationService' => __DIR__ . '/../..' . '/lib/Application/Service/ZoneAccessNotificationService.php',
         'Poweradmin\\Application\\Service\\ZoneGroupService' => __DIR__ . '/../..' . '/lib/Application/Service/ZoneGroupService.php',
+        'Poweradmin\\Application\\Service\\ZoneOwnershipFormResolver' => __DIR__ . '/../..' . '/lib/Application/Service/ZoneOwnershipFormResolver.php',
         'Poweradmin\\Application\\Service\\ZoneService' => __DIR__ . '/../..' . '/lib/Application/Service/ZoneService.php',
         'Poweradmin\\Application\\Service\\ZoneSyncService' => __DIR__ . '/../..' . '/lib/Application/Service/ZoneSyncService.php',
         'Poweradmin\\BaseController' => __DIR__ . '/../..' . '/lib/BaseController.php',

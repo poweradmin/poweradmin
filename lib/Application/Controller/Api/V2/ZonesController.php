@@ -36,9 +36,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -529,12 +527,7 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to create zones of this type', 403);
             }
 
-            $resolver = new ZoneCreateOwnershipResolver(
-                new ZoneOwnershipModeService($this->getConfig()),
-                $this->permissionService->permissions(),
-                $this->createUserGroupRepository()
-            );
-            $resolved = $resolver->resolve($input, $userId);
+            $resolved = $this->createZoneCreateOwnershipResolver()->resolve($input, $userId);
             if ($resolved->hasError()) {
                 return $this->returnApiError($resolved->error, $resolved->status);
             }

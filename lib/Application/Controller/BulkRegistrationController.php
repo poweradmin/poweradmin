@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
@@ -126,7 +127,6 @@ class BulkRegistrationController extends BaseController
             $this->showFirstValidationError($postParams);
         }
 
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
         $domains = DomainHelper::getDomains($this->request->getPostParam('domains'));
         $dom_type = $this->request->getPostParam('dom_type');
         $zone_template = $this->request->getPostParam('zone_template');
@@ -145,64 +145,14 @@ class BulkRegistrationController extends BaseController
             return;
         }
 
-        $rawOwner = $this->request->getPostParam('owner', '');
-        if ($ownershipMode->isUserOwnerAllowed() && $rawOwner !== '' && $rawOwner !== null) {
-            if (!is_numeric($rawOwner)) {
-                $this->setMessage('bulk_registration', 'error', _('Owner must be a numeric user ID.'));
-                $this->showBulkRegistrationForm();
-                return;
-            }
-            // owner=0 is treated as orphan everywhere else; coerce to null so
-            // the at-least-one-owner guard below catches it.
-            $parsedOwner = (int)$rawOwner;
-            $owner = $parsedOwner > 0 ? $parsedOwner : null;
-        } else {
-            $owner = null;
-        }
-        $groups = $this->request->getPostParam('groups');
-        $selected_groups = $ownershipMode->isGroupOwnerAllowed() && is_array($groups) ?
-            array_map('intval', $groups) : [];
-
-        if (!empty($selected_groups)) {
-            $userGroupRepo = $this->createUserGroupRepository();
-            $existing = $userGroupRepo->findExistingIds($selected_groups);
-            $unknown = array_values(array_diff($selected_groups, $existing));
-            if (!empty($unknown)) {
-                $this->setMessage('bulk_registration', 'error', sprintf(_('Unknown group ID(s): %s'), implode(',', $unknown)));
-                $this->showBulkRegistrationForm();
-                return;
-            }
-            $selected_groups = $existing;
-
-            // Reject (don't silently drop) groups the caller is not a member of
-            if (!$this->hasPermission('user_is_ueberuser')) {
-                $callerId = $this->userContextService->getLoggedInUserId();
-                $allowedIds = array_map(fn($g) => $g->getId(), $userGroupRepo->findByUserId($callerId));
-                $disallowed = array_values(array_diff($selected_groups, $allowedIds));
-                if (!empty($disallowed)) {
-                    $this->setMessage('bulk_registration', 'error', sprintf(_('You can only assign groups you are a member of (disallowed: %s)'), implode(',', $disallowed)));
-                    $this->showBulkRegistrationForm();
-                    return;
-                }
-            }
-        }
-
-        if ($owner === null && empty($selected_groups)) {
-            $this->setMessage('bulk_registration', 'error', _('At least one user or group must be selected as owner.'));
+        $ownership = $this->resolveZoneOwnershipFromForm($this->request);
+        if ($ownership->hasError()) {
+            $this->setMessage('bulk_registration', 'error', ZoneOwnershipFormResolver::errorMessage($ownership));
             $this->showBulkRegistrationForm();
             return;
         }
-
-        // Block assigning zones to a different user without elevated permission
-        $callerId = $this->userContextService->getLoggedInUserId();
-        if ($owner !== null && $owner !== $callerId) {
-            $isAdmin = $this->hasPermission('user_is_ueberuser');
-            if (!$isAdmin && !$this->hasPermission('zone_content_edit_others')) {
-                $this->setMessage('bulk_registration', 'error', _('You do not have permission to create zones for other users.'));
-                $this->showBulkRegistrationForm();
-                return;
-            }
-        }
+        $owner = $ownership->owner;
+        $selected_groups = $ownership->groupIds;
 
         $added_domains = [];
         $failed_domains = [];

@@ -25,8 +25,9 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 
 /**
- * Resolves the user-owner and group-owner assignment for an API zone-create
- * request, applying the active zone_ownership_mode and permission rules.
+ * Resolves the user-owner and group-owner assignment for a new zone, applying
+ * the active zone_ownership_mode and permission rules. The API hands in its
+ * JSON body; the web forms hand in the owner and groups they already parsed.
  */
 class ZoneCreateOwnershipResolver
 {
@@ -53,38 +54,28 @@ class ZoneCreateOwnershipResolver
         $groupIds = [];
         if ($groupIdsSupplied) {
             if (!is_array($input['group_ids'])) {
-                return ZoneOwnershipResolution::error('group_ids must be an array of integers', 400);
+                return ZoneOwnershipResolution::error('group_ids must be an array of integers', 400, ZoneOwnershipResolution::INVALID_INPUT);
             }
             foreach ($input['group_ids'] as $candidate) {
                 if (!is_int($candidate) && !(is_string($candidate) && ctype_digit($candidate))) {
-                    return ZoneOwnershipResolution::error('group_ids must be an array of integers', 400);
+                    return ZoneOwnershipResolution::error('group_ids must be an array of integers', 400, ZoneOwnershipResolution::INVALID_INPUT);
                 }
                 $groupIds[] = (int)$candidate;
-            }
-            $groupIds = array_values(array_unique($groupIds));
-
-            if (!empty($groupIds)) {
-                $existing = $this->groups->findExistingIds($groupIds);
-                $missing = array_values(array_diff($groupIds, $existing));
-                if (!empty($missing)) {
-                    return ZoneOwnershipResolution::error(
-                        'Unknown group ID(s): ' . implode(',', $missing),
-                        404
-                    );
-                }
             }
         }
 
         if (!$this->mode->isUserOwnerAllowed() && $ownerSupplied && $input['owner_user_id'] !== null) {
             return ZoneOwnershipResolution::error(
                 'User-owner assignment is disabled by the current zone ownership mode (groups_only). Omit owner_user_id or set it to null.',
-                400
+                400,
+                ZoneOwnershipResolution::USER_OWNER_DISABLED
             );
         }
         if (!$this->mode->isGroupOwnerAllowed() && !empty($groupIds)) {
             return ZoneOwnershipResolution::error(
                 'Group-owner assignment is disabled by the current zone ownership mode (users_only).',
-                400
+                400,
+                ZoneOwnershipResolution::GROUP_OWNER_DISABLED
             );
         }
 
@@ -98,7 +89,7 @@ class ZoneCreateOwnershipResolver
                 $owner = null;
             } elseif ($ownerSupplied) {
                 if (!is_int($rawOwner) && !(is_string($rawOwner) && ctype_digit($rawOwner))) {
-                    return ZoneOwnershipResolution::error('owner_user_id must be a numeric ID', 400);
+                    return ZoneOwnershipResolution::error('owner_user_id must be a numeric ID', 400, ZoneOwnershipResolution::INVALID_INPUT);
                 }
                 $parsed = (int)$rawOwner;
                 // Treat 0/negative as "no user owner"; matches how zones.owner=0
@@ -111,10 +102,38 @@ class ZoneCreateOwnershipResolver
             }
         }
 
+        return $this->resolveOwnership($owner, $groupIds, $callerUserId);
+    }
+
+    /**
+     * The rules shared by the API and the web forms: the groups must exist, a
+     * zone needs at least one owner, giving it to another user needs
+     * zone_content_edit_others, and non-admins may only pick their own groups.
+     *
+     * @param list<int> $groupIds
+     */
+    public function resolveOwnership(?int $owner, array $groupIds, int $callerUserId): ZoneOwnershipResolution
+    {
+        $groupIds = array_values(array_unique($groupIds));
+
+        if (!empty($groupIds)) {
+            $existing = $this->groups->findExistingIds($groupIds);
+            $missing = array_values(array_diff($groupIds, $existing));
+            if (!empty($missing)) {
+                return ZoneOwnershipResolution::error(
+                    'Unknown group ID(s): ' . implode(',', $missing),
+                    404,
+                    ZoneOwnershipResolution::UNKNOWN_GROUPS,
+                    $missing
+                );
+            }
+        }
+
         if ($owner === null && empty($groupIds)) {
             return ZoneOwnershipResolution::error(
                 'At least one of owner_user_id or group_ids must be provided',
-                400
+                400,
+                ZoneOwnershipResolution::NO_OWNER
             );
         }
 
@@ -122,7 +141,8 @@ class ZoneCreateOwnershipResolver
             if (!$this->permissions->hasPermission($callerUserId, 'zone_content_edit_others')) {
                 return ZoneOwnershipResolution::error(
                     'You do not have permission to create zones for other users',
-                    403
+                    403,
+                    ZoneOwnershipResolution::OTHER_OWNER_FORBIDDEN
                 );
             }
         }
@@ -133,7 +153,9 @@ class ZoneCreateOwnershipResolver
             if (!empty($disallowed)) {
                 return ZoneOwnershipResolution::error(
                     'You can only assign groups you are a member of (disallowed: ' . implode(',', $disallowed) . ')',
-                    403
+                    403,
+                    ZoneOwnershipResolution::GROUPS_NOT_MEMBER,
+                    $disallowed
                 );
             }
         }

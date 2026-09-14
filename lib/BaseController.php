@@ -23,6 +23,7 @@
 namespace Poweradmin;
 
 use InvalidArgumentException;
+use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
@@ -39,6 +40,8 @@ use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
+use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
+use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 use Poweradmin\Domain\Service\ZoneOverlapService;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -523,6 +526,19 @@ abstract class BaseController
     protected function createUserGroupRepository(): UserGroupRepositoryInterface
     {
         return $this->services()->userGroupRepository();
+    }
+
+    protected function createZoneCreateOwnershipResolver(): ZoneCreateOwnershipResolver
+    {
+        return $this->services()->zoneCreateOwnershipResolver();
+    }
+
+    /**
+     * Owner and groups of the add-zone forms, checked against the shared ownership rules.
+     */
+    protected function resolveZoneOwnershipFromForm(HttpRequest $request): ZoneOwnershipResolution
+    {
+        return $this->services()->zoneOwnershipFormResolver()->resolve($request, (int)$this->getCurrentUserId());
     }
 
     protected function createUserGroupMemberRepository(): UserGroupMemberRepositoryInterface

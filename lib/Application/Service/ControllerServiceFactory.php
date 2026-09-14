@@ -39,6 +39,8 @@ use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
+use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
+use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -65,6 +67,7 @@ class ControllerServiceFactory
 
     private ?DnsBackendProvider $dnsBackendProvider = null;
     private ?PermissionService $permissionService = null;
+    private ?ZoneOwnershipModeService $zoneOwnershipModeService = null;
     private ?CatalogZoneService $catalogZoneService = null;
     private ?UserPreferenceService $userPreferenceService = null;
     private ?RepositoryFactory $repositoryFactory = null;
@@ -175,6 +178,21 @@ class ControllerServiceFactory
     public function userGroupRepository(): UserGroupRepositoryInterface
     {
         return new DbUserGroupRepository($this->db);
+    }
+
+    public function zoneOwnershipModeService(): ZoneOwnershipModeService
+    {
+        return $this->zoneOwnershipModeService ??= new ZoneOwnershipModeService($this->config);
+    }
+
+    public function zoneCreateOwnershipResolver(): ZoneCreateOwnershipResolver
+    {
+        return new ZoneCreateOwnershipResolver($this->zoneOwnershipModeService(), $this->permissionService(), $this->userGroupRepository());
+    }
+
+    public function zoneOwnershipFormResolver(): ZoneOwnershipFormResolver
+    {
+        return new ZoneOwnershipFormResolver($this->zoneOwnershipModeService(), $this->zoneCreateOwnershipResolver());
     }
 
     public function userGroupMemberRepository(): UserGroupMemberRepositoryInterface

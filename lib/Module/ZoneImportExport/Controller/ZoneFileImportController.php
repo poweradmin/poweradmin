@@ -28,8 +28,10 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
+use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
@@ -355,30 +357,19 @@ class ZoneFileImportController extends BaseController
             } else {
                 $ownerForCreate = $userId;
             }
-            $groupsForCreate = [];
-            if ($ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups'])) {
-                $groupsForCreate = array_values(array_unique(array_map('intval', $_POST['groups'])));
-                $userGroupRepo = $this->createUserGroupRepository();
-                $existing = $userGroupRepo->findExistingIds($groupsForCreate);
-                $unknown = array_values(array_diff($groupsForCreate, $existing));
-                if (!empty($unknown)) {
-                    $this->showError(sprintf(_('Unknown group ID(s): %s'), implode(',', $unknown)));
-                    return;
-                }
-                if (!$this->hasPermission('user_is_ueberuser')) {
-                    $allowedIds = array_map(fn($g) => $g->getId(), $userGroupRepo->findByUserId($userId));
-                    $disallowed = array_values(array_diff($existing, $allowedIds));
-                    if (!empty($disallowed)) {
-                        $this->showError(sprintf(_('You can only assign groups you are a member of (disallowed: %s)'), implode(',', $disallowed)));
-                        return;
-                    }
-                }
-                $groupsForCreate = $existing;
-            }
-            if ($ownerForCreate === null && empty($groupsForCreate)) {
+            $groupsForCreate = $ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups'])
+                ? array_map('intval', $_POST['groups'])
+                : [];
+            $ownership = $this->createZoneCreateOwnershipResolver()->resolveOwnership($ownerForCreate, $groupsForCreate, $userId);
+            if ($ownership->code === ZoneOwnershipResolution::NO_OWNER) {
                 $this->showError(_('Cannot create a new zone via import: select at least one group, or leave "No user owner" unchecked.'));
                 return;
             }
+            if ($ownership->hasError()) {
+                $this->showError(ZoneOwnershipFormResolver::errorMessage($ownership));
+                return;
+            }
+            $groupsForCreate = $ownership->groupIds;
             $overlapError = $this->getZoneOverlapError($zoneName);
             if ($overlapError !== null) {
                 $this->showError($overlapError);

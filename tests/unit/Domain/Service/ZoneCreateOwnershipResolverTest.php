@@ -28,6 +28,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use TestHelpers\BuildsPermissionService;
 
@@ -274,6 +275,8 @@ class ZoneCreateOwnershipResolverTest extends TestCase
         $this->assertSame(404, $result->status);
         $this->assertNotNull($result->error);
         $this->assertStringContainsString('99', $result->error);
+        $this->assertSame(ZoneOwnershipResolution::UNKNOWN_GROUPS, $result->code);
+        $this->assertSame([99], $result->ids);
     }
 
     #[Test]
@@ -286,5 +289,20 @@ class ZoneCreateOwnershipResolverTest extends TestCase
         $this->assertSame(403, $result->status);
         $this->assertNotNull($result->error);
         $this->assertStringContainsString('9', $result->error);
+        $this->assertSame(ZoneOwnershipResolution::GROUPS_NOT_MEMBER, $result->code);
+        $this->assertSame([9], $result->ids);
+    }
+
+    #[Test]
+    public function resolveOwnershipAppliesTheSharedRulesToParsedInput(): void
+    {
+        $resolver = $this->buildResolver('both', [], [3]);
+
+        $this->assertSame(ZoneOwnershipResolution::NO_OWNER, $resolver->resolveOwnership(null, [], self::CALLER_ID)->code);
+        $this->assertSame(ZoneOwnershipResolution::OTHER_OWNER_FORBIDDEN, $resolver->resolveOwnership(self::CALLER_ID + 1, [], self::CALLER_ID)->code);
+
+        $ok = $resolver->resolveOwnership(self::CALLER_ID, [3, 3], self::CALLER_ID);
+        $this->assertFalse($ok->hasError());
+        $this->assertSame([3], $ok->groupIds);
     }
 }

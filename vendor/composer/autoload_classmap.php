@@ -1197,6 +1197,7 @@ return array(
     'Poweradmin\\Application\\Service\\UsernameRecoveryService' => $baseDir . '/lib/Application/Service/UsernameRecoveryService.php',
     'Poweradmin\\Application\\Service\\ZoneAccessNotificationService' => $baseDir . '/lib/Application/Service/ZoneAccessNotificationService.php',
     'Poweradmin\\Application\\Service\\ZoneGroupService' => $baseDir . '/lib/Application/Service/ZoneGroupService.php',
+    'Poweradmin\\Application\\Service\\ZoneOwnershipFormResolver' => $baseDir . '/lib/Application/Service/ZoneOwnershipFormResolver.php',
     'Poweradmin\\Application\\Service\\ZoneService' => $baseDir . '/lib/Application/Service/ZoneService.php',
     'Poweradmin\\Application\\Service\\ZoneSyncService' => $baseDir . '/lib/Application/Service/ZoneSyncService.php',
     'Poweradmin\\BaseController' => $baseDir . '/lib/BaseController.php',

@@ -23,6 +23,7 @@
 namespace Poweradmin\Module\SecondaryZoneImport\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DomainUtility;
@@ -158,13 +159,14 @@ class SecondaryZoneImportController extends BaseController
         }
 
         $zone = DnsIdnService::toPunycode($rawDomain);
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
-        [$owner, $groups, $ownerError] = $this->resolveOwnership($ownershipMode);
-        if ($ownerError !== null) {
-            $this->setMessage('import', 'error', $ownerError);
+        $ownership = $this->resolveZoneOwnershipFromForm($this->request);
+        if ($ownership->hasError()) {
+            $this->setMessage('import', 'error', ZoneOwnershipFormResolver::errorMessage($ownership));
             $this->showForm();
             return;
         }
+        $owner = $ownership->owner;
+        $groups = $ownership->groupIds;
 
         $domainRepository = $this->createDomainRepository();
         $recordRepository = $this->createRecordRepository();
@@ -251,54 +253,6 @@ class SecondaryZoneImportController extends BaseController
 
         $this->setMessage('edit', 'success', _('Zone has been converted to a primary zone.'));
         $this->redirect('/zones/' . $zoneId . '/edit');
-    }
-
-    /**
-     * Determine the owner and group assignment for the imported zone, mirroring
-     * the add-secondary-zone form: a user owner (default: the current user) plus
-     * any selected groups. Assigning to another user needs elevated permission.
-     *
-     * @return array{0: ?int, 1: int[], 2: ?string} [owner, groupIds, errorMessage]
-     */
-    private function resolveOwnership(ZoneOwnershipModeService $ownershipMode): array
-    {
-        $callerId = $this->userContextService->getLoggedInUserId();
-        $ownerInput = $this->request->getPostParam('owner');
-        $owner = $ownershipMode->isUserOwnerAllowed() && !empty($ownerInput) ? (int)$ownerInput : null;
-
-        if (
-            $owner !== null && $owner !== $callerId
-            && !$this->hasPermission('user_is_ueberuser')
-            && !$this->hasPermission('zone_content_edit_others')
-        ) {
-            return [null, [], _('You do not have permission to create zones for other users.')];
-        }
-
-        $groups = [];
-        $groupsInput = $this->request->getPostParam('groups');
-        if ($ownershipMode->isGroupOwnerAllowed() && is_array($groupsInput)) {
-            $requested = array_values(array_unique(array_map('intval', $groupsInput)));
-            $userGroupRepo = $this->createUserGroupRepository();
-            $existing = $userGroupRepo->findExistingIds($requested);
-            $unknown = array_values(array_diff($requested, $existing));
-            if (!empty($unknown)) {
-                return [null, [], sprintf(_('Unknown group ID(s): %s'), implode(',', $unknown))];
-            }
-            if (!$this->hasPermission('user_is_ueberuser')) {
-                $allowedIds = array_map(fn($g) => $g->getId(), $userGroupRepo->findByUserId($callerId));
-                $disallowed = array_values(array_diff($existing, $allowedIds));
-                if (!empty($disallowed)) {
-                    return [null, [], sprintf(_('You can only assign groups you are a member of (disallowed: %s)'), implode(',', $disallowed))];
-                }
-            }
-            $groups = $existing;
-        }
-
-        if ($owner === null && empty($groups)) {
-            return [null, [], _('At least one user or group must be selected as owner.')];
-        }
-
-        return [$owner, $groups, null];
     }
 
     /**
