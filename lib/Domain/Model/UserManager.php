@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Model;
 
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -106,14 +107,9 @@ class UserManager
 
         $this->apiPermissionService ??= new ApiPermissionService($this->db);
 
-        return match ($this->apiPermissionService->checkPermissionTemplateAssignment($userId, $targetUserId, $permTemplId)) {
-            null => null,
-            ApiPermissionService::TEMPLATE_SELF_ASSIGN_DENIED =>
-                _('Changing your own permission template requires the permission to edit other users.'),
-            ApiPermissionService::TEMPLATE_SUPERUSER_DENIED =>
-                _('Assigning a permission template with administrator rights requires administrator rights.'),
-            default => _('You do not have the permission to change the permission template.'),
-        };
+        $error = $this->apiPermissionService->checkPermissionTemplateAssignment($userId, $targetUserId, $permTemplId);
+
+        return $error === null ? null : UserFormMessages::templateAssignmentError($error);
     }
 
     /**
@@ -143,23 +139,6 @@ class UserManager
         $this->messageService->addSystemError($error);
 
         return true;
-    }
-
-    /**
-     * Check if Username Exists
-     *
-     * Checks if a given username exists in the database.
-     *
-     * @param string $user Username
-     *
-     * @return boolean true if exists, false if not
-     */
-    public static function userExists($db, string $user): bool
-    {
-        $stmt = $db->prepare("SELECT id FROM users WHERE username = :username");
-        $stmt->execute([':username' => $user]);
-        $response = $stmt->fetchColumn();
-        return (bool)$response;
     }
 
     /**
@@ -535,90 +514,5 @@ class UserManager
             return false;
         }
         return true;
-    }
-
-    /**
-     * Add a new user
-     *
-     * @param array $details Array of User details
-     *
-     * @return int|false The new user ID on success, false otherwise
-     */
-    public function addNewUser(array $details): int|false
-    {
-        $ldap_use = $this->config->get('ldap', 'enabled');
-        $validation = new Validator($this->config);
-
-        if (!$this->hasPermission('user_add_new')) {
-            $this->messageService->addSystemError(_("You do not have the permission to add a new user."));
-
-            return false;
-        } elseif (self::userExists($this->db, $details['username'])) {
-            $this->messageService->addSystemError(_('Username exist already, please choose another one.'));
-
-            return false;
-        } elseif ($details['username'] === '') {
-            $this->messageService->addSystemError(_('Enter a valid user name.'));
-
-            return false;
-        } elseif (!$validation->isValidEmail($details['email'])) {
-            $this->messageService->addSystemError(_('Enter a valid email address.'));
-
-            return false;
-        } elseif (self::emailExists($this->db, $details['email'])) {
-            $this->messageService->addSystemError(_('Email address already exists, please choose another one.'));
-
-            return false;
-        }
-
-        // Callers without user_edit_templ_perm inherit the creator's own template
-        // below, so only a chosen template needs gating.
-        $mayAssignTemplate = $this->hasPermission('user_edit_templ_perm');
-        if ($mayAssignTemplate && $this->templateAssignmentRejected(null, (int)($details['perm_templ'] ?? 0), null)) {
-            return false;
-        }
-
-        // Set active status (defaults to 0 if not set)
-        $active = isset($details['active']) && $details['active'] == 1 ? 1 : 0;
-
-        if ($ldap_use && isset($details['use_ldap']) && $details['use_ldap'] == 1) {
-            $use_ldap = 1;
-            $auth_method = AuthMethod::resolve(true, null)->value;
-            $password_hash = AuthMethod::LDAP_PASSWORD_PLACEHOLDER;
-        } else {
-            $use_ldap = 0;
-            $auth_method = AuthMethod::resolve(false, null)->value;
-            $config = ConfigurationManager::getInstance();
-            $config->initialize();
-            $userAuthService = new UserAuthenticationService(
-                $config->get('security', 'password_encryption'),
-                $config->get('security', 'password_cost')
-            );
-            $password_hash = $userAuthService->hashPassword($details['password']);
-        }
-
-        $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method) VALUES (:username, :password, :fullname, :email, :description, :perm_templ, :active, :use_ldap, :auth_method)";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':username', $details['username']);
-        $stmt->bindValue(':password', $password_hash);
-        $stmt->bindValue(':fullname', $details['fullname'] ?? '');
-        $stmt->bindValue(':email', $details['email']);
-        $stmt->bindValue(':description', $details['descr'] ?? '');
-
-        if ($mayAssignTemplate) {
-            $stmt->bindValue(':perm_templ', $details['perm_templ'], PDO::PARAM_INT);
-        } else {
-            $userRepository = $this->userRepository();
-            $current_user = $userRepository->getUserDetailList((bool)$ldap_use, null, (int)$_SESSION[SessionKeys::USERID]);
-            $stmt->bindValue(':perm_templ', $current_user[0]['tpl_id'], PDO::PARAM_INT);
-        }
-
-        $stmt->bindValue(':active', $active, PDO::PARAM_INT);
-        $stmt->bindValue(':use_ldap', $use_ldap, PDO::PARAM_INT);
-        $stmt->bindValue(':auth_method', $auth_method);
-        $stmt->execute();
-
-        return (int)$this->db->lastInsertId('users_id_seq');
     }
 }

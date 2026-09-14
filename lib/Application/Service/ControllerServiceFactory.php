@@ -39,6 +39,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
+use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
@@ -73,6 +74,7 @@ class ControllerServiceFactory
     private ?DnsBackendProvider $dnsBackendProvider = null;
     private ?PermissionService $permissionService = null;
     private ?ApiPermissionService $apiPermissionService = null;
+    private ?UserManagementService $userManagementService = null;
     private ?ZoneOwnershipModeService $zoneOwnershipModeService = null;
     private ?ZoneSigningService $zoneSigningService = null;
     private ?CatalogZoneService $catalogZoneService = null;
@@ -188,6 +190,24 @@ class ControllerServiceFactory
     public function apiPermissionService(): ApiPermissionService
     {
         return $this->apiPermissionService ??= new ApiPermissionService($this->db, $this->permissionService());
+    }
+
+    /**
+     * The user service the API uses, over the request's shared permission cache
+     */
+    public function userManagementService(): UserManagementService
+    {
+        return $this->userManagementService ??= new UserManagementService(
+            $this->userRepository(),
+            $this->permissionService(),
+            $this->userGroupRepository(),
+            new UserAuthenticationService(
+                $this->config->get('security', 'password_encryption', 'bcrypt'),
+                $this->config->get('security', 'password_cost', 12)
+            ),
+            new PasswordPolicyService($this->config),
+            (bool)$this->config->get('ldap', 'enabled', false)
+        );
     }
 
     public function userGroupRepository(): UserGroupRepositoryInterface

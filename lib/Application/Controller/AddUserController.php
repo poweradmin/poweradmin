@@ -36,8 +36,9 @@ use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\PasswordGenerationService;
 use Poweradmin\Application\Service\PasswordPolicyService;
+use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -109,51 +110,55 @@ class AddUserController extends BaseController
             return;
         }
 
-        if (!$this->validatePasswordPolicy()) {
-            $this->renderAddUserForm($policyConfig);
-            return;
-        }
-
-        $legacyUsers = new UserManager($this->db, $this->getConfig());
         $userParams = $this->request->getPostParams();
+        $callerId = (int)$this->getCurrentUserId();
 
         // The template picker is hidden when access templates are disabled or the
         // caller lacks user_edit_templ_perm; those callers get the minimal one.
         $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
         $canChooseTemplate = $showUserAccessTemplates && $this->hasPermission('user_edit_templ_perm');
+        $input = [
+            'username' => (string)($userParams['username'] ?? ''),
+            'fullname' => (string)($userParams['fullname'] ?? ''),
+            'email' => (string)($userParams['email'] ?? ''),
+            'description' => (string)($userParams['descr'] ?? ''),
+            'active' => ($userParams['active'] ?? '') == 1 ? 1 : 0,
+            'use_ldap' => ($userParams['use_ldap'] ?? '') == 1,
+            'password' => (string)($userParams['password'] ?? ''),
+            'perm_templ' => $canChooseTemplate && ($userParams['perm_templ'] ?? '') !== '' ? $userParams['perm_templ'] : null,
+        ];
 
-        if (!$canChooseTemplate || !isset($userParams['perm_templ']) || $userParams['perm_templ'] === '') {
-            $minimalTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user');
-            if ($minimalTemplateId === null) {
-                $this->setMessage('add_user', 'error', _('No non-superuser permission template is available to assign.'));
-                $this->renderAddUserForm($policyConfig);
-                return;
-            }
-            $userParams['perm_templ'] = $minimalTemplateId;
-        }
-
-        // Validate that the template is a user template
-        if (!$this->permissionTemplateRepository->validateTemplateType((int)$userParams['perm_templ'], 'user')) {
-            $this->setMessage('add_user', 'error', _('Invalid permission template: must be a user template'));
+        // Same gate as the API: the template must stay within the caller's own authority,
+        // and an omitted one falls back to the minimal template rather than Administrator.
+        $templateError = PermissionTemplateAssignmentGuard::apply(
+            $this->createPermissionService(),
+            $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user'),
+            $callerId,
+            $input,
+            null
+        );
+        if ($templateError !== null) {
+            $this->setMessage('add_user', 'error', UserFormMessages::templateAssignmentError($templateError));
             $this->renderAddUserForm($policyConfig);
             return;
         }
 
         // Handle auto-generated password
         $generatedPassword = '';
-        if (!$this->request->getPostParam('use_ldap') && $this->request->getPostParam('auto_generate_password')) {
+        if (!$input['use_ldap'] && $this->request->getPostParam('auto_generate_password')) {
             $generatedPassword = $this->passwordGenerationService->generatePassword();
-            $userParams['password'] = $generatedPassword;
+            $input['password'] = $generatedPassword;
         }
 
-        $newUserId = $legacyUsers->addNewUser($userParams);
-        if ($newUserId !== false) {
+        $created = $this->createUserManagementService()->createUser($input);
+        if ($created['success']) {
+            $newUserId = (int)$created['user_id'];
             $successMessage = _('The user has been created successfully.');
 
             // Handle group membership assignments
             $groupIds = $this->request->getPostParam('add_to_groups', []);
             if (is_array($groupIds) && !empty($groupIds)) {
-                $this->assignUserToGroups($newUserId, $groupIds, $userParams['username']);
+                $this->assignUserToGroups($newUserId, $groupIds, $input['username']);
             }
 
             // Handle generated password and email sending
@@ -170,12 +175,12 @@ class AddUserController extends BaseController
                 $configManager = ConfigurationManager::getInstance();
                 $mailEnabled = $configManager->get('mail', 'enabled', false);
 
-                if ($mailEnabled && $userParams['email'] && $this->request->getPostParam('send_email')) {
+                if ($mailEnabled && $input['email'] && $this->request->getPostParam('send_email')) {
                     $emailSent = $this->mailService->sendNewAccountEmail(
-                        $userParams['email'],
-                        $userParams['username'],
+                        $input['email'],
+                        $input['username'],
                         $generatedPassword,
-                        $userParams['fullname'] ?? ''
+                        $input['fullname']
                     );
 
                     if ($emailSent) {
@@ -186,7 +191,7 @@ class AddUserController extends BaseController
                 }
 
                 // If password is not shown to admin and not sent by email, inform admin
-                if (!$showGeneratedPasswords && !($mailEnabled && $userParams['email'] && $this->request->getPostParam('send_email'))) {
+                if (!$showGeneratedPasswords && !($mailEnabled && $input['email'] && $this->request->getPostParam('send_email'))) {
                     $successMessage .= ' ' . _('A password was generated but is not displayed for security reasons.');
                 }
             }
@@ -195,13 +200,14 @@ class AddUserController extends BaseController
                 'client_ip:%s user:%s operation:add_user username:%s email:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $this->userContextService->getLoggedInUsername(),
-                $userParams['username'],
-                $userParams['email']
+                $input['username'],
+                $input['email']
             ));
 
             $this->setMessage('users', 'success', $successMessage);
             $this->redirect('/users');
         } else {
+            $this->setMessage('add_user', 'error', UserFormMessages::errorMessage($created));
             $this->renderAddUserForm($policyConfig);
         }
     }
@@ -275,40 +281,11 @@ class AddUserController extends BaseController
             ]
         ];
 
-        // Add password validation for non-LDAP users (unless auto-generate is checked)
-        if (!$this->request->getPostParam('use_ldap') && !$this->request->getPostParam('auto_generate_password')) {
-            $constraints['password'] = [
-                new Assert\NotBlank()
-            ];
-        }
-
         $this->setValidationConstraints($constraints);
         $data = $this->request->getPostParams();
 
         if (!$this->doValidateRequest($data)) {
             $this->setMessage('add_user', 'error', _('Please fill in all required fields correctly.'));
-            return false;
-        }
-
-        return true;
-    }
-
-    private function validatePasswordPolicy(): bool
-    {
-        if ($this->request->getPostParam('use_ldap')) {
-            return true;
-        }
-
-        // Skip validation if we're auto-generating a password
-        if ($this->request->getPostParam('auto_generate_password')) {
-            return true;
-        }
-
-        $password = $this->request->getPostParam('password');
-        $policyErrors = $this->passwordPolicyService->validatePassword($password);
-
-        if (!empty($policyErrors)) {
-            $this->setMessage('add_user', 'error', array_shift($policyErrors));
             return false;
         }
 

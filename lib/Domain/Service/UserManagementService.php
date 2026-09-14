@@ -38,6 +38,17 @@ use Poweradmin\Domain\Enum\AuthMethod;
  */
 class UserManagementService
 {
+    public const ERR_USERNAME_REQUIRED = 'username_required';
+    public const ERR_INVALID_LDAP = 'invalid_ldap';
+    public const ERR_PASSWORD_REQUIRED = 'password_required';
+    public const ERR_PASSWORD_POLICY = 'password_policy';
+    public const ERR_FIELD_LENGTH = 'field_length';
+    public const ERR_USERNAME_EXISTS = 'username_exists';
+    public const ERR_EMAIL_EXISTS = 'email_exists';
+    public const ERR_NO_TEMPLATE = 'no_template';
+    public const ERR_TEMPLATE_NOT_FOUND = 'template_not_found';
+    public const ERR_WRITE = 'write';
+
     private UserRepository $userRepository;
     private UserProfileAssembler $profileAssembler;
     private UserAuthenticationService $authService;
@@ -200,7 +211,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Username is required',
-                'status' => 400
+                'status' => 400,
+                'code' => self::ERR_USERNAME_REQUIRED,
             ];
         }
 
@@ -213,7 +225,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Password is required',
-                'status' => 400
+                'status' => 400,
+                'code' => self::ERR_PASSWORD_REQUIRED,
             ];
         }
 
@@ -230,7 +243,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Username already exists',
-                'status' => 409
+                'status' => 409,
+                'code' => self::ERR_USERNAME_EXISTS,
             ];
         }
 
@@ -239,7 +253,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Email already exists',
-                'status' => 409
+                'status' => 409,
+                'code' => self::ERR_EMAIL_EXISTS,
             ];
         }
 
@@ -249,7 +264,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'No permission template available to assign',
-                'status' => 400
+                'status' => 400,
+                'code' => self::ERR_NO_TEMPLATE,
             ];
         }
 
@@ -258,7 +274,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Permission template not found',
-                'status' => 400
+                'status' => 400,
+                'code' => self::ERR_TEMPLATE_NOT_FOUND,
             ];
         }
         $userData['perm_templ'] = $permTemplId;
@@ -274,7 +291,8 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => 'Failed to create user',
-                    'status' => 500
+                    'status' => 500,
+                    'code' => self::ERR_WRITE,
                 ];
             }
 
@@ -287,7 +305,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'Failed to create user: ' . $e->getMessage(),
-                'status' => 500
+                'status' => 500,
+                'code' => self::ERR_WRITE,
             ];
         }
     }
@@ -614,7 +633,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'use_ldap must be a boolean',
-                'status' => 400
+                'status' => 400,
+                'code' => self::ERR_INVALID_LDAP,
             ];
         }
 
@@ -622,7 +642,8 @@ class UserManagementService
             return [
                 'success' => false,
                 'message' => 'LDAP authentication is not enabled',
-                'status' => 400
+                'status' => 400,
+                'code' => self::ERR_INVALID_LDAP,
             ];
         }
 
@@ -648,7 +669,8 @@ class UserManagementService
         return [
             'success' => false,
             'message' => $errors[0],
-            'status' => 400
+            'status' => 400,
+            'code' => self::ERR_PASSWORD_POLICY,
         ];
     }
 
@@ -680,7 +702,8 @@ class UserManagementService
                 return [
                     'success' => false,
                     'message' => ucfirst($field) . " must not exceed $max characters",
-                    'status' => 400
+                    'status' => 400,
+                    'code' => self::ERR_FIELD_LENGTH,
                 ];
             }
         }

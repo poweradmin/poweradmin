@@ -37,11 +37,8 @@ use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\GroupReferenceResolver;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\SelfEditFieldGuard;
-use Poweradmin\Application\Service\PasswordPolicyService;
-use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
@@ -92,24 +89,12 @@ class UsersController extends PublicApiController
 
         $this->userRepository = $this->createUserRepository();
         $this->groupRepository = $this->createUserGroupRepository();
-        $permissionService = new PermissionService($this->userRepository);
-        $config = $this->getConfig();
-        $this->userManagementService = new UserManagementService(
-            $this->userRepository,
-            $permissionService,
-            $this->groupRepository,
-            new UserAuthenticationService(
-                $config->get('security', 'password_encryption', 'bcrypt'),
-                $config->get('security', 'password_cost', 12)
-            ),
-            new PasswordPolicyService($config),
-            (bool)$config->get('ldap', 'enabled', false)
-        );
+        $this->userManagementService = $this->createUserManagementService();
         $this->membershipService = new GroupMembershipService(
             $this->createUserGroupMemberRepository(),
             $this->groupRepository
         );
-        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->apiPermissionService = $this->createApiPermissionService();
         $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
     }

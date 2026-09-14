@@ -39,6 +39,7 @@ use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
@@ -485,6 +486,11 @@ abstract class BaseController
     protected function createPermissionService(): PermissionService
     {
         return $this->services()->permissionService();
+    }
+
+    protected function createUserManagementService(): UserManagementService
+    {
+        return $this->services()->userManagementService();
     }
 
     protected function createApiPermissionService(): ApiPermissionService

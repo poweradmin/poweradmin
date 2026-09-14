@@ -265,6 +265,16 @@ class DbCompatTest extends TestCase
         $this->assertSame('email = ?', DbCompat::accentSensitiveEquals(null, 'email'));
     }
 
+    public function testCaseInsensitiveEqualsFoldsCaseOnEveryBackend(): void
+    {
+        $this->assertSame(
+            'LOWER(CONVERT(email USING utf8mb4)) COLLATE utf8mb4_bin = LOWER(:email)',
+            DbCompat::caseInsensitiveEquals('mysql', 'email', ':email')
+        );
+        $this->assertSame('LOWER(email) = LOWER(:email)', DbCompat::caseInsensitiveEquals('pgsql', 'email', ':email'));
+        $this->assertSame('LOWER(email) = LOWER(?)', DbCompat::caseInsensitiveEquals('sqlite', 'email'));
+    }
+
     public function testCastToStringUsesAsciiCharsetOnMySQL(): void
     {
         // ascii must match record_comment_links.record_id or MariaDB 11.6+ rejects the comparison

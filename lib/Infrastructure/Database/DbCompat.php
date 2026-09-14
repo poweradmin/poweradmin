@@ -410,4 +410,21 @@ final class DbCompat
             default => "$column = $placeholder",
         };
     }
+
+    /**
+     * Equality that ignores case but not accents on every backend, for values
+     * like email addresses where User@x and user@x are one identity.
+     *
+     * @param string|null $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @param string $column The column reference to compare
+     * @param string $placeholder The bound-parameter placeholder (e.g. "?" or ":name")
+     * @return string The WHERE-clause predicate
+     */
+    public static function caseInsensitiveEquals(?string $db_type, string $column, string $placeholder = '?'): string
+    {
+        return match ($db_type) {
+            'mysql', 'mysqli' => self::accentSensitiveEquals($db_type, $column, $placeholder),
+            default => "LOWER($column) = LOWER($placeholder)",
+        };
+    }
 }

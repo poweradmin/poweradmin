@@ -805,8 +805,7 @@ class DbUserRepository implements UserRepository
 
     public function getUserByEmail(string $email): ?array
     {
-        // Accent-exact match, so a look-alike email cannot resolve to another account.
-        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'users.email', ':email');
+        $match = $this->emailEquals('users.email', ':email');
         $query = "SELECT users.*, perm_templ.name AS perm_templ_name
                   FROM users
                   LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
@@ -821,12 +820,21 @@ class DbUserRepository implements UserRepository
 
     public function countUsersByEmail(string $email): int
     {
-        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
+        $match = $this->emailEquals('email', ':email');
         $query = "SELECT COUNT(*) FROM users WHERE $match";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':email' => $email]);
 
         return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Email addresses match regardless of case but accent-exact, so User@x and
+     * user@x are one account while a look-alike address cannot resolve to another.
+     */
+    private function emailEquals(string $column, string $placeholder): string
+    {
+        return DbCompat::caseInsensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), $column, $placeholder);
     }
 
     public function updateUser(int $userId, array $userData): bool

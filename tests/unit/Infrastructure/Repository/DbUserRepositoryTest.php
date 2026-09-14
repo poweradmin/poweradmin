@@ -214,6 +214,24 @@ class DbUserRepositoryTest extends TestCase
         $this->assertNull($this->repository->getUserByEmail('jose@example.com'));
     }
 
+    #[Test]
+    public function testGetUserByEmailIgnoresCaseOnOtherDrivers(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(false);
+
+        // PostgreSQL and SQLite compare byte-exact, so the case fold has to be explicit.
+        $db = $this->createMock(PDO::class);
+        $db->method('getAttribute')->willReturn('pgsql');
+        $db->expects($this->once())
+            ->method('prepare')
+            ->with($this->stringContains('WHERE LOWER(users.email) = LOWER(:email) LIMIT 1'))
+            ->willReturn($stmt);
+
+        $this->assertNull((new DbUserRepository($db, $this->config))->getUserByEmail('User@example.com'));
+    }
+
     // ========== countUsersByEmail tests ==========
 
     #[Test]

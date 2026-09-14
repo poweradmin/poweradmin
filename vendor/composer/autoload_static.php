@@ -1598,6 +1598,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Service\\UrlService' => __DIR__ . '/../..' . '/lib/Application/Service/UrlService.php',
         'Poweradmin\\Application\\Service\\UserAuthenticationService' => __DIR__ . '/../..' . '/lib/Application/Service/UserAuthenticationService.php',
         'Poweradmin\\Application\\Service\\UserEventLogger' => __DIR__ . '/../..' . '/lib/Application/Service/UserEventLogger.php',
+        'Poweradmin\\Application\\Service\\UserFormMessages' => __DIR__ . '/../..' . '/lib/Application/Service/UserFormMessages.php',
         'Poweradmin\\Application\\Service\\UserProvisioningService' => __DIR__ . '/../..' . '/lib/Application/Service/UserProvisioningService.php',
         'Poweradmin\\Application\\Service\\UserService' => __DIR__ . '/../..' . '/lib/Application/Service/UserService.php',
         'Poweradmin\\Application\\Service\\UsernameRecoveryService' => __DIR__ . '/../..' . '/lib/Application/Service/UsernameRecoveryService.php',

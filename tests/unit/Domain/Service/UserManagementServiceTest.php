@@ -418,6 +418,7 @@ class UserManagementServiceTest extends TestCase
         $this->assertFalse($result['success']);
         $this->assertEquals('Username is required', $result['message']);
         $this->assertSame(400, $result['status']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_REQUIRED, $result['code']);
     }
 
     #[Test]
@@ -428,6 +429,7 @@ class UserManagementServiceTest extends TestCase
         $this->assertFalse($result['success']);
         $this->assertEquals('Password is required', $result['message']);
         $this->assertSame(400, $result['status']);
+        $this->assertSame(UserManagementService::ERR_PASSWORD_REQUIRED, $result['code']);
     }
 
     #[Test]
@@ -458,6 +460,7 @@ class UserManagementServiceTest extends TestCase
         $this->assertFalse($result['success']);
         $this->assertEquals('Username already exists', $result['message']);
         $this->assertSame(409, $result['status']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_EXISTS, $result['code']);
     }
 
     #[Test]
@@ -479,6 +482,7 @@ class UserManagementServiceTest extends TestCase
         $this->assertFalse($result['success']);
         $this->assertEquals('Email already exists', $result['message']);
         $this->assertSame(409, $result['status']);
+        $this->assertSame(UserManagementService::ERR_EMAIL_EXISTS, $result['code']);
     }
 
     #[Test]

@@ -1192,6 +1192,7 @@ return array(
     'Poweradmin\\Application\\Service\\UrlService' => $baseDir . '/lib/Application/Service/UrlService.php',
     'Poweradmin\\Application\\Service\\UserAuthenticationService' => $baseDir . '/lib/Application/Service/UserAuthenticationService.php',
     'Poweradmin\\Application\\Service\\UserEventLogger' => $baseDir . '/lib/Application/Service/UserEventLogger.php',
+    'Poweradmin\\Application\\Service\\UserFormMessages' => $baseDir . '/lib/Application/Service/UserFormMessages.php',
     'Poweradmin\\Application\\Service\\UserProvisioningService' => $baseDir . '/lib/Application/Service/UserProvisioningService.php',
     'Poweradmin\\Application\\Service\\UserService' => $baseDir . '/lib/Application/Service/UserService.php',
     'Poweradmin\\Application\\Service\\UsernameRecoveryService' => $baseDir . '/lib/Application/Service/UsernameRecoveryService.php',
