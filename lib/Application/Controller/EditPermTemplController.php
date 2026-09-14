@@ -110,7 +110,7 @@ class EditPermTemplController extends BaseController
             return;
         }
 
-        $this->createAuditService()->logPermTemplateEdit($templateId, (string)$this->getSafeRequestValue('templ_name'));
+        $this->createAuditService()->logPermTemplateEdit($templateId, $this->getSafeRequestValue('templ_name'));
 
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
         $this->redirect('/permissions/templates');

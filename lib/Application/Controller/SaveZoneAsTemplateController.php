@@ -33,7 +33,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\PermissionService;
@@ -152,7 +151,7 @@ class SaveZoneAsTemplateController extends BaseController
             return;
         }
 
-        $auditService = new AuditService($this->db);
+        $auditService = $this->createAuditService();
         $auditService->logZoneTemplateAdd($template_name);
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been created successfully.'));
 

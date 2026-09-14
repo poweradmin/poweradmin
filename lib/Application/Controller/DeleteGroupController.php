@@ -115,7 +115,7 @@ class DeleteGroupController extends BaseController
 
             $this->groupService->deleteGroup($groupId);
 
-            $this->createAuditService()->logGroupDelete($groupId, $groupName, (int)$memberCount, (int)$zoneCount);
+            $this->createAuditService()->logGroupDelete($groupId, $groupName, $memberCount, $zoneCount);
 
             $this->setMessage('list_groups', 'success', _('Group has been deleted successfully.'));
             $this->redirect('/groups');

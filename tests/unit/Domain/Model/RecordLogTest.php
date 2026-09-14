@@ -40,7 +40,7 @@ class RecordLogTest extends TestCase
     private function makeRecordLog(array $store): RecordLog
     {
         $audit = $this->createMock(AuditService::class);
-        $audit->method('logRecordEdit')->willReturnCallback(function (int $zoneId, array $before, array $after): void {
+        $audit->method('logRecordEdit')->willReturnCallback(function (?int $zoneId, array $before, array $after): void {
             $this->written = [$zoneId, $before, $after];
         });
         $recordRepository = $this->createMock(RecordRepositoryInterface::class);

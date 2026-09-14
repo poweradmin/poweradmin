@@ -93,6 +93,7 @@ class DeleteRecordsController extends BaseController
         $recordRepository = $this->createRecordRepository();
         $recordManager = $this->createRecordManager();
         $domainRepository = $this->createDomainRepository();
+        $audit = $this->createAuditService();
         $deleted_count = 0;
         $affected_zones = [];
 
@@ -126,8 +127,8 @@ class DeleteRecordsController extends BaseController
                         $deleted_count++;
                         $affected_zones[$zid] = true;
 
-                        $this->createAuditService()->logRecordDelete(
-                            (int)$zid,
+                        $audit->logRecordDelete(
+                            $zid,
                             (string)$record_info['type'],
                             (string)$record_info['name'],
                             (string)$record_info['content'],

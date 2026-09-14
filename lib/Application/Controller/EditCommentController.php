@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\ZoneType;
@@ -109,7 +108,7 @@ class EditCommentController extends BaseController
                 $this->createRecordManager()->editZoneComment((int)$zone_id, $this->request->getPostParam('comment'));
 
                 $zoneIdInt = (int)$zone_id;
-                $auditService = new AuditService($this->db);
+                $auditService = $this->createAuditService();
                 $auditService->logZoneCommentEdit($zoneIdInt, $domainRepository->getDomainNameById($zoneIdInt));
 
                 $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));

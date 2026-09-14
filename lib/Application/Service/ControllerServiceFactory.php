@@ -82,6 +82,7 @@ class ControllerServiceFactory
     private ?ZoneOwnershipModeService $zoneOwnershipModeService = null;
     private ?ZoneSigningService $zoneSigningService = null;
     private ?AuditService $auditService = null;
+    private ?RecordManagerInterface $recordManager = null;
     private ?CatalogZoneService $catalogZoneService = null;
     private ?UserPreferenceService $userPreferenceService = null;
     private ?RepositoryFactory $repositoryFactory = null;
@@ -298,18 +299,16 @@ class ControllerServiceFactory
 
     public function recordManager(): RecordManagerInterface
     {
-        return DnsServiceFactory::createRecordManager($this->db, $this->config, $this->dnsBackendProvider());
+        return $this->recordManager ??= DnsServiceFactory::createRecordManager($this->db, $this->config, $this->dnsBackendProvider());
     }
 
     public function recordManagerService(): RecordManagerService
     {
-        $repositories = $this->repositoryFactory();
-
         return new RecordManagerService(
             $this->db,
-            $repositories->createDomainRepository(),
+            $this->domainRepository(),
             $this->recordManager(),
-            new RecordCommentService($repositories->createRecordCommentRepository()),
+            new RecordCommentService($this->repositoryFactory()->createRecordCommentRepository()),
             $this->auditService(),
             $this->config,
             $this->dnsBackendProvider()

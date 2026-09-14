@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
@@ -111,7 +110,7 @@ class DnssecKeyImportController extends BaseController
 
         try {
             if ($dnssecProvider->importZoneKey($domainName, $keyType, $algorithm, $privateKeyPem)) {
-                (new AuditService($this->db))->logDnssecAddKey($zoneIdInt, $domainName, $keyType, '0', $algorithm);
+                $this->createAuditService()->logDnssecAddKey($zoneIdInt, $domainName, $keyType, '0', $algorithm);
                 $this->setMessage('dnssec', 'success', _('PEM key imported successfully.'));
             } else {
                 $this->logger->error('Failed to import DNSSEC PEM key: domain={domain}, key_type={key_type}, algorithm={algorithm}', ['domain' => $domainName, 'key_type' => $keyType, 'algorithm' => $algorithm]);

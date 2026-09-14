@@ -103,6 +103,7 @@ class RecordLog
 
     public function write(): void
     {
-        $this->audit->logRecordEdit((int)($this->record_prior['zid'] ?? 0), $this->record_prior ?? [], $this->record_after ?? []);
+        $zoneId = $this->record_prior['zid'] ?? null;
+        $this->audit->logRecordEdit($zoneId === null ? null : (int)$zoneId, $this->record_prior ?? [], $this->record_after ?? []);
     }
 }

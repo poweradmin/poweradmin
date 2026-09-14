@@ -279,7 +279,7 @@ class EditRecordController extends BaseController
             ];
         }
 
-        $this->createAuditService()->logRecordEdit((int)$zid, $old_record_info, $new_record_info);
+        $this->createAuditService()->logRecordEdit($zid, $old_record_info, $new_record_info);
 
         $showRecordComments = $this->config->get('interface', 'show_record_comments', false);
         $nameOrTypeChanged = ($old_record_info['name'] !== $new_record_info['name'] ||

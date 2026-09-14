@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 
@@ -76,7 +75,7 @@ class UnlinkZonesTemplController extends BaseController
         $successful = 0;
         $failed = 0;
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
-        $auditService = new AuditService($this->db);
+        $auditService = $this->createAuditService();
         $perm_godlike = $this->hasPermission('user_is_ueberuser');
 
         foreach ($zone_ids as $zone_id) {

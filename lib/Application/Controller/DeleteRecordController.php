@@ -129,7 +129,7 @@ class DeleteRecordController extends BaseController
             $deleted = $recordManager->deleteRecord($record_id);
             if ($deleted->success) {
                 $this->createAuditService()->logRecordDelete(
-                    (int)$zid,
+                    $zid,
                     (string)$record_info['type'],
                     (string)$record_info['name'],
                     (string)$record_info['content'],

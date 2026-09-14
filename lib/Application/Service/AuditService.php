@@ -213,31 +213,33 @@ class AuditService
 
     public function logApiKeyCreate(int $keyId, string $keyName): void
     {
-        $this->logger->logApiInfo($this->line('api_key_create', ['key_id' => $keyId, 'key_name' => $keyName]));
+        $this->apiKeyEvent('api_key_create', $keyId, $keyName);
     }
 
     public function logApiKeyEdit(int $keyId, string $keyName): void
     {
-        $this->logger->logApiInfo($this->line('api_key_edit', ['key_id' => $keyId, 'key_name' => $keyName]));
+        $this->apiKeyEvent('api_key_edit', $keyId, $keyName);
     }
 
     public function logApiKeyDelete(int $keyId, string $keyName): void
     {
-        $this->logger->logApiInfo($this->line('api_key_delete', ['key_id' => $keyId, 'key_name' => $keyName]));
+        $this->apiKeyEvent('api_key_delete', $keyId, $keyName);
     }
 
     public function logApiKeyRegenerate(int $keyId, string $keyName): void
     {
-        $this->logger->logApiInfo($this->line('api_key_regenerate', ['key_id' => $keyId, 'key_name' => $keyName]));
+        $this->apiKeyEvent('api_key_regenerate', $keyId, $keyName);
     }
 
     public function logApiKeyToggle(int $keyId, string $keyName, bool $disabled): void
     {
-        $this->logger->logApiInfo($this->line('api_key_toggle', [
-            'key_id' => $keyId,
-            'key_name' => $keyName,
-            'status' => $disabled ? 'disabled' : 'enabled',
-        ]));
+        $this->apiKeyEvent('api_key_toggle', $keyId, $keyName, ['status' => $disabled ? 'disabled' : 'enabled']);
+    }
+
+    /** @param array<string, int|string|null> $extra */
+    private function apiKeyEvent(string $operation, int $keyId, string $keyName, array $extra = []): void
+    {
+        $this->logger->logApiInfo($this->line($operation, ['key_id' => $keyId, 'key_name' => $keyName] + $extra));
     }
 
     // Permission templates
@@ -315,7 +317,7 @@ class AuditService
      * @param array<string, mixed> $before Record row before the edit (type, name, content, ttl, prio)
      * @param array<string, mixed> $after Record row after the edit
      */
-    public function logRecordEdit(int $zoneId, array $before, array $after): void
+    public function logRecordEdit(?int $zoneId, array $before, array $after): void
     {
         $this->logger->logInfo($this->line('edit_record', [
             'old_record_type' => $before['type'] ?? '',
@@ -508,40 +510,30 @@ class AuditService
     /** @param list<string> $usernames */
     public function logGroupMembersAdd(int $groupId, string $groupName, array $usernames): void
     {
-        $this->logger->logGroupInfo($this->membersLine('add_members', $groupId, $groupName, $usernames), $groupId);
+        $this->logger->logGroupInfo($this->groupListLine('add_members', $groupId, $groupName, 'members', $usernames), $groupId);
     }
 
     /** @param list<string> $usernames */
     public function logGroupMembersRemove(int $groupId, string $groupName, array $usernames): void
     {
-        $this->logger->logGroupInfo($this->membersLine('remove_members', $groupId, $groupName, $usernames), $groupId);
+        $this->logger->logGroupInfo($this->groupListLine('remove_members', $groupId, $groupName, 'members', $usernames), $groupId);
     }
 
     public function logApiGroupMemberAdd(int $groupId, string $groupName, string $username): void
     {
-        $this->logger->logGroupInfo($this->membersLine('api_add_members', $groupId, $groupName, [$username]), $groupId);
+        $this->logger->logGroupInfo($this->groupListLine('api_add_members', $groupId, $groupName, 'members', [$username]), $groupId);
     }
 
     /** @param list<string> $zoneNames */
     public function logGroupZonesAdd(int $groupId, string $groupName, array $zoneNames): void
     {
-        $this->logger->logGroupInfo($this->line('add_zones', [
-            'group' => self::token($groupName),
-            'group_id' => $groupId,
-            'count' => count($zoneNames),
-            'zones' => implode(',', $zoneNames),
-        ]), $groupId);
+        $this->logger->logGroupInfo($this->groupListLine('add_zones', $groupId, $groupName, 'zones', $zoneNames), $groupId);
     }
 
     /** @param list<string> $zoneNames */
     public function logGroupZonesRemove(int $groupId, string $groupName, array $zoneNames): void
     {
-        $this->logger->logGroupInfo($this->line('remove_zones', [
-            'group' => self::token($groupName),
-            'group_id' => $groupId,
-            'count' => count($zoneNames),
-            'zones' => implode(',', $zoneNames),
-        ]), $groupId);
+        $this->logger->logGroupInfo($this->groupListLine('remove_zones', $groupId, $groupName, 'zones', $zoneNames), $groupId);
     }
 
     public function logGroupMemberRemove(int $groupId, int $userId): void
@@ -549,14 +541,14 @@ class AuditService
         $this->logger->logGroupInfo($this->line('remove_members', ['group_id' => $groupId, 'user_id' => $userId]), $groupId);
     }
 
-    /** @param list<string> $usernames */
-    private function membersLine(string $operation, int $groupId, string $groupName, array $usernames): string
+    /** @param list<string> $names The members or zones the operation touched */
+    private function groupListLine(string $operation, int $groupId, string $groupName, string $listField, array $names): string
     {
         return $this->line($operation, [
             'group' => self::token($groupName),
             'group_id' => $groupId,
-            'count' => count($usernames),
-            'members' => implode(',', $usernames),
+            'count' => count($names),
+            $listField => implode(',', $names),
         ]);
     }
 

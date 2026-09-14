@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
 use Poweradmin\Application\Service\GroupMembershipService;
-use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
 
 class RemoveUserGroupController extends BaseController
@@ -85,7 +84,6 @@ class RemoveUserGroupController extends BaseController
         try {
             // Get details before removal for logging
             $groupRepository = $this->createUserGroupRepository();
-            $groupService = new GroupService($groupRepository);
 
             $group = $groupRepository->findById($groupId);
             $groupName = $group ? $group->getName() : "ID: $groupId";

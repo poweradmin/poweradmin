@@ -84,7 +84,7 @@ class AddPermTemplController extends BaseController
             return;
         }
 
-        $this->createAuditService()->logPermTemplateAdd((string)$this->getSafeRequestValue('templ_name'));
+        $this->createAuditService()->logPermTemplateAdd($this->getSafeRequestValue('templ_name'));
 
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));
         $this->redirect('/permissions/templates');

@@ -55,7 +55,7 @@ class ZoneOwnersController extends PublicApiController
         $this->zoneRepository = $this->createZoneRepository();
         $this->userRepository = $this->createUserRepository();
         $this->apiPermissionService = new ApiPermissionService($this->db);
-        $this->auditService = new AuditService($this->db);
+        $this->auditService = $this->createAuditService();
     }
 
     /**

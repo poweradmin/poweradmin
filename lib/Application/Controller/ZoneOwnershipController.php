@@ -33,7 +33,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\ZoneAccessNotificationService;
@@ -171,7 +170,7 @@ class ZoneOwnershipController extends BaseController
 
     private function handleFormSubmission(int $zone_id, string $zone_name, int $userId, bool $meta_edit): void
     {
-        $auditService = new AuditService($this->db);
+        $auditService = $this->createAuditService();
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         // Add owner

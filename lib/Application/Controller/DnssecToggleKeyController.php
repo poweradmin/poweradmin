@@ -31,7 +31,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\Validator;
@@ -118,7 +117,7 @@ class DnssecToggleKeyController extends BaseController
 
             // Set appropriate message and redirect
             if ($result) {
-                $auditService = new AuditService($this->db);
+                $auditService = $this->createAuditService();
                 $auditService->logDnssecToggleKey($zone_id, $domain_name, $key_id, $action);
                 $this->setMessage('dnssec', 'success', $success_message);
             } else {

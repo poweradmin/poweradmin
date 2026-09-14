@@ -317,7 +317,7 @@ class AddUserController extends BaseController
 
         $audit = $this->createAuditService();
         foreach ($successfulGroups as $groupInfo) {
-            $audit->logGroupMembersAdd((int)$groupInfo['id'], (string)$groupInfo['name'], [$username]);
+            $audit->logGroupMembersAdd($groupInfo['id'], $groupInfo['name'], [$username]);
         }
     }
 }

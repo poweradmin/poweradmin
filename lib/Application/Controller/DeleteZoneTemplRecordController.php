@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Validator;
@@ -79,7 +78,7 @@ class DeleteZoneTemplRecordController extends BaseController
                 $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
                 $syncService->markTemplateAsModified($zone_templ_id);
 
-                $auditService = new AuditService($this->db);
+                $auditService = $this->createAuditService();
                 $auditService->logZoneTemplateRecordDelete($zone_templ_id, $record_id);
 
                 $this->setMessage('edit_zone_templ', 'success', _('The record has been deleted successfully.'));

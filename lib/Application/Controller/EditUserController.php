@@ -498,7 +498,7 @@ class EditUserController extends BaseController
             $this->setMessage('edit_user', 'success', $message);
 
             foreach ($successfulGroups as $groupInfo) {
-                $this->auditService->logGroupMembersAdd((int)$groupInfo['id'], (string)$groupInfo['name'], [(string)$targetUsername]);
+                $this->auditService->logGroupMembersAdd($groupInfo['id'], $groupInfo['name'], [(string)$targetUsername]);
             }
         }
 

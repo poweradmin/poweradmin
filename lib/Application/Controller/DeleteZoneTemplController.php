@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -93,7 +92,7 @@ class DeleteZoneTemplController extends BaseController
             $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
             $this->zoneTemplate->deleteZoneTempl((int)$zone_templ_id);
 
-            $auditService = new AuditService($this->db);
+            $auditService = $this->createAuditService();
             $auditService->logZoneTemplateDelete((int)$zone_templ_id);
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been deleted successfully.'));
             $this->redirect('/zones/templates');

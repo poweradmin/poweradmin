@@ -33,7 +33,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -212,7 +211,7 @@ class EditZoneTemplController extends BaseController
 
         $userId = $this->userContext->getLoggedInUserId();
         $this->zoneTemplate->editZoneTempl($postParams, $zone_templ_id, $userId);
-        $auditService = new AuditService($this->db);
+        $auditService = $this->createAuditService();
         $auditService->logZoneTemplateEdit($zone_templ_id, $postParams['templ_name'] ?? '');
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been updated successfully.'));
         $this->redirect('/zones/templates');

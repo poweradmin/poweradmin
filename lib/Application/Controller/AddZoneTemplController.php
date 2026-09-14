@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -94,7 +93,7 @@ class AddZoneTemplController extends BaseController
 
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
         if ($zoneTemplate->addZoneTempl($postParams, $_SESSION[SessionKeys::USERID])) {
-            $auditService = new AuditService($this->db);
+            $auditService = $this->createAuditService();
             $auditService->logZoneTemplateAdd($postParams['templ_name'] ?? '');
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been added successfully.'));
             $this->redirect('/zones/templates');

@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\RecordTypeService;
@@ -127,7 +126,7 @@ class AddZoneTemplRecordController extends BaseController
             $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig(), $this->createDnsBackendProvider());
             $syncService->markTemplateAsModified($zone_templ_id);
 
-            $auditService = new AuditService($this->db);
+            $auditService = $this->createAuditService();
             $auditService->logZoneTemplateRecordAdd($zone_templ_id, $name, $type);
 
             $this->setMessage('edit_zone_templ', 'success', 'The record was successfully added.');
