@@ -63,8 +63,10 @@ interface RecordManagerInterface
      *
      * @param array $record Record structure to update
      * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
+     * @param array|null $comment RRset comment ['content' => string, 'account' => string] to
+     *                            store with the record where the backend keeps them together
      */
-    public function editRecord(array $record, bool $finalizeZone = true): RecordWriteResult;
+    public function editRecord(array $record, bool $finalizeZone = true, ?array $comment = null): RecordWriteResult;
 
     /**
      * What every single write ends with: bump the serial (unless told not to) and

@@ -1105,6 +1105,110 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertFalse($result);
     }
 
+    // Issue #1556: the comment rides along in the record PATCH so PowerDNS bumps
+    // the SOA serial once under SOA-EDIT-API instead of once per PATCH.
+    public function testEditRecordWritesCommentInTheSamePatch(): void
+    {
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
+        $this->mockClient->method('getZoneRrset')
+            ->with('example.com.')
+            ->willReturn(['rrsets' => [$this->rrset('www.example.com.', 'A', [['content' => '192.168.1.1', 'disabled' => false]])]]);
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', $this->callback(function (array $rrsets): bool {
+                $this->assertCount(1, $rrsets);
+                $this->assertSame([['content' => '192.168.1.1', 'disabled' => false]], $rrsets[0]['records']);
+                $this->assertCount(1, $rrsets[0]['comments']);
+                $this->assertSame('mail server', $rrsets[0]['comments'][0]['content']);
+                $this->assertSame('admin', $rrsets[0]['comments'][0]['account']);
+                $this->assertIsInt($rrsets[0]['comments'][0]['modified_at']);
+                return true;
+            }))
+            ->willReturn(true);
+
+        $result = $this->provider->editRecord($encodedId, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 0, [
+            'content' => 'mail server',
+            'account' => 'admin',
+        ]);
+
+        $this->assertTrue($result);
+    }
+
+    public function testEditRecordWithEmptyCommentClearsRRsetComments(): void
+    {
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
+        $this->mockClient->method('getZoneRrset')
+            ->with('example.com.')
+            ->willReturn(['rrsets' => [$this->rrset('www.example.com.', 'A', [['content' => '192.168.1.1', 'disabled' => false]])]]);
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', $this->callback(function (array $rrsets): bool {
+                $this->assertSame([], $rrsets[0]['comments']);
+                return true;
+            }))
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->editRecord($encodedId, 'www.example.com', 'A', '192.168.1.1', 3600, 0, 0, [
+            'content' => '',
+            'account' => 'admin',
+        ]));
+    }
+
+    public function testEditRecordWithoutCommentLeavesRRsetCommentsAlone(): void
+    {
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
+        $this->mockClient->method('getZoneRrset')
+            ->with('example.com.')
+            ->willReturn(['rrsets' => [$this->rrset('www.example.com.', 'A', [['content' => '192.168.1.1', 'disabled' => false]])]]);
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', $this->callback(function (array $rrsets): bool {
+                $this->assertArrayNotHasKey('comments', $rrsets[0]);
+                return true;
+            }))
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->editRecord($encodedId, 'www.example.com', 'A', '10.0.0.1', 3600, 0, 0));
+    }
+
+    public function testEditRecordNameChangeAttachesCommentToNewRRsetOnly(): void
+    {
+        $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
+        $this->mockClient->method('getZoneRrset')
+            ->with('example.com.')
+            ->willReturnCallback(function (string $zone, string $name) {
+                if ($name === 'www.example.com.') {
+                    return ['rrsets' => [$this->rrset('www.example.com.', 'A', [['content' => '192.168.1.1', 'disabled' => false]])]];
+                }
+                return ['rrsets' => []];
+            });
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', $this->callback(function (array $rrsets): bool {
+                $this->assertCount(2, $rrsets);
+                $this->assertSame('DELETE', $rrsets[0]['changetype']);
+                $this->assertArrayNotHasKey('comments', $rrsets[0]);
+                $this->assertSame('web.example.com.', $rrsets[1]['name']);
+                $this->assertSame('moved', $rrsets[1]['comments'][0]['content']);
+                return true;
+            }))
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->editRecord($encodedId, 'web.example.com', 'A', '192.168.1.1', 3600, 0, 0, [
+            'content' => 'moved',
+            'account' => 'admin',
+        ]));
+    }
+
+    private function rrset(string $name, string $type, array $records, int $ttl = 3600): array
+    {
+        return ['name' => $name, 'type' => $type, 'ttl' => $ttl, 'records' => $records];
+    }
+
     // ---------------------------------------------------------------
     // addRecordGetId operations
     // ---------------------------------------------------------------

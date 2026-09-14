@@ -330,7 +330,7 @@ class RecordManager implements RecordManagerInterface
      *
      * @param array $record Record structure to update
      */
-    public function editRecord(array $record, bool $finalizeZone = true): RecordWriteResult
+    public function editRecord(array $record, bool $finalizeZone = true, ?array $comment = null): RecordWriteResult
     {
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
         $perm_edit = Permission::getEditPermission($this->db, $this->config);
@@ -422,7 +422,8 @@ class RecordManager implements RecordManagerInterface
                 $content,
                 $validatedTtl,
                 $validatedPrio,
-                $record['disabled']
+                $record['disabled'],
+                $comment
             )
         ) {
             return RecordWriteResult::backendFailure(_('Failed to update record in DNS backend.'));

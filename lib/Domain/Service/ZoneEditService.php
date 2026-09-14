@@ -211,7 +211,11 @@ class ZoneEditService
             return null;
         }
 
-        $edited = $this->recordManager->editRecord($record, false);
+        $newComment = (string)($record['comment'] ?? '');
+        $edited = $this->recordManager->editRecord($record, false, $showComments ? [
+            'content' => $newComment,
+            'account' => $submission->username,
+        ] : null);
         if (!$edited->success) {
             return $edited;
         }
@@ -220,7 +224,6 @@ class ZoneEditService
         $log->write();
 
         if ($showComments) {
-            $newComment = (string)($record['comment'] ?? '');
             $this->comments->updateCommentForRecord(
                 $submission->zoneId,
                 $record['name'],

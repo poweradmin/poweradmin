@@ -248,7 +248,11 @@ class EditRecordController extends BaseController
             $postData['disabled'] = 0;
         }
 
-        $result = $this->createRecordManager()->editRecord($postData);
+        $showRecordComments = $this->config->get('interface', 'show_record_comments', false);
+        $result = $this->createRecordManager()->editRecord($postData, true, $showRecordComments ? [
+            'content' => (string)$this->request->getPostParam('comment', ''),
+            'account' => $this->userContextService->getLoggedInUsername() ?? '',
+        ] : null);
         if (!$result->success) {
             $this->addSystemMessage('error', (string)$result->message);
             return false;
@@ -281,7 +285,6 @@ class EditRecordController extends BaseController
 
         $this->createAuditService()->logRecordEdit($zid, $old_record_info, $new_record_info);
 
-        $showRecordComments = $this->config->get('interface', 'show_record_comments', false);
         $nameOrTypeChanged = ($old_record_info['name'] !== $new_record_info['name'] ||
                               $old_record_info['type'] !== $new_record_info['type']);
 
