@@ -18,9 +18,6 @@
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
-        <MissingReturnType errorLevel="info" />
-        <UnusedClass errorLevel="info" />
-        <MissingOverrideAttribute errorLevel="info" />
         <MethodSignatureMismatch errorLevel="suppress" />
         <UndefinedMethod>
             <errorLevel type="suppress">
@@ -50,7 +47,6 @@
                 <directory name="tests" />
             </errorLevel>
         </InvalidAttribute>
-        <UnusedIssueHandlerSuppression errorLevel="info" />
         <InvalidArrayOffset>
             <errorLevel type="suppress">
                 <file name="lib/Domain/Service/DnsValidation/IPAddressValidator.php" />
@@ -84,42 +80,5 @@
                 <file name="lib/Module/Rdap/Service/RdapService.php" />
             </errorLevel>
         </TaintedFile>
-        <MissingClosureParamType errorLevel="info" />
-        <UndefinedInterfaceMethod errorLevel="info" />
-        <InvalidArgument errorLevel="info" />
-        <PossiblyNullArgument errorLevel="info" />
-        <PossiblyNullReference errorLevel="info" />
-        <MissingParamType errorLevel="info" />
-        <RedundantCondition errorLevel="info" />
-        <InvalidReturnType errorLevel="info" />
-        <InvalidNullableReturnType errorLevel="info" />
-        <InvalidReturnStatement errorLevel="info" />
-        <LessSpecificReturnStatement errorLevel="info" />
-        <ArgumentTypeCoercion errorLevel="info" />
-        <PropertyNotSetInConstructor errorLevel="info" />
-        <PossiblyInvalidArgument errorLevel="info" />
-        <UndefinedPropertyAssignment errorLevel="info" />
-        <UndefinedPropertyFetch errorLevel="info" />
-        <MissingPropertyType errorLevel="info" />
-        <NullableReturnStatement errorLevel="info" />
-        <PossiblyInvalidArrayAccess errorLevel="info" />
-        <TypeDoesNotContainType errorLevel="info" />
-        <PossiblyUndefinedMethod errorLevel="info" />
-        <PossiblyFalseArgument errorLevel="info" />
-        <PossiblyFalseReference errorLevel="info" />
-        <PossiblyNullPropertyAssignment errorLevel="info" />
-        <PossiblyUndefinedArrayOffset errorLevel="info" />
-        <PossiblyUndefinedVariable errorLevel="info" />
-        <MissingClosureReturnType errorLevel="info" />
-        <PossiblyInvalidCast errorLevel="info" />
-        <TooManyArguments errorLevel="info" />
-        <RiskyTruthyFalsyComparison errorLevel="info" />
-        <InvalidOperand errorLevel="info" />
-        <ImpureMethodCall errorLevel="info" />
-        <PossiblyFalsePropertyAssignmentValue errorLevel="info" />
-        <PossiblyUndefinedIntArrayOffset errorLevel="info" />
-        <DocblockTypeContradiction errorLevel="info" />
-        <ForbiddenCode errorLevel="info" />
-        <InvalidAttribute errorLevel="info" />
     </issueHandlers>
 </psalm>

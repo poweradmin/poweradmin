@@ -78,12 +78,6 @@
     "spaze/phpstan-disallowed-calls": "^4.13"
   },
   "scripts": {
-    "phpdoc:install": "test -f .phpdoc/phpDocumentor.phar || (mkdir -p .phpdoc && curl -sL -o .phpdoc/phpDocumentor.phar https://phpdoc.org/phpDocumentor.phar)",
-    "docs": ["@phpdoc:install", "php .phpdoc/phpDocumentor.phar"],
-    "docs:api:json": "vendor/bin/openapi lib/Application/Controller/Api/V2/ --output docs/openapi.json",
-    "docs:api:yaml": "vendor/bin/openapi lib/Application/Controller/Api/V2/ --output docs/openapi.yaml --format yaml",
-    "docs:api": ["@docs:api:json", "@docs:api:yaml"],
-
     "tests": "phpunit --testsuite unit",
     "tests:integration": "phpunit --testsuite integration",
     "tests:functional": "phpunit --testsuite functional",
@@ -177,7 +171,6 @@
       ".devcontainer",
       ".github",
       ".phan",
-      ".phpdoc",
       "playwright/",
       "install/",
       "tests",
@@ -190,7 +183,6 @@
       "DONORS.md",
       "package.json",
       "phpcs.xml",
-      "phpdoc.dist.xml",
       "phpstan-baseline.neon",
       "phpstan.neon",
       "phpunit.xml.dist",
