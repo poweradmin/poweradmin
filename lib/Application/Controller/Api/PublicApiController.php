@@ -220,47 +220,6 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
-     * Return API response with standard format
-     *
-     * @param mixed $data The data to return
-     * @param bool $success Whether the request was successful
-     * @param string|null $message Optional message
-     * @param int $status HTTP status code
-     * @param array $additionalFields Additional response fields (pagination, meta, etc.)
-     * @return JsonResponse The JSON response object
-     */
-    protected function returnApiResponse($data, bool $success = true, ?string $message = null, int $status = 200, array $additionalFields = []): JsonResponse
-    {
-        $response = [
-            'success' => $success,
-            'data' => $data
-        ];
-
-        if ($message !== null) {
-            $response['message'] = $message;
-        }
-
-        // Merge additional fields (pagination, meta, etc.) into response
-        $response = array_merge($response, $additionalFields);
-
-        return $this->returnJsonResponse($response, $status);
-    }
-
-    /**
-     * Return API error response
-     *
-     * @param string $message Error message
-     * @param int $status HTTP status code
-     * @param mixed $data Additional error data
-     * @param array $headers Additional headers
-     * @return JsonResponse The JSON response object
-     */
-    protected function returnApiError(string $message, int $status = 400, $data = null, array $headers = []): JsonResponse
-    {
-        return $this->returnApiResponse($data, false, $message, $status, $headers);
-    }
-
-    /**
      * Pick the right "cannot edit this zone's records" message: read-only zones
      * (Secondary, Consumer) replicate from a primary and are rejected for a
      * different reason than a missing edit permission. Keeps the public error

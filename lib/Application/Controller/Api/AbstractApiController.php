@@ -148,6 +148,39 @@ abstract class AbstractApiController extends BaseController
     }
 
     /**
+     * Wrapped API response: {success, data, message?} plus any additional top-level fields.
+     *
+     * @param mixed $data The data to return
+     * @param array $additionalFields Extra top-level fields (pagination, meta)
+     * @param array $headers Additional response headers
+     */
+    protected function returnApiResponse($data, bool $success = true, ?string $message = null, int $status = 200, array $additionalFields = [], array $headers = []): JsonResponse
+    {
+        $response = [
+            'success' => $success,
+            'data' => $data
+        ];
+
+        if ($message !== null) {
+            $response['message'] = $message;
+        }
+
+        return $this->returnJsonResponse(array_merge($response, $additionalFields), $status, $headers);
+    }
+
+    /**
+     * Wrapped API error: {success: false, data, message} plus any additional top-level fields.
+     *
+     * @param mixed $data Additional error data
+     * @param array $additionalFields Extra top-level fields (meta)
+     * @param array $headers Additional response headers
+     */
+    protected function returnApiError(string $message, int $status = 400, $data = null, array $additionalFields = [], array $headers = []): JsonResponse
+    {
+        return $this->returnApiResponse($data, false, $message, $status, $additionalFields, $headers);
+    }
+
+    /**
      * Return an error response
      *
      * @param string $message Error message

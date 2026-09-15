@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Service\SessionKeys;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Base for session-authenticated internal API endpoints: requires a login and the X-CSRF-Token header on writes.
@@ -94,43 +93,5 @@ abstract class InternalApiController extends AbstractApiController
             $response->send();
             exit;
         }
-    }
-
-    /**
-     * Return API response with standard format for internal API
-     *
-     * @param mixed $data The data to return
-     * @param bool $success Whether the request was successful
-     * @param string|null $message Optional message
-     * @param int $status HTTP status code
-     * @param array $headers Additional headers
-     * @return JsonResponse The JSON response object
-     */
-    protected function returnApiResponse($data, bool $success = true, ?string $message = null, int $status = 200, array $headers = []): JsonResponse
-    {
-        $response = [
-            'success' => $success,
-            'data' => $data
-        ];
-
-        if ($message !== null) {
-            $response['message'] = $message;
-        }
-
-        return $this->returnJsonResponse($response, $status, $headers);
-    }
-
-    /**
-     * Return API error response for internal API
-     *
-     * @param string $message Error message
-     * @param int $status HTTP status code
-     * @param mixed $data Additional error data
-     * @param array $headers Additional headers
-     * @return JsonResponse The JSON response object
-     */
-    protected function returnApiError(string $message, int $status = 400, $data = null, array $headers = []): JsonResponse
-    {
-        return $this->returnApiResponse($data, false, $message, $status, $headers);
     }
 }
