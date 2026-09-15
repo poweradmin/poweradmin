@@ -7915,7 +7915,7 @@ msgstr "Serienummer moet numeriek zijn."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:229
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
-msgstr "Serienummer moet tussen 0 en 4294967295 liggen."
+msgstr "Serienummer moet een 32-bits geheel getal zonder teken zijn (0 tot 4294967295)."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:242
 msgid ""
