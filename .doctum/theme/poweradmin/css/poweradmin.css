@@ -107,22 +107,70 @@ a:focus {
     color: var(--pa-red-dark);
 }
 
-/* Site menu: white with a hairline, like the docs header */
+/* Site menu laid out like the docs header: a title row, then a tab row with
+   muted 14px links and a red underline on the current section */
 
 #site-nav.navbar-default {
     background-color: #fff;
     border-bottom: 1px solid var(--pa-rule);
 }
 
-#site-nav.navbar-default .navbar-nav > li > a:hover,
-#site-nav.navbar-default .navbar-nav > li > a:focus {
-    color: var(--pa-red);
-    text-decoration: none;
-}
-
 #site-nav.navbar-default .navbar-brand:hover,
 #site-nav.navbar-default .navbar-brand:focus {
     color: var(--pa-red);
+}
+
+@media (min-width: 768px) {
+    #site-nav .navbar-header {
+        float: none;
+        border-bottom: 1px solid var(--pa-rule);
+    }
+
+    #navbar-elements {
+        float: none;
+    }
+
+    #site-nav .navbar-nav {
+        margin-left: 15px;
+    }
+
+    #site-nav .navbar-nav > li {
+        height: 48px;
+    }
+
+    #site-nav.navbar-default .navbar-nav > li > a {
+        padding: 16px 0 6px;
+        margin: 0 12px;
+        line-height: 1.3;
+    }
+
+    #site-nav .navbar-nav > li:first-child > a {
+        margin-left: 0;
+    }
+}
+
+#site-nav.navbar-default .navbar-nav > li > a {
+    color: var(--pa-text);
+    opacity: 0.7;
+}
+
+#site-nav.navbar-default .navbar-nav > li > a:hover,
+#site-nav.navbar-default .navbar-nav > li > a:focus {
+    color: var(--pa-text);
+    opacity: 1;
+    text-decoration: none;
+}
+
+body#classes #site-nav .navbar-nav > li > a[href$="classes.html"],
+body#class #site-nav .navbar-nav > li > a[href$="classes.html"],
+body#namespaces #site-nav .navbar-nav > li > a[href$="namespaces.html"],
+body#namespace #site-nav .navbar-nav > li > a[href$="namespaces.html"],
+body#interfaces #site-nav .navbar-nav > li > a[href$="interfaces.html"],
+body#doc-index #site-nav .navbar-nav > li > a[href$="doc-index.html"],
+body#search-page #site-nav .navbar-nav > li > a[href$="search.html"] {
+    color: var(--pa-red);
+    opacity: 1;
+    border-bottom: 2px solid var(--pa-red);
 }
 
 #site-nav.navbar-default .navbar-toggle:hover,
