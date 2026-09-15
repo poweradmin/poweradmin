@@ -373,7 +373,7 @@ abstract class PublicApiController extends AbstractApiController
                     $keyId = (string)$id;
                 }
             }
-            $user = $this->authenticatedUserId > 0 ? $this->getAuthenticatedUsername() : '-';
+            $user = $this->authenticatedUserId > 0 ? $this->getAuthenticatedUsername() : '';
             // The constructor rewrites v2 HEAD to GET so handlers can serve it;
             // read the original method so the audit trail stays accurate.
             $method = $_SERVER['REQUEST_METHOD'] ?? $this->request->getMethod();

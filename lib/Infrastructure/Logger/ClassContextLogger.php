@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Logger;
 
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Stringable;
 
 /**
@@ -37,18 +38,23 @@ final class ClassContextLogger extends AbstractLogger
 
     /**
      * Wrap $inner so its lines carry the short name of $class (a FQCN or `self::class`).
+     * A NullLogger is returned as is, and an already wrapped logger is re-tagged rather
+     * than stacked, since the outer tag is the one that reaches the line anyway.
      */
     public static function for(LoggerInterface $inner, string $class): LoggerInterface
     {
-        $segments = explode('\\', $class);
+        if ($inner instanceof NullLogger) {
+            return $inner;
+        }
+        if ($inner instanceof self) {
+            $inner = $inner->inner;
+        }
 
-        return new self($inner, (string)end($segments));
+        return new self($inner, basename(str_replace('\\', '/', $class)));
     }
 
     public function log($level, Stringable|string $message, array $context = []): void
     {
-        // A context that already names a class wins, so a wrapped logger handed to a
-        // collaborator keeps that collaborator's own tag.
         $this->inner->log($level, $message, $context + ['classname' => $this->classname]);
     }
 }

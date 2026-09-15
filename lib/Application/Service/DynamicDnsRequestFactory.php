@@ -42,8 +42,9 @@ class DynamicDnsRequestFactory
 {
     /**
      * Wires the update service from the live database connection and configuration.
+     * A controller passes its memoised AuditService; the dyndns2 script has none to share.
      */
-    public static function createUpdateService(PDO $db, ConfigurationManager $config, DynamicDnsRepositoryInterface $repository): DynamicDnsUpdateService
+    public static function createUpdateService(PDO $db, ConfigurationManager $config, DynamicDnsRepositoryInterface $repository, ?AuditService $auditService = null): DynamicDnsUpdateService
     {
         return new DynamicDnsUpdateService(
             new DynamicDnsValidationService($config),
@@ -53,7 +54,7 @@ class DynamicDnsRequestFactory
                 new LoginAttemptService($db, $config)
             ),
             $repository,
-            new AuditService($db),
+            $auditService ?? new AuditService($db),
             new IpAddressRetriever($_SERVER)
         );
     }
