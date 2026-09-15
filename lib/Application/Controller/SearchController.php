@@ -110,7 +110,7 @@ class SearchController extends BaseController
         $paginationService = $this->createPaginationService();
 
         // Get zones rows per page
-        $zone_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
+        $zone_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId, $this->httpRequest->getRowsPerPage());
         // Override with POST parameter if available for zones
         $zones_rows_per_page = $this->httpRequest->getPostParam('zones_rows_per_page');
         if ($this->isPost() && $zones_rows_per_page !== null && is_numeric($zones_rows_per_page)) {
@@ -122,7 +122,7 @@ class SearchController extends BaseController
         }
 
         // Get records rows per page
-        $record_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
+        $record_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId, $this->httpRequest->getRowsPerPage());
         // Override with POST parameter if available for records
         $records_rows_per_page = $this->httpRequest->getPostParam('records_rows_per_page');
         if ($this->isPost() && $records_rows_per_page !== null && is_numeric($records_rows_per_page)) {

@@ -221,4 +221,22 @@ class RequestTest extends TestCase
         $_GET = [];
         $this->assertSame(1, (new Request())->getPage());
     }
+
+    public function testGetRowsPerPageAcceptsOnlyPositiveIntegers(): void
+    {
+        $_GET = ['rows_per_page' => '50'];
+        $this->assertSame(50, (new Request())->getRowsPerPage());
+
+        $_GET = ['rows_per_page' => '0'];
+        $this->assertNull((new Request())->getRowsPerPage());
+
+        $_GET = ['rows_per_page' => '-5'];
+        $this->assertNull((new Request())->getRowsPerPage());
+
+        $_GET = ['rows_per_page' => 'abc'];
+        $this->assertNull((new Request())->getRowsPerPage());
+
+        $_GET = [];
+        $this->assertNull((new Request())->getRowsPerPage());
+    }
 }

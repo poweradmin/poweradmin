@@ -344,7 +344,7 @@ class DomainManager implements DomainManagerInterface
                                 // Process the template records
                                 foreach ($templ_records as $r) {
                                     if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
-                                        $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+                                        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger);
                                         $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
                                         $recordType = $r["type"];
                                         $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
@@ -862,7 +862,7 @@ class DomainManager implements DomainManagerInterface
 
                     // Get all records from the template
                     $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
-                    $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+                    $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger);
 
                     // Commit before API writes to avoid snapshot isolation issues
                     if ($isApiBackend) {

@@ -43,7 +43,7 @@ class AddZoneTemplRecordController extends BaseController
         parent::__construct($request);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContext = new UserContextService();
-        $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+        $this->zoneTemplate = $this->createZoneTemplateModel();
     }
 
     public function run(): void

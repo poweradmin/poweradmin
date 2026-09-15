@@ -37,7 +37,7 @@ class DeleteZoneTemplRecordController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+        $this->zoneTemplate = $this->createZoneTemplateModel();
     }
 
     public function run(): void

@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
@@ -104,7 +103,7 @@ class BulkRegistrationController extends BaseController
             return;
         }
 
-        $zoneTemplateModel = new ZoneTemplate($this->db, $this->getConfig());
+        $zoneTemplateModel = $this->createZoneTemplateModel();
         if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
             $this->setMessage('bulk_registration', 'error', _('Invalid or unexpected input given.'));
             $this->showBulkRegistrationForm();
@@ -146,7 +145,7 @@ class BulkRegistrationController extends BaseController
 
     private function showBulkRegistrationForm(array $failed_domains = [], array $added_domains = []): void
     {
-        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
+        $zone_templates = $this->createZoneTemplateModel();
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         $userGroupRepo = $this->createUserGroupRepository();

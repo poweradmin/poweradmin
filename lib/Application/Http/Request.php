@@ -75,6 +75,16 @@ class Request
     }
 
     /**
+     * Requested page size from the query string, or null when absent or not a positive integer.
+     */
+    public function getRowsPerPage(string $key = 'rows_per_page'): ?int
+    {
+        $value = filter_var($this->queryParams[$key] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+        return $value === false ? null : $value;
+    }
+
+    /**
      * Returns a parameter from the POST body on POST requests, from the
      * query string otherwise. For endpoints that accept both methods.
      */

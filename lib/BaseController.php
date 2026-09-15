@@ -39,6 +39,7 @@ use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Application\Service\RepositoryFactory;
+use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\PdnsCapabilities;
@@ -489,7 +490,7 @@ abstract class BaseController
             $url .= '&' . urlencode((string) $key) . '=' . urlencode((string) $value);
         }
 
-        $presenter = new PaginationPresenter($pagination, $url);
+        $presenter = new PaginationPresenter($pagination, $url, '', $this->httpRequest->getRowsPerPage());
 
         return $presenter->present();
     }
@@ -784,6 +785,11 @@ abstract class BaseController
     protected function createCatalogZoneService(): CatalogZoneService
     {
         return $this->services()->catalogZoneService();
+    }
+
+    protected function createZoneTemplateModel(): ZoneTemplate
+    {
+        return $this->services()->zoneTemplate();
     }
 
     protected function getRepositoryFactory(?DnsBackendProviderInterface $backendProvider = null): RepositoryFactory

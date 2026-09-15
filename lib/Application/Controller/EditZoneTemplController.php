@@ -42,7 +42,7 @@ class EditZoneTemplController extends BaseController
     {
         parent::__construct($request);
         $this->userContext = new UserContextService();
-        $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+        $this->zoneTemplate = $this->createZoneTemplateModel();
     }
 
     public function run(): void
@@ -112,7 +112,7 @@ class EditZoneTemplController extends BaseController
     {
         $paginationService = $this->createPaginationService();
         $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
-        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $this->getCurrentUserId());
+        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $this->getCurrentUserId(), $this->httpRequest->getRowsPerPage());
         $row_start = $this->getRowStart($iface_rowamount);
         [$record_sort_by] = (new ZoneSortingService($this->userContext))->getZoneSortOrder(
             ['name', 'type', 'content', 'ttl', 'prio'],

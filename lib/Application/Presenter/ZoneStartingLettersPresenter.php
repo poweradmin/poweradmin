@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,15 +27,16 @@ namespace Poweradmin\Application\Presenter;
  */
 class ZoneStartingLettersPresenter
 {
-    public function present(array $availableChars, bool $digitsAvailable, string $letterStart, string $baseUrlPrefix = ''): string
+    /**
+     * $rowsPerPage is the page size the current request asked for; it is carried on every letter link.
+     */
+    public function present(array $availableChars, bool $digitsAvailable, string $letterStart, string $baseUrlPrefix = '', ?int $rowsPerPage = null): string
     {
         $html = '<span class="text-secondary">' . _('Show zones beginning with') . "</span><br>";
         $html .= '<nav>';
         $html .= '<ul class="pagination pagination-sm d-flex flex-wrap">';
 
-        // Preserve rows_per_page parameter if set
-        $rowsPerPageParam = isset($_GET['rows_per_page']) ? '&rows_per_page=' . (int)$_GET['rows_per_page'] : '';
-
+        $rowsPerPageParam = $rowsPerPage !== null ? '&rows_per_page=' . $rowsPerPage : '';
 
         if ($letterStart === "1") {
             $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">0-9</span></li>';

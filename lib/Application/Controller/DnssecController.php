@@ -27,7 +27,6 @@ use Poweradmin\Application\Service\ZoneSigningMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
@@ -96,7 +95,7 @@ class DnssecController extends BaseController
         $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
 
         $dnssecProvider = $this->createDnssecProvider();
-        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
+        $zone_templates = $this->createZoneTemplateModel();
         $permissionService = $this->createPermissionService();
         $can_manage_dnssec = $permissionService->canManageDnssecForZone($this->getCurrentUserId(), $zone_id);
         // Kept for 4.4.0 theme forks that still gate the page on perm_edit
