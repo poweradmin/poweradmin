@@ -77,6 +77,9 @@
     "tomasvotruba/cognitive-complexity": "^1.1",
     "spaze/phpstan-disallowed-calls": "^4.13"
   },
+  "scripts-descriptions": {
+    "docs:api": "Print the OpenAPI spec as JSON; add -- --output <file> to write it"
+  },
   "scripts": {
     "docs:api": "openapi lib/Application/Controller/Api/V2/ --format json",
     "tests": "phpunit --testsuite unit",
