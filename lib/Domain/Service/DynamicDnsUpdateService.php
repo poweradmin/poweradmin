@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\User;
@@ -30,7 +31,6 @@ use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\ValueObject\IpAddressList;
-use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
@@ -42,7 +42,7 @@ readonly class DynamicDnsUpdateService
         private DynamicDnsValidationService $validationService,
         private DynamicDnsAuthenticationService $authService,
         private DynamicDnsRepositoryInterface $repository,
-        private ?AuditLogWriter $auditLogger = null,
+        private ?AuditService $auditService = null,
         private ?IpAddressRetriever $ipRetriever = null
     ) {
     }
@@ -130,7 +130,7 @@ readonly class DynamicDnsUpdateService
 
         if ($updateResult['wasUpdated']) {
             $primaryIp = $appliedV4[0] ?? $appliedV6[0] ?? '';
-            $this->logAuditEntry($username, $hostname, $zoneId, $primaryIp);
+            $this->auditService?->logDynamicDnsUpdate($username, $hostname->getValue(), $zoneId, $primaryIp);
         }
 
         return [
@@ -154,28 +154,6 @@ readonly class DynamicDnsUpdateService
             'applied_ipv6' => [],
             'changed' => false,
         ];
-    }
-
-    private function logAuditEntry(string $username, HostnameValue $hostname, int $zoneId, string $primaryIp): void
-    {
-        if ($this->auditLogger === null) {
-            return;
-        }
-        $clientIp = $this->ipRetriever?->getClientIp() ?? '';
-        $message = sprintf(
-            'client_ip:%s user:%s operation:dynamic_dns_update hostname:%s zone_id:%d ip:%s',
-            $clientIp,
-            $username,
-            $hostname->getValue(),
-            $zoneId,
-            $primaryIp
-        );
-
-        $this->auditLogger->logNotice($message);
-
-        // logNotice() carries no zone id, so the entry above only reaches the user log.
-        // Repeat it against the zone so the change shows in that zone's history.
-        $this->auditLogger->logInfo($message, $zoneId);
     }
 
     /**

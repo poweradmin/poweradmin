@@ -162,6 +162,32 @@ class AuditServiceTest extends TestCase
         $this->assertSame(['logWarn', 'client_ip:192.0.2.10 operation:login_error auth_method:oidc error:access_denied', null], $this->lines[1]);
     }
 
+    public function testApiRequestLineKeepsTheOperationFirstAndDashesForEmptyValues(): void
+    {
+        $service = $this->makeService();
+        $service->logApiRequest('api_request', 'HEAD', '/api/v2/zones', 200, '4', 'alice');
+        $service->logApiRequest('api_violation', 'DELETE', '/api/v2/zones/7', 403, '-', '');
+
+        $this->assertSame(
+            ['logApiInfo', 'operation:api_request method:HEAD path:/api/v2/zones status:200 key_id:4 user:alice client_ip:192.0.2.10', null],
+            $this->lines[0]
+        );
+        $this->assertSame(
+            ['logApiInfo', 'operation:api_violation method:DELETE path:/api/v2/zones/7 status:403 key_id:- user:- client_ip:192.0.2.10', null],
+            $this->lines[1]
+        );
+    }
+
+    public function testDynamicDnsUpdateIsWrittenToTheUserLogAndTheZoneLog(): void
+    {
+        $this->makeService()->logDynamicDnsUpdate('ddns-client', 'host.example.com', 12, '192.0.2.77');
+
+        $this->assertSame([
+            ['logNotice', 'client_ip:192.0.2.10 user:ddns-client operation:dynamic_dns_update hostname:host.example.com zone_id:12 ip:192.0.2.77', null],
+            ['logInfo', 'client_ip:192.0.2.10 user:ddns-client operation:dynamic_dns_update hostname:host.example.com zone_id:12 ip:192.0.2.77', 12],
+        ], $this->lines);
+    }
+
     public function testSamlLogoutUsesTheActorCapturedBeforeTheSessionWasCleared(): void
     {
         $this->makeService()->logSamlLogout('bob');

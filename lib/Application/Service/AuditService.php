@@ -73,7 +73,7 @@ class AuditService
 
     /**
      * For events logged after the session is gone (single logout), with the
-     * actor captured beforehand.
+     * actor captured beforehand, or with no session at all (dynamic DNS).
      *
      * @param array<string, int|string|null> $fields
      */
@@ -300,6 +300,49 @@ class AuditService
     private function apiKeyEvent(string $operation, int $keyId, string $keyName, array $extra = []): void
     {
         $this->logger->logApiInfo($this->line($operation, ['key_id' => $keyId, 'key_name' => $keyName] + $extra));
+    }
+
+    /**
+     * One public API response. Unlike the other lines the operation comes first and the
+     * actor last; that order is what log_api filters match on, so it stays. Empty values become '-'.
+     *
+     * @param string $operation api_request, or api_violation for a 401/403
+     * @param string $path Already capped by the caller so the row fits log_api.event
+     * @param string $keyId The API key id, or '-' for HTTP Basic auth
+     */
+    public function logApiRequest(string $operation, string $method, string $path, int $status, string $keyId, string $user): void
+    {
+        $clientIp = $this->ipRetriever->getClientIp();
+        $this->logger->logApiInfo(sprintf(
+            'operation:%s method:%s path:%s status:%d key_id:%s user:%s client_ip:%s',
+            $operation,
+            $method,
+            $path,
+            $status,
+            $keyId,
+            $user !== '' ? $user : '-',
+            $clientIp !== '' ? $clientIp : '-'
+        ));
+    }
+
+    // Dynamic DNS
+
+    /**
+     * Written twice: logNotice() carries no zone id and only reaches the user log, so the
+     * line is repeated against the zone to show in that zone's history.
+     *
+     * @param string $username The dyndns2 or API principal, which has no session
+     */
+    public function logDynamicDnsUpdate(string $username, string $hostname, int $zoneId, string $ip): void
+    {
+        $line = $this->lineAs($username, 'dynamic_dns_update', [
+            'hostname' => $hostname,
+            'zone_id' => $zoneId,
+            'ip' => $ip,
+        ]);
+
+        $this->logger->logNotice($line);
+        $this->logger->logInfo($line, $zoneId);
     }
 
     // Permission templates

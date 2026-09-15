@@ -30,7 +30,6 @@ use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -54,7 +53,7 @@ class DynamicDnsRequestFactory
                 new LoginAttemptService($db, $config)
             ),
             $repository,
-            new AuditLogWriter($db),
+            new AuditService($db),
             new IpAddressRetriever($_SERVER)
         );
     }
