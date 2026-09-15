@@ -224,8 +224,8 @@ class DomainManager implements DomainManagerInterface
                 $db->beginTransaction();
                 try {
                     if ($this->backendProvider->isApiBackend()) {
-                        // In API mode, createZone() already inserted the zones row.
-                        // Update it with owner and template info instead of creating a duplicate.
+                        // Zone ids come from the zones table here, so createZone() already
+                        // inserted the row; fill in owner and template instead of duplicating it.
                         $stmt = $db->prepare("UPDATE zones SET owner = :owner, zone_templ_id = :zone_template WHERE domain_id = :domain_id");
                         $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
                         $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
@@ -283,12 +283,10 @@ class DomainManager implements DomainManagerInterface
                         return ZoneWriteResult::ok((int)$domain_id);
                     } else {
                         if ($zone_template == "none" && $domain_id) {
-                            $isApiBackend = $this->backendProvider->isApiBackend();
-                            if ($isApiBackend) {
-                                // Commit zones + zones_groups before SOA update.
-                                // addRecord() calls the PowerDNS API which writes
-                                // to the same DB. With SQLite, holding a write lock
-                                // here would deadlock the PowerDNS write.
+                            $localTransaction = $this->backendProvider->supportsLocalWriteTransaction();
+                            if (!$localTransaction) {
+                                // The backend write cannot join this transaction, so land zones +
+                                // zones_groups first; on SQLite the open lock would block PowerDNS.
                                 $db->commit();
                             }
 
@@ -308,16 +306,14 @@ class DomainManager implements DomainManagerInterface
                             $soa_content = "$ns1 $hm $serial $soa_refresh $soa_retry $soa_expire $soa_minimum";
 
                             if (!$this->backendProvider->addRecord($domain_id, $domain, 'SOA', $soa_content, (int)$ttl, 0)) {
-                                if (!$isApiBackend) {
+                                if ($localTransaction) {
                                     $db->rollBack();
                                 }
                                 $this->cleanupZoneOnFailure($domain_id, $domain);
-                                if ($isApiBackend) {
-                                    $this->cleanupZoneMetadata($domain_id);
-                                }
+                                $this->cleanupZoneMetadata($domain_id);
                                 return ZoneWriteResult::backendFailure(_('Failed to create SOA record for zone.'));
                             }
-                            if (!$isApiBackend) {
+                            if ($localTransaction) {
                                 $db->commit();
                             }
                             $this->captureChange(function () use ($domain_id, $domain, $type, $owner): void {
@@ -330,12 +326,13 @@ class DomainManager implements DomainManagerInterface
                             });
                             return ZoneWriteResult::ok((int)$domain_id);
                         } elseif ($domain_id && is_numeric($zone_template)) {
-                            $isApiBackend = $this->backendProvider->isApiBackend();
-                            if ($isApiBackend) {
-                                // Commit zones + zones_groups before template records: in API mode
-                                // they go through PowerDNS HTTP calls this transaction cannot roll back.
+                            $localTransaction = $this->backendProvider->supportsLocalWriteTransaction();
+                            if (!$localTransaction) {
+                                // The template records are written outside this transaction, so
+                                // land zones + zones_groups before the first of them.
                                 $db->commit();
                             }
+                            $numericIds = $this->backendProvider->recordIdsAreNumeric();
 
                             $dns_ttl = $this->config->get('dns', 'ttl');
 
@@ -355,37 +352,35 @@ class DomainManager implements DomainManagerInterface
                                         }
 
                                         $record_id = $this->backendProvider->addRecordGetId($domain_id, $name, $recordType, $content, (int)$ttl, $prio);
-                                        if ($record_id === null && $isApiBackend) {
+                                        if ($record_id === null) {
+                                            if ($localTransaction) {
+                                                $db->rollBack();
+                                            }
                                             $this->cleanupZoneOnFailure($domain_id, $domain);
                                             $this->cleanupZoneMetadata($domain_id);
                                             return ZoneWriteResult::backendFailure(sprintf(_('Failed to create %s record for zone.'), $recordType));
                                         }
-                                        if ($record_id === null) {
-                                            $record_id = 0;
-                                        }
 
-                                        // Link the record to the template so future template
-                                        // edits can remove it precisely. SQL records use
-                                        // INT-keyed records_zone_templ; API records use
-                                        // string-keyed records_zone_templ_api.
-                                        if ($isApiBackend) {
-                                            $stmt = $db->prepare("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
-                                            $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-                                            $stmt->bindValue(':record_id', (string) $record_id, PDO::PARAM_STR);
-                                            $stmt->bindValue(':zone_templ_id', (int) $r['zone_templ_id'], PDO::PARAM_INT);
-                                            $stmt->execute();
-                                        } else {
+                                        // Link the record to the template so later template edits can
+                                        // remove it precisely; encoded ids need the string-keyed table.
+                                        if ($numericIds) {
                                             $stmt = $db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
                                             $stmt->execute([
                                                 ':domain_id' => $domain_id,
                                                 ':record_id' => $record_id,
                                                 ':zone_templ_id' => $r['zone_templ_id']
                                             ]);
+                                        } else {
+                                            $stmt = $db->prepare("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
+                                            $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                                            $stmt->bindValue(':record_id', (string) $record_id, PDO::PARAM_STR);
+                                            $stmt->bindValue(':zone_templ_id', (int) $r['zone_templ_id'], PDO::PARAM_INT);
+                                            $stmt->execute();
                                         }
                                     }
                                 }
                             }
-                            if (!$isApiBackend) {
+                            if ($localTransaction) {
                                 $db->commit();
                             }
                             $this->captureChange(function () use ($domain_id, $domain, $type, $zone_template, $owner): void {
@@ -404,16 +399,12 @@ class DomainManager implements DomainManagerInterface
                         }
                     }
                 } catch (\Exception $e) {
-                    $wasInTransaction = $db->inTransaction();
-                    if ($wasInTransaction) {
+                    if ($db->inTransaction()) {
                         $db->rollBack();
                     }
                     $this->cleanupZoneOnFailure($domain_id, $domain);
-                    // In API mode, the zones row is inserted before beginTransaction(),
-                    // so rollBack() won't remove it. Always clean up metadata in that case.
-                    if (!$wasInTransaction || $this->backendProvider->isApiBackend()) {
-                        $this->cleanupZoneMetadata($domain_id);
-                    }
+                    // Removes whatever was committed before the failure; a no-op after a rollback.
+                    $this->cleanupZoneMetadata($domain_id);
                     return ZoneWriteResult::backendFailure(sprintf(_('Failed to create zone: %s'), $e->getMessage()));
                 }
             } else {
@@ -449,14 +440,11 @@ class DomainManager implements DomainManagerInterface
                 if (!$this->backendProvider->deleteZone($id, $zoneName)) {
                     return ZoneWriteResult::backendFailure(_('Failed to delete zone from DNS backend.'));
                 }
-            } elseif (!$this->backendProvider->isApiBackend()) {
-                // Domain name row is gone (out-of-band delete or partial failure)
-                // but the SQL backend can still clean up records, domainmetadata,
-                // and cryptokeys by domain ID alone.
+            } else {
+                // The name is gone (out-of-band delete or partial failure); the SQL backend
+                // still clears records, metadata and keys by id, the API backend declines.
                 $this->backendProvider->deleteZone($id, '');
             }
-            // For API backend with missing domain name: skip backend call
-            // (API requires the zone name) and proceed to metadata cleanup.
 
             // Clean up Poweradmin-internal tables in a transaction
             try {
@@ -800,7 +788,8 @@ class DomainManager implements DomainManagerInterface
 
         $soa_rec = $this->soaRecordManager->getSOARecord($zone_id);
 
-        $isApiBackend = $this->backendProvider->isApiBackend();
+        $localTransaction = $this->backendProvider->supportsLocalWriteTransaction();
+        $numericIds = $this->backendProvider->recordIdsAreNumeric();
 
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
@@ -809,10 +798,9 @@ class DomainManager implements DomainManagerInterface
         try {
             if ($zone_template_id != 0) {
                 if ($canRemoveOldTemplateRecords) {
-                    if ($isApiBackend) {
-                        // API mode: encoded RecordIdentifier IDs are kept in the
-                        // string-keyed records_zone_templ_api table so we can
-                        // remove only the records this template applied here.
+                    if (!$numericIds) {
+                        // Encoded record ids live in the string-keyed records_zone_templ_api
+                        // table, so only the records this template applied are removed.
                         $this->deleteTemplateRecordsViaApi($zone_id, $zone_template_id, $dns_ttl);
                     } else {
                         // Snapshot template-linked records before the bulk delete
@@ -863,8 +851,8 @@ class DomainManager implements DomainManagerInterface
                     $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
                     $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger);
 
-                    // Commit before API writes to avoid snapshot isolation issues
-                    if ($isApiBackend) {
+                    // Writes outside this transaction would not see the rows above until it commits
+                    if (!$localTransaction) {
                         $this->db->commit();
                     }
 
@@ -875,8 +863,8 @@ class DomainManager implements DomainManagerInterface
                             $recordType = $r["type"];
 
                             if ($recordType == "SOA") {
-                                if ($isApiBackend) {
-                                    // In API mode, SOA is managed by PowerDNS; skip SOA template records
+                                if ($this->backendProvider->isApiBackend()) {
+                                    // PowerDNS manages the SOA of API-created zones; skip SOA template records
                                     continue;
                                 }
                                 // For SOA records, delete existing ones and use updated SOA record
@@ -910,79 +898,33 @@ class DomainManager implements DomainManagerInterface
                                 $ttl = $dns_ttl;
                             }
 
-                            // Check if a record with the same name, type, and content already exists
-                            $recordExists = $isApiBackend
-                                ? $this->backendProvider->recordExists($zone_id, $name, $recordType, $content)
-                                : false;
-
-                            if (!$isApiBackend) {
-                                $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table
-                                WHERE domain_id = :zone_id
-                                AND name = :name
-                                AND type = :type
-                                AND content = :content");
-                                $stmt->execute([
-                                    ':zone_id' => $zone_id,
-                                    ':name' => $name,
-                                    ':type' => $recordType,
-                                    ':content' => $content
-                                ]);
-                                $recordExists = (int)$stmt->fetchColumn() > 0;
-                            }
-
                             // Only insert if the record doesn't already exist
-                            if (!$recordExists) {
-                                if ($isApiBackend) {
-                                    $record_id = $this->backendProvider->addRecordGetId($zone_id, $name, $recordType, $content, (int)$ttl, $prio);
-                                    if ($record_id === null) {
-                                        continue;
-                                    }
-                                } else {
-                                    // Insert the record via SQL
-                                    $stmt = $this->db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:zone_id, :name, :type, :content, :ttl, :prio)");
-                                    $stmt->execute([
-                                        ':zone_id' => $zone_id,
-                                        ':name' => $name,
-                                        ':type' => $recordType,
-                                        ':content' => $content,
-                                        ':ttl' => $ttl,
-                                        ':prio' => $prio
-                                    ]);
-
-                                    // Get the new record ID
-                                    if ($db_type == 'pgsql') {
-                                        $record_id = $this->db->lastInsertId('records_id_seq');
-                                    } else {
-                                        $record_id = $this->db->lastInsertId();
-                                    }
+                            if (!$this->backendProvider->recordExists($zone_id, $name, $recordType, $content)) {
+                                $record_id = $this->backendProvider->addRecordGetId($zone_id, $name, $recordType, $content, (int)$ttl, $prio);
+                                if ($record_id === null) {
+                                    continue;
                                 }
 
-                                // Link the record to the template so future template
-                                // changes can remove it precisely. SQL records use the
-                                // INT-keyed records_zone_templ; API records use the
-                                // string-keyed records_zone_templ_api because their
-                                // encoded RecordIdentifier IDs don't fit an INT column.
-                                if ($isApiBackend) {
-                                    $stmt = $this->db->prepare("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
-                                    $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-                                    $stmt->bindValue(':record_id', (string) $record_id, PDO::PARAM_STR);
-                                    $stmt->bindValue(':zone_template_id', $zone_template_id, PDO::PARAM_INT);
-                                    $stmt->execute();
-                                } else {
+                                // Link the record to the template so later template edits can
+                                // remove it precisely; encoded ids need the string-keyed table.
+                                if ($numericIds) {
                                     $stmt = $this->db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
                                     $stmt->execute([
                                         ':zone_id' => $zone_id,
                                         ':record_id' => $record_id,
                                         ':zone_template_id' => $zone_template_id
                                     ]);
+                                } else {
+                                    $stmt = $this->db->prepare("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
+                                    $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+                                    $stmt->bindValue(':record_id', (string) $record_id, PDO::PARAM_STR);
+                                    $stmt->bindValue(':zone_template_id', $zone_template_id, PDO::PARAM_INT);
+                                    $stmt->execute();
                                 }
 
-                                $loggedRecordId = $isApiBackend
-                                    ? $record_id
-                                    : ($record_id !== false ? (int) $record_id : null);
-                                $this->captureChange(function () use ($loggedRecordId, $name, $recordType, $content, $ttl, $prio, $zone_id): void {
+                                $this->captureChange(function () use ($record_id, $name, $recordType, $content, $ttl, $prio, $zone_id): void {
                                     $this->changeLogger->logRecordCreate([
-                                        'id' => $loggedRecordId,
+                                        'id' => $record_id,
                                         'name' => $name,
                                         'type' => $recordType,
                                         'content' => $content,
@@ -1022,7 +964,7 @@ class DomainManager implements DomainManagerInterface
                 }
             }
 
-            if (!$isApiBackend || $this->db->inTransaction()) {
+            if ($this->db->inTransaction()) {
                 $this->db->commit();
             }
 

@@ -478,10 +478,7 @@ class ZonesRRSetsController extends PublicApiController
                 return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
 
-            // Start transaction (SQL backend only).
-            // API backend polls the DB for new record IDs after HTTP calls;
-            // an open transaction hides those rows due to MVCC snapshot isolation.
-            $useTransaction = !$this->backendProvider->isApiBackend();
+            $useTransaction = $this->backendProvider->supportsLocalWriteTransaction();
             if ($useTransaction) {
                 $this->db->beginTransaction();
             }

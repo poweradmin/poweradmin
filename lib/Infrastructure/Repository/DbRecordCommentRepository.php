@@ -50,9 +50,9 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         $this->backendProvider = $backendProvider;
     }
 
-    private function isApiBackend(): bool
+    private function recordIdsAreNumeric(): bool
     {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
+        return $this->backendProvider === null || $this->backendProvider->recordIdsAreNumeric();
     }
 
     public function add(RecordComment $comment): RecordComment
@@ -298,10 +298,9 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
             return false; // No legacy comment to migrate
         }
 
-        // In API mode, the records table has no local data (records come from the
-        // PowerDNS API), so we cannot enumerate sibling records for migration.
-        // Legacy RRset comments remain visible via fallback enrichment.
-        if ($this->isApiBackend()) {
+        // Sibling records are enumerated from the records table by integer id; encoded
+        // ids have no such table, and legacy RRset comments stay visible via the fallback.
+        if (!$this->recordIdsAreNumeric()) {
             return false;
         }
 

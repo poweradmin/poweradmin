@@ -30,8 +30,6 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
@@ -491,45 +489,22 @@ class DnsDataService
     }
 
     /**
-     * Batch count records for multiple zones.
-     * SQL backend uses a single query. The API backend has no bulk equivalent -
-     * PowerDNS's /zones list response carries no record count - so it costs one
-     * call per zone and must only be given the zones on the current page.
+     * Count records per zone, one backend call each. Only the API search path
+     * needs this (the SQL search joins the count itself), and PowerDNS's /zones
+     * list carries no record count, so only ever pass the zones on the current page.
      *
      * @param array<int, array{id?: int}> $zones
      * @return array<int, int> zone ID => record count
      */
     private function batchCountZoneRecords(array $zones): array
     {
-        if ($this->backendProvider->isApiBackend()) {
-            $counts = [];
-            foreach ($zones as $zone) {
-                $id = (int)($zone['id'] ?? 0);
-                if ($id <= 0) {
-                    continue;
-                }
-                $counts[$id] = $this->backendProvider->countZoneRecords($id);
-            }
-            return $counts;
-        }
-
-        $zoneIds = array_filter(array_map(fn($z) => (int)($z['id'] ?? 0), $zones));
-        if (empty($zoneIds)) {
-            return [];
-        }
-        $tableNameService = new TableNameService($this->config);
-        $recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
-        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
-        $stmt = $this->db->prepare(
-            "SELECT domain_id, COUNT(*) as count_records FROM $recordsTable
-             WHERE domain_id IN ($placeholders) AND type IS NOT NULL AND type != ''
-             GROUP BY domain_id"
-        );
-        $stmt->execute(array_values($zoneIds));
-
         $counts = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $counts[(int)$row['domain_id']] = (int)$row['count_records'];
+        foreach ($zones as $zone) {
+            $id = (int)($zone['id'] ?? 0);
+            if ($id <= 0) {
+                continue;
+            }
+            $counts[$id] = $this->backendProvider->countZoneRecords($id);
         }
         return $counts;
     }

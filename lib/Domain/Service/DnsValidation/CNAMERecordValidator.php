@@ -22,8 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
-use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
-use Poweradmin\Domain\Service\SearchBackendInterface;
+use Poweradmin\Domain\Service\RecordReadBackendInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
@@ -49,16 +48,16 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     private ConfigurationManager $config;
     private PDO $db;
     private TableNameService $tableNameService;
-    private (SearchBackendInterface&BackendCapabilitiesInterface)|null $backendProvider;
+    private ?RecordReadBackendInterface $backendProvider;
 
     /**
      * Constructor
      *
      * @param ConfigurationManager $config
      * @param PDO $db
-     * @param (SearchBackendInterface&BackendCapabilitiesInterface)|null $backendProvider Optional DNS backend provider
+     * @param RecordReadBackendInterface|null $backendProvider DNS backend provider; without one the records table is read directly
      */
-    public function __construct(ConfigurationManager $config, PDO $db, (SearchBackendInterface&BackendCapabilitiesInterface)|null $backendProvider = null)
+    public function __construct(ConfigurationManager $config, PDO $db, ?RecordReadBackendInterface $backendProvider = null)
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
@@ -66,11 +65,6 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $this->db = $db;
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
-    }
-
-    private function isApiBackend(): bool
-    {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     /**
@@ -222,11 +216,10 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameUnique(string $name, int|string $rid): ValidationResult
     {
-        if ($this->isApiBackend()) {
-            $result = $this->backendProvider->searchDnsData($name, 'record', 100);
+        if ($this->backendProvider !== null) {
             $isNewRecord = is_numeric($rid) && (int)$rid <= 0;
-            foreach ($result['records'] as $r) {
-                if (strcasecmp($r['name'], $name) === 0 && $r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
+            foreach ($this->backendProvider->findRecordsByName($name) as $r) {
+                if ($r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
                     return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
                 }
             }
@@ -264,10 +257,9 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameName(string $name): ValidationResult
     {
-        if ($this->isApiBackend()) {
-            $result = $this->backendProvider->searchDnsData($name, 'record', 100);
-            foreach ($result['records'] as $r) {
-                if ($r['content'] === $name && in_array($r['type'], ['MX', 'NS'], true)) {
+        if ($this->backendProvider !== null) {
+            foreach ($this->backendProvider->findRecordsByContent($name) as $r) {
+                if (in_array($r['type'], ['MX', 'NS'], true)) {
                     return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
                 }
             }
@@ -315,10 +307,9 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     public function validateCnameExistence(string $name, int|string $rid): ValidationResult
     {
-        if ($this->isApiBackend()) {
-            $result = $this->backendProvider->searchDnsData($name, 'record', 100);
-            foreach ($result['records'] as $r) {
-                if (strcasecmp($r['name'], $name) === 0 && $r['type'] === 'CNAME' && ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid)) {
+        if ($this->backendProvider !== null) {
+            foreach ($this->backendProvider->findRecordsByName($name, 'CNAME') as $r) {
+                if ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid) {
                     return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
                 }
             }

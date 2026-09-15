@@ -96,6 +96,29 @@ interface ZoneReadBackendInterface
     public function getZones(bool $withDnssec = true): array;
 
     /**
+     * Get id, name and type for the given zone ids, sorted by name.
+     * Unknown ids are skipped.
+     *
+     * @param int[] $domainIds Domain IDs
+     * @return array<int, array{id: int, name: string, type: string}>
+     */
+    public function getZonesByIds(array $domainIds): array;
+
+    /**
+     * Count all zones in the DNS backend.
+     *
+     * @return int Zone count
+     */
+    public function countZones(): int;
+
+    /**
+     * Count all record rows in the DNS backend, ENTs included.
+     *
+     * @return int|null Record count, or null when the backend has no global count (API)
+     */
+    public function countRecords(): ?int;
+
+    /**
      * Count non-ENT records in a zone.
      *
      * @param int $domainId Domain ID

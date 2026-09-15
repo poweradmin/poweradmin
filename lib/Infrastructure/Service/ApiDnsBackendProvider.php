@@ -162,6 +162,11 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
 
     public function deleteZone(int $domainId, string $zoneName): bool
     {
+        // Without a name there is nothing to address; "." would target the root zone
+        if ($zoneName === '') {
+            return false;
+        }
+
         $apiName = self::ensureTrailingDot($zoneName);
         $zone = new Zone($apiName);
 
@@ -828,6 +833,37 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
         ));
     }
 
+    public function findRecordsByName(string $name, ?string $type = null): array
+    {
+        $name = rtrim($name, '.');
+
+        return $this->searchRecordsMatching(
+            $name,
+            fn(array $r): bool => strcasecmp($r['name'], $name) === 0 && ($type === null || $r['type'] === $type)
+        );
+    }
+
+    public function findRecordsByContent(string $content, ?string $type = null): array
+    {
+        return $this->searchRecordsMatching(
+            $content,
+            fn(array $r): bool => $r['content'] === $content && ($type === null || $r['type'] === $type)
+        );
+    }
+
+    /**
+     * The search endpoint matches names and contents alike and caps at 100 candidates,
+     * so the exact predicate is applied here.
+     *
+     * @param callable(array): bool $match
+     */
+    private function searchRecordsMatching(string $query, callable $match): array
+    {
+        $records = $this->searchDnsData($query, 'record', 100)['records'];
+
+        return array_values(array_filter($records, $match));
+    }
+
     public function getSOARecord(int $domainId): string
     {
         $zoneName = $this->getZoneNameByLocalId($domainId);
@@ -957,6 +993,32 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
         }
 
         return $zones;
+    }
+
+    public function getZonesByIds(array $domainIds): array
+    {
+        $zones = [];
+        foreach (array_unique(array_map('intval', $domainIds)) as $id) {
+            $zone = $this->getZoneById($id);
+            if ($zone !== null) {
+                $zones[] = ['id' => (int)$zone['id'], 'name' => (string)$zone['name'], 'type' => (string)$zone['type']];
+            }
+        }
+        usort($zones, fn(array $a, array $b): int => strcasecmp($a['name'], $b['name']));
+
+        return $zones;
+    }
+
+    public function countZones(): int
+    {
+        // Only the number is needed, so skip the per-zone DNSSEC lookup
+        return count($this->getZones(false));
+    }
+
+    public function countRecords(): ?int
+    {
+        // PowerDNS keeps no global record count and the zone list carries none
+        return null;
     }
 
     public function getZoneSoaHealth(string $zoneName, string $kind): ?array
@@ -1224,6 +1286,16 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
     public function isApiBackend(): bool
     {
         return true;
+    }
+
+    public function supportsLocalWriteTransaction(): bool
+    {
+        return false;
+    }
+
+    public function recordIdsAreNumeric(): bool
+    {
+        return false;
     }
 
     public function hasSoaEditApi(int $domainId): bool

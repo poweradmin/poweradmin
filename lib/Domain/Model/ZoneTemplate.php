@@ -1297,28 +1297,11 @@ class ZoneTemplate
             return [];
         }
 
-        if ($this->isApiBackend()) {
-            try {
-                $result = [];
-                foreach ($zone_ids as $zid) {
-                    $zoneData = $this->backendProvider->getZoneById((int)$zid);
-                    if ($zoneData) {
-                        $result[] = [
-                            'id' => $zoneData['id'],
-                            'name' => $zoneData['name'],
-                            'type' => $zoneData['type'],
-                        ];
-                    }
-                }
-                usort($result, fn($a, $b) => strcasecmp($a['name'], $b['name']));
-                return $result;
-            } catch (Exception $e) {
-                $this->messageService->addSystemError(_('Error retrieving zones: ') . $e->getMessage());
-                return [];
-            }
-        }
-
         try {
+            if ($this->backendProvider !== null) {
+                return $this->backendProvider->getZonesByIds($zone_ids);
+            }
+
             $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
             $placeholders = str_repeat('?,', count($zone_ids) - 1) . '?';

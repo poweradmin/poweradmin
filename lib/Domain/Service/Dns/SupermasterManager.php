@@ -24,15 +24,12 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\SupermasterBackendInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
  * Creates, updates and deletes PowerDNS supermasters.
@@ -44,30 +41,23 @@ class SupermasterManager
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
-    private TableNameService $tableNameService;
-    private SupermasterBackendInterface&BackendCapabilitiesInterface $backendProvider;
+    private SupermasterBackendInterface $backendProvider;
 
     /**
      * Constructor
      *
      * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
-     * @param (SupermasterBackendInterface&BackendCapabilitiesInterface)|null $backendProvider DNS backend provider (auto-created if null)
+     * @param SupermasterBackendInterface|null $backendProvider DNS backend provider (auto-created if null)
      */
-    public function __construct(PDO $db, ConfigurationManager $config, (SupermasterBackendInterface&BackendCapabilitiesInterface)|null $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationManager $config, ?SupermasterBackendInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ipAddressValidator = new IPAddressValidator();
-        $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
-    }
-
-    private function isApiBackend(): bool
-    {
-        return $this->backendProvider->isApiBackend();
     }
 
     /**
@@ -135,48 +125,26 @@ class SupermasterManager
      */
     public function getSupermasters(): array
     {
-        if ($this->isApiBackend()) {
-            $apiSupermasters = $this->backendProvider->getSupermasters();
-            $supermasters = [];
-            foreach ($apiSupermasters as $sm) {
-                $ip = $sm['ip'] ?? $sm['master_ip'] ?? '';
-                $nameserver = $sm['nameserver'] ?? $sm['ns_name'] ?? '';
-                $account = $sm['account'] ?? '';
+        $accountMatch = DbCompat::accentSensitiveEquals($this->config->get('database', 'type'), 'username', ':account');
+        $fullnameStmt = $this->db->prepare("SELECT fullname FROM users WHERE $accountMatch");
 
-                // Enrich with user fullname from Poweradmin users table
-                $fullname = '';
-                if ($account !== '') {
-                    $stmt = $this->db->prepare("SELECT fullname FROM users WHERE username = ?");
-                    $stmt->execute([$account]);
-                    $fullname = $stmt->fetchColumn() ?: '';
-                }
+        $supermasters = [];
+        foreach ($this->backendProvider->getSupermasters() as $sm) {
+            $account = (string)($sm['account'] ?? '');
 
-                $supermasters[] = [
-                    "master_ip" => $ip,
-                    "ns_name" => $nameserver,
-                    "account" => $account,
-                    "fullname" => $fullname,
-                ];
+            // The account names the Poweradmin user the zones will be handed to
+            $fullname = '';
+            if ($account !== '') {
+                $fullnameStmt->execute([':account' => $account]);
+                $fullname = $fullnameStmt->fetchColumn() ?: '';
             }
-            return $supermasters;
-        }
 
-        $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
-        $accountMatch = DbCompat::accentSensitiveEquals($this->config->get('database', 'type'), 's.account', 'u.username');
-
-        $result = $this->db->query("SELECT s.ip, s.nameserver, s.account, u.fullname
-                                     FROM $supermasters_table s
-                                     LEFT JOIN users u ON $accountMatch");
-
-        $supermasters = array();
-
-        while ($r = $result->fetch()) {
-            $supermasters[] = array(
-                "master_ip" => $r["ip"],
-                "ns_name" => $r["nameserver"],
-                "account" => $r["account"],
-                "fullname" => $r["fullname"] ?? '',
-            );
+            $supermasters[] = [
+                "master_ip" => (string)($sm['master_ip'] ?? ''),
+                "ns_name" => (string)($sm['ns_name'] ?? ''),
+                "account" => $account,
+                "fullname" => $fullname,
+            ];
         }
         return $supermasters;
     }
@@ -197,32 +165,12 @@ class SupermasterManager
             return array();
         }
 
-        if ($this->isApiBackend()) {
-            $allSupermasters = $this->getSupermasters();
-            foreach ($allSupermasters as $sm) {
-                if ($sm['master_ip'] === $master_ip) {
-                    return $sm;
-                }
+        foreach ($this->getSupermasters() as $sm) {
+            if ($sm['master_ip'] === $master_ip) {
+                return $sm;
             }
-            return array();
         }
-
-        $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
-        $accountMatch = DbCompat::accentSensitiveEquals($this->config->get('database', 'type'), 's.account', 'u.username');
-
-        $stmt = $this->db->prepare("SELECT s.ip, s.nameserver, s.account, u.fullname
-                                     FROM $supermasters_table s
-                                     LEFT JOIN users u ON $accountMatch
-                                     WHERE s.ip = :master_ip");
-        $stmt->execute([':master_ip' => $master_ip]);
-        $result = $stmt->fetch();
-
-        return array(
-            "master_ip" => $result["ip"],
-            "ns_name" => $result["nameserver"],
-            "account" => $result["account"],
-            "fullname" => $result["fullname"] ?? ''
-        );
+        return array();
     }
 
     /**
@@ -239,22 +187,12 @@ class SupermasterManager
             return false;
         }
 
-        if ($this->isApiBackend()) {
-            $allSupermasters = $this->getSupermasters();
-            foreach ($allSupermasters as $sm) {
-                if ($sm['master_ip'] === $master_ip) {
-                    return true;
-                }
+        foreach ($this->backendProvider->getSupermasters() as $sm) {
+            if (($sm['master_ip'] ?? '') === $master_ip) {
+                return true;
             }
-            return false;
         }
-
-        $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
-
-        $stmt = $this->db->prepare("SELECT ip FROM $supermasters_table WHERE ip = :master_ip");
-        $stmt->execute([':master_ip' => $master_ip]);
-        $result = $stmt->fetchColumn();
-        return (bool)$result;
+        return false;
     }
 
     /**
@@ -272,25 +210,12 @@ class SupermasterManager
             return false;
         }
 
-        if ($this->isApiBackend()) {
-            $allSupermasters = $this->getSupermasters();
-            foreach ($allSupermasters as $sm) {
-                if ($sm['master_ip'] === $master_ip && $sm['ns_name'] === $ns_name) {
-                    return true;
-                }
+        foreach ($this->backendProvider->getSupermasters() as $sm) {
+            if (($sm['master_ip'] ?? '') === $master_ip && ($sm['ns_name'] ?? '') === $ns_name) {
+                return true;
             }
-            return false;
         }
-
-        $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
-
-        $stmt = $this->db->prepare("SELECT ip FROM $supermasters_table WHERE ip = :master_ip AND nameserver = :ns_name");
-        $stmt->execute([
-            ':master_ip' => $master_ip,
-            ':ns_name' => $ns_name
-        ]);
-        $result = $stmt->fetchColumn();
-        return (bool)$result;
+        return false;
     }
 
     /**
@@ -351,27 +276,11 @@ class SupermasterManager
      */
     public function getSlaveServerIPs(): array
     {
-        if ($this->isApiBackend()) {
-            $allSupermasters = $this->getSupermasters();
-            $ips = [];
-            foreach ($allSupermasters as $sm) {
-                $ips[$sm['master_ip']] = true;
-            }
-            return array_keys($ips);
+        $ips = [];
+        foreach ($this->backendProvider->getSupermasters() as $sm) {
+            $ips[(string)($sm['master_ip'] ?? '')] = true;
         }
-
-        $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
-
-        $result = $this->db->query("SELECT ip FROM $supermasters_table GROUP BY ip");
-
-        $slaveServerIPs = [];
-        if ($result) {
-            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                $slaveServerIPs[] = $row['ip'];
-            }
-        }
-
-        return $slaveServerIPs;
+        return array_keys($ips);
     }
 
     /**
