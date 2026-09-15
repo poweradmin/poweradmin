@@ -22,13 +22,13 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Service\DnssecProviderInterface;
 
 /**
- * Null Object implementation of DnssecProvider
+ * Null Object implementation of DnssecProviderInterface
  * Used when PowerDNS API is not configured or DNSSEC is disabled
  */
-class NullDnssecProvider implements DnssecProvider
+class NullDnssecProvider implements DnssecProviderInterface
 {
     public function rectifyZone(string $zoneName): bool
     {

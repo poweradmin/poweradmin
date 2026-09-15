@@ -25,7 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -47,9 +47,9 @@ class DbZoneRepository implements ZoneRepositoryInterface
     private ReverseZoneSorting $reverseZoneSorting;
     private object $config;
     private TableNameService $tableNameService;
-    private ?DnsBackendProvider $backendProvider;
+    private ?DnsBackendProviderInterface $backendProvider;
 
-    public function __construct($db, $config, ?DnsBackendProvider $backendProvider = null)
+    public function __construct($db, $config, ?DnsBackendProviderInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;

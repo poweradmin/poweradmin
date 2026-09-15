@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Service\DatabaseConsistencyService;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 #[CoversClass(DatabaseConsistencyService::class)]
@@ -58,9 +58,9 @@ class DatabaseConsistencyServiceTest extends TestCase
         parent::tearDown();
     }
 
-    private function apiBackend(array $zones): DnsBackendProvider&MockObject
+    private function apiBackend(array $zones): DnsBackendProviderInterface&MockObject
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getZones')->willReturn($zones);
         return $backend;
@@ -114,7 +114,7 @@ class DatabaseConsistencyServiceTest extends TestCase
     #[Test]
     public function apiBackendTreatsZoneWithGroupOwnershipAsHealthy(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getZones')->willReturn([
             ['id' => 7, 'name' => 'group-only.example.com.'],
@@ -140,7 +140,7 @@ class DatabaseConsistencyServiceTest extends TestCase
     #[Test]
     public function apiBackendTreatsZoneWithDirectOwnerAsHealthy(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getZones')->willReturn([
             ['id' => 11, 'name' => 'user-owned.example.com.'],
@@ -165,7 +165,7 @@ class DatabaseConsistencyServiceTest extends TestCase
     #[Test]
     public function apiBackendFlagsZoneWithNeitherOwnerNorGroup(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getZones')->willReturn([
             ['id' => 99, 'name' => 'orphan.example.com.'],

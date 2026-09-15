@@ -43,7 +43,7 @@ class CatalogZoneService
      */
     public const PUBLISHABLE_KINDS = [ZoneType::MASTER, ZoneType::PRODUCER];
 
-    private DnsBackendProvider $backendProvider;
+    private DnsBackendProviderInterface $backendProvider;
     private PermissionService $permissionService;
 
     private ?AuditService $auditService;
@@ -53,7 +53,7 @@ class CatalogZoneService
     private ?array $producers = null;
 
     public function __construct(
-        DnsBackendProvider $backendProvider,
+        DnsBackendProviderInterface $backendProvider,
         PermissionService $permissionService,
         ?AuditService $auditService = null,
         ?ZoneRepositoryInterface $zoneRepository = null

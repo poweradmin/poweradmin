@@ -24,9 +24,9 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -45,10 +45,10 @@ class DashboardStatsService
         private readonly PDO $db,
         private readonly ConfigurationInterface $config,
         private readonly LoggerInterface $logger,
-        private readonly UserRepository $users,
+        private readonly UserRepositoryInterface $users,
         private readonly UserGroupRepositoryInterface $groups,
         private readonly ZoneRepositoryInterface $zones,
-        private readonly DnsBackendProvider $backend
+        private readonly DnsBackendProviderInterface $backend
     ) {
         $this->tables = new TableNameService($config);
     }

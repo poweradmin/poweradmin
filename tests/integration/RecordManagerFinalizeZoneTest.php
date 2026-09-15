@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
@@ -138,7 +138,7 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
         $manager->finalizeZone(self::ZONE_ID, false);
     }
 
-    private function makeRecordManager(SOARecordManagerInterface $soa, RecordChangeLogger $changeLogger, ?DnsBackendProvider $backend = null): RecordManager
+    private function makeRecordManager(SOARecordManagerInterface $soa, RecordChangeLogger $changeLogger, ?DnsBackendProviderInterface $backend = null): RecordManager
     {
         $config = $this->primeConfigurationManager(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
 

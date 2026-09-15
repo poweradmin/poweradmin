@@ -26,9 +26,9 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\DashboardStatsService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
@@ -72,7 +72,7 @@ class DashboardStatsServiceTest extends TestCase
 
     public function testApiModeCountsThroughTheBackend(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getZones')->willReturn([['name' => 'a'], ['name' => 'b'], ['name' => 'c'], ['name' => 'd']]);
 
@@ -84,7 +84,7 @@ class DashboardStatsServiceTest extends TestCase
 
     public function testApiOutageFallsBackToTheCachedZones(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getZones')->willThrowException(new RuntimeException('down'));
 
@@ -94,24 +94,24 @@ class DashboardStatsServiceTest extends TestCase
     public function testSwallowedApiErrorWithNoZonesFallsBackToTheCachedZones(): void
     {
         $_SESSION['pdns_api_last_error'] = ['message' => 'timeout', 'context' => [], 'timestamp' => 0];
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getZones')->willReturn([]);
 
         $this->assertSame(2, $this->makeService(true, $backend)->stats(5, true)['zones']);
     }
 
-    private function makeService(bool $apiBackend, ?DnsBackendProvider $backend = null, ?ZoneRepositoryInterface $zones = null): DashboardStatsService
+    private function makeService(bool $apiBackend, ?DnsBackendProviderInterface $backend = null, ?ZoneRepositoryInterface $zones = null): DashboardStatsService
     {
         if ($backend === null) {
-            $backend = $this->createMock(DnsBackendProvider::class);
+            $backend = $this->createMock(DnsBackendProviderInterface::class);
             $backend->method('isApiBackend')->willReturn($apiBackend);
         }
         if ($zones === null) {
             $zones = $this->createMock(ZoneRepositoryInterface::class);
             $zones->method('getZoneCount')->willReturn(2);
         }
-        $users = $this->createMock(UserRepository::class);
+        $users = $this->createMock(UserRepositoryInterface::class);
         $users->method('getTotalUserCount')->willReturnCallback(fn(?int $restrictTo = null): int => $restrictTo === null ? 9 : 1);
         $groups = $this->createMock(UserGroupRepositoryInterface::class);
         $groups->method('countAll')->willReturn(4);

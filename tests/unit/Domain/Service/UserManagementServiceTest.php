@@ -32,7 +32,7 @@ use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\UserManagementService;
@@ -42,7 +42,7 @@ use Poweradmin\Domain\Service\UserProfileAssembler;
 class UserManagementServiceTest extends TestCase
 {
     private UserManagementService $service;
-    private UserRepository&MockObject $userRepository;
+    private UserRepositoryInterface&MockObject $userRepository;
     private PermissionService&MockObject $permissionService;
     private UserGroupRepositoryInterface&MockObject $groupRepository;
 
@@ -50,7 +50,7 @@ class UserManagementServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->permissionService = $this->createMock(PermissionService::class);
         $this->groupRepository = $this->createMock(UserGroupRepositoryInterface::class);
 

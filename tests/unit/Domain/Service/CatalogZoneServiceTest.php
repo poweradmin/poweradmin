@@ -28,13 +28,13 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\CatalogZoneService;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\PermissionService;
 
 #[CoversClass(CatalogZoneService::class)]
 class CatalogZoneServiceTest extends TestCase
 {
-    private DnsBackendProvider&MockObject $backend;
+    private DnsBackendProviderInterface&MockObject $backend;
     private PermissionService&MockObject $permissions;
     private CatalogZoneService $service;
 
@@ -42,7 +42,7 @@ class CatalogZoneServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->backend = $this->createMock(DnsBackendProvider::class);
+        $this->backend = $this->createMock(DnsBackendProviderInterface::class);
         $this->permissions = $this->createMock(PermissionService::class);
         $this->service = new CatalogZoneService($this->backend, $this->permissions);
     }

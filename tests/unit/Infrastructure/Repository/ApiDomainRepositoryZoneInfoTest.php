@@ -6,7 +6,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -59,7 +59,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
     #[Test]
     public function listZoneNamesReadsTheLiveListSortedWithoutTrailingDots(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn([
             ['id' => 101, 'name' => 'two.example.com.', 'kind' => 'Master'],
             ['id' => 0, 'name' => 'unresolved.example.com.', 'type' => 'NATIVE'],
@@ -77,7 +77,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
     #[Test]
     public function getZoneInfoFromIdsUsesOneBulkZoneListCall(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
 
         // Name/type/master come from a single bulk zone-list call rather than a
         // zone-body fetch per zone. Record counts have no bulk equivalent - the
@@ -111,7 +111,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
     #[Test]
     public function getZoneInfoFromIdsSkipsZonesMissingFromTheApi(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->once())->method('getZones')->willReturn([
             ['id' => 100, 'name' => 'present.example.com', 'type' => 'NATIVE', 'master' => ''],
         ]);
@@ -128,7 +128,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
     #[Test]
     public function getZoneInfoFromIdsReturnsEmptyForEmptyInput(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->never())->method('getZones');
         $backend->expects($this->never())->method('countZoneRecords');
 

@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordComment;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Repository\ApiRecordCommentRepository;
 
@@ -15,7 +15,7 @@ use Poweradmin\Infrastructure\Repository\ApiRecordCommentRepository;
 class ApiRecordCommentRepositoryTest extends TestCase
 {
     private MockObject&PowerdnsApiClient $apiClient;
-    private MockObject&DnsBackendProvider $backendProvider;
+    private MockObject&DnsBackendProviderInterface $backendProvider;
     private ApiRecordCommentRepository $repo;
 
     private const ZONE_NAME = 'example.com';
@@ -24,7 +24,7 @@ class ApiRecordCommentRepositoryTest extends TestCase
     protected function setUp(): void
     {
         $this->apiClient = $this->createMock(PowerdnsApiClient::class);
-        $this->backendProvider = $this->createMock(DnsBackendProvider::class);
+        $this->backendProvider = $this->createMock(DnsBackendProviderInterface::class);
 
         $this->backendProvider->method('getZoneNameById')
             ->with(self::DOMAIN_ID)
@@ -127,7 +127,7 @@ class ApiRecordCommentRepositoryTest extends TestCase
     #[Test]
     public function updateReturnsNullWhenZoneNotFound(): void
     {
-        $backendProvider = $this->createMock(DnsBackendProvider::class);
+        $backendProvider = $this->createMock(DnsBackendProviderInterface::class);
         $backendProvider->method('getZoneNameById')->willReturn(null);
 
         $repo = new ApiRecordCommentRepository($this->apiClient, $backendProvider);

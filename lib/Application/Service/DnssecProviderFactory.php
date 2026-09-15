@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Exception;
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\HttpClient;
@@ -89,10 +89,10 @@ class DnssecProviderFactory
      * @param ConfigurationInterface $config Configuration object
      * @param PowerdnsApiClient|null $apiClient Reuse a caller's client and its
      *        per-request caches; one is built from config when omitted
-     * @return DnssecProvider DNSSEC provider instance
+     * @return DnssecProviderInterface DNSSEC provider instance
      * @throws Exception When PowerDNS API is not configured
      */
-    public static function create(PDO $db, ConfigurationInterface $config, ?PowerdnsApiClient $apiClient = null): DnssecProvider
+    public static function create(PDO $db, ConfigurationInterface $config, ?PowerdnsApiClient $apiClient = null): DnssecProviderInterface
     {
         $pdnsApiUrl = $config->get('pdns_api', 'url');
         $pdnsApiKey = $config->get('pdns_api', 'key');

@@ -28,7 +28,7 @@ use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\ZoneSigningService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -43,7 +43,7 @@ class ZoneDnssecController extends PublicApiController
 {
     protected ZoneRepositoryInterface $zoneRepository;
     protected ApiPermissionService $apiPermissionService;
-    protected DnssecProvider $dnssecProvider;
+    protected DnssecProviderInterface $dnssecProvider;
     protected ?PowerdnsApiClient $apiClient = null;
 
     public function __construct(array $request, array $pathParameters = [])

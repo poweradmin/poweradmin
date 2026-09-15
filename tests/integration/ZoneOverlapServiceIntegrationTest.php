@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Integration;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ZoneOverlapService;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
@@ -92,7 +92,7 @@ class ZoneOverlapServiceIntegrationTest extends TestCase
             'database' => ['pdns_db_name' => null],
         ]);
 
-        $repository = $this->createMock(UserRepository::class);
+        $repository = $this->createMock(UserRepositoryInterface::class);
         $repository->method('getUserPermissions')->willReturn([]);
         $repository->method('hasAdminPermission')->willReturn(false);
         $repository->method('userOwnsZone')->willReturnCallback(
@@ -173,7 +173,7 @@ class ZoneOverlapServiceIntegrationTest extends TestCase
             $config = new FakeConfiguration([
                 'dns' => ['parent_zone_ownership_check' => true, 'backend' => 'api'],
             ]);
-            $repository = $this->createMock(UserRepository::class);
+            $repository = $this->createMock(UserRepositoryInterface::class);
             $repository->method('getUserPermissions')->willReturn([]);
             $repository->method('hasAdminPermission')->willReturn(false);
             $repository->method('userOwnsZone')->willReturn(false);

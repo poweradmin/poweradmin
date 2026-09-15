@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 
@@ -35,9 +35,9 @@ class DnsValidatorRegistry
     private array $validators = [];
     private ConfigurationManager $config;
     private PDO $db;
-    private ?DnsBackendProvider $backendProvider;
+    private ?DnsBackendProviderInterface $backendProvider;
 
-    public function __construct(ConfigurationManager $config, PDO $db, ?DnsBackendProvider $backendProvider = null)
+    public function __construct(ConfigurationManager $config, PDO $db, ?DnsBackendProviderInterface $backendProvider = null)
     {
         $this->config = $config;
         $this->db = $db;

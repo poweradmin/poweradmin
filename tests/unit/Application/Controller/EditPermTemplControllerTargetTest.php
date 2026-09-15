@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\EditPermTemplController;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -125,7 +125,7 @@ class EditPermTemplControllerTargetTest extends TestCase
 
         // A superuser caller, so the content guard passes and the id plumbing is what
         // is actually under test here.
-        $userRepository = $this->createMock(UserRepository::class);
+        $userRepository = $this->createMock(UserRepositoryInterface::class);
         $userRepository->method('hasAdminPermission')->willReturn(true);
 
         $controller = $this->reflection->newInstanceWithoutConstructor();

@@ -23,11 +23,11 @@
 namespace TestHelpers;
 
 use PHPUnit\Framework\MockObject\MockObject;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 
 /**
- * Builds a real PermissionService over a scripted UserRepository, so tests state
+ * Builds a real PermissionService over a scripted UserRepositoryInterface, so tests state
  * facts (who holds what, who owns what) instead of ordered query results.
  */
 trait BuildsPermissionService
@@ -68,8 +68,8 @@ trait BuildsPermissionService
         array $ownedZonesByUser = [],
         array $templateByUser = [],
         array $superuserTemplateIds = []
-    ): UserRepository&MockObject {
-        $repository = $this->createMock(UserRepository::class);
+    ): UserRepositoryInterface&MockObject {
+        $repository = $this->createMock(UserRepositoryInterface::class);
         $repository->method('getUserPermissions')
             ->willReturnCallback(fn(int $userId): array => $permissionsByUser[$userId] ?? []);
         $repository->method('hasAdminPermission')

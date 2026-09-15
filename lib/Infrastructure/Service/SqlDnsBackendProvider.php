@@ -26,7 +26,7 @@ use PDO;
 use PDOException;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -36,12 +36,12 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * DnsBackendProvider over direct SQL on the PowerDNS tables.
+ * DnsBackendProviderInterface over direct SQL on the PowerDNS tables.
  *
  * Performs DNS data operations directly against the PowerDNS database tables.
  * This is the default backend and preserves the existing behavior.
  */
-class SqlDnsBackendProvider implements DnsBackendProvider
+class SqlDnsBackendProvider implements DnsBackendProviderInterface
 {
     private PDO $db;
     private TableNameService $tableNameService;

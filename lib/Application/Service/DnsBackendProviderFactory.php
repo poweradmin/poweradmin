@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -47,9 +47,9 @@ class DnsBackendProviderFactory
      * @param PDO $db Database connection
      * @param ConfigurationInterface $config Configuration object
      * @param LoggerInterface|null $logger PSR-3 logger
-     * @return DnsBackendProvider
+     * @return DnsBackendProviderInterface
      */
-    public static function create(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null): DnsBackendProvider
+    public static function create(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null): DnsBackendProviderInterface
     {
         $logger = $logger ?? new NullLogger();
         $backend = $config->get('dns', 'backend');
@@ -115,7 +115,7 @@ class DnsBackendProviderFactory
      * Reach the client a provider already holds, so callers reuse its per-request
      * read caches instead of constructing a second client against the same server.
      */
-    public static function apiClientFrom(?DnsBackendProvider $provider): ?PowerdnsApiClient
+    public static function apiClientFrom(?DnsBackendProviderInterface $provider): ?PowerdnsApiClient
     {
         return $provider instanceof ApiDnsBackendProvider ? $provider->getApiClient() : null;
     }

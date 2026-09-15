@@ -26,7 +26,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 
@@ -39,7 +39,7 @@ use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 class ApiZoneRepositoryReverseSortTest extends TestCase
 {
     private PDO $db;
-    private DnsBackendProvider $backend;
+    private DnsBackendProviderInterface $backend;
 
     protected function setUp(): void
     {
@@ -62,7 +62,7 @@ class ApiZoneRepositoryReverseSortTest extends TestCase
             (2, 12, '2.168.192.in-addr.arpa', 'NATIVE', '', '', 1, 0),
             (3, 13, '3.168.192.in-addr.arpa', 'MASTER', '', '', 1, 0)");
 
-        $this->backend = $this->createMock(DnsBackendProvider::class);
+        $this->backend = $this->createMock(DnsBackendProviderInterface::class);
         $this->backend->method('getZoneStats')->willReturn([]);
         $this->backend->method('countZoneRecords')->willReturn(0);
         $this->backend->method('getZoneSoaHealth')->willReturn(['is_disabled' => false, 'is_missing_soa' => false]);

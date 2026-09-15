@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service;
 /**
  * PowerDNS data access (domains, records, supermasters) over direct SQL or the PowerDNS API; Poweradmin-native tables stay on SQL.
  */
-interface DnsBackendProvider
+interface DnsBackendProviderInterface
 {
     // ---------------------------------------------------------------
     // Zone / Domain operations

@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\DnsDataService;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PDO;
 
@@ -18,7 +18,7 @@ class DnsDataServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->mockBackend = $this->createMock(DnsBackendProvider::class);
+        $this->mockBackend = $this->createMock(DnsBackendProviderInterface::class);
         $this->mockDb = $this->createMock(PDO::class);
         $this->mockConfig = $this->createMock(ConfigurationInterface::class);
         $this->mockConfig->method('get')->willReturnCallback(function (string $section, string $key, $default = null) {

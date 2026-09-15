@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DatabaseConsistencyService;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
@@ -45,7 +45,7 @@ class DatabaseConsistencyCanonicalIdTest extends TestCase
 
     private function service(bool $apiBackend): DatabaseConsistencyService
     {
-        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider = $this->createMock(DnsBackendProviderInterface::class);
         $provider->method('isApiBackend')->willReturn($apiBackend);
 
         $config = ConfigurationManager::getInstance();

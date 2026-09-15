@@ -41,7 +41,7 @@ enum ZoneSoaHealth: string
     case UNKNOWN = 'unknown';
 
     /**
-     * Classify what a DnsBackendProvider returned. Null means the lookup
+     * Classify what a DnsBackendProviderInterface returned. Null means the lookup
      * failed, which is UNKNOWN rather than healthy.
      */
     public static function fromBackend(?array $soaHealth): self

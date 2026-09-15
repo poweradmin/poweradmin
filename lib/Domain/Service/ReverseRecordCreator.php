@@ -33,7 +33,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 
 /**
  * Keeps PTR records in step with A/AAAA records: adds, updates and deletes the counterpart in the paired zone.
@@ -45,7 +45,7 @@ class ReverseRecordCreator
     private AuditService $audit;
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
-    private ?DnsBackendProvider $backendProvider;
+    private ?DnsBackendProviderInterface $backendProvider;
 
     public function __construct(
         PDO $db,
@@ -53,7 +53,7 @@ class ReverseRecordCreator
         AuditService $audit,
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,
-        ?DnsBackendProvider $backendProvider = null
+        ?DnsBackendProviderInterface $backendProvider = null
     ) {
         $this->db = $db;
         $this->config = $config;

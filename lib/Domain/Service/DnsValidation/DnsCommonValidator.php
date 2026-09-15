@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PDO;
@@ -36,9 +36,9 @@ class DnsCommonValidator
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private ?DnsBackendProvider $backendProvider;
+    private ?DnsBackendProviderInterface $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProvider $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProviderInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;

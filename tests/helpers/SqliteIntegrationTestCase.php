@@ -25,7 +25,7 @@ namespace TestHelpers;
 use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use ReflectionClass;
@@ -117,9 +117,9 @@ abstract class SqliteIntegrationTestCase extends TestCase
         }
     }
 
-    protected function dnsBackendStub(bool $isApi): DnsBackendProvider&MockObject
+    protected function dnsBackendStub(bool $isApi): DnsBackendProviderInterface&MockObject
     {
-        $stub = $this->createMock(DnsBackendProvider::class);
+        $stub = $this->createMock(DnsBackendProviderInterface::class);
         $stub->method('isApiBackend')->willReturn($isApi);
         return $stub;
     }

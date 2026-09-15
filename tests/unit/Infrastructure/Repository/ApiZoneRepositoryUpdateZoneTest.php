@@ -16,7 +16,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 
@@ -48,7 +48,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
         // The row is id 1 / domain_id 10, and the provider is given the identifier the rest
         // of the application uses, so its own lookup resolves back to this same row. The
         // provider owns the cache write, which is covered in ApiDnsBackendProviderTest.
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->once())
             ->method('updateZoneType')
             ->with(10, 'MASTER')
@@ -60,7 +60,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
 
     public function testMasterUpdateIsDelegatedWithTheResolvedZoneId(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->once())
             ->method('updateZoneMaster')
             ->with(10, '192.0.2.1')
@@ -72,7 +72,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
 
     public function testLocalCacheUntouchedWhenApiFails(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('updateZoneType')->willReturn(false);
         $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
 
@@ -85,7 +85,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
     {
         // A failed type update must skip the master update entirely so a single
         // request cannot partially apply while reporting overall failure.
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('updateZoneType')->willReturn(false);
         $backend->expects($this->never())->method('updateZoneMaster');
         $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
@@ -102,7 +102,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, owner, zone_templ_id)
             VALUES (10, 77, 'other.example.com', 'NATIVE', '', 1, 0)");
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->once())
             ->method('updateZoneMaster')
             ->with(10, '192.0.2.1')
@@ -121,7 +121,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, owner, zone_templ_id)
             VALUES (21, 20, 'shadow.example.com', 'NATIVE', '', 1, 0)");
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->once())
             ->method('updateZoneMaster')
             ->with(20, '192.0.2.1')

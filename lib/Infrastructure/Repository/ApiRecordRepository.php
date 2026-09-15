@@ -25,16 +25,16 @@ namespace Poweradmin\Infrastructure\Repository;
 use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 
 /**
  * Record reads for the API backend mode, served from PowerDNS RRsets.
  */
 class ApiRecordRepository implements RecordRepositoryInterface
 {
-    private DnsBackendProvider $backendProvider;
+    private DnsBackendProviderInterface $backendProvider;
 
-    public function __construct(DnsBackendProvider $backendProvider)
+    public function __construct(DnsBackendProviderInterface $backendProvider)
     {
         $this->backendProvider = $backendProvider;
     }

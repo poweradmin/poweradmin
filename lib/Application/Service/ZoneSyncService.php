@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Application\Service\ApiStatusService;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -40,7 +40,7 @@ use Psr\Log\NullLogger;
 class ZoneSyncService
 {
     private PDO $db;
-    private DnsBackendProvider $backendProvider;
+    private DnsBackendProviderInterface $backendProvider;
     private LoggerInterface $logger;
 
     /** @var int Minimum seconds between syncs */
@@ -49,7 +49,7 @@ class ZoneSyncService
     /** @var string Session key for tracking last sync time */
     private const LAST_SYNC_KEY = 'zone_sync_last';
 
-    public function __construct(PDO $db, DnsBackendProvider $backendProvider, int $syncInterval = 300, ?LoggerInterface $logger = null)
+    public function __construct(PDO $db, DnsBackendProviderInterface $backendProvider, int $syncInterval = 300, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->backendProvider = $backendProvider;

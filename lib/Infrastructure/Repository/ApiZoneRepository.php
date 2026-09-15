@@ -27,7 +27,7 @@ use PDO;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -50,7 +50,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function __construct(
         private PDO $db,
-        private DnsBackendProvider $backendProvider,
+        private DnsBackendProviderInterface $backendProvider,
         private string $dbType,
         private ConfigurationInterface $config
     ) {

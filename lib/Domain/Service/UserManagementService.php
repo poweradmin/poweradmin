@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Exception;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -56,7 +56,7 @@ class UserManagementService
     public const ERR_ZONE_WRITE = 'zone_write';
     public const ERR_WRITE = 'write';
 
-    private UserRepository $userRepository;
+    private UserRepositoryInterface $userRepository;
     private PermissionService $permissions;
     private UserProfileAssembler $profileAssembler;
     private UserAuthenticationService $authService;
@@ -65,7 +65,7 @@ class UserManagementService
     private DomainManagerInterface $domainManager;
 
     public function __construct(
-        UserRepository $userRepository,
+        UserRepositoryInterface $userRepository,
         PermissionService $permissionService,
         UserProfileAssembler $profileAssembler,
         UserAuthenticationService $authService,

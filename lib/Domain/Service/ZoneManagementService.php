@@ -71,7 +71,7 @@ class ZoneManagementService
     private RecordChangeLogger $changeLogger;
     private ?PdnsCapabilities $capabilities;
     private ?ZoneSigningService $signing;
-    private ?DnsBackendProvider $backendProvider = null;
+    private ?DnsBackendProviderInterface $backendProvider = null;
     private ?RepositoryFactory $repositoryFactory = null;
     private ?DomainManagerInterface $domainManager = null;
     private ?ZoneOverlapService $overlapService = null;
@@ -480,7 +480,7 @@ class ZoneManagementService
         return $this->domainManager ??= DnsServiceFactory::createDomainManager($this->db, $this->config, $this->backendProvider());
     }
 
-    private function backendProvider(): DnsBackendProvider
+    private function backendProvider(): DnsBackendProviderInterface
     {
         return $this->backendProvider ??= DnsBackendProviderFactory::create($this->db, $this->config);
     }

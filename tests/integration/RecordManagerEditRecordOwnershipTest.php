@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
@@ -146,7 +146,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::ATTACKER_USER_ID . ", 'attacker', " . self::ATTACKER_PERM_TEMPL_ID . ")");
     }
 
-    private function makeRecordManager(DnsBackendProvider $backend): RecordManager
+    private function makeRecordManager(DnsBackendProviderInterface $backend): RecordManager
     {
         $config = $this->primeConfigurationManager(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
 

@@ -30,7 +30,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -56,7 +56,7 @@ class DomainManager implements DomainManagerInterface
     private SOARecordManagerInterface $soaRecordManager;
     private DomainRepositoryInterface $domainRepository;
     private IPAddressValidator $ipAddressValidator;
-    private DnsBackendProvider $backendProvider;
+    private DnsBackendProviderInterface $backendProvider;
     private LoggerInterface $logger;
     private RecordChangeLogger $changeLogger;
     private ?PermissionService $permissionService = null;
@@ -70,14 +70,14 @@ class DomainManager implements DomainManagerInterface
      * @param ConfigurationManager $config Configuration manager
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
-     * @param DnsBackendProvider|null $backendProvider DNS backend provider (auto-created if null)
+     * @param DnsBackendProviderInterface|null $backendProvider DNS backend provider (auto-created if null)
      */
     public function __construct(
         PDO $db,
         ConfigurationManager $config,
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
-        ?DnsBackendProvider $backendProvider = null,
+        ?DnsBackendProviderInterface $backendProvider = null,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
         ?UserContextService $userContext = null

@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Infrastructure\Repository\RecordSearch;
 use Poweradmin\Infrastructure\Repository\ZoneSearch;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneCountService;
@@ -39,20 +39,20 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
  * Orchestration service for DNS data reads.
  *
  * In SQL mode, delegates to existing repositories (zero behavioral change).
- * In API mode, fetches DNS data from the PowerDNS API via DnsBackendProvider
+ * In API mode, fetches DNS data from the PowerDNS API via DnsBackendProviderInterface
  * and enriches it with Poweradmin metadata (ownership, comments, templates)
  * from SQL.
  */
 class DnsDataService
 {
-    private DnsBackendProvider $backendProvider;
+    private DnsBackendProviderInterface $backendProvider;
     private PDO $db;
     private ConfigurationInterface $config;
     private ?ZoneSyncService $zoneSyncService = null;
     private RepositoryFactory $repositoryFactory;
 
     public function __construct(
-        DnsBackendProvider $backendProvider,
+        DnsBackendProviderInterface $backendProvider,
         PDO $db,
         ConfigurationInterface $config
     ) {
@@ -288,7 +288,7 @@ class DnsDataService
      * Search zones.
      *
      * In SQL mode, delegates to ZoneSearch.
-     * In API mode, uses DnsBackendProvider::searchDnsData() with enrichment.
+     * In API mode, uses DnsBackendProviderInterface::searchDnsData() with enrichment.
      */
     public function searchZones(
         array $parameters,
@@ -338,7 +338,7 @@ class DnsDataService
      * Search records.
      *
      * In SQL mode, delegates to RecordSearch.
-     * In API mode, uses DnsBackendProvider::searchDnsData() with enrichment.
+     * In API mode, uses DnsBackendProviderInterface::searchDnsData() with enrichment.
      */
     public function searchRecords(
         array $parameters,

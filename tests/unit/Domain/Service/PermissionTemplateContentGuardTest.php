@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 
 /**
@@ -189,7 +189,7 @@ class PermissionTemplateContentGuardTest extends TestCase
 
     public function testSuperuserCheckShortCircuitsTheLookups(): void
     {
-        $repository = $this->createMock(UserRepository::class);
+        $repository = $this->createMock(UserRepositoryInterface::class);
         $repository->method('hasAdminPermission')->willReturn(true);
         $repository->expects($this->never())->method('templateGrantsUberuser');
         $repository->expects($this->never())->method('getPermissionIdsByName');
@@ -223,8 +223,8 @@ class PermissionTemplateContentGuardTest extends TestCase
         bool $isSuperuser,
         bool $templateGrantsUberuser = false,
         ?array $uberuserPermIds = [self::UBERUSER_PERM_ID]
-    ): UserRepository {
-        $repository = $this->createMock(UserRepository::class);
+    ): UserRepositoryInterface {
+        $repository = $this->createMock(UserRepositoryInterface::class);
         $repository->method('hasAdminPermission')->willReturn($isSuperuser);
         $repository->method('templateGrantsUberuser')->willReturn($templateGrantsUberuser);
         $repository->method('getPermissionIdsByName')->willReturn($uberuserPermIds ?? []);

@@ -29,7 +29,7 @@ use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -49,19 +49,19 @@ use Psr\Log\LoggerInterface;
  * Centralized factory for creating repository instances.
  *
  * Selects between SQL and API backend implementations based on
- * the configured DnsBackendProvider.
+ * the configured DnsBackendProviderInterface.
  */
 class RepositoryFactory
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private DnsBackendProvider $backendProvider;
+    private DnsBackendProviderInterface $backendProvider;
     private ?LoggerInterface $logger;
 
     public function __construct(
         PDO $db,
         ConfigurationInterface $config,
-        DnsBackendProvider $backendProvider,
+        DnsBackendProviderInterface $backendProvider,
         ?LoggerInterface $logger = null
     ) {
         $this->db = $db;
@@ -123,7 +123,7 @@ class RepositoryFactory
         );
     }
 
-    public function getBackendProvider(): DnsBackendProvider
+    public function getBackendProvider(): DnsBackendProviderInterface
     {
         return $this->backendProvider;
     }

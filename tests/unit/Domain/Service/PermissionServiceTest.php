@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use TestHelpers\BuildsPermissionService;
 
@@ -36,13 +36,13 @@ class PermissionServiceTest extends TestCase
     use BuildsPermissionService;
 
     private PermissionService $service;
-    private UserRepository&MockObject $userRepository;
+    private UserRepositoryInterface&MockObject $userRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->service = new PermissionService($this->userRepository);
     }
 

@@ -27,7 +27,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
@@ -35,7 +35,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\CatalogZoneService;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
@@ -54,7 +54,7 @@ use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSigningService;
 use Poweradmin\Domain\Service\ZoneValidationService;
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
@@ -79,7 +79,7 @@ class ControllerServiceFactory
     private ConfigurationManager $config;
     private LoggerInterface $logger;
 
-    private ?DnsBackendProvider $dnsBackendProvider = null;
+    private ?DnsBackendProviderInterface $dnsBackendProvider = null;
     private ?PermissionService $permissionService = null;
     private ?ApiPermissionService $apiPermissionService = null;
     private ?UserManagementService $userManagementService = null;
@@ -92,7 +92,7 @@ class ControllerServiceFactory
     private ?UserPreferenceService $userPreferenceService = null;
     private ?RepositoryFactory $repositoryFactory = null;
     private ?SOARecordManagerInterface $soaRecordManager = null;
-    private ?DnssecProvider $dnssecProvider = null;
+    private ?DnssecProviderInterface $dnssecProvider = null;
     private ?PowerdnsApiClient $apiClient = null;
     private bool $apiClientResolved = false;
 
@@ -129,7 +129,7 @@ class ControllerServiceFactory
     /**
      * Providers are stateless, so one shared instance serves the whole request.
      */
-    public function dnsBackendProvider(): DnsBackendProvider
+    public function dnsBackendProvider(): DnsBackendProviderInterface
     {
         return $this->dnsBackendProvider ??= DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
     }
@@ -157,7 +157,7 @@ class ControllerServiceFactory
         );
     }
 
-    public function dnssecProvider(): DnssecProvider
+    public function dnssecProvider(): DnssecProviderInterface
     {
         return $this->dnssecProvider ??= DnssecProviderFactory::create($this->db, $this->config, $this->apiClient());
     }
@@ -182,7 +182,7 @@ class ControllerServiceFactory
         return $this->repositoryFactory()->createRecordRepository();
     }
 
-    public function userRepository(): UserRepository
+    public function userRepository(): UserRepositoryInterface
     {
         return new DbUserRepository($this->db, $this->config);
     }
@@ -413,7 +413,7 @@ class ControllerServiceFactory
         );
     }
 
-    public function repositoryFactory(?DnsBackendProvider $backendProvider = null): RepositoryFactory
+    public function repositoryFactory(?DnsBackendProviderInterface $backendProvider = null): RepositoryFactory
     {
         // Only the default-provider factory is shared; an explicit provider
         // means the caller wants its own wiring

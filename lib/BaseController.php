@@ -61,7 +61,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\CatalogZoneService;
@@ -74,9 +74,9 @@ use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Web\PageRenderer;
@@ -495,7 +495,7 @@ abstract class BaseController
         return $presenter->present();
     }
 
-    protected function createDnsBackendProvider(): DnsBackendProvider
+    protected function createDnsBackendProvider(): DnsBackendProviderInterface
     {
         return $this->services()->dnsBackendProvider();
     }
@@ -520,7 +520,7 @@ abstract class BaseController
         return $this->services()->recordRepository();
     }
 
-    protected function createUserRepository(): UserRepository
+    protected function createUserRepository(): UserRepositoryInterface
     {
         return $this->services()->userRepository();
     }
@@ -728,7 +728,7 @@ abstract class BaseController
         return $this->services()->soaRecordManager();
     }
 
-    protected function createDnssecProvider(): DnssecProvider
+    protected function createDnssecProvider(): DnssecProviderInterface
     {
         return $this->services()->dnssecProvider();
     }
@@ -782,7 +782,7 @@ abstract class BaseController
         return $this->services()->catalogZoneService();
     }
 
-    protected function getRepositoryFactory(?DnsBackendProvider $backendProvider = null): RepositoryFactory
+    protected function getRepositoryFactory(?DnsBackendProviderInterface $backendProvider = null): RepositoryFactory
     {
         return $this->services()->repositoryFactory($backendProvider);
     }

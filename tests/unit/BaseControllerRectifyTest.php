@@ -27,7 +27,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -39,13 +39,13 @@ use ReflectionClass;
 #[CoversClass(BaseController::class)]
 class BaseControllerRectifyTest extends TestCase
 {
-    private DnssecProvider&MockObject $dnssecProvider;
+    private DnssecProviderInterface&MockObject $dnssecProvider;
     private LoggerInterface&MockObject $logger;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->dnssecProvider = $this->createMock(DnssecProvider::class);
+        $this->dnssecProvider = $this->createMock(DnssecProviderInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
     }
 

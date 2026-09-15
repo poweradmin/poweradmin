@@ -17,7 +17,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ControllerServiceFactory;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 
@@ -79,7 +79,7 @@ class ControllerServiceFactoryTest extends TestCase
     {
         $factory = $this->makeFactory();
 
-        $other = $this->createMock(DnsBackendProvider::class);
+        $other = $this->createMock(DnsBackendProviderInterface::class);
         $explicit = $factory->repositoryFactory($other);
 
         $this->assertNotSame($factory->repositoryFactory(), $explicit);

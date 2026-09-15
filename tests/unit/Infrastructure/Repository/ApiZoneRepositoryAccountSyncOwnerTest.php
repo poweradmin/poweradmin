@@ -26,7 +26,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use ReflectionMethod;
@@ -62,7 +62,7 @@ class ApiZoneRepositoryAccountSyncOwnerTest extends TestCase
     {
         $repository = new ApiZoneRepository(
             $this->db,
-            $this->createMock(DnsBackendProvider::class),
+            $this->createMock(DnsBackendProviderInterface::class),
             'sqlite',
             $this->createMock(ConfigurationManager::class)
         );

@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiRecordRepository;
 
 /**
@@ -32,9 +32,9 @@ use Poweradmin\Infrastructure\Repository\ApiRecordRepository;
  */
 class ApiRecordRepositorySortingTest extends TestCase
 {
-    private function backendWithRecords(string $zoneName, array $records): DnsBackendProvider
+    private function backendWithRecords(string $zoneName, array $records): DnsBackendProviderInterface
     {
-        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider = $this->createMock(DnsBackendProviderInterface::class);
         $provider->method('getZoneNameById')->willReturn($zoneName);
         $provider->method('getZoneRecords')->willReturn($records);
         return $provider;
@@ -96,7 +96,7 @@ class ApiRecordRepositorySortingTest extends TestCase
     public function testFilteredRecordsAlsoPinApexToTop(): void
     {
         // getFilteredRecords fetches via getRecordsByZoneId and resolves the apex via getZoneNameById.
-        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider = $this->createMock(DnsBackendProviderInterface::class);
         $provider->method('getZoneNameById')->willReturn('example.com');
         $provider->method('getRecordsByZoneId')->willReturn($this->sampleRecords());
         $repo = new ApiRecordRepository($provider);

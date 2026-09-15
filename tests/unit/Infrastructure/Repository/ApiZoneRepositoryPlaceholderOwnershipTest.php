@@ -26,7 +26,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 
@@ -66,7 +66,7 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
     {
         return new ApiZoneRepository(
             $this->db,
-            $this->createMock(DnsBackendProvider::class),
+            $this->createMock(DnsBackendProviderInterface::class),
             'sqlite',
             $this->createMock(ConfigurationManager::class)
         );
@@ -151,7 +151,7 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
         // canonical row's own primary key would leave the row orphaned.
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (2905, 9)");
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('deleteZone')->willReturn(true);
         $repository = new ApiZoneRepository(
             $this->db,
@@ -174,7 +174,7 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
         // A different zone's mappings must survive.
         $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (4, 12, 3)");
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('deleteZone')->willReturn(true);
         $repository = new ApiZoneRepository(
             $this->db,

@@ -4,7 +4,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
@@ -29,7 +29,7 @@ class SupermasterManagerDelegationTest extends TestCase
             ['dns', 'ns4', null, ''],
             ['idn', 'idn_enabled', null, false],
         ]);
-        $this->mockBackendProvider = $this->createMock(DnsBackendProvider::class);
+        $this->mockBackendProvider = $this->createMock(DnsBackendProviderInterface::class);
     }
 
     public function testAddSupermasterDelegatesToBackendProvider(): void

@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 
@@ -52,7 +52,7 @@ class ApiZoneRepositoryOwnerLookupTest extends TestCase
 
         $this->repository = new ApiZoneRepository(
             $this->db,
-            $this->createMock(DnsBackendProvider::class),
+            $this->createMock(DnsBackendProviderInterface::class),
             'sqlite',
             $this->createMock(ConfigurationManager::class)
         );

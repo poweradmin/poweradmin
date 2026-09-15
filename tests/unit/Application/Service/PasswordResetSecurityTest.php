@@ -27,7 +27,7 @@ use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;
@@ -52,7 +52,7 @@ class PasswordResetSecurityTest extends TestCase
     {
         // Mock all dependencies except ConfigurationManager
         $this->tokenRepository = $this->createMock(DbPasswordResetTokenRepository::class);
-        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->mailService = $this->createMock(MailService::class);
         $this->authService = $this->createMock(UserAuthenticationService::class);
         $this->ipRetriever = $this->createMock(IpAddressRetriever::class);

@@ -24,7 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use Poweradmin\Domain\Model\User;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -34,7 +34,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 /**
  * SQL persistence for accounts in the users table, with permission lookups through perm_templ and perm_items.
  */
-class DbUserRepository implements UserRepository
+class DbUserRepository implements UserRepositoryInterface
 {
     private object $db;
     private ConfigurationInterface $config;

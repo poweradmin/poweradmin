@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 
@@ -36,7 +36,7 @@ readonly class PermissionTemplateWriteService
 {
     public function __construct(
         private DbPermissionTemplateRepository $templateRepository,
-        private UserRepository $userRepository
+        private UserRepositoryInterface $userRepository
     ) {
     }
 

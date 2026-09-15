@@ -3,7 +3,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
@@ -52,7 +52,7 @@ class ReverseRecordCreatorDeleteTest extends TestCase
         );
     }
 
-    private function createApiService(DomainRepositoryInterface $domainRepository, RecordManagerInterface $recordManager, DnsBackendProvider $backendProvider): ReverseRecordCreator
+    private function createApiService(DomainRepositoryInterface $domainRepository, RecordManagerInterface $recordManager, DnsBackendProviderInterface $backendProvider): ReverseRecordCreator
     {
         return new ReverseRecordCreator(
             $this->createMock(PDO::class),
@@ -103,7 +103,7 @@ class ReverseRecordCreatorDeleteTest extends TestCase
             ->with(7)
             ->willReturn(RecordWriteResult::ok());
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getRecordsByZoneId')
             ->with(42, 'PTR')
@@ -129,7 +129,7 @@ class ReverseRecordCreatorDeleteTest extends TestCase
             ->with(99)
             ->willReturn(RecordWriteResult::ok());
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getRecordsByZoneId')->willReturn([
             ['id' => 99, 'name' => '10.2.0.192.in-addr.arpa', 'content' => 'host.example.com.'],
@@ -147,7 +147,7 @@ class ReverseRecordCreatorDeleteTest extends TestCase
         $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
         $recordManager->expects($this->never())->method('deleteRecord');
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getRecordsByZoneId')->willReturn([
             ['id' => 1, 'name' => '99.2.0.192.in-addr.arpa', 'content' => 'unrelated.example.com.'],
@@ -165,7 +165,7 @@ class ReverseRecordCreatorDeleteTest extends TestCase
         $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(-1);
         $recordManager->expects($this->never())->method('deleteRecord');
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->expects($this->never())->method('getRecordsByZoneId');
 
@@ -188,7 +188,7 @@ class ReverseRecordCreatorDeleteTest extends TestCase
             ->with(123)
             ->willReturn(RecordWriteResult::ok());
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getRecordsByZoneId')->willReturn([
             ['id' => 123, 'name' => $expectedReverse, 'content' => 'host6.example.com'],
@@ -231,7 +231,7 @@ class ReverseRecordCreatorDeleteTest extends TestCase
             ->with(55)
             ->willReturn(RecordWriteResult::ok());
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('searchDnsData')
             ->with('host.example.com', 'record', 100)
@@ -253,7 +253,7 @@ class ReverseRecordCreatorDeleteTest extends TestCase
         $recordManager = $this->createMock(RecordManagerInterface::class);
         $recordManager->expects($this->never())->method('deleteRecord');
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('searchDnsData')->willReturn([
             'records' => [
@@ -275,7 +275,7 @@ class ReverseRecordCreatorDeleteTest extends TestCase
             ->with(77)
             ->willReturn(RecordWriteResult::ok());
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('searchDnsData')->willReturn([
             'records' => [

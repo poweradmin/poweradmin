@@ -33,9 +33,9 @@ class ZoneTemplateSyncService
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private ?DnsBackendProvider $backendProvider;
+    private ?DnsBackendProviderInterface $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProvider $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProviderInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;

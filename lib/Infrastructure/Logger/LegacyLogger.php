@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use PDO;
 
 /**
@@ -33,9 +33,9 @@ class LegacyLogger
 {
     private PDO $db;
     private ConfigurationManager $config;
-    private ?DnsBackendProvider $backendProvider;
+    private ?DnsBackendProviderInterface $backendProvider;
 
-    public function __construct($db, ?DnsBackendProvider $backendProvider = null)
+    public function __construct($db, ?DnsBackendProviderInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->config = ConfigurationManager::getInstance();

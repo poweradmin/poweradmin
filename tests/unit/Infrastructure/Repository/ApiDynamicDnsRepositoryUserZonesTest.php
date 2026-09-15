@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\User;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Infrastructure\Repository\ApiDynamicDnsRepository;
 
@@ -57,7 +57,7 @@ class ApiDynamicDnsRepositoryUserZonesTest extends TestCase
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (1, 'ddns', 10)");
     }
 
-    private function repository(DnsBackendProvider $provider): ApiDynamicDnsRepository
+    private function repository(DnsBackendProviderInterface $provider): ApiDynamicDnsRepository
     {
         return new ApiDynamicDnsRepository(
             $this->db,
@@ -66,9 +66,9 @@ class ApiDynamicDnsRepositoryUserZonesTest extends TestCase
         );
     }
 
-    private function providerReturningNames(array $namesById): DnsBackendProvider
+    private function providerReturningNames(array $namesById): DnsBackendProviderInterface
     {
-        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider = $this->createMock(DnsBackendProviderInterface::class);
         $provider->method('getZoneNameById')
             ->willReturnCallback(static fn(int $id): ?string => $namesById[$id] ?? null);
         return $provider;

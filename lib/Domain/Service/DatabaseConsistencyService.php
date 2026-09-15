@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Exception;
 use PDO;
 use Poweradmin\Application\Service\ApiStatusService;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -38,10 +38,10 @@ class DatabaseConsistencyService
 {
     private PDO $db;
     private TableNameService $tableNameService;
-    private ?DnsBackendProvider $backendProvider;
+    private ?DnsBackendProviderInterface $backendProvider;
     private bool $apiReadFailed = false;
 
-    public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProviderInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->tableNameService = new TableNameService($config);

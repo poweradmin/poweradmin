@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
@@ -54,7 +54,7 @@ class ZoneAccountSyncCanonicalZoneTest extends TestCase
             fn(string $group, string $key, mixed $default = null) => ($group === 'dns' && $key === 'sync_zone_owner_to_account') ? true : $default
         );
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('updateZoneAccount')->willReturnCallback(
             function (int $domainId, string $account) use (&$pushed): bool {

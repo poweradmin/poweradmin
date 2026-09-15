@@ -28,7 +28,7 @@ use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\ZoneSigningService;
 use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Application\Service\AuditService;
@@ -47,7 +47,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository = $this->createMock(ZoneRepositoryInterface::class);
         $this->permissionService = $this->createMock(ApiPermissionService::class);
-        $this->dnssecProvider = $this->createMock(DnssecProvider::class);
+        $this->dnssecProvider = $this->createMock(DnssecProviderInterface::class);
         $this->apiClient = $this->createMock(PowerdnsApiClient::class);
     }
 

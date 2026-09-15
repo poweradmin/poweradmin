@@ -34,7 +34,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -49,7 +49,7 @@ class ZonesRecordsBulkController extends PublicApiController
     private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
     private ApiPermissionService $permissionService;
-    private DnsBackendProvider $backendProvider;
+    private DnsBackendProviderInterface $backendProvider;
     private ReverseTtlResolver $reverseTtlResolver;
 
     public function __construct(array $request, array $pathParameters = [])

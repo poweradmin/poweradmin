@@ -25,15 +25,15 @@ namespace Poweradmin\Infrastructure\Service;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
 
 /**
- * DnssecProvider that manages zone keys, DS/DNSKEY records and rectification through the PowerDNS API.
+ * DnssecProviderInterface that manages zone keys, DS/DNSKEY records and rectification through the PowerDNS API.
  */
-class DnsSecApiProvider implements DnssecProvider
+class DnsSecApiProvider implements DnssecProviderInterface
 {
     private PowerdnsApiClient $client;
     private LegacyLoggerInterface $logger;

@@ -31,7 +31,7 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\UserManagementService;
@@ -46,7 +46,7 @@ class UserManagementServiceCredentialsTest extends TestCase
 {
     private const HASHED = '$configured$hash';
 
-    private UserRepository&MockObject $userRepository;
+    private UserRepositoryInterface&MockObject $userRepository;
     private PasswordPolicyService&MockObject $passwordPolicy;
     private UserAuthenticationService&MockObject $hasher;
     /** Row handed to the repository by the last captured create or update call. */
@@ -56,7 +56,7 @@ class UserManagementServiceCredentialsTest extends TestCase
     {
         parent::setUp();
 
-        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->userRepository->method('getUserByUsername')->willReturn(null);
         $this->userRepository->method('getUserByEmail')->willReturn(null);
         $this->userRepository->method('permissionTemplateExists')->willReturn(true);
@@ -253,7 +253,7 @@ class UserManagementServiceCredentialsTest extends TestCase
     #[Test]
     public function testUpdateUserAllowsPasswordWhenSwitchingLdapUserBackToSql(): void
     {
-        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'ldap']);
         $this->passwordPolicy->method('validatePassword')->willReturn([]);
         $this->captureWrite('updateUser');
@@ -280,7 +280,7 @@ class UserManagementServiceCredentialsTest extends TestCase
     #[Test]
     public function testUpdateUserLeavingLdapRequiresPassword(): void
     {
-        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'ldap']);
         $this->userRepository->expects($this->never())->method('updateUser');
 
@@ -294,7 +294,7 @@ class UserManagementServiceCredentialsTest extends TestCase
     #[Test]
     public function testUpdateUserOfLdapAccountWithoutFlagChangeKeepsPassword(): void
     {
-        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
         $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'ldap']);
         $this->captureWrite('updateUser');
 

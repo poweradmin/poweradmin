@@ -35,7 +35,7 @@ use Psr\Log\LoggerInterface;
 class ZoneSigningService
 {
     public function __construct(
-        private readonly DnssecProvider $dnssec,
+        private readonly DnssecProviderInterface $dnssec,
         private readonly ZoneValidationService $validator,
         private readonly SOARecordManagerInterface $soaRecordManager,
         private readonly AuditService $audit,

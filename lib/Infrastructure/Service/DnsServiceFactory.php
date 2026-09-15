@@ -37,7 +37,7 @@ use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 
@@ -58,7 +58,7 @@ class DnsServiceFactory
     public static function createDnsRecordValidationService(
         PDO $db,
         ConfigurationManager $config,
-        ?DnsBackendProvider $backendProvider = null
+        ?DnsBackendProviderInterface $backendProvider = null
     ): DnsRecordValidationServiceInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
@@ -81,7 +81,7 @@ class DnsServiceFactory
     public static function createSOARecordManager(
         PDO $db,
         ConfigurationManager $config,
-        ?DnsBackendProvider $backendProvider = null
+        ?DnsBackendProviderInterface $backendProvider = null
     ): SOARecordManagerInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         return new SOARecordManager($db, $config, $backendProvider);
@@ -94,7 +94,7 @@ class DnsServiceFactory
     private static function createDomainRepository(
         PDO $db,
         ConfigurationManager $config,
-        ?DnsBackendProvider $backendProvider = null
+        ?DnsBackendProviderInterface $backendProvider = null
     ): DomainRepositoryInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         return (new RepositoryFactory($db, $config, $backendProvider))->createDomainRepository();
@@ -106,7 +106,7 @@ class DnsServiceFactory
     public static function createRecordManager(
         PDO $db,
         ConfigurationManager $config,
-        ?DnsBackendProvider $backendProvider = null
+        ?DnsBackendProviderInterface $backendProvider = null
     ): RecordManagerInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         return new RecordManager(
@@ -125,7 +125,7 @@ class DnsServiceFactory
     public static function createDomainManager(
         PDO $db,
         ConfigurationManager $config,
-        ?DnsBackendProvider $backendProvider = null
+        ?DnsBackendProviderInterface $backendProvider = null
     ): DomainManagerInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         return new DomainManager(
@@ -143,7 +143,7 @@ class DnsServiceFactory
     public static function createSupermasterManager(
         PDO $db,
         ConfigurationManager $config,
-        ?DnsBackendProvider $backendProvider = null
+        ?DnsBackendProviderInterface $backendProvider = null
     ): SupermasterManager {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         return new SupermasterManager($db, $config, $backendProvider);

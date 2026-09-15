@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\DomainManager;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 use ReflectionClass;
@@ -43,7 +43,7 @@ class DomainManagerSerialPolicyTest extends TestCase
     {
         $this->reflection = new ReflectionClass(DomainManager::class);
         $this->manager = $this->reflection->newInstanceWithoutConstructor();
-        $this->backendProvider = $this->createMock(DnsBackendProvider::class);
+        $this->backendProvider = $this->createMock(DnsBackendProviderInterface::class);
         $this->config = $this->createMock(ConfigurationManager::class);
 
         $this->setProperty('backendProvider', $this->backendProvider);

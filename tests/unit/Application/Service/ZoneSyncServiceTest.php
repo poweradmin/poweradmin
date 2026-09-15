@@ -7,7 +7,7 @@ use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ZoneSyncService;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Psr\Log\LoggerInterface;
 
 #[CoversClass(ZoneSyncService::class)]
@@ -21,7 +21,7 @@ class ZoneSyncServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->mockDb = $this->createMock(PDO::class);
-        $this->mockBackend = $this->createMock(DnsBackendProvider::class);
+        $this->mockBackend = $this->createMock(DnsBackendProviderInterface::class);
         $this->mockLogger = $this->createMock(LoggerInterface::class);
         $this->service = new ZoneSyncService($this->mockDb, $this->mockBackend, 300, $this->mockLogger);
     }

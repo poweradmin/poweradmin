@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -157,7 +157,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         );
     }
 
-    private function makeDomainManager(DnsBackendProvider $backend): DomainManager
+    private function makeDomainManager(DnsBackendProviderInterface $backend): DomainManager
     {
         $config = $this->primeConfigurationManager([
             'dns' => ['ns1' => 'ns1.example', 'hostmaster' => 'hostmaster.example', 'ttl' => 3600],

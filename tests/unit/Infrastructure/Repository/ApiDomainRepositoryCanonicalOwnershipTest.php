@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 
@@ -64,9 +64,9 @@ class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
         $this->config->initialize();
     }
 
-    private function backendReturning(array $zones): DnsBackendProvider
+    private function backendReturning(array $zones): DnsBackendProviderInterface
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn($zones);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('countZoneRecords')->willReturn(0);

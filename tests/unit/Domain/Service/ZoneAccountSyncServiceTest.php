@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
@@ -40,7 +40,7 @@ class ZoneAccountSyncServiceTest extends TestCase
 {
     private PDO&MockObject $db;
     private ConfigurationManager&MockObject $config;
-    private DnsBackendProvider&MockObject $backendProvider;
+    private DnsBackendProviderInterface&MockObject $backendProvider;
 
     protected function setUp(): void
     {
@@ -48,7 +48,7 @@ class ZoneAccountSyncServiceTest extends TestCase
 
         $this->db = $this->createMock(PDO::class);
         $this->config = $this->createMock(ConfigurationManager::class);
-        $this->backendProvider = $this->createMock(DnsBackendProvider::class);
+        $this->backendProvider = $this->createMock(DnsBackendProviderInterface::class);
     }
 
     private function setSyncEnabled(bool $enabled): void

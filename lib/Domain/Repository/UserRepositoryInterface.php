@@ -27,7 +27,7 @@ use Poweradmin\Domain\Model\User;
 /**
  * Persistence for user accounts and the zones they own.
  */
-interface UserRepository
+interface UserRepositoryInterface
 {
     /**
      * Find a user by username

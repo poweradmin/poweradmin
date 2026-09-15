@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 
 /**
  * Answers permission questions for a user from their template and group grants, cached per request.
@@ -39,7 +39,7 @@ class PermissionService
     public const TEMPLATE_SELF_ASSIGN_DENIED = 'Changing your own permission template requires user_edit_others';
     public const TEMPLATE_SUPERUSER_DENIED = 'Assigning a superuser permission template requires user_is_ueberuser';
 
-    private UserRepository $userRepository;
+    private UserRepositoryInterface $userRepository;
 
     /** @var array<int, array<string>> */
     private array $permissionsCache = [];
@@ -50,7 +50,7 @@ class PermissionService
     /** @var array<string, bool> */
     private array $ownershipCache = [];
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }

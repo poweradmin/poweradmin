@@ -28,7 +28,7 @@ use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -43,7 +43,7 @@ use Psr\Log\NullLogger;
  * Zone metadata is stored locally in the Poweradmin zones table.
  * Records are identified by encoded composite keys (no PowerDNS DB access needed).
  */
-class ApiDnsBackendProvider implements DnsBackendProvider
+class ApiDnsBackendProvider implements DnsBackendProviderInterface
 {
     private PowerdnsApiClient $client;
     private PDO $db;
@@ -52,7 +52,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     /** @var array<string, int>|null Zone name to local id, resolved once per request. */
     private ?array $localZoneIds = null;
 
-    // $config is unused here but kept so both DnsBackendProvider implementations
+    // $config is unused here but kept so both DnsBackendProviderInterface implementations
     // are constructed alike; the API backend needs no table-name resolution.
     public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {

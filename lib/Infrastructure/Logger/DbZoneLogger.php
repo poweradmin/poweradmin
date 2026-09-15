@@ -26,7 +26,7 @@ use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Constants;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
@@ -38,9 +38,9 @@ class DbZoneLogger
 {
     private PDO $db;
     private ConfigurationManager $config;
-    private ?DnsBackendProvider $backendProvider;
+    private ?DnsBackendProviderInterface $backendProvider;
 
-    public function __construct($db, ?DnsBackendProvider $backendProvider = null)
+    public function __construct($db, ?DnsBackendProviderInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->config = ConfigurationManager::getInstance();

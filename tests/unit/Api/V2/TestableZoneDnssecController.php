@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Unit\Api\V2;
 use Poweradmin\Application\Controller\Api\V2\ZoneDnssecController;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\ZoneSigningService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -45,7 +45,7 @@ class TestableZoneDnssecController extends ZoneDnssecController
         $this->apiPermissionService = $service;
     }
 
-    public function setDnssecProvider(DnssecProvider $provider): void
+    public function setDnssecProvider(DnssecProviderInterface $provider): void
     {
         $this->dnssecProvider = $provider;
     }

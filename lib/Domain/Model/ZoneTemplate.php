@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Model;
 
 use Exception;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DomainParsingService;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
@@ -53,12 +53,12 @@ class ZoneTemplate
     private DnsFormatter $dnsFormatter;
     private MessageService $messageService;
     private TableNameService $tableNameService;
-    private ?DnsBackendProvider $backendProvider;
+    private ?DnsBackendProviderInterface $backendProvider;
     private LoggerInterface $logger;
     private ?PermissionService $permissionService = null;
     private ?ZoneTemplateRecordValidationService $recordValidationService = null;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProvider $backendProvider = null, ?LoggerInterface $logger = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProviderInterface $backendProvider = null, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->config = $config;
