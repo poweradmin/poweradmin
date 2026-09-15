@@ -61,7 +61,8 @@ class ApiDomainRepository implements DomainRepositoryInterface
 
     public function zoneIdExists(int $zid): bool
     {
-        return $this->backendProvider->getZoneById($zid) !== null;
+        // Answered from the local zones table only; no round trip to PowerDNS.
+        return $this->backendProvider->getZoneNameById($zid) !== null;
     }
 
     public function getDomainNameById(int $id): ?string

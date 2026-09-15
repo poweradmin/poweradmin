@@ -706,16 +706,16 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
 
     public function getZoneMasterById(int $domainId): ?string
     {
-        // First check local cache
+        // Any kind may carry a master (SLAVE and CONSUMER both replicate from
+        // a primary); only a row with no cached type needs the API.
         $row = $this->resolveCanonicalZoneRow($domainId);
 
-        if ($row !== null && strtoupper($row['zone_type'] ?? '') === 'SLAVE') {
+        if ($row !== null && ($row['zone_type'] ?? '') !== '') {
             return $row['zone_master'] ?: null;
         }
 
-        // Fallback to API
         $zone = $this->getZoneById($domainId);
-        if ($zone === null || strtoupper($zone['type']) !== 'SLAVE') {
+        if ($zone === null) {
             return null;
         }
         return $zone['master'] ?: null;

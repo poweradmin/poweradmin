@@ -311,10 +311,10 @@ interface DnsBackendProviderInterface
     public function getZoneTypeById(int $domainId): string;
 
     /**
-     * Get zone master by domain ID.
+     * Get zone master by domain ID, for any zone kind.
      *
      * @param int $domainId Domain ID
-     * @return string|null Master IP or null
+     * @return string|null Master IP or null if none is stored
      */
     public function getZoneMasterById(int $domainId): ?string;
 

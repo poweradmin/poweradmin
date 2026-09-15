@@ -30,11 +30,12 @@ use Poweradmin\Domain\Model\Constants;
 interface DomainRepositoryInterface
 {
     /**
-     * Check if Zone ID exists
+     * Check if Zone ID exists. Answered from the local database only (the
+     * domains table, or the zones table in API backend mode); PowerDNS is not asked.
      *
      * @param int $zid Zone ID
      *
-     * @return bool Whether a domains row with this id exists
+     * @return bool Whether a local row with this id exists
      */
     public function zoneIdExists(int $zid): bool;
 
@@ -74,11 +75,12 @@ interface DomainRepositoryInterface
     public function getDomainType(int $id): string;
 
     /**
-     * Get Slave Domain's Master
+     * Get the master (primary) server stored for a domain, whatever its kind.
+     * SLAVE and CONSUMER zones both replicate from one; callers that need SLAVE only check the type.
      *
      * @param int $id Domain ID
      *
-     * @return string|null Master server or null if not found
+     * @return string|null Master server or null if none is stored
      */
     public function getDomainSlaveMaster(int $id): ?string;
 
