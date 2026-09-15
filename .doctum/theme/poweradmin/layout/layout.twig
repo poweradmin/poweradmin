@@ -2,9 +2,11 @@
    Poweradmin has no traits and does not want any (see composer lint:no-traits). #}
 {% extends "layout/base.twig" %}
 
-{# The stock list pages split name and description 50/50; give the text the room. #}
+{# Poweradmin colours (css/poweradmin.css) on top of the stock stylesheets. The stock
+   list pages split name and description 50/50; give the text the room. #}
 {% block head %}
     {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ path('css/poweradmin.css') }}">
     <style>
         @media (min-width: 992px) {
             .underlined .row > .col-md-6:first-child { width: 30%; }

@@ -1,2 +1,5 @@
 name: poweradmin
 parent: default
+
+static:
+    'css/poweradmin.css': 'css/poweradmin.css'

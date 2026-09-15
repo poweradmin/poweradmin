@@ -1,0 +1,136 @@
+/* Poweradmin palette for the class reference, matching docs/css/extra.css in
+   poweradmin-docs: neutral greys instead of Doctum's blue tint, #cc0000 as the
+   accent (logo colour) with #b30000 on hover. */
+
+:root {
+    --pa-red: #cc0000;
+    --pa-red-dark: #b30000;
+    --pa-tint: #f5f5f5;
+    --pa-rule: rgba(0, 0, 0, 0.07);
+}
+
+/* Links */
+
+a {
+    color: var(--pa-red);
+}
+
+a:hover,
+a:focus {
+    color: var(--pa-red-dark);
+}
+
+/* Site menu: white with a hairline, like the docs header */
+
+#site-nav.navbar-default {
+    background-color: #fff;
+    border-bottom: 1px solid var(--pa-rule);
+}
+
+#site-nav.navbar-default .navbar-nav > li > a:hover,
+#site-nav.navbar-default .navbar-nav > li > a:focus {
+    color: var(--pa-red);
+    text-decoration: none;
+}
+
+#site-nav.navbar-default .navbar-brand:hover,
+#site-nav.navbar-default .navbar-brand:focus {
+    color: var(--pa-red);
+}
+
+#site-nav.navbar-default .navbar-toggle:hover,
+#site-nav.navbar-default .navbar-toggle:focus {
+    background-color: var(--pa-tint);
+}
+
+/* Left column */
+
+#left-column {
+    border-right-color: var(--pa-rule);
+}
+
+#control-panel {
+    background: #fff;
+    border-bottom: 1px solid var(--pa-rule);
+}
+
+#control-panel > .search-bar > .progress > .progress-bar {
+    background: var(--pa-red);
+}
+
+#api-tree {
+    background: linear-gradient(to bottom, #fff, #fff 50%, var(--pa-tint) 50%, var(--pa-tint));
+    background-size: 100% 56px;
+}
+
+#api-tree li .hd:nth-child(even) {
+    background-color: var(--pa-tint);
+}
+
+#api-tree li .hd:hover {
+    background-color: #ebebeb;
+}
+
+#api-tree li.active > .hd {
+    background-color: var(--pa-red);
+}
+
+#api-tree li.active > .hd a {
+    color: #fff;
+}
+
+/* Search autocomplete */
+
+.auto-complete-selected,
+.auto-complete-result:hover {
+    background-color: var(--pa-red);
+}
+
+.form-control:focus {
+    border-color: var(--pa-red);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(204, 0, 0, 0.35);
+}
+
+/* Section headings and striped tables */
+
+#page-content > h2,
+.namespace-container > h2 {
+    background-color: var(--pa-tint);
+    border-left: 4px solid var(--pa-red);
+}
+
+.method-description thead tr,
+.description thead tr,
+.method-description tbody tr:nth-child(even),
+.description tbody tr:nth-child(even) {
+    background: var(--pa-tint);
+}
+
+/* Breadcrumbs and pagination (Bootstrap defaults are blue) */
+
+.breadcrumb {
+    background-color: var(--pa-tint);
+}
+
+.pagination > li > a,
+.pagination > li > span {
+    color: var(--pa-red);
+}
+
+.pagination > li > a:hover,
+.pagination > li > a:focus,
+.pagination > li > span:hover,
+.pagination > li > span:focus {
+    color: var(--pa-red-dark);
+    background-color: var(--pa-tint);
+}
+
+.pagination > .active > a,
+.pagination > .active > a:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span,
+.pagination > .active > span:hover,
+.pagination > .active > span:focus {
+    background-color: var(--pa-red);
+    border-color: var(--pa-red);
+}
