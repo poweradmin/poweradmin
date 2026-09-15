@@ -999,16 +999,6 @@ abstract class BaseController
     }
 
     /**
-     * Sets validation rules for the request data.
-     *
-     * @param array $rules The validation rules.
-     */
-    public function setRequestRules(array $rules): void
-    {
-        $this->validator()->setRules($rules);
-    }
-
-    /**
      * Validates the request data.
      *
      * @param array|null $data Optional data to validate. If not provided, uses $this->requestData

@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\BaseController;
+use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -98,16 +99,11 @@ class AddPermTemplController extends BaseController
 
     private function validateSubmitRequest(): bool
     {
-        $this->setRequestRules([
-            'required' => ['templ_name', 'template_type'],
-            'lengthMax' => [
-                ['templ_name', 128],
-                ['templ_descr', 1024],
-            ],
-            'array' => ['perm_id'],
-            'in' => [
-                ['template_type', PermissionTemplateType::values()]
-            ],
+        $this->setValidationConstraints([
+            'templ_name' => [new Assert\NotBlank(), new Assert\Length(max: 128)],
+            'templ_descr' => [new Assert\Length(max: 1024)],
+            'perm_id' => [new Assert\Type('array')],
+            'template_type' => [new Assert\NotBlank(), new Assert\Choice(choices: PermissionTemplateType::values())],
         ]);
 
         return $this->doValidateRequest();

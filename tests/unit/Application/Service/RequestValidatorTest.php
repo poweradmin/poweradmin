@@ -20,15 +20,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Covers the request validation semantics extracted from BaseController:
- * rule-to-constraint conversion, empty-value filtering, and the tolerant
- * extra/missing-field behavior web forms rely on.
+ * empty-value filtering and the tolerant extra/missing-field behavior web forms rely on.
  */
 class RequestValidatorTest extends TestCase
 {
-    public function testRequiredRulePassesAndFails(): void
+    public function testNotBlankPassesAndFails(): void
     {
         $validator = new RequestValidator();
-        $validator->setRules(['required' => ['name']]);
+        $validator->setConstraints(['name' => new Assert\NotBlank()]);
 
         $this->assertSame(0, $validator->validate(['name' => 'example.com'])->count());
         $this->assertGreaterThan(0, $validator->validate(['name' => null])->count());
@@ -37,55 +36,19 @@ class RequestValidatorTest extends TestCase
         $this->assertSame(0, $validator->validate([])->count());
     }
 
-    public function testIntegerRuleAcceptsNumericStringsOnly(): void
+    public function testNumericTypeAcceptsNumericStringsOnly(): void
     {
         $validator = new RequestValidator();
-        $validator->setRules(['integer' => ['zone_id']]);
+        $validator->setConstraints(['zone_id' => new Assert\Type('numeric')]);
 
         $this->assertSame(0, $validator->validate(['zone_id' => '42'])->count());
         $this->assertGreaterThan(0, $validator->validate(['zone_id' => 'abc'])->count());
     }
 
-    public function testLengthMaxArrayAndInRulesAreEnforced(): void
-    {
-        $validator = new RequestValidator();
-        $validator->setRules([
-            'lengthMax' => [['name', 3]],
-            'array' => ['perm_id'],
-            'in' => [['type', ['user', 'group']]],
-        ]);
-
-        $this->assertSame(0, $validator->validate(['name' => 'abc', 'perm_id' => [1], 'type' => 'user'])->count());
-        $this->assertGreaterThan(0, $validator->validate(['name' => 'abcd'])->count());
-        $this->assertGreaterThan(0, $validator->validate(['perm_id' => '1'])->count());
-        $this->assertGreaterThan(0, $validator->validate(['type' => 'admin'])->count());
-    }
-
-    public function testMultipleRulesOnOneFieldAllApply(): void
-    {
-        $validator = new RequestValidator();
-        $validator->setRules([
-            'required' => ['name'],
-            'lengthMax' => [['name', 3]],
-        ]);
-
-        $this->assertSame(0, $validator->validate(['name' => 'abc'])->count());
-        $this->assertGreaterThan(0, $validator->validate(['name' => 'abcd'])->count());
-        $this->assertGreaterThan(0, $validator->validate(['name' => null])->count());
-    }
-
-    public function testUnknownRuleThrows(): void
-    {
-        $validator = new RequestValidator();
-
-        $this->expectException(\InvalidArgumentException::class);
-        $validator->setRules(['maxLength' => [['name', 3]]]);
-    }
-
     public function testEmptyStringValuesAreFilteredBeforeTypeChecks(): void
     {
         $validator = new RequestValidator();
-        $validator->setRules(['integer' => ['zone_id']]);
+        $validator->setConstraints(['zone_id' => new Assert\Type('numeric')]);
 
         // '' would fail the numeric type check; the filter turns it into a
         // missing field, which the tolerant collection allows

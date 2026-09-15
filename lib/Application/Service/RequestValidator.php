@@ -22,8 +22,6 @@
 
 namespace Poweradmin\Application\Service;
 
-use InvalidArgumentException;
-use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validation;
@@ -54,41 +52,6 @@ class RequestValidator
     public function setConstraints(array $constraints): void
     {
         $this->constraints = $constraints;
-    }
-
-    /**
-     * Sets validation rules for the request data.
-     *
-     * @param array $rules The validation rules.
-     */
-    public function setRules(array $rules): void
-    {
-        $constraints = [];
-
-        foreach ($rules as $rule => $fields) {
-            foreach ($fields as $spec) {
-                [$field, $arg] = is_array($spec) ? $spec : [$spec, null];
-                $constraints[$field][] = $this->ruleToConstraint($rule, $field, $arg);
-            }
-        }
-
-        $this->constraints = $constraints;
-    }
-
-    /**
-     * Maps one rule to a Symfony constraint. Unknown rule names throw so a
-     * misspelled rule fails loudly instead of silently validating nothing.
-     */
-    private function ruleToConstraint(string $rule, string $field, mixed $arg): Constraint
-    {
-        return match ($rule) {
-            'required' => new Assert\NotBlank(message: sprintf(_('The %s field is required.'), $field)),
-            'integer' => new Assert\Type(type: 'numeric', message: sprintf(_('The %s field must be a number.'), $field)),
-            'array' => new Assert\Type(type: 'array', message: sprintf(_('The %s field must be a list.'), $field)),
-            'lengthMax' => new Assert\Length(max: $arg, maxMessage: sprintf(_('The %s field must be at most %d characters.'), $field, $arg)),
-            'in' => new Assert\Choice(choices: $arg, message: sprintf(_('The %s field has an invalid value.'), $field)),
-            default => throw new InvalidArgumentException("Unknown validation rule: $rule"),
-        };
     }
 
     /**

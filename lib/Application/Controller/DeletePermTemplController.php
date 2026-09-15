@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
+use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 
 /**
@@ -88,9 +89,8 @@ class DeletePermTemplController extends BaseController
 
     private function validateSubmitRequest(): bool
     {
-        $this->setRequestRules([
-            'required' => ['id'],
-            'integer' => ['id'],
+        $this->setValidationConstraints([
+            'id' => [new Assert\NotBlank(), new Assert\Type('numeric')],
         ]);
 
         return $this->doValidateRequest();
