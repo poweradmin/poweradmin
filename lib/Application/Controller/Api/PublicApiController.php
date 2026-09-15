@@ -32,9 +32,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
-use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -366,7 +364,6 @@ abstract class PublicApiController extends AbstractApiController
             }
 
             $operation = $isViolation ? 'api_violation' : 'api_request';
-            $clientIp = (new IpAddressRetriever($_SERVER))->getClientIp();
             // Resolve the API key id lazily - only now that a log row is actually
             // being written - so the default (logging off) path pays nothing.
             $keyId = '-';
@@ -385,18 +382,7 @@ abstract class PublicApiController extends AbstractApiController
             // violation) rejected and silently dropped.
             $path = mb_substr($this->request->getPathInfo(), 0, 1500);
 
-            $event = sprintf(
-                'operation:%s method:%s path:%s status:%d key_id:%s user:%s client_ip:%s',
-                $operation,
-                $method,
-                $path,
-                $status,
-                $keyId,
-                $user !== '' ? $user : '-',
-                $clientIp !== '' ? $clientIp : '-'
-            );
-
-            (new AuditLogWriter($this->db))->logApiInfo($event);
+            $this->createAuditService()->logApiRequest($operation, $method, $path, $status, $keyId, $user);
             $this->pruneApiLog($config);
         } catch (\Throwable $e) {
             // Audit logging must never break the API response.

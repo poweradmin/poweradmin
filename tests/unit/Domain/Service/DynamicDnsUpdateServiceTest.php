@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
@@ -145,6 +146,31 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->assertSame('readonly', $result['status']);
         $this->assertSame(1, $result['zone_id']);
         $this->assertFalse($result['changed']);
+    }
+
+    public function testApplyForUserAuditsAWrittenUpdateButNotANoChange(): void
+    {
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('test.example.com');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')
+            ->willReturnOnConsecutiveCalls([], ['192.168.1.1' => 123]);
+
+        $audit = $this->createMock(AuditService::class);
+        $audit->expects($this->once())
+            ->method('logDynamicDnsUpdate')
+            ->with('ddns-client', 'test.example.com', 1, '192.168.1.1');
+
+        $service = new DynamicDnsUpdateService($this->validationService, $this->authService, $this->repository, $audit);
+
+        $written = $service->applyForUser($user, 'ddns-client', $hostname, $ipList, false);
+        $unchanged = $service->applyForUser($user, 'ddns-client', $hostname, $ipList, false);
+
+        $this->assertTrue($written['changed']);
+        $this->assertFalse($unchanged['changed']);
     }
 
     public function testProcessUpdateReturnsNochgWhenNoUpdateNeeded(): void
