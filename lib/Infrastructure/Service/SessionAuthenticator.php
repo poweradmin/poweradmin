@@ -23,7 +23,6 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
-use Poweradmin\Application\Service\LoggingService;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Application\Service\LoginAttemptService;
@@ -41,18 +40,20 @@ use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Application\Service\MailService;
-use ReflectionClass;
 
 /**
  * Per-request login pipeline: CSRF and reCAPTCHA on the form, session expiry, then the SQL or LDAP authenticator.
  */
-class SessionAuthenticator extends LoggingService
+class SessionAuthenticator
 {
+    private LoggerInterface $logger;
     private AuthenticationService $authService;
     private PDO $db;
     private ConfigurationManager $configManager;
@@ -66,8 +67,7 @@ class SessionAuthenticator extends LoggingService
 
     public function __construct(PDO $connection, ConfigurationManager $configManager)
     {
-        $shortClassName = (new ReflectionClass(self::class))->getShortName();
-                parent::__construct(Logger::fromConfig($configManager), $shortClassName);
+        $this->logger = ClassContextLogger::for(Logger::fromConfig($configManager), self::class);
 
         $this->db = $connection;
         $this->configManager = $configManager;
@@ -130,7 +130,7 @@ class SessionAuthenticator extends LoggingService
      */
     public function authenticate(): void
     {
-        $this->logDebug('Starting authentication process');
+        $this->logger->debug('Starting authentication process');
 
         $iface_expire = $this->configManager->get('interface', 'session_timeout', 1800);
         $session_key = $this->configManager->get('security', 'session_key', '');
@@ -147,18 +147,18 @@ class SessionAuthenticator extends LoggingService
             && isset($_POST['authenticate'])
             && !$this->csrfTokenService->validateToken($login_token, SessionKeys::LOGIN_TOKEN)
         ) {
-            $this->logWarning('Invalid CSRF token for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
+            $this->logger->warning('Invalid CSRF token for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
 
             $sessionEntity = new SessionEntity(_('Invalid CSRF token.'), 'danger');
             $this->authService->auth($sessionEntity);
 
-            $this->logDebug('CSRF token validation failed for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
+            $this->logger->debug('CSRF token validation failed for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
             return;
         }
 
         // If a user had just entered his/her login && password, store them in our session.
         if (isset($_POST["authenticate"])) {
-            $this->logDebug('User {username} attempting to authenticate', ['username' => $_POST["username"] ?? 'unknown']);
+            $this->logger->debug('User {username} attempting to authenticate', ['username' => $_POST["username"] ?? 'unknown']);
 
             // Verify reCAPTCHA if enabled
             if ($this->recaptchaService->isEnabled()) {
@@ -166,12 +166,12 @@ class SessionAuthenticator extends LoggingService
                 $remoteIp = (new IpAddressRetriever($_SERVER))->getClientIp();
 
                 if (!$this->recaptchaService->verify($recaptchaResponse, $remoteIp)) {
-                    $this->logWarning('reCAPTCHA verification failed for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
+                    $this->logger->warning('reCAPTCHA verification failed for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
 
                     $sessionEntity = new SessionEntity(_('reCAPTCHA verification failed. Please try again.'), 'danger');
                     $this->authService->auth($sessionEntity);
 
-                    $this->logDebug('Authentication blocked due to reCAPTCHA failure for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
+                    $this->logger->debug('Authentication blocked due to reCAPTCHA failure for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
                     return;
                 }
             }
@@ -179,60 +179,60 @@ class SessionAuthenticator extends LoggingService
             if ($_POST['password'] != '') {
                 $passwordEncryptionService = new PasswordEncryptionService($session_key);
                 $_SESSION[SessionKeys::USERPWD] = $passwordEncryptionService->encrypt($_POST['password']);
-                $this->logDebug('Password encrypted for user {username}', ['username' => $_POST["username"]]);
+                $this->logger->debug('Password encrypted for user {username}', ['username' => $_POST["username"]]);
 
                 $_SESSION[SessionKeys::USERLOGIN] = $_POST["username"];
-                $this->logDebug('User login set for user {username}', ['username' => $_POST["username"]]);
+                $this->logger->debug('User login set for user {username}', ['username' => $_POST["username"]]);
 
                 $_SESSION[SessionKeys::USERLANG] = $_POST["userlang"] ?? $this->configManager->get('interface', 'language', 'en_EN');
-                $this->logDebug('User language set for user {username}', ['username' => $_POST["username"]]);
+                $this->logger->debug('User language set for user {username}', ['username' => $_POST["username"]]);
 
-                $this->logInfo('User {username} authenticated', ['username' => $_POST["username"]]);
+                $this->logger->info('User {username} authenticated', ['username' => $_POST["username"]]);
             } else {
-                $this->logError('Empty password attempt for user {username}', ['username' => $_POST["username"] ?? 'unknown']);
+                $this->logger->error('Empty password attempt for user {username}', ['username' => $_POST["username"] ?? 'unknown']);
 
                 $sessionEntity = new SessionEntity(_('An empty password is not allowed'), 'danger');
                 $this->authService->auth($sessionEntity);
 
-                $this->logDebug('Authentication failed due to empty password for user {username}', ['username' => $_POST["username"] ?? 'unknown']);
+                $this->logger->debug('Authentication failed due to empty password for user {username}', ['username' => $_POST["username"] ?? 'unknown']);
                 return;
             }
         }
 
         // Check if the session hasn't expired yet.
         if (isset($_SESSION[SessionKeys::USERID]) && isset($_SESSION[SessionKeys::LASTMOD]) && $_SESSION[SessionKeys::LASTMOD] !== "" && ((time() - $_SESSION[SessionKeys::LASTMOD]) > $iface_expire)) {
-            $this->logInfo('Session expired for user {userid}', ['userid' => $_SESSION[SessionKeys::USERID]]);
+            $this->logger->info('Session expired for user {userid}', ['userid' => $_SESSION[SessionKeys::USERID]]);
 
             $this->auditService()->logSessionExpired();
 
             $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
             $this->authService->logout($sessionEntity);
 
-            $this->logDebug('Session expired and user {userid} logged out', ['userid' => $_SESSION[SessionKeys::USERID]]);
+            $this->logger->debug('Session expired and user {userid} logged out', ['userid' => $_SESSION[SessionKeys::USERID]]);
             return;
         }
 
         // If the session hasn't expired yet, give our session a fresh new timestamp.
         $_SESSION[SessionKeys::LASTMOD] = time();
-        $this->logDebug('Session timestamp updated for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
+        $this->logger->debug('Session timestamp updated for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
 
         $authMethod = $this->getUserAuthMethod();
 
         switch ($authMethod) {
             case UserProvisioningService::AUTH_METHOD_OIDC:
-                $this->logInfo('User {username} uses OIDC for authentication - skipping password verification', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
+                $this->logger->info('User {username} uses OIDC for authentication - skipping password verification', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
                 // OIDC users are already authenticated, no need to verify password
                 break;
             case UserProvisioningService::AUTH_METHOD_SAML:
-                $this->logInfo('User {username} uses SAML for authentication - skipping password verification', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
+                $this->logger->info('User {username} uses SAML for authentication - skipping password verification', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
                 // SAML users are already authenticated, no need to verify password
                 break;
             case UserProvisioningService::AUTH_METHOD_LDAP:
                 if ($ldap_use) {
-                    $this->logInfo('User {username} uses LDAP for authentication', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
+                    $this->logger->info('User {username} uses LDAP for authentication', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                     $this->ldapAuthenticator()->authenticate();
                 } else {
-                    $this->logWarning('User {username} configured for LDAP but LDAP is disabled', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
+                    $this->logger->warning('User {username} configured for LDAP but LDAP is disabled', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                     $sessionEntity = new SessionEntity(_('LDAP authentication is disabled'), 'danger');
                     $this->authService->logout($sessionEntity);
                 }
@@ -240,7 +240,7 @@ class SessionAuthenticator extends LoggingService
             case 'sql':
             default:
                 if (isset($_SESSION[SessionKeys::USERLOGIN])) {
-                    $this->logInfo('User {username} uses SQL for authentication', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
+                    $this->logger->info('User {username} uses SQL for authentication', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                 }
                 $this->sqlAuthenticator()->authenticate();
                 break;
@@ -252,7 +252,7 @@ class SessionAuthenticator extends LoggingService
         // Check for MFA enforcement requirements after user agreement
         $this->checkMfaEnforcementRequirements();
 
-        $this->logDebug('Authentication process completed for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
+        $this->logger->debug('Authentication process completed for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
     }
 
     private function checkUserAgreementRequirements(): void
@@ -280,7 +280,7 @@ class SessionAuthenticator extends LoggingService
 
         $userId = $userContextService->getLoggedInUserId();
         if ($userId && $agreementService->isAgreementRequired($userId)) {
-            $this->logInfo('User agreement required for user {userid}', ['userid' => $userId]);
+            $this->logger->info('User agreement required for user {userid}', ['userid' => $userId]);
 
             // Redirect to agreement page - user will be sent to index after acceptance
             $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
@@ -328,7 +328,7 @@ class SessionAuthenticator extends LoggingService
 
         // Check if MFA setup is required for this user
         if ($mfaService->isMfaSetupRequired($userId, $this->db, $userContextService->getAuthMethod())) {
-            $this->logInfo('MFA setup required for user {userid}', ['userid' => $userId]);
+            $this->logger->info('MFA setup required for user {userid}', ['userid' => $userId]);
 
             // Set a session flag to indicate this is an enforced setup
             $_SESSION[SessionKeys::MFA_SETUP_ENFORCED] = true;
@@ -386,14 +386,14 @@ class SessionAuthenticator extends LoggingService
     private function getUserAuthMethod(): string
     {
         if (!isset($_SESSION[SessionKeys::USERLOGIN])) {
-            $this->logDebug('No user login found in session');
+            $this->logger->debug('No user login found in session');
             return 'sql'; // Default to SQL if no user logged in
         }
 
         // First check how the current session was created
         if (isset($_SESSION[SessionKeys::AUTH_METHOD_USED])) {
             $sessionAuthMethod = $_SESSION[SessionKeys::AUTH_METHOD_USED];
-            $this->logDebug('Using session auth method for user {username}: {authMethod}', [
+            $this->logger->debug('Using session auth method for user {username}: {authMethod}', [
                 'username' => $_SESSION[SessionKeys::USERLOGIN],
                 'authMethod' => $sessionAuthMethod
             ]);
@@ -409,19 +409,19 @@ class SessionAuthenticator extends LoggingService
             $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($rowObj === false) {
-                $this->logWarning('User {username} not found in database', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
+                $this->logger->warning('User {username} not found in database', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
                 return 'sql'; // Default to SQL if user not found
             }
 
             $authMethod = $rowObj['auth_method'] ?? 'sql';
-            $this->logDebug('Using database auth method for user {username}: {authMethod}', [
+            $this->logger->debug('Using database auth method for user {username}: {authMethod}', [
                 'username' => $_SESSION[SessionKeys::USERLOGIN],
                 'authMethod' => $authMethod
             ]);
 
             return $authMethod;
         } catch (\PDOException $e) {
-            $this->logError('Database error while fetching auth method for user {username}: {error}', [
+            $this->logger->error('Database error while fetching auth method for user {username}: {error}', [
                 'username' => $_SESSION[SessionKeys::USERLOGIN],
                 'error' => $e->getMessage()
             ]);

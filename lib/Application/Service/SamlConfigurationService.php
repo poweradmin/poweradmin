@@ -23,21 +23,21 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
-use ReflectionClass;
 use RuntimeException;
 
 /**
  * Reads the saml provider and SP settings and builds the OneLogin toolkit settings array.
  */
-class SamlConfigurationService extends LoggingService
+class SamlConfigurationService
 {
+    private LoggerInterface $logger;
     private ConfigurationManager $configManager;
 
     public function __construct(ConfigurationManager $configManager, LoggerInterface $logger)
     {
-        $shortClassName = (new ReflectionClass(self::class))->getShortName();
-        parent::__construct($logger, $shortClassName);
+        $this->logger = ClassContextLogger::for($logger, self::class);
 
         $this->configManager = $configManager;
     }
@@ -48,7 +48,7 @@ class SamlConfigurationService extends LoggingService
             $providers = $this->configManager->get('saml', 'providers', []);
 
             if (!isset($providers[$providerId])) {
-                $this->logWarning('SAML provider not found: {provider}', ['provider' => $providerId]);
+                $this->logger->warning('SAML provider not found: {provider}', ['provider' => $providerId]);
                 return null;
             }
 
@@ -56,7 +56,7 @@ class SamlConfigurationService extends LoggingService
 
             $error = $this->describeConfigError($config);
             if ($error !== null) {
-                $this->logError('Invalid SAML configuration for provider {provider}: {error}', [
+                $this->logger->error('Invalid SAML configuration for provider {provider}: {error}', [
                     'provider' => $providerId,
                     'error' => $error,
                 ]);
@@ -65,7 +65,7 @@ class SamlConfigurationService extends LoggingService
 
             return $config;
         } catch (\Exception $e) {
-            $this->logError('Error getting SAML provider config for {provider}: {error}', [
+            $this->logger->error('Error getting SAML provider config for {provider}: {error}', [
                 'provider' => $providerId,
                 'error' => $e->getMessage()
             ]);
@@ -268,9 +268,9 @@ class SamlConfigurationService extends LoggingService
         if (empty($mapping)) {
             $defaultTemplate = $this->configManager->get('saml', 'default_permission_template', '');
             if (empty($defaultTemplate)) {
-                $this->logWarning('No permission template mapping configured and no default_permission_template defined');
+                $this->logger->warning('No permission template mapping configured and no default_permission_template defined');
             } else {
-                $this->logWarning('No permission template mapping configured, will use default_permission_template for all users');
+                $this->logger->warning('No permission template mapping configured, will use default_permission_template for all users');
             }
             return $errors;
         }

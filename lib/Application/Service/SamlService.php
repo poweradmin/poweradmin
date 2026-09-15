@@ -36,16 +36,17 @@ use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
+use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
-use ReflectionClass;
 
 /**
  * Runs the SAML login flow: builds the IdP redirect, consumes the assertion and handles single logout.
  */
-class SamlService extends LoggingService
+class SamlService
 {
+    private LoggerInterface $logger;
     private ConfigurationManager $configManager;
     private AuthenticationService $authenticationService;
     private SessionService $sessionService;
@@ -66,8 +67,7 @@ class SamlService extends LoggingService
         ?Request $request = null,
         ?AuditService $auditService = null
     ) {
-        $shortClassName = (new ReflectionClass(self::class))->getShortName();
-        parent::__construct($logger, $shortClassName);
+        $this->logger = ClassContextLogger::for($logger, self::class);
 
         $this->configManager = $configManager;
         $this->samlConfigurationService = $samlConfigurationService;
@@ -112,7 +112,7 @@ class SamlService extends LoggingService
         // Validate SAML configuration first
         $configErrors = $this->samlConfigurationService->validatePermissionTemplateMapping();
         if (!empty($configErrors)) {
-            $this->logError('Configuration validation failed: {errors}', ['errors' => implode(', ', $configErrors)]);
+            $this->logger->error('Configuration validation failed: {errors}', ['errors' => implode(', ', $configErrors)]);
             return [];
         }
 
@@ -129,7 +129,7 @@ class SamlService extends LoggingService
             // immediately fail (closes #1218).
             $configError = $this->samlConfigurationService->describeProviderConfigError($providerId);
             if ($configError !== null) {
-                $this->logWarning('Hiding SAML provider {provider}: {error}', [
+                $this->logger->warning('Hiding SAML provider {provider}: {error}', [
                     'provider' => $providerId,
                     'error' => $configError,
                 ]);
@@ -149,12 +149,12 @@ class SamlService extends LoggingService
     public function initiateAuthFlow(string $providerId): string
     {
         try {
-            $this->logInfo('Initiating SAML auth flow for provider: {provider}', ['provider' => $providerId]);
+            $this->logger->info('Initiating SAML auth flow for provider: {provider}', ['provider' => $providerId]);
 
             // Validate configuration before starting flow
             $configErrors = $this->samlConfigurationService->validatePermissionTemplateMapping();
             if (!empty($configErrors)) {
-                $this->logError('Cannot initiate SAML flow - configuration errors: {errors}', [
+                $this->logger->error('Cannot initiate SAML flow - configuration errors: {errors}', [
                     'errors' => implode(', ', $configErrors)
                 ]);
                 throw new \RuntimeException('Configuration validation failed: ' . implode(', ', $configErrors));
@@ -164,7 +164,7 @@ class SamlService extends LoggingService
             if (!$auth) {
                 $configError = $this->samlConfigurationService->describeProviderConfigError($providerId);
                 $reason = $configError ?? 'provider could not be initialised';
-                $this->logError('Failed to create SAML auth for {provider}: {reason}', [
+                $this->logger->error('Failed to create SAML auth for {provider}: {reason}', [
                     'provider' => $providerId,
                     'reason' => $reason,
                 ]);
@@ -177,7 +177,7 @@ class SamlService extends LoggingService
 
             // Store provider ID for callback processing
             $this->setSessionValue('saml_provider', $providerId);
-            $this->logInfo('Stored provider ID in session: {provider_id}, Session ID: {session_id}', [
+            $this->logger->info('Stored provider ID in session: {provider_id}, Session ID: {session_id}', [
                 'provider_id' => $providerId,
                 'session_id' => session_id()
             ]);
@@ -188,11 +188,11 @@ class SamlService extends LoggingService
             // Initiate SSO and get the redirect URL (stay=true prevents immediate redirect and returns URL)
             $redirectUrl = $auth->login($relayState, [], false, false, true);
 
-            $this->logInfo('Generated SAML SSO URL: {url}', ['url' => $redirectUrl]);
+            $this->logger->info('Generated SAML SSO URL: {url}', ['url' => $redirectUrl]);
 
             return $redirectUrl;
         } catch (\Exception $e) {
-            $this->logError('Error initiating SAML auth flow for {provider}: {error}', [
+            $this->logger->error('Error initiating SAML auth flow for {provider}: {error}', [
                 'provider' => $providerId,
                 'error' => $e->getMessage()
             ]);
@@ -202,7 +202,7 @@ class SamlService extends LoggingService
 
     public function handleAssertion(): void
     {
-        $this->logInfo('Processing SAML assertion');
+        $this->logger->info('Processing SAML assertion');
 
         $providerId = $this->getSessionValue('saml_provider', '');
 
@@ -213,15 +213,15 @@ class SamlService extends LoggingService
                 $relayState = json_decode(base64_decode($relayStateParam), true);
                 if (isset($relayState['provider'])) {
                     $providerId = $relayState['provider'];
-                    $this->logInfo('Retrieved provider ID from RelayState: {provider}', ['provider' => $providerId]);
+                    $this->logger->info('Retrieved provider ID from RelayState: {provider}', ['provider' => $providerId]);
                 }
             } catch (\Exception $e) {
-                $this->logWarning('Failed to decode RelayState: {error}', ['error' => $e->getMessage()]);
+                $this->logger->warning('Failed to decode RelayState: {error}', ['error' => $e->getMessage()]);
             }
         }
 
         if (empty($providerId)) {
-            $this->logWarning('No provider ID in session or RelayState during SAML assertion. Session ID: {session_id}', [
+            $this->logger->warning('No provider ID in session or RelayState during SAML assertion. Session ID: {session_id}', [
                 'session_id' => session_id()
             ]);
             $sessionEntity = new SessionEntity(_('Authentication failed: Invalid session'), 'danger');
@@ -257,8 +257,8 @@ class SamlService extends LoggingService
             }
 
             // Debug SAML response
-            $this->logInfo('Processing SAML response. POST data keys: {keys}', ['keys' => array_keys($this->request->getPostParams())]);
-            $this->logInfo('SAML Response length: {length}', ['length' => strlen((string) $this->request->getPostParam('SAMLResponse', ''))]);
+            $this->logger->info('Processing SAML response. POST data keys: {keys}', ['keys' => array_keys($this->request->getPostParams())]);
+            $this->logger->info('SAML Response length: {length}', ['length' => strlen((string) $this->request->getPostParam('SAMLResponse', ''))]);
 
             // Process the SAML response
             $auth->processResponse();
@@ -266,13 +266,13 @@ class SamlService extends LoggingService
             $errors = $auth->getErrors();
             if (!empty($errors)) {
                 $errorMsg = implode(', ', $errors);
-                $this->logError('SAML assertion processing errors: {errors}', ['errors' => $errorMsg]);
-                $this->logError('Last error reason: {reason}', ['reason' => $auth->getLastErrorReason()]);
+                $this->logger->error('SAML assertion processing errors: {errors}', ['errors' => $errorMsg]);
+                $this->logger->error('Last error reason: {reason}', ['reason' => $auth->getLastErrorReason()]);
 
                 // Get more detailed error information
                 $lastErrorException = $auth->getLastErrorException();
                 if ($lastErrorException) {
-                    $this->logError('SAML error exception: {exception}', ['exception' => $lastErrorException->getMessage()]);
+                    $this->logger->error('SAML error exception: {exception}', ['exception' => $lastErrorException->getMessage()]);
                 }
 
                 $sessionEntity = new SessionEntity(_('Authentication failed: ') . $errorMsg, 'danger');
@@ -281,7 +281,7 @@ class SamlService extends LoggingService
             }
 
             if (!$auth->isAuthenticated()) {
-                $this->logWarning('SAML authentication failed - not authenticated');
+                $this->logger->warning('SAML authentication failed - not authenticated');
                 $sessionEntity = new SessionEntity(_('Authentication failed: Invalid SAML response'), 'danger');
                 $this->authenticationService->auth($sessionEntity);
                 return;
@@ -291,7 +291,7 @@ class SamlService extends LoggingService
             $userInfo = $this->getUserInfoFromAssertion($auth, $providerId);
 
             // Log user info details
-            $this->logInfo('SAML User Info received: {userinfo}', [
+            $this->logger->info('SAML User Info received: {userinfo}', [
                 'userinfo' => [
                     'username' => $userInfo->getUsername(),
                     'email' => $userInfo->getEmail(),
@@ -307,16 +307,16 @@ class SamlService extends LoggingService
             $userId = $this->userProvisioningService->provisionUser($userInfo, $providerId);
 
             if ($userId) {
-                $this->logInfo('Successfully authenticated SAML user: {username}', ['username' => $userInfo->getUsername()]);
+                $this->logger->info('Successfully authenticated SAML user: {username}', ['username' => $userInfo->getUsername()]);
 
                 // Get the actual database username
                 $databaseUsername = $this->userProvisioningService->getDatabaseUsername($userId);
                 if (!$databaseUsername) {
-                    $this->logError('Could not get database username for user ID: {userId}', ['userId' => $userId]);
+                    $this->logger->error('Could not get database username for user ID: {userId}', ['userId' => $userId]);
                     $databaseUsername = $userInfo->getUsername();
                 }
 
-                $this->logInfo('Using database username for session: {username}', ['username' => $databaseUsername]);
+                $this->logger->info('Using database username for session: {username}', ['username' => $databaseUsername]);
 
                 // Set userlogin for MFA verification page
                 $this->setSessionValue('userlogin', $databaseUsername);
@@ -326,11 +326,11 @@ class SamlService extends LoggingService
 
                 // Rotate session id before binding the user - matches SqlAuthenticator.
                 session_regenerate_id(true);
-                $this->logInfo('Session ID regenerated for SAML user {username}', ['username' => $databaseUsername]);
+                $this->logger->info('Session ID regenerated for SAML user {username}', ['username' => $databaseUsername]);
 
                 // Ensure a CSRF token exists for subsequent requests
                 $this->csrfTokenService->ensureTokenExists();
-                $this->logInfo('CSRF token ensured for SAML session.');
+                $this->logger->info('CSRF token ensured for SAML session.');
 
                 // Check if MFA is globally enabled
                 $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
@@ -339,7 +339,7 @@ class SamlService extends LoggingService
                 $mfaRequired = $mfaGloballyEnabled && $this->mfaService()->isMfaEnabled($userId);
 
                 if ($mfaRequired) {
-                    $this->logInfo('MFA is required for SAML user {username}', ['username' => $databaseUsername]);
+                    $this->logger->info('MFA is required for SAML user {username}', ['username' => $databaseUsername]);
 
                     // Store user details temporarily for MFA verification - DO NOT set userid yet!
                     // This prevents API requests from bypassing MFA by checking isAuthenticated()
@@ -386,7 +386,7 @@ class SamlService extends LoggingService
                     $this->authenticationService->redirectToIndex();
                 }
             } else {
-                $this->logWarning('Failed to provision SAML user: {username}', ['username' => $userInfo->getUsername()]);
+                $this->logger->warning('Failed to provision SAML user: {username}', ['username' => $userInfo->getUsername()]);
                 $this->setSessionValue('userlogin', $userInfo->getUsername());
                 $this->auditService->logLoginFailed(AuthMethod::SAML);
                 $sessionEntity = new SessionEntity(_('Authentication failed: Unable to create or update user account'), 'danger');
@@ -420,7 +420,7 @@ class SamlService extends LoggingService
                 unset($_SERVER['SERVER_PORT']);
             }
 
-            $this->logError('SAML authentication error: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('SAML authentication error: {error}', ['error' => $e->getMessage()]);
             $sessionEntity = new SessionEntity(_('Authentication failed: ') . $e->getMessage(), 'danger');
             $this->authenticationService->auth($sessionEntity);
 
@@ -432,11 +432,11 @@ class SamlService extends LoggingService
     public function initiateSingleLogout(string $providerId): ?string
     {
         try {
-            $this->logInfo('Initiating SAML single logout for provider: {provider}', ['provider' => $providerId]);
+            $this->logger->info('Initiating SAML single logout for provider: {provider}', ['provider' => $providerId]);
 
             $auth = $this->createAuth($providerId);
             if (!$auth) {
-                $this->logError('Failed to create SAML auth for logout: {provider}', ['provider' => $providerId]);
+                $this->logger->error('Failed to create SAML auth for logout: {provider}', ['provider' => $providerId]);
                 return null;
             }
 
@@ -449,7 +449,7 @@ class SamlService extends LoggingService
 
             return null;
         } catch (\Exception $e) {
-            $this->logError('Error initiating SAML logout for {provider}: {error}', [
+            $this->logger->error('Error initiating SAML logout for {provider}: {error}', [
                 'provider' => $providerId,
                 'error' => $e->getMessage()
             ]);
@@ -459,11 +459,11 @@ class SamlService extends LoggingService
 
     public function handleSingleLogout(): void
     {
-        $this->logInfo('Handling SAML single logout');
+        $this->logger->info('Handling SAML single logout');
 
         $providerId = $this->getSessionValue('saml_provider', '');
         if (empty($providerId)) {
-            $this->logWarning('No provider ID in session during SAML logout');
+            $this->logger->warning('No provider ID in session during SAML logout');
             return;
         }
 
@@ -474,11 +474,11 @@ class SamlService extends LoggingService
 
                 $errors = $auth->getErrors();
                 if (!empty($errors)) {
-                    $this->logError('SAML logout errors: {errors}', ['errors' => implode(', ', $errors)]);
+                    $this->logger->error('SAML logout errors: {errors}', ['errors' => implode(', ', $errors)]);
                 }
             }
         } catch (\Exception $e) {
-            $this->logError('SAML logout error: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('SAML logout error: {error}', ['error' => $e->getMessage()]);
         }
 
         // Clear SAML session data
@@ -502,13 +502,13 @@ class SamlService extends LoggingService
 
             $errors = $settings->validateMetadata($metadata);
             if (!empty($errors)) {
-                $this->logError('SAML metadata validation errors: {errors}', ['errors' => implode(', ', $errors)]);
+                $this->logger->error('SAML metadata validation errors: {errors}', ['errors' => implode(', ', $errors)]);
                 throw new \RuntimeException('Invalid metadata generated: ' . implode(', ', $errors));
             }
 
             return $metadata;
         } catch (\Exception $e) {
-            $this->logError('Error generating SAML metadata for {provider}: {error}', [
+            $this->logger->error('Error generating SAML metadata for {provider}: {error}', [
                 'provider' => $providerId,
                 'error' => $e->getMessage()
             ]);
@@ -522,7 +522,7 @@ class SamlService extends LoggingService
             $settings = $this->samlConfigurationService->generateOneLoginSettings($providerId);
             return new Auth($settings);
         } catch (\Exception $e) {
-            $this->logError('Failed to create SAML Auth: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Failed to create SAML Auth: {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }

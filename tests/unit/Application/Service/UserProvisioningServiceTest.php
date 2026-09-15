@@ -309,14 +309,9 @@ class UserProvisioningServiceTest extends TestCase
         $configProp->setAccessible(true);
         $configProp->setValue($service, $configManager ?? $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class));
 
-        $parentReflection = $reflection->getParentClass();
-        $loggerProp = $parentReflection->getProperty('logger');
+        $loggerProp = $reflection->getProperty('logger');
         $loggerProp->setAccessible(true);
         $loggerProp->setValue($service, $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class));
-
-        $classNameProp = $parentReflection->getProperty('className');
-        $classNameProp->setAccessible(true);
-        $classNameProp->setValue($service, 'UserProvisioningService');
 
         return $service;
     }

@@ -37,23 +37,24 @@ use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
+use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
-use ReflectionClass;
 use RuntimeException;
 
 /**
  * Runs the OIDC login flow: builds the authorization redirect and turns the callback into a session.
  */
-class OidcService extends LoggingService
+class OidcService
 {
     // Carries OIDC flow state across the IdP's cross-site POST when a provider
     // uses response_mode=form_post, since the session cookie is SameSite=Lax.
     private const FLOW_COOKIE_NAME = 'oidc_flow';
     private const FLOW_COOKIE_TTL = 300;
 
+    private LoggerInterface $logger;
     private ConfigurationManager $configManager;
     private AuthenticationService $authenticationService;
     private SessionService $sessionService;
@@ -74,8 +75,7 @@ class OidcService extends LoggingService
         ?Request $request = null,
         ?AuditService $auditService = null
     ) {
-        $shortClassName = (new ReflectionClass(self::class))->getShortName();
-        parent::__construct($logger, $shortClassName);
+        $this->logger = ClassContextLogger::for($logger, self::class);
 
         $this->configManager = $configManager;
         $this->oidcConfigurationService = $oidcConfigurationService;
@@ -120,7 +120,7 @@ class OidcService extends LoggingService
         // Validate OIDC configuration first
         $configErrors = $this->oidcConfigurationService->validatePermissionTemplateMapping();
         if (!empty($configErrors)) {
-            $this->logError('Configuration validation failed: {errors}', ['errors' => implode(', ', $configErrors)]);
+            $this->logger->error('Configuration validation failed: {errors}', ['errors' => implode(', ', $configErrors)]);
             return [];
         }
 
@@ -137,7 +137,7 @@ class OidcService extends LoggingService
             // fail with a generic error (closes #1218).
             $configError = $this->oidcConfigurationService->describeProviderConfigError($providerId);
             if ($configError !== null) {
-                $this->logWarning('Hiding OIDC provider {provider}: {error}', [
+                $this->logger->warning('Hiding OIDC provider {provider}: {error}', [
                     'provider' => $providerId,
                     'error' => $configError,
                 ]);
@@ -157,12 +157,12 @@ class OidcService extends LoggingService
     public function initiateAuthFlow(string $providerId): string
     {
         try {
-            $this->logInfo('Initiating OIDC auth flow for provider: {provider}', ['provider' => $providerId]);
+            $this->logger->info('Initiating OIDC auth flow for provider: {provider}', ['provider' => $providerId]);
 
             // Validate configuration before starting flow
             $configErrors = $this->oidcConfigurationService->validatePermissionTemplateMapping();
             if (!empty($configErrors)) {
-                $this->logError('Cannot initiate OIDC flow - configuration errors: {errors}', [
+                $this->logger->error('Cannot initiate OIDC flow - configuration errors: {errors}', [
                     'errors' => implode(', ', $configErrors)
                 ]);
                 throw new \RuntimeException('Configuration validation failed: ' . implode(', ', $configErrors));
@@ -172,7 +172,7 @@ class OidcService extends LoggingService
             if (!$provider) {
                 $configError = $this->oidcConfigurationService->describeProviderConfigError($providerId);
                 $reason = $configError ?? 'provider could not be initialised';
-                $this->logError('Failed to create OIDC provider {provider}: {reason}', [
+                $this->logger->error('Failed to create OIDC provider {provider}: {reason}', [
                     'provider' => $providerId,
                     'reason' => $reason,
                 ]);
@@ -211,11 +211,11 @@ class OidcService extends LoggingService
 
             $authUrl = $provider->getAuthorizationUrl($authParams);
 
-            $this->logInfo('Generated OIDC authorization URL: {url}', ['url' => $authUrl]);
+            $this->logger->info('Generated OIDC authorization URL: {url}', ['url' => $authUrl]);
 
             return $authUrl;
         } catch (\Exception $e) {
-            $this->logError('Error initiating OIDC auth flow for {provider}: {error}', [
+            $this->logger->error('Error initiating OIDC auth flow for {provider}: {error}', [
                 'provider' => $providerId,
                 'error' => $e->getMessage()
             ]);
@@ -225,7 +225,7 @@ class OidcService extends LoggingService
 
     public function handleCallback(): void
     {
-        $this->logInfo('Handling OIDC callback');
+        $this->logger->info('Handling OIDC callback');
 
         // A form_post callback is a cross-site POST, so the browser withholds the
         // SameSite=Lax session cookie; recover the flow state from the flow cookie.
@@ -242,7 +242,7 @@ class OidcService extends LoggingService
         $sessionState = $this->getSessionValue('oidc_state');
 
         if (empty($receivedState) || $receivedState !== $sessionState) {
-            $this->logWarning('Invalid state parameter in OIDC callback');
+            $this->logger->warning('Invalid state parameter in OIDC callback');
             $sessionEntity = new SessionEntity(_('Authentication failed: Invalid state parameter'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return;
@@ -252,7 +252,7 @@ class OidcService extends LoggingService
         $error = $this->request->getParam('error');
         if (!empty($error)) {
             $errorDescription = $this->request->getParam('error_description', 'Unknown error');
-            $this->logError('OIDC provider returned error: {error} - {description}', [
+            $this->logger->error('OIDC provider returned error: {error} - {description}', [
                 'error' => $error,
                 'description' => $errorDescription
             ]);
@@ -263,7 +263,7 @@ class OidcService extends LoggingService
 
         $code = $this->request->getParam('code');
         if (empty($code)) {
-            $this->logWarning('No authorization code in OIDC callback');
+            $this->logger->warning('No authorization code in OIDC callback');
             $sessionEntity = new SessionEntity(_('Authentication failed: No authorization code'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return;
@@ -271,7 +271,7 @@ class OidcService extends LoggingService
 
         $providerId = $this->getSessionValue('oidc_provider', '');
         if (empty($providerId)) {
-            $this->logWarning('No provider ID in session during OIDC callback');
+            $this->logger->warning('No provider ID in session during OIDC callback');
             $sessionEntity = new SessionEntity(_('Authentication failed: Invalid session'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return;
@@ -295,7 +295,7 @@ class OidcService extends LoggingService
             try {
                 $token = $provider->getAccessToken('authorization_code', $tokenParams);
             } catch (\Exception $e) {
-                $this->logError('OIDC authentication error: {error}', ['error' => $e->getMessage()]);
+                $this->logger->error('OIDC authentication error: {error}', ['error' => $e->getMessage()]);
                 throw $e;
             }
 
@@ -306,12 +306,12 @@ class OidcService extends LoggingService
             $userInfo = $this->getUserInfo($provider, $token, $providerId);
 
             // Log raw data to see all available fields
-            $this->logInfo('OIDC Raw User Data: {rawdata}', [
+            $this->logger->info('OIDC Raw User Data: {rawdata}', [
                 'rawdata' => $userInfo->getRawData()
             ]);
 
             // Log user info details
-            $this->logInfo('OIDC User Info received: {userinfo}', [
+            $this->logger->info('OIDC User Info received: {userinfo}', [
                 'userinfo' => [
                     'username' => $userInfo->getUsername(),
                     'email' => $userInfo->getEmail(),
@@ -328,22 +328,22 @@ class OidcService extends LoggingService
 
             // Log provisioning result
             if ($userId) {
-                $this->logInfo('User provisioning successful, user ID: {userId}', ['userId' => $userId]);
+                $this->logger->info('User provisioning successful, user ID: {userId}', ['userId' => $userId]);
             } else {
-                $this->logError('User provisioning failed - returned null');
+                $this->logger->error('User provisioning failed - returned null');
             }
 
             if ($userId) {
-                $this->logInfo('Successfully authenticated OIDC user: {username}', ['username' => $userInfo->getUsername()]);
+                $this->logger->info('Successfully authenticated OIDC user: {username}', ['username' => $userInfo->getUsername()]);
 
                 // Get the actual database username (important for existing users linked by email)
                 $databaseUsername = $this->userProvisioningService->getDatabaseUsername($userId);
                 if (!$databaseUsername) {
-                    $this->logError('Could not get database username for user ID: {userId}', ['userId' => $userId]);
+                    $this->logger->error('Could not get database username for user ID: {userId}', ['userId' => $userId]);
                     $databaseUsername = $userInfo->getUsername(); // Fallback to OIDC username
                 }
 
-                $this->logInfo('Using database username for session: {username}', ['username' => $databaseUsername]);
+                $this->logger->info('Using database username for session: {username}', ['username' => $databaseUsername]);
 
                 // Set userlogin for MFA verification page
                 $this->setSessionValue('userlogin', $databaseUsername);
@@ -353,11 +353,11 @@ class OidcService extends LoggingService
 
                 // Rotate session id before binding the user - matches SqlAuthenticator.
                 session_regenerate_id(true);
-                $this->logInfo('Session ID regenerated for OIDC user {username}', ['username' => $databaseUsername]);
+                $this->logger->info('Session ID regenerated for OIDC user {username}', ['username' => $databaseUsername]);
 
                 // Ensure a CSRF token exists for subsequent requests
                 $this->csrfTokenService->ensureTokenExists();
-                $this->logInfo('CSRF token ensured for OIDC session.');
+                $this->logger->info('CSRF token ensured for OIDC session.');
 
                 // Check if MFA is globally enabled
                 $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
@@ -366,7 +366,7 @@ class OidcService extends LoggingService
                 $mfaRequired = $mfaGloballyEnabled && $this->mfaService()->isMfaEnabled($userId);
 
                 if ($mfaRequired) {
-                    $this->logInfo('MFA is required for OIDC user {username}', ['username' => $databaseUsername]);
+                    $this->logger->info('MFA is required for OIDC user {username}', ['username' => $databaseUsername]);
 
                     // Store user details temporarily for MFA verification - DO NOT set userid yet!
                     // This prevents API requests from bypassing MFA by checking isAuthenticated()
@@ -437,14 +437,14 @@ class OidcService extends LoggingService
                     $this->authenticationService->redirectToIndex();
                 }
             } else {
-                $this->logWarning('Failed to provision OIDC user: {username}', ['username' => $userInfo->getUsername()]);
+                $this->logger->warning('Failed to provision OIDC user: {username}', ['username' => $userInfo->getUsername()]);
                 $this->setSessionValue('userlogin', $userInfo->getUsername());
                 $this->auditService->logLoginFailed(AuthMethod::OIDC);
                 $sessionEntity = new SessionEntity(_('Authentication failed: Unable to create or update user account'), 'danger');
                 $this->authenticationService->auth($sessionEntity);
             }
         } catch (\Exception $e) {
-            $this->logError('OIDC authentication error: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('OIDC authentication error: {error}', ['error' => $e->getMessage()]);
             $sessionEntity = new SessionEntity(_('Authentication failed: ') . $e->getMessage(), 'danger');
             $this->authenticationService->auth($sessionEntity);
         }
@@ -519,7 +519,7 @@ class OidcService extends LoggingService
                 $idTokenClaims = $this->decodeIdTokenPayload($tokenValues['id_token']);
                 $groups = $idTokenClaims[$groupsKey] ?? [];
                 if (!empty($groups)) {
-                    $this->logInfo('Extracted groups from ID token: {groups}', ['groups' => $groups]);
+                    $this->logger->info('Extracted groups from ID token: {groups}', ['groups' => $groups]);
                 }
             }
         }
@@ -551,13 +551,13 @@ class OidcService extends LoggingService
     {
         $parts = explode('.', $idToken);
         if (count($parts) !== 3) {
-            $this->logWarning('Invalid ID token format');
+            $this->logger->warning('Invalid ID token format');
             return [];
         }
 
         $payload = base64_decode(strtr($parts[1], '-_', '+/'), true);
         if ($payload === false) {
-            $this->logWarning('Failed to decode ID token payload');
+            $this->logger->warning('Failed to decode ID token payload');
             return [];
         }
 
@@ -619,7 +619,7 @@ class OidcService extends LoggingService
         // deployments where TLS terminates before PHP.
         $callbackUrl = $this->getCallbackUrl();
         if (parse_url($callbackUrl, PHP_URL_SCHEME) !== 'https' && !$this->isLocalhostUrl($callbackUrl)) {
-            $this->logWarning(
+            $this->logger->warning(
                 'OIDC provider {provider} is configured with response_mode=form_post but the callback URL is not HTTPS; falling back to query',
                 ['provider' => $providerId]
             );
@@ -657,12 +657,12 @@ class OidcService extends LoggingService
         try {
             $payload = json_decode($this->flowEncryptionService()->decrypt($rawCookie), true);
         } catch (\Throwable $e) {
-            $this->logWarning('Failed to decrypt OIDC flow cookie: {error}', ['error' => $e->getMessage()]);
+            $this->logger->warning('Failed to decrypt OIDC flow cookie: {error}', ['error' => $e->getMessage()]);
             return;
         }
 
         if (!is_array($payload) || empty($payload['state']) || empty($payload['provider']) || empty($payload['verifier'])) {
-            $this->logWarning('OIDC flow cookie has an invalid payload');
+            $this->logger->warning('OIDC flow cookie has an invalid payload');
             return;
         }
 
@@ -670,7 +670,7 @@ class OidcService extends LoggingService
         $this->setSessionValue('oidc_provider', $payload['provider']);
         $this->setSessionValue('oidc_code_verifier', $payload['verifier']);
 
-        $this->logInfo('Restored OIDC flow state from flow cookie for form_post callback');
+        $this->logger->info('Restored OIDC flow state from flow cookie for form_post callback');
     }
 
     private function clearFlowCookie(): void
