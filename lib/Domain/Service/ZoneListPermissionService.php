@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 
 /**
  * Builds the ownership index the zone lists and the search page use to decide
@@ -33,7 +33,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 class ZoneListPermissionService
 {
     public function __construct(
-        private readonly ZoneRepositoryInterface $zones,
+        private readonly ZoneOwnershipRepositoryInterface $zones,
         private readonly ZoneGroupRepositoryInterface $zoneGroups,
         private readonly UserGroupRepositoryInterface $userGroups
     ) {

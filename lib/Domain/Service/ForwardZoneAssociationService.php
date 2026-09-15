@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,16 +22,16 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 
 /**
  * Maps each reverse zone to the forward zones its PTR records point at, with a PTR count per forward zone.
  */
 class ForwardZoneAssociationService
 {
-    private ZoneRepositoryInterface $zoneRepository;
+    private ZoneReadRepositoryInterface $zoneRepository;
 
-    public function __construct(ZoneRepositoryInterface $zoneRepository)
+    public function __construct(ZoneReadRepositoryInterface $zoneRepository)
     {
         $this->zoneRepository = $zoneRepository;
     }

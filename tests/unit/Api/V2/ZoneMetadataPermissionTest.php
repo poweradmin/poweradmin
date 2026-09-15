@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Api\V2;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesController;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
@@ -142,8 +143,10 @@ class ZoneMetadataPermissionTest extends TestCase
         $permissionService->method('hasZoneContentEditPermission')->willReturn($content);
         $permissionService->method('canCreateZone')->willReturn(true);
 
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('zoneIdExists')->willReturn(true);
+
         $zoneRepository = $this->createMock(DbZoneRepository::class);
-        $zoneRepository->method('zoneExists')->willReturn(true);
         $zoneRepository->method('getZoneById')->willReturn($stored + [
             'id' => self::ZONE_ID,
             'name' => 'tenant.example',
@@ -159,6 +162,7 @@ class ZoneMetadataPermissionTest extends TestCase
         $controller = (new ReflectionClass(ZonesController::class))->newInstanceWithoutConstructor();
         $this->inject($controller, 'apiPermissionService', $permissionService);
         $this->inject($controller, 'zoneRepository', $zoneRepository);
+        $this->inject($controller, 'domainRepository', $domainRepository);
         $this->inject($controller, 'zoneManagementService', $zoneManagementService);
         $this->inject($controller, 'request', new Request([], [], [], [], [], [], json_encode($body)));
         $this->inject($controller, 'pathParameters', ['id' => self::ZONE_ID]);

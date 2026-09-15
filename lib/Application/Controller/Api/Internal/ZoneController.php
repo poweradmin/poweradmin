@@ -125,7 +125,7 @@ class ZoneController extends InternalApiController
         if (!$viewOthers) {
             // Verify that the zone belongs to the current user
             $userId = $this->userContextService->getLoggedInUserId() ?? 0;
-            if (!$this->zoneRepository->zoneExists($zoneId, $userId)) {
+            if (!$this->zoneRepository->userCanAccessZone($zoneId, $userId)) {
                 return $this->returnErrorResponse('Zone not found or access denied', 404);
             }
         }

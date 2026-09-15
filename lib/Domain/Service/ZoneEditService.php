@@ -29,7 +29,7 @@ use Poweradmin\Domain\Enum\ZoneSaveOutcome;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneWriteRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
@@ -48,7 +48,7 @@ class ZoneEditService
     public function __construct(
         private readonly ConfigurationInterface $config,
         private readonly PermissionService $permissions,
-        private readonly ZoneRepositoryInterface $zones,
+        private readonly ZoneWriteRepositoryInterface $zones,
         private readonly DomainRepositoryInterface $domains,
         private readonly RecordRepositoryInterface $records,
         private readonly RecordManagerInterface $recordManager,

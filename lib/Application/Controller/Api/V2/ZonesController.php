@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
@@ -38,6 +39,7 @@ use Poweradmin\Domain\Enum\ZoneKind;
 class ZonesController extends PublicApiController
 {
     private ZoneRepositoryInterface $zoneRepository;
+    private DomainRepositoryInterface $domainRepository;
     private ZoneManagementService $zoneManagementService;
     private ApiPermissionService $apiPermissionService;
     private IPAddressValidator $ipAddressValidator;
@@ -47,6 +49,7 @@ class ZonesController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $this->zoneRepository = $this->createZoneRepository();
+        $this->domainRepository = $this->createDomainRepository();
         $this->apiPermissionService = $this->createApiPermissionService();
         $this->ipAddressValidator = new IPAddressValidator();
 
@@ -687,7 +690,7 @@ class ZonesController extends PublicApiController
             }
 
             // Confirm existence before permission, matching getZone()'s 404-before-403 order.
-            if (!$this->zoneRepository->zoneExists($zoneId)) {
+            if (!$this->domainRepository->zoneIdExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
             }
 
@@ -858,7 +861,7 @@ class ZonesController extends PublicApiController
             }
 
             // Confirm existence before permission, matching getZone()'s 404-before-403 order.
-            if (!$this->zoneRepository->zoneExists($zoneId)) {
+            if (!$this->domainRepository->zoneIdExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
             }
 

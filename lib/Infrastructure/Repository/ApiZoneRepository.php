@@ -482,14 +482,11 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return array_values($zones);
     }
 
-    public function zoneExists(int $zoneId, ?int $userId = null): bool
+    public function userCanAccessZone(int $zoneId, int $userId): bool
     {
         $canonical = $this->resolveCanonicalRow($zoneId);
         if ($canonical === null) {
             return false;
-        }
-        if ($userId === null) {
-            return true;
         }
         $cid = (int)$canonical['id'];
         $canonicalId = self::canonicalIdOf($canonical);
