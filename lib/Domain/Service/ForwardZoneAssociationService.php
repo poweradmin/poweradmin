@@ -48,119 +48,24 @@ class ForwardZoneAssociationService
             return [];
         }
 
-        $reverseZoneIds = $this->extractZoneIds($reverseZones);
-        $ptrMatches = $this->zoneRepository->findForwardZonesByPtrRecords($reverseZoneIds);
+        $reverseZoneIds = array_column($reverseZones, 'id');
+        $associated = array_fill_keys($reverseZoneIds, []);
+        $seenPtrs = [];
 
-        return $this->buildAssociationMap($reverseZoneIds, $ptrMatches);
-    }
-
-    /**
-     * Extract zone IDs from reverse zones array
-     *
-     * @param array $reverseZones
-     * @return array
-     */
-    private function extractZoneIds(array $reverseZones): array
-    {
-        return array_map(function ($zone) {
-            return $zone['id'];
-        }, $reverseZones);
-    }
-
-    /**
-     * Build the final association map from PTR record matches
-     *
-     * @param array $reverseZoneIds
-     * @param array $ptrMatches
-     * @return array
-     */
-    private function buildAssociationMap(array $reverseZoneIds, array $ptrMatches): array
-    {
-        $associatedZones = $this->initializeAssociationMap($reverseZoneIds);
-        $processedPtrs = [];
-
-        foreach ($ptrMatches as $match) {
-            $reverseDomainId = $match['reverse_domain_id'];
-            $forwardDomainId = $match['forward_domain_id'];
-            $forwardDomainName = $match['forward_domain_name'];
-            $ptrContent = $match['ptr_content'];
-
-            $ptrKey = $reverseDomainId . '-' . $ptrContent;
-
-            if (isset($processedPtrs[$ptrKey])) {
+        // One PTR content may match several forward zones; count each PTR once per reverse zone.
+        foreach ($this->zoneRepository->findForwardZonesByPtrRecords($reverseZoneIds) as $match) {
+            $reverseId = $match['reverse_domain_id'];
+            $forwardId = $match['forward_domain_id'];
+            $ptrKey = $reverseId . '-' . $match['ptr_content'];
+            if (isset($seenPtrs[$ptrKey])) {
                 continue;
             }
+            $seenPtrs[$ptrKey] = true;
 
-            $processedPtrs[$ptrKey] = true;
-
-            $this->addOrUpdateForwardZoneEntry(
-                $associatedZones,
-                $reverseDomainId,
-                $forwardDomainId,
-                $forwardDomainName
-            );
+            $associated[$reverseId][$forwardId] ??= ['id' => $forwardId, 'name' => $match['forward_domain_name'], 'ptr_records' => 0];
+            $associated[$reverseId][$forwardId]['ptr_records']++;
         }
 
-        return $this->convertToIndexedArrays($associatedZones, $reverseZoneIds);
-    }
-
-    /**
-     * Initialize association map with empty arrays for each reverse zone
-     *
-     * @param array $reverseZoneIds
-     * @return array
-     */
-    private function initializeAssociationMap(array $reverseZoneIds): array
-    {
-        $associatedZones = [];
-        foreach ($reverseZoneIds as $zoneId) {
-            $associatedZones[$zoneId] = [];
-        }
-        return $associatedZones;
-    }
-
-    /**
-     * Add or update forward zone entry in the association map
-     *
-     * @param array &$associatedZones
-     * @param int $reverseDomainId
-     * @param int $forwardDomainId
-     * @param string $forwardDomainName
-     */
-    private function addOrUpdateForwardZoneEntry(
-        array &$associatedZones,
-        int $reverseDomainId,
-        int $forwardDomainId,
-        string $forwardDomainName
-    ): void {
-        if (!isset($associatedZones[$reverseDomainId][$forwardDomainId])) {
-            $associatedZones[$reverseDomainId][$forwardDomainId] = [
-                'id' => $forwardDomainId,
-                'name' => $forwardDomainName,
-                'ptr_records' => 1
-            ];
-        } else {
-            $associatedZones[$reverseDomainId][$forwardDomainId]['ptr_records']++;
-        }
-    }
-
-    /**
-     * Convert associative arrays to indexed arrays for consistent output format
-     *
-     * @param array $associatedZones
-     * @param array $reverseZoneIds
-     * @return array
-     */
-    private function convertToIndexedArrays(array $associatedZones, array $reverseZoneIds): array
-    {
-        foreach ($reverseZoneIds as $zoneId) {
-            if (isset($associatedZones[$zoneId]) && is_array($associatedZones[$zoneId])) {
-                $associatedZones[$zoneId] = array_values($associatedZones[$zoneId]);
-            } else {
-                $associatedZones[$zoneId] = [];
-            }
-        }
-
-        return $associatedZones;
+        return array_map('array_values', $associated);
     }
 }
