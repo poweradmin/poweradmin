@@ -26,7 +26,6 @@ use DateTimeImmutable;
 use DateInterval;
 use DateTimeZone;
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
@@ -142,8 +141,7 @@ class ListRecordChangesController extends BaseController
             }
         }
 
-        $configManager = ConfigurationManager::getInstance();
-        $logsPerPage = (int) $configManager->get('interface', 'rows_per_page', 50);
+        $logsPerPage = (int) $this->config->get('interface', 'rows_per_page', 50);
 
         $filters = $this->buildFilters();
         $urlFilters = $this->buildUrlFilters();
@@ -183,7 +181,7 @@ class ListRecordChangesController extends BaseController
             'selected_page' => $selectedPage,
             'logs_per_page' => $logsPerPage,
             'pagination' => $this->presentPagination($totalLogs, $logsPerPage, '/zones/changes?start={PageNumber}', $urlFilters),
-            'iface_edit_show_id' => $configManager->get('interface', 'show_record_id', false),
+            'iface_edit_show_id' => $this->config->get('interface', 'show_record_id', false),
         ]);
     }
 

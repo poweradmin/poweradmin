@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Infrastructure\Session\SessionService;
-use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Service\RedirectService;
 
 /**
@@ -46,16 +45,14 @@ class OidcLoginController extends BaseController
         parent::__construct($request, false);
 
         // Initialize OIDC services
-        $logger = Logger::fromConfig($this->config);
-
-        $oidcConfigService = new OidcConfigurationService($this->config, $logger);
-        $oidcProvisioningService = new UserProvisioningService($this->db, $this->config, $logger);
+        $oidcConfigService = new OidcConfigurationService($this->config, $this->logger);
+        $oidcProvisioningService = new UserProvisioningService($this->db, $this->config, $this->logger);
 
         $this->oidcService = new OidcService(
             $this->config,
             $oidcConfigService,
             $oidcProvisioningService,
-            $logger,
+            $this->logger,
             $this->db,
             $this->httpRequest
         );

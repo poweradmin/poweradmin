@@ -51,7 +51,7 @@ class ZoneDnssecController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $this->domainRepository = $this->createDomainRepository();
-        $this->apiPermissionService = new ApiPermissionService($this->db, config: $this->config);
+        $this->apiPermissionService = $this->createApiPermissionService();
         $this->dnssecProvider = $this->createDnssecProvider();
 
         // DNSSEC works whenever the PowerDNS API is configured, independent of the

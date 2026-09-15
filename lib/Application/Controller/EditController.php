@@ -49,12 +49,10 @@ use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Domain\Service\RecordDisplayService;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -119,9 +117,8 @@ class EditController extends BaseController
         $iface_show_record_delete_button = $userPreferenceService->getShowRecordDeleteButton($userId);
         $display_hostname_only = $userPreferenceService->getDisplayHostnameOnly($userId);
 
-        $configManager = ConfigurationManager::getInstance();
-        $iface_record_comments = $configManager->get('interface', 'show_record_comments', false);
-        $iface_zone_comments = $configManager->get('interface', 'show_zone_comments', true);
+        $iface_record_comments = $this->config->get('interface', 'show_record_comments', false);
+        $iface_zone_comments = $this->config->get('interface', 'show_zone_comments', true);
 
         // Initialize filter parameters
         $searchTerm = htmlspecialchars($this->httpRequest->getQueryParam('search', ''));
@@ -151,11 +148,7 @@ class EditController extends BaseController
             submittedDirection: $this->httpRequest->getPostParam('sort_direction') ?? $this->httpRequest->getQueryParam('sort_direction')
         );
 
-        $zone_id = $this->getSafeRequestValue('id');
-        if (!$zone_id || !Validator::isNumber($zone_id)) {
-            $this->showError(_('Invalid or unexpected input given.'));
-        }
-        $zone_id = (int)$zone_id;
+        $zone_id = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
 
         // Clear session-based form data if zone has changed to prevent persistence across zones
         $this->clearFormDataOnZoneChange($zone_id);

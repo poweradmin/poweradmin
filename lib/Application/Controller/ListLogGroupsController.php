@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
@@ -93,8 +92,7 @@ class ListLogGroupsController extends BaseController
             $selected_page = max(1, (int)$start);
         }
 
-        $configManager = ConfigurationManager::getInstance();
-        $logs_per_page = $configManager->get('interface', 'rows_per_page', 50);
+        $logs_per_page = $this->config->get('interface', 'rows_per_page', 50);
 
         $filters = $this->buildFilters();
 
@@ -125,7 +123,7 @@ class ListLogGroupsController extends BaseController
             'selected_page' => $selected_page,
             'logs_per_page' => $logs_per_page,
             'pagination' => $this->presentPagination($number_of_logs, $logs_per_page, '/groups/logs?start={PageNumber}', $filters),
-            'iface_edit_show_id' => $configManager->get('interface', 'show_record_id', false),
+            'iface_edit_show_id' => $this->config->get('interface', 'show_record_id', false),
         ]);
     }
 

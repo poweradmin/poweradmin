@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Service;
 use Exception;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Email;
@@ -38,13 +39,13 @@ use Twig\Error\SyntaxError;
 class MailService
 {
     private ConfigurationManager $config;
-    private ?LoggerInterface $logger;
+    private LoggerInterface $logger;
     private EmailTemplateService $templateService;
 
     public function __construct(ConfigurationManager $config, ?LoggerInterface $logger = null)
     {
         $this->config = $config;
-        $this->logger = $logger;
+        $this->logger = $logger ?? new NullLogger();
         $this->templateService = new EmailTemplateService($config);
     }
 
@@ -67,7 +68,7 @@ class MailService
     ): bool {
         // First, verify mail configuration is valid
         if (!$this->isMailConfigurationValid()) {
-            $this->logWarning('Mail sending failed: mail configuration is invalid or mail server is unreachable');
+            $this->logger->warning('Mail sending failed: mail configuration is invalid or mail server is unreachable');
             return false;
         }
 
@@ -94,7 +95,7 @@ class MailService
                     return $this->sendPhpMail($to, $subject, $body, $plainBody, $headers, $boundary);
             }
         } catch (Exception $e) {
-            $this->logError('Mail sending failed: ' . $e->getMessage());
+            $this->logger->error('Mail sending failed: ' . $e->getMessage());
             return false;
         }
     }
@@ -199,7 +200,7 @@ class MailService
 
             return $status === 0;
         } catch (Exception $e) {
-            $this->logError('Sendmail error: ' . $e->getMessage());
+            $this->logger->error('Sendmail error: ' . $e->getMessage());
             return false;
         }
     }
@@ -250,7 +251,7 @@ class MailService
             $mailer->send($email);
             return true;
         } catch (Exception $e) {
-            $this->logError('Symfony Mailer SMTP error: ' . $e->getMessage());
+            $this->logger->error('Symfony Mailer SMTP error: ' . $e->getMessage());
             return false;
         }
     }
@@ -299,17 +300,12 @@ class MailService
         $emailMessage .= $body . "\n";
         $emailMessage .= "===== END EMAIL LOG =====\n";
 
-        // Log via the application logger if available, fall back to error_log for Docker visibility
-        if ($this->logger !== null) {
-            $this->logger->info('[POWERADMIN MAILER] Email sent via logger transport', [
-                'to' => $to,
-                'subject' => $subject,
-                'from' => $fromEmail,
-                'email_content' => $emailMessage
-            ]);
-        } else {
-            error_log($emailMessage);
-        }
+        $this->logger->info('[POWERADMIN MAILER] Email sent via logger transport', [
+            'to' => $to,
+            'subject' => $subject,
+            'from' => $fromEmail,
+            'email_content' => $emailMessage
+        ]);
 
         // Always return true since this is just logging
         return true;
@@ -335,7 +331,7 @@ class MailService
         error_reporting($oldErrorReporting);
 
         if (!$socket) {
-            $this->logError("Mail server connection test failed: $errstr ($errno)");
+            $this->logger->error("Mail server connection test failed: $errstr ($errno)");
             return false;
         }
 
@@ -353,7 +349,7 @@ class MailService
     {
         // Check if mail functionality is enabled
         if (!$this->config->get('mail', 'enabled', false)) {
-            $this->logWarning('Mail configuration check failed: mail functionality is disabled in configuration');
+            $this->logger->warning('Mail configuration check failed: mail functionality is disabled in configuration');
             return false;
         }
 
@@ -381,7 +377,7 @@ class MailService
             $sendmailBin = explode(' ', $sendmailPath)[0];
 
             if (!file_exists($sendmailBin) || !is_executable($sendmailBin)) {
-                $this->logError("Sendmail binary not found or not executable: $sendmailBin");
+                $this->logger->error("Sendmail binary not found or not executable: $sendmailBin");
                 return false;
             }
 
@@ -488,29 +484,5 @@ class MailService
         $message .= "--$boundary--";
 
         return $message;
-    }
-
-    /**
-     * Log an error message
-     */
-    private function logError(string $message): void
-    {
-        if ($this->logger !== null) {
-            $this->logger->error($message);
-        } else {
-            error_log('[POWERADMIN MAILER] ERROR: ' . $message);
-        }
-    }
-
-    /**
-     * Log a warning message
-     */
-    private function logWarning(string $message): void
-    {
-        if ($this->logger !== null) {
-            $this->logger->warning($message);
-        } else {
-            error_log('[POWERADMIN MAILER] WARNING: ' . $message);
-        }
     }
 }

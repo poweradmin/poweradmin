@@ -27,7 +27,6 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 
 /**
  * Handles bulk zone deletion from the zone lists: shows the selected zones and deletes them on confirmation.
@@ -171,7 +170,7 @@ class DeleteDomainsController extends BaseController
     {
         $zones = [];
         $domainRepository = $this->createDomainRepository();
-        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
+        $supermasterManager = $this->createSupermasterManager();
 
         // Fetch all zone details in one bulk call to avoid per-zone API round-trips
         $zoneInfos = [];

@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -81,7 +80,7 @@ class EditSupermasterController extends BaseController
             return;
         }
 
-        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
+        $supermasterManager = $this->createSupermasterManager();
 
         if (!$supermasterManager->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('The supermaster you are trying to edit does not exist.'));
@@ -102,7 +101,7 @@ class EditSupermasterController extends BaseController
 
     private function showEditSuperMaster($old_master_ip, $old_ns_name, $new_master_ip = null, $new_ns_name = null, $account = null): void
     {
-        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
+        $supermasterManager = $this->createSupermasterManager();
 
         if (!$supermasterManager->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('The supermaster you are trying to edit does not exist.'));

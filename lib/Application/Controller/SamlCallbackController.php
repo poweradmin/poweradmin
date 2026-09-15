@@ -29,7 +29,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Infrastructure\Session\SessionService;
-use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -47,16 +46,14 @@ class SamlCallbackController extends BaseController
         parent::__construct($request, false);
 
         // Initialize SAML services
-        $logger = Logger::fromConfig($this->config);
-
-        $samlConfigService = new SamlConfigurationService($this->config, $logger);
-        $userProvisioningService = new UserProvisioningService($this->db, $this->config, $logger);
+        $samlConfigService = new SamlConfigurationService($this->config, $this->logger);
+        $userProvisioningService = new UserProvisioningService($this->db, $this->config, $this->logger);
 
         $this->samlService = new SamlService(
             $this->config,
             $samlConfigService,
             $userProvisioningService,
-            $logger,
+            $this->logger,
             $this->db,
             $this->httpRequest
         );

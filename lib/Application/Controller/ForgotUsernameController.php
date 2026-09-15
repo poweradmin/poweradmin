@@ -30,10 +30,8 @@ use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Utility\UserAgentService;
-use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -56,21 +54,16 @@ class ForgotUsernameController extends BaseController
         $this->csrfTokenService = new CsrfTokenService();
 
         // Create UsernameRecoveryService with dependencies
-        $configManager = ConfigurationManager::getInstance();
-
-        // Create logger instance early for error logging
-        $this->logger = Logger::fromConfig($configManager);
-
         try {
-            $recoveryRepository = new DbUsernameRecoveryRepository($this->db, $configManager);
-            $mailService = new MailService($configManager, null);
+            $recoveryRepository = new DbUsernameRecoveryRepository($this->db, $this->config);
+            $mailService = new MailService($this->config, $this->logger);
             $this->ipRetriever = new IpAddressRetriever($_SERVER);
             $this->userAgentService = new UserAgentService($_SERVER);
 
             $this->usernameRecoveryService = new UsernameRecoveryService(
                 $recoveryRepository,
                 $mailService,
-                $configManager,
+                $this->config,
                 $this->ipRetriever,
                 $this->logger,
                 $this->db

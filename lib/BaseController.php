@@ -46,6 +46,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
+use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneEditService;
 use Poweradmin\Domain\Service\ZoneListPermissionService;
@@ -73,6 +74,7 @@ use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
@@ -774,6 +776,11 @@ abstract class BaseController
         return $this->services()->domainManager();
     }
 
+    protected function createSupermasterManager(): SupermasterManager
+    {
+        return $this->services()->supermasterManager();
+    }
+
     protected function createCatalogZoneService(): CatalogZoneService
     {
         return $this->services()->catalogZoneService();
@@ -864,6 +871,20 @@ abstract class BaseController
             $this->renderFooter();
             exit;
         }
+    }
+
+    /**
+     * Reads a positive integer request parameter (an id) or ends the request
+     * with the given error page.
+     */
+    protected function requireNumericParam(string $name, string $error): int
+    {
+        $value = $this->getSafeRequestValue($name);
+        if (!$value || !Validator::isNumber($value)) {
+            $this->showError($error);
+        }
+
+        return (int)$value;
     }
 
     /**

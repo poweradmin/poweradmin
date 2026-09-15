@@ -29,7 +29,6 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
@@ -51,12 +50,11 @@ class AddUserController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $configManager = ConfigurationManager::getInstance();
-        $this->passwordPolicyService = new PasswordPolicyService($configManager);
-        $this->passwordGenerationService = new PasswordGenerationService($configManager);
+        $this->passwordPolicyService = new PasswordPolicyService($this->config);
+        $this->passwordGenerationService = new PasswordGenerationService($this->config);
 
         // Initialize mail service
-        $this->mailService = new MailService($configManager);
+        $this->mailService = new MailService($this->config, $this->logger);
 
         // Initialize permission template repository
         $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
@@ -144,8 +142,7 @@ class AddUserController extends BaseController
 
             // Handle generated password and email sending
             if (!empty($generatedPassword)) {
-                $configManager = ConfigurationManager::getInstance();
-                $showGeneratedPasswords = $configManager->get('misc', 'show_generated_passwords', true);
+                $showGeneratedPasswords = $this->config->get('misc', 'show_generated_passwords', true);
 
                 // Display the generated password to the admin if allowed by configuration
                 if ($showGeneratedPasswords) {
@@ -153,8 +150,7 @@ class AddUserController extends BaseController
                 }
 
                 // Send email with credentials if mail is enabled and checkbox is checked
-                $configManager = ConfigurationManager::getInstance();
-                $mailEnabled = $configManager->get('mail', 'enabled', false);
+                $mailEnabled = $this->config->get('mail', 'enabled', false);
 
                 if ($mailEnabled && $input['email'] && $this->httpRequest->getPostParam('send_email')) {
                     $emailSent = $this->mailService->sendNewAccountEmail(
@@ -207,8 +203,7 @@ class AddUserController extends BaseController
         $use_ldap_checked = $this->httpRequest->getPostParam('use_ldap') === '1' ? 'checked' : '';
 
         // Check if mail functionality is enabled
-        $configManager = ConfigurationManager::getInstance();
-        $mail_enabled = $configManager->get('mail', 'enabled', false);
+        $mail_enabled = $this->config->get('mail', 'enabled', false);
 
         // Fetch all available groups for group membership assignment
         $allGroups = $this->groupRepository->findAll();

@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -44,7 +45,7 @@ class ZoneAccessNotificationService
     private EmailTemplateService $emailTemplateService;
     private DomainRepositoryInterface $domainRepository;
     private UrlService $urlService;
-    private ?LoggerInterface $logger;
+    private LoggerInterface $logger;
 
     public function __construct(
         PDO $db,
@@ -60,7 +61,7 @@ class ZoneAccessNotificationService
         $this->emailTemplateService = $emailTemplateService;
         $this->domainRepository = $domainRepository;
         $this->urlService = new UrlService($config);
-        $this->logger = $logger;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -82,21 +83,21 @@ class ZoneAccessNotificationService
             // Get zone details
             $zoneName = $this->domainRepository->getDomainNameById($zoneId);
             if (!$zoneName) {
-                $this->logError("Zone not found with ID: $zoneId");
+                $this->logger->error("Zone not found with ID: $zoneId");
                 return false;
             }
 
             // Get recipient (new owner) details
             $recipient = $this->getUserDetails($newOwnerId);
             if (!$recipient || empty($recipient['email'])) {
-                $this->logWarning("User $newOwnerId has no email address, skipping notification");
+                $this->logger->warning("User $newOwnerId has no email address, skipping notification");
                 return false;
             }
 
             // Get granter details
             $granter = $this->getUserDetails($grantedById);
             if (!$granter) {
-                $this->logError("User not found with ID: $grantedById");
+                $this->logger->error("User not found with ID: $grantedById");
                 return false;
             }
 
@@ -122,17 +123,17 @@ class ZoneAccessNotificationService
             );
 
             if ($result) {
-                $this->logInfo("Access granted notification sent for zone '$zoneName' to user '{$recipient['username']}'");
+                $this->logger->info("Access granted notification sent for zone '$zoneName' to user '{$recipient['username']}'");
             } else {
-                $this->logError("Failed to send access granted notification for zone '$zoneName' to user '{$recipient['username']}'");
+                $this->logger->error("Failed to send access granted notification for zone '$zoneName' to user '{$recipient['username']}'");
             }
 
             return $result;
         } catch (LoaderError | RuntimeError | SyntaxError $e) {
-            $this->logError("Template error sending access granted notification: " . $e->getMessage());
+            $this->logger->error("Template error sending access granted notification: " . $e->getMessage());
             return false;
         } catch (\Exception $e) {
-            $this->logError("Error sending access granted notification: " . $e->getMessage());
+            $this->logger->error("Error sending access granted notification: " . $e->getMessage());
             return false;
         }
     }
@@ -156,21 +157,21 @@ class ZoneAccessNotificationService
             // Get zone details
             $zoneName = $this->domainRepository->getDomainNameById($zoneId);
             if (!$zoneName) {
-                $this->logError("Zone not found with ID: $zoneId");
+                $this->logger->error("Zone not found with ID: $zoneId");
                 return false;
             }
 
             // Get recipient (removed owner) details
             $recipient = $this->getUserDetails($removedOwnerId);
             if (!$recipient || empty($recipient['email'])) {
-                $this->logWarning("User $removedOwnerId has no email address, skipping notification");
+                $this->logger->warning("User $removedOwnerId has no email address, skipping notification");
                 return false;
             }
 
             // Get revoker details
             $revoker = $this->getUserDetails($revokedById);
             if (!$revoker) {
-                $this->logError("User not found with ID: $revokedById");
+                $this->logger->error("User not found with ID: $revokedById");
                 return false;
             }
 
@@ -191,17 +192,17 @@ class ZoneAccessNotificationService
             );
 
             if ($result) {
-                $this->logInfo("Access revoked notification sent for zone '$zoneName' to user '{$recipient['username']}'");
+                $this->logger->info("Access revoked notification sent for zone '$zoneName' to user '{$recipient['username']}'");
             } else {
-                $this->logError("Failed to send access revoked notification for zone '$zoneName' to user '{$recipient['username']}'");
+                $this->logger->error("Failed to send access revoked notification for zone '$zoneName' to user '{$recipient['username']}'");
             }
 
             return $result;
         } catch (LoaderError | RuntimeError | SyntaxError $e) {
-            $this->logError("Template error sending access revoked notification: " . $e->getMessage());
+            $this->logger->error("Template error sending access revoked notification: " . $e->getMessage());
             return false;
         } catch (\Exception $e) {
-            $this->logError("Error sending access revoked notification: " . $e->getMessage());
+            $this->logger->error("Error sending access revoked notification: " . $e->getMessage());
             return false;
         }
     }
@@ -220,7 +221,7 @@ class ZoneAccessNotificationService
 
         // Check if mail is enabled
         if (!$this->config->get('mail', 'enabled', false)) {
-            $this->logWarning("Zone access notifications enabled but mail is disabled");
+            $this->logger->warning("Zone access notifications enabled but mail is disabled");
             return false;
         }
 
@@ -246,41 +247,5 @@ class ZoneAccessNotificationService
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $user ?: null;
-    }
-
-    /**
-     * Log info message
-     *
-     * @param string $message Message to log
-     */
-    private function logInfo(string $message): void
-    {
-        if ($this->logger !== null) {
-            $this->logger->info($message);
-        }
-    }
-
-    /**
-     * Log warning message
-     *
-     * @param string $message Message to log
-     */
-    private function logWarning(string $message): void
-    {
-        if ($this->logger !== null) {
-            $this->logger->warning($message);
-        }
-    }
-
-    /**
-     * Log error message
-     *
-     * @param string $message Message to log
-     */
-    private function logError(string $message): void
-    {
-        if ($this->logger !== null) {
-            $this->logger->error($message);
-        }
     }
 }

@@ -7,12 +7,6 @@ parameters:
 			path: lib/Application/Controller/AddSupermasterController.php
 
 		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 4
-			path: lib/Application/Controller/AddUserController.php
-
-		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 3
@@ -79,12 +73,6 @@ parameters:
 			path: lib/Application/Controller/DnssecController.php
 
 		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Controller/EditController.php
-
-		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 21
@@ -103,52 +91,10 @@ parameters:
 			path: lib/Application/Controller/EditZoneTemplController.php
 
 		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Controller/ForgotPasswordController.php
-
-		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Controller/ForgotUsernameController.php
-
-		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 6
 			path: lib/Application/Controller/ListForwardZonesController.php
-
-		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Controller/ListLogApiController.php
-
-		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Controller/ListLogGroupsController.php
-
-		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Controller/ListLogUsersController.php
-
-		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Controller/ListLogZonesController.php
-
-		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Controller/ListRecordChangesController.php
 
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
@@ -161,12 +107,6 @@ parameters:
 			identifier: disallowed.variable
 			count: 3
 			path: lib/Application/Controller/MfaSetupController.php
-
-		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Application/Controller/ResetPasswordController.php
 
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'

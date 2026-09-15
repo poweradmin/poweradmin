@@ -51,7 +51,7 @@ class MfaVerifyController extends BaseController
         parent::__construct($request, false);
 
         $userMfaRepository = new DbUserMfaRepository($this->db, $this->config);
-        $mailService = new MailService($this->config);
+        $mailService = new MailService($this->config, $this->logger);
         $this->mfaService = new MfaService($userMfaRepository, $this->config, $mailService, null, $this->createUserTimezoneService());
 
         $this->csrfTokenService = new CsrfTokenService();

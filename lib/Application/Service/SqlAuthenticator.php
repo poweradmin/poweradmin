@@ -83,7 +83,7 @@ class SqlAuthenticator extends LoggingService
         return $this->mfaService ??= new MfaService(
             new DbUserMfaRepository($this->connection, $this->configManager),
             $this->configManager,
-            new MailService($this->configManager),
+            new MailService($this->configManager, $this->logger),
             null,
             UserTimezoneService::createDefault($this->connection, $this->configManager)
         );

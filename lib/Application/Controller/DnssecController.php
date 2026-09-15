@@ -31,7 +31,6 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
-use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -48,13 +47,7 @@ class DnssecController extends BaseController
 
     public function run(): void
     {
-        $zone_id = $this->getSafeRequestValue('id');
-        if (!$zone_id || !Validator::isNumber($zone_id)) {
-            $this->showError(_('Invalid or unexpected input given.'));
-            return;
-        }
-
-        $zone_id = (int) $zone_id;
+        $zone_id = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
 
         // Early permission check - validate zone visibility before any operations.
         // The DNSSEC page itself only requires view; per-action gates apply for mutations.

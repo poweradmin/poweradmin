@@ -33,7 +33,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\DnsFormatter;
@@ -42,7 +41,6 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -54,7 +52,6 @@ abstract class PublicApiController extends AbstractApiController
 
     protected array $pathParameters;
     protected int $authenticatedUserId = 0;
-    protected LoggerInterface $logger;
 
     /**
      * Permission scope of the API key used for this request. Null when the request
@@ -77,10 +74,6 @@ abstract class PublicApiController extends AbstractApiController
 
         // Store path parameters for use by child classes
         $this->pathParameters = $pathParameters;
-
-        // Initialize PSR-3 logger
-        $config = $this->getConfig();
-        $this->logger = Logger::fromConfig($config);
 
         // Authenticate the API request using API key or HTTP Basic auth
         $this->authenticateApiRequest();
