@@ -520,39 +520,22 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return array_values($zones);
     }
 
-    /**
-     * Check if a zone exists and is accessible by a user
-     *
-     * @param int $zoneId The zone ID
-     * @param int|null $userId Optional user ID to check ownership
-     * @return bool True if the zone exists and is accessible by the user
-     */
-    public function zoneExists(int $zoneId, ?int $userId = null): bool
+    public function userCanAccessZone(int $zoneId, int $userId): bool
     {
-
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $query = "SELECT 1 FROM $domains_table";
-
-        if ($userId !== null) {
-            $query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
-            $query .= " WHERE $domains_table.id = :id AND (zones.owner = :userId OR EXISTS (
+        $query = "SELECT 1 FROM $domains_table
+            LEFT JOIN zones ON $domains_table.id = zones.domain_id
+            WHERE $domains_table.id = :id AND (zones.owner = :userId OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
                 WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
             ))";
-        } else {
-            $query .= " WHERE $domains_table.id = :id";
-        }
 
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-
-        if ($userId !== null) {
-            $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-            $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
-        }
-
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
         $stmt->execute();
 
         return $stmt->fetchColumn() !== false;

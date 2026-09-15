@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Zone;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneWriteRepositoryInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
@@ -47,7 +47,7 @@ class ZoneMetadataService
     private LoggerInterface $logger;
 
     public function __construct(
-        private readonly ZoneRepositoryInterface $zoneRepository,
+        private readonly ZoneWriteRepositoryInterface $zoneRepository,
         private readonly ConfigurationInterface $config,
         private readonly PermissionService $permissions,
         private readonly AuditService $audit,

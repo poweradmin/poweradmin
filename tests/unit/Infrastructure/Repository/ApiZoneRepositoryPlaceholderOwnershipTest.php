@@ -90,23 +90,23 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
     #[Test]
     public function theExtraOwnerCanSeeTheZone(): void
     {
-        // zoneExists doubles as the access gate on the internal zone endpoint, so a
+        // userCanAccessZone is the access gate on the internal zone endpoint, so a
         // miss here is a 404 on the user's own zone.
-        $this->assertTrue($this->repository()->zoneExists(4, 2));
+        $this->assertTrue($this->repository()->userCanAccessZone(4, 2));
     }
 
     #[Test]
     public function aStrangerIsStillRefused(): void
     {
         $this->assertFalse($this->repository()->isUserZoneOwner(4, 3));
-        $this->assertFalse($this->repository()->zoneExists(4, 3));
+        $this->assertFalse($this->repository()->userCanAccessZone(4, 3));
     }
 
     #[Test]
     public function thePrimaryOwnerIsUnaffected(): void
     {
         $this->assertTrue($this->repository()->isUserZoneOwner(4, 1));
-        $this->assertTrue($this->repository()->zoneExists(4, 1));
+        $this->assertTrue($this->repository()->userCanAccessZone(4, 1));
     }
 
     #[Test]
@@ -121,7 +121,7 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
 
         $this->assertSame(['extra', 'primary', 'stranger'], $owners);
         $this->assertTrue($this->repository()->isUserZoneOwner(4, 3));
-        $this->assertTrue($this->repository()->zoneExists(4, 3));
+        $this->assertTrue($this->repository()->userCanAccessZone(4, 3));
     }
 
     #[Test]

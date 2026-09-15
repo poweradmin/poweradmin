@@ -26,6 +26,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,6 +39,7 @@ use Exception;
 class ZoneOwnersController extends PublicApiController
 {
     private ZoneRepositoryInterface $zoneRepository;
+    private DomainRepositoryInterface $domainRepository;
     private UserRepositoryInterface $userRepository;
     private ApiPermissionService $apiPermissionService;
     private AuditService $auditService;
@@ -47,6 +49,7 @@ class ZoneOwnersController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $this->zoneRepository = $this->createZoneRepository();
+        $this->domainRepository = $this->createDomainRepository();
         $this->userRepository = $this->createUserRepository();
         $this->apiPermissionService = $this->createApiPermissionService();
         $this->auditService = $this->createAuditService();
@@ -57,7 +60,7 @@ class ZoneOwnersController extends PublicApiController
      */
     private function auditZoneName(int $zoneId): string
     {
-        return $this->createDomainRepository()->getDomainNameById($zoneId) ?? '';
+        return $this->domainRepository->getDomainNameById($zoneId) ?? '';
     }
 
     /**
@@ -134,7 +137,7 @@ class ZoneOwnersController extends PublicApiController
             return $scopeError;
         }
 
-        if (!$this->zoneRepository->zoneExists($zoneId)) {
+        if (!$this->domainRepository->zoneIdExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
         }
 
@@ -229,7 +232,7 @@ class ZoneOwnersController extends PublicApiController
             return $scopeError;
         }
 
-        if (!$this->zoneRepository->zoneExists($zoneId)) {
+        if (!$this->domainRepository->zoneIdExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
         }
 
@@ -386,7 +389,7 @@ class ZoneOwnersController extends PublicApiController
             return $scopeError;
         }
 
-        if (!$this->zoneRepository->zoneExists($zoneId)) {
+        if (!$this->domainRepository->zoneIdExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
         }
 

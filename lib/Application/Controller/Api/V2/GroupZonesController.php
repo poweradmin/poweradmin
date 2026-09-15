@@ -27,6 +27,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -40,6 +41,7 @@ class GroupZonesController extends PublicApiController
     private ZoneGroupService $zoneGroupService;
     private ApiPermissionService $apiPermissionService;
     private ZoneRepositoryInterface $zoneRepository;
+    private DomainRepositoryInterface $domainRepository;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -50,6 +52,7 @@ class GroupZonesController extends PublicApiController
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
         $this->apiPermissionService = $this->createApiPermissionService();
         $this->zoneRepository = $this->createZoneRepository();
+        $this->domainRepository = $this->createDomainRepository();
     }
 
     /**
@@ -229,7 +232,7 @@ class GroupZonesController extends PublicApiController
                 return $scopeError;
             }
 
-            if (!$this->zoneRepository->zoneExists($zoneId)) {
+            if (!$this->domainRepository->zoneIdExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
             }
 
@@ -304,7 +307,7 @@ class GroupZonesController extends PublicApiController
                 return $scopeError;
             }
 
-            if (!$this->zoneRepository->zoneExists($zoneId)) {
+            if (!$this->domainRepository->zoneIdExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
             }
 
