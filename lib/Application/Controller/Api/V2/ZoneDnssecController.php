@@ -27,7 +27,6 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
@@ -42,7 +41,6 @@ use Exception;
  */
 class ZoneDnssecController extends PublicApiController
 {
-    protected ZoneRepositoryInterface $zoneRepository;
     protected DomainRepositoryInterface $domainRepository;
     protected ApiPermissionService $apiPermissionService;
     protected DnssecProviderInterface $dnssecProvider;
@@ -52,7 +50,6 @@ class ZoneDnssecController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = $this->createZoneRepository();
         $this->domainRepository = $this->createDomainRepository();
         $this->apiPermissionService = new ApiPermissionService($this->db, config: $this->config);
         $this->dnssecProvider = $this->createDnssecProvider();
@@ -147,7 +144,8 @@ class ZoneDnssecController extends PublicApiController
             return $scopeError;
         }
 
-        if (!$this->zoneRepository->zoneExists($zoneId)) {
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
+        if ($zoneName === null) {
             return $this->returnApiError('Zone not found', 404);
         }
 
@@ -157,11 +155,6 @@ class ZoneDnssecController extends PublicApiController
 
         if ($this->apiClient === null) {
             return $this->returnApiError('DNSSEC management requires the PowerDNS API to be configured', 501);
-        }
-
-        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
-        if ($zoneName === null) {
-            return $this->returnApiError('Zone not found', 404);
         }
 
         try {
@@ -217,7 +210,8 @@ class ZoneDnssecController extends PublicApiController
             return $scopeError;
         }
 
-        if (!$this->zoneRepository->zoneExists($zoneId)) {
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
+        if ($zoneName === null) {
             return $this->returnApiError('Zone not found', 404);
         }
 
@@ -233,11 +227,6 @@ class ZoneDnssecController extends PublicApiController
         $enabled = is_array($data) ? $this->inputBool($data, 'enabled') : null;
         if ($enabled === null) {
             return $this->returnApiError('Missing or invalid required field: enabled (boolean)', 400);
-        }
-
-        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
-        if ($zoneName === null) {
-            return $this->returnApiError('Zone not found', 404);
         }
 
         try {

@@ -217,7 +217,7 @@ class ZoneFileImportController extends BaseController
         ];
 
         if ($importMode === 'existing' && $existingZoneId > 0) {
-            $existingZoneName = $this->createDomainRepository()->getDomainNameById($existingZoneId);
+            $existingZoneName = $domainRepository->getDomainNameById($existingZoneId);
             $previewVars['existing_zone_name'] = $existingZoneName ?: '';
         } else {
             // For new-zone imports, expose the ownership-mode flags + group list
