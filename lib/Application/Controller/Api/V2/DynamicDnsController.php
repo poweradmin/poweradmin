@@ -28,7 +28,6 @@ use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
@@ -50,10 +49,9 @@ class DynamicDnsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $config = $this->getConfig();
+        $config = $this->config;
         $backendProvider = $this->createDnsBackendProvider();
-        $soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $config, $backendProvider);
-        $repository = $this->getRepositoryFactory($backendProvider)->createDynamicDnsRepository($soaRecordManager);
+        $repository = $this->getRepositoryFactory($backendProvider)->createDynamicDnsRepository($this->createSOARecordManager());
 
         $userAuthService = new UserAuthenticationService(
             $config->get('security', 'password_encryption', 'bcrypt'),

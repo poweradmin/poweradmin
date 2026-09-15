@@ -159,7 +159,7 @@ class MessageServiceTest extends TestCase
     public function testDirectSystemErrorReportsServerError(): void
     {
         ob_start();
-        $this->service->dontExit()->displayDirectSystemError('Configuration is broken');
+        $this->service->displayDirectSystemError('Configuration is broken', false);
         $body = (string)ob_get_clean();
 
         $this->assertSame(500, http_response_code());
@@ -173,7 +173,7 @@ class MessageServiceTest extends TestCase
     public function testDirectSystemErrorEscapesTheMessage(): void
     {
         ob_start();
-        $this->service->dontExit()->displayDirectSystemError('<script>alert(1)</script>');
+        $this->service->displayDirectSystemError('<script>alert(1)</script>', false);
         $body = (string)ob_get_clean();
 
         $this->assertStringContainsString('&lt;script&gt;', $body);

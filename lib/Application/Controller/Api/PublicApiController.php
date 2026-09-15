@@ -144,6 +144,10 @@ abstract class PublicApiController extends AbstractApiController
         // If all authentication methods failed, return 401 Unauthorized
         if (!$authenticated) {
             $response = $this->returnApiError('Unauthorized: Invalid credentials', 401);
+            if ($config->get('api', 'basic_auth_enabled', false)) {
+                $realm = str_replace('"', '', (string)$config->get('api', 'basic_auth_realm', 'Poweradmin API'));
+                $response->headers->set('WWW-Authenticate', 'Basic realm="' . $realm . '"');
+            }
             $response->send();
             exit;
         }

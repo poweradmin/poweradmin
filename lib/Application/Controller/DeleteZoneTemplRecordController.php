@@ -42,8 +42,8 @@ class DeleteZoneTemplRecordController extends BaseController
 
     public function run(): void
     {
-        $record_id = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
-        $zone_templ_id = $this->requireNumericParam('template_id', _('Invalid or unexpected input given.'));
+        $record_id = $this->requireNumericParam('id');
+        $zone_templ_id = $this->requireNumericParam('template_id');
 
         $confirmed = $this->httpRequest->getPostParam('confirm') !== null;
 

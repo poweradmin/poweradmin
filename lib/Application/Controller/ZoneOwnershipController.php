@@ -60,7 +60,7 @@ class ZoneOwnershipController extends BaseController
         $this->setCurrentPage('edit');
         $this->setPageTitle(_('Edit zone'));
 
-        $zone_id = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
+        $zone_id = $this->requireNumericParam('id');
 
         // Check permissions
         $userId = $this->userContextService->getLoggedInUserId();

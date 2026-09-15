@@ -55,9 +55,8 @@ class ZonesRRSetsController extends PublicApiController
 
         $this->backendProvider = $this->createDnsBackendProvider();
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
-        $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = $repositoryFactory->createRecordRepository();
+        $this->recordRepository = $this->createRecordRepository();
         $this->apiPermissionService = $this->createApiPermissionService();
 
         $this->recordManager = $this->createRecordManager();
@@ -291,9 +290,7 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Get zone name for FQDN construction
-            $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-            $domainRepository = $repositoryFactory->createDomainRepository();
-            $zoneName = $domainRepository->getDomainNameById($zoneId);
+            $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
 
             // Convert name to FQDN
             $fqdn = $this->normalizeV2RecordName($name, $zoneName);
@@ -456,9 +453,7 @@ class ZonesRRSetsController extends PublicApiController
             $type = strtoupper(trim($typeRaw));
 
             // Get zone name
-            $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-            $domainRepository = $repositoryFactory->createDomainRepository();
-            $zoneName = $domainRepository->getDomainNameById($zoneId);
+            $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
             if ($zoneName === null) {
                 return $this->returnApiError('Zone not found', 404);
             }
@@ -722,9 +717,7 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Get zone name
-            $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-            $domainRepository = $repositoryFactory->createDomainRepository();
-            $zoneName = $domainRepository->getDomainNameById($zoneId);
+            $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
 
             // Convert name to FQDN
             $fqdn = $this->normalizeV2RecordName($name, $zoneName);
