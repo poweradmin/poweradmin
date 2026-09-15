@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DatabaseConsistencyService;
 
@@ -32,12 +31,10 @@ use Poweradmin\Domain\Service\DatabaseConsistencyService;
  */
 class DatabaseConsistencyController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -66,7 +63,7 @@ class DatabaseConsistencyController extends BaseController
         // Handle fix actions before the outage check below: owner assignment touches
         // only the local zones table, so it must still work when the API is briefly
         // down. API-dependent fixes fail gracefully on their own.
-        if ($this->isPost() && $this->request->getPostParam('action') !== null && $this->request->getPostParam('check_type') !== null) {
+        if ($this->isPost() && $this->httpRequest->getPostParam('action') !== null && $this->httpRequest->getPostParam('check_type') !== null) {
             $this->validateCsrfToken();
             $this->handleFixAction($consistencyService);
             return;
@@ -106,9 +103,9 @@ class DatabaseConsistencyController extends BaseController
 
     private function handleFixAction(DatabaseConsistencyService $service): void
     {
-        $checkType = $this->request->getPostParam('check_type', '');
-        $action = $this->request->getPostParam('action', '');
-        $itemId = $this->request->getPostParam('item_id');
+        $checkType = $this->httpRequest->getPostParam('check_type', '');
+        $action = $this->httpRequest->getPostParam('action', '');
+        $itemId = $this->httpRequest->getPostParam('item_id');
 
         try {
             $result = false;

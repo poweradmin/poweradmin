@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbUserLogger;
@@ -34,14 +33,12 @@ use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 class ListLogUsersController extends BaseController
 {
     private DbUserLogger $dbUserLogger;
-    private Request $httpRequest;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->dbUserLogger = new DbUserLogger($this->db);
-        $this->httpRequest = new Request();
     }
 
     public function run(): void

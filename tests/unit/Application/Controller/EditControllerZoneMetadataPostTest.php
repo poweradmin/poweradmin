@@ -262,7 +262,7 @@ class EditControllerZoneMetadataPostTest extends TestCase
     ): array {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
 
-        $this->setProperty($controller, 'request', new Request());
+        $this->setBaseProperty($controller, 'httpRequest', new Request());
         $this->setProperty($controller, 'domainManager', $domainManager);
         $this->setProperty($controller, 'domainRepository', $domainRepository ?? $this->createMock(DomainRepositoryInterface::class));
         $permissionService = $this->createMock(PermissionService::class);

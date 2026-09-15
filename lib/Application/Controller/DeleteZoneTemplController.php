@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -33,13 +32,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class DeleteZoneTemplController extends BaseController
 {
-    private Request $request;
     private ZoneTemplate $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
         $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
     }
     public function run(): void
@@ -64,7 +61,7 @@ class DeleteZoneTemplController extends BaseController
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to delete zone templates."));
 
-        if ($this->request->getPostParam('confirm') !== null) {
+        if ($this->httpRequest->getPostParam('confirm') !== null) {
             $this->deleteZoneTempl();
         } else {
             $this->showDeleteZoneTempl();

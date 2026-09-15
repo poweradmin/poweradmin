@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
@@ -44,13 +43,10 @@ class DeleteRecordController extends BaseController
     private ReverseRecordCreator $reverseRecordCreator;
     private UserContextService $userContextService;
     private PermissionService $permissionService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
         $this->reverseRecordCreator = $this->createReverseRecordCreator();
         $this->userContextService = new UserContextService();
         $this->permissionService = $this->createPermissionService();
@@ -132,7 +128,7 @@ class DeleteRecordController extends BaseController
                 );
 
                 // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
-                $delete_ptr = $this->request->getPostParam('delete_ptr') === '1';
+                $delete_ptr = $this->httpRequest->getPostParam('delete_ptr') === '1';
                 if ($hasPtrRecord && $delete_ptr) {
                     $deletedPtrRecord = $this->reverseRecordCreator->deleteReverseRecord(
                         $record_info['type'],
@@ -142,7 +138,7 @@ class DeleteRecordController extends BaseController
                 }
 
                 // Delete corresponding A/AAAA record if this was a PTR record and deletion is requested
-                $delete_forward = $this->request->getPostParam('delete_forward') === '1';
+                $delete_forward = $this->httpRequest->getPostParam('delete_forward') === '1';
                 if ($hasForwardRecord && $delete_forward) {
                     $deletedForwardRecord = $this->reverseRecordCreator->deleteForwardRecord(
                         $record_info['name'],

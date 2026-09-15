@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
@@ -37,12 +36,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AddZoneSlaveController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -81,20 +78,20 @@ class AddZoneSlaveController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        $postData = $this->request->getPostParams();
+        $postData = $this->httpRequest->getPostParams();
         if (!$this->doValidateRequest($postData)) {
             $this->showFirstValidationError($postData);
         }
 
         $type = "SLAVE";
-        $master = (string)$this->request->getPostParam('slave_master', '');
+        $master = (string)$this->httpRequest->getPostParam('slave_master', '');
 
-        $raw_domain = trim((string)$this->request->getPostParam('domain', ''));
+        $raw_domain = trim((string)$this->httpRequest->getPostParam('domain', ''));
 
         // On the reverse-zone form, accept a network (e.g. 192.168.1.0/24,
         // 2001:db8::/48) and create the matching in-addr.arpa/ip6.arpa zone
         // instead of silently creating a forward zone with that literal name.
-        $is_reverse_context = $this->request->getPostParam('type') === 'reverse';
+        $is_reverse_context = $this->httpRequest->getPostParam('type') === 'reverse';
         if ($is_reverse_context) {
             $reverse_zone = DnsHelper::resolveReverseZoneName($raw_domain);
             if ($reverse_zone === null) {
@@ -107,7 +104,7 @@ class AddZoneSlaveController extends BaseController
 
         $zone = DnsIdnService::toPunycode($raw_domain);
 
-        $ownership = $this->resolveZoneOwnershipFromForm($this->request);
+        $ownership = $this->resolveZoneOwnershipFromForm($this->httpRequest);
         if ($ownership->hasError()) {
             $this->setMessage('add_zone_slave', 'error', ZoneOwnershipFormResolver::errorMessage($ownership));
             $this->showForm();
@@ -139,14 +136,14 @@ class AddZoneSlaveController extends BaseController
     private function showForm(): void
     {
         // Keep the submitted values if there was an error
-        $domainInput = $this->request->getPostParam('domain');
+        $domainInput = $this->httpRequest->getPostParam('domain');
         $domain_value = $domainInput !== null ? htmlspecialchars($domainInput) : '';
-        $slaveMasterInput = $this->request->getPostParam('slave_master');
+        $slaveMasterInput = $this->httpRequest->getPostParam('slave_master');
         $slave_master_value = $slaveMasterInput !== null ? htmlspecialchars($slaveMasterInput) : '';
         $users = $this->createUserRepository()->getUsersWithZoneCounts();
 
         // Safely handle the owner value - ensure it's an integer or preserve empty selection
-        $ownerInput = $this->request->getPostParam('owner');
+        $ownerInput = $this->httpRequest->getPostParam('owner');
         if ($ownerInput !== null) {
             if ($ownerInput === '') {
                 // Empty value means "no user owner" was explicitly selected
@@ -162,7 +159,7 @@ class AddZoneSlaveController extends BaseController
             $owner_value = $_SESSION[SessionKeys::USERID];
         }
 
-        $is_post_request = !empty($this->request->getPostParams());
+        $is_post_request = !empty($this->httpRequest->getPostParams());
 
         // Fetch groups for the dropdown - admins see all, others see only their own
         $userGroupRepo = $this->createUserGroupRepository();
@@ -174,14 +171,14 @@ class AddZoneSlaveController extends BaseController
         $memberCounts = $userGroupRepo->getMemberCountsByGroupIds($groupIds);
 
         // Handle selected groups on error re-render
-        $groupsInput = $this->request->getPostParam('groups');
+        $groupsInput = $this->httpRequest->getPostParam('groups');
         $selected_groups = is_array($groupsInput) ? array_map('intval', $groupsInput) : [];
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         // Preserve reverse-zone context so the form returns to the reverse list
-        $is_reverse_zone = $this->request->getQueryParam('type') === 'reverse'
-            || $this->request->getPostParam('type') === 'reverse';
+        $is_reverse_zone = $this->httpRequest->getQueryParam('type') === 'reverse'
+            || $this->httpRequest->getPostParam('type') === 'reverse';
 
         $this->render('add_zone_slave.html', [
             'is_reverse_zone' => $is_reverse_zone,

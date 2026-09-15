@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
@@ -44,7 +43,6 @@ class AddZoneMasterController extends BaseController
 {
 
     private UserContextService $userContext;
-    private Request $request;
 
     /** @var array<int, string>|null */
     private ?array $soaEditApiChoices = null;
@@ -54,7 +52,6 @@ class AddZoneMasterController extends BaseController
         parent::__construct($request);
 
         $this->userContext = new UserContextService();
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -120,19 +117,19 @@ class AddZoneMasterController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        $postData = $this->request->getPostParams();
+        $postData = $this->httpRequest->getPostParams();
         if (!$this->doValidateRequest($postData)) {
             $this->showFirstValidationError($postData);
         }
 
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
 
-        $raw_domain = trim((string)$this->request->getPostParam('domain', ''));
+        $raw_domain = trim((string)$this->httpRequest->getPostParam('domain', ''));
 
         // On the reverse-zone form, accept a network (e.g. 192.168.1.0/24,
         // 2001:db8::/48) and create the matching in-addr.arpa/ip6.arpa zone
         // instead of silently creating a forward zone with that literal name.
-        $is_reverse_context = $this->request->getPostParam('type') === 'reverse';
+        $is_reverse_context = $this->httpRequest->getPostParam('type') === 'reverse';
         if ($is_reverse_context) {
             $reverse_zone = DnsHelper::resolveReverseZoneName($raw_domain);
             if ($reverse_zone === null) {
@@ -144,7 +141,7 @@ class AddZoneMasterController extends BaseController
         }
 
         $zone_name = DnsIdnService::toPunycode($raw_domain);
-        $dom_type = $this->request->getPostParam('dom_type', '');
+        $dom_type = $this->httpRequest->getPostParam('dom_type', '');
 
         // The dropdown only populates the form; without this the submit path would
         // accept any string, including kinds this server does not support.
@@ -154,7 +151,7 @@ class AddZoneMasterController extends BaseController
             return;
         }
 
-        $zone_template = $this->request->getPostParam('zone_template', 'none');
+        $zone_template = $this->httpRequest->getPostParam('zone_template', 'none');
         $zoneTemplateModel = new ZoneTemplate($this->db, $this->getConfig());
         if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
             $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
@@ -165,12 +162,12 @@ class AddZoneMasterController extends BaseController
         // A consumer takes its catalog by transfer, so it needs a primary and gets
         // neither template records nor a serial policy.
         $replicates = ZoneType::replicatesFromPrimary($dom_type);
-        $slave_master = $replicates ? trim((string)$this->request->getPostParam('slave_master', '')) : '';
+        $slave_master = $replicates ? trim((string)$this->httpRequest->getPostParam('slave_master', '')) : '';
         if ($replicates) {
             $zone_template = 'none';
         }
 
-        $soa_edit_api_input = $this->request->getPostParam('soa_edit_api');
+        $soa_edit_api_input = $this->httpRequest->getPostParam('soa_edit_api');
         if (!$this->isOfferedSoaEditApiInput($soa_edit_api_input)) {
             $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
             $this->showForm();
@@ -178,7 +175,7 @@ class AddZoneMasterController extends BaseController
         }
         $soa_edit_api = $this->sanitizeSoaEditApiInput($soa_edit_api_input);
 
-        $ownership = $this->resolveZoneOwnershipFromForm($this->request);
+        $ownership = $this->resolveZoneOwnershipFromForm($this->httpRequest);
         if ($ownership->hasError()) {
             $this->setMessage('add_zone_master', 'error', ZoneOwnershipFormResolver::errorMessage($ownership));
             $this->showForm();
@@ -188,7 +185,7 @@ class AddZoneMasterController extends BaseController
         $selected_groups = $ownership->groupIds;
 
         // Signing a zone whose records arrive by transfer is meaningless.
-        $signRequested = $pdnssec_use && !$replicates && $this->request->getPostParam('dnssec') !== null;
+        $signRequested = $pdnssec_use && !$replicates && $this->httpRequest->getPostParam('dnssec') !== null;
         $callerId = (int)$this->getCurrentUserId();
         if ($signRequested && !$this->createApiPermissionService()->canManageDnssecForNewZone($callerId, $owner, $selected_groups)) {
             $this->setMessage('add_zone_master', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
@@ -276,14 +273,14 @@ class AddZoneMasterController extends BaseController
         $users = $this->createUserRepository()->getUsersWithZoneCounts();
 
         // Keep the submitted zone name if there was an error
-        $domainInput = $this->request->getPostParam('domain');
+        $domainInput = $this->httpRequest->getPostParam('domain');
         $domain_value = $domainInput !== null ? htmlspecialchars($domainInput) : '';
 
         // Resolve the system-wide default template (DB flag → config setting → none)
         $default_template_id = $zone_templates->getDefaultTemplateId();
 
         // Safely handle the zone template value
-        $zoneTemplateInput = $this->request->getPostParam('zone_template');
+        $zoneTemplateInput = $this->httpRequest->getPostParam('zone_template');
         if ($zoneTemplateInput !== null) {
             // If it's 'none', keep it as is
             if ($zoneTemplateInput === 'none') {
@@ -302,7 +299,7 @@ class AddZoneMasterController extends BaseController
         }
 
         // Safely handle the owner value - ensure it's an integer or preserve empty selection
-        $ownerInput = $this->request->getPostParam('owner');
+        $ownerInput = $this->httpRequest->getPostParam('owner');
         if ($ownerInput !== null) {
             if ($ownerInput === '') {
                 // Empty value means "no user owner" was explicitly selected
@@ -319,14 +316,14 @@ class AddZoneMasterController extends BaseController
         }
 
         $valid_domain_types = $this->getAvailableZoneTypes();
-        $domTypeInput = $this->request->getPostParam('dom_type');
+        $domTypeInput = $this->httpRequest->getPostParam('dom_type');
         $dom_type_value = $domTypeInput !== null && in_array($domTypeInput, $valid_domain_types, true) ?
             $domTypeInput : $this->config->get('dns', 'zone_type_default', 'MASTER');
 
-        $is_post_request = !empty($this->request->getPostParams());
+        $is_post_request = !empty($this->httpRequest->getPostParams());
 
         // Create a sanitized version of the DNSSEC checkbox status
-        $dnssec_checked = $this->request->getPostParam('dnssec') == '1';
+        $dnssec_checked = $this->httpRequest->getPostParam('dnssec') == '1';
 
         // Get available templates for this user
         $userId = $this->userContext->getLoggedInUserId();
@@ -342,14 +339,14 @@ class AddZoneMasterController extends BaseController
         $memberCounts = $userGroupRepo->getMemberCountsByGroupIds($groupIds);
 
         // Handle selected groups on error re-render
-        $groupsInput = $this->request->getPostParam('groups');
+        $groupsInput = $this->httpRequest->getPostParam('groups');
         $selected_groups = is_array($groupsInput) ? array_map('intval', $groupsInput) : [];
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         // Preserve reverse-zone context so the form returns to the reverse list
-        $is_reverse_zone = $this->request->getQueryParam('type') === 'reverse'
-            || $this->request->getPostParam('type') === 'reverse';
+        $is_reverse_zone = $this->httpRequest->getQueryParam('type') === 'reverse'
+            || $this->httpRequest->getPostParam('type') === 'reverse';
 
         $this->render('add_zone_master.html', [
             'is_reverse_zone' => $is_reverse_zone,
@@ -367,7 +364,7 @@ class AddZoneMasterController extends BaseController
             'zone_template_value' => $zone_template_value,
             'owner_value' => $owner_value,
             'dom_type_value' => $dom_type_value,
-            'slave_master_value' => (string)$this->request->getPostParam('slave_master', ''),
+            'slave_master_value' => (string)$this->httpRequest->getPostParam('slave_master', ''),
             'zone_replicates_from_primary' => ZoneType::replicatesFromPrimary($dom_type_value),
             'replicating_zone_types' => ZoneType::getReplicatingTypes(),
             'is_post' => $is_post_request,
@@ -380,7 +377,7 @@ class AddZoneMasterController extends BaseController
             'soa_edit_api_options' => $this->getSoaEditApiChoices(),
             // Preselect the submitted value on error re-render, else the config default
             'soa_edit_api_value' => $this->sanitizeSoaEditApiInput(
-                $this->request->getPostParam('soa_edit_api') ?? $this->config->get('dns', 'soa_edit_api', '')
+                $this->httpRequest->getPostParam('soa_edit_api') ?? $this->config->get('dns', 'soa_edit_api', '')
             ) ?? '',
             // Don't pass raw POST data to the template for security
         ]);

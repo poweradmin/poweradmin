@@ -24,7 +24,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
@@ -74,7 +73,6 @@ class EditController extends BaseController
     private PermissionService $permissionService;
     private RecordRepositoryInterface $recordRepository;
     private DomainRepositoryInterface $domainRepository;
-    private Request $request;
     /** Rows and comment from a submission rejected as stale, so the re-render can restore them. */
     private array $rejectedRecords = [];
     private ?string $rejectedZoneComment = null;
@@ -82,7 +80,6 @@ class EditController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
         $this->recordRepository = $this->createRecordRepository();
         $this->domainRepository = $this->createDomainRepository();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
@@ -127,22 +124,22 @@ class EditController extends BaseController
         $iface_zone_comments = $configManager->get('interface', 'show_zone_comments', true);
 
         // Initialize filter parameters
-        $searchTerm = htmlspecialchars($this->request->getQueryParam('search', ''));
-        $recordTypeFilter = htmlspecialchars($this->request->getQueryParam('record_type', ''));
-        $contentFilter = htmlspecialchars($this->request->getQueryParam('content', ''));
+        $searchTerm = htmlspecialchars($this->httpRequest->getQueryParam('search', ''));
+        $recordTypeFilter = htmlspecialchars($this->httpRequest->getQueryParam('record_type', ''));
+        $contentFilter = htmlspecialchars($this->httpRequest->getQueryParam('content', ''));
 
         // Generate a form token for the add record form
         $formToken = $this->formStateService->generateFormId('add_record');
 
         // Check if we have any form data from a failed submission
         $formData = null;
-        $formId = $this->request->getQueryParam('form_id');
+        $formId = $this->httpRequest->getQueryParam('form_id');
         if ($formId) {
             $formData = $this->formStateService->getFormData($formId);
         }
 
         $row_start = 0;
-        $start = $this->request->getQueryParam('start');
+        $start = $this->httpRequest->getQueryParam('start');
         if ($start !== null) {
             $row_start = max(0, ((int)$start - 1) * $iface_rowamount);
         }
@@ -150,8 +147,8 @@ class EditController extends BaseController
         [$record_sort_by, $sort_direction] = (new ZoneSortingService($this->userContextService))->getZoneSortOrder(
             ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled'],
             SessionKeys::EDIT_RECORD_SORT_BY,
-            submittedSortBy: $this->request->getPostParam('record_sort_by') ?? $this->request->getQueryParam('record_sort_by'),
-            submittedDirection: $this->request->getPostParam('sort_direction') ?? $this->request->getQueryParam('sort_direction')
+            submittedSortBy: $this->httpRequest->getPostParam('record_sort_by') ?? $this->httpRequest->getQueryParam('record_sort_by'),
+            submittedDirection: $this->httpRequest->getPostParam('sort_direction') ?? $this->httpRequest->getQueryParam('sort_direction')
         );
 
         $zone_id = $this->getSafeRequestValue('id');
@@ -185,28 +182,28 @@ class EditController extends BaseController
         $defaultTtl = $this->reverseTtlResolver->getForwardTtl();
 
         // Process form submissions
-        if ($this->isPost() && $this->request->getPostParam('commit') !== null) {
+        if ($this->isPost() && $this->httpRequest->getPostParam('commit') !== null) {
             $this->validateCsrfToken();
 
             // Check if this is a record addition (has name, content, type fields)
-            $name = $this->request->getPostParam('name');
-            $content = $this->request->getPostParam('content');
-            $type = $this->request->getPostParam('type');
+            $name = $this->httpRequest->getPostParam('name');
+            $content = $this->httpRequest->getPostParam('content');
+            $type = $this->httpRequest->getPostParam('type');
             if ($name !== null && $content !== null && $type !== null) {
                 // Store the original form data before processing (in case validation fails)
-                $prio = $this->request->getPostParam('prio');
-                $ttl = $this->request->getPostParam('ttl');
+                $prio = $this->httpRequest->getPostParam('prio');
+                $ttl = $this->httpRequest->getPostParam('ttl');
                 $_SESSION[SessionKeys::ADD_RECORD_LAST_DATA] = [
                     'name' => $name,
                     'content' => $content,
                     'type' => $type,
                     'prio' => $prio !== null && $prio !== '' ? (int)$prio : 0,
                     'ttl' => $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone),
-                    'comment' => $this->request->getPostParam('comment', '')
+                    'comment' => $this->httpRequest->getPostParam('comment', '')
                 ];
 
                 // Handle record addition directly in edit controller (no redirect)
-                if ($this->request->getPostParam('record') === null) { // Check if it's an add record operation (not a zone update)
+                if ($this->httpRequest->getPostParam('record') === null) { // Check if it's an add record operation (not a zone update)
                     $result = $this->addRecord($zone_id);
 
                     // If the record was added successfully, clear the stored data
@@ -221,13 +218,13 @@ class EditController extends BaseController
                     // This is a zone update operation, handle as before
                     $this->saveRecords($zone_id, $zone_name);
                 }
-            } elseif ($this->request->getPostParam('record') !== null || $this->request->getPostParam('zone_comment') !== null || $this->request->getPostParam('form_complete') !== null) {
+            } elseif ($this->httpRequest->getPostParam('record') !== null || $this->httpRequest->getPostParam('zone_comment') !== null || $this->httpRequest->getPostParam('form_complete') !== null) {
                 // Save operation: records, a zone comment, or an unchanged form. The
                 // form_complete marker is always present, so a save where the client
                 // omitted every unchanged record still bumps the SOA serial as before.
                 $this->saveRecords($zone_id, $zone_name);
             }
-        } elseif ($this->isPost() && $this->request->getPostParam('record') !== null && $this->request->getPostParam('commit') === null) {
+        } elseif ($this->isPost() && $this->httpRequest->getPostParam('record') !== null && $this->httpRequest->getPostParam('commit') === null) {
             // max_input_vars truncated the POST and dropped the bottom save button; run
             // the save anyway so incomplete rows are skipped and the operator is warned.
             $this->validateCsrfToken();
@@ -260,7 +257,7 @@ class EditController extends BaseController
             $this->handleZoneMetadataPost($zone_id);
         }
 
-        if ($this->request->getPostParam('sign_zone') !== null) {
+        if ($this->httpRequest->getPostParam('sign_zone') !== null) {
             $this->validateCsrfToken();
 
             if (!$can_manage_dnssec) {
@@ -273,7 +270,7 @@ class EditController extends BaseController
             $this->setMessage('edit', $type, $message);
         }
 
-        if ($this->request->getPostParam('unsign_zone') !== null) {
+        if ($this->httpRequest->getPostParam('unsign_zone') !== null) {
             $this->validateCsrfToken();
 
             if (!$can_manage_dnssec) {
@@ -444,9 +441,9 @@ class EditController extends BaseController
             'record_sort_by' => $record_sort_by,
             'sort_direction' => $sort_direction,
             'pagination' => $this->presentPagination($total_filtered_count, $iface_rowamount, '/zones/' . $zone_id . '/edit?start={PageNumber}', [
-                'search' => $this->request->getQueryParam('search'),
-                'record_type' => $this->request->getQueryParam('record_type'),
-                'content' => $this->request->getQueryParam('content'),
+                'search' => $this->httpRequest->getQueryParam('search'),
+                'record_type' => $this->httpRequest->getQueryParam('record_type'),
+                'content' => $this->httpRequest->getQueryParam('content'),
             ]),
             'pdnssec_use' => $isDnsSecEnabled,
             'is_secured' => $is_secured,
@@ -494,7 +491,7 @@ class EditController extends BaseController
     {
         $userId = $this->userContextService->getLoggedInUserId();
         $catalogService = $this->createCatalogZoneService();
-        $producerId = $this->request->getPostParam('new_catalog', '');
+        $producerId = $this->httpRequest->getPostParam('new_catalog', '');
 
         // The zone is in a catalog with no local producer; leave it as it is rather
         // than clearing something the operator cannot see the whole of.
@@ -519,8 +516,8 @@ class EditController extends BaseController
     private function handleZoneMetadataPost(int $zone_id): void
     {
         $domainManager = $this->domainManager ??= $this->createDomainManager();
-        $new_type = htmlspecialchars($this->request->getPostParam('newtype', ''));
-        if ($this->request->getPostParam('type_change') !== null && in_array($new_type, ZoneType::getTypes())) {
+        $new_type = htmlspecialchars($this->httpRequest->getPostParam('newtype', ''));
+        if ($this->httpRequest->getPostParam('type_change') !== null && in_array($new_type, ZoneType::getTypes())) {
             $this->validateCsrfToken();
             // Converting a zone is equivalent to creating one of the target type.
             if (!$this->permissionService->canCreateZone((int)$this->getCurrentUserId(), $new_type)) {
@@ -530,22 +527,22 @@ class EditController extends BaseController
             $this->reportZoneWrite('edit', $domainManager->changeZoneType($new_type, $zone_id), _('Zone type has been changed successfully.'));
         }
 
-        if ($this->request->getPostParam('slave_master_change') !== null) {
+        if ($this->httpRequest->getPostParam('slave_master_change') !== null) {
             $this->validateCsrfToken();
-            $this->reportZoneWrite('edit', $domainManager->changeZoneSlaveMaster($zone_id, $this->request->getPostParam('new_master', '')), _('Slave master has been changed successfully.'));
+            $this->reportZoneWrite('edit', $domainManager->changeZoneSlaveMaster($zone_id, $this->httpRequest->getPostParam('new_master', '')), _('Slave master has been changed successfully.'));
         }
 
-        if ($this->request->getPostParam('retrieve_zone') !== null) {
+        if ($this->httpRequest->getPostParam('retrieve_zone') !== null) {
             $this->validateCsrfToken();
             $this->handleRetrieveZone($zone_id, $domainManager);
         }
 
-        if ($this->request->getPostParam('catalog_change') !== null) {
+        if ($this->httpRequest->getPostParam('catalog_change') !== null) {
             $this->validateCsrfToken();
             $this->handleCatalogChange($zone_id);
         }
 
-        if ($this->request->getPostParam('template_change') !== null) {
+        if ($this->httpRequest->getPostParam('template_change') !== null) {
             $this->validateCsrfToken();
             $this->handleTemplateChange($zone_id);
         }
@@ -553,9 +550,9 @@ class EditController extends BaseController
 
     private function handleTemplateChange(int $zone_id): void
     {
-        $zone_template = (string)($this->request->getPostParam('zone_template') ?? 'none');
+        $zone_template = (string)($this->httpRequest->getPostParam('zone_template') ?? 'none');
         $new_zone_template = $zone_template === 'none' ? 0 : $zone_template;
-        if ($this->request->getPostParam('current_zone_template', 0) == $new_zone_template) {
+        if ($this->httpRequest->getPostParam('current_zone_template', 0) == $new_zone_template) {
             return;
         }
 
@@ -592,9 +589,9 @@ class EditController extends BaseController
 
     public function saveRecords(int $zone_id, string $zone_name): void
     {
-        $records = $this->request->getPostParam('record');
-        $serial = $this->request->getPostParam('serial');
-        $zoneComment = $this->request->getPostParam('zone_comment');
+        $records = $this->httpRequest->getPostParam('record');
+        $serial = $this->httpRequest->getPostParam('serial');
+        $zoneComment = $this->httpRequest->getPostParam('zone_comment');
 
         $result = $this->createZoneEditService()->save(new ZoneEditSubmission(
             $zone_id,
@@ -602,9 +599,9 @@ class EditController extends BaseController
             (int)$this->getCurrentUserId(),
             (string)$this->userContextService->getLoggedInUsername(),
             is_array($records) ? $records : null,
-            $this->request->getPostParam('form_complete') !== null,
+            $this->httpRequest->getPostParam('form_complete') !== null,
             $serial === null ? null : (string)$serial,
-            $this->request->getPostParam('changed_rows_only') === '1',
+            $this->httpRequest->getPostParam('changed_rows_only') === '1',
             $zoneComment === null ? null : (string)$zoneComment
         ));
 
@@ -643,12 +640,12 @@ class EditController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($this->request->getPostParams())) {
+        if (!$this->doValidateRequest($this->httpRequest->getPostParams())) {
             // Store validation error directly in session
             $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
                 'error' => true,
                 'errorMessage' => _('Please provide all required fields.'),
-                'fieldError' => !empty($this->request->getPostParam('content')) ? 'type' : 'content'
+                'fieldError' => !empty($this->httpRequest->getPostParam('content')) ? 'type' : 'content'
             ];
 
             // Don't call showFirstValidationError as it would redirect
@@ -656,12 +653,12 @@ class EditController extends BaseController
             return false;
         }
 
-        $name = (string)$this->request->getPostParam('name', '');
-        $content = (string)$this->request->getPostParam('content');
-        $type = (string)$this->request->getPostParam('type');
-        $prio = $this->request->getPostParam('prio');
+        $name = (string)$this->httpRequest->getPostParam('name', '');
+        $content = (string)$this->httpRequest->getPostParam('content');
+        $type = (string)$this->httpRequest->getPostParam('type');
+        $prio = $this->httpRequest->getPostParam('prio');
         $prio = $prio !== null && $prio !== '' ? (int)$prio : 0;
-        $comment = (string)$this->request->getPostParam('comment', '');
+        $comment = (string)$this->httpRequest->getPostParam('comment', '');
 
         $zone_name_for_record = $this->zoneRepository->getDomainNameById($zone_id);
         if ($zone_name_for_record === null) {
@@ -672,7 +669,7 @@ class EditController extends BaseController
             ];
             return false;
         }
-        $ttl = $this->request->getPostParam('ttl');
+        $ttl = $this->httpRequest->getPostParam('ttl');
         $added = $this->createRecordAddService()->add(
             $zone_id,
             $zone_name_for_record,
@@ -683,7 +680,7 @@ class EditController extends BaseController
             $prio,
             $comment,
             (string)$this->userContextService->getLoggedInUsername(),
-            RecordAddResult::companionFrom($this->request->getPostParams())
+            RecordAddResult::companionFrom($this->httpRequest->getPostParams())
         );
         if (!$added->isOk()) {
             // Store validation error directly in session
@@ -700,7 +697,7 @@ class EditController extends BaseController
         unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
 
         // Clear form data if it exists in the session
-        $formToken = $this->request->getPostParam('form_token');
+        $formToken = $this->httpRequest->getPostParam('form_token');
         if ($formToken !== null) {
             $this->formStateService->clearFormData($formToken);
         }

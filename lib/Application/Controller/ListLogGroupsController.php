@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
@@ -34,14 +33,12 @@ use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 class ListLogGroupsController extends BaseController
 {
     private DbGroupLogger $dbGroupLogger;
-    private Request $httpRequest;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->dbGroupLogger = new DbGroupLogger($this->db);
-        $this->httpRequest = new Request();
     }
 
     public function run(): void

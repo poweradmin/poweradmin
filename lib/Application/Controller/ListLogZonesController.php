@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -36,14 +35,12 @@ use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 class ListLogZonesController extends BaseController
 {
     private DbZoneLogger $dbZoneLogger;
-    private Request $httpRequest;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->dbZoneLogger = new DbZoneLogger($this->db, $this->createDnsBackendProvider());
-        $this->httpRequest = new Request();
     }
 
     public function run(): void

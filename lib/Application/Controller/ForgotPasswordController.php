@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
@@ -49,13 +48,10 @@ class ForgotPasswordController extends BaseController
     private CsrfTokenService $csrfTokenService;
     private IpAddressRetriever $ipRetriever;
     private UserAgentService $userAgentService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request, false); // No authentication required for forgot password
-
-        $this->request = new Request();
 
         // Create our own CSRF token service
         $this->csrfTokenService = new CsrfTokenService();
@@ -141,7 +137,7 @@ class ForgotPasswordController extends BaseController
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
-            $token = $this->request->getPostParam('password_reset_token', '');
+            $token = $this->httpRequest->getPostParam('password_reset_token', '');
 
             if (!$this->csrfTokenService->validateToken($token, SessionKeys::PASSWORD_RESET_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
@@ -159,7 +155,7 @@ class ForgotPasswordController extends BaseController
 
         // Verify reCAPTCHA if enabled
         if ($this->recaptchaService->isEnabled()) {
-            $recaptchaToken = $this->request->getPostParam('g-recaptcha-response', '');
+            $recaptchaToken = $this->httpRequest->getPostParam('g-recaptcha-response', '');
             if (!$this->recaptchaService->verify($recaptchaToken, $ipAddress, 'forgot_password')) {
                 $this->logger->warning('Password reset failed - reCAPTCHA verification failed', [
                     'ip' => $ipAddress,
@@ -171,7 +167,7 @@ class ForgotPasswordController extends BaseController
             }
         }
 
-        $email = trim($this->request->getPostParam('email', ''));
+        $email = trim($this->httpRequest->getPostParam('email', ''));
 
         // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

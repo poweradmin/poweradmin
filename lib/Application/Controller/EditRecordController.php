@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Service\PermissionService;
@@ -52,13 +51,10 @@ class EditRecordController extends BaseController
     private RecordTypeService $recordTypeService;
     private UserContextService $userContextService;
     private PermissionService $permissionService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
@@ -196,14 +192,14 @@ class EditRecordController extends BaseController
     {
         $recordRepository = $this->createRecordRepository();
         $domainRepository = $this->createDomainRepository();
-        $rid = $this->request->getPostParam('rid');
+        $rid = $this->httpRequest->getPostParam('rid');
         $old_record_info = $recordRepository->getRecordFromId($rid);
         if ($old_record_info === null) {
             $this->setMessage('edit', 'error', _('Record not found.'));
             return false;
         }
 
-        $postData = $this->request->getPostParams();
+        $postData = $this->httpRequest->getPostParams();
 
         // Convert IDN record name and content to punycode
         if (isset($postData['name'])) {
@@ -244,7 +240,7 @@ class EditRecordController extends BaseController
 
         $showRecordComments = $this->config->get('interface', 'show_record_comments', false);
         $result = $this->createRecordManager()->editRecord($postData, true, $showRecordComments ? [
-            'content' => (string)$this->request->getPostParam('comment', ''),
+            'content' => (string)$this->httpRequest->getPostParam('comment', ''),
             'account' => $this->userContextService->getLoggedInUsername() ?? '',
         ] : null);
         if (!$result->success) {
@@ -284,7 +280,7 @@ class EditRecordController extends BaseController
 
         if ($showRecordComments) {
             // Comments visible - use per-record comment (linked by record ID via record_comment_links table)
-            $commentValue = $this->request->getPostParam('comment', '');
+            $commentValue = $this->httpRequest->getPostParam('comment', '');
 
             $this->recordCommentService->updateCommentForRecord(
                 $zid,
@@ -337,7 +333,7 @@ class EditRecordController extends BaseController
      */
     private function syncReverseRecord(int $zid, array $oldRecord, array $postData): void
     {
-        if ($this->request->getPostParam('update_ptr') === null) {
+        if ($this->httpRequest->getPostParam('update_ptr') === null) {
             return;
         }
 

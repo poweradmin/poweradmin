@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -35,7 +34,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class AddGroupController extends BaseController
 {
     private GroupService $groupService;
-    private Request $request;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
 
     public function __construct(array $request)
@@ -44,7 +42,6 @@ class AddGroupController extends BaseController
 
         $groupRepository = $this->createUserGroupRepository();
         $this->groupService = new GroupService($groupRepository);
-        $this->request = new Request();
         $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
     }
 
@@ -83,9 +80,9 @@ class AddGroupController extends BaseController
             return;
         }
 
-        $name = $this->request->getPostParam('name');
-        $description = $this->request->getPostParam('description', '');
-        $permTemplId = (int)$this->request->getPostParam('perm_templ');
+        $name = $this->httpRequest->getPostParam('name');
+        $description = $this->httpRequest->getPostParam('description', '');
+        $permTemplId = (int)$this->httpRequest->getPostParam('perm_templ');
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
 
@@ -128,9 +125,9 @@ class AddGroupController extends BaseController
         $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('group') ?? '';
 
         $this->render('add_group.html', [
-            'name' => $this->request->getPostParam('name', ''),
-            'description' => $this->request->getPostParam('description', ''),
-            'perm_templ' => $this->request->getPostParam('perm_templ', (string)$defaultTemplateId),
+            'name' => $this->httpRequest->getPostParam('name', ''),
+            'description' => $this->httpRequest->getPostParam('description', ''),
+            'perm_templ' => $this->httpRequest->getPostParam('perm_templ', (string)$defaultTemplateId),
             'perm_templates' => $permTemplates,
         ]);
     }
@@ -149,7 +146,7 @@ class AddGroupController extends BaseController
         ];
 
         $this->setValidationConstraints($constraints);
-        $data = $this->request->getPostParams();
+        $data = $this->httpRequest->getPostParams();
 
         if (!$this->doValidateRequest($data)) {
             $this->setMessage('add_group', 'error', _('Please fill in all required fields correctly.'));

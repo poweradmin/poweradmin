@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Validator;
@@ -34,13 +33,11 @@ use Poweradmin\Domain\Service\SessionKeys;
  */
 class DeleteZoneTemplRecordController extends BaseController
 {
-    private Request $request;
     private ZoneTemplate $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
         $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
     }
 
@@ -58,7 +55,7 @@ class DeleteZoneTemplRecordController extends BaseController
         }
         $zone_templ_id = (int)$zone_templ_id_value;
 
-        $confirmed = $this->request->getPostParam('confirm') !== null;
+        $confirmed = $this->httpRequest->getPostParam('confirm') !== null;
 
         $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
         $perm_godlike = $this->hasPermission('user_is_ueberuser');

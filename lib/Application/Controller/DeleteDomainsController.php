@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -37,19 +36,16 @@ class DeleteDomainsController extends BaseController
 {
 
     private UserContextService $userContextService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
         $this->userContextService = new UserContextService();
     }
 
     public function run(): void
     {
-        $zone_ids = $this->request->getPostParam('zone_id');
+        $zone_ids = $this->httpRequest->getPostParam('zone_id');
         if (!$zone_ids) {
             $referrer = $_SERVER['HTTP_REFERER'] ?? null;
             $return_page = 'list_forward_zones';
@@ -68,7 +64,7 @@ class DeleteDomainsController extends BaseController
         // (direct or group ownership); matches the single-zone delete controller.
         $this->verifyDeletePermission($zone_ids);
 
-        if ($this->request->getPostParam('confirm') !== null) {
+        if ($this->httpRequest->getPostParam('confirm') !== null) {
             $this->validateCsrfToken();
             $this->deleteDomains($zone_ids);
         }

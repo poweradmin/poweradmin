@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
@@ -43,13 +42,10 @@ class BulkRegistrationController extends BaseController
     private const AVAILABLE_ZONE_TYPES = [ZoneType::MASTER, ZoneType::NATIVE];
 
     private UserContextService $userContextService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
         $this->userContextService = new UserContextService();
     }
 
@@ -92,14 +88,14 @@ class BulkRegistrationController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        $postParams = $this->request->getPostParams();
+        $postParams = $this->httpRequest->getPostParams();
         if (!$this->doValidateRequest($postParams)) {
             $this->showFirstValidationError($postParams);
         }
 
-        $domains = DomainHelper::getDomains($this->request->getPostParam('domains'));
-        $dom_type = $this->request->getPostParam('dom_type');
-        $zone_template = $this->request->getPostParam('zone_template');
+        $domains = DomainHelper::getDomains($this->httpRequest->getPostParam('domains'));
+        $dom_type = $this->httpRequest->getPostParam('dom_type');
+        $zone_template = $this->httpRequest->getPostParam('zone_template');
 
         // The dropdown only populates the form; the submit path must whitelist too.
         if (!in_array($dom_type, self::AVAILABLE_ZONE_TYPES, true)) {
@@ -115,7 +111,7 @@ class BulkRegistrationController extends BaseController
             return;
         }
 
-        $ownership = $this->resolveZoneOwnershipFromForm($this->request);
+        $ownership = $this->resolveZoneOwnershipFromForm($this->httpRequest);
         if ($ownership->hasError()) {
             $this->setMessage('bulk_registration', 'error', ZoneOwnershipFormResolver::errorMessage($ownership));
             $this->showBulkRegistrationForm();
@@ -163,7 +159,7 @@ class BulkRegistrationController extends BaseController
         // when re-rendering after a partial failure. Only honour foreign user
         // IDs when the caller is allowed to see other users; otherwise fall back
         // to the caller's own ID so the dropdown can't leak hidden accounts.
-        $postParams = $this->request->getPostParams();
+        $postParams = $this->httpRequest->getPostParams();
         if (array_key_exists('owner', $postParams)) {
             if ($postParams['owner'] === '') {
                 $owner_value = '';

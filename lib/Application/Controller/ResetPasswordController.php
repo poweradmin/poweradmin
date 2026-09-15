@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\BaseController;
 use Poweradmin\Application\Service\PasswordResetService;
@@ -50,13 +49,10 @@ class ResetPasswordController extends BaseController
     private IpAddressRetriever $ipRetriever;
     private UserAgentService $userAgentService;
     private ?string $token = null;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request, false); // No authentication required for password reset
-
-        $this->request = new Request();
 
         // Create our own CSRF token service
         $this->csrfTokenService = new CsrfTokenService();
@@ -90,7 +86,7 @@ class ResetPasswordController extends BaseController
         $this->userContextService = new UserContextService();
 
         // Extract token from URL parameters
-        $this->token = $this->request->getQueryParam('token');
+        $this->token = $this->httpRequest->getQueryParam('token');
     }
 
     /**
@@ -185,7 +181,7 @@ class ResetPasswordController extends BaseController
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
-            $token = $this->request->getPostParam('reset_password_token', '');
+            $token = $this->httpRequest->getPostParam('reset_password_token', '');
 
             if (!$this->csrfTokenService->validateToken($token, SessionKeys::RESET_PASSWORD_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
@@ -202,8 +198,8 @@ class ResetPasswordController extends BaseController
             unset($_SESSION[SessionKeys::RESET_PASSWORD_TOKEN]);
         }
 
-        $password = $this->request->getPostParam('password', '');
-        $confirmPassword = $this->request->getPostParam('confirm_password', '');
+        $password = $this->httpRequest->getPostParam('password', '');
+        $confirmPassword = $this->httpRequest->getPostParam('confirm_password', '');
 
         // Check if passwords match
         if ($password !== $confirmPassword) {

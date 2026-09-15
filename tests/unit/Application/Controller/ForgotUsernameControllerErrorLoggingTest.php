@@ -99,7 +99,7 @@ class ForgotUsernameControllerErrorLoggingTest extends TestCase
         $recaptchaService->method('isEnabled')->willReturn(false);
 
         $this->setPrivate($controller, 'usernameRecoveryService', $usernameRecoveryService);
-        $this->setPrivate($controller, 'request', $request);
+        $this->setPrivate($controller, 'httpRequest', $request);
         $this->setPrivate($controller, 'ipRetriever', $ipRetriever);
         $this->setPrivate($controller, 'userAgentService', $userAgentService);
         $this->setPrivate($controller, 'recaptchaService', $recaptchaService);

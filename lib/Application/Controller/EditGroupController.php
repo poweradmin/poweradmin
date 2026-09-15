@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
@@ -39,7 +38,6 @@ class EditGroupController extends BaseController
     private GroupService $groupService;
     private GroupMembershipService $membershipService;
     private ZoneGroupService $zoneGroupService;
-    private Request $request;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
 
     public function __construct(array $request)
@@ -53,7 +51,6 @@ class EditGroupController extends BaseController
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
-        $this->request = new Request();
         $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
     }
 
@@ -99,9 +96,9 @@ class EditGroupController extends BaseController
             return;
         }
 
-        $name = $this->request->getPostParam('name');
-        $description = $this->request->getPostParam('description', '');
-        $permTemplId = (int)$this->request->getPostParam('perm_templ');
+        $name = $this->httpRequest->getPostParam('name');
+        $description = $this->httpRequest->getPostParam('description', '');
+        $permTemplId = (int)$this->httpRequest->getPostParam('perm_templ');
 
         // Validate that the template is a group template
         if (!$this->permissionTemplateRepository->validateTemplateType($permTemplId, 'group')) {
@@ -217,9 +214,9 @@ class EditGroupController extends BaseController
                 'members' => $memberUsernames,
                 'zones' => $zoneDetails,
                 'perm_templates' => $permTemplates,
-                'name' => $this->request->getPostParam('name', $group->getName()),
-                'description' => $this->request->getPostParam('description', $group->getDescription() ?? ''),
-                'perm_templ' => $this->request->getPostParam('perm_templ', (string)$group->getPermTemplId()),
+                'name' => $this->httpRequest->getPostParam('name', $group->getName()),
+                'description' => $this->httpRequest->getPostParam('description', $group->getDescription() ?? ''),
+                'perm_templ' => $this->httpRequest->getPostParam('perm_templ', (string)$group->getPermTemplId()),
             ]);
         } catch (InvalidArgumentException $e) {
             $this->setMessage('list_groups', 'error', $e->getMessage());
@@ -241,7 +238,7 @@ class EditGroupController extends BaseController
         ];
 
         $this->setValidationConstraints($constraints);
-        $data = $this->request->getPostParams();
+        $data = $this->httpRequest->getPostParams();
 
         if (!$this->doValidateRequest($data)) {
             $this->setMessage('edit_group', 'error', _('Please fill in all required fields correctly.'));

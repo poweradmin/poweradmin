@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
@@ -42,13 +41,10 @@ class ListReverseZonesController extends BaseController
     private ForwardZoneAssociationService $forwardZoneAssociationService;
     private UserContextService $userContextService;
     private ZoneSortingService $zoneSortingService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
         // Initialize repository and services
         $zoneRepository = $this->createZoneRepository();
         $this->dnsDataService = $this->createDnsDataService();
@@ -94,7 +90,7 @@ class ListReverseZonesController extends BaseController
         $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
 
         $row_start = 0;
-        $start_param = $this->request->getQueryParam('start');
+        $start_param = $this->httpRequest->getQueryParam('start');
         if ($start_param !== null) {
             $start = (int)htmlspecialchars($start_param);
             $row_start = max(0, ($start - 1) * $iface_rowamount);
@@ -145,8 +141,8 @@ class ListReverseZonesController extends BaseController
 
         list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
             $allowedSort,
-            submittedSortBy: $this->request->getPostParam('zone_sort_by') ?? $this->request->getQueryParam('zone_sort_by'),
-            submittedDirection: $this->request->getPostParam('zone_sort_by_direction') ?? $this->request->getQueryParam('zone_sort_by_direction')
+            submittedSortBy: $this->httpRequest->getPostParam('zone_sort_by') ?? $this->httpRequest->getQueryParam('zone_sort_by'),
+            submittedDirection: $this->httpRequest->getPostParam('zone_sort_by_direction') ?? $this->httpRequest->getQueryParam('zone_sort_by_direction')
         );
 
         if ($perm_view == 'none') {
@@ -154,7 +150,7 @@ class ListReverseZonesController extends BaseController
         }
 
         // Get the reverse zone filter type from the request
-        $reverse_zone_type = $this->zoneSortingService->getReverseZoneTypeFilter($this->request->getQueryParam('reverse_type'));
+        $reverse_zone_type = $this->zoneSortingService->getReverseZoneTypeFilter($this->httpRequest->getQueryParam('reverse_type'));
         $loggedInUserId = $this->userContextService->getLoggedInUserId();
 
         // Get all counts in a single call
@@ -248,8 +244,8 @@ class ListReverseZonesController extends BaseController
             'is_api_backend' => $isApiBackend,
             'pdnssec_use' => $pdnssec_use,
             'pagination' => $this->presentPagination($pagination_count, $iface_rowamount, '/zones/reverse?start={PageNumber}', [
-                'reverse_type' => $this->request->getQueryParam('reverse_type'),
-                'rows_per_page' => $this->request->getQueryParam('rows_per_page'),
+                'reverse_type' => $this->httpRequest->getQueryParam('reverse_type'),
+                'rows_per_page' => $this->httpRequest->getQueryParam('rows_per_page'),
             ]),
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),
             'perm_edit' => $perm_edit,

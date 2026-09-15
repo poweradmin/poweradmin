@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Application\Service\RecordAddService;
@@ -51,13 +50,10 @@ class AddRecordController extends BaseController
     private FormStateService $formStateService;
     private UserContextService $userContextService;
     private ReverseTtlResolver $reverseTtlResolver;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
         $this->formStateService = new FormStateService();
         $this->domainRepository = $this->createDomainRepository();
         $this->recordAdd = $this->createRecordAddService();
@@ -82,7 +78,7 @@ class AddRecordController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            if ($this->request->getPostParam('multi_record_mode') !== null && is_array($this->request->getPostParam('records'))) {
+            if ($this->httpRequest->getPostParam('multi_record_mode') !== null && is_array($this->httpRequest->getPostParam('records'))) {
                 $this->addMultipleRecords();
             } else {
                 $this->addRecord();
@@ -107,17 +103,17 @@ class AddRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        $postParams = $this->request->getPostParams();
+        $postParams = $this->httpRequest->getPostParams();
         if (!$this->doValidateRequest($postParams)) {
             $this->showFirstValidationError($postParams);
         }
 
-        $name = (string)$this->request->getPostParam('name', '');
-        $content = (string)$this->request->getPostParam('content');
-        $type = (string)$this->request->getPostParam('type');
-        $prio = $this->request->getPostParam('prio');
+        $name = (string)$this->httpRequest->getPostParam('name', '');
+        $content = (string)$this->httpRequest->getPostParam('content');
+        $type = (string)$this->httpRequest->getPostParam('type');
+        $prio = $this->httpRequest->getPostParam('prio');
         $prio = $prio !== null && $prio !== '' ? (int)$prio : 0;
-        $comment = (string)$this->request->getPostParam('comment', '');
+        $comment = (string)$this->httpRequest->getPostParam('comment', '');
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
 
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
@@ -125,7 +121,7 @@ class AddRecordController extends BaseController
             $this->showError(_('Zone not found.'));
             return;
         }
-        $ttl = $this->request->getPostParam('ttl');
+        $ttl = $this->httpRequest->getPostParam('ttl');
 
         $added = $this->recordAdd->add(
             $zone_id,
@@ -137,7 +133,7 @@ class AddRecordController extends BaseController
             $prio,
             $comment,
             (string)$this->userContextService->getLoggedInUsername(),
-            RecordAddResult::companionFrom($this->request->getPostParams())
+            RecordAddResult::companionFrom($this->httpRequest->getPostParams())
         );
         if (!$added->isOk()) {
             // Keep the submitted values and point at the field the reason names
@@ -159,7 +155,7 @@ class AddRecordController extends BaseController
         }
 
         // Clear form data if it exists in the session
-        $formToken = $this->request->getPostParam('form_token');
+        $formToken = $this->httpRequest->getPostParam('form_token');
         if ($formToken !== null) {
             $this->formStateService->clearFormData($formToken);
         }
@@ -187,7 +183,7 @@ class AddRecordController extends BaseController
 
         // Retrieve form state data from session (e.g. after validation error redirect)
         $formData = null;
-        $formId = $this->request->getQueryParam('form_id');
+        $formId = $this->httpRequest->getQueryParam('form_id');
         if ($formId) {
             $formData = $this->formStateService->getFormData($formId);
         }
@@ -213,14 +209,14 @@ class AddRecordController extends BaseController
         $this->render('add_record.html', [
             'types' => $offeredTypes,
             'deprecated_types' => RecordType::DEPRECATED_TYPES,
-            'name' => $formData['name'] ?? $this->request->getPostParam('name', ''),
-            'type' => $formData['type'] ?? $this->request->getPostParam('type', ''),
-            'content' => $formData['content'] ?? $this->request->getPostParam('content', ''),
-            'ttl' => $formData['ttl'] ?? $this->request->getPostParam('ttl', $ttl),
+            'name' => $formData['name'] ?? $this->httpRequest->getPostParam('name', ''),
+            'type' => $formData['type'] ?? $this->httpRequest->getPostParam('type', ''),
+            'content' => $formData['content'] ?? $this->httpRequest->getPostParam('content', ''),
+            'ttl' => $formData['ttl'] ?? $this->httpRequest->getPostParam('ttl', $ttl),
             'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),
             'ptr_default_ttl' => $this->reverseTtlResolver->getConfiguredReverseTtl(),
             'type_default_ttls' => $this->reverseTtlResolver->getTypeDefaults(),
-            'prio' => $formData['prio'] ?? $this->request->getPostParam('prio', 0),
+            'prio' => $formData['prio'] ?? $this->httpRequest->getPostParam('prio', 0),
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
@@ -247,15 +243,15 @@ class AddRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($this->request->getQueryParams())) {
-            $this->showFirstValidationError($this->request->getQueryParams());
+        if (!$this->doValidateRequest($this->httpRequest->getQueryParams())) {
+            $this->showFirstValidationError($this->httpRequest->getQueryParams());
         }
     }
 
     private function addMultipleRecords(): void
     {
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
-        $records = $this->request->getPostParam('records', []);
+        $records = $this->httpRequest->getPostParam('records', []);
         $successCount = 0;
         $failureReasons = [];
         $matchingRecordCount = 0;
@@ -312,7 +308,7 @@ class AddRecordController extends BaseController
         }
 
         // Clear form data if it exists in the session
-        $formToken = $this->request->getPostParam('form_token');
+        $formToken = $this->httpRequest->getPostParam('form_token');
         if ($formToken !== null) {
             $this->formStateService->clearFormData($formToken);
         }

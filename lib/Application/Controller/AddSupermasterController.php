@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
@@ -32,21 +31,19 @@ use Poweradmin\Infrastructure\Service\DnsServiceFactory;
  */
 class AddSupermasterController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
     {
         $this->checkPermission('supermaster_add', _("You do not have the permission to add a new supermaster."));
 
-        $master_ip = $this->request->getPostParam('master_ip', "");
-        $ns_name = $this->request->getPostParam('ns_name', "");
-        $account = $this->request->getPostParam('account', "");
+        $master_ip = $this->httpRequest->getPostParam('master_ip', "");
+        $ns_name = $this->httpRequest->getPostParam('ns_name', "");
+        $account = $this->httpRequest->getPostParam('account', "");
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

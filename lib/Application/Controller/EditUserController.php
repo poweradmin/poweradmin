@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserFormMessages;
@@ -39,7 +38,6 @@ use Poweradmin\Domain\Enum\AuthMethod;
  */
 class EditUserController extends BaseController
 {
-    protected Request $request;
     private PasswordPolicyService $policyService;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
     private readonly UserContextService $userContextService;
@@ -49,8 +47,6 @@ class EditUserController extends BaseController
         array $request
     ) {
         parent::__construct($request);
-
-        $this->request = new Request();
         $this->policyService = new PasswordPolicyService();
         $this->userContextService = new UserContextService();
         $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
@@ -77,7 +73,7 @@ class EditUserController extends BaseController
             $this->validateCsrfToken();
 
             // Check if this is a group addition request
-            $action = $this->request->getPostParam('action');
+            $action = $this->httpRequest->getPostParam('action');
             if ($action === 'add_groups') {
                 $this->handleAddToGroups($editId);
             } else {
@@ -163,7 +159,7 @@ class EditUserController extends BaseController
         }
 
         $this->setValidationConstraints($constraints);
-        $data = $this->request->getPostParams();
+        $data = $this->httpRequest->getPostParams();
 
         if (!$this->doValidateRequest($data)) {
             $this->setMessage('edit_user', 'error', _('Please fill in all required fields correctly.'));
@@ -226,7 +222,7 @@ class EditUserController extends BaseController
     private function useLdapAfterEdit(int $editId, array $stored): bool
     {
         if ($this->ldapControlEditable($editId)) {
-            return $this->request->getPostParam('use_ldap') === '1';
+            return $this->httpRequest->getPostParam('use_ldap') === '1';
         }
 
         // With LDAP switched off the row is loaded without use_ldap; auth_type still says
@@ -251,20 +247,20 @@ class EditUserController extends BaseController
         // (overwritten on the next sync), so ignore any submitted changes to them.
         $identity = self::resolveIdentityFields(
             $stored,
-            htmlspecialchars($this->request->getPostParam('fullname')),
-            htmlspecialchars($this->request->getPostParam('email')),
+            htmlspecialchars($this->httpRequest->getPostParam('fullname')),
+            htmlspecialchars($this->httpRequest->getPostParam('email')),
             $useLdap && $this->isLdapSyncEnabled()
         );
 
         $input = [
             'fullname' => $identity['fullname'],
             'email' => $identity['email'],
-            'description' => htmlspecialchars($this->request->getPostParam('description')),
+            'description' => htmlspecialchars($this->httpRequest->getPostParam('description')),
         ];
 
         // Username and the LDAP flag are auth-critical, not self-service (#1327)
         if (!$restrictedSelfEdit) {
-            $input['username'] = htmlspecialchars($this->request->getPostParam('username'));
+            $input['username'] = htmlspecialchars($this->httpRequest->getPostParam('username'));
         }
         if ($this->ldapControlEditable($editId)) {
             $input['use_ldap'] = $useLdap;
@@ -272,20 +268,20 @@ class EditUserController extends BaseController
 
         // Nobody deactivates themselves from their own profile
         if (!$isOwnProfile) {
-            $input['active'] = $this->request->getPostParam('active') === '1' ? 1 : 0;
+            $input['active'] = $this->httpRequest->getPostParam('active') === '1' ? 1 : 0;
         }
 
         // Changing another user's password needs user_passwd_edit_others; without it
         // the posted password is ignored and the other fields still save. An LDAP
         // account has no local password to set.
-        $password = (string)$this->request->getPostParam('password', '');
+        $password = (string)$this->httpRequest->getPostParam('password', '');
         if ($password !== '' && !$useLdap && $this->createApiPermissionService()->canEditUserPassword($callerId, $editId)) {
             $input['password'] = $password;
         }
 
         // The template is written only by callers who may pick one, and never on a
         // limited self-edit or while the picker is hidden.
-        $permTempl = $this->request->getPostParam('perm_templ');
+        $permTempl = $this->httpRequest->getPostParam('perm_templ');
         $mayPickTemplate = $this->hasPermission('user_edit_templ_perm')
             && $this->config->get('permissions', 'show_user_access_templates', true)
             && !($isOwnProfile && !$canEditOthers);
@@ -439,7 +435,7 @@ class EditUserController extends BaseController
             return;
         }
 
-        $groupIds = $this->request->getPostParam('add_to_groups', []);
+        $groupIds = $this->httpRequest->getPostParam('add_to_groups', []);
 
         if (!is_array($groupIds) || empty($groupIds)) {
             $this->setMessage('edit_user', 'warning', _('Please select at least one group.'));

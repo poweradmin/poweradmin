@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
 
@@ -34,12 +33,10 @@ use Poweradmin\BaseController;
  */
 class ListViewsController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -61,7 +58,7 @@ class ListViewsController extends BaseController
             return;
         }
 
-        if (!empty($this->request->getPostParams())) {
+        if (!empty($this->httpRequest->getPostParams())) {
             $this->validateCsrfToken();
             $action = $this->getSafeRequestValue('action');
             $view = trim($this->getSafeRequestValue('view'));
