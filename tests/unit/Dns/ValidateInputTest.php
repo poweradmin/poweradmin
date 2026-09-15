@@ -3,7 +3,6 @@
 namespace Poweradmin\Tests\Unit\Dns;
 
 use TestHelpers\BaseDnsTest;
-use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;

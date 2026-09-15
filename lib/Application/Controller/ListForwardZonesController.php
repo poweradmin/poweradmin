@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -133,7 +134,7 @@ class ListForwardZonesController extends BaseController
         $perm_view = $permissionService->getViewPermissionLevel((int)$userId);
         $perm_edit = $permissionService->getEditPermissionLevel((int)$userId);
         $perm_delete = $permissionService->getDeletePermissionLevel((int)$userId);
-        $can_bulk_delete_zones = $perm_delete === 'all' || $perm_delete === 'own';
+        $can_bulk_delete_zones = AccessScope::fromString($perm_delete)->grantsAnything();
         $dnsDataService = $this->createDnsDataService();
 
         $count_zones_view = $dnsDataService->countZones($perm_view);

@@ -117,9 +117,7 @@ class BulkRecordAddController extends BaseController
 
         // One submission, one changeset: every record added below is grouped under a
         // single entry in the change log carrying the reason the user gave.
-        RecordChangeLogger::beginChangeset($zone_id, $change_comment);
-
-        try {
+        RecordChangeLogger::withChangeset($zone_id, $change_comment, function () use ($lines, $zone_id, $parser, $reverseTtlResolver, &$success_count, &$failed_records): void {
             foreach ($lines as $line) {
                 $line = trim($line);
                 if (empty($line)) {
@@ -199,9 +197,7 @@ class BulkRecordAddController extends BaseController
                     $failed_records[] = $line . " - " . $e->getMessage();
                 }
             }
-        } finally {
-            RecordChangeLogger::endChangeset();
-        }
+        });
 
         if (!$failed_records) {
             $this->setMessage('edit', 'success', sprintf(_('%d record(s) have been added successfully.'), $success_count));

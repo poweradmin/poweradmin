@@ -1943,7 +1943,6 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Module\\ZoneImportExport\\Service\\ParsedRecord' => __DIR__ . '/../..' . '/lib/Module/ZoneImportExport/Service/ParsedRecord.php',
         'Poweradmin\\Module\\ZoneImportExport\\Service\\ParsedZoneFile' => __DIR__ . '/../..' . '/lib/Module/ZoneImportExport/Service/ParsedZoneFile.php',
         'Poweradmin\\Module\\ZoneImportExport\\ZoneImportExportModule' => __DIR__ . '/../..' . '/lib/Module/ZoneImportExport/ZoneImportExportModule.php',
-        'Poweradmin\\Pages' => __DIR__ . '/../..' . '/lib/Pages.php',
         'Poweradmin\\Version' => __DIR__ . '/../..' . '/lib/Version.php',
         'PragmaRX\\Google2FA\\Exceptions\\Contracts\\Google2FA' => __DIR__ . '/..' . '/pragmarx/google2fa/src/Exceptions/Contracts/Google2FA.php',
         'PragmaRX\\Google2FA\\Exceptions\\Contracts\\IncompatibleWithGoogleAuthenticator' => __DIR__ . '/..' . '/pragmarx/google2fa/src/Exceptions/Contracts/IncompatibleWithGoogleAuthenticator.php',

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,11 +38,6 @@ abstract class AbstractApiController extends BaseController
     protected Request $request;
 
     /**
-     * @var Request|null Temporary request for initialization
-     */
-    private static ?Request $tempRequest = null;
-
-    /**
      * AbstractApiController constructor
      *
      * @param array $requestParams The request parameters
@@ -50,9 +45,7 @@ abstract class AbstractApiController extends BaseController
      */
     public function __construct(array $requestParams, bool $authenticate = true)
     {
-        // Create Request object before anything else for route determination
-        // Store it in a static property for use before $this->request is initialized
-        self::$tempRequest = Request::createFromGlobals();
+        $request = Request::createFromGlobals();
 
         // Initialize config early
         $config = ConfigurationManager::getInstance();
@@ -73,8 +66,7 @@ abstract class AbstractApiController extends BaseController
         // Call parent constructor with authenticate param for session handling if needed
         parent::__construct($requestParams, $authenticate);
 
-        // Assign the already created Symfony Request object to the instance property
-        $this->request = self::$tempRequest;
+        $this->request = $request;
     }
 
     /**

@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -312,8 +313,8 @@ class SearchController extends BaseController
         $recordTypeService = new RecordTypeService($this->getConfig());
         $recordTypes = $recordTypeService->getAllTypes($this->getRecordTypeCapabilities());
 
-        $can_bulk_delete_zones = $deletePermission === 'all' || $deletePermission === 'own';
-        $can_bulk_delete_records = $editPermission === 'all' || $editPermission === 'own' || $editPermission === 'own_as_client';
+        $can_bulk_delete_zones = AccessScope::fromString($deletePermission)->grantsAnything();
+        $can_bulk_delete_records = AccessScope::fromString($editPermission)->grantsAnything();
 
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,

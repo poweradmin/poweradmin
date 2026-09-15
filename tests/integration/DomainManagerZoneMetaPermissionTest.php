@@ -28,8 +28,8 @@ use TestHelpers\SqliteIntegrationTestCase;
  * not assume the caller checked: a future API or CLI caller that bypasses
  * the controller would silently rewrite zone metadata otherwise.
  *
- * Each test runs in a fresh process because UserManager::verifyPermission
- * caches the first lookup in a static and reuses it across calls.
+ * Each test runs in a fresh process because Permission::$permissionService
+ * memoizes the first PermissionService in a static and reuses it across calls.
  */
 class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
 {
@@ -194,7 +194,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     private function seedAlternatePermSets(): void
     {
         // Reserve perm_items ids that don't collide with the base class's
-        // 47/53. Real prod ids differ; only the names matter to verifyPermission.
+        // 47/53. Real prod ids differ; only the names matter to hasPermission.
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES
             (200, 'zone_meta_edit_own'),
             (201, 'zone_meta_edit_others'),

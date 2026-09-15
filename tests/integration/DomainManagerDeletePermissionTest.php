@@ -27,8 +27,8 @@ use TestHelpers\SqliteIntegrationTestCase;
  * checked zone_content_edit_*, which let an edit-only user delete zones
  * (too permissive) while blocking a delete-only user (too strict).
  *
- * Each test runs in a fresh process because UserManager::verifyPermission
- * caches the first lookup in a static and reuses it across calls.
+ * Each test runs in a fresh process because Permission::$permissionService
+ * memoizes the first PermissionService in a static and reuses it across calls.
  */
 class DomainManagerDeletePermissionTest extends SqliteIntegrationTestCase
 {
