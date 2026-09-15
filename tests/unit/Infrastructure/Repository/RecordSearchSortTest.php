@@ -20,12 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace unit\Application\Query;
+namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Query\RecordSearch;
+use Poweradmin\Infrastructure\Repository\RecordSearch;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**

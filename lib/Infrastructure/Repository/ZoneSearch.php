@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Query;
+namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
@@ -132,7 +132,7 @@ class ZoneSearch extends BaseSearch
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         $db_type = $this->config->get('database', 'type');
-        $sort_zones_by = $sort_zones_by === 'name' ? SortHelper::getZoneSortOrder($domains_table, $db_type, $zone_sort_direction) : "$sort_zones_by $zone_sort_direction";
+        $sort_zones_by = $sort_zones_by === 'name' ? SortHelper::getNaturalSortOrder($domains_table, $db_type, $zone_sort_direction) : "$sort_zones_by $zone_sort_direction";
 
         $comment_field = $iface_zone_comments ? ', z.comment' : '';
 

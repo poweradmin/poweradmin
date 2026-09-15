@@ -12,14 +12,14 @@
  *  (at your option) any later version.
  */
 
-namespace unit\Application\Query;
+namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Query\RecordSearch;
-use Poweradmin\Application\Query\ZoneSearch;
+use Poweradmin\Infrastructure\Repository\RecordSearch;
+use Poweradmin\Infrastructure\Repository\ZoneSearch;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 

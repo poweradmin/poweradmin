@@ -20,18 +20,18 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Query;
+namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Query\BaseSearch;
+use Poweradmin\Infrastructure\Repository\BaseSearch;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Tests\Unit\Application\Query\TestableBaseSearch;
+use Poweradmin\Tests\Unit\Infrastructure\Repository\TestableBaseSearch;
 
 /**
  * Test Search Pattern Handling and Wildcard Functionality
  *
- * @package Poweradmin\Tests\Unit\Application\Query
+ * @package Poweradmin\Tests\Unit\Infrastructure\Repository
  */
 #[CoversClass(BaseSearch::class)]
 class BaseSearchPatternTest extends TestCase

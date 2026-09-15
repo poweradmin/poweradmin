@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Query;
+namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -116,7 +116,7 @@ class RecordSearch extends BaseSearch
         // Grouped results expose ttl/prio as aggregates, so sort by the result column
         // name there; qualify it otherwise to keep the column unambiguous (#1224).
         $sortColumn = $iface_search_group_records ? $sort_records_by : "$records_table.$sort_records_by";
-        $sort_records_by = $sort_records_by === 'name' ? SortHelper::getRecordSortOrder($records_table, $db_type, $record_sort_direction) : "$sortColumn $record_sort_direction";
+        $sort_records_by = $sort_records_by === 'name' ? SortHelper::getNaturalSortOrder($records_table, $db_type, $record_sort_direction) : "$sortColumn $record_sort_direction";
 
         // Prepare query parameters
         $params = [];

@@ -23,8 +23,8 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
-use Poweradmin\Application\Query\RecordSearch;
-use Poweradmin\Application\Query\ZoneSearch;
+use Poweradmin\Infrastructure\Repository\RecordSearch;
+use Poweradmin\Infrastructure\Repository\ZoneSearch;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
