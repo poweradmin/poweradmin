@@ -78,6 +78,7 @@
     "spaze/phpstan-disallowed-calls": "^4.13"
   },
   "scripts": {
+    "docs:api": "openapi lib/Application/Controller/Api/V2/ --format json",
     "tests": "phpunit --testsuite unit",
     "tests:integration": "phpunit --testsuite integration",
     "tests:functional": "phpunit --testsuite functional",
