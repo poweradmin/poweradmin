@@ -32,7 +32,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\DnsFormatter;
@@ -396,7 +396,7 @@ abstract class PublicApiController extends AbstractApiController
                 $clientIp !== '' ? $clientIp : '-'
             );
 
-            (new LegacyLogger($this->db))->logApiInfo($event);
+            (new AuditLogWriter($this->db))->logApiInfo($event);
             $this->pruneApiLog($config);
         } catch (\Throwable $e) {
             // Audit logging must never break the API response.

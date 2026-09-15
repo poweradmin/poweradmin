@@ -31,7 +31,6 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PDO;
 use Poweradmin\Infrastructure\Logger\SyslogLogger;
-use Psr\Log\NullLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Service\NullDnssecProvider;
 use Poweradmin\Domain\Service\UserContextService;
@@ -112,12 +111,7 @@ class DnssecProviderFactory
         }
 
         // DNSSEC operations are audited to syslog only; without it they are not recorded.
-        $logger = $config->get('logging', 'syslog_enabled')
-            ? new SyslogLogger(
-                $config->get('logging', 'syslog_identity') ?: 'poweradmin',
-                (int)($config->get('logging', 'syslog_facility') ?: LOG_USER)
-            )
-            : new NullLogger();
+        $logger = SyslogLogger::fromConfig($config);
 
         $transformer = new DnssecDataTransformer();
         $userContextService = new UserContextService();

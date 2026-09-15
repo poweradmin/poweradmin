@@ -121,18 +121,6 @@ parameters:
 			path: lib/Application/Controller/UsersController.php
 
 		-
-			message: '#^Using \$_GET is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
-			identifier: disallowed.variable
-			count: 2
-			path: lib/Application/Presenter/PaginationPresenter.php
-
-		-
-			message: '#^Using \$_GET is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
-			identifier: disallowed.variable
-			count: 2
-			path: lib/Application/Presenter/ZoneStartingLettersPresenter.php
-
-		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 3
@@ -155,12 +143,6 @@ parameters:
 			identifier: disallowed.method
 			count: 1
 			path: lib/Application/Service/LoginAttemptService.php
-
-		-
-			message: '#^Using \$_GET is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
-			identifier: disallowed.variable
-			count: 2
-			path: lib/Application/Service/PaginationService.php
 
 		-
 			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
@@ -191,12 +173,6 @@ parameters:
 			identifier: disallowed.variable
 			count: 7
 			path: lib/Application/Service/SqlAuthenticator.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 1
-			path: lib/Application/Service/UserEventLogger.php
 
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'

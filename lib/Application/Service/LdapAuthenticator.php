@@ -23,6 +23,8 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
@@ -32,7 +34,6 @@ use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
-use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Psr\Log\LoggerInterface;
@@ -47,7 +48,7 @@ class LdapAuthenticator extends LoggingService
 {
     private PDO $db;
     private ConfigurationManager $configManager;
-    private LdapUserEventLogger $ldapUserEventLogger;
+    private AuditService $auditService;
     private AuthenticationService $authenticationService;
     private CsrfTokenService $csrfTokenService;
     private LoginAttemptService $loginAttemptService;
@@ -61,7 +62,7 @@ class LdapAuthenticator extends LoggingService
     public function __construct(
         PDO $connection,
         ConfigurationManager $configManager,
-        LdapUserEventLogger $ldapUserEventLogger,
+        AuditService $auditService,
         AuthenticationService $authService,
         CsrfTokenService $csrfTokenService,
         LoggerInterface $logger,
@@ -74,7 +75,7 @@ class LdapAuthenticator extends LoggingService
 
         $this->db = $connection;
         $this->configManager = $configManager;
-        $this->ldapUserEventLogger = $ldapUserEventLogger;
+        $this->auditService = $auditService;
         $this->authenticationService = $authService;
         $this->csrfTokenService = $csrfTokenService;
         $this->loginAttemptService = $loginAttemptService;
@@ -111,7 +112,7 @@ class LdapAuthenticator extends LoggingService
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             $this->logWarning('Account is locked for LDAP user {username}', ['username' => $username]);
             if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->logLockout();
+                $this->auditService->logLoginLocked(AuthMethod::LDAP);
             }
             $sessionEntity = new SessionEntity(_('Account is temporarily locked. Please try again later.'), 'danger');
             $this->authenticationService->auth($sessionEntity);
@@ -167,7 +168,7 @@ class LdapAuthenticator extends LoggingService
         if (!$ldapconn) {
             $this->logError('Failed to connect to LDAP server.');
             if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->logFailedReason('ldap_connect');
+                $this->auditService->logLoginError(AuthMethod::LDAP, LoginFailureReason::LDAP_CONNECT_FAILED);
             }
             $sessionEntity = new SessionEntity(_('Failed to connect to LDAP server!'), 'danger');
             $this->authenticationService->logout($sessionEntity);
@@ -182,7 +183,7 @@ class LdapAuthenticator extends LoggingService
             $this->logError('Failed to bind to LDAP server.');
 
             if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->logFailedReason('ldap_bind');
+                $this->auditService->logLoginError(AuthMethod::LDAP, LoginFailureReason::LDAP_BIND_FAILED);
             }
 
             $sessionEntity = new SessionEntity(_('Failed to bind to LDAP server!'), 'danger');
@@ -217,7 +218,7 @@ class LdapAuthenticator extends LoggingService
         if (!$ldapsearch) {
             $this->logError('Failed to search LDAP.');
             if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->logFailedReason('ldap_search');
+                $this->auditService->logLoginError(AuthMethod::LDAP, LoginFailureReason::LDAP_SEARCH_FAILED);
             }
             $sessionEntity = new SessionEntity(_('Failed to search LDAP.'), 'danger');
             $this->authenticationService->logout($sessionEntity);
@@ -231,9 +232,9 @@ class LdapAuthenticator extends LoggingService
             $this->logWarning('LDAP search did not return exactly one user. Count: {count}', ['count' => $count]);
             if (isset($_POST["authenticate"])) {
                 if ($count === 0) {
-                    $this->ldapUserEventLogger->logFailedAuth();
+                    $this->auditService->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::NO_SUCH_USER);
                 } else {
-                    $this->ldapUserEventLogger->logFailedDuplicateAuth();
+                    $this->auditService->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::DUPLICATE_USERS);
                 }
             }
             $sessionEntity = new SessionEntity(_('Failed to authenticate against LDAP.'), 'danger');
@@ -249,7 +250,7 @@ class LdapAuthenticator extends LoggingService
         if ($session_pass === '' || !@ldap_bind($ldapconn, $user_dn, $session_pass)) {
             $this->logWarning('LDAP authentication failed for user {username}', ['username' => $username]);
             if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->logFailedIncorrectPass();
+                $this->auditService->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::WRONG_PASSWORD);
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
@@ -283,7 +284,7 @@ class LdapAuthenticator extends LoggingService
         if (!$rowObj) {
             $this->logWarning('No active LDAP user found with the provided username: {username}', ['username' => $username]);
             if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->logFailedUserInactive();
+                $this->auditService->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::ACCOUNT_DISABLED);
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
@@ -328,7 +329,7 @@ class LdapAuthenticator extends LoggingService
 
             if (isset($_POST['authenticate'])) {
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
-                $this->ldapUserEventLogger->logSuccessAuth();
+                $this->auditService->logLoginSuccess(AuthMethod::LDAP);
 
                 // Log before redirect
                 $this->logInfo('LdapAuthenticator: Redirecting to MFA verification page');
@@ -359,7 +360,7 @@ class LdapAuthenticator extends LoggingService
 
             if (isset($_POST['authenticate'])) {
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
-                $this->ldapUserEventLogger->logSuccessAuth();
+                $this->auditService->logLoginSuccess(AuthMethod::LDAP);
                 session_write_close();
                 $this->authenticationService->redirectToIndex();
             }

@@ -55,7 +55,7 @@ class SamlService extends LoggingService
     private CsrfTokenService $csrfTokenService;
     private PDO $db;
     private ?MfaService $mfaService = null;
-    private UserEventLogger $userEventLogger;
+    private AuditService $auditService;
 
     public function __construct(
         ConfigurationManager $configManager,
@@ -79,7 +79,7 @@ class SamlService extends LoggingService
         $redirectService = new RedirectService();
         $this->authenticationService = new AuthenticationService($this->sessionService, $redirectService, $this->configManager);
         $this->csrfTokenService = new CsrfTokenService();
-        $this->userEventLogger = new UserEventLogger($db);
+        $this->auditService = new AuditService($db);
     }
 
     /**
@@ -321,7 +321,7 @@ class SamlService extends LoggingService
                 $this->setSessionValue('userlogin', $databaseUsername);
 
                 // Log successful authentication to database
-                $this->userEventLogger->logSuccessfulAuth(AuthMethod::SAML);
+                $this->auditService->logLoginSuccess(AuthMethod::SAML);
 
                 // Rotate session id before binding the user - matches SqlAuthenticator.
                 session_regenerate_id(true);
@@ -387,7 +387,7 @@ class SamlService extends LoggingService
             } else {
                 $this->logWarning('Failed to provision SAML user: {username}', ['username' => $userInfo->getUsername()]);
                 $this->setSessionValue('userlogin', $userInfo->getUsername());
-                $this->userEventLogger->logFailedAuth(AuthMethod::SAML);
+                $this->auditService->logLoginFailed(AuthMethod::SAML);
                 $sessionEntity = new SessionEntity(_('Authentication failed: Unable to create or update user account'), 'danger');
                 $this->authenticationService->auth($sessionEntity);
 

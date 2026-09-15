@@ -22,8 +22,11 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Psr\Log\AbstractLogger;
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Psr\Log\NullLogger;
 use Stringable;
 
 /**
@@ -45,6 +48,22 @@ class SyslogLogger extends AbstractLogger
     public function __construct(string $ident = 'poweradmin', int $facility = LOG_USER)
     {
         openlog($ident, LOG_PERROR, $facility);
+    }
+
+    /**
+     * The syslog sink the logging.* settings ask for: a NullLogger when
+     * syslog_enabled is off, otherwise one opened with the configured identity and facility.
+     */
+    public static function fromConfig(ConfigurationInterface $config): LoggerInterface
+    {
+        if (!$config->get('logging', 'syslog_enabled')) {
+            return new NullLogger();
+        }
+
+        return new self(
+            $config->get('logging', 'syslog_identity') ?: 'poweradmin',
+            (int)($config->get('logging', 'syslog_facility') ?: LOG_USER)
+        );
     }
 
     public function log($level, Stringable|string $message, array $context = []): void
