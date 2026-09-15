@@ -90,7 +90,10 @@ class DeletePermTemplController extends BaseController
     private function validateSubmitRequest(): bool
     {
         $this->setValidationConstraints([
-            'id' => [new Assert\NotBlank(), new Assert\Type('numeric')],
+            'id' => [
+                new Assert\NotBlank(message: sprintf(_('The %s field is required.'), 'id')),
+                new Assert\Type('numeric', message: sprintf(_('The %s field must be a number.'), 'id')),
+            ],
         ]);
 
         return $this->doValidateRequest();
