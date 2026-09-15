@@ -56,7 +56,6 @@ use Poweradmin\Domain\Service\ZoneSigningService;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
@@ -123,9 +122,7 @@ abstract class BaseController
         $this->config = ConfigurationManager::getInstance();
         $this->config->initialize();
 
-        $logHandler = LoggerHandlerFactory::create($this->config->getAll());
-        $logLevel = $this->config->get('logging', 'level', 'info');
-        $this->logger = new Logger($logHandler, $logLevel);
+        $this->logger = Logger::fromConfig($this->config);
 
         $this->config->setLogger($this->logger);
 

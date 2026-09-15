@@ -27,8 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\NullLogHandler;
+use Psr\Log\NullLogger;
 use ReflectionClass;
 
 /**
@@ -205,7 +204,7 @@ class LdapUserProvisioningIntegrationTest extends TestCase
 
     private function service(): UserProvisioningService
     {
-        return new UserProvisioningService($this->db, $this->configManager(), new Logger(new NullLogHandler(), 'error'));
+        return new UserProvisioningService($this->db, $this->configManager(), new NullLogger());
     }
 
     private function configManager(): ConfigurationManager

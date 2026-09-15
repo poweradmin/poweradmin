@@ -35,7 +35,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -64,9 +63,7 @@ class ForgotUsernameController extends BaseController
         $configManager = ConfigurationManager::getInstance();
 
         // Create logger instance early for error logging
-        $logHandler = LoggerHandlerFactory::create($configManager->getAll());
-        $logLevel = $configManager->get('logging', 'level', 'info');
-        $this->logger = new Logger($logHandler, $logLevel);
+        $this->logger = Logger::fromConfig($configManager);
 
         try {
             $recoveryRepository = new DbUsernameRecoveryRepository($this->db, $configManager);

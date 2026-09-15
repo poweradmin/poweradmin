@@ -43,28 +43,28 @@ class LegacyLogger
         $this->backendProvider = $backendProvider;
     }
 
-    private function doLog(string $message, int $priority, ?int $zone_id = null): void
+    /**
+     * Writes one audit line to syslog and, through $dbWrite, to the matching log table;
+     * each sink is on only when its logging.* switch says so.
+     */
+    private function write(string $message, int $priority, callable $dbWrite): void
     {
-        $syslog_use = $this->config->get('logging', 'syslog_enabled');
-        $syslog_ident = $this->config->get('logging', 'syslog_identity');
-        $syslog_facility = $this->config->get('logging', 'syslog_facility');
-        $dblog_use = $this->config->get('logging', 'database_enabled');
-
-        if ($syslog_use) {
-            openlog($syslog_ident, LOG_PERROR, $syslog_facility);
+        if ($this->config->get('logging', 'syslog_enabled')) {
+            openlog($this->config->get('logging', 'syslog_identity'), LOG_PERROR, $this->config->get('logging', 'syslog_facility'));
             syslog($priority, $message);
             closelog();
         }
 
-        if ($dblog_use) {
-            if ($zone_id !== null) {
-                $dbZoneLogger = new DbZoneLogger($this->db, $this->backendProvider);
-                $dbZoneLogger->doLog($message, $zone_id, $priority);
-            } else {
-                $dbUserLogger = new DbUserLogger($this->db);
-                $dbUserLogger->doLog($message, $priority);
-            }
+        if ($this->config->get('logging', 'database_enabled')) {
+            $dbWrite();
         }
+    }
+
+    private function doLog(string $message, int $priority, ?int $zone_id = null): void
+    {
+        $this->write($message, $priority, fn() => $zone_id !== null
+            ? (new DbZoneLogger($this->db, $this->backendProvider))->doLog($message, $zone_id, $priority)
+            : (new DbUserLogger($this->db))->doLog($message, $priority));
     }
 
     public function logError(string $message, ?int $zone_id = null): void
@@ -104,39 +104,11 @@ class LegacyLogger
 
     private function doLogWithApi(string $message, int $priority): void
     {
-        $syslog_use = $this->config->get('logging', 'syslog_enabled');
-        $syslog_ident = $this->config->get('logging', 'syslog_identity');
-        $syslog_facility = $this->config->get('logging', 'syslog_facility');
-        $dblog_use = $this->config->get('logging', 'database_enabled');
-
-        if ($syslog_use) {
-            openlog($syslog_ident, LOG_PERROR, $syslog_facility);
-            syslog($priority, $message);
-            closelog();
-        }
-
-        if ($dblog_use) {
-            $dbApiLogger = new DbApiLogger($this->db);
-            $dbApiLogger->doLog($message, $priority);
-        }
+        $this->write($message, $priority, fn() => (new DbApiLogger($this->db))->doLog($message, $priority));
     }
 
     private function doLogWithGroup(string $message, int $priority, ?int $group_id): void
     {
-        $syslog_use = $this->config->get('logging', 'syslog_enabled');
-        $syslog_ident = $this->config->get('logging', 'syslog_identity');
-        $syslog_facility = $this->config->get('logging', 'syslog_facility');
-        $dblog_use = $this->config->get('logging', 'database_enabled');
-
-        if ($syslog_use) {
-            openlog($syslog_ident, LOG_PERROR, $syslog_facility);
-            syslog($priority, $message);
-            closelog();
-        }
-
-        if ($dblog_use) {
-            $dbGroupLogger = new DbGroupLogger($this->db);
-            $dbGroupLogger->doLog($message, $group_id, $priority);
-        }
+        $this->write($message, $priority, fn() => (new DbGroupLogger($this->db))->doLog($message, $group_id, $priority));
     }
 }

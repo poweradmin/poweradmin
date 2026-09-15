@@ -34,7 +34,6 @@ use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\DnsFormatter;
@@ -81,9 +80,7 @@ abstract class PublicApiController extends AbstractApiController
 
         // Initialize PSR-3 logger
         $config = $this->getConfig();
-        $logHandler = LoggerHandlerFactory::create($config->getAll());
-        $logLevel = $config->get('logging', 'level', 'info');
-        $this->logger = new Logger($logHandler, $logLevel);
+        $this->logger = Logger::fromConfig($config);
 
         // Authenticate the API request using API key or HTTP Basic auth
         $this->authenticateApiRequest();

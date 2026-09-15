@@ -29,7 +29,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Throwable;
@@ -82,10 +81,7 @@ class HealthController
     {
         // Memoised so a request where both checks fail does not emit Logger's
         // unrecognised-level warning twice.
-        return $this->logger ??= new Logger(
-            LoggerHandlerFactory::create($this->config()->getAll()),
-            (string) $this->config()->get('logging', 'level', 'info')
-        );
+        return $this->logger ??= Logger::fromConfig($this->config());
     }
 
     public function run(): void

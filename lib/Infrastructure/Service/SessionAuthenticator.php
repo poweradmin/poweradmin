@@ -44,7 +44,6 @@ use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
@@ -69,8 +68,7 @@ class SessionAuthenticator extends LoggingService
     public function __construct(PDO $connection, ConfigurationManager $configManager)
     {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
-        $loggerLevel = $configManager->get('logging', 'level', 'info');
-        parent::__construct(new Logger(LoggerHandlerFactory::create($configManager->getAll()), $loggerLevel), $shortClassName);
+                parent::__construct(Logger::fromConfig($configManager), $shortClassName);
 
         $this->db = $connection;
         $this->configManager = $configManager;

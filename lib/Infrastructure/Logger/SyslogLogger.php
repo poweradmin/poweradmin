@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,40 +22,34 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+use Psr\Log\AbstractLogger;
+use Psr\Log\LogLevel;
+use Stringable;
+
 /**
- * Legacy logger that sends each message to syslog under the configured ident and facility.
+ * PSR-3 logger that writes every message to syslog under the configured identity and facility.
  */
-class SyslogLegacyLogger implements LegacyLoggerInterface
+class SyslogLogger extends AbstractLogger
 {
-    private string $ident;
-    private int $facility;
+    private const PRIORITIES = [
+        LogLevel::EMERGENCY => LOG_EMERG,
+        LogLevel::ALERT => LOG_ALERT,
+        LogLevel::CRITICAL => LOG_CRIT,
+        LogLevel::ERROR => LOG_ERR,
+        LogLevel::WARNING => LOG_WARNING,
+        LogLevel::NOTICE => LOG_NOTICE,
+        LogLevel::INFO => LOG_INFO,
+        LogLevel::DEBUG => LOG_DEBUG,
+    ];
 
     public function __construct(string $ident = 'poweradmin', int $facility = LOG_USER)
     {
-        $this->ident = $ident;
-        $this->facility = $facility;
-
-        openlog($this->ident, LOG_PERROR, $this->facility);
+        openlog($ident, LOG_PERROR, $facility);
     }
 
-    public function info(string $message): void
+    public function log($level, Stringable|string $message, array $context = []): void
     {
-        syslog(LOG_INFO, $message);
-    }
-
-    public function warn(string $message): void
-    {
-        syslog(LOG_WARNING, $message);
-    }
-
-    public function error(string $message): void
-    {
-        syslog(LOG_ERR, $message);
-    }
-
-    public function notice(string $message): void
-    {
-        syslog(LOG_NOTICE, $message);
+        syslog(self::PRIORITIES[$level] ?? LOG_INFO, Logger::interpolatePlaceholders((string)$message, $context));
     }
 
     public function __destruct()

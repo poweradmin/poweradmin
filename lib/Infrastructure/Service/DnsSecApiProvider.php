@@ -28,7 +28,7 @@ use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * DnssecProviderInterface that manages zone keys, DS/DNSKEY records and rectification through the PowerDNS API.
@@ -36,7 +36,7 @@ use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
 class DnsSecApiProvider implements DnssecProviderInterface
 {
     private PowerdnsApiClient $client;
-    private LegacyLoggerInterface $logger;
+    private LoggerInterface $logger;
     private DnssecDataTransformer $transformer;
     private string $clientIp;
     private string $userLogin;
@@ -46,7 +46,7 @@ class DnsSecApiProvider implements DnssecProviderInterface
 
     public function __construct(
         PowerdnsApiClient $client,
-        LegacyLoggerInterface $logger,
+        LoggerInterface $logger,
         DnssecDataTransformer $transformer,
         string $clientIp,
         string $userLogin
