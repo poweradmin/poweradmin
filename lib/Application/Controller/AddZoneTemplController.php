@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -82,7 +81,7 @@ class AddZoneTemplController extends BaseController
             $this->showFirstValidationError($postParams);
         }
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+        $zoneTemplate = $this->createZoneTemplateModel();
         if ($zoneTemplate->addZoneTempl($postParams, $_SESSION[SessionKeys::USERID])) {
             $auditService = $this->createAuditService();
             $auditService->logZoneTemplateAdd($postParams['templ_name'] ?? '');

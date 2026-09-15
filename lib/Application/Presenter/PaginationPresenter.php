@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,14 +33,19 @@ class PaginationPresenter
 
     private string $urlPattern;
     private string $id;
+    private ?int $rowsPerPage;
 
     private int $numDisplayPages = 8;
 
-    public function __construct(Pagination $pagination, string $urlPattern, string $id = '')
+    /**
+     * $rowsPerPage is the page size the current request asked for; every page link carries it.
+     */
+    public function __construct(Pagination $pagination, string $urlPattern, string $id = '', ?int $rowsPerPage = null)
     {
         $this->pagination = $pagination;
         $this->urlPattern = $urlPattern;
         $this->id = $id;
+        $this->rowsPerPage = $rowsPerPage;
     }
 
     public function present(): string
@@ -104,10 +109,8 @@ class PaginationPresenter
             $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'id=' . urlencode($this->id);
         }
 
-        // Add rows_per_page parameter if present in the current request
-        if (isset($_GET['rows_per_page'])) {
-            $rowsPerPage = (int) $_GET['rows_per_page'];
-            $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'rows_per_page=' . $rowsPerPage;
+        if ($this->rowsPerPage !== null) {
+            $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'rows_per_page=' . $this->rowsPerPage;
         }
 
         return $url;

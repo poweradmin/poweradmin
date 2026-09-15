@@ -179,7 +179,7 @@ class UsersController extends BaseController
         $rowsPerPage = $this->config->get('interface', 'rows_per_page', 50);
 
         $paginationService = $this->createPaginationService();
-        $rowsPerPage = $paginationService->getUserRowsPerPage($rowsPerPage, $this->getCurrentUserId());
+        $rowsPerPage = $paginationService->getUserRowsPerPage($rowsPerPage, $this->getCurrentUserId(), $this->httpRequest->getRowsPerPage());
 
         // Get total count and paginated users; both restricted to the user's own
         // account when they lack the permission to view other users
@@ -206,7 +206,7 @@ class UsersController extends BaseController
         if ($searchTerm !== '') {
             $paginationUrl .= '&search=' . urlencode($searchTerm);
         }
-        $paginationPresenter = new PaginationPresenter($pagination, $paginationUrl);
+        $paginationPresenter = new PaginationPresenter($pagination, $paginationUrl, '', $this->httpRequest->getRowsPerPage());
 
         $this->render('users.html', [
             'permissions' => $permissions,

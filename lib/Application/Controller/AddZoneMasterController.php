@@ -26,7 +26,6 @@ use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
@@ -152,7 +151,7 @@ class AddZoneMasterController extends BaseController
         }
 
         $zone_template = $this->httpRequest->getPostParam('zone_template', 'none');
-        $zoneTemplateModel = new ZoneTemplate($this->db, $this->getConfig());
+        $zoneTemplateModel = $this->createZoneTemplateModel();
         if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
             $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
             $this->showForm();
@@ -268,7 +267,7 @@ class AddZoneMasterController extends BaseController
     private function showForm(): void
     {
         $perm_view_others = $this->hasPermission('user_view_others');
-        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
+        $zone_templates = $this->createZoneTemplateModel();
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
         $users = $this->createUserRepository()->getUsersWithZoneCounts();
 

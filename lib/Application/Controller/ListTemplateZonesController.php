@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -68,12 +68,12 @@ class ListTemplateZonesController extends BaseController
         // Create pagination service and get user preference
         $paginationService = $this->createPaginationService();
         $userId = $this->getCurrentUserId();
-        $itemsPerPage = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
+        $itemsPerPage = $paginationService->getUserRowsPerPage($default_rowamount, $userId, $this->httpRequest->getRowsPerPage());
 
         $currentPage = $this->httpRequest->getPage();
         $offset = ($currentPage - 1) * $itemsPerPage;
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
+        $zoneTemplate = $this->createZoneTemplateModel();
         $template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
         // Get zones using this template with pagination
@@ -93,7 +93,9 @@ class ListTemplateZonesController extends BaseController
             $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
             $presenter = new PaginationPresenter(
                 $pagination,
-                $baseUrlPrefix . '/zones/templates/' . $zone_templ_id . '/zones?start={PageNumber}'
+                $baseUrlPrefix . '/zones/templates/' . $zone_templ_id . '/zones?start={PageNumber}',
+                '',
+                $this->httpRequest->getRowsPerPage()
             );
             $paginationHtml = $presenter->present();
         }

@@ -24,7 +24,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -101,7 +100,7 @@ class SaveZoneAsTemplateController extends BaseController
     private function saveAsTemplate(int $zone_id, string $zone_name): void
     {
         $template_name = htmlspecialchars($this->httpRequest->getPostParam('templ_name') ?? '');
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+        $zoneTemplate = $this->createZoneTemplateModel();
 
         if ($zoneTemplate->zoneTemplNameExists($template_name)) {
             $this->setMessage('save-zone-template', 'error', _('Zone template with this name already exists, please choose another one.'));

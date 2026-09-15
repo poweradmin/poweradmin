@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -63,7 +62,7 @@ class ListZoneTemplController extends BaseController
         $userId = $this->userContext->getLoggedInUserId();
         $userName = $this->userContext->getLoggedInUsername();
 
-        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
+        $zone_templates = $this->createZoneTemplateModel();
         $templatesList = $zone_templates->getListZoneTempl($userId);
 
         // Get sync status for all templates

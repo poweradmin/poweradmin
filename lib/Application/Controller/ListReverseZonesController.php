@@ -88,7 +88,7 @@ class ListReverseZonesController extends BaseController
         // Create pagination service and get user preference
         $paginationService = $this->createPaginationService();
         $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
-        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
+        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId, $this->httpRequest->getRowsPerPage());
 
         $row_start = 0;
         $start_param = $this->httpRequest->getQueryParam('start');

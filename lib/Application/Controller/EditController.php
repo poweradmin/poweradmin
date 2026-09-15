@@ -101,7 +101,7 @@ class EditController extends BaseController
         // Create pagination service and get user preference
         $paginationService = $this->createPaginationService();
         $userId = $this->getCurrentUserId();
-        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
+        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId, $this->httpRequest->getRowsPerPage());
 
         // Get user preferences for form positioning
         $userPreferenceService = $this->createUserPreferenceService();
@@ -289,7 +289,7 @@ class EditController extends BaseController
         $catalog_producers = $catalog_selector_view && $meta_edit ? $catalog_service->getManageableProducers($userId) : [];
 
         // Get zone templates
-        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
+        $zone_templates = $this->createZoneTemplateModel();
         $zone_templates = $zone_templates->getListZoneTempl($userId);
         $zone_template_id = DomainManager::getZoneTemplate($this->db, $zone_id);
         $zone_template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_template_id);

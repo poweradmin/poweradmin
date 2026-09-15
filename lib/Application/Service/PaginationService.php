@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,18 +63,18 @@ class PaginationService
     }
 
     /**
-     * Get user preference for items per page with validation
+     * Resolves the page size: the value the request asked for wins and is stored as the
+     * user's preference, otherwise the stored preference, otherwise the configured default.
      *
      * @param int $defaultRowsPerPage Default rows per page from config
      * @param int|null $userId User ID to get preferences for
+     * @param int|null $requestedRowsPerPage Page size from the query string (Request::getRowsPerPage())
      * @return int Validated rows per page value
      */
-    public function getUserRowsPerPage(int $defaultRowsPerPage, ?int $userId = null): int
+    public function getUserRowsPerPage(int $defaultRowsPerPage, ?int $userId = null, ?int $requestedRowsPerPage = null): int
     {
-        // Check if user has specified a preference via URL
-        $userRowsPerPage = isset($_GET['rows_per_page']) ? (int)$_GET['rows_per_page'] : null;
+        $userRowsPerPage = $requestedRowsPerPage;
 
-        // If URL parameter is set, update user preference
         if ($userRowsPerPage !== null && $userId !== null && $this->userPreferenceService !== null) {
             try {
                 $this->userPreferenceService->setRowsPerPage($userId, $userRowsPerPage);

@@ -30,6 +30,7 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -95,6 +96,7 @@ class ControllerServiceFactory
     private ?RepositoryFactory $repositoryFactory = null;
     private ?DomainManagerInterface $domainManager = null;
     private ?SupermasterManager $supermasterManager = null;
+    private ?ZoneTemplate $zoneTemplate = null;
     private ?DnsDataService $dnsDataService = null;
     private ?ZoneRepositoryInterface $zoneRepository = null;
     private ?DomainRepositoryInterface $domainRepository = null;
@@ -429,6 +431,11 @@ class ControllerServiceFactory
     public function supermasterManager(): SupermasterManager
     {
         return $this->supermasterManager ??= DnsServiceFactory::createSupermasterManager($this->db, $this->config, $this->dnsBackendProvider());
+    }
+
+    public function zoneTemplate(): ZoneTemplate
+    {
+        return $this->zoneTemplate ??= new ZoneTemplate($this->db, $this->config, $this->dnsBackendProvider(), $this->logger);
     }
 
     public function catalogZoneService(): CatalogZoneService

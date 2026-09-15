@@ -38,9 +38,9 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
@@ -66,7 +66,7 @@ class ZoneTemplate
         $this->messageService = new MessageService();
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
-        $this->logger = $logger ?? Logger::fromConfig($config);
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**

@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -39,7 +38,7 @@ class SetDefaultZoneTemplController extends BaseController
         $this->checkCondition(!$perm_godlike, _("You do not have the permission to change the default zone template."));
 
         $action = $this->getSafeRequestValue('action');
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+        $zoneTemplate = $this->createZoneTemplateModel();
 
         if ($action === 'unset') {
             if ($zoneTemplate->unsetDefaultTemplate()) {
