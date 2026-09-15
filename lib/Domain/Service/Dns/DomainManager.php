@@ -341,10 +341,9 @@ class DomainManager implements DomainManagerInterface
 
                             $templ_records = ZoneTemplate::getZoneTemplRecords($db, (int)$zone_template);
                             if (!empty($templ_records)) {
-                                // Process the template records
+                                $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger);
                                 foreach ($templ_records as $r) {
                                     if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
-                                        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger);
                                         $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
                                         $recordType = $r["type"];
                                         $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);

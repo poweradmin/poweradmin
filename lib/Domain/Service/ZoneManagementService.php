@@ -132,7 +132,7 @@ class ZoneManagementService
     private function lookUpZoneTemplate(string $zoneTemplate, ?int $actingUserId): array
     {
 
-        $zoneTemplateModel = new ZoneTemplate($this->db, $this->config);
+        $zoneTemplateModel = new ZoneTemplate($this->db, $this->config, $this->backendProvider(), $this->logger);
         if (is_numeric($zoneTemplate)) {
             if (!ZoneTemplate::zoneTemplIdExists($this->db, (int)$zoneTemplate)) {
                 return ['success' => false, 'message' => 'Zone template not found', 'status' => 404, 'code' => self::ERR_TEMPLATE_NOT_FOUND];

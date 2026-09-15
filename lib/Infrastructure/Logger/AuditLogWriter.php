@@ -26,7 +26,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use PDO;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 /**
  * Sink for audit lines: hands each one to the syslog logger and, when database
@@ -34,28 +33,18 @@ use Psr\Log\LogLevel;
  */
 class AuditLogWriter
 {
-    private const LEVELS = [
-        LOG_ERR => LogLevel::ERROR,
-        LOG_WARNING => LogLevel::WARNING,
-        LOG_NOTICE => LogLevel::NOTICE,
-        LOG_INFO => LogLevel::INFO,
-    ];
-
     private PDO $db;
     private ConfigurationManager $config;
     private ?DnsBackendProviderInterface $backendProvider;
     private LoggerInterface $syslog;
 
-    /**
-     * @param LoggerInterface|null $syslog Defaults to SyslogLogger or NullLogger per logging.syslog_enabled
-     */
-    public function __construct(PDO $db, ?DnsBackendProviderInterface $backendProvider = null, ?LoggerInterface $syslog = null)
+    public function __construct(PDO $db, ?DnsBackendProviderInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->config = ConfigurationManager::getInstance();
         $this->config->initialize();
         $this->backendProvider = $backendProvider;
-        $this->syslog = $syslog ?? SyslogLogger::fromConfig($this->config);
+        $this->syslog = SyslogLogger::fromConfig($this->config);
     }
 
     /**
@@ -64,7 +53,7 @@ class AuditLogWriter
      */
     private function write(string $message, int $priority, callable $dbWrite): void
     {
-        $this->syslog->log(self::LEVELS[$priority] ?? LogLevel::INFO, $message);
+        $this->syslog->log(SyslogLogger::levelFor($priority), $message);
 
         if ($this->config->get('logging', 'database_enabled')) {
             $dbWrite();

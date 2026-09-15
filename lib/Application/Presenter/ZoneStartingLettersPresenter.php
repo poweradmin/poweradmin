@@ -27,9 +27,6 @@ namespace Poweradmin\Application\Presenter;
  */
 class ZoneStartingLettersPresenter
 {
-    /**
-     * $rowsPerPage is the page size the current request asked for; it is carried on every letter link.
-     */
     public function present(array $availableChars, bool $digitsAvailable, string $letterStart, string $baseUrlPrefix = '', ?int $rowsPerPage = null): string
     {
         $html = '<span class="text-secondary">' . _('Show zones beginning with') . "</span><br>";

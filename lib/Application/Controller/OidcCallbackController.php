@@ -26,6 +26,7 @@ use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\OidcService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Infrastructure\Session\SessionService;
@@ -55,7 +56,8 @@ class OidcCallbackController extends BaseController
             $oidcProvisioningService,
             $this->logger,
             $this->db,
-            $this->httpRequest
+            $this->httpRequest,
+            $this->createAuditService()
         );
 
         // Initialize authentication service
@@ -89,7 +91,7 @@ class OidcCallbackController extends BaseController
 
             // operation:login_error (not login_failed) - IdP-side handshake error
             // should not feed fail2ban brute-force counters.
-            $this->createAuditService()->logSsoLoginError('oidc', $error);
+            $this->createAuditService()->logSsoLoginError(AuthMethod::OIDC, $error);
 
             $sessionEntity = new SessionEntity(
                 _('Authentication failed: ') . $errorDescription,
@@ -104,7 +106,7 @@ class OidcCallbackController extends BaseController
 
         // Log successful OIDC login if session was established
         if (isset($_SESSION[SessionKeys::USERID])) {
-            $this->createAuditService()->logSsoLoginSuccess('oidc');
+            $this->createAuditService()->logSsoLoginSuccess(AuthMethod::OIDC);
         }
     }
 }

@@ -63,7 +63,8 @@ class SamlService extends LoggingService
         UserProvisioningService $userProvisioningService,
         LoggerInterface $logger,
         PDO $db,
-        ?Request $request = null
+        ?Request $request = null,
+        ?AuditService $auditService = null
     ) {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
         parent::__construct($logger, $shortClassName);
@@ -79,7 +80,7 @@ class SamlService extends LoggingService
         $redirectService = new RedirectService();
         $this->authenticationService = new AuthenticationService($this->sessionService, $redirectService, $this->configManager);
         $this->csrfTokenService = new CsrfTokenService();
-        $this->auditService = new AuditService($db);
+        $this->auditService = $auditService ?? new AuditService($db);
     }
 
     /**

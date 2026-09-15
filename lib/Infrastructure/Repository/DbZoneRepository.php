@@ -558,16 +558,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return $stmt->fetchColumn() !== false;
     }
 
-    /**
-     * Get a zone by ID with full details
-     *
-     * Returns the getZoneById() core (id, name, type, master, owner, account,
-     * record_count) plus count_records (alias of record_count), username,
-     * fullname, secured, comment, utf8_name, owners[], full_names[], users[].
-     *
-     * @param int $zoneId The zone ID
-     * @return array|null The zone data or null if not found
-     */
     public function getZone(int $zoneId): ?array
     {
         $zone = $this->getZoneById($zoneId);
@@ -581,35 +571,13 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $zone['count_records'] = $zone['record_count'];
         $zone['username'] = $usernames[0] ?? null;
         $zone['fullname'] = $owners[0]['fullname'] ?? null;
-        $zone['secured'] = $this->isZoneSecured($zoneId);
-        $zone['comment'] = $this->getZoneComment($zoneId) ?? '';
+        $zone['secured'] = (bool)$zone['secured'];
         $zone['utf8_name'] = DnsIdnService::toUtf8($zone['name']);
         $zone['owners'] = $usernames;
         $zone['full_names'] = array_map(fn(array $owner) => $owner['fullname'] ?: '', $owners);
         $zone['users'] = $usernames;
 
         return $zone;
-    }
-
-    /**
-     * Whether the zone has an active DNSSEC key or is marked PRESIGNED.
-     */
-    private function isZoneSecured(int $zoneId): bool
-    {
-        $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
-        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
-
-        $query = "SELECT 1 FROM $cryptokeys_table WHERE domain_id = :id AND active
-                  UNION ALL
-                  SELECT 1 FROM $domainmetadata_table WHERE domain_id = :id_meta AND kind = 'PRESIGNED'
-                  LIMIT 1";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':id_meta', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchColumn() !== false;
     }
 
     /**
@@ -1217,13 +1185,22 @@ class DbZoneRepository implements ZoneRepositoryInterface
     {
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
+        // Secured and comment are cheap indexed probes here; joining cryptokeys and
+        // domainmetadata instead would multiply the record count on signed zones.
         $query = "SELECT d.id, d.name, d.type, d.master, d.account,
                          COALESCE(MIN(z.owner), 0) as owner,
-                         COUNT(DISTINCT r.id) as record_count
+                         COALESCE(MIN(z.comment), '') as comment,
+                         COUNT(DISTINCT r.id) as record_count,
+                         CASE WHEN EXISTS (SELECT 1 FROM $cryptokeys_table c WHERE c.domain_id = d.id AND c.active)
+                                OR EXISTS (SELECT 1 FROM $domainmetadata_table m WHERE m.domain_id = d.id AND m.kind = 'PRESIGNED')
+                              THEN 1 ELSE 0 END as secured
                   FROM $domains_table d
                   LEFT JOIN zones z ON d.id = z.domain_id
-                  LEFT JOIN " . $this->tableNameService->getTable(PdnsTable::RECORDS) . " r ON d.id = r.domain_id
+                  LEFT JOIN $records_table r ON d.id = r.domain_id
                   WHERE d.id = :id
                   GROUP BY d.id, d.name, d.type, d.master, d.account";
 

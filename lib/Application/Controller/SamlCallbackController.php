@@ -26,6 +26,7 @@ use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Infrastructure\Session\SessionService;
@@ -55,7 +56,8 @@ class SamlCallbackController extends BaseController
             $userProvisioningService,
             $this->logger,
             $this->db,
-            $this->httpRequest
+            $this->httpRequest,
+            $this->createAuditService()
         );
 
         // Initialize authentication service
@@ -106,12 +108,12 @@ class SamlCallbackController extends BaseController
 
             // Log successful SAML login if session was established
             if (isset($_SESSION[SessionKeys::USERID])) {
-                $this->createAuditService()->logSsoLoginSuccess('saml');
+                $this->createAuditService()->logSsoLoginSuccess(AuthMethod::SAML);
             }
         } catch (\Exception $e) {
             // operation:login_error (not login_failed) - SAML assertion-handling
             // failure should not feed fail2ban brute-force counters.
-            $this->createAuditService()->logSsoLoginError('saml', $e->getMessage());
+            $this->createAuditService()->logSsoLoginError(AuthMethod::SAML, $e->getMessage());
 
             $sessionEntity = new SessionEntity(
                 _('SAML authentication failed: ') . $e->getMessage(),

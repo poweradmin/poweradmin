@@ -45,9 +45,18 @@ class SyslogLogger extends AbstractLogger
         LogLevel::DEBUG => LOG_DEBUG,
     ];
 
-    public function __construct(string $ident = 'poweradmin', int $facility = LOG_USER)
+    private bool $opened = false;
+
+    public function __construct(private readonly string $ident = 'poweradmin', private readonly int $facility = LOG_USER)
     {
-        openlog($ident, LOG_PERROR, $facility);
+    }
+
+    /**
+     * The PSR-3 level for a LOG_* priority, for sinks that still speak syslog priorities.
+     */
+    public static function levelFor(int $priority): string
+    {
+        return array_search($priority, self::PRIORITIES, true) ?: LogLevel::INFO;
     }
 
     /**
@@ -68,11 +77,18 @@ class SyslogLogger extends AbstractLogger
 
     public function log($level, Stringable|string $message, array $context = []): void
     {
+        // Opened on first use so a writer that never logs costs no syscall.
+        if (!$this->opened) {
+            openlog($this->ident, LOG_PERROR, $this->facility);
+            $this->opened = true;
+        }
         syslog(self::PRIORITIES[$level] ?? LOG_INFO, Logger::interpolatePlaceholders((string)$message, $context));
     }
 
     public function __destruct()
     {
-        closelog();
+        if ($this->opened) {
+            closelog();
+        }
     }
 }
