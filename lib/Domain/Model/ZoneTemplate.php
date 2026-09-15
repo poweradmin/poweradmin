@@ -52,7 +52,6 @@ class ZoneTemplate
     private PDO $db;
     private DnsFormatter $dnsFormatter;
     private MessageService $messageService;
-    private DomainParsingService $domainParsingService;
     private TableNameService $tableNameService;
     private ?DnsBackendProvider $backendProvider;
     private LoggerInterface $logger;
@@ -65,7 +64,6 @@ class ZoneTemplate
         $this->config = $config;
         $this->dnsFormatter = new DnsFormatter($config);
         $this->messageService = new MessageService();
-        $this->domainParsingService = new DomainParsingService();
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
         $this->logger = $logger ?? new PhpErrorLogPsrLogger();
@@ -126,8 +124,7 @@ class ZoneTemplate
         }
 
         // Parse domain into its components
-        $domainService = new DomainParsingService();
-        $domainComponents = $domainService->parseDomain($domain);
+        $domainComponents = DomainParsingService::parseDomain($domain);
         $domainName = $domainComponents['domain']; // Example: 'example' from 'example.com'
         $tld = $domainComponents['tld'];           // Example: 'com' from 'example.com'
 
@@ -1428,7 +1425,7 @@ class ZoneTemplate
         $serial .= "00";
 
         // Parse domain components
-        $domainComponents = $this->domainParsingService->parseDomain($domain);
+        $domainComponents = DomainParsingService::parseDomain($domain);
         $domainName = $domainComponents['domain'];
         $tld = $domainComponents['tld'];
 

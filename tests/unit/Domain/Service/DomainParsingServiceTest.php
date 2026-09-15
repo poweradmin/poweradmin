@@ -7,19 +7,12 @@ use Poweradmin\Domain\Service\DomainParsingService;
 
 class DomainParsingServiceTest extends TestCase
 {
-    private DomainParsingService $service;
-
-    protected function setUp(): void
-    {
-        $this->service = new DomainParsingService();
-    }
-
     /**
      * Test parsing a simple domain with common TLD
      */
     public function testParseSimpleDomain(): void
     {
-        $result = $this->service->parseDomain('example.net');
+        $result = DomainParsingService::parseDomain('example.net');
         $this->assertEquals('example', $result['domain']);
         $this->assertEquals('net', $result['tld']);
     }
@@ -29,7 +22,7 @@ class DomainParsingServiceTest extends TestCase
      */
     public function testParseDomainWithSubdomain(): void
     {
-        $result = $this->service->parseDomain('subdomain.example.net');
+        $result = DomainParsingService::parseDomain('subdomain.example.net');
         $this->assertEquals('example', $result['domain']);
         $this->assertEquals('net', $result['tld']);
     }
@@ -39,7 +32,7 @@ class DomainParsingServiceTest extends TestCase
      */
     public function testParseDomainWithMultipleSubdomains(): void
     {
-        $result = $this->service->parseDomain('sub1.sub2.example.net');
+        $result = DomainParsingService::parseDomain('sub1.sub2.example.net');
         $this->assertEquals('example', $result['domain']);
         $this->assertEquals('net', $result['tld']);
     }
@@ -49,7 +42,7 @@ class DomainParsingServiceTest extends TestCase
      */
     public function testParseDomainWithCompoundTld(): void
     {
-        $result = $this->service->parseDomain('example.co.uk');
+        $result = DomainParsingService::parseDomain('example.co.uk');
         $this->assertEquals('example', $result['domain']);
         $this->assertEquals('co.uk', $result['tld']);
     }
@@ -59,7 +52,7 @@ class DomainParsingServiceTest extends TestCase
      */
     public function testParseSubdomainWithCompoundTld(): void
     {
-        $result = $this->service->parseDomain('subdomain.example.co.uk');
+        $result = DomainParsingService::parseDomain('subdomain.example.co.uk');
         $this->assertEquals('example', $result['domain']);
         $this->assertEquals('co.uk', $result['tld']);
     }
@@ -69,7 +62,7 @@ class DomainParsingServiceTest extends TestCase
      */
     public function testParseReverseDnsZone(): void
     {
-        $result = $this->service->parseDomain('10.168.192.in-addr.arpa');
+        $result = DomainParsingService::parseDomain('10.168.192.in-addr.arpa');
         $this->assertEquals('10.168.192.in-addr.arpa', $result['domain']);
         $this->assertEquals('', $result['tld']);
     }
@@ -79,7 +72,7 @@ class DomainParsingServiceTest extends TestCase
      */
     public function testParseIpAddress(): void
     {
-        $result = $this->service->parseDomain('192.168.10.1');
+        $result = DomainParsingService::parseDomain('192.168.10.1');
         $this->assertEquals('192.168.10.1', $result['domain']);
         $this->assertEquals('', $result['tld']);
     }
@@ -89,7 +82,7 @@ class DomainParsingServiceTest extends TestCase
      */
     public function testParseSinglePartDomain(): void
     {
-        $result = $this->service->parseDomain('localhost');
+        $result = DomainParsingService::parseDomain('localhost');
         $this->assertEquals('localhost', $result['domain']);
         $this->assertEquals('', $result['tld']);
     }
@@ -102,7 +95,7 @@ class DomainParsingServiceTest extends TestCase
      */
     public function testMicrosoft365UseCase(): void
     {
-        $result = $this->service->parseDomain('example.net');
+        $result = DomainParsingService::parseDomain('example.net');
         $this->assertEquals('example', $result['domain']);
         $this->assertEquals('net', $result['tld']);
 
@@ -116,7 +109,7 @@ class DomainParsingServiceTest extends TestCase
      */
     public function testMicrosoft365UseCaseWithSubdomain(): void
     {
-        $result = $this->service->parseDomain('subdomain.example.net');
+        $result = DomainParsingService::parseDomain('subdomain.example.net');
         $this->assertEquals('example', $result['domain']);
         $this->assertEquals('net', $result['tld']);
 

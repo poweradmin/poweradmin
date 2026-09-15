@@ -33,7 +33,7 @@ class DomainParsingService
      * @param string $domain The domain to parse
      * @return array Array with 'domain' and 'tld' keys
      */
-    public function parseDomain(string $domain): array
+    public static function parseDomain(string $domain): array
     {
         $domainName = '';
         $tld = '';
