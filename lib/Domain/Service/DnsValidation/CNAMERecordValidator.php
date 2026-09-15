@@ -22,7 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Service\SearchBackendInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
@@ -48,16 +49,16 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     private ConfigurationManager $config;
     private PDO $db;
     private TableNameService $tableNameService;
-    private ?DnsBackendProviderInterface $backendProvider;
+    private (SearchBackendInterface&BackendCapabilitiesInterface)|null $backendProvider;
 
     /**
      * Constructor
      *
      * @param ConfigurationManager $config
      * @param PDO $db
-     * @param DnsBackendProviderInterface|null $backendProvider Optional DNS backend provider
+     * @param (SearchBackendInterface&BackendCapabilitiesInterface)|null $backendProvider Optional DNS backend provider
      */
-    public function __construct(ConfigurationManager $config, PDO $db, ?DnsBackendProviderInterface $backendProvider = null)
+    public function __construct(ConfigurationManager $config, PDO $db, (SearchBackendInterface&BackendCapabilitiesInterface)|null $backendProvider = null)
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();

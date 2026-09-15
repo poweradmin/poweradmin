@@ -33,9 +33,9 @@ class ZoneAccountSyncService
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private ?DnsBackendProviderInterface $backendProvider;
+    private ?ZoneWriteBackendInterface $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProviderInterface $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?ZoneWriteBackendInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;

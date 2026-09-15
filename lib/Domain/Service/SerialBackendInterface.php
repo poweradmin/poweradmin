@@ -23,17 +23,25 @@
 namespace Poweradmin\Domain\Service;
 
 /**
- * PowerDNS data access (domains, records, supermasters) over direct SQL or the PowerDNS API; Poweradmin-native tables stay on SQL.
+ * SOA serial handling: whether PowerDNS bumps the serial itself and the zone serial policy metadata.
  */
-interface DnsBackendProviderInterface extends
-    ZoneWriteBackendInterface,
-    ZoneReadBackendInterface,
-    RecordWriteBackendInterface,
-    RecordReadBackendInterface,
-    SerialBackendInterface,
-    SupermasterBackendInterface,
-    CatalogBackendInterface,
-    SearchBackendInterface,
-    BackendCapabilitiesInterface
+interface SerialBackendInterface
 {
+    /**
+     * Check whether the zone has soa_edit_api configured in PowerDNS.
+     * Returns false for SQL backends (not applicable).
+     */
+    public function hasSoaEditApi(int $domainId): bool;
+
+    /**
+     * Set the zone's SOA serial policy metadata.
+     *
+     * Keys are the zone-object property names from
+     * MetadataDefinitions::SERIAL_POLICY_PROPERTY_KINDS. An empty string clears the
+     * policy. API backend updates the zone object; SQL backend replaces the
+     * matching domainmetadata rows.
+     *
+     * @param array<string, string> $properties
+     */
+    public function setZoneSerialPolicy(int $domainId, string $zoneName, array $properties): bool;
 }
