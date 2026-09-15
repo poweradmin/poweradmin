@@ -72,6 +72,7 @@ class AddRecordController extends BaseController
 
         $perm_edit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
+        $this->checkCondition(!$this->domainRepository->zoneIdExists($zone_id), _('There is no zone with this ID.'));
         $zone_type = $this->domainRepository->getDomainType($zone_id);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
