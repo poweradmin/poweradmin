@@ -190,16 +190,6 @@ class SqlRecordRepository implements RecordRepositoryInterface
         return $r["domain_id"] ?? 0;
     }
 
-    public function recordNameExists(string $name): bool
-    {
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-        $stmt = $this->db->prepare("SELECT COUNT(id) FROM $records_table WHERE name = :name");
-        $stmt->execute([':name' => $name]);
-        $count = $stmt->fetchColumn();
-        return $count > 0;
-    }
-
     public function hasNonDelegationRecords(string $name): bool
     {
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -246,41 +236,6 @@ class SqlRecordRepository implements RecordRepositoryInterface
             ':content' => $content
         ]);
         return (int)$stmt->fetchColumn() > 0;
-    }
-
-    public function getRecordId(int $domain_id, string $name, string $type, string $content, ?int $prio = null, ?int $ttl = null): int|string|null
-    {
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-        $query = "SELECT id FROM $records_table
-                  WHERE domain_id = :domain_id
-                  AND name = :name
-                  AND type = :type
-                  AND content = :content";
-
-        $params = [
-            ':domain_id' => $domain_id,
-            ':name' => $name,
-            ':type' => $type,
-            ':content' => $content
-        ];
-
-        if ($prio !== null) {
-            $query .= " AND prio = :prio";
-            $params[':prio'] = $prio;
-        }
-
-        if ($ttl !== null) {
-            $query .= " AND ttl = :ttl";
-            $params[':ttl'] = $ttl;
-        }
-
-        $query .= " ORDER BY id DESC LIMIT 1";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
-        $result = $stmt->fetchColumn();
-        return $result !== false ? (int)$result : null;
     }
 
     public function hasPtrRecord(int $domain_id, string $name): bool

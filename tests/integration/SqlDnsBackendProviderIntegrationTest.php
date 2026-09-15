@@ -305,23 +305,6 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
         $this->assertFalse($stmt->fetch());
     }
 
-    public function testDeleteRecordsByDomainId(): void
-    {
-        $zone = $this->uniqueZoneName();
-        $domainId = $this->provider->createZone($zone, 'NATIVE');
-        $this->createdDomainIds[] = $domainId;
-
-        $this->provider->addRecord($domainId, "a.$zone", 'A', '192.0.2.1', 3600, 0);
-        $this->provider->addRecord($domainId, "b.$zone", 'A', '192.0.2.2', 3600, 0);
-
-        $this->assertTrue($this->provider->deleteRecordsByDomainId($domainId));
-
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM records WHERE domain_id = :id");
-        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
-        $stmt->execute();
-        $this->assertEquals(0, (int)$stmt->fetchColumn());
-    }
-
     // ---------------------------------------------------------------
     // Supermaster operations
     // ---------------------------------------------------------------
@@ -447,13 +430,13 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
         $this->assertEquals($id1, $found['id']);
     }
 
-    public function testGetZoneByName(): void
+    public function testGetZoneById(): void
     {
         $zone = $this->uniqueZoneName();
         $domainId = $this->provider->createZone($zone, 'MASTER');
         $this->createdDomainIds[] = $domainId;
 
-        $result = $this->provider->getZoneByName($zone);
+        $result = $this->provider->getZoneById($domainId);
 
         $this->assertNotNull($result);
         $this->assertEquals($zone, $result['name']);
@@ -462,10 +445,9 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
         $this->assertArrayHasKey('dnssec', $result);
     }
 
-    public function testGetZoneByNameNotFound(): void
+    public function testGetZoneByIdNotFound(): void
     {
-        $result = $this->provider->getZoneByName('nonexistent-zone-' . uniqid() . '.example.com');
-        $this->assertNull($result);
+        $this->assertNull($this->provider->getZoneById(2147483647));
     }
 
     // ---------------------------------------------------------------

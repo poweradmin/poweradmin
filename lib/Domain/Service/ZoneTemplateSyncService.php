@@ -185,22 +185,6 @@ class ZoneTemplateSyncService
     }
 
     /**
-     * Remove sync tracking when zone is unlinked from template
-     */
-    public function removeSyncRecord(int $zoneId, int $templateId): void
-    {
-        $query = "DELETE FROM zone_template_sync
-                  WHERE zone_id = :zone_id
-                    AND zone_templ_id = :template_id";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([
-            'zone_id' => $zoneId,
-            'template_id' => $templateId
-        ]);
-    }
-
-    /**
      * Drop sync rows for prior templates so the table reflects the zone's current template.
      * Pass 0 as $keepTemplateId to clear every sync row for the zone.
      */
@@ -283,80 +267,5 @@ class ZoneTemplateSyncService
         }
 
         return $results;
-    }
-
-    /**
-     * Get list of zones needing sync for a template
-     */
-    public function getUnsyncedZones(int $templateId): array
-    {
-        $db_type = $this->config->get('database', 'type');
-
-        if ($this->isApiBackend()) {
-            $query = "SELECT
-                        z.id,
-                        z.zone_name as name,
-                        zts.template_last_modified,
-                        zts.last_synced
-                      FROM zone_template_sync zts
-                      JOIN zones z ON zts.zone_id = z.id
-                      WHERE zts.zone_templ_id = :template_id
-                        AND zts.needs_sync = " . DbCompat::boolTrue($db_type) . "
-                      ORDER BY z.zone_name";
-        } else {
-            $query = "SELECT
-                        d.id,
-                        d.name,
-                        zts.template_last_modified,
-                        zts.last_synced
-                      FROM zone_template_sync zts
-                      JOIN zones z ON zts.zone_id = z.id
-                      JOIN domains d ON z.domain_id = d.id
-                      WHERE zts.zone_templ_id = :template_id
-                        AND zts.needs_sync = " . DbCompat::boolTrue($db_type) . "
-                      ORDER BY d.name";
-        }
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute(['template_id' => $templateId]);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * Check if a specific zone needs sync
-     */
-    public function zoneNeedsSync(int $zoneId, int $templateId): bool
-    {
-        $query = "SELECT needs_sync 
-                  FROM zone_template_sync 
-                  WHERE zone_id = :zone_id 
-                    AND zone_templ_id = :template_id";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([
-            'zone_id' => $zoneId,
-            'template_id' => $templateId
-        ]);
-
-        $result = $stmt->fetchColumn();
-        // If no sync record exists, assume it needs sync (should be created)
-        return $result === false ? true : (bool) $result;
-    }
-
-    /**
-     * Initialize sync records for existing zone-template relationships
-     */
-    public function initializeSyncRecords(): void
-    {
-        // Insert sync records for existing zone-template relationships that don't have them yet
-        $db_type = $this->config->get('database', 'type');
-        $query = "INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync, last_synced)
-                  SELECT z.id, z.zone_templ_id, " . DbCompat::boolFalse($db_type) . ", " . DbCompat::now($db_type) . "
-                  FROM zones z
-                  LEFT JOIN zone_template_sync zts ON z.id = zts.zone_id AND z.zone_templ_id = zts.zone_templ_id
-                  WHERE z.zone_templ_id > 0 AND zts.zone_id IS NULL";
-
-        $this->db->exec($query);
     }
 }

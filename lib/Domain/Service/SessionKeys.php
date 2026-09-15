@@ -119,7 +119,6 @@ final class SessionKeys
     public const ADD_RECORD_LAST_DATA = 'add_record_last_data';
     public const ADD_RECORD_ZONE_ID = 'add_record_zone_id';
     public const ZONE_IMPORT_DATA = 'zone_import_data';
-    public const FORM_DATA = 'form_data';
 
     // Misc
     public const PDNS_VERSION_LAST_ATTEMPT = 'pdns_version_last_attempt';

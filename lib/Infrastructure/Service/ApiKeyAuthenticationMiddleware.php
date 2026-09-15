@@ -27,9 +27,7 @@ use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Authenticates API requests by the X-API-Key header and loads the key's user.
@@ -126,20 +124,6 @@ class ApiKeyAuthenticationMiddleware
         }
 
         return $this->apiKeyService->getScopeFromApiKey($apiKey);
-    }
-
-    /**
-     * Handle anonymous request on API routes that require authentication
-     *
-     * @return JsonResponse
-     */
-    public function handleUnauthenticated(): JsonResponse
-    {
-        return new JsonResponse([
-            'error' => true,
-            'message' => 'Authentication required',
-            'code' => 'auth_required'
-        ], Response::HTTP_UNAUTHORIZED);
     }
 
     /**

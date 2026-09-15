@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,56 +49,8 @@ class Zone
         return $this->isSecured;
     }
 
-    public function secure(): void
-    {
-        $this->isSecured = true;
-    }
-
-    public function unsecure(): void
-    {
-        $this->isSecured = false;
-    }
-
-    public function addKey(CryptoKey $key): void
-    {
-        $this->keys[] = $key;
-    }
-
-    public function removeKey(int $keyId): void
-    {
-        foreach ($this->keys as $index => $key) {
-            if ($key->getId() === $keyId) {
-                unset($this->keys[$index]);
-                $this->keys = array_values($this->keys); // Re-index array
-                break;
-            }
-        }
-    }
-
     public function getKeys(): array
     {
         return $this->keys;
-    }
-
-    public function getKey(int $keyId): ?CryptoKey
-    {
-        foreach ($this->keys as $key) {
-            if ($key->getId() === $keyId) {
-                return $key;
-            }
-        }
-        return null;
-    }
-
-    public function activateKey(int $keyId): void
-    {
-        $key = $this->getKey($keyId);
-        $key?->activate();
-    }
-
-    public function deactivateKey(int $keyId): void
-    {
-        $key = $this->getKey($keyId);
-        $key?->deactivate();
     }
 }

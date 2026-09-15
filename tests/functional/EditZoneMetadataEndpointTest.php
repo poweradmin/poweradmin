@@ -9,6 +9,7 @@ use Poweradmin\AppInitializer;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
 
 class EditZoneMetadataEndpointTest extends TestCase
 {
@@ -186,9 +187,10 @@ class EditZoneMetadataEndpointTest extends TestCase
 
         $initializer = new AppInitializer(false);
         $db = $initializer->getDb();
-        $zoneRepository = new DbZoneRepository($db, ConfigurationManager::getInstance());
+        $config = ConfigurationManager::getInstance();
+        $zoneRepository = new DbZoneRepository($db, $config);
 
-        $zoneId = $zoneRepository->getZoneIdByName($zoneName);
+        $zoneId = (new SqlDomainRepository($db, $config))->getDomainIdByName($zoneName);
         $this->assertNotNull($zoneId);
 
         return [$zoneRepository, (int) $zoneId];

@@ -549,19 +549,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $zone;
     }
 
-    public function getZoneByName(string $zoneName): ?array
-    {
-        $query = "SELECT id FROM zones WHERE zone_name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
-        $zoneId = $stmt->fetchColumn();
-        if (!$zoneId) {
-            return null;
-        }
-        return $this->getZone((int)$zoneId);
-    }
-
     public function findForwardZonesByPtrRecords(array $reverseZoneIds): array
     {
         // Fetch PTR records from API for each reverse zone
@@ -806,16 +793,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $stmt->fetchColumn() !== false;
     }
 
-    public function getZoneIdByName(string $zoneName): ?int
-    {
-        $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE zone_name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
-        $result = $stmt->fetchColumn();
-        return $result ? (int)$result : null;
-    }
-
     public function deleteZone(int $zoneId): bool
     {
         $canonical = $this->resolveCanonicalRow($zoneId);
@@ -887,29 +864,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             $success = $this->backendProvider->updateZoneMaster($externalId, $updates['master']);
         }
         return $success;
-    }
-
-    public function getAllZones(?int $offset = null, ?int $limit = null): array
-    {
-        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
-                         COALESCE(z.owner, 0) as owner
-                  FROM zones z
-                  WHERE z.zone_name IS NOT NULL
-                  ORDER BY z.zone_name";
-        if ($limit !== null && $limit > 0) {
-            $query .= " LIMIT :limit OFFSET :offset";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset ?? 0, PDO::PARAM_INT);
-        } else {
-            $stmt = $this->db->prepare($query);
-        }
-        $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($results as &$row) {
-            $row['record_count'] = 0; // Skip per-zone API calls for list views
-        }
-        return $results;
     }
 
     public function getZoneCount(): int

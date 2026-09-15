@@ -170,7 +170,7 @@ class ZoneFileImportController extends BaseController
         // Auto-detect existing zone when importing from the menu
         $domainRepository = $this->createDomainRepository();
         if ($importMode === 'new' && $origin !== null && $domainRepository->domainExists($origin)) {
-            $existingZoneId = $domainRepository->getZoneIdFromName($origin) ?? 0;
+            $existingZoneId = $domainRepository->getDomainIdByName($origin) ?? 0;
             if ($existingZoneId > 0) {
                 $permEdit = $permissionService->getEditPermissionLevelForZone($userId, $existingZoneId);
                 if ($permEdit !== 'none') {

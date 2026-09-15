@@ -126,28 +126,6 @@ class UserManagementService
     }
 
     /**
-     * Check if a user exists by username
-     *
-     * @param string $username Username to check
-     * @return bool True if user exists, false otherwise
-     */
-    public function userExistsByUsername(string $username): bool
-    {
-        return $this->userRepository->getUserByUsername($username) !== null;
-    }
-
-    /**
-     * Check if a user exists by email
-     *
-     * @param string $email Email to check
-     * @return bool True if user exists, false otherwise
-     */
-    public function userExistsByEmail(string $email): bool
-    {
-        return $this->userRepository->getUserByEmail($email) !== null;
-    }
-
-    /**
      * Get user details by username (similar to list format)
      *
      * @param string $username Username to search for
@@ -179,35 +157,6 @@ class UserManagementService
         }
 
         return $this->profileAssembler->assembleLookup($user);
-    }
-
-    /**
-     * Get basic user information for verification purposes
-     *
-     * @param int $userId User ID
-     * @return array|null Basic user data or null if not found
-     */
-    public function getUserForVerification(int $userId): ?array
-    {
-        $user = $this->userRepository->getUserById($userId);
-
-        if (!$user) {
-            return null;
-        }
-
-        $permissions = $this->userRepository->getUserPermissions($userId);
-        $isAdmin = $this->userRepository->hasAdminPermission($userId);
-
-        return [
-            'user_id' => (int)$user['id'],
-            'username' => $user['username'],
-            'is_admin' => $isAdmin,
-            'permissions' => [
-                'is_admin' => $isAdmin,
-                'zone_creation_allowed' => in_array('zone_master_add', $permissions) || $isAdmin,
-                'zone_management_allowed' => in_array('zone_content_view_others', $permissions) || $isAdmin
-            ]
-        ];
     }
 
     /**

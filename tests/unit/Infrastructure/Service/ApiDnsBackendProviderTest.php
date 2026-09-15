@@ -477,19 +477,23 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertSame([1], $boundIds);
     }
 
-    public function testGetZoneByNameSurvivesAMastersFieldThatIsNotAnArray(): void
+    public function testGetZoneByIdSurvivesAMastersFieldThatIsNotAnArray(): void
     {
         // The raw zone read is not shape-normalized the way getAllZoneKinds is, so a
         // proxy flattening masters to a scalar used to be a TypeError inside implode().
-        $this->mockClient->method('getZone')->willReturn(['kind' => 'SLAVE', 'masters' => '192.0.2.1']);
+        $this->mockClient->expects($this->once())->method('getZone')
+            ->with('slave.example.com.', false)
+            ->willReturn(['kind' => 'SLAVE', 'masters' => '192.0.2.1']);
 
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute');
-        $stmt->method('fetch')->willReturn(['id' => 1, 'domain_id' => 1]);
-        $this->mockDb->method('prepare')->willReturn($stmt);
+        $this->mockDb->method('prepare')->willReturn(
+            $this->stubCanonicalRowLookup(['id' => 1, 'zone_name' => 'slave.example.com', 'zone_type' => 'SLAVE'])
+        );
 
-        $result = $this->provider->getZoneByName('slave.example.com');
+        $result = $this->provider->getZoneById(1);
 
+        $this->assertSame(1, $result['id']);
+        $this->assertSame('slave.example.com', $result['name']);
+        $this->assertSame('SLAVE', $result['type']);
         $this->assertSame('', $result['master']);
     }
 
@@ -1450,17 +1454,6 @@ class ApiDnsBackendProviderTest extends TestCase
     }
 
     // ---------------------------------------------------------------
-    // SOA operations
-    // ---------------------------------------------------------------
-
-    public function testUpdateSOASerialIsNoOp(): void
-    {
-        $result = $this->provider->updateSOASerial(1);
-
-        $this->assertTrue($result);
-    }
-
-    // ---------------------------------------------------------------
     // Supermaster operations
     // ---------------------------------------------------------------
 
@@ -1614,13 +1607,6 @@ class ApiDnsBackendProviderTest extends TestCase
         );
 
         $this->assertFalse($result);
-    }
-
-    public function testDeleteRecordsByDomainIdReturnsTrue(): void
-    {
-        $result = $this->provider->deleteRecordsByDomainId(1);
-
-        $this->assertTrue($result);
     }
 
     // ---------------------------------------------------------------

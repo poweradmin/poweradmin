@@ -30,15 +30,6 @@ interface ZoneRepositoryInterface
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array;
 
     /**
-     * Get all zones with pagination
-     *
-     * @param int|null $offset Pagination offset
-     * @param int|null $limit Maximum number of records to return
-     * @return array Array of zones
-     */
-    public function getAllZones(?int $offset = null, ?int $limit = null): array;
-
-    /**
      * Get the total number of zones
      *
      * @return int Total number of zones
@@ -158,14 +149,6 @@ interface ZoneRepositoryInterface
     public function removeOwnerFromZone(int $zoneId, int $userId): bool;
 
     /**
-     * Get zone ID by name
-     *
-     * @param string $zoneName The zone name
-     * @return int|null The zone ID or null if not found
-     */
-    public function getZoneIdByName(string $zoneName): ?int;
-
-    /**
      * Get raw PowerDNS domain metadata rows for a zone.
      *
      * @param int $zoneId The zone ID
@@ -236,14 +219,6 @@ interface ZoneRepositoryInterface
      * @return bool True if zone exists
      */
     public function zoneExists(int $zoneId, ?int $userId = null): bool;
-
-    /**
-     * Get a zone by name
-     *
-     * @param string $zoneName The zone name
-     * @return array|null Zone data if found, null otherwise
-     */
-    public function getZoneByName(string $zoneName): ?array;
 
     /**
      * Get count of zones with filtering

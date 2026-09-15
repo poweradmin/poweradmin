@@ -124,29 +124,6 @@ class IpHelper
     }
 
     /**
-     * Expand an IPv6 address to its full form
-     *
-     * @param string $ip IPv6 address, potentially in compressed form
-     * @return string Expanded IPv6 address
-     */
-    public static function expandIPv6(string $ip): string
-    {
-        $binary = inet_pton($ip);
-        if ($binary === false) {
-            return '';
-        }
-        $hex = bin2hex($binary);
-
-        // Format as 8 groups of 4 hex digits
-        $parts = [];
-        for ($i = 0; $i < 8; $i++) {
-            $parts[] = substr($hex, $i * 4, 4);
-        }
-
-        return implode(':', $parts);
-    }
-
-    /**
      * Build the reverse domain for an IPv4 address with appropriate CIDR handling
      *
      * @param array $octets The IP address octets
@@ -170,31 +147,6 @@ class IpHelper
         } else { // /7 through /0
             return $octets[0] . '.in-addr.arpa';
         }
-    }
-
-    /**
-     * Get IPv6 reverse zone for a network prefix
-     *
-     * @param string $networkPrefix The IPv6 network prefix (e.g., "2001:db8:1:1")
-     * @return string The reverse zone (e.g., "1.1.0.0.8.b.d.0.1.0.0.2.ip6.arpa")
-     */
-    public static function getIPv6ReverseZone(string $networkPrefix): string
-    {
-        // Add zeros to form a complete IPv6 address
-        $fullAddress = $networkPrefix . '::';
-
-        // Expand to full form
-        $expanded = self::expandIPv6($fullAddress);
-        $noColons = str_replace(':', '', $expanded);
-
-        // For a /64 network, we need the first 16 hex digits (64 bits)
-        $networkPart = substr($noColons, 0, 16);
-
-        // Reverse and add dots
-        $nibbles = str_split($networkPart);
-        $reversed = implode('.', array_reverse($nibbles));
-
-        return $reversed . '.ip6.arpa';
     }
 
     /**

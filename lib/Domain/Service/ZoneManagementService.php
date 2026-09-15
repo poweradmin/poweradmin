@@ -401,47 +401,6 @@ class ZoneManagementService
         return ['success' => true, 'message' => 'Zone deleted successfully'];
     }
 
-
-    /**
-     * Set domain permissions
-     *
-     * @param int $domainId Domain ID
-     * @param int $userId User ID
-     * @return array Result array with success status and message
-     */
-    public function setDomainPermissions(int $domainId, int $userId): array
-    {
-        // Check if domain exists
-        $domain = $this->zoneRepository->getZone($domainId);
-        if (!$domain) {
-            return ['success' => false, 'message' => 'Domain not found', 'status' => 404];
-        }
-
-        // Check if user is already an owner
-        if ($this->zoneRepository->isUserZoneOwner($domainId, $userId)) {
-            return [
-                'success' => true,
-                'message' => 'User is already an owner of this domain',
-                'domain_id' => $domainId,
-                'user_id' => $userId
-            ];
-        }
-
-        // Add the user as an owner of the zone
-        $success = $this->zoneRepository->addOwnerToZone($domainId, $userId);
-
-        if (!$success) {
-            return ['success' => false, 'message' => 'Failed to set domain permissions', 'status' => 500];
-        }
-
-        return [
-            'success' => true,
-            'message' => 'Domain permissions set successfully',
-            'domain_id' => $domainId,
-            'user_id' => $userId
-        ];
-    }
-
     /**
      * Applies a zone template (or "none" to unlink) to an existing zone, replacing
      * the template-managed records. The caller must be allowed to use the template.

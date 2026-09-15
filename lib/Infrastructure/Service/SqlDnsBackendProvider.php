@@ -365,16 +365,6 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
         return true;
     }
 
-    public function deleteRecordsByDomainId(int $domainId): bool
-    {
-        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-        $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE domain_id = :id");
-        $stmt->execute([':id' => $domainId]);
-
-        return true;
-    }
-
     // ---------------------------------------------------------------
     // Zone read methods
     // ---------------------------------------------------------------
@@ -660,35 +650,6 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
         return $zones;
     }
 
-    public function getZoneByName(string $zoneName): ?array
-    {
-        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $cryptokeysTable = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
-        $domainmetadataTable = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
-
-        $stmt = $this->db->prepare(
-            "SELECT d.id, d.name, d.type, d.master,
-                    EXISTS(SELECT 1 FROM $cryptokeysTable ck WHERE ck.domain_id = d.id) OR
-                    EXISTS(SELECT 1 FROM $domainmetadataTable dm WHERE dm.domain_id = d.id AND dm.kind = 'PRESIGNED')
-                    AS dnssec
-             FROM $domainsTable d WHERE d.name = :name"
-        );
-        $stmt->execute([':name' => $zoneName]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$row) {
-            return null;
-        }
-
-        return [
-            'id' => (int)$row['id'],
-            'name' => $row['name'],
-            'type' => $row['type'],
-            'master' => $row['master'] ?? '',
-            'dnssec' => (bool)$row['dnssec'],
-        ];
-    }
-
     // ---------------------------------------------------------------
     // Record read operations
     // ---------------------------------------------------------------
@@ -788,18 +749,6 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
         }
 
         return ['zones' => $zones, 'records' => $records];
-    }
-
-    // ---------------------------------------------------------------
-    // SOA operations
-    // ---------------------------------------------------------------
-
-    public function updateSOASerial(int $domainId): bool
-    {
-        // In SQL mode, this is handled by SOARecordManager directly.
-        // This method exists for interface compliance; actual SOA serial
-        // updates are delegated by RecordManager to SOARecordManager.
-        return true;
     }
 
     // ---------------------------------------------------------------

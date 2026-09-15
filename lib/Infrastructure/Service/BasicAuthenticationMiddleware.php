@@ -30,9 +30,7 @@ use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Authenticates API requests with HTTP Basic credentials against the users table.
@@ -80,26 +78,6 @@ class BasicAuthenticationMiddleware
         // Try to authenticate with the credentials
         list($username, $password) = $credentials;
         return $this->authenticateAndGetUserId($username, $password);
-    }
-
-    /**
-     * Handle unauthenticated request by sending a 401 response with WWW-Authenticate header
-     *
-     * @return JsonResponse
-     */
-    public function handleUnauthenticated(): JsonResponse
-    {
-        $response = new JsonResponse([
-            'error' => true,
-            'message' => 'Authentication required',
-            'code' => 'auth_required'
-        ], Response::HTTP_UNAUTHORIZED);
-
-        // Add WWW-Authenticate header for HTTP Basic Auth with realm from config
-        $realm = $this->config->get('api', 'basic_auth_realm', 'Poweradmin API');
-        $response->headers->set('WWW-Authenticate', 'Basic realm="' . $realm . '", charset="UTF-8"');
-
-        return $response;
     }
 
     /**

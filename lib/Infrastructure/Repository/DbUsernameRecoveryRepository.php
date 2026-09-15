@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -102,27 +102,6 @@ class DbUsernameRecoveryRepository
     }
 
     /**
-     * Get the timestamp of the last recovery attempt for an email
-     *
-     * @param string $email Email address to check
-     * @return string|null Timestamp of last attempt, or null if no attempts found
-     */
-    public function getLastAttemptTime(string $email): ?string
-    {
-        $sql = "SELECT created_at
-                FROM username_recovery_requests
-                WHERE email = :email
-                ORDER BY created_at DESC
-                LIMIT 1";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':email' => $email]);
-
-        $result = $stmt->fetchColumn();
-        return $result ?: null;
-    }
-
-    /**
      * Delete old recovery request records
      *
      * Cleanup strategy:
@@ -146,33 +125,5 @@ class DbUsernameRecoveryRepository
         $stmt->execute();
 
         return $stmt->rowCount();
-    }
-
-    /**
-     * Delete all recovery requests for a specific email
-     *
-     * @param string $email Email address
-     * @return int Number of deleted records
-     */
-    public function deleteByEmail(string $email): int
-    {
-        $sql = "DELETE FROM username_recovery_requests WHERE email = :email";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':email' => $email]);
-
-        return $stmt->rowCount();
-    }
-
-    /**
-     * Get total count of recovery requests in the system
-     *
-     * @return int Total number of records
-     */
-    public function getTotalCount(): int
-    {
-        $sql = "SELECT COUNT(*) FROM username_recovery_requests";
-        $stmt = $this->db->query($sql);
-        return (int) $stmt->fetchColumn();
     }
 }

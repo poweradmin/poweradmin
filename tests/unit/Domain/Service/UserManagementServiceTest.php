@@ -225,50 +225,6 @@ class UserManagementServiceTest extends TestCase
         $this->assertFalse($this->service->userExists(999));
     }
 
-    // ========== userExistsByUsername tests ==========
-
-    #[Test]
-    public function testUserExistsByUsernameReturnsTrueWhenFound(): void
-    {
-        $this->userRepository->method('getUserByUsername')
-            ->with('testuser')
-            ->willReturn(['id' => 1, 'username' => 'testuser']);
-
-        $this->assertTrue($this->service->userExistsByUsername('testuser'));
-    }
-
-    #[Test]
-    public function testUserExistsByUsernameReturnsFalseWhenNotFound(): void
-    {
-        $this->userRepository->method('getUserByUsername')
-            ->with('nonexistent')
-            ->willReturn(null);
-
-        $this->assertFalse($this->service->userExistsByUsername('nonexistent'));
-    }
-
-    // ========== userExistsByEmail tests ==========
-
-    #[Test]
-    public function testUserExistsByEmailReturnsTrueWhenFound(): void
-    {
-        $this->userRepository->method('getUserByEmail')
-            ->with('test@example.com')
-            ->willReturn(['id' => 1, 'email' => 'test@example.com']);
-
-        $this->assertTrue($this->service->userExistsByEmail('test@example.com'));
-    }
-
-    #[Test]
-    public function testUserExistsByEmailReturnsFalseWhenNotFound(): void
-    {
-        $this->userRepository->method('getUserByEmail')
-            ->with('nonexistent@example.com')
-            ->willReturn(null);
-
-        $this->assertFalse($this->service->userExistsByEmail('nonexistent@example.com'));
-    }
-
     // ========== getUserByUsername tests ==========
 
     #[Test]
@@ -346,70 +302,6 @@ class UserManagementServiceTest extends TestCase
         $this->assertNull($result['perm_templ']);
         $this->assertNull($result['perm_templ_name']);
         $this->assertSame([], $result['groups']);
-    }
-
-    // ========== getUserForVerification tests ==========
-
-    #[Test]
-    public function testGetUserForVerificationReturnsNullWhenNotFound(): void
-    {
-        $this->userRepository->method('getUserById')
-            ->with(999)
-            ->willReturn(null);
-
-        $result = $this->service->getUserForVerification(999);
-        $this->assertNull($result);
-    }
-
-    #[Test]
-    public function testGetUserForVerificationReturnsPermissionFlags(): void
-    {
-        $userId = 1;
-        $userData = ['id' => $userId, 'username' => 'testuser'];
-
-        $this->userRepository->method('getUserById')
-            ->with($userId)
-            ->willReturn($userData);
-
-        $this->userRepository->method('getUserPermissions')
-            ->with($userId)
-            ->willReturn(['zone_master_add', 'zone_content_view_others']);
-
-        $this->userRepository->method('hasAdminPermission')
-            ->with($userId)
-            ->willReturn(false);
-
-        $result = $this->service->getUserForVerification($userId);
-
-        $this->assertEquals($userId, $result['user_id']);
-        $this->assertFalse($result['is_admin']);
-        $this->assertTrue($result['permissions']['zone_creation_allowed']);
-        $this->assertTrue($result['permissions']['zone_management_allowed']);
-    }
-
-    #[Test]
-    public function testGetUserForVerificationAdminHasAllPermissions(): void
-    {
-        $userId = 1;
-        $userData = ['id' => $userId, 'username' => 'admin'];
-
-        $this->userRepository->method('getUserById')
-            ->with($userId)
-            ->willReturn($userData);
-
-        $this->userRepository->method('getUserPermissions')
-            ->with($userId)
-            ->willReturn([]);
-
-        $this->userRepository->method('hasAdminPermission')
-            ->with($userId)
-            ->willReturn(true);
-
-        $result = $this->service->getUserForVerification($userId);
-
-        $this->assertTrue($result['is_admin']);
-        $this->assertTrue($result['permissions']['zone_creation_allowed']);
-        $this->assertTrue($result['permissions']['zone_management_allowed']);
     }
 
     // ========== createUser tests ==========

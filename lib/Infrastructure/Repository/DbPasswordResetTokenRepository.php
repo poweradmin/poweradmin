@@ -68,23 +68,6 @@ class DbPasswordResetTokenRepository
     }
 
     /**
-     * Find all active (non-expired) tokens
-     */
-    public function findActiveTokens(): array
-    {
-        // expires_at is written with PHP's clock, so compare against PHP's clock too;
-        // DbCompat::now() uses the DB session/UTC clock and skews by the tz offset.
-        $sql = "SELECT * FROM password_reset_tokens
-                WHERE expires_at > :now
-                ORDER BY created_at DESC";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':now' => date('Y-m-d H:i:s')]);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    /**
      * Find a token by its value
      */
     public function findByToken(string $token): ?array
@@ -158,24 +141,6 @@ class DbPasswordResetTokenRepository
     }
 
     /**
-     * Get the last attempt time for an email
-     */
-    public function getLastAttemptTime(string $email): ?string
-    {
-        $sql = "SELECT created_at 
-                FROM password_reset_tokens 
-                WHERE email = :email 
-                ORDER BY created_at DESC 
-                LIMIT 1";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':email' => $email]);
-
-        $result = $stmt->fetchColumn();
-        return $result ?: null;
-    }
-
-    /**
      * Delete expired tokens
      *
      * Current cleanup strategy:
@@ -199,19 +164,6 @@ class DbPasswordResetTokenRepository
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':now' => date('Y-m-d H:i:s')]);
-
-        return $stmt->rowCount();
-    }
-
-    /**
-     * Delete all tokens for a specific email
-     */
-    public function deleteByEmail(string $email): int
-    {
-        $sql = "DELETE FROM password_reset_tokens WHERE email = :email";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':email' => $email]);
 
         return $stmt->rowCount();
     }
