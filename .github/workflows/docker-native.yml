@@ -163,7 +163,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: digests-${{ env.PLATFORM_PAIR }}
+          name: digests-${{ inputs.tag }}-${{ env.PLATFORM_PAIR }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
@@ -183,7 +183,7 @@ jobs:
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           path: /tmp/digests
-          pattern: digests-*
+          pattern: digests-${{ inputs.tag }}-*
           merge-multiple: true
 
       - name: Set up Docker Buildx
@@ -234,7 +234,7 @@ jobs:
       - name: Upload SBOM as artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: sbom-${{ github.run_id }}
+          name: sbom-${{ inputs.tag }}-${{ github.run_id }}
           path: sbom.spdx.json
 
       - name: Job Summary
@@ -254,7 +254,7 @@ jobs:
             echo "- Digest: ${IMAGE_DIGEST}"
             echo ""
             echo "**Security & Compliance:**"
-            echo "- ✅ SBOM generated (artifact: sbom-${RUN_ID})"
+            echo "- ✅ SBOM generated (artifact: sbom-${TAG}-${RUN_ID})"
             echo "- ✅ Images pushed to GHCR and Docker Hub"
             echo ""
             echo "**Workflow:** ${GITHUB_WORKFLOW} (#${GITHUB_RUN_NUMBER})"
