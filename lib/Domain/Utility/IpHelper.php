@@ -147,35 +147,6 @@ class IpHelper
     }
 
     /**
-     * Convert an IPv6 address to its PTR record form
-     *
-     * @param string $ip IPv6 address
-     * @return string PTR record form
-     */
-    public static function convertIPv6ToPTR(string $ip): string
-    {
-        // Clean and normalize the IPv6 address
-        if (str_contains($ip, '::')) {
-            // If it's a compressed IPv6 address, expand it
-            $binary = inet_pton($ip);
-            if ($binary === false) {
-                return '';
-            }
-            $hex = bin2hex($binary);
-        } else {
-            // If it's already expanded, just remove colons
-            $hex = str_replace(':', '', $ip);
-        }
-
-        // Reverse the hex digits and separate with dots
-        $nibbles = str_split($hex);
-        $reversed = implode('.', array_reverse($nibbles));
-
-        // Add the ip6.arpa suffix
-        return $reversed . '.ip6.arpa';
-    }
-
-    /**
      * Build the reverse domain for an IPv4 address with appropriate CIDR handling
      *
      * @param array $octets The IP address octets
