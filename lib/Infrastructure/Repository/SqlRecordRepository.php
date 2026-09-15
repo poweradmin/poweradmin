@@ -110,7 +110,7 @@ class SqlRecordRepository implements RecordRepositoryInterface
         if ($sortby == 'name') {
             $sortby = "$records_table.name";
         }
-        $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getRecordSortOrder($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
+        $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getNaturalSortOrder($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
         // Pin SOA, NS, and apex records to the top regardless of column or direction so
         // zone-level metadata stays grouped above the body the user is sorting through.
         $sql_sortby = "$records_table.type = 'SOA' DESC, $records_table.type = 'NS' DESC, " .
@@ -416,7 +416,7 @@ class SqlRecordRepository implements RecordRepositoryInterface
 
         $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
         $sort_by_qualified = $sort_by === 'name'
-            ? SortHelper::getRecordSortOrder($records_table, $driver, $sort_direction)
+            ? SortHelper::getNaturalSortOrder($records_table, $driver, $sort_direction)
             : $records_table . '.' . $sort_by . ' ' . $sort_direction;
         // Pin SOA, NS, and apex records to the top regardless of column or direction,
         // matching the unfiltered listing so filtering does not scatter zone metadata.

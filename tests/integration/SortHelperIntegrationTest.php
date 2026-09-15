@@ -119,7 +119,7 @@ class SortHelperIntegrationTest extends TestCase
             'ASC',
             self::ZONE_SORT_TEST_DATA,
             self::ZONE_SORT_EXPECTED_ORDER_ASC,
-            'getZoneSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -131,7 +131,7 @@ class SortHelperIntegrationTest extends TestCase
             'DESC',
             self::ZONE_SORT_TEST_DATA,
             array_reverse(self::ZONE_SORT_EXPECTED_ORDER_ASC),
-            'getZoneSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -143,7 +143,7 @@ class SortHelperIntegrationTest extends TestCase
             'ASC',
             self::ZONE_SORT_ARPA_TEST_DATA,
             self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC,
-            'getZoneSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -155,7 +155,7 @@ class SortHelperIntegrationTest extends TestCase
             'DESC',
             self::ZONE_SORT_ARPA_TEST_DATA,
             array_reverse(self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC),
-            'getZoneSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -167,7 +167,7 @@ class SortHelperIntegrationTest extends TestCase
             'ASC',
             self::ZONE_SORT_TEST_DATA,
             self::ZONE_SORT_EXPECTED_ORDER_ASC,
-            'getZoneSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -179,7 +179,7 @@ class SortHelperIntegrationTest extends TestCase
             'DESC',
             self::ZONE_SORT_TEST_DATA,
             array_reverse(self::ZONE_SORT_EXPECTED_ORDER_ASC),
-            'getZoneSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -191,7 +191,7 @@ class SortHelperIntegrationTest extends TestCase
             'ASC',
             self::ZONE_SORT_ARPA_TEST_DATA,
             self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC,
-            'getZoneSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -203,7 +203,7 @@ class SortHelperIntegrationTest extends TestCase
             'DESC',
             self::ZONE_SORT_ARPA_TEST_DATA,
             array_reverse(self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC),
-            'getZoneSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -215,7 +215,7 @@ class SortHelperIntegrationTest extends TestCase
             'ASC',
             self::ZONE_SORT_TEST_DATA,
             self::ZONE_SORT_EXPECTED_ORDER_ASC,
-            'getZoneSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -227,7 +227,7 @@ class SortHelperIntegrationTest extends TestCase
             'DESC',
             self::ZONE_SORT_TEST_DATA,
             array_reverse(self::ZONE_SORT_EXPECTED_ORDER_ASC),
-            'getZoneSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -239,7 +239,7 @@ class SortHelperIntegrationTest extends TestCase
             'ASC',
             self::ZONE_SORT_ARPA_TEST_DATA,
             self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC,
-            'getZoneSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -251,7 +251,7 @@ class SortHelperIntegrationTest extends TestCase
             'DESC',
             self::ZONE_SORT_ARPA_TEST_DATA,
             array_reverse(self::ZONE_SORT_ARPA_EXPECTED_ORDER_ASC),
-            'getZoneSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -263,7 +263,7 @@ class SortHelperIntegrationTest extends TestCase
             'ASC',
             self::ZONE_SORT_TEST_DATA,
             self::ZONE_SORT_EXPECTED_ORDER_ASC,
-            'getRecordSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -275,7 +275,7 @@ class SortHelperIntegrationTest extends TestCase
             'DESC',
             self::ZONE_SORT_TEST_DATA,
             array_reverse(self::ZONE_SORT_EXPECTED_ORDER_ASC),
-            'getRecordSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -287,7 +287,7 @@ class SortHelperIntegrationTest extends TestCase
             'ASC',
             self::RECORD_SORT_PTR_RECORDS,
             self::RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC,
-            'getRecordSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -299,7 +299,7 @@ class SortHelperIntegrationTest extends TestCase
             'DESC',
             self::RECORD_SORT_PTR_RECORDS,
             array_reverse(self::RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC),
-            'getRecordSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -311,7 +311,7 @@ class SortHelperIntegrationTest extends TestCase
             'ASC',
             self::ZONE_SORT_TEST_DATA,
             self::ZONE_SORT_EXPECTED_ORDER_ASC,
-            'getRecordSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -323,7 +323,7 @@ class SortHelperIntegrationTest extends TestCase
             'DESC',
             self::ZONE_SORT_TEST_DATA,
             array_reverse(self::ZONE_SORT_EXPECTED_ORDER_ASC),
-            'getRecordSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -335,7 +335,7 @@ class SortHelperIntegrationTest extends TestCase
             'ASC',
             self::RECORD_SORT_PTR_RECORDS,
             self::RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC,
-            'getRecordSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -347,7 +347,7 @@ class SortHelperIntegrationTest extends TestCase
             'DESC',
             self::RECORD_SORT_PTR_RECORDS,
             array_reverse(self::RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC),
-            'getRecordSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -359,7 +359,7 @@ class SortHelperIntegrationTest extends TestCase
             'ASC',
             self::ZONE_SORT_TEST_DATA,
             self::ZONE_SORT_EXPECTED_ORDER_ASC,
-            'getRecordSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -371,7 +371,7 @@ class SortHelperIntegrationTest extends TestCase
             'DESC',
             self::ZONE_SORT_TEST_DATA,
             array_reverse(self::ZONE_SORT_EXPECTED_ORDER_ASC),
-            'getRecordSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -383,7 +383,7 @@ class SortHelperIntegrationTest extends TestCase
             'ASC',
             self::RECORD_SORT_PTR_RECORDS,
             self::RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC,
-            'getRecordSortOrder'
+            'getNaturalSortOrder'
         );
     }
 
@@ -395,7 +395,7 @@ class SortHelperIntegrationTest extends TestCase
             'DESC',
             self::RECORD_SORT_PTR_RECORDS,
             array_reverse(self::RECORD_SORT_PTR_RECORDS_EXPECTED_ORDER_ASC),
-            'getRecordSortOrder'
+            'getNaturalSortOrder'
         );
     }
 

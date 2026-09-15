@@ -273,7 +273,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
             $sortby = "$domains_table.$sortby";
         }
 
-        $sql_sortby = $sortby == "$domains_table.name" ? SortHelper::getZoneSortOrder($domains_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
+        $sql_sortby = $sortby == "$domains_table.name" ? SortHelper::getNaturalSortOrder($domains_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
 
         if ($letterstart != 'all' && $rowamount < Constants::DEFAULT_MAX_ROWS) {
             $originalSqlMode = DbCompat::handleSqlMode($this->db, $db_type);

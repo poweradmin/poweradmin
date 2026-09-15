@@ -21,11 +21,15 @@ class ReverseZoneSortingTest extends TestCase
 
         $result = $this->reverseZoneSorting->getSortOrder($field, $dbType, 'ASC', 'natural');
 
-        // Since we're delegating to ReverseDomainNaturalSorting, we just ensure
-        // the result is non-empty and contains expected SQL fragments
-        $this->assertNotEmpty($result);
-        $this->assertStringContainsString($field, $result);
-        $this->assertStringContainsString('ASC', $result);
+        $this->assertSame("$field+0<>0 ASC, $field+0 ASC, $field ASC", $result);
+    }
+
+    public function testNaturalSortOrderPerDriver(): void
+    {
+        $field = 'domains.name';
+
+        $this->assertSame("LENGTH(SUBSTRING($field FROM '^[0-9]+')) DESC, $field DESC", $this->reverseZoneSorting->getSortOrder($field, 'pgsql', 'DESC'));
+        $this->assertSame("$field ASC", $this->reverseZoneSorting->getSortOrder($field, 'other', 'ASC'));
     }
 
     public function testGetSortOrderWithHierarchicalSort(): void

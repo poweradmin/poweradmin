@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Utility;
 
+use Poweradmin\Domain\Enum\SortDirection;
+
 /**
  * Picks natural or hierarchical reverse zone sorting per the configured sort type, in SQL or in PHP.
  */
@@ -43,8 +45,7 @@ class ReverseZoneSorting
             return $hierarchicalSorting->getHierarchicalSortOrder($field, $dbType, $direction);
         } else {
             // Use specialized natural sorting for reverse domains (default behavior)
-            $naturalSorting = new ReverseDomainNaturalSorting();
-            return $naturalSorting->getNaturalSortOrder($field, $dbType, $direction);
+            return $this->getNaturalSortOrder($field, $dbType, $direction);
         }
     }
 
@@ -86,5 +87,16 @@ class ReverseZoneSorting
             // array_merge automatically re-indexes, so array_values is redundant
             return array_merge($ipv4Domains, $ipv6Domains, $otherDomains);
         }
+    }
+
+    private function getNaturalSortOrder(string $field, string $dbType, string $direction): string
+    {
+        $direction = SortDirection::fromRequest($direction)->value;
+
+        return match ($dbType) {
+            'mysql', 'mysqli', 'sqlite' => "$field+0<>0 $direction, $field+0 $direction, $field $direction",
+            'pgsql' => "LENGTH(SUBSTRING($field FROM '^[0-9]+')) $direction, $field $direction",
+            default => "$field $direction",
+        };
     }
 }
