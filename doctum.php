@@ -36,7 +36,7 @@ require_once __DIR__ . '/lib/Version.php';
 
 // The footer records what the pages were generated from, since the published
 // site is rebuilt from develop on a schedule of its own.
-$commit = trim((string)shell_exec('git -C ' . escapeshellarg(__DIR__) . ' rev-parse --short HEAD 2>/dev/null'));
+$commit = !function_exists('shell_exec') ? '' : trim((string)shell_exec('git -C ' . escapeshellarg(__DIR__) . ' rev-parse --short HEAD 2>/dev/null'));
 $footer = [
     'href' => $commit !== '' ? 'https://github.com/poweradmin/poweradmin/commit/' . $commit : '',
     'rel' => 'noreferrer',
