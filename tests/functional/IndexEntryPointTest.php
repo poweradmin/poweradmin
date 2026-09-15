@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Functional;
 
+use Poweradmin\Application\Bootstrap;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Routing\SymfonyRouter;
@@ -33,9 +34,6 @@ class IndexEntryPointTest extends TestCase
         parent::setUp();
         $this->originalServer = $_SERVER;
         $this->originalRequest = $_REQUEST;
-
-        // Ensure helper functions are available
-        require_once __DIR__ . '/../../lib/Application/Helpers/StartupHelpers.php';
     }
 
     protected function tearDown(): void
@@ -45,19 +43,10 @@ class IndexEntryPointTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * Test that helper functions are properly loaded and accessible
-     */
-    public function testHelperFunctionsAreLoaded(): void
+    public function testBootstrapEntryPointsExist(): void
     {
-        $this->assertTrue(
-            function_exists('initializeSession'),
-            'initializeSession() function should be available'
-        );
-        $this->assertTrue(
-            function_exists('initializeTimezone'),
-            'initializeTimezone() function should be available'
-        );
+        $this->assertTrue(method_exists(Bootstrap::class, 'initializeSession'));
+        $this->assertTrue(method_exists(Bootstrap::class, 'initializeTimezone'));
     }
 
     /**
@@ -113,7 +102,7 @@ class IndexEntryPointTest extends TestCase
 
         // The actual session initialization is tested in integration context
         // Here we just verify the function exists and can be called
-        $this->assertIsCallable('initializeSession');
+        $this->assertIsCallable([Bootstrap::class, 'initializeSession']);
     }
 
     /**

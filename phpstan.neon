@@ -9,10 +9,6 @@ parameters:
   tmpDir: .phpstan-cache
   excludePaths:
     - vendor
-  # Global helpers loaded via require_once in entry points; lets targeted
-  # runs (single file, IDE) resolve them without analyzing all of lib/
-  scanFiles:
-    - lib/Application/Helpers/StartupHelpers.php
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # Ignore errors in test files related to mocking
@@ -158,7 +154,7 @@ parameters:
         - lib/AppInitializer.php
         - lib/AppManager.php
         - lib/BaseController.php
-        - lib/Application/Helpers/StartupHelpers.php
+        - lib/Application/Bootstrap.php
         - lib/Application/Service/CsrfTokenService.php
         - lib/Application/Service/OidcService.php
         - lib/Application/Service/SamlService.php

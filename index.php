@@ -20,6 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\Application\Bootstrap;
 use Poweradmin\Application\Http\BootstrapErrorResponder;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Routing\SymfonyRouter;
@@ -28,7 +29,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 require __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
 
 // getInstance() only allocates; initialize() is what can fail, so it goes inside
 // the guarded region. The responder tolerates a half-built configuration.
@@ -38,7 +38,7 @@ try {
     $configManager->initialize();
     CanonicalZoneSql::setRowIdFallback(DnsBackendProviderFactory::isApiBackend($configManager));
 
-    initializeTimezone($configManager);
+    Bootstrap::initializeTimezone($configManager);
 
     // Neither a headless install nor the monitoring probes have any use for a session,
     // and starting one per scrape would leave a session file behind on every request.
@@ -46,7 +46,7 @@ try {
         $configManager->get('interface', 'web_enabled', true)
         && !RequestContext::isHealthProbeRequest((string) $configManager->get('interface', 'base_url_prefix', ''))
     ) {
-        initializeSession($configManager);
+        Bootstrap::initializeSession($configManager);
     }
 
     // A v2 HEAD request is dispatched through the GET handler (see PublicApiController),

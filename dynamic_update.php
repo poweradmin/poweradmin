@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+use Poweradmin\Application\Bootstrap;
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DynamicDnsRequestFactory;
@@ -27,8 +28,7 @@ $config = ConfigurationManager::getInstance();
 $config->initialize();
 CanonicalZoneSql::setRowIdFallback(DnsBackendProviderFactory::isApiBackend($config));
 
-require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
-initializeTimezone($config);
+Bootstrap::initializeTimezone($config);
 
 // Use the shared credential mapper so DDNS honors the same db_ssl* settings as the
 // web app; a hand-built array here silently dropped them and connected in plaintext.
