@@ -34,9 +34,9 @@ interface DomainRepositoryInterface
      *
      * @param int $zid Zone ID
      *
-     * @return int Domain count or false on failure
+     * @return bool Whether a domains row with this id exists
      */
-    public function zoneIdExists(int $zid): int;
+    public function zoneIdExists(int $zid): bool;
 
     /**
      * Get Domain Name by domain ID

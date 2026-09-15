@@ -59,10 +59,9 @@ class ApiDomainRepository implements DomainRepositoryInterface
         $this->backendProvider = $backendProvider;
     }
 
-    public function zoneIdExists(int $zid): int
+    public function zoneIdExists(int $zid): bool
     {
-        $zone = $this->backendProvider->getZoneById($zid);
-        return $zone !== null ? 1 : 0;
+        return $this->backendProvider->getZoneById($zid) !== null;
     }
 
     public function getDomainNameById(int $id): ?string
