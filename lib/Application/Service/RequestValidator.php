@@ -62,9 +62,10 @@ class RequestValidator
      */
     public function validate(array $data): ConstraintViolationListInterface
     {
-        // Filter input data to remove empty values to prevent type errors
+        // An empty field counts as absent so optional type checks skip it (a blank record name
+        // is the apex). Fields declared with Assert\Required keep their '' and fail NotBlank.
         foreach ($data as $key => $value) {
-            if ($value === '') {
+            if ($value === '' && !$this->requiresValue($key)) {
                 unset($data[$key]);
             }
         }
@@ -76,6 +77,11 @@ class RequestValidator
         ]);
 
         return $this->validator->validate($data, $collectionConstraint);
+    }
+
+    private function requiresValue(string $field): bool
+    {
+        return ($this->constraints[$field] ?? null) instanceof Assert\Required;
     }
 
     /**

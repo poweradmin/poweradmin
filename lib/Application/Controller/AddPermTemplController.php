@@ -100,18 +100,18 @@ class AddPermTemplController extends BaseController
     private function validateSubmitRequest(): bool
     {
         $this->setValidationConstraints([
-            'templ_name' => [
+            'templ_name' => new Assert\Required([
                 new Assert\NotBlank(message: sprintf(_('The %s field is required.'), 'templ_name')),
                 new Assert\Length(max: 128, maxMessage: sprintf(_('The %s field must be at most %d characters.'), 'templ_name', 128)),
-            ],
+            ]),
             'templ_descr' => [
                 new Assert\Length(max: 1024, maxMessage: sprintf(_('The %s field must be at most %d characters.'), 'templ_descr', 1024)),
             ],
             'perm_id' => [new Assert\Type('array', message: sprintf(_('The %s field must be a list.'), 'perm_id'))],
-            'template_type' => [
+            'template_type' => new Assert\Required([
                 new Assert\NotBlank(message: sprintf(_('The %s field is required.'), 'template_type')),
                 new Assert\Choice(choices: PermissionTemplateType::values(), message: sprintf(_('The %s field has an invalid value.'), 'template_type')),
-            ],
+            ]),
         ]);
 
         return $this->doValidateRequest();
