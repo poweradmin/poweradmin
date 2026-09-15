@@ -91,6 +91,9 @@ class ControllerServiceFactory
     private ?CatalogZoneService $catalogZoneService = null;
     private ?UserPreferenceService $userPreferenceService = null;
     private ?RepositoryFactory $repositoryFactory = null;
+    private ?ZoneRepositoryInterface $zoneRepository = null;
+    private ?DomainRepositoryInterface $domainRepository = null;
+    private ?RecordRepositoryInterface $recordRepository = null;
     private ?SOARecordManagerInterface $soaRecordManager = null;
     private ?DnssecProviderInterface $dnssecProvider = null;
     private ?PowerdnsApiClient $apiClient = null;
@@ -169,17 +172,17 @@ class ControllerServiceFactory
 
     public function zoneRepository(): ZoneRepositoryInterface
     {
-        return $this->repositoryFactory()->createZoneRepository();
+        return $this->zoneRepository ??= $this->repositoryFactory()->createZoneRepository();
     }
 
     public function domainRepository(): DomainRepositoryInterface
     {
-        return $this->repositoryFactory()->createDomainRepository();
+        return $this->domainRepository ??= $this->repositoryFactory()->createDomainRepository();
     }
 
     public function recordRepository(): RecordRepositoryInterface
     {
-        return $this->repositoryFactory()->createRecordRepository();
+        return $this->recordRepository ??= $this->repositoryFactory()->createRecordRepository();
     }
 
     public function userRepository(): UserRepositoryInterface
@@ -229,7 +232,15 @@ class ControllerServiceFactory
 
     public function zoneManagementService(?PdnsCapabilities $capabilities = null): ZoneManagementService
     {
-        return new ZoneManagementService($this->zoneRepository(), $this->config, $this->db, $this->logger, null, $capabilities, $this->zoneSigningService(), $this->domainRepository());
+        return new ZoneManagementService(
+            $this->zoneRepository(),
+            $this->config,
+            $this->db,
+            $this->logger,
+            capabilities: $capabilities,
+            signing: $this->zoneSigningService(),
+            domainRepository: $this->domainRepository()
+        );
     }
 
     public function auditService(): AuditService
@@ -408,8 +419,7 @@ class ControllerServiceFactory
         return $this->catalogZoneService ??= new CatalogZoneService(
             $this->dnsBackendProvider(),
             $this->permissionService(),
-            $this->auditService(),
-            $this->domainRepository()
+            $this->auditService()
         );
     }
 

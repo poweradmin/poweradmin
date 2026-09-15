@@ -45,8 +45,6 @@ abstract class AbstractApiController extends BaseController
      */
     public function __construct(array $requestParams, bool $authenticate = true)
     {
-        $request = Request::createFromGlobals();
-
         // Initialize config early
         $config = ConfigurationManager::getInstance();
         $config->initialize();
@@ -66,7 +64,7 @@ abstract class AbstractApiController extends BaseController
         // Call parent constructor with authenticate param for session handling if needed
         parent::__construct($requestParams, $authenticate);
 
-        $this->request = $request;
+        $this->request = Request::createFromGlobals();
     }
 
     /**

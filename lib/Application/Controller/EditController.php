@@ -204,7 +204,7 @@ class EditController extends BaseController
 
                 // Handle record addition directly in edit controller (no redirect)
                 if ($this->httpRequest->getPostParam('record') === null) { // Check if it's an add record operation (not a zone update)
-                    $result = $this->addRecord($zone_id);
+                    $result = $this->addRecord($zone_id, $zone_name);
 
                     // If the record was added successfully, clear the stored data
                     if ($result) {
@@ -248,10 +248,6 @@ class EditController extends BaseController
         $ownership_view = ZoneAccessPolicy::levelAppliesToZone($perm_ownership_view, $user_is_zone_owner);
 
         $this->requireZoneView($zone_id);
-
-        if (!$this->domainRepository->zoneIdExists($zone_id)) {
-            $this->showError(_('There is no zone with this ID.'));
-        }
 
         if ($this->isPost() && $meta_edit) {
             $this->handleZoneMetadataPost($zone_id);
@@ -310,8 +306,7 @@ class EditController extends BaseController
         // entities in front of the operator and save them back on the next submit.
         $zone_comment = (string)$this->zoneRepository->getZoneComment($zone_id);
 
-        $zone_name_to_display = $this->domainRepository->getDomainNameById($zone_id);
-        $idn_zone_name = DnsIdnService::toIdnAlias($zone_name_to_display);
+        $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
         // Get records via DnsDataService (supports both SQL and API backends)
         $dnsDataService = $this->createDnsDataService();
         $recordResult = $dnsDataService->getZoneRecords(
@@ -387,9 +382,9 @@ class EditController extends BaseController
         $this->render('edit.html', [
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
-            'zone_name_to_display' => $zone_name_to_display,
+            'zone_name_to_display' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
-            'zone_display_name' => DnsIdnService::toDisplay($zone_name_to_display),
+            'zone_display_name' => DnsIdnService::toDisplay($zone_name),
             'zone_comment' => $zone_comment,
             'zone_comment_conflict' => $zone_comment_conflict,
             'stored_zone_comment' => $stored_zone_comment,
@@ -624,9 +619,10 @@ class EditController extends BaseController
      * Handle adding a new record directly from the edit page
      *
      * @param int $zone_id The ID of the zone
+     * @param string $zone_name The zone the record goes into
      * @return bool True if record was added successfully, false otherwise
      */
-    private function addRecord(int $zone_id): bool
+    private function addRecord(int $zone_id, string $zone_name): bool
     {
         // These are required fields
         $constraints = [
@@ -660,19 +656,10 @@ class EditController extends BaseController
         $prio = $prio !== null && $prio !== '' ? (int)$prio : 0;
         $comment = (string)$this->httpRequest->getPostParam('comment', '');
 
-        $zone_name_for_record = $this->domainRepository->getDomainNameById($zone_id);
-        if ($zone_name_for_record === null) {
-            $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
-                'error' => true,
-                'errorMessage' => _('Zone not found.'),
-                'fieldError' => ''
-            ];
-            return false;
-        }
         $ttl = $this->httpRequest->getPostParam('ttl');
         $added = $this->createRecordAddService()->add(
             $zone_id,
-            $zone_name_for_record,
+            $zone_name,
             $name,
             $type,
             $content,

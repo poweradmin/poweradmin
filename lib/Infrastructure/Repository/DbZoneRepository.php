@@ -1066,8 +1066,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // current one is dropped so clients that PUT the whole zone object back still work.
         $nameWasNoOp = isset($updates['name']);
         if ($nameWasNoOp) {
-            $currentName = $this->fetchZoneName($zoneId);
-            if ($currentName !== null && $updates['name'] !== $currentName) {
+            $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+            $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :id");
+            $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+            $stmt->execute();
+            $currentName = $stmt->fetchColumn();
+            if ($currentName !== false && $updates['name'] !== $currentName) {
                 throw new \InvalidArgumentException(
                     'Zone renaming is not supported. Delete the zone and recreate it under the new name.'
                 );
@@ -1096,18 +1100,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt = $this->db->prepare($query);
 
         return $stmt->execute($params);
-    }
-
-    private function fetchZoneName(int $zoneId): ?string
-    {
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :id");
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $name = $stmt->fetchColumn();
-        return $name === false ? null : (string)$name;
     }
 
     public function getAllZones(?int $offset = null, ?int $limit = null): array

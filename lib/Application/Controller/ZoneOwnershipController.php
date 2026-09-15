@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\ZoneAccessNotificationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -41,6 +42,7 @@ class ZoneOwnershipController extends BaseController
 {
     private UserContextService $userContextService;
     private ZoneRepositoryInterface $zoneRepository;
+    private DomainRepositoryInterface $domainRepository;
     private PermissionService $permissionService;
 
     public function __construct(array $request)
@@ -48,7 +50,7 @@ class ZoneOwnershipController extends BaseController
         parent::__construct($request);
         $this->userContextService = new UserContextService();
         $this->zoneRepository = $this->createZoneRepository();
-
+        $this->domainRepository = $this->createDomainRepository();
         $this->permissionService = $this->createPermissionService();
     }
 
@@ -80,7 +82,7 @@ class ZoneOwnershipController extends BaseController
         $meta_edit = ZoneAccessPolicy::levelAppliesToZone($perm_meta_edit, $user_is_zone_owner);
 
         // Get zone information
-        $zone_name = $this->createDomainRepository()->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
             return;
@@ -313,7 +315,7 @@ class ZoneOwnershipController extends BaseController
             $this->config,
             $mailService,
             $emailTemplateService,
-            $this->createDomainRepository(),
+            $this->domainRepository,
             null
         );
     }

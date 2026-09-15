@@ -107,8 +107,6 @@ class BulkRecordAddController extends BaseController
         $records_text = $this->httpRequest->getPostParam('records');
         $lines = explode("\n", trim($records_text));
 
-        $success_count = 0;
-        $failed_records = [];
         $parser = new BulkRecordParser();
         $reverseTtlResolver = new \Poweradmin\Domain\Service\ReverseTtlResolver(
             $this->config,
@@ -117,7 +115,9 @@ class BulkRecordAddController extends BaseController
 
         // One submission, one changeset: every record added below is grouped under a
         // single entry in the change log carrying the reason the user gave.
-        RecordChangeLogger::withChangeset($zone_id, $change_comment, function () use ($lines, $zone_id, $parser, $reverseTtlResolver, &$success_count, &$failed_records): void {
+        [$success_count, $failed_records] = RecordChangeLogger::withChangeset($zone_id, $change_comment, function () use ($lines, $zone_id, $parser, $reverseTtlResolver): array {
+            $success_count = 0;
+            $failed_records = [];
             foreach ($lines as $line) {
                 $line = trim($line);
                 if (empty($line)) {
@@ -197,6 +197,8 @@ class BulkRecordAddController extends BaseController
                     $failed_records[] = $line . " - " . $e->getMessage();
                 }
             }
+
+            return [$success_count, $failed_records];
         });
 
         if (!$failed_records) {

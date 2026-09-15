@@ -24,7 +24,6 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
 /**
@@ -47,7 +46,6 @@ class CatalogZoneService
     private PermissionService $permissionService;
 
     private ?AuditService $auditService;
-    private ?DomainRepositoryInterface $domainRepository;
 
     /** @var array<int, array{id: int, name: string, catalog: string}>|null */
     private ?array $producers = null;
@@ -55,13 +53,11 @@ class CatalogZoneService
     public function __construct(
         DnsBackendProviderInterface $backendProvider,
         PermissionService $permissionService,
-        ?AuditService $auditService = null,
-        ?DomainRepositoryInterface $domainRepository = null
+        ?AuditService $auditService = null
     ) {
         $this->backendProvider = $backendProvider;
         $this->permissionService = $permissionService;
         $this->auditService = $auditService;
-        $this->domainRepository = $domainRepository;
     }
 
     /**
@@ -265,7 +261,7 @@ class CatalogZoneService
      */
     private function zoneName(int $zoneId): string
     {
-        return (string)$this->domainRepository?->getDomainNameById($zoneId);
+        return (string)$this->backendProvider->getZoneNameById($zoneId);
     }
 
     /**

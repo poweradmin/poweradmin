@@ -83,7 +83,9 @@ class RecordChangeLogger
      * given reason. Pass $zoneId only when the whole scope belongs to one zone; a
      * cross-zone submission leaves it null and the per-change rows carry the truth.
      *
+     * @return mixed Whatever $work returns
      * @throws InvalidArgumentException when the installation requires a reason and none was given
+     * @throws \Throwable Whatever $work throws
      */
     public static function withChangeset(?int $zoneId, ?string $comment, callable $work): mixed
     {

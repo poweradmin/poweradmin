@@ -74,7 +74,7 @@ class ZoneManagementService
     private ?ZoneSigningService $signing;
     private ?DnsBackendProviderInterface $backendProvider = null;
     private ?RepositoryFactory $repositoryFactory = null;
-    private ?DomainRepositoryInterface $domainRepository = null;
+    private ?DomainRepositoryInterface $domainRepository;
     private ?DomainManagerInterface $domainManager = null;
     private ?ZoneOverlapService $overlapService = null;
     private ?HostnameValidator $hostnameValidator = null;
