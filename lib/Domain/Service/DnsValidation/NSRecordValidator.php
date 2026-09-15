@@ -62,6 +62,7 @@ class NSRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority value (should be 0 for NS records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */

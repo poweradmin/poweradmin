@@ -79,6 +79,7 @@ class DSRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority
      * @param mixed $ttl TTL value
      * @param int $defaultTTL Default TTL to use if TTL is empty
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */

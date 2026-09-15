@@ -73,6 +73,7 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio The preference value (0-65535)
      * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult Validation result with data or errors
      */

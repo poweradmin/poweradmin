@@ -88,6 +88,7 @@ interface RecordManagerInterface
     /**
      * Get Zone comment
      *
+     * @param \PDO $db Database connection
      * @param int $zone_id Zone ID
      *
      * @return string Zone Comment

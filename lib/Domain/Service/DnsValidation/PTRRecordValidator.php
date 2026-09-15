@@ -121,6 +121,7 @@ class PTRRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority (not used for PTR records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */

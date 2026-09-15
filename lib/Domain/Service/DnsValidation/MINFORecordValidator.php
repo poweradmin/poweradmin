@@ -70,6 +70,7 @@ class MINFORecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority value (not used for MINFO)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */

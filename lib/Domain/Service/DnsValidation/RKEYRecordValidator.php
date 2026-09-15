@@ -88,6 +88,7 @@ class RKEYRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio The priority (unused for RKEY records)
      * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */

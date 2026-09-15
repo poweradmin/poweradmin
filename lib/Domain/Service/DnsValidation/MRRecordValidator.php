@@ -79,6 +79,7 @@ class MRRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio The priority value (not used for MR records)
      * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult Validation result with data or errors
      */

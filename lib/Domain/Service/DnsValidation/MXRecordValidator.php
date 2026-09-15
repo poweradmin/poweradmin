@@ -65,6 +65,7 @@ class MXRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority value
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or errors
      */

@@ -65,6 +65,7 @@ class ARecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority (not used for A records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or errors
      */

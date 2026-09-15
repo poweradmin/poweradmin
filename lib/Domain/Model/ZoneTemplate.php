@@ -441,6 +441,7 @@ class ZoneTemplate
     /**
      * Get name and description of template based on template ID
      *
+     * @param PDO $db Database connection
      * @param int $zone_templ_id Zone template ID
      *
      * @return array zone template details
@@ -515,6 +516,7 @@ class ZoneTemplate
     /**
      * Check if zone template exist
      *
+     * @param PDO $db Database connection
      * @param int $zone_templ_id Zone template ID
      *
      * @return boolean true on success, false otherwise
@@ -531,6 +533,7 @@ class ZoneTemplate
      *
      * Retrieve all fields of the record and send it back to the function caller.
      *
+     * @param PDO $db Database connection
      * @param int $id zone template record id
      * @param int|null $zone_templ_id restrict the lookup to this template; callers that
      *                                authorised a template must pass it so a record id
@@ -568,6 +571,7 @@ class ZoneTemplate
      *
      * Retrieve all fields of the records and send it back to the function caller.
      *
+     * @param PDO $db Database connection
      * @param int $id zone template ID
      * @param int $rowstart Starting row (default=0)
      * @param int $rowamount Number of rows per query (default=9999)

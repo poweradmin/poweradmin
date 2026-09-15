@@ -73,6 +73,7 @@ class KXRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Preference value (0-65535, lower values have higher preference)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      *

@@ -68,6 +68,7 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio The subtype value for AFSDB record (1 or 2)
      * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
