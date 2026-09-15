@@ -52,31 +52,8 @@ jobs:
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
-      with:
-        php-version: '8.4'
-
-    - name: Get Composer cache directory
-      id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    - name: Regenerate autoloader
-      run: composer dump-autoload --no-interaction
-
-    - name: Fix vendor binary permissions
-      run: chmod +x vendor/bin/*
+    - name: Set up PHP and Composer dependencies
+      uses: ./.github/actions/php-composer
 
     - name: Security audit
       run: composer audit
@@ -88,28 +65,8 @@ jobs:
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
-      with:
-        php-version: '8.4'
-
-    - name: Get Composer cache directory
-      id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    - name: Fix vendor binary permissions
-      run: chmod +x vendor/bin/*
+    - name: Set up PHP and Composer dependencies
+      uses: ./.github/actions/php-composer
 
     - name: Check code style
       run: composer check:all
@@ -124,28 +81,8 @@ jobs:
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
-      with:
-        php-version: '8.4'
-
-    - name: Get Composer cache directory
-      id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    - name: Fix vendor binary permissions
-      run: chmod +x vendor/bin/*
+    - name: Set up PHP and Composer dependencies
+      uses: ./.github/actions/php-composer
 
     - name: Cache PHPStan result cache
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -165,28 +102,8 @@ jobs:
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
-      with:
-        php-version: '8.4'
-
-    - name: Get Composer cache directory
-      id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    - name: Fix vendor binary permissions
-      run: chmod +x vendor/bin/*
+    - name: Set up PHP and Composer dependencies
+      uses: ./.github/actions/php-composer
 
     - name: Run test suite
       run: composer tests
@@ -203,29 +120,10 @@ jobs:
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Setup PHP ${{ matrix.php-version }}
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+    - name: Set up PHP ${{ matrix.php-version }} and Composer dependencies
+      uses: ./.github/actions/php-composer
       with:
         php-version: ${{ matrix.php-version }}
-        coverage: none
-
-    - name: Get Composer cache directory
-      id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-php-${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-${{ matrix.php-version }}-composer-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    - name: Fix vendor binary permissions
-      run: chmod +x vendor/bin/*
 
     # All four matrix jobs re-download the same pinned phan phar otherwise.
     # Keyed on composer.json so a phan version bump invalidates it.
@@ -255,12 +153,8 @@ jobs:
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Check for incorrect CSRF token field names
-      run: |
-        if grep -rn 'name="csrf_token"' templates/ --include='*.html'; then
-          echo "ERROR: Use name=\"_token\" instead of name=\"csrf_token\" for CSRF token fields"
-          exit 1
-        fi
+    - name: Check the CSRF field name and macro use
+      run: composer lint:twig
 
   vendor-check:
     name: Vendor Integrity
@@ -306,7 +200,7 @@ jobs:
         fi
         # Local reusable workflows (uses: ./...) live in this repo, so there is no
         # third-party SHA to pin.
-        if grep -rnE '^[[:space:]]*-?[[:space:]]*uses:' .github/workflows/ \
+        if grep -rnE '^[[:space:]]*-?[[:space:]]*uses:' .github/workflows/ .github/actions/ \
              | grep -v 'uses: \./' | grep -vE '@[0-9a-f]{40}'; then
           echo "::error::Actions must be pinned to a full 40-character commit SHA"
           fail=1
