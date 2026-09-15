@@ -1,7 +1,7 @@
-# Templates allowed to differ between templates/default and templates/modern.
-# Every other template present in default must exist in modern and stay
-# byte-identical (enforced by composer lint:themes). Add a file here only
-# when a theme intentionally customizes it.
+# Templates the modern theme overrides. Every other page is served from
+# templates/default through the Twig fallback path, so modern/ holds only these
+# files (enforced by composer lint:themes). Add a file here when the theme
+# intentionally customizes it, and delete it when the copy becomes identical.
 add_perm_templ.html
 api_key_add.html
 api_key_created.html
