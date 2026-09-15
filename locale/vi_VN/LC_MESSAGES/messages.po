@@ -2313,21 +2313,17 @@ msgstr "Mẫu vùng đã được thay đổi thành công."
 msgid ""
 "Retrieving a zone from its primary needs the PowerDNS API backend and a "
 "secondary zone."
-msgstr ""
-"Retrieving a zone from its primary needs the PowerDNS API backend and a "
-"secondary zone."
+msgstr "Lấy vùng từ máy chủ chính cần backend PowerDNS API và một vùng phụ."
 
 #: lib/Application/Controller/EditController.php:719
 msgid "Zone transfer from the primary has been requested."
-msgstr "Zone transfer from the primary has been requested."
+msgstr "Đã yêu cầu truyền vùng từ máy chủ chính."
 
 #: lib/Application/Controller/EditController.php:721
 msgid ""
 "Failed to request a zone transfer from the primary. Check the PowerDNS logs "
 "for details."
-msgstr ""
-"Failed to request a zone transfer from the primary. Check the PowerDNS logs "
-"for details."
+msgstr "Không thể yêu cầu truyền vùng từ máy chủ chính. Kiểm tra nhật ký PowerDNS để biết chi tiết."
 
 #: lib/Application/Controller/EditRecordController.php:126
 msgid "You cannot edit records in a read-only zone."
@@ -2398,7 +2394,7 @@ msgstr "Yêu cầu đã hết hạn, vui lòng thử lại."
 #: lib/Application/Controller/EditController.php:1162
 #, auto-english-fallback
 msgid "Zone saved successfully. No record changes were made."
-msgstr "Zone saved successfully. No record changes were made."
+msgstr "Vùng đã được lưu thành công. Không có thay đổi bản ghi nào được thực hiện."
 
 #: lib/Application/Controller/EditController.php:1169
 msgid "Zone has been updated successfully."
@@ -2905,25 +2901,25 @@ msgstr "Đã gán %d vùng; %d thất bại"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
 msgid "Zone canonical ID repaired"
-msgstr "Zone canonical ID repaired"
+msgstr "Đã sửa ID chuẩn của vùng"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
 msgid "Failed to repair zone canonical ID"
-msgstr "Failed to repair zone canonical ID"
+msgstr "Không thể sửa ID chuẩn của vùng"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:149
 msgid "No zones without a canonical ID to fix"
-msgstr "No zones without a canonical ID to fix"
+msgstr "Không có vùng nào thiếu ID chuẩn cần sửa"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:152
 #, php-format
 msgid "Repaired the canonical ID of %d zones"
-msgstr "Repaired the canonical ID of %d zones"
+msgstr "Đã sửa ID chuẩn của %d vùng"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:157
 #, php-format
 msgid "Repaired %d zones; %d failed"
-msgstr "Repaired %d zones; %d failed"
+msgstr "Đã sửa %d vùng; %d thất bại"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
@@ -3782,9 +3778,7 @@ msgstr ""
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
-msgstr ""
-"Session encryption key is too short, please set a longer one in your "
-"configuration file."
+msgstr "Khóa mã hóa phiên quá ngắn, vui lòng đặt khóa dài hơn trong tệp cấu hình."
 
 #: lib/Infrastructure/Web/PageRenderer.php:253
 msgid ""
@@ -4065,12 +4059,12 @@ msgstr "Tìm thấy %d vùng không có bản ghi SOA"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:486
 msgid "All zones have a canonical ID"
-msgstr "All zones have a canonical ID"
+msgstr "Tất cả các vùng đều có ID chuẩn"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:487
 #, php-format
 msgid "%d zones found without a canonical ID"
-msgstr "%d zones found without a canonical ID"
+msgstr "Tìm thấy %d vùng không có ID chuẩn"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -11339,8 +11333,7 @@ msgstr "Không có SOA"
 #: templates/modern/list_forward_zones.html:158
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
-msgstr ""
-"The DNS server could not be reached, so this zone's SOA status is unknown"
+msgstr "Không thể kết nối tới máy chủ DNS, nên trạng thái SOA của vùng này không xác định"
 
 #: templates/modern/list_forward_zones.html:161
 msgid ""
@@ -12424,11 +12417,11 @@ msgstr "Địa chỉ IP của NS master"
 
 #: templates/default/edit.html:850 templates/modern/edit.html:850
 msgid "Requesting..."
-msgstr "Requesting..."
+msgstr "Đang yêu cầu..."
 
 #: templates/default/edit.html:851 templates/modern/edit.html:851
 msgid "Retrieve from primary"
-msgstr "Retrieve from primary"
+msgstr "Lấy từ máy chủ chính"
 
 #: templates/default/edit.html:895 templates/modern/edit.html:895
 msgid "Catalog"
@@ -12656,19 +12649,19 @@ msgstr "Sửa"
 
 #: templates/modern/database_consistency.html:104
 msgid "Zones Without A Canonical ID"
-msgstr "Zones Without A Canonical ID"
+msgstr "Các vùng không có ID chuẩn"
 
 #: templates/modern/database_consistency.html:113
 msgid "Repair the canonical ID of all listed zones?"
-msgstr "Repair the canonical ID of all listed zones?"
+msgstr "Sửa ID chuẩn của tất cả các vùng được liệt kê?"
 
 #: templates/modern/database_consistency.html:118
 msgid "Repair all"
-msgstr "Repair all"
+msgstr "Sửa tất cả"
 
 #: templates/modern/database_consistency.html:142
 msgid "Repair canonical ID"
-msgstr "Repair canonical ID"
+msgstr "Sửa ID chuẩn"
 
 #: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"

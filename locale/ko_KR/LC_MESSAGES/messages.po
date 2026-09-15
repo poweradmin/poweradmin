@@ -2291,21 +2291,17 @@ msgstr "존 템플릿이 성공적으로 변경되었습니다."
 msgid ""
 "Retrieving a zone from its primary needs the PowerDNS API backend and a "
 "secondary zone."
-msgstr ""
-"Retrieving a zone from its primary needs the PowerDNS API backend and a "
-"secondary zone."
+msgstr "프라이머리에서 존을 가져오려면 PowerDNS API 백엔드와 세컨더리 존이 필요합니다."
 
 #: lib/Application/Controller/EditController.php:719
 msgid "Zone transfer from the primary has been requested."
-msgstr "Zone transfer from the primary has been requested."
+msgstr "프라이머리에서 존 전송을 요청했습니다."
 
 #: lib/Application/Controller/EditController.php:721
 msgid ""
 "Failed to request a zone transfer from the primary. Check the PowerDNS logs "
 "for details."
-msgstr ""
-"Failed to request a zone transfer from the primary. Check the PowerDNS logs "
-"for details."
+msgstr "프라이머리에서 존 전송을 요청하지 못했습니다. 자세한 내용은 PowerDNS 로그를 확인하세요."
 
 #: lib/Application/Controller/EditRecordController.php:126
 msgid "You cannot edit records in a read-only zone."
@@ -2376,7 +2372,7 @@ msgstr "요청이 만료되었습니다. 다시 시도하십시오."
 #: lib/Application/Controller/EditController.php:1162
 #, auto-english-fallback
 msgid "Zone saved successfully. No record changes were made."
-msgstr "Zone saved successfully. No record changes were made."
+msgstr "존이 성공적으로 저장되었습니다. 레코드 변경은 없었습니다."
 
 #: lib/Application/Controller/EditController.php:1169
 msgid "Zone has been updated successfully."
@@ -2883,25 +2879,25 @@ msgstr "%d개 존 할당됨, %d개 실패"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
 msgid "Zone canonical ID repaired"
-msgstr "Zone canonical ID repaired"
+msgstr "존의 정규 ID가 복구되었습니다"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
 msgid "Failed to repair zone canonical ID"
-msgstr "Failed to repair zone canonical ID"
+msgstr "존의 정규 ID를 복구하지 못했습니다"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:149
 msgid "No zones without a canonical ID to fix"
-msgstr "No zones without a canonical ID to fix"
+msgstr "복구할 정규 ID 없는 존이 없습니다"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:152
 #, php-format
 msgid "Repaired the canonical ID of %d zones"
-msgstr "Repaired the canonical ID of %d zones"
+msgstr "존 %d개의 정규 ID를 복구했습니다"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:157
 #, php-format
 msgid "Repaired %d zones; %d failed"
-msgstr "Repaired %d zones; %d failed"
+msgstr "존 %d개 복구됨; %d개 실패"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
@@ -3745,9 +3741,7 @@ msgstr "기본 세션 암호화 키가 사용되고 있습니다. 구성 파일�
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
-msgstr ""
-"Session encryption key is too short, please set a longer one in your "
-"configuration file."
+msgstr "세션 암호화 키가 너무 짧습니다. 설정 파일에서 더 긴 키를 지정하세요."
 
 #: lib/Infrastructure/Web/PageRenderer.php:253
 msgid ""
@@ -4026,12 +4020,12 @@ msgstr "SOA 레코드가 없는 %d개의 존이 발견되었습니다"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:486
 msgid "All zones have a canonical ID"
-msgstr "All zones have a canonical ID"
+msgstr "모든 존에 정규 ID가 있습니다"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:487
 #, php-format
 msgid "%d zones found without a canonical ID"
-msgstr "%d zones found without a canonical ID"
+msgstr "정규 ID가 없는 존 %d개를 찾았습니다"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -11242,8 +11236,7 @@ msgstr "SOA 없음"
 #: templates/modern/list_forward_zones.html:158
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
-msgstr ""
-"The DNS server could not be reached, so this zone's SOA status is unknown"
+msgstr "DNS 서버에 연결할 수 없어 이 존의 SOA 상태를 알 수 없습니다"
 
 #: templates/modern/list_forward_zones.html:161
 msgid ""
@@ -12315,11 +12308,11 @@ msgstr "마스터 NS의 IP 주소"
 
 #: templates/default/edit.html:850 templates/modern/edit.html:850
 msgid "Requesting..."
-msgstr "Requesting..."
+msgstr "요청 중..."
 
 #: templates/default/edit.html:851 templates/modern/edit.html:851
 msgid "Retrieve from primary"
-msgstr "Retrieve from primary"
+msgstr "프라이머리에서 가져오기"
 
 #: templates/default/edit.html:895 templates/modern/edit.html:895
 msgid "Catalog"
@@ -12545,19 +12538,19 @@ msgstr "수정"
 
 #: templates/modern/database_consistency.html:104
 msgid "Zones Without A Canonical ID"
-msgstr "Zones Without A Canonical ID"
+msgstr "정규 ID가 없는 존"
 
 #: templates/modern/database_consistency.html:113
 msgid "Repair the canonical ID of all listed zones?"
-msgstr "Repair the canonical ID of all listed zones?"
+msgstr "나열된 모든 존의 정규 ID를 복구하시겠습니까?"
 
 #: templates/modern/database_consistency.html:118
 msgid "Repair all"
-msgstr "Repair all"
+msgstr "모두 복구"
 
 #: templates/modern/database_consistency.html:142
 msgid "Repair canonical ID"
-msgstr "Repair canonical ID"
+msgstr "정규 ID 복구"
 
 #: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"

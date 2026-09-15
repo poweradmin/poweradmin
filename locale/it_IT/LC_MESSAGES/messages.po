@@ -2360,21 +2360,17 @@ msgstr "Il template di zona è stato modificato con successo."
 msgid ""
 "Retrieving a zone from its primary needs the PowerDNS API backend and a "
 "secondary zone."
-msgstr ""
-"Retrieving a zone from its primary needs the PowerDNS API backend and a "
-"secondary zone."
+msgstr "Il recupero di una zona dal suo primario richiede il backend PowerDNS API e una zona secondaria."
 
 #: lib/Application/Controller/EditController.php:719
 msgid "Zone transfer from the primary has been requested."
-msgstr "Zone transfer from the primary has been requested."
+msgstr "Il trasferimento della zona dal primario è stato richiesto."
 
 #: lib/Application/Controller/EditController.php:721
 msgid ""
 "Failed to request a zone transfer from the primary. Check the PowerDNS logs "
 "for details."
-msgstr ""
-"Failed to request a zone transfer from the primary. Check the PowerDNS logs "
-"for details."
+msgstr "Impossibile richiedere il trasferimento della zona dal primario. Controlla i log di PowerDNS per i dettagli."
 
 #: lib/Application/Controller/EditRecordController.php:126
 msgid "You cannot edit records in a read-only zone."
@@ -2446,7 +2442,7 @@ msgstr "La richiesta è scaduta, riprovare."
 #: lib/Application/Controller/EditController.php:1162
 #, auto-english-fallback
 msgid "Zone saved successfully. No record changes were made."
-msgstr "Zone saved successfully. No record changes were made."
+msgstr "Zona salvata con successo. Non sono state apportate modifiche ai record."
 
 #: lib/Application/Controller/EditController.php:1169
 msgid "Zone has been updated successfully."
@@ -2967,25 +2963,25 @@ msgstr "%d zone assegnate; %d non riuscite"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
 msgid "Zone canonical ID repaired"
-msgstr "Zone canonical ID repaired"
+msgstr "ID canonico della zona riparato"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
 msgid "Failed to repair zone canonical ID"
-msgstr "Failed to repair zone canonical ID"
+msgstr "Impossibile riparare l'ID canonico della zona"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:149
 msgid "No zones without a canonical ID to fix"
-msgstr "No zones without a canonical ID to fix"
+msgstr "Nessuna zona senza ID canonico da riparare"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:152
 #, php-format
 msgid "Repaired the canonical ID of %d zones"
-msgstr "Repaired the canonical ID of %d zones"
+msgstr "ID canonico riparato per %d zone"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:157
 #, php-format
 msgid "Repaired %d zones; %d failed"
-msgstr "Repaired %d zones; %d failed"
+msgstr "%d zone riparate; %d non riuscite"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
@@ -3869,9 +3865,7 @@ msgstr ""
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
-msgstr ""
-"Session encryption key is too short, please set a longer one in your "
-"configuration file."
+msgstr "La chiave di cifratura della sessione è troppo corta, impostane una più lunga nel file di configurazione."
 
 #: lib/Infrastructure/Web/PageRenderer.php:253
 msgid ""
@@ -4160,12 +4154,12 @@ msgstr "%d zone trovate senza record SOA"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:486
 msgid "All zones have a canonical ID"
-msgstr "All zones have a canonical ID"
+msgstr "Tutte le zone hanno un ID canonico"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:487
 #, php-format
 msgid "%d zones found without a canonical ID"
-msgstr "%d zones found without a canonical ID"
+msgstr "Trovate %d zone senza ID canonico"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -11649,8 +11643,7 @@ msgstr "Nessun SOA"
 #: templates/modern/list_forward_zones.html:158
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
-msgstr ""
-"The DNS server could not be reached, so this zone's SOA status is unknown"
+msgstr "Il server DNS non è raggiungibile, quindi lo stato SOA di questa zona è sconosciuto"
 
 #: templates/modern/list_forward_zones.html:161
 msgid ""
@@ -12744,11 +12737,11 @@ msgstr "Indirizzo IP del NS master"
 
 #: templates/default/edit.html:850 templates/modern/edit.html:850
 msgid "Requesting..."
-msgstr "Requesting..."
+msgstr "Richiesta in corso..."
 
 #: templates/default/edit.html:851 templates/modern/edit.html:851
 msgid "Retrieve from primary"
-msgstr "Retrieve from primary"
+msgstr "Recupera dal primario"
 
 #: templates/default/edit.html:895 templates/modern/edit.html:895
 msgid "Catalog"
@@ -12978,19 +12971,19 @@ msgstr "Correggi"
 
 #: templates/modern/database_consistency.html:104
 msgid "Zones Without A Canonical ID"
-msgstr "Zones Without A Canonical ID"
+msgstr "Zone senza ID canonico"
 
 #: templates/modern/database_consistency.html:113
 msgid "Repair the canonical ID of all listed zones?"
-msgstr "Repair the canonical ID of all listed zones?"
+msgstr "Riparare l'ID canonico di tutte le zone elencate?"
 
 #: templates/modern/database_consistency.html:118
 msgid "Repair all"
-msgstr "Repair all"
+msgstr "Ripara tutte"
 
 #: templates/modern/database_consistency.html:142
 msgid "Repair canonical ID"
-msgstr "Repair canonical ID"
+msgstr "Ripara ID canonico"
 
 #: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"

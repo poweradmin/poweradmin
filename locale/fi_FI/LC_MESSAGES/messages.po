@@ -2298,21 +2298,17 @@ msgstr "Aluemalli on muutettu onnistuneesti."
 msgid ""
 "Retrieving a zone from its primary needs the PowerDNS API backend and a "
 "secondary zone."
-msgstr ""
-"Retrieving a zone from its primary needs the PowerDNS API backend and a "
-"secondary zone."
+msgstr "Alueen hakeminen ensisijaiselta palvelimelta vaatii PowerDNS API-taustajärjestelmän ja toissijaisen alueen."
 
 #: lib/Application/Controller/EditController.php:719
 msgid "Zone transfer from the primary has been requested."
-msgstr "Zone transfer from the primary has been requested."
+msgstr "Aluesiirto ensisijaiselta palvelimelta on pyydetty."
 
 #: lib/Application/Controller/EditController.php:721
 msgid ""
 "Failed to request a zone transfer from the primary. Check the PowerDNS logs "
 "for details."
-msgstr ""
-"Failed to request a zone transfer from the primary. Check the PowerDNS logs "
-"for details."
+msgstr "Aluesiirron pyytäminen ensisijaiselta palvelimelta epäonnistui. Katso lisätiedot PowerDNS-lokeista."
 
 #: lib/Application/Controller/EditRecordController.php:126
 msgid "You cannot edit records in a read-only zone."
@@ -2384,7 +2380,7 @@ msgstr "Pyyntö vanheni, yritä uudelleen."
 #: lib/Application/Controller/EditController.php:1162
 #, auto-english-fallback
 msgid "Zone saved successfully. No record changes were made."
-msgstr "Zone saved successfully. No record changes were made."
+msgstr "Alue tallennettu. Ei muutoksia."
 
 #: lib/Application/Controller/EditController.php:1169
 msgid "Zone has been updated successfully."
@@ -2891,25 +2887,25 @@ msgstr "Määritetty %d aluetta; %d epäonnistui"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
 msgid "Zone canonical ID repaired"
-msgstr "Zone canonical ID repaired"
+msgstr "Alueen kanoninen tunnus korjattu"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
 msgid "Failed to repair zone canonical ID"
-msgstr "Failed to repair zone canonical ID"
+msgstr "Alueen kanonisen tunnuksen korjaus epäonnistui"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:149
 msgid "No zones without a canonical ID to fix"
-msgstr "No zones without a canonical ID to fix"
+msgstr "Ei korjattavia alueita ilman kanonista tunnusta"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:152
 #, php-format
 msgid "Repaired the canonical ID of %d zones"
-msgstr "Repaired the canonical ID of %d zones"
+msgstr "Korjattiin %d alueen kanoninen tunnus"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:157
 #, php-format
 msgid "Repaired %d zones; %d failed"
-msgstr "Repaired %d zones; %d failed"
+msgstr "Korjattiin %d aluetta; %d epäonnistui"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
@@ -3769,9 +3765,7 @@ msgstr ""
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
-msgstr ""
-"Session encryption key is too short, please set a longer one in your "
-"configuration file."
+msgstr "Istunnon salausavain on liian lyhyt, aseta pidempi avain asetustiedostoon."
 
 #: lib/Infrastructure/Web/PageRenderer.php:253
 msgid ""
@@ -4053,12 +4047,12 @@ msgstr "Löytyi %d aluetta ilman SOA-tietueita"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:486
 msgid "All zones have a canonical ID"
-msgstr "All zones have a canonical ID"
+msgstr "Kaikilla alueilla on kanoninen tunnus"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:487
 #, php-format
 msgid "%d zones found without a canonical ID"
-msgstr "%d zones found without a canonical ID"
+msgstr "Löytyi %d aluetta ilman kanonista tunnusta"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -11233,8 +11227,7 @@ msgstr "Ei SOA"
 #: templates/modern/list_forward_zones.html:158
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
-msgstr ""
-"The DNS server could not be reached, so this zone's SOA status is unknown"
+msgstr "DNS-palvelinta ei tavoitettu, joten tämän alueen SOA-tila on tuntematon"
 
 #: templates/modern/list_forward_zones.html:161
 msgid ""
@@ -12308,11 +12301,11 @@ msgstr "Pää-NS:n IP-osoite"
 
 #: templates/default/edit.html:850 templates/modern/edit.html:850
 msgid "Requesting..."
-msgstr "Requesting..."
+msgstr "Pyydetään..."
 
 #: templates/default/edit.html:851 templates/modern/edit.html:851
 msgid "Retrieve from primary"
-msgstr "Retrieve from primary"
+msgstr "Hae ensisijaiselta"
 
 #: templates/default/edit.html:895 templates/modern/edit.html:895
 msgid "Catalog"
@@ -12538,19 +12531,19 @@ msgstr "Korjaa"
 
 #: templates/modern/database_consistency.html:104
 msgid "Zones Without A Canonical ID"
-msgstr "Zones Without A Canonical ID"
+msgstr "Alueet ilman kanonista tunnusta"
 
 #: templates/modern/database_consistency.html:113
 msgid "Repair the canonical ID of all listed zones?"
-msgstr "Repair the canonical ID of all listed zones?"
+msgstr "Korjataanko kaikkien lueteltujen alueiden kanoninen tunnus?"
 
 #: templates/modern/database_consistency.html:118
 msgid "Repair all"
-msgstr "Repair all"
+msgstr "Korjaa kaikki"
 
 #: templates/modern/database_consistency.html:142
 msgid "Repair canonical ID"
-msgstr "Repair canonical ID"
+msgstr "Korjaa kanoninen tunnus"
 
 #: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"

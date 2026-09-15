@@ -2309,21 +2309,17 @@ msgstr "قالب منطقه با موفقیت تغییر کرده است."
 msgid ""
 "Retrieving a zone from its primary needs the PowerDNS API backend and a "
 "secondary zone."
-msgstr ""
-"Retrieving a zone from its primary needs the PowerDNS API backend and a "
-"secondary zone."
+msgstr "دریافت منطقه از سرور اصلی آن به بک‌اند PowerDNS API و یک منطقه ثانویه نیاز دارد."
 
 #: lib/Application/Controller/EditController.php:719
 msgid "Zone transfer from the primary has been requested."
-msgstr "Zone transfer from the primary has been requested."
+msgstr "انتقال منطقه از سرور اصلی درخواست شد."
 
 #: lib/Application/Controller/EditController.php:721
 msgid ""
 "Failed to request a zone transfer from the primary. Check the PowerDNS logs "
 "for details."
-msgstr ""
-"Failed to request a zone transfer from the primary. Check the PowerDNS logs "
-"for details."
+msgstr "درخواست انتقال منطقه از سرور اصلی ناموفق بود. برای جزئیات، لاگ‌های PowerDNS را بررسی کنید."
 
 #: lib/Application/Controller/EditRecordController.php:126
 msgid "You cannot edit records in a read-only zone."
@@ -2394,7 +2390,7 @@ msgstr "درخواست منقضی شده است، لطفا دوباره امتح
 #: lib/Application/Controller/EditController.php:1162
 #, auto-english-fallback
 msgid "Zone saved successfully. No record changes were made."
-msgstr "Zone saved successfully. No record changes were made."
+msgstr "منطقه با موفقیت ذخیره شد. هیچ تغییری در رکوردها ایجاد نشد."
 
 #: lib/Application/Controller/EditController.php:1169
 msgid "Zone has been updated successfully."
@@ -2900,25 +2896,25 @@ msgstr "%d منطقه اختصاص یافت؛ %d ناموفق"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
 msgid "Zone canonical ID repaired"
-msgstr "Zone canonical ID repaired"
+msgstr "شناسه متعارف منطقه ترمیم شد"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:145
 msgid "Failed to repair zone canonical ID"
-msgstr "Failed to repair zone canonical ID"
+msgstr "ترمیم شناسه متعارف منطقه ناموفق بود"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:149
 msgid "No zones without a canonical ID to fix"
-msgstr "No zones without a canonical ID to fix"
+msgstr "منطقه‌ای بدون شناسه متعارف برای ترمیم وجود ندارد"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:152
 #, php-format
 msgid "Repaired the canonical ID of %d zones"
-msgstr "Repaired the canonical ID of %d zones"
+msgstr "شناسه متعارف %d منطقه ترمیم شد"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:157
 #, php-format
 msgid "Repaired %d zones; %d failed"
-msgstr "Repaired %d zones; %d failed"
+msgstr "%d منطقه ترمیم شد؛ %d ناموفق"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:170
 msgid "Slave zone deleted successfully"
@@ -3770,9 +3766,7 @@ msgstr ""
 msgid ""
 "Session encryption key is too short, please set a longer one in your "
 "configuration file."
-msgstr ""
-"Session encryption key is too short, please set a longer one in your "
-"configuration file."
+msgstr "کلید رمزنگاری نشست بسیار کوتاه است، لطفاً کلید بلندتری در فایل پیکربندی تنظیم کنید."
 
 #: lib/Infrastructure/Web/PageRenderer.php:253
 msgid ""
@@ -4051,12 +4045,12 @@ msgstr "%d منطقه بدون رکورد SOA یافت شد"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:486
 msgid "All zones have a canonical ID"
-msgstr "All zones have a canonical ID"
+msgstr "همه مناطق شناسه متعارف دارند"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:487
 #, php-format
 msgid "%d zones found without a canonical ID"
-msgstr "%d zones found without a canonical ID"
+msgstr "%d منطقه بدون شناسه متعارف یافت شد"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:115
 msgid "Priority field for IPSECKEY records must be 0 or empty"
@@ -11288,8 +11282,7 @@ msgstr "بدون SOA"
 #: templates/modern/list_forward_zones.html:158
 msgid ""
 "The DNS server could not be reached, so this zone's SOA status is unknown"
-msgstr ""
-"The DNS server could not be reached, so this zone's SOA status is unknown"
+msgstr "سرور DNS در دسترس نبود، بنابراین وضعیت SOA این منطقه نامشخص است"
 
 #: templates/modern/list_forward_zones.html:161
 msgid ""
@@ -12374,11 +12367,11 @@ msgstr "آدرس IP Master NS"
 
 #: templates/default/edit.html:850 templates/modern/edit.html:850
 msgid "Requesting..."
-msgstr "Requesting..."
+msgstr "در حال درخواست..."
 
 #: templates/default/edit.html:851 templates/modern/edit.html:851
 msgid "Retrieve from primary"
-msgstr "Retrieve from primary"
+msgstr "دریافت از سرور اصلی"
 
 #: templates/default/edit.html:895 templates/modern/edit.html:895
 msgid "Catalog"
@@ -12607,19 +12600,19 @@ msgstr "اصلاح"
 
 #: templates/modern/database_consistency.html:104
 msgid "Zones Without A Canonical ID"
-msgstr "Zones Without A Canonical ID"
+msgstr "مناطق بدون شناسه متعارف"
 
 #: templates/modern/database_consistency.html:113
 msgid "Repair the canonical ID of all listed zones?"
-msgstr "Repair the canonical ID of all listed zones?"
+msgstr "شناسه متعارف همه مناطق فهرست‌شده ترمیم شود؟"
 
 #: templates/modern/database_consistency.html:118
 msgid "Repair all"
-msgstr "Repair all"
+msgstr "ترمیم همه"
 
 #: templates/modern/database_consistency.html:142
 msgid "Repair canonical ID"
-msgstr "Repair canonical ID"
+msgstr "ترمیم شناسه متعارف"
 
 #: templates/modern/database_consistency.html:159
 msgid "Slave Zones Without Master IP Addresses"
