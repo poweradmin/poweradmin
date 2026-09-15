@@ -222,10 +222,7 @@ class ControllerServiceFactory
             $this->userRepository(),
             $this->permissionService(),
             new UserProfileAssembler($this->permissionService(), $this->userGroupRepository()),
-            new UserAuthenticationService(
-                $this->config->get('security', 'password_encryption', 'bcrypt'),
-                $this->config->get('security', 'password_cost', 12)
-            ),
+            UserAuthenticationService::fromConfig($this->config),
             new PasswordPolicyService($this->config),
             (bool)$this->config->get('ldap', 'enabled', false),
             $this->domainManager()

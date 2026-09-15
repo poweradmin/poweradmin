@@ -6,18 +6,13 @@ use Poweradmin\Application\Bootstrap;
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DynamicDnsRequestFactory;
-use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\RepositoryFactory;
-use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
-use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsHelper;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
-use Poweradmin\Domain\Service\DynamicDnsValidationService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,18 +35,7 @@ $backendProvider = DnsBackendProviderFactory::create($db, $config);
 $soaRecordManager = DnsServiceFactory::createSOARecordManager($db, $config, $backendProvider);
 $repository = (new RepositoryFactory($db, $config, $backendProvider))->createDynamicDnsRepository($soaRecordManager);
 
-$userAuthService = new UserAuthenticationService(
-    $config->get('security', 'password_encryption', 'bcrypt'),
-    $config->get('security', 'password_cost', 12)
-);
-
-$updateService = new DynamicDnsUpdateService(
-    new DynamicDnsValidationService($config),
-    new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($db, $config)),
-    $repository,
-    new AuditLogWriter($db),
-    new IpAddressRetriever($_SERVER)
-);
+$updateService = DynamicDnsUpdateService::build($db, $config, $repository, new IpAddressRetriever($_SERVER));
 
 $result = $updateService->processUpdate(DynamicDnsRequestFactory::fromHttpRequest($request));
 DynamicDnsHelper::statusExit($result, $request->query->has('verbose'));
