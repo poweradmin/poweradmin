@@ -188,7 +188,7 @@ class DeleteDomainsController extends BaseController
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;
             if ($zones[$zone_id]['type'] == "SLAVE") {
-                $slave_master = $domainRepository->getDomainSlaveMaster($zone_id);
+                $slave_master = $domainRepository->getDomainMaster($zone_id);
                 $zones[$zone_id]['slave_master'] = $slave_master;
 
                 if ($slave_master) {

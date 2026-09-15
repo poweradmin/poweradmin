@@ -30,7 +30,6 @@ use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
@@ -42,7 +41,6 @@ class DnsWizardFormController extends BaseController
 {
     private DomainRepositoryInterface $domainRepository;
     private WizardRegistry $wizardRegistry;
-    private ZoneRepositoryInterface $zoneRepository;
     private RecordManagerService $recordManager;
     private FormStateService $formStateService;
 
@@ -51,7 +49,6 @@ class DnsWizardFormController extends BaseController
         parent::__construct($request);
 
         $this->wizardRegistry = new WizardRegistry($this->getConfig());
-        $this->zoneRepository = $this->createZoneRepository();
         $this->formStateService = new FormStateService();
 
         $this->domainRepository = $this->createDomainRepository();
@@ -75,7 +72,7 @@ class DnsWizardFormController extends BaseController
         $zone_id = (int)$zone_id;
 
         // Check if zone exists
-        $zone_name = $this->zoneRepository->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
         }

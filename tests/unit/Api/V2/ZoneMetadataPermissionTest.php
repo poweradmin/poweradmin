@@ -143,7 +143,7 @@ class ZoneMetadataPermissionTest extends TestCase
         $permissionService->method('canCreateZone')->willReturn(true);
 
         $zoneRepository = $this->createMock(DbZoneRepository::class);
-        $zoneRepository->method('zoneIdExists')->willReturn(true);
+        $zoneRepository->method('zoneExists')->willReturn(true);
         $zoneRepository->method('getZoneById')->willReturn($stored + [
             'id' => self::ZONE_ID,
             'name' => 'tenant.example',

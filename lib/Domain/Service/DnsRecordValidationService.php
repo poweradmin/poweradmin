@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 
 /**
  * Validates a record by dispatching to the validator for its type.
@@ -40,18 +40,18 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
 {
     private DnsCommonValidator $dnsCommonValidator;
     private DnsValidatorRegistry $validatorRegistry;
-    private ZoneRepositoryInterface $zoneRepository;
+    private DomainRepositoryInterface $domainRepository;
     private DNSViolationValidator $dnsViolationValidator;
 
     public function __construct(
         DnsValidatorRegistry $validatorRegistry,
         DnsCommonValidator $dnsCommonValidator,
-        ZoneRepositoryInterface $zoneRepository,
+        DomainRepositoryInterface $domainRepository,
         DNSViolationValidator $dnsViolationValidator
     ) {
         $this->validatorRegistry = $validatorRegistry;
         $this->dnsCommonValidator = $dnsCommonValidator;
-        $this->zoneRepository = $zoneRepository;
+        $this->domainRepository = $domainRepository;
         $this->dnsViolationValidator = $dnsViolationValidator;
     }
 
@@ -81,7 +81,7 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         string $dns_hostmaster,
         int $dns_ttl
     ): ValidationResult {
-        $zone = $this->zoneRepository->getDomainNameById($zid);
+        $zone = $this->domainRepository->getDomainNameById($zid);
         if (!$zone) {
             return ValidationResult::failure(_('Unable to find domain with the given ID.'));
         }

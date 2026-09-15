@@ -171,7 +171,7 @@ class EditController extends BaseController
         }
 
         // Only retrieve zone data after permission validation
-        $zone_name = $this->zoneRepository->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
             return;
@@ -249,7 +249,7 @@ class EditController extends BaseController
 
         $this->requireZoneView($zone_id);
 
-        if (!$this->zoneRepository->zoneIdExists($zone_id)) {
+        if (!$this->domainRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
         }
 
@@ -283,9 +283,9 @@ class EditController extends BaseController
             $this->setMessage('edit', $type, $message);
         }
 
-        $domain_type = $this->zoneRepository->getDomainType($zone_id);
+        $domain_type = $this->domainRepository->getDomainType($zone_id);
         $record_count = $this->recordRepository->countZoneRecords($zone_id);
-        $slave_master = $this->zoneRepository->getDomainSlaveMaster($zone_id);
+        $slave_master = $this->domainRepository->getDomainMaster($zone_id);
         $types = ZoneType::getTypes();
 
         // Only zones PowerDNS would actually publish from a catalog get the selector,
@@ -310,7 +310,7 @@ class EditController extends BaseController
         // entities in front of the operator and save them back on the next submit.
         $zone_comment = (string)$this->zoneRepository->getZoneComment($zone_id);
 
-        $zone_name_to_display = $this->zoneRepository->getDomainNameById($zone_id);
+        $zone_name_to_display = $this->domainRepository->getDomainNameById($zone_id);
         $idn_zone_name = DnsIdnService::toIdnAlias($zone_name_to_display);
         // Get records via DnsDataService (supports both SQL and API backends)
         $dnsDataService = $this->createDnsDataService();
@@ -660,7 +660,7 @@ class EditController extends BaseController
         $prio = $prio !== null && $prio !== '' ? (int)$prio : 0;
         $comment = (string)$this->httpRequest->getPostParam('comment', '');
 
-        $zone_name_for_record = $this->zoneRepository->getDomainNameById($zone_id);
+        $zone_name_for_record = $this->domainRepository->getDomainNameById($zone_id);
         if ($zone_name_for_record === null) {
             $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
                 'error' => true,

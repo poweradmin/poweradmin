@@ -26,6 +26,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Zone;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
@@ -42,6 +43,7 @@ use Exception;
 class ZoneDnssecController extends PublicApiController
 {
     protected ZoneRepositoryInterface $zoneRepository;
+    protected DomainRepositoryInterface $domainRepository;
     protected ApiPermissionService $apiPermissionService;
     protected DnssecProviderInterface $dnssecProvider;
     protected ?PowerdnsApiClient $apiClient = null;
@@ -51,6 +53,7 @@ class ZoneDnssecController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $this->zoneRepository = $this->createZoneRepository();
+        $this->domainRepository = $this->createDomainRepository();
         $this->apiPermissionService = new ApiPermissionService($this->db, config: $this->config);
         $this->dnssecProvider = $this->createDnssecProvider();
 
@@ -156,7 +159,7 @@ class ZoneDnssecController extends PublicApiController
             return $this->returnApiError('DNSSEC management requires the PowerDNS API to be configured', 501);
         }
 
-        $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
         if ($zoneName === null) {
             return $this->returnApiError('Zone not found', 404);
         }
@@ -232,7 +235,7 @@ class ZoneDnssecController extends PublicApiController
             return $this->returnApiError('Missing or invalid required field: enabled (boolean)', 400);
         }
 
-        $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
         if ($zoneName === null) {
             return $this->returnApiError('Zone not found', 404);
         }

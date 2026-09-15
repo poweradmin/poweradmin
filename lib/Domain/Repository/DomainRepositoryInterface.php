@@ -84,7 +84,7 @@ interface DomainRepositoryInterface
      *
      * @return string|null Master server or null if none is stored
      */
-    public function getDomainSlaveMaster(int $id): ?string;
+    public function getDomainMaster(int $id): ?string;
 
     /**
      * Check if a domain is already existing.

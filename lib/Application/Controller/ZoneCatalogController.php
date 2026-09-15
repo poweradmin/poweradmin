@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\PermissionService;
@@ -37,7 +37,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 class ZoneCatalogController extends BaseController
 {
     private UserContextService $userContextService;
-    private ZoneRepositoryInterface $zoneRepository;
+    private DomainRepositoryInterface $domainRepository;
     private PermissionService $permissionService;
     private CatalogZoneService $catalogService;
 
@@ -45,7 +45,7 @@ class ZoneCatalogController extends BaseController
     {
         parent::__construct($request);
         $this->userContextService = new UserContextService();
-        $this->zoneRepository = $this->createZoneRepository();
+        $this->domainRepository = $this->createDomainRepository();
         $this->permissionService = $this->createPermissionService();
         $this->catalogService = $this->createCatalogZoneService();
     }
@@ -70,13 +70,13 @@ class ZoneCatalogController extends BaseController
             return;
         }
 
-        $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
         if ($zoneName === null) {
             $this->showError(_('Zone not found.'));
             return;
         }
 
-        if ($this->zoneRepository->getDomainType($zoneId) !== ZoneType::PRODUCER) {
+        if ($this->domainRepository->getDomainType($zoneId) !== ZoneType::PRODUCER) {
             $this->showError(_('Only producer zones publish a catalog.'));
             return;
         }

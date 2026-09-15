@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\ZoneManagementService;
@@ -62,7 +63,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             (13, 'dup', 0)");
     }
 
-    private function service(?PdnsCapabilities $capabilities = null, ?ZoneRepositoryInterface $zones = null): ZoneManagementService
+    private function service(?PdnsCapabilities $capabilities = null, ?DomainRepositoryInterface $domains = null): ZoneManagementService
     {
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(function (string $group, string $key, $default = null) {
@@ -72,16 +73,16 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             return $default;
         });
 
-        return new ZoneManagementService($zones ?? $this->createMock(ZoneRepositoryInterface::class), $config, $this->db, null, null, $capabilities);
+        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, null, null, $capabilities, null, $domains);
     }
 
-    private function existingZoneOfType(string $type): ZoneRepositoryInterface
+    private function existingZoneOfType(string $type): DomainRepositoryInterface
     {
-        $zones = $this->createMock(ZoneRepositoryInterface::class);
-        $zones->method('zoneIdExists')->willReturn(true);
-        $zones->method('getDomainType')->willReturn($type);
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('zoneIdExists')->willReturn(true);
+        $domains->method('getDomainType')->willReturn($type);
 
-        return $zones;
+        return $domains;
     }
 
     public function testRefusalsCarryACodeForTheForms(): void

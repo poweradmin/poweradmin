@@ -83,8 +83,7 @@ class ZoneFileImportController extends BaseController
         $targetZoneName = '';
 
         if (isset($_GET['zone_id']) && (int)$_GET['zone_id'] > 0) {
-            $zoneRepository = $this->createZoneRepository();
-            $zoneName = $zoneRepository->getDomainNameById((int)$_GET['zone_id']);
+            $zoneName = $this->createDomainRepository()->getDomainNameById((int)$_GET['zone_id']);
             if ($zoneName) {
                 $userId = $this->userContextService->getLoggedInUserId();
                 $permissionService = $this->createPermissionService();
@@ -218,8 +217,7 @@ class ZoneFileImportController extends BaseController
         ];
 
         if ($importMode === 'existing' && $existingZoneId > 0) {
-            $zoneRepository = $this->createZoneRepository();
-            $existingZoneName = $zoneRepository->getDomainNameById($existingZoneId);
+            $existingZoneName = $this->createDomainRepository()->getDomainNameById($existingZoneId);
             $previewVars['existing_zone_name'] = $existingZoneName ?: '';
         } else {
             // For new-zone imports, expose the ownership-mode flags + group list
@@ -285,8 +283,7 @@ class ZoneFileImportController extends BaseController
 
         if ($importMode === 'existing' && $existingZoneId > 0) {
             // Verify the zone exists
-            $zoneRepository = $this->createZoneRepository();
-            $existingZoneName = $zoneRepository->getDomainNameById($existingZoneId);
+            $existingZoneName = $domainRepository->getDomainNameById($existingZoneId);
             if (!$existingZoneName) {
                 $this->showError(_('The selected zone does not exist.'));
                 return;

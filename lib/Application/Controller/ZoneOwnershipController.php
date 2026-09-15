@@ -80,7 +80,7 @@ class ZoneOwnershipController extends BaseController
         $meta_edit = ZoneAccessPolicy::levelAppliesToZone($perm_meta_edit, $user_is_zone_owner);
 
         // Get zone information
-        $zone_name = $this->zoneRepository->getDomainNameById($zone_id);
+        $zone_name = $this->createDomainRepository()->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
             return;
@@ -313,7 +313,7 @@ class ZoneOwnershipController extends BaseController
             $this->config,
             $mailService,
             $emailTemplateService,
-            $this->zoneRepository,
+            $this->createDomainRepository(),
             null
         );
     }

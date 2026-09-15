@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\LoggerInterface;
 use Twig\Error\LoaderError;
@@ -42,7 +42,7 @@ class ZoneAccessNotificationService
     private ConfigurationManager $config;
     private MailService $mailService;
     private EmailTemplateService $emailTemplateService;
-    private ZoneRepositoryInterface $zoneRepository;
+    private DomainRepositoryInterface $domainRepository;
     private UrlService $urlService;
     private ?LoggerInterface $logger;
 
@@ -51,14 +51,14 @@ class ZoneAccessNotificationService
         ConfigurationManager $config,
         MailService $mailService,
         EmailTemplateService $emailTemplateService,
-        ZoneRepositoryInterface $zoneRepository,
+        DomainRepositoryInterface $domainRepository,
         ?LoggerInterface $logger = null
     ) {
         $this->db = $db;
         $this->config = $config;
         $this->mailService = $mailService;
         $this->emailTemplateService = $emailTemplateService;
-        $this->zoneRepository = $zoneRepository;
+        $this->domainRepository = $domainRepository;
         $this->urlService = new UrlService($config);
         $this->logger = $logger;
     }
@@ -80,7 +80,7 @@ class ZoneAccessNotificationService
 
         try {
             // Get zone details
-            $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
+            $zoneName = $this->domainRepository->getDomainNameById($zoneId);
             if (!$zoneName) {
                 $this->logError("Zone not found with ID: $zoneId");
                 return false;
@@ -154,7 +154,7 @@ class ZoneAccessNotificationService
 
         try {
             // Get zone details
-            $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
+            $zoneName = $this->domainRepository->getDomainNameById($zoneId);
             if (!$zoneName) {
                 $this->logError("Zone not found with ID: $zoneId");
                 return false;

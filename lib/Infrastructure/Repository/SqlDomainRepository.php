@@ -122,7 +122,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
         return ((string)$stmt->fetchColumn()) ?: 'NATIVE';
     }
 
-    public function getDomainSlaveMaster(int $id): ?string
+    public function getDomainMaster(int $id): ?string
     {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 

@@ -4,8 +4,8 @@ namespace TestHelpers;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
@@ -42,7 +42,7 @@ class BaseDnsTest extends TestCase
     {
         $dbMock = $this->createMock(PDO::class);
         $configMock = $this->createMock(ConfigurationManager::class);
-        $zoneRepositoryMock = $this->createMock(ZoneRepositoryInterface::class);
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
 
         // Configure the mock to return expected values
         $configMock->method('get')
@@ -102,8 +102,8 @@ class BaseDnsTest extends TestCase
                 return $stmtMock;
             });
 
-        // Mock ZoneRepository to return domain names
-        $zoneRepositoryMock->method('getDomainNameById')
+        // Mock DomainRepository to return domain names
+        $domainRepositoryMock->method('getDomainNameById')
             ->willReturnCallback(function ($zoneId) {
                 if ($zoneId === 1) {
                     return 'example.com';
@@ -198,7 +198,7 @@ class BaseDnsTest extends TestCase
         $this->validationService = new DnsRecordValidationService(
             $registryMock,
             $dnsCommonValidator,
-            $zoneRepositoryMock,
+            $domainRepositoryMock,
             $dnsViolationValidator
         );
     }

@@ -229,7 +229,7 @@ class ControllerServiceFactory
 
     public function zoneManagementService(?PdnsCapabilities $capabilities = null): ZoneManagementService
     {
-        return new ZoneManagementService($this->zoneRepository(), $this->config, $this->db, $this->logger, null, $capabilities, $this->zoneSigningService());
+        return new ZoneManagementService($this->zoneRepository(), $this->config, $this->db, $this->logger, null, $capabilities, $this->zoneSigningService(), $this->domainRepository());
     }
 
     public function auditService(): AuditService
@@ -409,7 +409,7 @@ class ControllerServiceFactory
             $this->dnsBackendProvider(),
             $this->permissionService(),
             $this->auditService(),
-            $this->repositoryFactory()->createZoneRepository()
+            $this->domainRepository()
         );
     }
 

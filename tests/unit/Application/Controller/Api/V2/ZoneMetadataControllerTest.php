@@ -24,12 +24,12 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZoneMetadataController;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneMetadataOutcome;
 use Poweradmin\Domain\Service\ZoneMetadataResult;
 use Poweradmin\Domain\Service\ZoneMetadataService;
-use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -140,13 +140,13 @@ class ZoneMetadataControllerTest extends TestCase
         $permissions = $this->createMock(ApiPermissionService::class);
         $permissions->method('canViewZoneMetadata')->willReturn(true);
         $permissions->method('canEditZoneMeta')->willReturn(true);
-        $zoneRepository = $this->createMock(DbZoneRepository::class);
-        $zoneRepository->method('getDomainNameById')->willReturn($zoneName);
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getDomainNameById')->willReturn($zoneName);
 
         $controller = (new ReflectionClass(ZoneMetadataController::class))->newInstanceWithoutConstructor();
         $this->inject($controller, 'metadataService', $service);
         $this->inject($controller, 'apiPermissionService', $permissions);
-        $this->inject($controller, 'zoneRepository', $zoneRepository);
+        $this->inject($controller, 'domainRepository', $domainRepository);
         $this->inject($controller, 'pathParameters', ['id' => self::ZONE_ID, 'kind' => $kind]);
         $this->inject($controller, 'authenticatedUserId', self::USER_ID);
         $this->inject($controller, 'request', new Request([], [], [], [], [], [], $body === null ? '' : json_encode($body)));

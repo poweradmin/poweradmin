@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
@@ -40,7 +39,6 @@ class DnsWizardSelectController extends BaseController
 {
     private DomainRepositoryInterface $domainRepository;
     private WizardRegistry $wizardRegistry;
-    private ZoneRepositoryInterface $zoneRepository;
 
     public function __construct(array $request)
     {
@@ -48,7 +46,6 @@ class DnsWizardSelectController extends BaseController
 
         $this->domainRepository = $this->createDomainRepository();
         $this->wizardRegistry = new WizardRegistry($this->getConfig());
-        $this->zoneRepository = $this->createZoneRepository();
     }
 
     public function run(): void
@@ -67,7 +64,7 @@ class DnsWizardSelectController extends BaseController
         $zone_id = (int)$zone_id;
 
         // Check if zone exists
-        $zone_name = $this->zoneRepository->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
         }

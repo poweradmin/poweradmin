@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
@@ -43,7 +43,7 @@ class DnsRecordValidationServiceTest extends TestCase
     private DnsRecordValidationService $service;
     private DnsValidatorRegistry&MockObject $validatorRegistry;
     private DnsCommonValidator&MockObject $dnsCommonValidator;
-    private ZoneRepositoryInterface&MockObject $zoneRepository;
+    private DomainRepositoryInterface&MockObject $domainRepository;
     private DNSViolationValidator&MockObject $dnsViolationValidator;
 
     protected function setUp(): void
@@ -52,13 +52,13 @@ class DnsRecordValidationServiceTest extends TestCase
 
         $this->validatorRegistry = $this->createMock(DnsValidatorRegistry::class);
         $this->dnsCommonValidator = $this->createMock(DnsCommonValidator::class);
-        $this->zoneRepository = $this->createMock(ZoneRepositoryInterface::class);
+        $this->domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $this->dnsViolationValidator = $this->createMock(DNSViolationValidator::class);
 
         $this->service = new DnsRecordValidationService(
             $this->validatorRegistry,
             $this->dnsCommonValidator,
-            $this->zoneRepository,
+            $this->domainRepository,
             $this->dnsViolationValidator
         );
     }
@@ -68,7 +68,7 @@ class DnsRecordValidationServiceTest extends TestCase
     #[Test]
     public function testValidateRecordReturnsFailureWhenZoneNotFound(): void
     {
-        $this->zoneRepository->method('getDomainNameById')
+        $this->domainRepository->method('getDomainNameById')
             ->with(999)
             ->willReturn(null);
 
@@ -92,7 +92,7 @@ class DnsRecordValidationServiceTest extends TestCase
     #[Test]
     public function testValidateRecordSucceedsForValidARecord(): void
     {
-        $this->zoneRepository->method('getDomainNameById')
+        $this->domainRepository->method('getDomainNameById')
             ->with(1)
             ->willReturn('example.com');
 
@@ -141,7 +141,7 @@ class DnsRecordValidationServiceTest extends TestCase
     #[Test]
     public function testValidateRecordFailsWhenCnameExistsForName(): void
     {
-        $this->zoneRepository->method('getDomainNameById')
+        $this->domainRepository->method('getDomainNameById')
             ->with(1)
             ->willReturn('example.com');
 
@@ -177,7 +177,7 @@ class DnsRecordValidationServiceTest extends TestCase
     #[Test]
     public function testValidateRecordFailsOnDnsViolation(): void
     {
-        $this->zoneRepository->method('getDomainNameById')
+        $this->domainRepository->method('getDomainNameById')
             ->with(1)
             ->willReturn('example.com');
 
@@ -216,7 +216,7 @@ class DnsRecordValidationServiceTest extends TestCase
     #[Test]
     public function testValidateRecordFailsWhenValidatorReturnsError(): void
     {
-        $this->zoneRepository->method('getDomainNameById')
+        $this->domainRepository->method('getDomainNameById')
             ->with(1)
             ->willReturn('example.com');
 
@@ -257,7 +257,7 @@ class DnsRecordValidationServiceTest extends TestCase
     #[Test]
     public function testValidateRecordSkipsCnameExistenceCheckForCnameType(): void
     {
-        $this->zoneRepository->method('getDomainNameById')
+        $this->domainRepository->method('getDomainNameById')
             ->with(1)
             ->willReturn('example.com');
 
@@ -300,7 +300,7 @@ class DnsRecordValidationServiceTest extends TestCase
     #[Test]
     public function testValidateRecordSetsSoaParamsForSoaType(): void
     {
-        $this->zoneRepository->method('getDomainNameById')
+        $this->domainRepository->method('getDomainNameById')
             ->with(1)
             ->willReturn('example.com');
 
@@ -350,7 +350,7 @@ class DnsRecordValidationServiceTest extends TestCase
     #[Test]
     public function testValidateRecordChecksNonAliasTargetForNsRecord(): void
     {
-        $this->zoneRepository->method('getDomainNameById')
+        $this->domainRepository->method('getDomainNameById')
             ->with(1)
             ->willReturn('example.com');
 
@@ -399,7 +399,7 @@ class DnsRecordValidationServiceTest extends TestCase
     #[Test]
     public function testValidateRecordChecksNonAliasTargetForMxRecord(): void
     {
-        $this->zoneRepository->method('getDomainNameById')
+        $this->domainRepository->method('getDomainNameById')
             ->with(1)
             ->willReturn('example.com');
 
@@ -448,7 +448,7 @@ class DnsRecordValidationServiceTest extends TestCase
     #[Test]
     public function testValidateRecordFailsWhenNsTargetIsAlias(): void
     {
-        $this->zoneRepository->method('getDomainNameById')
+        $this->domainRepository->method('getDomainNameById')
             ->with(1)
             ->willReturn('example.com');
 
@@ -497,7 +497,7 @@ class DnsRecordValidationServiceTest extends TestCase
     #[Test]
     public function testValidateRecordDoesNotCheckNonAliasTargetForARecord(): void
     {
-        $this->zoneRepository->method('getDomainNameById')
+        $this->domainRepository->method('getDomainNameById')
             ->with(1)
             ->willReturn('example.com');
 
@@ -545,7 +545,7 @@ class DnsRecordValidationServiceTest extends TestCase
     #[Test]
     public function testValidateRecordReturnsCorrectDataStructure(): void
     {
-        $this->zoneRepository->method('getDomainNameById')
+        $this->domainRepository->method('getDomainNameById')
             ->with(1)
             ->willReturn('example.com');
 

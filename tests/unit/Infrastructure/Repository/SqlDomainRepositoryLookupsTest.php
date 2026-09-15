@@ -84,12 +84,12 @@ class SqlDomainRepositoryLookupsTest extends TestCase
     }
 
     #[Test]
-    public function getDomainSlaveMasterReturnsTheStoredMasterForAnyKind(): void
+    public function getDomainMasterReturnsTheStoredMasterForAnyKind(): void
     {
-        $this->assertSame('192.0.2.1', $this->repository->getDomainSlaveMaster(2));
-        $this->assertSame('192.0.2.2', $this->repository->getDomainSlaveMaster(3));
-        $this->assertNull($this->repository->getDomainSlaveMaster(1));
-        $this->assertNull($this->repository->getDomainSlaveMaster(4));
-        $this->assertNull($this->repository->getDomainSlaveMaster(99));
+        $this->assertSame('192.0.2.1', $this->repository->getDomainMaster(2));
+        $this->assertSame('192.0.2.2', $this->repository->getDomainMaster(3));
+        $this->assertNull($this->repository->getDomainMaster(1));
+        $this->assertNull($this->repository->getDomainMaster(4));
+        $this->assertNull($this->repository->getDomainMaster(99));
     }
 }
