@@ -303,8 +303,8 @@ class AuditService
     }
 
     /**
-     * One public API response. Unlike the other lines the operation comes first and the
-     * actor last; that order is what log_api filters match on, so it stays. Empty values become '-'.
+     * One public API response. The operation-first layout and the '-' placeholders are the
+     * row format earlier releases stored, kept so external log scrapers keep matching.
      *
      * @param string $operation api_request, or api_violation for a 401/403
      * @param string $path Already capped by the caller so the row fits log_api.event
