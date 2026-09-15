@@ -29,9 +29,9 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use TestHelpers\FakeConfiguration;
 
 class DashboardStatsServiceTest extends TestCase
 {

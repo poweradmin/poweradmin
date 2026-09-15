@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ZoneOverlapService;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Integration tests for ZoneOverlapService against a real MariaDB.

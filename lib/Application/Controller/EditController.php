@@ -95,13 +95,8 @@ class EditController extends BaseController
         $this->setCurrentPage('edit');
         $this->setPageTitle(_('Edit zone'));
 
-        // Get default rows per page from config
-        $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
-
-        // Create pagination service and get user preference
-        $paginationService = $this->createPaginationService();
         $userId = $this->getCurrentUserId();
-        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId, $this->httpRequest->getRowsPerPage());
+        $iface_rowamount = $this->resolveRowsPerPage(10);
 
         // Get user preferences for form positioning
         $userPreferenceService = $this->createUserPreferenceService();

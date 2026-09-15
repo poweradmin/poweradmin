@@ -39,7 +39,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ZoneEditService;
 use Poweradmin\Domain\Service\ZoneEditSubmission;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The zone editor save: the edit gate and read-only refusal come first, a stale
