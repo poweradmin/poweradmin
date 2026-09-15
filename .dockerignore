@@ -62,8 +62,6 @@ phpstan-baseline.neon
 phpstan.neon
 phpunit.xml.dist
 psalm.xml
-.php-cs-fixer.cache
-.php-cs-fixer.php
 .phan
 .doctum
 doctum.php

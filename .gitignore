@@ -74,7 +74,6 @@ locale/**/*.po.backup.*
 /.playwright-mcp/
 
 # PHP tools
-/.php-cs-fixer.cache
 /.phpstan-cache/
 .phan/phan.phar
 .doctum/*
