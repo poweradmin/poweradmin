@@ -309,7 +309,7 @@ interface DnsBackendProviderInterface
      * Get zone type by domain ID.
      *
      * @param int $domainId Domain ID
-     * @return string Zone type (NATIVE, MASTER, SLAVE)
+     * @return string One of the ZoneKind values (NATIVE, MASTER, SLAVE, PRODUCER, CONSUMER); NATIVE when unknown
      */
     public function getZoneTypeById(int $domainId): string;
 

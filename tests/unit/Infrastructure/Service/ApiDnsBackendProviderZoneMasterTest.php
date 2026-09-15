@@ -33,9 +33,8 @@ use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
 
 /**
- * getZoneMasterById() serves the cached master for any zone kind, so a CONSUMER
- * zone keeps its primary on the edit page. PowerDNS is asked only when the local
- * row has no kind cached yet.
+ * The kind and master lookups serve the cached zones row for any zone kind; PowerDNS
+ * is asked once, and only when the local row has no kind cached yet.
  */
 #[CoversClass(ApiDnsBackendProvider::class)]
 class ApiDnsBackendProviderZoneMasterTest extends TestCase
@@ -51,16 +50,15 @@ class ApiDnsBackendProviderZoneMasterTest extends TestCase
         $db->exec("CREATE TABLE zones (
             id INTEGER PRIMARY KEY,
             domain_id INTEGER,
-            owner INTEGER,
             zone_name TEXT,
             zone_type TEXT,
             zone_master TEXT
         )");
-        $db->exec("INSERT INTO zones (id, domain_id, owner, zone_name, zone_type, zone_master) VALUES
-            (1, 1, 1, 'native.example.com', 'NATIVE', NULL),
-            (2, 2, 1, 'slave.example.com', 'SLAVE', '192.0.2.1'),
-            (3, 3, 1, 'consumer.example.com', 'CONSUMER', '192.0.2.2'),
-            (4, 4, 1, 'untyped.example.com', NULL, NULL)");
+        $db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master) VALUES
+            (1, 1, 'native.example.com', 'NATIVE', NULL),
+            (2, 2, 'slave.example.com', 'SLAVE', '192.0.2.1'),
+            (3, 3, 'consumer.example.com', 'CONSUMER', '192.0.2.2'),
+            (4, 4, 'untyped.example.com', NULL, NULL)");
 
         $this->client = $this->createMock(PowerdnsApiClient::class);
         $this->provider = new ApiDnsBackendProvider(
@@ -72,24 +70,20 @@ class ApiDnsBackendProviderZoneMasterTest extends TestCase
     }
 
     #[Test]
-    public function returnsTheCachedMasterForSlaveAndConsumerZonesWithoutAskingPowerdns(): void
+    public function answersFromTheCachedRowWithoutAskingPowerdns(): void
     {
         $this->client->expects($this->never())->method('getZone');
 
         $this->assertSame('192.0.2.1', $this->provider->getZoneMasterById(2));
         $this->assertSame('192.0.2.2', $this->provider->getZoneMasterById(3));
-    }
-
-    #[Test]
-    public function returnsNullForATypedZoneWithoutAMaster(): void
-    {
-        $this->client->expects($this->never())->method('getZone');
-
         $this->assertNull($this->provider->getZoneMasterById(1));
+        $this->assertNull($this->provider->getZoneMasterById(99));
+        $this->assertSame('CONSUMER', $this->provider->getZoneTypeById(3));
+        $this->assertSame('NATIVE', $this->provider->getZoneTypeById(99));
     }
 
     #[Test]
-    public function asksPowerdnsOnlyWhenTheLocalRowHasNoKind(): void
+    public function asksPowerdnsOnceWhenTheLocalRowHasNoKind(): void
     {
         $this->client->expects($this->once())
             ->method('getZone')
@@ -100,10 +94,13 @@ class ApiDnsBackendProviderZoneMasterTest extends TestCase
     }
 
     #[Test]
-    public function returnsNullForAnUnknownZoneId(): void
+    public function asksPowerdnsForTheKindWhenTheLocalRowHasNone(): void
     {
-        $this->client->expects($this->never())->method('getZone');
+        $this->client->expects($this->once())
+            ->method('getZone')
+            ->with('untyped.example.com.', false)
+            ->willReturn(['name' => 'untyped.example.com.', 'kind' => 'Slave', 'masters' => ['192.0.2.3']]);
 
-        $this->assertNull($this->provider->getZoneMasterById(99));
+        $this->assertSame('SLAVE', $this->provider->getZoneTypeById(4));
     }
 }

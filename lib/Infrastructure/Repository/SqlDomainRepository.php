@@ -63,9 +63,10 @@ class SqlDomainRepository implements DomainRepositoryInterface
     {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $stmt = $this->db->prepare("SELECT COUNT(id) FROM $domains_table WHERE id = :id");
-        $stmt->execute([':id' => $zid]);
-        return (int)$stmt->fetchColumn() > 0;
+        $stmt = $this->db->prepare("SELECT 1 FROM $domains_table WHERE id = :id");
+        $stmt->bindValue(':id', $zid, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() !== false;
     }
 
     public function getDomainNameById(int $id): ?string
@@ -73,13 +74,10 @@ class SqlDomainRepository implements DomainRepositoryInterface
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        $result = $stmt->fetch();
-        if ($result) {
-            return $result["name"];
-        } else {
-            return null;
-        }
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchColumn();
+        return $result === false ? null : (string)$result;
     }
 
     public function getDomainIdByName(string $name): ?int
@@ -119,12 +117,9 @@ class SqlDomainRepository implements DomainRepositoryInterface
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->prepare("SELECT type FROM $domains_table WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        $type = $stmt->fetchColumn();
-        if ($type == "") {
-            $type = "NATIVE";
-        }
-        return $type;
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return ((string)$stmt->fetchColumn()) ?: 'NATIVE';
     }
 
     public function getDomainSlaveMaster(int $id): ?string

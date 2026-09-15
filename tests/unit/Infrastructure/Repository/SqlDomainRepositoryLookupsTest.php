@@ -30,9 +30,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
 
 /**
- * Pins the four id lookups on the SQL domain repository. The master lookup must
- * answer for every zone kind: a CONSUMER zone replicates from a primary just like
- * a SLAVE zone, and the edit page shows that primary for both.
+ * Pins the id lookups; the master lookup answers for every zone kind.
  */
 #[CoversClass(SqlDomainRepository::class)]
 class SqlDomainRepositoryLookupsTest extends TestCase
@@ -52,12 +50,7 @@ class SqlDomainRepositoryLookupsTest extends TestCase
             (4, 'empty-master.example.com', '', 'MASTER'),
             (5, 'untyped.example.com', NULL, '')");
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            fn($group, $key, $default = null) => $group === 'database' && $key === 'type' ? 'sqlite' : $default
-        );
-
-        $this->repository = new SqlDomainRepository($db, $config);
+        $this->repository = new SqlDomainRepository($db, $this->createMock(ConfigurationManager::class));
     }
 
     #[Test]
@@ -91,20 +84,10 @@ class SqlDomainRepositoryLookupsTest extends TestCase
     }
 
     #[Test]
-    public function getDomainSlaveMasterReturnsTheMasterForSlaveZones(): void
+    public function getDomainSlaveMasterReturnsTheStoredMasterForAnyKind(): void
     {
         $this->assertSame('192.0.2.1', $this->repository->getDomainSlaveMaster(2));
-    }
-
-    #[Test]
-    public function getDomainSlaveMasterReturnsTheMasterForConsumerZones(): void
-    {
         $this->assertSame('192.0.2.2', $this->repository->getDomainSlaveMaster(3));
-    }
-
-    #[Test]
-    public function getDomainSlaveMasterReturnsNullWhenNoMasterIsStored(): void
-    {
         $this->assertNull($this->repository->getDomainSlaveMaster(1));
         $this->assertNull($this->repository->getDomainSlaveMaster(4));
         $this->assertNull($this->repository->getDomainSlaveMaster(99));
