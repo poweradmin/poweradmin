@@ -1794,11 +1794,11 @@ test_zone_metadata() {
     # Test 8: Reject multiple values for single-value kind
     api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" '{"values":["0","1"]}' 400 "Reject multiple values for single-value kind"
 
-    # Test 9: Reject write to read-only kind
-    api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/SOA-EDIT" '{"values":["INCEPTION-INCREMENT"]}' 403 "Reject write to read-only metadata kind"
+    # Test 9: Reject write to a kind PowerDNS maintains itself (SOA-EDIT is writable through the zone object)
+    api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/CATALOG-HASH" '{"values":["abc"]}' 403 "Reject write to server-managed metadata kind"
 
-    # Test 10: Reject delete of read-only kind
-    api_request_v2 "DELETE" "/zones/${TEST_METADATA_ZONE_ID}/metadata/SOA-EDIT" "" 403 "Reject delete of read-only metadata kind"
+    # Test 10: Reject delete of a server-managed kind
+    api_request_v2 "DELETE" "/zones/${TEST_METADATA_ZONE_ID}/metadata/CATALOG-HASH" "" 403 "Reject delete of server-managed metadata kind"
 
     # Test 11: Reject empty values array
     api_request_v2 "PUT" "/zones/${TEST_METADATA_ZONE_ID}/metadata/IXFR" '{"values":[]}' 400 "Reject empty values array"
@@ -2297,8 +2297,9 @@ test_users_ldap_sync() {
         print_fail "Expected LDAP-related error message, got: $LAST_RESPONSE_BODY"
     fi
 
-    # Switch user back to SQL; password updates must work again.
-    api_request_v2 "PUT" "/users/${ldap_user_id}" '{"use_ldap":false}' 200 "Disable use_ldap"
+    # Switch user back to SQL: the placeholder password must be replaced in the same request.
+    api_request_v2 "PUT" "/users/${ldap_user_id}" '{"use_ldap":false}' 400 "Reject disabling use_ldap without a password"
+    api_request_v2 "PUT" "/users/${ldap_user_id}" '{"use_ldap":false,"password":"ResetPass123"}' 200 "Disable use_ldap with a new password"
     api_request_v2 "PUT" "/users/${ldap_user_id}" '{"password":"NewPass123"}' 200 "Allow password change after disabling LDAP"
 
     api_request_v2 "DELETE" "/users/${ldap_user_id}" "" 200 "Delete LDAP test user"
