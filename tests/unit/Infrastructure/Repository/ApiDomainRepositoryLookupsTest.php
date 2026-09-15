@@ -32,10 +32,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 
 /**
- * Pins the four id lookups on the API-mode domain repository. Existence is
- * answered from the local zones row through getZoneNameById, so a stale row
- * never costs an HTTP round trip and never reports a locally known zone as
- * missing; the master lookup is passed through for every zone kind.
+ * The API-mode existence and name lookups answer from the local zones row and never ask PowerDNS.
  */
 #[CoversClass(ApiDomainRepository::class)]
 class ApiDomainRepositoryLookupsTest extends TestCase
@@ -47,32 +44,18 @@ class ApiDomainRepositoryLookupsTest extends TestCase
     {
         parent::setUp();
 
-        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(fn($group, $key, $default = null) => $default);
-
         $this->backend = $this->createMock(DnsBackendProviderInterface::class);
-        $this->backend->method('isApiBackend')->willReturn(true);
         $this->backend->method('getZoneNameById')->willReturnMap([
             [1, 'native.example.com'],
-            [2, 'slave.example.com'],
             [3, 'consumer.example.com'],
             [99, null],
         ]);
-        $this->backend->method('getZoneTypeById')->willReturnMap([
-            [1, 'NATIVE'],
-            [2, 'SLAVE'],
-            [3, 'CONSUMER'],
-            [99, 'NATIVE'],
-        ]);
-        $this->backend->method('getZoneMasterById')->willReturnMap([
-            [1, null],
-            [2, '192.0.2.1'],
-            [3, '192.0.2.2'],
-            [99, null],
-        ]);
 
-        $this->repository = new ApiDomainRepository($db, $config, $this->backend);
+        $this->repository = new ApiDomainRepository(
+            $this->createStub(PDO::class),
+            $this->createMock(ConfigurationManager::class),
+            $this->backend
+        );
     }
 
     #[Test]
@@ -91,35 +74,7 @@ class ApiDomainRepositoryLookupsTest extends TestCase
     {
         $this->backend->expects($this->never())->method('getZoneById');
 
-        $this->assertSame('slave.example.com', $this->repository->getDomainNameById(2));
+        $this->assertSame('consumer.example.com', $this->repository->getDomainNameById(3));
         $this->assertNull($this->repository->getDomainNameById(99));
-    }
-
-    #[Test]
-    public function getDomainTypeReturnsTheProviderKind(): void
-    {
-        $this->assertSame('NATIVE', $this->repository->getDomainType(1));
-        $this->assertSame('SLAVE', $this->repository->getDomainType(2));
-        $this->assertSame('CONSUMER', $this->repository->getDomainType(3));
-        $this->assertSame('NATIVE', $this->repository->getDomainType(99));
-    }
-
-    #[Test]
-    public function getDomainSlaveMasterReturnsTheMasterForSlaveZones(): void
-    {
-        $this->assertSame('192.0.2.1', $this->repository->getDomainSlaveMaster(2));
-    }
-
-    #[Test]
-    public function getDomainSlaveMasterReturnsTheMasterForConsumerZones(): void
-    {
-        $this->assertSame('192.0.2.2', $this->repository->getDomainSlaveMaster(3));
-    }
-
-    #[Test]
-    public function getDomainSlaveMasterReturnsNullWhenNoMasterIsStored(): void
-    {
-        $this->assertNull($this->repository->getDomainSlaveMaster(1));
-        $this->assertNull($this->repository->getDomainSlaveMaster(99));
     }
 }

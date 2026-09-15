@@ -657,33 +657,39 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
 
     public function getZoneTypeById(int $domainId): string
     {
-        // First check local cache
-        $type = $this->resolveCanonicalZoneRow($domainId)['zone_type'] ?? null;
-
-        if ($type !== null && $type !== '') {
-            return $type;
-        }
-
-        // Fallback to API
-        $zone = $this->getZoneById($domainId);
-        return $zone ? ($zone['type'] ?: 'NATIVE') : 'NATIVE';
+        return ($this->resolveKindAndMaster($domainId)['type'] ?? '') ?: 'NATIVE';
     }
 
     public function getZoneMasterById(int $domainId): ?string
     {
-        // Any kind may carry a master (SLAVE and CONSUMER both replicate from
-        // a primary); only a row with no cached type needs the API.
+        return ($this->resolveKindAndMaster($domainId)['master'] ?? '') ?: null;
+    }
+
+    /**
+     * Reads the kind and master from the local zones row; only a row with no kind cached
+     * (written before the sync stored types) costs a round trip to PowerDNS.
+     *
+     * @return array{type: string, master: string}|null Null when neither side knows the zone
+     */
+    private function resolveKindAndMaster(int $domainId): ?array
+    {
         $row = $this->resolveCanonicalZoneRow($domainId);
-
-        if ($row !== null && ($row['zone_type'] ?? '') !== '') {
-            return $row['zone_master'] ?: null;
-        }
-
-        $zone = $this->getZoneById($domainId);
-        if ($zone === null) {
+        if ($row === null) {
             return null;
         }
-        return $zone['master'] ?: null;
+        if (!empty($row['zone_type'])) {
+            return ['type' => $row['zone_type'], 'master' => (string)($row['zone_master'] ?? '')];
+        }
+
+        $zoneData = $this->client->getZone(self::ensureTrailingDot($row['zone_name']), false);
+        if ($zoneData === null) {
+            return null;
+        }
+
+        return [
+            'type' => strtoupper($zoneData['kind'] ?? ''),
+            'master' => self::formatMasters($zoneData['masters'] ?? []),
+        ];
     }
 
     // ---------------------------------------------------------------

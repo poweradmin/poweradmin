@@ -66,17 +66,19 @@ interface DomainRepositoryInterface
     public function getZoneIdFromName(string $zname): ?int;
 
     /**
-     * Get Domain Type for Domain ID
+     * Get the kind of a domain. In API backend mode a zones row without a cached kind
+     * costs one round trip to PowerDNS.
      *
      * @param int $id Domain ID
      *
-     * @return string Domain Type [NATIVE,MASTER,SLAVE]
+     * @return string One of the ZoneKind values (NATIVE, MASTER, SLAVE, PRODUCER, CONSUMER); NATIVE when unknown
      */
     public function getDomainType(int $id): string;
 
     /**
      * Get the master (primary) server stored for a domain, whatever its kind.
      * SLAVE and CONSUMER zones both replicate from one; callers that need SLAVE only check the type.
+     * In API backend mode a zones row without a cached kind costs one round trip to PowerDNS.
      *
      * @param int $id Domain ID
      *
