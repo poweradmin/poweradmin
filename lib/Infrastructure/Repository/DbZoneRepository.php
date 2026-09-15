@@ -520,27 +520,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return array_values($zones);
     }
 
-    public function userCanAccessZone(int $zoneId, int $userId): bool
-    {
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT 1 FROM $domains_table
-            LEFT JOIN zones ON $domains_table.id = zones.domain_id
-            WHERE $domains_table.id = :id AND (zones.owner = :userId OR EXISTS (
-                SELECT 1 FROM zones_groups zg
-                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
-            ))";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchColumn() !== false;
-    }
-
     public function getZone(int $zoneId): ?array
     {
         $zone = $this->getZoneById($zoneId);

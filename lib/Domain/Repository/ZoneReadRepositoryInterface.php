@@ -23,10 +23,18 @@
 namespace Poweradmin\Domain\Repository;
 
 /**
- * Zone lookups, lists and counts; the read half of ZoneRepositoryInterface.
+ * Zone lookups, lists and counts; one of the three roles ZoneRepositoryInterface combines.
  */
 interface ZoneReadRepositoryInterface
 {
+    /**
+     * Get zone comment by zone ID
+     *
+     * @param int $zoneId The zone ID
+     * @return string|null The zone comment or null if not found
+     */
+    public function getZoneComment(int $zoneId): ?string;
+
     /**
      * Get a zone by ID
      *

@@ -173,7 +173,6 @@ class UsersController extends BaseController
             ]
         );
 
-        // Pagination setup
         $currentPage = $this->httpRequest->getPage();
         $rowsPerPage = $this->resolveRowsPerPage(50);
 

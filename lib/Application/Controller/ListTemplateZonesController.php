@@ -61,7 +61,7 @@ class ListTemplateZonesController extends BaseController
 
     private function showZonesList(int $zone_templ_id): void
     {
-        $itemsPerPage = $this->resolveRowsPerPage(10);
+        $itemsPerPage = $this->resolveRowsPerPage();
         $currentPage = $this->httpRequest->getPage();
         $offset = ($currentPage - 1) * $itemsPerPage;
 

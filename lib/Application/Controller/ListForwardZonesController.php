@@ -118,7 +118,7 @@ class ListForwardZonesController extends BaseController
         $iface_zonelist_template = $userPreferenceService->getShowZoneTemplate($userId);
         $iface_zonelist_record_count = $userPreferenceService->getShowZoneRecordCount($userId);
 
-        $iface_rowamount = $this->resolveRowsPerPage(10);
+        $iface_rowamount = $this->resolveRowsPerPage();
 
         $row_start = 0;
         $start_param = $this->httpRequest->getQueryParam('start');

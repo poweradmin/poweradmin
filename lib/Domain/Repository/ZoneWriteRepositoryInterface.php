@@ -23,18 +23,10 @@
 namespace Poweradmin\Domain\Repository;
 
 /**
- * Zone row, comment and metadata writes; the write half of ZoneRepositoryInterface.
+ * Zone row, comment and metadata writes (plus the metadata read the editor pairs with them); one of the three roles ZoneRepositoryInterface combines.
  */
 interface ZoneWriteRepositoryInterface
 {
-    /**
-     * Get zone comment by zone ID
-     *
-     * @param int $zoneId The zone ID
-     * @return string|null The zone comment or null if not found
-     */
-    public function getZoneComment(int $zoneId): ?string;
-
     /**
      * Update zone comment
      *

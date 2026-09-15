@@ -25,7 +25,7 @@ namespace TestHelpers;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
- * In-memory ConfigurationInterface backed by a plain array, for tests and code paths without a settings file.
+ * In-memory ConfigurationInterface backed by a plain array, for tests.
  */
 class FakeConfiguration implements ConfigurationInterface
 {
@@ -36,35 +36,16 @@ class FakeConfiguration implements ConfigurationInterface
         $this->config = $config;
     }
 
-    /**
-     * Gets a configuration value.
-     *
-     * @param string $group Configuration group
-     * @param string $key Configuration key
-     * @param mixed $default Default value if not found
-     * @return mixed Configuration value or default if not found
-     */
     public function get(string $group, string $key, mixed $default = null): mixed
     {
         return $this->config[$group][$key] ?? $default;
     }
 
-    /**
-     * Gets an entire configuration group.
-     *
-     * @param string $group Configuration group
-     * @return array Configuration group values
-     */
     public function getGroup(string $group): array
     {
         return $this->config[$group] ?? [];
     }
 
-    /**
-     * Gets all configuration settings.
-     *
-     * @return array All settings
-     */
     public function getAll(): array
     {
         return $this->config;

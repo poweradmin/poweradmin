@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\ZoneMetadataFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\ZoneMetadataService;
@@ -45,7 +45,7 @@ class EditZoneMetadataController extends BaseController
     /**
      * Repository used for loading the zone.
      */
-    private ZoneRepositoryInterface $zoneRepository;
+    private ZoneReadRepositoryInterface $zoneRepository;
 
     /**
      * The rules and the persistence, shared with the API.
