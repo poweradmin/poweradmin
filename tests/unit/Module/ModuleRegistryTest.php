@@ -153,21 +153,6 @@ class ModuleRegistryTest extends TestCase
         $this->assertSame($firstCount, $secondCount);
     }
 
-    public function testGetAllModulesReturnsAllRegisteredModules(): void
-    {
-        $config = $this->createConfigMock([
-            'modules' => [
-                'csv_export.enabled' => true,
-            ],
-        ]);
-
-        $registry = new ModuleRegistry($config);
-        $registry->loadModules();
-
-        $all = $registry->getAllModules();
-        $this->assertGreaterThan(count($registry->getEnabledModules()), count($all));
-    }
-
     public function testDnsWizardsStandaloneKeyFallbackWhenModuleKeyAbsent(): void
     {
         // Legacy config: dns_wizards.enabled = true, no modules section

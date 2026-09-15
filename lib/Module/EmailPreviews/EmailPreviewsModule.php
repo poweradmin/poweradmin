@@ -34,16 +34,6 @@ class EmailPreviewsModule implements ModuleInterface
         return 'email_previews';
     }
 
-    public function getDisplayName(): string
-    {
-        return 'Email Template Previews';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Preview email templates in light and dark modes';
-    }
-
     public function getRoutes(): array
     {
         return [
@@ -80,11 +70,6 @@ class EmailPreviewsModule implements ModuleInterface
     }
 
     public function getTemplatePath(): string
-    {
-        return '';
-    }
-
-    public function getLocalePath(): string
     {
         return '';
     }

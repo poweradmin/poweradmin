@@ -34,16 +34,6 @@ class CsvExportModule implements ModuleInterface
         return 'csv_export';
     }
 
-    public function getDisplayName(): string
-    {
-        return 'CSV Export';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Export zone records as CSV files';
-    }
-
     public function getRoutes(): array
     {
         return [
@@ -84,10 +74,5 @@ class CsvExportModule implements ModuleInterface
     public function getTemplatePath(): string
     {
         return '';
-    }
-
-    public function getLocalePath(): string
-    {
-        return __DIR__ . '/locale';
     }
 }

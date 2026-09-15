@@ -34,16 +34,6 @@ class DnsWizardModule implements ModuleInterface
         return 'dns_wizards';
     }
 
-    public function getDisplayName(): string
-    {
-        return 'DNS Record Wizards';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Guided wizards for creating DMARC, SPF, DKIM, CAA, TLSA, and SRV records';
-    }
-
     public function getRoutes(): array
     {
         return [
@@ -95,11 +85,6 @@ class DnsWizardModule implements ModuleInterface
     }
 
     public function getTemplatePath(): string
-    {
-        return '';
-    }
-
-    public function getLocalePath(): string
     {
         return '';
     }

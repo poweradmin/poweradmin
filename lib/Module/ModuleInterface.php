@@ -33,16 +33,6 @@ interface ModuleInterface
     public function getName(): string;
 
     /**
-     * Get human-readable display name
-     */
-    public function getDisplayName(): string;
-
-    /**
-     * Get short description of what the module does
-     */
-    public function getDescription(): string;
-
-    /**
      * Get route definitions for this module.
      *
      * Each route is an associative array with keys:
@@ -100,12 +90,4 @@ interface ModuleInterface
      * Return an empty string if the module has no templates.
      */
     public function getTemplatePath(): string;
-
-    /**
-     * Get the absolute path to the module's locale directory.
-     *
-     * The directory should contain subdirectories per language (e.g., en_EN/messages.po).
-     * Return an empty string if the module has no translations.
-     */
-    public function getLocalePath(): string;
 }

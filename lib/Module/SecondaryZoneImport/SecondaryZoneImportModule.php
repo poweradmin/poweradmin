@@ -42,16 +42,6 @@ class SecondaryZoneImportModule implements ModuleInterface
         return 'secondary_zone_import';
     }
 
-    public function getDisplayName(): string
-    {
-        return 'Import secondary zone';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Import a zone from a live primary server over AXFR (API backend only)';
-    }
-
     public function getRoutes(): array
     {
         if (!$this->isApiBackendMode()) {
@@ -105,11 +95,6 @@ class SecondaryZoneImportModule implements ModuleInterface
     public function getTemplatePath(): string
     {
         return __DIR__ . '/templates';
-    }
-
-    public function getLocalePath(): string
-    {
-        return '';
     }
 
     private function isApiBackendMode(): bool

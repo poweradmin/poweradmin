@@ -42,7 +42,6 @@ class ModuleRegistry
     private ConfigurationManager $config;
 
     /** @var array<string, ModuleInterface> */
-    private array $modules = [];
 
     /** @var array<string, ModuleInterface> */
     private array $enabledModules = [];
@@ -86,8 +85,6 @@ class ModuleRegistry
                 continue;
             }
 
-            $this->modules[$name] = $module;
-
             $enabled = $this->config->get('modules', "$name.enabled", null);
 
             // Legacy config fallback: check standalone config section for modules
@@ -119,14 +116,6 @@ class ModuleRegistry
     }
 
     /**
-     * @return array<string, ModuleInterface>
-     */
-    public function getAllModules(): array
-    {
-        return $this->modules;
-    }
-
-    /**
      * Get aggregated route definitions from all enabled modules.
      *
      * @return array<array<string, mixed>>
@@ -152,11 +141,7 @@ class ModuleRegistry
     {
         $items = [];
         foreach ($this->enabledModules as $name => $module) {
-            $restrictToAdmin = $this->config->get('modules', "$name.restrict_to_admin", null);
-            if ($restrictToAdmin === null) {
-                $restrictToAdmin = $this->config->get($name, 'restrict_to_admin', false);
-            }
-            if ($restrictToAdmin && !$isAdmin) {
+            if (!$isAdmin && $this->isRestrictedToAdmin($name)) {
                 continue;
             }
 
@@ -183,12 +168,7 @@ class ModuleRegistry
                 continue;
             }
 
-            // Skip module capabilities when restrict_to_admin is enabled and user is not admin
-            $restrictToAdmin = $this->config->get('modules', "$name.restrict_to_admin", null);
-            if ($restrictToAdmin === null) {
-                $restrictToAdmin = $this->config->get($name, 'restrict_to_admin', false);
-            }
-            if ($restrictToAdmin && !$isAdmin) {
+            if (!$isAdmin && $this->isRestrictedToAdmin($name)) {
                 continue;
             }
 
@@ -200,5 +180,14 @@ class ModuleRegistry
             }
         }
         return $data;
+    }
+
+    /**
+     * modules.<name>.restrict_to_admin, with the legacy <name>.restrict_to_admin key as fallback.
+     */
+    private function isRestrictedToAdmin(string $name): bool
+    {
+        return (bool)($this->config->get('modules', "$name.restrict_to_admin", null)
+            ?? $this->config->get($name, 'restrict_to_admin', false));
     }
 }

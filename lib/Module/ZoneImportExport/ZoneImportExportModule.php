@@ -34,16 +34,6 @@ class ZoneImportExportModule implements ModuleInterface
         return 'zone_import_export';
     }
 
-    public function getDisplayName(): string
-    {
-        return 'Zone Import/Export';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Import and export zones as BIND zone files';
-    }
-
     public function getRoutes(): array
     {
         return [
@@ -104,10 +94,5 @@ class ZoneImportExportModule implements ModuleInterface
     public function getTemplatePath(): string
     {
         return __DIR__ . '/templates';
-    }
-
-    public function getLocalePath(): string
-    {
-        return __DIR__ . '/locale';
     }
 }

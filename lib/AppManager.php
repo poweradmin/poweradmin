@@ -94,7 +94,7 @@ class AppManager
         $this->templateRenderer = new Environment($loader, $this->buildTwigOptions());
         $this->statsDisplayService = $this->createStatsDisplayService();
 
-        $this->setupTranslator($registry);
+        $this->setupTranslator();
 
         $this->templateRenderer->addExtension(new BadgeTwigExtension());
         $this->templateRenderer->addExtension(new IntlExtension());
@@ -250,11 +250,9 @@ class AppManager
 
     /**
      * Resolves the interface language and registers the translator with the
-     * template renderer, including module translations.
-     *
-     * @param ModuleRegistry $registry The registry of loaded modules
+     * template renderer.
      */
-    private function setupTranslator(ModuleRegistry $registry): void
+    private function setupTranslator(): void
     {
         $resolver = new LocaleResolver($this->configuration, new UserContextService(), new Request());
         $this->interfaceLocale = $resolver->resolve();
@@ -267,21 +265,6 @@ class AppManager
 
         $translator = new Translator($interfaceLang);
         $translator->addLoader('po', new PoFileLoader());
-
-        // Modules are registered first so the main catalogue, added last, wins on
-        // any msgid both define - a module supplements the app, it does not
-        // redefine it.
-        foreach ($registry->getEnabledModules() as $module) {
-            $localePath = $module->getLocalePath();
-            if (empty($localePath)) {
-                continue;
-            }
-
-            $moduleLocaleFile = $localePath . '/' . $interfaceLang . '/messages.po';
-            if (file_exists($moduleLocaleFile)) {
-                $translator->addResource('po', $moduleLocaleFile, $interfaceLang);
-            }
-        }
 
         $translator->addResource('po', $this->getLocaleFile(), $interfaceLang);
 

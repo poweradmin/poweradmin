@@ -34,16 +34,6 @@ class WhoisModule implements ModuleInterface
         return 'whois';
     }
 
-    public function getDisplayName(): string
-    {
-        return 'WHOIS Lookup';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Lookup domain WHOIS information';
-    }
-
     public function getRoutes(): array
     {
         return [
@@ -98,10 +88,5 @@ class WhoisModule implements ModuleInterface
     public function getTemplatePath(): string
     {
         return __DIR__ . '/templates';
-    }
-
-    public function getLocalePath(): string
-    {
-        return '';
     }
 }

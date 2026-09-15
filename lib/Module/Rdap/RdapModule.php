@@ -34,16 +34,6 @@ class RdapModule implements ModuleInterface
         return 'rdap';
     }
 
-    public function getDisplayName(): string
-    {
-        return 'RDAP Lookup';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Lookup domain RDAP information';
-    }
-
     public function getRoutes(): array
     {
         return [
@@ -98,10 +88,5 @@ class RdapModule implements ModuleInterface
     public function getTemplatePath(): string
     {
         return __DIR__ . '/templates';
-    }
-
-    public function getLocalePath(): string
-    {
-        return '';
     }
 }

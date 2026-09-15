@@ -196,15 +196,6 @@ class WizardRegistry
     }
 
     /**
-     * Register a custom wizard class
-     *
-     * Allows plugins or extensions to add custom wizard implementations.
-     *
-     * @param string $type Wizard type identifier
-     * @param string $className Fully qualified class name
-     * @return void
-     */
-    /**
      * Get wizard configuration with module config fallback
      *
      * @return array Wizard configuration
@@ -224,16 +215,6 @@ class WizardRegistry
             return $this->config->getGroup('dns_wizards');
         } catch (\Exception $e) {
             return [];
-        }
-    }
-
-    public function registerWizard(string $type, string $className): void
-    {
-        $this->wizardClasses[$type] = $className;
-
-        // Clear cached instance if exists
-        if (isset($this->wizards[$type])) {
-            unset($this->wizards[$type]);
         }
     }
 }
