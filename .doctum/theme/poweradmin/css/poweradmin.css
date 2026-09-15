@@ -145,25 +145,29 @@ a:focus {
     background: var(--pa-red);
 }
 
-#api-tree {
-    background: linear-gradient(to bottom, #fff, #fff 50%, var(--pa-tint) 50%, var(--pa-tint));
-    background-size: 100% 56px;
-}
+/* Plain white tree like the docs sidebar: no striping, red text for hover and
+   the active entry instead of a filled row */
 
+#api-tree,
 #api-tree li .hd:nth-child(even) {
-    background-color: var(--pa-tint);
+    background: #fff;
 }
 
 #api-tree li .hd:hover {
-    background-color: #ebebeb;
+    background-color: transparent;
+}
+
+#api-tree li .hd:hover > a {
+    color: var(--pa-red);
 }
 
 #api-tree li.active > .hd {
-    background-color: var(--pa-red);
+    background-color: transparent;
 }
 
 #api-tree li.active > .hd a {
-    color: #fff;
+    color: var(--pa-red);
+    font-weight: 600;
 }
 
 /* Search autocomplete */
@@ -195,8 +199,23 @@ a:focus {
 
 /* Breadcrumbs and pagination (Bootstrap defaults are blue) */
 
-.breadcrumb {
-    background-color: var(--pa-tint);
+.namespace-breadcrumbs .breadcrumb {
+    background-color: transparent;
+    border-bottom: 1px solid var(--pa-rule);
+    border-radius: 0;
+    padding: 10px 30px;
+    font-size: 14px;
+}
+
+.namespace-breadcrumbs .breadcrumb > li.active {
+    color: var(--pa-text);
+}
+
+.namespace-breadcrumbs .label-default {
+    background-color: transparent;
+    border: 1px solid var(--pa-rule);
+    color: var(--pa-text-light);
+    font-weight: 400;
 }
 
 .pagination > li > a,
