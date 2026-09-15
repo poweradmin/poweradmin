@@ -30,7 +30,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\SessionKeys;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
  * /api/internal/dns-wizard: validates and previews wizard input for the record form.
@@ -347,8 +347,7 @@ class DnsWizardApiController extends InternalApiController
             // Same permission check as AddRecordController
             if (
                 ZoneType::isReadOnly($zone_type)
-                || $perm_edit == "none"
-                || (AccessScope::fromString($perm_edit)->isOwnedOnly() && !$user_is_zone_owner)
+                || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)
             ) {
                 return $this->returnApiError('You do not have permission to add records to this zone', 403);
             }

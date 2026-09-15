@@ -31,7 +31,7 @@ use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
  * Renders the form for one wizard at /zones/{id}/wizard/{type} and creates the records it builds.
@@ -85,7 +85,7 @@ class DnsWizardFormController extends BaseController
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && !$user_is_zone_owner)) {
+        if (ZoneType::isReadOnly($zone_type) || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
             $this->showError(_('You do not have permission to add records to this zone.'));
         }
 

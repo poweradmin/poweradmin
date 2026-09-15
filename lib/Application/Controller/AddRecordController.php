@@ -38,7 +38,7 @@ use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\Validator\Constraints as Assert;
-use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
  * Handles the add-record form for a zone: checks edit rights, validates the record and saves one or several rows.
@@ -76,9 +76,7 @@ class AddRecordController extends BaseController
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         $this->checkCondition(ZoneType::isReadOnly($zone_type)
-            || $perm_edit == "none"
-            || AccessScope::fromString($perm_edit)->isOwnedOnly()
-            && !$user_is_zone_owner, _("You do not have the permission to add a record to this zone."));
+            || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner), _("You do not have the permission to add a record to this zone."));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

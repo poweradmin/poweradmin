@@ -43,7 +43,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
-use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
@@ -212,7 +212,7 @@ class RecordManager implements RecordManagerInterface
             return RecordWriteResult::forbidden($e->getMessage());
         }
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
             return RecordWriteResult::forbidden(_("You do not have the permission to add a record to this zone."));
         }
 
@@ -370,7 +370,7 @@ class RecordManager implements RecordManagerInterface
 
         $dns_ttl = $this->config->get('dns', 'ttl');
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
             return RecordWriteResult::forbidden(_("You do not have permission to edit this record."));
         }
 
@@ -475,7 +475,7 @@ class RecordManager implements RecordManagerInterface
             return RecordWriteResult::forbidden(_("You cannot delete records from a read-only zone."));
         }
 
-        if (!($perm_edit == "all" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "1"))) {
+        if (!ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
             return RecordWriteResult::forbidden(_("You do not have the permission to delete this record."));
         }
 
@@ -608,7 +608,7 @@ class RecordManager implements RecordManagerInterface
         $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
+        if (ZoneType::isReadOnly($zone_type) || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this comment."));
 
             return false;

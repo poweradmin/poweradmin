@@ -29,7 +29,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Validator;
-use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
  * Handles the zone comment form: shows the comment and saves it when the user may edit the zone.
@@ -83,11 +83,8 @@ class EditCommentController extends BaseController
         // Read-only zones (Secondary, Consumer) block comment edits for everyone -
         // including admins - because RecordManager rejects the write. Otherwise a
         // user can edit if they are an admin, or have edit permission and own the zone.
-        $can_edit = !ZoneType::isReadOnly($zone_type) &&
-                   ($is_admin ||
-                    ($perm_edit != "none" &&
-                     ($perm_edit == "all" ||
-                      (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner))));
+        $can_edit = !ZoneType::isReadOnly($zone_type)
+            && ($is_admin || ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner));
 
         // For the form, we need to know if editing is disabled
         $perm_edit_comment = !$can_edit;

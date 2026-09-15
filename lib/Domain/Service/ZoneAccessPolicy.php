@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Permission;
 
 /**
@@ -47,8 +48,9 @@ final class ZoneAccessPolicy
      */
     public static function canEditZone(string $permEdit, bool $userIsZoneOwner): bool
     {
-        return $permEdit === 'all'
-            || (($permEdit === 'own' || $permEdit === 'own_as_client') && $userIsZoneOwner);
+        $scope = AccessScope::fromString($permEdit);
+
+        return $scope->isUnrestricted() || ($scope->isOwnedOnly() && $userIsZoneOwner);
     }
 
     /**
