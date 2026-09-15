@@ -1,2 +1,361 @@
 parameters:
-	ignoreErrors: []
+	ignoreErrors:
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Application/Controller/AddSupermasterController.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 4
+			path: lib/Application/Controller/AddUserController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 3
+			path: lib/Application/Controller/AddZoneMasterController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 4
+			path: lib/Application/Controller/AddZoneSlaveController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 5
+			path: lib/Application/Controller/AddZoneTemplController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Application/Controller/Api/InternalApiController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 2
+			path: lib/Application/Controller/ApiKeysController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 3
+			path: lib/Application/Controller/BulkRegistrationController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Application/Controller/ChangePasswordController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 2
+			path: lib/Application/Controller/DeleteUserController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Application/Controller/DeleteZoneTemplController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Application/Controller/DeleteZoneTemplRecordController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Application/Controller/DnssecController.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Controller/EditController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 21
+			path: lib/Application/Controller/EditController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Application/Controller/EditSupermasterController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Application/Controller/EditZoneTemplController.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Controller/ForgotPasswordController.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Controller/ForgotUsernameController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 6
+			path: lib/Application/Controller/ListForwardZonesController.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Controller/ListLogApiController.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Controller/ListLogGroupsController.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Controller/ListLogUsersController.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Controller/ListLogZonesController.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Controller/ListRecordChangesController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 3
+			path: lib/Application/Controller/ListTemplateZonesController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 3
+			path: lib/Application/Controller/MfaSetupController.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Controller/ResetPasswordController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Application/Controller/SearchController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Application/Controller/UsersController.php
+
+		-
+			message: '#^Using \$_GET is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
+			identifier: disallowed.variable
+			count: 2
+			path: lib/Application/Presenter/PaginationPresenter.php
+
+		-
+			message: '#^Using \$_GET is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
+			identifier: disallowed.variable
+			count: 2
+			path: lib/Application/Presenter/ZoneStartingLettersPresenter.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 3
+			path: lib/Application/Service/ApiStatusService.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 2
+			path: lib/Application/Service/DnsDataService.php
+
+		-
+			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
+			identifier: disallowed.variable
+			count: 10
+			path: lib/Application/Service/LdapAuthenticator.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Service/LoginAttemptService.php
+
+		-
+			message: '#^Using \$_GET is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
+			identifier: disallowed.variable
+			count: 2
+			path: lib/Application/Service/PaginationService.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Service/PasswordGenerationService.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Service/PasswordPolicyService.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 3
+			path: lib/Application/Service/PdnsVersionService.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Application/Service/PowerdnsStatusService.php
+
+		-
+			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
+			identifier: disallowed.variable
+			count: 7
+			path: lib/Application/Service/SqlAuthenticator.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Application/Service/UserEventLogger.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 2
+			path: lib/Application/Service/ZoneSyncService.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Domain/Model/ZoneTemplate.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Domain/Service/ApiPermissionService.php
+
+		-
+			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
+			identifier: disallowed.method
+			count: 1
+			path: lib/Domain/Service/AuthenticationService.php
+
+		-
+			message: '#^Namespace Poweradmin\\Application\\Http\\RequestContext is forbidden, lib/Domain must not depend on HTTP or Twig; move the dependency to the caller\. \[Poweradmin\\Application\\Http\\RequestContext matches Poweradmin\\Application\\Http\\\*\]$#'
+			identifier: disallowed.namespace
+			count: 2
+			path: lib/Domain/Service/AuthenticationService.php
+
+		-
+			message: '#^Namespace Twig\\Error\\LoaderError is forbidden, lib/Domain must not depend on HTTP or Twig; move the dependency to the caller\. \[Twig\\Error\\LoaderError matches Twig\\\*\]$#'
+			identifier: disallowed.namespace
+			count: 1
+			path: lib/Domain/Service/MfaService.php
+
+		-
+			message: '#^Namespace Twig\\Error\\RuntimeError is forbidden, lib/Domain must not depend on HTTP or Twig; move the dependency to the caller\. \[Twig\\Error\\RuntimeError matches Twig\\\*\]$#'
+			identifier: disallowed.namespace
+			count: 1
+			path: lib/Domain/Service/MfaService.php
+
+		-
+			message: '#^Namespace Twig\\Error\\SyntaxError is forbidden, lib/Domain must not depend on HTTP or Twig; move the dependency to the caller\. \[Twig\\Error\\SyntaxError matches Twig\\\*\]$#'
+			identifier: disallowed.namespace
+			count: 1
+			path: lib/Domain/Service/MfaService.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 14
+			path: lib/Domain/Service/UserContextService.php
+
+		-
+			message: '#^Using \$_GET is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Infrastructure/Service/HttpPaginationParameters.php
+
+		-
+			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
+			identifier: disallowed.variable
+			count: 20
+			path: lib/Infrastructure/Service/SessionAuthenticator.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 1
+			path: lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php
+
+		-
+			message: '#^Using \$_GET is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
+			identifier: disallowed.variable
+			count: 2
+			path: lib/Module/DnsWizard/Controller/DnsWizardFormController.php
+
+		-
+			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
+			identifier: disallowed.variable
+			count: 2
+			path: lib/Module/DnsWizard/Controller/DnsWizardFormController.php
+
+		-
+			message: '#^Using \$_GET is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
+			identifier: disallowed.variable
+			count: 5
+			path: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php
+
+		-
+			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'
+			identifier: disallowed.variable
+			count: 13
+			path: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php
+
+		-
+			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
+			identifier: disallowed.variable
+			count: 4
+			path: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php

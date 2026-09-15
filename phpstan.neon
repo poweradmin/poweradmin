@@ -1,4 +1,6 @@
 includes:
+  # Grandfathered layering violations (superglobals, the config singleton, Twig in
+  # Domain). Regenerate with --generate-baseline after removing one; never add to it.
   - phpstan-baseline.neon
   - vendor/phpstan/phpstan-deprecation-rules/rules.neon
   - vendor/spaze/phpstan-disallowed-calls/extension.neon
@@ -129,16 +131,6 @@ parameters:
         # Reading the superglobal is the job of these files.
         - lib/Application/Http/Request.php
         - tests/*
-        # Not yet migrated to Request. Delete each entry as its file is done.
-        - lib/Application/Presenter/PaginationPresenter.php
-        - lib/Application/Presenter/ZoneStartingLettersPresenter.php
-        - lib/Application/Service/LdapAuthenticator.php
-        - lib/Application/Service/PaginationService.php
-        - lib/Application/Service/SqlAuthenticator.php
-        - lib/Infrastructure/Service/HttpPaginationParameters.php
-        - lib/Infrastructure/Service/SessionAuthenticator.php
-        - lib/Module/DnsWizard/Controller/DnsWizardFormController.php
-        - lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php
     # Layering. Session state is read by the auth layer and BaseController and
     # handed down; lib/Domain never touches it. Every entry under "not yet
     # migrated" is debt - delete it when the file takes the value as a
@@ -166,35 +158,6 @@ parameters:
         - lib/Application/Controller/ForgotPasswordController.php
         - lib/Application/Controller/ForgotUsernameController.php
         - lib/Application/Controller/ResetPasswordController.php
-        # Not yet migrated. Delete each entry as its file is done.
-        - lib/Domain/Service/UserContextService.php
-        - lib/Application/Service/ApiStatusService.php
-        - lib/Application/Service/DnsDataService.php
-        - lib/Application/Service/PdnsVersionService.php
-        - lib/Application/Service/UserEventLogger.php
-        - lib/Application/Service/ZoneSyncService.php
-        - lib/Application/Controller/AddSupermasterController.php
-        - lib/Application/Controller/AddZoneMasterController.php
-        - lib/Application/Controller/AddZoneSlaveController.php
-        - lib/Application/Controller/AddZoneTemplController.php
-        - lib/Application/Controller/Api/InternalApiController.php
-        - lib/Application/Controller/ApiKeysController.php
-        - lib/Application/Controller/BulkRegistrationController.php
-        - lib/Application/Controller/ChangePasswordController.php
-        - lib/Application/Controller/DeleteUserController.php
-        - lib/Application/Controller/DeleteZoneTemplController.php
-        - lib/Application/Controller/DeleteZoneTemplRecordController.php
-        - lib/Application/Controller/DnssecController.php
-        - lib/Application/Controller/EditController.php
-        - lib/Application/Controller/EditSupermasterController.php
-        - lib/Application/Controller/EditZoneTemplController.php
-        - lib/Application/Controller/ListForwardZonesController.php
-        - lib/Application/Controller/ListTemplateZonesController.php
-        - lib/Application/Controller/MfaSetupController.php
-        - lib/Application/Controller/SearchController.php
-        - lib/Application/Controller/UsersController.php
-        - lib/Module/DnsWizard/Controller/Api/DnsWizardApiController.php
-        - lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php
     # Controllers pass $_SERVER to IpAddressRetriever; Domain code takes the
     # resolved value instead.
     -
@@ -237,24 +200,6 @@ parameters:
         - lib/Application/Controller/Api/HealthController.php
         - lib/Application/Controller/PingController.php
         - lib/Module/SecondaryZoneImport/SecondaryZoneImportModule.php
-        # Not yet migrated. Delete each entry as its file is done.
-        - lib/Domain/Model/ZoneTemplate.php
-        - lib/Domain/Service/ApiPermissionService.php
-        - lib/Domain/Service/AuthenticationService.php
-        - lib/Application/Service/LoginAttemptService.php
-        - lib/Application/Service/PasswordGenerationService.php
-        - lib/Application/Service/PasswordPolicyService.php
-        - lib/Application/Service/PowerdnsStatusService.php
-        - lib/Application/Controller/AddUserController.php
-        - lib/Application/Controller/EditController.php
-        - lib/Application/Controller/ForgotPasswordController.php
-        - lib/Application/Controller/ForgotUsernameController.php
-        - lib/Application/Controller/ListLogApiController.php
-        - lib/Application/Controller/ListLogGroupsController.php
-        - lib/Application/Controller/ListLogUsersController.php
-        - lib/Application/Controller/ListLogZonesController.php
-        - lib/Application/Controller/ListRecordChangesController.php
-        - lib/Application/Controller/ResetPasswordController.php
   # lib/Domain has no HTTP or template dependency. Same allowIn list for each
   # namespace; the extension takes one namespace per entry.
   disallowedNamespaces:
@@ -276,9 +221,6 @@ parameters:
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
-        # Not yet migrated. Delete each entry as its file is done.
-        - lib/Domain/Service/AuthenticationService.php
-        - lib/Domain/Service/MfaService.php
     -
       namespace: 'Symfony\Component\HttpFoundation\*'
       message: 'lib/Domain must not depend on HTTP or Twig; move the dependency to the caller'
@@ -297,9 +239,6 @@ parameters:
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
-        # Not yet migrated. Delete each entry as its file is done.
-        - lib/Domain/Service/AuthenticationService.php
-        - lib/Domain/Service/MfaService.php
     -
       namespace: 'Poweradmin\Infrastructure\Web\*'
       message: 'lib/Domain must not depend on HTTP or Twig; move the dependency to the caller'
@@ -318,9 +257,6 @@ parameters:
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
-        # Not yet migrated. Delete each entry as its file is done.
-        - lib/Domain/Service/AuthenticationService.php
-        - lib/Domain/Service/MfaService.php
     -
       namespace: 'Poweradmin\Application\Http\*'
       message: 'lib/Domain must not depend on HTTP or Twig; move the dependency to the caller'
@@ -339,6 +275,3 @@ parameters:
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
-        # Not yet migrated. Delete each entry as its file is done.
-        - lib/Domain/Service/AuthenticationService.php
-        - lib/Domain/Service/MfaService.php
