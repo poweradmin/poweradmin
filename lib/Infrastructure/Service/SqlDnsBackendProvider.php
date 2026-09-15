@@ -452,11 +452,11 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
     public function getZoneMasterById(int $domainId): ?string
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $stmt = $this->db->prepare("SELECT master FROM $domainsTable WHERE type = 'SLAVE' AND id = :id");
+        $stmt = $this->db->prepare("SELECT master FROM $domainsTable WHERE id = :id");
         $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchColumn();
-        return $result !== false ? $result : null;
+        return $result ?: null;
     }
 
     // ---------------------------------------------------------------

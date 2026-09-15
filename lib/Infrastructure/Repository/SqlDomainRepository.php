@@ -131,10 +131,11 @@ class SqlDomainRepository implements DomainRepositoryInterface
     {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $stmt = $this->db->prepare("SELECT master FROM $domains_table WHERE type = 'SLAVE' and id = :id");
-        $stmt->execute([':id' => $id]);
+        $stmt = $this->db->prepare("SELECT master FROM $domains_table WHERE id = :id");
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
         $result = $stmt->fetchColumn();
-        return $result !== false ? $result : null;
+        return $result ?: null;
     }
 
     public function domainExists(string $domain): bool
