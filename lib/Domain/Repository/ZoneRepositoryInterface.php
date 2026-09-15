@@ -185,6 +185,9 @@ interface ZoneRepositoryInterface
     /**
      * Get a zone by ID with full details
      *
+     * A superset of getZoneById(): its keys plus count_records (alias of record_count),
+     * username, fullname, secured, comment, utf8_name, owners[], full_names[], users[].
+     *
      * @param int $zoneId The zone ID
      * @return array|null The zone data or null if not found
      */

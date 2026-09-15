@@ -519,34 +519,39 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $stmt->fetchColumn() !== false;
     }
 
+    /**
+     * Same key set as DbZoneRepository::getZone(): the getZoneById() core plus
+     * count_records, username, fullname, secured, comment, utf8_name and the owner lists.
+     */
     public function getZone(int $zoneId): ?array
     {
         $canonical = $this->resolveCanonicalRow($zoneId);
         if ($canonical === null) {
             return null;
         }
-        $stmt = $this->db->prepare(
-            "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
-                    z.comment, u.username, u.fullname
-             FROM zones z
-             LEFT JOIN users u ON z.owner = u.id
-             WHERE z.id = :id"
-        );
-        $stmt->bindValue(':id', (int)$canonical['id'], PDO::PARAM_INT);
-        $stmt->execute();
-        $zone = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$zone) {
-            return null;
-        }
+        $owners = $this->ownersOfCanonical((int)$canonical['id'], self::canonicalIdOf($canonical));
+        $usernames = array_column($owners, 'username');
         $countRecords = $this->backendProvider->countZoneRecords($zoneId);
         $zoneInfo = $this->backendProvider->getZoneById($zoneId);
-        $zone['count_records'] = $countRecords;
-        $zone['secured'] = $zoneInfo['dnssec'] ?? false;
-        $zone['utf8_name'] = DnsIdnService::toUtf8($zone['name']);
-        $zone['owners'] = [$zone['username']];
-        $zone['full_names'] = [$zone['fullname'] ?: ''];
-        $zone['users'] = [$zone['username']];
-        return $zone;
+
+        return [
+            'id' => $canonical['id'],
+            'name' => $canonical['zone_name'],
+            'type' => $canonical['zone_type'],
+            'master' => $canonical['zone_master'],
+            'owner' => (int)($canonical['owner'] ?? 0),
+            'account' => '',
+            'record_count' => $countRecords,
+            'count_records' => $countRecords,
+            'username' => $usernames[0] ?? null,
+            'fullname' => $owners[0]['fullname'] ?? null,
+            'secured' => $zoneInfo['dnssec'] ?? false,
+            'comment' => $canonical['comment'] ?? '',
+            'utf8_name' => DnsIdnService::toUtf8($canonical['zone_name']),
+            'owners' => $usernames,
+            'full_names' => array_map(fn(array $owner) => $owner['fullname'] ?: '', $owners),
+            'users' => $usernames,
+        ];
     }
 
     public function findForwardZonesByPtrRecords(array $reverseZoneIds): array
@@ -694,8 +699,16 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         if ($canonical === null) {
             return [];
         }
-        $cid = (int)$canonical['id'];
-        $canonicalId = self::canonicalIdOf($canonical);
+        return $this->ownersOfCanonical((int)$canonical['id'], self::canonicalIdOf($canonical));
+    }
+
+    /**
+     * Users owning the canonical row or any extra ownership row keyed by the canonical id.
+     *
+     * @return array<int, array{id: int|string, username: string, fullname: string|null}>
+     */
+    private function ownersOfCanonical(int $canonicalRowId, int $canonicalId): array
+    {
         $stmt = $this->db->prepare(
             "SELECT DISTINCT u.id, u.username, u.fullname
              FROM zones z
@@ -703,7 +716,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
              WHERE z.id = :cid
                 OR (z.zone_name IS NULL AND z.domain_id = :cid_e)"
         );
-        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid', $canonicalRowId, PDO::PARAM_INT);
         $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
