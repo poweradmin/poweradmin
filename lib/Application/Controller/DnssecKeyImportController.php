@@ -41,7 +41,7 @@ class DnssecKeyImportController extends DnssecKeyController
 
     public function run(): void
     {
-        $zoneIdInt = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
+        $zoneIdInt = $this->requireNumericParam('id');
         $zoneId = (string)$zoneIdInt;
         [$domainName, $dnssecProvider] = $this->requireManagedDnssecZone($zoneIdInt);
 

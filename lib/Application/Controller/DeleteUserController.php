@@ -46,7 +46,7 @@ class DeleteUserController extends BaseController
         $perm_edit_others = $this->hasPermission('user_edit_others');
         $perm_is_godlike = $this->hasPermission('user_is_ueberuser');
 
-        $uid = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
+        $uid = $this->requireNumericParam('id');
 
         // Check basic permissions first
         if (($uid != $_SESSION[SessionKeys::USERID] && !$perm_edit_others) || ($uid == $_SESSION[SessionKeys::USERID] && !$perm_is_godlike)) {

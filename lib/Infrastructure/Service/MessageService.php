@@ -106,30 +106,15 @@ class MessageService
         $this->addMessage('system', self::TYPE_ERROR, $error, $recordName);
     }
 
-    private bool $exitAfterDirectError = true;
-
-    /**
-     * Don't exit the script after displaying the error (the test seam for displayDirectSystemError)
-     *
-     * @return $this For method chaining
-     */
-    public function dontExit(): self
-    {
-        $this->exitAfterDirectError = false;
-        return $this;
-    }
-
     /**
      * Display a system error directly with basic HTML
      * Useful for critical errors before the header/footer can be rendered
      *
      * @param string $error The error message to display
+     * @param bool $exit False only in tests, which cannot survive the exit
      */
-    public function displayDirectSystemError(string $error): void
+    public function displayDirectSystemError(string $error, bool $exit = true): void
     {
-        $exit = $this->exitAfterDirectError;
-        $this->exitAfterDirectError = true;
-
         $this->addSystemError($error);
 
         $processedError = htmlspecialchars($error, ENT_QUOTES, 'UTF-8');

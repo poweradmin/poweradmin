@@ -23,20 +23,17 @@
 namespace Poweradmin\Domain\Model;
 
 /**
- * A zone as seen by DNSSEC: its name, whether it is secured, and its list of CryptoKeys.
+ * A zone as seen by DNSSEC: its name and whether it is secured.
  */
 class Zone
 {
-
     private string $name;
     private bool $isSecured;
-    private array $keys;
 
-    public function __construct(string $name, bool $isSecured = false, array $keys = [])
+    public function __construct(string $name, bool $isSecured = false)
     {
         $this->name = $name;
         $this->isSecured = $isSecured;
-        $this->keys = $keys;
     }
 
     public function getName(): string
@@ -47,10 +44,5 @@ class Zone
     public function isSecured(): bool
     {
         return $this->isSecured;
-    }
-
-    public function getKeys(): array
-    {
-        return $this->keys;
     }
 }

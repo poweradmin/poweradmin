@@ -57,9 +57,8 @@ class ZonesRecordsBulkController extends PublicApiController
 
         $this->backendProvider = $this->createDnsBackendProvider();
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
-        $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = $repositoryFactory->createRecordRepository();
+        $this->recordRepository = $this->createRecordRepository();
         $this->apiPermissionService = $this->createApiPermissionService();
 
         $this->recordManager = $this->createRecordManager();

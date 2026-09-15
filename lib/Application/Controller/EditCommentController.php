@@ -54,7 +54,7 @@ class EditCommentController extends BaseController
         $perm_view = $permissionService->getViewPermissionLevel($userId);
         $perm_edit = $permissionService->getEditPermissionLevel($userId);
 
-        $zone_id = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
+        $zone_id = $this->requireNumericParam('id');
 
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {

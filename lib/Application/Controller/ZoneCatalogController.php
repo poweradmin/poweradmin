@@ -55,7 +55,7 @@ class ZoneCatalogController extends BaseController
         $this->setCurrentPage('edit');
         $this->setPageTitle(_('Catalog Members'));
 
-        $zoneId = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
+        $zoneId = $this->requireNumericParam('id');
 
         // The capability cache expires on its own; refresh here so the page does not
         // start refusing a producer zone it happily showed a few minutes earlier.

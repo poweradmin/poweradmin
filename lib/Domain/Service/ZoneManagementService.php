@@ -75,6 +75,7 @@ class ZoneManagementService
     private ?DnsBackendProviderInterface $backendProvider = null;
     private ?RepositoryFactory $repositoryFactory = null;
     private ?DomainRepositoryInterface $domainRepository;
+    private ?PermissionService $permissions;
     private ?DomainManagerInterface $domainManager = null;
     private ?ZoneOverlapService $overlapService = null;
     private ?HostnameValidator $hostnameValidator = null;
@@ -85,6 +86,7 @@ class ZoneManagementService
      * @param PdnsCapabilities|null $capabilities What the connected server supports; null admits only the basic kinds
      * @param ZoneSigningService|null $signing Needed for enable_dnssec; without it a create is never signed
      * @param DomainRepositoryInterface|null $domainRepository Zone lookups; built from the repository factory when omitted
+     * @param PermissionService|null $permissions Shares the request's permission cache; built on demand when omitted
      */
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
@@ -94,10 +96,12 @@ class ZoneManagementService
         ?RecordChangeLogger $changeLogger = null,
         ?PdnsCapabilities $capabilities = null,
         ?ZoneSigningService $signing = null,
-        ?DomainRepositoryInterface $domainRepository = null
+        ?DomainRepositoryInterface $domainRepository = null,
+        ?PermissionService $permissions = null
     ) {
         $this->zoneRepository = $zoneRepository;
         $this->domainRepository = $domainRepository;
+        $this->permissions = $permissions;
         $this->config = $config;
         $this->db = $db;
         $this->logger = $logger ?? new NullLogger();
@@ -145,7 +149,7 @@ class ZoneManagementService
         }
 
         if ($actingUserId !== null) {
-            $isAdmin = (new ApiPermissionService($this->db, config: $this->config))->userHasPermission($actingUserId, 'user_is_ueberuser');
+            $isAdmin = $this->permissions()->isAdmin($actingUserId);
             if (!$zoneTemplateModel->canUseTemplate($templateId, $actingUserId, $isAdmin)) {
                 return ['success' => false, 'message' => 'You do not have permission to use this zone template', 'status' => 403, 'code' => self::ERR_TEMPLATE_FORBIDDEN];
             }
@@ -220,7 +224,7 @@ class ZoneManagementService
 
         // Block a zone that would overlap an existing zone owned by another user.
         if ($actingUserId !== null) {
-            $this->overlapService ??= new ZoneOverlapService($this->db, $this->config);
+            $this->overlapService ??= new ZoneOverlapService($this->db, $this->config, $this->permissions());
             if ($this->overlapService->findConflictingZone($domain, $actingUserId) !== null) {
                 return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'status' => 409, 'code' => self::ERR_OVERLAP];
             }
@@ -452,6 +456,11 @@ class ZoneManagementService
     private function repositoryFactory(): RepositoryFactory
     {
         return $this->repositoryFactory ??= new RepositoryFactory($this->db, $this->config, $this->backendProvider());
+    }
+
+    private function permissions(): PermissionService
+    {
+        return $this->permissions ??= (new ApiPermissionService($this->db, config: $this->config))->permissions();
     }
 
     private function domainRepository(): DomainRepositoryInterface

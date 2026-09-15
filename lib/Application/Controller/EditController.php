@@ -64,7 +64,6 @@ class EditController extends BaseController
     private RecordTypeService $recordTypeService;
     private FormStateService $formStateService;
     private SOARecordManagerInterface $soaRecordManager;
-    private ?DomainManagerInterface $domainManager = null;
     private ReverseTtlResolver $reverseTtlResolver;
     private UserContextService $userContextService;
     private ZoneRepositoryInterface $zoneRepository;
@@ -148,7 +147,7 @@ class EditController extends BaseController
             submittedDirection: $this->httpRequest->getPostParam('sort_direction') ?? $this->httpRequest->getQueryParam('sort_direction')
         );
 
-        $zone_id = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
+        $zone_id = $this->requireNumericParam('id');
 
         // Clear session-based form data if zone has changed to prevent persistence across zones
         $this->clearFormDataOnZoneChange($zone_id);
@@ -503,7 +502,7 @@ class EditController extends BaseController
 
     private function handleZoneMetadataPost(int $zone_id): void
     {
-        $domainManager = $this->domainManager ??= $this->createDomainManager();
+        $domainManager = $this->createDomainManager();
         $new_type = htmlspecialchars($this->httpRequest->getPostParam('newtype', ''));
         if ($this->httpRequest->getPostParam('type_change') !== null && in_array($new_type, ZoneType::getTypes())) {
             $this->validateCsrfToken();

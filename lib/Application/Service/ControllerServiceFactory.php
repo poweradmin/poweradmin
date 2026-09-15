@@ -30,6 +30,7 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
@@ -92,6 +93,9 @@ class ControllerServiceFactory
     private ?CatalogZoneService $catalogZoneService = null;
     private ?UserPreferenceService $userPreferenceService = null;
     private ?RepositoryFactory $repositoryFactory = null;
+    private ?DomainManagerInterface $domainManager = null;
+    private ?SupermasterManager $supermasterManager = null;
+    private ?DnsDataService $dnsDataService = null;
     private ?ZoneRepositoryInterface $zoneRepository = null;
     private ?DomainRepositoryInterface $domainRepository = null;
     private ?RecordRepositoryInterface $recordRepository = null;
@@ -168,7 +172,7 @@ class ControllerServiceFactory
 
     public function dnsDataService(): DnsDataService
     {
-        return new DnsDataService($this->dnsBackendProvider(), $this->db, $this->config);
+        return $this->dnsDataService ??= new DnsDataService($this->dnsBackendProvider(), $this->db, $this->config);
     }
 
     public function zoneRepository(): ZoneRepositoryInterface
@@ -240,7 +244,8 @@ class ControllerServiceFactory
             $this->logger,
             capabilities: $capabilities,
             signing: $this->zoneSigningService(),
-            domainRepository: $this->domainRepository()
+            domainRepository: $this->domainRepository(),
+            permissions: $this->permissionService()
         );
     }
 
@@ -412,12 +417,18 @@ class ControllerServiceFactory
 
     public function domainManager(): DomainManagerInterface
     {
-        return DnsServiceFactory::createDomainManager($this->db, $this->config, $this->dnsBackendProvider());
+        return $this->domainManager ??= new DomainManager(
+            $this->db,
+            $this->config,
+            $this->soaRecordManager(),
+            $this->domainRepository(),
+            $this->dnsBackendProvider()
+        );
     }
 
     public function supermasterManager(): SupermasterManager
     {
-        return DnsServiceFactory::createSupermasterManager($this->db, $this->config, $this->dnsBackendProvider());
+        return $this->supermasterManager ??= DnsServiceFactory::createSupermasterManager($this->db, $this->config, $this->dnsBackendProvider());
     }
 
     public function catalogZoneService(): CatalogZoneService

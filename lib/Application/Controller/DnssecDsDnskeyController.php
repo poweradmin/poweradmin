@@ -38,7 +38,7 @@ class DnssecDsDnskeyController extends BaseController
     {
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
 
-        $zone_id = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
+        $zone_id = $this->requireNumericParam('id');
 
         // Early permission check - validate DNSSEC access before any operations
         $this->requireZoneView($zone_id);

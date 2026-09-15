@@ -875,13 +875,13 @@ abstract class BaseController
 
     /**
      * Reads a positive integer request parameter (an id) or ends the request
-     * with the given error page.
+     * with an error page.
      */
-    protected function requireNumericParam(string $name, string $error): int
+    protected function requireNumericParam(string $name, ?string $error = null): int
     {
         $value = $this->getSafeRequestValue($name);
         if (!$value || !Validator::isNumber($value)) {
-            $this->showError($error);
+            $this->showError($error ?? _('Invalid or unexpected input given.'));
         }
 
         return (int)$value;

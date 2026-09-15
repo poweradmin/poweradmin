@@ -31,7 +31,6 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,18 +45,15 @@ class ZonesRecordsController extends PublicApiController
     private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
     private ApiPermissionService $apiPermissionService;
-    private DnsBackendProviderInterface $backendProvider;
     private ReverseTtlResolver $reverseTtlResolver;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $this->backendProvider = $this->createDnsBackendProvider();
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
-        $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = $repositoryFactory->createRecordRepository();
+        $this->recordRepository = $this->createRecordRepository();
         $this->apiPermissionService = $this->createApiPermissionService();
 
         $this->recordManager = $this->createRecordManager();
@@ -280,9 +276,7 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Record not found in this zone', 404);
             }
 
-            $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-            $domainRepository = $repositoryFactory->createDomainRepository();
-            $zoneName = $domainRepository->getDomainNameById($zoneId);
+            $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
 
             $formattedRecord = [
                 'id' => $this->formatRecordId($record['id']),
@@ -435,9 +429,7 @@ class ZonesRecordsController extends PublicApiController
             $type = strtoupper(trim($this->inputString($input, 'type', '')));
             $originalContent = trim($this->inputString($input, 'content', ''));
             $content = $originalContent;
-            $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-            $domainRepository = $repositoryFactory->createDomainRepository();
-            $zoneName = $domainRepository->getDomainNameById($zoneId);
+            $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
             if ($zoneName === null) {
                 return $this->returnApiError(_('Zone not found.'), 404);
             }
@@ -732,9 +724,7 @@ class ZonesRecordsController extends PublicApiController
             $updatedRecord = $this->recordRepository->getRecordById($recordId);
 
             // Get zone name for stripping suffix
-            $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-            $domainRepository = $repositoryFactory->createDomainRepository();
-            $zoneName = $domainRepository->getDomainNameById($zoneId);
+            $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
 
             $ptrUpdated = false;
             $ptrMessage = '';

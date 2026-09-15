@@ -47,7 +47,7 @@ class DnssecController extends BaseController
 
     public function run(): void
     {
-        $zone_id = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
+        $zone_id = $this->requireNumericParam('id');
 
         // Early permission check - validate zone visibility before any operations.
         // The DNSSEC page itself only requires view; per-action gates apply for mutations.

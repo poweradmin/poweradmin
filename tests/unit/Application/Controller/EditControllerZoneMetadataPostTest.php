@@ -263,7 +263,6 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
 
         $this->setBaseProperty($controller, 'httpRequest', new Request());
-        $this->setProperty($controller, 'domainManager', $domainManager);
         $this->setProperty($controller, 'domainRepository', $domainRepository ?? $this->createMock(DomainRepositoryInterface::class));
         $permissionService = $this->createMock(PermissionService::class);
         $permissionService->method('canCreateZone')->willReturn($canCreateZone);
@@ -273,6 +272,7 @@ class EditControllerZoneMetadataPostTest extends TestCase
 
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('zoneManagementService')->willReturn($zoneService ?? $this->createMock(ZoneManagementService::class));
+        $factory->method('domainManager')->willReturn($domainManager);
         $this->setBaseProperty($controller, 'serviceFactory', $factory);
 
         $config = $this->primeConfig($configOverrides);

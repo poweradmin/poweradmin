@@ -300,11 +300,13 @@ class MailService
         $emailMessage .= $body . "\n";
         $emailMessage .= "===== END EMAIL LOG =====\n";
 
+        // The transport's output channel is error_log, so the message shows up (in Docker
+        // too) whatever logging.type says; the application logger gets a copy.
+        error_log($emailMessage);
         $this->logger->info('[POWERADMIN MAILER] Email sent via logger transport', [
             'to' => $to,
             'subject' => $subject,
             'from' => $fromEmail,
-            'email_content' => $emailMessage
         ]);
 
         // Always return true since this is just logging
