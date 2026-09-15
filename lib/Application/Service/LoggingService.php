@@ -22,17 +22,17 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Infrastructure\Logger\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Base class that tags debug, info, warning and error log calls with the subclass name.
  */
 abstract class LoggingService
 {
-    protected Logger $logger;
+    protected LoggerInterface $logger;
     private string $className;
 
-    public function __construct(Logger $logger, string $className = '')
+    public function __construct(LoggerInterface $logger, string $className = '')
     {
         $this->logger = $logger;
         $this->className = $className;

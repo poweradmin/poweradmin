@@ -37,7 +37,7 @@ use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
-use Poweradmin\Infrastructure\Logger\Logger;
+use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
@@ -69,7 +69,7 @@ class OidcService extends LoggingService
         ConfigurationManager $configManager,
         OidcConfigurationService $oidcConfigurationService,
         UserProvisioningService $userProvisioningService,
-        Logger $logger,
+        LoggerInterface $logger,
         PDO $db,
         ?Request $request = null
     ) {

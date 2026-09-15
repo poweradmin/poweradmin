@@ -35,7 +35,7 @@ use Poweradmin\Domain\ValueObject\LdapUserInfo;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Logger\Logger;
+use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use ReflectionClass;
@@ -64,7 +64,7 @@ class LdapAuthenticator extends LoggingService
         LdapUserEventLogger $ldapUserEventLogger,
         AuthenticationService $authService,
         CsrfTokenService $csrfTokenService,
-        Logger $logger,
+        LoggerInterface $logger,
         LoginAttemptService $loginAttemptService,
         UserContextService $userContextService,
         array $serverParams = []

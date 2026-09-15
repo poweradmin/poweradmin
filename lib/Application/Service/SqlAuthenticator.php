@@ -32,7 +32,7 @@ use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\Logger;
+use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -58,7 +58,7 @@ class SqlAuthenticator extends LoggingService
         UserEventLogger $userEventLogger,
         $authService, // Changed type to allow UserAuthenticationService
         CsrfTokenService $csrfTokenService,
-        Logger $logger,
+        LoggerInterface $logger,
         LoginAttemptService $loginAttemptService,
         array $serverParams = []
     ) {
