@@ -29,7 +29,6 @@ use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
@@ -187,8 +186,7 @@ class IndexController extends BaseController
      */
     private function ssoProvisioningTemplateMissing(): bool
     {
-        $logHandler = LoggerHandlerFactory::create($this->config->getAll());
-        $logger = new Logger($logHandler, $this->config->get('logging', 'level', 'info'));
+        $logger = Logger::fromConfig($this->config);
 
         return (new OidcConfigurationService($this->config, $logger))->isAutoProvisioningTemplateMissing()
             || (new SamlConfigurationService($this->config, $logger))->isAutoProvisioningTemplateMissing();

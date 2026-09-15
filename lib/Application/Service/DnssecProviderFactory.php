@@ -30,8 +30,8 @@ use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PDO;
-use Poweradmin\Infrastructure\Logger\CompositeLegacyLogger;
-use Poweradmin\Infrastructure\Logger\SyslogLegacyLogger;
+use Poweradmin\Infrastructure\Logger\SyslogLogger;
+use Psr\Log\NullLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Service\NullDnssecProvider;
 use Poweradmin\Domain\Service\UserContextService;
@@ -111,21 +111,13 @@ class DnssecProviderFactory
             $apiClient = new PowerdnsApiClient($httpClient, $serverName);
         }
 
-        $logger = new CompositeLegacyLogger();
-
-        // Check for syslog being enabled
-        $syslogEnabled = $config->get('logging', 'syslog_enabled');
-        if ($syslogEnabled) {
-            // Get syslog identity and facility with defaults
-            $syslogIdentity = $config->get('logging', 'syslog_identity');
-            $syslogIdentity = $syslogIdentity ?: 'poweradmin';
-
-            $syslogFacility = $config->get('logging', 'syslog_facility');
-            $syslogFacility = $syslogFacility ?: LOG_USER;
-
-            $syslogLogger = new SyslogLegacyLogger($syslogIdentity, $syslogFacility);
-            $logger->addLogger($syslogLogger);
-        }
+        // DNSSEC operations are audited to syslog only; without it they are not recorded.
+        $logger = $config->get('logging', 'syslog_enabled')
+            ? new SyslogLogger(
+                $config->get('logging', 'syslog_identity') ?: 'poweradmin',
+                (int)($config->get('logging', 'syslog_facility') ?: LOG_USER)
+            )
+            : new NullLogger();
 
         $transformer = new DnssecDataTransformer();
         $userContextService = new UserContextService();

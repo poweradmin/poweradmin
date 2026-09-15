@@ -23,7 +23,10 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use DateTimeImmutable;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Psr\Log\AbstractLogger;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Stringable;
 
 /**
@@ -54,6 +57,19 @@ class Logger extends AbstractLogger
      *
      * @return string[]
      */
+    /**
+     * The application logger as configured: PHP error_log when logging.type is
+     * "native", otherwise a logger that drops everything.
+     */
+    public static function fromConfig(ConfigurationInterface $config): LoggerInterface
+    {
+        if ($config->get('logging', 'type') !== 'native') {
+            return new NullLogger();
+        }
+
+        return new self(new NativeLogHandler(), (string)$config->get('logging', 'level', self::DEFAULT_LEVEL));
+    }
+
     public static function levelNames(): array
     {
         return array_keys(self::LEVELS);
@@ -119,8 +135,7 @@ class Logger extends AbstractLogger
     /**
      * Substitute PSR-3 `{key}` placeholders in a log message with values from the context array.
      *
-     * Shared by Logger and the lightweight PhpErrorLogPsrLogger fallback so the
-     * substitution rules stay in one place.
+     * Shared with SyslogLogger so the substitution rules stay in one place.
      */
     public static function interpolatePlaceholders(string $message, array $context): string
     {

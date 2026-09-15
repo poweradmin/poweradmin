@@ -36,7 +36,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -74,9 +73,7 @@ class ForgotPasswordController extends BaseController
         $this->userAgentService = new UserAgentService($_SERVER);
 
         // Create logger instance
-        $logHandler = LoggerHandlerFactory::create($configManager->getAll());
-        $logLevel = $configManager->get('logging', 'level', 'info');
-        $this->logger = new Logger($logHandler, $logLevel);
+        $this->logger = Logger::fromConfig($configManager);
 
         $this->passwordResetService = new PasswordResetService(
             $tokenRepository,

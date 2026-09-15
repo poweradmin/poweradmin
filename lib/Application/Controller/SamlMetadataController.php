@@ -28,7 +28,6 @@ use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 
 /**
  * Serves the SAML service provider metadata XML at /saml/metadata.
@@ -46,9 +45,7 @@ class SamlMetadataController extends BaseController
         $this->httpRequest = new Request();
 
         // Initialize SAML services
-        $logHandler = LoggerHandlerFactory::create($this->config->getAll());
-        $logLevel = $this->config->get('logging', 'level', 'info');
-        $logger = new Logger($logHandler, $logLevel);
+        $logger = Logger::fromConfig($this->config);
 
         $samlConfigService = new SamlConfigurationService($this->config, $logger);
         $userProvisioningService = new UserProvisioningService($this->db, $this->config, $logger);
