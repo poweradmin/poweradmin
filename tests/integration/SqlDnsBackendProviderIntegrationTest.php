@@ -25,9 +25,9 @@ namespace Poweradmin\Tests\Integration;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Integration tests for the SQL DNS backend provider against a real database.

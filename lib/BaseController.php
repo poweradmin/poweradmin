@@ -467,6 +467,21 @@ abstract class BaseController
     }
 
     /**
+     * Resolves the page size for a listing: the request value wins, then the user's
+     * stored preference, then interface.rows_per_page with $fallback when unset.
+     */
+    protected function resolveRowsPerPage(int $fallback = 10): int
+    {
+        $default = (int) $this->config->get('interface', 'rows_per_page', $fallback);
+
+        return $this->createPaginationService()->getUserRowsPerPage(
+            $default,
+            $this->getCurrentUserId(),
+            $this->httpRequest->getRowsPerPage()
+        );
+    }
+
+    /**
      * Renders a pagination widget for a paginated listing.
      *
      * $path is the route with the `{PageNumber}` placeholder already in place

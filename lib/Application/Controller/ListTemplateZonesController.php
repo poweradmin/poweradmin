@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -62,14 +61,7 @@ class ListTemplateZonesController extends BaseController
 
     private function showZonesList(int $zone_templ_id): void
     {
-        // Get default rows per page from config
-        $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
-
-        // Create pagination service and get user preference
-        $paginationService = $this->createPaginationService();
-        $userId = $this->getCurrentUserId();
-        $itemsPerPage = $paginationService->getUserRowsPerPage($default_rowamount, $userId, $this->httpRequest->getRowsPerPage());
-
+        $itemsPerPage = $this->resolveRowsPerPage(10);
         $currentPage = $this->httpRequest->getPage();
         $offset = ($currentPage - 1) * $itemsPerPage;
 
@@ -85,25 +77,11 @@ class ListTemplateZonesController extends BaseController
         // Apply pagination manually for now (ideally would be implemented in the model)
         $paginatedZones = array_slice($zones, $offset, $itemsPerPage);
 
-        // Create pagination object and presenter
-        $pagination = $paginationService->createPagination($totalZones, $itemsPerPage, $currentPage);
-        $paginationHtml = '';
-
-        if ($totalZones > $itemsPerPage) {
-            $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-            $presenter = new PaginationPresenter(
-                $pagination,
-                $baseUrlPrefix . '/zones/templates/' . $zone_templ_id . '/zones?start={PageNumber}',
-                $this->httpRequest->getRowsPerPage()
-            );
-            $paginationHtml = $presenter->present();
-        }
-
         $this->render('list_template_zones.html', [
             'template' => $template_details,
             'zones' => $paginatedZones,
             'user_name' => $this->createUserRepository()->getFullNameById($_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
-            'pagination' => $paginationHtml,
+            'pagination' => $this->presentPagination($totalZones, $itemsPerPage, '/zones/templates/' . $zone_templ_id . '/zones?start={PageNumber}'),
             'total_zones' => $totalZones,
             'iface_rowamount' => $itemsPerPage
         ]);

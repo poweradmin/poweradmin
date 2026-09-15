@@ -32,7 +32,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
             zone_type TEXT
         )");
 
-        // Permission tables so verifyPermission('zone_content_view_others') passes
+        // Permission tables so PermissionService::hasPermission('zone_content_view_others') passes
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, perm_templ INTEGER)");
         $this->db->exec("CREATE TABLE perm_templ (id INTEGER PRIMARY KEY)");
         $this->db->exec("CREATE TABLE perm_templ_items (id INTEGER PRIMARY KEY, templ_id INTEGER, perm_id INTEGER)");

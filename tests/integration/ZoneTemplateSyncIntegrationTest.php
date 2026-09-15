@@ -26,7 +26,7 @@ use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Integration test covering zone_template_sync reconciliation against a real database.

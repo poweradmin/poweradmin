@@ -103,13 +103,7 @@ class SearchController extends BaseController
             submittedDirection: $this->httpRequest->getPostParam('record_sort_by_direction') ?? $this->httpRequest->getQueryParam('record_sort_by_direction')
         );
 
-        // Get default rows per page from config
-        $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
-
-        // Create pagination service and get user preference
-        $paginationService = $this->createPaginationService();
-
-        $rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId, $this->httpRequest->getRowsPerPage());
+        $rowamount = $this->resolveRowsPerPage(10);
         $zone_rowamount = $rowamount;
         $record_rowamount = $rowamount;
         // Override with POST parameter if available for zones

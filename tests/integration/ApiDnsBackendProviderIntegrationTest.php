@@ -29,9 +29,9 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Integration tests for the API DNS backend provider against a real PowerDNS instance.

@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
@@ -176,10 +175,7 @@ class UsersController extends BaseController
 
         // Pagination setup
         $currentPage = $this->httpRequest->getPage();
-        $rowsPerPage = $this->config->get('interface', 'rows_per_page', 50);
-
-        $paginationService = $this->createPaginationService();
-        $rowsPerPage = $paginationService->getUserRowsPerPage($rowsPerPage, $this->getCurrentUserId(), $this->httpRequest->getRowsPerPage());
+        $rowsPerPage = $this->resolveRowsPerPage(50);
 
         // Get total count and paginated users; both restricted to the user's own
         // account when they lack the permission to view other users
@@ -199,15 +195,6 @@ class UsersController extends BaseController
             $searchTerm
         );
 
-        // Create pagination
-        $pagination = $paginationService->createPagination($totalUsers, $rowsPerPage, $currentPage);
-        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-        $paginationUrl = $baseUrlPrefix . '/users?start={PageNumber}';
-        if ($searchTerm !== '') {
-            $paginationUrl .= '&search=' . urlencode($searchTerm);
-        }
-        $paginationPresenter = new PaginationPresenter($pagination, $paginationUrl, $this->httpRequest->getRowsPerPage());
-
         $this->render('users.html', [
             'permissions' => $permissions,
             'perm_templates' => $this->createPermissionTemplateRepository()->listPermissionTemplates('user'),
@@ -217,7 +204,7 @@ class UsersController extends BaseController
             'perm_is_godlike' => $permissions['user_is_ueberuser'],
             'perm_user_logs_view' => $this->hasPermission('user_logs_view'),
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
-            'pagination' => $paginationPresenter->present(),
+            'pagination' => $this->presentPagination($totalUsers, $rowsPerPage, '/users?start={PageNumber}', ['search' => $searchTerm]),
             'total_users' => $totalUsers,
             'search_term' => $searchTerm,
             'rows_per_page' => $rowsPerPage,

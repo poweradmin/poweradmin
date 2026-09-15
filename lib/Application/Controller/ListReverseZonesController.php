@@ -85,10 +85,7 @@ class ListReverseZonesController extends BaseController
         $iface_zonelist_template = $userPreferenceService->getShowZoneTemplate($userId);
         $iface_zonelist_record_count = $userPreferenceService->getShowZoneRecordCount($userId);
 
-        // Create pagination service and get user preference
-        $paginationService = $this->createPaginationService();
-        $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
-        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId, $this->httpRequest->getRowsPerPage());
+        $iface_rowamount = $this->resolveRowsPerPage(10);
 
         $row_start = 0;
         $start_param = $this->httpRequest->getQueryParam('start');
