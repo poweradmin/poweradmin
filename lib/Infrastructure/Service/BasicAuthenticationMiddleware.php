@@ -26,9 +26,9 @@ use PDO;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\User;
-use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -141,8 +141,7 @@ class BasicAuthenticationMiddleware
      */
     private function authenticateAndGetUserId(string $username, #[\SensitiveParameter] string $password): int
     {
-        // Check if user exists
-        if (!UserEntity::exists($this->db, $username)) {
+        if ((new DbUserRepository($this->db, $this->config))->findByUsername($username) === null) {
             return 0;
         }
 

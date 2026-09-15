@@ -23,7 +23,6 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
-use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 /**
@@ -45,62 +44,6 @@ class DbUserLogger
             ':msg' => $msg,
             ':priority' => $priority,
         ]);
-    }
-
-    public function countAllLogs()
-    {
-        $stmt = $this->db->query("SELECT count(*) AS number_of_logs FROM log_users");
-        return $stmt->fetch()['number_of_logs'];
-    }
-
-    public function countLogsByUser($user)
-    {
-        $stmt = $this->db->prepare("
-                    SELECT count(log_users.id) as number_of_logs
-                    FROM log_users
-                    WHERE log_users.event LIKE :search_by ESCAPE '!'
-        ");
-        $name = "%user:" . DbCompat::escapeLike($user) . " %";
-        $stmt->execute(['search_by' => $name]);
-        return $stmt->fetch()['number_of_logs'];
-    }
-
-    public function getAllLogs($limit, $offset): array
-    {
-        $stmt = $this->db->prepare("
-                    SELECT * FROM log_users
-                    ORDER BY created_at DESC
-                    LIMIT :limit
-                    OFFSET :offset
-        ");
-
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll();
-    }
-
-    public function getLogsForUser($user, $limit, $offset): array
-    {
-        if (!(UserEntity::exists($this->db, $user))) {
-            return array();
-        }
-
-        $stmt = $this->db->prepare("
-            SELECT * FROM log_users
-            WHERE log_users.event LIKE :search_by ESCAPE '!'
-            ORDER BY created_at DESC
-            LIMIT :limit
-            OFFSET :offset");
-
-        $user = "%user:" . DbCompat::escapeLike($user) . " %";
-        $stmt->bindValue(':search_by', $user, PDO::PARAM_STR);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll();
     }
 
     public function getDistinctEventTypes(): array

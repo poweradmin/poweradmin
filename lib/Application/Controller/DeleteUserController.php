@@ -26,7 +26,6 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Constants;
-use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -162,10 +161,8 @@ class DeleteUserController extends BaseController
 
     public function showQuestion(string $uid): void
     {
-        $name = $this->createUserRepository()->getFullNameById((int)$uid);
-        if (!$name) {
-            $name = UserEntity::getUserNameById($this->db, $uid);
-        }
+        $user = $this->createUserRepository()->getUserById((int)$uid);
+        $name = ($user['fullname'] ?? '') ?: ($user['username'] ?? '');
         $repositoryFactory = $this->getRepositoryFactory();
         $domainRepository = $repositoryFactory->createDomainRepository();
         // The reassignment list renders neither health badges nor record counts
