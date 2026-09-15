@@ -28,7 +28,6 @@ use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
@@ -186,10 +185,8 @@ class IndexController extends BaseController
      */
     private function ssoProvisioningTemplateMissing(): bool
     {
-        $logger = Logger::fromConfig($this->config);
-
-        return (new OidcConfigurationService($this->config, $logger))->isAutoProvisioningTemplateMissing()
-            || (new SamlConfigurationService($this->config, $logger))->isAutoProvisioningTemplateMissing();
+        return (new OidcConfigurationService($this->config, $this->logger))->isAutoProvisioningTemplateMissing()
+            || (new SamlConfigurationService($this->config, $this->logger))->isAutoProvisioningTemplateMissing();
     }
 
     private function getModuleNavItemsForDashboard(): array

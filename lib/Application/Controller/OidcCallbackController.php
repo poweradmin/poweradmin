@@ -29,7 +29,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Infrastructure\Session\SessionService;
-use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -47,16 +46,14 @@ class OidcCallbackController extends BaseController
         parent::__construct($request, false);
 
         // Initialize OIDC services
-        $logger = Logger::fromConfig($this->config);
-
-        $oidcConfigService = new OidcConfigurationService($this->config, $logger);
-        $oidcProvisioningService = new UserProvisioningService($this->db, $this->config, $logger);
+        $oidcConfigService = new OidcConfigurationService($this->config, $this->logger);
+        $oidcProvisioningService = new UserProvisioningService($this->db, $this->config, $this->logger);
 
         $this->oidcService = new OidcService(
             $this->config,
             $oidcConfigService,
             $oidcProvisioningService,
-            $logger,
+            $this->logger,
             $this->db,
             $this->httpRequest
         );

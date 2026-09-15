@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 
 /**
  * Renders the supermasters list at /supermasters.
@@ -40,7 +39,7 @@ class ListSupermastersController extends BaseController
 
     private function showSuperMasters(): void
     {
-        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
+        $supermasterManager = $this->createSupermasterManager();
         $this->render('list_supermasters.html', [
             'perm_sm_add' => $this->hasPermission('supermaster_add'),
             'perm_sm_edit' => $this->hasPermission('supermaster_edit'),

@@ -31,7 +31,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Infrastructure\Session\SessionService;
-use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -74,8 +73,7 @@ class LogoutController extends BaseController
     {
         try {
             // Initialize OIDC configuration service
-            $logger = Logger::fromConfig($this->config);
-            $oidcConfigService = new OidcConfigurationService($this->config, $logger);
+            $oidcConfigService = new OidcConfigurationService($this->config, $this->logger);
 
             // Get provider configuration
             $providerConfig = $oidcConfigService->getProviderConfig($providerId);
@@ -113,15 +111,13 @@ class LogoutController extends BaseController
     {
         try {
             // Initialize SAML service for logout
-            $logger = Logger::fromConfig($this->config);
-
-            $samlConfigService = new SamlConfigurationService($this->config, $logger);
-            $userProvisioningService = new UserProvisioningService($this->db, $this->config, $logger);
+            $samlConfigService = new SamlConfigurationService($this->config, $this->logger);
+            $userProvisioningService = new UserProvisioningService($this->db, $this->config, $this->logger);
             $samlService = new SamlService(
                 $this->config,
                 $samlConfigService,
                 $userProvisioningService,
-                $logger,
+                $this->logger,
                 $this->db
             );
 

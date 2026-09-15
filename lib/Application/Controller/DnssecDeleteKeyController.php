@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -81,7 +80,7 @@ class DnssecDeleteKeyController extends DnssecKeyController
 
     public function showKeyInfo($domain_name, $key_id, int $zone_id): void
     {
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $dnssecProvider = $this->createDnssecProvider();
         $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
         $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);

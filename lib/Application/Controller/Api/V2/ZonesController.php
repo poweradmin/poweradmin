@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -40,7 +39,7 @@ class ZonesController extends PublicApiController
 {
     private ZoneRepositoryInterface $zoneRepository;
     private ZoneManagementService $zoneManagementService;
-    private ApiPermissionService $permissionService;
+    private ApiPermissionService $apiPermissionService;
     private IPAddressValidator $ipAddressValidator;
 
     public function __construct(array $request, array $pathParameters = [])
@@ -48,7 +47,7 @@ class ZonesController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $this->zoneRepository = $this->createZoneRepository();
-        $this->permissionService = $this->createApiPermissionService();
+        $this->apiPermissionService = $this->createApiPermissionService();
         $this->ipAddressValidator = new IPAddressValidator();
 
         $this->zoneManagementService = $this->createZoneManagementService();
@@ -142,7 +141,7 @@ class ZonesController extends PublicApiController
             $perPage = (int)$this->request->query->get('per_page', 0);
 
             // Get zone IDs that the user can view (null = all zones, [] = no zones, array = specific zones)
-            $visibleZoneIds = $this->permissionService->getUserVisibleZoneIds($userId);
+            $visibleZoneIds = $this->apiPermissionService->getUserVisibleZoneIds($userId);
 
             // Determine the actual userId to pass to repository (only needed for non-uber users)
             $filterUserId = ($visibleZoneIds !== null) ? $userId : null;
@@ -287,7 +286,7 @@ class ZonesController extends PublicApiController
             }
 
             // Check if user has permission to view this zone
-            if (!$this->permissionService->canViewZone($userId, $zoneId)) {
+            if (!$this->apiPermissionService->canViewZone($userId, $zoneId)) {
                 return $this->returnApiError('You do not have permission to view this zone', 403);
             }
 
@@ -491,7 +490,7 @@ class ZonesController extends PublicApiController
             $soaEditApi = $soaEditApi === '' ? null : $soaEditApi;
 
             // Check if user has permission to create zones
-            if (!$this->permissionService->canCreateZone($userId, $type)) {
+            if (!$this->apiPermissionService->canCreateZone($userId, $type)) {
                 return $this->returnApiError('You do not have permission to create zones of this type', 403);
             }
 
@@ -505,7 +504,7 @@ class ZonesController extends PublicApiController
             // Match ZoneManagementService: when DNSSEC is disabled server-side, enable_dnssec
             // is a silent no-op, so the permission gate would just emit a misleading 403.
             $dnssecEnabledServerSide = (bool) $this->getConfig()->get('dnssec', 'enabled', false);
-            if ($enableDnssec && $dnssecEnabledServerSide && !$this->permissionService->canManageDnssecForNewZone($userId, $owner, $groupIds)) {
+            if ($enableDnssec && $dnssecEnabledServerSide && !$this->apiPermissionService->canManageDnssecForNewZone($userId, $owner, $groupIds)) {
                 return $this->returnApiError('You do not have permission to manage DNSSEC for this zone', 403);
             }
 
@@ -565,7 +564,7 @@ class ZonesController extends PublicApiController
      */
     private function updateDomainAccount(int $zoneId, string $account): void
     {
-        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig());
+        $backendProvider = $this->createDnsBackendProvider();
         $backendProvider->updateZoneAccount($zoneId, $account);
     }
 
@@ -694,8 +693,8 @@ class ZonesController extends PublicApiController
 
             // Metadata and description are gated separately below; this only rejects
             // callers who may write neither.
-            $mayEditMeta = $this->permissionService->canEditZoneMeta($userId, $zoneId);
-            $mayEditContent = $this->permissionService->hasZoneContentEditPermission($userId, $zoneId);
+            $mayEditMeta = $this->apiPermissionService->canEditZoneMeta($userId, $zoneId);
+            $mayEditContent = $this->apiPermissionService->hasZoneContentEditPermission($userId, $zoneId);
             if (!$mayEditMeta && !$mayEditContent) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
@@ -761,7 +760,7 @@ class ZonesController extends PublicApiController
             }
 
             // Converting a zone is equivalent to creating one of the target type.
-            if (isset($updates['type']) && !$this->permissionService->canCreateZone($userId, $updates['type'])) {
+            if (isset($updates['type']) && !$this->apiPermissionService->canCreateZone($userId, $updates['type'])) {
                 return $this->returnApiError('You do not have permission to change this zone to that type', 403);
             }
 
@@ -864,7 +863,7 @@ class ZonesController extends PublicApiController
             }
 
             // Check if user has permission to delete this zone
-            if (!$this->permissionService->canDeleteZone($userId, $zoneId)) {
+            if (!$this->apiPermissionService->canDeleteZone($userId, $zoneId)) {
                 return $this->returnApiError('You do not have permission to delete this zone', 403);
             }
 

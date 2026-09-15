@@ -318,7 +318,7 @@ class SessionAuthenticator extends LoggingService
         $mfaService = new MfaService(
             new DbUserMfaRepository($this->db, $this->configManager),
             $this->configManager,
-            new MailService($this->configManager),
+            new MailService($this->configManager, $this->logger),
             null,
             UserTimezoneService::createDefault($this->db, $this->configManager)
         );

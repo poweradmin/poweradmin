@@ -53,12 +53,7 @@ class SaveZoneAsTemplateController extends BaseController
         $this->setCurrentPage('edit');
         $this->setPageTitle(_('Edit zone'));
 
-        $zone_id = $this->getSafeRequestValue('id');
-        if (!$zone_id || !is_numeric($zone_id)) {
-            $this->showError(_('Invalid or unexpected input given.'));
-            return;
-        }
-        $zone_id = (int)$zone_id;
+        $zone_id = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
 
         // Check permissions
         $userId = $this->userContextService->getLoggedInUserId();

@@ -31,10 +31,8 @@ use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Utility\UserAgentService;
-use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -57,25 +55,21 @@ class ForgotPasswordController extends BaseController
         $this->csrfTokenService = new CsrfTokenService();
 
         // Create PasswordResetService with dependencies
-        $configManager = ConfigurationManager::getInstance();
-        $tokenRepository = new DbPasswordResetTokenRepository($this->db, $configManager);
+        $tokenRepository = new DbPasswordResetTokenRepository($this->db, $this->config);
         $userRepository = $this->createUserRepository();
-        $mailService = new MailService($configManager, null);
+        $mailService = new MailService($this->config, $this->logger);
         $authService = new UserAuthenticationService(
-            $configManager->get('security', 'password_encryption', 'bcrypt'),
-            $configManager->get('security', 'password_cost', 12)
+            $this->config->get('security', 'password_encryption', 'bcrypt'),
+            $this->config->get('security', 'password_cost', 12)
         );
         $this->ipRetriever = new IpAddressRetriever($_SERVER);
         $this->userAgentService = new UserAgentService($_SERVER);
-
-        // Create logger instance
-        $this->logger = Logger::fromConfig($configManager);
 
         $this->passwordResetService = new PasswordResetService(
             $tokenRepository,
             $userRepository,
             $mailService,
-            $configManager,
+            $this->config,
             $authService,
             $this->ipRetriever,
             $this->logger

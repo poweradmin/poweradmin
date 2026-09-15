@@ -157,7 +157,7 @@ class ZoneMetadataPermissionTest extends TestCase
         $zoneManagementService->method('updateZone')->willReturn(['success' => true]);
 
         $controller = (new ReflectionClass(ZonesController::class))->newInstanceWithoutConstructor();
-        $this->inject($controller, 'permissionService', $permissionService);
+        $this->inject($controller, 'apiPermissionService', $permissionService);
         $this->inject($controller, 'zoneRepository', $zoneRepository);
         $this->inject($controller, 'zoneManagementService', $zoneManagementService);
         $this->inject($controller, 'request', new Request([], [], [], [], [], [], json_encode($body)));

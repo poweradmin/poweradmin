@@ -33,7 +33,6 @@ use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
@@ -48,7 +47,7 @@ class ZonesRecordsBulkController extends PublicApiController
     private ZoneRepositoryInterface $zoneRepository;
     private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
-    private ApiPermissionService $permissionService;
+    private ApiPermissionService $apiPermissionService;
     private DnsBackendProviderInterface $backendProvider;
     private ReverseTtlResolver $reverseTtlResolver;
 
@@ -61,9 +60,9 @@ class ZonesRecordsBulkController extends PublicApiController
         $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
-        $this->permissionService = new ApiPermissionService($this->db, config: $this->config);
+        $this->apiPermissionService = $this->createApiPermissionService();
 
-        $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
+        $this->recordManager = $this->createRecordManager();
     }
 
     /**
@@ -194,7 +193,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
             // Check if user has permission to edit records in this zone
             $zoneType = $zone['type'] ?? null;
-            if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zoneType)) {
+            if (!$this->apiPermissionService->canEditZoneContent($userId, $zoneId, $zoneType)) {
                 return $this->returnApiError($this->zoneEditDeniedMessage($zoneType), 403);
             }
 
@@ -384,7 +383,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Block SOA/NS edits for users limited to zone_content_edit_own_as_client;
         // checked after normalization so the subzone NS exemption sees the FQDN
-        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, $type, $zoneType, $normalizedName, $zoneName)) {
+        if (!$this->apiPermissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, $type, $zoneType, $normalizedName, $zoneName)) {
             throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }
 
@@ -426,14 +425,14 @@ class ZonesRecordsBulkController extends PublicApiController
         // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
         $userId = $this->getAuthenticatedUserId();
         $hostnameValidator = new HostnameValidator($this->getConfig());
-        if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zoneType, (string)$existingRecord['name'], $zoneName)) {
+        if (!$this->apiPermissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zoneType, (string)$existingRecord['name'], $zoneName)) {
             throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }
         // Block changing the record into one the user may not manage, e.g.
         // retyping to SOA/NS or renaming a subzone NS onto the zone apex
         $newType = strtoupper(trim((string)($operation['type'] ?? $existingRecord['type'])));
         $newName = $hostnameValidator->normalizeRecordName(trim((string)($operation['name'] ?? $existingRecord['name'])), (string)$zoneName);
-        if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zoneType, $newName, $zoneName)) {
+        if (!$this->apiPermissionService->canEditZoneRecord($userId, $zoneId, $newType, $zoneType, $newName, $zoneName)) {
             throw new ApiErrorException('You do not have permission to edit this record type', 403);
         }
 
@@ -500,7 +499,7 @@ class ZonesRecordsBulkController extends PublicApiController
         $recordType = $existingRecord['type'];
 
         // Block SOA/NS deletes for users limited to zone_content_edit_own_as_client
-        if (!$this->permissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, (string)$recordType, $zoneType, (string)$existingRecord['name'], $zoneName)) {
+        if (!$this->apiPermissionService->canEditZoneRecord($this->getAuthenticatedUserId(), $zoneId, (string)$recordType, $zoneType, (string)$existingRecord['name'], $zoneName)) {
             throw new ApiErrorException('You do not have permission to delete this record type', 403);
         }
 

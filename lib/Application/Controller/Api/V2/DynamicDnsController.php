@@ -44,7 +44,7 @@ class DynamicDnsController extends PublicApiController
 {
     private DynamicDnsUpdateService $updateService;
     private DynamicDnsValidationService $validationService;
-    private ApiPermissionService $permissionService;
+    private ApiPermissionService $apiPermissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -68,7 +68,7 @@ class DynamicDnsController extends PublicApiController
             new LegacyLogger($this->db),
             new IpAddressRetriever($_SERVER)
         );
-        $this->permissionService = new ApiPermissionService($this->db, config: $this->config);
+        $this->apiPermissionService = $this->createApiPermissionService();
     }
 
     public function run(): void
@@ -198,7 +198,7 @@ class DynamicDnsController extends PublicApiController
     private function userCanUseDdns(int $userId): bool
     {
         // DDNS operates only on zones the caller owns, so require an own-zone edit grant.
-        return $this->permissionService->userHasPermission($userId, 'zone_content_edit_own')
-            || $this->permissionService->userHasPermission($userId, 'zone_content_edit_own_as_client');
+        return $this->apiPermissionService->userHasPermission($userId, 'zone_content_edit_own')
+            || $this->apiPermissionService->userHasPermission($userId, 'zone_content_edit_own_as_client');
     }
 }

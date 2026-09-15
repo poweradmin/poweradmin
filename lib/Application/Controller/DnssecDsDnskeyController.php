@@ -23,11 +23,9 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
-use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
@@ -40,13 +38,7 @@ class DnssecDsDnskeyController extends BaseController
     {
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
 
-        $zone_id = $this->getSafeRequestValue('id');
-        if (!$zone_id || !Validator::isNumber($zone_id)) {
-            $this->showError(_('Invalid or unexpected input given.'));
-            return;
-        }
-
-        $zone_id = (int) $zone_id;
+        $zone_id = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
 
         // Early permission check - validate DNSSEC access before any operations
         $this->requireZoneView($zone_id);
@@ -72,7 +64,7 @@ class DnssecDsDnskeyController extends BaseController
         $record_count = $this->createRecordRepository()->countZoneRecords($zone_id);
         $zone_template_id = DomainManager::getZoneTemplate($this->db, $zone_id);
 
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $dnssecProvider = $this->createDnssecProvider();
         $dnskey_records = $dnssecProvider->getDnsKeyRecords($domain_name);
         $ds_records = $dnssecProvider->getDsRecords($domain_name);
 

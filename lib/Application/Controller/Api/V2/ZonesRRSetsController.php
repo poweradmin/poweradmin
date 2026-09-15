@@ -45,7 +45,7 @@ class ZonesRRSetsController extends PublicApiController
     private ZoneRepositoryInterface $zoneRepository;
     private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
-    private ApiPermissionService $permissionService;
+    private ApiPermissionService $apiPermissionService;
     private DnsBackendProviderInterface $backendProvider;
     private ReverseTtlResolver $reverseTtlResolver;
 
@@ -58,9 +58,9 @@ class ZonesRRSetsController extends PublicApiController
         $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
-        $this->permissionService = new ApiPermissionService($this->db, config: $this->config);
+        $this->apiPermissionService = $this->createApiPermissionService();
 
-        $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
+        $this->recordManager = $this->createRecordManager();
     }
 
     /**
@@ -174,7 +174,7 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Check if user has permission to view this zone
-            if (!$this->permissionService->canViewZone($userId, $zoneId)) {
+            if (!$this->apiPermissionService->canViewZone($userId, $zoneId)) {
                 return $this->returnApiError('You do not have permission to view this zone', 403);
             }
 
@@ -286,7 +286,7 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Check if user has permission to view this zone
-            if (!$this->permissionService->canViewZone($userId, $zoneId)) {
+            if (!$this->apiPermissionService->canViewZone($userId, $zoneId)) {
                 return $this->returnApiError('You do not have permission to view this zone', 403);
             }
 
@@ -426,7 +426,7 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
+            if (!$this->apiPermissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
                 return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
@@ -479,7 +479,7 @@ class ZonesRRSetsController extends PublicApiController
 
             // Block SOA/NS RRSet edits for users limited to zone_content_edit_own_as_client;
             // checked after FQDN conversion so the subzone NS exemption sees the full name
-            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null, $fqdn, $zoneName)) {
+            if (!$this->apiPermissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null, $fqdn, $zoneName)) {
                 return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
 
@@ -717,7 +717,7 @@ class ZonesRRSetsController extends PublicApiController
             }
 
             // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
+            if (!$this->apiPermissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
                 return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
@@ -731,7 +731,7 @@ class ZonesRRSetsController extends PublicApiController
 
             // Block SOA/NS RRSet deletes for users limited to zone_content_edit_own_as_client;
             // checked after FQDN conversion so the subzone NS exemption sees the full name
-            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null, $fqdn, $zoneName)) {
+            if (!$this->apiPermissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null, $fqdn, $zoneName)) {
                 return $this->returnApiError('You do not have permission to delete this record type', 403);
             }
 

@@ -80,7 +80,7 @@ class ListForwardZonesController extends BaseController
             return;
         }
 
-        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig(), $this->logger);
+        $backendProvider = $this->createDnsBackendProvider();
         $syncService = new ZoneSyncService($this->db, $backendProvider, 300, $this->logger);
 
         try {

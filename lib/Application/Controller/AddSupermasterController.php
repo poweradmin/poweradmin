@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 
 /**
  * Handles the add-supermaster form: validates the IP and nameserver, then stores the supermaster entry.
@@ -55,7 +54,7 @@ class AddSupermasterController extends BaseController
 
     private function addSuperMaster($master_ip, $ns_name, $account): void
     {
-        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
+        $supermasterManager = $this->createSupermasterManager();
         if ($supermasterManager->addSupermaster($master_ip, $ns_name, $account)) {
             $auditService = $this->createAuditService();
             $auditService->logSupermasterAdd($master_ip, $ns_name);

@@ -22,29 +22,14 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
-use Poweradmin\Domain\Service\Validator;
 
 /**
  * Base for the pages that add, edit, toggle, delete, import and export DNSSEC keys: one shared gate.
  */
 abstract class DnssecKeyController extends BaseController
 {
-    /**
-     * Reads a numeric request parameter or ends the request with an error page.
-     */
-    protected function requireNumericParam(string $name, string $error): int
-    {
-        $value = $this->getSafeRequestValue($name);
-        if (!$value || !Validator::isNumber($value)) {
-            $this->showError($error);
-        }
-
-        return (int)$value;
-    }
-
     /**
      * Gates a key-management page: the zone must be visible to the user, exist, and grant
      * dnssec_manage; presigned zones are sent back to the DNSSEC page because their keys
@@ -66,7 +51,7 @@ abstract class DnssecKeyController extends BaseController
         }
 
         $domainName = (string)$domainRepository->getDomainNameById($zoneId);
-        $provider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        $provider = $this->createDnssecProvider();
 
         if ($provider->isZonePresigned($domainName)) {
             $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));

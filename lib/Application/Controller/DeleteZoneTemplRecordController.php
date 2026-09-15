@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -43,17 +42,8 @@ class DeleteZoneTemplRecordController extends BaseController
 
     public function run(): void
     {
-        $id = $this->getSafeRequestValue('id');
-        if (empty($id) || !Validator::isNumber($id)) {
-            $this->showError(_('Invalid or unexpected input given.'));
-        }
-        $record_id = (int)$id;
-
-        $zone_templ_id_value = $this->getSafeRequestValue('template_id');
-        if (empty($zone_templ_id_value) || !Validator::isNumber($zone_templ_id_value)) {
-            $this->showError(_('Invalid or unexpected input given.'));
-        }
-        $zone_templ_id = (int)$zone_templ_id_value;
+        $record_id = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
+        $zone_templ_id = $this->requireNumericParam('template_id', _('Invalid or unexpected input given.'));
 
         $confirmed = $this->httpRequest->getPostParam('confirm') !== null;
 

@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Constants;
-use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -47,10 +46,7 @@ class DeleteUserController extends BaseController
         $perm_edit_others = $this->hasPermission('user_edit_others');
         $perm_is_godlike = $this->hasPermission('user_is_ueberuser');
 
-        $uid = $this->getSafeRequestValue('id');
-        if (!$uid || !Validator::isNumber($uid)) {
-            $this->showError(_('Invalid or unexpected input given.'));
-        }
+        $uid = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
 
         // Check basic permissions first
         if (($uid != $_SESSION[SessionKeys::USERID] && !$perm_edit_others) || ($uid == $_SESSION[SessionKeys::USERID] && !$perm_is_godlike)) {
@@ -58,7 +54,7 @@ class DeleteUserController extends BaseController
         }
 
         // Prevent non-superusers from deleting superuser accounts (privilege escalation protection)
-        $targetIsSuperuser = $this->createPermissionService()->isAdmin((int)$uid);
+        $targetIsSuperuser = $this->createPermissionService()->isAdmin($uid);
 
         if ($targetIsSuperuser && !$perm_is_godlike) {
             $this->showError(_('You do not have permission to delete a superuser account.'));
@@ -73,9 +69,9 @@ class DeleteUserController extends BaseController
         $this->showQuestion($uid);
     }
 
-    public function deleteUser(string $uid): void
+    public function deleteUser(int $uid): void
     {
-        $target = $this->createUserRepository()->getUserById((int)$uid);
+        $target = $this->createUserRepository()->getUserById($uid);
         if ($target === null) {
             $this->showError(_('User does not exist.'));
         }
@@ -109,7 +105,7 @@ class DeleteUserController extends BaseController
             $zones = $zone;
         }
 
-        $deleted = $this->createUserManagementService()->deleteUserWithZoneDecisions((int)$this->getCurrentUserId(), (int)$uid, $zones);
+        $deleted = $this->createUserManagementService()->deleteUserWithZoneDecisions((int)$this->getCurrentUserId(), $uid, $zones);
         if (!$deleted['success']) {
             $this->setMessage('delete_user', 'error', UserFormMessages::deleteErrorMessage($deleted));
             return;
@@ -154,14 +150,14 @@ class DeleteUserController extends BaseController
         return array_values($zones);
     }
 
-    public function showQuestion(string $uid): void
+    public function showQuestion(int $uid): void
     {
-        $user = $this->createUserRepository()->getUserById((int)$uid);
+        $user = $this->createUserRepository()->getUserById($uid);
         $name = ($user['fullname'] ?? '') ?: ($user['username'] ?? '');
         $repositoryFactory = $this->getRepositoryFactory();
         $domainRepository = $repositoryFactory->createDomainRepository();
         // The reassignment list renders neither health badges nor record counts
-        $zones = $domainRepository->getZones("own", (int)$uid, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false, false);
+        $zones = $domainRepository->getZones("own", $uid, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false, false);
 
         $users = [];
         if (count($zones) > 0) {

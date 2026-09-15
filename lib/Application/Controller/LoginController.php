@@ -28,7 +28,6 @@ use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Infrastructure\Logger\Logger;
 
 /**
  * Renders the login page with its CSRF token and the enabled OIDC and SAML providers.
@@ -46,16 +45,14 @@ class LoginController extends BaseController
 
         $this->csrfTokenService = new CsrfTokenService();
 
-        $logger = Logger::fromConfig($this->config);
-
-        $samlConfigService = new SamlConfigurationService($this->config, $logger);
-        $userProvisioningService = new UserProvisioningService($this->db, $this->config, $logger);
+        $samlConfigService = new SamlConfigurationService($this->config, $this->logger);
+        $userProvisioningService = new UserProvisioningService($this->db, $this->config, $this->logger);
 
         $this->samlService = new SamlService(
             $this->config,
             $samlConfigService,
             $userProvisioningService,
-            $logger,
+            $this->logger,
             $this->db
         );
     }
