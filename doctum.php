@@ -32,9 +32,24 @@ $files = Finder::create()
     ->name('*.php')
     ->in(__DIR__ . '/lib');
 
+require_once __DIR__ . '/lib/Version.php';
+
+// The footer records what the pages were generated from, since the published
+// site is rebuilt from develop on a schedule of its own.
+$commit = trim((string)shell_exec('git -C ' . escapeshellarg(__DIR__) . ' rev-parse --short HEAD 2>/dev/null'));
+$footer = [
+    'href' => $commit !== '' ? 'https://github.com/poweradmin/poweradmin/commit/' . $commit : '',
+    'rel' => 'noreferrer',
+    'target' => '_blank',
+    'before_text' => sprintf('Poweradmin %s, develop branch,', Poweradmin\Version::VERSION),
+    'link_text' => $commit !== '' ? 'commit ' . $commit . ',' : '',
+    'after_text' => 'built ' . gmdate('Y-m-d H:i') . ' UTC.',
+];
+
 return new Doctum($files, [
     'title' => 'Poweradmin class reference',
     'versions' => 'develop',
+    'footer_link' => $footer,
     'build_dir' => getenv('DOCTUM_BUILD_DIR') ?: __DIR__ . '/docs/reference',
     'cache_dir' => getenv('DOCTUM_CACHE_DIR') ?: __DIR__ . '/.doctum/cache',
     'source_dir' => __DIR__,
