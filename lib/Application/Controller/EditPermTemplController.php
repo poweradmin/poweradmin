@@ -130,10 +130,10 @@ class EditPermTemplController extends BaseController
     private function validateRequest(): bool
     {
         $this->setValidationConstraints([
-            'id' => [
+            'id' => new Assert\Required([
                 new Assert\NotBlank(message: sprintf(_('The %s field is required.'), 'id')),
                 new Assert\Type('numeric', message: sprintf(_('The %s field must be a number.'), 'id')),
-            ],
+            ]),
         ]);
 
         return $this->doValidateRequest();
@@ -142,11 +142,11 @@ class EditPermTemplController extends BaseController
     private function validateSubmitRequest(): bool
     {
         $this->setValidationConstraints([
-            'templ_name' => [new Assert\NotBlank(message: sprintf(_('The %s field is required.'), 'templ_name'))],
-            'template_type' => [
+            'templ_name' => new Assert\Required([new Assert\NotBlank(message: sprintf(_('The %s field is required.'), 'templ_name'))]),
+            'template_type' => new Assert\Required([
                 new Assert\NotBlank(message: sprintf(_('The %s field is required.'), 'template_type')),
                 new Assert\Choice(choices: PermissionTemplateType::values(), message: sprintf(_('The %s field has an invalid value.'), 'template_type')),
-            ],
+            ]),
         ]);
 
         return $this->doValidateRequest();

@@ -31,6 +31,9 @@ class RequestValidatorTest extends TestCase
 
         $this->assertSame(0, $validator->validate(['name' => 'example.com'])->count());
         $this->assertGreaterThan(0, $validator->validate(['name' => null])->count());
+        // Legacy: a plain NotBlank field submitted as '' is treated as absent (a blank record
+        // name is the zone apex); only Assert\Required fields keep the empty value
+        $this->assertSame(0, $validator->validate(['name' => ''])->count());
         // Long-standing tolerant behavior: an absent field passes even a
         // "required" rule (allowMissingFields), only blank present values fail
         $this->assertSame(0, $validator->validate([])->count());
@@ -48,11 +51,16 @@ class RequestValidatorTest extends TestCase
     public function testEmptyStringValuesAreFilteredBeforeTypeChecks(): void
     {
         $validator = new RequestValidator();
-        $validator->setConstraints(['zone_id' => new Assert\Type('numeric')]);
+        $validator->setConstraints([
+            'zone_id' => new Assert\Type('numeric'),
+            'name' => new Assert\Required([new Assert\NotBlank(), new Assert\Length(max: 3)]),
+        ]);
 
-        // '' would fail the numeric type check; the filter turns it into a
-        // missing field, which the tolerant collection allows
+        // '' would fail the numeric type check; the filter turns an optional field into a
+        // missing one, which the tolerant collection allows
         $this->assertSame(0, $validator->validate(['zone_id' => ''])->count());
+        // but a Required field keeps its empty value and fails
+        $this->assertGreaterThan(0, $validator->validate(['name' => ''])->count());
     }
 
     public function testExtraFieldsAreAllowed(): void
