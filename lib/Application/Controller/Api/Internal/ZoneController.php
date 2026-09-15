@@ -102,6 +102,10 @@ class ZoneController extends InternalApiController
 
     /**
      * Get a specific zone by ID
+     *
+     * Serialises the whole repository row: id, name, type, count_records, username,
+     * fullname, secured, comment, utf8_name, owners, full_names, users, plus the
+     * additive master, account, owner and record_count keys (4.6.0).
      */
     private function getZone(): JsonResponse
     {

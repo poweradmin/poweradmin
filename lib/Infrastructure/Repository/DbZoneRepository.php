@@ -214,8 +214,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
             return (int)$stmt->fetchColumn();
         } else {
             $sortByGroup = $sortBy === 'group';
-            // Group join multiplies record rows per group, so DISTINCT keeps the count accurate
-            $recordCountExpr = $sortByGroup ? "COUNT(DISTINCT $records_table.id)" : "COUNT($records_table.id)";
+            // The cryptokeys, metadata and group joins multiply record rows, so count distinct ids
+            $recordCountExpr = "COUNT(DISTINCT $records_table.id)";
             $needsRecordsJoin = $includeRecordCount || $includeHealth;
 
             $selectFields = "$domains_table.id,
@@ -275,7 +275,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         if ($sortBy == 'owner') {
             $sortBy = 'users.username';
         } elseif ($sortBy == 'count_records') {
-            $sortBy = "COUNT($records_table.id)";
+            $sortBy = $recordCountExpr;
         } elseif ($sortBy == 'group') {
             $sortBy = "MIN(user_groups.name)";
         } else {
@@ -426,11 +426,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
         $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
+        // The cryptokeys and metadata joins multiply record rows on signed zones, so count distinct ids
         $query = "SELECT
                 $domains_table.id,
                 $domains_table.name,
                 $domains_table.type,
-                COUNT($records_table.id) AS count_records,
+                COUNT(DISTINCT $records_table.id) AS count_records,
                 users.username,
                 users.fullname,
                 COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured,
@@ -560,53 +561,55 @@ class DbZoneRepository implements ZoneRepositoryInterface
     /**
      * Get a zone by ID with full details
      *
+     * Returns the getZoneById() core (id, name, type, master, owner, account,
+     * record_count) plus count_records (alias of record_count), username,
+     * fullname, secured, comment, utf8_name, owners[], full_names[], users[].
+     *
      * @param int $zoneId The zone ID
      * @return array|null The zone data or null if not found
      */
     public function getZone(int $zoneId): ?array
     {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-        $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
-        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
-
-        // First get the zone details
-        $query = "SELECT
-                $domains_table.id,
-                $domains_table.name,
-                $domains_table.type,
-                COUNT($records_table.id) AS count_records,
-                users.username,
-                users.fullname,
-                COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured,
-                zones.comment
-            FROM $domains_table
-            LEFT JOIN zones ON $domains_table.id = zones.domain_id
-            LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL
-            LEFT JOIN users ON users.id = zones.owner
-            LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
-            LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'
-            WHERE $domains_table.id = :id
-            GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, users.username, users.fullname, zones.comment";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $zone = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$zone) {
+        $zone = $this->getZoneById($zoneId);
+        if ($zone === null) {
             return null;
         }
 
-        // Add additional properties
+        $owners = $this->getZoneOwners($zoneId);
+        $usernames = array_column($owners, 'username');
+
+        $zone['count_records'] = $zone['record_count'];
+        $zone['username'] = $usernames[0] ?? null;
+        $zone['fullname'] = $owners[0]['fullname'] ?? null;
+        $zone['secured'] = $this->isZoneSecured($zoneId);
+        $zone['comment'] = $this->getZoneComment($zoneId) ?? '';
         $zone['utf8_name'] = DnsIdnService::toUtf8($zone['name']);
-        $zone['owners'] = [$zone['username']];
-        $zone['full_names'] = [$zone['fullname'] ?: ''];
-        $zone['users'] = [$zone['username']];
+        $zone['owners'] = $usernames;
+        $zone['full_names'] = array_map(fn(array $owner) => $owner['fullname'] ?: '', $owners);
+        $zone['users'] = $usernames;
 
         return $zone;
+    }
+
+    /**
+     * Whether the zone has an active DNSSEC key or is marked PRESIGNED.
+     */
+    private function isZoneSecured(int $zoneId): bool
+    {
+        $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+
+        $query = "SELECT 1 FROM $cryptokeys_table WHERE domain_id = :id AND active
+                  UNION ALL
+                  SELECT 1 FROM $domainmetadata_table WHERE domain_id = :id_meta AND kind = 'PRESIGNED'
+                  LIMIT 1";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':id_meta', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() !== false;
     }
 
     /**
