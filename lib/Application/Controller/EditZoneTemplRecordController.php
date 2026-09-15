@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\RecordTypeService;
@@ -37,13 +36,11 @@ class EditZoneTemplRecordController extends BaseController
 {
     private RecordTypeService $recordTypeService;
     private UserContextService $userContext;
-    private Request $request;
     private ZoneTemplate $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContext = new UserContextService();
         $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
@@ -132,7 +129,7 @@ class EditZoneTemplRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        $postParams = $this->request->getPostParams();
+        $postParams = $this->httpRequest->getPostParams();
         if (!$this->doValidateRequest($postParams)) {
             $this->showFirstValidationError($postParams);
             return;

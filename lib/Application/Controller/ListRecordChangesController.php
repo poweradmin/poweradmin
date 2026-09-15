@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 use DateTimeImmutable;
 use DateInterval;
 use DateTimeZone;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
@@ -45,14 +44,12 @@ class ListRecordChangesController extends BaseController
     ];
 
     private RecordChangeLogger $changeLogger;
-    private Request $httpRequest;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->changeLogger = new RecordChangeLogger($this->db);
-        $this->httpRequest = new Request();
     }
 
     public function run(): void

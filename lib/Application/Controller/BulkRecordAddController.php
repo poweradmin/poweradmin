@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
@@ -47,13 +46,10 @@ class BulkRecordAddController extends BaseController
     private RecordTypeService $recordTypeService;
     private UserContextService $userContextService;
     private PermissionService $permissionService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
         $this->domainRepository = $this->createDomainRepository();
         $this->recordManager = $this->createRecordManagerService();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
@@ -94,21 +90,21 @@ class BulkRecordAddController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        $postParams = $this->request->getPostParams();
+        $postParams = $this->httpRequest->getPostParams();
         if (!$this->doValidateRequest($postParams)) {
             $this->showFirstValidationError($postParams);
         }
 
         $zone_id = (int)$this->getSafeRequestValue('id');
 
-        $change_comment = (string)($this->request->getPostParam('change_comment') ?? '');
+        $change_comment = (string)($this->httpRequest->getPostParam('change_comment') ?? '');
         if (trim($change_comment) === '' && RecordChangeLogger::changeCommentRequired()) {
             $this->setMessage('bulk_record_add', 'error', _('Describe why you are making this change.'));
             $this->showBulkRecordAdditionForm();
             return;
         }
 
-        $records_text = $this->request->getPostParam('records');
+        $records_text = $this->httpRequest->getPostParam('records');
         $lines = explode("\n", trim($records_text));
 
         $success_count = 0;
@@ -230,7 +226,7 @@ class BulkRecordAddController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'zone_display_name' => DnsIdnService::toDisplay($zone_name),
             'failed_records' => $failed_records,
-            'change_comment' => (string)($this->request->getPostParam('change_comment') ?? ''),
+            'change_comment' => (string)($this->httpRequest->getPostParam('change_comment') ?? ''),
             'require_change_comment' => (bool)$this->config->get('logging', 'require_change_comment', false),
             'default_ttl' => $this->config->get('dns', 'ttl', 3600),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),

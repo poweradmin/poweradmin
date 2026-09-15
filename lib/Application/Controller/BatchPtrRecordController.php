@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
@@ -47,13 +46,10 @@ class BatchPtrRecordController extends BaseController
     private UserContextService $userContextService;
     private ReverseTtlResolver $reverseTtlResolver;
     private PermissionService $permissionService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
         $this->domainRepository = $this->createDomainRepository();
         $this->batchReverseRecordCreator = $this->createBatchReverseRecordCreator();
         $this->userContextService = new UserContextService();
@@ -80,7 +76,7 @@ class BatchPtrRecordController extends BaseController
         $this->setPageTitle(_('Batch PTR Records'));
 
         // Check if we have a specific zone_id
-        $id = $this->request->getQueryParam('id');
+        $id = $this->httpRequest->getQueryParam('id');
         $hasZoneId = !empty($id);
 
         if ($hasZoneId) {
@@ -105,7 +101,7 @@ class BatchPtrRecordController extends BaseController
         // Preserve form data in case of errors
         $formData = [];
         if ($this->isPost()) {
-            $formData = $this->request->getPostParams();
+            $formData = $this->httpRequest->getPostParams();
             try {
                 $this->validateCsrfToken();
                 if ($this->addBatchPtrRecords()) {
@@ -137,16 +133,16 @@ class BatchPtrRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        $postParams = $this->request->getPostParams();
+        $postParams = $this->httpRequest->getPostParams();
         if (!$this->doValidateRequest($postParams)) {
             $this->showFirstValidationError($postParams);
             return false;
         }
 
-        $networkType = $this->request->getPostParam('network_type', '');
-        $networkPrefix = $this->request->getPostParam('network_prefix', '');
-        $hostPrefix = $this->request->getPostParam('host_prefix', '');
-        $domain = $this->request->getPostParam('domain', '');
+        $networkType = $this->httpRequest->getPostParam('network_type', '');
+        $networkPrefix = $this->httpRequest->getPostParam('network_prefix', '');
+        $hostPrefix = $this->httpRequest->getPostParam('host_prefix', '');
+        $domain = $this->httpRequest->getPostParam('domain', '');
         $ttl = $this->reverseTtlResolver->resolveTtlForType('PTR', true);
         // Forward A/AAAA records get their own per-type default (or dns.ttl).
         $forwardType = $networkType === 'ipv6' ? 'AAAA' : 'A';
@@ -157,13 +153,13 @@ class BatchPtrRecordController extends BaseController
         $matchingPtrTtl = $this->reverseTtlResolver->getTypeDefaults()['PTR']
             ?? $this->reverseTtlResolver->getConfiguredReverseTtl();
         $prio = 0;
-        $comment = $this->request->getPostParam('comment', '');
-        $id = $this->request->getQueryParam('id');
+        $comment = $this->httpRequest->getPostParam('comment', '');
+        $id = $this->httpRequest->getQueryParam('id');
         $zone_id = $id !== null ? (int)$id : 0; // Use 0 when no zone_id is provided
-        $ipv6_count_param = $this->request->getPostParam('ipv6_count');
+        $ipv6_count_param = $this->httpRequest->getPostParam('ipv6_count');
         $ipv6_count = $ipv6_count_param !== null ? (int)$ipv6_count_param : 256;
-        $createForwardRecords = $this->request->getPostParam('create_forward_records') === 'on';
-        $onlyMatchingRecords = $this->request->getPostParam('only_matching_records') === 'on';
+        $createForwardRecords = $this->httpRequest->getPostParam('create_forward_records') === 'on';
+        $onlyMatchingRecords = $this->httpRequest->getPostParam('only_matching_records') === 'on';
 
         try {
             if ($networkType === 'ipv4') {
@@ -214,7 +210,7 @@ class BatchPtrRecordController extends BaseController
 
     private function showForm(array $formData = []): void
     {
-        $id = $this->request->getQueryParam('id');
+        $id = $this->httpRequest->getQueryParam('id');
         $hasZoneId = !empty($id);
         $zone_id = "";
         $zone_name = "";
@@ -266,8 +262,8 @@ class BatchPtrRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($this->request->getQueryParams())) {
-            $this->showFirstValidationError($this->request->getQueryParams());
+        if (!$this->doValidateRequest($this->httpRequest->getQueryParams())) {
+            $this->showFirstValidationError($this->httpRequest->getQueryParams());
         }
     }
 

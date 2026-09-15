@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
@@ -37,7 +36,6 @@ class ManageGroupZonesController extends BaseController
 {
     private ZoneGroupService $zoneGroupService;
     private GroupService $groupService;
-    private Request $request;
 
     public function __construct(array $request)
     {
@@ -48,7 +46,6 @@ class ManageGroupZonesController extends BaseController
 
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -88,7 +85,7 @@ class ManageGroupZonesController extends BaseController
 
     private function processAction(int $groupId): void
     {
-        $action = $this->request->getPostParam('action');
+        $action = $this->httpRequest->getPostParam('action');
 
         if ($action === 'add') {
             $this->addZones($groupId);
@@ -106,7 +103,7 @@ class ManageGroupZonesController extends BaseController
      */
     private function getSelectedDomainIds(): array
     {
-        $domainIds = $this->request->getPostParam('domain_ids', []);
+        $domainIds = $this->httpRequest->getPostParam('domain_ids', []);
         if (is_string($domainIds)) {
             $domainIds = explode(',', $domainIds);
         }

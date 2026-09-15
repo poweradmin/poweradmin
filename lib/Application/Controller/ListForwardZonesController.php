@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
@@ -39,12 +38,10 @@ use Poweradmin\Domain\Service\SessionKeys;
 class ListForwardZonesController extends BaseController
 {
     private ZoneSortingService $zoneSortingService;
-    private Request $request;
 
     public function __construct(array $request, bool $authenticate = true)
     {
         parent::__construct($request, $authenticate);
-        $this->request = new Request();
         $this->zoneSortingService = new ZoneSortingService();
     }
 
@@ -126,7 +123,7 @@ class ListForwardZonesController extends BaseController
         $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
 
         $row_start = 0;
-        $start_param = $this->request->getQueryParam('start');
+        $start_param = $this->httpRequest->getQueryParam('start');
         if ($start_param !== null) {
             $start = (int)htmlspecialchars($start_param);
             $row_start = max(0, ($start - 1) * $iface_rowamount);
@@ -146,7 +143,7 @@ class ListForwardZonesController extends BaseController
         $letter_start = 'all';
         if ($count_zones_view > $iface_rowamount) {
             $letter_start = 'a';
-            $letter = $this->request->getQueryParam('letter');
+            $letter = $this->httpRequest->getQueryParam('letter');
             if ($letter !== null) {
                 $letter_start = htmlspecialchars($letter);
                 $_SESSION[SessionKeys::LETTER] = htmlspecialchars($letter);
@@ -193,8 +190,8 @@ class ListForwardZonesController extends BaseController
 
         list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
             $allowedSort,
-            submittedSortBy: $this->request->getPostParam('zone_sort_by') ?? $this->request->getQueryParam('zone_sort_by'),
-            submittedDirection: $this->request->getPostParam('zone_sort_by_direction') ?? $this->request->getQueryParam('zone_sort_by_direction')
+            submittedSortBy: $this->httpRequest->getPostParam('zone_sort_by') ?? $this->httpRequest->getQueryParam('zone_sort_by'),
+            submittedDirection: $this->httpRequest->getPostParam('zone_sort_by_direction') ?? $this->httpRequest->getQueryParam('zone_sort_by_direction')
         );
 
         $effectiveLetterStart = ($count_zones_view <= $iface_rowamount || $letter_start == 'all') ? 'all' : $letter_start;

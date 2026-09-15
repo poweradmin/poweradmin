@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\RecordTypeService;
@@ -37,13 +36,11 @@ class AddZoneTemplRecordController extends BaseController
 {
     private RecordTypeService $recordTypeService;
     private UserContextService $userContext;
-    private Request $request;
     private ZoneTemplate $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContext = new UserContextService();
         $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
@@ -94,7 +91,7 @@ class AddZoneTemplRecordController extends BaseController
 
             $this->setValidationConstraints($constraints);
 
-            $postParams = $this->request->getPostParams();
+            $postParams = $this->httpRequest->getPostParams();
             if ($this->doValidateRequest($postParams)) {
                 $this->addZoneTemplRecord();
             } else {
@@ -108,12 +105,12 @@ class AddZoneTemplRecordController extends BaseController
     private function addZoneTemplRecord(): void
     {
         $zone_templ_id = (int)$this->getSafeRequestValue('id');
-        $name = $this->request->getPostParam('name', "[ZONE]");
-        $type = $this->request->getPostParam('type', "");
-        $content = $this->request->getPostParam('content', "");
-        $prio = $this->request->getPostParam('prio', 0);
+        $name = $this->httpRequest->getPostParam('name', "[ZONE]");
+        $type = $this->httpRequest->getPostParam('type', "");
+        $content = $this->httpRequest->getPostParam('content', "");
+        $prio = $this->httpRequest->getPostParam('prio', 0);
         $dns_ttl = $this->config->get('dns', 'ttl', 3600);
-        $ttl = $this->request->getPostParam('ttl', $dns_ttl);
+        $ttl = $this->httpRequest->getPostParam('ttl', $dns_ttl);
 
         if ($this->zoneTemplate->addZoneTemplRecord($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
             // Mark template as modified to track sync status
@@ -134,12 +131,12 @@ class AddZoneTemplRecordController extends BaseController
     {
         $zone_templ_id = (int)$this->getSafeRequestValue('id');
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
-        $name = $this->request->getPostParam('name', "[ZONE]");
-        $type = $this->request->getPostParam('type', "");
-        $content = $this->request->getPostParam('content', "");
-        $prio = $this->request->getPostParam('prio', 0);
+        $name = $this->httpRequest->getPostParam('name', "[ZONE]");
+        $type = $this->httpRequest->getPostParam('type', "");
+        $content = $this->httpRequest->getPostParam('content', "");
+        $prio = $this->httpRequest->getPostParam('prio', 0);
         $dns_ttl = $this->config->get('dns', 'ttl', 3600);
-        $ttl = $this->request->getPostParam('ttl', $dns_ttl);
+        $ttl = $this->httpRequest->getPostParam('ttl', $dns_ttl);
 
         // Get count of zones using this template
         $userId = $this->userContext->getLoggedInUserId();

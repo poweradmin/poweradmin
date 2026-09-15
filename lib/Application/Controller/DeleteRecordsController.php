@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
@@ -40,13 +39,10 @@ class DeleteRecordsController extends BaseController
     private ReverseRecordCreator $reverseRecordCreator;
     private UserContextService $userContextService;
     private PermissionService $permissionService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
         $this->reverseRecordCreator = $this->createReverseRecordCreator();
         $this->userContextService = new UserContextService();
         $this->permissionService = $this->createPermissionService();
@@ -58,7 +54,7 @@ class DeleteRecordsController extends BaseController
             $this->validateCsrfToken();
         }
 
-        $raw_ids = $this->request->getPostParam('record_id');
+        $raw_ids = $this->httpRequest->getPostParam('record_id');
         if (!is_array($raw_ids) || empty($raw_ids)) {
             $this->setMessage('search', 'error', _('No records selected for deletion.'));
             $this->redirect('/search');
@@ -67,8 +63,8 @@ class DeleteRecordsController extends BaseController
 
         $record_ids = array_values(array_filter($raw_ids, fn($id) => is_int($id) || is_string($id)));
 
-        if ($this->request->getPostParam('confirm') !== null) {
-            $comment = (string)($this->request->getPostParam('change_comment') ?? '');
+        if ($this->httpRequest->getPostParam('confirm') !== null) {
+            $comment = (string)($this->httpRequest->getPostParam('change_comment') ?? '');
             if (trim($comment) === '' && RecordChangeLogger::changeCommentRequired()) {
                 $this->setMessage('delete_records', 'error', _('Describe why you are making this change.'));
             } else {
@@ -94,7 +90,7 @@ class DeleteRecordsController extends BaseController
         // One submission, one changeset, so a multi-record delete reads as a single
         // action in the change log rather than N unrelated deletions. The selection can
         // span zones, so the changeset carries no zone of its own.
-        RecordChangeLogger::beginChangeset(null, (string)($this->request->getPostParam('change_comment') ?? ''));
+        RecordChangeLogger::beginChangeset(null, (string)($this->httpRequest->getPostParam('change_comment') ?? ''));
 
         try {
             foreach ($record_ids as $record_id) {
@@ -131,7 +127,7 @@ class DeleteRecordsController extends BaseController
                         );
 
                         // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
-                        $delete_ptr = $this->request->getPostParam('delete_ptr') === '1';
+                        $delete_ptr = $this->httpRequest->getPostParam('delete_ptr') === '1';
                         if ($hasPtrRecord && $delete_ptr) {
                             $this->reverseRecordCreator->deleteReverseRecord(
                                 $record_info['type'],
@@ -157,7 +153,7 @@ class DeleteRecordsController extends BaseController
         $redirectParams = [];
 
         // Check if this was submitted from a zone edit page
-        $post_zone_id = $this->request->getPostParam('zone_id');
+        $post_zone_id = $this->httpRequest->getPostParam('zone_id');
         if (is_numeric($post_zone_id)) {
             $zone_id = (int) $post_zone_id;
             // Validate zone exists
@@ -228,7 +224,7 @@ class DeleteRecordsController extends BaseController
             $redirectParams = [];
 
             // Check if this was submitted from a zone edit page
-            $post_zone_id = $this->request->getPostParam('zone_id');
+            $post_zone_id = $this->httpRequest->getPostParam('zone_id');
             if (is_numeric($post_zone_id)) {
                 $zone_id = (int) $post_zone_id;
                 // Validate zone exists
@@ -256,8 +252,8 @@ class DeleteRecordsController extends BaseController
             'records' => $records,
             'total_records' => count($records),
             'has_ip_records' => $has_ip_records,
-            'zone_id' => $this->request->getPostParam('zone_id'),
-            'change_comment' => (string)($this->request->getPostParam('change_comment') ?? ''),
+            'zone_id' => $this->httpRequest->getPostParam('zone_id'),
+            'change_comment' => (string)($this->httpRequest->getPostParam('change_comment') ?? ''),
             'require_change_comment' => RecordChangeLogger::changeCommentRequired(),
         ]);
     }

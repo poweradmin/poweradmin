@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Enum\DnssecKeyType;
 
@@ -34,12 +33,10 @@ use Poweradmin\Domain\Enum\DnssecKeyType;
  */
 class DnssecKeyImportController extends DnssecKeyController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -59,7 +56,7 @@ class DnssecKeyImportController extends DnssecKeyController
 
         $keyType = $this->getSafeRequestValue('key_type');
         $algorithm = $this->getSafeRequestValue('algorithm');
-        $privateKeyPem = (string) $this->request->getPostParam('private_key_pem', '');
+        $privateKeyPem = (string) $this->httpRequest->getPostParam('private_key_pem', '');
 
         if (!DnssecKeyType::isValid($keyType)) {
             $this->setMessage('dnssec', 'error', _('Invalid or unexpected input given.'));

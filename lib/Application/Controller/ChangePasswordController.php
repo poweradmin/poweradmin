@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\PasswordChangeService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
@@ -43,15 +42,12 @@ class ChangePasswordController extends BaseController
 {
     private AuthenticationService $authService;
     private PasswordPolicyService $policyService;
-    protected Request $request;
     private PasswordChangeService $passwordService;
     private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
         $sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authService = new AuthenticationService($sessionService, $redirectService, $this->config);
@@ -97,7 +93,7 @@ class ChangePasswordController extends BaseController
         }
 
         // Make sure we have the latest POST data
-        $this->request->refresh();
+        $this->httpRequest->refresh();
 
         $this->validateCsrfToken();
 
@@ -135,14 +131,14 @@ class ChangePasswordController extends BaseController
             'new_password2' => [
                 new Assert\NotBlank(),
                 new Assert\EqualTo([
-                    'value' => $this->request->getPostParam('new_password'),
+                    'value' => $this->httpRequest->getPostParam('new_password'),
                     'message' => 'Repeat password must match the new password.'
                 ])
             ]
         ];
 
         $this->setValidationConstraints($constraints);
-        $data = $this->request->getPostParams();
+        $data = $this->httpRequest->getPostParams();
 
         if (!$this->doValidateRequest($data)) {
             $this->setMessage('change_password', 'error', _('Please fill in all required fields correctly.'));
@@ -155,8 +151,8 @@ class ChangePasswordController extends BaseController
     private function processPasswordChange(): bool
     {
         [$success, $message] = $this->passwordService->changePassword(
-            $this->request->getPostParam('old_password'),
-            $this->request->getPostParam('new_password')
+            $this->httpRequest->getPostParam('old_password'),
+            $this->httpRequest->getPostParam('new_password')
         );
 
         if ($success) {
@@ -172,7 +168,7 @@ class ChangePasswordController extends BaseController
 
     private function validatePasswordPolicy(): bool
     {
-        $newPassword = $this->request->getPostParam('new_password');
+        $newPassword = $this->httpRequest->getPostParam('new_password');
         $policyErrors = $this->policyService->validatePassword($newPassword);
 
         if (!empty($policyErrors)) {

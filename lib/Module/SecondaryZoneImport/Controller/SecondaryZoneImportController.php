@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Module\SecondaryZoneImport\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
@@ -39,13 +38,11 @@ use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 class SecondaryZoneImportController extends BaseController
 {
     private UserContextService $userContextService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
         $this->userContextService = new UserContextService();
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -66,7 +63,7 @@ class SecondaryZoneImportController extends BaseController
 
         $this->validateCsrfToken();
 
-        if ($this->request->getPostParam('action') === 'convert') {
+        if ($this->httpRequest->getPostParam('action') === 'convert') {
             $this->handleConvert();
             return;
         }
@@ -130,8 +127,8 @@ class SecondaryZoneImportController extends BaseController
 
     private function handleImport(): void
     {
-        $rawDomain = trim((string)$this->request->getPostParam('domain', ''));
-        $master = trim((string)$this->request->getPostParam('slave_master', ''));
+        $rawDomain = trim((string)$this->httpRequest->getPostParam('domain', ''));
+        $master = trim((string)$this->httpRequest->getPostParam('slave_master', ''));
 
         if ($rawDomain === '' || $master === '') {
             $this->setMessage('import', 'error', _('Zone name and primary server address are required.'));
@@ -140,7 +137,7 @@ class SecondaryZoneImportController extends BaseController
         }
 
         $zone = DnsIdnService::toPunycode($rawDomain);
-        $ownership = $this->resolveZoneOwnershipFromForm($this->request);
+        $ownership = $this->resolveZoneOwnershipFromForm($this->httpRequest);
         if ($ownership->hasError()) {
             $this->setMessage('import', 'error', ZoneOwnershipFormResolver::errorMessage($ownership));
             $this->showForm();
@@ -173,7 +170,7 @@ class SecondaryZoneImportController extends BaseController
 
     private function handleConvert(): void
     {
-        $zoneId = (int)$this->request->getPostParam('zone_id', 0);
+        $zoneId = (int)$this->httpRequest->getPostParam('zone_id', 0);
         if (!$this->userMayAccessZone($zoneId)) {
             $this->showError(_('Invalid zone.'));
             return;
@@ -218,13 +215,13 @@ class SecondaryZoneImportController extends BaseController
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($sessionUserId);
         $memberCounts = $userGroupRepo->getMemberCountsByGroupIds(array_map(fn($g) => $g->getId(), $allGroups));
 
-        $ownerInput = $this->request->getPostParam('owner');
-        $groupsInput = $this->request->getPostParam('groups');
+        $ownerInput = $this->httpRequest->getPostParam('owner');
+        $groupsInput = $this->httpRequest->getPostParam('groups');
 
         $this->render('@secondary_zone_import/import.html', array_merge([
             'imported' => false,
-            'domain_value' => htmlspecialchars((string)$this->request->getPostParam('domain', '')),
-            'slave_master_value' => htmlspecialchars((string)$this->request->getPostParam('slave_master', '')),
+            'domain_value' => htmlspecialchars((string)$this->httpRequest->getPostParam('domain', '')),
+            'slave_master_value' => htmlspecialchars((string)$this->httpRequest->getPostParam('slave_master', '')),
             'users' => $this->createUserRepository()->getUsersWithZoneCounts(),
             'session_user_id' => $sessionUserId,
             'perm_view_others' => $this->hasPermission('user_view_others'),

@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
 
@@ -33,12 +32,10 @@ use Poweradmin\BaseController;
  */
 class ListNetworksController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -60,7 +57,7 @@ class ListNetworksController extends BaseController
             return;
         }
 
-        if (!empty($this->request->getPostParams())) {
+        if (!empty($this->httpRequest->getPostParams())) {
             $this->validateCsrfToken();
             $action = $this->getSafeRequestValue('action');
             $cidr = trim($this->getSafeRequestValue('cidr'));

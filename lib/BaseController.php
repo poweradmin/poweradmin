@@ -94,6 +94,7 @@ abstract class BaseController
     private AppInitializer $init;
     protected PDO $db;
     protected array $requestData;
+    protected HttpRequest $httpRequest;
     private ?RequestValidator $requestValidator = null;
     private CsrfTokenService $csrfTokenService;
     protected MessageService $messageService;
@@ -134,6 +135,7 @@ abstract class BaseController
         $this->db = $this->init->getDb();
 
         $this->requestData = $request;
+        $this->httpRequest = new HttpRequest();
 
         $this->csrfTokenService = new CsrfTokenService();
         $this->messageService = new MessageService();
@@ -470,7 +472,7 @@ abstract class BaseController
      */
     protected function presentPagination(int $totalItems, int $itemsPerPage, string $path, array $queryParams = []): string
     {
-        $currentPage = (new HttpRequest())->getPage();
+        $currentPage = $this->httpRequest->getPage();
 
         $pagination = $this->createPaginationService()->createPagination($totalItems, $itemsPerPage, $currentPage);
 

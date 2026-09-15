@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
@@ -34,12 +33,10 @@ use Poweradmin\Domain\Enum\DnssecKeyType;
  */
 class DnssecAddKeyController extends DnssecKeyController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -48,8 +45,8 @@ class DnssecAddKeyController extends DnssecKeyController
         [$domain_name, $dnssecProvider] = $this->requireManagedDnssecZone($zone_id);
 
         $key_type = "";
-        if ($this->request->getPostParam('key_type') !== null) {
-            $key_type = $this->request->getPostParam('key_type');
+        if ($this->httpRequest->getPostParam('key_type') !== null) {
+            $key_type = $this->httpRequest->getPostParam('key_type');
 
             if (!is_string($key_type) || !DnssecKeyType::isValid($key_type)) {
                 $this->showError(_('Invalid or unexpected input given.'));
@@ -57,8 +54,8 @@ class DnssecAddKeyController extends DnssecKeyController
         }
 
         $bits = "";
-        if ($this->request->getPostParam('bits') !== null) {
-            $bits = $this->request->getPostParam('bits');
+        if ($this->httpRequest->getPostParam('bits') !== null) {
+            $bits = $this->httpRequest->getPostParam('bits');
 
             $valid_values = array('2048', '1024', '384', '256');
             if (!in_array($bits, $valid_values)) {
@@ -67,8 +64,8 @@ class DnssecAddKeyController extends DnssecKeyController
         }
 
         $algorithm = "";
-        if ($this->request->getPostParam('algorithm') !== null) {
-            $algorithm = $this->request->getPostParam('algorithm');
+        if ($this->httpRequest->getPostParam('algorithm') !== null) {
+            $algorithm = $this->httpRequest->getPostParam('algorithm');
 
             // The dropdown is filtered against the connected server's
             // capabilities; validate against the same list so the form and
@@ -112,7 +109,7 @@ class DnssecAddKeyController extends DnssecKeyController
             return ['valid' => true, 'message' => ''];
         };
 
-        if ($this->request->getPostParam('submit') !== null) {
+        if ($this->httpRequest->getPostParam('submit') !== null) {
             $this->validateCsrfToken();
 
             // Validate combination of algorithm and bits before attempting to add the key

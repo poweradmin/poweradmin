@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
@@ -35,7 +34,6 @@ class DeleteGroupController extends BaseController
 {
     private GroupService $groupService;
     private ZoneGroupService $zoneGroupService;
-    private Request $request;
 
     public function __construct(array $request)
     {
@@ -46,7 +44,6 @@ class DeleteGroupController extends BaseController
 
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -86,7 +83,7 @@ class DeleteGroupController extends BaseController
 
     private function deleteGroup(int $groupId): void
     {
-        $confirm = $this->request->getPostParam('confirm');
+        $confirm = $this->httpRequest->getPostParam('confirm');
 
         if ($confirm !== 'yes') {
             $this->setMessage('list_groups', 'info', _('Group deletion cancelled.'));

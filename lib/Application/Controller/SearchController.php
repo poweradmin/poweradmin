@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
@@ -38,12 +37,10 @@ use Poweradmin\Domain\Utility\IpHelper;
 class SearchController extends BaseController
 {
     private ZoneSortingService $zoneSortingService;
-    private Request $request;
 
     public function __construct(array $request, bool $authenticate = true)
     {
         parent::__construct($request, $authenticate);
-        $this->request = new Request();
         $this->zoneSortingService = new ZoneSortingService();
     }
 
@@ -95,14 +92,14 @@ class SearchController extends BaseController
         list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
             $allowedZoneSort,
             SessionKeys::SEARCH_ZONE_SORT_BY,
-            submittedSortBy: $this->request->getPostParam('zone_sort_by') ?? $this->request->getQueryParam('zone_sort_by'),
-            submittedDirection: $this->request->getPostParam('zone_sort_by_direction') ?? $this->request->getQueryParam('zone_sort_by_direction')
+            submittedSortBy: $this->httpRequest->getPostParam('zone_sort_by') ?? $this->httpRequest->getQueryParam('zone_sort_by'),
+            submittedDirection: $this->httpRequest->getPostParam('zone_sort_by_direction') ?? $this->httpRequest->getQueryParam('zone_sort_by_direction')
         );
         list($record_sort_by, $record_sort_direction) = $this->zoneSortingService->getZoneSortOrder(
             ['name', 'type', 'prio', 'content', 'ttl', 'disabled'],
             SessionKeys::SEARCH_RECORD_SORT_BY,
-            submittedSortBy: $this->request->getPostParam('record_sort_by') ?? $this->request->getQueryParam('record_sort_by'),
-            submittedDirection: $this->request->getPostParam('record_sort_by_direction') ?? $this->request->getQueryParam('record_sort_by_direction')
+            submittedSortBy: $this->httpRequest->getPostParam('record_sort_by') ?? $this->httpRequest->getQueryParam('record_sort_by'),
+            submittedDirection: $this->httpRequest->getPostParam('record_sort_by_direction') ?? $this->httpRequest->getQueryParam('record_sort_by_direction')
         );
 
         // Get default rows per page from config
@@ -114,7 +111,7 @@ class SearchController extends BaseController
         // Get zones rows per page
         $zone_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
         // Override with POST parameter if available for zones
-        $zones_rows_per_page = $this->request->getPostParam('zones_rows_per_page');
+        $zones_rows_per_page = $this->httpRequest->getPostParam('zones_rows_per_page');
         if ($this->isPost() && $zones_rows_per_page !== null && is_numeric($zones_rows_per_page)) {
             $post_rows_per_page = (int)$zones_rows_per_page;
             // Any value inside the supported range is accepted, not just the presets
@@ -126,7 +123,7 @@ class SearchController extends BaseController
         // Get records rows per page
         $record_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
         // Override with POST parameter if available for records
-        $records_rows_per_page = $this->request->getPostParam('records_rows_per_page');
+        $records_rows_per_page = $this->httpRequest->getPostParam('records_rows_per_page');
         if ($this->isPost() && $records_rows_per_page !== null && is_numeric($records_rows_per_page)) {
             $post_rows_per_page = (int)$records_rows_per_page;
             // Any value inside the supported range is accepted, not just the presets
@@ -136,7 +133,7 @@ class SearchController extends BaseController
         }
 
         // Backward compatibility
-        $rows_per_page = $this->request->getPostParam('rows_per_page');
+        $rows_per_page = $this->httpRequest->getPostParam('rows_per_page');
         if ($this->isPost() && $rows_per_page !== null && is_numeric($rows_per_page)) {
             $post_rows_per_page = (int)$rows_per_page;
             // Any value inside the supported range is accepted, not just the presets
@@ -151,7 +148,7 @@ class SearchController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            $query = $this->request->getPostParam('query');
+            $query = $this->httpRequest->getPostParam('query');
             $rawQuery = !empty($query) ? $query : '';
 
             // Parse query for embedded filters
@@ -166,11 +163,11 @@ class SearchController extends BaseController
             // Store the original query for display purposes
             $parameters['displayed_query'] = htmlspecialchars($displayed_query);
 
-            $zones = $this->request->getPostParam('zones');
-            $records = $this->request->getPostParam('records');
-            $wildcard = $this->request->getPostParam('wildcard');
-            $reverse = $this->request->getPostParam('reverse');
-            $comments = $this->request->getPostParam('comments');
+            $zones = $this->httpRequest->getPostParam('zones');
+            $records = $this->httpRequest->getPostParam('records');
+            $wildcard = $this->httpRequest->getPostParam('wildcard');
+            $reverse = $this->httpRequest->getPostParam('reverse');
+            $comments = $this->httpRequest->getPostParam('comments');
             $parameters['zones'] = $zones !== null ? htmlspecialchars($zones) : false;
             $parameters['records'] = $records !== null ? htmlspecialchars($records) : false;
             $parameters['wildcard'] = $wildcard !== null ? htmlspecialchars($wildcard) : false;
@@ -193,7 +190,7 @@ class SearchController extends BaseController
                 $parameters['records'] = true;
             } else {
                 // Only use form field if no filter in query string
-                $type_filter = $this->request->getPostParam('type_filter');
+                $type_filter = $this->httpRequest->getPostParam('type_filter');
                 $parameters['type_filter'] = $type_filter !== null ? htmlspecialchars($type_filter) : '';
             }
 
@@ -203,7 +200,7 @@ class SearchController extends BaseController
                 $parameters['records'] = true;
             } else {
                 // Only use form field if no filter in query string
-                $content_filter = $this->request->getPostParam('content_filter');
+                $content_filter = $this->httpRequest->getPostParam('content_filter');
                 $parameters['content_filter'] = $content_filter !== null ? htmlspecialchars($content_filter) : '';
             }
 
@@ -213,7 +210,7 @@ class SearchController extends BaseController
                 $parameters['content_filter'] = '';
             }
 
-            $zones_page = max(1, (int)$this->request->getPostParam('zones_page', 1));
+            $zones_page = max(1, (int)$this->httpRequest->getPostParam('zones_page', 1));
 
             $permission_view = $permissionService->getViewPermissionLevel($userId);
 
@@ -231,7 +228,7 @@ class SearchController extends BaseController
 
             $totalZones = $dnsDataService->searchZonesTotalCount($parameters, $permission_view);
 
-            $records_page = max(1, (int)$this->request->getPostParam('records_page', 1));
+            $records_page = max(1, (int)$this->httpRequest->getPostParam('records_page', 1));
 
             $iface_search_group_records = $this->config->get('interface', 'search_group_records', false);
             $searchResultRecords = $dnsDataService->searchRecords(

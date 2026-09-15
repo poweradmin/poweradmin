@@ -23,7 +23,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\PermissionService;
@@ -38,12 +37,10 @@ class SaveZoneAsTemplateController extends BaseController
     private UserContextService $userContextService;
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
         $this->userContextService = new UserContextService();
         $this->zoneRepository = $this->createZoneRepository();
 
@@ -91,7 +88,7 @@ class SaveZoneAsTemplateController extends BaseController
         $domain_type = $this->zoneRepository->getDomainType($zone_id);
 
         // Handle form submission
-        if ($this->isPost() && $this->request->getPostParam('save_as') !== null) {
+        if ($this->isPost() && $this->httpRequest->getPostParam('save_as') !== null) {
             $this->validateCsrfToken();
             $this->saveAsTemplate($zone_id, $zone_name);
         }
@@ -101,14 +98,14 @@ class SaveZoneAsTemplateController extends BaseController
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'domain_type' => $domain_type,
-            'templ_name' => $this->request->getPostParam('templ_name', ''),
-            'templ_descr' => $this->request->getPostParam('templ_descr', ''),
+            'templ_name' => $this->httpRequest->getPostParam('templ_name', ''),
+            'templ_descr' => $this->httpRequest->getPostParam('templ_descr', ''),
         ]);
     }
 
     private function saveAsTemplate(int $zone_id, string $zone_name): void
     {
-        $template_name = htmlspecialchars($this->request->getPostParam('templ_name') ?? '');
+        $template_name = htmlspecialchars($this->httpRequest->getPostParam('templ_name') ?? '');
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
 
         if ($zoneTemplate->zoneTemplNameExists($template_name)) {
@@ -123,7 +120,7 @@ class SaveZoneAsTemplateController extends BaseController
 
         $records = $this->createRecordRepository()->getRecordsFromDomainId($this->config->get('database', 'type', 'mysql'), $zone_id);
 
-        $description = htmlspecialchars($this->request->getPostParam('templ_descr') ?? '');
+        $description = htmlspecialchars($this->httpRequest->getPostParam('templ_descr') ?? '');
 
         $options = [
             'NS1' => $this->config->get('dns', 'ns1', '') ?? '',

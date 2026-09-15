@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\ZoneMetadataFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
@@ -43,8 +42,6 @@ class EditZoneMetadataController extends BaseController
      */
     private const CUSTOM_KIND = '__CUSTOM__';
 
-    private Request $request;
-
     /**
      * Repository used for loading the zone.
      */
@@ -61,7 +58,6 @@ class EditZoneMetadataController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
         $this->zoneRepository = $this->createZoneRepository();
         $this->metadataService = $this->createZoneMetadataService();
     }
@@ -107,7 +103,7 @@ class EditZoneMetadataController extends BaseController
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $submittedMetadata = $this->normalizeSubmittedMetadata($this->request->getPostParam('metadata', []));
+            $submittedMetadata = $this->normalizeSubmittedMetadata($this->httpRequest->getPostParam('metadata', []));
 
             $result = $this->metadataService->replaceAll($zoneId, $zone['name'], $submittedMetadata, (int)$this->getCurrentUserId());
             if (!$result->isOk()) {

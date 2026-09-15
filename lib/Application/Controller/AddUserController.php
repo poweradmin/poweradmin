@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\PasswordGenerationService;
@@ -47,14 +46,11 @@ class AddUserController extends BaseController
     private DbPermissionTemplateRepository $permissionTemplateRepository;
     private UserGroupRepositoryInterface $groupRepository;
     private UserGroupMemberRepositoryInterface $memberRepository;
-    protected Request $request;
 
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
         $configManager = ConfigurationManager::getInstance();
         $this->passwordPolicyService = new PasswordPolicyService($configManager);
         $this->passwordGenerationService = new PasswordGenerationService($configManager);
@@ -95,7 +91,7 @@ class AddUserController extends BaseController
             return;
         }
 
-        $userParams = $this->request->getPostParams();
+        $userParams = $this->httpRequest->getPostParams();
         $callerId = (int)$this->getCurrentUserId();
 
         // The template picker is hidden when access templates are disabled or the
@@ -130,7 +126,7 @@ class AddUserController extends BaseController
 
         // Handle auto-generated password
         $generatedPassword = '';
-        if (!$input['use_ldap'] && $this->request->getPostParam('auto_generate_password')) {
+        if (!$input['use_ldap'] && $this->httpRequest->getPostParam('auto_generate_password')) {
             $generatedPassword = $this->passwordGenerationService->generatePassword();
             $input['password'] = $generatedPassword;
         }
@@ -141,7 +137,7 @@ class AddUserController extends BaseController
             $successMessage = _('The user has been created successfully.');
 
             // Handle group membership assignments
-            $groupIds = $this->request->getPostParam('add_to_groups', []);
+            $groupIds = $this->httpRequest->getPostParam('add_to_groups', []);
             if (is_array($groupIds) && !empty($groupIds)) {
                 $this->assignUserToGroups($newUserId, $groupIds, $input['username']);
             }
@@ -160,7 +156,7 @@ class AddUserController extends BaseController
                 $configManager = ConfigurationManager::getInstance();
                 $mailEnabled = $configManager->get('mail', 'enabled', false);
 
-                if ($mailEnabled && $input['email'] && $this->request->getPostParam('send_email')) {
+                if ($mailEnabled && $input['email'] && $this->httpRequest->getPostParam('send_email')) {
                     $emailSent = $this->mailService->sendNewAccountEmail(
                         $input['email'],
                         $input['username'],
@@ -176,7 +172,7 @@ class AddUserController extends BaseController
                 }
 
                 // If password is not shown to admin and not sent by email, inform admin
-                if (!$showGeneratedPasswords && !($mailEnabled && $input['email'] && $this->request->getPostParam('send_email'))) {
+                if (!$showGeneratedPasswords && !($mailEnabled && $input['email'] && $this->httpRequest->getPostParam('send_email'))) {
                     $successMessage .= ' ' . _('A password was generated but is not displayed for security reasons.');
                 }
             }
@@ -196,19 +192,19 @@ class AddUserController extends BaseController
         $user_edit_templ_perm = $this->hasPermission('user_edit_templ_perm');
         $user_templates = $this->permissionTemplateRepository->listPermissionTemplates('user');
 
-        $username = $this->request->getPostParam('username', '');
-        $fullname = $this->request->getPostParam('fullname', '');
-        $email = $this->request->getPostParam('email', '');
+        $username = $this->httpRequest->getPostParam('username', '');
+        $fullname = $this->httpRequest->getPostParam('fullname', '');
+        $email = $this->httpRequest->getPostParam('email', '');
 
         // Use minimal permission template as default (most secure); preselect
         // nothing rather than falling back to template id 1 (Administrator).
         $defaultTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user') ?? '';
-        $perm_templ = $this->request->getPostParam('perm_templ', (string)$defaultTemplateId);
+        $perm_templ = $this->httpRequest->getPostParam('perm_templ', (string)$defaultTemplateId);
 
-        $description = $this->request->getPostParam('descr', '');
+        $description = $this->httpRequest->getPostParam('descr', '');
 
-        $active_checked = $this->request->getPostParam('active', '1') === '1' ? 'checked' : '';
-        $use_ldap_checked = $this->request->getPostParam('use_ldap') === '1' ? 'checked' : '';
+        $active_checked = $this->httpRequest->getPostParam('active', '1') === '1' ? 'checked' : '';
+        $use_ldap_checked = $this->httpRequest->getPostParam('use_ldap') === '1' ? 'checked' : '';
 
         // Check if mail functionality is enabled
         $configManager = ConfigurationManager::getInstance();
@@ -225,7 +221,7 @@ class AddUserController extends BaseController
         }, $allGroups);
 
         // Get previously selected groups (in case of form re-render after validation error)
-        $selectedGroups = $this->request->getPostParam('add_to_groups', []);
+        $selectedGroups = $this->httpRequest->getPostParam('add_to_groups', []);
 
         $this->render('add_user.html', [
             'username' => $username,
@@ -261,7 +257,7 @@ class AddUserController extends BaseController
         ];
 
         $this->setValidationConstraints($constraints);
-        $data = $this->request->getPostParams();
+        $data = $this->httpRequest->getPostParams();
 
         if (!$this->doValidateRequest($data)) {
             $this->setMessage('add_user', 'error', _('Please fill in all required fields correctly.'));

@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -32,19 +31,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class DeleteSupermasterController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
     {
         $this->checkPermission('supermaster_edit', _("You do not have the permission to delete a supermaster."));
 
-        if ($this->request->getPostParam('confirm') !== null) {
+        if ($this->httpRequest->getPostParam('confirm') !== null) {
             $this->deleteSuperMaster();
         } else {
             $this->showDeleteSuperMaster();
@@ -66,13 +63,13 @@ class DeleteSupermasterController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($this->request->getPostParams())) {
-            $this->showFirstValidationError($this->request->getPostParams());
+        if (!$this->doValidateRequest($this->httpRequest->getPostParams())) {
+            $this->showFirstValidationError($this->httpRequest->getPostParams());
             return;
         }
 
-        $master_ip = filter_var((string)$this->request->getPostParam('master_ip'), FILTER_VALIDATE_IP);
-        $ns_name = filter_var((string)$this->request->getPostParam('ns_name'), FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
+        $master_ip = filter_var((string)$this->httpRequest->getPostParam('master_ip'), FILTER_VALIDATE_IP);
+        $ns_name = filter_var((string)$this->httpRequest->getPostParam('ns_name'), FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
 
         if ($master_ip === false) {
             $this->setMessage('list_supermasters', 'error', _('Invalid IP address.'));
@@ -100,7 +97,7 @@ class DeleteSupermasterController extends BaseController
 
     private function showDeleteSuperMaster(): void
     {
-        $master_ip = htmlspecialchars($this->request->getQueryParam('master_ip'));
+        $master_ip = htmlspecialchars($this->httpRequest->getQueryParam('master_ip'));
         $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
         $info = $supermasterManager->getSupermasterInfoFromIp($master_ip);
 

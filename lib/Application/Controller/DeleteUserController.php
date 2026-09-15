@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Constants;
@@ -38,13 +37,9 @@ class DeleteUserController extends BaseController
     // lazily, since zones x users options can exhaust the PHP memory limit
     private const MAX_INLINE_OWNER_OPTIONS = 10000;
 
-    private Request $request;
-
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -88,7 +83,7 @@ class DeleteUserController extends BaseController
         $targetUsername = (string)$target['username'];
 
         $zones = array();
-        $zone = $this->request->getPostParam('zone');
+        $zone = $this->httpRequest->getPostParam('zone');
         if (is_string($zone)) {
             // Per-zone decisions arrive as one JSON field to stay under PHP's max_input_vars limit
             $parsed = self::parseZoneDecisions($zone);
@@ -100,7 +95,7 @@ class DeleteUserController extends BaseController
         } elseif (is_array($zone)) {
             // No-JS fallback posts several fields per zone; a missing trailing marker means
             // the POST was truncated, so abort instead of mishandling the dropped zones
-            if ($this->request->getPostParam('form_complete') === null) {
+            if ($this->httpRequest->getPostParam('form_complete') === null) {
                 $this->setMessage('delete_user', 'error', _('The user was not deleted because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP "max_input_vars" setting.'));
                 return;
             }

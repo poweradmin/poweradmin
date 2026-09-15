@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -33,12 +32,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AddZoneTemplController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
     public function run(): void
     {
@@ -80,7 +77,7 @@ class AddZoneTemplController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        $postParams = $this->request->getPostParams();
+        $postParams = $this->httpRequest->getPostParams();
         if (!$this->doValidateRequest($postParams)) {
             $this->showFirstValidationError($postParams);
         }

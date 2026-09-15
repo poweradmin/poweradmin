@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\ZoneType;
@@ -36,12 +35,10 @@ use Poweradmin\Domain\Service\ZoneAccessPolicy;
  */
 class EditCommentController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -89,14 +86,14 @@ class EditCommentController extends BaseController
         // For the form, we need to know if editing is disabled
         $perm_edit_comment = !$can_edit;
 
-        if ($this->request->getPostParam('commit') !== null) {
+        if ($this->httpRequest->getPostParam('commit') !== null) {
             $this->validateCsrfToken();
 
             if ($perm_edit_comment) {
                 $messageService = new MessageService();
                 $messageService->addSystemError(_("You do not have the permission to edit this comment."));
             } else {
-                $this->createRecordManager()->editZoneComment((int)$zone_id, $this->request->getPostParam('comment'));
+                $this->createRecordManager()->editZoneComment((int)$zone_id, $this->httpRequest->getPostParam('comment'));
 
                 $zoneIdInt = (int)$zone_id;
                 $auditService = $this->createAuditService();

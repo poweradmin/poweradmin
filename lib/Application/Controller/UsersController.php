@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
 use Poweradmin\Application\Service\UserFormMessages;
@@ -36,12 +35,10 @@ use Poweradmin\Domain\Service\SessionKeys;
  */
 class UsersController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -74,7 +71,7 @@ class UsersController extends BaseController
         $blocked = false;
         $currentIsSuperuser = $this->hasPermission('user_is_ueberuser');
         $permissionService = $this->createPermissionService();
-        foreach ($this->request->getPostParam('user') as $user) {
+        foreach ($this->httpRequest->getPostParam('user') as $user) {
             if (!is_array($user)) {
                 continue;
             }
@@ -178,7 +175,7 @@ class UsersController extends BaseController
         );
 
         // Pagination setup
-        $currentPage = $this->request->getPage();
+        $currentPage = $this->httpRequest->getPage();
         $rowsPerPage = $this->config->get('interface', 'rows_per_page', 50);
 
         $paginationService = $this->createPaginationService();
@@ -189,7 +186,7 @@ class UsersController extends BaseController
         $userRepository = $this->createUserRepository();
         $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
         // ?search[]=x arrives as an array; treat anything non-string as no filter.
-        $searchParam = $this->request->getQueryParam('search', '');
+        $searchParam = $this->httpRequest->getQueryParam('search', '');
         $searchTerm = is_string($searchParam) ? trim($searchParam) : '';
         $totalUsers = $userRepository->getTotalUserCount($restrictToUserId, $searchTerm);
         $offset = ($currentPage - 1) * $rowsPerPage;

@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
@@ -35,7 +34,6 @@ class ManageGroupMembersController extends BaseController
 {
     private GroupMembershipService $membershipService;
     private GroupService $groupService;
-    private Request $request;
 
     public function __construct(array $request)
     {
@@ -46,7 +44,6 @@ class ManageGroupMembersController extends BaseController
 
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -86,7 +83,7 @@ class ManageGroupMembersController extends BaseController
 
     private function processAction(int $groupId): void
     {
-        $action = $this->request->getPostParam('action');
+        $action = $this->httpRequest->getPostParam('action');
 
         if ($action === 'add') {
             $this->addMembers($groupId);
@@ -104,7 +101,7 @@ class ManageGroupMembersController extends BaseController
      */
     private function getSelectedUserIds(): array
     {
-        $userIds = $this->request->getPostParam('user_ids', []);
+        $userIds = $this->httpRequest->getPostParam('user_ids', []);
         if (is_string($userIds)) {
             $userIds = explode(',', $userIds);
         }

@@ -23,7 +23,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\ZoneAccessNotificationService;
@@ -43,12 +42,10 @@ class ZoneOwnershipController extends BaseController
     private UserContextService $userContextService;
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
         $this->userContextService = new UserContextService();
         $this->zoneRepository = $this->createZoneRepository();
 
@@ -168,7 +165,7 @@ class ZoneOwnershipController extends BaseController
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         // Add owner
-        $newowner = $this->request->getPostParam('newowner');
+        $newowner = $this->httpRequest->getPostParam('newowner');
         if ($newowner !== null && is_numeric($newowner) && $meta_edit) {
             if (!$ownershipMode->isUserOwnerAllowed()) {
                 $this->setMessage('zone-ownership', 'error', _('User-owner assignment is disabled by the current zone ownership mode.'));
@@ -189,7 +186,7 @@ class ZoneOwnershipController extends BaseController
         }
 
         // Delete owner
-        $delete_owner = $this->request->getPostParam('delete_owner');
+        $delete_owner = $this->httpRequest->getPostParam('delete_owner');
         if ($delete_owner !== null && is_numeric($delete_owner) && $meta_edit) {
             // Orphan prevention: refuse if this deletion would leave the zone
             // with no remaining owners and no group ownership. The mode hint in
@@ -238,7 +235,7 @@ class ZoneOwnershipController extends BaseController
         }
 
         // Add group
-        $newgroup = $this->request->getPostParam('newgroup');
+        $newgroup = $this->httpRequest->getPostParam('newgroup');
         if ($newgroup !== null && is_numeric($newgroup) && $meta_edit) {
             if (!$ownershipMode->isGroupOwnerAllowed()) {
                 $this->setMessage('zone-ownership', 'error', _('Group-ownership assignment is disabled by the current zone ownership mode.'));
@@ -265,7 +262,7 @@ class ZoneOwnershipController extends BaseController
         }
 
         // Delete group
-        $delete_group = $this->request->getPostParam('delete_group');
+        $delete_group = $this->httpRequest->getPostParam('delete_group');
         if ($delete_group !== null && is_numeric($delete_group) && $meta_edit) {
             $zoneGroupRepo = $this->createZoneGroupRepository();
             // Orphan prevention: refuse if this deletion would leave the zone

@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
 use Exception;
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
@@ -35,12 +34,10 @@ use Poweradmin\Domain\Model\UserPreference;
  */
 class UserPreferencesController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -100,13 +97,13 @@ class UserPreferencesController extends BaseController
 
             // Update each preference that was submitted (excluding TTL as requested)
             $preferencesToUpdate = [
-                UserPreference::KEY_ROWS_PER_PAGE => $this->request->getPostParam('rows_per_page'),
-                UserPreference::KEY_RECORD_FORM_POSITION => $this->request->getPostParam('record_form_position'),
-                UserPreference::KEY_SAVE_BUTTON_POSITION => $this->request->getPostParam('save_button_position'),
+                UserPreference::KEY_ROWS_PER_PAGE => $this->httpRequest->getPostParam('rows_per_page'),
+                UserPreference::KEY_RECORD_FORM_POSITION => $this->httpRequest->getPostParam('record_form_position'),
+                UserPreference::KEY_SAVE_BUTTON_POSITION => $this->httpRequest->getPostParam('save_button_position'),
             ];
 
             foreach (UserPreference::CHECKBOX_KEYS as $key) {
-                $preferencesToUpdate[$key] = $this->request->getPostParam($key) !== null ? 'true' : 'false';
+                $preferencesToUpdate[$key] = $this->httpRequest->getPostParam($key) !== null ? 'true' : 'false';
             }
 
             // The record-ID toggle is hidden in API mode, so its checkbox is never
@@ -121,7 +118,7 @@ class UserPreferencesController extends BaseController
                 }
             }
 
-            $submittedTimezone = $this->request->getPostParam('timezone');
+            $submittedTimezone = $this->httpRequest->getPostParam('timezone');
             if ($submittedTimezone !== null) {
                 $submittedTimezone = trim((string)$submittedTimezone);
                 if ($submittedTimezone === '' || UserPreference::isValidTimezone($submittedTimezone)) {

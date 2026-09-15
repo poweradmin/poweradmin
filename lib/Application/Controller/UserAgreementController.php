@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -36,13 +35,10 @@ class UserAgreementController extends BaseController
 {
     private UserAgreementService $agreementService;
     private UserContextService $userContextService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request, true);
-
-        $this->request = new Request();
 
         $this->agreementService = new UserAgreementService(
             new DbUserAgreementRepository($this->db, $this->config),
@@ -89,7 +85,7 @@ class UserAgreementController extends BaseController
     {
         $this->validateCsrfToken();
 
-        if ($this->request->getPostParam('accept_agreement') === null) {
+        if ($this->httpRequest->getPostParam('accept_agreement') === null) {
             $this->setMessage('user_agreement', 'danger', 'You must accept the agreement to continue.');
             $this->showAgreementForm();
             return;

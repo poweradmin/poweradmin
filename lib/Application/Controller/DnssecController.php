@@ -23,7 +23,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\ZoneSigningMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
@@ -41,12 +40,10 @@ use Poweradmin\Domain\Service\SessionKeys;
  */
 class DnssecController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -73,7 +70,7 @@ class DnssecController extends BaseController
         ($this->hasPermission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         // Handle unsign zone action - requires dedicated DNSSEC management permission.
-        if ($this->request->getPostParam('unsign_zone') !== null) {
+        if ($this->httpRequest->getPostParam('unsign_zone') !== null) {
             if (!$this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zone_id)) {
                 $this->setMessage('dnssec', 'error', _("You do not have permission to manage DNSSEC for this zone."));
                 $this->showDnsSecKeys($zone_id);

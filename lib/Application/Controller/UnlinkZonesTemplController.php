@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 
@@ -31,12 +30,10 @@ use Poweradmin\Domain\Model\ZoneTemplate;
  */
 class UnlinkZonesTemplController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -50,7 +47,7 @@ class UnlinkZonesTemplController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            $zone_ids = $this->request->getPostParam('zone_ids', []);
+            $zone_ids = $this->httpRequest->getPostParam('zone_ids', []);
             $template_id = filter_input(INPUT_POST, 'template_id', FILTER_VALIDATE_INT);
 
             if (empty($zone_ids)) {
@@ -63,7 +60,7 @@ class UnlinkZonesTemplController extends BaseController
                 return;
             }
 
-            if ($this->request->getPostParam('confirm') !== null) {
+            if ($this->httpRequest->getPostParam('confirm') !== null) {
                 $this->unlinkZones($zone_ids, $template_id);
             } else {
                 $this->showConfirmation($zone_ids, $template_id);

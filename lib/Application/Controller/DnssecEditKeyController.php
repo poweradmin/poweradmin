@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Validator;
@@ -33,12 +32,10 @@ use Poweradmin\Domain\Utility\DnsHelper;
  */
 class DnssecEditKeyController extends DnssecKeyController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
@@ -47,7 +44,7 @@ class DnssecEditKeyController extends DnssecKeyController
         $key_id = $this->requireNumericParam('key_id', _('Invalid key ID.'));
 
         $confirm = "-1";
-        $confirmParam = $this->request->getQueryParam('confirm');
+        $confirmParam = $this->httpRequest->getQueryParam('confirm');
         if ($confirmParam !== null && Validator::isNumber($confirmParam)) {
             $confirm = $confirmParam;
         }

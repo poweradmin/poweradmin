@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
@@ -33,24 +32,22 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class EditSupermasterController extends BaseController
 {
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
     }
 
     public function run(): void
     {
         $this->checkPermission('supermaster_edit', _("You do not have the permission to edit a supermaster."));
 
-        $old_master_ip = $this->request->getQueryParam('master_ip', "");
-        $old_ns_name = $this->request->getQueryParam('ns_name', "");
+        $old_master_ip = $this->httpRequest->getQueryParam('master_ip', "");
+        $old_ns_name = $this->httpRequest->getQueryParam('ns_name', "");
 
-        $new_master_ip = $this->request->getPostParam('master_ip', $old_master_ip);
-        $new_ns_name = $this->request->getPostParam('ns_name', $old_ns_name);
-        $account = $this->request->getPostParam('account', "");
+        $new_master_ip = $this->httpRequest->getPostParam('master_ip', $old_master_ip);
+        $new_ns_name = $this->httpRequest->getPostParam('ns_name', $old_ns_name);
+        $account = $this->httpRequest->getPostParam('account', "");
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -78,7 +75,7 @@ class EditSupermasterController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        $postParams = $this->request->getPostParams();
+        $postParams = $this->httpRequest->getPostParams();
         if (!$this->doValidateRequest($postParams)) {
             $this->showFirstValidationError($postParams);
             return;

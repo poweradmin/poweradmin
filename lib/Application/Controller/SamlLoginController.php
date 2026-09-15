@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\UserProvisioningService;
@@ -40,14 +39,11 @@ class SamlLoginController extends BaseController
 {
     private SamlService $samlService;
     private AuthenticationService $authService;
-    private Request $httpRequest;
 
     public function __construct(array $request)
     {
         // Don't authenticate - this is a login endpoint
         parent::__construct($request, false);
-
-        $this->httpRequest = new Request();
 
         // Initialize SAML services
         $logger = Logger::fromConfig($this->config);

@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -41,13 +40,10 @@ class ZoneCatalogController extends BaseController
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
     private CatalogZoneService $catalogService;
-    private Request $request;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->request = new Request();
         $this->userContextService = new UserContextService();
         $this->zoneRepository = $this->createZoneRepository();
         $this->permissionService = $this->createPermissionService();
@@ -126,7 +122,7 @@ class ZoneCatalogController extends BaseController
             return;
         }
 
-        $memberId = $this->request->getPostParam('member_zone_id');
+        $memberId = $this->httpRequest->getPostParam('member_zone_id');
         if (!is_numeric($memberId)) {
             $this->setMessage('zone-catalog', 'error', _('Invalid or unexpected input given.'));
             return;
@@ -135,10 +131,10 @@ class ZoneCatalogController extends BaseController
 
         // CatalogZoneService writes the audit entry, so both this page and the
         // member-side selector log the same way.
-        if ($this->request->getPostParam('add_member') !== null) {
+        if ($this->httpRequest->getPostParam('add_member') !== null) {
             $done = $this->catalogService->assign($userId, $memberId, $producerId);
             $message = $done ? _('The zone has been added to the catalog.') : _('You do not have permission to edit this zone.');
-        } elseif ($this->request->getPostParam('remove_member') !== null) {
+        } elseif ($this->httpRequest->getPostParam('remove_member') !== null) {
             $done = $this->catalogService->clear($userId, $memberId);
             $message = $done ? _('The zone has been removed from the catalog.') : _('You do not have permission to edit this zone.');
         } else {

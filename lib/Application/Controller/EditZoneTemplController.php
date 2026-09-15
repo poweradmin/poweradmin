@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\UserContextService;
@@ -37,13 +36,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 class EditZoneTemplController extends BaseController
 {
     private UserContextService $userContext;
-    private Request $request;
     private ZoneTemplate $zoneTemplate;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->request = new Request();
         $this->userContext = new UserContextService();
         $this->zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
     }
@@ -98,15 +95,15 @@ class EditZoneTemplController extends BaseController
         $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
         $perm_godlike = $this->hasPermission('user_is_ueberuser');
 
-        if ($this->request->getPostParam('edit') !== null && ($owner || $perm_godlike)) {
+        if ($this->httpRequest->getPostParam('edit') !== null && ($owner || $perm_godlike)) {
             $this->updateZoneTemplateDetails($zone_templ_id);
         }
 
-        if ($this->request->getPostParam('save_as') !== null) {
+        if ($this->httpRequest->getPostParam('save_as') !== null) {
             $this->saveTemplateAs($zone_templ_id);
         }
 
-        if ($this->request->getPostParam('update_zones') !== null) {
+        if ($this->httpRequest->getPostParam('update_zones') !== null) {
             $this->updateZoneRecords($zone_templ_id);
         }
     }
@@ -120,8 +117,8 @@ class EditZoneTemplController extends BaseController
         [$record_sort_by] = (new ZoneSortingService($this->userContext))->getZoneSortOrder(
             ['name', 'type', 'content', 'ttl', 'prio'],
             SessionKeys::ZONE_TEMPL_RECORD_SORT_BY,
-            submittedSortBy: $this->request->getPostParam('record_sort_by') ?? $this->request->getQueryParam('record_sort_by'),
-            submittedDirection: $this->request->getPostParam('record_sort_by_direction') ?? $this->request->getQueryParam('record_sort_by_direction')
+            submittedSortBy: $this->httpRequest->getPostParam('record_sort_by') ?? $this->httpRequest->getQueryParam('record_sort_by'),
+            submittedDirection: $this->httpRequest->getPostParam('record_sort_by_direction') ?? $this->httpRequest->getQueryParam('record_sort_by_direction')
         );
         $record_count = ZoneTemplate::countZoneTemplRecords($this->db, $zone_templ_id);
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
@@ -172,7 +169,7 @@ class EditZoneTemplController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        $postParams = $this->request->getPostParams();
+        $postParams = $this->httpRequest->getPostParams();
         if (!$this->doValidateRequest($postParams)) {
             $this->showFirstValidationError($postParams);
             return;
@@ -251,7 +248,7 @@ class EditZoneTemplController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        $postParams = $this->request->getPostParams();
+        $postParams = $this->httpRequest->getPostParams();
         if (!$this->doValidateRequest($postParams)) {
             $this->showFirstValidationError($postParams);
             return;
