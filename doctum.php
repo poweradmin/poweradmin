@@ -49,6 +49,8 @@ $footer = [
 return new Doctum($files, [
     'title' => 'Poweradmin class reference',
     'versions' => 'develop',
+    'theme' => 'poweradmin',
+    'template_dirs' => [__DIR__ . '/.doctum/theme'],
     'footer_link' => $footer,
     'build_dir' => getenv('DOCTUM_BUILD_DIR') ?: __DIR__ . '/docs/reference',
     'cache_dir' => getenv('DOCTUM_CACHE_DIR') ?: __DIR__ . '/.doctum/cache',
