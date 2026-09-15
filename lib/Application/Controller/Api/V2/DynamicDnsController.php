@@ -24,15 +24,11 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
-use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -53,18 +49,13 @@ class DynamicDnsController extends PublicApiController
         $backendProvider = $this->createDnsBackendProvider();
         $repository = $this->getRepositoryFactory($backendProvider)->createDynamicDnsRepository($this->createSOARecordManager());
 
-        $userAuthService = new UserAuthenticationService(
-            $config->get('security', 'password_encryption', 'bcrypt'),
-            $config->get('security', 'password_cost', 12)
-        );
-
         $this->validationService = new DynamicDnsValidationService($config);
-        $this->updateService = new DynamicDnsUpdateService(
-            $this->validationService,
-            new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($this->db, $config)),
+        $this->updateService = DynamicDnsUpdateService::build(
+            $this->db,
+            $config,
             $repository,
-            new AuditLogWriter($this->db),
-            new IpAddressRetriever($_SERVER)
+            new IpAddressRetriever($_SERVER),
+            $this->validationService
         );
         $this->apiPermissionService = $this->createApiPermissionService();
     }

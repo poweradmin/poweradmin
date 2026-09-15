@@ -59,10 +59,7 @@ class ResetPasswordController extends BaseController
         $tokenRepository = new DbPasswordResetTokenRepository($this->db, $this->config);
         $userRepository = $this->createUserRepository();
         $mailService = new MailService($this->config, $this->logger);
-        $authService = new UserAuthenticationService(
-            $this->config->get('security', 'password_encryption', 'bcrypt'),
-            $this->config->get('security', 'password_cost', 12)
-        );
+        $authService = UserAuthenticationService::fromConfig($this->config);
         $this->ipRetriever = new IpAddressRetriever($_SERVER);
         $this->userAgentService = new UserAgentService($_SERVER);
 

@@ -123,10 +123,7 @@ class SqlAuthenticator extends LoggingService
         $encryptionService = new PasswordEncryptionService($sessionKey);
         $sessionPassword = $encryptionService->decrypt($_SESSION[SessionKeys::USERPWD]);
 
-        $passwordEncryption = $this->configManager->get('security', 'password_encryption', 'bcrypt');
-        $passwordCost = $this->configManager->get('security', 'password_cost', 12);
-
-        $userAuthService = new UserAuthenticationService($passwordEncryption, $passwordCost);
+        $userAuthService = UserAuthenticationService::fromConfig($this->configManager);
 
         $stmt = $this->connection->prepare("SELECT id, fullname, password, active, email FROM users WHERE username=:username AND use_ldap=0");
         $stmt->bindValue(':username', $_SESSION[SessionKeys::USERLOGIN], PDO::PARAM_STR);

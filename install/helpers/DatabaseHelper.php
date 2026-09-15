@@ -264,10 +264,7 @@ class DatabaseHelper
         // Create admin user with Administrator template
         $config = ConfigurationManager::getInstance();
         $config->initialize();
-        $userAuthService = new UserAuthenticationService(
-            $config->get('security', 'password_encryption', 'bcrypt'),
-            $config->get('security', 'password_cost', 12)
-        );
+        $userAuthService = UserAuthenticationService::fromConfig($config);
         $user_query = $this->db->prepare(
             "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method) " .
             "VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0, 'sql')"

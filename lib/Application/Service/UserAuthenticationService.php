@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use InvalidArgumentException;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Hashes and verifies user passwords across bcrypt, argon2 and the legacy md5 formats.
@@ -45,6 +46,17 @@ class UserAuthenticationService
     {
         $this->passwordEncryption = $passwordEncryption;
         $this->passwordEncryptionCost = $passwordEncryptionCost;
+    }
+
+    /**
+     * Build the service from the security.password_encryption and security.password_cost settings.
+     */
+    public static function fromConfig(ConfigurationInterface $config): self
+    {
+        return new self(
+            (string)$config->get('security', 'password_encryption', 'bcrypt'),
+            (int)$config->get('security', 'password_cost', 12)
+        );
     }
 
     /**

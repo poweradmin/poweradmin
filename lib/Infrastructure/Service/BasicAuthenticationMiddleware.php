@@ -196,10 +196,7 @@ class BasicAuthenticationMiddleware
             return false;
         }
 
-        $passwordEncryption = $this->config->get('security', 'password_encryption', 'bcrypt');
-        $passwordCost = $this->config->get('security', 'password_cost', 12);
-
-        $authService = new UserAuthenticationService($passwordEncryption, $passwordCost);
+        $authService = UserAuthenticationService::fromConfig($this->config);
 
         // Verify the password directly without going through the full authentication flow
         return $authService->verifyPassword($password, $hashedPassword);

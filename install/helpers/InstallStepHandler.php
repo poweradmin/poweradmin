@@ -350,10 +350,7 @@ class InstallStepHandler
         $db_charset = $this->input->request->get('db_charset');
         $db_collation = $this->input->request->get('db_collation');
 
-        $userAuthService = new UserAuthenticationService(
-            $config->get('security', 'password_encryption', 'bcrypt'),
-            $config->get('security', 'password_cost', 12)
-        );
+        $userAuthService = UserAuthenticationService::fromConfig($config);
 
         $sessionKey = $userAuthService->generateSalt(self::SESSION_KEY_LENGTH);
 
