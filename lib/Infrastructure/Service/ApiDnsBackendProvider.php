@@ -998,10 +998,13 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
     public function getZonesByIds(array $domainIds): array
     {
         $zones = [];
+        // Name and kind come from the local zones row; only a row with no cached kind
+        // costs a round trip (getZoneTypeById).
         foreach (array_unique(array_map('intval', $domainIds)) as $id) {
-            $zone = $this->getZoneById($id);
-            if ($zone !== null) {
-                $zones[] = ['id' => (int)$zone['id'], 'name' => (string)$zone['name'], 'type' => (string)$zone['type']];
+            $row = $this->resolveCanonicalZoneRow($id);
+            if ($row !== null) {
+                $type = !empty($row['zone_type']) ? (string)$row['zone_type'] : $this->getZoneTypeById($id);
+                $zones[] = ['id' => $id, 'name' => (string)$row['zone_name'], 'type' => $type];
             }
         }
         usort($zones, fn(array $a, array $b): int => strcasecmp($a['name'], $b['name']));

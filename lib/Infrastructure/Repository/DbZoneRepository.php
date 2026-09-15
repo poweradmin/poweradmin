@@ -1152,9 +1152,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
                          COALESCE(MIN(z.owner), 0) as owner,
                          COALESCE(MIN(z.comment), '') as comment,
                          COUNT(DISTINCT r.id) as record_count,
-                         CASE WHEN EXISTS (SELECT 1 FROM $cryptokeys_table c WHERE c.domain_id = d.id AND c.active)
-                                OR EXISTS (SELECT 1 FROM $domainmetadata_table m WHERE m.domain_id = d.id AND m.kind = 'PRESIGNED')
-                              THEN 1 ELSE 0 END as secured
+                         " . $this->securedProbe('d', $cryptokeys_table, $domainmetadata_table) . " as secured
                   FROM $domains_table d
                   LEFT JOIN zones z ON d.id = z.domain_id
                   LEFT JOIN $records_table r ON d.id = r.domain_id
