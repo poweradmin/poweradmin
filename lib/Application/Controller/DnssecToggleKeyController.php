@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-
 /**
  * Handles the POST that activates or deactivates a DNSSEC key, then returns to the zone's DNSSEC page.
  */
