@@ -32,19 +32,14 @@ class PaginationPresenter
     private Pagination $pagination;
 
     private string $urlPattern;
-    private string $id;
     private ?int $rowsPerPage;
 
     private int $numDisplayPages = 8;
 
-    /**
-     * $rowsPerPage is the page size the current request asked for; every page link carries it.
-     */
-    public function __construct(Pagination $pagination, string $urlPattern, string $id = '', ?int $rowsPerPage = null)
+    public function __construct(Pagination $pagination, string $urlPattern, ?int $rowsPerPage = null)
     {
         $this->pagination = $pagination;
         $this->urlPattern = $urlPattern;
-        $this->id = $id;
         $this->rowsPerPage = $rowsPerPage;
     }
 
@@ -103,11 +98,6 @@ class PaginationPresenter
     private function createPageUrl(int $pageNumber): string
     {
         $url = str_replace('{PageNumber}', (string)$pageNumber, $this->urlPattern);
-
-        // Add ID parameter if present
-        if ($this->id !== '') {
-            $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'id=' . urlencode($this->id);
-        }
 
         if ($this->rowsPerPage !== null) {
             $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'rows_per_page=' . $this->rowsPerPage;

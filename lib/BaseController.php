@@ -490,7 +490,7 @@ abstract class BaseController
             $url .= '&' . urlencode((string) $key) . '=' . urlencode((string) $value);
         }
 
-        $presenter = new PaginationPresenter($pagination, $url, '', $this->httpRequest->getRowsPerPage());
+        $presenter = new PaginationPresenter($pagination, $url, $this->httpRequest->getRowsPerPage());
 
         return $presenter->present();
     }

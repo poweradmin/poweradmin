@@ -519,10 +519,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $stmt->fetchColumn() !== false;
     }
 
-    /**
-     * Same key set as DbZoneRepository::getZone(): the getZoneById() core plus
-     * count_records, username, fullname, secured, comment, utf8_name and the owner lists.
-     */
     public function getZone(int $zoneId): ?array
     {
         $canonical = $this->resolveCanonicalRow($zoneId);
@@ -531,18 +527,11 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         }
         $owners = $this->ownersOfCanonical((int)$canonical['id'], self::canonicalIdOf($canonical));
         $usernames = array_column($owners, 'username');
-        $countRecords = $this->backendProvider->countZoneRecords($zoneId);
+        $zone = $this->coreRow($canonical, $zoneId);
         $zoneInfo = $this->backendProvider->getZoneById($zoneId);
 
-        return [
-            'id' => $canonical['id'],
-            'name' => $canonical['zone_name'],
-            'type' => $canonical['zone_type'],
-            'master' => $canonical['zone_master'],
-            'owner' => (int)($canonical['owner'] ?? 0),
-            'account' => '',
-            'record_count' => $countRecords,
-            'count_records' => $countRecords,
+        return $zone + [
+            'count_records' => $zone['record_count'],
             'username' => $usernames[0] ?? null,
             'fullname' => $owners[0]['fullname'] ?? null,
             'secured' => $zoneInfo['dnssec'] ?? false,
@@ -980,24 +969,23 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
     public function getZoneById(int $zoneId): ?array
     {
         $canonical = $this->resolveCanonicalRow($zoneId);
-        if ($canonical === null) {
-            return null;
-        }
-        $stmt = $this->db->prepare(
-            "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
-                    COALESCE(z.owner, 0) as owner
-             FROM zones z
-             WHERE z.id = :id"
-        );
-        $stmt->bindValue(':id', (int)$canonical['id'], PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$result) {
-            return null;
-        }
-        $result['account'] = '';
-        $result['record_count'] = $this->backendProvider->countZoneRecords($zoneId);
-        return $result;
+        return $canonical === null ? null : $this->coreRow($canonical, $zoneId);
+    }
+
+    /**
+     * The getZoneById() key set, built from a canonical row already in hand.
+     */
+    private function coreRow(array $canonical, int $zoneId): array
+    {
+        return [
+            'id' => $canonical['id'],
+            'name' => $canonical['zone_name'],
+            'type' => $canonical['zone_type'],
+            'master' => $canonical['zone_master'],
+            'owner' => (int)($canonical['owner'] ?? 0),
+            'account' => '',
+            'record_count' => $this->backendProvider->countZoneRecords($zoneId),
+        ];
     }
 
     /**

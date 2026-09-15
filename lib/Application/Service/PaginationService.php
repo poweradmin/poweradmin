@@ -71,24 +71,20 @@ class PaginationService
      * @param int|null $requestedRowsPerPage Page size from the query string (Request::getRowsPerPage())
      * @return int Validated rows per page value
      */
-    public function getUserRowsPerPage(int $defaultRowsPerPage, ?int $userId = null, ?int $requestedRowsPerPage = null): int
+    public function getUserRowsPerPage(int $defaultRowsPerPage, ?int $userId, ?int $requestedRowsPerPage): int
     {
-        $userRowsPerPage = $requestedRowsPerPage;
+        $preferences = $userId !== null ? $this->userPreferenceService : null;
 
-        if ($userRowsPerPage !== null && $userId !== null && $this->userPreferenceService !== null) {
+        if ($requestedRowsPerPage !== null) {
             try {
-                $this->userPreferenceService->setRowsPerPage($userId, $userRowsPerPage);
-            } catch (InvalidArgumentException $e) {
-                // Invalid value, ignore and continue
+                $preferences?->setRowsPerPage($userId, $requestedRowsPerPage);
+            } catch (InvalidArgumentException) {
+                // Out-of-range values are clamped below rather than stored
             }
+            return $this->getValidatedItemsPerPage($requestedRowsPerPage);
         }
 
-        // Try to get from user preferences first
-        if ($userId !== null && $this->userPreferenceService !== null && $userRowsPerPage === null) {
-            $userRowsPerPage = $this->userPreferenceService->getRowsPerPage($userId);
-        }
-
-        return $this->getValidatedItemsPerPage($userRowsPerPage ?? $defaultRowsPerPage);
+        return $this->getValidatedItemsPerPage($preferences?->getRowsPerPage($userId) ?? $defaultRowsPerPage);
     }
 
     /**

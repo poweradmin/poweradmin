@@ -206,7 +206,7 @@ class UsersController extends BaseController
         if ($searchTerm !== '') {
             $paginationUrl .= '&search=' . urlencode($searchTerm);
         }
-        $paginationPresenter = new PaginationPresenter($pagination, $paginationUrl, '', $this->httpRequest->getRowsPerPage());
+        $paginationPresenter = new PaginationPresenter($pagination, $paginationUrl, $this->httpRequest->getRowsPerPage());
 
         $this->render('users.html', [
             'permissions' => $permissions,

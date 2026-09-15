@@ -251,14 +251,14 @@ class AuditService
      * An identity-provider handshake error. Logged as login_error, not
      * login_failed, so it does not feed fail2ban brute-force counters.
      */
-    public function logSsoLoginError(string $authMethod, string $error): void
+    public function logSsoLoginError(AuthMethod $authMethod, string $error): void
     {
-        $this->logger->logWarn($this->anonymousLine('login_error', ['auth_method' => $authMethod, 'error' => $error]));
+        $this->logger->logWarn($this->anonymousLine('login_error', ['auth_method' => $authMethod->value, 'error' => $error]));
     }
 
-    public function logSsoLoginSuccess(string $authMethod): void
+    public function logSsoLoginSuccess(AuthMethod $authMethod): void
     {
-        $this->logger->logInfo($this->line($authMethod . '_login_success'));
+        $this->logger->logInfo($this->line($authMethod->value . '_login_success'));
     }
 
     /**

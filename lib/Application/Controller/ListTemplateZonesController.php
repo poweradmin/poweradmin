@@ -94,7 +94,6 @@ class ListTemplateZonesController extends BaseController
             $presenter = new PaginationPresenter(
                 $pagination,
                 $baseUrlPrefix . '/zones/templates/' . $zone_templ_id . '/zones?start={PageNumber}',
-                '',
                 $this->httpRequest->getRowsPerPage()
             );
             $paginationHtml = $presenter->present();
