@@ -236,7 +236,8 @@ class DbZoneRepositoryGroupOwnershipTest extends TestCase
         $this->assertStringContainsString('LEFT JOIN zones_groups', $capturedQuery, 'Group-sort query must join zones_groups');
         $this->assertStringContainsString('LEFT JOIN user_groups', $capturedQuery, 'Group-sort query must join user_groups');
         $this->assertStringContainsString('ORDER BY MIN(user_groups.name) ASC', $capturedQuery, 'Query must aggregate group name in ORDER BY');
-        $this->assertStringContainsString('COUNT(DISTINCT', $capturedQuery, 'Group join multiplies record rows, so DISTINCT is required to keep counts accurate');
+        $this->assertStringNotContainsString('LEFT JOIN records', $capturedQuery, 'Group join must not be multiplied by a records join');
+        $this->assertStringContainsString('(SELECT COUNT(*) FROM records r WHERE r.domain_id = domains.id AND r.type IS NOT NULL) AS count_records', $capturedQuery, 'Record count must be a correlated subquery so the group join cannot inflate it');
     }
 
     #[Test]

@@ -214,18 +214,17 @@ class DbZoneRepository implements ZoneRepositoryInterface
             return (int)$stmt->fetchColumn();
         } else {
             $sortByGroup = $sortBy === 'group';
-            // The cryptokeys, metadata and group joins multiply record rows, so count distinct ids
-            $recordCountExpr = "COUNT(DISTINCT $records_table.id)";
-            $needsRecordsJoin = $includeRecordCount || $includeHealth;
 
+            // Correlated probes keep the row set at owners (x groups) instead of
+            // multiplying it by records, keys and metadata as joins would
             $selectFields = "$domains_table.id,
                            $domains_table.name,
                            $domains_table.type,
-                           " . ($includeRecordCount ? "$recordCountExpr AS count_records," : "") . "
+                           " . ($includeRecordCount ? $this->recordCountSubquery($domains_table, $records_table) . " AS count_records," : "") . "
                            " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                            users.username,
                            users.fullname,
-                           COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured,
+                           " . $this->securedProbe($domains_table, $cryptokeys_table, $domainmetadata_table) . " AS secured,
                            zones.comment";
         }
 
@@ -233,10 +232,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $query = "SELECT $selectFields
                  FROM $domains_table
                  LEFT JOIN zones ON $domains_table.id = zones.domain_id
-                 " . ($needsRecordsJoin ? "LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL" : "") . "
-                 LEFT JOIN users ON users.id = zones.owner
-                 LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
-                 LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'"
+                 LEFT JOIN users ON users.id = zones.owner"
                  . ($sortByGroup ? "
                  LEFT JOIN zones_groups ON zones_groups.domain_id = $domains_table.id
                  LEFT JOIN user_groups ON user_groups.id = zones_groups.group_id" : "")
@@ -275,7 +271,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         if ($sortBy == 'owner') {
             $sortBy = 'users.username';
         } elseif ($sortBy == 'count_records') {
-            $sortBy = $recordCountExpr;
+            // The select alias; MySQL, PostgreSQL and SQLite all accept it in ORDER BY
+            $sortBy = 'count_records';
         } elseif ($sortBy == 'group') {
             $sortBy = "MIN(user_groups.name)";
         } else {
@@ -426,22 +423,20 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
         $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
-        // The cryptokeys and metadata joins multiply record rows on signed zones, so count distinct ids
+        // Correlated probes keep the row set at one row per owner instead of
+        // multiplying it by records, keys and metadata as joins would
         $query = "SELECT
                 $domains_table.id,
                 $domains_table.name,
                 $domains_table.type,
-                COUNT(DISTINCT $records_table.id) AS count_records,
+                " . $this->recordCountSubquery($domains_table, $records_table) . " AS count_records,
                 users.username,
                 users.fullname,
-                COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured,
+                " . $this->securedProbe($domains_table, $cryptokeys_table, $domainmetadata_table) . " AS secured,
                 zones.comment
             FROM $domains_table
             LEFT JOIN zones ON $domains_table.id = zones.domain_id
-            LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL
             LEFT JOIN users ON users.id = zones.owner
-            LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
-            LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'
             WHERE 1=1";
 
         $params = [];
@@ -1172,6 +1167,25 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ?: null;
+    }
+
+    /**
+     * Correlated record count for the zone list, excluding the NULL-type ENT rows
+     * PowerDNS keeps for empty non-terminals.
+     */
+    private function recordCountSubquery(string $domainsTable, string $recordsTable): string
+    {
+        return "(SELECT COUNT(*) FROM $recordsTable r WHERE r.domain_id = $domainsTable.id AND r.type IS NOT NULL)";
+    }
+
+    /**
+     * 1 when the zone has an active cryptokey or is PRESIGNED, else 0.
+     */
+    private function securedProbe(string $domainsTable, string $cryptokeysTable, string $domainmetadataTable): string
+    {
+        return "CASE WHEN EXISTS (SELECT 1 FROM $cryptokeysTable c WHERE c.domain_id = $domainsTable.id AND c.active)"
+            . " OR EXISTS (SELECT 1 FROM $domainmetadataTable m WHERE m.domain_id = $domainsTable.id AND m.kind = 'PRESIGNED')"
+            . " THEN 1 ELSE 0 END";
     }
 
     private function syncZoneAccount(int $domainId): void
