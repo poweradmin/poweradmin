@@ -26,6 +26,9 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 
+/**
+ * SQL persistence for password reset tokens and their rate-limit counters in password_reset_tokens.
+ */
 class DbPasswordResetTokenRepository
 {
     private PDO $db;

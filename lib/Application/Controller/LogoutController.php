@@ -36,6 +36,9 @@ use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Logs the user out, clearing the session and redirecting to the OIDC or SAML provider's logout when used.
+ */
 class LogoutController extends BaseController
 {
     private AuthenticationService $authService;

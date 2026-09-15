@@ -32,6 +32,9 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
+/**
+ * Sends application email over the configured transport: PHP mail(), sendmail, SMTP or the log.
+ */
 class MailService
 {
     private ConfigurationManager $config;

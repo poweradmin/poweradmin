@@ -27,6 +27,9 @@ use Pdp\CannotProcessHost;
 use Pdp\Rules;
 use Pdp\Domain;
 
+/**
+ * Static name helpers: reverse-zone detection, apex and in-zone tests, and stripping or restoring a zone suffix.
+ */
 class DnsHelper
 {
     private const IPV4_REVERSE_ZONE_PATTERN = '/^(?:[\d\/]+\.){1,4}in-addr\.arpa$/i';

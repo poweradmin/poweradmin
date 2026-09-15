@@ -25,6 +25,9 @@ namespace Poweradmin\Application\Service;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 
+/**
+ * Verifies reCAPTCHA v2/v3 responses with Google for the login form.
+ */
 class RecaptchaService
 {
     private ConfigurationManager $configManager;

@@ -54,11 +54,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - Modern email systems rarely use MR records for mail forwarding
  * - The content should be a fully qualified domain name
  * - No additional section processing is required for MR records
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class MRRecordValidator implements DnsRecordValidatorInterface
 {

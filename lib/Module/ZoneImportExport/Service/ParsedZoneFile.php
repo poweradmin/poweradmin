@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Module\ZoneImportExport\Service;
 
+/**
+ * Result of parsing a BIND zone file: origin, default TTL, records and parser warnings.
+ */
 readonly class ParsedZoneFile
 {
     /** @var string|null */

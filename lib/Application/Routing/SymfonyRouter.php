@@ -36,13 +36,7 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 
 /**
- * Class SymfonyRouter
- *
- * Symfony Router implementation for Poweradmin with module support.
- * Uses modern routing patterns with clean URLs and proper REST endpoints.
- * Loads routes from YAML configuration and enabled modules.
- *
- * @package Poweradmin\Application\Routing
+ * Matches the request against routes.yaml and enabled module routes, then runs the matched controller.
  */
 class SymfonyRouter
 {

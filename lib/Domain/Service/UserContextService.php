@@ -24,6 +24,9 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Enum\AuthMethod;
 
+/**
+ * Session-backed identity of the current user (id, username, auth method), with a fallback for API requests.
+ */
 class UserContextService
 {
     // Auth methods delegated to an external IdP (shared by session auth_used and

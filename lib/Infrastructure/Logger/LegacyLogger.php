@@ -26,6 +26,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use PDO;
 
+/**
+ * Writes an event to syslog and/or the log_users, log_zones, log_groups and log_api tables per the logging settings.
+ */
 class LegacyLogger
 {
     private PDO $db;

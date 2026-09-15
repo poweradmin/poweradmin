@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Model;
 
+/**
+ * One user_preferences row plus the list of allowed keys and the timezone validity rules.
+ */
 class UserPreference
 {
     private int $id;

@@ -32,14 +32,9 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 
 /**
- * DNS Record Validation Service
+ * Validates a record by dispatching to the validator for its type.
  *
  * Responsible only for validating DNS records according to their type
- *
- * @package Poweradmin
- * @copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright 2010-2025 Poweradmin Development Team
- * @license https://opensource.org/licenses/GPL-3.0 GPL
  */
 class DnsRecordValidationService implements DnsRecordValidationServiceInterface
 {

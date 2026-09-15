@@ -25,9 +25,7 @@ namespace Poweradmin\Application\Service;
 use InvalidArgumentException;
 
 /**
- * Class UserAuthenticationService
- *
- * Provides various methods for managing password hashing and verification.
+ * Hashes and verifies user passwords across bcrypt, argon2 and the legacy md5 formats.
  */
 class UserAuthenticationService
 {

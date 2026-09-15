@@ -31,6 +31,9 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
+/**
+ * Finds and repairs ownerless zones, masterless slave zones, orphaned records and missing or duplicate SOAs.
+ */
 class DatabaseConsistencyService
 {
     private PDO $db;

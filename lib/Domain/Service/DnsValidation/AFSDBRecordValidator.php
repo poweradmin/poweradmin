@@ -43,11 +43,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * Note: RFC 5864 deprecates the use of AFSDB RR to locate AFS cell database servers
  * in favor of SRV records.
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class AFSDBRecordValidator implements DnsRecordValidatorInterface
 {

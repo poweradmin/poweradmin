@@ -27,6 +27,9 @@ use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use PDO;
 use RuntimeException;
 
+/**
+ * Opens the PDO connection from the configured credentials, wrapping failures in a readable error.
+ */
 class DatabaseService
 {
     private PDODatabaseConnection $databaseConnection;

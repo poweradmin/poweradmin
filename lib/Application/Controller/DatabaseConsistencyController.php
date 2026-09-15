@@ -27,6 +27,9 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DatabaseConsistencyService;
 
+/**
+ * Renders the database consistency page for admins and applies the fix actions it offers.
+ */
 class DatabaseConsistencyController extends BaseController
 {
     private Request $request;

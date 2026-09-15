@@ -25,6 +25,9 @@ namespace Poweradmin\Application\Service;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\UserContextService;
 
+/**
+ * Changes the logged-in user's own password after verifying the current one; LDAP users are refused.
+ */
 readonly class PasswordChangeService
 {
     private const ERROR_MESSAGES = [

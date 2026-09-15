@@ -27,6 +27,9 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use ReflectionClass;
 use RuntimeException;
 
+/**
+ * Reads the saml provider and SP settings and builds the OneLogin toolkit settings array.
+ */
 class SamlConfigurationService extends LoggingService
 {
     private ConfigurationManager $configManager;

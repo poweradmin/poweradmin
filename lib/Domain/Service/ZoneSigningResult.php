@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Service;
 
+/**
+ * Outcome of a ZoneSigningService sign or unsign request plus the detail text callers may show.
+ */
 final readonly class ZoneSigningResult
 {
     /**

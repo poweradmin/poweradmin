@@ -47,7 +47,7 @@ use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
- * Service class for managing DNS records
+ * Creates, updates and deletes records for the web UI, with validation, logging and serial updates.
  */
 class RecordManager implements RecordManagerInterface
 {

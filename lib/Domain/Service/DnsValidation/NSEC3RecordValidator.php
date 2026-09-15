@@ -55,11 +55,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - Validating resolvers may reject zones with high iteration values (>100)
  *
  * Type code: 50
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class NSEC3RecordValidator implements DnsRecordValidatorInterface
 {

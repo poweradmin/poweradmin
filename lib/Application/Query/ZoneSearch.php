@@ -27,6 +27,9 @@ use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
+/**
+ * Runs the zone search page query, counting and fetching the domains that match the search string.
+ */
 class ZoneSearch extends BaseSearch
 {
     /**

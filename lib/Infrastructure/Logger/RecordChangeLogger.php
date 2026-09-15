@@ -27,6 +27,9 @@ use PDO;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
+/**
+ * Writes before/after record and zone snapshots to log_record_changes, grouped into log_changesets rows.
+ */
 class RecordChangeLogger
 {
     public const ACTION_RECORD_CREATE = 'record_create';

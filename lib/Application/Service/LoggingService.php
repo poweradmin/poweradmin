@@ -24,6 +24,9 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Logger\Logger;
 
+/**
+ * Base class that tags debug, info, warning and error log calls with the subclass name.
+ */
 abstract class LoggingService
 {
     protected Logger $logger;

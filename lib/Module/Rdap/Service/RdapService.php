@@ -26,6 +26,9 @@ use Exception;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 
+/**
+ * RDAP lookups: picks the server for a TLD from data/rdap_servers.php, queries it and formats the reply.
+ */
 class RdapService
 {
     private array $rdapServers = [];

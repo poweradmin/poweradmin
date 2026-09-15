@@ -50,11 +50,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * @see https://www.ietf.org/rfc/rfc1035.txt RFC 1035: Domain Names - Implementation and Specification
  * @see https://www.rfc-editor.org/rfc/rfc1700 RFC 1700: Assigned Numbers (for standard CPU and OS types)
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class HINFORecordValidator implements DnsRecordValidatorInterface
 {

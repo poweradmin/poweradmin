@@ -55,11 +55,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - Accurate system clocks are required to prevent replay attacks
  * - TSIG authentication complements but doesn't replace DNSSEC validation
  * - RFC 8945 recommends using minimum 16 octets for truncated MACs
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class TSIGRecordValidator implements DnsRecordValidatorInterface
 {

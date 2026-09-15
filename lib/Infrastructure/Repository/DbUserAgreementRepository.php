@@ -26,6 +26,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use PDO;
 
+/**
+ * SQL persistence for accepted user agreement versions in the user_agreements table.
+ */
 class DbUserAgreementRepository
 {
     private PDO $db;

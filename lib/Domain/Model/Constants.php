@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Model;
 
 /**
- * Application-wide constants
+ * Application-wide constants.
  */
 final class Constants
 {

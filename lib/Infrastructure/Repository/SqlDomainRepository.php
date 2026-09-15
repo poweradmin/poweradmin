@@ -40,8 +40,7 @@ use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
 /**
- * SQL-backend domain repository.
- * Queries PowerDNS tables directly via PDO.
+ * Domain lookups on the domains table.
  */
 class SqlDomainRepository implements DomainRepositoryInterface
 {

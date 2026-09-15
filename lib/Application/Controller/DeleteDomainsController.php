@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles zones deletion
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -39,6 +30,9 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 
+/**
+ * Handles bulk zone deletion from the zone lists: shows the selected zones and deletes them on confirmation.
+ */
 class DeleteDomainsController extends BaseController
 {
 

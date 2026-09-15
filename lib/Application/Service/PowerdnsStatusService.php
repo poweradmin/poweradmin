@@ -30,6 +30,9 @@ use Poweradmin\Infrastructure\Network\ProxyContext;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+/**
+ * Reads server info and metrics from the PowerDNS API and probes secondary servers for the status page.
+ */
 class PowerdnsStatusService
 {
     /** Bounds on the blocking autoprimary probes, which run serially on page load. */

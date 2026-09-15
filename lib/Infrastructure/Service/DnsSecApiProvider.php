@@ -30,6 +30,9 @@ use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
 
+/**
+ * DnssecProvider that manages zone keys, DS/DNSKEY records and rectification through the PowerDNS API.
+ */
 class DnsSecApiProvider implements DnssecProvider
 {
     private PowerdnsApiClient $client;

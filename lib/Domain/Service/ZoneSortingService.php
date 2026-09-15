@@ -20,21 +20,15 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Service for managing zone sorting functionality
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Domain\Enum\SortDirection;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 
+/**
+ * Resolves the zone list's sort column, direction and reverse-zone filter from submitted values and the session.
+ */
 class ZoneSortingService
 {
     private ReverseZoneSorting $reverseZoneSorting;

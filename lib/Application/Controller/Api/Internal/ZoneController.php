@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Internal API controller for zone operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\Internal;
 
 use Poweradmin\Application\Controller\Api\InternalApiController;
@@ -36,6 +27,9 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * Internal endpoint /api/internal/zone: lists or fetches zones the logged-in user may view.
+ */
 class ZoneController extends InternalApiController
 {
     private ZoneRepositoryInterface $zoneRepository;

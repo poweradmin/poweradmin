@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+/**
+ * Legacy logger that sends each message to syslog under the configured ident and facility.
+ */
 class SyslogLegacyLogger implements LegacyLoggerInterface
 {
     private string $ident;

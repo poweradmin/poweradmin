@@ -39,6 +39,9 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Handles the forgot-password form: takes an email address and sends the password reset link.
+ */
 class ForgotPasswordController extends BaseController
 {
     private PasswordResetService $passwordResetService;

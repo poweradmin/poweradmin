@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+/**
+ * Log handler that discards every line; the default when logging.type is unset.
+ */
 class NullLogHandler implements LogHandlerInterface
 {
 

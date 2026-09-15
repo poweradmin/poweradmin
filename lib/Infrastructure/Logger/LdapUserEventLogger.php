@@ -28,6 +28,9 @@ use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Records LDAP login outcomes (success, failure reason, lockout) with the client IP through LegacyLogger.
+ */
 class LdapUserEventLogger
 {
     private LegacyLogger $logger;

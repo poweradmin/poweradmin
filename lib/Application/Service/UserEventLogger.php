@@ -29,6 +29,9 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Writes login success, failure and lockout entries to the application log with the client IP.
+ */
 class UserEventLogger
 {
     private LegacyLogger $logger;

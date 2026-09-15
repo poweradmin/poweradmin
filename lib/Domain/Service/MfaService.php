@@ -45,6 +45,9 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Poweradmin\Domain\Enum\AuthMethod;
 
+/**
+ * TOTP, email-code and recovery-code verification, MFA enrolment, QR code rendering and enforcement checks.
+ */
 class MfaService
 {
     private Google2FA $google2fa;

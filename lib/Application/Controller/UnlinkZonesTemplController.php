@@ -26,6 +26,9 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 
+/**
+ * Handles unlinking selected zones from a zone template, with a confirmation step.
+ */
 class UnlinkZonesTemplController extends BaseController
 {
     private Request $request;

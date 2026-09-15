@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+/**
+ * Log handler that formats a line with DEFAULT_LOG_FORMAT and sends it to PHP's error_log (the SAPI log).
+ */
 class NativeLogHandler implements LogHandlerInterface
 {
 

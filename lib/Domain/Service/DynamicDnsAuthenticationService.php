@@ -28,6 +28,9 @@ use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 
+/**
+ * Checks a DDNS client's password (with login-attempt lockout) and which zones that user may update.
+ */
 readonly class DynamicDnsAuthenticationService
 {
     public function __construct(

@@ -25,6 +25,9 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
+/**
+ * Syntax checks for email addresses and digit-only strings.
+ */
 class Validator
 {
     private ConfigurationManager $config;

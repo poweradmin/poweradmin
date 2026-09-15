@@ -30,6 +30,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
+/**
+ * SQL persistence for record comments in the PowerDNS comments table, linked to records via record_comment_links.
+ */
 class DbRecordCommentRepository implements RecordCommentRepositoryInterface
 {
     private PDO $connection;

@@ -50,11 +50,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * @see https://www.rfc-editor.org/rfc/rfc4025.html RFC 4025: A Method for Storing IPsec Keying Material in DNS
  * @see https://www.iana.org/assignments/dns-parameters IANA DNS Parameters
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
 {

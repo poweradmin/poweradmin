@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Public API controller for external endpoints
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Service\DatabaseService;
@@ -55,6 +46,9 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * Base for /api/v2 endpoints: API key or Basic auth, key scope enforcement, request logging and wrapped responses.
+ */
 abstract class PublicApiController extends AbstractApiController
 {
     protected const MAX_PAGE_SIZE = 10000;

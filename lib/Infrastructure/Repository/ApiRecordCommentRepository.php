@@ -28,7 +28,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
 /**
- * API-backend record comment repository.
+ * Record comment persistence for the API backend mode.
  *
  * Uses PowerDNS REST API RRset comments as the sole storage backend.
  * Comments are per-RRset (name + type), not per individual record.

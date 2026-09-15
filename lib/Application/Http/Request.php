@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Application\Http;
 
+/**
+ * Snapshot of the $_GET, $_POST and $_SERVER superglobals with typed accessors for controllers.
+ */
 class Request
 {
     protected array $queryParams;

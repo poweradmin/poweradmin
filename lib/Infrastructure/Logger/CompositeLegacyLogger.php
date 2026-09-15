@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+/**
+ * Fans each legacy log call out to every LegacyLoggerInterface it holds.
+ */
 class CompositeLegacyLogger implements LegacyLoggerInterface
 {
     private array $loggers;

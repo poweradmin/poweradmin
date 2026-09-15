@@ -37,6 +37,9 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * POST /api/v2/dynamic-dns: updates the A/AAAA records of a hostname in a zone the caller owns.
+ */
 class DynamicDnsController extends PublicApiController
 {
     private DynamicDnsUpdateService $updateService;

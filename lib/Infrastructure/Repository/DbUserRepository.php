@@ -31,6 +31,9 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 use Poweradmin\Domain\Enum\AuthMethod;
 
+/**
+ * SQL persistence for accounts in the users table, with permission lookups through perm_templ and perm_items.
+ */
 class DbUserRepository implements UserRepository
 {
     private object $db;

@@ -63,11 +63,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - TKEY-established keys are associated with DNS servers/resolvers, not zones
  * - The GSS-API mode (3) provides built-in authentication during key exchange
  * - For Diffie-Hellman mode (2), external authentication like TSIG or SIG(0) is required
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class TKEYRecordValidator implements DnsRecordValidatorInterface
 {

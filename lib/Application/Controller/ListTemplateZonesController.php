@@ -28,6 +28,9 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Renders the list of zones linked to one zone template.
+ */
 class ListTemplateZonesController extends BaseController
 {
     public function run(): void

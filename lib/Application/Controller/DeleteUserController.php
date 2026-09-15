@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles user deletion
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -39,6 +30,9 @@ use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Handles the delete-user page: deletes the user and transfers or deletes each of their zones as chosen.
+ */
 class DeleteUserController extends BaseController
 {
     // Above this many total <option> elements the owner dropdowns are rendered

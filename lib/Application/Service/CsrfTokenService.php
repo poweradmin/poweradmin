@@ -24,6 +24,9 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Generates, stores and validates the per-session CSRF token carried by the _token form field.
+ */
 class CsrfTokenService
 {
     public const TOKEN_LENGTH = 40;

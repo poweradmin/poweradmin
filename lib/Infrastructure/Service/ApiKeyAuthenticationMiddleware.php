@@ -32,11 +32,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * API Key Authentication Middleware
+ * Authenticates API requests by the X-API-Key header and loads the key's user.
  *
  * This middleware checks for API key in request headers and authenticates the user if the key is valid
- *
- * @package Poweradmin\Infrastructure\Service
  */
 class ApiKeyAuthenticationMiddleware
 {

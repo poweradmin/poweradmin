@@ -25,6 +25,9 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
+/**
+ * Decides whether a user must accept the current user-agreement version and records acceptances.
+ */
 class UserAgreementService
 {
     private DbUserAgreementRepository $repository;

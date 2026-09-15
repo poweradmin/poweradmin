@@ -35,6 +35,9 @@ use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Handles the SAML assertion (/saml/acs) and single logout (/saml/sls) endpoints.
+ */
 class SamlCallbackController extends BaseController
 {
     private SamlService $samlService;

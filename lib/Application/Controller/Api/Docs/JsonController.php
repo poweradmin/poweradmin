@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * API Documentation JSON Controller
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\Docs;
 
 use Exception;
@@ -37,9 +28,7 @@ use Poweradmin\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class JsonController
- *
- * This controller serves the OpenAPI JSON specification generated from annotations.
+ * Serves the OpenAPI JSON specification at /api/docs/json, generated from the V2 controller attributes.
  */
 class JsonController extends BaseController
 {

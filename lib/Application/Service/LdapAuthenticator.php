@@ -40,6 +40,9 @@ use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use ReflectionClass;
 
+/**
+ * Session login against an LDAP directory, with lockout tracking, a cached bind result and MFA hand-off.
+ */
 class LdapAuthenticator extends LoggingService
 {
     private PDO $db;

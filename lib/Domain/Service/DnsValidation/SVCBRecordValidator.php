@@ -33,11 +33,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * SVCB records are the general variant of HTTPS records, allowing service binding for any protocol.
  * Format: <priority> <target> [param1=value1 param2=value2 ...]
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class SVCBRecordValidator implements DnsRecordValidatorInterface
 {

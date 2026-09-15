@@ -56,11 +56,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - Web service discovery
  * - Email service configuration
  * - Application-specific resource location
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class URIRecordValidator implements DnsRecordValidatorInterface
 {

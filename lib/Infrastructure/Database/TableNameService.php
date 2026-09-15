@@ -26,6 +26,9 @@ use InvalidArgumentException;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Domain\Enum\SortDirection;
 
+/**
+ * Applies the pdns_db_name prefix to PowerDNS table names and validates ORDER BY, LIMIT and OFFSET inputs.
+ */
 class TableNameService
 {
     private ?string $pdnsDbName;

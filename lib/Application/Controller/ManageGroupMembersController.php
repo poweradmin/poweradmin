@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles adding/removing users to/from groups
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
@@ -37,6 +28,9 @@ use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
 
+/**
+ * Handles the group members page: adds and removes users in a group.
+ */
 class ManageGroupMembersController extends BaseController
 {
     private GroupMembershipService $membershipService;

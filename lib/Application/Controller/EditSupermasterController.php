@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles requests to edit supermaster servers
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -37,6 +28,9 @@ use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Handles the edit-supermaster form: updates the IP, nameserver and account of a supermaster.
+ */
 class EditSupermasterController extends BaseController
 {
     private Request $request;

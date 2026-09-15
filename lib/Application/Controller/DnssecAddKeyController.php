@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles requests to add new supermaster servers
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Exception;
@@ -40,6 +31,9 @@ use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Enum\DnssecKeyType;
 
+/**
+ * Handles the add-DNSSEC-key form for a zone: validates key type, bits and algorithm, then creates the key.
+ */
 class DnssecAddKeyController extends BaseController
 {
     private Request $request;

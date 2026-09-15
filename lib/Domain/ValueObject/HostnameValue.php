@@ -26,6 +26,9 @@ use InvalidArgumentException;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
+/**
+ * A hostname that passed validation (full HostnameValidator when config is given, a syntax check otherwise).
+ */
 readonly class HostnameValue
 {
     private string $value;

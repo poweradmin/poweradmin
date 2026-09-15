@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Model;
 
+/**
+ * Numeric DNSSEC algorithm identifiers from the IANA registry and their display names.
+ */
 class DnssecAlgorithm
 {
     public const RESERVED = 0;

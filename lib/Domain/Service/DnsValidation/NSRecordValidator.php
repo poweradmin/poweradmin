@@ -37,11 +37,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * They identify the authoritative DNS servers for a zone.
  * According to RFCs, NS record targets must be hostnames, not IP addresses,
  * and cannot point to a CNAME record.
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class NSRecordValidator implements DnsRecordValidatorInterface
 {

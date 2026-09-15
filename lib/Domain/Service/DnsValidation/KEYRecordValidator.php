@@ -59,11 +59,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * @see https://datatracker.ietf.org/doc/html/rfc2535 RFC 2535: Domain Name System Security Extensions (Original KEY Record Definition)
  * @see https://datatracker.ietf.org/doc/html/rfc3445 RFC 3445: Limiting the Scope of the KEY Resource Record
  * @see https://datatracker.ietf.org/doc/html/rfc4034 RFC 4034: Resource Records for the DNS Security Extensions (Obsoletes KEY with DNSKEY)
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class KEYRecordValidator implements DnsRecordValidatorInterface
 {

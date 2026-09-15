@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Model;
 
 /**
- * Class containing constants for DNS record types.
+ * DNS record type names and the groups the UI and validators select from.
  */
 class RecordType
 {

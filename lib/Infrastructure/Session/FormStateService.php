@@ -23,12 +23,10 @@
 namespace Poweradmin\Infrastructure\Session;
 
 /**
- * Service class for managing form state across requests
+ * Keeps submitted form data in the session so a failed request can refill the form.
  *
  * This service handles storing and retrieving form data when validation errors occur,
  * allowing form fields to retain their values after a failed submission.
- *
- * @package Poweradmin\Infrastructure\Session
  */
 class FormStateService
 {

@@ -36,10 +36,7 @@ use Poweradmin\Infrastructure\Service\SessionAuthenticator;
 use Poweradmin\Infrastructure\Utility\DependencyCheck;
 
 /**
- * Class AppInitializer
- *
- * Initializes the application by checking dependencies, loading configuration,
- * setting locale, connecting to the database, and optionally authenticating the user.
+ * Boots a request: checks dependencies, loads config and locale, connects the database, optionally authenticates.
  */
 class AppInitializer
 {

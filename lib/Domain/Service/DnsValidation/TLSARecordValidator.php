@@ -68,11 +68,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - Without DNSSEC validation, TLSA offers no security advantage
  * - When CNAME records are used, the entire CNAME chain must be DNSSEC-signed
  * - When using SRV records, both SRV and TLSA records must be DNSSEC-signed
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class TLSARecordValidator implements DnsRecordValidatorInterface
 {

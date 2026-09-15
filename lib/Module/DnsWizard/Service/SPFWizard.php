@@ -25,15 +25,7 @@ namespace Poweradmin\Module\DnsWizard\Service;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
- * SPF Wizard
- *
- * Wizard for creating SPF (Sender Policy Framework) records.
- * SPF records are TXT records that specify which hosts are authorized to send
- * email on behalf of a domain.
- *
- * Includes DNS lookup limit warning per RFC 7208 Section 4.6.4.
- *
- * @package Poweradmin\Module\DnsWizard\Service
+ * Builds an SPF TXT record and warns when it exceeds the RFC 7208 lookup limit.
  */
 class SPFWizard extends AbstractDnsWizard
 {

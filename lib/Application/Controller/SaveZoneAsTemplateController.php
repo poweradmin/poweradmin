@@ -21,15 +21,6 @@
  *
  */
 
-/**
- * Script that handles saving a zone as a template
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -39,6 +30,9 @@ use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 
+/**
+ * Handles the save-zone-as-template form: creates a zone template from the zone's records.
+ */
 class SaveZoneAsTemplateController extends BaseController
 {
     private UserContextService $userContextService;

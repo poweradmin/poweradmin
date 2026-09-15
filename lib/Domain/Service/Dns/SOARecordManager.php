@@ -29,7 +29,7 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
- * Service class for managing SOA records
+ * Reads and rewrites SOA records and bumps their serial.
  */
 class SOARecordManager implements SOARecordManagerInterface
 {

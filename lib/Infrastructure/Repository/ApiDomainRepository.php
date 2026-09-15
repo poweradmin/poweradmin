@@ -40,8 +40,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
 /**
- * API-backend domain repository.
- * Fetches zone data via PowerDNS REST API, uses Poweradmin DB for ownership.
+ * Domain lookups for the API backend mode, read through PowerDNS.
  */
 class ApiDomainRepository implements DomainRepositoryInterface
 {

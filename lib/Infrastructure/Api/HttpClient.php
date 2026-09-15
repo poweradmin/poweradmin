@@ -29,6 +29,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
 
+/**
+ * Sends JSON requests to the PowerDNS HTTP API with X-API-Key, retrying GETs once on transient failures.
+ */
 class HttpClient
 {
 

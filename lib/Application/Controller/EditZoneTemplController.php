@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles zone templates editing
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -40,6 +31,9 @@ use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Renders the zone template edit page and handles detail, record, save-as and linked-zone updates.
+ */
 class EditZoneTemplController extends BaseController
 {
     private UserContextService $userContext;

@@ -30,6 +30,9 @@ use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
+/**
+ * Shared query building for the record and zone searches: IDN matching and reverse IP search strings.
+ */
 abstract class BaseSearch
 {
     protected object $db;

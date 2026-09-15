@@ -35,6 +35,9 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 
+/**
+ * Keeps PTR records in step with A/AAAA records: adds, updates and deletes the counterpart in the paired zone.
+ */
 class ReverseRecordCreator
 {
     private PDO $db;

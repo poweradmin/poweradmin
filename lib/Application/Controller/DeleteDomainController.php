@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles zone deletion
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
@@ -40,6 +31,9 @@ use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Handles the delete-zone confirmation page and deletes the zone on confirmed POST.
+ */
 class DeleteDomainController extends BaseController
 {
 

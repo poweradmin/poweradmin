@@ -31,7 +31,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Enum\AccessScope;
 
 /**
- * DNS Wizard Selection Controller
+ * Renders the wizard picker at /zones/{id}/wizard.
  *
  * Displays the wizard selection page where users can choose
  * which DNS record wizard to use.

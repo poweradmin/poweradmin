@@ -24,6 +24,9 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
+/**
+ * Resolves a user's avatar URL from an OAuth profile picture or Gravatar, per the interface.avatar_* settings.
+ */
 class AvatarService
 {
     private ConfigurationManager $configManager;

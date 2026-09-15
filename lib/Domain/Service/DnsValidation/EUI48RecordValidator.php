@@ -41,11 +41,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - 00-1A-2B-3C-4D-5E
  *
  * @see https://datatracker.ietf.org/doc/html/rfc7043 RFC 7043: Resource Records for EUI-48 and EUI-64 Addresses in the DNS
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class EUI48RecordValidator implements DnsRecordValidatorInterface
 {

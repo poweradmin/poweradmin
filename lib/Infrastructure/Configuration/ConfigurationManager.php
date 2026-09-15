@@ -27,11 +27,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Class ConfigurationManager
- *
- * This class is responsible for loading and accessing configuration values.
- * It layers config/settings.php (or PA_CONFIG_PATH) over config/settings.defaults.php.
- * Legacy inc/config.inc.php support was removed in 4.1.0.
+ * Singleton that layers config/settings.php over config/settings.defaults.php and serves values by group and key.
  */
 class ConfigurationManager implements ConfigurationInterface
 {

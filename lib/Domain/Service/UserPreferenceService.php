@@ -28,6 +28,9 @@ use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Repository\UserPreferenceRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
+/**
+ * Reads and writes per-user preferences with a request cache and config-derived defaults.
+ */
 class UserPreferenceService
 {
     private UserPreferenceRepositoryInterface $repository;

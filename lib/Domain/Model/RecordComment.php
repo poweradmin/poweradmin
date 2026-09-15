@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Model;
 
+/**
+ * A comment on a record set (zone, name, type) with its author account, text and modification timestamp.
+ */
 readonly class RecordComment
 {
     private ?int $id;

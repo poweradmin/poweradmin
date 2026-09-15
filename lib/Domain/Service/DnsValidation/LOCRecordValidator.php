@@ -51,11 +51,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * NOTE: The LOC record is defined in RFC 1876 as an experimental protocol.
  *
  * @see https://www.rfc-editor.org/rfc/rfc1876 RFC 1876: A Means for Expressing Location Information in the Domain Name System
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class LOCRecordValidator implements DnsRecordValidatorInterface
 {

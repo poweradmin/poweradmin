@@ -28,6 +28,9 @@ use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
+/**
+ * SQL persistence for zone templates in zone_templ and their records in zone_templ_records.
+ */
 class DbZoneTemplateRepository
 {
     private object $db;

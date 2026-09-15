@@ -28,6 +28,9 @@ use PDOException;
 use PDOStatement;
 use RuntimeException;
 
+/**
+ * Creates and drops tables, indexes and foreign keys for the installer using per-driver SQL.
+ */
 class DatabaseSchemaService
 {
     private PDO $db;

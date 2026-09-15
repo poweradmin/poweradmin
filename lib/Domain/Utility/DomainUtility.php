@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Utility;
 
 /**
- * Utility class for domain operations
+ * Domain name helpers: reverse-zone names, domain levels and second-level extraction.
  */
 class DomainUtility
 {

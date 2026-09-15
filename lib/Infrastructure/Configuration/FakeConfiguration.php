@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
+/**
+ * In-memory ConfigurationInterface backed by a plain array, for tests and code paths without a settings file.
+ */
 class FakeConfiguration implements ConfigurationInterface
 {
     protected array $config;

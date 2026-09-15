@@ -23,11 +23,7 @@
 namespace Poweradmin;
 
 /**
- * Class Pages
- *
- * This class provides a static method to retrieve a list of page identifiers.
- *
- * @package Poweradmin
+ * Static list of every page identifier the application routes, used by the entry-point tests.
  */
 class Pages
 {

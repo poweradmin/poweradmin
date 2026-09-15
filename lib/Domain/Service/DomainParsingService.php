@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 /**
- * Service for parsing domain names into components
+ * Splits a domain name into subdomain, domain and TLD parts.
  */
 class DomainParsingService
 {

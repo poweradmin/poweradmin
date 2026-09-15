@@ -49,11 +49,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * @see https://datatracker.ietf.org/doc/html/rfc8624 RFC 8624: Algorithm Implementation Requirements and Usage Guidance for DNSSEC
  * @see https://datatracker.ietf.org/doc/html/rfc3658 RFC 3658: Delegation Signer Resource Record
  * @see https://datatracker.ietf.org/doc/html/rfc8078 RFC 8078: Managing DS Records from the Parent via CDS/CDNSKEY
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class DSRecordValidator implements DnsRecordValidatorInterface
 {

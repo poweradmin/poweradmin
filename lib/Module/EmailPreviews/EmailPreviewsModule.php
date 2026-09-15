@@ -24,6 +24,9 @@ namespace Poweradmin\Module\EmailPreviews;
 
 use Poweradmin\Module\ModuleInterface;
 
+/**
+ * Module registration for the /tools/email-previews page and its tools menu entry.
+ */
 class EmailPreviewsModule implements ModuleInterface
 {
     public function getName(): string

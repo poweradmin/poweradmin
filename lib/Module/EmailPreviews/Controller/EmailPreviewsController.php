@@ -27,6 +27,9 @@ use Poweradmin\BaseController;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Module\EmailPreviews\Service\EmailPreviewService;
 
+/**
+ * GET /tools/email-previews - renders the email templates in light and dark mode for ueberusers.
+ */
 class EmailPreviewsController extends BaseController
 {
     private EmailTemplateService $emailTemplateService;

@@ -26,6 +26,9 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Handles the POST that marks a zone template as the default or clears the default flag.
+ */
 class SetDefaultZoneTemplController extends BaseController
 {
     public function run(): void

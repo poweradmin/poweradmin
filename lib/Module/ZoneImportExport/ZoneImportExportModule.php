@@ -24,6 +24,9 @@ namespace Poweradmin\Module\ZoneImportExport;
 
 use Poweradmin\Module\ModuleInterface;
 
+/**
+ * Module registration for the zone file import page and the per-zone BIND export route.
+ */
 class ZoneImportExportModule implements ModuleInterface
 {
     public function getName(): string

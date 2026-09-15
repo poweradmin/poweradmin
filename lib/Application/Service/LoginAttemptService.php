@@ -27,6 +27,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Domain\Enum\LoginAttemptStage;
 
+/**
+ * Records attempts in login_attempts and enforces the password- and MFA-stage lockouts per user and IP.
+ */
 class LoginAttemptService
 {
     /** Kept as string constants for callers; {@see LoginAttemptStage} owns the vocabulary. */

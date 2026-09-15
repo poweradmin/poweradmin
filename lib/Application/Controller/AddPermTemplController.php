@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles requests to add new permission template
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
@@ -38,6 +29,9 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 
+/**
+ * Handles the add-permission-template form: validates the fields and creates the template with its permissions.
+ */
 class AddPermTemplController extends BaseController
 {
     private DbPermissionTemplateRepository $permissionTemplate;

@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles requests to edit zone records
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -50,6 +41,9 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 
+/**
+ * Handles the edit-record form: validates the change, saves it and syncs the matching PTR record when ticked.
+ */
 class EditRecordController extends BaseController
 {
 

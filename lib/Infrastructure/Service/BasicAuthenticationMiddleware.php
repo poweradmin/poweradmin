@@ -35,11 +35,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * HTTP Basic Authentication Middleware
+ * Authenticates API requests with HTTP Basic credentials against the users table.
  *
  * This middleware processes HTTP Basic Authentication credentials and authenticates the user
- *
- * @package Poweradmin\Infrastructure\Service
  */
 class BasicAuthenticationMiddleware
 {

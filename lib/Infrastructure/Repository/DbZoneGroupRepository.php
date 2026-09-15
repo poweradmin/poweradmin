@@ -30,6 +30,9 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
+/**
+ * SQL persistence for zone-to-group links in zones_groups; joins domains, or the zones table under the API backend.
+ */
 class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 {
     private PDO $db;

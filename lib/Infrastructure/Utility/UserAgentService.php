@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Utility;
 
 /**
- * Service for safely handling and sanitizing User-Agent strings
+ * Reads and sanitizes the request User-Agent for logging and bot detection.
  *
  * This service provides methods to safely retrieve and sanitize User-Agent
  * strings for logging purposes, preventing potential security issues such as

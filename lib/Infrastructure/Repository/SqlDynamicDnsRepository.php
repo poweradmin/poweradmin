@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 
 /**
- * SQL-backend dynamic DNS repository.
+ * Dynamic DNS persistence on the records table.
  */
 readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 {

@@ -38,6 +38,9 @@ use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
+/**
+ * API-backend zone repository; reads zone state through PowerDNS and ownership from zones and zones_groups.
+ */
 readonly class ApiZoneRepository implements ZoneRepositoryInterface
 {
     // Failing beats returning an empty set that reads as "this zone has none".

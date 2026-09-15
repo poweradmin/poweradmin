@@ -39,11 +39,6 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
  *
  * The result reports validity only. Resolved values are sample data and must never be
  * stored, so callers keep the values they were given.
- *
- * @package Poweradmin
- * @copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright 2010-2026 Poweradmin Development Team
- * @license https://opensource.org/licenses/GPL-3.0 GPL
  */
 class ZoneTemplateRecordValidationService
 {

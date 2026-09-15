@@ -20,21 +20,15 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Quick removal of a member from group (from edit group page)
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\BaseController;
 
+/**
+ * Handles the POST that removes one user from a group from the edit-group page.
+ */
 class QuickRemoveGroupMemberController extends BaseController
 {
     private GroupMembershipService $membershipService;

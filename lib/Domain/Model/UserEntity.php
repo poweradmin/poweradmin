@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Model;
 
+/**
+ * Static lookups against the users table: whether a username exists and the username for an id.
+ */
 class UserEntity
 {
     public static function exists($db, $name): bool

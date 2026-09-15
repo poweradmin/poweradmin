@@ -28,7 +28,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\UserRepository;
 
 /**
- * Service for managing user permissions
+ * Answers permission questions for a user from their template and group grants, cached per request.
  *
  * This service provides methods to check and retrieve user permissions
  * using Domain-Driven Design principles.

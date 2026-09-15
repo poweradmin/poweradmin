@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles request to add new records to existing zone
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -49,6 +40,9 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Enum\AccessScope;
 
+/**
+ * Handles the add-record form for a zone: checks edit rights, validates the record and saves one or several rows.
+ */
 class AddRecordController extends BaseController
 {
     private DomainRepositoryInterface $domainRepository;

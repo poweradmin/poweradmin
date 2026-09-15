@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Application\Service;
 
+/**
+ * Renders the memory usage and elapsed time footer shown when misc.display_stats is on.
+ */
 class StatsDisplayService
 {
     private const UNITS = ['B', 'KB', 'MB', 'GB'];

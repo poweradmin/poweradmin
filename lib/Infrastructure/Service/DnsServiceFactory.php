@@ -42,14 +42,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 
 /**
- * Factory for DNS services
+ * Builds the DNS manager services with their backend provider and repositories.
  *
  * Creates and configures DNS-related services with proper dependencies
- *
- * @package Poweradmin
- * @copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright 2010-2025 Poweradmin Development Team
- * @license https://opensource.org/licenses/GPL-3.0 GPL
  */
 class DnsServiceFactory
 {

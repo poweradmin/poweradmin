@@ -27,6 +27,9 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Module\Rdap\Service\RdapService;
 
+/**
+ * /rdap and /zones/{id}/rdap - looks up a domain's RDAP record and shows the result.
+ */
 class RdapController extends BaseController
 {
     private RdapService $rdapService;

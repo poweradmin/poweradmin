@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+/**
+ * Sends a Location header for the given URL and ends the request.
+ */
 class RedirectService
 {
     public function redirectTo(string $url): void

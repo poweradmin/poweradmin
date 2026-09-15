@@ -28,6 +28,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 
+/**
+ * Resolves the timezone to display for a user: their preference, then misc.timezone, then UTC.
+ */
 class UserTimezoneService
 {
     private UserPreferenceService $preferenceService;

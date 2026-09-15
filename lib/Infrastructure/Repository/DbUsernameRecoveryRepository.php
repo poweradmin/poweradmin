@@ -26,6 +26,9 @@ use PDO;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
+/**
+ * SQL persistence for username recovery attempts and their rate-limit counters in username_recovery_requests.
+ */
 class DbUsernameRecoveryRepository
 {
     private PDO $db;

@@ -31,6 +31,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
+/**
+ * Writes zone events to the log_zones table and queries them by domain or filter, with SQL and API-backend joins.
+ */
 class DbZoneLogger
 {
     private PDO $db;

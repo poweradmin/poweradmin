@@ -24,6 +24,9 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
+/**
+ * Checks a password against the security.password_policy rules and reports the ones it fails.
+ */
 class PasswordPolicyService
 {
     private ConfigurationManager $configManager;

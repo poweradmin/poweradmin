@@ -40,11 +40,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - flags: 8-bit integer (0-255) where bit 0 is the critical bit
  * - tag: one of "issue", "issuewild", "iodef", or others registered with IANA
  * - value: tag-specific value, enclosed in quotes
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class CAARecordValidator implements DnsRecordValidatorInterface
 {

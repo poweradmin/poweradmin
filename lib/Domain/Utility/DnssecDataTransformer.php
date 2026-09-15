@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Utility;
 
+/**
+ * Flattens an API CryptoKey into the [id, type, key tag, algorithm, bits, active] row of the DNSSEC key table.
+ */
 class DnssecDataTransformer
 {
     public function transformKey(mixed $key): array

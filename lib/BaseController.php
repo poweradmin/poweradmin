@@ -86,7 +86,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Abstract class BaseController
+ * Base for every web controller: config, database, session, permissions, CSRF, validation and Twig rendering.
  *
  * Provides common functionality for all controllers in the Poweradmin application.
  */

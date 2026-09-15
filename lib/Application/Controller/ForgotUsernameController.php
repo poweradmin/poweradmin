@@ -38,6 +38,9 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Handles the forgot-username form: sends the username to the submitted email address if it is on file.
+ */
 class ForgotUsernameController extends BaseController
 {
     private UsernameRecoveryService $usernameRecoveryService;

@@ -30,6 +30,9 @@ use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserPreference;
 
+/**
+ * Handles the user preferences page: rows per page, form positions, display toggles and timezone.
+ */
 class UserPreferencesController extends BaseController
 {
     private Request $request;

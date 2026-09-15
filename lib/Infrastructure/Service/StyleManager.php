@@ -25,6 +25,9 @@ namespace Poweradmin\Infrastructure\Service;
 use DirectoryIterator;
 use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
 
+/**
+ * Picks the light/dark stylesheet from the style cookie or config, limited to what the theme's style directory ships.
+ */
 class StyleManager
 {
     private const DEFAULT_STYLE = 'light';

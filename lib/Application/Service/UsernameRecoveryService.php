@@ -28,6 +28,9 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;
 use PDO;
 
+/**
+ * Username recovery by email: rate-limits requests and mails the usernames registered to an address.
+ */
 class UsernameRecoveryService
 {
     private DbUsernameRecoveryRepository $recoveryRepository;

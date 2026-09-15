@@ -28,6 +28,9 @@ use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 
+/**
+ * Internal endpoint /api/internal/user-preferences: reads, updates and resets the logged-in user's preferences.
+ */
 class UserPreferencesController extends InternalApiController
 {
     private UserPreferenceService $userPreferenceService;

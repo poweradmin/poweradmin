@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Model;
 
 /**
- * ZoneGroup domain entity
+ * A zone-to-group ownership row from zones_groups.
  *
  * Represents the ownership relationship between a zone (domain) and a group
  */

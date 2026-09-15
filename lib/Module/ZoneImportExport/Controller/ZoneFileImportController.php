@@ -34,6 +34,9 @@ use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Enum\ZoneKind;
 
+/**
+ * The /tools/zone-import page: uploads a BIND zone file, previews the parsed records and creates the zone.
+ */
 class ZoneFileImportController extends BaseController
 {
     private UserContextService $userContextService;

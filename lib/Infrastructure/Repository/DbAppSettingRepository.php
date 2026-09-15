@@ -26,6 +26,9 @@ use PDO;
 use PDOException;
 use Poweradmin\Domain\Repository\AppSettingRepositoryInterface;
 
+/**
+ * SQL persistence for key/value application settings in the app_settings table.
+ */
 class DbAppSettingRepository implements AppSettingRepositoryInterface
 {
     public function __construct(private PDO $db)

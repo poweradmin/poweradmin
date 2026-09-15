@@ -33,6 +33,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use PDO;
 
+/**
+ * Creates a record through RecordManager, then logs it, stores its comment and syncs the PTR comment.
+ */
 class RecordManagerService
 {
     private PDO $db;

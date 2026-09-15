@@ -25,16 +25,7 @@ namespace Poweradmin\Module\DnsWizard\Service;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
- * DKIM Wizard
- *
- * Wizard for creating DKIM (DomainKeys Identified Mail) DNS records.
- * DKIM records are TXT records published at <selector>._domainkey.<domain>
- * that contain the public key for email signature verification.
- *
- * NOTE: This wizard manages DNS records only. DKIM keys are generated
- * on mail servers (Postfix, Exim, etc.), not in PowerDNS.
- *
- * @package Poweradmin\Module\DnsWizard\Service
+ * Builds the DKIM public-key TXT record at <selector>._domainkey.<domain>; the key itself comes from the mail server.
  */
 class DKIMWizard extends AbstractDnsWizard
 {

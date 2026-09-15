@@ -25,6 +25,9 @@ namespace Poweradmin\Module\EmailPreviews\Service;
 use InvalidArgumentException;
 use Poweradmin\Application\Service\EmailTemplateService;
 
+/**
+ * Renders each email template with sample data, in light and forced dark mode, for the preview page.
+ */
 class EmailPreviewService
 {
     private EmailTemplateService $emailTemplateService;

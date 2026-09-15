@@ -27,6 +27,9 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Throwable;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 
+/**
+ * SQL persistence for permission templates in perm_templ and their perm_items links in perm_templ_items.
+ */
 class DbPermissionTemplateRepository
 {
     private object $db;

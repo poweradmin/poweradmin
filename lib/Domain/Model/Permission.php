@@ -30,9 +30,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
- * Class Permission
- *
- * This class handles permission checks for various actions.
+ * Record-type restrictions for client-level editors and the current user's view, edit and delete level.
  */
 class Permission
 {

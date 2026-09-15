@@ -33,12 +33,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Poweradmin\Domain\Enum\AccessScope;
 
 /**
- * DNS Wizard Internal API Controller
+ * /api/internal/dns-wizard: validates and previews wizard input for the record form.
  *
  * Handles internal API endpoints for DNS record wizards.
  * These endpoints are used by JavaScript for dynamic wizard interactions.
- *
- * @package Poweradmin\Module\DnsWizard\Controller\Api
  */
 class DnsWizardApiController extends InternalApiController
 {

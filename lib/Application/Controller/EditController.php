@@ -21,15 +21,6 @@
  *
  */
 
-/**
- * Script that handles editing of zone records
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Domain\Service\PermissionService;
@@ -68,6 +59,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Renders the zone edit page with its record table and handles record, comment, template and signing changes.
+ */
 class EditController extends BaseController
 {
     private RecordTypeService $recordTypeService;

@@ -29,6 +29,9 @@ use Poweradmin\Domain\Model\Zone;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+/**
+ * Typed wrapper over the PowerDNS /api/v1 server endpoints: zones, RRsets, DNSSEC keys, metadata, TSIG, views.
+ */
 class PowerdnsApiClient
 {
 

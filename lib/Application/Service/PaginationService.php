@@ -26,6 +26,9 @@ use InvalidArgumentException;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Service\UserPreferenceService;
 
+/**
+ * Builds Pagination objects and resolves the rows-per-page value within the allowed bounds.
+ */
 class PaginationService
 {
     /** Lower and upper bounds for a usable page size; shared with UserPreferenceService. */

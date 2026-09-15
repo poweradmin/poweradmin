@@ -49,11 +49,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * Note: ILNP is an experimental protocol (RFC 6740) that provides identifier-locator
  * separation to enhance multihoming capabilities.
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class NIDRecordValidator implements DnsRecordValidatorInterface
 {

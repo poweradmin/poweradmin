@@ -26,6 +26,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Random\Engine\Secure;
 use Random\Randomizer;
 
+/**
+ * Generates random passwords that satisfy the configured password policy.
+ */
 class PasswordGenerationService
 {
     private ConfigurationManager $configManager;

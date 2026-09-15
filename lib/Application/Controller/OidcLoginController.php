@@ -34,6 +34,9 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
 
+/**
+ * Starts the OIDC login flow by redirecting to the chosen or first configured provider.
+ */
 class OidcLoginController extends BaseController
 {
     private OidcService $oidcService;

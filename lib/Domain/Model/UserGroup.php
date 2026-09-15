@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Model;
 
 /**
- * UserGroup domain entity
+ * A user group as stored in user_groups.
  *
  * Represents a group of users with shared permissions via a permission template
  */

@@ -25,6 +25,9 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 
+/**
+ * Finds the A or AAAA records of a forward zone whose addresses fall inside a given IPv4 range or IPv6 /64.
+ */
 class RecordMatchingService
 {
     private DomainRepositoryInterface $domainRepository;

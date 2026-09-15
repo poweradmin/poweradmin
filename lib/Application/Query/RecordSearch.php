@@ -30,6 +30,9 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 
 // TODO: search_group_records relies on MySQL sql_mode hacks plus per-backend
 // MIN() workarounds; rewrite with proper cross-database GROUP BY.
+/**
+ * Runs the record search page query with grouping, comments, sorting and pagination.
+ */
 class RecordSearch extends BaseSearch
 {
     /**

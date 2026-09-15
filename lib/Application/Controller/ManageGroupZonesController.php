@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles adding/removing zones to/from groups
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
@@ -39,6 +30,9 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\IpHelper;
 
+/**
+ * Handles the group zones page: assigns zones to a group and removes them.
+ */
 class ManageGroupZonesController extends BaseController
 {
     private ZoneGroupService $zoneGroupService;

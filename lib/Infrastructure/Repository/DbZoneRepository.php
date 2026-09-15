@@ -37,6 +37,9 @@ use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
+/**
+ * SQL zone repository over the PowerDNS domains and records tables plus the zones and zones_groups ownership tables.
+ */
 class DbZoneRepository implements ZoneRepositoryInterface
 {
     private object $db;

@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+/**
+ * Reads the current page number from the start query parameter, clamped to at least 1.
+ */
 class HttpPaginationParameters
 {
     public function getCurrentPage(): int

@@ -34,6 +34,9 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
 
+/**
+ * Starts the SAML login flow by redirecting to the chosen or first configured identity provider.
+ */
 class SamlLoginController extends BaseController
 {
     private SamlService $samlService;

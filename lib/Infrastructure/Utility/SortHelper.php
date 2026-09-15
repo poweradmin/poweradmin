@@ -24,6 +24,9 @@ namespace Poweradmin\Infrastructure\Utility;
 
 use Poweradmin\Domain\Enum\SortDirection;
 
+/**
+ * Per-database ORDER BY clauses that sort zone and record names naturally instead of lexically.
+ */
 class SortHelper
 {
     /**

@@ -27,6 +27,9 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 use ReflectionClass;
 
+/**
+ * Reads the oidc provider settings, discovers endpoints and validates the permission template mapping.
+ */
 class OidcConfigurationService extends LoggingService
 {
     private ConfigurationManager $configManager;

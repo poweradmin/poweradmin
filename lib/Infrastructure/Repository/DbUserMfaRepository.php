@@ -32,6 +32,9 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+/**
+ * SQL persistence for per-user MFA settings in the user_mfa table.
+ */
 class DbUserMfaRepository implements UserMfaRepositoryInterface
 {
     private PDO $db;

@@ -47,7 +47,7 @@ use Throwable;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
- * Service class for managing domains/zones
+ * Creates, updates and deletes zones for the web UI, including template records and DNSSEC setup.
  */
 class DomainManager implements DomainManagerInterface
 {

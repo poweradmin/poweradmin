@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that record deletion from zone template
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -38,6 +29,9 @@ use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Handles the delete confirmation for a zone template record and marks the template modified after deletion.
+ */
 class DeleteZoneTemplRecordController extends BaseController
 {
     private Request $request;

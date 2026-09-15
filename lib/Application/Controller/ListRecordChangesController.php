@@ -31,6 +31,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
+/**
+ * Renders the record change log page for admins with filters, pagination and CSV/JSON export.
+ */
 class ListRecordChangesController extends BaseController
 {
     private const TIME_WINDOWS = [

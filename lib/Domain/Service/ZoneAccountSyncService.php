@@ -27,7 +27,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
- * Service for mirroring zone ownership into the PowerDNS account field
+ * Mirrors zone ownership into the PowerDNS account field.
  */
 class ZoneAccountSyncService
 {

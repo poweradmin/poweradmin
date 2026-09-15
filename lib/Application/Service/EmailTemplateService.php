@@ -29,6 +29,9 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
+/**
+ * Renders the transactional email templates under templates/emails, with custom overrides, through Twig.
+ */
 class EmailTemplateService
 {
     private ?Environment $twig = null;

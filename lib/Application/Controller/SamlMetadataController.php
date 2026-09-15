@@ -30,6 +30,9 @@ use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 
+/**
+ * Serves the SAML service provider metadata XML at /saml/metadata.
+ */
 class SamlMetadataController extends BaseController
 {
     private SamlService $samlService;

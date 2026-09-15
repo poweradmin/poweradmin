@@ -24,6 +24,9 @@ namespace Poweradmin\Domain\Utility;
 
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 
+/**
+ * IPv4/IPv6 arithmetic for reverse DNS: CIDR sizes, PTR names, reverse zone names and address display forms.
+ */
 class IpHelper
 {
     private static ?IPAddressValidator $ipValidator = null;

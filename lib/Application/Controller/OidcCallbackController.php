@@ -35,6 +35,9 @@ use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Handles the OIDC provider callback at /oidc/callback: completes the login or reports the provider error.
+ */
 class OidcCallbackController extends BaseController
 {
     private OidcService $oidcService;

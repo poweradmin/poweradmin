@@ -25,15 +25,7 @@ namespace Poweradmin\Module\DnsWizard\Service;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
- * TLSA Wizard
- *
- * Wizard for creating TLSA (TLS Authentication) records for DANE.
- * TLSA records are published at _port._protocol.hostname and specify
- * certificate or public key data for TLS validation.
- *
- * IMPORTANT: TLSA requires DNSSEC to be enabled on the zone.
- *
- * @package Poweradmin\Module\DnsWizard\Service
+ * Builds TLSA records at _port._protocol.hostname for DANE; the zone must be DNSSEC-signed.
  */
 class TLSAWizard extends AbstractDnsWizard
 {

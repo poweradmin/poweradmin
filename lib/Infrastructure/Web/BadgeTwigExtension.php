@@ -28,6 +28,9 @@ use Poweradmin\Domain\Service\PdnsCapabilities;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
+/**
+ * Twig functions for record and zone type badge classes, zone type labels and the autoprimaries wording.
+ */
 class BadgeTwigExtension extends AbstractExtension
 {
     private const RECORD_TYPE_CLASSES = [

@@ -20,18 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API controller for zone RRSet (Resource Record Set) operations
- *
- * RRSets represent DNS-correct grouping of records: all records with the same
- * name and type are managed as a single set, matching PowerDNS behavior.
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
@@ -49,6 +37,9 @@ use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
+/**
+ * /api/v2/zones/{id}/rrsets: lists, replaces and deletes records grouped by name and type.
+ */
 class ZonesRRSetsController extends PublicApiController
 {
     private ZoneRepositoryInterface $zoneRepository;

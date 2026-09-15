@@ -28,10 +28,7 @@ use Poweradmin\Domain\Enum\MfaSessionState;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
- * MfaSessionManager
- *
- * Centralizes all MFA-related session operations to provide consistency
- * across different parts of the application.
+ * Static helpers that set, read and reset the MFA pending/verified state in the session.
  */
 class MfaSessionManager
 {

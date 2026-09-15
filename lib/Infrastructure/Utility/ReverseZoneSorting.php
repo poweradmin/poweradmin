@@ -23,14 +23,7 @@
 namespace Poweradmin\Infrastructure\Utility;
 
 /**
- * Class ReverseZoneSorting
- *
- * Provides multiple sorting algorithms for reverse DNS zones:
- *
- * 1. Natural sorting (default): Based on natural sorting of domain names
- * 2. Hierarchical sorting: Organizes zones by network hierarchy
- *    prioritizing by the base network first (10.in-addr.arpa, 172.in-addr.arpa, etc.)
- *    and then by the specific subnets within each network.
+ * Picks natural or hierarchical reverse zone sorting per the configured sort type, in SQL or in PHP.
  */
 class ReverseZoneSorting
 {

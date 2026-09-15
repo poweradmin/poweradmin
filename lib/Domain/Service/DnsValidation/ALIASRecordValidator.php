@@ -41,11 +41,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * and a resolver must be configured. These settings are beyond the scope of this validator.
  *
  * @see https://doc.powerdns.com/authoritative/guides/alias.html
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class ALIASRecordValidator implements DnsRecordValidatorInterface
 {

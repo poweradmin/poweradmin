@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that displays list of group event logs
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -37,6 +28,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
+/**
+ * Renders the group log page with filters and CSV/JSON export.
+ */
 class ListLogGroupsController extends BaseController
 {
     private DbGroupLogger $dbGroupLogger;

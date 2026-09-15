@@ -20,18 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API controller for bulk zone record operations
- *
- * Allows creating, updating, or deleting multiple records in a single
- * atomic transaction, improving performance and ensuring consistency.
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Exception;
@@ -52,6 +40,9 @@ use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
+/**
+ * POST /api/v2/zones/{id}/records/bulk: applies a list of create, update and delete record operations.
+ */
 class ZonesRecordsBulkController extends PublicApiController
 {
     private ZoneRepositoryInterface $zoneRepository;

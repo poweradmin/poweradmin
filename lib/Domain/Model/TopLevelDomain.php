@@ -25,9 +25,7 @@ namespace Poweradmin\Domain\Model;
 use RuntimeException;
 
 /**
- * Class for validating and working with Top Level Domains
- *
- * @package Poweradmin\Domain\Model
+ * Top-level domain validation against the bundled TLD list.
  */
 class TopLevelDomain
 {

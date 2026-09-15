@@ -61,11 +61,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - SHA-256 fingerprints (fp-type 2) are strongly preferred over SHA-1
  * - If both SHA-1 and SHA-256 exist for a host, SSH should prefer SHA-256
  * - If SHA-256 verification fails, SSH should reject the key rather than fall back to SHA-1
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class SSHFPRecordValidator implements DnsRecordValidatorInterface
 {

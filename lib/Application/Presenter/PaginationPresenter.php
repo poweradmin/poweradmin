@@ -24,6 +24,9 @@ namespace Poweradmin\Application\Presenter;
 
 use Poweradmin\Domain\Model\Pagination;
 
+/**
+ * Renders the Bootstrap page-number list for a Pagination object, with ellipses around the current page.
+ */
 class PaginationPresenter
 {
     private Pagination $pagination;

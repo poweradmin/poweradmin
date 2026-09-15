@@ -24,6 +24,9 @@ namespace Poweradmin\Domain\Model;
 
 use Poweradmin\Domain\Service\PdnsCapabilities;
 
+/**
+ * PowerDNS DNSSEC algorithm names, the subset offered for new keys, and version-gating against the server.
+ */
 class DnssecAlgorithmName
 {
     public const RSAMD5 = 'rsamd5';

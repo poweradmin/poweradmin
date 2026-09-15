@@ -29,6 +29,9 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Enum\AuthMethod;
 
+/**
+ * Password reset by email: issues and rate-limits tokens, validates them and stores the new password.
+ */
 class PasswordResetService
 {
     private DbPasswordResetTokenRepository $tokenRepository;

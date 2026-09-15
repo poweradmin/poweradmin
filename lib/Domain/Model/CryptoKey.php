@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Model;
 
+/**
+ * A DNSSEC key of a zone: id, type (ksk/zsk/csk), size, algorithm, active flag, DNSKEY and DS records.
+ */
 class CryptoKey
 {
 

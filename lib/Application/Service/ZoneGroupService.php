@@ -29,7 +29,7 @@ use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 
 /**
- * Service for managing zone-group ownership
+ * Assigns zones to groups and removes them; the group-based half of zone ownership.
  *
  * Handles assigning groups as zone owners
  */

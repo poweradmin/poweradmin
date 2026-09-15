@@ -26,6 +26,9 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
+/**
+ * GET /zones/{id}/export/csv - downloads the zone's records as a CSV file.
+ */
 class CsvExportController extends BaseController
 {
     public function run(): void

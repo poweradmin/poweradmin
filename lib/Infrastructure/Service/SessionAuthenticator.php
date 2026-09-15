@@ -51,6 +51,9 @@ use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Application\Service\MailService;
 use ReflectionClass;
 
+/**
+ * Per-request login pipeline: CSRF and reCAPTCHA on the form, session expiry, then the SQL or LDAP authenticator.
+ */
 class SessionAuthenticator extends LoggingService
 {
     private AuthenticationService $authService;

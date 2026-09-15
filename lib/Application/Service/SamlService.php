@@ -41,6 +41,9 @@ use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use ReflectionClass;
 
+/**
+ * Runs the SAML login flow: builds the IdP redirect, consumes the assertion and handles single logout.
+ */
 class SamlService extends LoggingService
 {
     private ConfigurationManager $configManager;

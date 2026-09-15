@@ -32,12 +32,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
- * Zone counting service
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
+ * Counts the zones a user may see, on SQL or the API backend.
  */
 class ZoneCountService
 {

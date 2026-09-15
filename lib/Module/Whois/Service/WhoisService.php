@@ -25,6 +25,9 @@ namespace Poweradmin\Module\Whois\Service;
 use Exception;
 use Poweradmin\Domain\Service\DnsIdnService;
 
+/**
+ * WHOIS lookups over port 43 using the per-TLD server list in data/whois_servers.php.
+ */
 class WhoisService
 {
     private array $whoisServers = [];

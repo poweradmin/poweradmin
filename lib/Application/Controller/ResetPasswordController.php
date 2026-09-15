@@ -39,6 +39,9 @@ use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Handles the password reset form reached from the emailed token link and sets the new password.
+ */
 class ResetPasswordController extends BaseController
 {
     private PasswordResetService $passwordResetService;

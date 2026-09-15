@@ -31,7 +31,7 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
 /**
- * Service for sending zone access change notifications
+ * Emails a user when they gain or lose access to a zone.
  *
  * This service handles email notifications when users are granted or revoked
  * access to DNS zones, improving collaboration awareness and audit trails.

@@ -36,7 +36,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * SQL-based DNS backend provider.
+ * DnsBackendProvider over direct SQL on the PowerDNS tables.
  *
  * Performs DNS data operations directly against the PowerDNS database tables.
  * This is the default backend and preserves the existing behavior.

@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Enum;
 
+/**
+ * Why a login attempt failed; distinguishes a wrong password from an unknown, disabled or duplicated account.
+ */
 enum LoginFailureReason: string
 {
     case NO_SUCH_USER = 'no_such_user';

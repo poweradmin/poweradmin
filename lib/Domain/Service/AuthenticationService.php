@@ -29,6 +29,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
 
+/**
+ * Starts or ends a session with a flash message, then redirects to login; API requests get a 401 JSON instead.
+ */
 class AuthenticationService
 {
     private SessionService $sessionService;

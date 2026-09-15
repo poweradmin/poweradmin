@@ -31,6 +31,9 @@ use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 
+/**
+ * Renders the login page with its CSRF token and the enabled OIDC and SAML providers.
+ */
 class LoginController extends BaseController
 {
     private CsrfTokenService $csrfTokenService;

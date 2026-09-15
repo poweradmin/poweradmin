@@ -30,6 +30,9 @@ use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\ValueObject\IpAddressList;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
+/**
+ * Validates a DDNS request's user agent, username, hostname and IP lists before any update is applied.
+ */
 class DynamicDnsValidationService
 {
     private HostnameValidator $hostnameValidator;

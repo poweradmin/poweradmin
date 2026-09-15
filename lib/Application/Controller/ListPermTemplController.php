@@ -20,19 +20,13 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that displays list of permission templates
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 
+/**
+ * Renders the permission templates list at /permissions/templates.
+ */
 class ListPermTemplController extends BaseController
 {
 

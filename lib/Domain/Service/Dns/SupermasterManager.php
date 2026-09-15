@@ -34,7 +34,7 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
- * Service class for managing PowerDNS supermasters
+ * Creates, updates and deletes PowerDNS supermasters.
  */
 class SupermasterManager
 {

@@ -28,7 +28,7 @@ use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 
 /**
- * Service for managing user groups
+ * Creates, updates, deletes and lists user groups, with the view checks the group pages need.
  *
  * Handles group CRUD operations, visibility filtering, and validation
  */

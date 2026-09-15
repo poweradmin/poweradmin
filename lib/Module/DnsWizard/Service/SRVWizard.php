@@ -25,13 +25,7 @@ namespace Poweradmin\Module\DnsWizard\Service;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
- * SRV Wizard
- *
- * Wizard for creating SRV (Service) records.
- * SRV records define the location (hostname and port) of servers for
- * specified services.
- *
- * @package Poweradmin\Module\DnsWizard\Service
+ * Builds SRV records giving the host and port of a service.
  */
 class SRVWizard extends AbstractDnsWizard
 {

@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API v2 controller for group member operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Domain\Error\GroupNotFoundException;
@@ -39,6 +30,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
 
+/**
+ * /api/v2/groups/{id}/members: lists, adds and removes the users in a group.
+ */
 class GroupMembersController extends PublicApiController
 {
     private GroupMembershipService $membershipService;

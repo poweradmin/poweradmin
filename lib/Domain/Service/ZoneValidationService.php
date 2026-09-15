@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 
 /**
- * Zone Validation Service
+ * Checks a zone is fit for DNSSEC signing and formats the reasons when it is not.
  *
  * Validates zone records for common issues that could cause DNSSEC signing to fail.
  * Performs comprehensive pre-flight checks before DNSSEC operations.

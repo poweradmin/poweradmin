@@ -30,6 +30,9 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
+/**
+ * Adds the matching A record in the managed forward zone when a PTR record is created in a reverse zone.
+ */
 class DomainRecordCreator
 {
     private ConfigurationManager $config;

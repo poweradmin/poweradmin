@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API controller for zone records operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Exception;
@@ -47,6 +38,9 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
+/**
+ * /api/v2/zones/{id}/records: lists, creates, updates and deletes single records in a zone.
+ */
 class ZonesRecordsController extends PublicApiController
 {
     private ZoneRepositoryInterface $zoneRepository;

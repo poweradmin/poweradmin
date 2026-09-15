@@ -36,10 +36,6 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
  * TTL values define how long DNS records should be cached by resolvers.
  * According to RFC 2181, TTL values are unsigned 32-bit integers (0-4294967295),
  * although practical implementations typically use much lower values.
- *
- * @package Poweradmin
- * @copyright 2010-2025 Poweradmin Development Team
- * @license https://opensource.org/licenses/GPL-3.0 GPL
  */
 class TTLValidator
 {

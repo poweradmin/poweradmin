@@ -25,6 +25,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * Resolves the client IP from REMOTE_ADDR, honoring forwarded headers only from private or trusted proxy peers.
+ */
 class IpAddressRetriever
 {
     private array $server;

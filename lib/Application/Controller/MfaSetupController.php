@@ -33,6 +33,9 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use RuntimeException;
 
+/**
+ * Handles the MFA setup page: app or email enrolment, verification, disabling and recovery code regeneration.
+ */
 class MfaSetupController extends BaseController
 {
     private MfaService $mfaService;

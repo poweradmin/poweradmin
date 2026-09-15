@@ -26,6 +26,9 @@ use DateTimeImmutable;
 use Psr\Log\AbstractLogger;
 use Stringable;
 
+/**
+ * PSR-3 logger that applies the logging.level threshold, fills {placeholders} and passes lines to a log handler.
+ */
 class Logger extends AbstractLogger
 {
     private const ISO8601_DATETIME_FORMAT = 'c';

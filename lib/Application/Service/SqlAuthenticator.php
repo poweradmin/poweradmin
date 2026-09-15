@@ -38,6 +38,9 @@ use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use ReflectionClass;
 
+/**
+ * Session login against the users table with lockout checks, hash upgrades and MFA hand-off.
+ */
 class SqlAuthenticator extends LoggingService
 {
     private PDO $connection;

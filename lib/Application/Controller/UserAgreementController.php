@@ -29,6 +29,9 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
+/**
+ * Handles the user agreement page: shows the text and records the user's acceptance.
+ */
 class UserAgreementController extends BaseController
 {
     private UserAgreementService $agreementService;

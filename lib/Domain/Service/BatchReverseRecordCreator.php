@@ -36,6 +36,9 @@ use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
 
+/**
+ * Creates PTR records for a whole IPv4 or IPv6 /64 network, optionally only where forward A/AAAA records exist.
+ */
 class BatchReverseRecordCreator
 {
     private PDO $db;

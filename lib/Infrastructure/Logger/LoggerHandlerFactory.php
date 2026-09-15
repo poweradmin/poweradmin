@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+/**
+ * Picks the log handler from logging.type: 'native' writes via error_log, anything else discards.
+ */
 class LoggerHandlerFactory
 {
     public static function create(array $config): LogHandlerInterface

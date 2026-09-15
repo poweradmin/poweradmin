@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that handles search requests
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -41,6 +32,9 @@ use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;
 
+/**
+ * Handles the search page: finds zones and records by name or content with paging and sorting.
+ */
 class SearchController extends BaseController
 {
     private ZoneSortingService $zoneSortingService;

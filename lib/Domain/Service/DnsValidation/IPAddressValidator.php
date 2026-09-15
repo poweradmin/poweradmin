@@ -32,11 +32,6 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
  * - RFC 3596: DNS Extensions to Support IP Version 6
  * - RFC 4291: IP Version 6 Addressing Architecture
  * - RFC 5952: A Recommendation for IPv6 Address Text Representation
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class IPAddressValidator
 {

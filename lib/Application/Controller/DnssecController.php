@@ -21,15 +21,6 @@
  *
  */
 
-/**
- * Script that handles editing of zone records
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -45,6 +36,9 @@ use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Renders the DNSSEC key overview for a zone and handles the unsign-zone action.
+ */
 class DnssecController extends BaseController
 {
     private Request $request;

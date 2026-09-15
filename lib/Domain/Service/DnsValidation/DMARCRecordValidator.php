@@ -35,11 +35,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * DMARC records are published as TXT records at _dmarc.<domain> and specify
  * policies for handling emails that fail SPF and/or DKIM authentication.
  * The record format begins with "v=DMARC1" followed by required and optional tags.
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class DMARCRecordValidator implements DnsRecordValidatorInterface
 {

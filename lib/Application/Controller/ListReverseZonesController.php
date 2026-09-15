@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Script that displays reverse zone list
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -42,6 +33,9 @@ use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;
 
+/**
+ * Renders the reverse zone list with pagination and sorting.
+ */
 class ListReverseZonesController extends BaseController
 {
     private DnsDataService $dnsDataService;

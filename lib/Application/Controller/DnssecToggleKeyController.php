@@ -20,21 +20,15 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Controller that handles DNSSEC key toggle (activate/deactivate) operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\Validator;
 
+/**
+ * Handles the POST that activates or deactivates a DNSSEC key, then returns to the zone's DNSSEC page.
+ */
 class DnssecToggleKeyController extends BaseController
 {
     public function run(): void

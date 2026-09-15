@@ -43,7 +43,7 @@ use Throwable;
 use Poweradmin\Domain\Enum\ZoneKind;
 
 /**
- * Service for managing DNS zones. Failures come back as
+ * Creates zones for the API with the same checks the web form applies. Failures come back as
  * ['success' => false, 'message' => ..., 'status' => ..., 'code' => ...]: the
  * message is the API wording, the code lets the web forms word it themselves.
  */

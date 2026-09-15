@@ -37,6 +37,9 @@ use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Model\Constants;
 
+/**
+ * Handles the batch PTR form: creates PTR records for an IPv4 or IPv6 network, optionally with forward records.
+ */
 class BatchPtrRecordController extends BaseController
 {
     private DomainRepositoryInterface $domainRepository;

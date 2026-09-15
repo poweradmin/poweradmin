@@ -25,12 +25,10 @@ namespace Poweradmin\Module\DnsWizard\Service;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
- * DNS Wizard Registry
+ * Lookup of the available record wizards by type.
  *
  * Central registry for all available DNS wizards. Manages wizard lifecycle,
  * availability, and provides access to wizard instances.
- *
- * @package Poweradmin\Module\DnsWizard\Service
  */
 class WizardRegistry
 {

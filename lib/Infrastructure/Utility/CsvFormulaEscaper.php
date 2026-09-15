@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Utility;
 
+/**
+ * Prefixes CSV cell values that start with a formula trigger (=, +, -, @, tab, CR, LF) with a quote.
+ */
 class CsvFormulaEscaper
 {
     private const FORMULA_TRIGGERS = ['=', '+', '-', '@', "\t", "\r", "\n"];

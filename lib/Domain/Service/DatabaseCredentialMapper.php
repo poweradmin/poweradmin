@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
- * Database credential mapping service
+ * Maps the database settings block to the PDO connection arguments.
  *
  * Handles mapping of database configuration to PDO connection credentials
  * following DDD principles by encapsulating domain logic for database credentials

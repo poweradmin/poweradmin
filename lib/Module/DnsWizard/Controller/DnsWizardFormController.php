@@ -34,7 +34,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Enum\AccessScope;
 
 /**
- * DNS Wizard Form Controller
+ * Renders the form for one wizard at /zones/{id}/wizard/{type} and creates the records it builds.
  *
  * Handles the wizard form display and submission for creating DNS records.
  */

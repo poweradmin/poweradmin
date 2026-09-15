@@ -48,11 +48,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * Systems not implementing Secure DNS should ignore KX records.
  *
  * @see https://datatracker.ietf.org/doc/html/rfc2230 RFC 2230: Key Exchange Delegation Record for the DNS
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class KXRecordValidator implements DnsRecordValidatorInterface
 {

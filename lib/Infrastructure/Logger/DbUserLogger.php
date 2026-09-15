@@ -26,6 +26,9 @@ use PDO;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
+/**
+ * Writes user events to the log_users table and queries them with filters for the user log page.
+ */
 class DbUserLogger
 {
     private PDO $db;

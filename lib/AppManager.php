@@ -46,9 +46,7 @@ use Twig\Extra\Intl\IntlExtension;
 use Twig\Loader\FilesystemLoader;
 
 /**
- * Class AppManager
- *
- * Manages the application configuration, template rendering, and statistics display.
+ * Builds the Twig environment with theme, translator and extensions, and renders templates for web controllers.
  */
 class AppManager
 {

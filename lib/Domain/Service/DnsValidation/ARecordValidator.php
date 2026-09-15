@@ -33,11 +33,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - RFC 791: Internet Protocol
  *
  * A records map domain names to IPv4 addresses.
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class ARecordValidator implements DnsRecordValidatorInterface
 {

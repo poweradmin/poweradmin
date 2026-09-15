@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Model;
 
+/**
+ * A user as seen by authentication: id, stored password hash and whether the account is LDAP-backed.
+ */
 readonly class User
 {
     public function __construct(

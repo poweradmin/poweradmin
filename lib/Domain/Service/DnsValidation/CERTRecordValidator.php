@@ -38,11 +38,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * @see https://datatracker.ietf.org/doc/html/rfc4398 RFC 4398: Storing Certificates in the Domain Name System (DNS)
  * @see https://datatracker.ietf.org/doc/html/rfc8624 RFC 8624: Algorithm Implementation Requirements and Usage Guidance for DNSSEC
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class CERTRecordValidator implements DnsRecordValidatorInterface
 {

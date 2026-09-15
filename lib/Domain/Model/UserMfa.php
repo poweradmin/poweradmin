@@ -26,6 +26,9 @@ use DateTime;
 use InvalidArgumentException;
 use Poweradmin\Domain\Enum\MfaFactorType;
 
+/**
+ * A user's MFA settings row: type (app or email), secret, recovery codes, verification data and timestamps.
+ */
 class UserMfa
 {
     public const TYPE_APP = 'app';

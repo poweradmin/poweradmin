@@ -32,8 +32,7 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 
 /**
- * SQL-backend record repository.
- * Queries PowerDNS tables directly via PDO.
+ * Record reads on the records table.
  */
 class SqlRecordRepository implements RecordRepositoryInterface
 {

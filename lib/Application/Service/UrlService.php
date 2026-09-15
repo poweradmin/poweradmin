@@ -28,7 +28,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Service for building absolute URLs
+ * Builds absolute URLs for emails and redirects from the configured base URL.
  *
  * This service provides consistent URL building across the application,
  * supporting both configured base URLs and auto-detection from HTTP headers.

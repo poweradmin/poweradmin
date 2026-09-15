@@ -26,7 +26,7 @@ use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 
 /**
- * Service for managing DNS record comments.
+ * Reads and writes the comment attached to a record.
  *
  * Comments are stored per-record using a linking table (record_comment_links)
  * that associates individual record IDs with comment IDs in the PowerDNS comments table.

@@ -25,6 +25,9 @@ namespace Poweradmin\Infrastructure\Service;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 
+/**
+ * Queues per-page flash messages in the session and stores form data under a token for redirect round-trips.
+ */
 class MessageService
 {
     private const TYPE_ERROR = 'error';

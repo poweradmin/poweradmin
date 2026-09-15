@@ -44,11 +44,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - Type-Bit-Map: The set of record types to be synchronized (space-separated)
  *
  * @see https://datatracker.ietf.org/doc/html/rfc7477 RFC 7477: Child-To-Parent Synchronization in DNS
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class CSYNCRecordValidator implements DnsRecordValidatorInterface
 {

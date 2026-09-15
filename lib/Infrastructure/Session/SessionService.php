@@ -25,6 +25,9 @@ namespace Poweradmin\Infrastructure\Session;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\SessionKeys;
 
+/**
+ * Stores the login message in the session and clears auth and MFA keys on logout.
+ */
 class SessionService
 {
     public function startSession(SessionEntity $sessionEntity): void

@@ -25,6 +25,9 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
+/**
+ * Record-type lists for the forward and reverse zone editors, filtered by config, DNSSEC and server support.
+ */
 class RecordTypeService
 {
     private ConfigurationInterface $configManager;

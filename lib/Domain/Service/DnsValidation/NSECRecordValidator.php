@@ -49,11 +49,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - NSEC records should have the same TTL as the SOA minimum TTL
  *
  * Type code: 47
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class NSECRecordValidator implements DnsRecordValidatorInterface
 {

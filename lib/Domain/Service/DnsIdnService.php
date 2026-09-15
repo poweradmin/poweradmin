@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 /**
- * Service for IDN (Internationalized Domain Name) handling
+ * Converts domain names between punycode and Unicode for storage and display.
  */
 class DnsIdnService
 {

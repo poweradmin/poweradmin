@@ -20,19 +20,13 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Service for managing forward zone associations with reverse zones
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 
+/**
+ * Maps each reverse zone to the forward zones its PTR records point at, with a PTR count per forward zone.
+ */
 class ForwardZoneAssociationService
 {
     private ZoneRepositoryInterface $zoneRepository;

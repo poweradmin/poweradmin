@@ -28,8 +28,7 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 
 /**
- * API-backend record repository.
- * Fetches DNS data via PowerDNS REST API, comments from API RRset data.
+ * Record reads for the API backend mode, served from PowerDNS RRsets.
  */
 class ApiRecordRepository implements RecordRepositoryInterface
 {

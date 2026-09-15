@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Service;
 
+/**
+ * AES-256-CBC encryption for the password held in the session, keyed from the configured session_key.
+ */
 class PasswordEncryptionService
 {
     private const ALGORITHM = 'aes-256-cbc';

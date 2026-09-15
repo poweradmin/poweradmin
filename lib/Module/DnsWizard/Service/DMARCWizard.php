@@ -25,13 +25,7 @@ namespace Poweradmin\Module\DnsWizard\Service;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
- * DMARC Wizard
- *
- * Wizard for creating DMARC (Domain-based Message Authentication, Reporting, and Conformance) records.
- * DMARC records are TXT records published at _dmarc.<domain> that specify policies for handling
- * emails that fail SPF and/or DKIM authentication.
- *
- * @package Poweradmin\Module\DnsWizard\Service
+ * Builds the DMARC policy TXT record published at _dmarc.<domain>.
  */
 class DMARCWizard extends AbstractDnsWizard
 {

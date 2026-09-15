@@ -35,9 +35,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Service for managing API keys
- *
- * @package Poweradmin\Domain\Service
+ * Creates, regenerates, disables and deletes API keys and enforces the per-user key limit.
  */
 class ApiKeyService
 {

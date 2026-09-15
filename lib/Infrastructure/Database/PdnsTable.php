@@ -30,7 +30,6 @@ use InvalidArgumentException;
  * This enum provides compile-time safety for table names, making it impossible
  * to use invalid table names and providing IDE autocomplete support.
  *
- * @package Poweradmin\Infrastructure\Database
  * @since 3.0.0
  */
 enum PdnsTable: string

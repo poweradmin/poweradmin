@@ -39,11 +39,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * Special handling is provided for specialized TXT record formats:
  * - DMARC records at _dmarc.<domain> with v=DMARC1 content
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class TXTRecordValidator implements DnsRecordValidatorInterface
 {

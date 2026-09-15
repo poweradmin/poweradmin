@@ -25,12 +25,7 @@ namespace Poweradmin\Module\DnsWizard\Service;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
- * Abstract base class for DNS Record Wizards
- *
- * Provides common functionality and shared logic for all DNS wizard implementations.
- * Concrete wizard classes (DMARCWizard, SPFWizard, etc.) should extend this class.
- *
- * @package Poweradmin\Module\DnsWizard\Service
+ * Shared validation, TXT quoting and record assembly for the record wizards; each wizard fills in its type.
  */
 abstract class AbstractDnsWizard
 {

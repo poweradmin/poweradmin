@@ -37,6 +37,9 @@ use Poweradmin\Infrastructure\Service\NullDnssecProvider;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
+/**
+ * Builds the DNSSEC provider for the configured PowerDNS API, or a null provider when the API is not set up.
+ */
 class DnssecProviderFactory
 {
     /**

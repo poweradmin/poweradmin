@@ -26,6 +26,9 @@ use Exception;
 use PDO;
 use PDOException;
 
+/**
+ * Opens the PDO connection from the database credentials, building the DSN and SSL options per driver.
+ */
 class PDODatabaseConnection
 {
     public function connect(array $credentials): PDO

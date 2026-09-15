@@ -36,6 +36,9 @@ use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use RuntimeException;
 
+/**
+ * Handles the MFA verification step after login, with throttling of failed attempts.
+ */
 class MfaVerifyController extends BaseController
 {
     private MfaService $mfaService;

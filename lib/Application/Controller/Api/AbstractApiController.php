@@ -20,15 +20,6 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Abstract base API controller class with common functionality
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\BaseController;
@@ -36,6 +27,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * Shared base for API controllers: enforces the api.enabled switch, parses JSON input and shapes JSON responses.
+ */
 abstract class AbstractApiController extends BaseController
 {
     /**

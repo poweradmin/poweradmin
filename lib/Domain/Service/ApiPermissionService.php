@@ -31,12 +31,6 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
- * Stateless permission service for API requests
- * Does not rely on session data - all checks use explicit user IDs
- *
- * @package Poweradmin\Domain\Service
- */
-/**
  * Permission gate for the public API. A facade over PermissionService so the API
  * and the web UI share one oracle; only the group and visible-zone lookups query here.
  */

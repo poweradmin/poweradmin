@@ -26,6 +26,9 @@ use PDO;
 use Poweradmin\Domain\Model\UserGroupMember;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 
+/**
+ * SQL persistence for group membership rows in the user_group_members table.
+ */
 class DbUserGroupMemberRepository implements UserGroupMemberRepositoryInterface
 {
     private PDO $db;

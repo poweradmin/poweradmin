@@ -41,11 +41,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * @see https://datatracker.ietf.org/doc/html/rfc8749 RFC 8749: Moving DNSSEC Lookaside Validation (DLV) to Historic Status
  * @see https://datatracker.ietf.org/doc/html/rfc5074 RFC 5074: DNSSEC Lookaside Validation (DLV)
  * @see https://datatracker.ietf.org/doc/html/rfc4431 RFC 4431: The DNSSEC Lookaside Validation (DLV) DNS Resource Record
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class DLVRecordValidator implements DnsRecordValidatorInterface
 {

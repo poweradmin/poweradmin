@@ -21,15 +21,6 @@
  *
  */
 
-/**
- * Script that handles zone ownership (user and group access)
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
@@ -44,6 +35,9 @@ use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
+/**
+ * Handles the zone ownership page: adds and removes user and group owners of a zone.
+ */
 class ZoneOwnershipController extends BaseController
 {
     private UserContextService $userContextService;

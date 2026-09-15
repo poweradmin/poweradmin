@@ -35,8 +35,7 @@ use ReflectionClass;
 use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
- * User provisioning service for external authentication providers
- * Supports both OIDC and SAML user provisioning and linking
+ * Creates or updates the local user for an LDAP, OIDC or SAML login and maps their groups to a permission template.
  */
 class UserProvisioningService extends LoggingService
 {

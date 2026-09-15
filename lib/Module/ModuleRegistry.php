@@ -32,7 +32,7 @@ use Poweradmin\Module\Whois\WhoisModule;
 use Poweradmin\Module\ZoneImportExport\ZoneImportExportModule;
 
 /**
- * Module Registry
+ * Loads the bundled modules and answers which are enabled for the current user.
  *
  * Central registry for all available modules. Manages module lifecycle,
  * availability, and provides aggregated routes, navigation, and capabilities.

@@ -33,6 +33,9 @@ use Poweradmin\Domain\ValueObject\IpAddressList;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
+/**
+ * Runs a DDNS update: validates and authenticates it, picks the owning zone and syncs the A/AAAA records.
+ */
 readonly class DynamicDnsUpdateService
 {
     public function __construct(

@@ -26,8 +26,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Class LocaleManager
- * Manages locale settings for the application.
+ * Sets the gettext locale and text domain for a supported locale from the locale directory.
  */
 class LocaleManager
 {

@@ -69,11 +69,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * Security considerations:
  * - NAPTR records with regexp fields can potentially be used for various injection attacks
  * - The validator includes security checks to prevent misuse of regexp patterns
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class NAPTRRecordValidator implements DnsRecordValidatorInterface
 {

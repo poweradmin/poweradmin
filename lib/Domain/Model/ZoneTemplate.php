@@ -44,12 +44,7 @@ use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
- * Template functions
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
+ * Zone template records and the placeholder expansion that turns them into real records.
  */
 class ZoneTemplate
 {

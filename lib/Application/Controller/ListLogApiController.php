@@ -28,6 +28,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
+/**
+ * Renders the API request log page for admins with filters and CSV/JSON export.
+ */
 class ListLogApiController extends BaseController
 {
     private DbApiLogger $dbApiLogger;

@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Model;
 
+/**
+ * A flash message (text plus Bootstrap alert type) kept in the session across a redirect.
+ */
 readonly class SessionEntity
 {
     private string $message;

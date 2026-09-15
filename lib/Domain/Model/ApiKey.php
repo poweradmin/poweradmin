@@ -27,11 +27,7 @@ use JsonSerializable;
 use Poweradmin\Domain\Enum\ApiKeyStatus;
 
 /**
- * Class ApiKey
- *
- * Represents an API key entity that can be used for API authentication
- *
- * @package Poweradmin\Domain\Model
+ * An API key row: name, secret, creator, expiry, disabled flag and its read-only, operation and zone scopes.
  */
 class ApiKey implements JsonSerializable
 {

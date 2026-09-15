@@ -24,6 +24,9 @@ namespace Poweradmin\Module\CsvExport;
 
 use Poweradmin\Module\ModuleInterface;
 
+/**
+ * Module registration for the CSV zone export route and its zone-page action button.
+ */
 class CsvExportModule implements ModuleInterface
 {
     public function getName(): string

@@ -33,11 +33,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Class DbApiKeyRepository
- *
- * Database implementation of the API key repository
- *
- * @package Poweradmin\Infrastructure\Repository
+ * SQL persistence for API keys in the api_keys table and their zone scopes in api_key_zones.
  */
 class DbApiKeyRepository implements ApiKeyRepositoryInterface
 {

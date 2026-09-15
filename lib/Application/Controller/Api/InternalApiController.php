@@ -20,21 +20,15 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Internal API controller for session-authenticated endpoints
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * Base for session-authenticated internal API endpoints: requires a login and the X-CSRF-Token header on writes.
+ */
 abstract class InternalApiController extends AbstractApiController
 {
     /**

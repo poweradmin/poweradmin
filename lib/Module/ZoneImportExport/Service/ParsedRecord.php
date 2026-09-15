@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Module\ZoneImportExport\Service;
 
+/**
+ * One resource record parsed from an uploaded zone file.
+ */
 class ParsedRecord
 {
     public string $name;

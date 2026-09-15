@@ -47,11 +47,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * @see https://datatracker.ietf.org/doc/html/rfc4034 RFC 4034: Resource Records for DNS Security Extensions
  * @see https://datatracker.ietf.org/doc/html/rfc3757 RFC 3757: Domain Name System KEY (DNSKEY) RR Secure Entry Point (SEP) Flag
  * @see https://datatracker.ietf.org/doc/html/rfc8624 RFC 8624: Algorithm Implementation Requirements and Usage Guidance for DNSSEC
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class DNSKEYRecordValidator implements DnsRecordValidatorInterface
 {

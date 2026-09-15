@@ -27,6 +27,9 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Module\Whois\Service\WhoisService;
 
+/**
+ * /whois and /zones/{id}/whois - looks up a domain's WHOIS record and shows the result.
+ */
 class WhoisController extends BaseController
 {
     private WhoisService $whoisService;

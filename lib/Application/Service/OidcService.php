@@ -44,6 +44,9 @@ use Poweradmin\Infrastructure\Service\RedirectService;
 use ReflectionClass;
 use RuntimeException;
 
+/**
+ * Runs the OIDC login flow: builds the authorization redirect and turns the callback into a session.
+ */
 class OidcService extends LoggingService
 {
     // Carries OIDC flow state across the IdP's cross-site POST when a provider

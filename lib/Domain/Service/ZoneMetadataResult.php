@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Service;
 
+/**
+ * Outcome of a ZoneMetadataService write, with the metadata kind and options the caller needs to word a refusal.
+ */
 final readonly class ZoneMetadataResult
 {
     /**

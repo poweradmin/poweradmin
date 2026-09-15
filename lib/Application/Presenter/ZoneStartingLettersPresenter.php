@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Application\Presenter;
 
+/**
+ * Renders the 0-9 and a-z letter filter links on the forward zone list page.
+ */
 class ZoneStartingLettersPresenter
 {
     public function present(array $availableChars, bool $digitsAvailable, string $letterStart, string $baseUrlPrefix = ''): string

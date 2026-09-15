@@ -34,11 +34,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - RFC 5952: A Recommendation for IPv6 Address Text Representation
  *
  * AAAA records map domain names to IPv6 addresses.
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class AAAARecordValidator implements DnsRecordValidatorInterface
 {

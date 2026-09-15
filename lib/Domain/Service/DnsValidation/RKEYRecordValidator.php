@@ -63,11 +63,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - Modern implementations rarely use RKEY records
  * - This record borrows format from DNSKEY but serves a different purpose
  * - Type code assignment was requested from IANA in the Internet-Draft
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class RKEYRecordValidator implements DnsRecordValidatorInterface
 {

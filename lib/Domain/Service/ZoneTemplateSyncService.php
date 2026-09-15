@@ -27,7 +27,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 /**
- * Service for managing zone template synchronization tracking
+ * Tracks which zones are out of date against their template after the template changes.
  */
 class ZoneTemplateSyncService
 {

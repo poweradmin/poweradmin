@@ -25,13 +25,7 @@ namespace Poweradmin\Infrastructure\Utility;
 use Poweradmin\Domain\Enum\SortDirection;
 
 /**
- * Class ReverseDomainNaturalSorting
- *
- * Provides specialized natural sorting functionality for reverse DNS domains
- * with support for MySQL, PostgreSQL and SQLite.
- *
- * This class specifically handles the special case of reverse domain sorting,
- * ensuring IP addresses in reverse notation are sorted properly.
+ * Per-database ORDER BY clause that sorts reverse zone names by their leading octet numerically.
  */
 class ReverseDomainNaturalSorting
 {

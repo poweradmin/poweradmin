@@ -25,6 +25,9 @@ namespace Poweradmin\Infrastructure\Configuration;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Infrastructure\Database\DbDriver;
 
+/**
+ * Checks the loaded settings array for invalid values (syslog, session timeout, theme, PowerDNS API, pdns_db_name).
+ */
 class ConfigValidator
 {
     private array $config;

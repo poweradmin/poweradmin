@@ -38,11 +38,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * IMPORTANT: As per RFC 7208 Section 14.1, the SPF record type is deprecated.
  * SPF records should be published as TXT records, not as SPF type records.
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class SPFRecordValidator implements DnsRecordValidatorInterface
 {

@@ -33,9 +33,7 @@ use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
- * Controller for managing API keys
- *
- * @package Poweradmin\Application\Controller
+ * Renders the API key list page and links to the add, edit, delete and regenerate actions.
  */
 class ApiKeysController extends BaseController
 {

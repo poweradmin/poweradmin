@@ -31,8 +31,7 @@ use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
- * API-backend dynamic DNS repository.
- * Uses PowerDNS REST API for DNS operations, Poweradmin DB for user/zone queries.
+ * Dynamic DNS persistence for the API backend mode.
  */
 readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 {

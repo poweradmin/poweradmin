@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\ValueObject;
 
+/**
+ * Parameters of one DDNS update call: credentials, hostname, IPv4 and IPv6 lists, dualstack flag and user agent.
+ */
 readonly class DynamicDnsRequest
 {
     public function __construct(

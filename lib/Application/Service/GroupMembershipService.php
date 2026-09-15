@@ -29,7 +29,7 @@ use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 
 /**
- * Service for managing group memberships
+ * Adds and removes users from groups and lists a group's members.
  *
  * Handles adding/removing users to/from groups
  */

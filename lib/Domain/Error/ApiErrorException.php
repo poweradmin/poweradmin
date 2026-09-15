@@ -25,6 +25,9 @@ namespace Poweradmin\Domain\Error;
 use RuntimeException;
 use Throwable;
 
+/**
+ * Runtime exception carrying a message, a code and an array of extra details for API error responses.
+ */
 class ApiErrorException extends RuntimeException
 {
     /**

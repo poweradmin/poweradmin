@@ -27,9 +27,7 @@ use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 
 /**
- * Controller for displaying PowerDNS server status
- *
- * @package Poweradmin\Application\Controller
+ * Renders the PowerDNS server status page from the API's server info and statistics.
  */
 class PdnsStatusController extends BaseController
 {

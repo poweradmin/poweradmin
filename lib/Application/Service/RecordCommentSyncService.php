@@ -28,6 +28,9 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\DomainUtility;
 
+/**
+ * Keeps the comment on an A/AAAA record and its PTR counterpart in sync when either is created or edited.
+ */
 class RecordCommentSyncService
 {
     private RecordCommentService $commentService;

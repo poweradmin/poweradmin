@@ -27,6 +27,9 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
 
+/**
+ * GET /zones/{id}/export/zonefile - downloads the zone in BIND format, from the API or the records table.
+ */
 class ZoneFileExportController extends BaseController
 {
     public function run(): void

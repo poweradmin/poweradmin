@@ -25,6 +25,9 @@ namespace Poweradmin\Domain\Model;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 
+/**
+ * Captures a record before and after an edit and writes the change to the zone audit log.
+ */
 class RecordLog
 {
     private ?array $record_prior = null;

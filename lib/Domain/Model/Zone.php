@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Model;
 
+/**
+ * A zone as seen by DNSSEC: its name, whether it is secured, and its list of CryptoKeys.
+ */
 class Zone
 {
 

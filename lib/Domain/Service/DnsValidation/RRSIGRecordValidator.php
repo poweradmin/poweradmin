@@ -69,11 +69,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - RSA/SHA-256 (algorithm 8) or newer algorithms are recommended for security
  * - Signatures should be renewed before expiration to avoid validation failures
  * - TTL value of RRSIG record must match the TTL of the RRset it covers
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class RRSIGRecordValidator implements DnsRecordValidatorInterface
 {
