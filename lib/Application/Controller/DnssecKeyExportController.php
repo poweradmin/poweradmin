@@ -23,9 +23,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
-use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\Validator;
 
 /**
  * Streams a DNSSEC private key as a PEM file download. Requires PowerDNS
@@ -35,43 +32,17 @@ use Poweradmin\Domain\Service\Validator;
  * so the HTML header/footer aren't emitted - on errors it redirects back to
  * the DNSSEC list page with a flash message.
  */
-class DnssecKeyExportController extends BaseController
+class DnssecKeyExportController extends DnssecKeyController
 {
     public function run(): void
     {
-        $zoneId = $this->getSafeRequestValue('zone_id');
-        $keyId = $this->getSafeRequestValue('key_id');
-        if (!$zoneId || !Validator::isNumber($zoneId) || !$keyId || !Validator::isNumber($keyId)) {
-            $this->showError(_('Invalid or unexpected input given.'));
-            return;
-        }
-
-        $zoneIdInt = (int) $zoneId;
-        $this->requireZoneView($zoneIdInt);
-
-        $domainRepository = $this->createDomainRepository();
-        if (!$domainRepository->zoneIdExists($zoneIdInt)) {
-            $this->showError(_('There is no zone with this ID.'));
-            return;
-        }
-
-        // Exporting private key material requires DNSSEC management permission.
-        if (!$this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zoneIdInt)) {
-            $this->showError(_('You do not have permission to manage DNSSEC for this zone.'));
-            return;
-        }
+        $zoneIdInt = $this->requireNumericParam('zone_id', _('Invalid or unexpected input given.'));
+        $keyId = $this->requireNumericParam('key_id', _('Invalid or unexpected input given.'));
+        $zoneId = (string)$zoneIdInt;
+        [$domainName, $dnssecProvider] = $this->requireManagedDnssecZone($zoneIdInt);
 
         if (!$this->getPdnsCapabilities()->supportsPemKeyImportExport()) {
             $this->setMessage('dnssec', 'error', _('PEM key export requires PowerDNS 4.7 or newer.'));
-            $this->redirect('/zones/' . $zoneId . '/dnssec');
-            return;
-        }
-
-        $domainName = $domainRepository->getDomainNameById($zoneIdInt);
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-
-        if ($dnssecProvider->isZonePresigned($domainName)) {
-            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
             $this->redirect('/zones/' . $zoneId . '/dnssec');
             return;
         }

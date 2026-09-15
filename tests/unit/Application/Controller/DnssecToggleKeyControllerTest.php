@@ -3,6 +3,7 @@
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Controller\DnssecKeyController;
 use Poweradmin\Application\Controller\DnssecToggleKeyController;
 
 class DnssecToggleKeyControllerTest extends TestCase
@@ -17,9 +18,8 @@ class DnssecToggleKeyControllerTest extends TestCase
         $this->assertTrue(method_exists(DnssecToggleKeyController::class, 'run'));
     }
 
-    public function testControllerExtendsBaseController(): void
+    public function testControllerSharesTheDnssecKeyGate(): void
     {
-        $reflection = new \ReflectionClass(DnssecToggleKeyController::class);
-        $this->assertEquals('Poweradmin\BaseController', $reflection->getParentClass()->getName());
+        $this->assertTrue(is_subclass_of(DnssecToggleKeyController::class, DnssecKeyController::class));
     }
 }

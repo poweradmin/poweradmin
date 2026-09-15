@@ -24,58 +24,21 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Handles the delete confirmation for a DNSSEC key and removes it from the zone on confirmed POST.
  */
-class DnssecDeleteKeyController extends BaseController
+class DnssecDeleteKeyController extends DnssecKeyController
 {
 
     public function run(): void
     {
-        $zone_id = $this->getSafeRequestValue('zone_id');
-        if (!$zone_id || !Validator::isNumber($zone_id)) {
-            $this->showError(_('Invalid zone ID.'));
-            return;
-        }
-        $zone_id = (int) $zone_id;
-
-        $key_id = $this->getSafeRequestValue('key_id');
-        if (!$key_id || !Validator::isNumber($key_id)) {
-            $this->showError(_('Invalid key ID.'));
-            return;
-        }
-        $key_id = (int) $key_id;
-
-
-        // Early permission check - validate DNSSEC access before any operations
-        $this->requireZoneView($zone_id);
-
-        // Validate zone existence
-        $domainRepository = $this->createDomainRepository();
-        if (!$domainRepository->zoneIdExists($zone_id)) {
-            $this->showError(_('There is no zone with this ID.'));
-            return;
-        }
-
-        if (!$this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zone_id)) {
-            $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
-            return;
-        }
-
-        $domain_name = $domainRepository->getDomainNameById($zone_id);
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-
-        if ($dnssecProvider->isZonePresigned($domain_name)) {
-            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
-            $this->redirect('/zones/' . $zone_id . '/dnssec');
-            return;
-        }
+        $zone_id = $this->requireNumericParam('zone_id', _('Invalid zone ID.'));
+        $key_id = $this->requireNumericParam('key_id', _('Invalid key ID.'));
+        [$domain_name, $dnssecProvider] = $this->requireManagedDnssecZone($zone_id);
 
         if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -88,7 +51,7 @@ class DnssecDeleteKeyController extends BaseController
                 $result = $dnssecProvider->removeZoneKey($domain_name, $key_id);
 
                 // Check if key still exists to verify deletion
-                $keyStillExists = $domain_name !== null && $dnssecProvider->keyExists($domain_name, $key_id);
+                $keyStillExists = $dnssecProvider->keyExists($domain_name, $key_id);
 
                 if ($result && !$keyStillExists) {
                     $auditService = $this->createAuditService();

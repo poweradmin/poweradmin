@@ -22,33 +22,17 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\Validator;
 
 /**
  * Handles the POST that activates or deactivates a DNSSEC key, then returns to the zone's DNSSEC page.
  */
-class DnssecToggleKeyController extends BaseController
+class DnssecToggleKeyController extends DnssecKeyController
 {
     public function run(): void
     {
-        $zone_id = $this->getSafeRequestValue('zone_id');
-        if (!$zone_id || !Validator::isNumber($zone_id)) {
-            $this->showError(_('Invalid zone ID.'));
-            return;
-        }
-        $zone_id = (int) $zone_id;
+        $zone_id = $this->requireNumericParam('zone_id', _('Invalid zone ID.'));
+        $key_id = $this->requireNumericParam('key_id', _('Invalid key ID.'));
 
-        $key_id = $this->getSafeRequestValue('key_id');
-        if (!$key_id || !Validator::isNumber($key_id)) {
-            $this->showError(_('Invalid key ID.'));
-            return;
-        }
-        $key_id = (int) $key_id;
-
-        // Toggling a signing key changes state, so require a CSRF-protected POST
-        // rather than a bare GET that could be triggered cross-site.
         if (!$this->isPost()) {
             $this->showError(_('This action requires a POST request.'));
             return;
@@ -56,32 +40,11 @@ class DnssecToggleKeyController extends BaseController
         $this->validateCsrfToken();
 
         // Validate permissions
-        $this->requireZoneView($zone_id);
-
-        if (!$this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zone_id)) {
-            $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
-            return;
-        }
-
-        // Validate zone existence
-        $domainRepository = $this->createDomainRepository();
-        if (!$domainRepository->zoneIdExists($zone_id)) {
-            $this->showError(_('There is no zone with this ID.'));
-            return;
-        }
-
-        $domain_name = $domainRepository->getDomainNameById($zone_id);
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+        [$domain_name, $dnssecProvider] = $this->requireManagedDnssecZone($zone_id);
 
         // Check if DNSSEC is available
         if (!$dnssecProvider->isDnssecEnabled()) {
             $this->showError(_('DNSSEC functionality is not available. Please check PowerDNS API configuration.'));
-            return;
-        }
-
-        if ($dnssecProvider->isZonePresigned($domain_name)) {
-            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
-            $this->redirect('/zones/' . $zone_id . '/dnssec');
             return;
         }
 

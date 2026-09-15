@@ -24,10 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
-use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Enum\DnssecKeyType;
 
 /**
@@ -35,7 +32,7 @@ use Poweradmin\Domain\Enum\DnssecKeyType;
  * Requires PowerDNS 4.7+ which accepts the `privatekey` field on
  * POST /cryptokeys; older servers reject the call and the UI hides the form.
  */
-class DnssecKeyImportController extends BaseController
+class DnssecKeyImportController extends DnssecKeyController
 {
     private Request $request;
 
@@ -47,38 +44,13 @@ class DnssecKeyImportController extends BaseController
 
     public function run(): void
     {
-        $zoneId = $this->getSafeRequestValue('id');
-        if (!$zoneId || !Validator::isNumber($zoneId)) {
-            $this->showError(_('Invalid or unexpected input given.'));
-            return;
-        }
-
-        $zoneIdInt = (int) $zoneId;
-        $this->requireZoneView($zoneIdInt);
-
-        $domainRepository = $this->createDomainRepository();
-        if (!$domainRepository->zoneIdExists($zoneIdInt)) {
-            $this->showError(_('There is no zone with this ID.'));
-            return;
-        }
-
-        if (!$this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zoneIdInt)) {
-            $this->showError(_('You do not have permission to manage DNSSEC for this zone.'));
-            return;
-        }
+        $zoneIdInt = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
+        $zoneId = (string)$zoneIdInt;
+        [$domainName, $dnssecProvider] = $this->requireManagedDnssecZone($zoneIdInt);
 
         $caps = $this->getPdnsCapabilities();
         if (!$caps->supportsPemKeyImportExport()) {
             $this->setMessage('dnssec', 'error', _('PEM key import requires PowerDNS 4.7 or newer.'));
-            $this->redirect('/zones/' . $zoneId . '/dnssec');
-            return;
-        }
-
-        $domainName = $domainRepository->getDomainNameById($zoneIdInt);
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-
-        if ($dnssecProvider->isZonePresigned($domainName)) {
-            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
             $this->redirect('/zones/' . $zoneId . '/dnssec');
             return;
         }

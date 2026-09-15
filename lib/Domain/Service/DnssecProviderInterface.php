@@ -44,6 +44,11 @@ interface DnssecProviderInterface
     public function getKeys(string $zoneName): array;
     public function addZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm): bool;
     public function removeZoneKey(string $zoneName, int $keyId): bool;
+    /**
+     * Asks the server each time; a key can vanish between two calls, so the result is not remembered.
+     *
+     * @phpstan-impure
+     */
     public function keyExists(string $zoneName, int $keyId): bool;
     public function getZoneKey(string $zoneName, int $keyId): array;
     public function isDnssecEnabled(): bool;

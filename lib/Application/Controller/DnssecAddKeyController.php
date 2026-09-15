@@ -24,17 +24,15 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Enum\DnssecKeyType;
 
 /**
  * Handles the add-DNSSEC-key form for a zone: validates key type, bits and algorithm, then creates the key.
  */
-class DnssecAddKeyController extends BaseController
+class DnssecAddKeyController extends DnssecKeyController
 {
     private Request $request;
 
@@ -46,37 +44,8 @@ class DnssecAddKeyController extends BaseController
 
     public function run(): void
     {
-        $zone_id = $this->getSafeRequestValue('id');
-        if (!$zone_id || !Validator::isNumber($zone_id)) {
-            $this->showError(_('Invalid or unexpected input given.'));
-            return;
-        }
-
-        $zone_id = (int) $zone_id;
-
-        // Early permission check - validate DNSSEC access before any operations
-        $this->requireZoneView($zone_id);
-
-        // Validate zone existence
-        $domainRepository = $this->createDomainRepository();
-        if (!$domainRepository->zoneIdExists($zone_id)) {
-            $this->showError(_('There is no zone with this ID.'));
-            return;
-        }
-
-        if (!$this->createPermissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zone_id)) {
-            $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
-            return;
-        }
-
-        $domain_name = $domainRepository->getDomainNameById($zone_id);
-        $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-
-        if ($dnssecProvider->isZonePresigned($domain_name)) {
-            $this->setMessage('dnssec', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
-            $this->redirect('/zones/' . $zone_id . '/dnssec');
-            return;
-        }
+        $zone_id = $this->requireNumericParam('id', _('Invalid or unexpected input given.'));
+        [$domain_name, $dnssecProvider] = $this->requireManagedDnssecZone($zone_id);
 
         $key_type = "";
         if ($this->request->getPostParam('key_type') !== null) {
