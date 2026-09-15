@@ -116,7 +116,7 @@ class DeleteDomainController extends BaseController
 
         $slave_master_exists = false;
         if ($zone_info['type'] == 'SLAVE') {
-            $slave_master = $domainRepository->getDomainSlaveMaster($zone_id);
+            $slave_master = $domainRepository->getDomainMaster($zone_id);
             if ($slave_master) {
                 // Extract first IP from master field (can contain multiple IPs, hostnames, ports)
                 $master_ip = IpHelper::extractFirstIpFromMaster($slave_master);

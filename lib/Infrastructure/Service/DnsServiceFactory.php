@@ -64,13 +64,12 @@ class DnsServiceFactory
         $repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
         $validatorRegistry = new DnsValidatorRegistry($config, $db, $backendProvider);
         $dnsCommonValidator = new DnsCommonValidator($db, $config, $backendProvider);
-        $zoneRepository = $repositoryFactory->createZoneRepository();
         $dnsViolationValidator = new DNSViolationValidator($repositoryFactory->createRecordRepository());
 
         return new DnsRecordValidationService(
             $validatorRegistry,
             $dnsCommonValidator,
-            $zoneRepository,
+            $repositoryFactory->createDomainRepository(),
             $dnsViolationValidator
         );
     }

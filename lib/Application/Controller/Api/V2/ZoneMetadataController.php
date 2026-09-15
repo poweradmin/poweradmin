@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneMetadataOutcome;
 use Poweradmin\Domain\Service\ZoneMetadataResult;
@@ -38,7 +38,7 @@ use Exception;
  */
 class ZoneMetadataController extends PublicApiController
 {
-    private ZoneRepositoryInterface $zoneRepository;
+    private DomainRepositoryInterface $domainRepository;
     private ApiPermissionService $apiPermissionService;
     private ZoneMetadataService $metadataService;
 
@@ -46,7 +46,7 @@ class ZoneMetadataController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = $this->createZoneRepository();
+        $this->domainRepository = $this->createDomainRepository();
         $this->apiPermissionService = $this->createApiPermissionService();
         $this->metadataService = $this->createZoneMetadataService();
     }
@@ -129,7 +129,7 @@ class ZoneMetadataController extends PublicApiController
             return $scopeError;
         }
 
-        $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
         if ($zoneName === null) {
             return $this->returnApiError('Zone not found', 404);
         }
@@ -207,7 +207,7 @@ class ZoneMetadataController extends PublicApiController
             return $scopeError;
         }
 
-        $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
         if ($zoneName === null) {
             return $this->returnApiError('Zone not found', 404);
         }
@@ -301,7 +301,7 @@ class ZoneMetadataController extends PublicApiController
             return $scopeError;
         }
 
-        $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
         if ($zoneName === null) {
             return $this->returnApiError('Zone not found', 404);
         }
@@ -378,7 +378,7 @@ class ZoneMetadataController extends PublicApiController
             return $scopeError;
         }
 
-        $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
         if ($zoneName === null) {
             return $this->returnApiError('Zone not found', 404);
         }

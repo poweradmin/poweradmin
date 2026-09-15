@@ -325,8 +325,8 @@ class DnsWizardApiController extends InternalApiController
 
         try {
             // Check zone existence
-            $zoneRepository = $this->createZoneRepository();
-            $zone_name = $zoneRepository->getDomainNameById($zone_id);
+            $domainRepository = $this->createDomainRepository();
+            $zone_name = $domainRepository->getDomainNameById($zone_id);
 
             if ($zone_name === null) {
                 return $this->returnApiError('Zone not found', 404);
@@ -339,7 +339,6 @@ class DnsWizardApiController extends InternalApiController
                 : $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
 
             // Check user has permission to edit this zone
-            $domainRepository = $this->createDomainRepository();
             $zone_type = $domainRepository->getDomainType($zone_id);
             $perm_edit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
             $user_is_zone_owner = $this->isZoneOwner($zone_id);

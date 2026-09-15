@@ -688,7 +688,7 @@ class ZonesController extends PublicApiController
             }
 
             // Confirm existence before permission, matching getZone()'s 404-before-403 order.
-            if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+            if (!$this->zoneRepository->zoneExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
             }
 
@@ -859,7 +859,7 @@ class ZonesController extends PublicApiController
             }
 
             // Confirm existence before permission, matching getZone()'s 404-before-403 order.
-            if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+            if (!$this->zoneRepository->zoneExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
             }
 

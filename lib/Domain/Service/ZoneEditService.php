@@ -70,7 +70,7 @@ class ZoneEditService
 
         // Secondary and consumer zones replicate from a primary: refuse any save
         // (records, comment, or serial bump) server-side, not just in the UI
-        if (ZoneType::isReadOnly($this->zones->getDomainType($submission->zoneId))) {
+        if (ZoneType::isReadOnly($this->domains->getDomainType($submission->zoneId))) {
             return new ZoneSaveResult(ZoneSaveOutcome::READ_ONLY);
         }
 

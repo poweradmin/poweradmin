@@ -27,7 +27,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 
 /**
  * Handles the save-zone-as-template form: creates a zone template from the zone's records.
@@ -35,14 +35,14 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 class SaveZoneAsTemplateController extends BaseController
 {
     private UserContextService $userContextService;
-    private ZoneRepositoryInterface $zoneRepository;
+    private DomainRepositoryInterface $domainRepository;
     private PermissionService $permissionService;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
         $this->userContextService = new UserContextService();
-        $this->zoneRepository = $this->createZoneRepository();
+        $this->domainRepository = $this->createDomainRepository();
 
         $this->permissionService = $this->createPermissionService();
     }
@@ -79,13 +79,13 @@ class SaveZoneAsTemplateController extends BaseController
         }
 
         // Get zone information
-        $zone_name = $this->zoneRepository->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
             return;
         }
 
-        $domain_type = $this->zoneRepository->getDomainType($zone_id);
+        $domain_type = $this->domainRepository->getDomainType($zone_id);
 
         // Handle form submission
         if ($this->isPost() && $this->httpRequest->getPostParam('save_as') !== null) {

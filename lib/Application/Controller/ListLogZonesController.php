@@ -124,7 +124,7 @@ class ListLogZonesController extends BaseController
         $zone_filter_name = null;
         $is_reverse_zone = false;
         if ($requestedZoneId !== null && in_array($requestedZoneId, $ownedZoneIds, true)) {
-            $domainName = $this->createZoneRepository()->getDomainNameById($requestedZoneId);
+            $domainName = $this->createDomainRepository()->getDomainNameById($requestedZoneId);
             $zone_filter_name = $domainName !== null ? DnsIdnService::toUtf8($domainName) : null;
             $is_reverse_zone = $domainName !== null && DnsHelper::isReverseZoneName($domainName);
         }

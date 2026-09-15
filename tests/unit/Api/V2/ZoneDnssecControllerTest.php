@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Api\V2;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\CryptoKey;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -39,6 +40,7 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 class ZoneDnssecControllerTest extends TestCase
 {
     private MockObject $zoneRepository;
+    private MockObject $domainRepository;
     private MockObject $permissionService;
     private MockObject $dnssecProvider;
     private MockObject $apiClient;
@@ -46,6 +48,7 @@ class ZoneDnssecControllerTest extends TestCase
     protected function setUp(): void
     {
         $this->zoneRepository = $this->createMock(ZoneRepositoryInterface::class);
+        $this->domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $this->permissionService = $this->createMock(ApiPermissionService::class);
         $this->dnssecProvider = $this->createMock(DnssecProviderInterface::class);
         $this->apiClient = $this->createMock(PowerdnsApiClient::class);
@@ -55,6 +58,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $controller = new TestableZoneDnssecController([], $pathParameters);
         $controller->setZoneRepository($this->zoneRepository);
+        $controller->setDomainRepository($this->domainRepository);
         $controller->setApiPermissionService($this->permissionService);
         $controller->setDnssecProvider($this->dnssecProvider);
         $controller->setApiClient($withApiClient ? $this->apiClient : null);
@@ -93,7 +97,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canViewZone')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->with(1)->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->with(1)->willReturn('example.com');
         $this->dnssecProvider->method('isZoneSecured')->willReturn(true);
 
         // ZSK first (no DS), then KSK with DS - dnskey must come from the KSK.
@@ -121,7 +125,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canViewZone')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isZoneSecured')->willReturn(false);
         $this->apiClient->expects($this->never())->method('getZoneKeys');
 
@@ -169,7 +173,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
         $this->dnssecProvider->expects($this->once())->method('secureZone')->with('example.com')->willReturn(true);
         $this->dnssecProvider->expects($this->once())->method('rectifyZone')->with('example.com')->willReturn(true);
@@ -195,7 +199,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->expects($this->once())->method('unsecureZone')->with('example.com')->willReturn(true);
         $this->dnssecProvider->expects($this->never())->method('rectifyZone');
         // The no-op guard sees signed; the post-unsign verification and the status payload see unsigned.
@@ -217,7 +221,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canViewZone')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         // Presigned zones report secured without any local cryptokeys.
         $this->dnssecProvider->method('isZoneSecured')->willReturn(true);
         $this->dnssecProvider->method('isZonePresigned')->willReturn(true);
@@ -235,7 +239,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
         $this->dnssecProvider->method('isZonePresigned')->willReturn(true);
         $this->dnssecProvider->expects($this->never())->method('secureZone');
@@ -252,7 +256,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isZonePresigned')->willReturn(true);
         $this->dnssecProvider->expects($this->never())->method('unsecureZone');
 
@@ -304,7 +308,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
         $this->dnssecProvider->method('secureZone')->willReturn(true);
         // No-op guard sees unsigned (proceed); post-sign verification still unsigned.
@@ -321,7 +325,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
         $this->dnssecProvider->method('isZoneSecured')->willReturn(true);
         // Already signed: must not re-sign, bump the serial, or log a change.
@@ -344,7 +348,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isZoneSecured')->willReturn(false);
         // Already unsigned: must not unsign, bump the serial, or log a change.
         $this->dnssecProvider->expects($this->never())->method('unsecureZone');
@@ -364,7 +368,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
         $this->dnssecProvider->method('isZoneSecured')->willReturn(false);
         // Invalid zone must be rejected before signing or bumping the serial.
@@ -384,7 +388,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(false);
         // Must not mutate the zone when the server cannot sign.
         $this->dnssecProvider->expects($this->never())->method('secureZone');
@@ -402,7 +406,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
         // No-op guard sees unsigned (proceed); the sign call then fails.
         $this->dnssecProvider->method('isZoneSecured')->willReturn(false);
@@ -420,7 +424,7 @@ class ZoneDnssecControllerTest extends TestCase
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
         $this->permissionService->method('canManageDnssec')->willReturn(true);
-        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
         // No-op guard sees signed (proceed); the unsign call then fails. A false
         // result must surface as 500 rather than being masked as a successful disable.
         $this->dnssecProvider->method('isZoneSecured')->willReturn(true);

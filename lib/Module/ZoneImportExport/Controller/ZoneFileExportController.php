@@ -56,8 +56,7 @@ class ZoneFileExportController extends BaseController
             return;
         }
 
-        $zoneRepository = $this->createZoneRepository();
-        $zone_name = $zoneRepository->getDomainNameById($zone_id);
+        $zone_name = $this->createDomainRepository()->getDomainNameById($zone_id);
 
         if (!$zone_name) {
             $this->showError(_('There is no zone with this ID.'));

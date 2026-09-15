@@ -91,7 +91,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
         return $this->backendProvider->getZoneTypeById($id);
     }
 
-    public function getDomainSlaveMaster(int $id): ?string
+    public function getDomainMaster(int $id): ?string
     {
         return $this->backendProvider->getZoneMasterById($id);
     }

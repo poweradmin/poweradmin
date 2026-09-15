@@ -416,12 +416,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         ];
     }
 
-    public function getDomainNameById(int $zoneId): ?string
-    {
-        $canonical = $this->resolveCanonicalRow($zoneId);
-        return $canonical['zone_name'] ?? null;
-    }
-
     public function listZones(?int $userId = null, bool $viewOthers = false, array $filters = [], int $offset = 0, int $limit = 100): array
     {
         // Owners are filled in by enrichZonesWithOwnership() so every assigned user
@@ -644,23 +638,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $results;
     }
 
-    public function zoneIdExists(int $zoneId): bool
-    {
-        return $this->resolveCanonicalRow($zoneId) !== null;
-    }
-
-    public function getDomainType(int $zoneId): string
-    {
-        $canonical = $this->resolveCanonicalRow($zoneId);
-        return $canonical['zone_type'] ?? '';
-    }
-
-    public function getDomainSlaveMaster(int $zoneId): ?string
-    {
-        $canonical = $this->resolveCanonicalRow($zoneId);
-        return $canonical['zone_master'] ?? null;
-    }
-
     public function getZoneComment(int $zoneId): ?string
     {
         $canonical = $this->resolveCanonicalRow($zoneId);
@@ -881,8 +858,10 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function updateZone(int $zoneId, array $updates): bool
     {
+        $canonical = $this->resolveCanonicalRow($zoneId);
+
         if (isset($updates['name'])) {
-            $currentName = $this->getDomainNameById($zoneId);
+            $currentName = $canonical['zone_name'] ?? null;
             if ($currentName !== null && $updates['name'] !== $currentName) {
                 throw new \InvalidArgumentException(
                     'Zone renaming is not supported in API backend mode. PowerDNS API does not support zone rename operations.'
@@ -891,7 +870,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             unset($updates['name']);
         }
 
-        $canonical = $this->resolveCanonicalRow($zoneId);
         if ($canonical === null) {
             return false;
         }

@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller\Api\Internal;
 
 use Poweradmin\Application\Controller\Api\InternalApiController;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
@@ -39,7 +38,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ValidationController extends InternalApiController
 {
     private DnsRecordValidationService $validationService;
-    private ZoneRepositoryInterface $zoneRepository;
     private ApiPermissionService $apiPermissionService;
     private UserContextService $userContextService;
 
@@ -49,13 +47,12 @@ class ValidationController extends InternalApiController
 
         $validatorRegistry = new DnsValidatorRegistry($this->getConfig(), $this->db);
         $dnsCommonValidator = new DnsCommonValidator($this->db, $this->getConfig());
-        $this->zoneRepository = $this->createZoneRepository();
         $dnsViolationValidator = new DNSViolationValidator($this->getRepositoryFactory()->createRecordRepository());
 
         $this->validationService = new DnsRecordValidationService(
             $validatorRegistry,
             $dnsCommonValidator,
-            $this->zoneRepository,
+            $this->createDomainRepository(),
             $dnsViolationValidator
         );
         $this->apiPermissionService = new ApiPermissionService($this->db, config: $this->config);

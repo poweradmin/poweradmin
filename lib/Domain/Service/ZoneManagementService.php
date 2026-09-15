@@ -29,6 +29,7 @@ use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -73,6 +74,7 @@ class ZoneManagementService
     private ?ZoneSigningService $signing;
     private ?DnsBackendProviderInterface $backendProvider = null;
     private ?RepositoryFactory $repositoryFactory = null;
+    private ?DomainRepositoryInterface $domainRepository = null;
     private ?DomainManagerInterface $domainManager = null;
     private ?ZoneOverlapService $overlapService = null;
     private ?HostnameValidator $hostnameValidator = null;
@@ -82,6 +84,7 @@ class ZoneManagementService
     /**
      * @param PdnsCapabilities|null $capabilities What the connected server supports; null admits only the basic kinds
      * @param ZoneSigningService|null $signing Needed for enable_dnssec; without it a create is never signed
+     * @param DomainRepositoryInterface|null $domainRepository Zone lookups; built from the repository factory when omitted
      */
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
@@ -90,9 +93,11 @@ class ZoneManagementService
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
         ?PdnsCapabilities $capabilities = null,
-        ?ZoneSigningService $signing = null
+        ?ZoneSigningService $signing = null,
+        ?DomainRepositoryInterface $domainRepository = null
     ) {
         $this->zoneRepository = $zoneRepository;
+        $this->domainRepository = $domainRepository;
         $this->config = $config;
         $this->db = $db;
         $this->logger = $logger ?? new NullLogger();
@@ -192,7 +197,7 @@ class ZoneManagementService
             $domain = preg_replace('/\.$/', '', $domain);
         }
 
-        $domainRepository = $this->repositoryFactory()->createDomainRepository();
+        $domainRepository = $this->domainRepository();
 
         // Check if domain already exists
         if ($domainRepository->domainExists($domain)) {
@@ -312,7 +317,7 @@ class ZoneManagementService
     public function updateZone(int $zoneId, array $updates): array
     {
         // Check if zone exists
-        if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+        if (!$this->domainRepository()->zoneIdExists($zoneId)) {
             return ['success' => false, 'message' => 'Zone not found', 'status' => 404];
         }
 
@@ -358,7 +363,7 @@ class ZoneManagementService
     public function deleteZone(int $zoneId): array
     {
         // Check if zone exists
-        if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+        if (!$this->domainRepository()->zoneIdExists($zoneId)) {
             return ['success' => false, 'message' => 'Zone not found', 'status' => 404, 'code' => self::ERR_NOT_FOUND];
         }
 
@@ -445,12 +450,12 @@ class ZoneManagementService
      */
     public function applyTemplate(int $zoneId, string $template, int $actingUserId): array
     {
-        if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+        if (!$this->domainRepository()->zoneIdExists($zoneId)) {
             return ['success' => false, 'message' => 'Zone not found', 'status' => 404, 'code' => self::ERR_NOT_FOUND];
         }
 
         // Applying a template writes records, which read-only zones cannot accept
-        if (ZoneType::isReadOnly($this->zoneRepository->getDomainType($zoneId))) {
+        if (ZoneType::isReadOnly($this->domainRepository()->getDomainType($zoneId))) {
             return ['success' => false, 'message' => 'Cannot apply a template to a read-only zone', 'status' => 400, 'code' => self::ERR_READ_ONLY];
         }
 
@@ -488,5 +493,10 @@ class ZoneManagementService
     private function repositoryFactory(): RepositoryFactory
     {
         return $this->repositoryFactory ??= new RepositoryFactory($this->db, $this->config, $this->backendProvider());
+    }
+
+    private function domainRepository(): DomainRepositoryInterface
+    {
+        return $this->domainRepository ??= $this->repositoryFactory()->createDomainRepository();
     }
 }

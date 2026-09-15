@@ -54,6 +54,7 @@ class ZoneEditServiceTest extends TestCase
 
     private PermissionService&MockObject $permissions;
     private ZoneRepositoryInterface&MockObject $zones;
+    private DomainRepositoryInterface&MockObject $domains;
     private RecordRepositoryInterface&MockObject $records;
     private RecordManagerInterface&MockObject $recordManager;
     private SOARecordManagerInterface&MockObject $soa;
@@ -66,8 +67,9 @@ class ZoneEditServiceTest extends TestCase
         $this->permissions->method('getEditPermissionLevelForZone')->willReturn('all');
         $this->permissions->method('userOwnsZone')->willReturn(false);
         $this->zones = $this->createMock(ZoneRepositoryInterface::class);
-        $this->zones->method('getDomainType')->willReturn('MASTER');
         $this->zones->method('getZoneComment')->willReturn('');
+        $this->domains = $this->createMock(DomainRepositoryInterface::class);
+        $this->domains->method('getDomainType')->willReturn('MASTER');
         $this->records = $this->createMock(RecordRepositoryInterface::class);
         $this->recordManager = $this->createMock(RecordManagerInterface::class);
         $this->soa = $this->createMock(SOARecordManagerInterface::class);
@@ -102,8 +104,9 @@ class ZoneEditServiceTest extends TestCase
 
     public function testReadOnlyZonesTakeNoSave(): void
     {
+        $this->domains = $this->createMock(DomainRepositoryInterface::class);
+        $this->domains->method('getDomainType')->willReturn('SLAVE');
         $this->zones = $this->createMock(ZoneRepositoryInterface::class);
-        $this->zones->method('getDomainType')->willReturn('SLAVE');
         $this->zones->expects($this->never())->method('updateZoneComment');
 
         $result = $this->makeService()->save($this->submission(zoneComment: 'x'));
@@ -249,7 +252,7 @@ class ZoneEditServiceTest extends TestCase
             $config,
             $this->permissions,
             $this->zones,
-            $this->createMock(DomainRepositoryInterface::class),
+            $this->domains,
             $this->records,
             $this->recordManager,
             $this->soa,

@@ -53,7 +53,6 @@ interface ZoneRepositoryInterface
      */
     public function getZoneById(int $zoneId): ?array;
 
-
     /**
      * Get reverse zones with efficient database-level filtering and pagination
      *
@@ -83,14 +82,6 @@ interface ZoneRepositoryInterface
     );
 
     /**
-     * Get domain name by ID
-     *
-     * @param int $zoneId The zone ID
-     * @return string|null The domain name or null if not found
-     */
-    public function getDomainNameById(int $zoneId): ?string;
-
-    /**
      * Find forward zones associated with reverse zones through PTR records
      *
      * @param array $reverseZoneIds Array of reverse zone IDs
@@ -106,30 +97,6 @@ interface ZoneRepositoryInterface
      * @return array{count_all: int, count_ipv4: int, count_ipv6: int}
      */
     public function getReverseZoneCounts(string $permType, int $userId): array;
-
-    /**
-     * Check if zone exists by ID
-     *
-     * @param int $zoneId The zone ID
-     * @return bool True if zone exists
-     */
-    public function zoneIdExists(int $zoneId): bool;
-
-    /**
-     * Get domain type by zone ID
-     *
-     * @param int $zoneId The zone ID
-     * @return string The domain type (MASTER, SLAVE, NATIVE)
-     */
-    public function getDomainType(int $zoneId): string;
-
-    /**
-     * Get slave master by zone ID
-     *
-     * @param int $zoneId The zone ID
-     * @return string|null The slave master or null if not found
-     */
-    public function getDomainSlaveMaster(int $zoneId): ?string;
 
     /**
      * Get zone comment by zone ID

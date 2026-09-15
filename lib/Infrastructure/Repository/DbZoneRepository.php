@@ -409,26 +409,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
-     * Get domain name by ID
-     *
-     * @param int $zoneId The zone ID
-     * @return string|null The domain name or null if not found
-     */
-    public function getDomainNameById(int $zoneId): ?string
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT name FROM $domains_table WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $result = $stmt->fetch(PDO::FETCH_COLUMN);
-        return $result ?: null;
-    }
-
-    /**
      * Get a complete list of zones accessible by the current user
      *
      * @param int|null $userId Optional user ID to filter zones
@@ -774,65 +754,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
-     * Check if zone exists by ID
-     *
-     * @param int $zoneId The zone ID
-     * @return bool True if zone exists
-     */
-    public function zoneIdExists(int $zoneId): bool
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT 1 FROM $domains_table WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchColumn() !== false;
-    }
-
-    /**
-     * Get domain type by zone ID
-     *
-     * @param int $zoneId The zone ID
-     * @return string The domain type (MASTER, SLAVE, NATIVE)
-     */
-    public function getDomainType(int $zoneId): string
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT type FROM $domains_table WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $result = $stmt->fetchColumn();
-        return $result ?: '';
-    }
-
-    /**
-     * Get slave master by zone ID
-     *
-     * @param int $zoneId The zone ID
-     * @return string|null The slave master or null if not found
-     */
-    public function getDomainSlaveMaster(int $zoneId): ?string
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT master FROM $domains_table WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $result = $stmt->fetchColumn();
-        return $result ?: null;
-    }
-
-    /**
      * Get zone comment by zone ID
      *
      * @param int $zoneId The zone ID
@@ -1145,7 +1066,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // current one is dropped so clients that PUT the whole zone object back still work.
         $nameWasNoOp = isset($updates['name']);
         if ($nameWasNoOp) {
-            $currentName = $this->getDomainNameById($zoneId);
+            $currentName = $this->fetchZoneName($zoneId);
             if ($currentName !== null && $updates['name'] !== $currentName) {
                 throw new \InvalidArgumentException(
                     'Zone renaming is not supported. Delete the zone and recreate it under the new name.'
@@ -1175,6 +1096,18 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt = $this->db->prepare($query);
 
         return $stmt->execute($params);
+    }
+
+    private function fetchZoneName(int $zoneId): ?string
+    {
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :id");
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $name = $stmt->fetchColumn();
+        return $name === false ? null : (string)$name;
     }
 
     public function getAllZones(?int $offset = null, ?int $limit = null): array

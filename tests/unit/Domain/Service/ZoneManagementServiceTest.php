@@ -27,6 +27,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -37,6 +38,7 @@ class ZoneManagementServiceTest extends TestCase
 {
     private ZoneManagementService $service;
     private ZoneRepositoryInterface&MockObject $zoneRepository;
+    private DomainRepositoryInterface&MockObject $domainRepository;
     private ConfigurationManager&MockObject $config;
     private PDO&MockObject $db;
     private string $originalErrorLog;
@@ -50,13 +52,15 @@ class ZoneManagementServiceTest extends TestCase
         ini_set('error_log', '/dev/null');
 
         $this->zoneRepository = $this->createMock(ZoneRepositoryInterface::class);
+        $this->domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $this->config = $this->createMock(ConfigurationManager::class);
         $this->db = $this->createMock(PDO::class);
 
         $this->service = new ZoneManagementService(
             $this->zoneRepository,
             $this->config,
-            $this->db
+            $this->db,
+            domainRepository: $this->domainRepository
         );
     }
 
@@ -131,7 +135,7 @@ class ZoneManagementServiceTest extends TestCase
     #[Test]
     public function testUpdateZoneReturnsErrorWhenZoneNotFound(): void
     {
-        $this->zoneRepository->method('zoneIdExists')
+        $this->domainRepository->method('zoneIdExists')
             ->with(999)
             ->willReturn(false);
 
@@ -145,7 +149,7 @@ class ZoneManagementServiceTest extends TestCase
     #[Test]
     public function testUpdateZoneReturnsBadRequestOnInvalidArgument(): void
     {
-        $this->zoneRepository->method('zoneIdExists')
+        $this->domainRepository->method('zoneIdExists')
             ->with(1)
             ->willReturn(true);
 
@@ -163,7 +167,7 @@ class ZoneManagementServiceTest extends TestCase
     #[Test]
     public function testUpdateZoneReturnsErrorWhenUpdateFails(): void
     {
-        $this->zoneRepository->method('zoneIdExists')
+        $this->domainRepository->method('zoneIdExists')
             ->with(1)
             ->willReturn(true);
 
@@ -181,7 +185,7 @@ class ZoneManagementServiceTest extends TestCase
     #[Test]
     public function testUpdateZoneReturnsSuccessWhenUpdateSucceeds(): void
     {
-        $this->zoneRepository->method('zoneIdExists')
+        $this->domainRepository->method('zoneIdExists')
             ->with(1)
             ->willReturn(true);
 
@@ -200,7 +204,7 @@ class ZoneManagementServiceTest extends TestCase
     #[Test]
     public function testDeleteZoneReturnsErrorWhenZoneNotFound(): void
     {
-        $this->zoneRepository->method('zoneIdExists')
+        $this->domainRepository->method('zoneIdExists')
             ->with(999)
             ->willReturn(false);
 
@@ -217,7 +221,7 @@ class ZoneManagementServiceTest extends TestCase
     {
         $this->setupDbPrepareForDelete();
 
-        $this->zoneRepository->method('zoneIdExists')
+        $this->domainRepository->method('zoneIdExists')
             ->with(1)
             ->willReturn(true);
 
@@ -237,7 +241,7 @@ class ZoneManagementServiceTest extends TestCase
     {
         $this->setupDbPrepareForDelete();
 
-        $this->zoneRepository->method('zoneIdExists')
+        $this->domainRepository->method('zoneIdExists')
             ->with(1)
             ->willReturn(true);
 
@@ -267,7 +271,7 @@ class ZoneManagementServiceTest extends TestCase
             }
         );
 
-        $this->zoneRepository->method('zoneIdExists')->with(7)->willReturn(true);
+        $this->domainRepository->method('zoneIdExists')->with(7)->willReturn(true);
         $this->zoneRepository->method('deleteZone')->with(7)->willReturn(true);
 
         $result = $this->service->deleteZone(7);
