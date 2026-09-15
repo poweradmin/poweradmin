@@ -77,6 +77,7 @@ locale/**/*.po.backup.*
 /.php-cs-fixer.cache
 /.phpstan-cache/
 .phan/phan.phar
+.doctum/
 
 # Node.js version manager
 /.nvmrc

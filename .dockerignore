@@ -65,6 +65,8 @@ psalm.xml
 .php-cs-fixer.cache
 .php-cs-fixer.php
 .phan
+.doctum
+doctum.php
 nginx.conf.example
 .htaccess
 .hadolint.yaml

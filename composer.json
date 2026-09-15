@@ -78,10 +78,13 @@
     "spaze/phpstan-disallowed-calls": "^4.13"
   },
   "scripts-descriptions": {
-    "docs:api": "Print the OpenAPI spec as JSON; add -- --output <file> to write it"
+    "docs:api": "Print the OpenAPI spec as JSON; add -- --output <file> to write it",
+    "docs:reference": "Build the local class reference into docs/reference with Doctum"
   },
   "scripts": {
     "docs:api": "openapi lib/Application/Controller/Api/V2/ --format json",
+    "doctum:install": "test -f .doctum/doctum.phar || (mkdir -p .doctum && curl -sL -o .doctum/doctum.phar https://doctum.long-term.support/releases/latest/doctum.phar)",
+    "docs:reference": ["@doctum:install", "php .doctum/doctum.phar update doctum.php --ignore-parse-errors"],
     "tests": "phpunit --testsuite unit",
     "tests:integration": "phpunit --testsuite integration",
     "tests:functional": "phpunit --testsuite functional",
@@ -175,6 +178,7 @@
       ".devcontainer",
       ".github",
       ".phan",
+      ".doctum",
       "playwright/",
       "install/",
       "tests",
@@ -187,6 +191,7 @@
       "DONORS.md",
       "package.json",
       "phpcs.xml",
+      "doctum.php",
       "phpstan-baseline.neon",
       "phpstan.neon",
       "phpunit.xml.dist",
