@@ -20,8 +20,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// Doctum configuration for the local class reference (composer docs:reference).
-// Output and cache live under ignored paths; nothing here is published.
+// Doctum configuration for the class reference (composer docs:reference). Source links
+// point at develop; the docs site build overrides the output path through the env vars.
 
 use Doctum\Doctum;
 use Doctum\RemoteRepository\GitHubRemoteRepository;
@@ -32,14 +32,11 @@ $files = Finder::create()
     ->name('*.php')
     ->in(__DIR__ . '/lib');
 
-// Source links point at the checked-out branch; there is no "main" branch to default to.
-$branch = trim((string)shell_exec('git -C ' . escapeshellarg(__DIR__) . ' rev-parse --abbrev-ref HEAD 2>/dev/null'));
-
 return new Doctum($files, [
     'title' => 'Poweradmin class reference',
-    'versions' => $branch !== '' && $branch !== 'HEAD' ? $branch : 'develop',
-    'build_dir' => __DIR__ . '/docs/reference',
-    'cache_dir' => __DIR__ . '/.doctum/cache',
+    'versions' => 'develop',
+    'build_dir' => getenv('DOCTUM_BUILD_DIR') ?: __DIR__ . '/docs/reference',
+    'cache_dir' => getenv('DOCTUM_CACHE_DIR') ?: __DIR__ . '/.doctum/cache',
     'source_dir' => __DIR__,
     'remote_repository' => new GitHubRemoteRepository('poweradmin/poweradmin', __DIR__),
     'default_opened_level' => 2,
