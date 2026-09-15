@@ -206,4 +206,19 @@ class RequestTest extends TestCase
         $request->refresh();
         $this->assertSame('2', $request->getQueryParam('v'));
     }
+
+    public function testGetPageIsOneBasedAndSanitised(): void
+    {
+        $_GET = ['start' => '3'];
+        $this->assertSame(3, (new Request())->getPage());
+
+        $_GET = ['start' => '0'];
+        $this->assertSame(1, (new Request())->getPage());
+
+        $_GET = ['start' => 'abc'];
+        $this->assertSame(1, (new Request())->getPage());
+
+        $_GET = [];
+        $this->assertSame(1, (new Request())->getPage());
+    }
 }

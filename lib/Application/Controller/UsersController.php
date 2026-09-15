@@ -28,7 +28,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -179,8 +178,7 @@ class UsersController extends BaseController
         );
 
         // Pagination setup
-        $httpParameters = new HttpPaginationParameters();
-        $currentPage = $httpParameters->getCurrentPage();
+        $currentPage = $this->request->getPage();
         $rowsPerPage = $this->config->get('interface', 'rows_per_page', 50);
 
         $paginationService = $this->createPaginationService();

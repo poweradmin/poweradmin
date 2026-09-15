@@ -23,9 +23,9 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\PaginationPresenter;
+use Poweradmin\Application\Http\Request;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -71,9 +71,7 @@ class ListTemplateZonesController extends BaseController
         $userId = $this->getCurrentUserId();
         $itemsPerPage = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
 
-        // Get the current page from request
-        $httpParameters = new HttpPaginationParameters();
-        $currentPage = $httpParameters->getCurrentPage();
+        $currentPage = (new Request())->getPage();
         $offset = ($currentPage - 1) * $itemsPerPage;
 
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());

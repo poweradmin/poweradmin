@@ -67,6 +67,14 @@ class Request
     }
 
     /**
+     * 1-based page number from the query string, never below 1.
+     */
+    public function getPage(string $key = 'start'): int
+    {
+        return max(1, (int)filter_var($this->queryParams[$key] ?? 1, FILTER_SANITIZE_NUMBER_INT));
+    }
+
+    /**
      * Returns a parameter from the POST body on POST requests, from the
      * query string otherwise. For endpoints that accept both methods.
      */

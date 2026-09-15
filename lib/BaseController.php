@@ -77,7 +77,6 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Web\PageRenderer;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -474,8 +473,7 @@ abstract class BaseController
      */
     protected function presentPagination(int $totalItems, int $itemsPerPage, string $path, array $queryParams = []): string
     {
-        $httpParameters = new HttpPaginationParameters();
-        $currentPage = $httpParameters->getCurrentPage();
+        $currentPage = (new HttpRequest())->getPage();
 
         $pagination = $this->createPaginationService()->createPagination($totalItems, $itemsPerPage, $currentPage);
 
