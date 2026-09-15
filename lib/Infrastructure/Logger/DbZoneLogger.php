@@ -23,9 +23,6 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\RepositoryFactory;
-use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -61,114 +58,6 @@ class DbZoneLogger
             ':zone_id' => $zone_id,
             ':priority' => $priority,
         ]);
-    }
-
-    public function countAllLogs()
-    {
-        $stmt = $this->db->query("SELECT count(*) AS number_of_logs FROM log_zones");
-        return $stmt->fetch()['number_of_logs'];
-    }
-
-    public function countLogsByDomain($domain)
-    {
-        if ($this->isApiBackend()) {
-            $stmt = $this->db->prepare("
-                SELECT count(zones.id) as number_of_logs
-                FROM log_zones
-                INNER JOIN zones ON " . CanonicalZoneSql::canonicalIdColumn('zones') . " = log_zones.zone_id
-                WHERE zones.zone_name IS NOT NULL AND zones.zone_name LIKE :search_by ESCAPE '!'
-            ");
-        } else {
-            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
-
-            $stmt = $this->db->prepare("
-                SELECT count($domains_table.id) as number_of_logs
-                FROM log_zones
-                INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id
-                WHERE $domains_table.name LIKE :search_by ESCAPE '!'
-            ");
-        }
-
-        $name = "%" . DbCompat::escapeLike($domain) . "%";
-        $stmt->execute(['search_by' => $name]);
-        return $stmt->fetch()['number_of_logs'];
-    }
-
-    public function getAllLogs($limit, $offset): array
-    {
-        $stmt = $this->db->prepare("
-                    SELECT * FROM log_zones
-                    ORDER BY created_at DESC
-                    LIMIT :limit
-                    OFFSET :offset
-        ");
-
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $records = $stmt->fetchAll();
-        return $this->processFetchedLogs($records);
-    }
-
-    public function getLogsForDomain($domain, $limit, $offset): array
-    {
-        if (!($this->checkIfDomainExist($domain))) {
-            return array();
-        }
-
-        if ($this->isApiBackend()) {
-            $stmt = $this->db->prepare("
-                SELECT log_zones.id, log_zones.event, log_zones.created_at, zones.zone_name as name
-                FROM log_zones
-                INNER JOIN zones ON " . CanonicalZoneSql::canonicalIdColumn('zones') . " = log_zones.zone_id
-                WHERE zones.zone_name IS NOT NULL AND zones.zone_name LIKE :search_by ESCAPE '!'
-                ORDER BY log_zones.created_at DESC
-                LIMIT :limit
-                OFFSET :offset");
-        } else {
-            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
-
-            $stmt = $this->db->prepare("
-                SELECT log_zones.id, log_zones.event, log_zones.created_at, $domains_table.name
-                FROM log_zones
-                INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id
-                WHERE $domains_table.name LIKE :search_by ESCAPE '!'
-                ORDER BY log_zones.created_at DESC
-                LIMIT :limit
-                OFFSET :offset");
-        }
-
-        $domain = "%" . DbCompat::escapeLike($domain) . "%";
-        $stmt->bindValue(':search_by', $domain, PDO::PARAM_STR);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $records = $stmt->fetchAll();
-        return $this->processFetchedLogs($records);
-    }
-
-    public function checkIfDomainExist($domain_searched): bool
-    {
-        if ($domain_searched == "") {
-            return false;
-        }
-
-        $backendProvider = $this->backendProvider ?? DnsBackendProviderFactory::create($this->db, $this->config);
-        $repositoryFactory = new RepositoryFactory($this->db, $this->config, $backendProvider);
-        $domainRepository = $repositoryFactory->createDomainRepository();
-        // Only zone names are read here, and this runs unpaginated, so neither
-        // health badges nor record counts may trigger their per-zone lookups
-        $zones = $domainRepository->getZones('all', 0, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false, false);
-        foreach ($zones as $zone) {
-            if (str_contains($zone['name'], $domain_searched)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public function getDistinctOperations(): array

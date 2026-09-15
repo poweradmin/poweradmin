@@ -97,21 +97,6 @@ class SqlDomainRepository implements DomainRepositoryInterface
         return $result ? (int)$result['id'] : null;
     }
 
-    public function getZoneIdFromName(string $zname): ?int
-    {
-        if (empty($zname)) {
-            return null;
-        }
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
-        $stmt->execute([':name' => $zname]);
-        $result = $stmt->fetch();
-
-        return $result ? (int)$result["id"] : null;
-    }
-
     public function getDomainType(int $id): string
     {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);

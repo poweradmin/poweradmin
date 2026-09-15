@@ -123,17 +123,6 @@ class ApiRecordRepository implements RecordRepositoryInterface
         return $this->backendProvider->getZoneIdFromRecordId($id);
     }
 
-    public function recordNameExists(string $name): bool
-    {
-        $result = $this->backendProvider->searchDnsData($name, 'record', 1);
-        foreach ($result['records'] as $r) {
-            if ($r['name'] === $name) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public function hasNonDelegationRecords(string $name): bool
     {
         $result = $this->backendProvider->searchDnsData($name, 'record', 100);
@@ -159,23 +148,6 @@ class ApiRecordRepository implements RecordRepositoryInterface
     public function recordExists(int $domain_id, string $name, string $type, string $content): bool
     {
         return $this->backendProvider->recordExists($domain_id, $name, $type, $content);
-    }
-
-    public function getRecordId(int $domain_id, string $name, string $type, string $content, ?int $prio = null, ?int $ttl = null): int|string|null
-    {
-        $records = $this->backendProvider->getRecordsByZoneId($domain_id, $type);
-        foreach ($records as $r) {
-            if ($r['name'] === $name && $r['type'] === $type && $r['content'] === $content) {
-                if ($prio !== null && ($r['prio'] ?? 0) != $prio) {
-                    continue;
-                }
-                if ($ttl !== null && ($r['ttl'] ?? 0) != $ttl) {
-                    continue;
-                }
-                return $r['id'] ?? null;
-            }
-        }
-        return null;
     }
 
     public function hasPtrRecord(int $domain_id, string $name): bool

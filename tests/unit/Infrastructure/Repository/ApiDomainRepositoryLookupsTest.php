@@ -62,7 +62,6 @@ class ApiDomainRepositoryLookupsTest extends TestCase
     public function zoneIdExistsAnswersFromTheLocalZoneRowOnly(): void
     {
         $this->backend->expects($this->never())->method('getZoneById');
-        $this->backend->expects($this->never())->method('getZoneByName');
 
         $this->assertTrue($this->repository->zoneIdExists(1));
         $this->assertTrue($this->repository->zoneIdExists(3));

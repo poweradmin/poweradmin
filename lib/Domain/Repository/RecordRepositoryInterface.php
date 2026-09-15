@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -125,15 +125,6 @@ interface RecordRepositoryInterface
     public function recidToDomid(int|string $id): int;
 
     /**
-     * Check if record exists
-     *
-     * @param string $name Record name
-     *
-     * @return boolean true on success, false on failure
-     */
-    public function recordNameExists(string $name): bool;
-
-    /**
      * Check if a record with the given parameters already exists
      *
      * @param int $domain_id Domain ID
@@ -240,19 +231,6 @@ interface RecordRepositoryInterface
      * @return array Array of matching records
      */
     public function getRRSetRecords(int $domainId, string $name, string $type): array;
-
-    /**
-     * Get record ID by its attributes.
-     *
-     * @param int $domain_id Domain ID
-     * @param string $name Record name
-     * @param string $type Record type
-     * @param string $content Record content
-     * @param int|null $prio Optional priority
-     * @param int|null $ttl Optional TTL
-     * @return int|string|null Record ID or null if not found
-     */
-    public function getRecordId(int $domain_id, string $name, string $type, string $content, ?int $prio = null, ?int $ttl = null): int|string|null;
 
     /**
      * Get the ID of a newly created record

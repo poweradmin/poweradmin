@@ -204,29 +204,6 @@ interface DnsBackendProviderInterface
      */
     public function deleteRecord(int|string $recordId): bool;
 
-    /**
-     * Delete all records for a given domain.
-     *
-     * @param int $domainId Domain ID
-     * @return bool
-     */
-    public function deleteRecordsByDomainId(int $domainId): bool;
-
-    // ---------------------------------------------------------------
-    // SOA operations
-    // ---------------------------------------------------------------
-
-    /**
-     * Update the SOA serial for a zone.
-     *
-     * In API mode this is a no-op since PowerDNS handles serial
-     * increments automatically via soa_edit_api.
-     *
-     * @param int $domainId Domain ID
-     * @return bool
-     */
-    public function updateSOASerial(int $domainId): bool;
-
     // ---------------------------------------------------------------
     // Supermaster / Autoprimary operations
     // ---------------------------------------------------------------
@@ -439,14 +416,6 @@ interface DnsBackendProviderInterface
      * @return array Array of zone data arrays
      */
     public function getZones(bool $withDnssec = true): array;
-
-    /**
-     * Get a single zone by name with its type, master, and DNSSEC status.
-     *
-     * @param string $zoneName Zone name (without trailing dot)
-     * @return array|null Zone data array or null if not found
-     */
-    public function getZoneByName(string $zoneName): ?array;
 
     // ---------------------------------------------------------------
     // Record read operations

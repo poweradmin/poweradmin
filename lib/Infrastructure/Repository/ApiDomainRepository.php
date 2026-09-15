@@ -78,14 +78,6 @@ class ApiDomainRepository implements DomainRepositoryInterface
         return $this->backendProvider->getZoneIdByName($name);
     }
 
-    public function getZoneIdFromName(string $zname): ?int
-    {
-        if (empty($zname)) {
-            return null;
-        }
-        return $this->backendProvider->getZoneIdByName($zname);
-    }
-
     public function getDomainType(int $id): string
     {
         return $this->backendProvider->getZoneTypeById($id);

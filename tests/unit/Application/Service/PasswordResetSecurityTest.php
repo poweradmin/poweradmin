@@ -135,7 +135,6 @@ class PasswordResetSecurityTest extends TestCase
 
         // Mock rate limit checks
         $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
-        $this->tokenRepository->method('getLastAttemptTime')->willReturn(null);
         $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
 
         // Mock user with OIDC auth method
@@ -183,7 +182,6 @@ class PasswordResetSecurityTest extends TestCase
         $email = 'shared@example.com';
 
         $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
-        $this->tokenRepository->method('getLastAttemptTime')->willReturn(null);
         $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
 
         $this->userRepository->method('getUserByEmail')
@@ -224,7 +222,6 @@ class PasswordResetSecurityTest extends TestCase
 
         // Mock rate limit checks
         $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
-        $this->tokenRepository->method('getLastAttemptTime')->willReturn(null);
         $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
 
         // Mock user with SAML auth method
@@ -272,7 +269,6 @@ class PasswordResetSecurityTest extends TestCase
 
         // Mock rate limit checks
         $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
-        $this->tokenRepository->method('getLastAttemptTime')->willReturn(null);
         $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
 
         // Mock user with LDAP auth method
@@ -320,7 +316,6 @@ class PasswordResetSecurityTest extends TestCase
 
         // Mock rate limit checks
         $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
-        $this->tokenRepository->method('getLastAttemptTime')->willReturn(null);
         $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
 
         // Mock user with SQL auth method
@@ -362,7 +357,6 @@ class PasswordResetSecurityTest extends TestCase
         $stored = 'josé@example.com';
 
         $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
-        $this->tokenRepository->method('getLastAttemptTime')->willReturn(null);
         $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
 
         $this->userRepository->method('getUserByEmail')
@@ -398,7 +392,6 @@ class PasswordResetSecurityTest extends TestCase
 
         // Mock rate limit checks
         $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
-        $this->tokenRepository->method('getLastAttemptTime')->willReturn(null);
         $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
 
         // Mock user without auth_method field (legacy user)

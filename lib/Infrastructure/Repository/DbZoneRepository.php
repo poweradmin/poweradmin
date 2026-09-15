@@ -610,33 +610,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
-     * Get a zone by name with full details
-     *
-     * @param string $zoneName The zone name
-     * @return array|null The zone data or null if not found
-     */
-    public function getZoneByName(string $zoneName): ?array
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        // First find the zone ID
-        $query = "SELECT id FROM $domains_table WHERE name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
-
-        $zoneId = $stmt->fetchColumn();
-
-        if (!$zoneId) {
-            return null;
-        }
-
-        // Then get the full zone details
-        return $this->getZone((int)$zoneId);
-    }
-
-    /**
      * Find forward zones associated with reverse zones through PTR records
      *
      * Optimized 3-step approach instead of slow LIKE JOIN:
@@ -923,26 +896,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
-     * Get zone ID by name
-     *
-     * @param string $zoneName The zone name
-     * @return int|null The zone ID or null if not found
-     */
-    public function getZoneIdByName(string $zoneName): ?int
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT id FROM $domains_table WHERE name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
-
-        $result = $stmt->fetchColumn();
-        return $result ? (int)$result : null;
-    }
-
-    /**
      * Get raw PowerDNS domain metadata rows for a zone.
      *
      * @param int $zoneId The zone ID
@@ -1100,36 +1053,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt = $this->db->prepare($query);
 
         return $stmt->execute($params);
-    }
-
-    public function getAllZones(?int $offset = null, ?int $limit = null): array
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-        $query = "SELECT d.id, d.name, d.type, d.master,
-                         COALESCE(MIN(z.owner), 0) as owner,
-                         COUNT(DISTINCT r.id) as record_count
-                  FROM $domains_table d
-                  LEFT JOIN zones z ON d.id = z.domain_id
-                  LEFT JOIN $records_table r ON d.id = r.domain_id
-                  GROUP BY d.id, d.name, d.type, d.master
-                  ORDER BY d.name";
-
-        // Add pagination only if limit is specified
-        if ($limit !== null && $limit > 0) {
-            $query .= " LIMIT :limit OFFSET :offset";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset ?? 0, PDO::PARAM_INT);
-        } else {
-            $stmt = $this->db->prepare($query);
-        }
-
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getZoneCount(): int

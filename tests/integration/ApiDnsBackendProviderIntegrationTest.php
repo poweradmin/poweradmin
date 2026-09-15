@@ -752,22 +752,6 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
     }
 
     // ---------------------------------------------------------------
-    // SOA serial (no-op in API mode)
-    // ---------------------------------------------------------------
-
-    public function testUpdateSOASerialIsNoOp(): void
-    {
-        $zone = $this->uniqueZoneName();
-        $this->createdZones[] = $zone;
-
-        $domainId = $this->provider->createZone($zone, 'NATIVE');
-        $this->assertIsInt($domainId);
-
-        // Should always return true without doing anything
-        $this->assertTrue($this->provider->updateSOASerial($domainId));
-    }
-
-    // ---------------------------------------------------------------
     // Zone read operations
     // ---------------------------------------------------------------
 
@@ -803,14 +787,14 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $this->assertEquals('NATIVE', $found['type']);
     }
 
-    public function testGetZoneByName(): void
+    public function testGetZoneById(): void
     {
         $zone = $this->uniqueZoneName();
         $this->createdZones[] = $zone;
 
         $domainId = $this->provider->createZone($zone, 'NATIVE');
 
-        $result = $this->provider->getZoneByName($zone);
+        $result = $this->provider->getZoneById($domainId);
 
         $this->assertNotNull($result);
         $this->assertEquals($zone, $result['name']);
@@ -819,10 +803,9 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $this->assertArrayHasKey('dnssec', $result);
     }
 
-    public function testGetZoneByNameNotFound(): void
+    public function testGetZoneByIdNotFound(): void
     {
-        $result = $this->provider->getZoneByName('nonexistent-zone-' . uniqid() . '.example.com');
-        $this->assertNull($result);
+        $this->assertNull($this->provider->getZoneById(2147483647));
     }
 
     // ---------------------------------------------------------------

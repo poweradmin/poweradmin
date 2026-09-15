@@ -58,14 +58,6 @@ interface DomainRepositoryInterface
     public function getDomainIdByName(string $name): ?int;
 
     /**
-     * Get zone id from name
-     *
-     * @param string $zname Zone name
-     * @return int|null Zone ID or null if not found
-     */
-    public function getZoneIdFromName(string $zname): ?int;
-
-    /**
      * Get the kind of a domain. In API backend mode a zones row without a cached kind
      * costs one round trip to PowerDNS.
      *

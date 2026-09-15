@@ -355,18 +355,6 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testDeleteRecordsByDomainIdDeletesAll(): void
-    {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->once())->method('execute')->with([':id' => 1]);
-
-        $this->mockDb->method('prepare')->willReturn($stmt);
-
-        $result = $this->provider->deleteRecordsByDomainId(1);
-
-        $this->assertTrue($result);
-    }
-
     // ---------------------------------------------------------------
     // createRecordAtomic
     // ---------------------------------------------------------------
@@ -457,17 +445,6 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->expectExceptionMessage('Syntax error');
 
         $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
-    }
-
-    // ---------------------------------------------------------------
-    // SOA operations
-    // ---------------------------------------------------------------
-
-    public function testUpdateSOASerialReturnsTrue(): void
-    {
-        $result = $this->provider->updateSOASerial(1);
-
-        $this->assertTrue($result);
     }
 
     // ---------------------------------------------------------------

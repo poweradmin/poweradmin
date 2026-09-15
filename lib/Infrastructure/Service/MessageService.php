@@ -26,7 +26,7 @@ use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 
 /**
- * Queues per-page flash messages in the session and stores form data under a token for redirect round-trips.
+ * Queues per-page flash messages in the session and renders the bare-HTML fatal error page.
  */
 class MessageService
 {
@@ -106,46 +106,17 @@ class MessageService
         $this->addMessage('system', self::TYPE_ERROR, $error, $recordName);
     }
 
-    /**
-     * Options for configuring system error display
-     */
-    private array $errorOptions = [
-        'recordName' => null,
-        'exit' => true,
-    ];
+    private bool $exitAfterDirectError = true;
 
     /**
-     * Set record name context for the error message
-     *
-     * @param string $recordName The record name to provide context for
-     * @return $this For method chaining
-     */
-    public function withRecordContext(string $recordName): self
-    {
-        $this->errorOptions['recordName'] = $recordName;
-        return $this;
-    }
-
-    /**
-     * Don't exit the script after displaying the error
+     * Don't exit the script after displaying the error (the test seam for displayDirectSystemError)
      *
      * @return $this For method chaining
      */
     public function dontExit(): self
     {
-        $this->errorOptions['exit'] = false;
+        $this->exitAfterDirectError = false;
         return $this;
-    }
-
-    /**
-     * Reset error options to default values
-     */
-    private function resetErrorOptions(): void
-    {
-        $this->errorOptions = [
-            'recordName' => null,
-            'exit' => true,
-        ];
     }
 
     /**
@@ -156,15 +127,10 @@ class MessageService
      */
     public function displayDirectSystemError(string $error): void
     {
-        $recordName = $this->errorOptions['recordName'];
-        $exit = $this->errorOptions['exit'];
-        $this->resetErrorOptions();
+        $exit = $this->exitAfterDirectError;
+        $this->exitAfterDirectError = true;
 
-        if ($recordName !== null) {
-            $error = sprintf('%s (Record: %s)', $error, $recordName);
-        }
-
-        $this->addSystemError($error, $recordName);
+        $this->addSystemError($error);
 
         $processedError = htmlspecialchars($error, ENT_QUOTES, 'UTF-8');
 
@@ -198,80 +164,6 @@ class MessageService
 
         if ($exit) {
             exit();
-        }
-    }
-
-    /**
-     * Generate a unique form token
-     *
-     * @return string The generated token
-     */
-    public function generateFormToken(): string
-    {
-        return bin2hex(random_bytes(16));
-    }
-
-    /**
-     * Store form data with a specific token
-     *
-     * @param string $token The form token
-     * @param array $data The form data to store
-     */
-    public function storeFormData(string $token, array $data): void
-    {
-        $formData = $this->userContextService->getSessionData(SessionKeys::FORM_DATA) ?? [];
-        $formData[$token] = [
-            'data' => $data,
-            'expires' => time() + 300 // Expire after 5 minutes
-        ];
-        $this->userContextService->setSessionData(SessionKeys::FORM_DATA, $formData);
-    }
-
-    /**
-     * Get stored form data for a token and remove it from the session
-     *
-     * @param string $token The form token
-     * @return array|null The stored form data or null if none exists
-     */
-    public function getFormData(string $token): ?array
-    {
-        $formData = $this->userContextService->getSessionData(SessionKeys::FORM_DATA) ?? [];
-        if (!isset($formData[$token])) {
-            return null;
-        }
-
-        $entry = $formData[$token];
-        unset($formData[$token]);
-        $this->userContextService->setSessionData(SessionKeys::FORM_DATA, $formData);
-
-        if (time() > $entry['expires']) {
-            return null;
-        }
-
-        return $entry['data'];
-    }
-
-    /**
-     * Clean up expired form data
-     */
-    public function cleanupFormData(): void
-    {
-        $formData = $this->userContextService->getSessionData(SessionKeys::FORM_DATA);
-        if ($formData === null) {
-            return;
-        }
-
-        $now = time();
-        $changed = false;
-        foreach ($formData as $token => $entry) {
-            if ($now > $entry['expires']) {
-                unset($formData[$token]);
-                $changed = true;
-            }
-        }
-
-        if ($changed) {
-            $this->userContextService->setSessionData(SessionKeys::FORM_DATA, $formData);
         }
     }
 }

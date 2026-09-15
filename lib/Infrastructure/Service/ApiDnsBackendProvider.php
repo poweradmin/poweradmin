@@ -606,12 +606,6 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
         return $this->client->patchZoneRRsets($apiZoneName, [$rrset]);
     }
 
-    public function deleteRecordsByDomainId(int $domainId): bool
-    {
-        // Zone deletion via API handles this automatically
-        return true;
-    }
-
     // ---------------------------------------------------------------
     // Zone read methods
     // ---------------------------------------------------------------
@@ -629,12 +623,18 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
         if ($zoneName === null) {
             return null;
         }
-        $zone = $this->getZoneByName($zoneName);
-        if ($zone === null) {
+        $zoneData = $this->client->getZone(self::ensureTrailingDot($zoneName), false);
+        if ($zoneData === null) {
             return null;
         }
-        $zone['id'] = $domainId;
-        return $zone;
+
+        return [
+            'id' => $domainId,
+            'name' => $zoneName,
+            'type' => strtoupper($zoneData['kind'] ?? ''),
+            'master' => self::formatMasters($zoneData['masters'] ?? []),
+            'dnssec' => $zoneData['dnssec'] ?? false,
+        ];
     }
 
     public function getZoneNameById(int $domainId): ?string
@@ -959,29 +959,6 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
         return $zones;
     }
 
-    public function getZoneByName(string $zoneName): ?array
-    {
-        $apiName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZone($apiName, false);
-        if ($zoneData === null) {
-            return null;
-        }
-
-        // Get local zone ID
-        $stmt = $this->db->prepare("SELECT id, domain_id FROM zones WHERE zone_name = :name");
-        $stmt->execute([':name' => $zoneName]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $id = $row !== false ? (int)($row['domain_id'] ?: $row['id']) : 0;
-
-        return [
-            'id' => $id,
-            'name' => $zoneName,
-            'type' => strtoupper($zoneData['kind'] ?? ''),
-            'master' => self::formatMasters($zoneData['masters'] ?? []),
-            'dnssec' => $zoneData['dnssec'] ?? false,
-        ];
-    }
-
     public function getZoneSoaHealth(string $zoneName, string $kind): ?array
     {
         // Optimization hint only - skip the API call when the caller is sure
@@ -1179,16 +1156,6 @@ class ApiDnsBackendProvider implements DnsBackendProviderInterface
         }
 
         return ['zones' => $zones, 'records' => $records];
-    }
-
-    // ---------------------------------------------------------------
-    // SOA operations
-    // ---------------------------------------------------------------
-
-    public function updateSOASerial(int $domainId): bool
-    {
-        // In API mode, PowerDNS handles SOA serial increments automatically
-        return true;
     }
 
     // ---------------------------------------------------------------
