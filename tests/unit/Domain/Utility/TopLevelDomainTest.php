@@ -20,10 +20,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Model;
+namespace Poweradmin\Tests\Unit\Domain\Utility;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Model\TopLevelDomain;
+use Poweradmin\Domain\Utility\TopLevelDomain;
 
 class TopLevelDomainTest extends TestCase
 {

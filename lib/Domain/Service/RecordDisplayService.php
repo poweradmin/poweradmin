@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Model\RecordDisplay;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 
@@ -44,9 +43,9 @@ class RecordDisplayService
      *
      * @param array $record The record data
      * @param string $zoneName The zone name
-     * @return RecordDisplay The transformed record for display
+     * @return array The record with display_name, editable_name and is_hostname_only added
      */
-    public function transformRecord(array $record, string $zoneName): RecordDisplay
+    public function transformRecord(array $record, string $zoneName): array
     {
         $displayName = $record['name'];
         $editableName = $record['name'];
@@ -71,12 +70,11 @@ class RecordDisplayService
             }
         }
 
-        return new RecordDisplay(
-            $transformedRecord,
-            $displayName,
-            $editableName,
-            $this->displayHostnameOnly
-        );
+        return $transformedRecord + [
+            'display_name' => $displayName,
+            'editable_name' => $editableName,
+            'is_hostname_only' => $this->displayHostnameOnly,
+        ];
     }
 
     /**
@@ -84,7 +82,7 @@ class RecordDisplayService
      *
      * @param array $records Array of records
      * @param string $zoneName The zone name
-     * @return array Array of RecordDisplay objects
+     * @return array The transformed records
      */
     public function transformRecords(array $records, string $zoneName): array
     {

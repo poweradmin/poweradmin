@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Model;
+namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;

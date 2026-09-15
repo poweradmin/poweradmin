@@ -44,11 +44,11 @@ class RecordDisplayServiceTest extends TestCase
 
         $result = $service->transformRecord($apexRecord, $zoneName);
 
-        $this->assertEquals('@', $result->getDisplayName());
-        $this->assertEquals('@', $result->getEditableName());
+        $this->assertEquals('@', $result['display_name']);
+        $this->assertEquals('@', $result['editable_name']);
 
         // Test array conversion
-        $arrayResult = $result->toArray();
+        $arrayResult = $result;
         $this->assertEquals('@', $arrayResult['display_name']);
         $this->assertEquals('@', $arrayResult['editable_name']);
     }
@@ -70,8 +70,8 @@ class RecordDisplayServiceTest extends TestCase
 
         $result = $service->transformRecord($record, $zoneName);
 
-        $this->assertEquals('www', $result->getDisplayName());
-        $this->assertEquals('www', $result->getEditableName());
+        $this->assertEquals('www', $result['display_name']);
+        $this->assertEquals('www', $result['editable_name']);
     }
 
     public function testApexRecordDisplaysFullNameWhenHostnameOnlyDisabled(): void
@@ -91,8 +91,8 @@ class RecordDisplayServiceTest extends TestCase
 
         $result = $service->transformRecord($apexRecord, $zoneName);
 
-        $this->assertEquals('example.com', $result->getDisplayName());
-        $this->assertEquals('example.com', $result->getEditableName());
+        $this->assertEquals('example.com', $result['display_name']);
+        $this->assertEquals('example.com', $result['editable_name']);
     }
 
     public function testMultipleRecordsTransform(): void
@@ -133,11 +133,11 @@ class RecordDisplayServiceTest extends TestCase
         $results = $service->transformRecords($records, $zoneName);
 
         // Check apex record
-        $this->assertEquals('@', $results[0]->getDisplayName());
+        $this->assertEquals('@', $results[0]['display_name']);
 
         // Check regular records
-        $this->assertEquals('mail', $results[1]->getDisplayName());
-        $this->assertEquals('www', $results[2]->getDisplayName());
+        $this->assertEquals('mail', $results[1]['display_name']);
+        $this->assertEquals('www', $results[2]['display_name']);
     }
 
     public function testRestoreFqdnFromAtSymbol(): void

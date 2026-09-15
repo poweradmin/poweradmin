@@ -345,9 +345,7 @@ class EditController extends BaseController
         // Transform records for display using the RecordDisplayService
         $recordDisplayService = new RecordDisplayService($display_hostname_only);
 
-        $recordDisplayObjects = $recordDisplayService->transformRecords($records, $zone_name);
-        // Convert to arrays for template compatibility
-        $displayRecords = array_map(fn($recordDisplay) => $recordDisplay->toArray(), $recordDisplayObjects);
+        $displayRecords = $recordDisplayService->transformRecords($records, $zone_name);
 
         $perm_edit_ns_subzone = $this->hasPermission(Permission::PERM_EDIT_NS_SUBZONE);
         $perm_is_godlike = $this->permissionService->isAdmin($userId);

@@ -26,7 +26,6 @@ use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Enum\ZoneSaveOutcome;
-use Poweradmin\Domain\Model\RecordLog;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;

@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Domain\Model;
+namespace Poweradmin\Domain\Utility;
 
 use RuntimeException;
 
