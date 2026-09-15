@@ -79,12 +79,14 @@
   },
   "scripts-descriptions": {
     "docs:api": "Print the OpenAPI spec as JSON; add -- --output <file> to write it",
-    "docs:reference": "Build the local class reference into docs/reference with Doctum"
+    "docs:reference": "Build the local class reference into docs/reference with Doctum",
+    "lint:docblocks": "Fail on @param tags that do not match the method signature (Doctum parse)"
   },
   "scripts": {
     "docs:api": "openapi lib/Application/Controller/Api/V2/ --format json",
-    "doctum:install": "test -f .doctum/doctum.phar || (mkdir -p .doctum && curl -sL -o .doctum/doctum.phar https://doctum.long-term.support/releases/latest/doctum.phar)",
-    "docs:reference": ["@doctum:install", "php .doctum/doctum.phar update doctum.php --ignore-parse-errors"],
+    "doctum:install": "test -f .doctum/doctum.phar || (mkdir -p .doctum && curl -sL -o .doctum/doctum.phar https://doctum.long-term.support/releases/5.6.0/doctum.phar)",
+    "docs:reference": ["@doctum:install", "php .doctum/doctum.phar update doctum.php"],
+    "lint:docblocks": ["@doctum:install", "out=$(php .doctum/doctum.phar parse doctum.php --force --no-progress -v 2>&1) || { printf '%s\n' \"$out\" | grep '^ERROR'; echo 'ERROR: fix the docblocks above (composer lint:docblocks)'; exit 1; }"],
     "tests": "phpunit --testsuite unit",
     "tests:integration": "phpunit --testsuite integration",
     "tests:functional": "phpunit --testsuite functional",
@@ -120,7 +122,8 @@
         "@lint:sensitive-params",
         "@lint:error-traces",
         "@lint:e2e-routes",
-        "@lint:e2e-urls"
+        "@lint:e2e-urls",
+        "@lint:docblocks"
     ],
     "analyse:all": [
         "@check:all",
