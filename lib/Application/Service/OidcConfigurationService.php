@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,22 +23,22 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Network\ProxyContext;
-use ReflectionClass;
 
 /**
  * Reads the oidc provider settings, discovers endpoints and validates the permission template mapping.
  */
-class OidcConfigurationService extends LoggingService
+class OidcConfigurationService
 {
+    private LoggerInterface $logger;
     private ConfigurationManager $configManager;
     private array $discoveredConfigs = [];
 
     public function __construct(ConfigurationManager $configManager, LoggerInterface $logger)
     {
-        $shortClassName = (new ReflectionClass(self::class))->getShortName();
-        parent::__construct($logger, $shortClassName);
+        $this->logger = ClassContextLogger::for($logger, self::class);
 
         $this->configManager = $configManager;
     }
@@ -49,7 +49,7 @@ class OidcConfigurationService extends LoggingService
             $providers = $this->configManager->get('oidc', 'providers', []);
 
             if (!isset($providers[$providerId])) {
-                $this->logWarning('OIDC provider not found: {provider}', ['provider' => $providerId]);
+                $this->logger->warning('OIDC provider not found: {provider}', ['provider' => $providerId]);
                 return null;
             }
 
@@ -57,7 +57,7 @@ class OidcConfigurationService extends LoggingService
 
             $staticError = $this->describeStaticConfigError($config);
             if ($staticError !== null) {
-                $this->logError('Invalid OIDC configuration for provider {provider}: {error}', [
+                $this->logger->error('Invalid OIDC configuration for provider {provider}: {error}', [
                     'provider' => $providerId,
                     'error' => $staticError,
                 ]);
@@ -68,14 +68,14 @@ class OidcConfigurationService extends LoggingService
             if ($config['auto_discovery'] ?? false) {
                 $config = $this->discoverProviderEndpoints($providerId, $config);
                 if (!$config) {
-                    $this->logError('Failed to discover OIDC endpoints for provider: {provider}', ['provider' => $providerId]);
+                    $this->logger->error('Failed to discover OIDC endpoints for provider: {provider}', ['provider' => $providerId]);
                     return null;
                 }
             }
 
             return $this->validateProviderConfig($config) ? $config : null;
         } catch (\Exception $e) {
-            $this->logError('Error getting OIDC provider config for {provider}: {error}', [
+            $this->logger->error('Error getting OIDC provider config for {provider}: {error}', [
                 'provider' => $providerId,
                 'error' => $e->getMessage()
             ]);
@@ -142,7 +142,7 @@ class OidcConfigurationService extends LoggingService
         $metadataUrl = $config['metadata_url'] ?? '';
 
         if (empty($metadataUrl)) {
-            $this->logWarning(
+            $this->logger->warning(
                 'Auto-discovery enabled but no metadata URL provided for provider: {provider}',
                 ['provider' => $providerId]
             );
@@ -155,7 +155,7 @@ class OidcConfigurationService extends LoggingService
         }
 
         try {
-            $this->logInfo('Discovering OIDC endpoints for provider: {provider}', ['provider' => $providerId]);
+            $this->logger->info('Discovering OIDC endpoints for provider: {provider}', ['provider' => $providerId]);
 
             $options = [
                 'http' => [
@@ -190,11 +190,11 @@ class OidcConfigurationService extends LoggingService
             // Cache the discovered configuration
             $this->discoveredConfigs[$providerId] = $discoveredConfig;
 
-            $this->logInfo('Successfully discovered OIDC endpoints for provider: {provider}', ['provider' => $providerId]);
+            $this->logger->info('Successfully discovered OIDC endpoints for provider: {provider}', ['provider' => $providerId]);
 
             return array_merge($config, $discoveredConfig);
         } catch (\Exception $e) {
-            $this->logError('Failed to discover OIDC endpoints for provider {provider}: {error}', [
+            $this->logger->error('Failed to discover OIDC endpoints for provider {provider}: {error}', [
                 'provider' => $providerId,
                 'error' => $e->getMessage()
             ]);
@@ -266,9 +266,9 @@ class OidcConfigurationService extends LoggingService
             // Check if default template exists before claiming it will be used
             $defaultTemplate = $this->configManager->get('oidc', 'default_permission_template', '');
             if (empty($defaultTemplate)) {
-                $this->logWarning('No permission template mapping configured and no default_permission_template defined');
+                $this->logger->warning('No permission template mapping configured and no default_permission_template defined');
             } else {
-                $this->logWarning('No permission template mapping configured, will use default_permission_template for all users');
+                $this->logger->warning('No permission template mapping configured, will use default_permission_template for all users');
             }
             return $errors;
         }

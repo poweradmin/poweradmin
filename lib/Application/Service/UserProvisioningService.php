@@ -26,15 +26,15 @@ use PDO;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use ReflectionClass;
 use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
  * Creates or updates the local user for an LDAP, OIDC or SAML login and maps their groups to a permission template.
  */
-class UserProvisioningService extends LoggingService
+class UserProvisioningService
 {
     // Authentication method constants
     /** Aliases kept for callers; {@see AuthMethod} owns the vocabulary. */
@@ -46,6 +46,7 @@ class UserProvisioningService extends LoggingService
     /** Methods with an identity link table; LDAP identity is the username itself. */
     private const LINKABLE_AUTH_METHODS = [self::AUTH_METHOD_OIDC, self::AUTH_METHOD_SAML];
 
+    private LoggerInterface $logger;
     private PDO $db;
     private ConfigurationManager $configManager;
     private DbUserRepository $userRepository;
@@ -61,8 +62,7 @@ class UserProvisioningService extends LoggingService
         ConfigurationManager $configManager,
         LoggerInterface $logger
     ) {
-        $shortClassName = (new ReflectionClass(self::class))->getShortName();
-        parent::__construct($logger, $shortClassName);
+        $this->logger = ClassContextLogger::for($logger, self::class);
 
         $this->db = $connection;
         $this->configManager = $configManager;
@@ -85,13 +85,13 @@ class UserProvisioningService extends LoggingService
     {
         // Determine auth method from the actual UserInfo type being used
         $authMethod = $this->determineAuthMethodFromUserInfo($userInfo);
-        $this->logInfo('Starting user provisioning for {method} user: {username}', [
+        $this->logger->info('Starting user provisioning for {method} user: {username}', [
             'method' => strtoupper($authMethod),
             'username' => $userInfo->getUsername()
         ]);
 
         if (!$userInfo->isValid()) {
-            $this->logWarning('Invalid OIDC user info provided for provisioning: {details}', [
+            $this->logger->warning('Invalid OIDC user info provided for provisioning: {details}', [
                 'details' => [
                     'username' => $userInfo->getUsername(),
                     'email' => $userInfo->getEmail(),
@@ -111,7 +111,7 @@ class UserProvisioningService extends LoggingService
             };
 
             if ($existingUserId) {
-                $this->logInfo('Found existing user by {method} subject: {subject}', [
+                $this->logger->info('Found existing user by {method} subject: {subject}', [
                     'method' => strtoupper($authMethod),
                     'subject' => $userInfo->getSubject()
                 ]);
@@ -132,7 +132,7 @@ class UserProvisioningService extends LoggingService
                 if ($existingUserId !== null && $this->userHoldsSuperuserPermission($existingUserId)) {
                     // An address is not proof of identity, so it may never hand out
                     // the account that can rewrite every zone and every other user.
-                    $this->logWarning(
+                    $this->logger->warning(
                         'Refusing to link {method} identity to superuser account {id} by email',
                         ['method' => strtoupper($authMethod), 'id' => $existingUserId]
                     );
@@ -140,7 +140,7 @@ class UserProvisioningService extends LoggingService
                 }
 
                 if ($existingUserId) {
-                    $this->logInfo('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
+                    $this->logger->info('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
                     $this->linkIdentity($existingUserId, $userInfo, $providerId, $authMethod);
                     $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
                     return $existingUserId;
@@ -152,13 +152,13 @@ class UserProvisioningService extends LoggingService
                 return $this->createNewUser($userInfo, $providerId, $authMethod);
             }
 
-            $this->logWarning(
+            $this->logger->warning(
                 'User not found and auto-provisioning disabled: {username}',
                 ['username' => $userInfo->getUsername()]
             );
             return null;
         } catch (\Exception $e) {
-            $this->logError('Error provisioning OIDC user {username}: {error}', [
+            $this->logger->error('Error provisioning OIDC user {username}: {error}', [
                 'username' => $userInfo->getUsername(),
                 'error' => $e->getMessage()
             ]);
@@ -169,7 +169,7 @@ class UserProvisioningService extends LoggingService
     private function findUserByOidcSubject(string $subject, string $providerId): ?int
     {
         try {
-            $this->logInfo('Looking for existing user by OIDC subject: {subject} and provider: {provider}', [
+            $this->logger->info('Looking for existing user by OIDC subject: {subject} and provider: {provider}', [
                 'subject' => $subject,
                 'provider' => $providerId
             ]);
@@ -190,19 +190,19 @@ class UserProvisioningService extends LoggingService
                 $userExists = $userCheckStmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($userExists) {
-                    $this->logInfo('Found existing user by OIDC subject, user ID: {userId}', ['userId' => $userId]);
+                    $this->logger->info('Found existing user by OIDC subject, user ID: {userId}', ['userId' => $userId]);
                     return $userId;
                 } else {
-                    $this->logWarning('Found OIDC link for user ID {userId} but user no longer exists, cleaning up orphaned record', ['userId' => $userId]);
+                    $this->logger->warning('Found OIDC link for user ID {userId} but user no longer exists, cleaning up orphaned record', ['userId' => $userId]);
                     $this->cleanupOrphanedOidcLinks($subject, $providerId);
                 }
             } else {
-                $this->logInfo('No existing user found by OIDC subject');
+                $this->logger->info('No existing user found by OIDC subject');
             }
 
             return null;
         } catch (\Exception $e) {
-            $this->logError('Error finding user by OIDC subject (table may not exist): {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error finding user by OIDC subject (table may not exist): {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }
@@ -224,7 +224,7 @@ class UserProvisioningService extends LoggingService
             return;
         }
 
-        $this->logInfo('Linking {method} identity to user ID: {userId}', ['method' => strtoupper($authMethod), 'userId' => $userId]);
+        $this->logger->info('Linking {method} identity to user ID: {userId}', ['method' => strtoupper($authMethod), 'userId' => $userId]);
         if ($authMethod === self::AUTH_METHOD_SAML) {
             $this->linkSamlToExistingUser($userId, $userInfo, $providerId);
         } else {
@@ -257,7 +257,7 @@ class UserProvisioningService extends LoggingService
         $isVerified = filter_var($verified, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false;
 
         if (!$isVerified) {
-            $this->logWarning(
+            $this->logger->warning(
                 'Provider reported email_verified=false; skipping email-based account linking for {email}',
                 ['email' => $userInfo->getEmail()]
             );
@@ -275,7 +275,7 @@ class UserProvisioningService extends LoggingService
             return $this->userRepository->hasAdminPermission($userId);
         } catch (\Exception $e) {
             // Fail closed: an unreadable permission state must not permit linking.
-            $this->logError('Error checking superuser permission: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error checking superuser permission: {error}', ['error' => $e->getMessage()]);
             return true;
         }
     }
@@ -291,7 +291,7 @@ class UserProvisioningService extends LoggingService
 
             return $result ? (int)$result['id'] : null;
         } catch (\Exception $e) {
-            $this->logError('Error finding user by email: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error finding user by email: {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }
@@ -299,7 +299,7 @@ class UserProvisioningService extends LoggingService
     private function createNewUser(UserInfoInterface $userInfo, string $providerId, string $authMethod = self::AUTH_METHOD_OIDC): ?int
     {
         try {
-            $this->logInfo('Creating new user from {method}: {username}', [
+            $this->logger->info('Creating new user from {method}: {username}', [
                 'method' => strtoupper($authMethod),
                 'username' => $userInfo->getUsername()
             ]);
@@ -308,24 +308,24 @@ class UserProvisioningService extends LoggingService
             $permissionTemplateId = $this->determinePermissionTemplate($userInfo->getGroups(), $authMethod);
 
             if (!$permissionTemplateId) {
-                $this->logError('No permission template ID determined for user: {username}', ['username' => $userInfo->getUsername()]);
+                $this->logger->error('No permission template ID determined for user: {username}', ['username' => $userInfo->getUsername()]);
                 return null;
             }
 
-            $this->logInfo('Permission template ID determined: {templateId}', ['templateId' => $permissionTemplateId]);
+            $this->logger->info('Permission template ID determined: {templateId}', ['templateId' => $permissionTemplateId]);
 
             // LDAP logins authenticate by exact username, so a suffixed variant
             // would never be matched again - fail instead of uniquifying.
             $username = $userInfo->getUsername();
             if ($authMethod === self::AUTH_METHOD_LDAP) {
                 if ($this->usernameExists($username)) {
-                    $this->logError('Cannot auto-provision LDAP user {username}: username is taken by a local account', ['username' => $username]);
+                    $this->logger->error('Cannot auto-provision LDAP user {username}: username is taken by a local account', ['username' => $username]);
                     return null;
                 }
             } else {
                 $username = $this->ensureUniqueUsername($username);
             }
-            $this->logInfo('Final username for creation: {username}', ['username' => $username]);
+            $this->logger->info('Final username for creation: {username}', ['username' => $username]);
 
             // Log all the data that will be inserted
             $userData = [
@@ -337,7 +337,7 @@ class UserProvisioningService extends LoggingService
                 'active' => 1,
                 'perm_templ' => $permissionTemplateId
             ];
-            $this->logInfo('User data to be inserted: {userData}', ['userData' => $userData]);
+            $this->logger->info('User data to be inserted: {userData}', ['userData' => $userData]);
 
             // Create user
             $stmt = $this->db->prepare("
@@ -360,26 +360,26 @@ class UserProvisioningService extends LoggingService
 
             if (!$success) {
                 $errorInfo = implode(' - ', $stmt->errorInfo());
-                $this->logError('Database INSERT failed. PDO Error: {error}', ['error' => $errorInfo]);
+                $this->logger->error('Database INSERT failed. PDO Error: {error}', ['error' => $errorInfo]);
                 throw new \RuntimeException('Failed to insert user. PDO Error: ' . $errorInfo);
             }
 
             $userId = (int)$this->db->lastInsertId('users_id_seq');
-            $this->logInfo('User INSERT successful, new user ID: {userId}', ['userId' => $userId]);
+            $this->logger->info('User INSERT successful, new user ID: {userId}', ['userId' => $userId]);
 
             $this->linkIdentity($userId, $userInfo, $providerId, $authMethod);
 
             // Apply group membership based on external groups
             $this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod);
 
-            $this->logInfo('Successfully created new user: {username} with ID: {id}', [
+            $this->logger->info('Successfully created new user: {username} with ID: {id}', [
                 'username' => $username,
                 'id' => $userId
             ]);
 
             return $userId;
         } catch (\Exception $e) {
-            $this->logError('Error creating new {method} user: {error} at {origin}', [
+            $this->logger->error('Error creating new {method} user: {error} at {origin}', [
                 'method' => strtoupper($authMethod),
                 'error' => $e->getMessage(),
                 'origin' => $e->getFile() . ':' . $e->getLine()
@@ -419,13 +419,13 @@ class UserProvisioningService extends LoggingService
             if ($currentAuthMethod !== $authMethod && $this->shouldUpdateAuthMethod($currentAuthMethod, $authMethod)) {
                 $updateFields[] = 'auth_method = ?';
                 $updateValues[] = $authMethod;
-                $this->logInfo('Updating auth_method from {old} to {new} for user {userId}', [
+                $this->logger->info('Updating auth_method from {old} to {new} for user {userId}', [
                     'old' => $currentAuthMethod,
                     'new' => $authMethod,
                     'userId' => $userId
                 ]);
             } elseif ($currentAuthMethod !== $authMethod) {
-                $this->logInfo('Preserving existing auth_method {current} for user {userId} (not overwriting with {new})', [
+                $this->logger->info('Preserving existing auth_method {current} for user {userId} (not overwriting with {new})', [
                     'current' => $currentAuthMethod,
                     'new' => $authMethod,
                     'userId' => $userId
@@ -452,16 +452,16 @@ class UserProvisioningService extends LoggingService
                     if ($defaultTemplateId) {
                         $updateFields[] = 'perm_templ = ?';
                         $updateValues[] = $defaultTemplateId;
-                        $this->logInfo('Revoked SSO group-mapped template for user {userId}, falling back to default template', [
+                        $this->logger->info('Revoked SSO group-mapped template for user {userId}, falling back to default template', [
                             'userId' => $userId
                         ]);
                     } else {
-                        $this->logWarning('SSO group-mapped template should be revoked for user {userId} but no default template configured - keeping current template', [
+                        $this->logger->warning('SSO group-mapped template should be revoked for user {userId} but no default template configured - keeping current template', [
                             'userId' => $userId
                         ]);
                     }
                 } else {
-                    $this->logInfo('No matching group mapping for user {userId}, keeping admin-assigned permissions unchanged', [
+                    $this->logger->info('No matching group mapping for user {userId}, keeping admin-assigned permissions unchanged', [
                         'userId' => $userId
                     ]);
                 }
@@ -475,13 +475,13 @@ class UserProvisioningService extends LoggingService
                 ");
                 $stmt->execute($updateValues);
 
-                $this->logInfo('Updated user information and permissions for user ID: {id}', ['id' => $userId]);
+                $this->logger->info('Updated user information and permissions for user ID: {id}', ['id' => $userId]);
             }
 
             // Apply/sync group membership based on external groups
             $this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod);
         } catch (\Exception $e) {
-            $this->logError('Error updating existing user: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error updating existing user: {error}', ['error' => $e->getMessage()]);
         }
     }
 
@@ -525,16 +525,16 @@ class UserProvisioningService extends LoggingService
                 ]);
             }
 
-            $this->logInfo('Linked external identity to user ID: {id}', ['id' => $userId]);
+            $this->logger->info('Linked external identity to user ID: {id}', ['id' => $userId]);
         } catch (\Exception $e) {
-            $this->logError('Error linking external identity: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error linking external identity: {error}', ['error' => $e->getMessage()]);
         }
     }
 
     private function findUserBySamlSubject(string $subject, string $providerId): ?int
     {
         try {
-            $this->logInfo('Looking for existing user by SAML subject: {subject} and provider: {provider}', [
+            $this->logger->info('Looking for existing user by SAML subject: {subject} and provider: {provider}', [
                 'subject' => $subject,
                 'provider' => $providerId
             ]);
@@ -555,19 +555,19 @@ class UserProvisioningService extends LoggingService
                 $userExists = $userCheckStmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($userExists) {
-                    $this->logInfo('Found existing user by SAML subject, user ID: {userId}', ['userId' => $userId]);
+                    $this->logger->info('Found existing user by SAML subject, user ID: {userId}', ['userId' => $userId]);
                     return $userId;
                 } else {
-                    $this->logWarning('Found SAML link for user ID {userId} but user no longer exists, cleaning up orphaned record', ['userId' => $userId]);
+                    $this->logger->warning('Found SAML link for user ID {userId} but user no longer exists, cleaning up orphaned record', ['userId' => $userId]);
                     $this->cleanupOrphanedSamlLinks($subject, $providerId);
                 }
             } else {
-                $this->logInfo('No existing user found by SAML subject');
+                $this->logger->info('No existing user found by SAML subject');
             }
 
             return null;
         } catch (\Exception $e) {
-            $this->logError('Error finding user by SAML subject (table may not exist): {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error finding user by SAML subject (table may not exist): {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }
@@ -612,34 +612,34 @@ class UserProvisioningService extends LoggingService
                 ]);
             }
 
-            $this->logInfo('Linked SAML identity to user ID: {id}', ['id' => $userId]);
+            $this->logger->info('Linked SAML identity to user ID: {id}', ['id' => $userId]);
         } catch (\Exception $e) {
-            $this->logError('Error linking SAML identity: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error linking SAML identity: {error}', ['error' => $e->getMessage()]);
         }
     }
 
 
     private function determinePermissionTemplate(array $groups, string $authMethod = self::AUTH_METHOD_OIDC, bool $useDefaultFallback = true): ?int
     {
-        $this->logDebug('Determining permission template for groups: {groups}', ['groups' => $groups]);
+        $this->logger->debug('Determining permission template for groups: {groups}', ['groups' => $groups]);
 
         $permissionTemplateMapping = $this->configManager->get($authMethod, 'permission_template_mapping', []);
-        $this->logDebug('Available permission template mappings: {mappings}', ['mappings' => $permissionTemplateMapping]);
+        $this->logger->debug('Available permission template mappings: {mappings}', ['mappings' => $permissionTemplateMapping]);
 
         // Check if user's groups match any configured mappings
         foreach ($permissionTemplateMapping as $groupName => $templateName) {
             if ($this->groupMatches((string)$groupName, $groups)) {
-                $this->logInfo('Found matching group: {group}', ['group' => $groupName]);
+                $this->logger->info('Found matching group: {group}', ['group' => $groupName]);
                 $templateId = $this->findPermissionTemplateByName($templateName, $authMethod);
                 if ($templateId) {
-                    $this->logInfo('Mapped OIDC group {group} to permission template: {template} (ID: {id})', [
+                    $this->logger->info('Mapped OIDC group {group} to permission template: {template} (ID: {id})', [
                         'group' => $groupName,
                         'template' => $templateName,
                         'id' => $templateId
                     ]);
                     return $templateId;
                 } else {
-                    $this->logWarning('Permission template {template} not found for group {group}', [
+                    $this->logger->warning('Permission template {template} not found for group {group}', [
                         'template' => $templateName,
                         'group' => $groupName
                     ]);
@@ -648,26 +648,26 @@ class UserProvisioningService extends LoggingService
         }
 
         if (!$useDefaultFallback) {
-            $this->logInfo('No matching group mapping found for existing user, keeping current permissions');
+            $this->logger->info('No matching group mapping found for existing user, keeping current permissions');
             return null;
         }
 
-        $this->logInfo('No matching groups found, proceeding to default template');
+        $this->logger->info('No matching groups found, proceeding to default template');
 
         // Fall back to default permission template
         $defaultTemplateName = $this->configManager->get($authMethod, 'default_permission_template', '');
 
         if (empty($defaultTemplateName)) {
-            $this->logError('No default permission template configured and user has no matching groups. User provisioning failed.');
+            $this->logger->error('No default permission template configured and user has no matching groups. User provisioning failed.');
             return null;
         }
 
-        $this->logInfo('Falling back to default permission template: {template}', ['template' => $defaultTemplateName]);
+        $this->logger->info('Falling back to default permission template: {template}', ['template' => $defaultTemplateName]);
 
         $defaultTemplateId = $this->findPermissionTemplateByName($defaultTemplateName, $authMethod);
 
         if ($defaultTemplateId) {
-            $this->logInfo('Using default permission template: {template} (ID: {id})', [
+            $this->logger->info('Using default permission template: {template} (ID: {id})', [
                 'template' => $defaultTemplateName,
                 'id' => $defaultTemplateId
             ]);
@@ -677,7 +677,7 @@ class UserProvisioningService extends LoggingService
         // Fail closed. Picking "any available template" resolved to the lowest id,
         // which is the bundled Administrator template, so a renamed or deleted
         // default silently provisioned external identities as superusers.
-        $this->logError(
+        $this->logger->error(
             'Default permission template {template} not found in database; refusing to provision user.',
             ['template' => $defaultTemplateName]
         );
@@ -707,7 +707,7 @@ class UserProvisioningService extends LoggingService
 
             return $result ? $result['username'] : null;
         } catch (\Exception $e) {
-            $this->logError('Error getting database username for user ID {userId}: {error}', [
+            $this->logger->error('Error getting database username for user ID {userId}: {error}', [
                 'userId' => $userId,
                 'error' => $e->getMessage()
             ]);
@@ -730,7 +730,7 @@ class UserProvisioningService extends LoggingService
 
             $templateId = (int)$result['id'];
             if (!$this->superuserProvisioningAllowed($authMethod) && $this->templateGrantsSuperuser($templateId)) {
-                $this->logWarning(
+                $this->logger->warning(
                     'Refusing to provision superuser template {template} from {method}; '
                     . 'set allow_superuser_provisioning to permit it',
                     ['template' => $templateName, 'method' => strtoupper($authMethod)]
@@ -740,7 +740,7 @@ class UserProvisioningService extends LoggingService
 
             return $templateId;
         } catch (\Exception $e) {
-            $this->logError('Error finding permission template by name: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error finding permission template by name: {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }
@@ -759,7 +759,7 @@ class UserProvisioningService extends LoggingService
             return $this->userRepository->templateGrantsUberuser($permTemplId);
         } catch (\Exception $e) {
             // Fail closed: an unreadable template must not be assumed harmless.
-            $this->logError('Error checking template permissions: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error checking template permissions: {error}', ['error' => $e->getMessage()]);
             return true;
         }
     }
@@ -777,7 +777,7 @@ class UserProvisioningService extends LoggingService
 
             return $permTemplId !== false && $this->templateGrantsSuperuser((int)$permTemplId);
         } catch (\Exception $e) {
-            $this->logError('Error checking group permissions: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error checking group permissions: {error}', ['error' => $e->getMessage()]);
             return true;
         }
     }
@@ -808,7 +808,7 @@ class UserProvisioningService extends LoggingService
             $stmt->execute([$username]);
             return $stmt->fetch() !== false;
         } catch (\Exception $e) {
-            $this->logError('Error checking username existence: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error checking username existence: {error}', ['error' => $e->getMessage()]);
             return true; // Assume it exists to be safe
         }
     }
@@ -888,10 +888,10 @@ class UserProvisioningService extends LoggingService
             $orphanedLinks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (!empty($orphanedLinks)) {
-                $this->logInfo('Found {count} orphaned external auth links to clean up', ['count' => count($orphanedLinks)]);
+                $this->logger->info('Found {count} orphaned external auth links to clean up', ['count' => count($orphanedLinks)]);
 
                 foreach ($orphanedLinks as $link) {
-                    $this->logInfo('Cleaning up orphaned link: user_id={user_id}, provider={provider}, username={username}', [
+                    $this->logger->info('Cleaning up orphaned link: user_id={user_id}, provider={provider}, username={username}', [
                         'user_id' => $link['user_id'],
                         'provider' => $link['provider_id'],
                         'username' => $link['username']
@@ -906,9 +906,9 @@ class UserProvisioningService extends LoggingService
                 $stmt->execute();
                 $cleanupCount = $stmt->rowCount();
 
-                $this->logInfo('Successfully cleaned up {count} orphaned external auth links', ['count' => $cleanupCount]);
+                $this->logger->info('Successfully cleaned up {count} orphaned external auth links', ['count' => $cleanupCount]);
             } else {
-                $this->logInfo('No orphaned external auth links found');
+                $this->logger->info('No orphaned external auth links found');
             }
 
             return [
@@ -917,7 +917,7 @@ class UserProvisioningService extends LoggingService
                 'orphaned_links' => $orphanedLinks
             ];
         } catch (\Exception $e) {
-            $this->logError('Error cleaning up orphaned auth links: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error cleaning up orphaned auth links: {error}', ['error' => $e->getMessage()]);
             return [
                 'success' => false,
                 'error' => $e->getMessage(),
@@ -932,7 +932,7 @@ class UserProvisioningService extends LoggingService
     private function cleanupOrphanedSamlLinks(string $subject, string $providerId): void
     {
         try {
-            $this->logInfo('Checking for orphaned SAML links for subject: {subject}', ['subject' => $subject]);
+            $this->logger->info('Checking for orphaned SAML links for subject: {subject}', ['subject' => $subject]);
 
             // Find orphaned links for this specific subject
             $stmt = $this->db->prepare("
@@ -945,7 +945,7 @@ class UserProvisioningService extends LoggingService
             $orphanedLinks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (!empty($orphanedLinks)) {
-                $this->logWarning('Found {count} orphaned SAML links for subject {subject}, cleaning up...', [
+                $this->logger->warning('Found {count} orphaned SAML links for subject {subject}, cleaning up...', [
                     'count' => count($orphanedLinks),
                     'subject' => $subject
                 ]);
@@ -955,10 +955,10 @@ class UserProvisioningService extends LoggingService
                 $deleteStmt = $this->db->prepare("DELETE FROM saml_user_links WHERE id IN ($placeholders)");
                 $deleteStmt->execute($linkIds);
 
-                $this->logInfo('Successfully cleaned up {count} orphaned SAML links', ['count' => count($orphanedLinks)]);
+                $this->logger->info('Successfully cleaned up {count} orphaned SAML links', ['count' => count($orphanedLinks)]);
             }
         } catch (\Exception $e) {
-            $this->logError('Error cleaning up orphaned SAML links: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error cleaning up orphaned SAML links: {error}', ['error' => $e->getMessage()]);
         }
     }
 
@@ -968,7 +968,7 @@ class UserProvisioningService extends LoggingService
     private function cleanupOrphanedOidcLinks(string $subject, string $providerId): void
     {
         try {
-            $this->logInfo('Checking for orphaned OIDC links for subject: {subject}', ['subject' => $subject]);
+            $this->logger->info('Checking for orphaned OIDC links for subject: {subject}', ['subject' => $subject]);
 
             // Find orphaned links for this specific subject
             $stmt = $this->db->prepare("
@@ -981,7 +981,7 @@ class UserProvisioningService extends LoggingService
             $orphanedLinks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             if (!empty($orphanedLinks)) {
-                $this->logWarning('Found {count} orphaned OIDC links for subject {subject}, cleaning up...', [
+                $this->logger->warning('Found {count} orphaned OIDC links for subject {subject}, cleaning up...', [
                     'count' => count($orphanedLinks),
                     'subject' => $subject
                 ]);
@@ -991,10 +991,10 @@ class UserProvisioningService extends LoggingService
                 $deleteStmt = $this->db->prepare("DELETE FROM oidc_user_links WHERE id IN ($placeholders)");
                 $deleteStmt->execute($linkIds);
 
-                $this->logInfo('Successfully cleaned up {count} orphaned OIDC links', ['count' => count($orphanedLinks)]);
+                $this->logger->info('Successfully cleaned up {count} orphaned OIDC links', ['count' => count($orphanedLinks)]);
             }
         } catch (\Exception $e) {
-            $this->logError('Error cleaning up orphaned OIDC links: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error cleaning up orphaned OIDC links: {error}', ['error' => $e->getMessage()]);
         }
     }
 
@@ -1012,13 +1012,13 @@ class UserProvisioningService extends LoggingService
         $groupMapping = $this->configManager->get($authMethod, 'group_mapping', []);
 
         if (empty($groupMapping)) {
-            $this->logDebug('No group mapping configured for {method}, skipping group membership sync', [
+            $this->logger->debug('No group mapping configured for {method}, skipping group membership sync', [
                 'method' => strtoupper($authMethod)
             ]);
             return;
         }
 
-        $this->logDebug('Synchronizing group membership for user {userId} based on {method} groups: {groups}', [
+        $this->logger->debug('Synchronizing group membership for user {userId} based on {method} groups: {groups}', [
             'userId' => $userId,
             'method' => strtoupper($authMethod),
             'groups' => $externalGroups
@@ -1034,7 +1034,7 @@ class UserProvisioningService extends LoggingService
                 }
                 $mappedGroupIds[$poweradminGroupName] = $this->findGroupByName($poweradminGroupName);
                 if ($mappedGroupIds[$poweradminGroupName] === null) {
-                    $this->logWarning('Poweradmin group {group} from {method} group_mapping not found', [
+                    $this->logger->warning('Poweradmin group {group} from {method} group_mapping not found', [
                         'group' => $poweradminGroupName,
                         'method' => strtoupper($authMethod)
                     ]);
@@ -1065,7 +1065,7 @@ class UserProvisioningService extends LoggingService
                     return true;
                 }
 
-                $this->logWarning(
+                $this->logger->warning(
                     'Refusing to add {method} user to superuser group {group}; '
                     . 'set allow_superuser_provisioning to permit it',
                     ['method' => strtoupper($authMethod), 'group' => $idToName[$groupId] ?? $groupId]
@@ -1086,7 +1086,7 @@ class UserProvisioningService extends LoggingService
 
         foreach (array_diff($currentGroupIds, $targetGroupIds) as $groupId) {
             if ($this->removeUserFromGroup($userId, $groupId)) {
-                $this->logInfo('Removed user {userId} from group: {group} (no longer in external group)', [
+                $this->logger->info('Removed user {userId} from group: {group} (no longer in external group)', [
                     'userId' => $userId,
                     'group' => $idToName[$groupId] ?? $groupId
                 ]);
@@ -1101,7 +1101,7 @@ class UserProvisioningService extends LoggingService
         }
 
         if (!empty($addedGroups)) {
-            $this->logInfo('User {userId} membership synchronized, in groups: {groups}', [
+            $this->logger->info('User {userId} membership synchronized, in groups: {groups}', [
                 'userId' => $userId,
                 'groups' => implode(', ', $addedGroups)
             ]);
@@ -1173,7 +1173,7 @@ class UserProvisioningService extends LoggingService
 
             return $result ? (int)$result['id'] : null;
         } catch (\Exception $e) {
-            $this->logError('Error finding group by name: {error}', ['error' => $e->getMessage()]);
+            $this->logger->error('Error finding group by name: {error}', ['error' => $e->getMessage()]);
             return null;
         }
     }
@@ -1202,7 +1202,7 @@ class UserProvisioningService extends LoggingService
 
             return true;
         } catch (\Exception $e) {
-            $this->logError('Error adding user {userId} to group {groupId}: {error}', [
+            $this->logger->error('Error adding user {userId} to group {groupId}: {error}', [
                 'userId' => $userId,
                 'groupId' => $groupId,
                 'error' => $e->getMessage()
@@ -1226,7 +1226,7 @@ class UserProvisioningService extends LoggingService
 
             return $stmt->rowCount() > 0;
         } catch (\Exception $e) {
-            $this->logError('Error removing user {userId} from group {groupId}: {error}', [
+            $this->logger->error('Error removing user {userId} from group {groupId}: {error}', [
                 'userId' => $userId,
                 'groupId' => $groupId,
                 'error' => $e->getMessage()

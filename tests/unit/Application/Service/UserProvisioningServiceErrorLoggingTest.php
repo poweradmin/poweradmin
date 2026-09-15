@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
@@ -83,9 +84,7 @@ class UserProvisioningServiceErrorLoggingTest extends TestCase
         $this->setProperty($reflection, $service, 'dbType', 'mysql');
         $this->setProperty($reflection, $service, 'binaryCollation', '');
 
-        $parent = $reflection->getParentClass();
-        $this->setProperty($parent, $service, 'logger', $this->capturingLogger());
-        $this->setProperty($parent, $service, 'className', 'UserProvisioningService');
+        $this->setProperty($reflection, $service, 'logger', ClassContextLogger::for($this->capturingLogger(), UserProvisioningService::class));
 
         $userInfo = $this->createMock(UserInfoInterface::class);
         $userInfo->method('getUsername')->willReturn('jdoe');
@@ -154,9 +153,11 @@ class UserProvisioningServiceErrorLoggingTest extends TestCase
     private function capturingLogger(): Logger
     {
         $logger = $this->createMock(Logger::class);
-        $logger->method('error')->willReturnCallback(
-            function (string $message, array $context): void {
-                $this->loggedErrors[] = [$message, $context];
+        $logger->method('log')->willReturnCallback(
+            function (string $level, string $message, array $context): void {
+                if ($level === 'error') {
+                    $this->loggedErrors[] = [$message, $context];
+                }
             }
         );
 

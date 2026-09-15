@@ -43,7 +43,7 @@ class LdapAuthenticatorCacheTest extends TestCase
 
         // Mock logger to avoid initialization errors
         $mockLogger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
-        $loggerProperty = $this->reflection->getParentClass()->getProperty('logger');
+        $loggerProperty = $this->reflection->getProperty('logger');
         $loggerProperty->setAccessible(true);
         $loggerProperty->setValue($this->authenticator, $mockLogger);
 
