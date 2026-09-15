@@ -25,8 +25,7 @@ namespace Poweradmin\Domain\Repository;
 use Poweradmin\Domain\Model\Constants;
 
 /**
- * Reads over the records table by zone, name, id or RRset, plus the existence checks
- * record validation relies on. Implemented for direct SQL and for the API backend mode.
+ * Reads on the records table; implemented for SQL and for the API backend mode.
  */
 interface RecordRepositoryInterface
 {

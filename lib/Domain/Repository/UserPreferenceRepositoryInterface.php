@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Repository;
 use Poweradmin\Domain\Model\UserPreference;
 
 /**
- * Persistence for per-user interface preferences stored as key-value pairs.
+ * Persistence for per-user interface preferences.
  */
 interface UserPreferenceRepositoryInterface
 {

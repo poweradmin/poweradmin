@@ -25,9 +25,7 @@ namespace Poweradmin\Domain\Repository;
 use Poweradmin\Domain\Model\Constants;
 
 /**
- * Read-only lookups on the domains table: name and id resolution, zone type, primary
- * server and the best-matching zone for a record name. Implemented for direct SQL and
- * for the API backend mode.
+ * Lookups on the domains table; implemented for SQL and for the API backend mode.
  */
 interface DomainRepositoryInterface
 {

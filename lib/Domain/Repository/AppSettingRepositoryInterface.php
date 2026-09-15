@@ -23,12 +23,7 @@
 namespace Poweradmin\Domain\Repository;
 
 /**
- * Persistence boundary for generic admin-managed settings layered above
- * config/settings.php. Keys use dotted notation (e.g. "interface.theme")
- * so they map cleanly onto ConfigurationManager groups during fallback.
- *
- * Values are stored as strings with a separate type hint; the service layer
- * (AppSettingsService) casts on read.
+ * Persistence for admin-managed settings that override config/settings.php.
  */
 interface AppSettingRepositoryInterface
 {

@@ -23,11 +23,7 @@
 namespace Poweradmin\Domain\Repository;
 
 /**
- * Persistence boundary for admin-configured default TTLs keyed by record type.
- *
- * Implementations are expected to store and retrieve a single TTL per record
- * type (e.g. `PTR => 300`). The web UI manages the entries; record-creation
- * paths consult this repository before falling back to legacy config.
+ * Persistence for admin-configured default TTLs per record type.
  */
 interface RecordTypeDefaultRepositoryInterface
 {

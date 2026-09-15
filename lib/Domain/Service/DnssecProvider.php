@@ -23,8 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 /**
- * DNSSEC operations for one zone, implemented over the PowerDNS API and as a no-op
- * provider for installations without DNSSEC.
+ * DNSSEC operations for one zone.
  */
 interface DnssecProvider
 {

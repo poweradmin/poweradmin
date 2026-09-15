@@ -23,8 +23,7 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 /**
- * Sink for the PSR-3 Logger: formats a log context into a line and writes it, or drops
- * it when logging is disabled.
+ * Output sink for the PSR-3 Logger.
  */
 interface LogHandlerInterface
 {
