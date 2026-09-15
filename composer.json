@@ -106,6 +106,7 @@
     "lint:e2e-assertions": "node playwright/tools/check-assertions.js",
     "lint:e2e-routes": "php playwright/tools/check-route-paths.php",
     "lint:e2e-urls": "php playwright/tools/check-url-literals.php",
+    "lint:no-traits": "! grep -rnE '^\\s*trait ' lib/ --include='*.php' || (echo 'ERROR: lib/ does not use traits; share behaviour through a service or an abstract class instead (the installer keeps its five legacy ones)' && false)",
     "lint:zone-ids": [
         "! grep -rnE 'zg[0-9]*\\.domain_id *(= *z[0-9_]*\\.id\\b|IN *\\( *z[0-9_]*\\.id)' lib/ || (echo 'ERROR: match zones_groups.domain_id against COALESCE(z.domain_id, z.id); zones.id and zones.domain_id overlap, see CanonicalZoneSql' && false)"
     ],
@@ -123,7 +124,8 @@
         "@lint:error-traces",
         "@lint:e2e-routes",
         "@lint:e2e-urls",
-        "@lint:docblocks"
+        "@lint:docblocks",
+        "@lint:no-traits"
     ],
     "analyse:all": [
         "@check:all",
