@@ -24,6 +24,10 @@ namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\User;
 
+/**
+ * Persistence for user accounts, their permission template and the zones they own.
+ * Named without the Interface suffix for historical reasons.
+ */
 interface UserRepository
 {
     /**

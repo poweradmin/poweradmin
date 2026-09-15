@@ -22,6 +22,10 @@
 
 namespace Poweradmin\Domain\Service;
 
+/**
+ * DNSSEC operations for one zone, implemented over the PowerDNS API and as a no-op
+ * provider for installations without DNSSEC.
+ */
 interface DnssecProvider
 {
     public function rectifyZone(string $zoneName): bool;

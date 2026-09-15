@@ -24,6 +24,10 @@ namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\RecordComment;
 
+/**
+ * Persistence for record comments in the Poweradmin-native comments table, including the
+ * record-to-comment links and the migration of legacy PowerDNS comments.
+ */
 interface RecordCommentRepositoryInterface
 {
     /**

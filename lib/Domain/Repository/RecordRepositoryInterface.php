@@ -25,7 +25,8 @@ namespace Poweradmin\Domain\Repository;
 use Poweradmin\Domain\Model\Constants;
 
 /**
- * Interface for DNS record repository operations
+ * Reads over the records table by zone, name, id or RRset, plus the existence checks
+ * record validation relies on. Implemented for direct SQL and for the API backend mode.
  */
 interface RecordRepositoryInterface
 {

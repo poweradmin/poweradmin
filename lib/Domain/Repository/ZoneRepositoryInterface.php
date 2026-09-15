@@ -22,6 +22,10 @@
 
 namespace Poweradmin\Domain\Repository;
 
+/**
+ * Zone reads and ownership writes over the zones and domains tables. Implemented once
+ * for direct SQL and once for the API backend mode, which reads zone state via PowerDNS.
+ */
 interface ZoneRepositoryInterface
 {
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array;

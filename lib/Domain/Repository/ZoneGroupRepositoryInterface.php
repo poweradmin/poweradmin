@@ -24,6 +24,10 @@ namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\ZoneGroup;
 
+/**
+ * Persistence for group-based zone ownership (zones_groups), the second ownership path
+ * beside the direct owner on the zones table.
+ */
 interface ZoneGroupRepositoryInterface
 {
     /**

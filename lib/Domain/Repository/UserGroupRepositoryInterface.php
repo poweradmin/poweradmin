@@ -24,6 +24,10 @@ namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\UserGroup;
 
+/**
+ * Persistence for user groups: lookup by id, name or member, and the member and zone
+ * counts the group list displays.
+ */
 interface UserGroupRepositoryInterface
 {
     /**

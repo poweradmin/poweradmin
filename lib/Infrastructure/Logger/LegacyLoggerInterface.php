@@ -22,6 +22,10 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+/**
+ * Minimal message-only logger used by the DNSSEC API provider. New code should take
+ * a PSR-3 LoggerInterface instead.
+ */
 interface LegacyLoggerInterface
 {
     public function info(string $message): void;

@@ -25,11 +25,7 @@ namespace Poweradmin\Domain\Repository;
 use Poweradmin\Domain\Model\ApiKey;
 
 /**
- * Interface ApiKeyRepositoryInterface
- *
- * Repository interface for API key operations
- *
- * @package Poweradmin\Domain\Repository
+ * Persistence for API keys: lookup by key value or owner, creation, expiry and usage tracking.
  */
 interface ApiKeyRepositoryInterface
 {

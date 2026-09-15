@@ -22,6 +22,10 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
+/**
+ * Read access to settings by group and key. ConfigurationManager is the production
+ * implementation; FakeConfiguration backs unit tests.
+ */
 interface ConfigurationInterface
 {
     /**
