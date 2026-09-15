@@ -59,13 +59,13 @@ class SqlDomainRepository implements DomainRepositoryInterface
         $this->tableNameService = new TableNameService($config);
     }
 
-    public function zoneIdExists(int $zid): int
+    public function zoneIdExists(int $zid): bool
     {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->prepare("SELECT COUNT(id) FROM $domains_table WHERE id = :id");
         $stmt->execute([':id' => $zid]);
-        return (int)$stmt->fetchColumn();
+        return (int)$stmt->fetchColumn() > 0;
     }
 
     public function getDomainNameById(int $id): ?string
