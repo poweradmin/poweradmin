@@ -23,7 +23,9 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
+use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Service\UserContextService;
 
@@ -34,17 +36,17 @@ use Poweradmin\Domain\Service\UserContextService;
  */
 class AuditService
 {
-    private LegacyLogger $logger;
+    private AuditLogWriter $logger;
     private IpAddressRetriever $ipRetriever;
     private UserContextService $userContext;
 
     public function __construct(
         PDO $db,
-        ?LegacyLogger $logger = null,
+        ?AuditLogWriter $logger = null,
         ?IpAddressRetriever $ipRetriever = null,
         ?UserContextService $userContext = null
     ) {
-        $this->logger = $logger ?? new LegacyLogger($db);
+        $this->logger = $logger ?? new AuditLogWriter($db);
         $this->ipRetriever = $ipRetriever ?? new IpAddressRetriever($_SERVER);
         $this->userContext = $userContext ?? new UserContextService();
     }
@@ -175,6 +177,50 @@ class AuditService
     }
 
     // Sign-in
+
+    /**
+     * Login lines name the username the form posted, empty when there is none; the
+     * fail2ban filter documented in poweradmin-docs keys on client_ip and operation.
+     */
+    private function loginLine(string $operation, AuthMethod $authMethod, ?LoginFailureReason $reason = null): string
+    {
+        return $this->lineAs($this->userContext->getLoggedInUsername() ?? '', $operation, [
+            'auth_method' => $authMethod->value,
+            'reason' => $reason?->value,
+        ]);
+    }
+
+    public function logLoginSuccess(AuthMethod $authMethod): void
+    {
+        $this->logger->logNotice($this->loginLine('login_success', $authMethod));
+    }
+
+    public function logLoginFailed(AuthMethod $authMethod, ?LoginFailureReason $reason = null): void
+    {
+        $line = $this->loginLine('login_failed', $authMethod, $reason);
+
+        // Two directory entries for one login is a data defect, not a bad credential
+        if ($reason === LoginFailureReason::DUPLICATE_USERS) {
+            $this->logger->logError($line);
+            return;
+        }
+
+        $this->logger->logWarn($line);
+    }
+
+    public function logLoginLocked(AuthMethod $authMethod): void
+    {
+        $this->logger->logWarn($this->loginLine('login_locked', $authMethod));
+    }
+
+    /**
+     * A backend failure (LDAP connect, bind or search). Logged as login_error, not
+     * login_failed, so an outage does not feed fail2ban brute-force counters.
+     */
+    public function logLoginError(AuthMethod $authMethod, LoginFailureReason $reason): void
+    {
+        $this->logger->logError($this->loginLine('login_error', $authMethod, $reason));
+    }
 
     public function logMfaEnable(string $mfaType): void
     {

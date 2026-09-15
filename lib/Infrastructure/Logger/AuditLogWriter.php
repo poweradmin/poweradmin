@@ -25,35 +25,46 @@ namespace Poweradmin\Infrastructure\Logger;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use PDO;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
- * Writes an event to syslog and/or the log_users, log_zones, log_groups and log_api tables per the logging settings.
+ * Sink for audit lines: hands each one to the syslog logger and, when database
+ * logging is on, to the log_users, log_zones, log_groups or log_api table.
  */
-class LegacyLogger
+class AuditLogWriter
 {
+    private const LEVELS = [
+        LOG_ERR => LogLevel::ERROR,
+        LOG_WARNING => LogLevel::WARNING,
+        LOG_NOTICE => LogLevel::NOTICE,
+        LOG_INFO => LogLevel::INFO,
+    ];
+
     private PDO $db;
     private ConfigurationManager $config;
     private ?DnsBackendProviderInterface $backendProvider;
+    private LoggerInterface $syslog;
 
-    public function __construct($db, ?DnsBackendProviderInterface $backendProvider = null)
+    /**
+     * @param LoggerInterface|null $syslog Defaults to SyslogLogger or NullLogger per logging.syslog_enabled
+     */
+    public function __construct(PDO $db, ?DnsBackendProviderInterface $backendProvider = null, ?LoggerInterface $syslog = null)
     {
         $this->db = $db;
         $this->config = ConfigurationManager::getInstance();
         $this->config->initialize();
         $this->backendProvider = $backendProvider;
+        $this->syslog = $syslog ?? SyslogLogger::fromConfig($this->config);
     }
 
     /**
-     * Writes one audit line to syslog and, through $dbWrite, to the matching log table;
-     * each sink is on only when its logging.* switch says so.
+     * Writes one audit line to syslog and, through $dbWrite, to the matching log
+     * table when logging.database_enabled is on.
      */
     private function write(string $message, int $priority, callable $dbWrite): void
     {
-        if ($this->config->get('logging', 'syslog_enabled')) {
-            openlog($this->config->get('logging', 'syslog_identity'), LOG_PERROR, $this->config->get('logging', 'syslog_facility'));
-            syslog($priority, $message);
-            closelog();
-        }
+        $this->syslog->log(self::LEVELS[$priority] ?? LogLevel::INFO, $message);
 
         if ($this->config->get('logging', 'database_enabled')) {
             $dbWrite();

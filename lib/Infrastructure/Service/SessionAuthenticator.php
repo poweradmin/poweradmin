@@ -31,7 +31,6 @@ use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
@@ -41,7 +40,6 @@ use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserTimezoneService;
-use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
@@ -61,6 +59,7 @@ class SessionAuthenticator extends LoggingService
     private CsrfTokenService $csrfTokenService;
     private ?LdapAuthenticator $ldapAuthenticator = null;
     private ?SqlAuthenticator $sqlAuthenticator = null;
+    private ?AuditService $auditService = null;
     private LoginAttemptService $loginAttemptService;
     private RecaptchaService $recaptchaService;
     private RedirectService $redirectService;
@@ -82,6 +81,11 @@ class SessionAuthenticator extends LoggingService
         $this->recaptchaService = new RecaptchaService($configManager);
     }
 
+    private function auditService(): AuditService
+    {
+        return $this->auditService ??= new AuditService($this->db);
+    }
+
     /**
      * Builds the LDAP authenticator on first use, so installations without LDAP
      * never construct it or its MFA graph.
@@ -91,7 +95,7 @@ class SessionAuthenticator extends LoggingService
         return $this->ldapAuthenticator ??= new LdapAuthenticator(
             $this->db,
             $this->configManager,
-            new LdapUserEventLogger($this->db),
+            $this->auditService(),
             $this->authService,
             $this->csrfTokenService,
             $this->logger,
@@ -109,7 +113,7 @@ class SessionAuthenticator extends LoggingService
         return $this->sqlAuthenticator ??= new SqlAuthenticator(
             $this->db,
             $this->configManager,
-            new UserEventLogger($this->db),
+            $this->auditService(),
             $this->authService,
             $this->csrfTokenService,
             $this->logger,
@@ -199,8 +203,7 @@ class SessionAuthenticator extends LoggingService
         if (isset($_SESSION[SessionKeys::USERID]) && isset($_SESSION[SessionKeys::LASTMOD]) && $_SESSION[SessionKeys::LASTMOD] !== "" && ((time() - $_SESSION[SessionKeys::LASTMOD]) > $iface_expire)) {
             $this->logInfo('Session expired for user {userid}', ['userid' => $_SESSION[SessionKeys::USERID]]);
 
-            $auditService = new AuditService($this->db);
-            $auditService->logSessionExpired();
+            $this->auditService()->logSessionExpired();
 
             $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
             $this->authService->logout($sessionEntity);

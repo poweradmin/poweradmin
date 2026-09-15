@@ -30,7 +30,7 @@ use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\ValueObject\IpAddressList;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
@@ -42,7 +42,7 @@ readonly class DynamicDnsUpdateService
         private DynamicDnsValidationService $validationService,
         private DynamicDnsAuthenticationService $authService,
         private DynamicDnsRepositoryInterface $repository,
-        private ?LegacyLogger $auditLogger = null,
+        private ?AuditLogWriter $auditLogger = null,
         private ?IpAddressRetriever $ipRetriever = null
     ) {
     }

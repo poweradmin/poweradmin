@@ -45,7 +45,7 @@ class SqlAuthenticator extends LoggingService
 {
     private PDO $connection;
     private ConfigurationManager $configManager;
-    private UserEventLogger $userEventLogger;
+    private AuditService $auditService;
     private $authService; // Can be either AuthenticationService or UserAuthenticationService
     private CsrfTokenService $csrfTokenService;
     private LoginAttemptService $loginAttemptService;
@@ -55,7 +55,7 @@ class SqlAuthenticator extends LoggingService
     public function __construct(
         PDO $connection,
         ConfigurationManager $configManager,
-        UserEventLogger $userEventLogger,
+        AuditService $auditService,
         $authService, // Changed type to allow UserAuthenticationService
         CsrfTokenService $csrfTokenService,
         LoggerInterface $logger,
@@ -67,7 +67,7 @@ class SqlAuthenticator extends LoggingService
 
         $this->connection = $connection;
         $this->configManager = $configManager;
-        $this->userEventLogger = $userEventLogger;
+        $this->auditService = $auditService;
         $this->authService = $authService;
         $this->csrfTokenService = $csrfTokenService;
         $this->loginAttemptService = $loginAttemptService;
@@ -101,7 +101,7 @@ class SqlAuthenticator extends LoggingService
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             $this->logWarning('Account is locked for user {username}', ['username' => $username]);
             if (isset($_POST['authenticate'])) {
-                $this->userEventLogger->logLockout();
+                $this->auditService->logLoginLocked(AuthMethod::SQL);
             }
             $sessionEntity = new SessionEntity(_('Account is temporarily locked. Please try again later.'), 'danger');
             $this->authService->auth($sessionEntity);
@@ -165,7 +165,7 @@ class SqlAuthenticator extends LoggingService
         if ($rowObj['active'] != 1) {
             $this->logWarning('User account is disabled for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
             if (isset($_POST['authenticate'])) {
-                $this->userEventLogger->logFailedAuth(AuthMethod::SQL, LoginFailureReason::ACCOUNT_DISABLED);
+                $this->auditService->logLoginFailed(AuthMethod::SQL, LoginFailureReason::ACCOUNT_DISABLED);
             }
             $sessionEntity = new SessionEntity(_('The user account is disabled.'), 'danger');
             $this->authService->auth($sessionEntity);
@@ -217,7 +217,7 @@ class SqlAuthenticator extends LoggingService
 
             if (isset($_POST['authenticate'])) {
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
-                $this->userEventLogger->logSuccessfulAuth();
+                $this->auditService->logLoginSuccess(AuthMethod::SQL);
 
                 // Log before redirect
                 $this->logInfo('SqlAuthenticator: Redirecting to MFA verification page');
@@ -245,7 +245,7 @@ class SqlAuthenticator extends LoggingService
 
             if (isset($_POST['authenticate'])) {
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
-                $this->userEventLogger->logSuccessfulAuth();
+                $this->auditService->logLoginSuccess(AuthMethod::SQL);
                 session_write_close();
                 $this->authService->redirectToIndex();
             }
@@ -259,7 +259,7 @@ class SqlAuthenticator extends LoggingService
         $this->logInfo('Handling failed authentication.');
 
         if (isset($_POST['authenticate'])) {
-            $this->userEventLogger->logFailedAuth(AuthMethod::SQL, $reason);
+            $this->auditService->logLoginFailed(AuthMethod::SQL, $reason);
             $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
         } else {
             unset($_SESSION[SessionKeys::USERPWD]);

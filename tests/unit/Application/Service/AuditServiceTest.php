@@ -25,8 +25,10 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 /**
@@ -38,10 +40,10 @@ class AuditServiceTest extends TestCase
     /** @var list<array{0: string, 1: string, 2: int|null}> method, message, zone or group id */
     private array $lines = [];
 
-    private function makeService(): AuditService
+    private function makeService(?string $loginUsername = 'alice'): AuditService
     {
-        $logger = $this->createMock(LegacyLogger::class);
-        foreach (['logInfo', 'logWarn', 'logNotice', 'logGroupInfo', 'logGroupWarning', 'logApiInfo'] as $method) {
+        $logger = $this->createMock(AuditLogWriter::class);
+        foreach (['logInfo', 'logWarn', 'logNotice', 'logError', 'logGroupInfo', 'logGroupWarning', 'logApiInfo'] as $method) {
             $logger->method($method)->willReturnCallback(function (string $message, ?int $id = null) use ($method): void {
                 $this->lines[] = [$method, $message, $id];
             });
@@ -51,6 +53,7 @@ class AuditServiceTest extends TestCase
         $ip->method('getClientIp')->willReturn('192.0.2.10');
         $user = $this->createMock(UserContextService::class);
         $user->method('getActingUsername')->willReturn('alice');
+        $user->method('getLoggedInUsername')->willReturn($loginUsername);
 
         return new AuditService($this->createMock(PDO::class), $logger, $ip, $user);
     }
@@ -168,7 +171,7 @@ class AuditServiceTest extends TestCase
 
     public function testActorFallsBackToUnknownWithoutASession(): void
     {
-        $logger = $this->createMock(LegacyLogger::class);
+        $logger = $this->createMock(AuditLogWriter::class);
         $logger->expects($this->once())->method('logWarn')
             ->with('client_ip:192.0.2.10 user:unknown operation:access_denied permission:zone_master_add uri:/zones/add/master', null);
         $ip = $this->createMock(IpAddressRetriever::class);
@@ -178,5 +181,85 @@ class AuditServiceTest extends TestCase
 
         (new AuditService($this->createMock(PDO::class), $logger, $ip, $user))
             ->logAccessDenied('zone_master_add', '/zones/add/master');
+    }
+
+    /**
+     * The login line shape is load-bearing for the fail2ban filter in
+     * poweradmin-docs, so any deviation needs to be deliberate.
+     */
+    public function testLoginOutcomesKeepTheFail2banLineShape(): void
+    {
+        $service = $this->makeService();
+        $service->logLoginSuccess(AuthMethod::SQL);
+        $service->logLoginFailed(AuthMethod::SQL);
+        $service->logLoginFailed(AuthMethod::SQL, LoginFailureReason::WRONG_PASSWORD);
+        $service->logLoginLocked(AuthMethod::SQL);
+
+        $this->assertSame([
+            ['logNotice', 'client_ip:192.0.2.10 user:alice operation:login_success auth_method:sql', null],
+            ['logWarn', 'client_ip:192.0.2.10 user:alice operation:login_failed auth_method:sql', null],
+            ['logWarn', 'client_ip:192.0.2.10 user:alice operation:login_failed auth_method:sql reason:wrong_password', null],
+            ['logWarn', 'client_ip:192.0.2.10 user:alice operation:login_locked auth_method:sql', null],
+        ], $this->lines);
+    }
+
+    public function testLoginFailedCarriesTheAuthMethod(): void
+    {
+        $service = $this->makeService();
+        $service->logLoginFailed(AuthMethod::OIDC, LoginFailureReason::NO_SUCH_USER);
+        $service->logLoginFailed(AuthMethod::SAML);
+        $service->logLoginLocked(AuthMethod::LDAP);
+
+        $this->assertSame('client_ip:192.0.2.10 user:alice operation:login_failed auth_method:oidc reason:no_such_user', $this->lines[0][1]);
+        $this->assertSame('client_ip:192.0.2.10 user:alice operation:login_failed auth_method:saml', $this->lines[1][1]);
+        $this->assertSame('client_ip:192.0.2.10 user:alice operation:login_locked auth_method:ldap', $this->lines[2][1]);
+    }
+
+    public function testLoginLineLeavesTheUserEmptyWhenNothingWasPosted(): void
+    {
+        $this->makeService(null)->logLoginFailed(AuthMethod::SQL, LoginFailureReason::NO_SUCH_USER);
+
+        $this->assertSame(
+            ['logWarn', 'client_ip:192.0.2.10 user: operation:login_failed auth_method:sql reason:no_such_user', null],
+            $this->lines[0]
+        );
+    }
+
+    public function testLdapFailuresMatchTheUnifiedShape(): void
+    {
+        $service = $this->makeService();
+        $service->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::WRONG_PASSWORD);
+        $service->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::NO_SUCH_USER);
+        $service->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::ACCOUNT_DISABLED);
+        $service->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::DUPLICATE_USERS);
+
+        $this->assertSame([
+            ['logWarn', 'client_ip:192.0.2.10 user:alice operation:login_failed auth_method:ldap reason:wrong_password', null],
+            ['logWarn', 'client_ip:192.0.2.10 user:alice operation:login_failed auth_method:ldap reason:no_such_user', null],
+            ['logWarn', 'client_ip:192.0.2.10 user:alice operation:login_failed auth_method:ldap reason:account_disabled', null],
+            ['logError', 'client_ip:192.0.2.10 user:alice operation:login_failed auth_method:ldap reason:duplicate_users', null],
+        ], $this->lines);
+    }
+
+    /**
+     * Backend errors (LDAP server unreachable, bind or search failure) must NOT use
+     * operation:login_failed, otherwise fail2ban would ban legitimate users during
+     * an LDAP outage. They use operation:login_error at ERROR priority instead.
+     */
+    public function testLdapBackendErrorsUseADistinctOperation(): void
+    {
+        $service = $this->makeService();
+        $service->logLoginError(AuthMethod::LDAP, LoginFailureReason::LDAP_CONNECT_FAILED);
+        $service->logLoginError(AuthMethod::LDAP, LoginFailureReason::LDAP_BIND_FAILED);
+        $service->logLoginError(AuthMethod::LDAP, LoginFailureReason::LDAP_SEARCH_FAILED);
+
+        $this->assertSame([
+            ['logError', 'client_ip:192.0.2.10 user:alice operation:login_error auth_method:ldap reason:ldap_connect', null],
+            ['logError', 'client_ip:192.0.2.10 user:alice operation:login_error auth_method:ldap reason:ldap_bind', null],
+            ['logError', 'client_ip:192.0.2.10 user:alice operation:login_error auth_method:ldap reason:ldap_search_failed', null],
+        ], $this->lines);
+        foreach ($this->lines as $line) {
+            $this->assertStringNotContainsString('operation:login_failed', $line[1]);
+        }
     }
 }

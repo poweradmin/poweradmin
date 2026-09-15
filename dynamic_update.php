@@ -17,7 +17,7 @@ use Poweradmin\Domain\Service\DynamicDnsValidationService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +49,7 @@ $updateService = new DynamicDnsUpdateService(
     new DynamicDnsValidationService($config),
     new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($db, $config)),
     $repository,
-    new LegacyLogger($db),
+    new AuditLogWriter($db),
     new IpAddressRetriever($_SERVER)
 );
 

@@ -63,7 +63,7 @@ class OidcService extends LoggingService
     private CsrfTokenService $csrfTokenService;
     private PDO $db;
     private ?MfaService $mfaService = null;
-    private UserEventLogger $userEventLogger;
+    private AuditService $auditService;
 
     public function __construct(
         ConfigurationManager $configManager,
@@ -87,7 +87,7 @@ class OidcService extends LoggingService
         $redirectService = new RedirectService();
         $this->authenticationService = new AuthenticationService($this->sessionService, $redirectService, $this->configManager);
         $this->csrfTokenService = new CsrfTokenService();
-        $this->userEventLogger = new UserEventLogger($db);
+        $this->auditService = new AuditService($db);
     }
 
     /**
@@ -348,7 +348,7 @@ class OidcService extends LoggingService
                 $this->setSessionValue('userlogin', $databaseUsername);
 
                 // Log successful authentication to database
-                $this->userEventLogger->logSuccessfulAuth(AuthMethod::OIDC);
+                $this->auditService->logLoginSuccess(AuthMethod::OIDC);
 
                 // Rotate session id before binding the user - matches SqlAuthenticator.
                 session_regenerate_id(true);
@@ -438,7 +438,7 @@ class OidcService extends LoggingService
             } else {
                 $this->logWarning('Failed to provision OIDC user: {username}', ['username' => $userInfo->getUsername()]);
                 $this->setSessionValue('userlogin', $userInfo->getUsername());
-                $this->userEventLogger->logFailedAuth(AuthMethod::OIDC);
+                $this->auditService->logLoginFailed(AuthMethod::OIDC);
                 $sessionEntity = new SessionEntity(_('Authentication failed: Unable to create or update user account'), 'danger');
                 $this->authenticationService->auth($sessionEntity);
             }
