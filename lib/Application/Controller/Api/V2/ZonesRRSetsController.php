@@ -28,7 +28,7 @@ use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -42,7 +42,7 @@ use OpenApi\Attributes as OA;
  */
 class ZonesRRSetsController extends PublicApiController
 {
-    private ZoneRepositoryInterface $zoneRepository;
+    private ZoneReadRepositoryInterface $zoneRepository;
     private RecordRepositoryInterface $recordRepository;
     private RecordManagerInterface $recordManager;
     private ApiPermissionService $apiPermissionService;

@@ -22,9 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use PDO;
-use Poweradmin\Application\Service\LoginAttemptService;
-use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\User;
@@ -33,7 +30,6 @@ use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\ValueObject\IpAddressList;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
@@ -49,30 +45,6 @@ readonly class DynamicDnsUpdateService
         private ?AuditLogWriter $auditLogger = null,
         private ?IpAddressRetriever $ipRetriever = null
     ) {
-    }
-
-    /**
-     * Wire the service for a live request: audit log on $db, lockout tracking and
-     * password settings from $config. Pass $validationService to share one with the caller.
-     */
-    public static function build(
-        PDO $db,
-        ConfigurationManager $config,
-        DynamicDnsRepositoryInterface $repository,
-        IpAddressRetriever $ipRetriever,
-        ?DynamicDnsValidationService $validationService = null
-    ): self {
-        return new self(
-            $validationService ?? new DynamicDnsValidationService($config),
-            new DynamicDnsAuthenticationService(
-                $repository,
-                UserAuthenticationService::fromConfig($config),
-                new LoginAttemptService($db, $config)
-            ),
-            $repository,
-            new AuditLogWriter($db),
-            $ipRetriever
-        );
     }
 
     public function processUpdate(DynamicDnsRequest $request): string

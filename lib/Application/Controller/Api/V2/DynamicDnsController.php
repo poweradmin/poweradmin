@@ -24,12 +24,12 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Service\DynamicDnsRequestFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -50,13 +50,7 @@ class DynamicDnsController extends PublicApiController
         $repository = $this->getRepositoryFactory($backendProvider)->createDynamicDnsRepository($this->createSOARecordManager());
 
         $this->validationService = new DynamicDnsValidationService($config);
-        $this->updateService = DynamicDnsUpdateService::build(
-            $this->db,
-            $config,
-            $repository,
-            new IpAddressRetriever($_SERVER),
-            $this->validationService
-        );
+        $this->updateService = DynamicDnsRequestFactory::createUpdateService($this->db, $config, $repository);
         $this->apiPermissionService = $this->createApiPermissionService();
     }
 

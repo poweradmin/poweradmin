@@ -30,7 +30,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
@@ -41,7 +41,7 @@ use Poweradmin\Domain\Service\ZoneAccessPolicy;
 class ZoneOwnershipController extends BaseController
 {
     private UserContextService $userContextService;
-    private ZoneRepositoryInterface $zoneRepository;
+    private ZoneOwnershipRepositoryInterface $zoneRepository;
     private DomainRepositoryInterface $domainRepository;
     private PermissionService $permissionService;
 

@@ -482,40 +482,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return array_values($zones);
     }
 
-    public function userCanAccessZone(int $zoneId, int $userId): bool
-    {
-        $canonical = $this->resolveCanonicalRow($zoneId);
-        if ($canonical === null) {
-            return false;
-        }
-        $cid = (int)$canonical['id'];
-        $canonicalId = self::canonicalIdOf($canonical);
-        $stmt = $this->db->prepare(
-            "SELECT 1 FROM zones z
-             WHERE z.id = :cid AND (
-                 z.owner = :userId
-                 OR EXISTS (
-                     SELECT 1 FROM zones zo
-                     WHERE zo.zone_name IS NULL
-                       AND zo.domain_id = :cid_e
-                       AND zo.owner = :userId_own
-                 )
-                 OR EXISTS (
-                     SELECT 1 FROM zones_groups zg
-                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                     WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :userId_group
-                 )
-             )"
-        );
-        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
-        $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
-        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchColumn() !== false;
-    }
-
     public function getZone(int $zoneId): ?array
     {
         $canonical = $this->resolveCanonicalRow($zoneId);

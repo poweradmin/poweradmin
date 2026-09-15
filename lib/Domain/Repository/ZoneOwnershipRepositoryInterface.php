@@ -23,19 +23,10 @@
 namespace Poweradmin\Domain\Repository;
 
 /**
- * Zone ownership reads and writes; the ownership half of ZoneRepositoryInterface.
+ * Zone ownership reads and writes; one of the three roles ZoneRepositoryInterface combines.
  */
 interface ZoneOwnershipRepositoryInterface
 {
-    /**
-     * Whether the zone exists and the user owns it directly or through a group.
-     *
-     * @param int $zoneId The zone ID
-     * @param int $userId The user ID
-     * @return bool True if the zone exists and the user owns it directly or via a group
-     */
-    public function userCanAccessZone(int $zoneId, int $userId): bool;
-
     /**
      * Get users who own a zone
      *

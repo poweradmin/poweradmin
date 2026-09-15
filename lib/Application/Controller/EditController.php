@@ -52,7 +52,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -66,7 +66,7 @@ class EditController extends BaseController
     private SOARecordManagerInterface $soaRecordManager;
     private ReverseTtlResolver $reverseTtlResolver;
     private UserContextService $userContextService;
-    private ZoneRepositoryInterface $zoneRepository;
+    private ZoneReadRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
     private RecordRepositoryInterface $recordRepository;
     private DomainRepositoryInterface $domainRepository;
@@ -96,7 +96,7 @@ class EditController extends BaseController
         $this->setPageTitle(_('Edit zone'));
 
         $userId = $this->getCurrentUserId();
-        $iface_rowamount = $this->resolveRowsPerPage(10);
+        $iface_rowamount = $this->resolveRowsPerPage();
 
         // Get user preferences for form positioning
         $userPreferenceService = $this->createUserPreferenceService();

@@ -103,9 +103,7 @@ class SearchController extends BaseController
             submittedDirection: $this->httpRequest->getPostParam('record_sort_by_direction') ?? $this->httpRequest->getQueryParam('record_sort_by_direction')
         );
 
-        $rowamount = $this->resolveRowsPerPage(10);
-        $zone_rowamount = $rowamount;
-        $record_rowamount = $rowamount;
+        $zone_rowamount = $record_rowamount = $this->resolveRowsPerPage();
         // Override with POST parameter if available for zones
         $zones_rows_per_page = $this->httpRequest->getPostParam('zones_rows_per_page');
         if ($this->isPost() && $zones_rows_per_page !== null && is_numeric($zones_rows_per_page)) {

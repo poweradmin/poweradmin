@@ -28,7 +28,7 @@ use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -40,7 +40,7 @@ class GroupZonesController extends PublicApiController
 {
     private ZoneGroupService $zoneGroupService;
     private ApiPermissionService $apiPermissionService;
-    private ZoneRepositoryInterface $zoneRepository;
+    private ZoneOwnershipRepositoryInterface $zoneRepository;
     private DomainRepositoryInterface $domainRepository;
 
     public function __construct(array $request, array $pathParameters = [])

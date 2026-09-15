@@ -110,7 +110,7 @@ class EditZoneTemplController extends BaseController
 
     private function showForm(int $zone_templ_id): void
     {
-        $iface_rowamount = $this->resolveRowsPerPage(10);
+        $iface_rowamount = $this->resolveRowsPerPage();
         $row_start = $this->getRowStart($iface_rowamount);
         [$record_sort_by] = (new ZoneSortingService($this->userContext))->getZoneSortOrder(
             ['name', 'type', 'content', 'ttl', 'prio'],

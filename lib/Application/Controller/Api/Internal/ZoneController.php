@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Controller\Api\Internal;
 
 use Poweradmin\Application\Controller\Api\InternalApiController;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class ZoneController extends InternalApiController
 {
-    private ZoneRepositoryInterface $zoneRepository;
+    private ZoneReadRepositoryInterface $zoneRepository;
     private UserContextService $userContextService;
 
     /**
@@ -103,7 +103,7 @@ class ZoneController extends InternalApiController
     /**
      * Get a specific zone by ID
      *
-     * Serialises the repository row unchanged, so ZoneRepositoryInterface::getZone()
+     * Serialises the repository row unchanged, so ZoneReadRepositoryInterface::getZone()
      * documents the response keys (master, account, owner, record_count added in 4.6.0).
      */
     private function getZone(): JsonResponse
@@ -121,13 +121,9 @@ class ZoneController extends InternalApiController
 
         $viewOthers = $this->hasPermission('zone_content_view_others');
 
-        // Check if user can view this zone
-        if (!$viewOthers) {
-            // Verify that the zone belongs to the current user
-            $userId = $this->userContextService->getLoggedInUserId() ?? 0;
-            if (!$this->zoneRepository->userCanAccessZone($zoneId, $userId)) {
-                return $this->returnErrorResponse('Zone not found or access denied', 404);
-            }
+        // A zone the user neither owns nor may view others of reads as missing
+        if (!$viewOthers && !$this->isZoneOwner($zoneId)) {
+            return $this->returnErrorResponse('Zone not found or access denied', 404);
         }
 
         $zone = $this->zoneRepository->getZone($zoneId);

@@ -22,18 +22,43 @@
 
 namespace Poweradmin\Application\Service;
 
+use PDO;
+use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
+use Poweradmin\Domain\Service\DynamicDnsUpdateService;
+use Poweradmin\Domain\Service\DynamicDnsValidationService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Builds a DynamicDnsRequest from the HTTP request the dyndns2 endpoint received.
+ * Builds the dyndns2 request value object and the update service that handles it.
  * Reading $_SERVER and the Symfony request lives here so the value object stays
  * a plain, dependency-free carrier of already-resolved values.
  */
 class DynamicDnsRequestFactory
 {
+    /**
+     * Wires the update service from the live database connection and configuration.
+     */
+    public static function createUpdateService(PDO $db, ConfigurationManager $config, DynamicDnsRepositoryInterface $repository): DynamicDnsUpdateService
+    {
+        return new DynamicDnsUpdateService(
+            new DynamicDnsValidationService($config),
+            new DynamicDnsAuthenticationService(
+                $repository,
+                UserAuthenticationService::fromConfig($config),
+                new LoginAttemptService($db, $config)
+            ),
+            $repository,
+            new AuditLogWriter($db),
+            new IpAddressRetriever($_SERVER)
+        );
+    }
+
     public static function fromHttpRequest(Request $request): DynamicDnsRequest
     {
         $username = $_SERVER['PHP_AUTH_USER'] ?? $request->query->get('username', '');

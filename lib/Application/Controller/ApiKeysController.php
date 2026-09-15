@@ -27,7 +27,7 @@ use Exception;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -39,7 +39,7 @@ class ApiKeysController extends BaseController
 {
     private ApiKeyService $apiKeyService;
     private ApiKeyRepositoryInterface $apiKeyRepository;
-    private ZoneRepositoryInterface $zoneRepository;
+    private ZoneReadRepositoryInterface $zoneRepository;
 
     /**
      * Matched route name, captured before setCurrentPage() overwrites the 'page' key.
