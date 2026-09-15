@@ -29,7 +29,7 @@ use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\ZoneReadBackendInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -48,9 +48,9 @@ class ApiDomainRepository implements DomainRepositoryInterface
     private ConfigurationManager $config;
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
-    private DnsBackendProviderInterface $backendProvider;
+    private ZoneReadBackendInterface $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationManager $config, DnsBackendProviderInterface $backendProvider)
+    public function __construct(PDO $db, ConfigurationManager $config, ZoneReadBackendInterface $backendProvider)
     {
         $this->db = $db;
         $this->config = $config;

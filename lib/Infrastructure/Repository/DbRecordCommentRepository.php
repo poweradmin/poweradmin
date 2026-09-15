@@ -25,7 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -39,9 +39,9 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
     private string $comments_table;
     private string $records_table;
     private string $links_table = 'record_comment_links';
-    private ?DnsBackendProviderInterface $backendProvider;
+    private ?BackendCapabilitiesInterface $backendProvider;
 
-    public function __construct(PDO $connection, ConfigurationManager $config, ?DnsBackendProviderInterface $backendProvider = null)
+    public function __construct(PDO $connection, ConfigurationManager $config, ?BackendCapabilitiesInterface $backendProvider = null)
     {
         $this->connection = $connection;
         $tableNameService = new TableNameService($config);

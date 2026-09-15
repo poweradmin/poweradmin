@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Service\SearchBackendInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PDO;
@@ -36,9 +37,9 @@ class DnsCommonValidator
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private ?DnsBackendProviderInterface $backendProvider;
+    private (SearchBackendInterface&BackendCapabilitiesInterface)|null $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProviderInterface $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, (SearchBackendInterface&BackendCapabilitiesInterface)|null $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;

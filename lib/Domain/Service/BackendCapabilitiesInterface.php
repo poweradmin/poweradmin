@@ -23,17 +23,17 @@
 namespace Poweradmin\Domain\Service;
 
 /**
- * PowerDNS data access (domains, records, supermasters) over direct SQL or the PowerDNS API; Poweradmin-native tables stay on SQL.
+ * Capability probe telling callers which kind of DNS backend they hold.
  */
-interface DnsBackendProviderInterface extends
-    ZoneWriteBackendInterface,
-    ZoneReadBackendInterface,
-    RecordWriteBackendInterface,
-    RecordReadBackendInterface,
-    SerialBackendInterface,
-    SupermasterBackendInterface,
-    CatalogBackendInterface,
-    SearchBackendInterface,
-    BackendCapabilitiesInterface
+interface BackendCapabilitiesInterface
 {
+    /**
+     * Check if this is the API backend.
+     *
+     * Callers can use this to adjust behavior (e.g., skip manual SOA serial
+     * updates, show notices about search limitations).
+     *
+     * @return bool
+     */
+    public function isApiBackend(): bool;
 }

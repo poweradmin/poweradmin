@@ -24,7 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\ZoneReadBackendInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
 /**
@@ -37,9 +37,9 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 class ApiRecordCommentRepository implements RecordCommentRepositoryInterface
 {
     private PowerdnsApiClient $apiClient;
-    private DnsBackendProviderInterface $backendProvider;
+    private ZoneReadBackendInterface $backendProvider;
 
-    public function __construct(PowerdnsApiClient $apiClient, DnsBackendProviderInterface $backendProvider)
+    public function __construct(PowerdnsApiClient $apiClient, ZoneReadBackendInterface $backendProvider)
     {
         $this->apiClient = $apiClient;
         $this->backendProvider = $backendProvider;

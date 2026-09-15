@@ -23,17 +23,21 @@
 namespace Poweradmin\Domain\Service;
 
 /**
- * PowerDNS data access (domains, records, supermasters) over direct SQL or the PowerDNS API; Poweradmin-native tables stay on SQL.
+ * Wildcard search over zones and records in the DNS backend.
  */
-interface DnsBackendProviderInterface extends
-    ZoneWriteBackendInterface,
-    ZoneReadBackendInterface,
-    RecordWriteBackendInterface,
-    RecordReadBackendInterface,
-    SerialBackendInterface,
-    SupermasterBackendInterface,
-    CatalogBackendInterface,
-    SearchBackendInterface,
-    BackendCapabilitiesInterface
+interface SearchBackendInterface
 {
+    /**
+     * Search for zones and records matching a query.
+     *
+     * Returns separate arrays for zone matches and record matches.
+     * Results contain only DNS data - callers must enrich with
+     * Poweradmin metadata (ownership, permissions).
+     *
+     * @param string $query Search query (supports wildcards)
+     * @param string $objectType Filter: 'all', 'zone', 'record'
+     * @param int $max Maximum results
+     * @return array{zones: array, records: array}
+     */
+    public function searchDnsData(string $query, string $objectType = 'all', int $max = 100): array;
 }
