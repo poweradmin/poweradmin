@@ -23,9 +23,6 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
-use Poweradmin\Domain\ValueObject\LdapUserInfo;
-use Poweradmin\Domain\ValueObject\OidcUserInfo;
-use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -823,18 +820,7 @@ class UserProvisioningService extends LoggingService
      */
     private function determineAuthMethodFromUserInfo(UserInfoInterface $userInfo): string
     {
-        if ($userInfo instanceof SamlUserInfo) {
-            return self::AUTH_METHOD_SAML;
-        }
-        if ($userInfo instanceof OidcUserInfo) {
-            return self::AUTH_METHOD_OIDC;
-        }
-        if ($userInfo instanceof LdapUserInfo) {
-            return self::AUTH_METHOD_LDAP;
-        }
-
-        // Fallback to OIDC for backward compatibility with unknown types
-        return self::AUTH_METHOD_OIDC;
+        return $userInfo->authMethod()->value;
     }
 
     /**

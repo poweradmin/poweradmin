@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\ValueObject;
 
+use Poweradmin\Domain\Enum\AuthMethod;
+
 /**
  * Value object representing OIDC user information
  */
@@ -62,6 +64,11 @@ readonly class OidcUserInfo implements UserInfoInterface
         $this->avatarUrl = $avatarUrl;
     }
 
+    public function authMethod(): AuthMethod
+    {
+        return AuthMethod::OIDC;
+    }
+
     public function getUsername(): string
     {
         return $this->username;
@@ -70,16 +77,6 @@ readonly class OidcUserInfo implements UserInfoInterface
     public function getEmail(): string
     {
         return $this->email;
-    }
-
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
     }
 
     public function getDisplayName(): string
@@ -110,11 +107,6 @@ readonly class OidcUserInfo implements UserInfoInterface
     public function getRawData(): array
     {
         return $this->rawData;
-    }
-
-    public function hasGroup(string $group): bool
-    {
-        return in_array($group, $this->groups, true);
     }
 
     public function getAvatarUrl(): ?string

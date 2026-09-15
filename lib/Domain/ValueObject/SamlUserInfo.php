@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\ValueObject;
 
+use Poweradmin\Domain\Enum\AuthMethod;
+
 /**
  * Value object representing SAML user information
  */
@@ -62,6 +64,11 @@ readonly class SamlUserInfo implements UserInfoInterface
         $this->rawAttributes = $rawAttributes;
     }
 
+    public function authMethod(): AuthMethod
+    {
+        return AuthMethod::SAML;
+    }
+
     public function getUsername(): string
     {
         return $this->username;
@@ -70,16 +77,6 @@ readonly class SamlUserInfo implements UserInfoInterface
     public function getEmail(): string
     {
         return $this->email;
-    }
-
-    public function getFirstName(): string
-    {
-        return $this->firstName;
-    }
-
-    public function getLastName(): string
-    {
-        return $this->lastName;
     }
 
     public function getDisplayName(): string
@@ -110,16 +107,6 @@ readonly class SamlUserInfo implements UserInfoInterface
     public function getSessionIndex(): string
     {
         return $this->sessionIndex;
-    }
-
-    public function getRawAttributes(): array
-    {
-        return $this->rawAttributes;
-    }
-
-    public function hasGroup(string $group): bool
-    {
-        return in_array($group, $this->groups, true);
     }
 
     public function isValid(): bool

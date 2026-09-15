@@ -74,10 +74,8 @@ class LdapUserInfoTest extends TestCase
         $info = LdapUserInfo::fromLdapEntry(self::ENTRY, 'jdoe', 'displayName', 'mail');
 
         $this->assertSame('ldap', $info->getProviderId());
-        $this->assertSame('', $info->getFirstName());
-        $this->assertSame('', $info->getLastName());
         $this->assertSame([], $info->getGroups(), 'No groups attribute requested');
-        $this->assertFalse($info->hasGroup('admins'));
+        $this->assertNotContains('admins', $info->getGroups());
         $this->assertSame([], $info->getRawData());
     }
 
@@ -89,7 +87,7 @@ class LdapUserInfoTest extends TestCase
             'cn=dns-admins,ou=groups,dc=example,dc=com',
             'cn=dns-operators,ou=groups,dc=example,dc=com',
         ], $info->getGroups(), 'Raw DNs, without count markers; short-name matching happens at mapping time');
-        $this->assertTrue($info->hasGroup('cn=dns-operators,ou=groups,dc=example,dc=com'));
+        $this->assertContains('cn=dns-operators,ou=groups,dc=example,dc=com', $info->getGroups());
     }
 
     public function testMissingGroupsAttributeYieldsNoGroups(): void

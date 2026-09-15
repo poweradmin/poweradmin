@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\ValueObject;
 
+use Poweradmin\Domain\Enum\AuthMethod;
+
 /**
  * Value object representing user information read from an LDAP entry
  */
@@ -72,6 +74,11 @@ readonly class LdapUserInfo implements UserInfoInterface
         return $groups;
     }
 
+    public function authMethod(): AuthMethod
+    {
+        return AuthMethod::LDAP;
+    }
+
     public function getUsername(): string
     {
         return $this->username;
@@ -80,16 +87,6 @@ readonly class LdapUserInfo implements UserInfoInterface
     public function getEmail(): string
     {
         return $this->email;
-    }
-
-    public function getFirstName(): string
-    {
-        return '';
-    }
-
-    public function getLastName(): string
-    {
-        return '';
     }
 
     public function getDisplayName(): string
@@ -120,11 +117,6 @@ readonly class LdapUserInfo implements UserInfoInterface
     public function getRawData(): array
     {
         return [];
-    }
-
-    public function hasGroup(string $group): bool
-    {
-        return in_array($group, $this->groups, true);
     }
 
     public function isValid(): bool

@@ -22,21 +22,21 @@
 
 namespace Poweradmin\Domain\ValueObject;
 
+use Poweradmin\Domain\Enum\AuthMethod;
+
 /**
  * User details returned by an external login provider (LDAP, OIDC or SAML).
  */
 interface UserInfoInterface
 {
+    public function authMethod(): AuthMethod;
     public function getUsername(): string;
     public function getEmail(): string;
-    public function getFirstName(): string;
-    public function getLastName(): string;
     public function getDisplayName(): string;
     public function getFullName(): string;
     public function getGroups(): array;
     public function getProviderId(): string;
     public function getSubject(): string;
     public function getRawData(): array;
-    public function hasGroup(string $group): bool;
     public function isValid(): bool;
 }
