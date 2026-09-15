@@ -32,8 +32,12 @@ $files = Finder::create()
     ->name('*.php')
     ->in(__DIR__ . '/lib');
 
+// Source links point at the checked-out branch; there is no "main" branch to default to.
+$branch = trim((string)shell_exec('git -C ' . escapeshellarg(__DIR__) . ' rev-parse --abbrev-ref HEAD 2>/dev/null'));
+
 return new Doctum($files, [
     'title' => 'Poweradmin class reference',
+    'versions' => $branch !== '' && $branch !== 'HEAD' ? $branch : 'develop',
     'build_dir' => __DIR__ . '/docs/reference',
     'cache_dir' => __DIR__ . '/.doctum/cache',
     'source_dir' => __DIR__,

@@ -84,7 +84,7 @@
   },
   "scripts": {
     "docs:api": "openapi lib/Application/Controller/Api/V2/ --format json",
-    "doctum:install": "test -f .doctum/doctum.phar || (mkdir -p .doctum && curl -sL -o .doctum/doctum.phar https://doctum.long-term.support/releases/5.6.0/doctum.phar)",
+    "doctum:install": "test -f .doctum/doctum.phar || (mkdir -p .doctum && curl -fsSL -o .doctum/doctum.phar.tmp https://doctum.long-term.support/releases/5.6.0/doctum.phar && mv .doctum/doctum.phar.tmp .doctum/doctum.phar)",
     "docs:reference": ["@doctum:install", "php .doctum/doctum.phar update doctum.php"],
     "lint:docblocks": ["@doctum:install", "out=$(php .doctum/doctum.phar parse doctum.php --force --no-progress -v 2>&1) || { printf '%s\n' \"$out\" | grep '^ERROR'; echo 'ERROR: fix the docblocks above (composer lint:docblocks)'; exit 1; }"],
     "tests": "phpunit --testsuite unit",
