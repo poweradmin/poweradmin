@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Routing\SymfonyRouter;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Pages;
 use ReflectionMethod;
 
 /**
@@ -146,23 +145,6 @@ class IndexEntryPointTest extends TestCase
     }
 
     /**
-     * Test Pages class integration
-     */
-    public function testPagesIntegration(): void
-    {
-        // Test that Pages class exists and has getPages method
-        $this->assertTrue(class_exists('Poweradmin\Pages'), 'Pages class should be available');
-        $this->assertTrue(
-            method_exists('Poweradmin\Pages', 'getPages'),
-            'Pages::getPages() method should be available'
-        );
-
-        // Test that getPages returns an array
-        $pages = Pages::getPages();
-        $this->assertIsArray($pages, 'Pages::getPages() should return an array');
-    }
-
-    /**
      * Test BaseController integration
      */
     public function testBaseControllerIntegration(): void
@@ -194,7 +176,6 @@ class IndexEntryPointTest extends TestCase
         $requiredClasses = [
             'Poweradmin\Application\Routing\SymfonyRouter',
             'Poweradmin\Infrastructure\Configuration\ConfigurationManager',
-            'Poweradmin\Pages',
             'Poweradmin\BaseController',
             'Poweradmin\Application\Controller\NotFoundController',
         ];
@@ -253,7 +234,6 @@ class IndexEntryPointTest extends TestCase
         // Simulate key initialization steps
         ConfigurationManager::getInstance();
         $router = new SymfonyRouter();
-        $pages = Pages::getPages();
         RequestContext::expectsJson();
 
         $memoryAfter = memory_get_usage();

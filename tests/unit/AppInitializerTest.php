@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\AppInitializer;
 use Poweradmin\Infrastructure\Service\MessageService;
 use ReflectionClass;
-use ReflectionMethod;
 
 class AppInitializerTest extends TestCase
 {

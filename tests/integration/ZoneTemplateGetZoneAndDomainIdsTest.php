@@ -37,8 +37,8 @@ use TestHelpers\SqliteIntegrationTestCase;
  *   domains table) feed null into getDomainNameById and crash the template
  *   update with a TypeError. The INNER JOIN guard must drop those.
  *
- * Each test runs in its own process to keep the static permission cache inside
- * UserManager::verifyPermission from leaking across cases.
+ * Each test runs in its own process to keep the PermissionService memoized in
+ * Permission::$permissionService from leaking across cases.
  */
 class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
 {

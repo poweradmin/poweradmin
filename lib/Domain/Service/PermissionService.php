@@ -340,9 +340,10 @@ class PermissionService
      */
     public function canViewZone(int $userId, int $domainId): bool
     {
-        $level = $this->getViewPermissionLevel($userId);
-
-        return $level === 'all' || ($level === 'own' && $this->userOwnsZone($userId, $domainId));
+        return ZoneAccessPolicy::levelAppliesToZone(
+            $this->getViewPermissionLevel($userId),
+            $this->userOwnsZone($userId, $domainId)
+        );
     }
 
     /**

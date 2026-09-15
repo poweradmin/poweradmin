@@ -33,7 +33,7 @@ use ReflectionClass;
 /**
  * Base test case for integration tests that need a throwaway in-memory SQLite
  * database with Poweradmin's permission system wired up enough to satisfy
- * Permission::getEditPermission() / UserManager::verifyPermission().
+ * Permission::getEditPermission() / PermissionService::hasPermission().
  *
  * What you get out of the box:
  *   - $this->db         : in-memory PDO with PRAGMA foreign_keys ON
@@ -44,8 +44,8 @@ use ReflectionClass;
  * Tests are responsible for creating any domain-specific tables they need
  * (zones, domains, etc.) inside their own setUp().
  *
- * Note: UserManager::verifyPermission() caches results in a function-level
- * static, which leaks across tests sharing a process. Add #[RunInSeparateProcess]
+ * Note: Permission memoizes its PermissionService in a static
+ * (Permission::$permissionService), which leaks across tests sharing a process. Add #[RunInSeparateProcess]
  * to test methods that change permissions or want a clean cache.
  */
 abstract class SqliteIntegrationTestCase extends TestCase
@@ -125,7 +125,7 @@ abstract class SqliteIntegrationTestCase extends TestCase
     }
 
     /**
-     * Tables that UserManager::verifyPermission walks via its UNION query:
+     * Tables that PermissionService::hasPermission walks via its UNION query:
      * users -> perm_templ -> perm_templ_items -> perm_items, plus the
      * user_groups / user_group_members branch.
      */
@@ -143,7 +143,7 @@ abstract class SqliteIntegrationTestCase extends TestCase
     private function seedAdminWithUeberuser(): void
     {
         // perm_items ids and the ueberuser shortcut match Poweradmin's seed
-        // data so verifyPermission's `user_is_ueberuser` check resolves true.
+        // data so hasPermission's `user_is_ueberuser` check resolves true.
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES
             (47, 'zone_content_edit_others'),
             (53, 'user_is_ueberuser')");

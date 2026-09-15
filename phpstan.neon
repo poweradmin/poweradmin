@@ -174,7 +174,6 @@ parameters:
         - lib/AppManager.php
         - lib/BaseController.php
         - lib/LocaleManager.php
-        - lib/Pages.php
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -217,7 +216,6 @@ parameters:
         - lib/AppManager.php
         - lib/BaseController.php
         - lib/LocaleManager.php
-        - lib/Pages.php
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -235,7 +233,6 @@ parameters:
         - lib/AppManager.php
         - lib/BaseController.php
         - lib/LocaleManager.php
-        - lib/Pages.php
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -253,7 +250,6 @@ parameters:
         - lib/AppManager.php
         - lib/BaseController.php
         - lib/LocaleManager.php
-        - lib/Pages.php
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
@@ -271,7 +267,6 @@ parameters:
         - lib/AppManager.php
         - lib/BaseController.php
         - lib/LocaleManager.php
-        - lib/Pages.php
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*

@@ -255,79 +255,80 @@ class ZonesRecordsBulkController extends PublicApiController
                 }
                 return $this->returnApiError("Field 'comment' is required: this installation requires a reason for every change", 400);
             }
-            RecordChangeLogger::beginChangeset($zoneId, $changeComment);
 
-            try {
-                foreach ($input['operations'] as $index => $operation) {
-                    $action = strtolower($operation['action'] ?? '');
+            $work = function () use ($input, $zoneId, $zoneType, $zone, $useTransaction, &$results, &$nonSOARecordModified): JsonResponse {
+                try {
+                    foreach ($input['operations'] as $index => $operation) {
+                        $action = strtolower($operation['action'] ?? '');
 
-                    try {
-                        switch ($action) {
-                            case 'create':
-                                $recordType = $this->performCreateOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
-                                $results['created']++;
-                                if ($recordType !== 'SOA') {
-                                    $nonSOARecordModified = true;
-                                }
-                                break;
+                        try {
+                            switch ($action) {
+                                case 'create':
+                                    $recordType = $this->performCreateOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
+                                    $results['created']++;
+                                    if ($recordType !== 'SOA') {
+                                        $nonSOARecordModified = true;
+                                    }
+                                    break;
 
-                            case 'update':
-                                $recordType = $this->performUpdateOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
-                                $results['updated']++;
-                                if ($recordType !== 'SOA') {
-                                    $nonSOARecordModified = true;
-                                }
-                                break;
+                                case 'update':
+                                    $recordType = $this->performUpdateOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
+                                    $results['updated']++;
+                                    if ($recordType !== 'SOA') {
+                                        $nonSOARecordModified = true;
+                                    }
+                                    break;
 
-                            case 'delete':
-                                $recordType = $this->performDeleteOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
-                                $results['deleted']++;
-                                if ($recordType !== 'SOA') {
-                                    $nonSOARecordModified = true;
-                                }
-                                break;
+                                case 'delete':
+                                    $recordType = $this->performDeleteOperation($zoneId, $operation, $zoneType, $zone['name'] ?? null);
+                                    $results['deleted']++;
+                                    if ($recordType !== 'SOA') {
+                                        $nonSOARecordModified = true;
+                                    }
+                                    break;
 
-                            default:
-                                throw new ApiErrorException("Invalid action: $action. Must be 'create', 'update', or 'delete'", 400);
+                                default:
+                                    throw new ApiErrorException("Invalid action: $action. Must be 'create', 'update', or 'delete'", 400);
+                            }
+                        } catch (\Throwable $e) {
+                            $results['failed']++;
+                            $results['errors'][] = "Operation $index ($action): " . $e->getMessage();
+
+                            // Rollback on any error for atomicity
+                            throw $e;
                         }
-                    } catch (\Throwable $e) {
-                        $results['failed']++;
-                        $results['errors'][] = "Operation $index ($action): " . $e->getMessage();
-
-                        // Rollback on any error for atomicity
-                        throw $e;
                     }
+
+                    // The serial moves with the records, inside the transaction, and only when
+                    // non-SOA records changed so a user-supplied SOA serial stays; the rectify
+                    // waits for the commit since PowerDNS reads committed rows.
+                    if ($nonSOARecordModified) {
+                        $this->createSOARecordManager()->updateSOASerial($zoneId);
+                    }
+                    if ($useTransaction) {
+                        $this->db->commit();
+                    }
+                    $this->recordManager->finalizeZone($zoneId, false);
+
+                    $this->createAuditService()->logApiBulkRecords($zoneId, count($results));
+
+                    // Any failed operation rethrows above, so reaching here means all succeeded
+                    return $this->returnApiResponse($results, true, 'Bulk operations completed successfully', 200);
+                } catch (\Throwable $e) {
+                    if ($useTransaction) {
+                        $this->db->rollBack();
+
+                        // Reset counters - rollback means no changes were persisted
+                        $results['created'] = 0;
+                        $results['updated'] = 0;
+                        $results['deleted'] = 0;
+                    }
+
+                    throw $e;
                 }
+            };
 
-                // The serial moves with the records, inside the transaction, and only when
-                // non-SOA records changed so a user-supplied SOA serial stays; the rectify
-                // waits for the commit since PowerDNS reads committed rows.
-                if ($nonSOARecordModified) {
-                    $this->createSOARecordManager()->updateSOASerial($zoneId);
-                }
-                if ($useTransaction) {
-                    $this->db->commit();
-                }
-                $this->recordManager->finalizeZone($zoneId, false);
-
-                $this->createAuditService()->logApiBulkRecords($zoneId, count($results));
-
-                // Any failed operation rethrows above, so reaching here means all succeeded
-                return $this->returnApiResponse($results, true, 'Bulk operations completed successfully', 200);
-            } catch (\Throwable $e) {
-                if ($useTransaction) {
-                    $this->db->rollBack();
-
-                    // Reset counters - rollback means no changes were persisted
-                    $results['created'] = 0;
-                    $results['updated'] = 0;
-                    $results['deleted'] = 0;
-                }
-
-                throw $e;
-            } finally {
-                RecordChangeLogger::endChangeset();
-            }
+            return RecordChangeLogger::withChangeset($zoneId, $changeComment, $work);
         } catch (ApiErrorException $e) {
             // Client validation errors - return detailed error response with appropriate 4xx status code
             $statusCode = (int) ($e->getCode() >= 400 && $e->getCode() < 500 ? $e->getCode() : 400);

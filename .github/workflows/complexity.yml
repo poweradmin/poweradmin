@@ -26,29 +26,8 @@ jobs:
       with:
         ref: develop
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
-      with:
-        php-version: '8.4'
-        coverage: none
-
-    - name: Get Composer cache directory
-      id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-complexity-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-complexity-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    - name: Fix vendor binary permissions
-      run: chmod +x vendor/bin/*
+    - name: Set up PHP and Composer dependencies
+      uses: ./.github/actions/php-composer
 
     - name: Report cognitive complexity
       run: composer analyse:complexity

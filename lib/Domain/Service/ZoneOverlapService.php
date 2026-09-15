@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 namespace Poweradmin\Domain\Service;
 
 use PDO;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -159,7 +160,7 @@ class ZoneOverlapService
      */
     private function zoneSource(): array
     {
-        if ($this->config->get('dns', 'backend') === 'api') {
+        if (DnsBackendProviderFactory::isApiBackend($this->config)) {
             // The id is only ever selected, never matched on, so the canonical expression
             // stands in for the column here.
             return ['zones', 'zone_name', CanonicalZoneSql::canonicalIdColumn()];

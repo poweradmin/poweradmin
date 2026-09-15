@@ -266,7 +266,7 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
 
     public function testUnchangedTemplateOnAnotherAccountNeedsNoTemplatePermission(): void
     {
-        // Mirrors UserManager::templateAssignmentRejected(), which exempts an unchanged
+        // Mirrors PermissionService::checkPermissionTemplateAssignment(), which exempts an unchanged
         // non-superuser template before any permission is consulted.
         $svc = $this->permissionService(
             isUeberuser: false,

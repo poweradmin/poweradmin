@@ -90,9 +90,8 @@ class DeleteRecordsController extends BaseController
         // One submission, one changeset, so a multi-record delete reads as a single
         // action in the change log rather than N unrelated deletions. The selection can
         // span zones, so the changeset carries no zone of its own.
-        RecordChangeLogger::beginChangeset(null, (string)($this->httpRequest->getPostParam('change_comment') ?? ''));
-
-        try {
+        $comment = (string)($this->httpRequest->getPostParam('change_comment') ?? '');
+        RecordChangeLogger::withChangeset(null, $comment, function () use ($record_ids, $recordRepository, $recordManager, $audit, &$deleted_count, &$affected_zones): void {
             foreach ($record_ids as $record_id) {
                 $record_info = $recordRepository->getRecordFromId($record_id);
                 if ($record_info === null) {
@@ -140,9 +139,7 @@ class DeleteRecordsController extends BaseController
                     }
                 }
             }
-        } finally {
-            RecordChangeLogger::endChangeset();
-        }
+        });
 
         foreach (array_keys($affected_zones) as $zone_id) {
             $recordManager->finalizeZone($zone_id);

@@ -3,7 +3,6 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 

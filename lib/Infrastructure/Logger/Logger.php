@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,11 +53,6 @@ class Logger extends AbstractLogger
     private const DEFAULT_LEVEL = 'info';
 
     /**
-     * Level names accepted by the logging.level setting, most severe first.
-     *
-     * @return string[]
-     */
-    /**
      * The application logger as configured: PHP error_log when logging.type is
      * "native", otherwise a logger that drops everything.
      */
@@ -70,6 +65,11 @@ class Logger extends AbstractLogger
         return new self(new NativeLogHandler(), (string)$config->get('logging', 'level', self::DEFAULT_LEVEL));
     }
 
+    /**
+     * Level names accepted by the logging.level setting, most severe first.
+     *
+     * @return string[]
+     */
     public static function levelNames(): array
     {
         return array_keys(self::LEVELS);
@@ -120,16 +120,11 @@ class Logger extends AbstractLogger
         }
 
         $this->logHandler->handle([
-            'message' => self::interpolateMessage((string)$message, $context) . $contextString,
+            'message' => self::interpolatePlaceholders((string)$message, $context) . $contextString,
             'level' => strtoupper($level),
             'timestamp' => ($timestamp),
             'classname' => $classname,
         ]);
-    }
-
-    private function interpolateMessage(string $message, array $context = []): string
-    {
-        return self::interpolatePlaceholders($message, $context);
     }
 
     /**

@@ -1537,7 +1537,6 @@ return array(
     'Poweradmin\\Module\\ZoneImportExport\\Service\\ParsedRecord' => $baseDir . '/lib/Module/ZoneImportExport/Service/ParsedRecord.php',
     'Poweradmin\\Module\\ZoneImportExport\\Service\\ParsedZoneFile' => $baseDir . '/lib/Module/ZoneImportExport/Service/ParsedZoneFile.php',
     'Poweradmin\\Module\\ZoneImportExport\\ZoneImportExportModule' => $baseDir . '/lib/Module/ZoneImportExport/ZoneImportExportModule.php',
-    'Poweradmin\\Pages' => $baseDir . '/lib/Pages.php',
     'Poweradmin\\Version' => $baseDir . '/lib/Version.php',
     'PragmaRX\\Google2FA\\Exceptions\\Contracts\\Google2FA' => $vendorDir . '/pragmarx/google2fa/src/Exceptions/Contracts/Google2FA.php',
     'PragmaRX\\Google2FA\\Exceptions\\Contracts\\IncompatibleWithGoogleAuthenticator' => $vendorDir . '/pragmarx/google2fa/src/Exceptions/Contracts/IncompatibleWithGoogleAuthenticator.php',
