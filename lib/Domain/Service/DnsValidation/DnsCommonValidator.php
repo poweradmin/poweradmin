@@ -22,8 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
-use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
-use Poweradmin\Domain\Service\SearchBackendInterface;
+use Poweradmin\Domain\Service\RecordReadBackendInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PDO;
@@ -37,9 +36,9 @@ class DnsCommonValidator
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private (SearchBackendInterface&BackendCapabilitiesInterface)|null $backendProvider;
+    private ?RecordReadBackendInterface $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, (SearchBackendInterface&BackendCapabilitiesInterface)|null $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?RecordReadBackendInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
@@ -87,12 +86,9 @@ class DnsCommonValidator
      */
     public function validateNonAliasTarget(string $target): ValidationResult
     {
-        if ($this->backendProvider !== null && $this->backendProvider->isApiBackend()) {
-            $result = $this->backendProvider->searchDnsData($target, 'record', 100);
-            foreach ($result['records'] as $r) {
-                if ($r['name'] === $target && $r['type'] === 'CNAME') {
-                    return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
-                }
+        if ($this->backendProvider !== null) {
+            if ($this->backendProvider->findRecordsByName($target, 'CNAME') !== []) {
+                return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
             }
             return ValidationResult::success(true);
         }

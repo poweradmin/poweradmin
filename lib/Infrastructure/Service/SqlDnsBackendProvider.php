@@ -589,6 +589,38 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function findRecordsByName(string $name, ?string $type = null): array
+    {
+        return $this->findRecords('LOWER(name) = LOWER(:value)', rtrim($name, '.'), $type);
+    }
+
+    public function findRecordsByContent(string $content, ?string $type = null): array
+    {
+        return $this->findRecords('content = :value', $content, $type);
+    }
+
+    /**
+     * Cross-zone record lookup on one bound predicate, ENTs excluded.
+     */
+    private function findRecords(string $predicate, string $value, ?string $type): array
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled
+                  FROM $recordsTable
+                  WHERE $predicate AND type IS NOT NULL AND type != ''";
+        $params = [':value' => $value];
+
+        if ($type !== null) {
+            $query .= " AND type = :type";
+            $params[':type'] = $type;
+        }
+        $query .= " ORDER BY domain_id, type, content";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getSOARecord(int $domainId): string
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -648,6 +680,44 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
             ];
         }
         return $zones;
+    }
+
+    public function getZonesByIds(array $domainIds): array
+    {
+        $domainIds = array_values(array_unique(array_map('intval', $domainIds)));
+        if ($domainIds === []) {
+            return [];
+        }
+
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $placeholders = implode(',', array_fill(0, count($domainIds), '?'));
+        $stmt = $this->db->prepare("SELECT id, name, type FROM $domainsTable WHERE id IN ($placeholders) ORDER BY name");
+        foreach ($domainIds as $i => $id) {
+            $stmt->bindValue($i + 1, $id, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $zones = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $zones[] = [
+                'id' => (int)$row['id'],
+                'name' => (string)$row['name'],
+                'type' => (string)$row['type'],
+            ];
+        }
+        return $zones;
+    }
+
+    public function countZones(): int
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        return (int)$this->db->query("SELECT COUNT(*) FROM $domainsTable")->fetchColumn();
+    }
+
+    public function countRecords(): ?int
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        return (int)$this->db->query("SELECT COUNT(*) FROM $recordsTable")->fetchColumn();
     }
 
     // ---------------------------------------------------------------
@@ -816,6 +886,16 @@ class SqlDnsBackendProvider implements DnsBackendProviderInterface
     public function isApiBackend(): bool
     {
         return false;
+    }
+
+    public function supportsLocalWriteTransaction(): bool
+    {
+        return true;
+    }
+
+    public function recordIdsAreNumeric(): bool
+    {
+        return true;
     }
 
     public function hasSoaEditApi(int $domainId): bool

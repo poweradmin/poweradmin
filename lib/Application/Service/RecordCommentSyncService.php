@@ -35,7 +35,7 @@ class RecordCommentSyncService
 {
     private RecordCommentService $commentService;
     private ?RecordRepositoryInterface $recordRepository;
-    private bool $isApiBackend;
+    private bool $numericRecordIds;
 
     public function __construct(
         RecordCommentService $commentService,
@@ -44,7 +44,7 @@ class RecordCommentSyncService
     ) {
         $this->commentService = $commentService;
         $this->recordRepository = $recordRepository;
-        $this->isApiBackend = $backendProvider !== null && $backendProvider->isApiBackend();
+        $this->numericRecordIds = $backendProvider === null || $backendProvider->recordIdsAreNumeric();
     }
 
     public function syncCommentsForPtrRecord(
@@ -127,9 +127,8 @@ class RecordCommentSyncService
 
     private function updateRecordComments(int $zoneId, string $name, string $type, string $comment, string $userLogin): void
     {
-        // In API mode, record IDs are encoded strings that cannot be cast to int.
-        // Use RRset-level comment update instead of per-record linking.
-        if ($this->isApiBackend) {
+        // Encoded record ids cannot be linked per record; update the RRset comment instead
+        if (!$this->numericRecordIds) {
             if ($type === RecordType::PTR) {
                 $this->updatePtrRecordComment($zoneId, $name, $name, $comment, $userLogin);
             } else {

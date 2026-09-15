@@ -33,6 +33,82 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertFalse($this->provider->isApiBackend());
     }
 
+    public function testSqlBackendWritesJoinTheLocalTransaction(): void
+    {
+        $this->assertTrue($this->provider->supportsLocalWriteTransaction());
+    }
+
+    public function testSqlBackendRecordIdsAreNumeric(): void
+    {
+        $this->assertTrue($this->provider->recordIdsAreNumeric());
+    }
+
+    // ---------------------------------------------------------------
+    // Cross-zone lookups and counts (sqlite in-memory)
+    // ---------------------------------------------------------------
+
+    private function sqliteProvider(): SqlDnsBackendProvider
+    {
+        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, master TEXT)");
+        $db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0)");
+        $db->exec("INSERT INTO domains (id, name, type) VALUES (1, 'example.com', 'MASTER'), (2, 'other.org', 'NATIVE'), (3, 'alpha.net', 'SLAVE')");
+        $db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio) VALUES
+            (10, 1, 'www.example.com', 'A', '192.0.2.1', 3600, 0),
+            (11, 1, 'WWW.example.com', 'TXT', 'hello', 3600, 0),
+            (12, 1, 'mail.example.com', 'MX', 'www.example.com', 3600, 10),
+            (13, 2, 'www.example.com', 'CNAME', 'other.org', 3600, 0),
+            (14, 2, 'ent.other.org', NULL, '', 0, 0),
+            (15, 2, 'empty.other.org', '', '', 0, 0)");
+
+        return new SqlDnsBackendProvider($db, $this->mockConfig, new NullLogger());
+    }
+
+    public function testFindRecordsByNameMatchesAcrossZonesCaseInsensitively(): void
+    {
+        $ids = array_map('intval', array_column($this->sqliteProvider()->findRecordsByName('www.EXAMPLE.com.'), 'id'));
+
+        $this->assertSame([10, 11, 13], $ids);
+    }
+
+    public function testFindRecordsByNameFiltersByType(): void
+    {
+        $records = $this->sqliteProvider()->findRecordsByName('www.example.com', 'CNAME');
+
+        $this->assertCount(1, $records);
+        $this->assertSame(2, (int)$records[0]['domain_id']);
+    }
+
+    public function testFindRecordsByContentIsExactAndSkipsEnts(): void
+    {
+        $provider = $this->sqliteProvider();
+
+        $this->assertSame([12], array_map('intval', array_column($provider->findRecordsByContent('www.example.com'), 'id')));
+        $this->assertSame([], $provider->findRecordsByContent('www.example.co'));
+        $this->assertSame([], $provider->findRecordsByContent(''));
+        $this->assertSame([], $provider->findRecordsByContent('www.example.com', 'NS'));
+    }
+
+    public function testGetZonesByIdsSortsByNameAndSkipsUnknownIds(): void
+    {
+        $zones = $this->sqliteProvider()->getZonesByIds([2, 99, 3, 3]);
+
+        $this->assertSame([
+            ['id' => 3, 'name' => 'alpha.net', 'type' => 'SLAVE'],
+            ['id' => 2, 'name' => 'other.org', 'type' => 'NATIVE'],
+        ], $zones);
+        $this->assertSame([], $this->sqliteProvider()->getZonesByIds([]));
+    }
+
+    public function testCountZonesAndRecordsCountEveryRow(): void
+    {
+        $provider = $this->sqliteProvider();
+
+        $this->assertSame(3, $provider->countZones());
+        // ENT rows count too: the dashboard reports table size, not served records
+        $this->assertSame(6, $provider->countRecords());
+    }
+
     public function testRetrieveZoneReturnsFalse(): void
     {
         // SQL backend cannot trigger an immediate transfer; PowerDNS handles it.

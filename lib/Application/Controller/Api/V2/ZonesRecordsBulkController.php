@@ -231,10 +231,7 @@ class ZonesRecordsBulkController extends PublicApiController
                 return $this->returnApiError("Field 'comment' is required: this installation requires a reason for every change", 400);
             }
 
-            // Start transaction for atomic operations (SQL backend only).
-            // API backend polls the DB for new record IDs after HTTP calls;
-            // an open transaction hides those rows due to MVCC snapshot isolation.
-            $useTransaction = !$this->backendProvider->isApiBackend();
+            $useTransaction = $this->backendProvider->supportsLocalWriteTransaction();
             if ($useTransaction) {
                 $this->db->beginTransaction();
             }

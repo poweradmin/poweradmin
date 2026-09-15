@@ -36,4 +36,25 @@ interface BackendCapabilitiesInterface
      * @return bool
      */
     public function isApiBackend(): bool;
+
+    /**
+     * Whether backend writes can be wrapped in a transaction on the Poweradmin database.
+     *
+     * True for the SQL backend, where the PowerDNS tables share the connection. False
+     * for the API backend: it writes over HTTP and then reads the local zones table for
+     * the new ids, and an open transaction would hide those rows.
+     *
+     * @return bool
+     */
+    public function supportsLocalWriteTransaction(): bool;
+
+    /**
+     * Whether record ids are the integer records.id values.
+     *
+     * True for the SQL backend. False for the API backend, whose record ids are
+     * encoded composite keys (see RecordIdentifier) that do not fit an INT column.
+     *
+     * @return bool
+     */
+    public function recordIdsAreNumeric(): bool;
 }

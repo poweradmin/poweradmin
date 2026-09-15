@@ -253,10 +253,8 @@ class RecordManager implements RecordManagerInterface
             return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), 409, RecordWriteResult::FIELD_DUPLICATE);
         }
 
-        // On the SQL backend the row and the serial bump land together. The API
-        // backend polls for the new id, which an open transaction would hide, and a
-        // batch caller already holds its own.
-        $ownTransaction = $finalizeZone && !$this->backendProvider->isApiBackend() && !$this->db->inTransaction();
+        // The row and the serial bump land together; a batch caller already holds its own.
+        $ownTransaction = $finalizeZone && $this->backendProvider->supportsLocalWriteTransaction() && !$this->db->inTransaction();
         if ($ownTransaction) {
             $this->db->beginTransaction();
         }

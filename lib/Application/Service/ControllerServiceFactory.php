@@ -311,8 +311,6 @@ class ControllerServiceFactory
     public function dashboardStatsService(): DashboardStatsService
     {
         return new DashboardStatsService(
-            $this->db,
-            $this->config,
             $this->logger,
             $this->userRepository(),
             $this->userGroupRepository(),

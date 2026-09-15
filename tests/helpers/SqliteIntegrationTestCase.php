@@ -120,6 +120,8 @@ abstract class SqliteIntegrationTestCase extends TestCase
     {
         $stub = $this->createMock(DnsBackendProviderInterface::class);
         $stub->method('isApiBackend')->willReturn($isApi);
+        $stub->method('supportsLocalWriteTransaction')->willReturn(!$isApi);
+        $stub->method('recordIdsAreNumeric')->willReturn(!$isApi);
         return $stub;
     }
 

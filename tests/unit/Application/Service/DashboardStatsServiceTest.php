@@ -29,6 +29,7 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use TestHelpers\FakeConfiguration;
@@ -50,10 +51,12 @@ class DashboardStatsServiceTest extends TestCase
 
     public function testSqlModeCountsThePowerdnsTables(): void
     {
+        $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY)");
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY)");
+        $this->db->exec("INSERT INTO domains (id) VALUES (1), (2)");
         $this->db->exec("INSERT INTO records (id) VALUES (1), (2), (3)");
 
-        $stats = $this->makeService(false)->stats(5, true);
+        $stats = $this->makeService($this->sqlBackend())->stats(5, true);
 
         $this->assertSame(['zones' => 2, 'records' => 3, 'users' => 9, 'groups' => 4], $stats);
     }
@@ -63,7 +66,7 @@ class DashboardStatsServiceTest extends TestCase
         $zones = $this->createMock(ZoneRepositoryInterface::class);
         $zones->method('getZoneCount')->willThrowException(new RuntimeException('no such table: domains'));
 
-        $stats = $this->makeService(false, null, $zones)->stats(5, false);
+        $stats = $this->makeService($this->sqlBackend(), $zones)->stats(5, false);
 
         $this->assertNull($stats['zones']);
         $this->assertNull($stats['records']);
@@ -73,10 +76,10 @@ class DashboardStatsServiceTest extends TestCase
     public function testApiModeCountsThroughTheBackend(): void
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
-        $backend->method('isApiBackend')->willReturn(true);
-        $backend->method('getZones')->willReturn([['name' => 'a'], ['name' => 'b'], ['name' => 'c'], ['name' => 'd']]);
+        $backend->method('countZones')->willReturn(4);
+        $backend->method('countRecords')->willReturn(null);
 
-        $stats = $this->makeService(true, $backend)->stats(5, true);
+        $stats = $this->makeService($backend)->stats(5, true);
 
         $this->assertSame(4, $stats['zones']);
         $this->assertNull($stats['records']);
@@ -85,28 +88,27 @@ class DashboardStatsServiceTest extends TestCase
     public function testApiOutageFallsBackToTheCachedZones(): void
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
-        $backend->method('isApiBackend')->willReturn(true);
-        $backend->method('getZones')->willThrowException(new RuntimeException('down'));
+        $backend->method('countZones')->willThrowException(new RuntimeException('down'));
 
-        $this->assertSame(2, $this->makeService(true, $backend)->stats(5, true)['zones']);
+        $this->assertSame(2, $this->makeService($backend)->stats(5, true)['zones']);
     }
 
     public function testSwallowedApiErrorWithNoZonesFallsBackToTheCachedZones(): void
     {
         $_SESSION['pdns_api_last_error'] = ['message' => 'timeout', 'context' => [], 'timestamp' => 0];
         $backend = $this->createMock(DnsBackendProviderInterface::class);
-        $backend->method('isApiBackend')->willReturn(true);
-        $backend->method('getZones')->willReturn([]);
+        $backend->method('countZones')->willReturn(0);
 
-        $this->assertSame(2, $this->makeService(true, $backend)->stats(5, true)['zones']);
+        $this->assertSame(2, $this->makeService($backend)->stats(5, true)['zones']);
     }
 
-    private function makeService(bool $apiBackend, ?DnsBackendProviderInterface $backend = null, ?ZoneRepositoryInterface $zones = null): DashboardStatsService
+    private function sqlBackend(): SqlDnsBackendProvider
     {
-        if ($backend === null) {
-            $backend = $this->createMock(DnsBackendProviderInterface::class);
-            $backend->method('isApiBackend')->willReturn($apiBackend);
-        }
+        return new SqlDnsBackendProvider($this->db, new FakeConfiguration(['database' => ['type' => 'sqlite', 'pdns_db_name' => '']]));
+    }
+
+    private function makeService(DnsBackendProviderInterface $backend, ?ZoneRepositoryInterface $zones = null): DashboardStatsService
+    {
         if ($zones === null) {
             $zones = $this->createMock(ZoneRepositoryInterface::class);
             $zones->method('getZoneCount')->willReturn(2);
@@ -117,8 +119,6 @@ class DashboardStatsServiceTest extends TestCase
         $groups->method('countAll')->willReturn(4);
 
         return new DashboardStatsService(
-            $this->db,
-            new FakeConfiguration(['database' => ['type' => 'sqlite', 'pdns_db_name' => '']]),
             $this->createMock(LoggerInterface::class),
             $users,
             $groups,

@@ -22,15 +22,10 @@
 
 namespace Poweradmin\Application\Service;
 
-use PDO;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
-use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\ZoneReadBackendInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -40,18 +35,13 @@ use Throwable;
  */
 class DashboardStatsService
 {
-    private TableNameService $tables;
-
     public function __construct(
-        private readonly PDO $db,
-        private readonly ConfigurationInterface $config,
         private readonly LoggerInterface $logger,
         private readonly UserRepositoryInterface $users,
         private readonly UserGroupRepositoryInterface $groups,
         private readonly ZoneReadRepositoryInterface $zones,
-        private readonly ZoneReadBackendInterface&BackendCapabilitiesInterface $backend
+        private readonly ZoneReadBackendInterface $backend
     ) {
-        $this->tables = new TableNameService($config);
     }
 
     /**
@@ -65,39 +55,43 @@ class DashboardStatsService
             'groups' => $this->groups->countAll(),
         ];
 
-        if ($this->backend->isApiBackend()) {
-            return ['zones' => $this->apiZoneCount(), 'records' => null] + $counts;
-        }
-
-        // The PowerDNS tables may be absent or ungranted (PowerDNS not yet deployed,
-        // or its schema in a separate database); show no counts rather than fail
-        try {
-            $zones = $this->zones->getZoneCount();
-            $records = (int)$this->db->query('SELECT COUNT(*) FROM ' . $this->tables->getTable(PdnsTable::RECORDS))->fetchColumn();
-        } catch (Throwable $e) {
-            $this->logger->warning('Dashboard zone/record count failed: {error}', ['error' => $e->getMessage()]);
-            $zones = null;
-            $records = null;
-        }
-
-        return ['zones' => $zones, 'records' => $records] + $counts;
+        return ['zones' => $this->zoneCount(), 'records' => $this->recordCount()] + $counts;
     }
 
     /**
-     * Counts through the API for freshness (the local zones table lags until sync
-     * runs) and falls back to the local cache count on an outage instead of showing 0.
+     * Counts through the backend for freshness (the local zones table lags behind the
+     * API until sync runs); on an outage the local count is shown instead of 0.
      */
-    private function apiZoneCount(): int
+    private function zoneCount(): ?int
     {
         try {
-            $count = count($this->backend->getZones());
+            $count = $this->backend->countZones();
             if ($count > 0 || (new ApiStatusService())->getLastError() === null) {
                 return $count;
             }
         } catch (Throwable $e) {
-            $this->logger->warning('Dashboard zone count via API failed: {error}', ['error' => $e->getMessage()]);
+            $this->logger->warning('Dashboard zone count failed: {error}', ['error' => $e->getMessage()]);
         }
 
-        return $this->zones->getZoneCount();
+        // On SQL this reads the same table that just failed; the null keeps the page rendering
+        try {
+            return $this->zones->getZoneCount();
+        } catch (Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Null when the backend keeps no global count, or when the PowerDNS tables are
+     * absent or ungranted (not yet deployed, or a schema in a separate database).
+     */
+    private function recordCount(): ?int
+    {
+        try {
+            return $this->backend->countRecords();
+        } catch (Throwable $e) {
+            $this->logger->warning('Dashboard record count failed: {error}', ['error' => $e->getMessage()]);
+            return null;
+        }
     }
 }

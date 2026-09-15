@@ -54,11 +54,6 @@ class SOARecordManager implements SOARecordManagerInterface
         $this->backendProvider = $backendProvider;
     }
 
-    private function isApiBackend(): bool
-    {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
-    }
-
     /**
      * Get SOA record content for Zone ID
      *
@@ -68,7 +63,7 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function getSOARecord(int $zone_id): string
     {
-        if ($this->isApiBackend()) {
+        if ($this->backendProvider !== null) {
             return $this->backendProvider->getSOARecord($zone_id);
         }
 
@@ -235,7 +230,9 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function updateSOARecord(int $domain_id, string $content): bool
     {
-        if ($this->isApiBackend()) {
+        // The API backend rewrites the SOA RRset (and its TTL) from dns.ttl, the SQL
+        // backend keeps the stored TTL; the two are not one provider operation yet.
+        if ($this->backendProvider !== null && $this->backendProvider->isApiBackend()) {
             $zoneName = $this->backendProvider->getZoneNameById($domain_id);
             if ($zoneName === null) {
                 return false;
@@ -306,11 +303,9 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function updateSOASerial(int $domain_id): bool
     {
-        if ($this->isApiBackend()) {
-            if ($this->backendProvider->hasSoaEditApi($domain_id)) {
-                return true;
-            }
-            // PowerDNS soa_edit_api is not configured, update SOA serial via API PATCH
+        // PowerDNS bumps the serial itself under SOA-EDIT-API; the SQL backend never reports it
+        if ($this->backendProvider !== null && $this->backendProvider->hasSoaEditApi($domain_id)) {
+            return true;
         }
 
         $soa_rec = $this->getSOARecord($domain_id);
