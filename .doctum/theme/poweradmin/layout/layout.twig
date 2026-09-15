@@ -2,6 +2,17 @@
    Poweradmin has no traits and does not want any (see composer lint:no-traits). #}
 {% extends "layout/base.twig" %}
 
+{# The stock list pages split name and description 50/50; give the text the room. #}
+{% block head %}
+    {{ parent() }}
+    <style>
+        @media (min-width: 992px) {
+            .underlined .row > .col-md-6:first-child { width: 30%; }
+            .underlined .row > .col-md-6:last-child { width: 70%; }
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
     <div id="content">
         <div id="left-column">
