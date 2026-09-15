@@ -36,6 +36,7 @@ use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\UserManagementService;
+use Poweradmin\Domain\Service\UserProfileAssembler;
 
 #[CoversClass(UserManagementService::class)]
 class UserManagementServiceTest extends TestCase
@@ -58,7 +59,7 @@ class UserManagementServiceTest extends TestCase
         $this->service = new UserManagementService(
             $this->userRepository,
             $this->permissionService,
-            $this->groupRepository,
+            new UserProfileAssembler($this->permissionService, $this->groupRepository),
             new UserAuthenticationService('bcrypt', 4),
             $passwordPolicy,
             false,

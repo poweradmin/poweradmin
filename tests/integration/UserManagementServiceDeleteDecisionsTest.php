@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserManagementService;
+use Poweradmin\Domain\Service\UserProfileAssembler;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use TestHelpers\SqliteIntegrationTestCase;
 
@@ -170,7 +171,7 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
         return new UserManagementService(
             $userRepository,
             $permissions,
-            $this->createMock(UserGroupRepositoryInterface::class),
+            new UserProfileAssembler($permissions, $this->createMock(UserGroupRepositoryInterface::class)),
             new UserAuthenticationService(),
             new PasswordPolicyService($config),
             false,

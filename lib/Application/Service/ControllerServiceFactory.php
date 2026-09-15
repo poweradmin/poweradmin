@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\ZoneEditService;
 use Poweradmin\Domain\Service\ZoneListPermissionService;
+use Poweradmin\Domain\Service\UserProfileAssembler;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
@@ -210,7 +211,7 @@ class ControllerServiceFactory
         return $this->userManagementService ??= new UserManagementService(
             $this->userRepository(),
             $this->permissionService(),
-            $this->userGroupRepository(),
+            new UserProfileAssembler($this->permissionService(), $this->userGroupRepository()),
             new UserAuthenticationService(
                 $this->config->get('security', 'password_encryption', 'bcrypt'),
                 $this->config->get('security', 'password_cost', 12)

@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Service;
 use Exception;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Model\Pagination;
@@ -68,7 +67,7 @@ class UserManagementService
     public function __construct(
         UserRepository $userRepository,
         PermissionService $permissionService,
-        UserGroupRepositoryInterface $groupRepository,
+        UserProfileAssembler $profileAssembler,
         UserAuthenticationService $authService,
         PasswordPolicyService $passwordPolicy,
         bool $ldapEnabled,
@@ -76,7 +75,7 @@ class UserManagementService
     ) {
         $this->userRepository = $userRepository;
         $this->permissions = $permissionService;
-        $this->profileAssembler = new UserProfileAssembler($permissionService, $groupRepository);
+        $this->profileAssembler = $profileAssembler;
         $this->authService = $authService;
         $this->passwordPolicy = $passwordPolicy;
         $this->ldapEnabled = $ldapEnabled;

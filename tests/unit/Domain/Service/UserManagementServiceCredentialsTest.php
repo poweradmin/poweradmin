@@ -35,6 +35,7 @@ use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\UserManagementService;
+use Poweradmin\Domain\Service\UserProfileAssembler;
 
 /**
  * Password hashing, password policy and LDAP handling in UserManagementService.
@@ -70,8 +71,8 @@ class UserManagementServiceCredentialsTest extends TestCase
     {
         return new UserManagementService(
             $this->userRepository,
-            $this->createMock(PermissionService::class),
-            $this->createMock(UserGroupRepositoryInterface::class),
+            $permissions = $this->createMock(PermissionService::class),
+            new UserProfileAssembler($permissions, $this->createMock(UserGroupRepositoryInterface::class)),
             $this->hasher,
             $this->passwordPolicy,
             $ldapEnabled,
