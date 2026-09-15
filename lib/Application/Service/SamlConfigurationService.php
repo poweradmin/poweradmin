@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\Logger;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use RuntimeException;
 
@@ -34,7 +34,7 @@ class SamlConfigurationService extends LoggingService
 {
     private ConfigurationManager $configManager;
 
-    public function __construct(ConfigurationManager $configManager, Logger $logger)
+    public function __construct(ConfigurationManager $configManager, LoggerInterface $logger)
     {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
         parent::__construct($logger, $shortClassName);

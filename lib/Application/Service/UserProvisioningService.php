@@ -26,7 +26,7 @@ use PDO;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Logger\Logger;
+use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -59,7 +59,7 @@ class UserProvisioningService extends LoggingService
     public function __construct(
         PDO $connection,
         ConfigurationManager $configManager,
-        Logger $logger
+        LoggerInterface $logger
     ) {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
         parent::__construct($logger, $shortClassName);

@@ -36,7 +36,7 @@ use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
-use Poweradmin\Infrastructure\Logger\Logger;
+use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use ReflectionClass;
@@ -61,7 +61,7 @@ class SamlService extends LoggingService
         ConfigurationManager $configManager,
         SamlConfigurationService $samlConfigurationService,
         UserProvisioningService $userProvisioningService,
-        Logger $logger,
+        LoggerInterface $logger,
         PDO $db,
         ?Request $request = null
     ) {
