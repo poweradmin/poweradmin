@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 /**
- * Interface for domain/zone management operations
+ * Zone creation, update and deletion.
  */
 interface DomainManagerInterface
 {

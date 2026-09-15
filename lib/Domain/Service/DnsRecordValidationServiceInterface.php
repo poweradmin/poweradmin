@@ -25,14 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
- * Interface for DNS Record Validation Service
- *
- * Defines the contract for DNS record validation functionality
- *
- * @package Poweradmin
- * @copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright 2010-2025 Poweradmin Development Team
- * @license https://opensource.org/licenses/GPL-3.0 GPL
+ * Validates a record before it is written.
  */
 interface DnsRecordValidationServiceInterface
 {

@@ -23,10 +23,7 @@
 namespace Poweradmin\Module;
 
 /**
- * Interface for Poweradmin modules.
- *
- * Modules are self-contained features that can be enabled/disabled via configuration.
- * Each module can provide routes, navigation items, capabilities, and templates.
+ * A feature module: its routes, navigation items, capabilities and templates, enabled through configuration.
  */
 interface ModuleInterface
 {

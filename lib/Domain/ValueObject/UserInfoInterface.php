@@ -23,8 +23,7 @@
 namespace Poweradmin\Domain\ValueObject;
 
 /**
- * Interface for user information from external authentication providers
- * Supports both OIDC and SAML authentication
+ * User details returned by an external login provider (LDAP, OIDC or SAML).
  */
 interface UserInfoInterface
 {

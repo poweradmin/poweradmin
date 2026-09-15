@@ -23,12 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 /**
- * Interface for DNS data backend operations.
- *
- * Abstracts the underlying DNS data store (direct SQL or PowerDNS REST API).
- * Poweradmin-internal tables (zones, users, permissions, templates) are always
- * accessed via SQL regardless of the backend - this interface only covers
- * operations on PowerDNS data tables (domains, records, supermasters, etc.).
+ * PowerDNS data access (domains, records, supermasters) over direct SQL or the PowerDNS API; Poweradmin-native tables stay on SQL.
  */
 interface DnsBackendProvider
 {

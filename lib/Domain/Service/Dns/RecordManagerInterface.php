@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 /**
- * Interface for DNS record management operations
+ * Record creation, update and deletion.
  */
 interface RecordManagerInterface
 {
