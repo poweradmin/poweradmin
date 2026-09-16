@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -465,11 +465,12 @@ class ZonesController extends PublicApiController
                 $owner,
                 $slaveMaster,
                 $zoneTemplate,
-                $enableDnssec
+                $enableDnssec,
+                $userId
             );
 
             if (!$result['success']) {
-                $statusCode = match ($result['message']) {
+                $statusCode = $result['status'] ?? match ($result['message']) {
                     'Domain already exists' => 409,
                     default => 400
                 };
