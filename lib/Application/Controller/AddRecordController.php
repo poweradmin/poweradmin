@@ -216,6 +216,7 @@ class AddRecordController extends BaseController
             'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),
             'ptr_default_ttl' => $this->reverseTtlResolver->getConfiguredReverseTtl(),
             'type_default_ttls' => $this->reverseTtlResolver->getTypeDefaults(),
+            'ttl_defaults_by_type' => $this->reverseTtlResolver->resolveTtlsForTypes($offeredTypes, $isReverseZone),
             'prio' => $formData['prio'] ?? $this->httpRequest->getPostParam('prio', 0),
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,

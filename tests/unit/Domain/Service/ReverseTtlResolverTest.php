@@ -47,6 +47,7 @@ class ReverseTtlResolverTest extends TestCase
 
         $repo = $this->createMock(RecordTypeDefaultRepositoryInterface::class);
         $repo->method('find')->willReturnCallback(fn(string $type) => $typeDefaults[strtoupper($type)] ?? null);
+        $repo->expects($this->atMost(1))->method('findAll')->willReturn($typeDefaults);
 
         return new ReverseTtlResolver($config, $repo);
     }
@@ -203,5 +204,22 @@ class ReverseTtlResolverTest extends TestCase
     {
         $resolver = $this->createResolver(reverseTtl: null, typeDefaults: ['MX' => 1800]);
         $this->assertSame(86400, $resolver->resolveTtlForType('A', false));
+    }
+
+    public function testResolveTtlsForTypesAppliesThePrecedencePerType(): void
+    {
+        $resolver = $this->createResolver(3600, 86400, ['MX' => 300]);
+        // Every type must agree with the single-type resolution it replaces.
+        foreach (['A', 'PTR', 'MX'] as $type) {
+            $this->assertSame($resolver->resolveTtlForType($type, true), $resolver->resolveTtlsForTypes([$type], true)[$type]);
+        }
+
+        $this->assertSame(
+            ['A' => 86400, 'PTR' => 3600, 'MX' => 300],
+            $resolver->resolveTtlsForTypes(['A', 'ptr', 'MX'], true)
+        );
+        $this->assertSame(['PTR' => 86400], $resolver->resolveTtlsForTypes(['PTR'], false));
+        // The controller passes both maps to the form; the defaults are read once.
+        $this->assertSame(['MX' => 300], $resolver->getTypeDefaults());
     }
 }

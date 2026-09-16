@@ -36,6 +36,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
  */
 class ReverseTtlResolver
 {
+    /** @var array<string, int>|null */
+    private ?array $typeDefaults = null;
+
     public function __construct(
         private ConfigurationInterface $config,
         private RecordTypeDefaultRepositoryInterface $recordTypeDefaults,
@@ -106,6 +109,28 @@ class ReverseTtlResolver
     }
 
     /**
+     * The TTL each offered record type starts with, resolved with the same
+     * precedence as resolveTtlForType() so the form's type swap matches what
+     * the server would apply.
+     *
+     * @param array<int, string> $recordTypes
+     * @return array<string, int>
+     */
+    public function resolveTtlsForTypes(array $recordTypes, bool $isInReverseZone): array
+    {
+        $typeDefaults = $this->getTypeDefaults();
+        $forwardTtl = $this->getForwardTtl();
+        $ptrTtl = $isInReverseZone ? ($this->getConfiguredReverseTtl() ?? $forwardTtl) : $forwardTtl;
+
+        $out = [];
+        foreach ($recordTypes as $type) {
+            $typeKey = strtoupper($type);
+            $out[$typeKey] = $typeDefaults[$typeKey] ?? ($typeKey === RecordType::PTR ? $ptrTtl : $forwardTtl);
+        }
+        return $out;
+    }
+
+    /**
      * The configured dns.ttl_reverse value, or null when unset/empty.
      * Callers use null to signal "preserve historical behavior".
      */
@@ -126,6 +151,7 @@ class ReverseTtlResolver
      */
     public function getTypeDefaults(): array
     {
-        return $this->recordTypeDefaults->findAll();
+        // A form asks for this map more than once; one query per resolver.
+        return $this->typeDefaults ??= $this->recordTypeDefaults->findAll();
     }
 }

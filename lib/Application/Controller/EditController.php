@@ -366,6 +366,10 @@ class EditController extends BaseController
             $zone_comment = $this->rejectedZoneComment;
         }
 
+        $recordTypes = $isReverseZone
+            ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities())
+            : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities());
+
         $this->render('edit.html', [
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
@@ -436,10 +440,9 @@ class EditController extends BaseController
             'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),
             'ptr_default_ttl' => $this->reverseTtlResolver->getConfiguredReverseTtl(),
             'type_default_ttls' => $this->reverseTtlResolver->getTypeDefaults(),
+            'ttl_defaults_by_type' => $this->reverseTtlResolver->resolveTtlsForTypes($recordTypes, $isReverseZone),
             'is_reverse_zone' => $isReverseZone,
-            'record_types' => $isReverseZone
-                ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities())
-                : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities()),
+            'record_types' => $recordTypes,
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', true),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', true),
             'iface_edit_show_id' => $iface_show_id,

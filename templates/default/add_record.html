@@ -231,12 +231,11 @@
         }
     }
 
-    // TTL_DEFAULTS.byType[TYPE] wins when set (admin-managed record_type_defaults).
-    // ptr is the legacy dns.ttl_reverse fallback, only applied for PTR in reverse zones.
+    // Per-type starting TTLs resolved server-side (record_type_defaults, then the
+    // reverse-zone PTR fallback, then dns.ttl); plain covers any type not offered.
     const TTL_DEFAULTS = {
         plain: {{ default_ttl|json_encode|raw }},
-        ptr: {{ (is_reverse_zone ? ptr_default_ttl : null)|json_encode|raw }},
-        byType: {{ type_default_ttls|default({})|json_encode|raw }}
+        byType: {{ ttl_defaults_by_type|default({})|json_encode|raw }}
     };
 
     let suppressTtlSwap = false;
@@ -246,12 +245,9 @@
             return;
         }
         const type = typeSelect.value;
-        if (Object.prototype.hasOwnProperty.call(TTL_DEFAULTS.byType, type)) {
-            ttlInput.value = TTL_DEFAULTS.byType[type];
-            return;
-        }
-        const isPtr = type === 'PTR';
-        ttlInput.value = isPtr && TTL_DEFAULTS.ptr !== null ? TTL_DEFAULTS.ptr : TTL_DEFAULTS.plain;
+        ttlInput.value = Object.prototype.hasOwnProperty.call(TTL_DEFAULTS.byType, type)
+            ? TTL_DEFAULTS.byType[type]
+            : TTL_DEFAULTS.plain;
     }
 
     document.addEventListener('DOMContentLoaded', function() {
