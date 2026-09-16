@@ -26,7 +26,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -302,6 +302,12 @@ class EditController extends BaseController
                     $new_zone_template = $_POST['zone_template'];
                 }
                 $current_zone_template = $_POST['current_zone_template'] ?? 0;
+
+                $zoneTemplateModel = new ZoneTemplate($this->db, $this->getConfig());
+                if (!$zoneTemplateModel->canCurrentUserUseTemplate($new_zone_template)) {
+                    $this->showError(_('Invalid or unexpected input given.'));
+                    return;
+                }
 
                 if ($current_zone_template != $new_zone_template) {
                     $this->dnsRecord->updateZoneRecords(

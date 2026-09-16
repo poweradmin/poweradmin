@@ -101,6 +101,13 @@ class BulkRegistrationController extends BaseController
         $domains = DomainHelper::getDomains($_POST['domains']);
         $dom_type = $_POST['dom_type'];
         $zone_template = $_POST['zone_template'];
+
+        $zoneTemplateModel = new ZoneTemplate($this->db, $this->getConfig());
+        if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
+            $this->setMessage('bulk_registration', 'error', _('Invalid or unexpected input given.'));
+            $this->showBulkRegistrationForm();
+            return;
+        }
         $owner = (int)$_POST['owner'];
 
         // Block assigning zones to a different user without elevated permission
