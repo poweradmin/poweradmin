@@ -119,6 +119,12 @@ class AddZoneMasterController extends BaseController
         $dom_type = $_POST["dom_type"];
         $owner = !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
         $zone_template = $_POST['zone_template'] ?? "none";
+        $zoneTemplateModel = new ZoneTemplate($this->db, $this->getConfig());
+        if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
+            $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
+            $this->showForm();
+            return;
+        }
         $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
             array_map('intval', $_POST['groups']) : [];
 
