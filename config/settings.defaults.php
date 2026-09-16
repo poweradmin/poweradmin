@@ -274,7 +274,6 @@ return [
      */
     'dnssec' => [
         'enabled' => false,                        // Enable DNSSEC functionality (added in 2.1.7)
-        'debug' => false,                          // Enable DNSSEC debug logging (added in 2.1.9)
     ],
 
     /**
