@@ -435,9 +435,10 @@ class UserManagementService
      *
      * @param int $userId User ID to delete
      * @param int|null $transferToUserId User ID to transfer zones to (required if user has zones)
+     * @param int|null $actingUserId When given, the transfer needs meta-edit rights on every zone, as the web form requires
      * @return array Result with success status and message
      */
-    public function deleteUser(int $userId, ?int $transferToUserId = null): array
+    public function deleteUser(int $userId, ?int $transferToUserId = null, ?int $actingUserId = null): array
     {
         if (($refusal = $this->deleteRefusal($userId)) !== null) {
             return $refusal;
@@ -479,6 +480,20 @@ class UserManagementService
                         'status' => 404,
                         'code' => self::ERR_TRANSFER_TARGET,
                     ];
+                }
+
+                // Giving away a zone is a meta edit; a user manager without that right must not gain zones this way.
+                if ($actingUserId !== null && $this->permissions->getZoneMetaEditPermissionLevel($actingUserId) !== 'all') {
+                    foreach ($userZones as $zone) {
+                        if (!$this->permissions->canEditZoneMeta($actingUserId, (int)$zone['domain_id'])) {
+                            return [
+                                'success' => false,
+                                'message' => 'You do not have permission to reassign zone ' . (int)$zone['domain_id'],
+                                'status' => 403,
+                                'code' => self::ERR_ZONE_META_FORBIDDEN,
+                            ];
+                        }
+                    }
                 }
 
                 // Transfer zones to the specified user

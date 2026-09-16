@@ -866,7 +866,7 @@ class UsersController extends PublicApiController
             properties: [
                 new OA\Property(
                     property: 'transfer_to_user_id',
-                    description: 'User ID to transfer zones to (required if user owns zones)',
+                    description: 'User ID to transfer zones to (required if user owns zones). The caller needs zone_meta_edit rights on every zone being transferred.',
                     type: 'integer',
                     example: 2
                 )
@@ -907,6 +907,16 @@ class UsersController extends PublicApiController
         )
     )]
     #[OA\Response(
+        response: 403,
+        description: 'Forbidden - caller may not delete this user or may not reassign one of their zones',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'You do not have permission to reassign zone 12')
+            ]
+        )
+    )]
+    #[OA\Response(
         response: 409,
         description: 'Conflict - cannot delete the last remaining super admin',
         content: new OA\JsonContent(
@@ -932,7 +942,7 @@ class UsersController extends PublicApiController
             $transferToUserId = isset($requestBody['transfer_to_user_id']) ? (int)$requestBody['transfer_to_user_id'] : null;
 
             // Use the domain service to delete the user
-            $result = $this->userManagementService->deleteUser($targetUserId, $transferToUserId);
+            $result = $this->userManagementService->deleteUser($targetUserId, $transferToUserId, $currentUserId);
 
             if (!$result['success']) {
                 $statusCode = $result['status'] ?? 400;
