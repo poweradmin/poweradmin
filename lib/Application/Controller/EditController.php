@@ -591,6 +591,16 @@ class EditController extends BaseController
 
     public function saveRecords(int $zone_id, string $zone_name): void
     {
+        // The page gate only proves view access; records are re-checked per row
+        // but the zone comment write and the SOA serial bump are not.
+        $userId = (int)$this->userContextService->getLoggedInUserId();
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        if (!($perm_edit === 'all' || (($perm_edit === 'own' || $perm_edit === 'own_as_client') && $user_is_zone_owner))) {
+            $this->setMessage('edit', 'error', _('You do not have the permission to edit this zone.'));
+            return;
+        }
+
         $error = false;
         $one_record_changed = false;
         $serial_mismatch = false;
