@@ -1053,7 +1053,7 @@ class UserManager
     {
         $perm_edit_own = self::verifyPermission($this->db, 'user_edit_own');
         $perm_edit_others = self::verifyPermission($this->db, 'user_edit_others');
-        $perm_templ_perm_edit = self::verifyPermission($this->db, 'templ_perm_edit');
+        $perm_edit_user_templ = self::verifyPermission($this->db, 'user_edit_templ_perm');
         $perm_is_godlike = self::verifyPermission($this->db, 'user_is_ueberuser');
 
         if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION["userid"] && $perm_edit_others)) {
@@ -1121,7 +1121,7 @@ class UserManager
                 active = :active";
 
             // If the user is allowed to change the permission template, set it.
-            if ($perm_templ_perm_edit == "1") {
+            if ($perm_edit_user_templ == "1") {
                 $templateError = (int)$details['templ_id'] === (int)$userCheck['perm_templ']
                     ? null
                     : $this->permissionTemplateAssignmentError(
@@ -1166,7 +1166,7 @@ class UserManager
             $stmt->bindValue(':email', $details['email'], PDO::PARAM_STR);
             $stmt->bindValue(':active', $active, PDO::PARAM_INT);
 
-            if ($perm_templ_perm_edit == "1") {
+            if ($perm_edit_user_templ == "1") {
                 $stmt->bindValue(':templ_id', $details['templ_id'], PDO::PARAM_INT);
             }
             if ($perm_is_godlike == "1") {
