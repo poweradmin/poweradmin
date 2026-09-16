@@ -170,11 +170,12 @@ class ZoneOwnershipController extends BaseController
                 $this->setMessage('zone-ownership', 'error', _('User-owner assignment is disabled by the current zone ownership mode.'));
                 return;
             }
-            $ownerAdded = $this->zoneRepository->addOwnerToZone($zone_id, (int)$newowner);
+            // DomainManager is the one guarded write: it refuses unknown users.
+            $result = $this->createDomainManager()->addOwnerToZone($zone_id, (int)$newowner);
+            $this->reportZoneWrite('zone-ownership', $result, _('Owner has been added successfully.'));
 
-            if ($ownerAdded) {
+            if ($result->success) {
                 $auditService->logZoneOwnerAdd($zone_id, $zone_name, (int)$newowner);
-                $this->setMessage('zone-ownership', 'success', _('Owner has been added successfully.'));
 
                 // Send zone access granted notification
                 if ($this->config->get('notifications', 'zone_access_enabled', false)) {

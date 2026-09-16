@@ -611,7 +611,7 @@ class DomainManager implements DomainManagerInterface
             return ZoneWriteResult::forbidden(_('You do not have the permission to edit zone metadata.'));
         }
         if ($this->userRepository()->getUserById($user_id) === null) {
-            return ZoneWriteResult::failure(sprintf(_('Invalid argument(s) given to function %s %s'), "addOwnerToZone", "$zone_id / $user_id"));
+            return ZoneWriteResult::failure(sprintf(_('Unknown user ID: %s'), $user_id), 404);
         }
 
         $zoneRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createZoneRepository();
