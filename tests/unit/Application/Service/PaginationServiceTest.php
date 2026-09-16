@@ -72,4 +72,31 @@ class PaginationServiceTest extends TestCase
     {
         $this->assertSame(PaginationService::ROWS_PER_PAGE_PRESETS, $this->service->getRowsPerPageOptions(99999));
     }
+
+    public function testAcceptedRowsPerPageTakesAnyNumberInsideTheRange(): void
+    {
+        $this->assertSame(37, PaginationService::acceptedRowsPerPage('37'));
+        $this->assertSame(PaginationService::MIN_ROWS_PER_PAGE, PaginationService::acceptedRowsPerPage((string)PaginationService::MIN_ROWS_PER_PAGE));
+        $this->assertNull(PaginationService::acceptedRowsPerPage(null));
+        $this->assertNull(PaginationService::acceptedRowsPerPage('lots'));
+        $this->assertNull(PaginationService::acceptedRowsPerPage((string)(PaginationService::MAX_ROWS_PER_PAGE + 1)));
+        $this->assertNull(PaginationService::acceptedRowsPerPage('0'));
+    }
+
+    public function testPagerWindowCentresOnTheCurrentPageWithBreaks(): void
+    {
+        $this->assertSame(
+            ['total_pages' => 30, 'start_page' => 11, 'end_page' => 19, 'show_leading_break' => true, 'show_trailing_break' => true],
+            PaginationService::pagerWindow(300, 10, 15)
+        );
+        $this->assertSame(
+            ['total_pages' => 3, 'start_page' => 1, 'end_page' => 3, 'show_leading_break' => false, 'show_trailing_break' => false],
+            PaginationService::pagerWindow(25, 10, 1)
+        );
+        // The window is not shifted left near the end; the trailing break just disappears.
+        $this->assertSame(
+            ['total_pages' => 30, 'start_page' => 25, 'end_page' => 30, 'show_leading_break' => true, 'show_trailing_break' => false],
+            PaginationService::pagerWindow(300, 10, 29)
+        );
+    }
 }

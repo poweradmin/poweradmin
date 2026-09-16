@@ -105,6 +105,44 @@ class PaginationService
     }
 
     /**
+     * A submitted page size, when it is a number inside the supported range;
+     * any value in range is accepted, not only the presets.
+     */
+    public static function acceptedRowsPerPage(mixed $submitted): ?int
+    {
+        if ($submitted === null || !is_numeric($submitted)) {
+            return null;
+        }
+        $rows = (int)$submitted;
+        return $rows >= self::MIN_ROWS_PER_PAGE && $rows <= self::MAX_ROWS_PER_PAGE ? $rows : null;
+    }
+
+    /**
+     * Sliding window of up to nine page links centred on the current page, with
+     * break indicators when the window does not touch the first or last page.
+     * Deliberately not the Pagination model: that one shifts the window left
+     * near the last page, which would change what the search pager renders.
+     *
+     * @return array{total_pages: int, start_page: int, end_page: int, show_leading_break: bool, show_trailing_break: bool}
+     */
+    public static function pagerWindow(int $total, int $rowAmount, int $currentPage): array
+    {
+        $maxVisiblePages = 9;
+        $halfVisiblePages = intdiv($maxVisiblePages, 2);
+        $totalPages = (int)ceil($total / max(1, $rowAmount));
+        $startPage = max(1, $currentPage - $halfVisiblePages);
+        $endPage = min($startPage + $maxVisiblePages - 1, $totalPages);
+
+        return [
+            'total_pages' => $totalPages,
+            'start_page' => $startPage,
+            'end_page' => $endPage,
+            'show_leading_break' => $currentPage > $halfVisiblePages + 1,
+            'show_trailing_break' => $totalPages > $endPage,
+        ];
+    }
+
+    /**
      * Page sizes to offer, so the current and configured values are always selectable.
      *
      * @return int[]

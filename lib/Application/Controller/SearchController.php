@@ -104,35 +104,11 @@ class SearchController extends BaseController
         );
 
         $zone_rowamount = $record_rowamount = $this->resolveRowsPerPage();
-        // Override with POST parameter if available for zones
-        $zones_rows_per_page = $this->httpRequest->getPostParam('zones_rows_per_page');
-        if ($this->isPost() && $zones_rows_per_page !== null && is_numeric($zones_rows_per_page)) {
-            $post_rows_per_page = (int)$zones_rows_per_page;
-            // Any value inside the supported range is accepted, not just the presets
-            if ($post_rows_per_page >= PaginationService::MIN_ROWS_PER_PAGE && $post_rows_per_page <= PaginationService::MAX_ROWS_PER_PAGE) {
-                $zone_rowamount = $post_rows_per_page;
-            }
-        }
-
-        // Override with POST parameter if available for records
-        $records_rows_per_page = $this->httpRequest->getPostParam('records_rows_per_page');
-        if ($this->isPost() && $records_rows_per_page !== null && is_numeric($records_rows_per_page)) {
-            $post_rows_per_page = (int)$records_rows_per_page;
-            // Any value inside the supported range is accepted, not just the presets
-            if ($post_rows_per_page >= PaginationService::MIN_ROWS_PER_PAGE && $post_rows_per_page <= PaginationService::MAX_ROWS_PER_PAGE) {
-                $record_rowamount = $post_rows_per_page;
-            }
-        }
-
-        // Backward compatibility
-        $rows_per_page = $this->httpRequest->getPostParam('rows_per_page');
-        if ($this->isPost() && $rows_per_page !== null && is_numeric($rows_per_page)) {
-            $post_rows_per_page = (int)$rows_per_page;
-            // Any value inside the supported range is accepted, not just the presets
-            if ($post_rows_per_page >= PaginationService::MIN_ROWS_PER_PAGE && $post_rows_per_page <= PaginationService::MAX_ROWS_PER_PAGE) {
-                $zone_rowamount = $post_rows_per_page;
-                $record_rowamount = $post_rows_per_page;
-            }
+        if ($this->isPost()) {
+            // rows_per_page is the legacy single control and still overrides both when posted.
+            $bothRows = PaginationService::acceptedRowsPerPage($this->httpRequest->getPostParam('rows_per_page'));
+            $zone_rowamount = $bothRows ?? PaginationService::acceptedRowsPerPage($this->httpRequest->getPostParam('zones_rows_per_page')) ?? $zone_rowamount;
+            $record_rowamount = $bothRows ?? PaginationService::acceptedRowsPerPage($this->httpRequest->getPostParam('records_rows_per_page')) ?? $record_rowamount;
         }
         $iface_zone_comments = $this->config->get('interface', 'show_zone_comments', true);
         $iface_record_comments = $this->config->get('interface', 'show_record_comments', false);
@@ -329,8 +305,8 @@ class SearchController extends BaseController
             'total_records' => $totalRecords,
             'zones_page' => $zones_page,
             'records_page' => $records_page,
-            'zones_pager' => $this->buildPagerWindow($totalZones, $zone_rowamount, $zones_page),
-            'records_pager' => $this->buildPagerWindow($totalRecords, $record_rowamount, $records_page),
+            'zones_pager' => PaginationService::pagerWindow($totalZones, $zone_rowamount, $zones_page),
+            'records_pager' => PaginationService::pagerWindow($totalRecords, $record_rowamount, $records_page),
             'zone_rowamount' => $zone_rowamount,
             'record_rowamount' => $record_rowamount,
             'iface_zone_comments' => $iface_zone_comments,
@@ -346,32 +322,6 @@ class SearchController extends BaseController
             'rdap_action_patterns' => $this->moduleCapabilityData('rdap_lookup'),
             'record_types' => $recordTypes,
         ]);
-    }
-
-    /**
-     * Sliding pagination window matching the search page's client-side pager:
-     * up to 9 page links centered on the current page, with break indicators
-     * when the window does not touch the first or last page. Deliberately not
-     * the Pagination model: that one shifts the window left near the last page,
-     * which would change what the search pager has always rendered.
-     *
-     * @return array{total_pages: int, start_page: int, end_page: int, show_leading_break: bool, show_trailing_break: bool}
-     */
-    private function buildPagerWindow(int $total, int $rowAmount, int $currentPage): array
-    {
-        $maxVisiblePages = 9;
-        $halfVisiblePages = intdiv($maxVisiblePages, 2);
-        $totalPages = (int)ceil($total / max(1, $rowAmount));
-        $startPage = max(1, $currentPage - $halfVisiblePages);
-        $endPage = min($startPage + $maxVisiblePages - 1, $totalPages);
-
-        return [
-            'total_pages' => $totalPages,
-            'start_page' => $startPage,
-            'end_page' => $endPage,
-            'show_leading_break' => $currentPage > $halfVisiblePages + 1,
-            'show_trailing_break' => $totalPages > $endPage,
-        ];
     }
 
     /**
