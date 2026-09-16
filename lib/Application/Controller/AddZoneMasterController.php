@@ -353,6 +353,7 @@ class AddZoneMasterController extends BaseController
             'session_user_id' => $userId,
             'available_zone_types' => $valid_domain_types,
             'users' => $users,
+            'selectable_owners' => $this->selectableOwners($users),
             'zone_templates' => $templates,
             'can_use_templates' => !empty($templates),
             'default_template_id' => $default_template_id,

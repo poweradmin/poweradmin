@@ -124,8 +124,17 @@ class EditSupermasterController extends BaseController
             $account = $info['account'];
         }
 
+        $users = $this->createUserRepository()->getUsersWithZoneCounts();
+        $selectableOwners = $this->selectableOwners($users);
+        // The account holder stays listed even when the caller may not see other users.
+        foreach ($users as $user) {
+            if ($user['username'] === $account && !in_array($user, $selectableOwners, true)) {
+                $selectableOwners[] = $user;
+            }
+        }
         $this->render('edit_supermaster.html', [
-            'users' => $this->createUserRepository()->getUsersWithZoneCounts(),
+            'users' => $users,
+            'selectable_owners' => $selectableOwners,
             'master_ip' => htmlspecialchars($new_master_ip),
             'ns_name' => htmlspecialchars($new_ns_name),
             'account' => htmlspecialchars($account),

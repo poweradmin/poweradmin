@@ -172,6 +172,7 @@ class BulkRegistrationController extends BaseController
             $owner_value = $callerId;
         }
 
+        $users = $this->createUserRepository()->getUsersWithZoneCounts();
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION[SessionKeys::USERID],
             'owner_value' => $owner_value,
@@ -179,7 +180,8 @@ class BulkRegistrationController extends BaseController
             'perm_edit_others' => $this->hasPermission('user_edit_others'),
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'MASTER'),
             'available_zone_types' => self::AVAILABLE_ZONE_TYPES,
-            'users' => $this->createUserRepository()->getUsersWithZoneCounts(),
+            'users' => $users,
+            'selectable_owners' => $this->selectableOwners($users),
             'zone_templates' => $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]),
             'failed_domains' => $failed_domains,
             'added_domains' => $added_domains,

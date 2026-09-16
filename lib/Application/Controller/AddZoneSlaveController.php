@@ -183,6 +183,7 @@ class AddZoneSlaveController extends BaseController
         $this->render('add_zone_slave.html', [
             'is_reverse_zone' => $is_reverse_zone,
             'users' => $users,
+            'selectable_owners' => $this->selectableOwners($users),
             'session_user_id' => $_SESSION[SessionKeys::USERID],
             'perm_view_others' => $this->hasPermission('user_view_others'),
             'domain_value' => $domain_value,

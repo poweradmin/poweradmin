@@ -75,12 +75,10 @@
                             {% if group_owner_allowed and all_groups is not empty %}
                             <option value="" {% if owner_value == '' %}selected{% endif %}>{% trans %}No user owner{% endtrans %}</option>
                             {% endif %}
-                            {% for user in users %}
-                                {% if perm_view_others or user['id'] == userid %}
+                            {% for user in selectable_owners %}
                                 <option value="{{ user['id'] }}" {% if user['id'] == owner_value %}selected{% endif %}>
                                     {% if user['fullname'] %}{{ user['fullname'] }} ({{ user['username'] }}){% else %}{{ user['username'] }}{% endif %}
                                 </option>
-                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>

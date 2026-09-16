@@ -62,8 +62,7 @@
                 <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership">
                     {{ macros.csrf_field() }}
                     <div id="user_list" style="max-height: 250px; overflow-y: auto;" class="border rounded p-2">
-                        {% for user in users %}
-                        {% if perm_view_others or user['id'] == session_userid %}
+                        {% for user in selectable_owners %}
                         <div class="form-check mb-2 user-item" data-username="{{ user['fullname']|lower }} {{ user['username']|lower }}">
                             <input class="form-check-input" type="radio" name="newowner" id="owner_{{ user['id'] }}" value="{{ user['id'] }}">
                             <label class="form-check-label" for="owner_{{ user['id'] }}">
@@ -72,7 +71,6 @@
                                 {% if user['id'] == session_userid %}<span class="badge bg-primary ms-1">{% trans %}You{% endtrans %}</span>{% endif %}
                             </label>
                         </div>
-                        {% endif %}
                         {% endfor %}
                     </div>
                     <div class="mt-3">

@@ -745,6 +745,22 @@ abstract class BaseController
     }
 
     /**
+     * The users an owner picker may offer: everyone with user_view_others,
+     * otherwise only the current user.
+     *
+     * @param list<array<string, mixed>> $users Rows with an 'id' key
+     * @return list<array<string, mixed>>
+     */
+    protected function selectableOwners(array $users): array
+    {
+        if ($this->hasPermission('user_view_others')) {
+            return array_values($users);
+        }
+        $userId = $this->getCurrentUserId();
+        return array_values(array_filter($users, static fn(array $user): bool => (int)($user['id'] ?? 0) === $userId));
+    }
+
+    /**
      * Flash the outcome of a zone write to a page: the given text on success,
      * the result's reason on failure.
      */

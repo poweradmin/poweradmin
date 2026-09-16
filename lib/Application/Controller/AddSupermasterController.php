@@ -68,8 +68,10 @@ class AddSupermasterController extends BaseController
 
     private function showAddSuperMaster($master_ip, $ns_name, $account): void
     {
+        $users = $this->createUserRepository()->getUsersWithZoneCounts();
         $this->render('add_supermaster.html', [
-            'users' => $this->createUserRepository()->getUsersWithZoneCounts(),
+            'users' => $users,
+            'selectable_owners' => $this->selectableOwners($users),
             'master_ip' => htmlspecialchars($master_ip),
             'ns_name' => htmlspecialchars($ns_name),
             'account' => htmlspecialchars($account),

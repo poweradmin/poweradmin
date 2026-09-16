@@ -67,8 +67,7 @@
                     </div>
                 </div>
                 <div id="user_list" style="max-height: 200px; overflow-y: auto;">
-                    {% for user in users %}
-                    {% if perm_view_others or user['id'] == session_user_id %}
+                    {% for user in selectable_owners %}
                     <div class="form-check mb-2 user-item" data-username="{{ user['fullname']|lower }} {{ user['username']|lower }}">
                         <input class="form-check-input" type="radio" name="owner" id="owner_{{ user['id'] }}" value="{{ user['id'] }}" {% if user['id'] == owner_value %}checked{% endif %}>
                         <label class="form-check-label" for="owner_{{ user['id'] }}">
@@ -77,7 +76,6 @@
                             {% if user['id'] == session_user_id %}<span class="badge bg-primary ms-1">{% trans %}You{% endtrans %}</span>{% endif %}
                         </label>
                     </div>
-                    {% endif %}
                     {% endfor %}
                 </div>
                 <small class="text-muted mt-2 d-block">{% trans %}Optional: Select a user responsible for this zone{% endtrans %}</small>
