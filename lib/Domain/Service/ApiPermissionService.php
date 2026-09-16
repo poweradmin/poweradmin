@@ -22,11 +22,11 @@
 
 namespace Poweradmin\Domain\Service;
 
+use InvalidArgumentException;
 use PDO;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
@@ -43,11 +43,16 @@ class ApiPermissionService
     private PDO $db;
     private PermissionService $permissions;
 
+    /**
+     * @param ConfigurationInterface|null $config Required when no PermissionService is given
+     */
     public function __construct(PDO $db, ?PermissionService $permissions = null, ?ConfigurationInterface $config = null)
     {
         $this->db = $db;
-        $this->permissions = $permissions
-            ?? new PermissionService(new DbUserRepository($db, $config ?? ConfigurationManager::getInstance()));
+        if ($permissions === null && $config === null) {
+            throw new InvalidArgumentException('ApiPermissionService needs a PermissionService or a configuration to build one');
+        }
+        $this->permissions = $permissions ?? new PermissionService(new DbUserRepository($db, $config));
     }
 
     /**

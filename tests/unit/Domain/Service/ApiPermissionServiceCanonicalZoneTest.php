@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use TestHelpers\FakeConfiguration;
 
 /**
  * userOwnsZone() gates canViewZone(), hasZoneContentEditPermission() and the rest of the v2 API's "own"
@@ -48,7 +49,7 @@ class ApiPermissionServiceCanonicalZoneTest extends TestCase
         $this->db->exec("CREATE TABLE perm_items (id INTEGER PRIMARY KEY, name TEXT)");
         $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT, perm_templ INTEGER)");
 
-        $this->service = new ApiPermissionService($this->db);
+        $this->service = new ApiPermissionService($this->db, config: new FakeConfiguration());
     }
 
     private function seedZone(int $id, ?int $domainId, int $owner): void

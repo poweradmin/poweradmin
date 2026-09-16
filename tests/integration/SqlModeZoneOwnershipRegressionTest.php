@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
@@ -75,8 +75,9 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
 
         $this->seedSqlModeFixture();
 
-        $this->userRepository = new DbUserRepository($this->db, ConfigurationManager::getInstance());
-        $this->apiPermissions = new ApiPermissionService($this->db);
+        $config = new FakeConfiguration();
+        $this->userRepository = new DbUserRepository($this->db, $config);
+        $this->apiPermissions = new ApiPermissionService($this->db, config: $config);
         $this->permissions = new PermissionService($this->userRepository);
     }
 
