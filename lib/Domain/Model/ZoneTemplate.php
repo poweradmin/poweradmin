@@ -223,7 +223,8 @@ class ZoneTemplate
                 $stmt->execute([
                     ':name' => $details['templ_name'],
                     ':descr' => $details['templ_descr'],
-                    ':owner' => isset($details['templ_global']) ? 0 : $userid,
+                    // Only ueberusers may create a global template; others get a personal one.
+                    ':owner' => $this->resolveTemplateOwner(isset($details['templ_global']), $userid),
                     ':created_by' => $userid // Always set created_by to current user
                 ]);
 
@@ -753,7 +754,8 @@ class ZoneTemplate
 
                 // Determine if the template should be global based on options
                 $isGlobal = isset($options['global']) && $options['global'] === true;
-                $owner = $isGlobal ? 0 : $userid; // 0 for global templates, user ID otherwise
+                // A global template (owner 0) is reserved for ueberusers.
+                $owner = $this->resolveTemplateOwner($isGlobal, $userid);
 
                 $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by) 
                     VALUES (:name, :descr, :owner, :created_by)");
@@ -1080,8 +1082,8 @@ class ZoneTemplate
                 "templ_id" => $zone_templ_id
             ];
 
-            // When making a template global, we set owner=0 but keep created_by intact
-            if (isset($details['templ_global'])) {
+            // Making a template global (owner 0) is reserved for ueberusers; keep created_by intact.
+            if ($this->resolveTemplateOwner(isset($details['templ_global']), $user_id) === 0) {
                 $query .= ', owner=0';
             } else {
                 $query .= ', owner=:templ_owner';
@@ -1289,6 +1291,24 @@ class ZoneTemplate
         }
 
         return $val;
+    }
+
+    /**
+     * Resolve the owner column for a template. A global template (owner 0) is
+     * reserved for ueberusers; anyone else owns the template personally.
+     *
+     * @param bool $requestedGlobal whether the request asked for a global template
+     * @param int $userid the current user id
+     *
+     * @return int 0 for a permitted global template, otherwise the user id
+     */
+    private function resolveTemplateOwner(bool $requestedGlobal, int $userid): int
+    {
+        if ($requestedGlobal && UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+            return 0;
+        }
+
+        return $userid;
     }
 
     /**
