@@ -23,54 +23,57 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Web;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Infrastructure\Web\BadgeTwigExtension;
 
 class BadgeTwigExtensionTest extends TestCase
 {
     private BadgeTwigExtension $ext;
+    /** @var array<string, mixed> */
+    private array $context = [];
 
     protected function setUp(): void
     {
-        $_SESSION = [];
+        $this->context = [];
         $this->ext = new BadgeTwigExtension();
     }
 
     public function testZoneTypeLabelUsesPrimarySecondaryOn45(): void
     {
         $this->setSessionVersion('4.5.0');
-        $this->assertSame('Primary', $this->ext->getZoneTypeLabel('MASTER'));
-        $this->assertSame('Secondary', $this->ext->getZoneTypeLabel('SLAVE'));
-        $this->assertSame('Native', $this->ext->getZoneTypeLabel('NATIVE'));
+        $this->assertSame('Primary', $this->ext->getZoneTypeLabel($this->context, 'MASTER'));
+        $this->assertSame('Secondary', $this->ext->getZoneTypeLabel($this->context, 'SLAVE'));
+        $this->assertSame('Native', $this->ext->getZoneTypeLabel($this->context, 'NATIVE'));
     }
 
     public function testZoneTypeLabelKeepsLegacyTerminologyBefore45(): void
     {
         $this->setSessionVersion('4.4.3');
-        $this->assertSame('Master', $this->ext->getZoneTypeLabel('MASTER'));
-        $this->assertSame('Slave', $this->ext->getZoneTypeLabel('SLAVE'));
-        $this->assertSame('Native', $this->ext->getZoneTypeLabel('NATIVE'));
+        $this->assertSame('Master', $this->ext->getZoneTypeLabel($this->context, 'MASTER'));
+        $this->assertSame('Slave', $this->ext->getZoneTypeLabel($this->context, 'SLAVE'));
+        $this->assertSame('Native', $this->ext->getZoneTypeLabel($this->context, 'NATIVE'));
     }
 
     public function testZoneTypeLabelOnUnknownVersionFallsBackToLegacyTerminology(): void
     {
         // Strict mode: unknown version means we don't know whether the
         // server prefers modern aliases, so legacy labels stay.
-        $this->assertSame('Master', $this->ext->getZoneTypeLabel('MASTER'));
-        $this->assertSame('Slave', $this->ext->getZoneTypeLabel('SLAVE'));
+        $this->assertSame('Master', $this->ext->getZoneTypeLabel($this->context, 'MASTER'));
+        $this->assertSame('Slave', $this->ext->getZoneTypeLabel($this->context, 'SLAVE'));
     }
 
     public function testZoneTypeLabelHandlesCaseAndProducerConsumer(): void
     {
         $this->setSessionVersion('4.7.0');
-        $this->assertSame('Primary', $this->ext->getZoneTypeLabel('master'));
-        $this->assertSame('Producer', $this->ext->getZoneTypeLabel('PRODUCER'));
-        $this->assertSame('Consumer', $this->ext->getZoneTypeLabel('CONSUMER'));
+        $this->assertSame('Primary', $this->ext->getZoneTypeLabel($this->context, 'master'));
+        $this->assertSame('Producer', $this->ext->getZoneTypeLabel($this->context, 'PRODUCER'));
+        $this->assertSame('Consumer', $this->ext->getZoneTypeLabel($this->context, 'CONSUMER'));
     }
 
     public function testZoneTypeLabelEmptyAndNullInputReturnEmpty(): void
     {
-        $this->assertSame('', $this->ext->getZoneTypeLabel(null));
-        $this->assertSame('', $this->ext->getZoneTypeLabel(''));
+        $this->assertSame('', $this->ext->getZoneTypeLabel($this->context, null));
+        $this->assertSame('', $this->ext->getZoneTypeLabel($this->context, ''));
     }
 
     public function testIsZoneReadOnlyForReplicatedKinds(): void
@@ -85,52 +88,45 @@ class BadgeTwigExtensionTest extends TestCase
     public function testZoneTypeLabelUnknownKindFallsBackToTitleCase(): void
     {
         $this->setSessionVersion('4.5.0');
-        $this->assertSame('Foobar', $this->ext->getZoneTypeLabel('FOOBAR'));
+        $this->assertSame('Foobar', $this->ext->getZoneTypeLabel($this->context, 'FOOBAR'));
     }
 
     public function testAutoprimariesLabelUsesModernTermFrom46(): void
     {
         $this->setSessionVersion('4.6.0');
-        $this->assertSame('Autoprimaries', $this->ext->getAutoprimariesLabel('plural'));
-        $this->assertSame('Autoprimary', $this->ext->getAutoprimariesLabel('singular'));
-        $this->assertSame('Add autoprimary', $this->ext->getAutoprimariesLabel('add_action'));
-        $this->assertSame('Edit autoprimary', $this->ext->getAutoprimariesLabel('edit_action'));
-        $this->assertSame('Delete autoprimary', $this->ext->getAutoprimariesLabel('delete_action'));
-        $this->assertSame('About Autoprimaries', $this->ext->getAutoprimariesLabel('about_title'));
-        $this->assertSame('IP address of autoprimary', $this->ext->getAutoprimariesLabel('ip_label'));
+        $this->assertSame('Autoprimaries', $this->ext->getAutoprimariesLabel($this->context, 'plural'));
+        $this->assertSame('Autoprimary', $this->ext->getAutoprimariesLabel($this->context, 'singular'));
+        $this->assertSame('Add autoprimary', $this->ext->getAutoprimariesLabel($this->context, 'add_action'));
+        $this->assertSame('Edit autoprimary', $this->ext->getAutoprimariesLabel($this->context, 'edit_action'));
+        $this->assertSame('Delete autoprimary', $this->ext->getAutoprimariesLabel($this->context, 'delete_action'));
+        $this->assertSame('About Autoprimaries', $this->ext->getAutoprimariesLabel($this->context, 'about_title'));
+        $this->assertSame('IP address of autoprimary', $this->ext->getAutoprimariesLabel($this->context, 'ip_label'));
     }
 
     public function testAutoprimariesLabelKeepsLegacyTermBefore46(): void
     {
         $this->setSessionVersion('4.5.9');
-        $this->assertSame('Supermasters', $this->ext->getAutoprimariesLabel('plural'));
-        $this->assertSame('Supermaster', $this->ext->getAutoprimariesLabel('singular'));
-        $this->assertSame('Add supermaster', $this->ext->getAutoprimariesLabel('add_action'));
+        $this->assertSame('Supermasters', $this->ext->getAutoprimariesLabel($this->context, 'plural'));
+        $this->assertSame('Supermaster', $this->ext->getAutoprimariesLabel($this->context, 'singular'));
+        $this->assertSame('Add supermaster', $this->ext->getAutoprimariesLabel($this->context, 'add_action'));
     }
 
     public function testAutoprimariesLabelUnknownVersionStaysOnLegacyTerm(): void
     {
         // Strict mode: unknown server version means "we don't know it's 4.6+",
         // so keep the long-standing Supermaster label.
-        $this->assertSame('Supermasters', $this->ext->getAutoprimariesLabel('plural'));
-        $this->assertSame('Supermaster', $this->ext->getAutoprimariesLabel('singular'));
+        $this->assertSame('Supermasters', $this->ext->getAutoprimariesLabel($this->context, 'plural'));
+        $this->assertSame('Supermaster', $this->ext->getAutoprimariesLabel($this->context, 'singular'));
     }
 
     public function testAutoprimariesLabelUnknownKeyFallsBackToPlural(): void
     {
         $this->setSessionVersion('4.7.0');
-        $this->assertSame('Autoprimaries', $this->ext->getAutoprimariesLabel('something_unrecognized'));
+        $this->assertSame('Autoprimaries', $this->ext->getAutoprimariesLabel($this->context, 'something_unrecognized'));
     }
 
     private function setSessionVersion(string $version): void
     {
-        $_SESSION['pdns_server_info'] = [
-            'info' => [
-                'version' => $version,
-                'daemon_type' => 'authoritative',
-                'id' => 'localhost',
-            ],
-            'fetched_at' => time(),
-        ];
+        $this->context = ['pdns_caps' => PdnsCapabilities::fromVersion($version)];
     }
 }

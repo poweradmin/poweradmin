@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Infrastructure\Web;
 
-use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Twig\Extension\AbstractExtension;
@@ -57,9 +56,9 @@ class BadgeTwigExtension extends AbstractExtension
         return [
             new TwigFunction('record_type_class', [$this, 'getRecordTypeClass']),
             new TwigFunction('zone_type_class', [$this, 'getZoneTypeClass']),
-            new TwigFunction('zone_type_label', [$this, 'getZoneTypeLabel']),
+            new TwigFunction('zone_type_label', [$this, 'getZoneTypeLabel'], ['needs_context' => true]),
             new TwigFunction('zone_is_read_only', [$this, 'isZoneReadOnly']),
-            new TwigFunction('autoprimaries_label', [$this, 'getAutoprimariesLabel']),
+            new TwigFunction('autoprimaries_label', [$this, 'getAutoprimariesLabel'], ['needs_context' => true]),
         ];
     }
 
@@ -91,13 +90,16 @@ class BadgeTwigExtension extends AbstractExtension
      * adopted the modern terminology. The internal kind value passed to the
      * API never changes - this only affects what the UI shows.
      */
-    public function getZoneTypeLabel(?string $type): string
+    /**
+     * @param array<string, mixed> $context The Twig context; reads the pdns_caps global
+     */
+    public function getZoneTypeLabel(array $context, ?string $type): string
     {
         if ($type === null || $type === '') {
             return '';
         }
 
-        $caps = $this->resolveCapabilities();
+        $caps = self::capabilitiesFromContext($context);
         $upper = strtoupper(trim($type));
 
         if ($caps->prefersPrimarySecondaryTerminology()) {
@@ -127,9 +129,12 @@ class BadgeTwigExtension extends AbstractExtension
      * Returns full strings (not composed at the template) so gettext can
      * translate each variant as a single unit.
      */
-    public function getAutoprimariesLabel(string $key = 'plural'): string
+    /**
+     * @param array<string, mixed> $context The Twig context; reads the pdns_caps global
+     */
+    public function getAutoprimariesLabel(array $context, string $key = 'plural'): string
     {
-        $modern = $this->resolveCapabilities()->supportsAutoprimariesApi();
+        $modern = self::capabilitiesFromContext($context)->supportsAutoprimariesApi();
 
         return match ($key) {
             'plural' => $modern ? _('Autoprimaries') : _('Supermasters'),
@@ -165,12 +170,13 @@ class BadgeTwigExtension extends AbstractExtension
     }
 
     /**
-     * Build a PdnsCapabilities snapshot from the session-cached PowerDNS
-     * version. Indirected so tests can override behaviour by subclassing.
+     * The pdns_caps global PageRenderer sets; unknown when rendering without it.
+     *
+     * @param array<string, mixed> $context
      */
-    protected function resolveCapabilities(): PdnsCapabilities
+    private static function capabilitiesFromContext(array $context): PdnsCapabilities
     {
-        $info = PdnsVersionService::getCachedInfo($_SESSION ?? []);
-        return PdnsCapabilities::fromServerInfo($info);
+        $caps = $context['pdns_caps'] ?? null;
+        return $caps instanceof PdnsCapabilities ? $caps : PdnsCapabilities::fromServerInfo(null);
     }
 }
