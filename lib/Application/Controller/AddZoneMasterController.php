@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -127,6 +127,17 @@ class AddZoneMasterController extends BaseController
             $this->setMessage('add_zone_master', 'error', _('At least one user or group must be selected as owner.'));
             $this->showForm();
             return;
+        }
+
+        // Block assigning a zone to a different user without elevated permission
+        $callerId = $this->userContext->getLoggedInUserId();
+        if ($owner !== null && $owner !== $callerId) {
+            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+            if (!$isAdmin && !UserManager::verifyPermission($this->db, 'zone_content_edit_others')) {
+                $this->setMessage('add_zone_master', 'error', _('You do not have permission to create zones for other users.'));
+                $this->showForm();
+                return;
+            }
         }
 
         // Validate submitted group IDs against user's allowed groups
