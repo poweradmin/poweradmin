@@ -42,6 +42,8 @@ class DatabaseSchemaService
 
     /**
      * List all tables in the current database
+     *
+     * @throws RuntimeException for a driver other than mysql, pgsql or sqlite
      */
     public function listTables(): array
     {
@@ -55,7 +57,7 @@ class DatabaseSchemaService
         } elseif ($db_type == 'sqlite') {
             $query = "SELECT name FROM sqlite_master WHERE type='table'";
         } else {
-            die(_('Unknown database type.'));
+            throw new RuntimeException(_('Unknown database type.'));
         }
 
         $result = $this->db->query($query);
