@@ -341,10 +341,17 @@ class UserManager
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
 
-            $query = "SELECT username, perm_templ FROM users WHERE id = " . $this->db->quote($id, 'integer');
+            $query = "SELECT username, perm_templ, active, use_ldap FROM users WHERE id = " . $this->db->quote($id, 'integer');
             $response = $this->db->query($query);
 
             $usercheck = $response->fetch();
+
+            // Username, active flag and LDAP flag are not self-service (#1327).
+            if ($id == $_SESSION["userid"] && !$perm_edit_others) {
+                $user = $usercheck['username'];
+                $active = (int)$usercheck['active'];
+                $i_use_ldap = (bool)$usercheck['use_ldap'];
+            }
 
             if ($usercheck ['username'] != $user) {
                 // Username of user ID in the database is different from the name
@@ -835,11 +842,17 @@ class UserManager
             // current username is not the same as the username that was given by the
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
-            $query = "SELECT username, perm_templ FROM users WHERE id = :id";
+            $query = "SELECT username, perm_templ, active FROM users WHERE id = :id";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':id', $details['uid'], PDO::PARAM_INT);
             $stmt->execute();
             $userCheck = $stmt->fetch();
+
+            // Username and active flag are not self-service (#1327).
+            if ($details['uid'] == $_SESSION["userid"] && !$perm_edit_others) {
+                $details['username'] = $userCheck['username'];
+                $active = (int)$userCheck['active'];
+            }
 
             if ($userCheck['username'] != $details['username']) {
                 // Username of user ID in the database is different from the name

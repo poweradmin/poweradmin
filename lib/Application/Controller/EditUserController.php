@@ -166,6 +166,7 @@ class EditUserController extends BaseController
             'edit_templ_perm' => $edit_templ_perm,
             'edit_own_perm' => $edit_own_perm,
             'perm_passwd_edit_others' => $passwd_edit_others_perm,
+            'self_edit_locked' => $_SESSION['userid'] == $edit_id && !UserManager::verify_permission($this->db, 'user_edit_others'),
             'permission_templates' => $permission_templates,
             'user_permissions' => $user_permissions,
             'ldap_use' => $this->config('ldap_use') && !$currentUserAdmin,
