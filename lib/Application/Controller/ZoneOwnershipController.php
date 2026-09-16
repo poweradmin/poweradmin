@@ -180,7 +180,17 @@ class ZoneOwnershipController extends BaseController
                 $this->setMessage('zone-ownership', 'error', _('User-owner assignment is disabled by the current zone ownership mode.'));
                 return;
             }
-            $ownerAdded = $this->zoneRepository->addOwnerToZone($zone_id, (int)$newowner);
+            $newOwnerId = (int)$newowner;
+            // zones.owner has no foreign key, so an unknown id would leave a zone nobody owns
+            if ($this->createUserRepository()->getUserById($newOwnerId) === null) {
+                $this->setMessage('zone-ownership', 'error', _('User does not exist.'));
+                return;
+            }
+            if ($this->zoneRepository->isUserZoneOwner($zone_id, $newOwnerId)) {
+                $this->setMessage('zone-ownership', 'error', _('The selected user already owns the zone.'));
+                return;
+            }
+            $ownerAdded = $this->zoneRepository->addOwnerToZone($zone_id, $newOwnerId);
 
             if ($ownerAdded) {
                 $auditService->logZoneOwnerAdd($zone_id, $zone_name, (int)$newowner);
