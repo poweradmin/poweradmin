@@ -125,7 +125,7 @@
                         </a>
                     </li>
 
-                    {% if can('search') %}
+                    {% if nav.search %}
                     <!-- Search -->
                     <li class="nav-item">
                         <a href="{{ base_url_prefix }}/search" class="nav-link {{ current_page == 'search' ? 'active' : '' }}">
@@ -134,7 +134,7 @@
                     </li>
                     {% endif %}
 
-                    {% if can('zone_content_view_own') or can('zone_content_view_others') or can('zone_master_add') or can('zone_slave_add') or ((can('zone_logs_view_own') or can('zone_logs_view_others')) and dblog_use == true) %}
+                    {% if nav.zones %}
                     <!-- Zones Section -->
                     {% set zones_active = current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] or current_page starts with 'module_dns_wizard' %}
                     <li class="nav-item">
@@ -143,7 +143,7 @@
                             <i class="bi bi-chevron-down nav-section-chevron"></i>
                         </div>
                         <ul class="nav nav-pills flex-column ms-3 collapse {{ zones_active ? 'show' : '' }}" id="navZones">
-                            {% if can('zone_content_view_own') or can('zone_content_view_others') %}
+                            {% if nav.zone_list %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/forward">
                                     <i class="bi bi-arrow-right me-2"></i>{% trans %}Forward Zones{% endtrans %}
@@ -155,41 +155,41 @@
                                 </a>
                             </li>
                             {% endif %}
-                            {% if can('zone_master_add') %}
+                            {% if nav.zone_add_master %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'add_zone_master' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/add/master">
                                     <i class="bi bi-plus-circle me-2"></i>{% trans %}Add master zone{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
-                            {% if can('zone_slave_add') %}
+                            {% if nav.zone_add_slave %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'add_zone_slave' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/add/slave">
                                     <i class="bi bi-plus-circle-dotted me-2"></i>{% trans %}Add slave zone{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
-                            {% if can('zone_master_add') %}
+                            {% if nav.bulk_registration %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'bulk_registration' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/bulk-registration">
                                     <i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
-                            {% if iface_add_reverse_record and (can('zone_content_view_own') or can('zone_content_view_others')) %}
+                            {% if nav.batch_ptr %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'batch_ptr_record' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/batch-ptr">
                                     <i class="bi bi-arrow-repeat me-2"></i>{% trans %}Batch PTR Records{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
-                            {% if (can('user_is_ueberuser') or can('zone_logs_view_own') or can('zone_logs_view_others')) and dblog_use == true %}
+                            {% if nav.zone_logs %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/logs">
                                     <i class="bi bi-list-ul me-2"></i>{% trans %}Zone logs{% endtrans %}
                                 </a>
                             </li>
-                            {% if can('user_is_ueberuser') %}
+                            {% if nav.record_changes %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_record_changes' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/changes">
                                     <i class="bi bi-clock-history me-2"></i>{% trans %}Record Change Log{% endtrans %}
@@ -201,7 +201,7 @@
                     </li>
                     {% endif %}
 
-                    {% if can('user_view_others') or can('user_edit_others') or can('user_add_new') or can('user_is_ueberuser') or (can('user_logs_view') and dblog_use == true) %}
+                    {% if nav.users %}
                     <!-- Users Section -->
                     {% set users_active = current_page in ['users', 'add_user', 'list_log_users'] or (current_page == 'edit_user' and request.id != session_userid) %}
                     <li class="nav-item">
@@ -210,21 +210,21 @@
                             <i class="bi bi-chevron-down nav-section-chevron"></i>
                         </div>
                         <ul class="nav nav-pills flex-column ms-3 collapse {{ users_active ? 'show' : '' }}" id="navUsers">
-                            {% if can('user_view_others') or can('user_edit_others') or can('user_add_new') or can('user_is_ueberuser') %}
+                            {% if nav.user_list %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'users' ? 'active' : '' }}" href="{{ base_url_prefix }}/users">
                                     <i class="bi bi-person-gear me-2"></i>{% trans %}List users{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
-                            {% if can('user_add_new') %}
+                            {% if nav.user_add %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'add_user' ? 'active' : '' }}" href="{{ base_url_prefix }}/users/add">
                                     <i class="bi bi-person-plus me-2"></i>{% trans %}Add user{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
-                            {% if (can('user_is_ueberuser') or can('user_logs_view')) and dblog_use == true %}
+                            {% if nav.user_logs %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_log_users' ? 'active' : '' }}" href="{{ base_url_prefix }}/users/logs">
                                     <i class="bi bi-journal-text me-2"></i>{% trans %}User logs{% endtrans %}
@@ -235,7 +235,7 @@
                     </li>
                     {% endif %}
 
-                    {% if (can('user_is_ueberuser') or (can('group_logs_view') and dblog_use == true)) and show_group_access_templates %}
+                    {% if nav.groups %}
                     <!-- Groups Section -->
                     {% set groups_active = current_page in ['list_groups', 'add_group', 'list_log_groups', 'edit_group'] %}
                     <li class="nav-item">
@@ -244,7 +244,7 @@
                             <i class="bi bi-chevron-down nav-section-chevron"></i>
                         </div>
                         <ul class="nav nav-pills flex-column ms-3 collapse {{ groups_active ? 'show' : '' }}" id="navGroups">
-                            {% if can('user_is_ueberuser') %}
+                            {% if nav.group_manage %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_groups' ? 'active' : '' }}" href="{{ base_url_prefix }}/groups">
                                     <i class="bi bi-collection-fill me-2"></i>{% trans %}List groups{% endtrans %}
@@ -256,7 +256,7 @@
                                 </a>
                             </li>
                             {% endif %}
-                            {% if dblog_use == true %}
+                            {% if nav.group_logs %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_log_groups' ? 'active' : '' }}" href="{{ base_url_prefix }}/groups/logs">
                                     <i class="bi bi-journal-text me-2"></i>{% trans %}Group logs{% endtrans %}
@@ -267,7 +267,7 @@
                     </li>
                     {% endif %}
 
-                    {% if can('templ_perm_edit') %}
+                    {% if nav.permissions %}
                     <!-- Permissions -->
                     {% set access_active = current_page in ['list_perm_templ', 'add_perm_templ', 'edit_perm_templ'] %}
                     <li class="nav-item">
@@ -281,7 +281,7 @@
                                     <i class="bi bi-shield-fill-check me-2"></i>{% trans %}List permission templates{% endtrans %}
                                 </a>
                             </li>
-                            {% if can('templ_perm_add') %}
+                            {% if nav.perm_templ_add %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'add_perm_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/permissions/templates/add">
                                     <i class="bi bi-shield-plus me-2"></i>{% trans %}Add permission template{% endtrans %}
@@ -292,7 +292,7 @@
                     </li>
                     {% endif %}
 
-                    {% if can('zone_templ_add') or can('zone_templ_edit') %}
+                    {% if nav.templates %}
                     <!-- Templates -->
                     {% set templates_active = current_page in ['list_zone_templ', 'add_zone_templ', 'edit_zone_templ'] %}
                     <li class="nav-item">
@@ -306,7 +306,7 @@
                                     <i class="bi bi-list me-2"></i>{% trans %}List zone templates{% endtrans %}
                                 </a>
                             </li>
-                            {% if can('zone_templ_add') %}
+                            {% if nav.zone_templ_add %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'add_zone_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/templates/add">
                                     <i class="bi bi-plus me-2"></i>{% trans %}Add zone template{% endtrans %}
@@ -317,8 +317,7 @@
                     </li>
                     {% endif %}
 
-                    {% set is_ueberuser = can('user_is_ueberuser') %}
-                    {% if ((is_ueberuser or can('api_manage_keys')) and api_enabled) or (is_ueberuser and enable_consistency_checks) or (module_nav_items is defined and module_nav_items|length > 0) %}
+                    {% if nav.tools %}
                     <!-- Tools Section -->
                     {% set tools_active = current_page in ['api_keys', 'list_log_api', 'database_consistency'] or (current_page starts with 'module_' and not current_page starts with 'module_dns_wizard') %}
                     <li class="nav-item">
@@ -327,28 +326,28 @@
                             <i class="bi bi-chevron-down nav-section-chevron"></i>
                         </div>
                         <ul class="nav nav-pills flex-column ms-3 collapse {{ tools_active ? 'show' : '' }}" id="navTools">
-                            {% if (can('user_is_ueberuser') or can('api_manage_keys')) and api_enabled %}
+                            {% if nav.api_keys %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'api_keys' ? 'active' : '' }}" href="{{ base_url_prefix }}/settings/api-keys">
                                     <i class="bi bi-key-fill me-2"></i>{% trans %}API Keys{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
-                            {% if can('user_is_ueberuser') and api_enabled and dblog_use == true %}
+                            {% if nav.api_logs %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_log_api' ? 'active' : '' }}" href="{{ base_url_prefix }}/settings/api/logs">
                                     <i class="bi bi-journal-text me-2"></i>{% trans %}API Logs{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
-                            {% if api_docs_enabled %}
+                            {% if nav.api_docs %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm" href="{{ base_url_prefix }}/api/docs" target="_blank">
                                     <i class="bi bi-book me-2"></i>{% trans %}API Documentation{% endtrans %} <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.65rem;"></i>
                                 </a>
                             </li>
                             {% endif %}
-                            {% if can('user_is_ueberuser') and enable_consistency_checks %}
+                            {% if nav.database_consistency %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'database_consistency' ? 'active' : '' }}" href="{{ base_url_prefix }}/tools/database-consistency">
                                     <i class="bi bi-database-check me-2"></i>{% trans %}Database Consistency{% endtrans %}

@@ -65,7 +65,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if permissions['search'] %}
+                {% if nav.search %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/search" class="card h-100 text-decoration-none text-body" data-testid="search-link">
                         <div class="card-body text-center py-2 px-1">
@@ -75,7 +75,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
+                {% if nav.zone_list %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/zones/forward" class="card h-100 text-decoration-none text-body" data-testid="list-forward-zones-link">
                         <div class="card-body text-center py-2 px-1">
@@ -85,7 +85,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
+                {% if nav.zone_list %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/zones/reverse" class="card h-100 text-decoration-none text-body" data-testid="list-reverse-zones-link">
                         <div class="card-body text-center py-2 px-1">
@@ -95,7 +95,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if permissions['zone_templ_add'] or permissions['zone_templ_edit'] %}
+                {% if nav.templates %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/zones/templates" class="card h-100 text-decoration-none text-body" data-testid="list-zone-templates-link">
                         <div class="card-body text-center py-2 px-1">
@@ -149,7 +149,7 @@
     <div class="collapse show" id="zone-operations">
         <div class="card-body py-2 px-2">
             <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 row-cols-xl-7 row-cols-xxl-8 g-1">
-                {% if permissions['zone_master_add'] %}
+                {% if nav.zone_add_master %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/zones/add/master" class="card h-100 text-decoration-none text-body" data-testid="add-master-zone-link">
                         <div class="card-body text-center py-2 px-1">
@@ -159,7 +159,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if permissions['zone_slave_add'] %}
+                {% if nav.zone_add_slave %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/zones/add/slave" class="card h-100 text-decoration-none text-body" data-testid="add-slave-zone-link">
                         <div class="card-body text-center py-2 px-1">
@@ -179,7 +179,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if permissions['zone_master_add'] %}
+                {% if nav.bulk_registration %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/zones/bulk-registration" class="card h-100 text-decoration-none text-body" data-testid="bulk-registration-link">
                         <div class="card-body text-center py-2 px-1">
@@ -215,7 +215,7 @@
     <div class="collapse show" id="administration">
         <div class="card-body py-2 px-2">
             <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 row-cols-xl-7 row-cols-xxl-8 g-1">
-                {% if permissions['user_view_others'] or permissions['user_edit_others'] or permissions['user_add_new'] or permissions['user_is_ueberuser'] %}
+                {% if nav.user_list %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/users" class="card h-100 text-decoration-none text-body" data-testid="user-administration-link">
                         <div class="card-body text-center py-2 px-1">
@@ -235,7 +235,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if permissions['templ_perm_edit'] %}
+                {% if nav.permissions %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/permissions/templates" class="card h-100 text-decoration-none text-body" data-testid="list-permission-templates-link">
                         <div class="card-body text-center py-2 px-1">
@@ -301,7 +301,7 @@
     <div class="collapse show" id="tools-modules">
         <div class="card-body py-2 px-2">
             <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-6 row-cols-xl-7 row-cols-xxl-8 g-1">
-                {% if permissions['user_is_ueberuser'] and enable_consistency_checks %}
+                {% if nav.database_consistency %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/tools/database-consistency" class="card h-100 text-decoration-none text-body" data-testid="database-consistency-link">
                         <div class="card-body text-center py-2 px-1">
@@ -403,7 +403,7 @@
 {# Non-ueberuser roles have few tiles - a single flat grid of larger cards fills the
    row without the half-empty look that grouped sections produce when sparse. #}
 <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-2">
-    {% if permissions['search'] %}
+    {% if nav.search %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/search" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="search-link">
             <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
@@ -413,7 +413,7 @@
         </a>
     </div>
     {% endif %}
-    {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
+    {% if nav.zone_list %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/zones/forward" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="list-forward-zones-link">
             <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
@@ -423,7 +423,7 @@
         </a>
     </div>
     {% endif %}
-    {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
+    {% if nav.zone_list %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/zones/reverse" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="list-reverse-zones-link">
             <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
@@ -433,7 +433,7 @@
         </a>
     </div>
     {% endif %}
-    {% if permissions['zone_templ_add'] or permissions['zone_templ_edit'] %}
+    {% if nav.templates %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/zones/templates" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="list-zone-templates-link">
             <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
@@ -453,7 +453,7 @@
         </a>
     </div>
     {% endif %}
-    {% if permissions['zone_master_add'] %}
+    {% if nav.zone_add_master %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/zones/add/master" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="add-master-zone-link">
             <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
@@ -463,7 +463,7 @@
         </a>
     </div>
     {% endif %}
-    {% if permissions['zone_slave_add'] %}
+    {% if nav.zone_add_slave %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/zones/add/slave" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="add-slave-zone-link">
             <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
@@ -483,7 +483,7 @@
         </a>
     </div>
     {% endif %}
-    {% if permissions['zone_master_add'] %}
+    {% if nav.bulk_registration %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/zones/bulk-registration" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="bulk-registration-link">
             <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
@@ -503,7 +503,7 @@
         </a>
     </div>
     {% endif %}
-    {% if permissions['user_view_others'] or permissions['user_edit_others'] or permissions['user_add_new'] %}
+    {% if nav.user_list %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/users" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="user-administration-link">
             <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
@@ -513,7 +513,7 @@
         </a>
     </div>
     {% endif %}
-    {% if permissions['templ_perm_edit'] %}
+    {% if nav.permissions %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/permissions/templates" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="list-permission-templates-link">
             <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">

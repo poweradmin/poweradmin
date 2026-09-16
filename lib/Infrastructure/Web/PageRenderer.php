@@ -63,6 +63,8 @@ class PageRenderer
     private bool $wideLayout;
 
     private bool $twigEnvironmentReady = false;
+    /** @var list<array<string, mixed>>|null */
+    private ?array $moduleNavItems = null;
     private ?array $languageVars = null;
     private ?string $assetFingerprint = null;
 
@@ -115,6 +117,7 @@ class PageRenderer
         $this->app->addTwigGlobal('user_logged_in', $this->userContextService->isAuthenticated());
         $this->app->addTwigGlobal('file_version', $this->getAssetVersion());
         // Record forms read these in JS; one source keeps them in step with the validators.
+        $this->app->addTwigGlobal('nav', $this->navigationVisibility());
         $this->app->addTwigGlobal('record_types_with_priority', RecordType::TYPES_WITH_PRIORITY);
         $this->app->addTwigGlobal('deprecated_record_types', RecordType::DEPRECATED_TYPES);
         // Page-size choices, so the dropdowns offer the configured value rather than
@@ -269,6 +272,7 @@ class PageRenderer
 
         if ($this->userContextService->isAuthenticated()) {
             $perm_is_godlike = $this->hasPermission('user_is_ueberuser');
+            $moduleNavItems = $this->moduleNavItems ??= $this->getModuleNavItems();
 
             $vars = array_merge($vars, [
                 'user_name' => $this->userContextService->getDisplayName(),
@@ -310,7 +314,7 @@ class PageRenderer
                 // enabled at all - otherwise it advertises an endpoint that 404s.
                 'api_docs_enabled' => $this->config->get('api', 'enabled', false)
                     && $this->config->get('api', 'docs_enabled', false),
-                'module_nav_items' => $this->getModuleNavItems(),
+                'module_nav_items' => $moduleNavItems,
                 'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
                 'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
             ]);
@@ -421,6 +425,21 @@ class PageRenderer
      *
      * @return array<array<string, string>>
      */
+    /**
+     * Which navigation entries this request's user gets; every entry is false
+     * before login so templates can read the map without guarding it.
+     *
+     * @return array<string, bool>
+     */
+    private function navigationVisibility(): array
+    {
+        if (!$this->userContextService->isAuthenticated()) {
+            return NavigationVisibility::build(static fn(string $permission): bool => false, $this->config, false);
+        }
+        $moduleNavItems = $this->moduleNavItems ??= $this->getModuleNavItems();
+        return NavigationVisibility::build(fn(string $permission): bool => $this->hasPermission($permission), $this->config, $moduleNavItems !== []);
+    }
+
     private function getModuleNavItems(): array
     {
         $registry = new ModuleRegistry($this->config);
