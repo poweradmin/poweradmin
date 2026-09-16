@@ -62,8 +62,8 @@ class DnsServiceFactory
     ): DnsRecordValidationServiceInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
         $repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
-        $validatorRegistry = new DnsValidatorRegistry($config, $db, $backendProvider);
-        $dnsCommonValidator = new DnsCommonValidator($db, $config, $backendProvider);
+        $validatorRegistry = new DnsValidatorRegistry($config, $backendProvider);
+        $dnsCommonValidator = new DnsCommonValidator($backendProvider);
         $dnsViolationValidator = new DNSViolationValidator($repositoryFactory->createRecordRepository());
 
         return new DnsRecordValidationService(

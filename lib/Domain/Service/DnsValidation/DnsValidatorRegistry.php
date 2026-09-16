@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
 
 /**
  * Registry for DNS record validators
@@ -34,13 +33,11 @@ class DnsValidatorRegistry
 {
     private array $validators = [];
     private ConfigurationManager $config;
-    private PDO $db;
-    private ?DnsBackendProviderInterface $backendProvider;
+    private DnsBackendProviderInterface $backendProvider;
 
-    public function __construct(ConfigurationManager $config, PDO $db, ?DnsBackendProviderInterface $backendProvider = null)
+    public function __construct(ConfigurationManager $config, DnsBackendProviderInterface $backendProvider)
     {
         $this->config = $config;
-        $this->db = $db;
         $this->backendProvider = $backendProvider;
         $this->registerValidators();
     }
@@ -62,7 +59,7 @@ class DnsValidatorRegistry
             RecordType::CDNSKEY => new CDNSKEYRecordValidator($this->config),
             RecordType::CDS => new CDSRecordValidator($this->config),
             RecordType::CERT => new CERTRecordValidator($this->config),
-            RecordType::CNAME => new CNAMERecordValidator($this->config, $this->db, $this->backendProvider),
+            RecordType::CNAME => new CNAMERecordValidator($this->config, $this->backendProvider),
             RecordType::CSYNC => new CSYNCRecordValidator($this->config),
             RecordType::DHCID => new DHCIDRecordValidator($this->config),
             RecordType::DLV => new DLVRecordValidator($this->config),

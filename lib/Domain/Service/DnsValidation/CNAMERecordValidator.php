@@ -25,9 +25,6 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 use Poweradmin\Domain\Service\RecordReadBackendInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
  * Validator for CNAME DNS records
@@ -46,24 +43,19 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
     private ConfigurationManager $config;
-    private PDO $db;
-    private TableNameService $tableNameService;
-    private ?RecordReadBackendInterface $backendProvider;
+    private RecordReadBackendInterface $backendProvider;
 
     /**
      * Constructor
      *
      * @param ConfigurationManager $config
-     * @param PDO $db
-     * @param RecordReadBackendInterface|null $backendProvider DNS backend provider; without one the records table is read directly
+     * @param RecordReadBackendInterface $backendProvider DNS backend the conflict lookups read from
      */
-    public function __construct(ConfigurationManager $config, PDO $db, ?RecordReadBackendInterface $backendProvider = null)
+    public function __construct(ConfigurationManager $config, RecordReadBackendInterface $backendProvider)
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
         $this->config = $config;
-        $this->db = $db;
-        $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
     }
 
@@ -216,32 +208,12 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameUnique(string $name, int|string $rid): ValidationResult
     {
-        if ($this->backendProvider !== null) {
-            $isNewRecord = is_numeric($rid) && (int)$rid <= 0;
-            foreach ($this->backendProvider->findRecordsByName($name) as $r) {
-                if ($r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
-                    return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
-                }
-            }
-            return ValidationResult::success(true);
-        }
-
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
         // Existing-record edit: exclude the row being edited from the duplicate check.
-        if (is_numeric($rid) && (int)$rid > 0) {
-            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE != 'CNAME' AND id != ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$name, (int)$rid]);
-        } else {
-            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE != 'CNAME'";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$name]);
-        }
-
-        $response = $stmt->fetchColumn();
-        if ($response) {
-            return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
+        $isNewRecord = is_numeric($rid) && (int)$rid <= 0;
+        foreach ($this->backendProvider->findRecordsByName($name) as $r) {
+            if ($r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
+                return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
+            }
         }
         return ValidationResult::success(true);
     }
@@ -257,27 +229,11 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameName(string $name): ValidationResult
     {
-        if ($this->backendProvider !== null) {
-            foreach ($this->backendProvider->findRecordsByContent($name) as $r) {
-                if (in_array($r['type'], ['MX', 'NS'], true)) {
-                    return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
-                }
+        foreach ($this->backendProvider->findRecordsByContent($name) as $r) {
+            if (in_array($r['type'], ['MX', 'NS'], true)) {
+                return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
             }
-            return ValidationResult::success(true);
         }
-
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-        $query = "SELECT id FROM $records_table WHERE content = ? AND (type = ? OR type = ?)";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([$name, 'MX', 'NS']);
-
-        $response = $stmt->fetchColumn();
-
-        if (!empty($response)) {
-            return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
-        }
-
         return ValidationResult::success(true);
     }
 
@@ -307,31 +263,11 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     public function validateCnameExistence(string $name, int|string $rid): ValidationResult
     {
-        if ($this->backendProvider !== null) {
-            foreach ($this->backendProvider->findRecordsByName($name, 'CNAME') as $r) {
-                if ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid) {
-                    return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
-                }
-            }
-            return ValidationResult::success(true);
-        }
-
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
         // Existing-record edit: exclude the row being edited from the duplicate check.
-        if (is_numeric($rid) && (int)$rid > 0) {
-            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE = 'CNAME' AND id != ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$name, (int)$rid]);
-        } else {
-            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE = 'CNAME'";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$name]);
-        }
-
-        $response = $stmt->fetchColumn();
-        if ($response) {
-            return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
+        foreach ($this->backendProvider->findRecordsByName($name, 'CNAME') as $r) {
+            if ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid) {
+                return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
+            }
         }
         return ValidationResult::success(true);
     }

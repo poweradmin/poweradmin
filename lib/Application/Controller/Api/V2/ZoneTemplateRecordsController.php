@@ -55,7 +55,7 @@ class ZoneTemplateRecordsController extends PublicApiController
     private function validateTemplateRecord(string $name, string $type, string $content, int $ttl, int $priority): ?JsonResponse
     {
         $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
-            new DnsValidatorRegistry($this->config, $this->db)
+            new DnsValidatorRegistry($this->config, $this->createDnsBackendProvider())
         );
 
         $result = $this->recordValidationService->validate(

@@ -30,19 +30,30 @@ use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
+use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 
 /**
  * Base DNS test class with common setup for all DNS-related tests
  */
 class BaseDnsTest extends TestCase
 {
+    use SqliteDnsBackend;
+
     protected DnsRecordValidationServiceInterface $validationService;
+    protected SqlDnsBackendProvider $backendProvider;
 
     protected function setUp(): void
     {
         $dbMock = $this->createMock(PDO::class);
         $configMock = $this->createMock(ConfigurationManager::class);
         $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+
+        // Records the CNAME conflict checks see: two existing CNAMEs and one NS target
+        $this->backendProvider = $this->sqliteBackendProvider([
+            [123, 1, 'existing.cname.example.com', 'CNAME', 'target.example.com'],
+            [456, 1, 'alias.example.com', 'CNAME', 'target.example.com'],
+            [789, 1, 'example.com', 'NS', 'invalid.cname.target'],
+        ]);
 
         // Configure the mock to return expected values
         $configMock->method('get')
@@ -130,20 +141,7 @@ class BaseDnsTest extends TestCase
                         $validator = new AAAARecordValidator($configMock);
                         break;
                     case RecordType::CNAME:
-                        $validator = $this->getMockBuilder(CNAMERecordValidator::class)
-                            ->setConstructorArgs([$configMock, $dbMock])
-                            ->onlyMethods(['isValidCnameExistence'])
-                            ->getMock();
-
-                        $validator->method('isValidCnameExistence')
-                            ->willReturnCallback(function ($hostname, $rid) {
-                                // Return false for known problematic hostnames
-                                if ($hostname === 'existing.cname.example.com') {
-                                    return false;
-                                }
-                                return true;
-                            });
-
+                        $validator = new CNAMERecordValidator($configMock, $this->backendProvider);
                         break;
                     case RecordType::MX:
                         $validator = new MXRecordValidator($configMock);
@@ -189,7 +187,7 @@ class BaseDnsTest extends TestCase
                 return $validator;
             });
 
-        $dnsCommonValidator = new DnsCommonValidator($dbMock, $configMock);
+        $dnsCommonValidator = new DnsCommonValidator($this->backendProvider);
         $recordRepositoryMock = $this->createMock(RecordRepositoryInterface::class);
         $recordRepositoryMock->method('getRecordsByName')->willReturn([]);
         $dnsViolationValidator = new DNSViolationValidator($recordRepositoryMock);

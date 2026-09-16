@@ -38,16 +38,16 @@ class SOARecordManager implements SOARecordManagerInterface
 
     private PDO $db;
     private ConfigurationManager $config;
-    private ?DnsBackendProviderInterface $backendProvider;
+    private DnsBackendProviderInterface $backendProvider;
 
     /**
      * Constructor
      *
      * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
-     * @param DnsBackendProviderInterface|null $backendProvider Optional DNS backend provider
+     * @param DnsBackendProviderInterface $backendProvider DNS backend provider
      */
-    public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProviderInterface $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationManager $config, DnsBackendProviderInterface $backendProvider)
     {
         $this->db = $db;
         $this->config = $config;
@@ -63,16 +63,7 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function getSOARecord(int $zone_id): string
     {
-        if ($this->backendProvider !== null) {
-            return $this->backendProvider->getSOARecord($zone_id);
-        }
-
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        $stmt = $this->db->prepare("SELECT content FROM $records_table WHERE type = ? AND domain_id = ?");
-        $stmt->execute(['SOA', $zone_id]);
-        return $stmt->fetchColumn() ?: '';
+        return $this->backendProvider->getSOARecord($zone_id);
     }
 
     /**
@@ -232,7 +223,7 @@ class SOARecordManager implements SOARecordManagerInterface
     {
         // The API backend rewrites the SOA RRset (and its TTL) from dns.ttl, the SQL
         // backend keeps the stored TTL; the two are not one provider operation yet.
-        if ($this->backendProvider !== null && $this->backendProvider->isApiBackend()) {
+        if ($this->backendProvider->isApiBackend()) {
             $zoneName = $this->backendProvider->getZoneNameById($domain_id);
             if ($zoneName === null) {
                 return false;
@@ -304,7 +295,7 @@ class SOARecordManager implements SOARecordManagerInterface
     public function updateSOASerial(int $domain_id): bool
     {
         // PowerDNS bumps the serial itself under SOA-EDIT-API; the SQL backend never reports it
-        if ($this->backendProvider !== null && $this->backendProvider->hasSoaEditApi($domain_id)) {
+        if ($this->backendProvider->hasSoaEditApi($domain_id)) {
             return true;
         }
 

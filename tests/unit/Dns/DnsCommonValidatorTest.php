@@ -22,27 +22,26 @@
 
 namespace Poweradmin\Tests\Unit\Dns;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
+use TestHelpers\SqliteDnsBackend;
 
 /**
  * Tests for common DNS validation functions
  */
 class DnsCommonValidatorTest extends TestCase
 {
+    use SqliteDnsBackend;
+
     private DnsCommonValidator $validator;
-    private MockObject&PDO $dbMock;
-    private MockObject&ConfigurationManager $configMock;
 
     protected function setUp(): void
     {
-        $this->dbMock = $this->createMock(PDO::class);
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->validator = new DnsCommonValidator($this->dbMock, $this->configMock);
+        $this->validator = new DnsCommonValidator($this->sqliteBackendProvider([
+            [10, 1, 'example.com', 'A', '192.0.2.1'],
+            [11, 1, 'has.cname.example.com', 'CNAME', 'example.com'],
+        ]));
     }
 
     /**
@@ -145,19 +144,6 @@ class DnsCommonValidatorTest extends TestCase
      */
     public function testValidateNonAliasTargetWithNoCname()
     {
-        // Configure mock for database name
-        $this->configMock->method('get')
-            ->willReturn('pdns');
-
-        // Configure mock for prepared statement
-        $stmtMock = $this->createMock(\PDOStatement::class);
-        $stmtMock->method('execute')->willReturn(true);
-        $stmtMock->method('fetchColumn')->willReturn(false); // No CNAME found
-
-        $this->dbMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
-
         $result = $this->validator->validateNonAliasTarget("example.com");
         $this->assertTrue($result->isValid());
         $this->assertTrue($result->getData());
@@ -165,19 +151,6 @@ class DnsCommonValidatorTest extends TestCase
 
     public function testValidateNonAliasTargetWithCname()
     {
-        // Configure mock for database name
-        $this->configMock->method('get')
-            ->willReturn('pdns');
-
-        // Configure mock for prepared statement
-        $stmtMock = $this->createMock(\PDOStatement::class);
-        $stmtMock->method('execute')->willReturn(true);
-        $stmtMock->method('fetchColumn')->willReturn(1); // CNAME found
-
-        $this->dbMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
-
         $result = $this->validator->validateNonAliasTarget("has.cname.example.com");
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getErrors());

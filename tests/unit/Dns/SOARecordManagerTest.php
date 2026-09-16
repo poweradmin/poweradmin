@@ -6,19 +6,51 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use PDO;
+use TestHelpers\FakeConfiguration;
+use TestHelpers\SqliteDnsBackend;
 
 class SOARecordManagerTest extends TestCase
 {
-    private $dbMock;
+    use SqliteDnsBackend;
+
+    private PDO $db;
     private $configMock;
+    private SqlDnsBackendProvider $backendProvider;
     private $soaRecordManager;
 
     protected function setUp(): void
     {
-        $this->dbMock = $this->createMock(PDO::class);
+        $this->db = $this->sqliteRecordsDb([
+            [1, 1, 'example.com', 'SOA', 'ns1.example.com. hostmaster.example.com. 2023060100 28800 7200 604800 86400'],
+        ]);
         $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->soaRecordManager = new SOARecordManager($this->dbMock, $this->configMock);
+        $this->backendProvider = new SqlDnsBackendProvider($this->db, new FakeConfiguration());
+        $this->soaRecordManager = new SOARecordManager($this->db, $this->configMock, $this->backendProvider);
+    }
+
+    public function testGetSOARecordReadsThroughTheBackend(): void
+    {
+        $this->assertSame(
+            'ns1.example.com. hostmaster.example.com. 2023060100 28800 7200 604800 86400',
+            $this->soaRecordManager->getSOARecord(1)
+        );
+        $this->assertSame('', $this->soaRecordManager->getSOARecord(2));
+    }
+
+    public function testUpdateSOASerialBumpsTheStoredRecord(): void
+    {
+        $this->assertTrue($this->soaRecordManager->updateSOASerial(1));
+
+        $serial = SOARecordManager::getSOASerial($this->backendProvider->getSOARecord(1));
+        $this->assertNotSame('2023060100', $serial);
+        $this->assertGreaterThan(2023060100, (int)$serial);
+    }
+
+    public function testUpdateSOASerialFailsWithoutSoaRecord(): void
+    {
+        $this->assertFalse($this->soaRecordManager->updateSOASerial(2));
     }
 
     #[DataProvider('soaSerialProvider')]
@@ -120,7 +152,7 @@ class SOARecordManagerTest extends TestCase
 
         // Mock getNextSerial to return a specific value
         $soaManagerMock = $this->getMockBuilder(SOARecordManager::class)
-            ->setConstructorArgs([$this->dbMock, $this->configMock])
+            ->setConstructorArgs([$this->db, $this->configMock, $this->backendProvider])
             ->onlyMethods(['getNextSerial'])
             ->getMock();
 

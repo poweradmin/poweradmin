@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Model;
 
 use Exception;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DomainParsingService;
@@ -88,6 +89,15 @@ class ZoneTemplate
     }
 
     /**
+     * Callers that construct the model without a provider can still validate records,
+     * so resolve one from config. Not stored: the null-probes above keep their meaning.
+     */
+    private function backendProvider(): DnsBackendProviderInterface
+    {
+        return $this->backendProvider ?? DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
+    }
+
+    /**
      * Check a template record against the validator for its type.
      *
      * Built on demand because the validator registry instantiates every record-type
@@ -96,7 +106,7 @@ class ZoneTemplate
     private function validateTemplateRecord(string $name, string $type, string $content, mixed $ttl, mixed $prio): ValidationResult
     {
         $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
-            new DnsValidatorRegistry(ConfigurationManager::getInstance(), $this->db, $this->backendProvider)
+            new DnsValidatorRegistry(ConfigurationManager::getInstance(), $this->backendProvider())
         );
 
         return $this->recordValidationService->validate(

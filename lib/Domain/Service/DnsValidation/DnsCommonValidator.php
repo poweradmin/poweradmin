@@ -24,24 +24,16 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\RecordReadBackendInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use PDO;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
  * Common DNS validation functions shared across record types
  */
 class DnsCommonValidator
 {
-    private PDO $db;
-    private ConfigurationInterface $config;
-    private ?RecordReadBackendInterface $backendProvider;
+    private RecordReadBackendInterface $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?RecordReadBackendInterface $backendProvider = null)
+    public function __construct(RecordReadBackendInterface $backendProvider)
     {
-        $this->db = $db;
-        $this->config = $config;
         $this->backendProvider = $backendProvider;
     }
 
@@ -86,21 +78,7 @@ class DnsCommonValidator
      */
     public function validateNonAliasTarget(string $target): ValidationResult
     {
-        if ($this->backendProvider !== null) {
-            if ($this->backendProvider->findRecordsByName($target, 'CNAME') !== []) {
-                return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
-            }
-            return ValidationResult::success(true);
-        }
-
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        $stmt = $this->db->prepare("SELECT id FROM $records_table
-				WHERE name = ? AND TYPE = ?");
-        $stmt->execute([$target, 'CNAME']);
-        $response = $stmt->fetchColumn();
-        if ($response) {
+        if ($this->backendProvider->findRecordsByName($target, 'CNAME') !== []) {
             return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
         }
         return ValidationResult::success(true);

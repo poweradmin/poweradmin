@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,20 +29,19 @@ use Poweradmin\Domain\Service\DnsValidation\DefaultRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\KXRecordValidator;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
 
 class DnsValidatorRegistryTest extends TestCase
 {
     private DnsValidatorRegistry $registry;
     private ConfigurationManager $configMock;
-    private PDO $dbMock;
 
     protected function setUp(): void
     {
         $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->dbMock = $this->createMock(PDO::class);
-        $this->registry = new DnsValidatorRegistry($this->configMock, $this->dbMock);
+        // Only the CNAME validator reads the backend, and no test here validates a record
+        $this->registry = new DnsValidatorRegistry($this->configMock, $this->createMock(DnsBackendProviderInterface::class));
     }
 
     /**

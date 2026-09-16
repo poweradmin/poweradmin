@@ -22,11 +22,12 @@
 
 namespace Unit\Domain\Service;
 
-use PDO;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\SqliteDnsBackend;
 
 /**
  * Test for zone template record validation
@@ -37,6 +38,8 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class ZoneTemplateRecordValidationServiceTest extends TestCase
 {
+    use SqliteDnsBackend;
+
     private ZoneTemplateRecordValidationService $service;
 
     protected function setUp(): void
@@ -44,10 +47,9 @@ class ZoneTemplateRecordValidationServiceTest extends TestCase
         $config = ConfigurationManager::getInstance();
         $config->initialize();
 
-        $db = $this->createMock(PDO::class);
-
+        // Template records are checked by syntax only, so the backend stays empty
         $this->service = new ZoneTemplateRecordValidationService(
-            new DnsValidatorRegistry($config, $db)
+            new DnsValidatorRegistry($config, $this->sqliteBackendProvider())
         );
     }
 
@@ -75,9 +77,8 @@ class ZoneTemplateRecordValidationServiceTest extends TestCase
      * Completion has to pad only the fields that are missing. Appending a fixed four
      * timers pushes a partially-specified SOA past the seven the validator allows,
      * which refused to save a template record that had saved fine before.
-     *
-     * @dataProvider partialSoaProvider
      */
+    #[DataProvider('partialSoaProvider')]
     public function testAcceptsPartiallySpecifiedSoa(string $content): void
     {
         $this->assertTrue($this->validate('[ZONE]', 'SOA', $content));
