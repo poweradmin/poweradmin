@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -102,6 +102,17 @@ class BulkRegistrationController extends BaseController
         $dom_type = $_POST['dom_type'];
         $zone_template = $_POST['zone_template'];
         $owner = (int)$_POST['owner'];
+
+        // Block assigning zones to a different user without elevated permission
+        $callerId = $this->userContextService->getLoggedInUserId();
+        if ($owner !== $callerId) {
+            $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+            if (!$isAdmin && !UserManager::verifyPermission($this->db, 'zone_content_edit_others')) {
+                $this->setMessage('bulk_registration', 'error', _('You do not have permission to create zones for other users.'));
+                $this->showBulkRegistrationForm();
+                return;
+            }
+        }
 
         $failed_domains = [];
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
