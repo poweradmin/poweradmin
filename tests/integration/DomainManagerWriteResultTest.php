@@ -103,20 +103,6 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
     }
 
     #[RunInSeparateProcess]
-    public function testDeletingWithoutTheGrantIsForbidden(): void
-    {
-        $_SESSION['userid'] = self::CLIENT_USER_ID;
-        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::NEW_DOMAIN_ID . ", " . self::ADMIN_USER_ID . ")");
-        $backend = $this->dnsBackendStub(false);
-        $backend->expects($this->never())->method('deleteZone');
-
-        $result = $this->makeDomainManager($backend)->deleteDomain(self::NEW_DOMAIN_ID);
-
-        $this->assertFalse($result->success);
-        $this->assertSame(403, $result->status);
-    }
-
-    #[RunInSeparateProcess]
     public function testChangingTheMasterToAnInvalidAddressIsRefused(): void
     {
         $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::NEW_DOMAIN_ID . ", " . self::ADMIN_USER_ID . ")");

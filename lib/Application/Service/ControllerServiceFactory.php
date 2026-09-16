@@ -225,7 +225,8 @@ class ControllerServiceFactory
             UserAuthenticationService::fromConfig($this->config),
             new PasswordPolicyService($this->config),
             (bool)$this->config->get('ldap', 'enabled', false),
-            $this->domainManager()
+            $this->domainManager(),
+            $this->zoneManagementService()
         );
     }
 

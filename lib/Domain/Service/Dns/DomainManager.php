@@ -134,8 +134,7 @@ class DomainManager implements DomainManagerInterface
 
     /**
      * Snapshot a zone's metadata-relevant fields (type and master IP) for the
-     * change log. Distinct from {@see snapshotZoneForLog()}, which only carries
-     * id/name/type and is used for zone create/delete entries.
+     * change log's metadata-edit entries.
      *
      * Uses the backend provider's lightweight zone lookup rather than the
      * repository's getZoneInfoFromId(), which aggregates record_count and
@@ -416,84 +415,6 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
-     * Deletes a domain by a given id
-     *
-     * @param int $id Zone ID
-     */
-    public function deleteDomain(int $id): ZoneWriteResult
-    {
-        $perm_delete = Permission::getDeletePermission($this->db, $this->config);
-        $user_is_zone_owner = $this->currentUserOwnsZone($id);
-
-        if (ZoneAccessPolicy::levelAppliesToZone($perm_delete, $user_is_zone_owner)) {
-            // Get zone name for backend deletion.
-            $zoneName = $this->domainRepository->getDomainNameById($id);
-
-            // Snapshot zone metadata + record count BEFORE deletion for the audit log.
-            $zoneSnapshot = $this->snapshotZoneForLog($id, $zoneName);
-            $recordCountBefore = $this->countRecordsForZone($id);
-
-            if ($zoneName !== null) {
-                // Delete DNS data via backend first (SQL or API).
-                // This must happen before local cleanup so that a failure
-                // does not leave Poweradmin metadata deleted while DNS zone remains.
-                if (!$this->backendProvider->deleteZone($id, $zoneName)) {
-                    return ZoneWriteResult::backendFailure(_('Failed to delete zone from DNS backend.'));
-                }
-            } else {
-                // The name is gone (out-of-band delete or partial failure); the SQL backend
-                // still clears records, metadata and keys by id, the API backend declines.
-                $this->backendProvider->deleteZone($id, '');
-            }
-
-            // Clean up Poweradmin-internal tables in a transaction
-            try {
-                $this->db->beginTransaction();
-
-                // Get zone_id before deleting zones record for sync cleanup
-                $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
-                $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-                $stmt->execute();
-                $zoneId = $stmt->fetchColumn();
-
-                // Clean up zone template sync records if zone exists
-                if ($zoneId) {
-                    $syncService = new ZoneTemplateSyncService($this->db, $this->config, $this->backendProvider);
-                    $syncService->cleanupZoneSyncRecords($zoneId);
-                }
-
-                $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
-                $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-                $stmt->execute();
-
-                $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
-                $stmt->execute([':id' => $id]);
-
-                $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
-                $stmt->execute([':id' => $id]);
-
-                $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :id");
-                $stmt->execute([':id' => $id]);
-
-                $this->db->commit();
-            } catch (\Exception $e) {
-                if ($this->db->inTransaction()) {
-                    $this->db->rollBack();
-                }
-                return ZoneWriteResult::backendFailure(sprintf(_('Failed to clean up zone metadata: %s'), $e->getMessage()));
-            }
-
-            $this->captureChange(function () use ($zoneSnapshot, $recordCountBefore): void {
-                $this->changeLogger->logZoneDelete($zoneSnapshot, $recordCountBefore);
-            });
-
-            return ZoneWriteResult::ok($id);
-        } else {
-            return ZoneWriteResult::forbidden(_("You do not have the permission to delete a zone."));
-        }
-    }
-
-    /**
      * Apply the SOA serial policy (SOA-EDIT / SOA-EDIT-API) to a new zone.
      *
      * The per-zone SOA-EDIT-API choice wins over the dns.soa_edit_api config
@@ -574,44 +495,6 @@ class DomainManager implements DomainManagerInterface
             $zonesDeleteStmt->execute();
         } catch (\Exception $e) {
             $this->logger->error('Failed to clean up zone metadata for domain_id {domainId}: {error}', ['domainId' => $domainId, 'error' => $e->getMessage()]);
-        }
-    }
-
-    /**
-     * Capture a minimal zone snapshot suitable for the change log.
-     * Tolerates missing data (out-of-band deletes leave $zoneName null).
-     */
-    private function snapshotZoneForLog(int $domainId, ?string $zoneName): array
-    {
-        $type = null;
-        try {
-            $type = $this->domainRepository->getDomainType($domainId);
-        } catch (Throwable $e) {
-            // Type lookup is best-effort; the log still gets a row with null type.
-        }
-
-        return [
-            'id' => $domainId,
-            'name' => $zoneName,
-            'type' => $type,
-        ];
-    }
-
-    /**
-     * Count records in a zone before deletion. Used to summarize how many
-     * records were removed by a zone delete in the audit log.
-     */
-    private function countRecordsForZone(int $domainId): int
-    {
-        try {
-            $tableNameService = new TableNameService($this->config);
-            $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-            $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table WHERE domain_id = :did");
-            $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
-            $stmt->execute();
-            return (int) $stmt->fetchColumn();
-        } catch (Throwable $e) {
-            return 0;
         }
     }
 

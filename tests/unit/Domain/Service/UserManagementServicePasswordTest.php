@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\UserManagementService;
+use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\UserProfileAssembler;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -57,7 +58,8 @@ class UserManagementServicePasswordTest extends TestCase
             new UserAuthenticationService('bcrypt', 4),
             $passwordPolicy,
             false,
-            $this->createMock(DomainManagerInterface::class)
+            $this->createMock(DomainManagerInterface::class),
+            $this->createMock(ZoneManagementService::class)
         );
     }
 

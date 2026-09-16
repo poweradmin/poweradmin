@@ -63,6 +63,7 @@ class UserManagementService
     private PasswordPolicyService $passwordPolicy;
     private bool $ldapEnabled;
     private DomainManagerInterface $domainManager;
+    private ZoneManagementService $zones;
 
     public function __construct(
         UserRepositoryInterface $userRepository,
@@ -71,7 +72,8 @@ class UserManagementService
         UserAuthenticationService $authService,
         PasswordPolicyService $passwordPolicy,
         bool $ldapEnabled,
-        DomainManagerInterface $domainManager
+        DomainManagerInterface $domainManager,
+        ZoneManagementService $zones
     ) {
         $this->userRepository = $userRepository;
         $this->permissions = $permissionService;
@@ -80,6 +82,7 @@ class UserManagementService
         $this->passwordPolicy = $passwordPolicy;
         $this->ldapEnabled = $ldapEnabled;
         $this->domainManager = $domainManager;
+        $this->zones = $zones;
     }
 
     /**
@@ -551,9 +554,16 @@ class UserManagementService
 
         foreach ($zoneDecisions as $decision) {
             $zoneId = (int)$decision['zid'];
-            $result = $decision['target'] === 'delete'
-                ? $this->domainManager->deleteDomain($zoneId)
-                : $this->domainManager->addOwnerToZone($zoneId, (int)($decision['newowner'] ?? 0));
+            if ($decision['target'] === 'delete') {
+                // Permission was checked above; the zone service deletes keys, comments,
+                // records and metadata with the zone, as the web and API deletes do
+                $deleted = $this->zones->deleteZone($zoneId);
+                if (!$deleted['success']) {
+                    return ['success' => false, 'message' => $deleted['message'], 'status' => $deleted['status'], 'code' => self::ERR_ZONE_WRITE];
+                }
+                continue;
+            }
+            $result = $this->domainManager->addOwnerToZone($zoneId, (int)($decision['newowner'] ?? 0));
             if (!$result->success) {
                 return ['success' => false, 'message' => (string)$result->message, 'status' => $result->status, 'code' => self::ERR_ZONE_WRITE];
             }

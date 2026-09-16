@@ -42,13 +42,6 @@ interface DomainManagerInterface
     public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): ZoneWriteResult;
 
     /**
-     * Deletes a domain by a given id
-     *
-     * @param int $id Zone ID
-     */
-    public function deleteDomain(int $id): ZoneWriteResult;
-
-    /**
      * Change Zone Type
      *
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]

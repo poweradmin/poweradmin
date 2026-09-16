@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserManagementService;
+use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\UserProfileAssembler;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use TestHelpers\SqliteIntegrationTestCase;
@@ -44,6 +45,8 @@ use TestHelpers\SqliteIntegrationTestCase;
 #[CoversClass(UserManagementService::class)]
 class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
 {
+    private ?ZoneManagementService $zoneService = null;
+
     private const SECOND_ADMIN = 3;
     private const USER_ADMIN = 4;
     private const TARGET = 5;
@@ -110,6 +113,36 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
     }
 
     #[RunInSeparateProcess]
+    public function testAllowedDeletionsGoThroughTheZoneServiceBeforeTheUserGoes(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::TARGET . ", 'target', " . self::ADMIN_PERM_TEMPL_ID . ")");
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (10, " . self::TARGET . ")");
+        $this->zoneService = $this->createMock(ZoneManagementService::class);
+        $this->zoneService->expects($this->once())->method('deleteZone')->with(10)->willReturn(['success' => true, 'message' => 'Zone deleted successfully']);
+
+        $result = $this->service()->deleteUserWithZoneDecisions(self::ADMIN_USER_ID, self::TARGET, [['zid' => 10, 'target' => 'delete']]);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(0, $this->rows('users WHERE id = ' . self::TARGET));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAFailedZoneDeletionKeepsTheUser(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::TARGET . ", 'target', " . self::ADMIN_PERM_TEMPL_ID . ")");
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (10, " . self::TARGET . ")");
+        $this->zoneService = $this->createMock(ZoneManagementService::class);
+        $this->zoneService->method('deleteZone')->willReturn(['success' => false, 'message' => 'Failed to delete zone', 'status' => 500, 'code' => ZoneManagementService::ERR_ZONE_WRITE]);
+
+        $result = $this->service()->deleteUserWithZoneDecisions(self::ADMIN_USER_ID, self::TARGET, [['zid' => 10, 'target' => 'delete']]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(UserManagementService::ERR_ZONE_WRITE, $result['code']);
+        $this->assertSame(500, $result['status']);
+        $this->assertSame(1, $this->rows('users WHERE id = ' . self::TARGET));
+    }
+
+    #[RunInSeparateProcess]
     public function testAReassignmentWithoutTheMetaGrantKeepsTheUser(): void
     {
         $this->seedUserAdmin([]);
@@ -158,6 +191,8 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
 
     private function service(): UserManagementService
     {
+        // Refusal tests never reach the zone service; a bare mock fails loudly if they do
+        $this->zoneService ??= $this->createMock(ZoneManagementService::class);
         $config = $this->primeConfigurationManager();
         $userRepository = new DbUserRepository($this->db, $config);
         $permissions = new PermissionService($userRepository);
@@ -175,7 +210,8 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
             new UserAuthenticationService(),
             new PasswordPolicyService($config),
             false,
-            $domainManager
+            $domainManager,
+            $this->zoneService
         );
     }
 
