@@ -23,6 +23,8 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -31,22 +33,30 @@ use Psr\Log\NullLogger;
  * Detects and caches the connected PowerDNS server version so admins can see
  * it in the UI and so error reports include it without a manual lookup.
  *
- * Cached in the session with a 5-minute TTL to avoid an extra API round-trip
- * on every request. Detection failures are swallowed - callers must treat the
- * absence of a cached value as "version unknown", not as an error.
+ * Cached in the per-user array the caller hands in (the session, in practice)
+ * with a 5-minute TTL to avoid an extra API round-trip on every request.
+ * Detection failures are swallowed - callers must treat the absence of a
+ * cached value as "version unknown", not as an error.
  */
 class PdnsVersionService
 {
     private const SESSION_KEY = 'pdns_server_info';
     private const TTL_SECONDS = 300;
+    private const RETRY_SECONDS = 60;
 
     private PowerdnsApiClient $apiClient;
     private LoggerInterface $logger;
+    /** @var array<string, mixed> */
+    private array $cache;
 
-    public function __construct(PowerdnsApiClient $apiClient, ?LoggerInterface $logger = null)
+    /**
+     * @param array<string, mixed> $cache Where the server info and retry stamp live, normally $_SESSION
+     */
+    public function __construct(PowerdnsApiClient $apiClient, ?LoggerInterface $logger = null, array &$cache = [])
     {
         $this->apiClient = $apiClient;
         $this->logger = $logger ?? new NullLogger();
+        $this->cache = &$cache;
     }
 
     /**
@@ -56,7 +66,7 @@ class PdnsVersionService
      */
     public function detect(): ?array
     {
-        $cached = $_SESSION[self::SESSION_KEY] ?? null;
+        $cached = $this->cache[self::SESSION_KEY] ?? null;
         if (is_array($cached) && isset($cached['fetched_at']) && (time() - $cached['fetched_at']) < self::TTL_SECONDS) {
             return $cached['info'] ?? null;
         }
@@ -92,12 +102,41 @@ class PdnsVersionService
             ]);
         }
 
-        $_SESSION[self::SESSION_KEY] = [
+        $this->cache[self::SESSION_KEY] = [
             'info' => $info,
             'fetched_at' => time(),
         ];
 
         return $info;
+    }
+
+    /**
+     * Refresh the cache from the configured PowerDNS API, at most once a minute
+     * per cache. A no-op when no API is configured; failures leave the previous
+     * entry in place, so callers never see an error from here.
+     *
+     * @param array<string, mixed> $cache Normally $_SESSION
+     */
+    public static function refreshFromConfig(ConfigurationInterface $config, LoggerInterface $logger, array &$cache): void
+    {
+        $apiUrl = (string) $config->get('pdns_api', 'url', '');
+        $apiKey = (string) $config->get('pdns_api', 'key', '');
+        if ($apiUrl === '' || $apiKey === '') {
+            return;
+        }
+        $last = $cache[SessionKeys::PDNS_VERSION_LAST_ATTEMPT] ?? 0;
+        if ((time() - (int) $last) < self::RETRY_SECONDS) {
+            return;
+        }
+        $cache[SessionKeys::PDNS_VERSION_LAST_ATTEMPT] = time();
+        try {
+            $apiClient = DnsBackendProviderFactory::createApiClient($config, $logger);
+            if ($apiClient !== null) {
+                (new self($apiClient, $logger, $cache))->detect();
+            }
+        } catch (\Throwable $e) {
+            $logger->debug('PowerDNS version detection failed: {error}', ['error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -107,24 +146,24 @@ class PdnsVersionService
      */
     public function getCached(): ?array
     {
-        return self::getCachedInfo();
+        return self::getCachedInfo($this->cache);
     }
 
     /**
-     * Static accessor for the session-cached server info. Useful for callers
-     * (e.g. BaseController) that don't want to construct the service just to
-     * read what IndexController already detected.
+     * Static accessor for the cached server info, for callers that don't want
+     * to construct the service just to read what IndexController already detected.
      *
      * Returns null when the cached entry is older than TTL_SECONDS so that
      * capability-driven UI does not silently follow a stale version after a
      * PowerDNS upgrade or downgrade for the rest of the session - callers
      * that get null fall through to detect() and refresh the cache.
      *
+     * @param array<string, mixed> $cache Normally $_SESSION
      * @return array{version: string, daemon_type: string, id: string, backends?: string, views?: string}|null
      */
-    public static function getCachedInfo(): ?array
+    public static function getCachedInfo(array $cache): ?array
     {
-        $cached = $_SESSION[self::SESSION_KEY] ?? null;
+        $cached = $cache[self::SESSION_KEY] ?? null;
         if (!is_array($cached)) {
             return null;
         }

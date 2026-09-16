@@ -170,7 +170,7 @@ class BadgeTwigExtension extends AbstractExtension
      */
     protected function resolveCapabilities(): PdnsCapabilities
     {
-        $info = PdnsVersionService::getCachedInfo();
+        $info = PdnsVersionService::getCachedInfo($_SESSION ?? []);
         return PdnsCapabilities::fromServerInfo($info);
     }
 }

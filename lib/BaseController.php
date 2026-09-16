@@ -79,7 +79,6 @@ use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Web\PageRenderer;
-use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Module\ModuleRegistry;
 use Psr\Log\LoggerInterface;
 
@@ -238,7 +237,7 @@ abstract class BaseController
      */
     protected function getPdnsCapabilities(): PdnsCapabilities
     {
-        $info = PdnsVersionService::getCachedInfo();
+        $info = PdnsVersionService::getCachedInfo($_SESSION ?? []);
         return PdnsCapabilities::fromServerInfo($info);
     }
 
@@ -266,36 +265,14 @@ abstract class BaseController
     /**
      * Trigger a session-cached refresh of PowerDNS version + capabilities.
      *
-     * Makes at most one API call per minute (rate-limited via the session
-     * timestamp `pdns_version_last_attempt`) and is a no-op when no PowerDNS
-     * API is configured. Runs in both API and SQL backend modes: the
-     * version display is useful in either mode whenever `pdns_api` is
-     * configured, even though capability gates only matter for API mode.
-     * Page renders that don't call this just read whatever is already cached.
+     * Runs in both API and SQL backend modes: the version display is useful in
+     * either mode whenever `pdns_api` is configured, even though capability
+     * gates only matter for API mode. Page renders that don't call this just
+     * read whatever is already cached.
      */
     protected function refreshPdnsCapabilities(): void
     {
-        $apiUrl = (string) $this->config->get('pdns_api', 'url', '');
-        $apiKey = (string) $this->config->get('pdns_api', 'key', '');
-        if ($apiUrl === '' || $apiKey === '') {
-            return;
-        }
-        $last = $_SESSION[SessionKeys::PDNS_VERSION_LAST_ATTEMPT] ?? 0;
-        if ((time() - (int) $last) < 60) {
-            return;
-        }
-        $_SESSION[SessionKeys::PDNS_VERSION_LAST_ATTEMPT] = time();
-        try {
-            $apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
-            if ($apiClient !== null) {
-                (new PdnsVersionService($apiClient, $this->logger))->detect();
-            }
-        } catch (\Throwable $e) {
-            // Detection failures are non-fatal - the UI just falls back to
-            // whatever's already cached (or strict-unknown). Log at debug
-            // to avoid noise during outages.
-            $this->logger->debug('PowerDNS version detection failed: {error}', ['error' => $e->getMessage()]);
-        }
+        PdnsVersionService::refreshFromConfig($this->config, $this->logger, $_SESSION);
     }
 
     /**
