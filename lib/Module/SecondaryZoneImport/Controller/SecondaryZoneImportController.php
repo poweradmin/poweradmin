@@ -228,7 +228,6 @@ class SecondaryZoneImportController extends BaseController
             'users' => $users,
             'selectable_owners' => $assignableOwners,
             'session_user_id' => $sessionUserId,
-            'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
             'owner_value' => $this->preservedOwnerChoice($assignableOwners, $ownerInput),
             'all_groups' => $allGroups,
             'group_member_counts' => $memberCounts,

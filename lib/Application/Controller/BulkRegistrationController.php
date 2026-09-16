@@ -150,7 +150,6 @@ class BulkRegistrationController extends BaseController
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION[SessionKeys::USERID],
             'owner_value' => $this->preservedOwnerChoice($assignableOwners, $this->httpRequest->getPostParam('owner')),
-            'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
             'perm_edit_others' => $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS),
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'MASTER'),
             'available_zone_types' => self::AVAILABLE_ZONE_TYPES,

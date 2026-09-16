@@ -267,7 +267,6 @@ class AddZoneMasterController extends BaseController
 
     private function showForm(): void
     {
-        $perm_view_others = $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS);
         $zone_templates = $this->createZoneTemplateModel();
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
         $users = $this->createUserRepository()->getUsersWithZoneCounts();
@@ -336,7 +335,6 @@ class AddZoneMasterController extends BaseController
 
         $this->render('add_zone_master.html', [
             'is_reverse_zone' => $is_reverse_zone,
-            'perm_view_others' => $perm_view_others,
             'session_user_id' => $userId,
             'available_zone_types' => $valid_domain_types,
             'users' => $users,

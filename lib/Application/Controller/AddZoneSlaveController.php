@@ -172,7 +172,6 @@ class AddZoneSlaveController extends BaseController
             'users' => $users,
             'selectable_owners' => $assignableOwners,
             'session_user_id' => $_SESSION[SessionKeys::USERID],
-            'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
             'domain_value' => $domain_value,
             'slave_master_value' => $slave_master_value,
             'owner_value' => $owner_value,
