@@ -878,7 +878,7 @@ class UserManager
                 active = :active";
 
             // If the user is allowed to change the permission template, set it.
-            if ($perm_edit_user_templ == "1") {
+            if ($perm_edit_user_templ) {
                 $templateError = (int)$details['templ_id'] === (int)$userCheck['perm_templ']
                     ? null
                     : self::permission_template_assignment_error(
@@ -925,7 +925,7 @@ class UserManager
             $stmt->bindValue(':email', $details['email'], PDO::PARAM_STR);
             $stmt->bindValue(':active', $active, PDO::PARAM_INT);
 
-            if ($perm_edit_user_templ == "1") {
+            if ($perm_edit_user_templ) {
                 $stmt->bindValue(':templ_id', $details['templ_id'], PDO::PARAM_INT);
             }
             if ($perm_is_godlike == "1") {
