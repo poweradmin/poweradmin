@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller\Api\V1;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\SelfEditFieldGuard;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
@@ -70,14 +71,15 @@ class UsersController extends PublicApiController
 {
     private UserManagementService $userManagementService;
     private ApiPermissionService $apiPermissionService;
+    private DbUserRepository $userRepository;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $userRepository = new DbUserRepository($this->db, $this->config);
-        $permissionService = new PermissionService($userRepository);
-        $this->userManagementService = new UserManagementService($userRepository, $permissionService);
+        $this->userRepository = new DbUserRepository($this->db, $this->config);
+        $permissionService = new PermissionService($this->userRepository);
+        $this->userManagementService = new UserManagementService($this->userRepository, $permissionService);
         $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 
@@ -721,6 +723,21 @@ class UsersController extends PublicApiController
             $templateGate = $this->guardPermissionTemplateAssignment($currentUserId, $input, null, $targetUserId);
             if ($templateGate !== null) {
                 return $templateGate;
+            }
+
+            // Auth-critical fields are not self-service on self-edit (#1327)
+            $currentUser = $this->userRepository->getUserById($targetUserId);
+            if ($currentUser !== null) {
+                $selfEditGate = SelfEditFieldGuard::apply(
+                    $this->apiPermissionService,
+                    $currentUserId,
+                    $targetUserId,
+                    $currentUser,
+                    $input
+                );
+                if ($selfEditGate !== null) {
+                    return $this->returnApiError($selfEditGate, 403);
+                }
             }
 
             // Use the domain service to update user
