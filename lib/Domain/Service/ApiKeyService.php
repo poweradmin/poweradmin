@@ -30,7 +30,6 @@ use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -42,7 +41,6 @@ class ApiKeyService
     private ApiKeyRepositoryInterface $apiKeyRepository;
     private PDO $db;
     private ConfigurationInterface $config;
-    private MessageService $messageService;
     private LoggerInterface $logger;
     private UserContextService $userContextService;
     private ?PermissionService $permissionService = null;
@@ -63,20 +61,17 @@ class ApiKeyService
      * @param ApiKeyRepositoryInterface $apiKeyRepository The API key repository
      * @param PDO $db The database connection
      * @param ConfigurationInterface $config The configuration manager
-     * @param MessageService $messageService The message service
      */
     public function __construct(
         ApiKeyRepositoryInterface $apiKeyRepository,
         PDO $db,
         ConfigurationInterface $config,
-        MessageService $messageService,
         ?LoggerInterface $logger = null,
         ?UserContextService $userContextService = null
     ) {
         $this->apiKeyRepository = $apiKeyRepository;
         $this->db = $db;
         $this->config = $config;
-        $this->messageService = $messageService;
         $this->logger = $logger ?? new NullLogger();
         $this->userContextService = $userContextService ?? new UserContextService();
     }
@@ -185,35 +180,24 @@ class ApiKeyService
      * @param bool $isReadonly Whether the key is restricted to read-only requests
      * @param string[]|null $allowedOperations Operations the key may perform; null/empty means all
      * @param int[] $zoneIds Zones the key is restricted to; empty means no restriction
-     * @return ApiKey|null The created API key, or null if creation failed
      */
-    public function createApiKey(string $name, ?DateTime $expiresAt = null, bool $isReadonly = false, ?array $allowedOperations = null, array $zoneIds = []): ?ApiKey
+    public function createApiKey(string $name, ?DateTime $expiresAt = null, bool $isReadonly = false, ?array $allowedOperations = null, array $zoneIds = []): ApiKeyWriteResult
     {
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
-        // Check if API is enabled
         if (!$this->config->get('api', 'enabled', false)) {
-            $this->messageService->addSystemError(_('API functionality is disabled.'));
-            return null;
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_API_DISABLED, _('API functionality is disabled.'), 403);
         }
 
-        // Check if user has permission to create API keys
-        if (
-            !$this->currentUserHasPermission('user_is_ueberuser') &&
-            !$this->currentUserHasPermission('api_manage_keys')
-        ) {
-            $this->messageService->addSystemError(_('You do not have permission to create API keys.'));
-            return null;
+        if (!$this->canManageKeys()) {
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to create API keys.'), 403);
         }
 
-        // Check maximum number of API keys per user
         $maxKeysPerUser = $this->config->get('api', 'max_keys_per_user', 5);
         if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser && !$this->currentUserHasPermission('user_is_ueberuser')) {
-            $this->messageService->addSystemError(_('You have reached the maximum number of API keys allowed.'));
-            return null;
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_LIMIT, _('You have reached the maximum number of API keys allowed.'), 409);
         }
 
-        // Create and save the new API key
         $apiKey = new ApiKey(
             $name,
             ApiKey::generateSecretKey(),
@@ -230,7 +214,7 @@ class ApiKeyService
         $this->apiKeyRepository->saveZoneIds($saved->getId(), $zoneIds);
         $saved->setZoneIds($zoneIds);
 
-        return $saved;
+        return ApiKeyWriteResult::ok($saved);
     }
 
     /**
@@ -243,27 +227,17 @@ class ApiKeyService
      * @param bool $isReadonly Whether the key is restricted to read-only requests
      * @param string[]|null $allowedOperations Operations the key may perform; null/empty means all
      * @param int[]|null $zoneIds Zones the key is restricted to; null leaves them unchanged, [] clears
-     * @return ApiKey|null The updated API key, or null if update failed
      */
-    public function updateApiKey(int $id, string $name, ?DateTime $expiresAt = null, bool $disabled = false, bool $isReadonly = false, ?array $allowedOperations = null, ?array $zoneIds = null): ?ApiKey
+    public function updateApiKey(int $id, string $name, ?DateTime $expiresAt = null, bool $disabled = false, bool $isReadonly = false, ?array $allowedOperations = null, ?array $zoneIds = null): ApiKeyWriteResult
     {
         $apiKey = $this->getApiKey($id);
-
         if ($apiKey === null) {
-            $this->messageService->addSystemError(_('API key not found or you do not have permission to edit it.'));
-            return null;
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_NOT_FOUND, _('API key not found or you do not have permission to edit it.'), 404);
+        }
+        if (!$this->canManageKeys()) {
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to update API keys.'), 403);
         }
 
-        // Check if user has permission to update API keys
-        if (
-            !$this->currentUserHasPermission('user_is_ueberuser') &&
-            !$this->currentUserHasPermission('api_manage_keys')
-        ) {
-            $this->messageService->addSystemError(_('You do not have permission to update API keys.'));
-            return null;
-        }
-
-        // Update the API key
         $apiKey->setName($name);
         $apiKey->setExpiresAt($expiresAt);
         $apiKey->setDisabled($disabled);
@@ -279,95 +253,66 @@ class ApiKeyService
             $saved->setZoneIds($zoneIds);
         }
 
-        return $saved;
+        return ApiKeyWriteResult::ok($saved);
     }
 
     /**
      * Delete an API key
-     *
-     * @param int $id The ID of the API key to delete
-     * @return bool True if the API key was deleted, false otherwise
      */
-    public function deleteApiKey(int $id): bool
+    public function deleteApiKey(int $id): ApiKeyWriteResult
     {
         $apiKey = $this->getApiKey($id);
-
         if ($apiKey === null) {
-            $this->messageService->addSystemError(_('API key not found or you do not have permission to delete it.'));
-            return false;
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_NOT_FOUND, _('API key not found or you do not have permission to delete it.'), 404);
+        }
+        if (!$this->canManageKeys()) {
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to delete API keys.'), 403);
         }
 
-        // Check if user has permission to delete API keys
-        if (
-            !$this->currentUserHasPermission('user_is_ueberuser') &&
-            !$this->currentUserHasPermission('api_manage_keys')
-        ) {
-            $this->messageService->addSystemError(_('You do not have permission to delete API keys.'));
-            return false;
-        }
-
-        return $this->apiKeyRepository->delete($id);
+        return $this->apiKeyRepository->delete($id)
+            ? ApiKeyWriteResult::ok($apiKey)
+            : ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_WRITE, _('An error occurred. Please try again.'), 500);
     }
 
     /**
      * Regenerate the secret key for an API key
-     *
-     * @param int $id The ID of the API key
-     * @return ApiKey|null The updated API key with new secret, or null if regeneration failed
      */
-    public function regenerateSecretKey(int $id): ?ApiKey
+    public function regenerateSecretKey(int $id): ApiKeyWriteResult
     {
         $apiKey = $this->getApiKey($id);
-
         if ($apiKey === null) {
-            $this->messageService->addSystemError(_('API key not found or you do not have permission to edit it.'));
-            return null;
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_NOT_FOUND, _('API key not found or you do not have permission to edit it.'), 404);
+        }
+        if (!$this->canManageKeys()) {
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to regenerate API keys.'), 403);
         }
 
-        // Check if user has permission to update API keys
-        if (
-            !$this->currentUserHasPermission('user_is_ueberuser') &&
-            !$this->currentUserHasPermission('api_manage_keys')
-        ) {
-            $this->messageService->addSystemError(_('You do not have permission to regenerate API keys.'));
-            return null;
-        }
-
-        // Generate a new secret key
         $apiKey->regenerateSecretKey();
 
-        return $this->apiKeyRepository->save($apiKey);
+        return ApiKeyWriteResult::ok($this->apiKeyRepository->save($apiKey));
     }
 
     /**
      * Toggle the disabled status of an API key
-     *
-     * @param int $id The ID of the API key
-     * @param bool $disabled The new disabled status
-     * @return ApiKey|null The updated API key, or null if update failed
      */
-    public function toggleApiKey(int $id, bool $disabled): ?ApiKey
+    public function toggleApiKey(int $id, bool $disabled): ApiKeyWriteResult
     {
         $apiKey = $this->getApiKey($id);
-
         if ($apiKey === null) {
-            $this->messageService->addSystemError(_('API key not found or you do not have permission to edit it.'));
-            return null;
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_NOT_FOUND, _('API key not found or you do not have permission to edit it.'), 404);
+        }
+        if (!$this->canManageKeys()) {
+            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to update API keys.'), 403);
         }
 
-        // Check if user has permission to update API keys
-        if (
-            !$this->currentUserHasPermission('user_is_ueberuser') &&
-            !$this->currentUserHasPermission('api_manage_keys')
-        ) {
-            $this->messageService->addSystemError(_('You do not have permission to update API keys.'));
-            return null;
-        }
-
-        // Update the disabled status
         $apiKey->setDisabled($disabled);
 
-        return $this->apiKeyRepository->save($apiKey);
+        return ApiKeyWriteResult::ok($this->apiKeyRepository->save($apiKey));
+    }
+
+    private function canManageKeys(): bool
+    {
+        return $this->currentUserHasPermission('user_is_ueberuser') || $this->currentUserHasPermission('api_manage_keys');
     }
 
     /**

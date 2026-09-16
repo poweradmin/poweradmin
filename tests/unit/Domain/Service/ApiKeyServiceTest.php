@@ -30,8 +30,8 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
+use Poweradmin\Domain\Service\ApiKeyWriteResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 #[CoversClass(ApiKeyService::class)]
 class ApiKeyServiceTest extends TestCase
@@ -40,7 +40,6 @@ class ApiKeyServiceTest extends TestCase
     private ApiKeyRepositoryInterface&MockObject $apiKeyRepository;
     private PDO&MockObject $db;
     private ConfigurationManager&MockObject $config;
-    private MessageService&MockObject $messageService;
 
     protected function setUp(): void
     {
@@ -49,13 +48,11 @@ class ApiKeyServiceTest extends TestCase
         $this->apiKeyRepository = $this->createMock(ApiKeyRepositoryInterface::class);
         $this->db = $this->createMock(PDO::class);
         $this->config = $this->createMock(ConfigurationManager::class);
-        $this->messageService = $this->createMock(MessageService::class);
 
         $this->service = new ApiKeyService(
             $this->apiKeyRepository,
             $this->db,
-            $this->config,
-            $this->messageService
+            $this->config
         );
 
         // Initialize session
@@ -485,10 +482,13 @@ class ApiKeyServiceTest extends TestCase
         // User holds neither user_is_ueberuser nor api_manage_keys
         $this->grantPermissions(['zone_content_view_own']);
 
-        $this->messageService->expects($this->once())->method('addSystemError');
         $this->apiKeyRepository->expects($this->never())->method('save');
 
-        $this->assertNull($this->service->createApiKey('my-key'));
+        $result = $this->service->createApiKey('my-key');
+
+        $this->assertFalse($result->success);
+        $this->assertSame(ApiKeyWriteResult::ERR_FORBIDDEN, $result->code);
+        $this->assertSame(403, $result->status);
     }
 
     #[Test]
@@ -507,6 +507,6 @@ class ApiKeyServiceTest extends TestCase
         $this->apiKeyRepository->expects($this->once())->method('save')->willReturn($saved);
         $this->apiKeyRepository->expects($this->once())->method('saveZoneIds')->with(99, []);
 
-        $this->assertSame($saved, $this->service->createApiKey('my-key'));
+        $this->assertSame($saved, $this->service->createApiKey('my-key')->key);
     }
 }

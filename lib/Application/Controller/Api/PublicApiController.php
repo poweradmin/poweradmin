@@ -40,7 +40,6 @@ use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -198,8 +197,7 @@ abstract class PublicApiController extends AbstractApiController
         // Create API key service to validate the key against the database
         $config = $this->getConfig();
         $apiKeyRepository = new DbApiKeyRepository($this->db, $config);
-        $messageService = new MessageService();
-        $apiKeyService = new ApiKeyService($apiKeyRepository, $this->db, $config, $messageService);
+        $apiKeyService = new ApiKeyService($apiKeyRepository, $this->db, $config);
 
         // Authenticate using the API key service
         return $apiKeyService->authenticate($apiKey);

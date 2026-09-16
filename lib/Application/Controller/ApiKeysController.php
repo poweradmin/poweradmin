@@ -59,12 +59,7 @@ class ApiKeysController extends BaseController
 
         $this->routeName = (string)($request['page'] ?? '');
         $this->apiKeyRepository = new DbApiKeyRepository($this->db, $this->config);
-        $this->apiKeyService = new ApiKeyService(
-            $this->apiKeyRepository,
-            $this->db,
-            $this->config,
-            $this->messageService
-        );
+        $this->apiKeyService = new ApiKeyService($this->apiKeyRepository, $this->db, $this->config);
         $this->zoneRepository = $this->createZoneRepository();
     }
 
@@ -183,7 +178,7 @@ class ApiKeysController extends BaseController
             }
 
             // Create the API key
-            $apiKey = $this->apiKeyService->createApiKey(
+            $created = $this->apiKeyService->createApiKey(
                 $name,
                 $expiresAtDate,
                 $scope['is_readonly'],
@@ -191,7 +186,8 @@ class ApiKeysController extends BaseController
                 $scope['zones']
             );
 
-            if ($apiKey !== null) {
+            if ($created->success) {
+                $apiKey = $created->key;
                 $this->createAuditService()->logApiKeyCreate((int)$apiKey->getId(), $apiKey->getName());
 
                 // Show confirmation with the secret key - user needs to save it
@@ -201,7 +197,7 @@ class ApiKeysController extends BaseController
                 return;
             }
 
-            // Error occurred, it was already added to the message service by the API key service
+            $this->messageService->addMessage('api_key_add', 'error', (string)$created->message);
         }
 
         // Show the add form
@@ -254,7 +250,7 @@ class ApiKeysController extends BaseController
             }
 
             // Update the API key
-            $apiKey = $this->apiKeyService->updateApiKey(
+            $updated = $this->apiKeyService->updateApiKey(
                 $id,
                 $name,
                 $expiresAtDate,
@@ -264,15 +260,15 @@ class ApiKeysController extends BaseController
                 $scope['zones']
             );
 
-            if ($apiKey !== null) {
-                $this->createAuditService()->logApiKeyEdit($id, $apiKey->getName());
+            if ($updated->success) {
+                $this->createAuditService()->logApiKeyEdit($id, $updated->key->getName());
 
                 $this->messageService->addMessage('api_keys', 'success', _('API key updated successfully.'));
                 $this->redirect('/settings/api-keys');
                 return;
             }
 
-            // Error occurred, it was already added to the message service by the API key service
+            $this->messageService->addMessage('api_key_edit', 'error', (string)$updated->message);
         }
 
         // Show the edit form
@@ -296,17 +292,13 @@ class ApiKeysController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            // Get key name before deletion for logging
-            $apiKeyForLog = $this->apiKeyService->getApiKey($id);
-            $keyName = $apiKeyForLog !== null ? $apiKeyForLog->getName() : 'unknown';
+            $deleted = $this->apiKeyService->deleteApiKey($id);
 
-            // Delete the API key
-            $success = $this->apiKeyService->deleteApiKey($id);
-
-            if ($success) {
-                $this->createAuditService()->logApiKeyDelete($id, $keyName);
-
+            if ($deleted->success) {
+                $this->createAuditService()->logApiKeyDelete($id, $deleted->key->getName());
                 $this->messageService->addMessage('api_keys', 'success', _('API key deleted successfully.'));
+            } else {
+                $this->messageService->addMessage('api_keys', 'error', (string)$deleted->message);
             }
 
             $this->redirect('/settings/api-keys');
@@ -334,32 +326,29 @@ class ApiKeysController extends BaseController
     {
         $id = (int)$this->getSafeRequestValue('id');
 
+        $apiKey = $this->apiKeyService->getApiKey($id);
+        if ($apiKey === null) {
+            $this->showError(_('API key not found or you do not have permission to edit it.'));
+            return;
+        }
+
         // Handle form submission for confirmation
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            // Regenerate the secret key
-            $apiKey = $this->apiKeyService->regenerateSecretKey($id);
+            $regenerated = $this->apiKeyService->regenerateSecretKey($id);
 
-            if ($apiKey !== null) {
-                $this->createAuditService()->logApiKeyRegenerate($id, $apiKey->getName());
+            if ($regenerated->success) {
+                $this->createAuditService()->logApiKeyRegenerate($id, $regenerated->key->getName());
 
                 // Show confirmation with the new secret key
                 $this->render('api_key_regenerated.html', [
-                    'api_key' => $apiKey
+                    'api_key' => $regenerated->key
                 ]);
                 return;
             }
 
-            // Error occurred, it was already added to the message service by the API key service
-        }
-
-        // Get the API key
-        $apiKey = $this->apiKeyService->getApiKey($id);
-
-        if ($apiKey === null) {
-            $this->showError(_('API key not found or you do not have permission to edit it.'));
-            return;
+            $this->messageService->addMessage('api_key_regenerate', 'error', (string)$regenerated->message);
         }
 
         // Show the regenerate confirmation
@@ -379,13 +368,15 @@ class ApiKeysController extends BaseController
         $disable = $this->getSafeRequestValue('disable') === '1';
 
         // Toggle the API key status
-        $apiKey = $this->apiKeyService->toggleApiKey($id, $disable);
+        $toggled = $this->apiKeyService->toggleApiKey($id, $disable);
 
-        if ($apiKey !== null) {
-            $this->createAuditService()->logApiKeyToggle($id, $apiKey->getName(), $disable);
+        if ($toggled->success) {
+            $this->createAuditService()->logApiKeyToggle($id, $toggled->key->getName(), $disable);
 
             $translatedStatus = $disable ? _('disabled') : _('enabled');
             $this->messageService->addMessage('api_keys', 'success', sprintf(_('API key %s successfully.'), $translatedStatus));
+        } else {
+            $this->messageService->addMessage('api_keys', 'error', (string)$toggled->message);
         }
 
         $this->redirect('/settings/api-keys');
