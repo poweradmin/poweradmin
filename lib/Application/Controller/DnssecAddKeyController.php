@@ -53,12 +53,15 @@ class DnssecAddKeyController extends DnssecKeyController
             }
         }
 
+        $algorithmBits = DnssecAlgorithmName::getAlgorithmBitsForCapabilities($this->getPdnsCapabilities());
+        $offeredBits = array_values(array_unique(array_merge(...array_values($algorithmBits))));
+        rsort($offeredBits);
+
         $bits = "";
         if ($this->httpRequest->getPostParam('bits') !== null) {
             $bits = $this->httpRequest->getPostParam('bits');
 
-            $valid_values = array('2048', '1024', '384', '256');
-            if (!in_array($bits, $valid_values)) {
+            if (!in_array($bits, array_map('strval', $offeredBits), true)) {
                 $this->showError(_('Invalid or unexpected input given.'));
             }
         }
@@ -77,36 +80,20 @@ class DnssecAddKeyController extends DnssecKeyController
             }
         }
 
-        // Function to validate algorithm and bit combinations
-        $validateAlgorithmBitCombination = function ($algorithm, $bits) {
-            // ECDSA algorithms should only use 256 or 384 bits
-            if ($algorithm === 'ecdsa256' && $bits !== '256') {
-                return ['valid' => false, 'message' => _('ECDSA P-256 algorithm must use 256 bits')];
+        // The accepted sizes come from the algorithm map; only the wording is per algorithm.
+        $validateAlgorithmBitCombination = function (string $algorithm, string $bits) use ($algorithmBits): array {
+            $allowed = $algorithmBits[$algorithm] ?? [];
+            if ($allowed === [] || in_array((int)$bits, $allowed, true)) {
+                return ['valid' => true, 'message' => ''];
             }
-            if ($algorithm === 'ecdsa384' && $bits !== '384') {
-                return ['valid' => false, 'message' => _('ECDSA P-384 algorithm must use 384 bits')];
-            }
-
-            // EdDSA algorithms have fixed bit sizes
-            if ($algorithm === 'ed25519') {
-                if ($bits !== '256') {
-                    return ['valid' => false, 'message' => _('ED25519 algorithm must use 256 bits')];
-                }
-            }
-            if ($algorithm === 'ed448') {
-                if ($bits !== '456') {
-                    return ['valid' => false, 'message' => _('ED448 algorithm must use 456 bits (unsupported in this UI)')];
-                }
-            }
-
-            // RSA algorithms should use appropriate bit lengths
-            if (in_array($algorithm, ['rsasha1', 'rsasha1-nsec3-sha1', 'rsasha256', 'rsasha512'])) {
-                if (!in_array($bits, ['1024', '2048'])) {
-                    return ['valid' => false, 'message' => _('RSA algorithms should use 1024 or 2048 bits for adequate security')];
-                }
-            }
-
-            return ['valid' => true, 'message' => ''];
+            $message = match ($algorithm) {
+                DnssecAlgorithmName::ECDSA256 => _('ECDSA P-256 algorithm must use 256 bits'),
+                DnssecAlgorithmName::ECDSA384 => _('ECDSA P-384 algorithm must use 384 bits'),
+                DnssecAlgorithmName::ED25519 => _('ED25519 algorithm must use 256 bits'),
+                DnssecAlgorithmName::ED448 => _('ED448 algorithm must use 456 bits (unsupported in this UI)'),
+                default => _('RSA algorithms should use 1024 or 2048 bits for adequate security'),
+            };
+            return ['valid' => false, 'message' => $message];
         };
 
         if ($this->httpRequest->getPostParam('submit') !== null) {
@@ -169,6 +156,24 @@ class DnssecAddKeyController extends DnssecKeyController
             'bits' => $bits,
             'algorithm' => $algorithm,
             'algorithm_names' => DnssecAlgorithmName::getSupportedAlgorithmNamesForCapabilities($this->getPdnsCapabilities()),
+            'algorithm_bits' => $algorithmBits,
+            'bits_algorithms' => $this->algorithmsByBits($algorithmBits, $offeredBits),
         ]);
+    }
+
+    /**
+     * Invert the algorithm map for the bit-size dropdown: size => algorithms that accept it.
+     *
+     * @param array<string, array<int, int>> $algorithmBits
+     * @param array<int, int> $offeredBits Sizes in display order
+     * @return array<int, array<int, string>>
+     */
+    private function algorithmsByBits(array $algorithmBits, array $offeredBits): array
+    {
+        $out = [];
+        foreach ($offeredBits as $size) {
+            $out[$size] = array_keys(array_filter($algorithmBits, static fn(array $sizes): bool => in_array($size, $sizes, true)));
+        }
+        return $out;
     }
 }

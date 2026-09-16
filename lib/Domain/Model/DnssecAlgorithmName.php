@@ -76,6 +76,21 @@ class DnssecAlgorithmName
     ];
 
     /**
+     * Key sizes each supported algorithm accepts. The curve algorithms have one
+     * fixed size; RSA is capped at 2048 because larger keys bloat responses.
+     */
+    public const ALGORITHM_BITS = [
+        self::RSASHA1 => [1024, 2048],
+        self::RSASHA1_NSEC3_SHA1 => [1024, 2048],
+        self::RSASHA256 => [1024, 2048],
+        self::RSASHA512 => [1024, 2048],
+        self::ECDSA256 => [256],
+        self::ECDSA384 => [384],
+        self::ED25519 => [256],
+        self::ED448 => [456],
+    ];
+
+    /**
      * Algorithms that only became available from a particular PowerDNS
      * release. Anything not listed here has been supported for as long as
      * the API has existed, so we don't gate it.
@@ -103,6 +118,21 @@ class DnssecAlgorithmName
             if ($minVer === null || $caps->isAtLeast($minVer)) {
                 $out[] = $alg;
             }
+        }
+        return $out;
+    }
+
+    /**
+     * algorithm => accepted key sizes, for the algorithms the connected server
+     * offers, so the form's bit list and the server-side check share one source.
+     *
+     * @return array<string, array<int, int>>
+     */
+    public static function getAlgorithmBitsForCapabilities(?PdnsCapabilities $caps): array
+    {
+        $out = [];
+        foreach (self::getSupportedAlgorithmsForCapabilities($caps) as $alg) {
+            $out[$alg] = self::ALGORITHM_BITS[$alg];
         }
         return $out;
     }

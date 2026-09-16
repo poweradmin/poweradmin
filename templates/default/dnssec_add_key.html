@@ -62,10 +62,9 @@
                         <label for="bits" class="form-label">{% trans %}Bits in length{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="bits" name="bits" required>
                             <option value=""></option>
-                            <option value="2048" {{ bits == '2048' ? 'selected' : '' }} data-algorithms="rsasha1,rsasha1-nsec3-sha1,rsasha256,rsasha512">2048</option>
-                            <option value="1024" {{ bits == '1024' ? 'selected' : '' }} data-algorithms="rsasha1,rsasha1-nsec3-sha1,rsasha256,rsasha512">1024</option>
-                            <option value="384" {{ bits == '384' ? 'selected' : '' }} data-algorithms="ecdsa384">384</option>
-                            <option value="256" {{ bits == '256' ? 'selected' : '' }} data-algorithms="ecdsa256,ed25519">256</option>
+                            {% for size, algorithms in bits_algorithms %}
+                            <option value="{{ size }}" {{ bits == size ? 'selected' : '' }} data-algorithms="{{ algorithms|join(',') }}">{{ size }}</option>
+                            {% endfor %}
                         </select>
                         <div class="invalid-feedback">{% trans %}Select bits length{% endtrans %}</div>
                         <div id="bit-warning" class="form-text text-danger"></div>
@@ -85,29 +84,11 @@
                         const algorithmHelp = document.getElementById('algorithm-help');
                         const submitButton = document.getElementById('submit-button');
                         
-                        // Mapping of algorithms to recommended bit sizes
-                        const algorithmBitsMap = {
-                            'ecdsa256': ['256'],
-                            'ecdsa384': ['384'],
-                            'ed25519': ['256'],
-                            'ed448': ['456'], // Not in our dropdown
-                            'rsasha1': ['1024', '2048'],
-                            'rsasha1-nsec3-sha1': ['1024', '2048'],
-                            'rsasha256': ['1024', '2048'],
-                            'rsasha512': ['1024', '2048']
-                        };
-                        
-                        // Algorithm friendly names
-                        const algorithmNames = {
-                            'ecdsa256': 'ECDSA P-256',
-                            'ecdsa384': 'ECDSA P-384',
-                            'ed25519': 'ED25519',
-                            'ed448': 'ED448',
-                            'rsasha1': 'RSASHA1',
-                            'rsasha1-nsec3-sha1': 'RSASHA1-NSEC3-SHA1',
-                            'rsasha256': 'RSASHA256',
-                            'rsasha512': 'RSASHA512'
-                        };
+                        // Accepted bit sizes per algorithm, from the same map the server validates against
+                        const algorithmBitsMap = Object.fromEntries(
+                            Object.entries({{ algorithm_bits|json_encode|raw }}).map(([alg, sizes]) => [alg, sizes.map(String)])
+                        );
+                        const algorithmNames = {{ algorithm_names|json_encode|raw }};
                         
                         // Function to update bit options and validation
                         function updateValidation() {
@@ -134,14 +115,8 @@
                             if (selectedBits && selectedAlgorithm && validBits.indexOf(selectedBits) === -1) {
                                 bitWarning.textContent = `{% trans %}Warning:{% endtrans %} ${selectedBits} {% trans %}bits is not recommended for{% endtrans %} ${algorithmNames[selectedAlgorithm]}`;
                                 
-                                // Disable submit if the combination is completely invalid
-                                if (
-                                    (selectedAlgorithm === 'ecdsa256' && selectedBits !== '256') ||
-                                    (selectedAlgorithm === 'ecdsa384' && selectedBits !== '384') ||
-                                    (selectedAlgorithm === 'ed25519' && selectedBits !== '256')
-                                ) {
-                                    submitButton.disabled = true;
-                                }
+                                // The server refuses every size outside the map, so stop the submit here too
+                                submitButton.disabled = true;
                             }
                             
                             // Filter bit options
