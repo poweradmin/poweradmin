@@ -266,7 +266,8 @@ parameters:
         - lib/Infrastructure/*
         - lib/Module/*
   # Layering. lib/Domain reaches Application and Infrastructure only through the
-  # interfaces under lib/Domain/Repository and ConfigurationInterface.
+  # interfaces under lib/Domain/Repository and ConfigurationInterface (the concrete
+  # manager, validator and theme resolver are listed by name for that reason).
   # Grandfathered files are in phpstan-baseline.neon.
     -
       namespace: 'Poweradmin\Application\*'
@@ -389,6 +390,74 @@ parameters:
         - lib/Module/*
     -
       namespace: 'Poweradmin\Infrastructure\Utility\*'
+      message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+    -
+      namespace: 'Poweradmin\Infrastructure\Network\*'
+      message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+    -
+      namespace: 'Poweradmin\Infrastructure\Configuration\ConfigurationManager'
+      message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+    -
+      namespace: 'Poweradmin\Infrastructure\Configuration\ConfigValidator'
+      message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+    -
+      namespace: 'Poweradmin\Infrastructure\Configuration\ThemePathResolver'
       message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
       allowIn:
         - tests/*

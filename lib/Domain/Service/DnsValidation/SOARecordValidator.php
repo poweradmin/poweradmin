@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 use DateTime;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\Validator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * SOA record validator
@@ -40,7 +40,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class SOARecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
@@ -48,7 +48,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
     private ?string $dns_hostmaster = null;
     private ?string $zone = null;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationInterface $config)
     {
         $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);

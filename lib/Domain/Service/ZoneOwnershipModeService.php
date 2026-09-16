@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Resolves the dns.zone_ownership_mode setting into ownership-side flags.
@@ -39,9 +39,9 @@ class ZoneOwnershipModeService
         self::MODE_GROUPS_ONLY,
     ];
 
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationInterface $config)
     {
         $this->config = $config;
     }

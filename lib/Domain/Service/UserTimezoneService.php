@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Service;
 use PDO;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 
 /**
@@ -86,7 +85,7 @@ class UserTimezoneService
      * preference repository. Shortcut for the many call sites that have
      * a PDO connection and config available but no service container.
      */
-    public static function createDefault(PDO $db, ConfigurationManager $config): self
+    public static function createDefault(PDO $db, ConfigurationInterface $config): self
     {
         $repository = new DbUserPreferenceRepository($db);
         $preferenceService = new UserPreferenceService($repository, $config);

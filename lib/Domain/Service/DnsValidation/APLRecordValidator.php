@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Validator for APL (Address Prefix List) DNS records
@@ -55,14 +55,14 @@ class APLRecordValidator implements DnsRecordValidatorInterface
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
     private IPAddressValidator $ipValidator;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
     /**
      * Constructor
      *
-     * @param ConfigurationManager $config
+     * @param ConfigurationInterface $config
      */
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationInterface $config)
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();

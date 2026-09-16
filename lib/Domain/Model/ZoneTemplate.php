@@ -33,7 +33,6 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -106,7 +105,7 @@ class ZoneTemplate
     private function validateTemplateRecord(string $name, string $type, string $content, mixed $ttl, mixed $prio): ValidationResult
     {
         $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
-            new DnsValidatorRegistry(ConfigurationManager::getInstance(), $this->backendProvider())
+            new DnsValidatorRegistry($this->config, $this->backendProvider())
         );
 
         return $this->recordValidationService->validate(

@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * MINFO Record Validator
@@ -55,7 +55,7 @@ class MINFORecordValidator implements DnsRecordValidatorInterface
     private TTLValidator $ttlValidator;
     private HostnameValidator $hostnameValidator;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationInterface $config)
     {
         $this->ttlValidator = new TTLValidator();
         $this->hostnameValidator = new HostnameValidator($config);

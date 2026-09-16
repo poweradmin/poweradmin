@@ -211,12 +211,6 @@ parameters:
 			path: lib/Domain/Model/Permission.php
 
 		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Domain/Model/ZoneTemplate.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
 			identifier: disallowed.class
 			count: 6
@@ -325,6 +319,12 @@ parameters:
 			path: lib/Domain/Service/ApiPermissionService.php
 
 		-
+			message: '#^Namespace Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\.$#'
+			identifier: disallowed.namespace
+			count: 2
+			path: lib/Domain/Service/ApiPermissionService.php
+
+		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 2
@@ -380,6 +380,12 @@ parameters:
 
 		-
 			message: '#^Namespace Poweradmin\\Application\\Http\\RequestContext is forbidden, lib/Domain must not depend on HTTP or Twig; move the dependency to the caller\. \[Poweradmin\\Application\\Http\\RequestContext matches Poweradmin\\Application\\Http\\\*\]$#'
+			identifier: disallowed.namespace
+			count: 2
+			path: lib/Domain/Service/AuthenticationService.php
+
+		-
+			message: '#^Namespace Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\.$#'
 			identifier: disallowed.namespace
 			count: 2
 			path: lib/Domain/Service/AuthenticationService.php

@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Validator for ALIAS DNS records
@@ -50,9 +50,9 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
     /**
      * Constructor
      *
-     * @param ConfigurationManager $config
+     * @param ConfigurationInterface $config
      */
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationInterface $config)
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();

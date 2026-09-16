@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\RecordReadBackendInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Validator for CNAME DNS records
@@ -42,16 +42,16 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private RecordReadBackendInterface $backendProvider;
 
     /**
      * Constructor
      *
-     * @param ConfigurationManager $config
+     * @param ConfigurationInterface $config
      * @param RecordReadBackendInterface $backendProvider DNS backend the conflict lookups read from
      */
-    public function __construct(ConfigurationManager $config, RecordReadBackendInterface $backendProvider)
+    public function __construct(ConfigurationInterface $config, RecordReadBackendInterface $backendProvider)
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();

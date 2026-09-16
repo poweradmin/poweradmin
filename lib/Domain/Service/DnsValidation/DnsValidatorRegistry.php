@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Registry for DNS record validators
@@ -32,10 +32,10 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class DnsValidatorRegistry
 {
     private array $validators = [];
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private DnsBackendProviderInterface $backendProvider;
 
-    public function __construct(ConfigurationManager $config, DnsBackendProviderInterface $backendProvider)
+    public function __construct(ConfigurationInterface $config, DnsBackendProviderInterface $backendProvider)
     {
         $this->config = $config;
         $this->backendProvider = $backendProvider;

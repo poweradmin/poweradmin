@@ -26,7 +26,7 @@ use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PDO;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -42,7 +42,7 @@ use Poweradmin\Domain\Utility\DomainUtility;
 class BatchReverseRecordCreator
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private AuditService $audit;
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
@@ -52,7 +52,7 @@ class BatchReverseRecordCreator
 
     public function __construct(
         PDO $db,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         AuditService $audit,
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,

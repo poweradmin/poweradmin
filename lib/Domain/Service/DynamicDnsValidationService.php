@@ -28,7 +28,7 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\ValueObject\IpAddressList;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Validates a DDNS request's user agent, username, hostname and IP lists before any update is applied.
@@ -37,9 +37,9 @@ class DynamicDnsValidationService
 {
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationInterface $config)
     {
         $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);

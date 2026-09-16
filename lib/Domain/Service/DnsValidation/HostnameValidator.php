@@ -26,16 +26,16 @@ use Poweradmin\Domain\Utility\TopLevelDomain;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Hostname validation service
  */
 class HostnameValidator
 {
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationInterface $config)
     {
         $this->config = $config;
     }

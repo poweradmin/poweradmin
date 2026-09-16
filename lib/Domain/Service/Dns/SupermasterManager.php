@@ -27,7 +27,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\SupermasterBackendInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
@@ -37,7 +37,7 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 class SupermasterManager
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
@@ -47,10 +47,10 @@ class SupermasterManager
      * Constructor
      *
      * @param PDO $db Database connection
-     * @param ConfigurationManager $config Configuration manager
+     * @param ConfigurationInterface $config Configuration manager
      * @param SupermasterBackendInterface|null $backendProvider DNS backend provider (auto-created if null)
      */
-    public function __construct(PDO $db, ConfigurationManager $config, ?SupermasterBackendInterface $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?SupermasterBackendInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;

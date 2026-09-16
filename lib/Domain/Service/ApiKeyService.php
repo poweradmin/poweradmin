@@ -28,7 +28,7 @@ use PDO;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
@@ -41,7 +41,7 @@ class ApiKeyService
 {
     private ApiKeyRepositoryInterface $apiKeyRepository;
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private MessageService $messageService;
     private LoggerInterface $logger;
     private UserContextService $userContextService;
@@ -62,13 +62,13 @@ class ApiKeyService
      *
      * @param ApiKeyRepositoryInterface $apiKeyRepository The API key repository
      * @param PDO $db The database connection
-     * @param ConfigurationManager $config The configuration manager
+     * @param ConfigurationInterface $config The configuration manager
      * @param MessageService $messageService The message service
      */
     public function __construct(
         ApiKeyRepositoryInterface $apiKeyRepository,
         PDO $db,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         MessageService $messageService,
         ?LoggerInterface $logger = null,
         ?UserContextService $userContextService = null

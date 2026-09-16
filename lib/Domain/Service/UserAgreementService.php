@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Decides whether a user must accept the current user-agreement version and records acceptances.
@@ -31,11 +31,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class UserAgreementService
 {
     private DbUserAgreementRepository $repository;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
     public function __construct(
         DbUserAgreementRepository $repository,
-        ConfigurationManager $config
+        ConfigurationInterface $config
     ) {
         $this->repository = $repository;
         $this->config = $config;

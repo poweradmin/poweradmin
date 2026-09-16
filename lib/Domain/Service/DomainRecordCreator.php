@@ -28,14 +28,14 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Adds the matching A record in the managed forward zone when a PTR record is created in a reverse zone.
  */
 class DomainRecordCreator
 {
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
     private IPAddressValidator $ipValidator;
@@ -45,7 +45,7 @@ class DomainRecordCreator
     private const IPV6_SUFFIX = '.ip6.arpa';
 
     public function __construct(
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,
         ?IPAddressValidator $ipValidator = null,

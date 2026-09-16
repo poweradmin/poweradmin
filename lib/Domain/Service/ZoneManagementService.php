@@ -34,7 +34,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DomainUtility;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use PDO;
@@ -66,7 +66,7 @@ class ZoneManagementService
     public const ERR_READ_ONLY = 'read_only';
 
     private ZoneRepositoryInterface $zoneRepository;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private PDO $db;
     private LoggerInterface $logger;
     private RecordChangeLogger $changeLogger;
@@ -90,7 +90,7 @@ class ZoneManagementService
      */
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         object $db,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,

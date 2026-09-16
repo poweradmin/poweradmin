@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use PDO;
 use Poweradmin\Application\Service\AuditService;
@@ -41,7 +41,7 @@ use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 class ReverseRecordCreator
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private AuditService $audit;
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
@@ -49,7 +49,7 @@ class ReverseRecordCreator
 
     public function __construct(
         PDO $db,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         AuditService $audit,
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,

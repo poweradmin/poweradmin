@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * TXT record validator
@@ -54,10 +54,10 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
     private ?int $maxLength;
 
     /**
-     * @param ConfigurationManager $config
+     * @param ConfigurationInterface $config
      * @param int|null $maxLength Maximum content length (null = no limit for normal records)
      */
-    public function __construct(ConfigurationManager $config, ?int $maxLength = null)
+    public function __construct(ConfigurationInterface $config, ?int $maxLength = null)
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
@@ -69,10 +69,10 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
      * Create a validator instance for zone template records
      * Zone templates have a VARCHAR(2048) constraint on the content column
      *
-     * @param ConfigurationManager $config
+     * @param ConfigurationInterface $config
      * @return self
      */
-    public static function forZoneTemplate(ConfigurationManager $config): self
+    public static function forZoneTemplate(ConfigurationInterface $config): self
     {
         return new self($config, self::MAX_ZONE_TEMPLATE_LENGTH);
     }

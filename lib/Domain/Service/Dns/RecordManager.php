@@ -36,7 +36,7 @@ use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -52,7 +52,7 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 class RecordManager implements RecordManagerInterface
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private MessageService $messageService;
     private DnsFormatter $dnsFormatter;
     private DnsRecordValidationServiceInterface $validationService;
@@ -68,7 +68,7 @@ class RecordManager implements RecordManagerInterface
      * Constructor
      *
      * @param PDO $db Database connection
-     * @param ConfigurationManager $config Configuration manager
+     * @param ConfigurationInterface $config Configuration manager
      * @param DnsRecordValidationServiceInterface $validationService DNS record validation service
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
@@ -76,7 +76,7 @@ class RecordManager implements RecordManagerInterface
      */
     public function __construct(
         PDO $db,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         DnsRecordValidationServiceInterface $validationService,
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,

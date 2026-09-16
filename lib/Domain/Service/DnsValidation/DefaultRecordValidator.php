@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Default DNS record validator for record types that don't have specific validation
@@ -32,9 +32,9 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
 {
     private TTLValidator $ttlValidator;
 
-    public function __construct(ConfigurationManager $_config)
+    public function __construct(ConfigurationInterface $_config)
     {
-        // ConfigurationManager parameter is kept for interface consistency
+        // Config parameter is kept for interface consistency
         $this->ttlValidator = new TTLValidator();
     }
 

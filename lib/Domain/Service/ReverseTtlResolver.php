@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Resolves the default TTL for new records.
@@ -37,7 +37,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class ReverseTtlResolver
 {
     public function __construct(
-        private ConfigurationManager $config,
+        private ConfigurationInterface $config,
         private RecordTypeDefaultRepositoryInterface $recordTypeDefaults,
     ) {
     }

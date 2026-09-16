@@ -32,7 +32,7 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
 use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
@@ -52,7 +52,7 @@ class MfaService
 {
     private Google2FA $google2fa;
     private UserMfaRepositoryInterface $userMfaRepository;
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
     private MailService $mailService;
     private EmailTemplateService $templateService;
     private LoggerInterface $logger;
@@ -63,7 +63,7 @@ class MfaService
      */
     public function __construct(
         UserMfaRepositoryInterface $userMfaRepository,
-        ConfigurationManager $configManager,
+        ConfigurationInterface $configManager,
         MailService $mailService,
         ?LoggerInterface $logger = null,
         ?UserTimezoneService $userTimezoneService = null

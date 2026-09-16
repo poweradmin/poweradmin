@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PDO;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -37,17 +37,17 @@ class SOARecordManager implements SOARecordManagerInterface
     public const MAX_SERIAL = 4294967295;
 
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private DnsBackendProviderInterface $backendProvider;
 
     /**
      * Constructor
      *
      * @param PDO $db Database connection
-     * @param ConfigurationManager $config Configuration manager
+     * @param ConfigurationInterface $config Configuration manager
      * @param DnsBackendProviderInterface $backendProvider DNS backend provider
      */
-    public function __construct(PDO $db, ConfigurationManager $config, DnsBackendProviderInterface $backendProvider)
+    public function __construct(PDO $db, ConfigurationInterface $config, DnsBackendProviderInterface $backendProvider)
     {
         $this->db = $db;
         $this->config = $config;

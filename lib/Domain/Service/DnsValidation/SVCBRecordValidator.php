@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * SVCB record validator
@@ -40,7 +40,7 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
     private TTLValidator $ttlValidator;
     private IPAddressValidator $ipValidator;
 
-    public function __construct(ConfigurationManager $config, ?IPAddressValidator $ipValidator = null)
+    public function __construct(ConfigurationInterface $config, ?IPAddressValidator $ipValidator = null)
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();

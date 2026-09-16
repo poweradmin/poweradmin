@@ -36,7 +36,7 @@ use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -52,7 +52,7 @@ use Poweradmin\Domain\Service\ZoneAccessPolicy;
 class DomainManager implements DomainManagerInterface
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private SOARecordManagerInterface $soaRecordManager;
     private DomainRepositoryInterface $domainRepository;
     private IPAddressValidator $ipAddressValidator;
@@ -67,14 +67,14 @@ class DomainManager implements DomainManagerInterface
      * Constructor
      *
      * @param PDO $db Database connection
-     * @param ConfigurationManager $config Configuration manager
+     * @param ConfigurationInterface $config Configuration manager
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
      * @param DnsBackendProviderInterface|null $backendProvider DNS backend provider (auto-created if null)
      */
     public function __construct(
         PDO $db,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
         ?DnsBackendProviderInterface $backendProvider = null,

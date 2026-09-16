@@ -23,16 +23,16 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
  * Syntax checks for email addresses and digit-only strings.
  */
 class Validator
 {
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationInterface $config)
     {
         $this->config = $config;
     }
