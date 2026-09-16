@@ -23,7 +23,6 @@
 namespace Poweradmin;
 
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\LocaleResolver;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
@@ -32,11 +31,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Database\DebugPDO;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\SessionAuthenticator;
 use Poweradmin\Infrastructure\Utility\DependencyCheck;
-use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 
 /**
  * Boots a request: checks dependencies, loads config and locale, connects the database, optionally authenticates.
@@ -134,15 +131,6 @@ class AppInitializer
     {
         $sessionAuthenticator = new SessionAuthenticator($this->db, $this->configManager);
         $sessionAuthenticator->authenticate();
-
-        // Internal API routes without a session may still carry an API key.
-        if (
-            !(new UserContextService())->isAuthenticated()
-            && RequestContext::isInternalApiRoute()
-            && $this->configManager->get('api', 'enabled', false)
-        ) {
-            (new ApiKeyAuthenticationMiddleware($this->db, $this->configManager))->process(HttpFoundationRequest::createFromGlobals());
-        }
     }
 
     /**
