@@ -166,4 +166,21 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $this->assertSame(['admin', 'member'], $zones[0]['owners']);
         $this->assertSame([4011 => [1, 2]], $this->repository()->getOwnerIdsByZoneIds([4011]));
     }
+
+    #[Test]
+    public function listZonesReportsTheCanonicalIdNextToTheRowId(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
+            VALUES (7, 4011, 'migrated.example', 'MASTER', '', '', 1, 0), (8, 8, 'native.example', 'MASTER', '', '', 1, 0)");
+
+        // getAllZonesFiltered() feeds GET /api/v2/zones; listZones() the internal API.
+        $filtered = array_column($this->repository()->getAllZonesFiltered(null, null, null, null, null), null, 'name');
+        $listed = array_column(array_values($this->repository()->listZones(1, true)), null, 'name');
+
+        foreach ([$filtered, $listed] as $byName) {
+            $this->assertSame(7, (int)$byName['migrated.example']['id']);
+            $this->assertSame(4011, $byName['migrated.example']['canonical_id']);
+            $this->assertSame(8, $byName['native.example']['canonical_id']);
+        }
+    }
 }

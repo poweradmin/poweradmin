@@ -112,6 +112,7 @@ class ZonesController extends PublicApiController
                     items: new OA\Items(
                         properties: [
                             new OA\Property(property: 'id', type: 'integer', example: 1),
+                            new OA\Property(property: 'canonical_id', type: 'integer', example: 1, description: 'Zone id accepted by the other zone endpoints; equals id except for API-backend zones migrated from SQL mode'),
                             new OA\Property(property: 'name', type: 'string', example: 'example.com'),
                             new OA\Property(property: 'type', type: 'string', example: 'MASTER'),
                             new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00')
@@ -194,6 +195,9 @@ class ZonesController extends PublicApiController
             $formattedZones = array_map(function ($zone) {
                 return [
                     'id' => (int)$zone['id'],
+                    // Equal to id except for API-backend zones migrated from SQL mode; the
+                    // value every other endpoint accepts. id will follow it in a later release.
+                    'canonical_id' => (int)($zone['canonical_id'] ?? $zone['id']),
                     'name' => $zone['name'],
                     'type' => $zone['type'] ?? 'MASTER',
                     'created_at' => $zone['created_at'] ?? null

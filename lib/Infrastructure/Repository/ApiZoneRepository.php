@@ -420,7 +420,8 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
     {
         // Owners are filled in by enrichZonesWithOwnership() so every assigned user
         // appears in the list, not just the primary owner.
-        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.comment
+        $query = "SELECT z.id, " . CanonicalZoneSql::canonicalIdColumn('z') . " AS canonical_id,
+                         z.zone_name as name, z.zone_type as type, z.comment
                   FROM zones z
                   LEFT JOIN users u ON z.owner = u.id
                   WHERE z.zone_name IS NOT NULL";
@@ -463,6 +464,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 $stats = $zoneStats[$apiName] ?? [];
                 $zones[$name] = [
                     'id' => $row['id'],
+                    'canonical_id' => (int)$row['canonical_id'],
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
@@ -904,7 +906,10 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         }
 
         [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
-        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
+        // canonical_id is what every other endpoint keys on; id stays the row id for
+        // one release so API clients can move over before the two are made equal.
+        $query = "SELECT z.id, " . CanonicalZoneSql::canonicalIdColumn('z') . " AS canonical_id,
+                         z.zone_name as name, z.zone_type as type, z.zone_master as master,
                          COALESCE(z.owner, 0) as owner
                   FROM zones z
                   WHERE z.zone_name IS NOT NULL"
@@ -924,6 +929,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($results as &$row) {
+            $row['canonical_id'] = (int)$row['canonical_id'];
             $row['record_count'] = 0;
         }
         return $results;
