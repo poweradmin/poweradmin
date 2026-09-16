@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\Application\Service\MailService;
+use Poweradmin\Application\Service\MfaVerificationMailer;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\MfaService;
@@ -45,8 +46,8 @@ class MfaSetupController extends BaseController
         parent::__construct($request);
 
         $userMfaRepository = new DbUserMfaRepository($this->db, $this->config);
-        $mailService = new MailService($this->config, $this->logger);
-        $this->mfaService = new MfaService($userMfaRepository, $this->config, $mailService, null, $this->createUserTimezoneService());
+        $mailer = new MfaVerificationMailer(new MailService($this->config, $this->logger), $this->config);
+        $this->mfaService = new MfaService($userMfaRepository, $this->config, $mailer, null, $this->createUserTimezoneService());
         $this->userContextService = new UserContextService();
     }
 

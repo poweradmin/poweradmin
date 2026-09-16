@@ -92,7 +92,7 @@ class SamlService
         return $this->mfaService ??= new MfaService(
             new DbUserMfaRepository($this->db, $this->configManager),
             $this->configManager,
-            new MailService($this->configManager, $this->logger),
+            new MfaVerificationMailer(new MailService($this->configManager, $this->logger), $this->configManager),
             null,
             UserTimezoneService::createDefault($this->db, $this->configManager)
         );

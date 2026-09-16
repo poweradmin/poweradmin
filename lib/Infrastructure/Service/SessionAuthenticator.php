@@ -47,6 +47,7 @@ use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Application\Service\MailService;
+use Poweradmin\Application\Service\MfaVerificationMailer;
 
 /**
  * Per-request login pipeline: CSRF and reCAPTCHA on the form, session expiry, then the SQL or LDAP authenticator.
@@ -321,7 +322,7 @@ class SessionAuthenticator
         $mfaService = new MfaService(
             new DbUserMfaRepository($this->db, $this->configManager),
             $this->configManager,
-            new MailService($this->configManager, $this->logger),
+            new MfaVerificationMailer(new MailService($this->configManager, $this->logger), $this->configManager),
             null,
             UserTimezoneService::createDefault($this->db, $this->configManager)
         );

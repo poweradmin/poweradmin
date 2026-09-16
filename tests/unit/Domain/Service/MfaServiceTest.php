@@ -28,7 +28,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\MailService;
+use Poweradmin\Domain\Service\MfaVerificationMailerInterface;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Service\MfaService;
@@ -42,7 +42,7 @@ class MfaServiceTest extends TestCase
     private MfaService $service;
     private UserMfaRepositoryInterface&MockObject $userMfaRepository;
     private ConfigurationManager&MockObject $configManager;
-    private MailService&MockObject $mailService;
+    private MfaVerificationMailerInterface&MockObject $mailService;
 
     private string $originalErrorLog;
 
@@ -56,7 +56,7 @@ class MfaServiceTest extends TestCase
 
         $this->userMfaRepository = $this->createMock(UserMfaRepositoryInterface::class);
         $this->configManager = $this->createMock(ConfigurationManager::class);
-        $this->mailService = $this->createMock(MailService::class);
+        $this->mailService = $this->createMock(MfaVerificationMailerInterface::class);
 
         $this->service = new MfaService(
             $this->userMfaRepository,

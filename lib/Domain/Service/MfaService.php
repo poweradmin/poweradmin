@@ -28,8 +28,6 @@ use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use Exception;
 use PDOException;
-use Poweradmin\Application\Service\MailService;
-use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -40,9 +38,6 @@ use PragmaRX\Google2FA\Google2FA;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use RuntimeException;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 use Poweradmin\Domain\Enum\AuthMethod;
 
 /**
@@ -53,8 +48,7 @@ class MfaService
     private Google2FA $google2fa;
     private UserMfaRepositoryInterface $userMfaRepository;
     private ConfigurationInterface $configManager;
-    private MailService $mailService;
-    private EmailTemplateService $templateService;
+    private MfaVerificationMailerInterface $mailer;
     private LoggerInterface $logger;
     private ?UserTimezoneService $userTimezoneService;
 
@@ -64,15 +58,14 @@ class MfaService
     public function __construct(
         UserMfaRepositoryInterface $userMfaRepository,
         ConfigurationInterface $configManager,
-        MailService $mailService,
+        MfaVerificationMailerInterface $mailer,
         ?LoggerInterface $logger = null,
         ?UserTimezoneService $userTimezoneService = null
     ) {
         $this->google2fa = new Google2FA();
         $this->userMfaRepository = $userMfaRepository;
         $this->configManager = $configManager;
-        $this->mailService = $mailService;
-        $this->templateService = new EmailTemplateService($configManager);
+        $this->mailer = $mailer;
         $this->logger = $logger ?? new NullLogger();
         $this->userTimezoneService = $userTimezoneService;
     }
@@ -467,9 +460,7 @@ class MfaService
      * @param int $userId The user ID
      * @param string $email The email address to send the code to
      * @return string The generated verification code
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
+     * @throws RuntimeException when mail is disabled, misconfigured or the address is empty
      */
     public function sendEmailVerificationCode(int $userId, string $email): string
     {
@@ -486,7 +477,7 @@ class MfaService
         }
 
         // Validate mail configuration before proceeding
-        if (!$this->mailService->isMailConfigurationValid()) {
+        if (!$this->mailer->isMailConfigurationValid()) {
             $this->logger->warning('Email verification attempted but mail configuration is invalid for user ID: {userId}', ['userId' => $userId]);
             throw new RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
         }
@@ -526,9 +517,7 @@ class MfaService
 
         $timezone = $this->userTimezoneService?->getEffectiveTimezone($userId);
 
-        $templates = $this->templateService->renderMfaVerificationEmail($verificationCode, $expiresAt, $timezone);
-
-        $this->mailService->sendMail($email, $templates['subject'], $templates['html'], $templates['text']);
+        $this->mailer->sendVerificationCode($email, $verificationCode, $expiresAt, $timezone);
 
         return $verificationCode;
     }
@@ -558,7 +547,7 @@ class MfaService
         }
 
         // Validate mail configuration before proceeding
-        if (!$this->mailService->isMailConfigurationValid()) {
+        if (!$this->mailer->isMailConfigurationValid()) {
             $this->logger->warning('Email verification refresh attempted but mail configuration is invalid for user ID: {userId}', ['userId' => $userId]);
             throw new RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
         }
