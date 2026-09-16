@@ -2,9 +2,12 @@
 
 namespace Poweradmin\Tests\Integration;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Module\Whois\Service\WhoisService;
 
+// Queries public WHOIS servers over port 43; excluded from CI.
+#[Group('network')]
 class WhoisServiceIntegrationTest extends TestCase
 {
     /**

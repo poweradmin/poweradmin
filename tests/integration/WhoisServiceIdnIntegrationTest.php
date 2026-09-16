@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Module\Whois\Service\WhoisService;
 
@@ -13,6 +14,8 @@ use Poweradmin\Module\Whois\Service\WhoisService;
  * This test verifies that the WhoisService correctly handles
  * internationalized domain names in various scripts.
  */
+// Queries public WHOIS servers over port 43; excluded from CI.
+#[Group('network')]
 #[RequiresPhpExtension('intl')]
 class WhoisServiceIdnIntegrationTest extends TestCase
 {

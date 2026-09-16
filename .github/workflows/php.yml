@@ -108,6 +108,11 @@ jobs:
     - name: Run test suite
       run: composer tests
 
+    # Runs on in-memory SQLite; tests that need MySQL, PostgreSQL or LDAP skip
+    # themselves, and the WHOIS tests that query public servers are excluded.
+    - name: Run integration suite
+      run: composer tests:integration -- --exclude-group network
+
   compatibility:
     name: PHP ${{ matrix.php-version }} Compatibility
     runs-on: ubuntu-latest
