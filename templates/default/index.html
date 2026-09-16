@@ -189,7 +189,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others']) %}
+                {% if nav.batch_ptr %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/zones/batch-ptr" class="card h-100 text-decoration-none text-body" data-testid="batch-ptr-records-link">
                         <div class="card-body text-center py-2 px-1">
@@ -245,7 +245,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if permissions['user_is_ueberuser'] and dblog_use == true %}
+                {% if nav.zone_logs %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/zones/logs" class="card h-100 text-decoration-none text-body" data-testid="zone-logs-link">
                         <div class="card-body text-center py-2 px-1">
@@ -255,7 +255,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if permissions['user_is_ueberuser'] and dblog_use == true %}
+                {% if nav.user_logs %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/users/logs" class="card h-100 text-decoration-none text-body" data-testid="user-logs-link">
                         <div class="card-body text-center py-2 px-1">
@@ -265,7 +265,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if permissions['user_is_ueberuser'] and dblog_use == true and show_group_access_templates %}
+                {% if nav.group_logs %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/groups/logs" class="card h-100 text-decoration-none text-body" data-testid="group-logs-link">
                         <div class="card-body text-center py-2 px-1">
@@ -275,7 +275,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if permissions['user_is_ueberuser'] and dblog_use == true %}
+                {% if nav.record_changes %}
                 <div class="col card-item">
                     <a href="{{ base_url_prefix }}/zones/changes" class="card h-100 text-decoration-none text-body" data-testid="record-changes-link">
                         <div class="card-body text-center py-2 px-1">
@@ -493,7 +493,7 @@
         </a>
     </div>
     {% endif %}
-    {% if iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others']) %}
+    {% if nav.batch_ptr %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/zones/batch-ptr" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="batch-ptr-records-link">
             <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">

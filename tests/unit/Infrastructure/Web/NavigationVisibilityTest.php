@@ -101,4 +101,13 @@ class NavigationVisibilityTest extends TestCase
         $this->assertFalse($this->build([], ['api' => ['enabled' => true]])['api_docs']);
         $this->assertTrue($this->build([], ['api' => ['enabled' => true, 'docs_enabled' => true]])['api_docs']);
     }
+
+    public function testBatchPtrNeedsAnEditGrantLikeItsPage(): void
+    {
+        $reverse = ['interface' => ['add_reverse_record' => true]];
+
+        $this->assertFalse($this->build(['zone_content_view_others'], $reverse)['batch_ptr']);
+        $this->assertTrue($this->build(['zone_content_edit_own'], $reverse)['batch_ptr']);
+        $this->assertFalse($this->build(['zone_content_edit_own'])['batch_ptr']);
+    }
 }

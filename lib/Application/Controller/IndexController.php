@@ -81,6 +81,10 @@ class IndexController extends BaseController
             'user_edit_others',
             'user_add_new',
             'api_manage_keys',
+            'zone_logs_view_own',
+            'zone_logs_view_others',
+            'user_logs_view',
+            'group_logs_view',
         ]);
 
         // Check PowerDNS server status if API is enabled and user is admin
@@ -130,6 +134,7 @@ class IndexController extends BaseController
             && $this->ssoProvisioningTemplateMissing();
 
         $dblogUse = $this->config->get('logging', 'database_enabled', false);
+        $showGroupAccessTemplates = (bool)$this->config->get('permissions', 'show_group_access_templates', true);
         $ifaceAddReverseRecord = $this->config->get('interface', 'add_reverse_record', true);
         $apiEnabled = $this->config->get('api', 'enabled', false);
         $enableConsistencyChecks = $this->config->get('interface', 'enable_consistency_checks', false);
@@ -146,7 +151,10 @@ class IndexController extends BaseController
             || ($ifaceAddReverseRecord && ($permissions['zone_content_edit_own'] || $permissions['zone_content_edit_others']));
         $hasAdministration = $permissions['user_view_others'] || $permissions['user_edit_others']
             || $permissions['user_add_new'] || $permissions['user_is_ueberuser']
-            || $permissions['templ_perm_edit'];
+            || $permissions['templ_perm_edit']
+            || ($dblogUse && ($permissions['zone_logs_view_own'] || $permissions['zone_logs_view_others']
+                || $permissions['user_logs_view']
+                || ($permissions['group_logs_view'] && $showGroupAccessTemplates)));
         $hasTools = ($permissions['user_is_ueberuser'] && $enableConsistencyChecks)
             || (($permissions['user_is_ueberuser'] || $permissions['api_manage_keys']) && $apiEnabled)
             || count($moduleNavItems) > 0;
@@ -167,7 +175,7 @@ class IndexController extends BaseController
             'is_limited_user' => $isLimitedUser,
             'user_id' => $userId,
             'enable_consistency_checks' => $enableConsistencyChecks,
-            'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
+            'show_group_access_templates' => $showGroupAccessTemplates,
             'module_nav_items' => $moduleNavItems,
             'has_dns_management' => $hasDnsManagement,
             'has_zone_operations' => $hasZoneOperations,

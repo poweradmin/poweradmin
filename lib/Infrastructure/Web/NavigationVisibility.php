@@ -56,7 +56,9 @@ final class NavigationVisibility
             'zone_add_master' => $can('zone_master_add'),
             'zone_add_slave' => $can('zone_slave_add'),
             'bulk_registration' => $can('zone_master_add'),
-            'batch_ptr' => (bool)$config->get('interface', 'add_reverse_record', false) && $viewZones,
+            // The batch PTR page itself requires an edit grant.
+            'batch_ptr' => (bool)$config->get('interface', 'add_reverse_record', false)
+                && ($can('zone_content_edit_own') || $can('zone_content_edit_others')),
             'zone_logs' => $zoneLogs,
             'record_changes' => $zoneLogs && $ueberuser,
             'users' => $userList || ($can('user_logs_view') && $dbLog),
