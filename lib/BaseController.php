@@ -41,7 +41,6 @@ use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserManagementService;
@@ -77,14 +76,12 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
-use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Web\PageRenderer;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Module\ModuleRegistry;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Base for every web controller: config, database, session, permissions, CSRF, validation and Twig rendering.
@@ -144,37 +141,6 @@ abstract class BaseController
         $this->messageService = new MessageService();
         $this->userContextService = new UserContextService();
 
-        // If we're in an API context and the user is not authenticated,
-        // check for API key authentication (but only for internal API routes)
-        if ($authenticate && !$this->userContextService->isAuthenticated() && RequestContext::isInternalApiRoute()) {
-            $this->tryApiKeyAuthentication();
-        }
-
-        // Enforce pending MFA before serving an authenticated request. Web pages are
-        // redirected to the verification form; API requests get a JSON 403 instead of
-        // an HTML redirect they cannot follow (but are still blocked, not skipped).
-        if ($authenticate && $this->userContextService->isAuthenticated()) {
-            $currentPage = $request['page'] ?? '';
-
-            if (MfaSessionManager::isMfaRequired() && $currentPage !== 'mfa_verify') {
-                if (RequestContext::isApiRequest()) {
-                    http_response_code(403);
-                    header('Content-Type: application/json');
-                    echo json_encode(['error' => true, 'message' => 'Multi-factor authentication required']);
-                    exit;
-                }
-
-                // Ensure session is written before redirecting
-                session_write_close();
-
-                // Build redirect URL with base_url_prefix support
-                $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-                $redirectUrl = $baseUrlPrefix . '/mfa/verify';
-                header("Location: $redirectUrl");
-                exit;
-            }
-        }
-
         // Every state-changing web request is token-checked here rather than in each
         // controller, so a handler cannot be written without the guard
         if ($this->isPost() && $this->requiresCsrfValidation()) {
@@ -191,27 +157,6 @@ abstract class BaseController
     protected function requiresCsrfValidation(): bool
     {
         return true;
-    }
-
-    /**
-     * Tries to authenticate using API key
-     * Only used for internal API routes by default
-     */
-    private function tryApiKeyAuthentication(): void
-    {
-        // Check if API functionality is enabled (which includes API keys)
-        if (!$this->config->get('api', 'enabled', false)) {
-            return;
-        }
-
-        // Create API key middleware
-        $middleware = new ApiKeyAuthenticationMiddleware($this->db, $this->config);
-
-        // Create request object from globals
-        $request = Request::createFromGlobals();
-
-        // Try to authenticate
-        $middleware->process($request);
     }
 
     /**

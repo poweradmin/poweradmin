@@ -33,6 +33,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Infrastructure\Session\SessionService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\UserAgreementService;
@@ -43,6 +44,7 @@ use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
+use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Application\Service\MailService;
@@ -252,7 +254,37 @@ class SessionAuthenticator
         // Check for MFA enforcement requirements after user agreement
         $this->checkMfaEnforcementRequirements();
 
+        $this->checkPendingMfaVerification();
+
         $this->logger->debug('Authentication process completed for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
+    }
+
+    /**
+     * A session that still owes its second factor may only reach the verification
+     * form. API requests get a JSON 403 instead of a redirect they cannot follow.
+     */
+    private function checkPendingMfaVerification(): void
+    {
+        if (
+            !(new UserContextService())->isAuthenticated()
+            || !MfaSessionManager::isMfaRequired()
+            || $this->getCurrentRequestPath() === '/mfa/verify'
+        ) {
+            return;
+        }
+
+        if (RequestContext::isApiRequest()) {
+            http_response_code(403);
+            header('Content-Type: application/json');
+            echo json_encode(['error' => true, 'message' => 'Multi-factor authentication required']);
+            exit;
+        }
+
+        // Ensure session is written before redirecting
+        session_write_close();
+
+        $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
+        $this->redirectService->redirectTo($baseUrlPrefix . '/mfa/verify');
     }
 
     private function checkUserAgreementRequirements(): void
