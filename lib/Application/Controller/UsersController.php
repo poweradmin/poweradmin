@@ -26,6 +26,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
+use Poweradmin\Domain\Service\SelfEditFieldGuard;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -124,6 +125,10 @@ class UsersController extends BaseController
             'email' => $email,
             'active' => ($posted['active'] ?? '') == 'on' ? 1 : 0,
         ];
+        // Auth-critical fields are not self-service (#1327), as on the single-user form
+        if ($targetId === $callerId && !$this->hasPermission(Permission::PERM_USER_EDIT_OTHERS)) {
+            $input = array_diff_key($input, array_flip(SelfEditFieldGuard::RESTRICTED_FIELDS));
+        }
         if ($this->hasPermission(Permission::PERM_USER_EDIT_TEMPL_PERM) && isset($posted['templ_id'])) {
             $input['perm_templ'] = $posted['templ_id'];
             $templateError = PermissionTemplateAssignmentGuard::apply($this->createPermissionService(), null, $callerId, $input, $targetId);
