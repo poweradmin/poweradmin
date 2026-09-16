@@ -12,10 +12,10 @@
  *  (at your option) any later version.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\AuthenticationService;
+use Poweradmin\Infrastructure\Service\AuthenticationService;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Session\SessionService;
 use ReflectionMethod;

@@ -27,7 +27,7 @@ use Poweradmin\Application\Service\OidcService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Domain\Service\AuthenticationService;
+use Poweradmin\Infrastructure\Service\AuthenticationService;
 use Poweradmin\Infrastructure\Session\SessionService;
 use Poweradmin\Infrastructure\Service\RedirectService;
 
