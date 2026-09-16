@@ -265,3 +265,205 @@ parameters:
         - lib/Application/*
         - lib/Infrastructure/*
         - lib/Module/*
+  # Layering. lib/Domain reaches Application and Infrastructure only through the
+  # interfaces under lib/Domain/Repository and ConfigurationInterface.
+  # Grandfathered files are in phpstan-baseline.neon.
+    -
+      namespace: 'Poweradmin\Application\*'
+      message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+    -
+      namespace: 'Poweradmin\Infrastructure\Repository\*'
+      message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+    -
+      namespace: 'Poweradmin\Infrastructure\Service\*'
+      message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+    -
+      namespace: 'Poweradmin\Infrastructure\Api\*'
+      message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+    -
+      namespace: 'Poweradmin\Infrastructure\Session\*'
+      message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+    -
+      namespace: 'Poweradmin\Infrastructure\Logger\*'
+      message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+    -
+      namespace: 'Poweradmin\Infrastructure\Database\*'
+      message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+    -
+      namespace: 'Poweradmin\Infrastructure\Utility\*'
+      message: 'lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+  # lib/Domain returns; the caller emits HTTP and owns the session.
+  disallowedFunctionCalls:
+    -
+      function:
+        - 'header()'
+        - 'http_response_code()'
+        - 'setcookie()'
+        - 'session_start()'
+        - 'session_write_close()'
+        - 'session_regenerate_id()'
+        - 'session_destroy()'
+        - 'exit()'
+        - 'die()'
+        - 'echo()'
+        - 'print()'
+      message: 'lib/Domain returns a result; the controller emits output and owns the session'
+      allowIn:
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Application/*
+        - lib/Infrastructure/*
+        - lib/Module/*
+  # Controllers read and write through repositories and services, never PDO.
+  disallowedMethodCalls:
+    -
+      method:
+        - 'PDO::prepare()'
+        - 'PDO::query()'
+        - 'PDO::exec()'
+        - 'PDO::beginTransaction()'
+      message: 'controllers go through a repository or service; move the SQL there'
+      allowIn:
+        # The health probe opens its own connection and pings it.
+        - lib/Application/Controller/Api/HealthController.php
+        - tests/*
+        - addons/*
+        - config/*
+        - install/*
+        - index.php
+        - dynamic_update.php
+        - lib/AppInitializer.php
+        - lib/AppManager.php
+        - lib/BaseController.php
+        - lib/LocaleManager.php
+        - lib/Pages.php
+        - lib/Application/Service/*
+        - lib/Application/Helpers/*
+        - lib/Application/Http/*
+        - lib/Application/Presenter/*
+        - lib/Application/Query/*
+        - lib/Application/Routing/*
+        - lib/Application/Config/*
+        - lib/Domain/*
+        - lib/Infrastructure/*
+        - lib/Module/*
