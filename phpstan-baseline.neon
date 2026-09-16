@@ -175,12 +175,6 @@ parameters:
 			path: lib/Application/Service/PasswordPolicyService.php
 
 		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 3
-			path: lib/Application/Service/PdnsVersionService.php
-
-		-
 			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
 			identifier: disallowed.method
 			count: 1
@@ -307,21 +301,9 @@ parameters:
 			path: lib/Domain/Service/ApiKeyService.php
 
 		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Domain/Service/ApiPermissionService.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\DbUserRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
-			path: lib/Domain/Service/ApiPermissionService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\.$#'
-			identifier: disallowed.namespace
-			count: 2
 			path: lib/Domain/Service/ApiPermissionService.php
 
 		-
@@ -335,72 +317,6 @@ parameters:
 			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/ApiPermissionService.php
-
-		-
-			message: '#^Calling Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager\:\:getInstance\(\) is forbidden, inject ConfigurationInterface instead of reaching for the singleton\.$#'
-			identifier: disallowed.method
-			count: 1
-			path: lib/Domain/Service/AuthenticationService.php
-
-		-
-			message: '#^Calling echo\(\) is forbidden, lib/Domain returns a result; the controller emits output and owns the session\.$#'
-			identifier: disallowed.echo
-			count: 1
-			path: lib/Domain/Service/AuthenticationService.php
-
-		-
-			message: '#^Calling exit\(\) is forbidden, lib/Domain returns a result; the controller emits output and owns the session\.$#'
-			identifier: disallowed.exit
-			count: 1
-			path: lib/Domain/Service/AuthenticationService.php
-
-		-
-			message: '#^Calling header\(\) is forbidden, lib/Domain returns a result; the controller emits output and owns the session\.$#'
-			identifier: disallowed.function
-			count: 1
-			path: lib/Domain/Service/AuthenticationService.php
-
-		-
-			message: '#^Calling http_response_code\(\) is forbidden, lib/Domain returns a result; the controller emits output and owns the session\.$#'
-			identifier: disallowed.function
-			count: 1
-			path: lib/Domain/Service/AuthenticationService.php
-
-		-
-			message: '#^Class Poweradmin\\Infrastructure\\Service\\RedirectService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Service\\RedirectService matches Poweradmin\\Infrastructure\\Service\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/AuthenticationService.php
-
-		-
-			message: '#^Class Poweradmin\\Infrastructure\\Session\\SessionService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Session\\SessionService matches Poweradmin\\Infrastructure\\Session\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/AuthenticationService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Http\\RequestContext is forbidden, lib/Domain must not depend on HTTP or Twig; move the dependency to the caller\. \[Poweradmin\\Application\\Http\\RequestContext matches Poweradmin\\Application\\Http\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 2
-			path: lib/Domain/Service/AuthenticationService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\.$#'
-			identifier: disallowed.namespace
-			count: 2
-			path: lib/Domain/Service/AuthenticationService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Service\\RedirectService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Service\\RedirectService matches Poweradmin\\Infrastructure\\Service\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/AuthenticationService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Session\\SessionService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Session\\SessionService matches Poweradmin\\Infrastructure\\Session\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/AuthenticationService.php
 
 		-
 			message: '#^Class Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
@@ -497,12 +413,6 @@ parameters:
 			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/DatabaseConsistencyService.php
-
-		-
-			message: '#^Calling die\(\) is forbidden, lib/Domain returns a result; the controller emits output and owns the session\.$#'
-			identifier: disallowed.die
-			count: 1
-			path: lib/Domain/Service/DatabaseSchemaService.php
 
 		-
 			message: '#^Class Poweradmin\\Application\\Service\\RepositoryFactory is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\RepositoryFactory matches Poweradmin\\Application\\\*\]$#'
@@ -721,12 +631,6 @@ parameters:
 			path: lib/Domain/Service/DynamicDnsAuthenticationService.php
 
 		-
-			message: '#^Calling echo\(\) is forbidden, lib/Domain returns a result; the controller emits output and owns the session\.$#'
-			identifier: disallowed.echo
-			count: 1
-			path: lib/Domain/Service/DynamicDnsHelper.php
-
-		-
 			message: '#^Class Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
@@ -749,48 +653,6 @@ parameters:
 			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/DynamicDnsUpdateService.php
-
-		-
-			message: '#^Class Poweradmin\\Application\\Service\\EmailTemplateService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\EmailTemplateService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/MfaService.php
-
-		-
-			message: '#^Class Poweradmin\\Application\\Service\\MailService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\MailService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/MfaService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\EmailTemplateService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\EmailTemplateService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/MfaService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\MailService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\MailService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/MfaService.php
-
-		-
-			message: '#^Namespace Twig\\Error\\LoaderError is forbidden, lib/Domain must not depend on HTTP or Twig; move the dependency to the caller\. \[Twig\\Error\\LoaderError matches Twig\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/MfaService.php
-
-		-
-			message: '#^Namespace Twig\\Error\\RuntimeError is forbidden, lib/Domain must not depend on HTTP or Twig; move the dependency to the caller\. \[Twig\\Error\\RuntimeError matches Twig\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/MfaService.php
-
-		-
-			message: '#^Namespace Twig\\Error\\SyntaxError is forbidden, lib/Domain must not depend on HTTP or Twig; move the dependency to the caller\. \[Twig\\Error\\SyntaxError matches Twig\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/MfaService.php
 
 		-
 			message: '#^Class Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
