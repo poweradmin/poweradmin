@@ -287,7 +287,7 @@ class ControllerServiceFactory
 
     public function zoneCreateOwnershipResolver(): ZoneCreateOwnershipResolver
     {
-        return new ZoneCreateOwnershipResolver($this->zoneOwnershipModeService(), $this->permissionService(), $this->userGroupRepository());
+        return new ZoneCreateOwnershipResolver($this->zoneOwnershipModeService(), $this->permissionService(), $this->userGroupRepository(), $this->userRepository());
     }
 
     public function zoneOwnershipFormResolver(): ZoneOwnershipFormResolver

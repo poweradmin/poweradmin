@@ -72,6 +72,7 @@ class ZoneOwnershipFormResolver
         return match ($resolution->code) {
             ZoneOwnershipResolution::NO_OWNER => _('At least one user or group must be selected as owner.'),
             ZoneOwnershipResolution::OTHER_OWNER_FORBIDDEN => _('You do not have permission to create zones for other users.'),
+            ZoneOwnershipResolution::UNKNOWN_OWNER => sprintf(_('Unknown user ID: %s'), implode(',', $resolution->ids)),
             ZoneOwnershipResolution::UNKNOWN_GROUPS => sprintf(_('Unknown group ID(s): %s'), implode(',', $resolution->ids)),
             ZoneOwnershipResolution::GROUPS_NOT_MEMBER => sprintf(_('You can only assign groups you are a member of (disallowed: %s)'), implode(',', $resolution->ids)),
             default => (string)$resolution->error,

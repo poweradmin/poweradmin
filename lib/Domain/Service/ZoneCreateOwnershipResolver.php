@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 
 /**
  * Resolves the user-owner and group-owner assignment for a new zone, applying
@@ -35,12 +36,18 @@ class ZoneCreateOwnershipResolver
     private ZoneOwnershipModeService $mode;
     private PermissionService $permissions;
     private UserGroupRepositoryInterface $groups;
+    private UserRepositoryInterface $users;
 
-    public function __construct(ZoneOwnershipModeService $mode, PermissionService $permissions, UserGroupRepositoryInterface $groups)
-    {
+    public function __construct(
+        ZoneOwnershipModeService $mode,
+        PermissionService $permissions,
+        UserGroupRepositoryInterface $groups,
+        UserRepositoryInterface $users
+    ) {
         $this->mode = $mode;
         $this->permissions = $permissions;
         $this->groups = $groups;
+        $this->users = $users;
     }
 
     /**
@@ -123,9 +130,19 @@ class ZoneCreateOwnershipResolver
     }
 
     /**
+     * Whether the caller may give a new zone to somebody else; the owner pickers
+     * offer other users only when this holds.
+     */
+    public function canAssignOtherOwners(int $callerUserId): bool
+    {
+        return $this->permissions->hasPermission($callerUserId, Permission::PERM_ZONE_CONTENT_EDIT_OTHERS);
+    }
+
+    /**
      * The rules shared by the API and the web forms: the groups must exist, a
      * zone needs at least one owner, giving it to another user needs
-     * zone_content_edit_others, and non-admins may only pick their own groups.
+     * zone_content_edit_others and that user must exist, and non-admins may
+     * only pick their own groups.
      *
      * @param list<int> $groupIds
      */
@@ -155,11 +172,20 @@ class ZoneCreateOwnershipResolver
         }
 
         if ($owner !== null && $owner !== $callerUserId) {
-            if (!$this->permissions->hasPermission($callerUserId, Permission::PERM_ZONE_CONTENT_EDIT_OTHERS)) {
+            if (!$this->canAssignOtherOwners($callerUserId)) {
                 return ZoneOwnershipResolution::error(
                     'You do not have permission to create zones for other users',
                     403,
                     ZoneOwnershipResolution::OTHER_OWNER_FORBIDDEN
+                );
+            }
+            // zones.owner has no foreign key, so an unknown id would leave a zone nobody owns.
+            if ($this->users->getUserById($owner) === null) {
+                return ZoneOwnershipResolution::error(
+                    'Unknown user ID: ' . $owner,
+                    404,
+                    ZoneOwnershipResolution::UNKNOWN_OWNER,
+                    [$owner]
                 );
             }
         }

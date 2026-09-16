@@ -27,6 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
@@ -91,6 +92,16 @@ class ZoneOwnershipFormResolverTest extends TestCase
         $this->assertSame('You can only assign groups you are a member of (disallowed: 9)', ZoneOwnershipFormResolver::errorMessage($result));
     }
 
+    public function testAnUnknownOwnerIsNamedInTheRefusal(): void
+    {
+        $_POST = ['owner' => '42'];
+
+        $result = $this->resolver('both', adminCaller: true)->resolve(new Request(), self::CALLER_ID);
+
+        $this->assertSame(ZoneOwnershipResolution::UNKNOWN_OWNER, $result->code);
+        $this->assertSame('Unknown user ID: 42', ZoneOwnershipFormResolver::errorMessage($result));
+    }
+
     public function testTheBlockerIsWordedForThePage(): void
     {
         $this->assertNull($this->resolver('both')->blocker(self::CALLER_ID));
@@ -107,7 +118,7 @@ class ZoneOwnershipFormResolverTest extends TestCase
     /**
      * @param int[] $memberOf groups the caller belongs to; every requested group exists
      */
-    private function resolver(string $mode, array $memberOf = []): ZoneOwnershipFormResolver
+    private function resolver(string $mode, array $memberOf = [], bool $adminCaller = false): ZoneOwnershipFormResolver
     {
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->with('dns', 'zone_ownership_mode', 'both')->willReturn($mode);
@@ -117,9 +128,12 @@ class ZoneOwnershipFormResolverTest extends TestCase
         $groups->method('findExistingIds')->willReturnCallback(fn(array $ids): array => $ids);
         $groups->method('getGroupIdsForUser')->willReturn($memberOf);
 
+        // No user besides the caller exists, and the caller is never looked up.
+        $users = $this->scriptedUserRepository(adminUserIds: $adminCaller ? [self::CALLER_ID] : []);
+
         return new ZoneOwnershipFormResolver(
             $ownershipMode,
-            new ZoneCreateOwnershipResolver($ownershipMode, $this->buildPermissionService(), $groups)
+            new ZoneCreateOwnershipResolver($ownershipMode, new PermissionService($users), $groups, $users)
         );
     }
 }

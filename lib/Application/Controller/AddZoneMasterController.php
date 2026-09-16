@@ -298,22 +298,8 @@ class AddZoneMasterController extends BaseController
             $zone_template_value = $default_template_id !== null ? $default_template_id : 'none';
         }
 
-        // Safely handle the owner value - ensure it's an integer or preserve empty selection
-        $ownerInput = $this->httpRequest->getPostParam('owner');
-        if ($ownerInput !== null) {
-            if ($ownerInput === '') {
-                // Empty value means "no user owner" was explicitly selected
-                $owner_value = '';
-            } else {
-                $owner_id = filter_var($ownerInput, FILTER_VALIDATE_INT);
-                // Verify that the owner ID exists among valid users
-                $valid_owner_ids = array_column($users, 'id');
-                $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION[SessionKeys::USERID];
-            }
-        } else {
-            // No POST data, default to current user
-            $owner_value = $_SESSION[SessionKeys::USERID];
-        }
+        $assignableOwners = $this->assignableOwners($users);
+        $owner_value = $this->preservedOwnerChoice($assignableOwners, $this->httpRequest->getPostParam('owner'));
 
         $valid_domain_types = $this->getAvailableZoneTypes();
         $domTypeInput = $this->httpRequest->getPostParam('dom_type');
@@ -354,7 +340,7 @@ class AddZoneMasterController extends BaseController
             'session_user_id' => $userId,
             'available_zone_types' => $valid_domain_types,
             'users' => $users,
-            'selectable_owners' => $this->selectableOwners($users),
+            'selectable_owners' => $assignableOwners,
             'zone_templates' => $templates,
             'can_use_templates' => !empty($templates),
             'default_template_id' => $default_template_id,

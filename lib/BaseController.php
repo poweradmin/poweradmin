@@ -754,7 +754,55 @@ abstract class BaseController
      */
     protected function selectableOwners(array $users): array
     {
-        if ($this->hasPermission(Permission::PERM_USER_VIEW_OTHERS)) {
+        return $this->ownersOffered($this->hasPermission(Permission::PERM_USER_VIEW_OTHERS), $users);
+    }
+
+    /**
+     * The users a new zone may be given to: everyone when the create path lets
+     * the caller assign other owners and they may see other users, otherwise
+     * only the current user.
+     *
+     * @param list<array<string, mixed>> $users Rows with an 'id' key
+     * @return list<array<string, mixed>>
+     */
+    protected function assignableOwners(array $users): array
+    {
+        $everyone = $this->canAssignOtherOwners() && $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS);
+        return $this->ownersOffered($everyone, $users);
+    }
+
+    protected function canAssignOtherOwners(): bool
+    {
+        return $this->createZoneCreateOwnershipResolver()->canAssignOtherOwners((int)$this->getCurrentUserId());
+    }
+
+    /**
+     * The owner an add-zone form shows again after a failed submit: the posted
+     * id when the picker can offer it, '' for an explicit "no user owner",
+     * otherwise the current user.
+     *
+     * @param list<array<string, mixed>> $assignableOwners
+     * @param mixed $ownerInput The raw posted value, if any
+     */
+    protected function preservedOwnerChoice(array $assignableOwners, mixed $ownerInput): int|string
+    {
+        if ($ownerInput === '') {
+            return '';
+        }
+        $ownerId = is_scalar($ownerInput) ? filter_var($ownerInput, FILTER_VALIDATE_INT) : false;
+        if ($ownerId !== false && in_array($ownerId, array_map('intval', array_column($assignableOwners, 'id')), true)) {
+            return $ownerId;
+        }
+        return (int)$this->getCurrentUserId();
+    }
+
+    /**
+     * @param list<array<string, mixed>> $users
+     * @return list<array<string, mixed>>
+     */
+    private function ownersOffered(bool $everyone, array $users): array
+    {
+        if ($everyone) {
             return array_values($users);
         }
         $userId = $this->getCurrentUserId();

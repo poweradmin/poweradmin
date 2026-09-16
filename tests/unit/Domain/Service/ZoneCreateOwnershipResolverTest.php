@@ -27,6 +27,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
@@ -53,13 +54,17 @@ class ZoneCreateOwnershipResolverTest extends TestCase
      * @param array<string, bool> $perms permissions the caller holds
      * @param int[] $groupMembership groups the caller belongs to
      * @param int[]|null $existingGroups group ids that exist (defaults to every requested id)
+     * @param int[] $existingUsers user ids that exist besides the caller
      */
-    private function buildResolver(string $mode, array $perms = [], array $groupMembership = [], ?array $existingGroups = null): ZoneCreateOwnershipResolver
+    private function buildResolver(string $mode, array $perms = [], array $groupMembership = [], ?array $existingGroups = null, array $existingUsers = []): ZoneCreateOwnershipResolver
     {
-        $permissions = $this->buildPermissionService(
+        // The same scripted repository answers permission lookups and owner existence.
+        $users = $this->scriptedUserRepository(
             permissionsByUser: [self::CALLER_ID => array_keys(array_filter($perms))],
-            adminUserIds: !empty($perms[Permission::PERM_USER_IS_UEBERUSER]) ? [self::CALLER_ID] : []
+            adminUserIds: !empty($perms[Permission::PERM_USER_IS_UEBERUSER]) ? [self::CALLER_ID] : [],
+            templateByUser: array_fill_keys($existingUsers, 1)
         );
+        $permissions = new PermissionService($users);
         $groups = $this->createMock(UserGroupRepositoryInterface::class);
         $groups->method('getGroupIdsForUser')->willReturn($groupMembership);
         // By default, treat every requested group_id as existing so unrelated tests
@@ -67,7 +72,7 @@ class ZoneCreateOwnershipResolverTest extends TestCase
         $groups->method('findExistingIds')
             ->willReturnCallback(fn(array $ids) => $existingGroups ?? $ids);
 
-        return new ZoneCreateOwnershipResolver($this->buildMode($mode), $permissions, $groups);
+        return new ZoneCreateOwnershipResolver($this->buildMode($mode), $permissions, $groups, $users);
     }
 
     #[Test]
@@ -208,6 +213,49 @@ class ZoneCreateOwnershipResolverTest extends TestCase
         $this->assertSame(403, $result->status);
         $this->assertNotNull($result->error);
         $this->assertStringContainsString('other users', $result->error);
+    }
+
+    #[Test]
+    public function allowsAssigningAnExistingUserWithPermission(): void
+    {
+        $resolver = $this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true], existingUsers: [99]);
+
+        $result = $resolver->resolve(['owner_user_id' => 99], self::CALLER_ID);
+
+        $this->assertFalse($result->hasError());
+        $this->assertSame(99, $result->owner);
+    }
+
+    #[Test]
+    public function rejectsAnUnknownOwnerSoNoZoneEndsUpOrphaned(): void
+    {
+        $resolver = $this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true]);
+
+        $result = $resolver->resolve(['owner_user_id' => 42], self::CALLER_ID);
+
+        $this->assertSame(404, $result->status);
+        $this->assertSame(ZoneOwnershipResolution::UNKNOWN_OWNER, $result->code);
+        $this->assertSame('Unknown user ID: 42', $result->error);
+        $this->assertSame([42], $result->ids);
+    }
+
+    #[Test]
+    public function permissionIsCheckedBeforeTheOwnerIsLookedUp(): void
+    {
+        $resolver = $this->buildResolver('both');
+
+        $result = $resolver->resolve(['owner_user_id' => 42], self::CALLER_ID);
+
+        $this->assertSame(403, $result->status);
+        $this->assertSame(ZoneOwnershipResolution::OTHER_OWNER_FORBIDDEN, $result->code);
+    }
+
+    #[Test]
+    public function canAssignOtherOwnersFollowsTheCreateRule(): void
+    {
+        $this->assertFalse($this->buildResolver('both')->canAssignOtherOwners(self::CALLER_ID));
+        $this->assertTrue($this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true])->canAssignOtherOwners(self::CALLER_ID));
+        $this->assertTrue($this->buildResolver('both', [Permission::PERM_USER_IS_UEBERUSER => true])->canAssignOtherOwners(self::CALLER_ID));
     }
 
     #[Test]

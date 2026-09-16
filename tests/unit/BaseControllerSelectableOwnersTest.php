@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -29,7 +30,8 @@ use ReflectionMethod;
 
 /**
  * Owner pickers offer every user to callers with user_view_others and only
- * the caller to everyone else.
+ * the caller to everyone else; the add-zone pickers follow the create path's
+ * own rule instead, and re-offer a posted owner only when they can show it.
  */
 class BaseControllerSelectableOwnersTest extends TestCase
 {
@@ -41,15 +43,39 @@ class BaseControllerSelectableOwnersTest extends TestCase
 
     private function selectableOwners(bool $canViewOthers, int $currentUserId): array
     {
+        $controller = $this->controller($currentUserId);
+        $controller->method('hasPermission')->with(Permission::PERM_USER_VIEW_OTHERS)->willReturn($canViewOthers);
+
+        return (new ReflectionMethod(BaseController::class, 'selectableOwners'))->invoke($controller, self::USERS);
+    }
+
+    private function assignableOwners(bool $canAssignOthers, int $currentUserId, bool $canViewOthers = true): array
+    {
+        $controller = $this->controller($currentUserId);
+        $controller->method('canAssignOtherOwners')->willReturn($canAssignOthers);
+        $controller->method('hasPermission')->with(Permission::PERM_USER_VIEW_OTHERS)->willReturn($canViewOthers);
+
+        return (new ReflectionMethod(BaseController::class, 'assignableOwners'))->invoke($controller, self::USERS);
+    }
+
+    private function preservedOwnerChoice(mixed $ownerInput, int $currentUserId = 7): int|string
+    {
+        // Drivers without native int columns hand ids back as strings.
+        $offered = [['id' => 7, 'username' => 'client'], ['id' => '9', 'username' => 'other']];
+
+        return (new ReflectionMethod(BaseController::class, 'preservedOwnerChoice'))
+            ->invoke($this->controller($currentUserId), $offered, $ownerInput);
+    }
+
+    private function controller(int $currentUserId): BaseController&MockObject
+    {
         $controller = $this->getMockBuilder(BaseController::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['run', 'hasPermission', 'getCurrentUserId'])
+            ->onlyMethods(['run', 'hasPermission', 'canAssignOtherOwners', 'getCurrentUserId'])
             ->getMock();
-        $controller->method('hasPermission')->with(Permission::PERM_USER_VIEW_OTHERS)->willReturn($canViewOthers);
         $controller->method('getCurrentUserId')->willReturn($currentUserId);
 
-        $method = new ReflectionMethod(BaseController::class, 'selectableOwners');
-        return $method->invoke($controller, self::USERS);
+        return $controller;
     }
 
     public function testViewOthersGrantOffersEveryUser(): void
@@ -65,5 +91,34 @@ class BaseControllerSelectableOwnersTest extends TestCase
     public function testCallerMissingFromTheListLeavesItEmpty(): void
     {
         $this->assertSame([], $this->selectableOwners(false, 42));
+    }
+
+    public function testCallersWhoMayAssignOthersAreOfferedEveryUserForNewZones(): void
+    {
+        $this->assertSame(self::USERS, $this->assignableOwners(true, 7));
+    }
+
+    public function testOtherCallersAreOfferedOnlyThemselvesForNewZones(): void
+    {
+        $this->assertSame([['id' => 7, 'username' => 'client']], $this->assignableOwners(false, 7));
+    }
+
+    public function testAssigningOthersDoesNotRevealUsersTheCallerMayNotSee(): void
+    {
+        $this->assertSame([['id' => 7, 'username' => 'client']], $this->assignableOwners(true, 7, canViewOthers: false));
+    }
+
+    public function testAPostedOwnerIsKeptOnlyWhenThePickerOffersIt(): void
+    {
+        $this->assertSame(9, $this->preservedOwnerChoice('9'));
+        $this->assertSame(7, $this->preservedOwnerChoice('1'));
+        $this->assertSame(7, $this->preservedOwnerChoice('abc'));
+        $this->assertSame(7, $this->preservedOwnerChoice(null));
+        $this->assertSame(7, $this->preservedOwnerChoice(['9']));
+    }
+
+    public function testAnExplicitNoUserOwnerIsPreserved(): void
+    {
+        $this->assertSame('', $this->preservedOwnerChoice(''));
     }
 }

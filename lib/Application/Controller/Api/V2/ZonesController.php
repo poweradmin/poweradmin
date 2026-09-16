@@ -376,7 +376,8 @@ class ZonesController extends PublicApiController
                     description: 'User ID to assign as zone owner. Defaults to the authenticated user when omitted '
                         . '(even if group_ids is supplied). Send an explicit null to opt out of user ownership and '
                         . 'create a group-only zone (requires zone_ownership_mode that allows groups and a non-empty '
-                        . 'group_ids). Specifying a different user requires zone_content_edit_others permission.',
+                        . 'group_ids). Specifying a different user requires zone_content_edit_others permission '
+                        . 'and the user must exist.',
                     type: 'integer',
                     example: 1,
                     nullable: true
@@ -433,6 +434,28 @@ class ZonesController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Zone name is required'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 403,
+        description: 'Forbidden - owner or groups the caller may not assign',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'You do not have permission to create zones for other users'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 404,
+        description: 'Not found - owner_user_id or group_ids name an unknown user or group',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'Unknown user ID: 42'),
                 new OA\Property(property: 'data', type: 'null')
             ]
         )

@@ -31,6 +31,7 @@ final readonly class ZoneOwnershipResolution
 {
     public const NO_OWNER = 'no_owner';
     public const OTHER_OWNER_FORBIDDEN = 'other_owner_forbidden';
+    public const UNKNOWN_OWNER = 'unknown_owner';
     public const UNKNOWN_GROUPS = 'unknown_groups';
     public const GROUPS_NOT_MEMBER = 'groups_not_member';
     public const INVALID_INPUT = 'invalid_input';
@@ -45,7 +46,7 @@ final readonly class ZoneOwnershipResolution
      * @param string|null $error   Error message; null on success.
      * @param int        $status   HTTP status code to return on error.
      * @param string|null $code    One of the class constants; null on success.
-     * @param list<int>  $ids      The group ids the error is about, if any.
+     * @param list<int>  $ids      The user or group ids the error is about, if any.
      */
     private function __construct(
         public ?int $owner,

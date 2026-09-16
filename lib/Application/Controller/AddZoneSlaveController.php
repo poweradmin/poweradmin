@@ -143,22 +143,8 @@ class AddZoneSlaveController extends BaseController
         $slave_master_value = $slaveMasterInput !== null ? htmlspecialchars($slaveMasterInput) : '';
         $users = $this->createUserRepository()->getUsersWithZoneCounts();
 
-        // Safely handle the owner value - ensure it's an integer or preserve empty selection
-        $ownerInput = $this->httpRequest->getPostParam('owner');
-        if ($ownerInput !== null) {
-            if ($ownerInput === '') {
-                // Empty value means "no user owner" was explicitly selected
-                $owner_value = '';
-            } else {
-                $owner_id = filter_var($ownerInput, FILTER_VALIDATE_INT);
-                // Verify that the owner ID exists among valid users
-                $valid_owner_ids = array_column($users, 'id');
-                $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION[SessionKeys::USERID];
-            }
-        } else {
-            // No POST data, default to current user
-            $owner_value = $_SESSION[SessionKeys::USERID];
-        }
+        $assignableOwners = $this->assignableOwners($users);
+        $owner_value = $this->preservedOwnerChoice($assignableOwners, $this->httpRequest->getPostParam('owner'));
 
         $is_post_request = !empty($this->httpRequest->getPostParams());
 
@@ -184,7 +170,7 @@ class AddZoneSlaveController extends BaseController
         $this->render('add_zone_slave.html', [
             'is_reverse_zone' => $is_reverse_zone,
             'users' => $users,
-            'selectable_owners' => $this->selectableOwners($users),
+            'selectable_owners' => $assignableOwners,
             'session_user_id' => $_SESSION[SessionKeys::USERID],
             'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
             'domain_value' => $domain_value,

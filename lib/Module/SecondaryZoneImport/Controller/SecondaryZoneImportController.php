@@ -220,15 +220,16 @@ class SecondaryZoneImportController extends BaseController
         $groupsInput = $this->httpRequest->getPostParam('groups');
 
         $users = $this->createUserRepository()->getUsersWithZoneCounts();
+        $assignableOwners = $this->assignableOwners($users);
         $this->render('@secondary_zone_import/import.html', array_merge([
             'imported' => false,
             'domain_value' => htmlspecialchars((string)$this->httpRequest->getPostParam('domain', '')),
             'slave_master_value' => htmlspecialchars((string)$this->httpRequest->getPostParam('slave_master', '')),
             'users' => $users,
-            'selectable_owners' => $this->selectableOwners($users),
+            'selectable_owners' => $assignableOwners,
             'session_user_id' => $sessionUserId,
             'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
-            'owner_value' => $ownerInput !== null ? $ownerInput : $sessionUserId,
+            'owner_value' => $this->preservedOwnerChoice($assignableOwners, $ownerInput),
             'all_groups' => $allGroups,
             'group_member_counts' => $memberCounts,
             'selected_groups' => is_array($groupsInput) ? array_map('intval', $groupsInput) : [],

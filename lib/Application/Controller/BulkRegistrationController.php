@@ -27,7 +27,6 @@ use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DomainHelper;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -40,14 +39,6 @@ class BulkRegistrationController extends BaseController
 {
     /** Bulk creation only makes sense for locally served zones. */
     private const AVAILABLE_ZONE_TYPES = [ZoneType::MASTER, ZoneType::NATIVE];
-
-    private UserContextService $userContextService;
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-        $this->userContextService = new UserContextService();
-    }
 
     public function run(): void
     {
@@ -153,43 +144,25 @@ class BulkRegistrationController extends BaseController
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION[SessionKeys::USERID]);
 
-        $callerId = $this->userContextService->getLoggedInUserId();
-        $canViewOthers = $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS);
-        // Preserve the user's owner choice (including explicit "no user owner")
-        // when re-rendering after a partial failure. Only honour foreign user
-        // IDs when the caller is allowed to see other users; otherwise fall back
-        // to the caller's own ID so the dropdown can't leak hidden accounts.
-        $postParams = $this->httpRequest->getPostParams();
-        if (array_key_exists('owner', $postParams)) {
-            if ($postParams['owner'] === '') {
-                $owner_value = '';
-            } elseif (is_numeric($postParams['owner'])) {
-                $postedId = (int)$postParams['owner'];
-                $owner_value = ($postedId === $callerId || $canViewOthers) ? $postedId : $callerId;
-            } else {
-                $owner_value = $callerId;
-            }
-        } else {
-            $owner_value = $callerId;
-        }
-
         $users = $this->createUserRepository()->getUsersWithZoneCounts();
+        $assignableOwners = $this->assignableOwners($users);
+        $groupsInput = $this->httpRequest->getPostParam('groups');
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION[SessionKeys::USERID],
-            'owner_value' => $owner_value,
+            'owner_value' => $this->preservedOwnerChoice($assignableOwners, $this->httpRequest->getPostParam('owner')),
             'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
             'perm_edit_others' => $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS),
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'MASTER'),
             'available_zone_types' => self::AVAILABLE_ZONE_TYPES,
             'users' => $users,
-            'selectable_owners' => $this->selectableOwners($users),
+            'selectable_owners' => $assignableOwners,
             'zone_templates' => $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]),
             'failed_domains' => $failed_domains,
             'added_domains' => $added_domains,
             'user_owner_allowed' => $ownershipMode->isUserOwnerAllowed(),
             'group_owner_allowed' => $ownershipMode->isGroupOwnerAllowed(),
             'all_groups' => $allGroups,
-            'selected_groups' => isset($postParams['groups']) && is_array($postParams['groups']) ? array_map('intval', $postParams['groups']) : [],
+            'selected_groups' => is_array($groupsInput) ? array_map('intval', $groupsInput) : [],
         ]);
     }
 }
