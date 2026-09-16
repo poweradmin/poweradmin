@@ -183,4 +183,15 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
             $this->assertSame(8, $byName['native.example']['canonical_id']);
         }
     }
+
+    #[Test]
+    public function zoneIdAllowlistBindsIntegersInTheCountQuery(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
+            VALUES (7, 4011, 'migrated.example', 'MASTER', '', '', 1, 0), (8, 8, 'native.example', 'MASTER', '', '', 1, 0)");
+
+        $this->assertSame(['migrated.example'], array_column($this->repository()->getAllZonesFiltered([7], null, null, null, null), 'name'));
+        $this->assertSame(1, $this->repository()->getZoneCountFiltered([7], null, null));
+        $this->assertSame(0, $this->repository()->getZoneCountFiltered([9], null, null));
+    }
 }

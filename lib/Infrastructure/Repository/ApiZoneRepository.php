@@ -851,7 +851,11 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             . ($conditions === [] ? '' : ' AND ' . implode(' AND ', $conditions));
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
+        // Integer binding matters: a text-bound id never equals the COALESCE canonical id.
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+        $stmt->execute();
         return (int)$stmt->fetchColumn();
     }
 
@@ -883,6 +887,9 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         }
 
         if ($zoneIds !== null && $zoneIds !== []) {
+            // Row ids. API-key scopes are stored as row ids, visible-zone ids are canonical;
+            // on a migrated install the two differ. Matching either would widen a scope
+            // under an id collision, so this stays narrow until id and canonical_id are one.
             $placeholders = [];
             foreach (array_values($zoneIds) as $i => $zoneId) {
                 $placeholders[] = ":zone_id_$i";
