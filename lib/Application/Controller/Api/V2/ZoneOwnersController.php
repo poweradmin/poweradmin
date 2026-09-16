@@ -35,6 +35,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -358,6 +359,15 @@ class ZoneOwnersController extends PublicApiController
 
             if ($userId === 0) {
                 return $this->returnApiError('Invalid user_id', 400);
+            }
+
+            // Refuse to leave the zone with no user and no group owner
+            if ($this->zoneRepository->isUserZoneOwner($zoneId, $userId)) {
+                $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->config);
+                $ownerIds = array_unique(array_map(fn($o) => (int)($o['id'] ?? 0), $this->zoneRepository->getZoneOwners($zoneId)));
+                if (count($ownerIds) <= 1 && count($zoneGroupRepo->findByDomainId($zoneId)) === 0) {
+                    return $this->returnApiError('Cannot remove the last owner: this would leave the zone with no ownership. Add another owner or a group first.', 400);
+                }
             }
 
             $success = $this->zoneRepository->removeOwnerFromZone($zoneId, $userId);
