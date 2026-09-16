@@ -36,4 +36,4 @@ $repository = (new RepositoryFactory($db, $config, $backendProvider))->createDyn
 $updateService = DynamicDnsRequestFactory::createUpdateService($db, $config, $repository);
 
 $result = $updateService->processUpdate(DynamicDnsRequestFactory::fromHttpRequest($request));
-DynamicDnsHelper::statusExit($result, $request->query->has('verbose'));
+echo DynamicDnsHelper::statusMessage($result, $request->query->has('verbose'));

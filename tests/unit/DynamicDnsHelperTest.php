@@ -7,37 +7,22 @@ use Poweradmin\Domain\Service\DynamicDnsHelper;
 
 class DynamicDnsHelperTest extends TestCase
 {
-    public function testStatusExitWithoutVerbose(): void
+    public function testStatusMessageWithoutVerbose(): void
     {
-        ob_start();
-        $result = DynamicDnsHelper::statusExit('good');
-        $output = ob_get_clean();
-
-        $this->assertFalse($result);
-        $this->assertEquals("good\n", $output);
+        $this->assertEquals("good\n", DynamicDnsHelper::statusMessage('good'));
     }
 
-    public function testStatusExitWithVerbose(): void
+    public function testStatusMessageWithVerbose(): void
     {
-        ob_start();
-        $result = DynamicDnsHelper::statusExit('good', true);
-        $output = ob_get_clean();
-
-        $this->assertFalse($result);
-        $this->assertEquals("Your hostname has been updated.\n", $output);
+        $this->assertEquals("Your hostname has been updated.\n", DynamicDnsHelper::statusMessage('good', true));
     }
 
-    public function testStatusExitWithVerboseMultipleWords(): void
+    public function testStatusMessageWithVerboseMultipleWords(): void
     {
-        ob_start();
-        $result = DynamicDnsHelper::statusExit('good 192.168.1.1', true);
-        $output = ob_get_clean();
-
-        $this->assertFalse($result);
-        $this->assertEquals("Your hostname has been updated.\n", $output);
+        $this->assertEquals("Your hostname has been updated.\n", DynamicDnsHelper::statusMessage('good 192.168.1.1', true));
     }
 
-    public function testStatusExitAllVerboseCodes(): void
+    public function testStatusMessageAllVerboseCodes(): void
     {
         $test_cases = [
             'badagent' => 'Your user agent is not valid.',
@@ -53,12 +38,7 @@ class DynamicDnsHelperTest extends TestCase
         ];
 
         foreach ($test_cases as $code => $expected_message) {
-            ob_start();
-            $result = DynamicDnsHelper::statusExit((string)$code, true);
-            $output = ob_get_clean();
-
-            $this->assertFalse($result, "statusExit should always return false for code: $code");
-            $this->assertEquals("$expected_message\n", $output, "Wrong verbose message for code: $code");
+            $this->assertEquals("$expected_message\n", DynamicDnsHelper::statusMessage((string)$code, true), "Wrong verbose message for code: $code");
         }
     }
 }

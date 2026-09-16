@@ -29,16 +29,12 @@ class DynamicDnsHelper
 {
 
     /**
-     * Get exit status message
+     * Build the response line for a dynamic DNS update.
      *
-     * Print verbose status message for request
-     *
-     * @param string $status Short status message
-     * @param bool $verbose Print the long explanation instead of the short code
-     *
-     * @return boolean false
+     * @param string $status Short status code, optionally followed by details
+     * @param bool $verbose Return the long explanation instead of the short code
      */
-    public static function statusExit(string $status, bool $verbose = false): bool
+    public static function statusMessage(string $status, bool $verbose = false): string
     {
         $verbose_codes = array(
             'badagent' => 'Your user agent is not valid.',
@@ -57,7 +53,6 @@ class DynamicDnsHelper
             $pieces = preg_split('/\s/', $status);
             $status = $verbose_codes[$pieces[0]];
         }
-        echo "$status\n";
-        return false;
+        return "$status\n";
     }
 }
