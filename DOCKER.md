@@ -237,7 +237,6 @@ docker run -d --name poweradmin -p 80:80 \
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
 | `PA_DNSSEC_ENABLED` | Enable DNSSEC functionality | `false` | No |
-| `PA_DNSSEC_DEBUG` | Enable DNSSEC debug logging | `false` | No |
 
 ### Logging Configuration
 
@@ -1258,7 +1257,6 @@ docker run -d --name poweradmin -p 80:80 \
   -e PA_DNS_DOMAIN_RECORD_TYPES=A,AAAA,CNAME,MX,TXT,SRV,CAA \
   -e PA_DNS_REVERSE_RECORD_TYPES=PTR,NS,SOA,TXT \
   -e PA_DNSSEC_ENABLED=true \
-  -e PA_DNSSEC_DEBUG=false \
   poweradmin/poweradmin
 ```
 

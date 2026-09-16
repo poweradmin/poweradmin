@@ -774,8 +774,6 @@ generate_config() {
     # Convert DNSSEC boolean values to lowercase
     local dnssec_enabled
     dnssec_enabled=$(to_php_bool "${PA_DNSSEC_ENABLED:-false}")
-    local dnssec_debug
-    dnssec_debug=$(to_php_bool "${PA_DNSSEC_DEBUG:-false}")
 
     # Convert logging boolean values to lowercase
     local logging_database_enabled
@@ -1161,7 +1159,6 @@ return [
     ],
     'dnssec' => [
         'enabled' => ${dnssec_enabled},
-        'debug' => ${dnssec_debug},
     ],
     'security' => [
         'session_key' => '${session_key_esc}',
