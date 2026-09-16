@@ -59,6 +59,7 @@ class DbZoneRepositoryGetZoneTest extends TestCase
                     (10, 1, 'signed.example', 'SOA', 'ns1 hostmaster 1 1 1 1 1'),
                     (11, 1, 'signed.example', 'NS', 'ns1.signed.example'),
                     (12, 1, 'www.signed.example', 'A', '192.0.2.1'),
+                    (13, 1, 'ent.signed.example', NULL, NULL),
                     (20, 2, 'plain.example', 'SOA', 'ns1 hostmaster 1 1 1 1 1')",
                 "INSERT INTO users VALUES (5, 'alice', 'Alice A'), (6, 'bob', NULL)",
                 "INSERT INTO zones VALUES (1, 1, 5, 'signed zone'), (2, 1, 6, NULL), (3, 2, NULL, NULL)",
@@ -80,6 +81,7 @@ class DbZoneRepositoryGetZoneTest extends TestCase
     {
         $zone = $this->repository->getZone(1);
 
+        // Empty non-terminals (NULL type) are PowerDNS bookkeeping, counted nowhere
         $this->assertNotNull($zone);
         $this->assertSame(3, (int)$zone['record_count']);
         $this->assertSame(3, (int)$zone['count_records']);

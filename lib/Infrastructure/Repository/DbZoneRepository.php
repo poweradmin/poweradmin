@@ -1146,18 +1146,15 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
         $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
-        // Secured and comment are cheap indexed probes here; joining cryptokeys and
-        // domainmetadata instead would multiply the record count on signed zones.
+        // Correlated probes instead of joins: the same record count rule as the zone
+        // list (empty non-terminals excluded) and no fan-out on signed or shared zones.
         $query = "SELECT d.id, d.name, d.type, d.master, d.account,
-                         COALESCE(MIN(z.owner), 0) as owner,
-                         COALESCE(MIN(z.comment), '') as comment,
-                         COUNT(DISTINCT r.id) as record_count,
+                         COALESCE((SELECT MIN(z.owner) FROM zones z WHERE z.domain_id = d.id), 0) as owner,
+                         COALESCE((SELECT MIN(z.comment) FROM zones z WHERE z.domain_id = d.id), '') as comment,
+                         " . $this->recordCountSubquery('d', $records_table) . " as record_count,
                          " . $this->securedProbe('d', $cryptokeys_table, $domainmetadata_table) . " as secured
                   FROM $domains_table d
-                  LEFT JOIN zones z ON d.id = z.domain_id
-                  LEFT JOIN $records_table r ON d.id = r.domain_id
-                  WHERE d.id = :id
-                  GROUP BY d.id, d.name, d.type, d.master, d.account";
+                  WHERE d.id = :id";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
