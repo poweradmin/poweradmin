@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -50,7 +50,12 @@ class UsersController extends BaseController
     private function updateUsers(): void
     {
         $success = false;
+        $perm_is_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
         foreach ($_POST['user'] as $user) {
+            // The list posts every row; a delegated manager may not touch superuser rows.
+            if (!$perm_is_godlike && isset($user['uid']) && UserManager::is_user_superuser($this->db, (int)$user['uid'])) {
+                continue;
+            }
             $legacyUsers = new UserManager($this->db, $this->getConfig());
             $result = $legacyUsers->update_user_details($user);
             if ($result) {

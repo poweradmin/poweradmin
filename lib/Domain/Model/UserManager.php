@@ -232,6 +232,12 @@ class UserManager
             $errorPresenter->present($error);
 
             return false;
+        } elseif ($uid != $_SESSION['userid'] && self::is_user_superuser($this->db, $uid) && !self::verify_permission($this->db, 'user_is_ueberuser')) {
+            $error = new ErrorMessage(_('You do not have permission to delete a superuser account.'));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            return false;
         } else {
             $dnsRecord = new DnsRecord($this->db, $this->config);
             foreach ($zones as $zone) {
@@ -303,6 +309,15 @@ class UserManager
         $perm_edit_others = self::verify_permission($this->db, 'user_edit_others');
 
         if (($id == $_SESSION["userid"] && $perm_edit_own) || ($id != $_SESSION["userid"] && $perm_edit_others)) {
+            // A delegated manager may not touch a superuser account, whatever the field.
+            if ($id != $_SESSION["userid"] && self::is_user_superuser($this->db, $id) && !self::verify_permission($this->db, 'user_is_ueberuser')) {
+                $error = new ErrorMessage(_('You do not have permission to edit a superuser account.'));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+
+                return false;
+            }
+
             $validation = new Validator($this->db, $this->config);
             if (!$validation->is_valid_email($email)) {
                 $error = new ErrorMessage(_('Enter a valid email address.'));
@@ -699,6 +714,16 @@ class UserManager
     }
 
     /**
+     * Whether the given account holds user_is_ueberuser through its template.
+     */
+    public static function is_user_superuser($db, int $user_id): bool
+    {
+        $perm_templ = $db->queryOne("SELECT perm_templ FROM users WHERE id = " . $db->quote($user_id, 'integer'));
+
+        return $perm_templ !== false && $perm_templ !== null && self::template_grants_ueberuser($db, (int)$perm_templ);
+    }
+
+    /**
      * Whether the given permission template hands out user_is_ueberuser.
      *
      * Matched by name across every row, because perm_items has no unique
@@ -764,6 +789,15 @@ class UserManager
         $perm_is_godlike = self::verify_permission($this->db, 'user_is_ueberuser');
 
         if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION["userid"] && $perm_edit_others)) {
+            // A delegated manager may not touch a superuser account, whatever the field.
+            if ($details['uid'] != $_SESSION["userid"] && self::is_user_superuser($this->db, (int)$details['uid']) && !$perm_is_godlike) {
+                $error = new ErrorMessage(_('You do not have permission to edit a superuser account.'));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+
+                return false;
+            }
+
             $validation = new Validator($this->db, $this->config);
             if (!$validation->is_valid_email($details['email'])) {
                 $error = new ErrorMessage(_('Enter a valid email address.'));

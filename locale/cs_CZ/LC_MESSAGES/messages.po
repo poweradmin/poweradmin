@@ -3036,3 +3036,13 @@ msgstr ""
 #: lib/Application/Controller/BulkRegistrationController.php:89
 msgid "You do not have permission to create zones for other users."
 msgstr "Nemáte oprávnění vytvářet zóny pro jiné uživatele."
+
+#: lib/Application/Controller/EditUserController.php:61
+#: lib/Domain/Model/UserManager.php:314
+msgid "You do not have permission to edit a superuser account."
+msgstr "Nemáte oprávnění upravovat účet superuživatele."
+
+#: lib/Application/Controller/DeleteUserController.php:59
+#: lib/Domain/Model/UserManager.php:236
+msgid "You do not have permission to delete a superuser account."
+msgstr "Nemáte oprávnění smazat účet superuživatele."

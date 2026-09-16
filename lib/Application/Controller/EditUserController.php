@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -55,6 +55,10 @@ class EditUserController extends BaseController
 
         if (($edit_id != $_SESSION["userid"] || !$perm_edit_own) && ($edit_id == $_SESSION["userid"] || !$perm_edit_others)) {
             $this->showError(_("You do not have the permission to edit this user."));
+        }
+
+        if ($edit_id != $_SESSION["userid"] && UserManager::is_user_superuser($this->db, $edit_id) && !UserManager::verify_permission($this->db, 'user_is_ueberuser')) {
+            $this->showError(_('You do not have permission to edit a superuser account.'));
         }
 
         if ($this->isPost()) {

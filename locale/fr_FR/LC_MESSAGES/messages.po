@@ -3120,3 +3120,13 @@ msgstr ""
 #: lib/Application/Controller/BulkRegistrationController.php:89
 msgid "You do not have permission to create zones for other users."
 msgstr "Vous n'avez pas la permission de créer des zones pour d'autres utilisateurs."
+
+#: lib/Application/Controller/EditUserController.php:61
+#: lib/Domain/Model/UserManager.php:314
+msgid "You do not have permission to edit a superuser account."
+msgstr "Vous n'avez pas la permission de modifier un compte superutilisateur."
+
+#: lib/Application/Controller/DeleteUserController.php:59
+#: lib/Domain/Model/UserManager.php:236
+msgid "You do not have permission to delete a superuser account."
+msgstr "Vous n'avez pas la permission de supprimer un compte superutilisateur."
