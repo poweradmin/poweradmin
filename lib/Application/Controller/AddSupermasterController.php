@@ -54,14 +54,14 @@ class AddSupermasterController extends BaseController
 
     private function addSuperMaster($master_ip, $ns_name, $account): void
     {
-        $supermasterManager = $this->createSupermasterManager();
-        if ($supermasterManager->addSupermaster($master_ip, $ns_name, $account)) {
-            $auditService = $this->createAuditService();
-            $auditService->logSupermasterAdd($master_ip, $ns_name);
+        $added = $this->createSupermasterManager()->addSupermaster($master_ip, $ns_name, $account);
+        if ($added->success) {
+            $this->createAuditService()->logSupermasterAdd($master_ip, $ns_name);
 
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been added successfully.'));
             $this->redirect('/supermasters');
         } else {
+            $this->setMessage('add_supermaster', 'error', (string)$added->message);
             $this->showAddSuperMaster($master_ip, $ns_name, $account);
         }
     }

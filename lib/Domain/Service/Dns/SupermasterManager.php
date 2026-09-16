@@ -28,7 +28,6 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\SupermasterBackendInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 /**
@@ -38,7 +37,6 @@ class SupermasterManager
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
     private SupermasterBackendInterface $backendProvider;
@@ -54,66 +52,49 @@ class SupermasterManager
     {
         $this->db = $db;
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ipAddressValidator = new IPAddressValidator();
         $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
     }
 
     /**
-     * Add Supermaster
-     *
-     * Add a trusted supermaster to the global supermasters table
+     * Add a trusted supermaster to the global supermasters table.
      *
      * @param string $master_ip Supermaster IP address
-     * @param string $ns_name Hostname of supermasterfound in NS records for domain
+     * @param string $ns_name Hostname of the supermaster found in NS records for the domain
      * @param string $account Account name used for tracking
-     *
-     * @return boolean true on success
      */
-    public function addSupermaster(string $master_ip, string $ns_name, string $account): bool
+    public function addSupermaster(string $master_ip, string $ns_name, string $account): SupermasterWriteResult
     {
-        if (!$this->ipAddressValidator->isValidIPv4($master_ip) && !$this->ipAddressValidator->isValidIPv6($master_ip)) {
-            $this->messageService->addSystemError(_('This is not a valid IPv4 or IPv6 address.'));
-            return false;
-        }
-
-        if (!$this->hostnameValidator->isValid($ns_name)) {
-            $this->messageService->addSystemError(_('Invalid hostname.'));
-            return false;
-        }
-
-        if (!self::validateAccount($account)) {
-            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "addSupermaster", "given account name is invalid (alpha chars only)"));
-            return false;
+        $refusal = $this->validateFields($master_ip, $ns_name, $account);
+        if ($refusal !== null) {
+            return $refusal;
         }
 
         if ($this->supermasterIpNameExists($master_ip, $ns_name)) {
-            $this->messageService->addSystemError(_('There is already a supermaster with this IP address and hostname.'));
-            return false;
-        } else {
-            return $this->backendProvider->addSupermaster($master_ip, $ns_name, $account);
+            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_EXISTS, _('There is already a supermaster with this IP address and hostname.'), 409);
         }
+
+        return $this->backendProvider->addSupermaster($master_ip, $ns_name, $account)
+            ? SupermasterWriteResult::ok()
+            : SupermasterWriteResult::refused(SupermasterWriteResult::ERR_BACKEND, _('An error occurred. Please try again.'), 500);
     }
 
     /**
-     * Delete Supermaster
-     *
-     * Delete a supermaster from the global supermasters table
+     * Delete a supermaster from the global supermasters table.
      *
      * @param string $master_ip Supermaster IP address
-     * @param string $ns_name Hostname of supermaster
-     *
-     * @return boolean true on success
+     * @param string $ns_name Hostname of the supermaster
      */
-    public function deleteSupermaster(string $master_ip, string $ns_name): bool
+    public function deleteSupermaster(string $master_ip, string $ns_name): SupermasterWriteResult
     {
-        if ($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip) || $this->hostnameValidator->isValid($ns_name)) {
-            return $this->backendProvider->deleteSupermaster($master_ip, $ns_name);
-        } else {
-            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "deleteSupermaster", "No or no valid ipv4 or ipv6 address given."));
+        if (!$this->isValidIp($master_ip) && !$this->hostnameValidator->isValid($ns_name)) {
+            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_INVALID_IP, _('This is not a valid IPv4 or IPv6 address.'));
         }
-        return false;
+
+        return $this->backendProvider->deleteSupermaster($master_ip, $ns_name)
+            ? SupermasterWriteResult::ok()
+            : SupermasterWriteResult::refused(SupermasterWriteResult::ERR_BACKEND, _('An error occurred. Please try again.'), 500);
     }
 
     /**
@@ -160,9 +141,8 @@ class SupermasterManager
      */
     public function getSupermasterInfoFromIp(string $master_ip): array
     {
-        if (!$this->ipAddressValidator->isValidIPv4($master_ip) && !$this->ipAddressValidator->isValidIPv6($master_ip)) {
-            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "getSupermasterInfoFromIp", "No or no valid ipv4 or ipv6 address given."));
-            return array();
+        if (!$this->isValidIp($master_ip)) {
+            return [];
         }
 
         foreach ($this->getSupermasters() as $sm) {
@@ -182,8 +162,7 @@ class SupermasterManager
      */
     public function supermasterExists(string $master_ip): bool
     {
-        if (!$this->ipAddressValidator->isValidIPv4($master_ip) && !$this->ipAddressValidator->isValidIPv6($master_ip)) {
-            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "supermasterExists", "No or no valid IPv4 or IPv6 address given."));
+        if (!$this->isValidIp($master_ip)) {
             return false;
         }
 
@@ -205,8 +184,7 @@ class SupermasterManager
      */
     public function supermasterIpNameExists(string $master_ip, string $ns_name): bool
     {
-        if ((!$this->ipAddressValidator->isValidIPv4($master_ip) && !$this->ipAddressValidator->isValidIPv6($master_ip)) || !$this->hostnameValidator->isValid($ns_name)) {
-            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "supermasterExists", "No or no valid IPv4 or IPv6 address given."));
+        if (!$this->isValidIp($master_ip) || !$this->hostnameValidator->isValid($ns_name)) {
             return false;
         }
 
@@ -219,54 +197,56 @@ class SupermasterManager
     }
 
     /**
-     * Update Supermaster
-     *
-     * Update a trusted supermaster in the global supermasters table
+     * Update a trusted supermaster in the global supermasters table.
      *
      * @param string $old_master_ip Original supermaster IP address
-     * @param string $old_ns_name Original hostname of supermaster
+     * @param string $old_ns_name Original hostname of the supermaster
      * @param string $new_master_ip New supermaster IP address
-     * @param string $new_ns_name New hostname of supermaster
+     * @param string $new_ns_name New hostname of the supermaster
      * @param string $account Account name used for tracking
-     *
-     * @return boolean true on success
      */
-    public function updateSupermaster(string $old_master_ip, string $old_ns_name, string $new_master_ip, string $new_ns_name, string $account): bool
+    public function updateSupermaster(string $old_master_ip, string $old_ns_name, string $new_master_ip, string $new_ns_name, string $account): SupermasterWriteResult
     {
-        // Validate IP addresses
-        if (!$this->ipAddressValidator->isValidIPv4($new_master_ip) && !$this->ipAddressValidator->isValidIPv6($new_master_ip)) {
-            $this->messageService->addSystemError(_('This is not a valid IPv4 or IPv6 address.'));
-            return false;
+        $refusal = $this->validateFields($new_master_ip, $new_ns_name, $account);
+        if ($refusal !== null) {
+            return $refusal;
         }
 
-        // Validate hostnames
-        if (!$this->hostnameValidator->isValid($new_ns_name)) {
-            $this->messageService->addSystemError(_('Invalid hostname.'));
-            return false;
-        }
-
-        // Validate account
-        if (!self::validateAccount($account)) {
-            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "updateSupermaster", "given account name is invalid (alpha chars only)"));
-            return false;
-        }
-
-        // Check if source supermaster exists
         if (!$this->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
-            $this->messageService->addSystemError(_('The supermaster you are trying to edit does not exist.'));
-            return false;
+            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_NOT_FOUND, _('The supermaster you are trying to edit does not exist.'), 404);
         }
 
-        // Check for duplicate if IP or hostname changed
+        // A duplicate only matters when the identifying pair changes
         if (
             ($old_master_ip !== $new_master_ip || $old_ns_name !== $new_ns_name)
             && $this->supermasterIpNameExists($new_master_ip, $new_ns_name)
         ) {
-            $this->messageService->addSystemError(_('There is already a supermaster with this IP address and hostname.'));
-            return false;
+            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_EXISTS, _('There is already a supermaster with this IP address and hostname.'), 409);
         }
 
-        return $this->backendProvider->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account);
+        return $this->backendProvider->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account)
+            ? SupermasterWriteResult::ok()
+            : SupermasterWriteResult::refused(SupermasterWriteResult::ERR_BACKEND, _('An error occurred. Please try again.'), 500);
+    }
+
+    private function validateFields(string $master_ip, string $ns_name, string $account): ?SupermasterWriteResult
+    {
+        if (!$this->isValidIp($master_ip)) {
+            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_INVALID_IP, _('This is not a valid IPv4 or IPv6 address.'));
+        }
+        if (!$this->hostnameValidator->isValid($ns_name)) {
+            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_INVALID_HOSTNAME, _('Invalid hostname.'));
+        }
+        if (!self::validateAccount($account)) {
+            return SupermasterWriteResult::refused(SupermasterWriteResult::ERR_INVALID_ACCOUNT, sprintf(_('Invalid argument(s) given to function %s %s'), 'validateAccount', 'given account name is invalid (alpha chars only)'));
+        }
+
+        return null;
+    }
+
+    private function isValidIp(string $ip): bool
+    {
+        return $this->ipAddressValidator->isValidIPv4($ip) || $this->ipAddressValidator->isValidIPv6($ip);
     }
 
     /**

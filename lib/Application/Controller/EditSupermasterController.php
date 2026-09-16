@@ -88,13 +88,14 @@ class EditSupermasterController extends BaseController
             return;
         }
 
-        if ($supermasterManager->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account)) {
-            $auditService = $this->createAuditService();
-            $auditService->logSupermasterEdit($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name);
+        $updated = $supermasterManager->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account);
+        if ($updated->success) {
+            $this->createAuditService()->logSupermasterEdit($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name);
 
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been updated successfully.'));
             $this->redirect('/supermasters');
         } else {
+            $this->setMessage('edit_supermaster', 'error', (string)$updated->message);
             $this->showEditSuperMaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account);
         }
     }

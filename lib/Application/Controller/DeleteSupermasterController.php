@@ -85,13 +85,14 @@ class DeleteSupermasterController extends BaseController
             $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
             $this->redirect('/supermasters');
         }
-        if ($supermasterManager->deleteSupermaster($master_ip, $ns_name)) {
-            $auditService = $this->createAuditService();
-            $auditService->logSupermasterDelete($master_ip, $ns_name);
-
+        $deleted = $supermasterManager->deleteSupermaster($master_ip, $ns_name);
+        if ($deleted->success) {
+            $this->createAuditService()->logSupermasterDelete($master_ip, $ns_name);
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been deleted successfully.'));
-            $this->redirect('/supermasters');
+        } else {
+            $this->setMessage('list_supermasters', 'error', (string)$deleted->message);
         }
+        $this->redirect('/supermasters');
     }
 
     private function showDeleteSuperMaster(): void
