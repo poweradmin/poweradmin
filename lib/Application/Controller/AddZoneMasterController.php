@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -80,6 +80,16 @@ class AddZoneMasterController extends BaseController
         $zone_name = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
         $dom_type = $_POST["dom_type"];
         $owner = $_POST['owner'];
+        // Only users allowed to edit other users' zones may give a new zone away
+        if (
+            (int)$owner !== (int)$_SESSION['userid']
+            && !UserManager::verify_permission($this->db, 'user_is_ueberuser')
+            && !UserManager::verify_permission($this->db, 'zone_content_edit_others')
+        ) {
+            $this->setMessage('add_zone_master', 'error', _('You do not have permission to create zones for other users.'));
+            $this->showForm();
+            return;
+        }
         $zone_template = $_POST['zone_template'] ?? "none";
         $this->checkCondition(!ZoneTemplate::may_use_zone_templ($this->db, $zone_template, (int)$_SESSION['userid']), _('Invalid or unexpected input given.'));
 

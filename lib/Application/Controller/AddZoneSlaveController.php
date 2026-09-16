@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -77,6 +77,16 @@ class AddZoneSlaveController extends BaseController
 
         $type = "SLAVE";
         $owner = $_POST['owner'];
+        // Only users allowed to edit other users' zones may give a new zone away
+        if (
+            (int)$owner !== (int)$_SESSION['userid']
+            && !UserManager::verify_permission($this->db, 'user_is_ueberuser')
+            && !UserManager::verify_permission($this->db, 'zone_content_edit_others')
+        ) {
+            $this->setMessage('add_zone_slave', 'error', _('You do not have permission to create zones for other users.'));
+            $this->showForm();
+            return;
+        }
         $master = $_POST['slave_master'];
         $zone = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
 

@@ -3114,3 +3114,9 @@ msgstr ""
 "Please contact your administrator."
 
 
+
+#: lib/Application/Controller/AddZoneMasterController.php:89
+#: lib/Application/Controller/AddZoneSlaveController.php:86
+#: lib/Application/Controller/BulkRegistrationController.php:89
+msgid "You do not have permission to create zones for other users."
+msgstr "Vous n'avez pas la permission de créer des zones pour d'autres utilisateurs."
