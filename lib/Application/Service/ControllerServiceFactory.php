@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
+use Closure;
 use PDO;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -235,7 +236,7 @@ class ControllerServiceFactory
         return new DbUserGroupRepository($this->db);
     }
 
-    public function zoneManagementService(?PdnsCapabilities $capabilities = null): ZoneManagementService
+    public function zoneManagementService(PdnsCapabilities|Closure|null $capabilities = null): ZoneManagementService
     {
         return new ZoneManagementService(
             $this->zoneRepository(),

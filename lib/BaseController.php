@@ -525,7 +525,7 @@ abstract class BaseController
      */
     protected function createZoneManagementService(): ZoneManagementService
     {
-        return $this->services()->zoneManagementService($this->getPdnsCapabilities());
+        return $this->services()->zoneManagementService(fn(): PdnsCapabilities => $this->getPdnsCapabilities());
     }
 
     /**

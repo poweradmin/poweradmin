@@ -117,6 +117,25 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         $this->assertSame(ZoneManagementService::ERR_MASTER_REQUIRED, $consumer['code']);
     }
 
+    public function testCapabilitiesAreOnlyLookedUpForACatalogKind(): void
+    {
+        $lookups = 0;
+        $lazy = function () use (&$lookups) {
+            $lookups++;
+            return PdnsCapabilities::fromVersion('4.7.0');
+        };
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(fn(string $group, string $key, $default = null) => $default);
+        $service = new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, null, null, $lazy);
+
+        $service->createZone('new.example', 'BOGUS', self::ADMIN_USER_ID);
+        $this->assertSame(0, $lookups, 'a basic-kind refusal must not fetch the server version');
+
+        $service->createZone('catalog.example', 'PRODUCER', self::ADMIN_USER_ID);
+        $service->createZone('catalog2.example', 'PRODUCER', self::ADMIN_USER_ID);
+        $this->assertSame(1, $lookups, 'the version is fetched once per service');
+    }
+
     public function testCreateZoneLooksUpTheNameAsPunycode(): void
     {
         $result = $this->service()->createZone('bücher.example', 'MASTER', self::ADMIN_USER_ID);

@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Service\DatabaseService;
+use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ApiKeyService;
@@ -35,6 +36,7 @@ use Poweradmin\Infrastructure\Logger\DbApiLogger;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
@@ -57,6 +59,9 @@ abstract class PublicApiController extends AbstractApiController
      * case {@see self::getApiKeyScope()} returns an unrestricted scope.
      */
     protected ?ApiKeyScope $apiKeyScope = null;
+
+    /** @var array<string, mixed> Request-scoped stand-in for the session version cache */
+    private array $capabilityCache = [];
 
     /**
      * PublicApiController constructor
@@ -242,6 +247,20 @@ abstract class PublicApiController extends AbstractApiController
         $stmt = $this->db->prepare("SELECT username FROM users WHERE id = :id");
         $stmt->execute([':id' => $this->authenticatedUserId]);
         return $stmt->fetchColumn() ?: 'user_id:' . $this->authenticatedUserId;
+    }
+
+    /**
+     * API requests carry no session, so the PowerDNS version is fetched on first
+     * use and kept for this request only. Callers ask lazily (a zone create with a
+     * catalog kind), so ordinary requests never pay for the lookup.
+     */
+    protected function getPdnsCapabilities(): PdnsCapabilities
+    {
+        if ($this->capabilityCache === []) {
+            PdnsVersionService::refreshFromConfig($this->config, $this->logger, $this->capabilityCache);
+        }
+
+        return PdnsCapabilities::fromServerInfo(PdnsVersionService::getCachedInfo($this->capabilityCache));
     }
 
     /**

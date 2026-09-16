@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Closure;
 use Exception;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
@@ -70,7 +71,8 @@ class ZoneManagementService
     private PDO $db;
     private LoggerInterface $logger;
     private RecordChangeLogger $changeLogger;
-    private ?PdnsCapabilities $capabilities;
+    /** @var PdnsCapabilities|Closure|null Resolved on first use so a lookup only happens for a catalog kind */
+    private PdnsCapabilities|Closure|null $capabilities;
     private ?ZoneSigningService $signing;
     private ?DnsBackendProviderInterface $backendProvider = null;
     private ?RepositoryFactory $repositoryFactory = null;
@@ -83,7 +85,7 @@ class ZoneManagementService
     private array $resolvedTemplates = [];
 
     /**
-     * @param PdnsCapabilities|null $capabilities What the connected server supports; null admits only the basic kinds
+     * @param PdnsCapabilities|Closure|null $capabilities What the connected server supports, or a closure returning it; null admits only the basic kinds
      * @param ZoneSigningService|null $signing Needed for enable_dnssec; without it a create is never signed
      * @param DomainRepositoryInterface|null $domainRepository Zone lookups; built from the repository factory when omitted
      * @param PermissionService|null $permissions Shares the request's permission cache; built on demand when omitted
@@ -94,7 +96,7 @@ class ZoneManagementService
         object $db,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
-        ?PdnsCapabilities $capabilities = null,
+        PdnsCapabilities|Closure|null $capabilities = null,
         ?ZoneSigningService $signing = null,
         ?DomainRepositoryInterface $domainRepository = null,
         ?PermissionService $permissions = null
@@ -231,7 +233,11 @@ class ZoneManagementService
         }
 
         // Catalog kinds need a server that has them; an unknown server counts as too old.
-        $validTypes = $this->capabilities?->supportsCatalogZones() ? ZoneKind::values() : ZoneKind::basicValues();
+        $validTypes = ZoneKind::basicValues();
+        $isCatalogKind = !in_array($type, $validTypes, true) && in_array($type, ZoneKind::values(), true);
+        if ($isCatalogKind && $this->capabilities()?->supportsCatalogZones()) {
+            $validTypes = ZoneKind::values();
+        }
         if (!in_array($type, $validTypes, true)) {
             return [
                 'success' => false,
@@ -441,6 +447,15 @@ class ZoneManagementService
         }
 
         return ['success' => true, 'template_id' => $templateId];
+    }
+
+    private function capabilities(): ?PdnsCapabilities
+    {
+        if ($this->capabilities instanceof Closure) {
+            $this->capabilities = ($this->capabilities)();
+        }
+
+        return $this->capabilities;
     }
 
     private function domainManager(): DomainManagerInterface
