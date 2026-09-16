@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -69,7 +70,7 @@ class EditCommentController extends BaseController
         $zone_type = $domainRepository->getDomainType($zone_id);
 
         // Check permission to edit comment - directly reuse the logic from edit_zone_comment method
-        $is_admin = $this->hasPermission('user_is_ueberuser');
+        $is_admin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
 
         // Permission check logic matches what's in RecordManager->editZoneComment.
         // Read-only zones (Secondary, Consumer) block comment edits for everyone -

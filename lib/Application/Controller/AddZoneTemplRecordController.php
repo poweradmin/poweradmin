@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -63,8 +64,8 @@ class AddZoneTemplRecordController extends BaseController
         $zone_templ_id = (int)$this->getSafeRequestValue('id');
         $userId = $this->userContext->getLoggedInUserId();
         $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $userId);
-        $perm_godlike = $this->hasPermission('user_is_ueberuser');
-        $perm_templ_edit = $this->hasPermission('zone_templ_edit');
+        $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
+        $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to add records to zone templates."));
 

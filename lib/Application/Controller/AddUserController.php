@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\PasswordGenerationService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
@@ -66,7 +67,7 @@ class AddUserController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('user_add_new', _("You do not have the permission to add a new user."));
+        $this->checkPermission(Permission::PERM_USER_ADD_NEW, _("You do not have the permission to add a new user."));
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('add_user');
@@ -95,7 +96,7 @@ class AddUserController extends BaseController
         // The template picker is hidden when access templates are disabled or the
         // caller lacks user_edit_templ_perm; those callers get the minimal one.
         $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
-        $canChooseTemplate = $showUserAccessTemplates && $this->hasPermission('user_edit_templ_perm');
+        $canChooseTemplate = $showUserAccessTemplates && $this->hasPermission(Permission::PERM_USER_EDIT_TEMPL_PERM);
         $input = [
             'username' => (string)($userParams['username'] ?? ''),
             'fullname' => (string)($userParams['fullname'] ?? ''),
@@ -185,7 +186,7 @@ class AddUserController extends BaseController
 
     private function renderAddUserForm(array $policyConfig): void
     {
-        $user_edit_templ_perm = $this->hasPermission('user_edit_templ_perm');
+        $user_edit_templ_perm = $this->hasPermission(Permission::PERM_USER_EDIT_TEMPL_PERM);
         $user_templates = $this->permissionTemplateRepository->listPermissionTemplates('user');
 
         $username = $this->httpRequest->getPostParam('username', '');
@@ -226,14 +227,14 @@ class AddUserController extends BaseController
             'description' => $description,
             'active_checked' => $active_checked,
             'use_ldap_checked' => $use_ldap_checked,
-            'user_edit_templ_perm' => $user_edit_templ_perm,
+            Permission::PERM_USER_EDIT_TEMPL_PERM => $user_edit_templ_perm,
             'user_templates' => $user_templates,
             'ldap_use' => $this->config->get('ldap', 'enabled', false),
             'password_policy' => $policyConfig,
             'mail_enabled' => $mail_enabled,
             'available_groups' => $availableGroups,
             'selected_groups' => $selectedGroups,
-            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
+            'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER),
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
@@ -272,7 +273,7 @@ class AddUserController extends BaseController
     private function assignUserToGroups(int $userId, array $groupIds, string $username): void
     {
         // Only admins can manage group memberships
-        if (!$this->hasPermission('user_is_ueberuser')) {
+        if (!$this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
             return;
         }
 

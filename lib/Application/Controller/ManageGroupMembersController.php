@@ -26,6 +26,7 @@ use InvalidArgumentException;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 
 /**
  * Handles the group members page: adds and removes users in a group.
@@ -290,7 +291,7 @@ class ManageGroupMembersController extends BaseController
      */
     private function getVisibleUsers(): array
     {
-        $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
+        $restrictToUserId = $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS) ? null : ($this->getCurrentUserId() ?? 0);
         return $this->createUserRepository()->getUserDetailList(false, $restrictToUserId);
     }
 }

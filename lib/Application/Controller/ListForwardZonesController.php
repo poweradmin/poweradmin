@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\ZoneSyncService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -48,8 +49,8 @@ class ListForwardZonesController extends BaseController
 
     public function run(): void
     {
-        $perm_view_zone_own = $this->hasPermission('zone_content_view_own');
-        $perm_view_zone_others = $this->hasPermission('zone_content_view_others');
+        $perm_view_zone_own = $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OWN);
+        $perm_view_zone_others = $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS);
 
         $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
@@ -74,7 +75,7 @@ class ListForwardZonesController extends BaseController
             return;
         }
 
-        if (!$this->hasPermission('user_is_ueberuser')) {
+        if (!$this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
             $this->setMessage('list_forward_zones', 'error', _('You do not have permission to sync zones from PowerDNS.'));
             $this->redirect('/zones/forward');
             return;
@@ -263,16 +264,16 @@ class ListForwardZonesController extends BaseController
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
             'can_bulk_delete_zones' => $can_bulk_delete_zones,
-            'perm_zone_master_add' => $this->hasPermission('zone_master_add'),
-            'perm_zone_slave_add' => $this->hasPermission('zone_slave_add'),
-            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
+            'perm_zone_master_add' => $this->hasPermission(Permission::PERM_ZONE_MASTER_ADD),
+            'perm_zone_slave_add' => $this->hasPermission(Permission::PERM_ZONE_SLAVE_ADD),
+            'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER),
             'is_api_backend' => $isApiBackend,
         ]);
     }
 
     private function getAvailableStartingLetters(string $letterStart, int $userId, DnsDataService $dnsDataService): string
     {
-        $allow_view_others = $this->hasPermission('zone_content_view_others');
+        $allow_view_others = $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS);
         $availableChars = $dnsDataService->getDistinctStartingLetters($userId, $allow_view_others);
 
         $digitsAvailable = (bool)array_filter($availableChars, 'is_numeric');

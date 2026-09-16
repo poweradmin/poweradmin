@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Integration;
 use PDO;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\PermissionService;
 use TestHelpers\FakeConfiguration;
@@ -97,7 +98,7 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
             (2, 101, NULL, " . self::BOB . "),
             (100, 102, NULL, " . self::CAROL . ")");
 
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (41, 'zone_content_edit_own'), (42, 'zone_content_view_own')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (41, '" . Permission::PERM_ZONE_CONTENT_EDIT_OWN . "'), (42, '" . Permission::PERM_ZONE_CONTENT_VIEW_OWN . "')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (" . self::EDITOR_TEMPL . ", 'Editor')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES
             (" . self::EDITOR_TEMPL . ", 41),

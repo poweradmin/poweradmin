@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Module\EmailPreviews;
 
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Module\ModuleInterface;
 
 /**
@@ -54,7 +55,7 @@ class EmailPreviewsModule implements ModuleInterface
                 'url' => '/tools/email-previews',
                 'icon' => 'envelope-fill',
                 'page_id' => 'module_email_previews',
-                'permission' => 'user_is_ueberuser',
+                'permission' => Permission::PERM_USER_IS_UEBERUSER,
             ],
         ];
     }

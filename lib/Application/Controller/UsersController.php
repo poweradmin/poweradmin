@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Application\Service\UserFormMessages;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -43,8 +44,8 @@ class UsersController extends BaseController
     public function run(): void
     {
         // Check if user has permission to view or edit other users before processing
-        $canViewOthers = $this->hasPermission('user_view_others');
-        $canEditOthers = $this->hasPermission('user_edit_others');
+        $canViewOthers = $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS);
+        $canEditOthers = $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS);
 
         // If user doesn't have permissions to view/edit others, redirect to home
         if (!$canViewOthers && !$canEditOthers) {
@@ -68,7 +69,7 @@ class UsersController extends BaseController
     {
         $success = false;
         $blocked = false;
-        $currentIsSuperuser = $this->hasPermission('user_is_ueberuser');
+        $currentIsSuperuser = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $permissionService = $this->createPermissionService();
         foreach ($this->httpRequest->getPostParam('user') as $user) {
             if (!is_array($user)) {
@@ -123,7 +124,7 @@ class UsersController extends BaseController
             'email' => $email,
             'active' => ($posted['active'] ?? '') == 'on' ? 1 : 0,
         ];
-        if ($this->hasPermission('user_edit_templ_perm') && isset($posted['templ_id'])) {
+        if ($this->hasPermission(Permission::PERM_USER_EDIT_TEMPL_PERM) && isset($posted['templ_id'])) {
             $input['perm_templ'] = $posted['templ_id'];
             $templateError = PermissionTemplateAssignmentGuard::apply($this->createPermissionService(), null, $callerId, $input, $targetId);
             if ($templateError !== null) {
@@ -165,11 +166,11 @@ class UsersController extends BaseController
         $permissions = $this->createPermissionService()->getPermissionFlags(
             (int)$this->getCurrentUserId(),
             [
-                'user_view_others',
-                'user_edit_own',
-                'user_edit_others',
-                'user_edit_templ_perm',
-                'user_is_ueberuser'
+                Permission::PERM_USER_VIEW_OTHERS,
+                Permission::PERM_USER_EDIT_OWN,
+                Permission::PERM_USER_EDIT_OTHERS,
+                Permission::PERM_USER_EDIT_TEMPL_PERM,
+                Permission::PERM_USER_IS_UEBERUSER
             ]
         );
 
@@ -179,7 +180,7 @@ class UsersController extends BaseController
         // Get total count and paginated users; both restricted to the user's own
         // account when they lack the permission to view other users
         $userRepository = $this->createUserRepository();
-        $restrictToUserId = $this->hasPermission('user_view_others') ? null : ($this->getCurrentUserId() ?? 0);
+        $restrictToUserId = $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS) ? null : ($this->getCurrentUserId() ?? 0);
         // ?search[]=x arrives as an array; treat anything non-string as no filter.
         $searchParam = $this->httpRequest->getQueryParam('search', '');
         $searchTerm = is_string($searchParam) ? trim($searchParam) : '';
@@ -199,9 +200,9 @@ class UsersController extends BaseController
             'perm_templates' => $this->createPermissionTemplateRepository()->listPermissionTemplates('user'),
             'users' => $users,
             'session_userid' => $_SESSION[SessionKeys::USERID],
-            'perm_add_new' => $this->hasPermission('user_add_new'),
-            'perm_is_godlike' => $permissions['user_is_ueberuser'],
-            'perm_user_logs_view' => $this->hasPermission('user_logs_view'),
+            'perm_add_new' => $this->hasPermission(Permission::PERM_USER_ADD_NEW),
+            'perm_is_godlike' => $permissions[Permission::PERM_USER_IS_UEBERUSER],
+            'perm_user_logs_view' => $this->hasPermission(Permission::PERM_USER_LOGS_VIEW),
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
             'pagination' => $this->presentPagination($totalUsers, $rowsPerPage, '/users?start={PageNumber}', ['search' => $searchTerm]),
             'total_users' => $totalUsers,

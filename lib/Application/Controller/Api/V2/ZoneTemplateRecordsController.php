@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
@@ -97,7 +98,7 @@ class ZoneTemplateRecordsController extends PublicApiController
             return false;
         }
 
-        if ($this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser')) {
+        if ($this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER)) {
             return true;
         }
 
@@ -115,7 +116,7 @@ class ZoneTemplateRecordsController extends PublicApiController
             return false;
         }
 
-        if ($this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser')) {
+        if ($this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER)) {
             return true;
         }
 

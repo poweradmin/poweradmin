@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
@@ -91,8 +92,8 @@ class EditRecordController extends BaseController
         $user_is_zone_owner = $this->isZoneOwner($zid);
 
         // Check view permission first (zone-aware for group support)
-        $canView = $this->permissionService->canPerformZoneAction($userId, $zid, 'zone_content_view_own');
-        $canViewOthers = $this->hasPermission('zone_content_view_others');
+        $canView = $this->permissionService->canPerformZoneAction($userId, $zid, Permission::PERM_ZONE_CONTENT_VIEW_OWN);
+        $canViewOthers = $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS);
 
         if (!$canViewOthers && !$canView) {
             $this->showError(_("You do not have permission to view this record."));

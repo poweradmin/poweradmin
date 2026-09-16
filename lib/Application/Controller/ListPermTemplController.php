@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 
 /**
  * Renders the permission templates list at /permissions/templates.
@@ -32,7 +33,7 @@ class ListPermTemplController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('templ_perm_edit', _("You do not have the permission to edit permission templates."));
+        $this->checkPermission(Permission::PERM_TEMPL_PERM_EDIT, _("You do not have the permission to edit permission templates."));
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('list_perm_templ');
@@ -58,7 +59,7 @@ class ListPermTemplController extends BaseController
         }
 
         $this->render('list_perm_templ.html', [
-            'templ_perm_add' => $this->hasPermission('templ_perm_add'),
+            Permission::PERM_TEMPL_PERM_ADD => $this->hasPermission(Permission::PERM_TEMPL_PERM_ADD),
             'permission_templates' => $templates,
             'show_user_access_templates' => $showUser,
             'show_group_access_templates' => $showGroup,

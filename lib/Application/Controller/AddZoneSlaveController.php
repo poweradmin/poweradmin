@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -44,7 +45,7 @@ class AddZoneSlaveController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('zone_slave_add', _("You do not have the permission to add a slave zone."));
+        $this->checkPermission(Permission::PERM_ZONE_SLAVE_ADD, _("You do not have the permission to add a slave zone."));
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('add_zone_slave');
@@ -163,7 +164,7 @@ class AddZoneSlaveController extends BaseController
 
         // Fetch groups for the dropdown - admins see all, others see only their own
         $userGroupRepo = $this->createUserGroupRepository();
-        $isAdmin = $this->hasPermission('user_is_ueberuser');
+        $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION[SessionKeys::USERID]);
 
         // Fetch member counts for all groups in a single query
@@ -185,7 +186,7 @@ class AddZoneSlaveController extends BaseController
             'users' => $users,
             'selectable_owners' => $this->selectableOwners($users),
             'session_user_id' => $_SESSION[SessionKeys::USERID],
-            'perm_view_others' => $this->hasPermission('user_view_others'),
+            'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
             'domain_value' => $domain_value,
             'slave_master_value' => $slave_master_value,
             'owner_value' => $owner_value,

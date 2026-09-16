@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Module\ZoneImportExport;
 
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Module\ModuleInterface;
 
 /**
@@ -67,7 +68,7 @@ class ZoneImportExportModule implements ModuleInterface
                 'url' => '/tools/zone-import',
                 'icon' => 'cloud-arrow-down',
                 'page_id' => 'module_zone_import',
-                'permission' => 'zone_master_add',
+                'permission' => Permission::PERM_ZONE_MASTER_ADD,
             ],
         ];
     }

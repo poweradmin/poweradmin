@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -82,7 +83,7 @@ class PermissionsController extends PublicApiController
                                 type: 'object',
                                 properties: [
                                     'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
-                                    'name' => new OA\Property(property: 'name', type: 'string', example: 'zone_content_view_own'),
+                                    'name' => new OA\Property(property: 'name', type: 'string', example: Permission::PERM_ZONE_CONTENT_VIEW_OWN),
                                     'descr' => new OA\Property(property: 'descr', type: 'string', example: 'User may view the content of zones he owns')
                                 ]
                             )
@@ -101,8 +102,8 @@ class PermissionsController extends PublicApiController
 
             // Check if user has permission to view permissions
             // Must match web UI requirement: templ_perm_edit permission
-            $canViewPermissions = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
-                                  $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
+            $canViewPermissions = $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_USER_IS_UEBERUSER) ||
+                                  $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_TEMPL_PERM_EDIT);
 
             if (!$canViewPermissions) {
                 return $this->returnApiError('You do not have permission to view permissions', 403);
@@ -147,7 +148,7 @@ class PermissionsController extends PublicApiController
                                     property: 'permission',
                                     properties: [
                                         'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
-                                        'name' => new OA\Property(property: 'name', type: 'string', example: 'zone_content_view_own'),
+                                        'name' => new OA\Property(property: 'name', type: 'string', example: Permission::PERM_ZONE_CONTENT_VIEW_OWN),
                                         'descr' => new OA\Property(property: 'descr', type: 'string', example: 'User may view the content of zones he owns')
                                     ],
                                     type: 'object'
@@ -170,8 +171,8 @@ class PermissionsController extends PublicApiController
 
             // Check if user has permission to view permissions
             // Must match web UI requirement: templ_perm_edit permission
-            $canViewPermissions = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
-                                  $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
+            $canViewPermissions = $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_USER_IS_UEBERUSER) ||
+                                  $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_TEMPL_PERM_EDIT);
 
             if (!$canViewPermissions) {
                 return $this->returnApiError('You do not have permission to view permissions', 403);

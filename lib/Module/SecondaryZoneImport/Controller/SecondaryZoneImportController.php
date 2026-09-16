@@ -25,6 +25,7 @@ namespace Poweradmin\Module\SecondaryZoneImport\Controller;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
@@ -47,7 +48,7 @@ class SecondaryZoneImportController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('zone_slave_add', _('You do not have the permission to import a secondary zone.'));
+        $this->checkPermission(Permission::PERM_ZONE_SLAVE_ADD, _('You do not have the permission to import a secondary zone.'));
         $this->setPageTitle(_('Import secondary zone'));
 
         $blocker = $this->getOwnerOptionsBlocker();
@@ -81,7 +82,7 @@ class SecondaryZoneImportController extends BaseController
         header('Content-Type: application/json');
 
         $zoneId = (int)$this->getSafeRequestValue('id');
-        if (!$this->hasPermission('zone_slave_add') || !$this->userMayAccessZone($zoneId)) {
+        if (!$this->hasPermission(Permission::PERM_ZONE_SLAVE_ADD) || !$this->userMayAccessZone($zoneId)) {
             http_response_code(403);
             echo json_encode(['ready' => false, 'records' => 0]);
             return;
@@ -102,9 +103,9 @@ class SecondaryZoneImportController extends BaseController
             return false;
         }
         if (
-            $this->hasPermission('user_is_ueberuser')
-            || $this->hasPermission('zone_content_edit_others')
-            || $this->hasPermission('zone_meta_edit_others')
+            $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)
+            || $this->hasPermission(Permission::PERM_ZONE_CONTENT_EDIT_OTHERS)
+            || $this->hasPermission(Permission::PERM_ZONE_META_EDIT_OTHERS)
         ) {
             return true;
         }
@@ -210,7 +211,7 @@ class SecondaryZoneImportController extends BaseController
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
         $sessionUserId = $this->userContextService->getLoggedInUserId();
-        $isAdmin = $this->hasPermission('user_is_ueberuser');
+        $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $userGroupRepo = $this->createUserGroupRepository();
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($sessionUserId);
         $memberCounts = $userGroupRepo->getMemberCountsByGroupIds(array_map(fn($g) => $g->getId(), $allGroups));
@@ -226,7 +227,7 @@ class SecondaryZoneImportController extends BaseController
             'users' => $users,
             'selectable_owners' => $this->selectableOwners($users),
             'session_user_id' => $sessionUserId,
-            'perm_view_others' => $this->hasPermission('user_view_others'),
+            'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
             'owner_value' => $ownerInput !== null ? $ownerInput : $sessionUserId,
             'all_groups' => $allGroups,
             'group_member_counts' => $memberCounts,

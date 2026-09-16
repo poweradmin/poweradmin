@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Throwable;
@@ -265,7 +266,7 @@ class DbPermissionTemplateRepository
                       SELECT 1
                       FROM perm_templ_items sup
                       INNER JOIN perm_items spi ON sup.perm_id = spi.id
-                      WHERE sup.templ_id = pt.id AND spi.name = 'user_is_ueberuser'
+                      WHERE sup.templ_id = pt.id AND spi.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
                   )";
 
         if ($templateType !== null) {

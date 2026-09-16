@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\MfaVerificationMailerInterface;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
@@ -707,7 +708,7 @@ class MfaServiceTest extends TestCase
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn($hasPermission ? ['permission' => 'user_enforce_mfa'] : false);
+        $stmt->method('fetch')->willReturn($hasPermission ? ['permission' => Permission::PERM_USER_ENFORCE_MFA] : false);
 
         $db = $this->createMock(PDO::class);
         $db->method('prepare')->willReturn($stmt);

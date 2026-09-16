@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\ZoneSigningMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
@@ -59,7 +60,7 @@ class DnssecController extends BaseController
             return;
         }
 
-        ($this->hasPermission('user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+        ($this->hasPermission(Permission::PERM_USER_VIEW_OTHERS)) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         // Handle unsign zone action - requires dedicated DNSSEC management permission.
         if ($this->httpRequest->getPostParam('unsign_zone') !== null) {

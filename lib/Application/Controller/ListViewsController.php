@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 
 /**
  * Lists PowerDNS views (5.0+) and the zones they contain. Also exposes inline
@@ -41,7 +42,7 @@ class ListViewsController extends BaseController
 
     public function run(): void
     {
-        if (!$this->hasPermission('user_is_ueberuser')) {
+        if (!$this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
             $this->showError(_('You do not have permission to manage PowerDNS views.'));
             return;
         }

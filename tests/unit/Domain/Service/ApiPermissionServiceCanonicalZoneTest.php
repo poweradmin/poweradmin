@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use TestHelpers\FakeConfiguration;
 
@@ -110,7 +111,7 @@ class ApiPermissionServiceCanonicalZoneTest extends TestCase
 
     public function testVisibleZoneIdsAreCanonicalIntegers(): void
     {
-        $this->grant(1, 'zone_content_view_own');
+        $this->grant(1, Permission::PERM_ZONE_CONTENT_VIEW_OWN);
         $this->seedZone(55, 0, 1);
         $this->seedZone(56, null, 1);
         $this->seedZone(7, 201, 1);

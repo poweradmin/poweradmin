@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
@@ -50,7 +51,7 @@ class BulkRegistrationController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('zone_master_add', _("You do not have the permission to add a master zone."));
+        $this->checkPermission(Permission::PERM_ZONE_MASTER_ADD, _("You do not have the permission to add a master zone."));
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('bulk_registration');
@@ -149,11 +150,11 @@ class BulkRegistrationController extends BaseController
         $ownershipMode = new ZoneOwnershipModeService($this->config);
 
         $userGroupRepo = $this->createUserGroupRepository();
-        $isAdmin = $this->hasPermission('user_is_ueberuser');
+        $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION[SessionKeys::USERID]);
 
         $callerId = $this->userContextService->getLoggedInUserId();
-        $canViewOthers = $this->hasPermission('user_view_others');
+        $canViewOthers = $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS);
         // Preserve the user's owner choice (including explicit "no user owner")
         // when re-rendering after a partial failure. Only honour foreign user
         // IDs when the caller is allowed to see other users; otherwise fall back
@@ -176,8 +177,8 @@ class BulkRegistrationController extends BaseController
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION[SessionKeys::USERID],
             'owner_value' => $owner_value,
-            'perm_view_others' => $this->hasPermission('user_view_others'),
-            'perm_edit_others' => $this->hasPermission('user_edit_others'),
+            'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
+            'perm_edit_others' => $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS),
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'MASTER'),
             'available_zone_types' => self::AVAILABLE_ZONE_TYPES,
             'users' => $users,

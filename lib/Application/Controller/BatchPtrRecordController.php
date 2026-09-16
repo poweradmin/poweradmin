@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
@@ -64,8 +65,8 @@ class BatchPtrRecordController extends BaseController
         $this->checkCondition(!$isReverseRecordAllowed, _("Batch PTR record creation is not enabled."));
 
         // Check if user has permission to use this feature
-        $perm_edit_own = $this->hasPermission('zone_content_edit_own');
-        $perm_edit_others = $this->hasPermission('zone_content_edit_others');
+        $perm_edit_own = $this->hasPermission(Permission::PERM_ZONE_CONTENT_EDIT_OWN);
+        $perm_edit_others = $this->hasPermission(Permission::PERM_ZONE_CONTENT_EDIT_OTHERS);
         $this->checkCondition(
             !$perm_edit_own && !$perm_edit_others,
             _("You do not have permission to edit DNS records.")

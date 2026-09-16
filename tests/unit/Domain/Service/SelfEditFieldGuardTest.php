@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\SelfEditFieldGuard;
 use TestHelpers\BuildsPermissionService;
@@ -43,7 +44,7 @@ class SelfEditFieldGuardTest extends TestCase
 
     private function permissionService(bool $isUeberuser = false, bool $canEditOthers = false): PermissionService
     {
-        $grants = $canEditOthers ? ['user_edit_others'] : [];
+        $grants = $canEditOthers ? [Permission::PERM_USER_EDIT_OTHERS] : [];
 
         return $this->buildPermissionService(
             permissionsByUser: array_fill_keys(self::CALLERS, $grants),

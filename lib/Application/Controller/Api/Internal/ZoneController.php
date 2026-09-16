@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api\Internal;
 
 use Poweradmin\Application\Controller\Api\InternalApiController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -69,8 +70,8 @@ class ZoneController extends InternalApiController
      */
     private function hasAnyZoneViewPermission(): bool
     {
-        return $this->hasPermission('zone_content_view_own')
-            || $this->hasPermission('zone_content_view_others');
+        return $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OWN)
+            || $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS);
     }
 
     /**
@@ -85,7 +86,7 @@ class ZoneController extends InternalApiController
         // Scope to the user's own zones unless they hold zone_content_view_others.
         // Without these args the repository defaults leak every zone in the system.
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
-        $viewOthers = $this->hasPermission('zone_content_view_others');
+        $viewOthers = $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS);
         $zones = $this->zoneRepository->listZones($userId, $viewOthers);
 
         return $this->returnJsonResponse([
@@ -119,7 +120,7 @@ class ZoneController extends InternalApiController
             return $this->returnErrorResponse('Forbidden: insufficient permissions', 403);
         }
 
-        $viewOthers = $this->hasPermission('zone_content_view_others');
+        $viewOthers = $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS);
 
         // A zone the user neither owns nor may view others of reads as missing
         if (!$viewOthers && !$this->isZoneOwner($zoneId)) {

@@ -16,6 +16,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Infrastructure\Repository\SqlDynamicDnsRepository;
@@ -42,7 +43,7 @@ class DynamicDnsGroupPermissionTest extends TestCase
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
 
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (1, 'zone_content_edit_own'), (2, 'search')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (1, '" . Permission::PERM_ZONE_CONTENT_EDIT_OWN . "'), (2, '" . Permission::PERM_SEARCH . "')");
         // Templates: 10 grants edit, 11 does not, 12 grants edit (assigned to a group).
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (10, 'DirectEdit'), (11, 'NoEdit'), (12, 'GroupEdit')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (10, 1), (11, 2), (12, 1)");

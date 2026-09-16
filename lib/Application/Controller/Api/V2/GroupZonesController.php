@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\ZoneGroupService;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -123,7 +124,7 @@ class GroupZonesController extends PublicApiController
     #[OA\Response(response: 403, description: 'Forbidden')]
     private function listZones(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('Only administrators can view group zones', 403);
         }
 
@@ -202,7 +203,7 @@ class GroupZonesController extends PublicApiController
     #[OA\Response(response: 404, description: 'Zone not found')]
     private function assignZone(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('Only administrators can assign zones to groups', 403);
         }
 
@@ -291,7 +292,7 @@ class GroupZonesController extends PublicApiController
     #[OA\Response(response: 404, description: 'Zone or assignment not found')]
     private function unassignZone(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('Only administrators can unassign zones from groups', 403);
         }
 

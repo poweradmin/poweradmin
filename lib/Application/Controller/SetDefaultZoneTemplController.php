@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -34,7 +35,7 @@ class SetDefaultZoneTemplController extends BaseController
     {
         $this->validateCsrfToken();
 
-        $perm_godlike = $this->hasPermission('user_is_ueberuser');
+        $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $this->checkCondition(!$perm_godlike, _("You do not have the permission to change the default zone template."));
 
         $action = $this->getSafeRequestValue('action');

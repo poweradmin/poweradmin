@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Unit\Api\V2;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Exception;
@@ -43,7 +44,7 @@ class ZoneTemplatesControllerTest extends TestCase
 
         $this->mockPermissionService
             ->method('userHasPermission')
-            ->with(1, 'user_is_ueberuser')
+            ->with(1, Permission::PERM_USER_IS_UEBERUSER)
             ->willReturn(false);
 
         $this->mockRepository
@@ -333,7 +334,7 @@ class ZoneTemplatesControllerTest extends TestCase
 
         $this->mockPermissionService
             ->method('userHasPermission')
-            ->with(1, 'user_is_ueberuser')
+            ->with(1, Permission::PERM_USER_IS_UEBERUSER)
             ->willReturn(true);
 
         $this->mockRepository
@@ -405,7 +406,7 @@ class ZoneTemplatesControllerTest extends TestCase
 
         $this->mockPermissionService
             ->method('userHasPermission')
-            ->with(1, 'user_is_ueberuser')
+            ->with(1, Permission::PERM_USER_IS_UEBERUSER)
             ->willReturn(true);
 
         $this->mockRepository
@@ -466,7 +467,7 @@ class ZoneTemplatesControllerTest extends TestCase
 
         $this->mockPermissionService
             ->method('userHasPermission')
-            ->with(1, 'user_is_ueberuser')
+            ->with(1, Permission::PERM_USER_IS_UEBERUSER)
             ->willReturn(false);
 
         $this->mockRepository

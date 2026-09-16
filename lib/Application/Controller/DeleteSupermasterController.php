@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -38,7 +39,7 @@ class DeleteSupermasterController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('supermaster_edit', _("You do not have the permission to delete a supermaster."));
+        $this->checkPermission(Permission::PERM_SUPERMASTER_EDIT, _("You do not have the permission to delete a supermaster."));
 
         if ($this->httpRequest->getPostParam('confirm') !== null) {
             $this->deleteSuperMaster();

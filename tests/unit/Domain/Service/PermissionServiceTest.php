@@ -26,6 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use TestHelpers\BuildsPermissionService;
@@ -56,7 +57,7 @@ class PermissionServiceTest extends TestCase
             ->willReturn(true);
 
         $this->assertTrue($this->service->hasPermission($userId, 'any_permission'));
-        $this->assertTrue($this->service->hasPermission($userId, 'zone_content_view_own'));
+        $this->assertTrue($this->service->hasPermission($userId, Permission::PERM_ZONE_CONTENT_VIEW_OWN));
         $this->assertTrue($this->service->hasPermission($userId, 'nonexistent_permission'));
     }
 
@@ -71,11 +72,11 @@ class PermissionServiceTest extends TestCase
 
         $this->userRepository->method('getUserPermissions')
             ->with($userId)
-            ->willReturn(['zone_content_view_own', 'zone_content_edit_own']);
+            ->willReturn([Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN]);
 
-        $this->assertTrue($this->service->hasPermission($userId, 'zone_content_view_own'));
-        $this->assertTrue($this->service->hasPermission($userId, 'zone_content_edit_own'));
-        $this->assertFalse($this->service->hasPermission($userId, 'zone_content_view_others'));
+        $this->assertTrue($this->service->hasPermission($userId, Permission::PERM_ZONE_CONTENT_VIEW_OWN));
+        $this->assertTrue($this->service->hasPermission($userId, Permission::PERM_ZONE_CONTENT_EDIT_OWN));
+        $this->assertFalse($this->service->hasPermission($userId, Permission::PERM_ZONE_CONTENT_VIEW_OTHERS));
     }
 
     #[Test]
@@ -131,7 +132,7 @@ class PermissionServiceTest extends TestCase
 
         // Admin short-circuit must not consult ownership
         $this->userRepository->expects($this->never())->method('userOwnsZone');
-        $this->assertTrue($this->service->canPerformZoneAction($userId, 100, 'zone_delete_own'));
+        $this->assertTrue($this->service->canPerformZoneAction($userId, 100, Permission::PERM_ZONE_DELETE_OWN));
     }
 
     #[Test]
@@ -139,14 +140,14 @@ class PermissionServiceTest extends TestCase
     {
         $this->userRepository->method('hasAdminPermission')->willReturn(false);
         // getUserPermissions already unions the user's template with every group template
-        $this->userRepository->method('getUserPermissions')->with(5)->willReturn(['zone_delete_own']);
+        $this->userRepository->method('getUserPermissions')->with(5)->willReturn([Permission::PERM_ZONE_DELETE_OWN]);
         $this->userRepository->method('userOwnsZone')->willReturnMap([
             [5, 100, true],
             [5, 200, false],
         ]);
-        $this->assertTrue($this->service->canPerformZoneAction(5, 100, 'zone_delete_own'));
-        $this->assertFalse($this->service->canPerformZoneAction(5, 200, 'zone_delete_own'));
-        $this->assertFalse($this->service->canPerformZoneAction(5, 100, 'zone_dnssec_manage_own'));
+        $this->assertTrue($this->service->canPerformZoneAction(5, 100, Permission::PERM_ZONE_DELETE_OWN));
+        $this->assertFalse($this->service->canPerformZoneAction(5, 200, Permission::PERM_ZONE_DELETE_OWN));
+        $this->assertFalse($this->service->canPerformZoneAction(5, 100, Permission::PERM_ZONE_DNSSEC_MANAGE_OWN));
     }
 
     #[Test]
@@ -166,7 +167,7 @@ class PermissionServiceTest extends TestCase
     public function testGetUserPermissions(): void
     {
         $userId = 1;
-        $permissions = ['zone_content_view_own', 'zone_content_edit_own'];
+        $permissions = [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN];
 
         $this->userRepository->method('getUserPermissions')
             ->with($userId)
@@ -203,7 +204,7 @@ class PermissionServiceTest extends TestCase
 
         $this->userRepository->method('getUserPermissions')
             ->with($userId)
-            ->willReturn(['zone_content_view_others']);
+            ->willReturn([Permission::PERM_ZONE_CONTENT_VIEW_OTHERS]);
 
         $this->assertEquals('all', $this->service->getViewPermissionLevel($userId));
     }
@@ -219,7 +220,7 @@ class PermissionServiceTest extends TestCase
 
         $this->userRepository->method('getUserPermissions')
             ->with($userId)
-            ->willReturn(['zone_content_view_own']);
+            ->willReturn([Permission::PERM_ZONE_CONTENT_VIEW_OWN]);
 
         $this->assertEquals('own', $this->service->getViewPermissionLevel($userId));
     }
@@ -267,7 +268,7 @@ class PermissionServiceTest extends TestCase
 
         $this->userRepository->method('getUserPermissions')
             ->with($userId)
-            ->willReturn(['zone_content_edit_others']);
+            ->willReturn([Permission::PERM_ZONE_CONTENT_EDIT_OTHERS]);
 
         $this->assertEquals('all', $this->service->getEditPermissionLevel($userId));
     }
@@ -283,7 +284,7 @@ class PermissionServiceTest extends TestCase
 
         $this->userRepository->method('getUserPermissions')
             ->with($userId)
-            ->willReturn(['zone_content_edit_own']);
+            ->willReturn([Permission::PERM_ZONE_CONTENT_EDIT_OWN]);
 
         $this->assertEquals('own', $this->service->getEditPermissionLevel($userId));
     }
@@ -299,7 +300,7 @@ class PermissionServiceTest extends TestCase
 
         $this->userRepository->method('getUserPermissions')
             ->with($userId)
-            ->willReturn(['zone_content_edit_own_as_client']);
+            ->willReturn([Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT]);
 
         $this->assertEquals('own_as_client', $this->service->getEditPermissionLevel($userId));
     }
@@ -349,7 +350,7 @@ class PermissionServiceTest extends TestCase
 
         $this->userRepository->method('getUserPermissions')
             ->with($userId)
-            ->willReturn(['zone_content_edit_others']);
+            ->willReturn([Permission::PERM_ZONE_CONTENT_EDIT_OTHERS]);
 
         $this->assertEquals('all', $this->service->getEditPermissionLevelForZone($userId, $domainId));
     }
@@ -359,8 +360,8 @@ class PermissionServiceTest extends TestCase
     {
         $this->userRepository->method('hasAdminPermission')->willReturn(false);
         $this->userRepository->method('getUserPermissions')->willReturnMap([
-            [1, ['zone_content_edit_own']],
-            [2, ['zone_content_edit_own_as_client']],
+            [1, [Permission::PERM_ZONE_CONTENT_EDIT_OWN]],
+            [2, [Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT]],
             [3, []],
         ]);
         $this->userRepository->method('userOwnsZone')->willReturnCallback(fn(int $userId, int $domainId) => $domainId === 100);
@@ -384,8 +385,8 @@ class PermissionServiceTest extends TestCase
         $this->userRepository->method('getUserPermissions')
             ->willReturnMap([
                 [1, []],
-                [2, ['zone_meta_edit_others']],
-                [3, ['zone_meta_edit_own']],
+                [2, [Permission::PERM_ZONE_META_EDIT_OTHERS]],
+                [3, [Permission::PERM_ZONE_META_EDIT_OWN]],
                 [4, []],
             ]);
 
@@ -412,11 +413,11 @@ class PermissionServiceTest extends TestCase
         $this->userRepository->method('getUserPermissions')
             ->willReturnMap([
                 [1, []],
-                [2, ['zone_metadata_view_others']],
-                [3, ['zone_meta_edit_others']],
-                [4, ['zone_metadata_view_own']],
-                [5, ['zone_meta_edit_own']],
-                [6, ['zone_content_view_own', 'zone_content_view_others']],
+                [2, [Permission::PERM_ZONE_METADATA_VIEW_OTHERS]],
+                [3, [Permission::PERM_ZONE_META_EDIT_OTHERS]],
+                [4, [Permission::PERM_ZONE_METADATA_VIEW_OWN]],
+                [5, [Permission::PERM_ZONE_META_EDIT_OWN]],
+                [6, [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_VIEW_OTHERS]],
                 [7, []],
             ]);
 
@@ -446,11 +447,11 @@ class PermissionServiceTest extends TestCase
         $this->userRepository->method('getUserPermissions')
             ->willReturnMap([
                 [1, []],
-                [2, ['zone_ownership_view_others']],
-                [3, ['zone_meta_edit_others']],
-                [4, ['zone_ownership_view_own']],
-                [5, ['zone_meta_edit_own']],
-                [6, ['zone_content_view_own', 'zone_content_view_others']],
+                [2, [Permission::PERM_ZONE_OWNERSHIP_VIEW_OTHERS]],
+                [3, [Permission::PERM_ZONE_META_EDIT_OTHERS]],
+                [4, [Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN]],
+                [5, [Permission::PERM_ZONE_META_EDIT_OWN]],
+                [6, [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_VIEW_OTHERS]],
                 [7, []],
             ]);
 
@@ -477,8 +478,8 @@ class PermissionServiceTest extends TestCase
         $this->userRepository->method('getUserPermissions')
             ->willReturnMap([
                 [1, []],
-                [2, ['zone_delete_others']],
-                [3, ['zone_delete_own']],
+                [2, [Permission::PERM_ZONE_DELETE_OTHERS]],
+                [3, [Permission::PERM_ZONE_DELETE_OWN]],
                 [4, []],
             ]);
 
@@ -501,7 +502,7 @@ class PermissionServiceTest extends TestCase
         $this->userRepository->method('getUserPermissions')
             ->willReturnMap([
                 [1, []],
-                [2, ['user_view_others']],
+                [2, [Permission::PERM_USER_VIEW_OTHERS]],
                 [3, []],
             ]);
 
@@ -516,8 +517,8 @@ class PermissionServiceTest extends TestCase
         $this->userRepository->method('hasAdminPermission')->willReturnMap([[1, true], [2, false], [3, false], [4, false]]);
         $this->userRepository->method('getUserPermissions')->willReturnMap([
             [1, []],
-            [2, ['zone_content_view_others']],
-            [3, ['zone_content_view_own']],
+            [2, [Permission::PERM_ZONE_CONTENT_VIEW_OTHERS]],
+            [3, [Permission::PERM_ZONE_CONTENT_VIEW_OWN]],
             [4, []],
         ]);
         $this->userRepository->method('userOwnsZone')->willReturnCallback(fn(int $userId, int $domainId) => $domainId === 100);
@@ -535,7 +536,7 @@ class PermissionServiceTest extends TestCase
         $this->userRepository->method('hasAdminPermission')->willReturnMap([[1, true], [2, false], [3, false]]);
         $this->userRepository->method('getUserPermissions')->willReturnMap([
             [1, []],
-            [2, ['zone_logs_view_own', 'search']],
+            [2, [Permission::PERM_ZONE_LOGS_VIEW_OWN, Permission::PERM_SEARCH]],
             [3, []],
         ]);
 
@@ -544,10 +545,10 @@ class PermissionServiceTest extends TestCase
         $this->assertSame('none', $this->service->getZoneLogPermissionLevel(3));
 
         $this->assertSame(
-            ['search' => true, 'user_is_ueberuser' => false],
-            $this->service->getPermissionFlags(2, ['search', 'user_is_ueberuser'])
+            [Permission::PERM_SEARCH => true, Permission::PERM_USER_IS_UEBERUSER => false],
+            $this->service->getPermissionFlags(2, [Permission::PERM_SEARCH, Permission::PERM_USER_IS_UEBERUSER])
         );
-        $this->assertSame(['search' => true], $this->service->getPermissionFlags(1, ['search']));
+        $this->assertSame([Permission::PERM_SEARCH => true], $this->service->getPermissionFlags(1, [Permission::PERM_SEARCH]));
     }
 
     #[Test]
@@ -563,8 +564,8 @@ class PermissionServiceTest extends TestCase
         $this->userRepository->method('getUserPermissions')
             ->willReturnMap([
                 [1, []],
-                [2, ['zone_master_add']],
-                [3, ['zone_slave_add']],
+                [2, [Permission::PERM_ZONE_MASTER_ADD]],
+                [3, [Permission::PERM_ZONE_SLAVE_ADD]],
             ]);
 
         foreach (['MASTER', 'NATIVE', 'SLAVE', 'PRODUCER', 'CONSUMER'] as $kind) {
@@ -594,7 +595,7 @@ class PermissionServiceTest extends TestCase
         $this->userRepository->method('getUserPermissions')
             ->willReturnMap([
                 [1, []],
-                [2, ['zone_templ_add']],
+                [2, [Permission::PERM_ZONE_TEMPL_ADD]],
                 [3, []],
             ]);
 
@@ -627,7 +628,7 @@ class PermissionServiceTest extends TestCase
 
         $this->userRepository->method('getUserPermissions')
             ->with($userId)
-            ->willReturn(['zone_delete_others']);
+            ->willReturn([Permission::PERM_ZONE_DELETE_OTHERS]);
 
         $this->assertTrue($this->service->canDeleteZone($userId, true));
         $this->assertTrue($this->service->canDeleteZone($userId, false));
@@ -644,7 +645,7 @@ class PermissionServiceTest extends TestCase
 
         $this->userRepository->method('getUserPermissions')
             ->with($userId)
-            ->willReturn(['zone_delete_own']);
+            ->willReturn([Permission::PERM_ZONE_DELETE_OWN]);
 
         $this->assertTrue($this->service->canDeleteZone($userId, true)); // is owner
         $this->assertFalse($this->service->canDeleteZone($userId, false)); // not owner
@@ -653,7 +654,7 @@ class PermissionServiceTest extends TestCase
     public function testCanDeleteZoneByIdLooksUpOwnershipOnlyForTheOwnLevel(): void
     {
         $service = $this->buildPermissionService(
-            permissionsByUser: [7 => ['zone_delete_own'], 8 => ['zone_delete_others']],
+            permissionsByUser: [7 => [Permission::PERM_ZONE_DELETE_OWN], 8 => [Permission::PERM_ZONE_DELETE_OTHERS]],
             ownedZonesByUser: [7 => [42]]
         );
 

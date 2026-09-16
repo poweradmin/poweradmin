@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Logger\DbUserLogger;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
@@ -43,10 +44,10 @@ class ListLogUsersController extends BaseController
     public function run(): void
     {
         if (
-            !$this->hasPermission('user_is_ueberuser')
-            && !$this->hasPermission('user_logs_view')
+            !$this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)
+            && !$this->hasPermission(Permission::PERM_USER_LOGS_VIEW)
         ) {
-            $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
+            $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, 'You do not have the permission to see any logs');
             return;
         }
 

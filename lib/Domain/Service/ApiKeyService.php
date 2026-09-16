@@ -26,6 +26,7 @@ use DateTime;
 use Exception;
 use PDO;
 use Poweradmin\Domain\Model\ApiKey;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -99,7 +100,7 @@ class ApiKeyService
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
         // Admin users can see all API keys, regular users only see their own
-        if ($this->currentUserHasPermission('user_is_ueberuser')) {
+        if ($this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
             $apiKeys = $this->apiKeyRepository->getAll();
         } else {
             $apiKeys = $this->apiKeyRepository->getAll($userId);
@@ -145,7 +146,7 @@ class ApiKeyService
 
         // Check if the current user has access to this API key
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
-        if ($this->currentUserHasPermission('user_is_ueberuser') || $apiKey->getCreatedBy() === $userId) {
+        if ($this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER) || $apiKey->getCreatedBy() === $userId) {
             // Add creator username and fullname
             if ($apiKey->getCreatedBy() !== null) {
                 $stmt = $this->db->prepare("SELECT username, fullname FROM users WHERE id = :user_id");
@@ -194,7 +195,7 @@ class ApiKeyService
         }
 
         $maxKeysPerUser = $this->config->get('api', 'max_keys_per_user', 5);
-        if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser && !$this->currentUserHasPermission('user_is_ueberuser')) {
+        if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser && !$this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
             return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_LIMIT, _('You have reached the maximum number of API keys allowed.'), 409);
         }
 
@@ -312,7 +313,7 @@ class ApiKeyService
 
     private function canManageKeys(): bool
     {
-        return $this->currentUserHasPermission('user_is_ueberuser') || $this->currentUserHasPermission('api_manage_keys');
+        return $this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER) || $this->currentUserHasPermission(Permission::PERM_API_MANAGE_KEYS);
     }
 
     /**

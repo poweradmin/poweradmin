@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -74,11 +75,11 @@ class DeleteDomainsController extends BaseController
     private function verifyDeletePermission($zone_ids): void
     {
         $userId = $this->userContextService->getLoggedInUserId();
-        $canDeleteOthers = $this->hasPermission('zone_delete_others');
+        $canDeleteOthers = $this->hasPermission(Permission::PERM_ZONE_DELETE_OTHERS);
 
         foreach ((array)$zone_ids as $zone_id) {
             $canDelete = $canDeleteOthers
-                || $this->createPermissionService()->canPerformZoneAction($userId, (int)$zone_id, 'zone_delete_own');
+                || $this->createPermissionService()->canPerformZoneAction($userId, (int)$zone_id, Permission::PERM_ZONE_DELETE_OWN);
             $this->checkCondition(!$canDelete, _("You do not have the permission to delete a zone."));
         }
     }

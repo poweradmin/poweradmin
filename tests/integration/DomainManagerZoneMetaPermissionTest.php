@@ -15,6 +15,7 @@
 namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -160,7 +161,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     {
         // MASTER/NATIVE zones pass '' here. Normalizing that to null would hand null to
         // createZone(string $slaveMaster) and fatal on every non-slave zone creation.
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (203, 'zone_master_add')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (203, '" . Permission::PERM_ZONE_MASTER_ADD . "')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (103, 'ZoneAdder')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (103, 203)");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (103, 'adder', 103)");
@@ -196,9 +197,9 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         // Reserve perm_items ids that don't collide with the base class's
         // 47/53. Real prod ids differ; only the names matter to hasPermission.
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES
-            (200, 'zone_meta_edit_own'),
-            (201, 'zone_meta_edit_others'),
-            (202, 'zone_content_view_own')");
+            (200, '" . Permission::PERM_ZONE_META_EDIT_OWN . "'),
+            (201, '" . Permission::PERM_ZONE_META_EDIT_OTHERS . "'),
+            (202, '" . Permission::PERM_ZONE_CONTENT_VIEW_OWN . "')");
 
         // Empty permission template - 'search' / 'zone_content_view_own' style
         // perms a basic user has, none of which permit metadata edits.

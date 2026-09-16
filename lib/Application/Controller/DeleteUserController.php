@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -43,8 +44,8 @@ class DeleteUserController extends BaseController
 
     public function run(): void
     {
-        $perm_edit_others = $this->hasPermission('user_edit_others');
-        $perm_is_godlike = $this->hasPermission('user_is_ueberuser');
+        $perm_edit_others = $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS);
+        $perm_is_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
 
         $uid = $this->requireNumericParam('id');
 

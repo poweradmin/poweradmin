@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 
 /**
  * Renders the supermasters list at /supermasters.
@@ -32,7 +33,7 @@ class ListSupermastersController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('supermaster_view', _("You do not have the permission to view supermasters."));
+        $this->checkPermission(Permission::PERM_SUPERMASTER_VIEW, _("You do not have the permission to view supermasters."));
 
         $this->showSuperMasters();
     }
@@ -41,8 +42,8 @@ class ListSupermastersController extends BaseController
     {
         $supermasterManager = $this->createSupermasterManager();
         $this->render('list_supermasters.html', [
-            'perm_sm_add' => $this->hasPermission('supermaster_add'),
-            'perm_sm_edit' => $this->hasPermission('supermaster_edit'),
+            'perm_sm_add' => $this->hasPermission(Permission::PERM_SUPERMASTER_ADD),
+            'perm_sm_edit' => $this->hasPermission(Permission::PERM_SUPERMASTER_EDIT),
             'supermasters' => $supermasterManager->getSupermasters()
         ]);
     }

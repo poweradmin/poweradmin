@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -43,9 +44,9 @@ class ListZoneTemplController extends BaseController
     public function run(): void
     {
         // Only users with zone_templ_add or zone_templ_edit permission can view zone templates
-        $hasPermission = $this->hasPermission('zone_templ_add') ||
-                         $this->hasPermission('zone_templ_edit') ||
-                         $this->hasPermission('user_is_ueberuser');
+        $hasPermission = $this->hasPermission(Permission::PERM_ZONE_TEMPL_ADD) ||
+                         $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT) ||
+                         $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
 
         $this->checkCondition(!$hasPermission, _("You do not have permission to view zone templates."));
 
@@ -58,7 +59,7 @@ class ListZoneTemplController extends BaseController
 
     private function showListZoneTempl(): void
     {
-        $perm_zone_templ_add = $this->hasPermission('zone_templ_add');
+        $perm_zone_templ_add = $this->hasPermission(Permission::PERM_ZONE_TEMPL_ADD);
         $userId = $this->userContext->getLoggedInUserId();
         $userName = $this->userContext->getLoggedInUsername();
 
@@ -87,11 +88,11 @@ class ListZoneTemplController extends BaseController
 
         $this->render('list_zone_templ.html', [
             'perm_zone_templ_add' => $perm_zone_templ_add,
-            'perm_zone_templ_edit' => $this->hasPermission('zone_templ_edit'),
+            'perm_zone_templ_edit' => $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT),
             'user_name' => $this->createUserRepository()->getFullNameById($userId) ?: $userName,
             'zone_templates' => $templatesList,
             'sync_status' => $syncStatus,
-            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
+            'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER),
             'effective_default_id' => $effectiveDefaultId,
             'has_db_default' => $hasDbDefault,
         ]);

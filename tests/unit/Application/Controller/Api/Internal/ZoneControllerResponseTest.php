@@ -16,6 +16,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api\Internal;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\Internal\ZoneController;
+use Poweradmin\Domain\Model\Permission;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -108,7 +109,7 @@ class ZoneControllerResponseTest extends TestCase
         $this->expectException(\Error::class);
 
         $this->invokeWith(
-            $this->controllerHolding(['zone_content_view_own']),
+            $this->controllerHolding([Permission::PERM_ZONE_CONTENT_VIEW_OWN]),
             'getZone',
             '/api/internal/zone?action=get&id=5'
         );

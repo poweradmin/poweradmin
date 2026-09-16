@@ -27,6 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -206,7 +207,7 @@ class AuditServiceTest extends TestCase
         $user->method('getActingUsername')->willReturn(null);
 
         (new AuditService($this->createMock(PDO::class), $logger, $ip, $user))
-            ->logAccessDenied('zone_master_add', '/zones/add/master');
+            ->logAccessDenied(Permission::PERM_ZONE_MASTER_ADD, '/zones/add/master');
     }
 
     /**

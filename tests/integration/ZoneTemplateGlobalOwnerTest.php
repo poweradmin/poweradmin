@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use TestHelpers\SqliteIntegrationTestCase;
 
@@ -44,7 +45,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
         $this->db->exec("CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, content TEXT NOT NULL, ttl INTEGER NOT NULL, prio INTEGER NOT NULL)");
 
         // A non-ueberuser "client" who may add and edit templates but is not an admin.
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (60, 'zone_templ_add'), (61, 'zone_templ_edit')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (60, '" . Permission::PERM_ZONE_TEMPL_ADD . "'), (61, '" . Permission::PERM_ZONE_TEMPL_EDIT . "')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (" . self::CLIENT_PERM_TEMPL_ID . ", 'Client')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . self::CLIENT_PERM_TEMPL_ID . ", 60), (" . self::CLIENT_PERM_TEMPL_ID . ", 61)");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::CLIENT_USER_ID . ", 'client', " . self::CLIENT_PERM_TEMPL_ID . ")");

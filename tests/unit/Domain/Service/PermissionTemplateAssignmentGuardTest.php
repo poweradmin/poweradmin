@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use TestHelpers\BuildsPermissionService;
@@ -46,8 +47,8 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         ?int $currentTemplateId = null
     ): PermissionService {
         $grants = array_keys(array_filter([
-            'user_edit_templ_perm' => $canEditTemplPerm,
-            'user_edit_others' => $canEditOthers,
+            Permission::PERM_USER_EDIT_TEMPL_PERM => $canEditTemplPerm,
+            Permission::PERM_USER_EDIT_OTHERS => $canEditOthers,
         ]));
         $templates = $currentTemplateId === null ? [] : [7 => $currentTemplateId, 9 => $currentTemplateId];
 

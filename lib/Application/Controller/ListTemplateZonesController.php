@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\SessionKeys;
 
@@ -33,9 +34,9 @@ class ListTemplateZonesController extends BaseController
 {
     public function run(): void
     {
-        $perm_templ_edit = $this->hasPermission('zone_templ_edit');
-        $perm_templ_add = $this->hasPermission('zone_templ_add');
-        $perm_godlike = $this->hasPermission('user_is_ueberuser');
+        $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
+        $perm_templ_add = $this->hasPermission(Permission::PERM_ZONE_TEMPL_ADD);
+        $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit || $perm_templ_add), _('You do not have permission to view zone templates.'));
 

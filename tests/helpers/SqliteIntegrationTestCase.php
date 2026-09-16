@@ -25,6 +25,7 @@ namespace TestHelpers;
 use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
@@ -146,8 +147,8 @@ abstract class SqliteIntegrationTestCase extends TestCase
         // perm_items ids and the ueberuser shortcut match Poweradmin's seed
         // data so hasPermission's `user_is_ueberuser` check resolves true.
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES
-            (47, 'zone_content_edit_others'),
-            (53, 'user_is_ueberuser')");
+            (47, '" . Permission::PERM_ZONE_CONTENT_EDIT_OTHERS . "'),
+            (53, '" . Permission::PERM_USER_IS_UEBERUSER . "')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (" . static::ADMIN_PERM_TEMPL_ID . ", 'Administrator')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES
             (" . static::ADMIN_PERM_TEMPL_ID . ", 47),

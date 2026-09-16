@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupMembershipService;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -117,7 +118,7 @@ class GroupMembersController extends PublicApiController
     #[OA\Response(response: 403, description: 'Forbidden')]
     private function listMembers(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('Only administrators can view group members', 403);
         }
 
@@ -188,7 +189,7 @@ class GroupMembersController extends PublicApiController
     #[OA\Response(response: 403, description: 'Forbidden')]
     private function addMember(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('Only administrators can add group members', 403);
         }
 
@@ -260,7 +261,7 @@ class GroupMembersController extends PublicApiController
     #[OA\Response(response: 404, description: 'Member not found')]
     private function removeMember(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('Only administrators can remove group members', 403);
         }
 

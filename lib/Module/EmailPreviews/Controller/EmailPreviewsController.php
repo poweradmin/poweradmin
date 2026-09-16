@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ namespace Poweradmin\Module\EmailPreviews\Controller;
 use Exception;
 use Poweradmin\BaseController;
 use Poweradmin\Application\Service\EmailTemplateService;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Module\EmailPreviews\Service\EmailPreviewService;
 
 /**
@@ -54,7 +55,7 @@ class EmailPreviewsController extends BaseController
             return;
         }
 
-        $this->checkPermission('user_is_ueberuser', 'You do not have permission to access email template previews.');
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, 'You do not have permission to access email template previews.');
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('module_email_previews');

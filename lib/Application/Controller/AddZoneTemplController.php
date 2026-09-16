@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -38,7 +39,7 @@ class AddZoneTemplController extends BaseController
     }
     public function run(): void
     {
-        $this->checkPermission('zone_templ_add', _("You do not have the permission to add a zone template."));
+        $this->checkPermission(Permission::PERM_ZONE_TEMPL_ADD, _("You do not have the permission to add a zone template."));
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('add_zone_templ');
@@ -56,7 +57,7 @@ class AddZoneTemplController extends BaseController
     {
         $this->render('add_zone_templ.html', [
             'user_name' => $this->createUserRepository()->getFullNameById($_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
-            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
+            'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER),
             'templ_name' => '',
             'templ_descr' => '',
         ]);
@@ -92,7 +93,7 @@ class AddZoneTemplController extends BaseController
                 'user_name' => $this->createUserRepository()->getFullNameById($_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
                 'templ_name' => htmlspecialchars($postParams['templ_name']),
                 'templ_descr' => htmlspecialchars($postParams['templ_descr']),
-                'perm_is_godlike' => $this->hasPermission('user_is_ueberuser')
+                'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)
             ]);
         }
     }

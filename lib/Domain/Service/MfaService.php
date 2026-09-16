@@ -28,6 +28,7 @@ use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use Exception;
 use PDOException;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -651,7 +652,7 @@ class MfaService
                 INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
                 INNER JOIN users ON perm_templ.id = users.perm_templ
                 WHERE users.id = ?
-                    AND perm_items.name = 'user_enforce_mfa'
+                    AND perm_items.name = '" . Permission::PERM_USER_ENFORCE_MFA . "'
 
                 UNION
 
@@ -662,7 +663,7 @@ class MfaService
                 INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
                 INNER JOIN perm_items pi ON pti.perm_id = pi.id
                 WHERE ugm.user_id = ?
-                    AND pi.name = 'user_enforce_mfa'
+                    AND pi.name = '" . Permission::PERM_USER_ENFORCE_MFA . "'
             ");
             $query->execute([$userId, $userId]);
             $result = $query->fetch();

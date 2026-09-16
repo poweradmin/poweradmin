@@ -23,6 +23,7 @@
 namespace Poweradmin\Module\SecondaryZoneImport;
 
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Module\ModuleInterface;
 
@@ -77,7 +78,7 @@ class SecondaryZoneImportModule implements ModuleInterface
                 'url' => '/zones/import-secondary',
                 'icon' => 'cloud-arrow-down',
                 'page_id' => 'module_secondary_zone_import',
-                'permission' => 'zone_slave_add',
+                'permission' => Permission::PERM_ZONE_SLAVE_ADD,
             ],
         ];
     }

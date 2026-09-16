@@ -26,6 +26,7 @@ use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\DynamicDnsRequestFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
@@ -181,7 +182,7 @@ class DynamicDnsController extends PublicApiController
     private function userCanUseDdns(int $userId): bool
     {
         // DDNS operates only on zones the caller owns, so require an own-zone edit grant.
-        return $this->apiPermissionService->userHasPermission($userId, 'zone_content_edit_own')
-            || $this->apiPermissionService->userHasPermission($userId, 'zone_content_edit_own_as_client');
+        return $this->apiPermissionService->userHasPermission($userId, Permission::PERM_ZONE_CONTENT_EDIT_OWN)
+            || $this->apiPermissionService->userHasPermission($userId, Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT);
     }
 }

@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Unit\Api\V2;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\V2\ZoneTemplatesController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -54,7 +55,7 @@ class TestableZoneTemplatesController extends ZoneTemplatesController
                 return $this->returnApiError('You do not have permission to view zone templates', 403);
             }
 
-            $isUeberuser = $this->testApiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
+            $isUeberuser = $this->testApiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
 
             $templates = $this->testRepository->listZoneTemplates($userId, $isUeberuser);
 
@@ -84,7 +85,7 @@ class TestableZoneTemplatesController extends ZoneTemplatesController
                 return $this->returnApiError('You do not have permission to view zone templates', 403);
             }
 
-            $isUeberuser = $this->testApiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
+            $isUeberuser = $this->testApiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
 
             $id = (int)$this->pathParameters['id'];
 
@@ -137,7 +138,7 @@ class TestableZoneTemplatesController extends ZoneTemplatesController
             $description = trim($data['description']);
             $isGlobal = !empty($data['is_global']);
 
-            if ($isGlobal && !$this->testApiPermissionService->userHasPermission($userId, 'user_is_ueberuser')) {
+            if ($isGlobal && !$this->testApiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER)) {
                 return $this->returnApiError('Only ueberusers can create global zone templates', 403);
             }
 
@@ -173,7 +174,7 @@ class TestableZoneTemplatesController extends ZoneTemplatesController
                 return $this->returnApiError('Zone template not found', 404);
             }
 
-            $isUeberuser = $this->testApiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
+            $isUeberuser = $this->testApiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
             $owner = $this->testRepository->getOwner($id);
 
             if ($owner === 0 && !$isUeberuser) {
@@ -227,7 +228,7 @@ class TestableZoneTemplatesController extends ZoneTemplatesController
                 return $this->returnApiError('Zone template not found', 404);
             }
 
-            $isUeberuser = $this->testApiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
+            $isUeberuser = $this->testApiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
             $owner = $this->testRepository->getOwner($id);
 
             if ($owner === 0 && !$isUeberuser) {

@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
@@ -57,7 +58,7 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
                         SELECT 1 FROM perm_templ_items pti
                         JOIN perm_items pi ON pi.id = pti.perm_id
                         WHERE pti.templ_id = users.perm_templ
-                            AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                            AND pi.name IN ('" . Permission::PERM_ZONE_CONTENT_EDIT_OWN . "', '" . Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT . "', '" . Permission::PERM_ZONE_CONTENT_EDIT_OTHERS . "')
                     )
                     OR EXISTS (
                         SELECT 1 FROM user_group_members ugm
@@ -65,7 +66,7 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
                         JOIN perm_templ_items pti ON pti.templ_id = ug.perm_templ
                         JOIN perm_items pi ON pi.id = pti.perm_id
                         WHERE ugm.user_id = users.id
-                            AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                            AND pi.name IN ('" . Permission::PERM_ZONE_CONTENT_EDIT_OWN . "', '" . Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT . "', '" . Permission::PERM_ZONE_CONTENT_EDIT_OTHERS . "')
                     )
                 )
         ");
@@ -99,7 +100,7 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
                     SELECT 1 FROM perm_templ_items pti
                     JOIN perm_items pi ON pi.id = pti.perm_id
                     WHERE pti.templ_id = u.perm_templ
-                        AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                        AND pi.name IN ('" . Permission::PERM_ZONE_CONTENT_EDIT_OWN . "', '" . Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT . "', '" . Permission::PERM_ZONE_CONTENT_EDIT_OTHERS . "')
                 )
 
             UNION
@@ -113,7 +114,7 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
                     SELECT 1 FROM perm_templ_items pti
                     JOIN perm_items pi ON pi.id = pti.perm_id
                     WHERE pti.templ_id = ug.perm_templ
-                        AND pi.name IN ('zone_content_edit_own', 'zone_content_edit_own_as_client', 'zone_content_edit_others')
+                        AND pi.name IN ('" . Permission::PERM_ZONE_CONTENT_EDIT_OWN . "', '" . Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT . "', '" . Permission::PERM_ZONE_CONTENT_EDIT_OTHERS . "')
                 )
         ");
         $query->execute([

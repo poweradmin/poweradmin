@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -38,7 +39,7 @@ class AddSupermasterController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('supermaster_add', _("You do not have the permission to add a new supermaster."));
+        $this->checkPermission(Permission::PERM_SUPERMASTER_ADD, _("You do not have the permission to add a new supermaster."));
 
         $master_ip = $this->httpRequest->getPostParam('master_ip', "");
         $ns_name = $this->httpRequest->getPostParam('ns_name', "");
@@ -75,7 +76,7 @@ class AddSupermasterController extends BaseController
             'master_ip' => htmlspecialchars($master_ip),
             'ns_name' => htmlspecialchars($ns_name),
             'account' => htmlspecialchars($account),
-            'perm_view_others' => $this->hasPermission('user_view_others'),
+            'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
             'session_uid' => $_SESSION[SessionKeys::USERID]
         ]);
     }

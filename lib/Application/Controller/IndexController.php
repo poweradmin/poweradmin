@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Enum\AuthMethod;
 
@@ -63,28 +64,28 @@ class IndexController extends BaseController
         $userId = $this->userContextService->getLoggedInUserId();
 
         $permissions = $this->createPermissionService()->getPermissionFlags((int)$userId, [
-            'search',
-            'zone_content_view_own',
-            'zone_content_view_others',
-            'zone_content_edit_own',
-            'zone_content_edit_others',
-            'supermaster_view',
-            'zone_master_add',
-            'zone_slave_add',
-            'supermaster_add',
-            'user_is_ueberuser',
-            'templ_perm_edit',
-            'zone_templ_add',
-            'zone_templ_edit',
-            'user_view_others',
-            'user_edit_own',
-            'user_edit_others',
-            'user_add_new',
-            'api_manage_keys',
-            'zone_logs_view_own',
-            'zone_logs_view_others',
-            'user_logs_view',
-            'group_logs_view',
+            Permission::PERM_SEARCH,
+            Permission::PERM_ZONE_CONTENT_VIEW_OWN,
+            Permission::PERM_ZONE_CONTENT_VIEW_OTHERS,
+            Permission::PERM_ZONE_CONTENT_EDIT_OWN,
+            Permission::PERM_ZONE_CONTENT_EDIT_OTHERS,
+            Permission::PERM_SUPERMASTER_VIEW,
+            Permission::PERM_ZONE_MASTER_ADD,
+            Permission::PERM_ZONE_SLAVE_ADD,
+            Permission::PERM_SUPERMASTER_ADD,
+            Permission::PERM_USER_IS_UEBERUSER,
+            Permission::PERM_TEMPL_PERM_EDIT,
+            Permission::PERM_ZONE_TEMPL_ADD,
+            Permission::PERM_ZONE_TEMPL_EDIT,
+            Permission::PERM_USER_VIEW_OTHERS,
+            Permission::PERM_USER_EDIT_OWN,
+            Permission::PERM_USER_EDIT_OTHERS,
+            Permission::PERM_USER_ADD_NEW,
+            Permission::PERM_API_MANAGE_KEYS,
+            Permission::PERM_ZONE_LOGS_VIEW_OWN,
+            Permission::PERM_ZONE_LOGS_VIEW_OTHERS,
+            Permission::PERM_USER_LOGS_VIEW,
+            Permission::PERM_GROUP_LOGS_VIEW,
         ]);
 
         // Check PowerDNS server status if API is enabled and user is admin
@@ -92,7 +93,7 @@ class IndexController extends BaseController
         $pdnsApiEnabled = !empty($this->config->get('pdns_api', 'url', '')) && !empty($this->config->get('pdns_api', 'key', ''));
         $showPdnsStatus = $this->config->get('interface', 'show_pdns_status', false);
 
-        if ($pdnsApiEnabled && $showPdnsStatus && $permissions['user_is_ueberuser']) {
+        if ($pdnsApiEnabled && $showPdnsStatus && $permissions[Permission::PERM_USER_IS_UEBERUSER]) {
             $statusService = new PowerdnsStatusService();
             $serverStatus = $statusService->getServerStatus();
             $pdnsServerStatus = [
@@ -103,9 +104,9 @@ class IndexController extends BaseController
         }
 
         // Determine if this is a limited user (can edit own profile but not view/edit others)
-        $isLimitedUser = $permissions['user_edit_own'] &&
-                        !$permissions['user_view_others'] &&
-                        !$permissions['user_edit_others'];
+        $isLimitedUser = $permissions[Permission::PERM_USER_EDIT_OWN] &&
+                        !$permissions[Permission::PERM_USER_VIEW_OTHERS] &&
+                        !$permissions[Permission::PERM_USER_EDIT_OTHERS];
 
         // Determine if user can change password (internal auth only, not ldap/oidc/saml)
         $canChangePassword = AuthMethod::fromDb($this->userContextService->getAuthMethod())->allowsLocalPassword();
@@ -113,8 +114,8 @@ class IndexController extends BaseController
         // Dashboard stats for admin users
         $dashboardStats = null;
         $showDashboardStats = $this->config->get('interface', 'show_dashboard_stats', true);
-        if ($permissions['user_is_ueberuser'] && $showDashboardStats) {
-            $dashboardStats = $this->createDashboardStatsService()->stats((int)$this->getCurrentUserId(), $this->hasPermission('user_view_others'));
+        if ($permissions[Permission::PERM_USER_IS_UEBERUSER] && $showDashboardStats) {
+            $dashboardStats = $this->createDashboardStatsService()->stats((int)$this->getCurrentUserId(), $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS));
         }
 
         // Dashboard owns the version refresh so other pages read from cache only.
@@ -126,11 +127,11 @@ class IndexController extends BaseController
 
         // Surface the otherwise-silent misconfiguration: with application_url
         // unset, reset emails are skipped with only a server log entry.
-        $passwordResetMisconfigured = $permissions['user_is_ueberuser']
+        $passwordResetMisconfigured = $permissions[Permission::PERM_USER_IS_UEBERUSER]
             && $this->config->get('security', 'password_reset.enabled', false)
             && empty($this->config->get('interface', 'application_url', ''));
 
-        $ssoTemplateMisconfigured = $permissions['user_is_ueberuser']
+        $ssoTemplateMisconfigured = $permissions[Permission::PERM_USER_IS_UEBERUSER]
             && $this->ssoProvisioningTemplateMissing();
 
         $dblogUse = $this->config->get('logging', 'database_enabled', false);
@@ -140,23 +141,23 @@ class IndexController extends BaseController
         $enableConsistencyChecks = $this->config->get('interface', 'enable_consistency_checks', false);
         $moduleNavItems = $this->getModuleNavItemsForDashboard();
 
-        $hasDnsManagement = ($permissions['user_is_ueberuser'] && $pdnsApiEnabled && $showPdnsStatus)
-            || $permissions['search']
-            || $permissions['zone_content_view_own'] || $permissions['zone_content_view_others']
-            || $permissions['zone_templ_add'] || $permissions['zone_templ_edit']
-            || $permissions['supermaster_view'];
-        $hasZoneOperations = $permissions['zone_master_add']
-            || $permissions['zone_slave_add']
-            || $permissions['supermaster_add']
-            || ($ifaceAddReverseRecord && ($permissions['zone_content_edit_own'] || $permissions['zone_content_edit_others']));
-        $hasAdministration = $permissions['user_view_others'] || $permissions['user_edit_others']
-            || $permissions['user_add_new'] || $permissions['user_is_ueberuser']
-            || $permissions['templ_perm_edit']
-            || ($dblogUse && ($permissions['zone_logs_view_own'] || $permissions['zone_logs_view_others']
-                || $permissions['user_logs_view']
-                || ($permissions['group_logs_view'] && $showGroupAccessTemplates)));
-        $hasTools = ($permissions['user_is_ueberuser'] && $enableConsistencyChecks)
-            || (($permissions['user_is_ueberuser'] || $permissions['api_manage_keys']) && $apiEnabled)
+        $hasDnsManagement = ($permissions[Permission::PERM_USER_IS_UEBERUSER] && $pdnsApiEnabled && $showPdnsStatus)
+            || $permissions[Permission::PERM_SEARCH]
+            || $permissions[Permission::PERM_ZONE_CONTENT_VIEW_OWN] || $permissions[Permission::PERM_ZONE_CONTENT_VIEW_OTHERS]
+            || $permissions[Permission::PERM_ZONE_TEMPL_ADD] || $permissions[Permission::PERM_ZONE_TEMPL_EDIT]
+            || $permissions[Permission::PERM_SUPERMASTER_VIEW];
+        $hasZoneOperations = $permissions[Permission::PERM_ZONE_MASTER_ADD]
+            || $permissions[Permission::PERM_ZONE_SLAVE_ADD]
+            || $permissions[Permission::PERM_SUPERMASTER_ADD]
+            || ($ifaceAddReverseRecord && ($permissions[Permission::PERM_ZONE_CONTENT_EDIT_OWN] || $permissions[Permission::PERM_ZONE_CONTENT_EDIT_OTHERS]));
+        $hasAdministration = $permissions[Permission::PERM_USER_VIEW_OTHERS] || $permissions[Permission::PERM_USER_EDIT_OTHERS]
+            || $permissions[Permission::PERM_USER_ADD_NEW] || $permissions[Permission::PERM_USER_IS_UEBERUSER]
+            || $permissions[Permission::PERM_TEMPL_PERM_EDIT]
+            || ($dblogUse && ($permissions[Permission::PERM_ZONE_LOGS_VIEW_OWN] || $permissions[Permission::PERM_ZONE_LOGS_VIEW_OTHERS]
+                || $permissions[Permission::PERM_USER_LOGS_VIEW]
+                || ($permissions[Permission::PERM_GROUP_LOGS_VIEW] && $showGroupAccessTemplates)));
+        $hasTools = ($permissions[Permission::PERM_USER_IS_UEBERUSER] && $enableConsistencyChecks)
+            || (($permissions[Permission::PERM_USER_IS_UEBERUSER] || $permissions[Permission::PERM_API_MANAGE_KEYS]) && $apiEnabled)
             || count($moduleNavItems) > 0;
 
         $this->render("index.html", [
@@ -199,7 +200,7 @@ class IndexController extends BaseController
 
     private function getModuleNavItemsForDashboard(): array
     {
-        $items = $this->moduleRegistry()->getNavItems($this->hasPermission('user_is_ueberuser'));
+        $items = $this->moduleRegistry()->getNavItems($this->hasPermission(Permission::PERM_USER_IS_UEBERUSER));
 
         return array_values(array_filter($items, function (array $item): bool {
             if (!empty($item['permission'])) {

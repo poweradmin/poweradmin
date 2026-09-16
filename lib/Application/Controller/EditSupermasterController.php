@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -39,7 +40,7 @@ class EditSupermasterController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('supermaster_edit', _("You do not have the permission to edit a supermaster."));
+        $this->checkPermission(Permission::PERM_SUPERMASTER_EDIT, _("You do not have the permission to edit a supermaster."));
 
         $old_master_ip = $this->httpRequest->getQueryParam('master_ip', "");
         $old_ns_name = $this->httpRequest->getQueryParam('ns_name', "");
@@ -141,7 +142,7 @@ class EditSupermasterController extends BaseController
             'account' => htmlspecialchars($account),
             'old_master_ip' => htmlspecialchars($old_master_ip),
             'old_ns_name' => htmlspecialchars($old_ns_name),
-            'perm_view_others' => $this->hasPermission('user_view_others'),
+            'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
             'session_uid' => $_SESSION[SessionKeys::USERID]
         ]);
     }

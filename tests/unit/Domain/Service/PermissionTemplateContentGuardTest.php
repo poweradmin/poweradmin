@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 
@@ -202,19 +203,19 @@ class PermissionTemplateContentGuardTest extends TestCase
     public function testFilterHidesTheUberuserRowFromNonSuperusers(): void
     {
         $permissions = [
-            ['id' => 4, 'name' => 'zone_content_view_own'],
-            ['id' => self::UBERUSER_PERM_ID, 'name' => 'user_is_ueberuser'],
+            ['id' => 4, 'name' => Permission::PERM_ZONE_CONTENT_VIEW_OWN],
+            ['id' => self::UBERUSER_PERM_ID, 'name' => Permission::PERM_USER_IS_UEBERUSER],
         ];
 
         $filtered = PermissionTemplateContentGuard::filterOfferedPermissions($permissions, false);
 
         $this->assertCount(1, $filtered);
-        $this->assertSame('zone_content_view_own', $filtered[0]['name']);
+        $this->assertSame(Permission::PERM_ZONE_CONTENT_VIEW_OWN, $filtered[0]['name']);
     }
 
     public function testFilterLeavesTheListIntactForSuperusers(): void
     {
-        $permissions = [['id' => self::UBERUSER_PERM_ID, 'name' => 'user_is_ueberuser']];
+        $permissions = [['id' => self::UBERUSER_PERM_ID, 'name' => Permission::PERM_USER_IS_UEBERUSER]];
 
         $this->assertSame($permissions, PermissionTemplateContentGuard::filterOfferedPermissions($permissions, true));
     }

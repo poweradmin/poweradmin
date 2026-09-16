@@ -44,6 +44,88 @@ class Permission
      */
     public const PERM_EDIT_NS_SUBZONE = 'zone_content_edit_ns_subzone';
 
+    public const PERM_ZONE_MASTER_ADD = 'zone_master_add';
+    public const PERM_ZONE_SLAVE_ADD = 'zone_slave_add';
+    public const PERM_ZONE_CONTENT_VIEW_OWN = 'zone_content_view_own';
+    public const PERM_ZONE_CONTENT_EDIT_OWN = 'zone_content_edit_own';
+    public const PERM_ZONE_META_EDIT_OWN = 'zone_meta_edit_own';
+    public const PERM_ZONE_CONTENT_VIEW_OTHERS = 'zone_content_view_others';
+    public const PERM_ZONE_CONTENT_EDIT_OTHERS = 'zone_content_edit_others';
+    public const PERM_ZONE_META_EDIT_OTHERS = 'zone_meta_edit_others';
+    public const PERM_SEARCH = 'search';
+    public const PERM_SUPERMASTER_VIEW = 'supermaster_view';
+    public const PERM_SUPERMASTER_ADD = 'supermaster_add';
+    public const PERM_SUPERMASTER_EDIT = 'supermaster_edit';
+    public const PERM_USER_IS_UEBERUSER = 'user_is_ueberuser';
+    public const PERM_USER_VIEW_OTHERS = 'user_view_others';
+    public const PERM_USER_ADD_NEW = 'user_add_new';
+    public const PERM_USER_EDIT_OWN = 'user_edit_own';
+    public const PERM_USER_EDIT_OTHERS = 'user_edit_others';
+    public const PERM_USER_PASSWD_EDIT_OTHERS = 'user_passwd_edit_others';
+    public const PERM_USER_EDIT_TEMPL_PERM = 'user_edit_templ_perm';
+    public const PERM_TEMPL_PERM_ADD = 'templ_perm_add';
+    public const PERM_TEMPL_PERM_EDIT = 'templ_perm_edit';
+    public const PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT = 'zone_content_edit_own_as_client';
+    public const PERM_ZONE_TEMPL_ADD = 'zone_templ_add';
+    public const PERM_ZONE_TEMPL_EDIT = 'zone_templ_edit';
+    public const PERM_API_MANAGE_KEYS = 'api_manage_keys';
+    public const PERM_ZONE_DELETE_OWN = 'zone_delete_own';
+    public const PERM_ZONE_DELETE_OTHERS = 'zone_delete_others';
+    public const PERM_USER_ENFORCE_MFA = 'user_enforce_mfa';
+    public const PERM_ZONE_DNSSEC_MANAGE_OWN = 'zone_dnssec_manage_own';
+    public const PERM_ZONE_LOGS_VIEW_OWN = 'zone_logs_view_own';
+    public const PERM_ZONE_LOGS_VIEW_OTHERS = 'zone_logs_view_others';
+    public const PERM_USER_LOGS_VIEW = 'user_logs_view';
+    public const PERM_GROUP_LOGS_VIEW = 'group_logs_view';
+    public const PERM_ZONE_METADATA_VIEW_OWN = 'zone_metadata_view_own';
+    public const PERM_ZONE_METADATA_VIEW_OTHERS = 'zone_metadata_view_others';
+    public const PERM_ZONE_OWNERSHIP_VIEW_OWN = 'zone_ownership_view_own';
+    public const PERM_ZONE_OWNERSHIP_VIEW_OTHERS = 'zone_ownership_view_others';
+
+    /**
+     * Every permission name known to perm_items, for validation and lint tooling.
+     */
+    public const ALL = [
+        self::PERM_ZONE_MASTER_ADD,
+        self::PERM_ZONE_SLAVE_ADD,
+        self::PERM_ZONE_CONTENT_VIEW_OWN,
+        self::PERM_ZONE_CONTENT_EDIT_OWN,
+        self::PERM_ZONE_META_EDIT_OWN,
+        self::PERM_ZONE_CONTENT_VIEW_OTHERS,
+        self::PERM_ZONE_CONTENT_EDIT_OTHERS,
+        self::PERM_ZONE_META_EDIT_OTHERS,
+        self::PERM_SEARCH,
+        self::PERM_SUPERMASTER_VIEW,
+        self::PERM_SUPERMASTER_ADD,
+        self::PERM_SUPERMASTER_EDIT,
+        self::PERM_USER_IS_UEBERUSER,
+        self::PERM_USER_VIEW_OTHERS,
+        self::PERM_USER_ADD_NEW,
+        self::PERM_USER_EDIT_OWN,
+        self::PERM_USER_EDIT_OTHERS,
+        self::PERM_USER_PASSWD_EDIT_OTHERS,
+        self::PERM_USER_EDIT_TEMPL_PERM,
+        self::PERM_TEMPL_PERM_ADD,
+        self::PERM_TEMPL_PERM_EDIT,
+        self::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT,
+        self::PERM_ZONE_TEMPL_ADD,
+        self::PERM_ZONE_TEMPL_EDIT,
+        self::PERM_API_MANAGE_KEYS,
+        self::PERM_ZONE_DELETE_OWN,
+        self::PERM_ZONE_DELETE_OTHERS,
+        self::PERM_USER_ENFORCE_MFA,
+        self::PERM_ZONE_DNSSEC_MANAGE_OWN,
+        self::PERM_ZONE_LOGS_VIEW_OWN,
+        self::PERM_ZONE_LOGS_VIEW_OTHERS,
+        self::PERM_USER_LOGS_VIEW,
+        self::PERM_GROUP_LOGS_VIEW,
+        self::PERM_EDIT_NS_SUBZONE,
+        self::PERM_ZONE_METADATA_VIEW_OWN,
+        self::PERM_ZONE_METADATA_VIEW_OTHERS,
+        self::PERM_ZONE_OWNERSHIP_VIEW_OWN,
+        self::PERM_ZONE_OWNERSHIP_VIEW_OTHERS,
+    ];
+
     private static ?PermissionService $permissionService = null;
 
     /**

@@ -6,6 +6,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
@@ -41,7 +42,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
         $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
         $this->db->exec("INSERT INTO users (id, perm_templ) VALUES (1, 1)");
         $this->db->exec("INSERT INTO perm_templ (id) VALUES (1)");
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (1, 'zone_content_view_others')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (1, '" . Permission::PERM_ZONE_CONTENT_VIEW_OTHERS . "')");
         $this->db->exec("INSERT INTO perm_templ_items (id, templ_id, perm_id) VALUES (1, 1, 1)");
 
         $this->config = ConfigurationManager::getInstance();

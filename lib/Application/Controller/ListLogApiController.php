@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
@@ -42,7 +43,7 @@ class ListLogApiController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, 'You do not have the permission to see any logs');
 
         $this->setCurrentPage('list_log_api');
         $this->setPageTitle(_('API Logs'));

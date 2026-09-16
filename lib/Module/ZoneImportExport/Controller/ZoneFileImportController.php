@@ -23,6 +23,7 @@
 namespace Poweradmin\Module\ZoneImportExport\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -67,7 +68,7 @@ class ZoneFileImportController extends BaseController
 
     private function checkImportPermission(): void
     {
-        $canAdd = $this->hasPermission('zone_master_add');
+        $canAdd = $this->hasPermission(Permission::PERM_ZONE_MASTER_ADD);
         $perm_edit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $this->checkCondition(
             !$canAdd && $perm_edit === 'none',
@@ -226,7 +227,7 @@ class ZoneFileImportController extends BaseController
             $ownershipMode = new ZoneOwnershipModeService($this->config);
             $userId = $this->userContextService->getLoggedInUserId();
             $userGroupRepo = $this->createUserGroupRepository();
-            $isAdmin = $this->hasPermission('user_is_ueberuser');
+            $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
             $availableGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
 
             // Short-circuit a dead-end preview: in groups_only with no assignable
@@ -309,7 +310,7 @@ class ZoneFileImportController extends BaseController
 
             $audit->logZoneImport($zone_id, (string)$zoneName, true);
         } else {
-            if (!$this->hasPermission('zone_master_add')) {
+            if (!$this->hasPermission(Permission::PERM_ZONE_MASTER_ADD)) {
                 $this->showError(_('You do not have permission to add zones.'));
                 return;
             }

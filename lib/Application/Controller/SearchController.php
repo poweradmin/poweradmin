@@ -26,6 +26,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -47,7 +48,7 @@ class SearchController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('search', _("You do not have the permission to perform searches."));
+        $this->checkPermission(Permission::PERM_SEARCH, _("You do not have the permission to perform searches."));
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('search');

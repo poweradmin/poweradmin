@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 
 /**
@@ -38,9 +39,9 @@ class UnlinkZonesTemplController extends BaseController
 
     public function run(): void
     {
-        $perm_godlike = $this->hasPermission('user_is_ueberuser');
-        $perm_zone_edit = $this->hasPermission('zone_content_edit_own') || $this->hasPermission('zone_content_edit_others');
-        $perm_zone_meta_edit = $this->hasPermission('zone_meta_edit_own') || $this->hasPermission('zone_meta_edit_others');
+        $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
+        $perm_zone_edit = $this->hasPermission(Permission::PERM_ZONE_CONTENT_EDIT_OWN) || $this->hasPermission(Permission::PERM_ZONE_CONTENT_EDIT_OTHERS);
+        $perm_zone_meta_edit = $this->hasPermission(Permission::PERM_ZONE_META_EDIT_OWN) || $this->hasPermission(Permission::PERM_ZONE_META_EDIT_OTHERS);
 
         $this->checkCondition(!($perm_godlike || $perm_zone_edit || $perm_zone_meta_edit), _('You do not have permission to unlink zones from templates.'));
 
@@ -76,7 +77,7 @@ class UnlinkZonesTemplController extends BaseController
         $failed = 0;
         $zoneTemplate = $this->createZoneTemplateModel();
         $auditService = $this->createAuditService();
-        $perm_godlike = $this->hasPermission('user_is_ueberuser');
+        $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
 
         foreach ($zone_ids as $zone_id) {
             $zone_id = filter_var($zone_id, FILTER_VALIDATE_INT);

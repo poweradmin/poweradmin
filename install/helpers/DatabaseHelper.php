@@ -24,6 +24,7 @@ namespace PoweradminInstall;
 
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DatabaseSchemaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
@@ -222,11 +223,11 @@ class DatabaseHelper
 
         // Get permission IDs for template assignments
         $permissionNames = [
-            'user_is_ueberuser', 'zone_master_add', 'zone_slave_add', 'zone_content_view_own',
-            'zone_content_edit_own', 'zone_meta_edit_own', 'search', 'user_edit_own',
-            'zone_templ_add', 'zone_templ_edit', 'api_manage_keys', 'zone_delete_own',
-            'zone_content_edit_own_as_client', 'zone_dnssec_manage_own', 'zone_logs_view_own',
-            'zone_metadata_view_own', 'zone_ownership_view_own'
+            Permission::PERM_USER_IS_UEBERUSER, Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD, Permission::PERM_ZONE_CONTENT_VIEW_OWN,
+            Permission::PERM_ZONE_CONTENT_EDIT_OWN, Permission::PERM_ZONE_META_EDIT_OWN, Permission::PERM_SEARCH, Permission::PERM_USER_EDIT_OWN,
+            Permission::PERM_ZONE_TEMPL_ADD, Permission::PERM_ZONE_TEMPL_EDIT, Permission::PERM_API_MANAGE_KEYS, Permission::PERM_ZONE_DELETE_OWN,
+            Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT, Permission::PERM_ZONE_DNSSEC_MANAGE_OWN, Permission::PERM_ZONE_LOGS_VIEW_OWN,
+            Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN
         ];
 
         $permissionIds = [];
@@ -238,14 +239,14 @@ class DatabaseHelper
 
         // Assign permissions to templates
         $templatePermissions = [
-            'Administrator' => ['user_is_ueberuser'],
-            'Zone Manager' => ['zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
-                               'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
-                               'api_manage_keys', 'zone_delete_own', 'zone_dnssec_manage_own', 'zone_logs_view_own',
-                               'zone_metadata_view_own', 'zone_ownership_view_own'],
-            'Editor' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client', 'zone_logs_view_own',
-                         'zone_metadata_view_own', 'zone_ownership_view_own'],
-            'Viewer' => ['zone_content_view_own', 'search', 'zone_logs_view_own', 'zone_metadata_view_own', 'zone_ownership_view_own'],
+            'Administrator' => [Permission::PERM_USER_IS_UEBERUSER],
+            'Zone Manager' => [Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD, Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN,
+                               Permission::PERM_ZONE_META_EDIT_OWN, Permission::PERM_SEARCH, Permission::PERM_USER_EDIT_OWN, Permission::PERM_ZONE_TEMPL_ADD, Permission::PERM_ZONE_TEMPL_EDIT,
+                               Permission::PERM_API_MANAGE_KEYS, Permission::PERM_ZONE_DELETE_OWN, Permission::PERM_ZONE_DNSSEC_MANAGE_OWN, Permission::PERM_ZONE_LOGS_VIEW_OWN,
+                               Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN],
+            'Editor' => [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_SEARCH, Permission::PERM_USER_EDIT_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT, Permission::PERM_ZONE_LOGS_VIEW_OWN,
+                         Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN],
+            'Viewer' => [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_SEARCH, Permission::PERM_ZONE_LOGS_VIEW_OWN, Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN],
             'Guest' => []
         ];
 
@@ -289,14 +290,14 @@ class DatabaseHelper
 
         // Assign permissions to group templates (same as corresponding user templates)
         $groupTemplatePermissions = [
-            'Administrators' => ['user_is_ueberuser'],
-            'Zone Managers' => ['zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
-                               'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
-                               'api_manage_keys', 'zone_delete_own', 'zone_dnssec_manage_own', 'zone_logs_view_own',
-                               'zone_metadata_view_own', 'zone_ownership_view_own'],
-            'Editors' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client', 'zone_logs_view_own',
-                          'zone_metadata_view_own', 'zone_ownership_view_own'],
-            'Viewers' => ['zone_content_view_own', 'search', 'zone_logs_view_own', 'zone_metadata_view_own', 'zone_ownership_view_own'],
+            'Administrators' => [Permission::PERM_USER_IS_UEBERUSER],
+            'Zone Managers' => [Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD, Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN,
+                               Permission::PERM_ZONE_META_EDIT_OWN, Permission::PERM_SEARCH, Permission::PERM_USER_EDIT_OWN, Permission::PERM_ZONE_TEMPL_ADD, Permission::PERM_ZONE_TEMPL_EDIT,
+                               Permission::PERM_API_MANAGE_KEYS, Permission::PERM_ZONE_DELETE_OWN, Permission::PERM_ZONE_DNSSEC_MANAGE_OWN, Permission::PERM_ZONE_LOGS_VIEW_OWN,
+                               Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN],
+            'Editors' => [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_SEARCH, Permission::PERM_USER_EDIT_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT, Permission::PERM_ZONE_LOGS_VIEW_OWN,
+                          Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN],
+            'Viewers' => [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_SEARCH, Permission::PERM_ZONE_LOGS_VIEW_OWN, Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN],
             'Guests' => [],
         ];
 

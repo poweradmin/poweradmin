@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use ReflectionMethod;
 
 /**
@@ -44,7 +45,7 @@ class BaseControllerSelectableOwnersTest extends TestCase
             ->disableOriginalConstructor()
             ->onlyMethods(['run', 'hasPermission', 'getCurrentUserId'])
             ->getMock();
-        $controller->method('hasPermission')->with('user_view_others')->willReturn($canViewOthers);
+        $controller->method('hasPermission')->with(Permission::PERM_USER_VIEW_OTHERS)->willReturn($canViewOthers);
         $controller->method('getCurrentUserId')->willReturn($currentUserId);
 
         $method = new ReflectionMethod(BaseController::class, 'selectableOwners');

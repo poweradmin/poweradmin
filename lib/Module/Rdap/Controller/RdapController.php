@@ -23,6 +23,7 @@
 namespace Poweradmin\Module\Rdap\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Module\Rdap\Service\RdapService;
@@ -55,7 +56,7 @@ class RdapController extends BaseController
     {
         $restrict_to_admin = $this->getModuleConfig('rdap', 'restrict_to_admin', true);
         if ($restrict_to_admin) {
-            $this->checkPermission('user_is_ueberuser', _('You do not have permission to perform RDAP lookups.'));
+            $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have permission to perform RDAP lookups.'));
         }
 
         $this->setCurrentPage('module_rdap');

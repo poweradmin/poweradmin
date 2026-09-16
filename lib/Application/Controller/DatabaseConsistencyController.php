@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DatabaseConsistencyService;
 
 /**
@@ -44,7 +45,7 @@ class DatabaseConsistencyController extends BaseController
             return;
         }
 
-        $this->checkPermission('user_is_ueberuser', _('You do not have the permission to view this page.'));
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have the permission to view this page.'));
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('database_consistency');

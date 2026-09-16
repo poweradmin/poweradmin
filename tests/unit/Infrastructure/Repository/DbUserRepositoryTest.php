@@ -28,6 +28,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -500,8 +501,8 @@ class DbUserRepositoryTest extends TestCase
         $userStmt->method('execute')->willReturn(true);
         $userStmt->method('fetch')
             ->willReturnOnConsecutiveCalls(
-                ['permission' => 'zone_content_view_own'],
-                ['permission' => 'zone_content_edit_own'],
+                ['permission' => Permission::PERM_ZONE_CONTENT_VIEW_OWN],
+                ['permission' => Permission::PERM_ZONE_CONTENT_EDIT_OWN],
                 false
             );
 
@@ -509,7 +510,7 @@ class DbUserRepositoryTest extends TestCase
 
         $result = $this->repository->getUserPermissions(1);
 
-        $this->assertSame(['zone_content_view_own', 'zone_content_edit_own'], $result);
+        $this->assertSame([Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN], $result);
     }
 
     #[Test]
@@ -534,7 +535,7 @@ class DbUserRepositoryTest extends TestCase
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetch')->willReturn(['permission' => 'user_is_ueberuser']);
+        $stmt->method('fetch')->willReturn(['permission' => Permission::PERM_USER_IS_UEBERUSER]);
 
         $this->db->method('prepare')->willReturn($stmt);
 

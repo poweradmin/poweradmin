@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\BaseController;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -50,7 +51,7 @@ class AddPermTemplController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('templ_perm_add', _("You do not have the permission to add permission templates."));
+        $this->checkPermission(Permission::PERM_TEMPL_PERM_ADD, _("You do not have the permission to add permission templates."));
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('add_perm_templ');

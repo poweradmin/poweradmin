@@ -167,7 +167,7 @@ class ApiPermissionService
             return true;
         }
 
-        if (!$this->permissions->hasPermission($userId, 'zone_dnssec_manage_own')) {
+        if (!$this->permissions->hasPermission($userId, Permission::PERM_ZONE_DNSSEC_MANAGE_OWN)) {
             return false;
         }
 
@@ -185,7 +185,7 @@ class ApiPermissionService
 
     public function canViewUser(int $userId, int $targetUserId): bool
     {
-        return $userId === $targetUserId || $this->permissions->hasPermission($userId, 'user_view_others');
+        return $userId === $targetUserId || $this->permissions->hasPermission($userId, Permission::PERM_USER_VIEW_OTHERS);
     }
 
     public function canEditUser(int $userId, int $targetUserId): bool
@@ -199,21 +199,21 @@ class ApiPermissionService
             return false;
         }
 
-        if ($userId === $targetUserId && $this->permissions->hasPermission($userId, 'user_edit_own')) {
+        if ($userId === $targetUserId && $this->permissions->hasPermission($userId, Permission::PERM_USER_EDIT_OWN)) {
             return true;
         }
 
-        return $this->permissions->hasPermission($userId, 'user_edit_others');
+        return $this->permissions->hasPermission($userId, Permission::PERM_USER_EDIT_OTHERS);
     }
 
     public function canEditUserPassword(int $userId, int $targetUserId): bool
     {
-        return $userId === $targetUserId || $this->permissions->hasPermission($userId, 'user_passwd_edit_others');
+        return $userId === $targetUserId || $this->permissions->hasPermission($userId, Permission::PERM_USER_PASSWD_EDIT_OTHERS);
     }
 
     public function canCreateUser(int $userId): bool
     {
-        return $this->permissions->hasPermission($userId, 'user_add_new');
+        return $this->permissions->hasPermission($userId, Permission::PERM_USER_ADD_NEW);
     }
 
     public function canDeleteUser(int $userId, int $targetUserId): bool
@@ -227,7 +227,7 @@ class ApiPermissionService
             return false;
         }
 
-        return $this->permissions->hasPermission($userId, 'user_edit_others');
+        return $this->permissions->hasPermission($userId, Permission::PERM_USER_EDIT_OTHERS);
     }
 
     public function canManageGroups(int $userId): bool
@@ -237,7 +237,7 @@ class ApiPermissionService
 
     public function canEditPermissionTemplates(int $userId): bool
     {
-        return $this->permissions->hasPermission($userId, 'user_edit_templ_perm');
+        return $this->permissions->hasPermission($userId, Permission::PERM_USER_EDIT_TEMPL_PERM);
     }
 
     /**
@@ -269,17 +269,17 @@ class ApiPermissionService
 
     public function canListUsers(int $userId): bool
     {
-        return $this->permissions->hasPermission($userId, 'user_view_others');
+        return $this->permissions->hasPermission($userId, Permission::PERM_USER_VIEW_OTHERS);
     }
 
     public function canCreateZoneTemplate(int $userId): bool
     {
-        return $this->permissions->hasPermission($userId, 'zone_templ_add');
+        return $this->permissions->hasPermission($userId, Permission::PERM_ZONE_TEMPL_ADD);
     }
 
     public function canEditZoneTemplate(int $userId): bool
     {
-        return $this->permissions->hasPermission($userId, 'zone_templ_edit');
+        return $this->permissions->hasPermission($userId, Permission::PERM_ZONE_TEMPL_EDIT);
     }
 
     /**
@@ -292,7 +292,7 @@ class ApiPermissionService
 
     public function canViewZoneTemplates(int $userId): bool
     {
-        foreach (['zone_templ_add', 'zone_templ_edit', 'zone_master_add', 'zone_slave_add'] as $permission) {
+        foreach ([Permission::PERM_ZONE_TEMPL_ADD, Permission::PERM_ZONE_TEMPL_EDIT, Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD] as $permission) {
             if ($this->permissions->hasPermission($userId, $permission)) {
                 return true;
             }
@@ -325,17 +325,17 @@ class ApiPermissionService
     public function getUserVisibleZoneIds(int $userId): ?array
     {
         // Uberuser can view all zones
-        if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+        if ($this->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER)) {
             return null; // null = all zones
         }
 
         // User with zone_content_view_others can view all zones
-        if ($this->userHasPermission($userId, 'zone_content_view_others')) {
+        if ($this->userHasPermission($userId, Permission::PERM_ZONE_CONTENT_VIEW_OTHERS)) {
             return null; // null = all zones
         }
 
         // User with zone_content_view_own can view only their own zones (direct + group)
-        if ($this->userHasPermission($userId, 'zone_content_view_own')) {
+        if ($this->userHasPermission($userId, Permission::PERM_ZONE_CONTENT_VIEW_OWN)) {
             $canonicalId = CanonicalZoneSql::canonicalIdColumn();
             $stmt = $this->db->prepare("
                 SELECT $canonicalId FROM zones WHERE owner = :user_id

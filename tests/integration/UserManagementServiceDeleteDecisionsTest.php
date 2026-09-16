@@ -26,6 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
@@ -100,7 +101,7 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
     public function testARefusedZoneDeletionKeepsTheUserAndTouchesNoZone(): void
     {
         // The acting user may delete users and their own zones, but not zones owned by others.
-        $this->seedUserAdmin([50 => 'zone_delete_own']);
+        $this->seedUserAdmin([50 => Permission::PERM_ZONE_DELETE_OWN]);
         $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (10, " . self::USER_ADMIN . "), (11, " . self::TARGET . ")");
 
         $decisions = [['zid' => 10, 'target' => 'delete'], ['zid' => 11, 'target' => 'delete']];
@@ -177,7 +178,7 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
      */
     private function seedUserAdmin(array $extraPermissions): void
     {
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (44, 'user_edit_others')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (44, '" . Permission::PERM_USER_EDIT_OTHERS . "')");
         foreach ($extraPermissions as $id => $name) {
             $this->db->exec("INSERT INTO perm_items (id, name) VALUES ($id, '$name')");
         }

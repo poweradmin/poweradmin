@@ -183,8 +183,8 @@ class DomainManager implements DomainManagerInterface
             return ZoneWriteResult::failure(_('Invalid or unexpected input given.'));
         }
 
-        $zone_master_add = $this->userHasPermission('zone_master_add');
-        $zone_slave_add = $this->userHasPermission('zone_slave_add');
+        $zone_master_add = $this->userHasPermission(Permission::PERM_ZONE_MASTER_ADD);
+        $zone_slave_add = $this->userHasPermission(Permission::PERM_ZONE_SLAVE_ADD);
         // Keeps the original string for MASTER/NATIVE zones, which pass '' here, and for
         // anything that fails validation - addDomain has never validated this argument.
         $slave_master = $this->normalizeMasterList($slave_master) ?? $slave_master;
@@ -500,11 +500,11 @@ class DomainManager implements DomainManagerInterface
 
     private function userCanEditZoneMetadata(int $zoneId): bool
     {
-        if ($this->userHasPermission('zone_meta_edit_others')) {
+        if ($this->userHasPermission(Permission::PERM_ZONE_META_EDIT_OTHERS)) {
             return true;
         }
         if (
-            $this->userHasPermission('zone_meta_edit_own')
+            $this->userHasPermission(Permission::PERM_ZONE_META_EDIT_OWN)
             && $this->currentUserOwnsZone($zoneId)
         ) {
             return true;
@@ -666,8 +666,8 @@ class DomainManager implements DomainManagerInterface
         $canRemoveOldTemplateRecords = $zone_template_id == 0
             || ZoneAccessPolicy::levelAppliesToZone(Permission::getEditPermission($this->db, $this->config), $this->currentUserOwnsZone($zone_id));
 
-        $zone_master_add = $this->userHasPermission('zone_master_add');
-        $zone_slave_add = $this->userHasPermission('zone_slave_add');
+        $zone_master_add = $this->userHasPermission(Permission::PERM_ZONE_MASTER_ADD);
+        $zone_slave_add = $this->userHasPermission(Permission::PERM_ZONE_SLAVE_ADD);
 
         $soa_rec = $this->soaRecordManager->getSOARecord($zone_id);
 

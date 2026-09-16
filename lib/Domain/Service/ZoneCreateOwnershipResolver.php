@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 
 /**
@@ -154,7 +155,7 @@ class ZoneCreateOwnershipResolver
         }
 
         if ($owner !== null && $owner !== $callerUserId) {
-            if (!$this->permissions->hasPermission($callerUserId, 'zone_content_edit_others')) {
+            if (!$this->permissions->hasPermission($callerUserId, Permission::PERM_ZONE_CONTENT_EDIT_OTHERS)) {
                 return ZoneOwnershipResolution::error(
                     'You do not have permission to create zones for other users',
                     403,

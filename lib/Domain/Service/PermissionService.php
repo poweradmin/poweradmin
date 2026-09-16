@@ -152,9 +152,9 @@ class PermissionService
         // Covers the user's own template and their groups' templates.
         $permissions = $this->getUserPermissions($userId);
 
-        if (in_array('zone_content_view_others', $permissions) || $this->isAdmin($userId)) {
+        if (in_array(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS, $permissions) || $this->isAdmin($userId)) {
             return 'all';
-        } elseif (in_array('zone_content_view_own', $permissions)) {
+        } elseif (in_array(Permission::PERM_ZONE_CONTENT_VIEW_OWN, $permissions)) {
             return 'own';
         } else {
             return 'none';
@@ -172,11 +172,11 @@ class PermissionService
         // Covers the user's own template and their groups' templates.
         $permissions = $this->getUserPermissions($userId);
 
-        if (in_array('zone_content_edit_others', $permissions) || $this->isAdmin($userId)) {
+        if (in_array(Permission::PERM_ZONE_CONTENT_EDIT_OTHERS, $permissions) || $this->isAdmin($userId)) {
             return 'all';
-        } elseif (in_array('zone_content_edit_own', $permissions)) {
+        } elseif (in_array(Permission::PERM_ZONE_CONTENT_EDIT_OWN, $permissions)) {
             return 'own';
-        } elseif (in_array('zone_content_edit_own_as_client', $permissions)) {
+        } elseif (in_array(Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT, $permissions)) {
             return 'own_as_client';
         } else {
             return 'none';
@@ -209,9 +209,9 @@ class PermissionService
     {
         $permissions = $this->getUserPermissions($userId);
 
-        if (in_array('zone_meta_edit_others', $permissions) || $this->isAdmin($userId)) {
+        if (in_array(Permission::PERM_ZONE_META_EDIT_OTHERS, $permissions) || $this->isAdmin($userId)) {
             return 'all';
-        } elseif (in_array('zone_meta_edit_own', $permissions)) {
+        } elseif (in_array(Permission::PERM_ZONE_META_EDIT_OWN, $permissions)) {
             return 'own';
         } else {
             return 'none';
@@ -231,14 +231,14 @@ class PermissionService
         $permissions = $this->getUserPermissions($userId);
 
         if (
-            in_array('zone_metadata_view_others', $permissions)
-            || in_array('zone_meta_edit_others', $permissions)
+            in_array(Permission::PERM_ZONE_METADATA_VIEW_OTHERS, $permissions)
+            || in_array(Permission::PERM_ZONE_META_EDIT_OTHERS, $permissions)
             || $this->isAdmin($userId)
         ) {
             return 'all';
         } elseif (
-            in_array('zone_metadata_view_own', $permissions)
-            || in_array('zone_meta_edit_own', $permissions)
+            in_array(Permission::PERM_ZONE_METADATA_VIEW_OWN, $permissions)
+            || in_array(Permission::PERM_ZONE_META_EDIT_OWN, $permissions)
         ) {
             return 'own';
         } else {
@@ -259,14 +259,14 @@ class PermissionService
         $permissions = $this->getUserPermissions($userId);
 
         if (
-            in_array('zone_ownership_view_others', $permissions)
-            || in_array('zone_meta_edit_others', $permissions)
+            in_array(Permission::PERM_ZONE_OWNERSHIP_VIEW_OTHERS, $permissions)
+            || in_array(Permission::PERM_ZONE_META_EDIT_OTHERS, $permissions)
             || $this->isAdmin($userId)
         ) {
             return 'all';
         } elseif (
-            in_array('zone_ownership_view_own', $permissions)
-            || in_array('zone_meta_edit_own', $permissions)
+            in_array(Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN, $permissions)
+            || in_array(Permission::PERM_ZONE_META_EDIT_OWN, $permissions)
         ) {
             return 'own';
         } else {
@@ -282,7 +282,7 @@ class PermissionService
      */
     public function canViewOthersContent(int $userId): bool
     {
-        return $this->hasPermission($userId, 'user_view_others') || $this->isAdmin($userId);
+        return $this->hasPermission($userId, Permission::PERM_USER_VIEW_OTHERS) || $this->isAdmin($userId);
     }
 
     /**
@@ -296,7 +296,7 @@ class PermissionService
         if ($kind === null) {
             return false;
         }
-        $grant = $kind->replicatesFromPrimary() ? 'zone_slave_add' : 'zone_master_add';
+        $grant = $kind->replicatesFromPrimary() ? Permission::PERM_ZONE_SLAVE_ADD : Permission::PERM_ZONE_MASTER_ADD;
 
         return $this->hasPermission($userId, $grant) || $this->isAdmin($userId);
     }
@@ -309,7 +309,7 @@ class PermissionService
      */
     public function canAddZoneTemplates(int $userId): bool
     {
-        return $this->hasPermission($userId, 'zone_templ_add') || $this->isAdmin($userId);
+        return $this->hasPermission($userId, Permission::PERM_ZONE_TEMPL_ADD) || $this->isAdmin($userId);
     }
 
     /**
@@ -320,9 +320,9 @@ class PermissionService
      */
     public function canManageUsers(int $userId): bool
     {
-        return $this->hasPermission($userId, 'user_view_others')
-            || $this->hasPermission($userId, 'user_edit_others')
-            || $this->hasPermission($userId, 'user_add_new')
+        return $this->hasPermission($userId, Permission::PERM_USER_VIEW_OTHERS)
+            || $this->hasPermission($userId, Permission::PERM_USER_EDIT_OTHERS)
+            || $this->hasPermission($userId, Permission::PERM_USER_ADD_NEW)
             || $this->isAdmin($userId);
     }
 
@@ -331,7 +331,7 @@ class PermissionService
      */
     public function canManageDnssecForZone(int $userId, int $domainId): bool
     {
-        return $this->canPerformZoneAction($userId, $domainId, 'zone_dnssec_manage_own');
+        return $this->canPerformZoneAction($userId, $domainId, Permission::PERM_ZONE_DNSSEC_MANAGE_OWN);
     }
 
     /**
@@ -355,11 +355,11 @@ class PermissionService
     {
         $permissions = $this->getUserPermissions($userId);
 
-        if (in_array('zone_content_edit_others', $permissions) || $this->isAdmin($userId)) {
+        if (in_array(Permission::PERM_ZONE_CONTENT_EDIT_OTHERS, $permissions) || $this->isAdmin($userId)) {
             return true;
         }
 
-        return in_array('zone_content_edit_own', $permissions) && $this->userOwnsZone($userId, $domainId);
+        return in_array(Permission::PERM_ZONE_CONTENT_EDIT_OWN, $permissions) && $this->userOwnsZone($userId, $domainId);
     }
 
     /**
@@ -455,11 +455,11 @@ class PermissionService
             }
         }
 
-        if (!$this->hasPermission($actorId, 'user_edit_templ_perm')) {
+        if (!$this->hasPermission($actorId, Permission::PERM_USER_EDIT_TEMPL_PERM)) {
             return self::TEMPLATE_ASSIGN_DENIED;
         }
 
-        if ($actorId === $targetUserId && !$this->hasPermission($actorId, 'user_edit_others')) {
+        if ($actorId === $targetUserId && !$this->hasPermission($actorId, Permission::PERM_USER_EDIT_OTHERS)) {
             return self::TEMPLATE_SELF_ASSIGN_DENIED;
         }
 
@@ -477,9 +477,9 @@ class PermissionService
     {
         $permissions = $this->getUserPermissions($userId);
 
-        if (in_array('zone_logs_view_others', $permissions) || $this->isAdmin($userId)) {
+        if (in_array(Permission::PERM_ZONE_LOGS_VIEW_OTHERS, $permissions) || $this->isAdmin($userId)) {
             return 'all';
-        } elseif (in_array('zone_logs_view_own', $permissions)) {
+        } elseif (in_array(Permission::PERM_ZONE_LOGS_VIEW_OWN, $permissions)) {
             return 'own';
         }
 
@@ -512,9 +512,9 @@ class PermissionService
     {
         $permissions = $this->getUserPermissions($userId);
 
-        if (in_array('zone_delete_others', $permissions) || $this->isAdmin($userId)) {
+        if (in_array(Permission::PERM_ZONE_DELETE_OTHERS, $permissions) || $this->isAdmin($userId)) {
             return 'all';
-        } elseif (in_array('zone_delete_own', $permissions)) {
+        } elseif (in_array(Permission::PERM_ZONE_DELETE_OWN, $permissions)) {
             return 'own';
         } else {
             return 'none';

@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneManagementService;
@@ -65,8 +66,8 @@ class DeleteDomainController extends BaseController
         // Check zone-specific delete permission (includes group permissions)
         $userId = $this->userContextService->getLoggedInUserId();
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
-        $canDelete = $this->createPermissionService()->canPerformZoneAction($userId, $zone_id, 'zone_delete_own');
-        $canDeleteOthers = $this->hasPermission('zone_delete_others');
+        $canDelete = $this->createPermissionService()->canPerformZoneAction($userId, $zone_id, Permission::PERM_ZONE_DELETE_OWN);
+        $canDeleteOthers = $this->hasPermission(Permission::PERM_ZONE_DELETE_OTHERS);
 
         $this->checkCondition(
             !$canDeleteOthers && !$canDelete,

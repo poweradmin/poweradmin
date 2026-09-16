@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Application\Service\PowerdnsStatusService;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
 
 /**
@@ -58,7 +59,7 @@ class PdnsStatusController extends BaseController
         }
 
         // Only allow administrators to view server status
-        if (!$this->hasPermission('user_is_ueberuser')) {
+        if (!$this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
             $this->showError(_('You do not have permission to view PowerDNS server status. Only administrators can access this feature.'));
             return;
         }

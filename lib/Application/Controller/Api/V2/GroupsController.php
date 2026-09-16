@@ -28,6 +28,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -127,7 +128,7 @@ class GroupsController extends PublicApiController
     {
         try {
             $userId = $this->authenticatedUserId;
-            $isAdmin = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
+            $isAdmin = $this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
 
             $groups = $this->groupService->listGroups($userId, $isAdmin);
 
@@ -227,7 +228,7 @@ class GroupsController extends PublicApiController
         try {
             $groupId = (int)$this->pathParameters['id'];
             $userId = $this->authenticatedUserId;
-            $isAdmin = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
+            $isAdmin = $this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
 
             try {
                 $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);

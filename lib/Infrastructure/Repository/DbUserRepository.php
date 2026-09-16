@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -207,7 +208,7 @@ class DbUserRepository implements UserRepositoryInterface
             INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
             INNER JOIN users ON perm_templ.id = users.perm_templ
             WHERE users.id = ?
-                AND perm_items.name = 'user_is_ueberuser'
+                AND perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
                 AND perm_items.name IS NOT NULL
 
             UNION
@@ -219,7 +220,7 @@ class DbUserRepository implements UserRepositoryInterface
             INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
             INNER JOIN perm_items pi ON pti.perm_id = pi.id
             WHERE ugm.user_id = ?
-                AND pi.name = 'user_is_ueberuser'
+                AND pi.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
                 AND pi.name IS NOT NULL
         ";
 
@@ -686,7 +687,7 @@ class DbUserRepository implements UserRepositoryInterface
                   JOIN perm_templ ON users.perm_templ = perm_templ.id
                   JOIN perm_templ_items ON perm_templ.id = perm_templ_items.templ_id
                   JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
-                  WHERE perm_items.name = 'user_is_ueberuser'
+                  WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
                   AND users.active = 1";
 
         $stmt = $this->db->query($query);
@@ -711,7 +712,7 @@ class DbUserRepository implements UserRepositoryInterface
                   JOIN perm_templ ON users.perm_templ = perm_templ.id
                   JOIN perm_templ_items ON perm_templ.id = perm_templ_items.templ_id
                   JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
-                  WHERE perm_items.name = 'user_is_ueberuser'
+                  WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
                   AND users.id = :userId
                   AND users.active = 1";
 
@@ -726,7 +727,7 @@ class DbUserRepository implements UserRepositoryInterface
                   FROM perm_templ_items
                   JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
                   WHERE perm_templ_items.templ_id = :templId
-                  AND perm_items.name = 'user_is_ueberuser'";
+                  AND perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute([':templId' => $permTemplId]);

@@ -39,6 +39,7 @@ use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Application\Service\RepositoryFactory;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
@@ -550,7 +551,7 @@ abstract class BaseController
      */
     protected function moduleCapabilityData(string $capability, array $context = []): array
     {
-        return $this->moduleRegistry()->getCapabilityData($capability, $context, $this->hasPermission('user_is_ueberuser'));
+        return $this->moduleRegistry()->getCapabilityData($capability, $context, $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER));
     }
 
     protected function moduleProvides(string $capability): bool
@@ -753,7 +754,7 @@ abstract class BaseController
      */
     protected function selectableOwners(array $users): array
     {
-        if ($this->hasPermission('user_view_others')) {
+        if ($this->hasPermission(Permission::PERM_USER_VIEW_OTHERS)) {
             return array_values($users);
         }
         $userId = $this->getCurrentUserId();

@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\ZoneAccessNotificationService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -106,7 +107,7 @@ class ZoneOwnershipController extends BaseController
         // Fetch groups - all for name lookup, filtered for dropdown
         $userGroupRepo = $this->createUserGroupRepository();
         $allGroups = $userGroupRepo->findAll();
-        $isAdmin = $this->hasPermission('user_is_ueberuser');
+        $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $userGroups = $isAdmin ? $allGroups : $userGroupRepo->findByUserId($userId);
 
         // Filter out groups that are already owners (from user's visible groups)
@@ -242,7 +243,7 @@ class ZoneOwnershipController extends BaseController
             $groupId = (int)$newgroup;
 
             // Validate group ID against user's allowed groups
-            $isAdmin = $this->hasPermission('user_is_ueberuser');
+            $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
             if (!$isAdmin) {
                 $userGroupRepo = $this->createUserGroupRepository();
                 $allowedGroups = $userGroupRepo->findByUserId($userId);

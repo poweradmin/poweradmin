@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 
 namespace PoweradminInstall;
 
+use Poweradmin\Domain\Model\Permission;
+
 class PermissionHelper
 {
     /**
@@ -32,44 +34,44 @@ class PermissionHelper
     public static function getPermissionMappings(): array
     {
         return [
-            [41, 'zone_master_add', 'User is allowed to add new master zones.'],
-            [42, 'zone_slave_add', 'User is allowed to add new slave zones.'],
-            [43, 'zone_content_view_own', 'User is allowed to see the content of zones he owns.'],
-            [44, 'zone_content_edit_own', 'User is allowed to edit the content of zones he owns.'],
-            [45, 'zone_meta_edit_own', 'User is allowed to edit the meta data of zones he owns.'],
-            [46, 'zone_content_view_others', 'User is allowed to see the content of zones he does not own.'],
-            [47, 'zone_content_edit_others', 'User is allowed to edit the content of zones he does not own.'],
-            [48, 'zone_meta_edit_others', 'User is allowed to edit the meta data of zones he does not own.'],
-            [49, 'search', 'User is allowed to perform searches.'],
-            [50, 'supermaster_view', 'User is allowed to view supermasters.'],
-            [51, 'supermaster_add', 'User is allowed to add new supermasters.'],
-            [52, 'supermaster_edit', 'User is allowed to edit supermasters.'],
-            [53, 'user_is_ueberuser', 'User has full access. God-like. Redeemer.'],
-            [54, 'user_view_others', 'User is allowed to see other users and their details.'],
-            [55, 'user_add_new', 'User is allowed to add new users.'],
-            [56, 'user_edit_own', 'User is allowed to edit their own details.'],
-            [57, 'user_edit_others', 'User is allowed to edit other users.'],
-            [58, 'user_passwd_edit_others', 'User is allowed to edit the password of other users.'], // not used
-            [59, 'user_edit_templ_perm', 'User is allowed to change the permission template that is assigned to a user.'],
-            [60, 'templ_perm_add', 'User is allowed to add new permission templates.'],
-            [61, 'templ_perm_edit', 'User is allowed to edit existing permission templates.'],
-            [62, 'zone_content_edit_own_as_client', 'User is allowed to edit record, but not SOA and NS.'],
-            [63, 'zone_templ_add', 'User is allowed to add new zone templates.'],
-            [64, 'zone_templ_edit', 'User is allowed to edit existing zone templates.'],
-            [65, 'api_manage_keys', 'User is allowed to create and manage API keys.'],
-            [67, 'zone_delete_own', 'User is allowed to delete zones they own.'],
-            [68, 'zone_delete_others', 'User is allowed to delete zones owned by others.'],
-            [69, 'user_enforce_mfa', 'User is required to use multi-factor authentication.'],
-            [70, 'zone_dnssec_manage_own', 'User is allowed to manage DNSSEC keys for zones he owns.'],
-            [71, 'zone_logs_view_own', 'User is allowed to view activity logs for zones he owns.'],
-            [72, 'zone_logs_view_others', 'User is allowed to view activity logs for zones he does not own.'],
-            [73, 'user_logs_view', 'User is allowed to view the user activity logs.'],
-            [74, 'group_logs_view', 'User is allowed to view the group activity logs.'],
-            [75, 'zone_content_edit_ns_subzone', 'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.'],
-            [76, 'zone_metadata_view_own', 'User is allowed to see the meta data of zones he owns.'],
-            [77, 'zone_metadata_view_others', 'User is allowed to see the meta data of zones he does not own.'],
-            [78, 'zone_ownership_view_own', 'User is allowed to see the owners of zones he owns.'],
-            [79, 'zone_ownership_view_others', 'User is allowed to see the owners of zones he does not own.'],
+            [41, Permission::PERM_ZONE_MASTER_ADD, 'User is allowed to add new master zones.'],
+            [42, Permission::PERM_ZONE_SLAVE_ADD, 'User is allowed to add new slave zones.'],
+            [43, Permission::PERM_ZONE_CONTENT_VIEW_OWN, 'User is allowed to see the content of zones he owns.'],
+            [44, Permission::PERM_ZONE_CONTENT_EDIT_OWN, 'User is allowed to edit the content of zones he owns.'],
+            [45, Permission::PERM_ZONE_META_EDIT_OWN, 'User is allowed to edit the meta data of zones he owns.'],
+            [46, Permission::PERM_ZONE_CONTENT_VIEW_OTHERS, 'User is allowed to see the content of zones he does not own.'],
+            [47, Permission::PERM_ZONE_CONTENT_EDIT_OTHERS, 'User is allowed to edit the content of zones he does not own.'],
+            [48, Permission::PERM_ZONE_META_EDIT_OTHERS, 'User is allowed to edit the meta data of zones he does not own.'],
+            [49, Permission::PERM_SEARCH, 'User is allowed to perform searches.'],
+            [50, Permission::PERM_SUPERMASTER_VIEW, 'User is allowed to view supermasters.'],
+            [51, Permission::PERM_SUPERMASTER_ADD, 'User is allowed to add new supermasters.'],
+            [52, Permission::PERM_SUPERMASTER_EDIT, 'User is allowed to edit supermasters.'],
+            [53, Permission::PERM_USER_IS_UEBERUSER, 'User has full access. God-like. Redeemer.'],
+            [54, Permission::PERM_USER_VIEW_OTHERS, 'User is allowed to see other users and their details.'],
+            [55, Permission::PERM_USER_ADD_NEW, 'User is allowed to add new users.'],
+            [56, Permission::PERM_USER_EDIT_OWN, 'User is allowed to edit their own details.'],
+            [57, Permission::PERM_USER_EDIT_OTHERS, 'User is allowed to edit other users.'],
+            [58, Permission::PERM_USER_PASSWD_EDIT_OTHERS, 'User is allowed to edit the password of other users.'], // not used
+            [59, Permission::PERM_USER_EDIT_TEMPL_PERM, 'User is allowed to change the permission template that is assigned to a user.'],
+            [60, Permission::PERM_TEMPL_PERM_ADD, 'User is allowed to add new permission templates.'],
+            [61, Permission::PERM_TEMPL_PERM_EDIT, 'User is allowed to edit existing permission templates.'],
+            [62, Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT, 'User is allowed to edit record, but not SOA and NS.'],
+            [63, Permission::PERM_ZONE_TEMPL_ADD, 'User is allowed to add new zone templates.'],
+            [64, Permission::PERM_ZONE_TEMPL_EDIT, 'User is allowed to edit existing zone templates.'],
+            [65, Permission::PERM_API_MANAGE_KEYS, 'User is allowed to create and manage API keys.'],
+            [67, Permission::PERM_ZONE_DELETE_OWN, 'User is allowed to delete zones they own.'],
+            [68, Permission::PERM_ZONE_DELETE_OTHERS, 'User is allowed to delete zones owned by others.'],
+            [69, Permission::PERM_USER_ENFORCE_MFA, 'User is required to use multi-factor authentication.'],
+            [70, Permission::PERM_ZONE_DNSSEC_MANAGE_OWN, 'User is allowed to manage DNSSEC keys for zones he owns.'],
+            [71, Permission::PERM_ZONE_LOGS_VIEW_OWN, 'User is allowed to view activity logs for zones he owns.'],
+            [72, Permission::PERM_ZONE_LOGS_VIEW_OTHERS, 'User is allowed to view activity logs for zones he does not own.'],
+            [73, Permission::PERM_USER_LOGS_VIEW, 'User is allowed to view the user activity logs.'],
+            [74, Permission::PERM_GROUP_LOGS_VIEW, 'User is allowed to view the group activity logs.'],
+            [75, Permission::PERM_EDIT_NS_SUBZONE, 'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.'],
+            [76, Permission::PERM_ZONE_METADATA_VIEW_OWN, 'User is allowed to see the meta data of zones he owns.'],
+            [77, Permission::PERM_ZONE_METADATA_VIEW_OTHERS, 'User is allowed to see the meta data of zones he does not own.'],
+            [78, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN, 'User is allowed to see the owners of zones he owns.'],
+            [79, Permission::PERM_ZONE_OWNERSHIP_VIEW_OTHERS, 'User is allowed to see the owners of zones he does not own.'],
         ];
     }
 }

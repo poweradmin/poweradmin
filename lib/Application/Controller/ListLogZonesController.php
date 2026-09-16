@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
@@ -48,7 +49,7 @@ class ListLogZonesController extends BaseController
 
         if ($logPermission === 'none') {
             // Existing deny path: logs the access denial via AuditService and halts.
-            $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
+            $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, 'You do not have the permission to see any logs');
             return;
         }
 

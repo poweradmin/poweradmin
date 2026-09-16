@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Domain\Model\Pagination;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\GroupReferenceResolver;
@@ -1105,7 +1106,7 @@ class UsersController extends PublicApiController
         // Group membership carries permissions through user_groups.perm_templ, and the
         // caller sets the new account's password. canCreateUser() is satisfied by plain
         // user_add_new, so assigning groups needs the gate every other group write uses.
-        if (!$this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('You do not have permission to assign groups', 403);
         }
 

@@ -27,6 +27,7 @@ use Poweradmin\Application\Controller\Api\V2\GroupsController;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Model\UserGroupMember;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -86,7 +87,7 @@ class GroupsControllerRosterTest extends TestCase
 
         $apiPermissionService = $this->createMock(ApiPermissionService::class);
         $apiPermissionService->method('userHasPermission')
-            ->with(self::CALLER_ID, 'user_is_ueberuser')
+            ->with(self::CALLER_ID, Permission::PERM_USER_IS_UEBERUSER)
             ->willReturn($isAdmin);
 
         $this->setProperty($controller, 'groupService', $groupService);

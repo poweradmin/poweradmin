@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 
 /**
  * Renders the groups list page at /groups.
@@ -83,7 +84,7 @@ class ListGroupsController extends BaseController
             'is_admin' => $isAdmin,
             'can_add_group' => $isAdmin, // Only admins can create groups
             'perm_is_godlike' => $isAdmin,
-            'perm_group_logs_view' => $this->hasPermission('group_logs_view'),
+            'perm_group_logs_view' => $this->hasPermission(Permission::PERM_GROUP_LOGS_VIEW),
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
         ]);
     }

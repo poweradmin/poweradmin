@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Web;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Web\NavigationVisibility;
 use TestHelpers\FakeConfiguration;
 
@@ -51,18 +52,18 @@ class NavigationVisibilityTest extends TestCase
 
     public function testZoneMenuFollowsAnyZoneGrant(): void
     {
-        $this->assertTrue($this->build(['zone_slave_add'])['zones']);
-        $this->assertFalse($this->build(['zone_slave_add'])['zone_list']);
-        $this->assertTrue($this->build(['zone_content_view_own'])['zone_list']);
+        $this->assertTrue($this->build([Permission::PERM_ZONE_SLAVE_ADD])['zones']);
+        $this->assertFalse($this->build([Permission::PERM_ZONE_SLAVE_ADD])['zone_list']);
+        $this->assertTrue($this->build([Permission::PERM_ZONE_CONTENT_VIEW_OWN])['zone_list']);
         // Log grants alone open the menu only when database logging is on.
-        $this->assertFalse($this->build(['zone_logs_view_own'])['zones']);
-        $this->assertTrue($this->build(['zone_logs_view_own'], ['logging' => ['database_enabled' => true]])['zones']);
+        $this->assertFalse($this->build([Permission::PERM_ZONE_LOGS_VIEW_OWN])['zones']);
+        $this->assertTrue($this->build([Permission::PERM_ZONE_LOGS_VIEW_OWN], ['logging' => ['database_enabled' => true]])['zones']);
     }
 
     public function testLogEntriesNeedDatabaseLogging(): void
     {
-        $off = $this->build(['user_is_ueberuser']);
-        $on = $this->build(['user_is_ueberuser'], ['logging' => ['database_enabled' => true]]);
+        $off = $this->build([Permission::PERM_USER_IS_UEBERUSER]);
+        $on = $this->build([Permission::PERM_USER_IS_UEBERUSER], ['logging' => ['database_enabled' => true]]);
 
         $this->assertFalse($off['zone_logs']);
         $this->assertFalse($off['record_changes']);
@@ -76,7 +77,7 @@ class NavigationVisibilityTest extends TestCase
 
     public function testRecordChangesAreForTheUeberuserOnly(): void
     {
-        $nav = $this->build(['zone_logs_view_others'], ['logging' => ['database_enabled' => true]]);
+        $nav = $this->build([Permission::PERM_ZONE_LOGS_VIEW_OTHERS], ['logging' => ['database_enabled' => true]]);
 
         $this->assertTrue($nav['zone_logs']);
         $this->assertFalse($nav['record_changes']);
@@ -84,15 +85,15 @@ class NavigationVisibilityTest extends TestCase
 
     public function testGroupsMenuHonoursTheDisplaySetting(): void
     {
-        $this->assertTrue($this->build(['user_is_ueberuser'])['groups']);
-        $this->assertFalse($this->build(['user_is_ueberuser'], ['permissions' => ['show_group_access_templates' => false]])['groups']);
+        $this->assertTrue($this->build([Permission::PERM_USER_IS_UEBERUSER])['groups']);
+        $this->assertFalse($this->build([Permission::PERM_USER_IS_UEBERUSER], ['permissions' => ['show_group_access_templates' => false]])['groups']);
     }
 
     public function testToolsMenuOpensForApiKeysConsistencyOrModules(): void
     {
-        $this->assertFalse($this->build(['api_manage_keys'])['tools']);
-        $this->assertTrue($this->build(['api_manage_keys'], ['api' => ['enabled' => true]])['tools']);
-        $this->assertTrue($this->build(['user_is_ueberuser'], ['interface' => ['enable_consistency_checks' => true]])['database_consistency']);
+        $this->assertFalse($this->build([Permission::PERM_API_MANAGE_KEYS])['tools']);
+        $this->assertTrue($this->build([Permission::PERM_API_MANAGE_KEYS], ['api' => ['enabled' => true]])['tools']);
+        $this->assertTrue($this->build([Permission::PERM_USER_IS_UEBERUSER], ['interface' => ['enable_consistency_checks' => true]])['database_consistency']);
         $this->assertTrue($this->build([], [], true)['tools']);
     }
 
@@ -106,8 +107,8 @@ class NavigationVisibilityTest extends TestCase
     {
         $reverse = ['interface' => ['add_reverse_record' => true]];
 
-        $this->assertFalse($this->build(['zone_content_view_others'], $reverse)['batch_ptr']);
-        $this->assertTrue($this->build(['zone_content_edit_own'], $reverse)['batch_ptr']);
-        $this->assertFalse($this->build(['zone_content_edit_own'])['batch_ptr']);
+        $this->assertFalse($this->build([Permission::PERM_ZONE_CONTENT_VIEW_OTHERS], $reverse)['batch_ptr']);
+        $this->assertTrue($this->build([Permission::PERM_ZONE_CONTENT_EDIT_OWN], $reverse)['batch_ptr']);
+        $this->assertFalse($this->build([Permission::PERM_ZONE_CONTENT_EDIT_OWN])['batch_ptr']);
     }
 }

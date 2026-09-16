@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 
 /**
  * Lists network -> view mappings (PowerDNS 5.0+) and exposes inline
@@ -40,7 +41,7 @@ class ListNetworksController extends BaseController
 
     public function run(): void
     {
-        if (!$this->hasPermission('user_is_ueberuser')) {
+        if (!$this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
             $this->showError(_('You do not have permission to manage network views.'));
             return;
         }

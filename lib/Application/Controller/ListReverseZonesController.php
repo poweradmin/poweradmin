@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
@@ -56,8 +57,8 @@ class ListReverseZonesController extends BaseController
 
     public function run(): void
     {
-        $perm_view_zone_own = $this->hasPermission('zone_content_view_own');
-        $perm_view_zone_others = $this->hasPermission('zone_content_view_others');
+        $perm_view_zone_own = $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OWN);
+        $perm_view_zone_others = $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS);
 
         $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
@@ -249,9 +250,9 @@ class ListReverseZonesController extends BaseController
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
             'can_bulk_delete_zones' => $can_bulk_delete_zones,
-            'perm_zone_master_add' => $this->hasPermission('zone_master_add'),
-            'perm_zone_slave_add' => $this->hasPermission('zone_slave_add'),
-            'perm_is_godlike' => $this->hasPermission('user_is_ueberuser'),
+            'perm_zone_master_add' => $this->hasPermission(Permission::PERM_ZONE_MASTER_ADD),
+            'perm_zone_slave_add' => $this->hasPermission(Permission::PERM_ZONE_SLAVE_ADD),
+            'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER),
             'reverse_zone_type' => $reverse_zone_type,
             'count_ipv4_zones' => $count_ipv4_zones,
             'count_ipv6_zones' => $count_ipv6_zones,

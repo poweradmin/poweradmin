@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\ZoneMetadataFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\PdnsCapabilities;
@@ -136,7 +137,7 @@ class EditZoneMetadataController extends BaseController
         $this->setCurrentPage('zone_metadata');
         $this->setPageTitle($canEdit ? _('Edit Zone Metadata') : _('Zone Metadata'));
 
-        $definitions = $this->getMetadataDefinitionsForTemplate($this->hasPermission('user_is_ueberuser'), $this->serverCapabilities());
+        $definitions = $this->getMetadataDefinitionsForTemplate($this->hasPermission(Permission::PERM_USER_IS_UEBERUSER), $this->serverCapabilities());
 
         $this->render('edit_zone_metadata.html', [
             'zone_id' => $zoneId,

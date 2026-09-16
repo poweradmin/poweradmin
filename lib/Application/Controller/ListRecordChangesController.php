@@ -26,6 +26,7 @@ use DateTimeImmutable;
 use DateInterval;
 use DateTimeZone;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
@@ -53,7 +54,7 @@ class ListRecordChangesController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see record change logs.');
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, 'You do not have the permission to see record change logs.');
 
         $this->setCurrentPage('list_record_changes');
         $this->setPageTitle(_('Record Change Log'));

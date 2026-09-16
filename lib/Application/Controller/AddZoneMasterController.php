@@ -26,6 +26,7 @@ use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
@@ -55,7 +56,7 @@ class AddZoneMasterController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('zone_master_add', _("You do not have the permission to add a master zone."));
+        $this->checkPermission(Permission::PERM_ZONE_MASTER_ADD, _("You do not have the permission to add a master zone."));
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('add_zone_master');
@@ -86,7 +87,7 @@ class AddZoneMasterController extends BaseController
         // A consumer replicates from a remote primary, which is what zone_slave_add governs.
         return ZoneType::getCreatableTypes(
             $this->supportsCatalogKinds(),
-            $this->hasPermission('zone_slave_add')
+            $this->hasPermission(Permission::PERM_ZONE_SLAVE_ADD)
         );
     }
 
@@ -266,7 +267,7 @@ class AddZoneMasterController extends BaseController
 
     private function showForm(): void
     {
-        $perm_view_others = $this->hasPermission('user_view_others');
+        $perm_view_others = $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS);
         $zone_templates = $this->createZoneTemplateModel();
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
         $users = $this->createUserRepository()->getUsersWithZoneCounts();
@@ -330,7 +331,7 @@ class AddZoneMasterController extends BaseController
 
         // Fetch groups for the dropdown - admins see all, others see only their own
         $userGroupRepo = $this->createUserGroupRepository();
-        $isAdmin = $this->hasPermission('user_is_ueberuser');
+        $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($userId);
 
         // Fetch member counts for all groups in a single query

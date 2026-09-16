@@ -29,6 +29,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use TestHelpers\BuildsPermissionService;
 
@@ -63,18 +64,18 @@ class ApiPermissionServiceTest extends TestCase
     {
         $grants = [
             self::OTHERS => [
-                'zone_content_view_others', 'zone_content_edit_others', 'zone_delete_others',
-                'zone_meta_edit_others', 'zone_metadata_view_others', 'zone_ownership_view_others',
-                'user_view_others', 'user_edit_others', 'user_passwd_edit_others', 'user_add_new',
-                'user_edit_templ_perm', 'zone_templ_add', 'zone_master_add', 'zone_slave_add',
+                Permission::PERM_ZONE_CONTENT_VIEW_OTHERS, Permission::PERM_ZONE_CONTENT_EDIT_OTHERS, Permission::PERM_ZONE_DELETE_OTHERS,
+                Permission::PERM_ZONE_META_EDIT_OTHERS, Permission::PERM_ZONE_METADATA_VIEW_OTHERS, Permission::PERM_ZONE_OWNERSHIP_VIEW_OTHERS,
+                Permission::PERM_USER_VIEW_OTHERS, Permission::PERM_USER_EDIT_OTHERS, Permission::PERM_USER_PASSWD_EDIT_OTHERS, Permission::PERM_USER_ADD_NEW,
+                Permission::PERM_USER_EDIT_TEMPL_PERM, Permission::PERM_ZONE_TEMPL_ADD, Permission::PERM_ZONE_MASTER_ADD, Permission::PERM_ZONE_SLAVE_ADD,
             ],
             self::OWN => [
-                'zone_content_view_own', 'zone_content_edit_own', 'zone_delete_own', 'zone_meta_edit_own',
-                'zone_metadata_view_own', 'zone_ownership_view_own', 'user_edit_own', 'zone_dnssec_manage_own',
-                'zone_templ_edit',
+                Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN, Permission::PERM_ZONE_DELETE_OWN, Permission::PERM_ZONE_META_EDIT_OWN,
+                Permission::PERM_ZONE_METADATA_VIEW_OWN, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN, Permission::PERM_USER_EDIT_OWN, Permission::PERM_ZONE_DNSSEC_MANAGE_OWN,
+                Permission::PERM_ZONE_TEMPL_EDIT,
             ],
-            self::CLIENT => ['zone_content_view_own', 'zone_content_edit_own_as_client'],
-            self::SUBZONE => ['zone_content_edit_own_as_client', 'zone_content_edit_ns_subzone'],
+            self::CLIENT => [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT],
+            self::SUBZONE => [Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT, Permission::PERM_EDIT_NS_SUBZONE],
             self::NOBODY => [],
         ];
         foreach ($extraGrants as $userId => $names) {
@@ -99,10 +100,10 @@ class ApiPermissionServiceTest extends TestCase
     {
         $service = $this->service();
 
-        $this->assertTrue($service->userHasPermission(self::OWN, 'zone_content_edit_own'));
-        $this->assertFalse($service->userHasPermission(self::OWN, 'zone_content_edit_others'));
+        $this->assertTrue($service->userHasPermission(self::OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN));
+        $this->assertFalse($service->userHasPermission(self::OWN, Permission::PERM_ZONE_CONTENT_EDIT_OTHERS));
         $this->assertTrue($service->userHasPermission(self::ADMIN, 'anything_at_all'));
-        $this->assertFalse($service->userHasPermission(self::NOBODY, 'zone_content_view_own'));
+        $this->assertFalse($service->userHasPermission(self::NOBODY, Permission::PERM_ZONE_CONTENT_VIEW_OWN));
     }
 
     #[Test]
@@ -154,7 +155,7 @@ class ApiPermissionServiceTest extends TestCase
     #[Test]
     public function testMetadataViewersAlsoSeeViaTheirOwnViewGrants(): void
     {
-        $service = $this->service([self::NOBODY => ['zone_metadata_view_others', 'zone_ownership_view_others']]);
+        $service = $this->service([self::NOBODY => [Permission::PERM_ZONE_METADATA_VIEW_OTHERS, Permission::PERM_ZONE_OWNERSHIP_VIEW_OTHERS]]);
 
         $this->assertTrue($service->canViewZoneMetadata(self::NOBODY, self::OTHER_ZONE));
         $this->assertTrue($service->canViewZoneOwnership(self::NOBODY, self::OTHER_ZONE));
@@ -196,7 +197,7 @@ class ApiPermissionServiceTest extends TestCase
     #[Test]
     public function testCanCreateZoneFollowsTheKindAndRefusesCatalogKindsForNonAdmins(): void
     {
-        $service = $this->service([self::OWN => ['zone_slave_add']]);
+        $service = $this->service([self::OWN => [Permission::PERM_ZONE_SLAVE_ADD]]);
 
         $this->assertTrue($service->canCreateZone(self::ADMIN, 'PRODUCER'));
         $this->assertTrue($service->canCreateZone(self::OTHERS, 'MASTER'));
@@ -267,7 +268,7 @@ class ApiPermissionServiceTest extends TestCase
     public function testTemplateAssignmentRules(): void
     {
         $service = $this->service(
-            [self::OWN => ['user_edit_templ_perm']],
+            [self::OWN => [Permission::PERM_USER_EDIT_TEMPL_PERM]],
             superuserTemplates: [9],
             templateByUser: [self::NOBODY => 5]
         );

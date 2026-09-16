@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PdnsVersionService;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -271,33 +272,33 @@ class PageRenderer
         $session_key = $this->config->get('security', 'session_key');
 
         if ($this->userContextService->isAuthenticated()) {
-            $perm_is_godlike = $this->hasPermission('user_is_ueberuser');
+            $perm_is_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
             $moduleNavItems = $this->moduleNavItems ??= $this->getModuleNavItems();
 
             $vars = array_merge($vars, [
                 'user_name' => $this->userContextService->getDisplayName(),
                 'user_username' => $this->userContextService->getLoggedInUsername(),
-                'perm_search' => $this->hasPermission('search'),
-                'perm_view_zone_own' => $this->hasPermission('zone_content_view_own'),
-                'perm_view_zone_other' => $this->hasPermission('zone_content_view_others'),
-                'perm_supermaster_view' => $this->hasPermission('supermaster_view'),
-                'perm_zone_master_add' => $this->hasPermission('zone_master_add'),
-                'perm_zone_slave_add' => $this->hasPermission('zone_slave_add'),
-                'perm_zone_templ_add' => $this->hasPermission('zone_templ_add'),
-                'perm_zone_templ_edit' => $this->hasPermission('zone_templ_edit'),
-                'perm_supermaster_add' => $this->hasPermission('supermaster_add'),
+                'perm_search' => $this->hasPermission(Permission::PERM_SEARCH),
+                'perm_view_zone_own' => $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OWN),
+                'perm_view_zone_other' => $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS),
+                'perm_supermaster_view' => $this->hasPermission(Permission::PERM_SUPERMASTER_VIEW),
+                'perm_zone_master_add' => $this->hasPermission(Permission::PERM_ZONE_MASTER_ADD),
+                'perm_zone_slave_add' => $this->hasPermission(Permission::PERM_ZONE_SLAVE_ADD),
+                'perm_zone_templ_add' => $this->hasPermission(Permission::PERM_ZONE_TEMPL_ADD),
+                'perm_zone_templ_edit' => $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT),
+                'perm_supermaster_add' => $this->hasPermission(Permission::PERM_SUPERMASTER_ADD),
                 'perm_is_godlike' => $perm_is_godlike,
-                'perm_templ_perm_edit' => $this->hasPermission('templ_perm_edit'),
-                'perm_templ_perm_add' => $this->hasPermission('templ_perm_add'),
-                'perm_add_new' => $this->hasPermission('user_add_new'),
-                'perm_view_others' => $this->hasPermission('user_view_others'),
-                'perm_edit_own' => $this->hasPermission('user_edit_own'),
-                'perm_edit_others' => $this->hasPermission('user_edit_others'),
-                'perm_api_manage_keys' => $this->hasPermission('api_manage_keys'),
-                'perm_view_zone_logs_own' => $this->hasPermission('zone_logs_view_own'),
-                'perm_view_zone_logs_others' => $this->hasPermission('zone_logs_view_others'),
-                'perm_user_logs_view' => $this->hasPermission('user_logs_view'),
-                'perm_group_logs_view' => $this->hasPermission('group_logs_view'),
+                'perm_templ_perm_edit' => $this->hasPermission(Permission::PERM_TEMPL_PERM_EDIT),
+                'perm_templ_perm_add' => $this->hasPermission(Permission::PERM_TEMPL_PERM_ADD),
+                'perm_add_new' => $this->hasPermission(Permission::PERM_USER_ADD_NEW),
+                'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
+                'perm_edit_own' => $this->hasPermission(Permission::PERM_USER_EDIT_OWN),
+                'perm_edit_others' => $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS),
+                'perm_api_manage_keys' => $this->hasPermission(Permission::PERM_API_MANAGE_KEYS),
+                'perm_view_zone_logs_own' => $this->hasPermission(Permission::PERM_ZONE_LOGS_VIEW_OWN),
+                'perm_view_zone_logs_others' => $this->hasPermission(Permission::PERM_ZONE_LOGS_VIEW_OTHERS),
+                'perm_user_logs_view' => $this->hasPermission(Permission::PERM_USER_LOGS_VIEW),
+                'perm_group_logs_view' => $this->hasPermission(Permission::PERM_GROUP_LOGS_VIEW),
                 'session_key_error' => $perm_is_godlike ? (self::sessionKeyWarning($session_key) ?? false) : false,
                 'auth_used' => $this->userContextService->getAuthMethod() !== "ldap",  // Legacy variable for backward compatibility
                 'auth_method' => $this->userContextService->getAuthMethod() ?? 'internal',
@@ -445,7 +446,7 @@ class PageRenderer
         $registry = new ModuleRegistry($this->config);
         $registry->loadModules();
 
-        $isAdmin = $this->hasPermission('user_is_ueberuser');
+        $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $items = $registry->getNavItems($isAdmin);
 
         return array_values(array_filter($items, function (array $item): bool {

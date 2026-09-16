@@ -28,6 +28,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ApiKey;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Domain\Service\ApiKeyWriteResult;
@@ -405,9 +406,9 @@ class ApiKeyServiceTest extends TestCase
             $stmt = $this->createMock(\PDOStatement::class);
             $stmt->method('execute')->willReturn(true);
 
-            if (str_contains($query, "= 'user_is_ueberuser'")) {
-                $isAdmin = in_array('user_is_ueberuser', $permissions, true);
-                $stmt->method('fetch')->willReturn($isAdmin ? ['permission' => 'user_is_ueberuser'] : false);
+            if (str_contains($query, "= '" . Permission::PERM_USER_IS_UEBERUSER . "'")) {
+                $isAdmin = in_array(Permission::PERM_USER_IS_UEBERUSER, $permissions, true);
+                $stmt->method('fetch')->willReturn($isAdmin ? ['permission' => Permission::PERM_USER_IS_UEBERUSER] : false);
             } elseif (str_contains($query, 'SELECT username, fullname FROM users')) {
                 $stmt->method('fetch')->willReturn($creatorRow);
             } else {
@@ -480,7 +481,7 @@ class ApiKeyServiceTest extends TestCase
         ]);
 
         // User holds neither user_is_ueberuser nor api_manage_keys
-        $this->grantPermissions(['zone_content_view_own']);
+        $this->grantPermissions([Permission::PERM_ZONE_CONTENT_VIEW_OWN]);
 
         $this->apiKeyRepository->expects($this->never())->method('save');
 
@@ -500,7 +501,7 @@ class ApiKeyServiceTest extends TestCase
         ]);
 
         // Admins bypass both the permission gate and the per-user key limit
-        $this->grantPermissions(['user_is_ueberuser']);
+        $this->grantPermissions([Permission::PERM_USER_IS_UEBERUSER]);
 
         $saved = $this->createMock(ApiKey::class);
         $saved->method('getId')->willReturn(99);

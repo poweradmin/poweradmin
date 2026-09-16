@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 
 /**
@@ -37,7 +38,7 @@ use Poweradmin\Domain\Repository\UserRepositoryInterface;
  */
 class PermissionTemplateContentGuard
 {
-    public const UBERUSER_PERMISSION = 'user_is_ueberuser';
+    public const UBERUSER_PERMISSION = Permission::PERM_USER_IS_UEBERUSER;
 
     public const CONTENT_SUPERUSER_DENIED = 'Granting user_is_ueberuser in a permission template requires user_is_ueberuser';
     public const EDIT_SUPERUSER_DENIED = 'Editing a permission template that grants user_is_ueberuser requires user_is_ueberuser';

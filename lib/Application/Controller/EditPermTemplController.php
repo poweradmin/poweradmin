@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\BaseController;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -50,7 +51,7 @@ class EditPermTemplController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('templ_perm_edit', _("You do not have the permission to edit permission templates."));
+        $this->checkPermission(Permission::PERM_TEMPL_PERM_EDIT, _("You do not have the permission to edit permission templates."));
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('edit_perm_templ');

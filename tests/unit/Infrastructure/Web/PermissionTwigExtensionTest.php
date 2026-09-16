@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Web;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Web\PermissionTwigExtension;
 use Twig\TwigFunction;
 
@@ -30,10 +31,10 @@ class PermissionTwigExtensionTest extends TestCase
 {
     public function testCanDelegatesToChecker(): void
     {
-        $ext = new PermissionTwigExtension(fn(string $permission): bool => $permission === 'search');
+        $ext = new PermissionTwigExtension(fn(string $permission): bool => $permission === Permission::PERM_SEARCH);
 
-        $this->assertTrue($ext->can('search'));
-        $this->assertFalse($ext->can('user_add_new'));
+        $this->assertTrue($ext->can(Permission::PERM_SEARCH));
+        $this->assertFalse($ext->can(Permission::PERM_USER_ADD_NEW));
     }
 
     public function testCheckerReceivesPermissionName(): void
@@ -44,9 +45,9 @@ class PermissionTwigExtensionTest extends TestCase
             return true;
         });
 
-        $ext->can('zone_master_add');
+        $ext->can(Permission::PERM_ZONE_MASTER_ADD);
 
-        $this->assertSame(['zone_master_add'], $received);
+        $this->assertSame([Permission::PERM_ZONE_MASTER_ADD], $received);
     }
 
     public function testCheckerNotInvokedOnConstructionOrGetFunctions(): void

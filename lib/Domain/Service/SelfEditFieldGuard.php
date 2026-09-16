@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Model\Permission;
+
 /**
  * Gates auth-critical fields on user self-edit API paths (#1327).
  *
@@ -55,7 +57,7 @@ class SelfEditFieldGuard
         }
 
         if (
-            $permissionService->hasPermission($callerId, 'user_edit_others')
+            $permissionService->hasPermission($callerId, Permission::PERM_USER_EDIT_OTHERS)
         ) {
             return null;
         }

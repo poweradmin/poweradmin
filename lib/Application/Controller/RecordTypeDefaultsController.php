@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 
@@ -43,7 +44,7 @@ class RecordTypeDefaultsController extends BaseController
             return;
         }
 
-        $this->checkPermission('user_is_ueberuser', _('You do not have the permission to view this page.'));
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have the permission to view this page.'));
 
         $this->setCurrentPage(self::PAGE_KEY);
         $this->setPageTitle(_('Default TTLs by record type'));

@@ -205,7 +205,7 @@ class ZoneTemplate
                 LEFT JOIN zones z ON zt.id = z.zone_templ_id";
         $params = [];
 
-        if (!$this->currentUserHasPermission('user_is_ueberuser')) {
+        if (!$this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
             $query .= " WHERE zt.owner = :userid OR zt.owner = 0";
             $params[':userid'] = $userid;
         }
@@ -359,7 +359,7 @@ class ZoneTemplate
     {
         $zone_name_exists = $this->zoneTemplNameExists($details['templ_name']);
 
-        if (!($this->currentUserHasPermission('zone_templ_add'))) {
+        if (!($this->currentUserHasPermission(Permission::PERM_ZONE_TEMPL_ADD))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
@@ -462,7 +462,7 @@ class ZoneTemplate
      */
     public function deleteZoneTempl(int $zone_templ_id): bool
     {
-        if (!($this->currentUserHasPermission('zone_templ_edit'))) {
+        if (!($this->currentUserHasPermission(Permission::PERM_ZONE_TEMPL_EDIT))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
@@ -623,7 +623,7 @@ class ZoneTemplate
      */
     public function addZoneTemplRecord(int $zone_templ_id, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
-        if (!($this->currentUserHasPermission('zone_templ_edit'))) {
+        if (!($this->currentUserHasPermission(Permission::PERM_ZONE_TEMPL_EDIT))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a record to this zone template."));
             return false;
         }
@@ -703,7 +703,7 @@ class ZoneTemplate
      */
     private function resolveTemplateOwner(bool $requestedGlobal, int $userid): int
     {
-        if ($requestedGlobal && $this->currentUserHasPermission('user_is_ueberuser')) {
+        if ($requestedGlobal && $this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
             return 0;
         }
 
@@ -723,7 +723,7 @@ class ZoneTemplate
      */
     public function editZoneTemplRecord(array $record, int $zone_templ_id): bool
     {
-        if (!($this->currentUserHasPermission('zone_templ_edit'))) {
+        if (!($this->currentUserHasPermission(Permission::PERM_ZONE_TEMPL_EDIT))) {
             $this->messageService->addSystemError(_("You do not have permission to edit this record."));
             return false;
         }
@@ -808,7 +808,7 @@ class ZoneTemplate
      */
     public function deleteZoneTemplRecord(int $rid, int $zone_templ_id): bool
     {
-        if (!($this->currentUserHasPermission('zone_templ_edit'))) {
+        if (!($this->currentUserHasPermission(Permission::PERM_ZONE_TEMPL_EDIT))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
             return false;
         }
@@ -885,7 +885,7 @@ class ZoneTemplate
     {
         $userId = (int)((new UserContextService())->getLoggedInUserId() ?? 0);
 
-        return $this->canUseTemplate($zone_templ_id, $userId, $this->currentUserHasPermission('user_is_ueberuser'));
+        return $this->canUseTemplate($zone_templ_id, $userId, $this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER));
     }
 
     public function isUserOwnerOfTemplate(int $zone_templ_id, int $userid): bool
@@ -916,7 +916,7 @@ class ZoneTemplate
      */
     public function addZoneTemplSaveAs(string $template_name, string $description, int $userid, array $records, array $options, string $domain = ''): bool
     {
-        if (!($this->currentUserHasPermission('zone_templ_add'))) {
+        if (!($this->currentUserHasPermission(Permission::PERM_ZONE_TEMPL_ADD))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } else {
@@ -1239,7 +1239,7 @@ class ZoneTemplate
     public function editZoneTempl(array $details, int $zone_templ_id, int $user_id): bool
     {
         $zone_name_exists = $this->zoneTemplNameAndIdExists($details['templ_name'], $zone_templ_id);
-        if (!($this->currentUserHasPermission('zone_templ_edit'))) {
+        if (!($this->currentUserHasPermission(Permission::PERM_ZONE_TEMPL_EDIT))) {
             $this->messageService->addSystemError(_("You do not have the permission to edit a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {

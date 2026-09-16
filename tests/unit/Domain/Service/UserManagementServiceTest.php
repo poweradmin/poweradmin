@@ -28,6 +28,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Pagination;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
@@ -98,7 +99,7 @@ class UserManagementServiceTest extends TestCase
             'created_at' => '2024-01-01 00:00:00',
             'updated_at' => '2024-01-02 00:00:00'
         ];
-        $permissions = ['zone_content_view_own', 'zone_content_edit_own'];
+        $permissions = [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN];
 
         $this->userRepository->method('getUserById')
             ->with($userId)

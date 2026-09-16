@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -140,7 +141,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
     {
         // zone_content_edit_own_as_client is what makes the pre-fix bug exploitable:
         // with it the attacker passes the ownership check on its own zid and writes.
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (60, 'zone_content_edit_own_as_client')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (60, '" . Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT . "')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (" . self::ATTACKER_PERM_TEMPL_ID . ", 'Client')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . self::ATTACKER_PERM_TEMPL_ID . ", 60)");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::ATTACKER_USER_ID . ", 'attacker', " . self::ATTACKER_PERM_TEMPL_ID . ")");

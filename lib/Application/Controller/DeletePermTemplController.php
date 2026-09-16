@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 
 /**
@@ -42,7 +43,7 @@ class DeletePermTemplController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission('user_edit_templ_perm', _("You do not have the permission to delete permission templates."));
+        $this->checkPermission(Permission::PERM_USER_EDIT_TEMPL_PERM, _("You do not have the permission to delete permission templates."));
 
         if ($this->httpRequest->getPostParam('confirm') !== null) {
             $this->handleFormSubmission();
