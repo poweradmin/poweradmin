@@ -523,6 +523,36 @@
         </a>
     </div>
     {% endif %}
+    {% if nav.zone_logs %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/zones/logs" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="zone-logs-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-list-ul display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Zone logs{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if nav.user_logs %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/users/logs" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="user-logs-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-journal-text display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}User logs{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    {% if nav.group_logs %}
+    <div class="col card-item">
+        <a href="{{ base_url_prefix }}/groups/logs" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="group-logs-link">
+            <div class="card-body text-center d-flex flex-column align-items-center justify-content-center py-3">
+                <i class="bi bi-journal-bookmark display-5 mb-2"></i>
+                <span class="text-truncate">{% trans %}Group logs{% endtrans %}</span>
+            </div>
+        </a>
+    </div>
+    {% endif %}
     {% if permissions['api_manage_keys'] and api_enabled %}
     <div class="col card-item">
         <a href="{{ base_url_prefix }}/settings/api-keys" class="card h-100 shadow-sm text-decoration-none text-body" data-testid="api-keys-link">
