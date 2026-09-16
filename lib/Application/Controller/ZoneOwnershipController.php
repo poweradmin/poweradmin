@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -171,7 +171,17 @@ class ZoneOwnershipController extends BaseController
 
         // Add owner
         if (isset($_POST["newowner"]) && is_numeric($_POST["newowner"]) && $meta_edit) {
-            $ownerAdded = $this->zoneRepository->addOwnerToZone($zone_id, (int)$_POST["newowner"]);
+            $newOwnerId = (int)$_POST["newowner"];
+            // zones.owner has no foreign key, so an unknown id would leave a zone nobody owns
+            if (!UserManager::isValidUser($this->db, $newOwnerId)) {
+                $this->setMessage('zone_ownership', 'error', _('User does not exist.'));
+                return;
+            }
+            if ($this->zoneRepository->isUserZoneOwner($zone_id, $newOwnerId)) {
+                $this->setMessage('zone_ownership', 'error', _('The selected user already owns the zone.'));
+                return;
+            }
+            $ownerAdded = $this->zoneRepository->addOwnerToZone($zone_id, $newOwnerId);
 
             if ($ownerAdded) {
                 $auditService->logZoneOwnerAdd($zone_id, $zone_name, (int)$_POST["newowner"]);
