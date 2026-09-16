@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -181,6 +181,12 @@ class AddZoneMasterController extends BaseController
 
         $owner = $ownershipMode->isUserOwnerAllowed() && !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
         $zone_template = $_POST['zone_template'] ?? "none";
+        $zoneTemplateModel = new ZoneTemplate($this->db, $this->getConfig());
+        if (!$zoneTemplateModel->canCurrentUserUseTemplate($zone_template)) {
+            $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
+            $this->showForm();
+            return;
+        }
         $selected_groups = $ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups']) ?
             array_map('intval', $_POST['groups']) : [];
 

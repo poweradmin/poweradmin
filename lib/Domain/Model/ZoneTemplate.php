@@ -44,7 +44,7 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class ZoneTemplate
@@ -1443,5 +1443,49 @@ class ZoneTemplate
         }
 
         return $val;
+    }
+
+    /**
+     * Whether a posted template id may be applied to a zone.
+     *
+     * Follows the listing scope: no template, a global template (owner 0), the
+     * user's own template, or any template for an administrator.
+     *
+     * @param mixed $zone_templ_id Posted template id ("none", "", 0 or an id)
+     */
+    public function canUseTemplate(mixed $zone_templ_id, int $userid, bool $isAdmin): bool
+    {
+        if ($zone_templ_id === null || $zone_templ_id === '' || $zone_templ_id === 'none') {
+            return true;
+        }
+        if (!is_numeric($zone_templ_id)) {
+            return false;
+        }
+        $zone_templ_id = (int)$zone_templ_id;
+        if ($zone_templ_id === 0) {
+            return true;
+        }
+        if ($isAdmin) {
+            return true;
+        }
+
+        $stmt = $this->db->prepare("SELECT owner FROM zone_templ WHERE id = :id");
+        $stmt->execute([':id' => $zone_templ_id]);
+        $owner = $stmt->fetchColumn();
+        if ($owner === false || $owner === null) {
+            return false;
+        }
+
+        return (int)$owner === 0 || (int)$owner === $userid;
+    }
+
+    /**
+     * canUseTemplate() for the logged-in user.
+     */
+    public function canCurrentUserUseTemplate(mixed $zone_templ_id): bool
+    {
+        $userId = (int)($_SESSION['userid'] ?? 0);
+
+        return $this->canUseTemplate($zone_templ_id, $userId, UserManager::verifyPermission($this->db, 'user_is_ueberuser'));
     }
 }
