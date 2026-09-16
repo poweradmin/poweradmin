@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -281,6 +281,14 @@ class GroupZonesController extends PublicApiController
 
             if (!$this->zoneRepository->zoneExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
+            }
+
+            // Refuse to leave the zone with no group and no user owner
+            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->config, DnsBackendProviderFactory::isApiBackend($this->config));
+            $existingGroups = $zoneGroupRepo->findByDomainId($zoneId);
+            $hasThisGroup = in_array($groupId, array_map(fn($zg) => $zg->getGroupId(), $existingGroups), true);
+            if ($hasThisGroup && count($existingGroups) <= 1 && count($this->zoneRepository->getZoneOwners($zoneId)) === 0) {
+                return $this->returnApiError('Cannot remove the last owner: this would leave the zone with no ownership. Add another group or a user owner first.', 400);
             }
 
             $success = $this->zoneGroupService->removeGroupFromZone($zoneId, $groupId);

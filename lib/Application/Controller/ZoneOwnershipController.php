@@ -197,7 +197,17 @@ class ZoneOwnershipController extends BaseController
 
         // Delete owner
         if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"]) && $meta_edit) {
-            $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, (int)$_POST["delete_owner"]);
+            // Refuse to leave the zone with no user and no group owner
+            $deleteUserId = (int)$_POST["delete_owner"];
+            // Duplicate ownership rows for one user count once, or the delete of both rows would slip past
+            $currentOwnerIds = array_unique(array_map(fn($o) => (int)($o['id'] ?? 0), $this->zoneRepository->getZoneOwners($zone_id)));
+            $isCurrentOwner = in_array($deleteUserId, $currentOwnerIds, true);
+            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
+            if ($isCurrentOwner && count($currentOwnerIds) <= 1 && count($zoneGroupRepo->findByDomainId($zone_id)) === 0) {
+                $this->setMessage('zone_ownership', 'error', _('Cannot remove the last owner: this would leave the zone with no ownership.') . ' ' . _('Add another owner or a group first.'));
+                return;
+            }
+            $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, $deleteUserId);
 
             if ($ownerRemoved) {
                 $auditService->logZoneOwnerRemove($zone_id, $zone_name, (int)$_POST["delete_owner"]);
@@ -236,7 +246,15 @@ class ZoneOwnershipController extends BaseController
         // Delete group
         if (isset($_POST["delete_group"]) && is_numeric($_POST["delete_group"]) && $meta_edit) {
             $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig(), DnsBackendProviderFactory::isApiBackend($this->getConfig()));
-            $zoneGroupRepo->remove($zone_id, (int)$_POST["delete_group"]);
+            // Refuse to leave the zone with no group and no user owner
+            $deleteGroupId = (int)$_POST["delete_group"];
+            $currentGroups = $zoneGroupRepo->findByDomainId($zone_id);
+            $isCurrentGroup = in_array($deleteGroupId, array_map(fn($zg) => $zg->getGroupId(), $currentGroups), true);
+            if ($isCurrentGroup && count($currentGroups) <= 1 && count($this->zoneRepository->getZoneOwners($zone_id)) === 0) {
+                $this->setMessage('zone_ownership', 'error', _('Cannot remove the last owner: this would leave the zone with no ownership.') . ' ' . _('Add another group or a user owner first.'));
+                return;
+            }
+            $zoneGroupRepo->remove($zone_id, $deleteGroupId);
             $auditService->logZoneGroupRemove($zone_id, $zone_name, (int)$_POST["delete_group"]);
             $this->setMessage('zone_ownership', 'success', _('Group has been removed successfully.'));
         }
