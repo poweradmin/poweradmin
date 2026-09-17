@@ -115,9 +115,9 @@ class EditController extends BaseController
         $iface_zone_comments = $this->config->get('interface', 'show_zone_comments', true);
 
         // Initialize filter parameters
-        $searchTerm = htmlspecialchars($this->httpRequest->getQueryParam('search', ''));
-        $recordTypeFilter = htmlspecialchars($this->httpRequest->getQueryParam('record_type', ''));
-        $contentFilter = htmlspecialchars($this->httpRequest->getQueryParam('content', ''));
+        $searchTerm = $this->httpRequest->getQueryParam('search', '');
+        $recordTypeFilter = $this->httpRequest->getQueryParam('record_type', '');
+        $contentFilter = $this->httpRequest->getQueryParam('content', '');
 
         // Generate a form token for the add record form
         $formToken = $this->formStateService->generateFormId('add_record');
@@ -170,8 +170,6 @@ class EditController extends BaseController
 
         // Process form submissions
         if ($this->isPost() && $this->httpRequest->getPostParam('commit') !== null) {
-            $this->validateCsrfToken();
-
             // Check if this is a record addition (has name, content, type fields)
             $name = $this->httpRequest->getPostParam('name');
             $content = $this->httpRequest->getPostParam('content');
@@ -214,7 +212,6 @@ class EditController extends BaseController
         } elseif ($this->isPost() && $this->httpRequest->getPostParam('record') !== null && $this->httpRequest->getPostParam('commit') === null) {
             // max_input_vars truncated the POST and dropped the bottom save button; run
             // the save anyway so incomplete rows are skipped and the operator is warned.
-            $this->validateCsrfToken();
             $this->saveRecords($zone_id, $zone_name);
         }
 
@@ -241,8 +238,6 @@ class EditController extends BaseController
         }
 
         if ($this->httpRequest->getPostParam('sign_zone') !== null) {
-            $this->validateCsrfToken();
-
             if (!$can_manage_dnssec) {
                 $this->setMessage('edit', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
                 $this->redirect('/zones/' . $zone_id . '/edit');
@@ -254,8 +249,6 @@ class EditController extends BaseController
         }
 
         if ($this->httpRequest->getPostParam('unsign_zone') !== null) {
-            $this->validateCsrfToken();
-
             if (!$can_manage_dnssec) {
                 $this->setMessage('edit', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
                 $this->redirect('/zones/' . $zone_id . '/edit');
@@ -501,9 +494,8 @@ class EditController extends BaseController
     private function handleZoneMetadataPost(int $zone_id): void
     {
         $domainManager = $this->createDomainManager();
-        $new_type = htmlspecialchars($this->httpRequest->getPostParam('newtype', ''));
+        $new_type = $this->httpRequest->getPostParam('newtype', '');
         if ($this->httpRequest->getPostParam('type_change') !== null && in_array($new_type, ZoneType::getTypes())) {
-            $this->validateCsrfToken();
             // Converting a zone is equivalent to creating one of the target type.
             if (!$this->permissionService->canCreateZone((int)$this->getCurrentUserId(), $new_type)) {
                 $this->setMessage('edit', 'error', _('You do not have permission to change this zone to that type.'));
@@ -513,22 +505,18 @@ class EditController extends BaseController
         }
 
         if ($this->httpRequest->getPostParam('slave_master_change') !== null) {
-            $this->validateCsrfToken();
             $this->reportZoneWrite('edit', $domainManager->changeZoneSlaveMaster($zone_id, $this->httpRequest->getPostParam('new_master', '')), _('Slave master has been changed successfully.'));
         }
 
         if ($this->httpRequest->getPostParam('retrieve_zone') !== null) {
-            $this->validateCsrfToken();
             $this->handleRetrieveZone($zone_id, $domainManager);
         }
 
         if ($this->httpRequest->getPostParam('catalog_change') !== null) {
-            $this->validateCsrfToken();
             $this->handleCatalogChange($zone_id);
         }
 
         if ($this->httpRequest->getPostParam('template_change') !== null) {
-            $this->validateCsrfToken();
             $this->handleTemplateChange($zone_id);
         }
     }
@@ -656,6 +644,7 @@ class EditController extends BaseController
             $ttl !== null && $ttl !== '' ? (int)$ttl : null,
             $prio,
             $comment,
+            (int)$this->getCurrentUserId(),
             (string)$this->userContextService->getLoggedInUsername(),
             RecordAddResult::companionFrom($this->httpRequest->getPostParams())
         );

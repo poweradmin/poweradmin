@@ -27,8 +27,10 @@ use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\Application\Service\RecordManagerService;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\DomainRecordCreator;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 
@@ -49,7 +51,7 @@ class RecordAddServiceTest extends TestCase
         $ttl->method('resolveTtlForType')->with('CNAME', false)->willReturn(300);
 
         $result = $this->makeService($records, null, null, $ttl)
-            ->add(5, 'example.com', 'bücher', 'CNAME', 'münchen.example.com', null, 0, 'note', 'alice');
+            ->add(5, 'example.com', 'bücher', 'CNAME', 'münchen.example.com', null, 0, 'note', 7, 'alice');
 
         $this->assertTrue($result->isOk());
         $this->assertNull($result->companion);
@@ -63,7 +65,7 @@ class RecordAddServiceTest extends TestCase
         $reverse->expects($this->never())->method('createReverseRecord');
 
         $result = $this->makeService($records, $reverse)
-            ->add(5, 'example.com', 'www', 'A', 'bad', 60, 0, '', 'alice', RecordAddResult::COMPANION_PTR);
+            ->add(5, 'example.com', 'www', 'A', 'bad', 60, 0, '', 7, 'alice', RecordAddResult::COMPANION_PTR);
 
         $this->assertFalse($result->isOk());
         $this->assertSame('Invalid IP address', $result->record->message);
@@ -82,7 +84,7 @@ class RecordAddServiceTest extends TestCase
             ->willReturn(['success' => true, 'type' => 'warning', 'message' => 'A PTR record already points elsewhere.']);
 
         $result = $this->makeService($records, $reverse, null, $ttl)
-            ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, '', 'alice', RecordAddResult::COMPANION_PTR);
+            ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, '', 7, 'alice', RecordAddResult::COMPANION_PTR);
 
         $this->assertTrue($result->companionCreated);
         $this->assertTrue($result->companionWarning);
@@ -97,7 +99,7 @@ class RecordAddServiceTest extends TestCase
         $reverse->method('createReverseRecord')->willReturn(['success' => false, 'type' => 'error', 'message' => 'There is no matching reverse-zone for: 1.2.0.192.in-addr.arpa.']);
 
         $result = $this->makeService($records, $reverse)
-            ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, '', 'alice', RecordAddResult::COMPANION_PTR);
+            ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, '', 7, 'alice', RecordAddResult::COMPANION_PTR);
 
         $this->assertTrue($result->isOk());
         $this->assertFalse($result->companionCreated);
@@ -115,24 +117,79 @@ class RecordAddServiceTest extends TestCase
         $domain->method('addDomainRecord')->willReturn(['success' => false, 'type' => 'error', 'message' => 'no zone']);
 
         $result = $this->makeService($records, null, $domain)
-            ->add(9, '2.0.192.in-addr.arpa', '1', 'PTR', 'www.example.com', 60, 0, '', 'alice', RecordAddResult::COMPANION_A);
+            ->add(9, '2.0.192.in-addr.arpa', '1', 'PTR', 'www.example.com', 60, 0, '', 7, 'alice', RecordAddResult::COMPANION_A);
 
         $this->assertSame(RecordAddResult::COMPANION_A, $result->companion);
         $this->assertSame('no zone', $result->companionMessage);
         $this->assertSame(['success', 'The record was successfully added.'], RecordAddMessages::forAdded($result));
     }
 
+    public function testPassesTheDisabledFlagThroughToTheWrite(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->expects($this->once())->method('createRecord')
+            ->with(5, 'www.example.com', 'A', '192.0.2.1', 60, 0, '', 'alice', 1)
+            ->willReturn(RecordWriteResult::ok(1));
+
+        $result = $this->makeService($records)
+            ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, '', 7, 'alice', '', 1);
+
+        $this->assertTrue($result->isOk());
+    }
+
+    public function testRefusesTheWriteWhenTheUserMayNotEditTheZone(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->expects($this->never())->method('createRecord');
+        $reverse = $this->createMock(ReverseRecordCreator::class);
+        $reverse->expects($this->never())->method('createReverseRecord');
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('canEditZoneRecord')->willReturn(false);
+
+        $result = $this->makeService($records, $reverse, permissions: $permissions)
+            ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, '', 7, 'alice', RecordAddResult::COMPANION_PTR);
+
+        $this->assertFalse($result->isOk());
+        $this->assertSame(403, $result->record->status);
+    }
+
+    public function testChecksThePermissionAgainstTheNormalisedNameAndZoneType(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->method('createRecord')->willReturn(RecordWriteResult::ok(1));
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('getDomainType')->with(5)->willReturn('MASTER');
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->expects($this->once())->method('canEditZoneRecord')
+            ->with(7, 5, 'A', 'MASTER', 'www.example.com', 'example.com')
+            ->willReturn(true);
+
+        $result = $this->makeService($records, permissions: $permissions, domains: $domains)
+            ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, '', 7, 'alice');
+
+        $this->assertTrue($result->isOk());
+    }
+
     private function makeService(
         RecordManagerService $records,
         ?ReverseRecordCreator $reverse = null,
         ?DomainRecordCreator $domain = null,
-        ?ReverseTtlResolver $ttl = null
+        ?ReverseTtlResolver $ttl = null,
+        ?PermissionService $permissions = null,
+        ?DomainRepositoryInterface $domains = null
     ): RecordAddService {
+        if ($permissions === null) {
+            $permissions = $this->createMock(PermissionService::class);
+            $permissions->method('canEditZoneRecord')->willReturn(true);
+        }
+
         return new RecordAddService(
             $records,
             $reverse ?? $this->createMock(ReverseRecordCreator::class),
             $domain ?? $this->createMock(DomainRecordCreator::class),
-            $ttl ?? $this->createMock(ReverseTtlResolver::class)
+            $ttl ?? $this->createMock(ReverseTtlResolver::class),
+            $permissions,
+            $domains ?? $this->createMock(DomainRepositoryInterface::class)
         );
     }
 }

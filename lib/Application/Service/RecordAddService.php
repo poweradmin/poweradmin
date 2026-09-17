@@ -22,8 +22,11 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DomainRecordCreator;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -39,13 +42,16 @@ class RecordAddService
         private readonly RecordManagerService $records,
         private readonly ReverseRecordCreator $reverseRecords,
         private readonly DomainRecordCreator $domainRecords,
-        private readonly ReverseTtlResolver $ttlResolver
+        private readonly ReverseTtlResolver $ttlResolver,
+        private readonly PermissionService $permissions,
+        private readonly DomainRepositoryInterface $domains
     ) {
     }
 
     /**
      * @param int|null $ttl The submitted TTL, or null for the configured default of the type
      * @param string $companion One of the RecordAddResult::COMPANION_* constants, or '' for none
+     * @param int $disabled 1 to create the record disabled (API callers); the forms always pass 0
      */
     public function add(
         int $zoneId,
@@ -56,14 +62,24 @@ class RecordAddService
         ?int $ttl,
         int $prio,
         string $comment,
+        int $userId,
         string $username,
-        string $companion = ''
+        string $companion = '',
+        int $disabled = 0
     ): RecordAddResult {
         $ttl ??= $this->ttlResolver->resolveTtlForType($type, DnsHelper::isReverseZoneName($zoneName));
         $name = DnsHelper::restoreZoneSuffix(DnsIdnService::toPunycode($name), $zoneName);
         $content = DnsIdnService::convertContentToPunycode($type, $content);
 
-        $written = $this->records->createRecord($zoneId, $name, $type, $content, $ttl, $prio, $comment, $username);
+        // Callers gate the page, but the write defends itself: edit level, zone
+        // read-only state and the own_as_client type restriction are re-checked here
+        if (!$this->permissions->canEditZoneRecord($userId, $zoneId, $type, $this->domains->getDomainType($zoneId), $name, $zoneName)) {
+            return RecordAddResult::refused(RecordWriteResult::forbidden(
+                _('You do not have the permission to add a record to this zone.')
+            ));
+        }
+
+        $written = $this->records->createRecord($zoneId, $name, $type, $content, $ttl, $prio, $comment, $username, $disabled);
         if (!$written->success) {
             return RecordAddResult::refused($written);
         }

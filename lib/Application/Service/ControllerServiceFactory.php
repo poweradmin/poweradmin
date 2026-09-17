@@ -385,7 +385,9 @@ class ControllerServiceFactory
             $this->recordManagerService(),
             $this->reverseRecordCreator(),
             new DomainRecordCreator($this->config, $this->domainRepository(), $this->recordManager(), null, $ttlResolver),
-            $ttlResolver
+            $ttlResolver,
+            $this->permissionService(),
+            $this->domainRepository()
         );
     }
 

@@ -76,8 +76,6 @@ class AddRecordController extends BaseController
             || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner), _("You do not have the permission to add a record to this zone."));
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
-
             if ($this->httpRequest->getPostParam('multi_record_mode') !== null && is_array($this->httpRequest->getPostParam('records'))) {
                 $this->addMultipleRecords();
             } else {
@@ -132,6 +130,7 @@ class AddRecordController extends BaseController
             $ttl !== null && $ttl !== '' ? (int)$ttl : null,
             $prio,
             $comment,
+            (int)$this->getCurrentUserId(),
             (string)$this->userContextService->getLoggedInUsername(),
             RecordAddResult::companionFrom($this->httpRequest->getPostParams())
         );
@@ -291,6 +290,7 @@ class AddRecordController extends BaseController
                 isset($record['ttl']) && $record['ttl'] !== '' ? (int)$record['ttl'] : null,
                 isset($record['prio']) && $record['prio'] !== '' ? (int)$record['prio'] : 0,
                 (string)($record['comment'] ?? ''),
+                (int)$this->getCurrentUserId(),
                 $username,
                 RecordAddResult::companionFrom($record)
             );
