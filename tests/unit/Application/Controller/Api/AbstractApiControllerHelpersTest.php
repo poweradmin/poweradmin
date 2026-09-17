@@ -36,7 +36,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class AbstractApiControllerHelpersTest extends TestCase
 {
-    private function makeController(Request $request): AbstractApiController
+    private function makeController(Request $request): TestableAbstractApiHelpersController
     {
         $controller = (new ReflectionClass(TestableAbstractApiHelpersController::class))
             ->newInstanceWithoutConstructor();

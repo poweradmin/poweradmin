@@ -58,7 +58,7 @@ class ControllerEnvironmentSeamTest extends TestCase
         }
     }
 
-    private function makeController(?ControllerServiceFactory $factory = null, array $request = []): BaseController
+    private function makeController(?ControllerServiceFactory $factory = null, array $request = []): TestableSeamController
     {
         $environment = new ControllerEnvironment(
             ConfigurationManager::getInstance(),
@@ -71,16 +71,7 @@ class ControllerEnvironmentSeamTest extends TestCase
             $this->createMock(UserContextService::class)
         );
 
-        return new class ($request, true, $environment) extends BaseController {
-            public function run(): void
-            {
-            }
-
-            public function paginationServiceForTest(): PaginationService
-            {
-                return $this->createPaginationService();
-            }
-        };
+        return new TestableSeamController($request, true, $environment);
     }
 
     public function testConstructsWithoutConfigFileDatabaseOrSession(): void
