@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Session;
 
+use Poweradmin\Domain\Service\SessionKeys;
+
 /**
  * Keeps submitted form data in the session so a failed request can refill the form.
  *
@@ -122,5 +124,66 @@ class FormStateService
     public function generateFormId(string $prefix = ''): string
     {
         return $prefix . '_' . bin2hex(random_bytes(8));
+    }
+
+    /**
+     * Stash the zone editor's inline add-record form before processing, so a
+     * failed validation can re-display the submitted values.
+     *
+     * These use the same session keys the zone editor always used, so the
+     * behaviour (and any in-flight sessions) are unchanged.
+     *
+     * @param array $values The submitted add-record fields
+     */
+    public function rememberAddRecordForm(array $values): void
+    {
+        $_SESSION[SessionKeys::ADD_RECORD_LAST_DATA] = $values;
+    }
+
+    /**
+     * Record why the stashed add-record submission was refused.
+     *
+     * @param array $error Error flags/message/field for the re-rendered form
+     */
+    public function rememberAddRecordError(array $error): void
+    {
+        $_SESSION[SessionKeys::ADD_RECORD_ERROR] = $error;
+    }
+
+    /**
+     * The stashed add-record values merged with their error, or null unless
+     * both are present. Non-destructive: the stash survives until the add
+     * succeeds or the zone changes.
+     */
+    public function addRecordFormWithError(): ?array
+    {
+        if (!isset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]) || !isset($_SESSION[SessionKeys::ADD_RECORD_ERROR])) {
+            return null;
+        }
+
+        return array_merge($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA], $_SESSION[SessionKeys::ADD_RECORD_ERROR]);
+    }
+
+    /**
+     * Drop the stashed add-record form and its error, after a successful add.
+     */
+    public function forgetAddRecordForm(): void
+    {
+        unset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
+        unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
+    }
+
+    /**
+     * Remember which zone the add-record stash belongs to, clearing it when the
+     * operator moves to a different zone so values never leak across zones.
+     */
+    public function trackAddRecordZone(int $zoneId): void
+    {
+        if (isset($_SESSION[SessionKeys::ADD_RECORD_ZONE_ID]) && $_SESSION[SessionKeys::ADD_RECORD_ZONE_ID] != $zoneId) {
+            $this->forgetAddRecordForm();
+            unset($_SESSION[SessionKeys::ADD_RECORD_ZONE_ID]);
+        }
+
+        $_SESSION[SessionKeys::ADD_RECORD_ZONE_ID] = $zoneId;
     }
 }

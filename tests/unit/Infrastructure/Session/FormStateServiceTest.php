@@ -5,6 +5,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Session;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Session\FormStateService;
 
 #[CoversClass(FormStateService::class)]
@@ -208,5 +209,61 @@ class FormStateServiceTest extends TestCase
 
         // This is essentially testing that no exception is thrown
         $this->assertTrue(true);
+    }
+
+    #[Test]
+    public function testAddRecordFormUsesTheHistoricalSessionKeys(): void
+    {
+        // The zone editor stashed these under fixed keys before the service
+        // existed; in-flight sessions must keep working across the change
+        $this->service->rememberAddRecordForm(['name' => 'www', 'type' => 'A']);
+        $this->service->rememberAddRecordError(['error' => true, 'errorMessage' => 'nope']);
+
+        $this->assertSame(['name' => 'www', 'type' => 'A'], $_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
+        $this->assertSame(['error' => true, 'errorMessage' => 'nope'], $_SESSION[SessionKeys::ADD_RECORD_ERROR]);
+    }
+
+    #[Test]
+    public function testAddRecordFormWithErrorMergesOnlyWhenBothArePresent(): void
+    {
+        $this->assertNull($this->service->addRecordFormWithError());
+
+        $this->service->rememberAddRecordForm(['name' => 'www']);
+        $this->assertNull($this->service->addRecordFormWithError());
+
+        $this->service->rememberAddRecordError(['error' => true]);
+        $this->assertSame(['name' => 'www', 'error' => true], $this->service->addRecordFormWithError());
+
+        // Non-destructive: reading keeps the stash for the next render
+        $this->assertNotNull($this->service->addRecordFormWithError());
+    }
+
+    #[Test]
+    public function testForgetAddRecordFormDropsBothKeys(): void
+    {
+        $this->service->rememberAddRecordForm(['name' => 'www']);
+        $this->service->rememberAddRecordError(['error' => true]);
+
+        $this->service->forgetAddRecordForm();
+
+        $this->assertArrayNotHasKey(SessionKeys::ADD_RECORD_LAST_DATA, $_SESSION);
+        $this->assertArrayNotHasKey(SessionKeys::ADD_RECORD_ERROR, $_SESSION);
+    }
+
+    #[Test]
+    public function testTrackAddRecordZoneClearsTheStashWhenTheZoneChanges(): void
+    {
+        $this->service->trackAddRecordZone(5);
+        $this->service->rememberAddRecordForm(['name' => 'www']);
+        $this->service->rememberAddRecordError(['error' => true]);
+
+        // Same zone keeps the stash
+        $this->service->trackAddRecordZone(5);
+        $this->assertNotNull($this->service->addRecordFormWithError());
+
+        // A different zone drops it so values never leak across zones
+        $this->service->trackAddRecordZone(6);
+        $this->assertNull($this->service->addRecordFormWithError());
+        $this->assertSame(6, $_SESSION[SessionKeys::ADD_RECORD_ZONE_ID]);
     }
 }

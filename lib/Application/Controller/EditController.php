@@ -24,6 +24,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Application\Http\ZoneEditIntent;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
@@ -145,7 +146,7 @@ class EditController extends BaseController
         $zone_id = $this->requireNumericParam('id');
 
         // Clear session-based form data if zone has changed to prevent persistence across zones
-        $this->clearFormDataOnZoneChange($zone_id);
+        $this->formStateService->trackAddRecordZone($zone_id);
 
         // Early permission check - validate access before data retrieval
         $userId = $this->userContextService->getLoggedInUserId();
@@ -168,56 +169,47 @@ class EditController extends BaseController
         // for PTR selections so display tracks what's persisted.
         $defaultTtl = $this->reverseTtlResolver->getForwardTtl();
 
-        // Process form submissions
-        if ($this->isPost() && $this->httpRequest->getPostParam('commit') !== null) {
-            // Check if this is a record addition (has name, content, type fields)
-            $name = $this->httpRequest->getPostParam('name');
-            $content = $this->httpRequest->getPostParam('content');
-            $type = $this->httpRequest->getPostParam('type');
-            if ($name !== null && $content !== null && $type !== null) {
-                // Store the original form data before processing (in case validation fails)
-                $prio = $this->httpRequest->getPostParam('prio');
-                $ttl = $this->httpRequest->getPostParam('ttl');
-                $_SESSION[SessionKeys::ADD_RECORD_LAST_DATA] = [
-                    'name' => $name,
-                    'content' => $content,
-                    'type' => $type,
-                    'prio' => $prio !== null && $prio !== '' ? (int)$prio : 0,
-                    'ttl' => $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone),
-                    'comment' => $this->httpRequest->getPostParam('comment', '')
-                ];
+        // Process form submissions; which form arrived is decided in one place
+        $postParams = $this->httpRequest->getPostParams();
+        $intent = ZoneEditIntent::from($this->isPost(), $postParams);
 
-                // Handle record addition directly in edit controller (no redirect)
-                if ($this->httpRequest->getPostParam('record') === null) { // Check if it's an add record operation (not a zone update)
-                    $result = $this->addRecord($zone_id, $zone_name);
+        // A committed POST carrying the inline add form stashes its values before
+        // processing, so a failed validation can re-display them (a truncated POST
+        // never did, and still must not)
+        if (($intent === ZoneEditIntent::ADD_RECORD || $intent === ZoneEditIntent::SAVE_RECORDS) && ZoneEditIntent::hasAddRecordFields($postParams)) {
+            $prio = $this->httpRequest->getPostParam('prio');
+            $ttl = $this->httpRequest->getPostParam('ttl');
+            $type = (string)$this->httpRequest->getPostParam('type');
+            $this->formStateService->rememberAddRecordForm([
+                'name' => $this->httpRequest->getPostParam('name'),
+                'content' => $this->httpRequest->getPostParam('content'),
+                'type' => $type,
+                'prio' => $prio !== null && $prio !== '' ? (int)$prio : 0,
+                'ttl' => $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone),
+                'comment' => $this->httpRequest->getPostParam('comment', '')
+            ]);
+        }
 
-                    // If the record was added successfully, clear the stored data
-                    if ($result) {
-                        unset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
-                        unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
-                    } elseif (!$formData && isset($_SESSION[SessionKeys::ADD_RECORD_ERROR])) {
-                        // Create form data from the session error data
-                        $formData = array_merge($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA], $_SESSION[SessionKeys::ADD_RECORD_ERROR]);
-                    }
-                } else {
-                    // This is a zone update operation, handle as before
-                    $this->saveRecords($zone_id, $zone_name);
-                }
-            } elseif ($this->httpRequest->getPostParam('record') !== null || $this->httpRequest->getPostParam('zone_comment') !== null || $this->httpRequest->getPostParam('form_complete') !== null) {
-                // Save operation: records, a zone comment, or an unchanged form. The
-                // form_complete marker is always present, so a save where the client
-                // omitted every unchanged record still bumps the SOA serial as before.
-                $this->saveRecords($zone_id, $zone_name);
+        if ($intent === ZoneEditIntent::ADD_RECORD) {
+            // Handle record addition directly in edit controller (no redirect)
+            $result = $this->addRecord($zone_id, $zone_name);
+
+            // If the record was added successfully, clear the stored data
+            if ($result) {
+                $this->formStateService->forgetAddRecordForm();
+            } elseif (!$formData) {
+                // Re-display the refused submission with its error
+                $formData = $this->formStateService->addRecordFormWithError() ?? $formData;
             }
-        } elseif ($this->isPost() && $this->httpRequest->getPostParam('record') !== null && $this->httpRequest->getPostParam('commit') === null) {
-            // max_input_vars truncated the POST and dropped the bottom save button; run
-            // the save anyway so incomplete rows are skipped and the operator is warned.
+        } elseif ($intent === ZoneEditIntent::SAVE_RECORDS || $intent === ZoneEditIntent::SAVE_TRUNCATED) {
+            // SAVE_TRUNCATED: max_input_vars dropped the bottom save button; run the
+            // save anyway so incomplete rows are skipped and the operator is warned.
             $this->saveRecords($zone_id, $zone_name);
         }
 
         // If we have stored validation error data from a previous request, use it
-        if (!$formData && isset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]) && isset($_SESSION[SessionKeys::ADD_RECORD_ERROR])) {
-            $formData = array_merge($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA], $_SESSION[SessionKeys::ADD_RECORD_ERROR]);
+        if (!$formData) {
+            $formData = $this->formStateService->addRecordFormWithError() ?? $formData;
         }
 
         // Permission levels - use zone-aware checking for group permission support
@@ -615,12 +607,11 @@ class EditController extends BaseController
         $this->setValidationConstraints($constraints);
 
         if (!$this->doValidateRequest($this->httpRequest->getPostParams())) {
-            // Store validation error directly in session
-            $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
+            $this->formStateService->rememberAddRecordError([
                 'error' => true,
                 'errorMessage' => _('Please provide all required fields.'),
                 'fieldError' => !empty($this->httpRequest->getPostParam('content')) ? 'type' : 'content'
-            ];
+            ]);
 
             // Don't call showFirstValidationError as it would redirect
             // We've already stored the form data for displaying error later
@@ -649,18 +640,16 @@ class EditController extends BaseController
             RecordAddResult::companionFrom($this->httpRequest->getPostParams())
         );
         if (!$added->isOk()) {
-            // Store validation error directly in session
-            $_SESSION[SessionKeys::ADD_RECORD_ERROR] = [
+            $this->formStateService->rememberAddRecordError([
                 'error' => true,
                 'errorMessage' => $added->record->message,
                 'fieldError' => $added->record->field
-            ];
+            ]);
             return false;
         }
 
         // Clear session data when record is successfully created
-        unset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
-        unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
+        $this->formStateService->forgetAddRecordForm();
 
         // Clear form data if it exists in the session
         $formToken = $this->httpRequest->getPostParam('form_token');
@@ -672,25 +661,5 @@ class EditController extends BaseController
         $this->setMessage('edit', $messageType, $message);
 
         return true;
-    }
-
-    /**
-     * Clear form data from session if zone has changed
-     *
-     * @param int $currentZoneId The current zone ID being viewed
-     * @return void
-     */
-    private function clearFormDataOnZoneChange(int $currentZoneId): void
-    {
-        // Check if we have a previously stored zone ID in session for form data
-        if (isset($_SESSION[SessionKeys::ADD_RECORD_ZONE_ID]) && $_SESSION[SessionKeys::ADD_RECORD_ZONE_ID] != $currentZoneId) {
-            // Zone has changed, clear the form data and error information
-            unset($_SESSION[SessionKeys::ADD_RECORD_LAST_DATA]);
-            unset($_SESSION[SessionKeys::ADD_RECORD_ERROR]);
-            unset($_SESSION[SessionKeys::ADD_RECORD_ZONE_ID]);
-        }
-
-        // Store the current zone ID for future comparisons
-        $_SESSION[SessionKeys::ADD_RECORD_ZONE_ID] = $currentZoneId;
     }
 }
