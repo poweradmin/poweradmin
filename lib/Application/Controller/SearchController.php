@@ -24,10 +24,10 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\SearchCriteria;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\ZoneSortingService;
@@ -54,16 +54,8 @@ class SearchController extends BaseController
         $this->setCurrentPage('search');
         $this->setPageTitle(_('Search'));
 
-        $parameters = [
-            'query' => '',
-            'zones' => true,
-            'records' => true,
-            'wildcard' => true,
-            'reverse' => true,
-            'comments' => false,
-            'type_filter' => '',
-            'content_filter' => '',
-        ];
+        $criteria = SearchCriteria::fromRequest($this->isPost() ? $this->httpRequest->getPostParams() : null);
+        $parameters = $criteria->toArray();
 
         $totalZones = 0;
         $searchResultZones = [];
@@ -115,68 +107,6 @@ class SearchController extends BaseController
         $iface_record_comments = $this->config->get('interface', 'show_record_comments', false);
 
         if ($this->isPost()) {
-            $query = $this->httpRequest->getPostParam('query');
-            $rawQuery = !empty($query) ? $query : '';
-
-            // Parse query for embedded filters
-            list($cleanQuery, $extractedFilters) = $this->parseQueryFilters($rawQuery);
-
-            // Keep the original query for display in the search box
-            $displayed_query = $rawQuery;
-
-            // Use the cleaned query (without filters) for actual searching
-            $parameters['query'] = $cleanQuery;
-
-            // Store the original query for display purposes
-            $parameters['displayed_query'] = $displayed_query;
-
-            $zones = $this->httpRequest->getPostParam('zones');
-            $records = $this->httpRequest->getPostParam('records');
-            $wildcard = $this->httpRequest->getPostParam('wildcard');
-            $reverse = $this->httpRequest->getPostParam('reverse');
-            $comments = $this->httpRequest->getPostParam('comments');
-            $parameters['zones'] = $zones ?? false;
-            $parameters['records'] = $records ?? false;
-            $parameters['wildcard'] = $wildcard ?? false;
-            $parameters['reverse'] = $reverse ?? false;
-            $parameters['comments'] = $comments ?? false;
-
-            // A bare IP query should always search records and reverse zones, even when
-            // the user did not tick those boxes - that is almost certainly a PTR lookup.
-            $ipValidator = new IPAddressValidator();
-            if ($ipValidator->isValidIPv4($parameters['query']) || $ipValidator->isValidIPv6($parameters['query'])) {
-                $parameters['records'] = true;
-                $parameters['reverse'] = true;
-            }
-
-            // Only use extracted type and content filters from the query string
-            // This ensures filters from the search box always take precedence
-            if (!empty($extractedFilters['type'])) {
-                $parameters['type_filter'] = $extractedFilters['type'];
-                // Enable records search if type filter is found in query
-                $parameters['records'] = true;
-            } else {
-                // Only use form field if no filter in query string
-                $type_filter = $this->httpRequest->getPostParam('type_filter');
-                $parameters['type_filter'] = $type_filter ?? '';
-            }
-
-            if (!empty($extractedFilters['content'])) {
-                $parameters['content_filter'] = $extractedFilters['content'];
-                // Enable records search if content filter is found in query
-                $parameters['records'] = true;
-            } else {
-                // Only use form field if no filter in query string
-                $content_filter = $this->httpRequest->getPostParam('content_filter');
-                $parameters['content_filter'] = $content_filter ?? '';
-            }
-
-            // If records search is disabled, clear the filters
-            if (!$parameters['records']) {
-                $parameters['type_filter'] = '';
-                $parameters['content_filter'] = '';
-            }
-
             $zones_page = max(1, (int)$this->httpRequest->getPostParam('zones_page', 1));
 
             $permission_view = $permissionService->getViewPermissionLevel($userId);
@@ -388,36 +318,5 @@ class SearchController extends BaseController
             }
         }
         return $records;
-    }
-
-    /**
-     * Parse query string for embedded filters like "type:txt" or "content:spf"
-     *
-     * @param string $query The search query to parse
-     * @return array Array containing the cleaned query and extracted filters
-     */
-    private function parseQueryFilters(string $query): array
-    {
-        $filters = [
-            'type' => '',
-            'content' => '',
-        ];
-
-        // Match patterns like "type:txt" or "type: txt" or "type:TXT" (case insensitive)
-        if (preg_match('/\btype:\s*([a-z0-9_]+)\b/i', $query, $matches)) {
-            $filters['type'] = strtoupper($matches[1]); // Convert to uppercase for consistency
-            $query = str_replace($matches[0], '', $query); // Remove from query
-        }
-
-        // Match patterns like "content:spf" or "content: value"
-        if (preg_match('/\bcontent:\s*([^\s]+)\b/i', $query, $matches)) {
-            $filters['content'] = $matches[1];
-            $query = str_replace($matches[0], '', $query); // Remove from query
-        }
-
-        // Cleanup query (remove extra spaces)
-        $query = trim(preg_replace('/\s+/', ' ', $query));
-
-        return [$query, $filters];
     }
 }
