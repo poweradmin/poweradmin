@@ -83,8 +83,6 @@ class EditPermTemplController extends BaseController
 
     private function handleFormSubmission(): void
     {
-        $this->validateCsrfToken();
-
         if (!$this->validateSubmitRequest()) {
             $this->showFirstValidationError();
             return;

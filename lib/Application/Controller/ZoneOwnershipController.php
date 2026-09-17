@@ -86,7 +86,6 @@ class ZoneOwnershipController extends BaseController
 
         // Handle form submissions
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->handleFormSubmission($zone_id, $zone_name, $userId, $meta_edit);
         }
 

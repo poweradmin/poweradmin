@@ -117,7 +117,6 @@ class EditRecordController extends BaseController
 
         $validationFailed = false;
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $validationFailed = !$this->saveRecord($zid);
         }
 

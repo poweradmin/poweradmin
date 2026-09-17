@@ -24,18 +24,12 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\SessionKeys;
 
 /**
  * Handles the add-supermaster form: validates the IP and nameserver, then stores the supermaster entry.
  */
 class AddSupermasterController extends BaseController
 {
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
 
     public function run(): void
     {
@@ -46,7 +40,6 @@ class AddSupermasterController extends BaseController
         $account = $this->httpRequest->getPostParam('account', "");
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->addSuperMaster($master_ip, $ns_name, $account);
         } else {
             $this->showAddSuperMaster($master_ip, $ns_name, $account);
@@ -73,11 +66,11 @@ class AddSupermasterController extends BaseController
         $this->render('add_supermaster.html', [
             'users' => $users,
             'selectable_owners' => $this->selectableOwners($users),
-            'master_ip' => htmlspecialchars($master_ip),
-            'ns_name' => htmlspecialchars($ns_name),
-            'account' => htmlspecialchars($account),
+            'master_ip' => $master_ip,
+            'ns_name' => $ns_name,
+            'account' => $account,
             'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
-            'session_uid' => $_SESSION[SessionKeys::USERID]
+            'session_uid' => $this->getCurrentUserId()
         ]);
     }
 }

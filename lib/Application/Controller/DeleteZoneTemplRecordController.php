@@ -26,7 +26,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
-use Poweradmin\Domain\Service\SessionKeys;
 
 /**
  * Handles the delete confirmation for a zone template record and marks the template modified after deletion.
@@ -48,7 +47,7 @@ class DeleteZoneTemplRecordController extends BaseController
 
         $confirmed = $this->httpRequest->getPostParam('confirm') !== null;
 
-        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
+        $owner = $this->zoneTemplate->isUserOwnerOfTemplate($zone_templ_id, (int)$this->getCurrentUserId());
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
 

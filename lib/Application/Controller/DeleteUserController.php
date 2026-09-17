@@ -26,7 +26,6 @@ use Poweradmin\Application\Service\UserFormMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\SessionKeys;
 
 /**
  * Handles the delete-user page: deletes the user and transfers or deletes each of their zones as chosen.
@@ -37,11 +36,6 @@ class DeleteUserController extends BaseController
     // lazily, since zones x users options can exhaust the PHP memory limit
     private const MAX_INLINE_OWNER_OPTIONS = 10000;
 
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
-
     public function run(): void
     {
         $perm_edit_others = $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS);
@@ -50,7 +44,7 @@ class DeleteUserController extends BaseController
         $uid = $this->requireNumericParam('id');
 
         // Check basic permissions first
-        if (($uid != $_SESSION[SessionKeys::USERID] && !$perm_edit_others) || ($uid == $_SESSION[SessionKeys::USERID] && !$perm_is_godlike)) {
+        if (($uid != $this->getCurrentUserId() && !$perm_edit_others) || ($uid == $this->getCurrentUserId() && !$perm_is_godlike)) {
             $this->showError(_("You do not have the permission to delete this user."));
         }
 
@@ -63,7 +57,6 @@ class DeleteUserController extends BaseController
 
         // All permission checks passed, now handle POST request
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->deleteUser($uid);
         }
 

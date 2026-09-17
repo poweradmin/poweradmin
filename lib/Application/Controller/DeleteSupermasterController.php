@@ -32,11 +32,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class DeleteSupermasterController extends BaseController
 {
 
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
-
     public function run(): void
     {
         $this->checkPermission(Permission::PERM_SUPERMASTER_EDIT, _("You do not have the permission to delete a supermaster."));
@@ -98,7 +93,7 @@ class DeleteSupermasterController extends BaseController
 
     private function showDeleteSuperMaster(): void
     {
-        $master_ip = htmlspecialchars($this->httpRequest->getQueryParam('master_ip'));
+        $master_ip = (string)$this->httpRequest->getQueryParam('master_ip');
         $supermasterManager = $this->createSupermasterManager();
         $info = $supermasterManager->getSupermasterInfoFromIp($master_ip);
 

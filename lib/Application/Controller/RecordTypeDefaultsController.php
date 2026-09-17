@@ -52,7 +52,6 @@ class RecordTypeDefaultsController extends BaseController
         $repository = new DbRecordTypeDefaultRepository($this->db);
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->handlePost($repository);
             $this->redirect('/tools/record-type-defaults');
             return;

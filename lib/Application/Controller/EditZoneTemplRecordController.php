@@ -76,7 +76,6 @@ class EditZoneTemplRecordController extends BaseController
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to edit zone template records."));
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->updateZoneTemplateRecord($zone_templ_id);
         }
 

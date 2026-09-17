@@ -110,10 +110,10 @@ class ListLogUsersController extends BaseController
 
         $this->render('list_log_users.html', [
             'number_of_logs' => $number_of_logs,
-            'name' => htmlspecialchars($this->httpRequest->getQueryParam('name', '')),
-            'event_type' => htmlspecialchars($this->httpRequest->getQueryParam('event_type', '')),
-            'date_from' => htmlspecialchars($this->httpRequest->getQueryParam('date_from', '')),
-            'date_to' => htmlspecialchars($this->httpRequest->getQueryParam('date_to', '')),
+            'name' => $this->httpRequest->getQueryParam('name', ''),
+            'event_type' => $this->httpRequest->getQueryParam('event_type', ''),
+            'date_from' => $this->httpRequest->getQueryParam('date_from', ''),
+            'date_to' => $this->httpRequest->getQueryParam('date_to', ''),
             'event_types' => $this->dbUserLogger->getDistinctEventTypes(),
             'users' => $this->dbUserLogger->getDistinctUsers(),
             'data' => $logs,

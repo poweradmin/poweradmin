@@ -45,7 +45,6 @@ class DnssecDeleteKeyController extends DnssecKeyController
         }
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             try {
                 $result = $dnssecProvider->removeZoneKey($domain_name, $key_id);
 

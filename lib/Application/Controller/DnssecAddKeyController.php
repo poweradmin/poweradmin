@@ -34,11 +34,6 @@ use Poweradmin\Domain\Enum\DnssecKeyType;
 class DnssecAddKeyController extends DnssecKeyController
 {
 
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
-
     public function run(): void
     {
         $zone_id = $this->requireNumericParam('id');
@@ -97,8 +92,6 @@ class DnssecAddKeyController extends DnssecKeyController
         };
 
         if ($this->httpRequest->getPostParam('submit') !== null) {
-            $this->validateCsrfToken();
-
             // Validate combination of algorithm and bits before attempting to add the key
             if (!empty($algorithm) && !empty($bits)) {
                 $validation = $validateAlgorithmBitCombination($algorithm, $bits);

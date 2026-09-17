@@ -35,11 +35,6 @@ use Poweradmin\Domain\Model\Permission;
 class ListViewsController extends BaseController
 {
 
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
-
     public function run(): void
     {
         if (!$this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
@@ -60,7 +55,6 @@ class ListViewsController extends BaseController
         }
 
         if (!empty($this->httpRequest->getPostParams())) {
-            $this->validateCsrfToken();
             $action = $this->getSafeRequestValue('action');
             $view = trim($this->getSafeRequestValue('view'));
             $zone = trim($this->getSafeRequestValue('zone'));

@@ -103,7 +103,6 @@ class EditZoneMetadataController extends BaseController
         }
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $submittedMetadata = $this->normalizeSubmittedMetadata($this->httpRequest->getPostParam('metadata', []));
 
             $result = $this->metadataService->replaceAll($zoneId, $zone['name'], $submittedMetadata, (int)$this->getCurrentUserId());

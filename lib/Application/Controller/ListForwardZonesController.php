@@ -60,7 +60,6 @@ class ListForwardZonesController extends BaseController
         $this->setPageTitle(_('Forward Zones'));
 
         if ($this->isPost() && $this->getSafeRequestValue('action') === 'sync') {
-            $this->validateCsrfToken();
             $this->forceSyncFromApi();
             return;
         }
@@ -124,7 +123,7 @@ class ListForwardZonesController extends BaseController
         $row_start = 0;
         $start_param = $this->httpRequest->getQueryParam('start');
         if ($start_param !== null) {
-            $start = (int)htmlspecialchars($start_param);
+            $start = (int)$start_param;
             $row_start = max(0, ($start - 1) * $iface_rowamount);
         }
 
@@ -144,8 +143,8 @@ class ListForwardZonesController extends BaseController
             $letter_start = 'a';
             $letter = $this->httpRequest->getQueryParam('letter');
             if ($letter !== null) {
-                $letter_start = htmlspecialchars($letter);
-                $_SESSION[SessionKeys::LETTER] = htmlspecialchars($letter);
+                $letter_start = $letter;
+                $_SESSION[SessionKeys::LETTER] = $letter;
             } elseif (isset($_SESSION[SessionKeys::LETTER])) {
                 $letter_start = $_SESSION[SessionKeys::LETTER];
             }
@@ -196,7 +195,7 @@ class ListForwardZonesController extends BaseController
         $effectiveLetterStart = ($count_zones_view <= $iface_rowamount || $letter_start == 'all') ? 'all' : $letter_start;
         $zones = $dnsDataService->getForwardZones(
             $perm_view,
-            $_SESSION[SessionKeys::USERID],
+            (int)$this->getCurrentUserId(),
             $effectiveLetterStart,
             $row_start,
             $iface_rowamount,
@@ -258,9 +257,9 @@ class ListForwardZonesController extends BaseController
             'is_owner_sort_supported' => $isOwnerSortSupported,
             'is_group_sort_supported' => $isGroupSortSupported,
             'pdnssec_use' => $pdnssec_use,
-            'letters' => $this->getAvailableStartingLetters($letter_start, $_SESSION[SessionKeys::USERID], $dnsDataService),
+            'letters' => $this->getAvailableStartingLetters($letter_start, (int)$this->getCurrentUserId(), $dnsDataService),
             'pagination' => $this->presentPagination($count_zones_all_letterstart, $iface_rowamount, '/zones/forward?start={PageNumber}'),
-            'session_userlogin' => $_SESSION[SessionKeys::USERLOGIN],
+            'session_userlogin' => $this->getUserContextService()->getLoggedInUsername(),
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
             'can_bulk_delete_zones' => $can_bulk_delete_zones,

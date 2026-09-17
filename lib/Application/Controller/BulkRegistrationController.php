@@ -29,7 +29,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DomainHelper;
-use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -55,7 +54,6 @@ class BulkRegistrationController extends BaseController
         }
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->doBulkRegistration();
         } else {
             $this->showBulkRegistrationForm();
@@ -142,20 +140,20 @@ class BulkRegistrationController extends BaseController
 
         $userGroupRepo = $this->createUserGroupRepository();
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
-        $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION[SessionKeys::USERID]);
+        $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId((int)$this->getCurrentUserId());
 
         $users = $this->createUserRepository()->getUsersWithZoneCounts();
         $assignableOwners = $this->assignableOwners($users);
         $groupsInput = $this->httpRequest->getPostParam('groups');
         $this->render('bulk_registration.html', [
-            'userid' => $_SESSION[SessionKeys::USERID],
+            'userid' => $this->getCurrentUserId(),
             'owner_value' => $this->preservedOwnerChoice($assignableOwners, $this->httpRequest->getPostParam('owner')),
             'perm_edit_others' => $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS),
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'MASTER'),
             'available_zone_types' => self::AVAILABLE_ZONE_TYPES,
             'users' => $users,
             'selectable_owners' => $assignableOwners,
-            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]),
+            'zone_templates' => $zone_templates->getListZoneTempl((int)$this->getCurrentUserId()),
             'failed_domains' => $failed_domains,
             'added_domains' => $added_domains,
             'user_owner_allowed' => $ownershipMode->isUserOwnerAllowed(),

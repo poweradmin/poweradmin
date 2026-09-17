@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -55,8 +54,8 @@ class DeleteZoneTemplController extends BaseController
             $this->showFirstValidationError($this->requestData);
         }
 
-        $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
-        $owner = $this->zoneTemplate->isUserOwnerOfTemplate((int)$zone_templ_id, $_SESSION[SessionKeys::USERID]);
+        $zone_templ_id = $this->getSafeRequestValue('id');
+        $owner = $this->zoneTemplate->isUserOwnerOfTemplate((int)$zone_templ_id, (int)$this->getCurrentUserId());
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
 
@@ -81,7 +80,7 @@ class DeleteZoneTemplController extends BaseController
         $this->setValidationConstraints($constraints);
 
         if ($this->doValidateRequest($this->requestData)) {
-            $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
+            $zone_templ_id = $this->getSafeRequestValue('id');
             $this->zoneTemplate->deleteZoneTempl((int)$zone_templ_id);
 
             $auditService = $this->createAuditService();
@@ -95,7 +94,7 @@ class DeleteZoneTemplController extends BaseController
 
     private function showDeleteZoneTempl(): void
     {
-        $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
+        $zone_templ_id = $this->getSafeRequestValue('id');
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, (int)$zone_templ_id);
 
         $this->render('delete_zone_templ.html', [

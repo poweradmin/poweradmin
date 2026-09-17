@@ -35,11 +35,6 @@ use Poweradmin\Domain\Model\UserPreference;
 class UserPreferencesController extends BaseController
 {
 
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
-
     public function run(): void
     {
         // Check if user is logged in; if not, redirect to login page
@@ -92,9 +87,6 @@ class UserPreferencesController extends BaseController
     private function handlePreferencesUpdate(int $userId, $userPreferenceService): void
     {
         try {
-            // Verify CSRF token
-            $this->validateCsrfToken();
-
             // Update each preference that was submitted (excluding TTL as requested)
             $preferencesToUpdate = [
                 UserPreference::KEY_ROWS_PER_PAGE => $this->httpRequest->getPostParam('rows_per_page'),

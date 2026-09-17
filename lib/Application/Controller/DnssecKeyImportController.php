@@ -34,11 +34,6 @@ use Poweradmin\Domain\Enum\DnssecKeyType;
 class DnssecKeyImportController extends DnssecKeyController
 {
 
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
-
     public function run(): void
     {
         $zoneIdInt = $this->requireNumericParam('id');
@@ -51,8 +46,6 @@ class DnssecKeyImportController extends DnssecKeyController
             $this->redirect('/zones/' . $zoneId . '/dnssec');
             return;
         }
-
-        $this->validateCsrfToken();
 
         $keyType = $this->getSafeRequestValue('key_type');
         $algorithm = $this->getSafeRequestValue('algorithm');

@@ -36,7 +36,6 @@ class DnssecToggleKeyController extends DnssecKeyController
             $this->showError(_('This action requires a POST request.'));
             return;
         }
-        $this->validateCsrfToken();
 
         // Validate permissions
         [$domain_name, $dnssecProvider] = $this->requireManagedDnssecZone($zone_id);

@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Domain\Service\SessionKeys;
 
 /**
  * Renders the list of zones linked to one zone template.
@@ -70,7 +69,7 @@ class ListTemplateZonesController extends BaseController
         $template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
         // Get zones using this template with pagination
-        $zones = $zoneTemplate->getZonesUsingTemplate($zone_templ_id, $_SESSION[SessionKeys::USERID]);
+        $zones = $zoneTemplate->getZonesUsingTemplate($zone_templ_id, (int)$this->getCurrentUserId());
 
         // Get total count of zones for pagination
         $totalZones = count($zones);
@@ -81,7 +80,7 @@ class ListTemplateZonesController extends BaseController
         $this->render('list_template_zones.html', [
             'template' => $template_details,
             'zones' => $paginatedZones,
-            'user_name' => $this->createUserRepository()->getFullNameById($_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
+            'user_name' => $this->createUserRepository()->getFullNameById((int)$this->getCurrentUserId()) ?: $this->getUserContextService()->getLoggedInUsername(),
             'pagination' => $this->presentPagination($totalZones, $itemsPerPage, '/zones/templates/' . $zone_templ_id . '/zones?start={PageNumber}'),
             'total_zones' => $totalZones,
             'iface_rowamount' => $itemsPerPage

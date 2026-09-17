@@ -29,7 +29,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -37,11 +36,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AddZoneSlaveController extends BaseController
 {
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
 
     public function run(): void
     {
@@ -58,7 +52,6 @@ class AddZoneSlaveController extends BaseController
         }
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->addZone();
         } else {
             $this->showForm();
@@ -138,9 +131,9 @@ class AddZoneSlaveController extends BaseController
     {
         // Keep the submitted values if there was an error
         $domainInput = $this->httpRequest->getPostParam('domain');
-        $domain_value = $domainInput !== null ? htmlspecialchars($domainInput) : '';
+        $domain_value = $domainInput ?? '';
         $slaveMasterInput = $this->httpRequest->getPostParam('slave_master');
-        $slave_master_value = $slaveMasterInput !== null ? htmlspecialchars($slaveMasterInput) : '';
+        $slave_master_value = $slaveMasterInput ?? '';
         $users = $this->createUserRepository()->getUsersWithZoneCounts();
 
         $assignableOwners = $this->assignableOwners($users);
@@ -151,7 +144,7 @@ class AddZoneSlaveController extends BaseController
         // Fetch groups for the dropdown - admins see all, others see only their own
         $userGroupRepo = $this->createUserGroupRepository();
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
-        $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId($_SESSION[SessionKeys::USERID]);
+        $allGroups = $isAdmin ? $userGroupRepo->findAll() : $userGroupRepo->findByUserId((int)$this->getCurrentUserId());
 
         // Fetch member counts for all groups in a single query
         $groupIds = array_map(fn($g) => $g->getId(), $allGroups);
@@ -171,7 +164,7 @@ class AddZoneSlaveController extends BaseController
             'is_reverse_zone' => $is_reverse_zone,
             'users' => $users,
             'selectable_owners' => $assignableOwners,
-            'session_user_id' => $_SESSION[SessionKeys::USERID],
+            'session_user_id' => $this->getCurrentUserId(),
             'domain_value' => $domain_value,
             'slave_master_value' => $slave_master_value,
             'owner_value' => $owner_value,

@@ -82,7 +82,7 @@ class BatchPtrRecordController extends BaseController
 
         if ($hasZoneId) {
             $this->checkId();
-            $zone_id = (int)htmlspecialchars($id);
+            $zone_id = (int)$id;
             $zone_type = $this->domainRepository->getDomainType($zone_id);
             $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             $userId = $this->userContextService->getLoggedInUserId();
@@ -104,7 +104,6 @@ class BatchPtrRecordController extends BaseController
         if ($this->isPost()) {
             $formData = $this->httpRequest->getPostParams();
             try {
-                $this->validateCsrfToken();
                 if ($this->addBatchPtrRecords()) {
                     // Clear form data on success
                     $formData = [];
@@ -220,7 +219,7 @@ class BatchPtrRecordController extends BaseController
         $preFillDomain = "";
 
         if ($hasZoneId) {
-            $zone_id = (int)htmlspecialchars($id);
+            $zone_id = (int)$id;
             $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
             $preFillDomain = $zone_name;

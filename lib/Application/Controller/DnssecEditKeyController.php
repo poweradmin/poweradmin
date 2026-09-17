@@ -33,11 +33,6 @@ use Poweradmin\Domain\Utility\DnsHelper;
 class DnssecEditKeyController extends DnssecKeyController
 {
 
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
-
     public function run(): void
     {
         $zone_id = $this->requireNumericParam('zone_id', _('Invalid zone ID.'));

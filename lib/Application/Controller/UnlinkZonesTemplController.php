@@ -32,11 +32,6 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 class UnlinkZonesTemplController extends BaseController
 {
 
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
-
     public function run(): void
     {
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
@@ -46,8 +41,6 @@ class UnlinkZonesTemplController extends BaseController
         $this->checkCondition(!($perm_godlike || $perm_zone_edit || $perm_zone_meta_edit), _('You do not have permission to unlink zones from templates.'));
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
-
             $zone_ids = $this->httpRequest->getPostParam('zone_ids', []);
             $template_id = filter_input(INPUT_POST, 'template_id', FILTER_VALIDATE_INT);
 

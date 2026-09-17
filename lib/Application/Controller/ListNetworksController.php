@@ -34,11 +34,6 @@ use Poweradmin\Domain\Model\Permission;
 class ListNetworksController extends BaseController
 {
 
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
-
     public function run(): void
     {
         if (!$this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
@@ -59,7 +54,6 @@ class ListNetworksController extends BaseController
         }
 
         if (!empty($this->httpRequest->getPostParams())) {
-            $this->validateCsrfToken();
             $action = $this->getSafeRequestValue('action');
             $cidr = trim($this->getSafeRequestValue('cidr'));
             $view = trim($this->getSafeRequestValue('view'));

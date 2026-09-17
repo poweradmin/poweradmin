@@ -65,7 +65,6 @@ class DeleteDomainsController extends BaseController
         $this->verifyDeletePermission($zone_ids);
 
         if ($this->httpRequest->getPostParam('confirm') !== null) {
-            $this->validateCsrfToken();
             $this->deleteDomains($zone_ids);
         }
 

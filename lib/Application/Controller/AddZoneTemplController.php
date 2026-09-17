@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -32,11 +31,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AddZoneTemplController extends BaseController
 {
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
     public function run(): void
     {
         $this->checkPermission(Permission::PERM_ZONE_TEMPL_ADD, _("You do not have the permission to add a zone template."));
@@ -46,7 +40,6 @@ class AddZoneTemplController extends BaseController
         $this->setPageTitle(_('Add zone template'));
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->addZoneTemplate();
         } else {
             $this->showAddZoneTemplate();
@@ -56,7 +49,7 @@ class AddZoneTemplController extends BaseController
     private function showAddZoneTemplate(): void
     {
         $this->render('add_zone_templ.html', [
-            'user_name' => $this->createUserRepository()->getFullNameById($_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
+            'user_name' => $this->createUserRepository()->getFullNameById((int)$this->getCurrentUserId()) ?: $this->getUserContextService()->getLoggedInUsername(),
             'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER),
             'templ_name' => '',
             'templ_descr' => '',
@@ -83,16 +76,16 @@ class AddZoneTemplController extends BaseController
         }
 
         $zoneTemplate = $this->createZoneTemplateModel();
-        if ($zoneTemplate->addZoneTempl($postParams, $_SESSION[SessionKeys::USERID])) {
+        if ($zoneTemplate->addZoneTempl($postParams, (int)$this->getCurrentUserId())) {
             $auditService = $this->createAuditService();
             $auditService->logZoneTemplateAdd($postParams['templ_name'] ?? '');
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been added successfully.'));
             $this->redirect('/zones/templates');
         } else {
             $this->render('add_zone_templ.html', [
-                'user_name' => $this->createUserRepository()->getFullNameById($_SESSION[SessionKeys::USERID]) ?: $_SESSION[SessionKeys::USERLOGIN],
-                'templ_name' => htmlspecialchars($postParams['templ_name']),
-                'templ_descr' => htmlspecialchars($postParams['templ_descr']),
+                'user_name' => $this->createUserRepository()->getFullNameById((int)$this->getCurrentUserId()) ?: $this->getUserContextService()->getLoggedInUsername(),
+                'templ_name' => $postParams['templ_name'],
+                'templ_descr' => $postParams['templ_descr'],
                 'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)
             ]);
         }

@@ -33,11 +33,6 @@ use Poweradmin\Domain\Service\DatabaseConsistencyService;
 class DatabaseConsistencyController extends BaseController
 {
 
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
-
     public function run(): void
     {
         if (!$this->getUserContextService()->isAuthenticated()) {
@@ -65,7 +60,6 @@ class DatabaseConsistencyController extends BaseController
         // only the local zones table, so it must still work when the API is briefly
         // down. API-dependent fixes fail gracefully on their own.
         if ($this->isPost() && $this->httpRequest->getPostParam('action') !== null && $this->httpRequest->getPostParam('check_type') !== null) {
-            $this->validateCsrfToken();
             $this->handleFixAction($consistencyService);
             return;
         }

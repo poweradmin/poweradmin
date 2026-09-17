@@ -36,11 +36,6 @@ use Poweradmin\Domain\Service\ZoneAccessPolicy;
 class EditCommentController extends BaseController
 {
 
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
-
     public function run(): void
     {
         $domainRepository = $this->createDomainRepository();
@@ -83,8 +78,6 @@ class EditCommentController extends BaseController
         $perm_edit_comment = !$can_edit;
 
         if ($this->httpRequest->getPostParam('commit') !== null) {
-            $this->validateCsrfToken();
-
             if ($perm_edit_comment) {
                 $messageService = new MessageService();
                 $messageService->addSystemError(_("You do not have the permission to edit this comment."));

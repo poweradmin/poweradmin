@@ -67,8 +67,6 @@ class EditUserController extends BaseController
         $policyConfig = $this->policyService->getPolicyConfig();
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
-
             // Check if this is a group addition request
             $action = $this->httpRequest->getPostParam('action');
             if ($action === 'add_groups') {
@@ -244,20 +242,20 @@ class EditUserController extends BaseController
         // (overwritten on the next sync), so ignore any submitted changes to them.
         $identity = self::resolveIdentityFields(
             $stored,
-            htmlspecialchars($this->httpRequest->getPostParam('fullname')),
-            htmlspecialchars($this->httpRequest->getPostParam('email')),
+            (string)$this->httpRequest->getPostParam('fullname'),
+            (string)$this->httpRequest->getPostParam('email'),
             $useLdap && $this->isLdapSyncEnabled()
         );
 
         $input = [
             'fullname' => $identity['fullname'],
             'email' => $identity['email'],
-            'description' => htmlspecialchars($this->httpRequest->getPostParam('description')),
+            'description' => (string)$this->httpRequest->getPostParam('description'),
         ];
 
         // Username and the LDAP flag are auth-critical, not self-service (#1327)
         if (!$restrictedSelfEdit) {
-            $input['username'] = htmlspecialchars($this->httpRequest->getPostParam('username'));
+            $input['username'] = (string)$this->httpRequest->getPostParam('username');
         }
         if ($this->ldapControlEditable($editId)) {
             $input['use_ldap'] = $useLdap;

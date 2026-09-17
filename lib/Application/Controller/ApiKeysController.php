@@ -31,7 +31,6 @@ use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
-use Poweradmin\Domain\Service\SessionKeys;
 
 /**
  * Renders the API key list page and links to the add, edit, delete and regenerate actions.
@@ -141,9 +140,9 @@ class ApiKeysController extends BaseController
         $this->render('api_keys.html', [
             'api_keys' => $apiKeys,
             'max_keys_per_user' => $this->config->get('api', 'max_keys_per_user', 5),
-            'current_keys_count' => $this->apiKeyRepository->countByUser($_SESSION[SessionKeys::USERID]),
+            'current_keys_count' => $this->apiKeyRepository->countByUser((int)$this->getCurrentUserId()),
             'can_add_more' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER) ||
-                $this->apiKeyRepository->countByUser($_SESSION[SessionKeys::USERID]) < $this->config->get('api', 'max_keys_per_user', 5)
+                $this->apiKeyRepository->countByUser((int)$this->getCurrentUserId()) < $this->config->get('api', 'max_keys_per_user', 5)
         ]);
     }
 
@@ -154,8 +153,6 @@ class ApiKeysController extends BaseController
     {
         // Handle form submission
         if ($this->isPost()) {
-            $this->validateCsrfToken();
-
             // Process form data
             $name = $this->getSafeRequestValue('name');
             $expiresAt = $this->getSafeRequestValue('expires_at');
@@ -225,8 +222,6 @@ class ApiKeysController extends BaseController
 
         // Handle form submission
         if ($this->isPost()) {
-            $this->validateCsrfToken();
-
             // Process form data
             $name = $this->getSafeRequestValue('name');
             $expiresAt = $this->getSafeRequestValue('expires_at');
@@ -291,8 +286,6 @@ class ApiKeysController extends BaseController
 
         // Handle form submission for confirmation
         if ($this->isPost()) {
-            $this->validateCsrfToken();
-
             $deleted = $this->apiKeyService->deleteApiKey($id);
 
             if ($deleted->success) {
@@ -335,8 +328,6 @@ class ApiKeysController extends BaseController
 
         // Handle form submission for confirmation
         if ($this->isPost()) {
-            $this->validateCsrfToken();
-
             $regenerated = $this->apiKeyService->regenerateSecretKey($id);
 
             if ($regenerated->success) {
@@ -363,8 +354,6 @@ class ApiKeysController extends BaseController
      */
     private function toggleApiKey(): void
     {
-        $this->validateCsrfToken();
-
         $id = (int)$this->getSafeRequestValue('id');
         $disable = $this->getSafeRequestValue('disable') === '1';
 

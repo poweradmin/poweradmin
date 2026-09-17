@@ -33,8 +33,6 @@ class SetDefaultZoneTemplController extends BaseController
 {
     public function run(): void
     {
-        $this->validateCsrfToken();
-
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $this->checkCondition(!$perm_godlike, _("You do not have the permission to change the default zone template."));
 

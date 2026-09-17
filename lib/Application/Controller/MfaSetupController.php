@@ -67,8 +67,6 @@ class MfaSetupController extends BaseController
 
         // MFA setup forms processing
         if ($this->isPost()) {
-            $this->validateCsrfToken();
-
             if ($this->httpRequest->getPostParam('setup_app') !== null) {
                 $this->handleAppSetup();
                 return;

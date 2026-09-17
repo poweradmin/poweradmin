@@ -89,7 +89,6 @@ class DeleteRecordController extends BaseController
         $domain_id = $recordRepository->recidToDomid($record_id);
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $record_info = $recordRepository->getRecordFromId($record_id);
             if ($record_info === null) {
                 $this->showError(_('Record not found.'));

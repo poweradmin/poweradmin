@@ -88,7 +88,6 @@ class ZoneCatalogController extends BaseController
         $mayEdit = $this->catalogService->canManageZone($userId, $zoneId);
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->handleFormSubmission($zoneId, $userId, $mayEdit);
         }
 

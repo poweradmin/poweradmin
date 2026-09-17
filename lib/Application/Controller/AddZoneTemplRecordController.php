@@ -70,8 +70,6 @@ class AddZoneTemplRecordController extends BaseController
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to add records to zone templates."));
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
-
             $constraints = [
                 'name' => [
                     new Assert\NotBlank()
@@ -147,12 +145,12 @@ class AddZoneTemplRecordController extends BaseController
         $this->render('add_zone_templ_record.html', [
             'templ_name' => $templ_details['name'],
             'zone_templ_id' => $zone_templ_id,
-            'name' => htmlspecialchars($name),
-            'type' => htmlspecialchars($type),
+            'name' => $name,
+            'type' => $type,
             'record_types' => $this->recordTypeService->getAllTypes($this->getRecordTypeCapabilities()),
-            'content' => htmlspecialchars($content),
-            'prio' => htmlspecialchars($prio),
-            'ttl' => htmlspecialchars($ttl),
+            'content' => $content,
+            'prio' => $prio,
+            'ttl' => $ttl,
             'zones_linked_count' => $zones_linked_count,
         ]);
     }

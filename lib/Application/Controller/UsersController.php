@@ -29,18 +29,12 @@ use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\SelfEditFieldGuard;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Symfony\Component\Validator\Constraints as Assert;
-use Poweradmin\Domain\Service\SessionKeys;
 
 /**
  * Renders the users list and saves the inline edits submitted from it.
  */
 class UsersController extends BaseController
 {
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
 
     public function run(): void
     {
@@ -60,7 +54,6 @@ class UsersController extends BaseController
         $this->setPageTitle(_('Users'));
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->updateUsers();
         }
         $this->showUsers();
@@ -204,7 +197,7 @@ class UsersController extends BaseController
             'permissions' => $permissions,
             'perm_templates' => $this->createPermissionTemplateRepository()->listPermissionTemplates('user'),
             'users' => $users,
-            'session_userid' => $_SESSION[SessionKeys::USERID],
+            'session_userid' => $this->getCurrentUserId(),
             'perm_add_new' => $this->hasPermission(Permission::PERM_USER_ADD_NEW),
             'perm_is_godlike' => $permissions[Permission::PERM_USER_IS_UEBERUSER],
             'perm_user_logs_view' => $this->hasPermission(Permission::PERM_USER_LOGS_VIEW),

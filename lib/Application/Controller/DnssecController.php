@@ -32,18 +32,12 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Domain\Service\SessionKeys;
 
 /**
  * Renders the DNSSEC key overview for a zone and handles the unsign-zone action.
  */
 class DnssecController extends BaseController
 {
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
 
     public function run(): void
     {
@@ -69,7 +63,6 @@ class DnssecController extends BaseController
                 $this->showDnsSecKeys($zone_id);
                 return;
             }
-            $this->validateCsrfToken();
 
             $zone_name = $domainRepository->getDomainNameById($zone_id);
             if ($zone_name === null) {
@@ -112,7 +105,7 @@ class DnssecController extends BaseController
             'record_count' => $this->createRecordRepository()->countZoneRecords($zone_id),
             'zone_id' => $zone_id,
             'zone_template_id' => DomainManager::getZoneTemplate($this->db, $zone_id),
-            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]),
+            'zone_templates' => $zone_templates->getListZoneTempl((int)$this->getCurrentUserId()),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'algorithm_names' => DnssecAlgorithmName::getSupportedAlgorithmNamesForCapabilities($this->getPdnsCapabilities()),
             'can_manage_dnssec' => $can_manage_dnssec,

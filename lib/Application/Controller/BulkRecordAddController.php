@@ -61,7 +61,7 @@ class BulkRecordAddController extends BaseController
     {
         $this->checkId();
 
-        $zone_id = (int)htmlspecialchars($this->getSafeRequestValue('id'));
+        $zone_id = (int)$this->getSafeRequestValue('id');
         $zone_type = $this->domainRepository->getDomainType($zone_id);
         $userId = $this->userContextService->getLoggedInUserId();
 
@@ -73,7 +73,6 @@ class BulkRecordAddController extends BaseController
         );
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->doBulkRecordAddition();
         } else {
             $this->showBulkRecordAdditionForm();
@@ -212,7 +211,7 @@ class BulkRecordAddController extends BaseController
 
     private function showBulkRecordAdditionForm(array $failed_records = []): void
     {
-        $zone_id = (int)htmlspecialchars($this->getSafeRequestValue('id'));
+        $zone_id = (int)$this->getSafeRequestValue('id');
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
         // For internationalized domain names

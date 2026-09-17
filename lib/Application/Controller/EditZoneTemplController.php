@@ -84,7 +84,6 @@ class EditZoneTemplController extends BaseController
         }
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->updateZoneTemplate($zone_templ_id);
         }
         $this->showForm($zone_templ_id);
@@ -280,7 +279,7 @@ class EditZoneTemplController extends BaseController
         $success = $this->zoneTemplate->addZoneTemplSaveAs(
             $postParams['templ_name'],
             $postParams['templ_descr'],
-            $_SESSION[SessionKeys::USERID],
+            (int)$this->getCurrentUserId(),
             $records,
             $options,
             '' // Empty domain since we're not doing domain substitution

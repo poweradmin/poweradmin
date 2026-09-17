@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -32,11 +31,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class EditSupermasterController extends BaseController
 {
-
-    public function __construct(array $request)
-    {
-        parent::__construct($request);
-    }
 
     public function run(): void
     {
@@ -50,7 +44,6 @@ class EditSupermasterController extends BaseController
         $account = $this->httpRequest->getPostParam('account', "");
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->updateSuperMaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account);
         } else {
             $this->showEditSuperMaster($old_master_ip, $old_ns_name);
@@ -137,13 +130,13 @@ class EditSupermasterController extends BaseController
         $this->render('edit_supermaster.html', [
             'users' => $users,
             'selectable_owners' => $selectableOwners,
-            'master_ip' => htmlspecialchars($new_master_ip),
-            'ns_name' => htmlspecialchars($new_ns_name),
-            'account' => htmlspecialchars($account),
-            'old_master_ip' => htmlspecialchars($old_master_ip),
-            'old_ns_name' => htmlspecialchars($old_ns_name),
+            'master_ip' => $new_master_ip,
+            'ns_name' => $new_ns_name,
+            'account' => $account,
+            'old_master_ip' => $old_master_ip,
+            'old_ns_name' => $old_ns_name,
             'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
-            'session_uid' => $_SESSION[SessionKeys::USERID]
+            'session_uid' => $this->getCurrentUserId()
         ]);
     }
 }

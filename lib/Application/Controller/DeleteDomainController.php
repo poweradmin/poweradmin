@@ -75,7 +75,6 @@ class DeleteDomainController extends BaseController
         );
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->deleteDomain($zone_id);
         } else {
             $this->showDeleteDomain($zone_id);

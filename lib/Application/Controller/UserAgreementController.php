@@ -83,8 +83,6 @@ class UserAgreementController extends BaseController
 
     private function handleAgreementSubmission(): void
     {
-        $this->validateCsrfToken();
-
         if ($this->httpRequest->getPostParam('accept_agreement') === null) {
             $this->setMessage('user_agreement', 'danger', 'You must accept the agreement to continue.');
             $this->showAgreementForm();

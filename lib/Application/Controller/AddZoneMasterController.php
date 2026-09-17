@@ -33,7 +33,6 @@ use Poweradmin\Domain\Service\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -69,7 +68,6 @@ class AddZoneMasterController extends BaseController
         }
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->addZone();
         } else {
             $this->showForm();
@@ -273,7 +271,7 @@ class AddZoneMasterController extends BaseController
 
         // Keep the submitted zone name if there was an error
         $domainInput = $this->httpRequest->getPostParam('domain');
-        $domain_value = $domainInput !== null ? htmlspecialchars($domainInput) : '';
+        $domain_value = $domainInput ?? '';
 
         // Resolve the system-wide default template (DB flag → config setting → none)
         $default_template_id = $zone_templates->getDefaultTemplateId();
@@ -288,7 +286,7 @@ class AddZoneMasterController extends BaseController
                 // Otherwise, ensure it's a valid integer
                 $template_id = filter_var($zoneTemplateInput, FILTER_VALIDATE_INT);
                 // Get the list of valid template IDs
-                $templates = $zone_templates->getListZoneTempl($_SESSION[SessionKeys::USERID]);
+                $templates = $zone_templates->getListZoneTempl((int)$this->getCurrentUserId());
                 $valid_template_ids = array_column($templates, 'id');
                 $zone_template_value = ($template_id !== false && in_array($template_id, $valid_template_ids)) ?
                     $template_id : 'none';

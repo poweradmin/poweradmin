@@ -146,11 +146,11 @@ class ListLogZonesController extends BaseController
 
         $this->render('list_log_zones.html', [
             'number_of_logs' => $number_of_logs,
-            'name' => htmlspecialchars($this->httpRequest->getQueryParam('name', '')),
-            'operation' => htmlspecialchars($this->httpRequest->getQueryParam('operation', '')),
-            'user_filter' => htmlspecialchars($this->httpRequest->getQueryParam('user', '')),
-            'date_from' => htmlspecialchars($this->httpRequest->getQueryParam('date_from', '')),
-            'date_to' => htmlspecialchars($this->httpRequest->getQueryParam('date_to', '')),
+            'name' => $this->httpRequest->getQueryParam('name', ''),
+            'operation' => $this->httpRequest->getQueryParam('operation', ''),
+            'user_filter' => $this->httpRequest->getQueryParam('user', ''),
+            'date_from' => $this->httpRequest->getQueryParam('date_from', ''),
+            'date_to' => $this->httpRequest->getQueryParam('date_to', ''),
             'zone_id_filter' => $requestedZoneId,
             'zone_name' => $zone_filter_name,
             'is_reverse_zone' => $is_reverse_zone,

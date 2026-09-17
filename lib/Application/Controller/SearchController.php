@@ -115,8 +115,6 @@ class SearchController extends BaseController
         $iface_record_comments = $this->config->get('interface', 'show_record_comments', false);
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
-
             $query = $this->httpRequest->getPostParam('query');
             $rawQuery = !empty($query) ? $query : '';
 
@@ -127,21 +125,21 @@ class SearchController extends BaseController
             $displayed_query = $rawQuery;
 
             // Use the cleaned query (without filters) for actual searching
-            $parameters['query'] = htmlspecialchars($cleanQuery);
+            $parameters['query'] = $cleanQuery;
 
             // Store the original query for display purposes
-            $parameters['displayed_query'] = htmlspecialchars($displayed_query);
+            $parameters['displayed_query'] = $displayed_query;
 
             $zones = $this->httpRequest->getPostParam('zones');
             $records = $this->httpRequest->getPostParam('records');
             $wildcard = $this->httpRequest->getPostParam('wildcard');
             $reverse = $this->httpRequest->getPostParam('reverse');
             $comments = $this->httpRequest->getPostParam('comments');
-            $parameters['zones'] = $zones !== null ? htmlspecialchars($zones) : false;
-            $parameters['records'] = $records !== null ? htmlspecialchars($records) : false;
-            $parameters['wildcard'] = $wildcard !== null ? htmlspecialchars($wildcard) : false;
-            $parameters['reverse'] = $reverse !== null ? htmlspecialchars($reverse) : false;
-            $parameters['comments'] = $comments !== null ? htmlspecialchars($comments) : false;
+            $parameters['zones'] = $zones ?? false;
+            $parameters['records'] = $records ?? false;
+            $parameters['wildcard'] = $wildcard ?? false;
+            $parameters['reverse'] = $reverse ?? false;
+            $parameters['comments'] = $comments ?? false;
 
             // A bare IP query should always search records and reverse zones, even when
             // the user did not tick those boxes - that is almost certainly a PTR lookup.
@@ -154,23 +152,23 @@ class SearchController extends BaseController
             // Only use extracted type and content filters from the query string
             // This ensures filters from the search box always take precedence
             if (!empty($extractedFilters['type'])) {
-                $parameters['type_filter'] = htmlspecialchars($extractedFilters['type']);
+                $parameters['type_filter'] = $extractedFilters['type'];
                 // Enable records search if type filter is found in query
                 $parameters['records'] = true;
             } else {
                 // Only use form field if no filter in query string
                 $type_filter = $this->httpRequest->getPostParam('type_filter');
-                $parameters['type_filter'] = $type_filter !== null ? htmlspecialchars($type_filter) : '';
+                $parameters['type_filter'] = $type_filter ?? '';
             }
 
             if (!empty($extractedFilters['content'])) {
-                $parameters['content_filter'] = htmlspecialchars($extractedFilters['content']);
+                $parameters['content_filter'] = $extractedFilters['content'];
                 // Enable records search if content filter is found in query
                 $parameters['records'] = true;
             } else {
                 // Only use form field if no filter in query string
                 $content_filter = $this->httpRequest->getPostParam('content_filter');
-                $parameters['content_filter'] = $content_filter !== null ? htmlspecialchars($content_filter) : '';
+                $parameters['content_filter'] = $content_filter ?? '';
             }
 
             // If records search is disabled, clear the filters
@@ -316,7 +314,7 @@ class SearchController extends BaseController
             'delete_permission' => $deletePermission,
             'can_bulk_delete_zones' => $can_bulk_delete_zones,
             'can_bulk_delete_records' => $can_bulk_delete_records,
-            'user_id' => $_SESSION[SessionKeys::USERID],
+            'user_id' => $this->getCurrentUserId(),
             'show_zone_owners' => $ownershipViewPermission !== 'none',
             'is_owner_sort_supported' => $ownerSortAllowed,
             'whois_action_patterns' => $this->moduleCapabilityData('whois_lookup'),

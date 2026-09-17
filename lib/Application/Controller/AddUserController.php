@@ -76,7 +76,6 @@ class AddUserController extends BaseController
         $policyConfig = $this->passwordPolicyService->getPolicyConfig();
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->addUser($policyConfig);
         } else {
             $this->renderAddUserForm($policyConfig);
