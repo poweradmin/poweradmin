@@ -27,6 +27,7 @@ use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\RequestValidator;
 use Poweradmin\Application\Service\CsrfTokenService;
@@ -91,7 +92,7 @@ use Psr\Log\LoggerInterface;
 abstract class BaseController
 {
     private ?AppManager $app = null;
-    private AppInitializer $init;
+    private ?AppInitializer $init = null;
     protected PDO $db;
     protected array $requestData;
     protected HttpRequest $httpRequest;
@@ -116,30 +117,47 @@ abstract class BaseController
      *
      * @param array $request The request data.
      * @param bool $authenticate Whether to authenticate the user.
+     * @param ControllerEnvironment|null $environment Pre-built collaborators; a test
+     *        seam that skips the config/database/session bootstrap. The router
+     *        never passes one, so production construction is unchanged.
      */
-    public function __construct(array $request, bool $authenticate = true)
+    public function __construct(array $request, bool $authenticate = true, ?ControllerEnvironment $environment = null)
     {
-        // Create logger early so AppManager and ConfigurationManager can use it
-        $this->config = ConfigurationManager::getInstance();
-        $this->config->initialize();
+        if ($environment !== null) {
+            $this->config = $environment->config;
+            $this->logger = $environment->logger;
+            $this->db = $environment->db;
+            $this->serviceFactory = $environment->serviceFactory;
 
-        $this->logger = Logger::fromConfig($this->config);
+            $this->requestData = $request;
+            $this->httpRequest = $environment->httpRequest ?? new HttpRequest();
 
-        $this->config->setLogger($this->logger);
+            $this->csrfTokenService = $environment->csrfTokenService ?? new CsrfTokenService();
+            $this->messageService = $environment->messageService ?? new MessageService();
+            $this->userContextService = $environment->userContextService ?? new UserContextService();
+        } else {
+            // Create logger early so AppManager and ConfigurationManager can use it
+            $this->config = ConfigurationManager::getInstance();
+            $this->config->initialize();
 
-        // Kept eager: the template stack below is lazy, and a broken configuration
-        // should still stop the request rather than surface deep in a handler
-        AppManager::assertConfigurationUsable($this->config);
+            $this->logger = Logger::fromConfig($this->config);
 
-        $this->init = new AppInitializer($authenticate);
-        $this->db = $this->init->getDb();
+            $this->config->setLogger($this->logger);
 
-        $this->requestData = $request;
-        $this->httpRequest = new HttpRequest();
+            // Kept eager: the template stack below is lazy, and a broken configuration
+            // should still stop the request rather than surface deep in a handler
+            AppManager::assertConfigurationUsable($this->config);
 
-        $this->csrfTokenService = new CsrfTokenService();
-        $this->messageService = new MessageService();
-        $this->userContextService = new UserContextService();
+            $this->init = new AppInitializer($authenticate);
+            $this->db = $this->init->getDb();
+
+            $this->requestData = $request;
+            $this->httpRequest = new HttpRequest();
+
+            $this->csrfTokenService = new CsrfTokenService();
+            $this->messageService = new MessageService();
+            $this->userContextService = new UserContextService();
+        }
 
         // Every state-changing web request is token-checked here rather than in each
         // controller, so a handler cannot be written without the guard
@@ -951,7 +969,7 @@ abstract class BaseController
             $this->csrfTokenService,
             $this->userContextService,
             $this->hasPermission(...),
-            $this->init->getDebugQueries(...),
+            fn(): array => $this->init?->getDebugQueries() ?? [],
             $this->getWideLayout()
         );
     }
