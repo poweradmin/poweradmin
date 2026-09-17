@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -71,7 +72,7 @@ class ZonesRecordsController extends PublicApiController
             'POST' => $this->createRecord(),
             'PUT' => $this->updateRecord(),
             'DELETE' => $this->deleteRecord(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
         $response->send();
@@ -164,9 +165,11 @@ class ZonesRecordsController extends PublicApiController
             // Filter out ENT (Empty Non-Terminal) records created by PowerDNS for RFC 8020 compliance.
             // These records have NULL/empty type and are not user-manageable.
             // Note: Repository already filters these, but kept as defensive measure.
-            $validRecords = array_filter($records, function ($record) {
+            // array_values() so dropped rows cannot leave gaps in the keys, which
+            // would serialize the records list as a JSON object instead of an array.
+            $validRecords = array_values(array_filter($records, function ($record) {
                 return !empty($record['type']) && !empty($record['name']);
-            });
+            }));
 
             // Format record data
             $formattedRecords = array_map(function ($record) {
@@ -194,7 +197,7 @@ class ZonesRecordsController extends PublicApiController
      * @return JsonResponse The JSON response
      */
     #[OA\Get(
-        path: '/v2/zones/{id}/records/{recordId}',
+        path: '/v2/zones/{id}/records/{record_id}',
         operationId: 'v2GetZoneRecord',
         summary: 'Get a specific record',
         tags: ['records'],
@@ -208,7 +211,7 @@ class ZonesRecordsController extends PublicApiController
         schema: new OA\Schema(type: 'integer')
     )]
     #[OA\Parameter(
-        name: 'recordId',
+        name: 'record_id',
         in: 'path',
         description: 'Record ID',
         required: true,
@@ -326,7 +329,8 @@ class ZonesRecordsController extends PublicApiController
                 new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'Time to live (TTL) in seconds'),
                 new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.)'),
                 new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled). Default: false'),
-                new OA\Property(property: 'create_ptr', type: 'boolean', example: false, description: 'Automatically create PTR record (reverse DNS). Only applicable for A and AAAA records. Requires matching reverse zone. Default: false')
+                new OA\Property(property: 'create_ptr', type: 'boolean', example: false, description: 'Automatically create PTR record (reverse DNS). Only applicable for A and AAAA records. Requires matching reverse zone. Default: false'),
+                new OA\Property(property: 'comment', type: 'string', example: 'web server', description: 'Optional change-log/RRset comment stored with the record')
             ]
         )
     )]
@@ -410,8 +414,8 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
-            if (!$input) {
+            $input = $this->getValidatedJsonBody();
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
@@ -469,47 +473,47 @@ class ZonesRecordsController extends PublicApiController
             // Format content, with V2 API always auto-quoting TXT records
             $content = $this->formatV2RecordContent($type, $content);
 
-            // Validation, the duplicate check, the serial bump, the change log and the
-            // rectify are the record manager's, as on the web.
-            $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled);
-            if (!$created->success) {
-                return $this->returnApiError($this->recordWriteErrorMessage($created, 'Failed to create record'), $created->status);
+            $comment = trim((string)$this->inputString($input, 'comment', ''));
+
+            // The same add flow as the web forms: validation, the duplicate check, the
+            // serial bump, the change log, rectify, the record comment and the companion
+            // PTR (whose TTL honours dns.ttl_reverse) all follow the shared rules.
+            $companion = ($createPtr && ($type === 'A' || $type === 'AAAA')) ? RecordAddResult::COMPANION_PTR : '';
+            $added = $this->createRecordAddService()->add(
+                $zoneId,
+                $zoneName,
+                $normalizedName,
+                $type,
+                $content,
+                $ttl,
+                $priority,
+                $comment,
+                $userId,
+                $this->getAuthenticatedUsername(),
+                $companion,
+                $disabled
+            );
+            if (!$added->isOk()) {
+                return $this->returnApiError($this->recordWriteErrorMessage($added->record, 'Failed to create record'), $added->record->status);
             }
-            $newRecordId = $created->recordId;
+            $newRecordId = $added->record->recordId;
 
             // Fetch the newly created record; the stored values are what the manager validated
             $newRecord = $this->recordRepository->getRecordById($newRecordId);
-            $validatedContent = (string)($newRecord['content'] ?? $content);
             $validatedTtl = (int)($newRecord['ttl'] ?? $ttl);
             $validatedPriority = (int)($newRecord['prio'] ?? $priority);
 
-            // Create PTR record if requested and record type is A or AAAA
-            $ptrCreated = false;
+            $ptrCreated = $added->companionCreated;
             $ptrMessage = '';
-            if ($createPtr && ($type === 'A' || $type === 'AAAA')) {
-                try {
-                    $reverseRecordCreator = $this->createReverseRecordCreator();
-
-                    $ptrResult = $reverseRecordCreator->createReverseRecord(
-                        $name,
-                        $type,
-                        $validatedContent,
-                        $zoneId,
-                        $validatedTtl,
-                        $validatedPriority
-                    );
-
-                    if ($ptrResult['success']) {
-                        $ptrCreated = true;
-                        $ptrMessage = ' PTR record created successfully.';
-                    } else {
-                        // PTR creation failed but don't fail the entire request
-                        $ptrMessage = ' PTR record creation failed: ' . $ptrResult['message'];
+            if ($companion === RecordAddResult::COMPANION_PTR) {
+                if ($ptrCreated) {
+                    $ptrMessage = ' PTR record created successfully.';
+                    if ($added->companionWarning && $added->companionMessage !== null) {
+                        $ptrMessage .= ' ' . $added->companionMessage;
                     }
-                } catch (Exception $e) {
-                    // Log error but don't fail the entire request
-                    $ptrMessage = ' PTR record creation failed: ' . $e->getMessage();
-                    $this->logger->error('PTR record creation failed: {error}', ['error' => $e->getMessage()]);
+                } else {
+                    // PTR creation failed but the record itself is in, as before
+                    $ptrMessage = ' PTR record creation failed: ' . ($added->companionMessage ?? '');
                 }
             }
 
@@ -544,7 +548,7 @@ class ZonesRecordsController extends PublicApiController
      * @return JsonResponse The JSON response
      */
     #[OA\Put(
-        path: '/v2/zones/{id}/records/{recordId}',
+        path: '/v2/zones/{id}/records/{record_id}',
         operationId: 'v2UpdateZoneRecord',
         summary: 'Update an existing record',
         tags: ['records'],
@@ -558,7 +562,7 @@ class ZonesRecordsController extends PublicApiController
         schema: new OA\Schema(type: 'integer')
     )]
     #[OA\Parameter(
-        name: 'recordId',
+        name: 'record_id',
         in: 'path',
         description: 'Record ID',
         required: true,
@@ -657,8 +661,8 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
-            if (!$input) {
+            $input = $this->getValidatedJsonBody();
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
@@ -811,7 +815,7 @@ class ZonesRecordsController extends PublicApiController
      * @return JsonResponse The JSON response
      */
     #[OA\Delete(
-        path: '/v2/zones/{id}/records/{recordId}',
+        path: '/v2/zones/{id}/records/{record_id}',
         operationId: 'v2DeleteZoneRecord',
         summary: 'Delete a record',
         tags: ['records'],
@@ -825,7 +829,7 @@ class ZonesRecordsController extends PublicApiController
         schema: new OA\Schema(type: 'integer')
     )]
     #[OA\Parameter(
-        name: 'recordId',
+        name: 'record_id',
         in: 'path',
         description: 'Record ID',
         required: true,
@@ -833,14 +837,7 @@ class ZonesRecordsController extends PublicApiController
     )]
     #[OA\Response(
         response: 204,
-        description: 'Record deleted successfully',
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: 'success', type: 'boolean', example: true),
-                new OA\Property(property: 'message', type: 'string', example: 'Record deleted successfully'),
-                new OA\Property(property: 'data', type: 'null')
-            ]
-        )
+        description: 'Record deleted successfully'
     )]
     #[OA\Response(
         response: 404,
