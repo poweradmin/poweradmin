@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -32,9 +31,24 @@ use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 /**
  * Renders the zone log page, limited to owned zones for users without the view-others permission.
  */
-class ListLogZonesController extends BaseController
+class ListLogZonesController extends AbstractListLogController
 {
     private DbZoneLogger $dbZoneLogger;
+
+    /**
+     * Owner-only filter applies when the user may see their own zones' logs but
+     * not others'. "all" holders (ueberuser or zone_logs_view_others) see everything.
+     */
+    private bool $applyOwnerFilter = false;
+
+    /** @var int[]|null Scope for the log queries; null means unrestricted. */
+    private ?array $ownedZoneIds = null;
+
+    private ?int $requestedZoneId = null;
+
+    private ?string $zoneFilterName = null;
+
+    private bool $isReverseZone = false;
 
     public function __construct(array $request)
     {
@@ -43,128 +57,108 @@ class ListLogZonesController extends BaseController
         $this->dbZoneLogger = new DbZoneLogger($this->db, $this->createDnsBackendProvider());
     }
 
-    public function run(): void
+    protected function authorize(): bool
     {
         $logPermission = $this->createPermissionService()->getZoneLogPermissionLevel((int)$this->getCurrentUserId());
 
         if ($logPermission === 'none') {
             // Existing deny path: logs the access denial via AuditService and halts.
             $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, 'You do not have the permission to see any logs');
-            return;
+            return false;
         }
 
-        // Set the current page for navigation highlighting
-        $this->setCurrentPage('list_log_zones');
-        $this->setPageTitle(_('Zone logs'));
-
-        // Owner-only filter applies when the user may see their own zones' logs but
-        // not others'. "all" holders (ueberuser or zone_logs_view_others) see everything.
-        $applyOwnerFilter = $logPermission === 'own';
-        $this->showListLogZones($applyOwnerFilter);
+        $this->applyOwnerFilter = $logPermission === 'own';
+        return true;
     }
 
-    private function buildFilters(): array
+    protected function getPageName(): string
     {
-        $filters = [];
-        $name = $this->httpRequest->getQueryParam('name');
-        if (!empty($name)) {
-            $filters['name'] = DnsIdnService::toPunycode($name);
-        }
-        $operation = $this->httpRequest->getQueryParam('operation');
-        if (!empty($operation)) {
-            $filters['operation'] = $operation;
-        }
-        $user = $this->httpRequest->getQueryParam('user');
-        if (!empty($user)) {
-            $filters['user'] = $user;
-        }
-        $dateFrom = $this->httpRequest->getQueryParam('date_from');
-        if (!empty($dateFrom) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
-            $filters['date_from'] = $dateFrom;
-        }
-        $dateTo = $this->httpRequest->getQueryParam('date_to');
-        if (!empty($dateTo) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateTo)) {
-            $filters['date_to'] = $dateTo;
-        }
-        return $filters;
+        return 'list_log_zones';
     }
 
-    private function showListLogZones(bool $applyOwnerFilter): void
+    protected function getPageTitleText(): string
     {
-        $selected_page = 1;
-        $start = $this->httpRequest->getQueryParam('start');
-        if ($start !== null && is_numeric($start)) {
-            $selected_page = max(1, (int)$start);
-        }
+        return _('Zone logs');
+    }
 
-        $logs_per_page = $this->config->get('interface', 'rows_per_page', 50);
+    protected function getTemplateName(): string
+    {
+        return 'list_log_zones.html';
+    }
 
-        $filters = $this->buildFilters();
-        $ownedZoneIds = $applyOwnerFilter ? $this->resolveOwnedZoneIds() : null;
+    protected function getPaginationRoute(): string
+    {
+        return '/zones/logs?start={PageNumber}';
+    }
+
+    protected function getExportFilenamePrefix(): string
+    {
+        return 'zone-logs';
+    }
+
+    protected function getAdditionalFilterParams(): array
+    {
+        return ['operation', 'user'];
+    }
+
+    protected function transformNameFilter(string $name): string
+    {
+        return DnsIdnService::toPunycode($name);
+    }
+
+    protected function prepareListing(array &$filters): void
+    {
+        $this->ownedZoneIds = $this->applyOwnerFilter ? $this->resolveOwnedZoneIds() : null;
 
         // Exact zone scope from the per-zone "Logs" button on edit.html.
         // Intersect with the ownership filter so non-admins cannot peek at zones
         // they don't own by guessing IDs.
         $zoneIdParam = $this->httpRequest->getQueryParam('zone_id');
-        $requestedZoneId = (is_numeric($zoneIdParam) && (int) $zoneIdParam > 0) ? (int) $zoneIdParam : null;
-        if ($requestedZoneId !== null) {
-            if ($ownedZoneIds !== null) {
-                $ownedZoneIds = in_array($requestedZoneId, $ownedZoneIds, true) ? [$requestedZoneId] : [];
+        $this->requestedZoneId = (is_numeric($zoneIdParam) && (int) $zoneIdParam > 0) ? (int) $zoneIdParam : null;
+        if ($this->requestedZoneId !== null) {
+            if ($this->ownedZoneIds !== null) {
+                $this->ownedZoneIds = in_array($this->requestedZoneId, $this->ownedZoneIds, true) ? [$this->requestedZoneId] : [];
             } else {
-                $ownedZoneIds = [$requestedZoneId];
+                $this->ownedZoneIds = [$this->requestedZoneId];
             }
             // DbZoneLogger ignores unknown filter keys; including zone_id here only
             // affects pagination URL generation via presentPagination().
-            $filters['zone_id'] = (string) $requestedZoneId;
+            $filters['zone_id'] = (string) $this->requestedZoneId;
         }
 
         // Only resolve the zone name/breadcrumb when the requested zone survived the
         // ownership intersection, so owner-scoped users cannot enumerate other zones' names.
-        $zone_filter_name = null;
-        $is_reverse_zone = false;
-        if ($requestedZoneId !== null && in_array($requestedZoneId, $ownedZoneIds, true)) {
-            $domainName = $this->createDomainRepository()->getDomainNameById($requestedZoneId);
-            $zone_filter_name = $domainName !== null ? DnsIdnService::toUtf8($domainName) : null;
-            $is_reverse_zone = $domainName !== null && DnsHelper::isReverseZoneName($domainName);
+        if ($this->requestedZoneId !== null && in_array($this->requestedZoneId, $this->ownedZoneIds, true)) {
+            $domainName = $this->createDomainRepository()->getDomainNameById($this->requestedZoneId);
+            $this->zoneFilterName = $domainName !== null ? DnsIdnService::toUtf8($domainName) : null;
+            $this->isReverseZone = $domainName !== null && DnsHelper::isReverseZoneName($domainName);
         }
+    }
 
-        // Handle export
-        $exportFormat = $this->httpRequest->getQueryParam('export');
-        if (!empty($exportFormat) && in_array($exportFormat, ['csv', 'json'])) {
-            $this->exportLogs($filters, $exportFormat, $ownedZoneIds);
-            return;
-        }
+    protected function countLogs(array $filters): int
+    {
+        return $this->dbZoneLogger->countFilteredLogs($filters, $this->ownedZoneIds);
+    }
 
-        $number_of_logs = $this->dbZoneLogger->countFilteredLogs($filters, $ownedZoneIds);
-        $number_of_pages = (int)ceil($number_of_logs / $logs_per_page);
-        // Clamp to the last page rather than dying when the request is out of range.
-        if ($number_of_pages > 0 && $selected_page > $number_of_pages) {
-            $selected_page = $number_of_pages;
-        }
-        $offset = ($selected_page - 1) * $logs_per_page;
-        $logs = $this->dbZoneLogger->getFilteredLogs($filters, $logs_per_page, $offset, $ownedZoneIds);
+    protected function fetchLogs(array $filters, int $limit, int $offset): array
+    {
+        return $this->dbZoneLogger->getFilteredLogs($filters, $limit, $offset, $this->ownedZoneIds);
+    }
 
-        $this->render('list_log_zones.html', [
-            'number_of_logs' => $number_of_logs,
-            'name' => $this->httpRequest->getQueryParam('name', ''),
+    protected function getAdditionalRenderParams(): array
+    {
+        return [
             'operation' => $this->httpRequest->getQueryParam('operation', ''),
             'user_filter' => $this->httpRequest->getQueryParam('user', ''),
-            'date_from' => $this->httpRequest->getQueryParam('date_from', ''),
-            'date_to' => $this->httpRequest->getQueryParam('date_to', ''),
-            'zone_id_filter' => $requestedZoneId,
-            'zone_name' => $zone_filter_name,
-            'is_reverse_zone' => $is_reverse_zone,
+            'zone_id_filter' => $this->requestedZoneId,
+            'zone_name' => $this->zoneFilterName,
+            'is_reverse_zone' => $this->isReverseZone,
             'operations' => $this->dbZoneLogger->getDistinctOperations(),
-            'users' => $applyOwnerFilter
-                ? $this->dbZoneLogger->getDistinctUsersForZones($ownedZoneIds ?? [])
+            'users' => $this->applyOwnerFilter
+                ? $this->dbZoneLogger->getDistinctUsersForZones($this->ownedZoneIds ?? [])
                 : $this->dbZoneLogger->getDistinctUsers(),
-            'data' => $logs,
-            'selected_page' => $selected_page,
-            'logs_per_page' => $logs_per_page,
-            'pagination' => $this->presentPagination($number_of_logs, $logs_per_page, '/zones/logs?start={PageNumber}', $filters),
-            'iface_edit_show_id' => $this->config->get('interface', 'show_record_id', false),
-            'is_owner_view' => $applyOwnerFilter,
-        ]);
+            'is_owner_view' => $this->applyOwnerFilter,
+        ];
     }
 
     /**
@@ -179,31 +173,7 @@ class ListLogZonesController extends BaseController
         return $userId > 0 ? $this->createZoneRepository()->getOwnedZoneIds($userId) : [];
     }
 
-    private function exportLogs(array $filters, string $format, ?array $zoneIds): void
-    {
-        $logs = $this->dbZoneLogger->getFilteredLogs($filters, 100000, 0, $zoneIds);
-        $parsed = $this->parseLogEvents($logs);
-
-        if ($format === 'json') {
-            header('Content-Type: application/json');
-            header('Content-Disposition: attachment; filename="zone-logs-' . date('Y-m-d') . '.json"');
-            echo json_encode($parsed, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        } else {
-            header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="zone-logs-' . date('Y-m-d') . '.csv"');
-            $output = fopen('php://output', 'w');
-            if (!empty($parsed)) {
-                fputcsv($output, CsvFormulaEscaper::escapeRow(array_keys($parsed[0])));
-                foreach ($parsed as $row) {
-                    fputcsv($output, CsvFormulaEscaper::escapeRow($row));
-                }
-            }
-            fclose($output);
-        }
-        exit;
-    }
-
-    private function parseLogEvents(array $logs): array
+    protected function parseLogEvents(array $logs): array
     {
         $result = [];
         foreach ($logs as $log) {
@@ -220,5 +190,13 @@ class ListLogZonesController extends BaseController
             $result[] = $row;
         }
         return $result;
+    }
+
+    protected function writeCsvRows($output, array $parsed): void
+    {
+        fputcsv($output, CsvFormulaEscaper::escapeRow(array_keys($parsed[0])));
+        foreach ($parsed as $row) {
+            fputcsv($output, CsvFormulaEscaper::escapeRow($row));
+        }
     }
 }

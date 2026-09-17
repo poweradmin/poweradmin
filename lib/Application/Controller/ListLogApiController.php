@@ -22,15 +22,13 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
-use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 /**
  * Renders the API request log page for admins with filters and CSV/JSON export.
  */
-class ListLogApiController extends BaseController
+class ListLogApiController extends AbstractListLogController
 {
     private DbApiLogger $dbApiLogger;
 
@@ -41,127 +39,53 @@ class ListLogApiController extends BaseController
         $this->dbApiLogger = new DbApiLogger($this->db);
     }
 
-    public function run(): void
+    protected function authorize(): bool
     {
         $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, 'You do not have the permission to see any logs');
-
-        $this->setCurrentPage('list_log_api');
-        $this->setPageTitle(_('API Logs'));
-
-        $this->showListLogApi();
+        return true;
     }
 
-    private function buildFilters(): array
+    protected function getPageName(): string
     {
-        $filters = [];
-        $name = $this->httpRequest->getQueryParam('name');
-        if (!empty($name)) {
-            $filters['name'] = $name;
-        }
-        $eventType = $this->httpRequest->getQueryParam('event_type');
-        if (!empty($eventType)) {
-            $filters['event_type'] = $eventType;
-        }
-        $dateFrom = $this->httpRequest->getQueryParam('date_from');
-        if (!empty($dateFrom) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
-            $filters['date_from'] = $dateFrom;
-        }
-        $dateTo = $this->httpRequest->getQueryParam('date_to');
-        if (!empty($dateTo) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateTo)) {
-            $filters['date_to'] = $dateTo;
-        }
-        return $filters;
+        return 'list_log_api';
     }
 
-    private function showListLogApi(): void
+    protected function getPageTitleText(): string
     {
-        $selected_page = 1;
-        $start = $this->httpRequest->getQueryParam('start');
-        if ($start !== null && is_numeric($start)) {
-            $selected_page = max(1, (int)$start);
-        }
+        return _('API Logs');
+    }
 
-        $logs_per_page = $this->config->get('interface', 'rows_per_page', 50);
+    protected function getTemplateName(): string
+    {
+        return 'list_log_api.html';
+    }
 
-        $filters = $this->buildFilters();
+    protected function getPaginationRoute(): string
+    {
+        return '/settings/api/logs?start={PageNumber}';
+    }
 
-        // Handle export
-        $exportFormat = $this->httpRequest->getQueryParam('export');
-        if (!empty($exportFormat) && in_array($exportFormat, ['csv', 'json'])) {
-            $this->exportLogs($filters, $exportFormat);
-            return;
-        }
+    protected function getExportFilenamePrefix(): string
+    {
+        return 'api-logs';
+    }
 
-        $number_of_logs = $this->dbApiLogger->countFilteredLogs($filters);
-        $number_of_pages = (int)ceil($number_of_logs / $logs_per_page);
-        // Clamp to the last page rather than dying when the request is out of range.
-        if ($number_of_pages > 0 && $selected_page > $number_of_pages) {
-            $selected_page = $number_of_pages;
-        }
-        $offset = ($selected_page - 1) * $logs_per_page;
-        $logs = $this->dbApiLogger->getFilteredLogs($filters, $logs_per_page, $offset);
+    protected function countLogs(array $filters): int
+    {
+        return $this->dbApiLogger->countFilteredLogs($filters);
+    }
 
-        $this->render('list_log_api.html', [
-            'number_of_logs' => $number_of_logs,
-            'name' => $this->httpRequest->getQueryParam('name', ''),
+    protected function fetchLogs(array $filters, int $limit, int $offset): array
+    {
+        return $this->dbApiLogger->getFilteredLogs($filters, $limit, $offset);
+    }
+
+    protected function getAdditionalRenderParams(): array
+    {
+        return [
             'event_type' => $this->httpRequest->getQueryParam('event_type', ''),
-            'date_from' => $this->httpRequest->getQueryParam('date_from', ''),
-            'date_to' => $this->httpRequest->getQueryParam('date_to', ''),
             'event_types' => $this->dbApiLogger->getDistinctEventTypes(),
             'users' => $this->dbApiLogger->getDistinctUsers(),
-            'data' => $logs,
-            'selected_page' => $selected_page,
-            'logs_per_page' => $logs_per_page,
-            'pagination' => $this->presentPagination($number_of_logs, $logs_per_page, '/settings/api/logs?start={PageNumber}', $filters),
-            'iface_edit_show_id' => $this->config->get('interface', 'show_record_id', false),
-        ]);
-    }
-
-    private function exportLogs(array $filters, string $format): void
-    {
-        $logs = $this->dbApiLogger->getFilteredLogs($filters, 100000, 0);
-        $parsed = [];
-        foreach ($logs as $log) {
-            $row = ['timestamp' => $log['created_at']];
-            if (str_contains($log['event'], 'operation:')) {
-                $parts = explode(' ', $log['event']);
-                foreach ($parts as $part) {
-                    $kv = explode(':', $part, 2);
-                    if (count($kv) === 2) {
-                        $row[$kv[0]] = $kv[1];
-                    }
-                }
-            } else {
-                $row['event'] = $log['event'];
-            }
-            $parsed[] = $row;
-        }
-
-        if ($format === 'json') {
-            header('Content-Type: application/json');
-            header('Content-Disposition: attachment; filename="api-logs-' . date('Y-m-d') . '.json"');
-            echo json_encode($parsed, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        } else {
-            header('Content-Type: text/csv');
-            header('Content-Disposition: attachment; filename="api-logs-' . date('Y-m-d') . '.csv"');
-            $output = fopen('php://output', 'w');
-            if (!empty($parsed)) {
-                $allKeys = [];
-                foreach ($parsed as $row) {
-                    $allKeys = array_merge($allKeys, array_keys($row));
-                }
-                $allKeys = array_unique($allKeys);
-                fputcsv($output, CsvFormulaEscaper::escapeRow($allKeys));
-                foreach ($parsed as $row) {
-                    $csvRow = [];
-                    foreach ($allKeys as $key) {
-                        $csvRow[] = $row[$key] ?? '';
-                    }
-                    fputcsv($output, CsvFormulaEscaper::escapeRow($csvRow));
-                }
-            }
-            fclose($output);
-        }
-        exit;
+        ];
     }
 }
