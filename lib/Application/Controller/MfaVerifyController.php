@@ -31,6 +31,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Domain\Service\SessionPromotionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -211,56 +212,11 @@ class MfaVerifyController extends BaseController
             }
 
             // Promote pending session variables to actual ones now that MFA is verified
-            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_USERID)) {
-                $this->userContextService->setSessionData(SessionKeys::USERID, $this->userContextService->getSessionData(SessionKeys::PENDING_USERID));
-                $this->userContextService->unsetSessionData(SessionKeys::PENDING_USERID);
+            $hadPendingUserId = $this->userContextService->hasSessionData(SessionKeys::PENDING_USERID);
+            $sessionPromotionService = new SessionPromotionService($this->userContextService);
+            $sessionPromotionService->promotePendingSession();
+            if ($hadPendingUserId) {
                 $this->logger->debug('[MfaVerifyController] Promoted pending_userid to userid for user ID: {user_id}', ['user_id' => $userId]);
-            }
-            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_NAME)) {
-                $this->userContextService->setSessionData(SessionKeys::NAME, $this->userContextService->getSessionData(SessionKeys::PENDING_NAME));
-                $this->userContextService->unsetSessionData(SessionKeys::PENDING_NAME);
-            }
-            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_EMAIL)) {
-                $this->userContextService->setSessionData(SessionKeys::EMAIL, $this->userContextService->getSessionData(SessionKeys::PENDING_EMAIL));
-                $this->userContextService->unsetSessionData(SessionKeys::PENDING_EMAIL);
-            }
-            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_AUTH_USED)) {
-                $this->userContextService->setSessionData(SessionKeys::AUTH_USED, $this->userContextService->getSessionData(SessionKeys::PENDING_AUTH_USED));
-                $this->userContextService->unsetSessionData(SessionKeys::PENDING_AUTH_USED);
-            }
-            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_AUTH_METHOD_USED)) {
-                $this->userContextService->setSessionData(SessionKeys::AUTH_METHOD_USED, $this->userContextService->getSessionData(SessionKeys::PENDING_AUTH_METHOD_USED));
-                $this->userContextService->unsetSessionData(SessionKeys::PENDING_AUTH_METHOD_USED);
-            }
-
-            // Promote OIDC-specific pending session variables
-            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_OIDC_PROVIDER)) {
-                $this->userContextService->setSessionData(SessionKeys::OIDC_PROVIDER, $this->userContextService->getSessionData(SessionKeys::PENDING_OIDC_PROVIDER));
-                $this->userContextService->unsetSessionData(SessionKeys::PENDING_OIDC_PROVIDER);
-                $this->userContextService->setSessionData(SessionKeys::OIDC_AUTHENTICATED, true);
-            }
-            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_OIDC_ID_TOKEN)) {
-                $this->userContextService->setSessionData(SessionKeys::OIDC_ID_TOKEN, $this->userContextService->getSessionData(SessionKeys::PENDING_OIDC_ID_TOKEN));
-                $this->userContextService->unsetSessionData(SessionKeys::PENDING_OIDC_ID_TOKEN);
-            }
-            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_OAUTH_AVATAR_URL)) {
-                $this->userContextService->setSessionData(SessionKeys::OAUTH_AVATAR_URL, $this->userContextService->getSessionData(SessionKeys::PENDING_OAUTH_AVATAR_URL));
-                $this->userContextService->unsetSessionData(SessionKeys::PENDING_OAUTH_AVATAR_URL);
-            }
-
-            // Promote SAML-specific pending session variables
-            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_SAML_PROVIDER)) {
-                $this->userContextService->setSessionData(SessionKeys::SAML_PROVIDER, $this->userContextService->getSessionData(SessionKeys::PENDING_SAML_PROVIDER));
-                $this->userContextService->unsetSessionData(SessionKeys::PENDING_SAML_PROVIDER);
-                $this->userContextService->setSessionData(SessionKeys::SAML_AUTHENTICATED, true);
-            }
-            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_SAML_NAME_ID)) {
-                $this->userContextService->setSessionData(SessionKeys::SAML_NAME_ID, $this->userContextService->getSessionData(SessionKeys::PENDING_SAML_NAME_ID));
-                $this->userContextService->unsetSessionData(SessionKeys::PENDING_SAML_NAME_ID);
-            }
-            if ($this->userContextService->hasSessionData(SessionKeys::PENDING_SAML_SESSION_INDEX)) {
-                $this->userContextService->setSessionData(SessionKeys::SAML_SESSION_INDEX, $this->userContextService->getSessionData(SessionKeys::PENDING_SAML_SESSION_INDEX));
-                $this->userContextService->unsetSessionData(SessionKeys::PENDING_SAML_SESSION_INDEX);
             }
 
             // Use the centralized session manager to mark MFA as verified
@@ -274,8 +230,7 @@ class MfaVerifyController extends BaseController
                 $this->userContextService->hasSessionData(SessionKeys::AUTH_USED) &&
                 $this->userContextService->getSessionData(SessionKeys::AUTH_USED) === 'ldap'
             ) {
-                $ipRetriever = new IpAddressRetriever($_SERVER);
-                $ipAddress = $ipRetriever->getClientIp() ?: '0.0.0.0';
+                $ipAddress = $this->ipAddressRetriever->getClientIp() ?: '0.0.0.0';
                 $username = $this->userContextService->getLoggedInUsername();
 
                 $this->userContextService->setSessionData(SessionKeys::LDAP_AUTH_TIMESTAMP, time());
