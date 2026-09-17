@@ -993,6 +993,18 @@ class EditController extends BaseController
      */
     private function addRecord(int $zone_id): bool
     {
+        // The page gate only proves view access; adding a record needs edit
+        // rights on a writable zone, as the add-record page already enforces.
+        $userId = (int)$this->getCurrentUserId();
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
+        if (
+            !ZoneAccessPolicy::canEditZone($perm_edit, $this->permissionService->userOwnsZone($userId, $zone_id))
+            || ZoneType::isReadOnly($this->zoneRepository->getDomainType($zone_id))
+        ) {
+            $this->setMessage('edit', 'error', _('You do not have the permission to add a record to this zone.'));
+            return false;
+        }
+
         // These are required fields
         $constraints = [
             'content' => [
