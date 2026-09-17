@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -61,14 +62,8 @@ class EditGroupController extends BaseController
             return;
         }
 
-        // Only admin (überuser) can edit groups
-        $userContext = $this->getUserContextService();
-        $userId = $userContext->getLoggedInUserId();
-        if (!$this->createPermissionService()->canManageGroups($userId)) {
-            $this->setMessage('list_groups', 'error', _('You do not have permission to edit groups.'));
-            $this->redirect('/groups');
-            return;
-        }
+        // Only admin (überuser) can edit groups; denials are audit-logged
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have permission to edit groups.'));
 
         $groupId = isset($this->requestData['id']) ? (int)$this->requestData['id'] : 0;
         if ($groupId <= 0) {
@@ -82,7 +77,6 @@ class EditGroupController extends BaseController
         $this->setPageTitle(_('Edit group'));
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->editGroup($groupId);
         } else {
             $this->renderEditGroupForm($groupId);

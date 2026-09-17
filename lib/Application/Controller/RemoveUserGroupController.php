@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 use InvalidArgumentException;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 
 /**
  * Handles the POST that removes a user from one group from the edit-user page.
@@ -49,22 +50,14 @@ class RemoveUserGroupController extends BaseController
             return;
         }
 
-        // Only admin (überuser) can manage group membership
-        $userContext = $this->getUserContextService();
-        $userId = $userContext->getLoggedInUserId();
-        if (!$this->createPermissionService()->isAdmin($userId)) {
-            $this->setMessage('edit_user', 'error', _('You do not have permission to manage group memberships.'));
-            $this->redirect('/users');
-            return;
-        }
+        // Only admin (überuser) can manage group membership; denials are audit-logged
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have permission to manage group memberships.'));
 
         if (!$this->isPost()) {
             $this->setMessage('edit_user', 'error', _('Invalid request method.'));
             $this->redirect('/users');
             return;
         }
-
-        $this->validateCsrfToken();
 
         $targetUserId = isset($this->requestData['user_id']) ? (int)$this->requestData['user_id'] : 0;
         $groupId = isset($this->requestData['group_id']) ? (int)$this->requestData['group_id'] : 0;

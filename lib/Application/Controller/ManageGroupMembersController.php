@@ -54,14 +54,8 @@ class ManageGroupMembersController extends BaseController
             return;
         }
 
-        // Only admin (überuser) can manage group membership
-        $userContext = $this->getUserContextService();
-        $userId = $userContext->getLoggedInUserId();
-        if (!$this->createPermissionService()->isAdmin($userId)) {
-            $this->setMessage('list_groups', 'error', _('You do not have permission to manage group members.'));
-            $this->redirect('/groups');
-            return;
-        }
+        // Only admin (überuser) can manage group membership; denials are audit-logged
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have permission to manage group members.'));
 
         $groupId = isset($this->requestData['id']) ? (int)$this->requestData['id'] : 0;
         if ($groupId <= 0) {
@@ -75,7 +69,6 @@ class ManageGroupMembersController extends BaseController
         $this->setPageTitle(_('Manage Group Members'));
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->processAction($groupId);
         } else {
             $this->showManageMembers($groupId);

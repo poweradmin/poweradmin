@@ -26,6 +26,7 @@ use InvalidArgumentException;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 
 /**
  * Handles the delete-group confirmation page and deletes the group on confirmed POST.
@@ -53,14 +54,8 @@ class DeleteGroupController extends BaseController
             return;
         }
 
-        // Only admin (überuser) can delete groups
-        $userContext = $this->getUserContextService();
-        $userId = $userContext->getLoggedInUserId();
-        if (!$this->createPermissionService()->isAdmin($userId)) {
-            $this->setMessage('list_groups', 'error', _('You do not have permission to delete groups.'));
-            $this->redirect('/groups');
-            return;
-        }
+        // Only admin (überuser) can delete groups; denials are audit-logged
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have permission to delete groups.'));
 
         $groupId = isset($this->requestData['id']) ? (int)$this->requestData['id'] : 0;
         if ($groupId <= 0) {
@@ -74,7 +69,6 @@ class DeleteGroupController extends BaseController
         $this->setPageTitle(_('Delete group'));
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->deleteGroup($groupId);
         } else {
             $this->showDeleteConfirmation($groupId);

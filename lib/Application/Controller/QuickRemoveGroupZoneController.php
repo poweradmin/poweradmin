@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 use InvalidArgumentException;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 
 /**
  * Handles the POST that removes one zone from a group from the edit-group page.
@@ -49,22 +50,14 @@ class QuickRemoveGroupZoneController extends BaseController
             return;
         }
 
-        // Only admin (überuser) can manage group zones
-        $userContext = $this->getUserContextService();
-        $userId = $userContext->getLoggedInUserId();
-        if (!$this->createPermissionService()->isAdmin($userId)) {
-            $this->setMessage('edit_group', 'error', _('You do not have permission to manage group zones.'));
-            $this->redirect('/groups');
-            return;
-        }
+        // Only admin (überuser) can manage group zones; denials are audit-logged
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have permission to manage group zones.'));
 
         if (!$this->isPost()) {
             $this->setMessage('edit_group', 'error', _('Invalid request method.'));
             $this->redirect('/groups');
             return;
         }
-
-        $this->validateCsrfToken();
 
         $groupId = isset($this->requestData['group_id']) ? (int)$this->requestData['group_id'] : 0;
         $zoneId = isset($this->requestData['zone_id']) ? (int)$this->requestData['zone_id'] : 0;

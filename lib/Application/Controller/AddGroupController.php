@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 use InvalidArgumentException;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -52,21 +53,14 @@ class AddGroupController extends BaseController
             return;
         }
 
-        // Only admin (überuser) can create groups
-        $userContext = $this->getUserContextService();
-        $userId = $userContext->getLoggedInUserId();
-        if (!$this->createPermissionService()->canManageGroups($userId)) {
-            $this->setMessage('list_groups', 'error', _('You do not have permission to create groups.'));
-            $this->redirect('/groups');
-            return;
-        }
+        // Only admin (überuser) can create groups; denials are audit-logged
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have permission to create groups.'));
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('add_group');
         $this->setPageTitle(_('Add group'));
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->addGroup();
         } else {
             $this->renderAddGroupForm();

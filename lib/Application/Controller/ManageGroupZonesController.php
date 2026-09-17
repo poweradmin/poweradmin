@@ -26,6 +26,7 @@ use InvalidArgumentException;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\IpHelper;
 
@@ -55,14 +56,8 @@ class ManageGroupZonesController extends BaseController
             return;
         }
 
-        // Any admin can manage zone ownership (same as user ownership model)
-        $userContext = $this->getUserContextService();
-        $userId = $userContext->getLoggedInUserId();
-        if (!$this->createPermissionService()->isAdmin($userId)) {
-            $this->setMessage('list_groups', 'error', _('You do not have permission to manage zone ownership.'));
-            $this->redirect('/groups');
-            return;
-        }
+        // Only admin (überuser) can manage zone ownership; denials are audit-logged
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have permission to manage zone ownership.'));
 
         $groupId = isset($this->requestData['id']) ? (int)$this->requestData['id'] : 0;
         if ($groupId <= 0) {
@@ -76,7 +71,6 @@ class ManageGroupZonesController extends BaseController
         $this->setPageTitle(_('Manage Group Zones'));
 
         if ($this->isPost()) {
-            $this->validateCsrfToken();
             $this->processAction($groupId);
         } else {
             $this->showManageZones($groupId);
