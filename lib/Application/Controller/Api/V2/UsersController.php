@@ -40,29 +40,6 @@ use OpenApi\Attributes as OA;
 /**
  * /api/v2/users: lists, creates, updates and deletes users and assigns their permission template.
  */
-#[OA\OpenApi(
-    info: new OA\Info(
-        version: '2.0.0',
-        description: 'RESTful API for Poweradmin DNS Management (v2 - with wrapped responses)',
-        title: 'Poweradmin API v2'
-    ),
-    servers: [
-        new OA\Server(url: '/api', description: 'API Server')
-    ]
-)]
-#[OA\SecurityScheme(
-    securityScheme: 'bearerAuth',
-    type: 'http',
-    bearerFormat: 'API Key',
-    scheme: 'bearer'
-)]
-#[OA\SecurityScheme(
-    securityScheme: 'apiKeyHeader',
-    type: 'apiKey',
-    name: 'X-API-Key',
-    in: 'header'
-)]
-
 class UsersController extends PublicApiController
 {
     /** Guards against a single request fanning out into thousands of membership queries. */
@@ -101,7 +78,7 @@ class UsersController extends PublicApiController
             'PUT' => $this->updateUser(),
             'PATCH' => $this->assignPermissionTemplate(),
             'DELETE' => $this->deleteUser(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
         };
 
         $response->send();
@@ -293,30 +270,36 @@ class UsersController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'Users retrieved successfully'),
                 new OA\Property(
                     property: 'data',
-                    type: 'array',
-                    items: new OA\Items(
-                        properties: [
-                            new OA\Property(property: 'user_id', type: 'integer', example: 1),
-                            new OA\Property(property: 'username', type: 'string', example: 'admin'),
-                            new OA\Property(property: 'fullname', type: 'string', example: 'Administrator'),
-                            new OA\Property(property: 'email', type: 'string', example: 'admin@example.com'),
-                            new OA\Property(property: 'description', type: 'string', example: 'System Administrator'),
-                            new OA\Property(property: 'active', type: 'boolean', example: true),
-                            new OA\Property(property: 'zone_count', type: 'integer', example: 5),
-                            new OA\Property(property: 'is_admin', type: 'boolean', example: true),
-                            new OA\Property(property: 'perm_templ', type: 'integer', example: 2, nullable: true),
-                            new OA\Property(property: 'perm_templ_name', type: 'string', example: 'Zone Manager', nullable: true),
-                            new OA\Property(
-                                property: 'groups',
-                                type: 'array',
-                                items: new OA\Items(properties: [
-                                    new OA\Property(property: 'id', type: 'integer', example: 3),
-                                    new OA\Property(property: 'name', type: 'string', example: 'dns-operators')
-                                ], type: 'object')
+                    properties: [
+                        new OA\Property(
+                            property: 'users',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'user_id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'username', type: 'string', example: 'admin'),
+                                    new OA\Property(property: 'fullname', type: 'string', example: 'Administrator'),
+                                    new OA\Property(property: 'email', type: 'string', example: 'admin@example.com'),
+                                    new OA\Property(property: 'description', type: 'string', example: 'System Administrator'),
+                                    new OA\Property(property: 'active', type: 'boolean', example: true),
+                                    new OA\Property(property: 'zone_count', type: 'integer', example: 5),
+                                    new OA\Property(property: 'is_admin', type: 'boolean', example: true),
+                                    new OA\Property(property: 'perm_templ', type: 'integer', example: 2, nullable: true),
+                                    new OA\Property(property: 'perm_templ_name', type: 'string', example: 'Zone Manager', nullable: true),
+                                    new OA\Property(
+                                        property: 'groups',
+                                        type: 'array',
+                                        items: new OA\Items(properties: [
+                                            new OA\Property(property: 'id', type: 'integer', example: 3),
+                                            new OA\Property(property: 'name', type: 'string', example: 'dns-operators')
+                                        ], type: 'object')
+                                    )
+                                ],
+                                type: 'object'
                             )
-                        ],
-                        type: 'object'
-                    )
+                        )
+                    ],
+                    type: 'object'
                 ),
                 new OA\Property(
                     property: 'pagination',
@@ -384,7 +367,7 @@ class UsersController extends PublicApiController
             } else {
                 // Use pagination
                 $page = max(1, (int)$this->request->query->get('page', 1));
-                $perPage = min(10000, max(1, $perPage)); // Allow up to 10k per page
+                $perPage = min(self::MAX_PAGE_SIZE, max(1, $perPage));
 
                 // Create pagination object
                 $pagination = new Pagination(0, $perPage, $page);
@@ -569,10 +552,10 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('You do not have permission to create users', 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
+            $input = $this->getValidatedJsonBody();
 
             // A truthy scalar body reached the array-typed guards below as a TypeError.
-            if (!is_array($input) || $input === []) {
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
@@ -772,9 +755,9 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('You do not have permission to edit this user', 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
+            $input = $this->getValidatedJsonBody();
 
-            if (!$input) {
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
@@ -937,8 +920,8 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('You do not have permission to delete this user', 403);
             }
 
-            // Get request body for zone transfer options
-            $requestBody = json_decode($this->request->getContent(), true) ?? [];
+            // Get request body for zone transfer options (the body is optional here)
+            $requestBody = $this->getValidatedJsonBody() ?? [];
             $transferToUserId = isset($requestBody['transfer_to_user_id']) ? (int)$requestBody['transfer_to_user_id'] : null;
 
             // Use the domain service to delete the user
@@ -1055,9 +1038,9 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('You do not have permission to edit permission templates', 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
+            $input = $this->getValidatedJsonBody() ?? [];
 
-            if (!$input || !isset($input['perm_templ'])) {
+            if (!isset($input['perm_templ'])) {
                 return $this->returnApiError('Missing required field: perm_templ', 400);
             }
 

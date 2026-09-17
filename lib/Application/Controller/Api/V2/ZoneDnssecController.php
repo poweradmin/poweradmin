@@ -66,7 +66,7 @@ class ZoneDnssecController extends PublicApiController
         $response = match ($method) {
             'GET' => $this->getStatus(),
             'POST' => $this->setStatus(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST']),
         };
 
         $response->send();
@@ -164,7 +164,7 @@ class ZoneDnssecController extends PublicApiController
                 'DNSSEC status retrieved successfully'
             );
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneDnssecController::getStatus', 'Failed to retrieve DNSSEC status');
         }
     }
 
@@ -223,8 +223,8 @@ class ZoneDnssecController extends PublicApiController
             return $this->returnApiError('DNSSEC management requires the PowerDNS API to be configured', 501);
         }
 
-        $data = json_decode($this->request->getContent(), true);
-        $enabled = is_array($data) ? $this->inputBool($data, 'enabled') : null;
+        $data = $this->getValidatedJsonBody();
+        $enabled = $data !== null ? $this->inputBool($data, 'enabled') : null;
         if ($enabled === null) {
             return $this->returnApiError('Missing or invalid required field: enabled (boolean)', 400);
         }
@@ -244,7 +244,7 @@ class ZoneDnssecController extends PublicApiController
                 default => $this->returnApiError('Failed to update DNSSEC status', 500),
             };
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneDnssecController::setStatus', 'Failed to update DNSSEC status');
         }
     }
 

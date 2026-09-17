@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Domain\Error\GroupNotFoundException;
+use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Domain\Model\Permission;
@@ -67,7 +68,7 @@ class GroupZonesController extends PublicApiController
             'GET' => $this->listZones(),
             'POST' => $this->assignZone(),
             'DELETE' => $this->unassignZone(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'DELETE']),
         };
 
         $response->send();
@@ -151,7 +152,7 @@ class GroupZonesController extends PublicApiController
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupZonesController::listZones', 'Failed to retrieve zones');
         }
     }
 
@@ -217,7 +218,7 @@ class GroupZonesController extends PublicApiController
 
         try {
             $groupId = (int)$this->pathParameters['id'];
-            $data = json_decode($this->request->getContent(), true);
+            $data = $this->getValidatedJsonBody() ?? [];
 
             if (empty($data['zone_id'])) {
                 return $this->returnApiError('Missing required field: zone_id', 400);
@@ -242,8 +243,11 @@ class GroupZonesController extends PublicApiController
             return $this->returnApiResponse(null, true, 'Zone assigned successfully', 201);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
+            // Domain validation refusal (group already owns this zone) - bad input, not a fault.
             return $this->returnApiError($e->getMessage(), 400);
+        } catch (Exception $e) {
+            return $this->handleException($e, 'GroupZonesController::assignZone', 'Failed to assign zone');
         }
     }
 
@@ -367,7 +371,7 @@ class GroupZonesController extends PublicApiController
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupZonesController::unassignZone', 'Failed to unassign zone');
         }
     }
 }

@@ -73,7 +73,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         $response = match ($method) {
             'POST' => $this->bulkRecordOperations(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['POST']),
         };
 
         $response->send();
@@ -196,8 +196,8 @@ class ZonesRecordsBulkController extends PublicApiController
                 return $this->returnApiError($this->zoneEditDeniedMessage($zoneType), 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
-            if (!$input || !isset($input['operations']) || !is_array($input['operations'])) {
+            $input = $this->getValidatedJsonBody() ?? [];
+            if (!isset($input['operations']) || !is_array($input['operations'])) {
                 return $this->returnApiError("Field 'operations' is required and must be an array", 400);
             }
 

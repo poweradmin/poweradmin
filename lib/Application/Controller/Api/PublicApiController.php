@@ -521,7 +521,8 @@ abstract class PublicApiController extends AbstractApiController
             'line' => $e->getLine(),
         ]);
 
-        // Return clean JSON error response to client
-        return $this->returnApiError($userMessage . ': ' . $e->getMessage(), $statusCode);
+        // The raw exception text is already logged above; the client only gets the
+        // contextual message so internal details (SQL, paths) cannot leak
+        return $this->returnApiError($userMessage, $statusCode);
     }
 }

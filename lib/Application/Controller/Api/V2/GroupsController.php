@@ -70,7 +70,7 @@ class GroupsController extends PublicApiController
             'POST' => $this->createGroup(),
             'PUT' => $this->updateGroup(),
             'DELETE' => $this->deleteGroup(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
         $response->send();
@@ -150,7 +150,7 @@ class GroupsController extends PublicApiController
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupsController::listGroups', 'Failed to retrieve groups');
         }
     }
 
@@ -273,7 +273,7 @@ class GroupsController extends PublicApiController
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupsController::getGroup', 'Failed to retrieve group');
         }
     }
 
@@ -328,7 +328,7 @@ class GroupsController extends PublicApiController
         }
 
         try {
-            $data = json_decode($this->request->getContent(), true);
+            $data = $this->getValidatedJsonBody() ?? [];
 
             if (empty($data['name']) || empty($data['perm_templ_id'])) {
                 return $this->returnApiError('Missing required fields: name, perm_templ_id (must be a group-type permission template ID)', 400);
@@ -353,8 +353,11 @@ class GroupsController extends PublicApiController
             ]], true, 'Group created successfully', 201);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
+            // Domain validation refusal (empty or duplicate name) - bad input, not a fault.
             return $this->returnApiError($e->getMessage(), 400);
+        } catch (Exception $e) {
+            return $this->handleException($e, 'GroupsController::createGroup', 'Failed to create group');
         }
     }
 
@@ -422,7 +425,7 @@ class GroupsController extends PublicApiController
 
         try {
             $groupId = (int)$this->pathParameters['id'];
-            $data = json_decode($this->request->getContent(), true);
+            $data = $this->getValidatedJsonBody() ?? [];
 
             // Validate that the template is a group template (if provided)
             if (isset($data['perm_templ_id'])) {
@@ -449,8 +452,11 @@ class GroupsController extends PublicApiController
             ]], true, 'Group updated successfully');
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
+            // Domain validation refusal (empty or duplicate name) - bad input, not a fault.
             return $this->returnApiError($e->getMessage(), 400);
+        } catch (Exception $e) {
+            return $this->handleException($e, 'GroupsController::updateGroup', 'Failed to update group');
         }
     }
 
@@ -528,7 +534,7 @@ class GroupsController extends PublicApiController
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupsController::deleteGroup', 'Failed to delete group');
         }
     }
 }

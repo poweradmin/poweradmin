@@ -61,7 +61,7 @@ class ZoneMetadataController extends PublicApiController
             $method === 'GET' && $hasKind => $this->getMetadataKind(),
             $method === 'PUT' && $hasKind => $this->updateMetadataKind(),
             $method === 'DELETE' && $hasKind => $this->deleteMetadataKind(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'PUT', 'DELETE']),
         };
 
         $response->send();
@@ -143,7 +143,7 @@ class ZoneMetadataController extends PublicApiController
 
             return $this->returnApiResponse(['metadata' => $grouped], true, 'Metadata retrieved successfully');
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneMetadataController::listMetadata', 'Failed to retrieve metadata');
         }
     }
 
@@ -234,7 +234,7 @@ class ZoneMetadataController extends PublicApiController
                 'Metadata retrieved successfully'
             );
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneMetadataController::getMetadataKind', 'Failed to retrieve metadata');
         }
     }
 
@@ -311,7 +311,7 @@ class ZoneMetadataController extends PublicApiController
         }
 
         try {
-            $data = json_decode($this->request->getContent(), true);
+            $data = $this->getValidatedJsonBody() ?? [];
 
             if (!isset($data['values']) || !is_array($data['values'])) {
                 return $this->returnApiError('Missing required field: values (array)', 400);
@@ -324,7 +324,7 @@ class ZoneMetadataController extends PublicApiController
 
             return $this->returnApiResponse(null, true, 'Metadata updated successfully');
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneMetadataController::updateMetadataKind', 'Failed to update metadata');
         }
     }
 
@@ -395,7 +395,7 @@ class ZoneMetadataController extends PublicApiController
 
             return $this->returnApiResponse(null, true, 'Metadata deleted successfully');
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneMetadataController::deleteMetadataKind', 'Failed to delete metadata');
         }
     }
 

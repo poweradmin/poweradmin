@@ -74,7 +74,7 @@ class ZoneOwnersController extends PublicApiController
             'GET' => $this->listOwners(),
             'POST' => $this->addOwner(),
             'DELETE' => $this->removeOwner(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'DELETE']),
         };
 
         $response->send();
@@ -156,7 +156,7 @@ class ZoneOwnersController extends PublicApiController
 
             return $this->returnApiResponse(['owners' => $ownersData], true, 'Owners retrieved successfully');
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneOwnersController::listOwners', 'Failed to retrieve owners');
         }
     }
 
@@ -249,7 +249,7 @@ class ZoneOwnersController extends PublicApiController
         }
 
         try {
-            $data = json_decode($this->request->getContent(), true);
+            $data = $this->getValidatedJsonBody() ?? [];
 
             // Batch mode: user_ids array
             if (!empty($data['user_ids']) && is_array($data['user_ids'])) {
@@ -281,7 +281,7 @@ class ZoneOwnersController extends PublicApiController
             return $this->returnApiResponse(null, true, 'Owner added successfully', 201);
         } catch (Exception $e) {
             // A throw here is a repository/DB failure, not bad input - mirror removeOwner()'s 500.
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneOwnersController::addOwner', 'Failed to add owner');
         }
     }
 
@@ -452,7 +452,7 @@ class ZoneOwnersController extends PublicApiController
 
             return $this->returnApiResponse(null, true, 'Owner removed successfully');
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneOwnersController::removeOwner', 'Failed to remove owner');
         }
     }
 }

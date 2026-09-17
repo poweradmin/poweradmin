@@ -68,7 +68,7 @@ class ZonesController extends PublicApiController
             'POST' => $this->createZone(),
             'PUT' => $this->updateZone(),
             'DELETE' => $this->deleteZone(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
         $response->send();
@@ -108,17 +108,23 @@ class ZonesController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'Zones retrieved successfully'),
                 new OA\Property(
                     property: 'data',
-                    type: 'array',
-                    items: new OA\Items(
-                        properties: [
-                            new OA\Property(property: 'id', type: 'integer', example: 1),
-                            new OA\Property(property: 'canonical_id', type: 'integer', example: 1, description: 'Zone id accepted by the other zone endpoints; equals id except for API-backend zones migrated from SQL mode'),
-                            new OA\Property(property: 'name', type: 'string', example: 'example.com'),
-                            new OA\Property(property: 'type', type: 'string', example: 'MASTER'),
-                            new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00')
-                        ],
-                        type: 'object'
-                    )
+                    properties: [
+                        new OA\Property(
+                            property: 'zones',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'canonical_id', type: 'integer', example: 1, description: 'Zone id accepted by the other zone endpoints; equals id except for API-backend zones migrated from SQL mode'),
+                                    new OA\Property(property: 'name', type: 'string', example: 'example.com'),
+                                    new OA\Property(property: 'type', type: 'string', example: 'MASTER'),
+                                    new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00')
+                                ],
+                                type: 'object'
+                            )
+                        )
+                    ],
+                    type: 'object'
                 ),
                 new OA\Property(
                     property: 'pagination',
@@ -184,7 +190,7 @@ class ZonesController extends PublicApiController
             } else {
                 // Use pagination with permission and name filtering at database level
                 $page = max(1, (int)$this->request->query->get('page', 1));
-                $perPage = min(10000, max(1, $perPage)); // Allow up to 10k per page
+                $perPage = min(self::MAX_PAGE_SIZE, max(1, $perPage));
                 $offset = ($page - 1) * $perPage;
 
                 $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter, $offset, $perPage);
@@ -485,9 +491,9 @@ class ZonesController extends PublicApiController
                 );
             }
 
-            $input = json_decode($this->request->getContent(), true);
+            $input = $this->getValidatedJsonBody();
 
-            if (!$input) {
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
@@ -729,8 +735,8 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
-            if (!$input) {
+            $input = $this->getValidatedJsonBody();
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
@@ -852,14 +858,7 @@ class ZonesController extends PublicApiController
     )]
     #[OA\Response(
         response: 204,
-        description: 'Zone deleted successfully',
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: 'success', type: 'boolean', example: true),
-                new OA\Property(property: 'message', type: 'string', example: 'Zone deleted successfully'),
-                new OA\Property(property: 'data', type: 'null')
-            ]
-        )
+        description: 'Zone deleted successfully'
     )]
     #[OA\Response(
         response: 404,

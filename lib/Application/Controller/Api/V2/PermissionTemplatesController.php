@@ -60,7 +60,7 @@ class PermissionTemplatesController extends PublicApiController
             'POST' => $this->createPermissionTemplate(),
             'PUT' => $this->updatePermissionTemplate(),
             'DELETE' => $this->deletePermissionTemplate(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
         $response->send();
@@ -72,8 +72,9 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Get(
         path: '/v2/permission-templates',
+        operationId: 'v2ListPermissionTemplates',
         summary: 'Get list of permission templates',
-        tags: ['Permission Templates'],
+        tags: ['permission-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         responses: [
             new OA\Response(
@@ -128,8 +129,9 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Get(
         path: '/v2/permission-templates/{id}',
+        operationId: 'v2GetPermissionTemplate',
         summary: 'Get specific permission template',
-        tags: ['Permission Templates'],
+        tags: ['permission-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -217,8 +219,9 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Post(
         path: '/v2/permission-templates',
+        operationId: 'v2CreatePermissionTemplate',
         summary: 'Create new permission template',
-        tags: ['Permission Templates'],
+        tags: ['permission-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         requestBody: new OA\RequestBody(
             required: true,
@@ -319,8 +322,9 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Put(
         path: '/v2/permission-templates/{id}',
+        operationId: 'v2UpdatePermissionTemplate',
         summary: 'Update permission template',
-        tags: ['Permission Templates'],
+        tags: ['permission-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -442,8 +446,9 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Delete(
         path: '/v2/permission-templates/{id}',
+        operationId: 'v2DeletePermissionTemplate',
         summary: 'Delete permission template',
-        tags: ['Permission Templates'],
+        tags: ['permission-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(

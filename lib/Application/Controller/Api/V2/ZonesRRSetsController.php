@@ -75,7 +75,7 @@ class ZonesRRSetsController extends PublicApiController
                 : $this->listRRSets(),
             'POST', 'PUT', 'PATCH' => $this->replaceRRSet(),
             'DELETE' => $this->deleteRRSet(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
         };
 
         $response->send();
@@ -427,8 +427,8 @@ class ZonesRRSetsController extends PublicApiController
                 return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
-            if (!$input) {
+            $input = $this->getValidatedJsonBody();
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
@@ -671,16 +671,7 @@ class ZonesRRSetsController extends PublicApiController
     )]
     #[OA\Response(
         response: 204,
-        description: 'RRSet deleted successfully',
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: 'success', type: 'boolean', example: true),
-                new OA\Property(property: 'message', type: 'string', example: 'RRSet deleted successfully'),
-                new OA\Property(property: 'data', properties: [
-                    new OA\Property(property: 'records_deleted', type: 'integer', example: 2)
-                ], type: 'object')
-            ]
-        )
+        description: 'RRSet deleted successfully'
     )]
     #[OA\Response(
         response: 404,
@@ -833,10 +824,12 @@ class ZonesRRSetsController extends PublicApiController
      */
     private function formatRRSet(array $records, string $zoneName): array
     {
-        // Filter out ENT (Empty Non-Terminal) records created by PowerDNS for RFC 8020 compliance
-        $validRecords = array_filter($records, function ($record) {
+        // Filter out ENT (Empty Non-Terminal) records created by PowerDNS for RFC 8020 compliance.
+        // array_values() so dropped rows cannot leave gaps in the keys, which would
+        // serialize the records list as a JSON object instead of an array.
+        $validRecords = array_values(array_filter($records, function ($record) {
             return !empty($record['type']) && !empty($record['name']);
-        });
+        }));
 
         if (empty($validRecords)) {
             return [];

@@ -53,7 +53,7 @@ class PermissionsController extends PublicApiController
 
         $response = match ($method) {
             'GET' => isset($this->pathParameters['id']) ? $this->getPermission() : $this->listPermissions(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET']),
         };
 
         $response->send();
@@ -65,8 +65,9 @@ class PermissionsController extends PublicApiController
      */
     #[OA\Get(
         path: '/v2/permissions',
+        operationId: 'v2ListPermissions',
         summary: 'Get list of available permissions',
-        tags: ['Permissions'],
+        tags: ['permissions'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         responses: [
             new OA\Response(
@@ -112,7 +113,7 @@ class PermissionsController extends PublicApiController
             $permissions = $this->permissionTemplateRepository->getPermissionsByTemplateId(0);
             return $this->returnApiResponse(['permissions' => $permissions]);
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to fetch permissions: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'PermissionsController::listPermissions', 'Failed to fetch permissions');
         }
     }
 
@@ -121,8 +122,9 @@ class PermissionsController extends PublicApiController
      */
     #[OA\Get(
         path: '/v2/permissions/{id}',
+        operationId: 'v2GetPermission',
         summary: 'Get a specific permission',
-        tags: ['Permissions'],
+        tags: ['permissions'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -193,7 +195,7 @@ class PermissionsController extends PublicApiController
 
             return $this->returnApiResponse(['permission' => array_values($permission)[0]]);
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to fetch permission: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'PermissionsController::getPermission', 'Failed to fetch permission');
         }
     }
 }

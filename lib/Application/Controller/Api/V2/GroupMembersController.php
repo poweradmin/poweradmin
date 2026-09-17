@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Domain\Error\GroupNotFoundException;
+use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Domain\Model\Permission;
@@ -60,7 +61,7 @@ class GroupMembersController extends PublicApiController
             'GET' => $this->listMembers(),
             'POST' => $this->addMember(),
             'DELETE' => $this->removeMember(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'DELETE']),
         };
 
         $response->send();
@@ -138,7 +139,7 @@ class GroupMembersController extends PublicApiController
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupMembersController::listMembers', 'Failed to retrieve members');
         }
     }
 
@@ -195,7 +196,7 @@ class GroupMembersController extends PublicApiController
 
         try {
             $groupId = (int)$this->pathParameters['id'];
-            $data = json_decode($this->request->getContent(), true);
+            $data = $this->getValidatedJsonBody() ?? [];
 
             if (empty($data['user_id'])) {
                 return $this->returnApiError('Missing required field: user_id', 400);
@@ -211,8 +212,11 @@ class GroupMembersController extends PublicApiController
             return $this->returnApiResponse(null, true, 'Member added successfully', 201);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
+            // Domain validation refusal (already a member) - bad input, not a fault.
             return $this->returnApiError($e->getMessage(), 400);
+        } catch (Exception $e) {
+            return $this->handleException($e, 'GroupMembersController::addMember', 'Failed to add member');
         }
     }
 
@@ -283,7 +287,7 @@ class GroupMembersController extends PublicApiController
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupMembersController::removeMember', 'Failed to remove member');
         }
     }
 }

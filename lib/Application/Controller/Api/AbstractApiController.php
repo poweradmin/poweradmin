@@ -110,12 +110,29 @@ abstract class AbstractApiController extends BaseController
     protected function getJsonInput(): ?array
     {
         if ($this->isJsonRequest()) {
-            $content = $this->request->getContent();
-            return json_decode($content, true);
+            // A scalar body ("abc", 42) is valid JSON but not a usable input set
+            $decoded = json_decode($this->request->getContent(), true);
+            return is_array($decoded) ? $decoded : null;
         }
 
         // Fall back to POST data if no valid JSON in the body
         return $this->request->request->all() ?: null;
+    }
+
+    /**
+     * Get the JSON request body validated as a non-empty array.
+     *
+     * Same sources as {@see self::getJsonInput()} (JSON body with a form-data
+     * fallback), but scalar bodies like `"abc"` or `42` - which decode to
+     * non-array values - are rejected as well, so callers can safely use array
+     * access on the result. Returns null for anything but a non-empty array.
+     *
+     * @return array|null Decoded body array, or null when missing or invalid
+     */
+    protected function getValidatedJsonBody(): ?array
+    {
+        $input = $this->getJsonInput();
+        return is_array($input) && $input !== [] ? $input : null;
     }
 
     /**
@@ -168,6 +185,20 @@ abstract class AbstractApiController extends BaseController
     protected function returnApiError(string $message, int $status = 400, $data = null, array $additionalFields = [], array $headers = []): JsonResponse
     {
         return $this->returnApiResponse($data, false, $message, $status, $additionalFields, $headers);
+    }
+
+    /**
+     * Return a 405 Method Not Allowed error with the RFC 9110 Allow header
+     * listing the methods the endpoint supports.
+     *
+     * @param string[] $allowedMethods HTTP methods the endpoint handles (e.g. ['GET', 'POST'])
+     * @return JsonResponse
+     */
+    protected function methodNotAllowed(array $allowedMethods): JsonResponse
+    {
+        return $this->returnApiError('Method not allowed', 405, null, [], [
+            'Allow' => implode(', ', $allowedMethods),
+        ]);
     }
 
     /**

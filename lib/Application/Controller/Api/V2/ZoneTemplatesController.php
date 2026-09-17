@@ -56,7 +56,7 @@ class ZoneTemplatesController extends PublicApiController
             'POST' => $this->createZoneTemplate(),
             'PUT' => $this->updateZoneTemplate(),
             'DELETE' => $this->deleteZoneTemplate(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
         $response->send();
@@ -65,8 +65,9 @@ class ZoneTemplatesController extends PublicApiController
 
     #[OA\Get(
         path: '/v2/zone-templates',
+        operationId: 'v2ListZoneTemplates',
         summary: 'Get list of zone templates',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         responses: [
             new OA\Response(
@@ -130,8 +131,9 @@ class ZoneTemplatesController extends PublicApiController
 
     #[OA\Get(
         path: '/v2/zone-templates/{id}',
+        operationId: 'v2GetZoneTemplate',
         summary: 'Get specific zone template with records',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -239,8 +241,9 @@ class ZoneTemplatesController extends PublicApiController
 
     #[OA\Post(
         path: '/v2/zone-templates',
+        operationId: 'v2CreateZoneTemplate',
         summary: 'Create new zone template',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         requestBody: new OA\RequestBody(
             required: true,
@@ -328,8 +331,9 @@ class ZoneTemplatesController extends PublicApiController
 
     #[OA\Put(
         path: '/v2/zone-templates/{id}',
+        operationId: 'v2UpdateZoneTemplate',
         summary: 'Update zone template',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -449,8 +453,9 @@ class ZoneTemplatesController extends PublicApiController
 
     #[OA\Delete(
         path: '/v2/zone-templates/{id}',
+        operationId: 'v2DeleteZoneTemplate',
         summary: 'Delete zone template',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(

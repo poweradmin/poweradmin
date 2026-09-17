@@ -59,7 +59,7 @@ class DynamicDnsController extends PublicApiController
     {
         $response = match ($this->request->getMethod()) {
             'POST' => $this->updateRecord(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['POST']),
         };
 
         $response->send();
