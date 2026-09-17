@@ -319,12 +319,26 @@ class SymfonyRouterTest extends TestCase
     public function testInternalApiRoutes(): void
     {
         $_SERVER['REQUEST_URI'] = '/api/internal/validation';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
 
         $this->assertEquals('Poweradmin\Application\Controller\Api\Internal\ValidationController', $routeInfo['controller']);
         $this->assertEquals('api_internal_validation', $routeInfo['route']);
+    }
+
+    public function testInternalValidationRefusesGet(): void
+    {
+        // A GET must not reach the body-handling action: InternalApiController only
+        // applies the X-CSRF-Token check to non-GET requests
+        $_SERVER['REQUEST_URI'] = '/api/internal/validation';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $router = new SymfonyRouter();
+
+        $this->expectExceptionMessage('Method not allowed');
+        $router->match();
     }
 
     protected function tearDown(): void

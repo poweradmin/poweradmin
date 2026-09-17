@@ -743,17 +743,22 @@ api_docs_json:
     version: V2
 
 # Internal API Routes
+# methods are declared so a GET cannot reach a body-handling action and skip
+# the X-CSRF-Token check InternalApiController applies to non-GET requests
 api_internal_validation:
   path: /api/internal/validation
   controller: Poweradmin\Application\Controller\Api\Internal\ValidationController::run
+  methods: [POST]
 
 api_internal_user_preferences:
   path: /api/internal/user-preferences
   controller: Poweradmin\Application\Controller\Api\Internal\UserPreferencesController::run
+  methods: [GET, POST, PUT, DELETE]
 
 api_internal_zone:
   path: /api/internal/zone
   controller: Poweradmin\Application\Controller\Api\Internal\ZoneController::run
+  methods: [GET]
 
 
 # Additional Zone Management Routes
