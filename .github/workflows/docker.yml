@@ -32,7 +32,7 @@ jobs:
     timeout-minutes: 60
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     permissions:
-      contents: write
+      contents: read
       packages: write
       actions: read
 
