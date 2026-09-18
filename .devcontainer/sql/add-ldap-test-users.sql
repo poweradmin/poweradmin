@@ -12,7 +12,8 @@
 --   OR
 --   docker exec -i mariadb mysql -u pdns -ppoweradmin poweradmin < .devcontainer/sql/add-ldap-test-users.sql
 --
--- Part of: LDAP testing infrastructure (.devcontainer/ldap/setup-ldap-test.sh)
+-- Imported by .devcontainer/scripts/import-test-data.sh (MySQL only); the matching LDAP entries
+-- are bootstrapped by the ldap container from .devcontainer/ldap/bootstrap/
 
 USE poweradmin;
 

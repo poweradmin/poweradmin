@@ -308,6 +308,19 @@ import_mysql() {
             fi
         fi
 
+        # LDAP-linked users (testuser, testuser2) match the entries the ldap container bootstraps
+        if [ -f "$SQL_DIR/add-ldap-test-users.sql" ]; then
+            echo -e "${YELLOW}📦 Importing LDAP test users...${NC}"
+            output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$SQL_DIR/add-ldap-test-users.sql" 2>&1)
+            exit_code=$?
+
+            if [ $exit_code -eq 0 ]; then
+                echo -e "${GREEN}✅ MySQL/MariaDB LDAP test users imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  LDAP test users import had issues (may already exist)${NC}"
+            fi
+        fi
+
         # Import group test data (memberships, zone-group assignments)
         if [ -f "$SQL_DIR/test-groups-mysql.sql" ]; then
             echo -e "${YELLOW}📦 Importing group memberships and zone-group assignments...${NC}"
@@ -647,6 +660,7 @@ main() {
         echo -e "${BLUE}Test credentials:${NC}"
         echo "  Username: admin, manager, client, viewer, noperm, inactive"
         echo "  Password: Poweradmin123"
+        echo "  LDAP (MySQL instance): testuser / testpass123, testuser2 / testpass456"
         echo ""
         echo -e "${BLUE}Test zones:${NC}"
         echo "  Forward zones:"
@@ -656,16 +670,6 @@ main() {
         echo "  - shared-zone.example.com (owners: manager, client)"
         echo "  - test858.example.com (owner: admin) - Issue #858 comment testing"
         echo "  - 168.192.in-addr.arpa (owner: admin) - A/PTR sync testing"
-        echo ""
-        echo "  Reverse zones:"
-        echo "  - 2.0.192.in-addr.arpa (IPv4, owners: admin, manager)"
-        echo "  - 8.b.d.0.1.0.0.2.ip6.arpa (IPv6, owner: admin)"
-        echo ""
-        echo -e "${BLUE}Zone Templates:${NC}"
-        echo "  - Standard Web Zone (owner: admin) - www, mail, ftp, MX"
-        echo "  - Mail Server Zone (owner: admin) - MX, SPF"
-        echo "  - Minimal Zone (owner: admin) - empty"
-        echo "  - Manager Template (owner: manager) - empty"
         echo ""
         echo "  Reverse zones:"
         echo "  - 2.0.192.in-addr.arpa (IPv4, owners: admin, manager)"

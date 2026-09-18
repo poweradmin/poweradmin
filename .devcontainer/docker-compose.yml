@@ -450,8 +450,10 @@ services:
       - LDAP_DOMAIN=poweradmin.org
       - "LDAP_BASE_DN=dc=poweradmin,dc=org"
       - LDAP_ADMIN_PASSWORD=poweradmin
+    # Fixtures load on first start: ldif files are applied in name order.
     volumes:
-      - ./ldap/ldap-test-user.ldif:/ldap-test-user.ldif:ro
+      - ./ldap/bootstrap:/container/service/slapd/assets/config/bootstrap/ldif/custom:ro
+    command: ["--copy-service"]
     ports:
       - 389:389
       - 636:636

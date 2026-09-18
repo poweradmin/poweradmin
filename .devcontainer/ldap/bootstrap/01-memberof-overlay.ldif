@@ -1,0 +1,14 @@
+# The image's stock memberof overlay only tracks groupOfUniqueNames/uniqueMember.
+# This second instance surfaces groupOfNames/member (the fixture groups) as memberOf,
+# which is the attribute Poweradmin's LDAP group mapping reads.
+dn: olcOverlay=memberof,olcDatabase={1}mdb,cn=config
+changetype: add
+objectClass: olcConfig
+objectClass: olcMemberOf
+objectClass: olcOverlayConfig
+objectClass: top
+olcOverlay: memberof
+olcMemberOfRefInt: TRUE
+olcMemberOfGroupOC: groupOfNames
+olcMemberOfMemberAD: member
+olcMemberOfMemberOfAD: memberOf

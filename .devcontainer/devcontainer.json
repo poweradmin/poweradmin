@@ -85,6 +85,5 @@
     "ldapadmin:8443": {
       "label": "phpLDAPadmin v2"
     }
-  },
-  "postStartCommand": "bash .devcontainer/ldap/setup-ldap-test.sh"
+  }
 }
