@@ -11,7 +11,7 @@ x-app: &app
 
 x-app-volumes:
   - &vol-app ../.:/app
-  - &vol-xdebug ./conf/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+  - &vol-xdebug ./conf/xdebug.ini:/usr/local/etc/php/conf.d/zz-xdebug.ini
   - &vol-error-reporting ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
 
 services:
@@ -29,6 +29,7 @@ services:
       dockerfile: Dockerfile
       args:
         - VARIANT=${PHP_VERSION_MYSQL}-fpm-${DEBIAN_VERSION}
+        - XDEBUG=${PHP_XDEBUG:-0}
     volumes:
       - *vol-app
       - *vol-xdebug
@@ -50,6 +51,7 @@ services:
       dockerfile: Dockerfile
       args:
         - VARIANT=${PHP_VERSION_SQLITE}-fpm-${DEBIAN_VERSION}
+        - XDEBUG=${PHP_XDEBUG:-0}
     volumes:
       - *vol-app
       - *vol-xdebug
@@ -86,6 +88,7 @@ services:
       dockerfile: Dockerfile
       args:
         - VARIANT=${PHP_VERSION_PGSQL}-fpm-${DEBIAN_VERSION}
+        - XDEBUG=${PHP_XDEBUG:-0}
     volumes:
       - *vol-app
       - *vol-xdebug
@@ -136,6 +139,7 @@ services:
       dockerfile: Dockerfile
       args:
         - VARIANT=${PHP_VERSION_DE}-fpm-${DEBIAN_VERSION}
+        - XDEBUG=${PHP_XDEBUG:-0}
     volumes:
       - *vol-app
       - *vol-xdebug

@@ -29,6 +29,9 @@ The images are tagged `poweradmin-devcontainer-fpm:<version>`; the first service
 builds, the others reuse the tag. After editing `.devcontainer/Dockerfile` or a version in
 `.env`, run `docker compose ... build` and recreate the app services.
 
+Xdebug is off by default. Set `PHP_XDEBUG=1` in `.env`, rebuild the fpm images and recreate
+the app services; `conf/xdebug.ini` holds the client settings (`host.docker.internal`, port 9003).
+
 Only the web instances (8080-8087) listen on all interfaces. Databases, LDAP, the PowerDNS
 DNS/API ports, Adminer and phpLDAPadmin are bound to 127.0.0.1, so they are unreachable from
 other machines on your network.
