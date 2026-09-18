@@ -3,7 +3,8 @@
 ##############################################################################
 # Poweradmin API v2 Test Suite
 # Comprehensive testing for API v2 endpoints
-# Tests: RRSets, PTR auto-creation, Bulk operations, Master port syntax, Groups, Metadata, Users
+# Tests: RRSets, PTR auto-creation, Bulk operations, Master port syntax, Groups, Metadata, Users,
+#        limited-user permission gates (identity matrix, basic auth)
 ##############################################################################
 
 set -euo pipefail
@@ -2534,6 +2535,404 @@ test_users_perm_templ_validation() {
 }
 
 ##############################################################################
+# Test: Limited-user permission gates (identity matrix)
+##############################################################################
+
+# Every other suite authenticates with the ueberuser key, which satisfies every
+# gate. These identities are created through the API and authenticate with
+# basic auth so the 403 branches in the v2 controllers actually run.
+LUG_PASSWORD="LimitedUs3r#Pass1"
+LUG_ZONE_ID=""          # owned by lug_client and lug_content
+LUG_OTHER_ZONE_ID=""    # owned by the admin key only
+LUG_GLOBAL_ZT_ID=""     # global zone template (owner 0)
+LUG_ADMIN_ZT_ID=""      # personal zone template owned by the admin user
+LUG_ADMIN_USER_ID=""
+LUG_ADMIN_TEMPL_ID=""
+LUG_GROUP_ID=""
+# Per-identity user/template ids, assigned by lug_make_identity (bash 3 has no
+# associative arrays).
+LUG_UID_nobody="" LUG_UID_client="" LUG_UID_content="" LUG_UID_useredit=""
+LUG_TID_nobody="" LUG_TID_client=""
+
+# lug_as USER METHOD ENDPOINT DATA STATUS DESCRIPTION - a mismatch is counted
+# but never aborts the run, so every gate in the matrix gets reported.
+lug_as() {
+    local user="$1"
+    shift
+    api_request_v2_basic "$1" "$2" "$3" "$4" "$5" "$user" "$LUG_PASSWORD" || true
+}
+
+# Admin-key variant with the same never-abort behaviour.
+lug_admin() {
+    api_request_v2 "$1" "$2" "$3" "$4" "$5" || true
+}
+
+lug_admin_get() {
+    curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" "${API_BASE_URL}/api/v2$1"
+}
+
+lug_lookup_perm_templ() {
+    lug_admin_get "/permission-templates" | jq -r --arg n "$1" '.data.templates[]? | select(.name == $n) | .id' | head -1
+}
+
+lug_lookup_user() {
+    lug_admin_get "/users?username=$1" | jq -r '.data.users[0]?.user_id // empty'
+}
+
+# Removes anything a previous aborted run left behind. Zones first: a user who
+# still owns zones cannot be deleted without a transfer target.
+lug_cleanup() {
+    local id
+    for id in $(lug_admin_get "/zones" | jq -r '.data.zones[]? | select(.name | startswith("lug-")) | .id'); do
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" "${API_BASE_URL}/api/v2/zones/${id}" >/dev/null 2>&1 || true
+    done
+    for id in $(lug_admin_get "/zone-templates" | jq -r '.data.templates[]? | select(.name | startswith("lug_")) | .id'); do
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" "${API_BASE_URL}/api/v2/zone-templates/${id}" >/dev/null 2>&1 || true
+    done
+    for id in $(lug_admin_get "/users" | jq -r '.data.users[]? | select(.username | startswith("lug_")) | .user_id'); do
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" "${API_BASE_URL}/api/v2/users/${id}" >/dev/null 2>&1 || true
+    done
+    for id in $(lug_admin_get "/permission-templates" | jq -r '.data.templates[]? | select(.name | startswith("lug_")) | .id'); do
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" "${API_BASE_URL}/api/v2/permission-templates/${id}" >/dev/null 2>&1 || true
+    done
+}
+
+# lug_make_identity NAME "perm ids as JSON array" - template + user, both prefixed lug_.
+lug_make_identity() {
+    local name="$1" perms="$2" templ_id user_id
+    if ! api_request_v2 "POST" "/permission-templates" \
+        "{\"name\":\"lug_${name}_templ\",\"descr\":\"limited-user gate matrix\",\"permissions\":${perms}}" \
+        201 "Create template for lug_${name}"; then
+        return 1
+    fi
+    templ_id=$(lug_lookup_perm_templ "lug_${name}_templ")
+    if [[ -z "$templ_id" ]]; then
+        increment_test
+        print_fail "Could not resolve template id for lug_${name}"
+        return 1
+    fi
+    eval "LUG_TID_${name}=\"$templ_id\""
+
+    local body
+    body=$(jq -n --arg u "lug_${name}" --arg pw "$LUG_PASSWORD" --argjson t "$templ_id" \
+        '{username: $u, password: $pw, fullname: ("LUG " + $u), email: ($u + "@example.com"), perm_templ: $t, active: true}')
+    if ! api_request_v2 "POST" "/users" "$body" 201 "Create user lug_${name}"; then
+        return 1
+    fi
+    user_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')
+    eval "LUG_UID_${name}=\"$user_id\""
+}
+
+lug_setup() {
+    lug_cleanup
+
+    # Permission ids from the perm_items seed: 41 zone_master_add, 43 content_view_own,
+    # 44 content_edit_own, 54 user_view_others, 55 user_add_new, 57 user_edit_others,
+    # 60 templ_perm_add, 61 templ_perm_edit, 62 content_edit_own_as_client,
+    # 63 zone_templ_add, 64 zone_templ_edit.
+    lug_make_identity "nobody" "[]" || return 1
+    lug_make_identity "client" "[43,62,63,64]" || return 1
+    lug_make_identity "content" "[43,44]" || return 1
+    lug_make_identity "useradd" "[54,55]" || return 1
+    lug_make_identity "useredit" "[54,57]" || return 1
+    lug_make_identity "templ" "[60,61]" || return 1
+
+    LUG_ADMIN_USER_ID=$(lug_lookup_user "admin")
+    if [[ -n "$LUG_ADMIN_USER_ID" ]]; then
+        LUG_ADMIN_TEMPL_ID=$(lug_admin_get "/users/${LUG_ADMIN_USER_ID}" | jq -r '.data.user.perm_templ // empty')
+    fi
+    LUG_GROUP_ID=$(lug_admin_get "/groups" | jq -r '.data.groups[0]?.id // empty')
+
+    if ! api_request_v2 "POST" "/zones" '{"name":"lug-owned.example.com","type":"MASTER"}' 201 "Create zone owned by limited users"; then
+        return 1
+    fi
+    LUG_ZONE_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    lug_admin "POST" "/zones/${LUG_ZONE_ID}/owners" "{\"user_id\":${LUG_UID_client}}" 201 "Make lug_client an owner"
+    lug_admin "POST" "/zones/${LUG_ZONE_ID}/owners" "{\"user_id\":${LUG_UID_content}}" 201 "Make lug_content an owner"
+
+    if ! api_request_v2 "POST" "/zones" '{"name":"lug-other.example.com","type":"MASTER"}' 201 "Create zone no limited user owns"; then
+        return 1
+    fi
+    LUG_OTHER_ZONE_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+
+    if api_request_v2 "POST" "/zone-templates" '{"name":"lug_global_zt","description":"global","is_global":true}' 201 "Create global zone template"; then
+        LUG_GLOBAL_ZT_ID=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id')
+    fi
+    if api_request_v2 "POST" "/zone-templates" '{"name":"lug_admin_zt","description":"admin-owned"}' 201 "Create admin-owned zone template"; then
+        LUG_ADMIN_ZT_ID=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id')
+    fi
+}
+
+lug_test_nobody() {
+    print_section "Limited users - no permissions at all"
+    local me="${LUG_UID_nobody}" other="${LUG_UID_content}" z="$LUG_ZONE_ID"
+
+    lug_as lug_nobody "GET" "/users" "" 403 "nobody: list users rejected"
+    lug_as lug_nobody "GET" "/users/${me}" "" 200 "nobody: may read own account"
+    lug_as lug_nobody "GET" "/users/${other}" "" 403 "nobody: other account hidden"
+    lug_as lug_nobody "POST" "/users" '{"username":"lug_by_nobody","password":"LimitedUs3r#Pass1"}' 403 "nobody: create user rejected"
+    lug_as lug_nobody "PUT" "/users/${other}" '{"fullname":"x"}' 403 "nobody: edit other user rejected"
+    lug_as lug_nobody "DELETE" "/users/${other}" "" 403 "nobody: delete other user rejected"
+    lug_as lug_nobody "PATCH" "/users/${other}" '{"perm_templ":1}' 403 "nobody: retemplate other user rejected"
+
+    lug_as lug_nobody "GET" "/groups" "" 200 "nobody: group list is own groups only"
+    assert_json "nobody: sees no groups" "$LAST_RESPONSE_BODY" '.data.groups | length' "0"
+    lug_as lug_nobody "POST" "/groups" '{"name":"lug_group","description":"x","perm_templ_id":6}' 403 "nobody: create group rejected"
+    if [[ -n "$LUG_GROUP_ID" ]]; then
+        local g="$LUG_GROUP_ID"
+        lug_as lug_nobody "GET" "/groups/${g}" "" 403 "nobody: non-member cannot read group"
+        lug_as lug_nobody "PUT" "/groups/${g}" '{"name":"lug_renamed"}' 403 "nobody: update group rejected"
+        lug_as lug_nobody "DELETE" "/groups/${g}" "" 403 "nobody: delete group rejected"
+        lug_as lug_nobody "GET" "/groups/${g}/members" "" 403 "nobody: list members rejected"
+        lug_as lug_nobody "POST" "/groups/${g}/members" "{\"user_id\":${me}}" 403 "nobody: add member rejected"
+        lug_as lug_nobody "DELETE" "/groups/${g}/members/${me}" "" 403 "nobody: remove member rejected"
+        lug_as lug_nobody "GET" "/groups/${g}/zones" "" 403 "nobody: list group zones rejected"
+        lug_as lug_nobody "POST" "/groups/${g}/zones" "{\"zone_id\":${z}}" 403 "nobody: assign zone to group rejected"
+        lug_as lug_nobody "DELETE" "/groups/${g}/zones/${z}" "" 403 "nobody: unassign zone from group rejected"
+    fi
+
+    lug_as lug_nobody "GET" "/permissions" "" 403 "nobody: list permissions rejected"
+    lug_as lug_nobody "GET" "/permissions/53" "" 403 "nobody: read permission rejected"
+    lug_as lug_nobody "GET" "/permission-templates" "" 403 "nobody: list permission templates rejected"
+    lug_as lug_nobody "GET" "/permission-templates/${LUG_TID_nobody}" "" 403 "nobody: read permission template rejected"
+    lug_as lug_nobody "POST" "/permission-templates" '{"name":"lug_x","descr":"x"}' 403 "nobody: create permission template rejected"
+    lug_as lug_nobody "PUT" "/permission-templates/${LUG_TID_nobody}" '{"name":"lug_x","descr":"x"}' 403 "nobody: update permission template rejected"
+    lug_as lug_nobody "DELETE" "/permission-templates/${LUG_TID_nobody}" "" 403 "nobody: delete permission template rejected"
+
+    lug_as lug_nobody "POST" "/zones" '{"name":"lug-nobody.example.com","type":"MASTER"}' 403 "nobody: create zone rejected"
+    lug_as lug_nobody "GET" "/zones" "" 200 "nobody: zone list is filtered"
+    assert_json "nobody: sees no zones" "$LAST_RESPONSE_BODY" '.data.zones | length' "0"
+    lug_as lug_nobody "GET" "/zones/${z}" "" 403 "nobody: read zone rejected"
+    lug_as lug_nobody "PUT" "/zones/${z}" '{"type":"NATIVE"}' 403 "nobody: update zone rejected"
+    lug_as lug_nobody "DELETE" "/zones/${z}" "" 403 "nobody: delete zone rejected"
+    lug_as lug_nobody "GET" "/zones/${z}/records" "" 403 "nobody: list records rejected"
+    lug_as lug_nobody "POST" "/zones/${z}/records" '{"name":"x","type":"A","content":"192.0.2.9"}' 403 "nobody: create record rejected"
+    lug_as lug_nobody "GET" "/zones/${z}/rrsets" "" 403 "nobody: list rrsets rejected"
+    lug_as lug_nobody "PUT" "/zones/${z}/rrsets" '{"name":"x","type":"A","records":[{"content":"192.0.2.9"}]}' 403 "nobody: replace rrset rejected"
+    lug_as lug_nobody "DELETE" "/zones/${z}/rrsets/x/A" "" 403 "nobody: delete rrset rejected"
+    lug_as lug_nobody "POST" "/zones/${z}/records/bulk" '{"operations":[{"action":"create","name":"x","type":"A","content":"192.0.2.9"}]}' 403 "nobody: bulk records rejected"
+    lug_as lug_nobody "GET" "/zones/${z}/owners" "" 403 "nobody: list owners rejected"
+    lug_as lug_nobody "POST" "/zones/${z}/owners" "{\"user_id\":${me}}" 403 "nobody: add owner rejected"
+    lug_as lug_nobody "DELETE" "/zones/${z}/owners/${other}" "" 403 "nobody: remove owner rejected"
+    lug_as lug_nobody "GET" "/zones/${z}/metadata" "" 403 "nobody: list metadata rejected"
+    lug_as lug_nobody "GET" "/zones/${z}/metadata/ALLOW-AXFR-FROM" "" 403 "nobody: read metadata kind rejected"
+    lug_as lug_nobody "PUT" "/zones/${z}/metadata/ALLOW-AXFR-FROM" '{"values":["192.0.2.0/24"]}' 403 "nobody: set metadata rejected"
+    lug_as lug_nobody "DELETE" "/zones/${z}/metadata/ALLOW-AXFR-FROM" "" 403 "nobody: delete metadata rejected"
+    lug_as lug_nobody "GET" "/zones/${z}/dnssec" "" 403 "nobody: dnssec status rejected"
+    lug_as lug_nobody "POST" "/zones/${z}/dnssec" '{"enabled":true}' 403 "nobody: dnssec enable rejected"
+
+    lug_as lug_nobody "GET" "/zone-templates" "" 403 "nobody: list zone templates rejected"
+    lug_as lug_nobody "POST" "/zone-templates" '{"name":"lug_nobody_zt","description":"x"}' 403 "nobody: create zone template rejected"
+    if [[ -n "$LUG_GLOBAL_ZT_ID" ]]; then
+        lug_as lug_nobody "GET" "/zone-templates/${LUG_GLOBAL_ZT_ID}" "" 403 "nobody: read zone template rejected"
+        lug_as lug_nobody "GET" "/zone-templates/${LUG_GLOBAL_ZT_ID}/records" "" 403 "nobody: list template records rejected"
+    fi
+
+    lug_as lug_nobody "POST" "/dynamic-dns" '{"hostname":"www.lug-owned.example.com","ipv4":"192.0.2.9"}' 403 "nobody: dynamic DNS rejected"
+}
+
+lug_test_client() {
+    print_section "Limited users - client-level record editor (own_as_client)"
+    local z="$LUG_ZONE_ID" oz="$LUG_OTHER_ZONE_ID" a_id soa_id
+
+    lug_as lug_client "GET" "/zones/${z}" "" 200 "client: may read owned zone"
+    lug_as lug_client "GET" "/zones/${oz}" "" 403 "client: zone owned by someone else hidden"
+    lug_as lug_client "GET" "/zones" "" 200 "client: zone list filtered to owned zones"
+    assert_json "client: list excludes the other zone" "$LAST_RESPONSE_BODY" "[.data.zones[] | select(.id == ${oz})] | length" "0"
+
+    # Record-type gate: A passes, SOA/NS are refused on create, retype, edit and delete.
+    lug_as lug_client "POST" "/zones/${z}/records" '{"name":"www","type":"A","content":"192.0.2.10"}' 201 "client: may create an A record"
+    a_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.record_id // .data.id // empty')
+    lug_as lug_client "POST" "/zones/${z}/records" '{"name":"sub","type":"NS","content":"ns1.example.com"}' 403 "client: NS create rejected"
+    lug_as lug_client "POST" "/zones/${z}/records" '{"name":"sub","type":"LUA","content":"A \"192.0.2.1\""}' 403 "client: LUA create rejected"
+    if [[ -n "$a_id" ]]; then
+        lug_as lug_client "PUT" "/zones/${z}/records/${a_id}" '{"name":"sub","type":"NS","content":"ns1.example.com"}' 403 "client: retyping A to NS rejected"
+        lug_as lug_client "PUT" "/zones/${z}/records/${a_id}" '{"content":"192.0.2.11"}' 200 "client: may edit own A record"
+    fi
+    soa_id=$(lug_admin_get "/zones/${z}/records?type=SOA" | jq -r '.data.records[] | select(.type == "SOA") | .id' | head -1)
+    if [[ -n "$soa_id" ]]; then
+        lug_as lug_client "PUT" "/zones/${z}/records/${soa_id}" '{"ttl":300}' 403 "client: SOA edit rejected"
+        lug_as lug_client "PUT" "/zones/${z}/records/${soa_id}" '{"type":"A","content":"192.0.2.1"}' 403 "client: relabelling SOA as A rejected"
+        lug_as lug_client "DELETE" "/zones/${z}/records/${soa_id}" "" 403 "client: SOA delete rejected"
+    fi
+    lug_as lug_client "POST" "/zones/${oz}/records" '{"name":"www","type":"A","content":"192.0.2.10"}' 403 "client: record write on unowned zone rejected"
+
+    lug_as lug_client "PUT" "/zones/${z}/rrsets" '{"name":"rr","type":"A","records":[{"content":"192.0.2.20"}]}' 200 "client: may replace an A rrset"
+    lug_as lug_client "PUT" "/zones/${z}/rrsets" '{"name":"rr","type":"NS","records":[{"content":"ns1.example.com"}]}' 403 "client: NS rrset replace rejected"
+    lug_as lug_client "DELETE" "/zones/${z}/rrsets/rr/NS" "" 403 "client: NS rrset delete rejected"
+    lug_as lug_client "POST" "/zones/${z}/records/bulk" '{"operations":[{"action":"create","name":"bulk","type":"NS","content":"ns1.example.com"}]}' 403 "client: bulk NS create rejected"
+    lug_as lug_client "POST" "/zones/${z}/records/bulk" '{"operations":[{"action":"create","name":"bulk","type":"A","content":"192.0.2.30"}]}' 200 "client: bulk A create allowed"
+
+    # Content rights are not meta/ownership/dnssec/delete rights.
+    lug_as lug_client "PUT" "/zones/${z}" '{"type":"NATIVE"}' 403 "client: zone settings change rejected"
+    lug_as lug_client "DELETE" "/zones/${z}" "" 403 "client: zone delete rejected"
+    lug_as lug_client "GET" "/zones/${z}/owners" "" 403 "client: owners hidden without ownership_view"
+    lug_as lug_client "POST" "/zones/${z}/owners" "{\"user_id\":${LUG_UID_nobody}}" 403 "client: add owner rejected"
+    lug_as lug_client "DELETE" "/zones/${z}/owners/${LUG_UID_content}" "" 403 "client: remove owner rejected"
+    lug_as lug_client "GET" "/zones/${z}/metadata" "" 403 "client: metadata hidden without metadata_view"
+    lug_as lug_client "PUT" "/zones/${z}/metadata/ALLOW-AXFR-FROM" '{"values":["192.0.2.0/24"]}' 403 "client: set metadata rejected"
+    lug_as lug_client "POST" "/zones/${z}/dnssec" '{"enabled":true}' 403 "client: dnssec enable rejected"
+
+    # Dynamic DNS: a client-level owner may update, and only within owned zones.
+    lug_as lug_client "POST" "/dynamic-dns" '{"hostname":"www.lug-owned.example.com","ipv4":"192.0.2.12"}' 200 "client: dynamic DNS update on owned zone"
+    assert_json "client: dynamic DNS reports the change" "$LAST_RESPONSE_BODY" '.data.changed' "true"
+    lug_as lug_client "POST" "/dynamic-dns" '{"hostname":"www.lug-other.example.com","ipv4":"192.0.2.12"}' 404 "client: dynamic DNS on unowned zone is nohost"
+    lug_as lug_client "POST" "/dynamic-dns" '{"hostname":"www.lug-owned.example.com"}' 400 "client: dynamic DNS without an address rejected"
+
+    # Zone templates: personal only, and the record-type gate applies to template records.
+    local zt_id rec_id ns_id
+    lug_as lug_client "POST" "/zone-templates" '{"name":"lug_client_zt","description":"x","is_global":true}' 403 "client: global zone template create rejected"
+    lug_as lug_client "POST" "/zone-templates" '{"name":"lug_client_zt","description":"x"}' 201 "client: may create a personal zone template"
+    zt_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id // empty')
+    if [[ -n "$zt_id" ]]; then
+        lug_as lug_client "PUT" "/zone-templates/${zt_id}" '{"name":"lug_client_zt","description":"y","is_global":true}' 403 "client: promoting own template to global rejected"
+        lug_as lug_client "PUT" "/zone-templates/${zt_id}" '{"name":"lug_client_zt","description":"y"}' 200 "client: may edit own template"
+        lug_as lug_client "POST" "/zone-templates/${zt_id}/records" '{"name":"www","type":"A","content":"192.0.2.40"}' 201 "client: may add an A template record"
+        rec_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id // empty')
+        lug_as lug_client "POST" "/zone-templates/${zt_id}/records" '{"name":"[ZONE]","type":"NS","content":"ns1.example.com"}' 403 "client: NS template record rejected"
+        lug_as lug_client "POST" "/zone-templates/${zt_id}/records" '{"name":"[ZONE]","type":"SOA","content":"ns1.example.com hostmaster.example.com 0 28800 7200 604800 86400"}' 403 "client: SOA template record rejected"
+        lug_as lug_client "POST" "/zone-templates/${zt_id}/records" '{"name":"lua","type":"LUA","content":"A \"192.0.2.1\""}' 403 "client: LUA template record rejected"
+        if [[ -n "$rec_id" ]]; then
+            lug_as lug_client "PUT" "/zone-templates/${zt_id}/records/${rec_id}" '{"name":"www","type":"NS","content":"ns1.example.com"}' 403 "client: retyping template A to NS rejected"
+        fi
+        # An admin-authored NS record in the client's template stays out of reach.
+        if lug_admin "POST" "/zone-templates/${zt_id}/records" '{"name":"[ZONE]","type":"NS","content":"ns1.example.com"}' 201 "admin: seed NS record into client template"; then
+            ns_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id // empty')
+            if [[ -n "$ns_id" ]]; then
+                lug_as lug_client "PUT" "/zone-templates/${zt_id}/records/${ns_id}" '{"name":"www","type":"A","content":"192.0.2.41"}' 403 "client: relabelling template NS as A rejected"
+                lug_as lug_client "DELETE" "/zone-templates/${zt_id}/records/${ns_id}" "" 403 "client: template NS delete rejected"
+            fi
+        fi
+    fi
+    if [[ -n "$LUG_GLOBAL_ZT_ID" ]]; then
+        lug_as lug_client "PUT" "/zone-templates/${LUG_GLOBAL_ZT_ID}" '{"name":"lug_global_zt","description":"y"}' 403 "client: editing a global template rejected"
+        lug_as lug_client "DELETE" "/zone-templates/${LUG_GLOBAL_ZT_ID}" "" 403 "client: deleting a global template rejected"
+        lug_as lug_client "POST" "/zone-templates/${LUG_GLOBAL_ZT_ID}/records" '{"name":"www","type":"A","content":"192.0.2.40"}' 403 "client: adding to a global template rejected"
+    fi
+    if [[ -n "$LUG_ADMIN_ZT_ID" ]]; then
+        lug_as lug_client "GET" "/zone-templates/${LUG_ADMIN_ZT_ID}" "" 403 "client: another user's template hidden"
+        lug_as lug_client "PUT" "/zone-templates/${LUG_ADMIN_ZT_ID}" '{"name":"lug_admin_zt","description":"y"}' 403 "client: editing another user's template rejected"
+        lug_as lug_client "DELETE" "/zone-templates/${LUG_ADMIN_ZT_ID}" "" 403 "client: deleting another user's template rejected"
+    fi
+}
+
+lug_test_content() {
+    print_section "Limited users - content editor without meta rights"
+    local z="$LUG_ZONE_ID"
+
+    # Positive control for the record-type gate: content_edit_own may write NS.
+    lug_as lug_content "POST" "/zones/${z}/records" '{"name":"sub2","type":"NS","content":"ns1.example.com"}' 201 "content: NS create allowed at own level"
+    lug_as lug_content "PUT" "/zones/${z}" '{"description":"content editors may describe"}' 200 "content: description update allowed"
+    lug_as lug_content "PUT" "/zones/${z}" '{"type":"NATIVE"}' 403 "content: zone type change needs meta rights"
+    lug_as lug_content "POST" "/zones/${z}/owners" "{\"user_id\":${LUG_UID_nobody}}" 403 "content: add owner needs meta rights"
+    lug_as lug_content "DELETE" "/zones/${z}/owners/${LUG_UID_client}" "" 403 "content: remove owner needs meta rights"
+    lug_as lug_content "PUT" "/zones/${z}/metadata/ALLOW-AXFR-FROM" '{"values":["192.0.2.0/24"]}' 403 "content: set metadata needs meta rights"
+    lug_as lug_content "DELETE" "/zones/${z}" "" 403 "content: zone delete needs delete rights"
+    lug_as lug_content "POST" "/zones" '{"name":"lug-content.example.com","type":"MASTER"}' 403 "content: zone create needs zone_master_add"
+    lug_as lug_content "POST" "/zones/${z}/dnssec" '{"enabled":true}' 403 "content: dnssec needs dnssec_manage_own"
+}
+
+lug_test_useradd() {
+    print_section "Limited users - user_add_new without ueberuser"
+    local other="${LUG_UID_content}" created
+
+    if [[ -n "$LUG_ADMIN_TEMPL_ID" ]]; then
+        lug_as lug_useradd "POST" "/users" \
+            "{\"username\":\"lug_escalated\",\"password\":\"${LUG_PASSWORD}\",\"perm_templ\":${LUG_ADMIN_TEMPL_ID}}" \
+            403 "useradd: creating a superuser rejected"
+        assert_json "useradd: no superuser row was created" "$(lug_admin_get '/users?username=lug_escalated')" '.data.users | length' "0"
+    fi
+    if [[ -n "$LUG_GROUP_ID" ]]; then
+        lug_as lug_useradd "POST" "/users" \
+            "{\"username\":\"lug_grouped\",\"password\":\"${LUG_PASSWORD}\",\"groups\":[${LUG_GROUP_ID}]}" \
+            403 "useradd: assigning groups needs ueberuser"
+        assert_json "useradd: no grouped row was created" "$(lug_admin_get '/users?username=lug_grouped')" '.data.users | length' "0"
+    fi
+
+    # Omitted perm_templ must land on the minimal template, never Administrator.
+    lug_as lug_useradd "POST" "/users" "{\"username\":\"lug_defaulted\",\"password\":\"${LUG_PASSWORD}\"}" 201 "useradd: may create a user without perm_templ"
+    created=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id // empty')
+    if [[ -n "$created" ]]; then
+        lug_admin "GET" "/users/${created}" "" 200 "admin: read defaulted user"
+        assert_json "useradd: defaulted user is not an admin" "$LAST_RESPONSE_BODY" '.data.user.is_admin' "false"
+        if [[ -n "$LUG_ADMIN_TEMPL_ID" ]]; then
+            increment_test
+            if [[ "$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user.perm_templ')" != "$LUG_ADMIN_TEMPL_ID" ]]; then
+                print_pass "useradd: defaulted user is not on the superuser template"
+            else
+                print_fail "useradd: defaulted user landed on the superuser template"
+            fi
+        fi
+    fi
+
+    lug_as lug_useradd "PUT" "/users/${other}" '{"fullname":"x"}' 403 "useradd: editing users needs user_edit_others"
+    lug_as lug_useradd "DELETE" "/users/${other}" "" 403 "useradd: deleting users needs user_edit_others"
+    lug_as lug_useradd "PATCH" "/users/${other}" "{\"perm_templ\":${LUG_TID_nobody}}" 403 "useradd: retemplating users rejected"
+}
+
+lug_test_useredit() {
+    print_section "Limited users - user_edit_others without password/template rights"
+    local me="${LUG_UID_useredit}" target="${LUG_UID_nobody}"
+
+    lug_as lug_useredit "PUT" "/users/${target}" '{"fullname":"Renamed by delegate"}' 200 "useredit: may edit another user's details"
+    lug_as lug_useredit "PUT" "/users/${target}" "{\"password\":\"${LUG_PASSWORD}\"}" 403 "useredit: password change needs user_passwd_edit_others"
+    if [[ -n "$LUG_ADMIN_TEMPL_ID" ]]; then
+        lug_as lug_useredit "PUT" "/users/${target}" "{\"perm_templ\":${LUG_ADMIN_TEMPL_ID}}" 403 "useredit: promoting a user to superuser rejected"
+        lug_as lug_useredit "PUT" "/users/${me}" "{\"perm_templ\":${LUG_ADMIN_TEMPL_ID}}" 403 "useredit: self-promotion rejected"
+    fi
+    lug_as lug_useredit "PUT" "/users/${target}" "{\"perm_templ\":${LUG_TID_client}}" 403 "useredit: retemplating needs user_edit_templ_perm"
+    lug_as lug_useredit "PUT" "/users/${target}" "{\"perm_templ\":${LUG_TID_nobody},\"fullname\":\"Round trip\"}" 200 "useredit: restating the current template is not a change"
+    lug_as lug_useredit "PATCH" "/users/${target}" "{\"perm_templ\":${LUG_TID_client}}" 403 "useredit: PATCH retemplate needs user_edit_templ_perm"
+    lug_admin "GET" "/users/${target}" "" 200 "admin: read target after delegate edits"
+    assert_json "useredit: target template unchanged" "$LAST_RESPONSE_BODY" '.data.user.perm_templ' "${LUG_TID_nobody}"
+
+    if [[ -n "$LUG_ADMIN_USER_ID" ]]; then
+        lug_as lug_useredit "PUT" "/users/${LUG_ADMIN_USER_ID}" '{"fullname":"x"}' 403 "useredit: delegate cannot edit a superuser"
+        lug_as lug_useredit "DELETE" "/users/${LUG_ADMIN_USER_ID}" "" 403 "useredit: delegate cannot delete a superuser"
+    fi
+    lug_as lug_useredit "DELETE" "/users/${me}" "" 403 "useredit: self-delete rejected"
+}
+
+lug_test_templ() {
+    print_section "Limited users - permission template editor without ueberuser"
+    local created
+
+    lug_as lug_templ "GET" "/permissions" "" 200 "templ: may list permissions"
+    lug_as lug_templ "GET" "/permission-templates" "" 200 "templ: may list permission templates"
+    lug_as lug_templ "POST" "/permission-templates" '{"name":"lug_escalate_templ","descr":"x","permissions":[53]}' 403 "templ: template granting ueberuser rejected"
+    assert_json "templ: no escalation template was created" "$(lug_admin_get '/permission-templates')" '[.data.templates[] | select(.name == "lug_escalate_templ")] | length' "0"
+    lug_as lug_templ "POST" "/permission-templates" '{"name":"lug_created_templ","descr":"x","permissions":[56]}' 201 "templ: may create an ordinary template"
+    created=$(lug_lookup_perm_templ "lug_created_templ")
+    if [[ -n "$created" ]]; then
+        lug_as lug_templ "PUT" "/permission-templates/${created}" '{"name":"lug_created_templ","descr":"x","permissions":[56,53]}' 403 "templ: adding ueberuser to own template rejected"
+        lug_as lug_templ "PUT" "/permission-templates/${created}" '{"name":"lug_created_templ","descr":"y","permissions":[56,43]}' 200 "templ: may edit an ordinary template"
+        lug_as lug_templ "DELETE" "/permission-templates/${created}" "" 403 "templ: delete needs user_edit_templ_perm"
+    fi
+    if [[ -n "$LUG_ADMIN_TEMPL_ID" ]]; then
+        lug_as lug_templ "PUT" "/permission-templates/${LUG_ADMIN_TEMPL_ID}" '{"name":"lug_admin_renamed","descr":"x"}' 403 "templ: editing the superuser template rejected"
+    fi
+}
+
+test_limited_user_gates() {
+    print_section "Limited-user permission gates"
+
+    if ! lug_setup; then
+        print_fail "Limited-user setup failed - skipping matrix"
+        lug_cleanup
+        return 0
+    fi
+
+    lug_test_nobody
+    lug_test_client
+    lug_test_content
+    lug_test_useradd
+    lug_test_useredit
+    lug_test_templ
+
+    lug_cleanup
+}
+
+##############################################################################
 # Test: Granular API Key Permissions (gh #795)
 ##############################################################################
 
@@ -2876,6 +3275,7 @@ main() {
     test_users_ldap_sync
     test_users_perm_templ_validation
     test_users_self_edit_guard
+    test_limited_user_gates
     test_api_key_scopes
     test_zone_overlap_guard
 
