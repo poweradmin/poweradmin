@@ -230,30 +230,64 @@ make_mysql_defaults_file() {
     printf '%s' "${tmpfile}"
 }
 
+# One place for the client connection arguments: every MySQL/PostgreSQL call below goes
+# through these, so host, port, SSL and credentials cannot drift between call sites.
+MYSQL_DEFAULTS_FILE=""
+# Must run in the main shell (not a subshell) so the file and its cleanup trap persist
+ensure_mysql_defaults_file() {
+    if [ -z "${MYSQL_DEFAULTS_FILE}" ]; then
+        MYSQL_DEFAULTS_FILE=$(make_mysql_defaults_file)
+        # shellcheck disable=SC2064
+        trap "rm -f '${MYSQL_DEFAULTS_FILE}'" EXIT
+    fi
+}
+
+mysql_connection_args() {
+    printf '%s\n' "--defaults-file=${MYSQL_DEFAULTS_FILE}"
+    build_mysql_ssl_opts
+    printf '%s\n' "-h${DB_HOST}"
+    [ -n "${DB_PORT:-}" ] && printf '%s\n' "-P${DB_PORT}"
+    printf '%s\n' "-u${DB_USER}"
+}
+
+mysql_client() { # mysql_client [mysql args...] - runs against DB_NAME
+    ensure_mysql_defaults_file
+    local -a args
+    mapfile -t args < <(mysql_connection_args)
+    mysql "${args[@]}" "${DB_NAME}" "$@"
+}
+
+mysql_ping() {
+    ensure_mysql_defaults_file
+    local -a args
+    mapfile -t args < <(mysql_connection_args)
+    mysqladmin "${args[@]}" ping
+}
+
+psql_client() { # psql_client [psql args...]
+    local -a port_opt=()
+    [ -n "${DB_PORT:-}" ] && port_opt=(-p "${DB_PORT}")
+    PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" "$@"
+}
+
+pg_ready() {
+    local -a port_opt=()
+    [ -n "${DB_PORT:-}" ] && port_opt=(-p "${DB_PORT}")
+    pg_isready -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -q
+}
+
 # Load the Poweradmin schema into an empty MySQL database (parity with SQLite init).
 # Idempotent: skips when the users table already exists, so existing data is never touched.
 init_mysql_db() {
     [ "${DB_TYPE}" = "mysql" ] || return 0
 
-    local -a ssl_opts
-    mapfile -t ssl_opts < <(build_mysql_ssl_opts)
-    local -a port_opt=()
-    [ -n "${DB_PORT:-}" ] && port_opt=("-P${DB_PORT}")
-
-    local mycnf
-    mycnf=$(make_mysql_defaults_file)
-    # shellcheck disable=SC2064
-    trap "rm -f '${mycnf}'" RETURN
-
     # mysqladmin ping succeeds once the server is up, even before credentials are checked
-    wait_for_db mysqladmin --defaults-file="${mycnf}" "${ssl_opts[@]}" \
-        -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" ping || true
+    wait_for_db mysql_ping || true
 
     # '|| true' keeps a probe failure (DB unreachable / bad credentials) from tripping 'set -e';
     # the empty-result check below turns it into a graceful skip.
     local table_exists
-    table_exists=$(mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
-        -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -sNe \
+    table_exists=$(mysql_client -sNe \
         "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$(escape_sql "${DB_NAME}")' AND table_name='users';" 2>/dev/null) || true
 
     if [ -z "${table_exists}" ]; then
@@ -270,15 +304,13 @@ init_mysql_db() {
     if [ "${init_pdns_schema}" = "true" ] && [ -z "${PA_PDNS_DB_NAME:-}" ]; then
         local pdns_version="${PDNS_VERSION:-49}"
         local pdns_table_exists
-        pdns_table_exists=$(mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
-            -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -sNe \
+        pdns_table_exists=$(mysql_client -sNe \
             "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$(escape_sql "${DB_NAME}")' AND table_name='domains';" 2>/dev/null) || true
         if [ "${pdns_table_exists}" = "0" ]; then
             local pdns_schema="/app/sql/pdns/${pdns_version}/schema.mysql.sql"
             if [ ! -f "${pdns_schema}" ]; then
                 log "WARNING: PowerDNS MySQL schema file for version ${pdns_version} not found, database may not be properly initialized"
-            elif mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
-                    -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" < "${pdns_schema}"; then
+            elif mysql_client < "${pdns_schema}"; then
                 log "PowerDNS schema (version ${pdns_version}) initialized successfully in MySQL database '${DB_NAME}'"
             else
                 log "ERROR: Failed to initialize PowerDNS schema in MySQL database '${DB_NAME}'"
@@ -297,8 +329,7 @@ init_mysql_db() {
         log "WARNING: Poweradmin MySQL schema file not found, database may not be properly initialized"
         return 0
     fi
-    if mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
-            -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" \
+    if mysql_client \
             < /app/sql/poweradmin-mysql-db-structure.sql; then
         log "Poweradmin schema initialized successfully in MySQL database '${DB_NAME}'"
     else
@@ -312,15 +343,12 @@ init_mysql_db() {
 init_pgsql_db() {
     [ "${DB_TYPE}" = "pgsql" ] || return 0
 
-    local -a port_opt=()
-    [ -n "${DB_PORT:-}" ] && port_opt=(-p "${DB_PORT}")
-
-    wait_for_db pg_isready -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -q || true
+    wait_for_db pg_ready || true
 
     # '|| true' keeps a probe failure (DB unreachable / bad credentials) from tripping 'set -e';
     # the empty-result check below turns it into a graceful skip.
     local table_exists
-    table_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -tAc \
+    table_exists=$(psql_client -tAc \
         "SELECT to_regclass('public.users') IS NOT NULL;" 2>/dev/null) || true
 
     if [ -z "${table_exists}" ]; then
@@ -337,13 +365,13 @@ init_pgsql_db() {
     if [ "${init_pdns_schema}" = "true" ] && [ -z "${PA_PDNS_DB_NAME:-}" ]; then
         local pdns_version="${PDNS_VERSION:-49}"
         local pdns_table_exists
-        pdns_table_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -tAc \
+        pdns_table_exists=$(psql_client -tAc \
             "SELECT to_regclass('public.domains') IS NOT NULL;" 2>/dev/null) || true
         if [ "${pdns_table_exists}" = "f" ]; then
             local pdns_schema="/app/sql/pdns/${pdns_version}/schema.pgsql.sql"
             if [ ! -f "${pdns_schema}" ]; then
                 log "WARNING: PowerDNS PostgreSQL schema file for version ${pdns_version} not found, database may not be properly initialized"
-            elif PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -v ON_ERROR_STOP=1 -q -f "${pdns_schema}"; then
+            elif psql_client -v ON_ERROR_STOP=1 -q -f "${pdns_schema}"; then
                 log "PowerDNS schema (version ${pdns_version}) initialized successfully in PostgreSQL database '${DB_NAME}'"
             else
                 log "ERROR: Failed to initialize PowerDNS schema in PostgreSQL database '${DB_NAME}'"
@@ -362,7 +390,7 @@ init_pgsql_db() {
         log "WARNING: Poweradmin PostgreSQL schema file not found, database may not be properly initialized"
         return 0
     fi
-    if PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -v ON_ERROR_STOP=1 -q -f /app/sql/poweradmin-pgsql-db-structure.sql; then
+    if psql_client -v ON_ERROR_STOP=1 -q -f /app/sql/poweradmin-pgsql-db-structure.sql; then
         log "Poweradmin schema initialized successfully in PostgreSQL database '${DB_NAME}'"
     else
         log "ERROR: Failed to initialize Poweradmin schema in PostgreSQL database '${DB_NAME}'"
@@ -691,24 +719,9 @@ create_admin_user() {
         "mysql")
             debug_log "Creating admin user in MySQL database"
 
-            # Build MySQL SSL options based on environment variables
-            local -a mysql_ssl_opts
-            mapfile -t mysql_ssl_opts < <(build_mysql_ssl_opts)
-
-            debug_log "MySQL SSL options: ${mysql_ssl_opts[*]:-none}"
-
-            local -a port_opt=()
-            [ -n "${DB_PORT:-}" ] && port_opt=("-P${DB_PORT}")
-
-            local mycnf
-            mycnf=$(make_mysql_defaults_file)
-            # shellcheck disable=SC2064
-            trap "rm -f '${mycnf}'" RETURN
-
             # Check if user already exists
             local user_exists
-            user_exists=$(mysql --defaults-file="${mycnf}" "${mysql_ssl_opts[@]}" \
-                -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';") \
+            user_exists=$(mysql_client -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';") \
                 || { log "ERROR: Cannot query the users table in MySQL database '${DB_NAME}' to create the admin user"; exit 1; }
 
             if [ "${user_exists}" -gt 0 ]; then
@@ -717,8 +730,7 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            if ! mysql --defaults-file="${mycnf}" "${mysql_ssl_opts[@]}" \
-                    -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+            if ! mysql_client -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
                 insert_result=1
             fi
             ;;
@@ -726,12 +738,9 @@ create_admin_user() {
         "pgsql")
             debug_log "Creating admin user in PostgreSQL database"
 
-            local -a port_opt=()
-            [ -n "${DB_PORT:-}" ] && port_opt=(-p "${DB_PORT}")
-
             # Check if user already exists
             local user_exists
-            user_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -tAc "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';") \
+            user_exists=$(psql_client -tAc "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';") \
                 || { log "ERROR: Cannot query the users table in PostgreSQL database '${DB_NAME}' to create the admin user"; exit 1; }
 
             if [ "${user_exists}" -gt 0 ]; then
@@ -740,7 +749,7 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            if ! PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -c "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+            if ! psql_client -c "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
                 insert_result=1
             fi
             ;;
@@ -1929,6 +1938,9 @@ main() {
 
     log "Configuration loaded successfully"
     log "Starting Poweradmin..."
+
+    # exec replaces this shell, so the EXIT trap never fires: drop the credentials file here
+    [ -n "${MYSQL_DEFAULTS_FILE}" ] && rm -f "${MYSQL_DEFAULTS_FILE}"
 
     # Setup permissions and drop privileges (root only)
     if [ "$IS_ROOT" = true ]; then
