@@ -120,7 +120,7 @@ process_secret_files() {
 install_trusted_ca() {
     if [ -n "${TRUSTED_CA_FILE:-}" ]; then
         # TRUSTED_CA_FILE__FILE arrives here as the PEM text itself, not as a path
-        if [[ "${TRUSTED_CA_FILE}" == "-----BEGIN"* ]]; then
+        if [[ "${TRUSTED_CA_FILE}" == *"-----BEGIN "* ]]; then
             log "Installing custom CA certificate from TRUSTED_CA_FILE__FILE..."
             printf '%s\n' "${TRUSTED_CA_FILE}" > /usr/local/share/ca-certificates/custom-ca.crt
             update-ca-certificates
@@ -942,7 +942,8 @@ generate_config() {
     # setting it to an empty string clears the application allowlist entirely.
     local trusted_proxies_src="${PA_TRUSTED_PROXIES-${TRUSTED_PROXIES:-}}"
     local trusted_proxies_php
-    trusted_proxies_php=$(php_str_array "$(printf '%s' "${trusted_proxies_src}" | tr ',' '\n' | sed 's/^ *//; s/ *$//' | grep -vx 'private_ranges' | paste -sd, -)")
+    # Commas or whitespace separate entries, the same as on the Caddy side
+    trusted_proxies_php=$(php_str_array "$(printf '%s' "${trusted_proxies_src}" | tr ', ' '\n\n' | grep -v '^$' | grep -vx 'private_ranges' | paste -sd, -)")
 
     # Convert notification boolean values to lowercase
     local notification_zone_access
