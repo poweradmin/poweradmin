@@ -108,50 +108,24 @@ jobs:
 
       # The digest is pushed but untagged, so a failing smoke test here blocks the
       # merge job and no tag ever points at it. Each platform is tested natively.
-      - name: Smoke test (root mode - port 80)
-        env:
-          REF: ${{ env.GHCR_IMAGE }}@${{ steps.build.outputs.digest }}
-        run: |
-          docker run -d --name smoke-root -p 80:80 \
-            -e DB_TYPE=sqlite -e DB_NAME=/db/poweradmin.db \
-            -e DNS_HOSTMASTER=test.example.com \
-            -e DNS_NS1=ns1.example.com -e DNS_NS2=ns2.example.com "$REF"
-          for i in $(seq 1 60); do
-            if [ "$(docker inspect -f '{{.State.Status}}' smoke-root 2>/dev/null)" != "running" ]; then
-              echo "Root mode: container exited unexpectedly"; docker logs smoke-root; exit 1
-            fi
-            if curl -sf http://localhost:80/ -o /dev/null 2>/dev/null; then
-              echo "Root mode: responded on port 80 (after ${i}s)"; break
-            fi
-            if [ "$i" = "60" ]; then
-              echo "Root mode: no response within 60s"; docker logs smoke-root; exit 1
-            fi
-            sleep 1
-          done
-          docker rm -f smoke-root
+      # The checkout above is the branch being built, which may predate the smoke script;
+      # take the script from this workflow's own ref instead.
+      - name: Fetch the smoke script from the workflow ref
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          path: .workflow-src
+          sparse-checkout: .github/scripts/docker-smoke.sh
+          sparse-checkout-cone-mode: false
 
-      - name: Smoke test (non-root mode - port 8080)
-        if: inputs.nonroot_smoke
+      - name: Smoke test
         env:
           REF: ${{ env.GHCR_IMAGE }}@${{ steps.build.outputs.digest }}
+          SKIP_NONROOT: ${{ !inputs.nonroot_smoke }}
         run: |
-          docker run -d --name smoke-nonroot --user 82:82 -p 8080:8080 \
-            -e DB_TYPE=sqlite -e DB_NAME=/db/poweradmin.db \
-            -e DNS_HOSTMASTER=test.example.com \
-            -e DNS_NS1=ns1.example.com -e DNS_NS2=ns2.example.com "$REF"
-          for i in $(seq 1 60); do
-            if [ "$(docker inspect -f '{{.State.Status}}' smoke-nonroot 2>/dev/null)" != "running" ]; then
-              echo "Non-root mode: container exited unexpectedly"; docker logs smoke-nonroot; exit 1
-            fi
-            if curl -sf http://localhost:8080/ -o /dev/null 2>/dev/null; then
-              echo "Non-root mode: responded on port 8080 (after ${i}s)"; break
-            fi
-            if [ "$i" = "60" ]; then
-              echo "Non-root mode: no response within 60s"; docker logs smoke-nonroot; exit 1
-            fi
-            sleep 1
-          done
-          docker rm -f smoke-nonroot
+          args=()
+          [ "$SKIP_NONROOT" = "true" ] && args+=(--skip-nonroot)
+          bash .workflow-src/.github/scripts/docker-smoke.sh "$REF" basic "${args[@]}"
 
       - name: Export digest
         env:
@@ -163,7 +137,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: digests-${{ env.PLATFORM_PAIR }}
+          name: digests-${{ inputs.tag }}-${{ env.PLATFORM_PAIR }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
@@ -183,7 +157,7 @@ jobs:
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           path: /tmp/digests
-          pattern: digests-*
+          pattern: digests-${{ inputs.tag }}-*
           merge-multiple: true
 
       - name: Set up Docker Buildx
@@ -234,7 +208,7 @@ jobs:
       - name: Upload SBOM as artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: sbom-${{ github.run_id }}
+          name: sbom-${{ inputs.tag }}-${{ github.run_id }}
           path: sbom.spdx.json
 
       - name: Job Summary
@@ -254,7 +228,7 @@ jobs:
             echo "- Digest: ${IMAGE_DIGEST}"
             echo ""
             echo "**Security & Compliance:**"
-            echo "- ✅ SBOM generated (artifact: sbom-${RUN_ID})"
+            echo "- ✅ SBOM generated (artifact: sbom-${TAG}-${RUN_ID})"
             echo "- ✅ Images pushed to GHCR and Docker Hub"
             echo ""
             echo "**Workflow:** ${GITHUB_WORKFLOW} (#${GITHUB_RUN_NUMBER})"

@@ -1,0 +1,100 @@
+name: Docker Image Publish (branches)
+
+# One dispatcher for every branch that publishes a moving tag. Lives on master because
+# workflow_run only fires from the default branch, which is also what keeps the
+# "validations must pass" gate. v* release tags still publish through docker.yml.
+#
+# The plan job turns the trigger into a build matrix: the branch whose validations just
+# passed, the branch picked on manual dispatch, or every branch on the weekly rebuild.
+# release/3.x has no docker.yml of its own, so this is its only builder; its image runs
+# as 82:82 on port 80 with no port-switching entrypoint, so the non-root smoke test is off.
+on:
+  workflow_run:
+    workflows: ["validations"]
+    types:
+      - completed
+    branches:
+      - develop
+      - master
+      - release/4.4.x
+      - release/4.3.x
+      - release/4.2.x
+      - release/3.x
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build'
+        type: choice
+        required: true
+        options:
+          - develop
+          - master
+          - release/4.4.x
+          - release/4.3.x
+          - release/4.2.x
+          - release/3.x
+      no_cache:
+        description: 'Build without layer cache to pull in updated base packages'
+        type: boolean
+        default: false
+  schedule:
+    - cron: '30 4 * * 1'
+
+jobs:
+  plan:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - name: Pick the branches to build
+        id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          INPUT_BRANCH: ${{ inputs.branch }}
+        run: |
+          # Never fall back to github.ref: a dispatch from master must not publish master under another tag.
+          case "$EVENT" in
+            workflow_run) branches="$HEAD_BRANCH" ;;
+            workflow_dispatch) branches="$INPUT_BRANCH" ;;
+            *) branches="develop master release/4.4.x release/4.3.x release/4.2.x release/3.x" ;;
+          esac
+          entries=""
+          for branch in $branches; do
+            case "$branch" in
+              develop) tag=dev ;;
+              master) tag=latest ;;
+              release/3.x) tag=lts ;;
+              release/*) tag="${branch#release/}" ;;
+              *) echo "::error::no image tag for branch $branch"; exit 1 ;;
+            esac
+            ref="$branch"
+            [ "$EVENT" = workflow_run ] && ref="$HEAD_SHA"
+            smoke=true
+            [ "$branch" = release/3.x ] && smoke=false
+            cache="buildcache-${branch//\//-}"
+            entries="$entries{\"branch\":\"$branch\",\"ref\":\"$ref\",\"tag\":\"$tag\",\"cache_prefix\":\"$cache\",\"nonroot_smoke\":$smoke},"
+          done
+          echo "matrix=[${entries%,}]" >> "$GITHUB_OUTPUT"
+          echo "Building: $branches"
+
+  publish:
+    needs: plan
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    concurrency:
+      group: docker-publish-${{ matrix.tag }}
+      cancel-in-progress: true
+    uses: ./.github/workflows/docker-native.yml
+    secrets:
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    with:
+      ref: ${{ matrix.ref }}
+      tag: ${{ matrix.tag }}
+      cache_prefix: ${{ matrix.cache_prefix }}
+      no_cache: ${{ github.event_name == 'schedule' || inputs.no_cache == true }}
+      nonroot_smoke: ${{ matrix.nonroot_smoke }}
