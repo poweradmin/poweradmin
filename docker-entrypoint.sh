@@ -119,6 +119,14 @@ process_secret_files() {
 # Install custom CA certificate for trusting self-signed certs (e.g., internal Keycloak/OIDC)
 install_trusted_ca() {
     if [ -n "${TRUSTED_CA_FILE:-}" ]; then
+        # TRUSTED_CA_FILE__FILE arrives here as the PEM text itself, not as a path
+        if [[ "${TRUSTED_CA_FILE}" == "-----BEGIN"* ]]; then
+            log "Installing custom CA certificate from TRUSTED_CA_FILE__FILE..."
+            printf '%s\n' "${TRUSTED_CA_FILE}" > /usr/local/share/ca-certificates/custom-ca.crt
+            update-ca-certificates
+            log "Custom CA certificate installed successfully"
+            return
+        fi
         if [ ! -f "${TRUSTED_CA_FILE}" ]; then
             log "ERROR: TRUSTED_CA_FILE points to non-existent file: ${TRUSTED_CA_FILE}"
             exit 1
@@ -155,7 +163,10 @@ configure_trusted_proxies() {
 
     log "Configuring trusted proxies: ${proxies}"
 
-    sed -i "s|order php_server before file_server|order php_server before file_server\n    servers {\n        trusted_proxies static ${proxies}\n        client_ip_headers X-Forwarded-For X-Real-IP\n    }|" "${caddyfile}"
+    # & and | are special in the sed replacement; a stray one would corrupt the Caddyfile
+    local proxies_sed
+    proxies_sed=$(printf '%s' "${proxies}" | sed 's/[&|\\]/\\&/g')
+    sed -i "s|order php_server before file_server|order php_server before file_server\n    servers {\n        trusted_proxies static ${proxies_sed}\n        client_ip_headers X-Forwarded-For X-Real-IP\n    }|" "${caddyfile}"
 
     log "Trusted proxies configured in Caddyfile"
 }

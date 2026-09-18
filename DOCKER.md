@@ -1058,6 +1058,7 @@ Poweradmin Docker supports **two configuration modes** with automatic priority h
 - **Custom Config**: If `PA_CONFIG_PATH` is set and the file exists, it completely replaces the generated settings
 - **Environment Variables**: If no custom config is provided, settings are generated from environment variables
 - **Automatic Generation**: The container automatically detects which mode to use at startup
+- **Generated once**: `settings.php` is written on the first start only. Changing a `PA_*` or `DB_*` variable later has no effect until the file is deleted (or the `/app/config` volume is recreated)
 
 ### Benefits
 
