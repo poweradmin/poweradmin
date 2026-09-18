@@ -12,6 +12,9 @@
 #
 #   Alternatively, you can run the program with a current folder mounted:
 #   docker run -d --name poweradmin -p 80:80 -v $(pwd):/app poweradmin
+#   The image does not re-check PHP files once cached (opcache.validate_timestamps=0);
+#   for live editing mount an ini that turns it back on:
+#     -v $(pwd)/dev.ini:/usr/local/etc/php/conf.d/zz-dev.ini
 #
 # Docker Secrets Support:
 #   Use environment variables with __FILE suffix to read from files:
@@ -76,6 +79,19 @@ RUN apk upgrade --no-cache \
     pdo_pgsql \
     && apk del .build-deps \
     && rm -rf /var/cache/apk/*
+
+# Run on the production ini; mount another file into conf.d/ to change the overrides
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && cat > "$PHP_INI_DIR/conf.d/zz-poweradmin.ini" <<'INIEOF'
+expose_php = Off
+memory_limit = 256M
+upload_max_filesize = 16M
+post_max_size = 20M
+opcache.validate_timestamps = 0
+opcache.max_accelerated_files = 20000
+opcache.memory_consumption = 192
+opcache.interned_strings_buffer = 16
+INIEOF
 
 WORKDIR /app
 

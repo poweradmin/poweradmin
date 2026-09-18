@@ -991,6 +991,20 @@ The Docker image uses FrankenPHP with a custom Caddyfile that provides:
 - **Security**: Built-in protection against access to sensitive files and directories
 - **Performance**: Gzip compression and static asset caching
 
+### PHP Settings
+
+PHP runs on `php.ini-production` with these overrides in `/usr/local/etc/php/conf.d/zz-poweradmin.ini`:
+
+| Setting | Value |
+|---------|-------|
+| `expose_php` | `Off` |
+| `memory_limit` | `256M` |
+| `upload_max_filesize` / `post_max_size` | `16M` / `20M` |
+| `opcache.validate_timestamps` | `0` (files are cached until the container restarts) |
+| `opcache.max_accelerated_files` | `20000` |
+
+To change any of them, mount your own ini file into `/usr/local/etc/php/conf.d/` (files are read in name order, so name it `zz-custom.ini` or later to win).
+
 ### Supported PHP Extensions
 
 - `gettext` - Internationalization support
