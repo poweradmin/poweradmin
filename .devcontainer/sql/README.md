@@ -20,7 +20,7 @@ PostgreSQL version of test data. Use with PostgreSQL 12+.
 ### `test-users-permissions-sqlite.sql`
 SQLite version of test data. Use with SQLite 3.8+.
 
-**Important**: This script automatically attaches the PowerDNS database at `/data/db/powerdns.db` as `pdns` since the `domains` and `records` tables are in a separate database file. All PowerDNS table references use the `pdns.` prefix.
+**Important**: This script automatically attaches the PowerDNS database at `/data/pdns.db` as `pdns` since the `domains` and `records` tables are in a separate database file. All PowerDNS table references use the `pdns.` prefix.
 
 ### `test-users-permissions-mysql-combined.sql`
 MySQL/MariaDB version for **devcontainer multi-database setup**. This script handles both the `poweradmin` database (users, permissions, zones) and the `pdns` database (domains, records) using `USE` statements and cross-database joins.
@@ -55,7 +55,7 @@ SQLite comprehensive DNS records for UI testing. Adds ~26 diverse record types t
 #### MySQL/MariaDB
 ```bash
 # Use the combined script that handles both poweradmin and pdns databases
-docker exec -i mariadb mysql -u root -ppoweradmin < .devcontainer/sql/test-users-permissions-mysql-combined.sql
+docker exec -i mariadb mysql -u root -puberuser < .devcontainer/sql/test-users-permissions-mysql-combined.sql
 ```
 
 #### PostgreSQL
@@ -66,7 +66,7 @@ docker exec -i -e PGPASSWORD=poweradmin postgres psql -U pdns -d pdns < .devcont
 
 #### SQLite
 ```bash
-# Note: The SQLite script automatically attaches /data/db/powerdns.db
+# Note: the fixtures ATTACH /data/pdns.db themselves; both schemas live in that one file
 docker exec -i sqlite sqlite3 /data/pdns.db < .devcontainer/sql/test-users-permissions-sqlite.sql
 ```
 
@@ -90,7 +90,7 @@ docker exec -i sqlite sqlite3 /data/pdns.db < .devcontainer/sql/test-users-permi
 
 ### Test Users
 
-All users have the password: **`poweradmin123`**
+All users have the password: **`Poweradmin123`**
 
 | Username | Template | Active | Email | Description |
 |----------|----------|--------|-------|-------------|
@@ -213,7 +213,7 @@ To modify test data:
 ## Security Notes
 
 - **DO NOT use these credentials in production**
-- The password hash is publicly known: `poweradmin123`
+- The password hash is publicly known: `Poweradmin123`
 - These files are for development and testing only
 - Always use strong, unique passwords in production environments
 
@@ -230,28 +230,26 @@ Ensure Docker containers are running:
 docker ps
 ```
 
-Start containers if needed:
+Start containers if needed (see `.devcontainer/README.md` for the compose project name):
 ```bash
-docker-compose up -d  # or docker compose up -d
+docker start mariadb postgres sqlite
 ```
 
 ### Permission Denied
 Verify database credentials match your environment:
 ```bash
 # MySQL
-docker exec mariadb mysql -u root -ppoweradmin -e "SELECT 1"
+docker exec mariadb mysql -u root -puberuser -e "SELECT 1"
 
 # PostgreSQL
-docker exec postgres psql -U pdns -d poweradmin -c "SELECT 1"
+docker exec postgres psql -U pdns -d pdns -c "SELECT 1"
 ```
 
 ### SQLite Database Path
-If SQLite import fails, verify the database path:
+If SQLite import fails, verify the database file exists (created by `scripts/create-sqlite-db.sh`):
 ```bash
-docker exec sqlite ls -la /var/lib/poweradmin/
+docker exec sqlite ls -la /data/pdns.db
 ```
-
-Adjust `SQLITE_DB_PATH` environment variable if needed.
 
 ## Contributing
 

@@ -11,6 +11,7 @@
     "web-pgsql-api:8084",
     "web-sqlite-api:8085",
     "web-subfolder:8086",
+    "web-mysql-de:8087",
     "mysql:3306",
     "pgsql:5432",
     "adminer:8090",
@@ -21,6 +22,7 @@
     "pdns-sqlite:1055",
     "pdns-sqlite:8183",
     "ldap:389",
+    "ldap:636",
     "ldapadmin:8443"
   ],
   "portsAttributes": {
@@ -52,6 +54,10 @@
       "label": "Poweradmin (MySQL + Subfolder)",
       "onAutoForward": "notify"
     },
+    "web-mysql-de:8087": {
+      "label": "Poweradmin (MySQL + SQL, German only)",
+      "onAutoForward": "notify"
+    },
     "mysql:3306": {
       "label": "MariaDB"
     },
@@ -81,6 +87,9 @@
     },
     "ldap:389": {
       "label": "LDAP"
+    },
+    "ldap:636": {
+      "label": "LDAPS"
     },
     "ldapadmin:8443": {
       "label": "phpLDAPadmin v2"

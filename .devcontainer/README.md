@@ -4,9 +4,16 @@ This folder contains the Docker-based development environment for Poweradmin wit
 
 ## Quick Start
 
+The VS Code devcontainer creates the stack as compose project `poweradmin_devcontainer`.
+Reuse that name when driving it by hand, otherwise compose forks a second project with
+empty volumes and aborts on container-name conflicts:
+
 ```bash
-docker-compose up -d
+docker compose -f .devcontainer/docker-compose.yml --project-directory .devcontainer \
+  --project-name poweradmin_devcontainer up -d
 ```
+
+Then load the fixtures: `.devcontainer/scripts/import-test-data.sh`
 
 ## Architecture
 
@@ -28,6 +35,13 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 | 8084 | Nginx | PostgreSQL | 1054 | 8182 |
 | 8085 | Nginx | SQLite | 1055 | 8183 |
 
+### Special-purpose instances (MySQL/MariaDB, SQL backend)
+
+| Port | Purpose |
+|------|---------|
+| 8086 | Subfolder deployment, served under http://localhost:8086/poweradmin/ |
+| 8087 | German-only interface (`enabled_languages` restricted to `de_DE`) |
+
 ## Port Mappings
 
 ### Poweradmin Web Interfaces (SQL backend)
@@ -39,11 +53,15 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 - **MySQL + API** (Nginx): http://localhost:8083
 - **PostgreSQL + API** (Nginx): http://localhost:8084
 - **SQLite + API** (Nginx): http://localhost:8085
+- **MySQL + Subfolder** (Nginx): http://localhost:8086/poweradmin/
+- **MySQL + German only** (Nginx): http://localhost:8087
 
 ### PowerDNS Servers (with DNSSEC)
 - **MySQL backend**: DNS port 1053, API port 8181
 - **PostgreSQL backend**: DNS port 1054, API port 8182
 - **SQLite backend**: DNS port 1055, API port 8183
+- **LMDB backend** (opt-in, the only backend with views and network mappings): DNS port 1056, API port 8184.
+  Start it with `docker compose --profile lmdb up -d pdns-lmdb` (same `-f`/`--project-name` flags as above).
 
 ### Admin Tools
 - **Adminer** (DB management): http://localhost:8090
@@ -90,7 +108,7 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 Access Adminer at http://localhost:8090
 
 ### Direct Connection
-- **MariaDB**: user: `pdns`, pass: `poweradmin`, db: `pdns` (app tables in `poweradmin` db)
+- **MariaDB**: user: `pdns`, pass: `poweradmin`, db: `pdns` (app tables in `poweradmin` db); root password `uberuser`
 - **PostgreSQL**: user: `pdns`, pass: `poweradmin`, db: `pdns`
 - **SQLite**: `/data/pdns.db` (mounted in containers)
 
@@ -98,4 +116,16 @@ Access Adminer at http://localhost:8090
 
 After importing test data (`.devcontainer/scripts/import-test-data.sh`):
 - Username: `admin`, `manager`, `client`, `viewer`, `noperm`, `inactive`
-- Password: `poweradmin123`
+- Password: `Poweradmin123`
+
+## LDAP Test Users
+
+The `ldap` container bootstraps `ldap/bootstrap/*.ldif` on first start (users, the
+`dns-admins` group and a `memberof` overlay for `groupOfNames`). The MySQL import adds the
+matching Poweradmin accounts, so LDAP login works on the MySQL instances (8080, 8083, 8086):
+
+- `testuser` / `testpass123` (Administrator template, member of `dns-admins`)
+- `testuser2` / `testpass456` (Zone Manager template)
+
+Check the whole chain with `.devcontainer/scripts/verify-ldap-test-setup.sh`.
+phpLDAPadmin: http://localhost:8443 (login DN `cn=admin,dc=poweradmin,dc=org`, password `poweradmin`).
