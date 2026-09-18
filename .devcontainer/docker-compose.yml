@@ -1,3 +1,19 @@
+name: poweradmin_devcontainer
+
+# One php-fpm image serves every app instance: app-mysql builds it, the others reuse the tag.
+x-app: &app
+  image: poweradmin-devcontainer-fpm:local
+  networks:
+    - internal
+  environment:
+    - PHP_IDE_CONFIG=serverName=localhost
+    - PA_CONFIG_PATH=/etc/poweradmin/settings.php
+
+x-app-volumes:
+  - &vol-app ../.:/app
+  - &vol-xdebug ./conf/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+  - &vol-error-reporting ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+
 services:
   # =============================================================================
   # PHP-FPM Application Containers
@@ -5,6 +21,7 @@ services:
 
   # PHP-FPM for MySQL + SQL backend (used by nginx)
   app-mysql:
+    <<: *app
     container_name: pwa-mysql-sql
     build:
       context: .
@@ -12,154 +29,94 @@ services:
       args:
         - VARIANT=${PHP_VERSION}-fpm-${DEBIAN_VERSION}
     volumes:
-      - ../.:/app
-      - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-      - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+      - *vol-app
+      - *vol-xdebug
+      - *vol-error-reporting
+      # VS Code opens the workspace here; the E2E sweep recipe also serves worktrees from it
       - ../..:/workspaces:cached
       - ./conf/settings-mysql-sql.php:/etc/poweradmin/settings.php:ro
-    networks:
-      - internal
-    environment:
-      - PHP_IDE_CONFIG=serverName=localhost
-      - PA_CONFIG_PATH=/etc/poweradmin/settings.php
     depends_on:
       mysql:
         condition: service_healthy
 
   # PHP-FPM for SQLite + SQL backend (used by caddy)
   app-sqlite:
+    <<: *app
     container_name: pwa-sqlite-sql
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - VARIANT=${PHP_VERSION}-fpm-${DEBIAN_VERSION}
     volumes:
-      - ../.:/app
-      - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-      - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
-      - ../..:/workspaces:cached
+      - *vol-app
+      - *vol-xdebug
+      - *vol-error-reporting
+      # Read-only: only the E2E sweep recipe serves worktrees through this instance
+      - ../..:/workspaces:ro
       - sqlite_data:/data
       - ./conf/settings-sqlite-sql.php:/etc/poweradmin/settings.php:ro
-    networks:
-      - internal
-    environment:
-      - PHP_IDE_CONFIG=serverName=localhost
-      - PA_CONFIG_PATH=/etc/poweradmin/settings.php
     depends_on:
       - sqlite
 
   # PHP-FPM for MySQL + API backend (used by nginx)
   app-mysql-api:
+    <<: *app
     container_name: pwa-mysql-api
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - VARIANT=${PHP_VERSION}-fpm-${DEBIAN_VERSION}
     volumes:
-      - ../.:/app
-      - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-      - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
-      - ../..:/workspaces:cached
+      - *vol-app
+      - *vol-xdebug
+      - *vol-error-reporting
       - ./conf/settings-mysql-api.php:/etc/poweradmin/settings.php:ro
-    networks:
-      - internal
-    environment:
-      - PHP_IDE_CONFIG=serverName=localhost
-      - PA_CONFIG_PATH=/etc/poweradmin/settings.php
     depends_on:
       mysql:
         condition: service_healthy
 
   # PHP-FPM for PostgreSQL + API backend (used by nginx)
   app-pgsql-api:
+    <<: *app
     container_name: pwa-pgsql-api
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - VARIANT=${PHP_VERSION}-fpm-${DEBIAN_VERSION}
     volumes:
-      - ../.:/app
-      - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-      - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
-      - ../..:/workspaces:cached
+      - *vol-app
+      - *vol-xdebug
+      - *vol-error-reporting
+      # Read-only: only the E2E sweep recipe serves worktrees through this instance
+      - ../..:/workspaces:ro
       - ./conf/settings-pgsql-api.php:/etc/poweradmin/settings.php:ro
-    networks:
-      - internal
-    environment:
-      - PHP_IDE_CONFIG=serverName=localhost
-      - PA_CONFIG_PATH=/etc/poweradmin/settings.php
     depends_on:
       pgsql:
         condition: service_healthy
 
   # PHP-FPM for SQLite + API backend (used by nginx)
   app-sqlite-api:
+    <<: *app
     container_name: pwa-sqlite-api
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - VARIANT=${PHP_VERSION}-fpm-${DEBIAN_VERSION}
     volumes:
-      - ../.:/app
-      - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-      - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
-      - ../..:/workspaces:cached
+      - *vol-app
+      - *vol-xdebug
+      - *vol-error-reporting
       - sqlite_data:/data
       - ./conf/settings-sqlite-api.php:/etc/poweradmin/settings.php:ro
-    networks:
-      - internal
-    environment:
-      - PHP_IDE_CONFIG=serverName=localhost
-      - PA_CONFIG_PATH=/etc/poweradmin/settings.php
     depends_on:
       - sqlite
 
   # PHP-FPM for MySQL + SQL backend (subfolder deployment testing)
   app-mysql-subfolder:
+    <<: *app
     container_name: pwa-mysql-subfolder
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - VARIANT=${PHP_VERSION}-fpm-${DEBIAN_VERSION}
     volumes:
-      - ../.:/app
-      - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-      - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
-      - ../..:/workspaces:cached
+      - *vol-app
+      - *vol-xdebug
+      - *vol-error-reporting
       - ./conf/settings-mysql-subfolder.php:/etc/poweradmin/settings.php:ro
-    networks:
-      - internal
-    environment:
-      - PHP_IDE_CONFIG=serverName=localhost
-      - PA_CONFIG_PATH=/etc/poweradmin/settings.php
     depends_on:
       mysql:
         condition: service_healthy
 
   # PHP-FPM for MySQL + SQL backend, German only (used by nginx)
   app-mysql-de:
+    <<: *app
     container_name: pwa-mysql-sql-de
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - VARIANT=${PHP_VERSION}-fpm-${DEBIAN_VERSION}
     volumes:
-      - ../.:/app
-      - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-      - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
-      - ../..:/workspaces:cached
+      - *vol-app
+      - *vol-xdebug
+      - *vol-error-reporting
       - ./conf/settings-mysql-sql-de.php:/etc/poweradmin/settings.php:ro
-    networks:
-      - internal
-    environment:
-      - PHP_IDE_CONFIG=serverName=localhost
-      - PA_CONFIG_PATH=/etc/poweradmin/settings.php
     depends_on:
       mysql:
         condition: service_healthy
@@ -455,8 +412,8 @@ services:
       - ./ldap/bootstrap:/container/service/slapd/assets/config/bootstrap/ldif/custom:ro
     command: ["--copy-service"]
     ports:
-      - 389:389
-      - 636:636
+      - "389:389"
+      - "636:636"
     healthcheck:
       test: ["CMD-SHELL", "ldapsearch -x -H ldap://localhost -b dc=poweradmin,dc=org -D 'cn=admin,dc=poweradmin,dc=org' -w poweradmin"]
       interval: 10s
@@ -476,7 +433,7 @@ services:
       - LDAP_PASSWORD=poweradmin
       - LDAP_BASE_DN=dc=poweradmin,dc=org
     ports:
-      - 8443:8080
+      - "8443:8080"
 
 volumes:
   mysql_data: { }

@@ -15,6 +15,10 @@ docker compose -f .devcontainer/docker-compose.yml --project-directory .devconta
 
 Then load the fixtures: `.devcontainer/scripts/import-test-data.sh`
 
+All seven PHP-FPM instances run the same image (`poweradmin-devcontainer-fpm:local`), built by
+the `app-mysql` service. `up` builds it before starting anything; to rebuild after editing
+`.devcontainer/Dockerfile` run `docker compose ... build app-mysql` and recreate the app services.
+
 ## Architecture
 
 Each database has two Poweradmin instances - one using direct SQL and one using the PowerDNS REST API backend (experimental). All share the same PowerDNS servers (DNSSEC enabled):
