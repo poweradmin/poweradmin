@@ -1693,7 +1693,7 @@ EOF
 
     # Set proper permissions (root only - non-root already owns the file)
     if [ "$IS_ROOT" = true ]; then
-        chmod 644 "${CONFIG_FILE}"
+        chmod 640 "${CONFIG_FILE}"
         chown www-data:www-data "${CONFIG_FILE}"
     fi
 
