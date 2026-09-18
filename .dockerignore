@@ -36,6 +36,21 @@ docs
 scripts
 # Keep README.md but exclude other markdown files
 DONORS.md
+DOCKER.md
+DOCKER-SECRETS.md
+CONTRIBUTING.md
+caddy.conf.example
+.semgrepignore
+
+# Bootstrap sources, docs and source maps; the app serves only dist/ and font/
+vendor/twbs/bootstrap/site/
+vendor/twbs/bootstrap/scss/
+vendor/twbs/bootstrap/js/
+vendor/twbs/bootstrap/build/
+vendor/twbs/bootstrap/nuget/
+vendor/twbs/bootstrap-icons/icons/
+vendor/twbs/**/*.map
+locale/*.pot
 
 # Node.js
 package.json
