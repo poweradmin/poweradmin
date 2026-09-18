@@ -95,13 +95,12 @@ INIEOF
 
 WORKDIR /app
 
-# Copy application files
-COPY . .
+# Copy application files with their final owner; a later chown -R would duplicate the layer
+COPY --chown=www-data:0 . .
 
-# Copy and set permissions for entrypoint script, create directories
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
-    && mkdir -p /db /app/config \
+# Entrypoint outside the app tree, data directory, pristine copy of the defaults
+COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN mkdir -p /db /app/config \
     && cp /app/config/settings.defaults.php /usr/local/share/settings.defaults.php
 
 # Create Caddyfile for FrankenPHP
@@ -188,7 +187,7 @@ ENV XDG_DATA_HOME=/var/caddy
 #   - K8s with fsGroup (overrides group at mount time)
 #   - OpenShift arbitrary UIDs (which always run as GID 0)
 # Root-mode entrypoint re-asserts www-data ownership via setup_permissions()
-RUN chown -R www-data:0 /app /db \
+RUN chown www-data:0 /db \
     && chmod -R g+w /app/config /db \
     && mkdir -p /var/caddy/caddy \
     && chown -R www-data:0 /var/caddy \
