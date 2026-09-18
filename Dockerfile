@@ -201,10 +201,10 @@ RUN chown www-data:0 /db \
 
 EXPOSE 80 8080
 
-# Healthcheck reads the port from file written by entrypoint (healthcheck runs
-# as a separate process and does not inherit entrypoint's exported env vars)
+# The healthcheck runs as a separate process without the entrypoint's environment, so the
+# entrypoint leaves the port and the path (/ping when the liveness endpoint is on) in /tmp
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/bin/sh", "-c", "curl -sf http://localhost:$(cat /tmp/.server_port 2>/dev/null || echo 80)/ -o /dev/null || exit 1"]
+    CMD ["/bin/sh", "-c", "curl -sf http://localhost:$(cat /tmp/.server_port 2>/dev/null || echo 80)$(cat /tmp/.health_path 2>/dev/null || echo /) -o /dev/null || exit 1"]
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]

@@ -1856,9 +1856,14 @@ main() {
         fi
     fi
 
-    # Persist SERVER_PORT for healthcheck early, before any long initialization.
-    # Healthcheck runs as a separate process and does not inherit entrypoint env vars.
+    # Persist SERVER_PORT and the probe path for the healthcheck early, before any long
+    # initialization. The healthcheck is a separate process without the entrypoint env.
     echo "${SERVER_PORT:-80}" > /tmp/.server_port
+    if [ "$(to_php_bool "${PA_HEALTH_PING_ENABLED:-false}")" = "true" ]; then
+        echo "/ping" > /tmp/.health_path
+    else
+        echo "/" > /tmp/.health_path
+    fi
 
     # Install custom CA certificate if provided (must run before any HTTPS calls)
     if [ "$IS_ROOT" = true ]; then

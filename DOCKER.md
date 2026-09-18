@@ -453,9 +453,10 @@ default. Restrict them at your reverse proxy when enabling them.
 | `PA_HEALTH_DB_TIMEOUT` | Database connect timeout in seconds used by the health check | `2` | No |
 | `PA_HEALTH_PDNS_TIMEOUT` | PowerDNS API timeout in seconds used by the health check | `2` | No |
 
-The image's built-in `HEALTHCHECK` requests `/`, which succeeds even when the database is
-down. To have the container reflect real readiness, enable the endpoint and override the
-healthcheck:
+The image's built-in `HEALTHCHECK` requests `/ping` when `PA_HEALTH_PING_ENABLED=true`
+(so a headless container with `PA_WEB_ENABLED=false` still reports healthy) and `/` otherwise.
+Both succeed even when the database is down. To have the container reflect real readiness,
+enable the readiness endpoint and override the healthcheck:
 
 ```yaml
 services:
