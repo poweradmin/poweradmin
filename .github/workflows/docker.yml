@@ -1,16 +1,11 @@
 name: Docker Image Publish
 
-# Every branch image now builds natively in its own docker-<branch>.yml. What is left
-# here is the v* release-tag publisher.
+# The v* release-tag publisher. Moving branch tags (dev, latest, 4.x.x, lts) come from
+# docker-branches.yml; this file only ever runs from a tag's own tree.
 on:
   push:
     tags:
       - 'v*'
-    branches:
-      - release/3.x
-      - release/4.2.x
-      - release/4.3.x
-      - release/4.4.x
   workflow_dispatch:
     inputs:
       no_cache:
@@ -19,7 +14,7 @@ on:
         default: false
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_branch || github.ref_name }}
+  group: ${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true
 
 env:
@@ -30,7 +25,6 @@ jobs:
   build-push:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     permissions:
       contents: read
       packages: write
@@ -38,8 +32,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.ref }}
 
       - name: Lint Dockerfile with hadolint
         uses: hadolint/hadolint-action@06be81baf89a55ffd0e24b8f04a4185738dd3387 # v3.5.0
@@ -68,8 +60,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # metadata-action derives revision from github.sha, which on a workflow_run
-      # event is the default branch rather than the sha actually checked out.
+      # metadata-action derives revision from github.sha; read it from the checkout instead
       - name: Resolve build revision
         id: vars
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -89,17 +80,11 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=raw,value=latest,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'master') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/master') }}
-            type=raw,value=dev,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'develop') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/develop') }}
-            type=raw,value=lts,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/3.x') }}
-            type=raw,value=4.2.x,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.2.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.2.x') }}
-            type=raw,value=4.3.x,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.3.x') }}
-            type=raw,value=4.4.x,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.4.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.4.x') }}
 
       - name: Resolve build cache ref
         id: cache
         env:
-          BUILD_REF: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch || github.ref_name }}
+          BUILD_REF: ${{ github.ref_name }}
           OWNER: ${{ github.repository_owner }}
         run: |
           slug=$(printf '%s' "$BUILD_REF" | tr '/' '-' | tr -cd '[:alnum:]._-')
@@ -116,16 +101,10 @@ jobs:
           tags: poweradmin:smoke-test
           cache-from: |
             type=registry,ref=${{ steps.cache.outputs.ref }}
-          no-cache: ${{ github.event_name == 'schedule' || inputs.no_cache == true }}
+          no-cache: ${{ inputs.no_cache == true }}
 
-      # release/3.x runs as 82:82 on port 80 and has no port-switching entrypoint
       - name: Smoke test
-        env:
-          SKIP_NONROOT: ${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/3.x') || github.ref == 'refs/heads/release/3.x' }}
-        run: |
-          args=()
-          [ "$SKIP_NONROOT" = "true" ] && args+=(--skip-nonroot)
-          ./.github/scripts/docker-smoke.sh poweradmin:smoke-test basic "${args[@]}"
+        run: ./.github/scripts/docker-smoke.sh poweradmin:smoke-test basic
 
       - name: Build and push
         id: build
@@ -140,7 +119,7 @@ jobs:
           cache-from: |
             type=registry,ref=${{ steps.cache.outputs.ref }}
           cache-to: type=registry,ref=${{ steps.cache.outputs.ref }},mode=max,ignore-error=true
-          no-cache: ${{ github.event_name == 'schedule' || inputs.no_cache == true }}
+          no-cache: ${{ inputs.no_cache == true }}
 
       - name: Generate SBOM
         if: github.event_name != 'pull_request' && success()
