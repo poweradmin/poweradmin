@@ -1,180 +1,32 @@
 <?php
 
 /**
- * Poweradmin Settings Configuration File (SQLite + API Backend)
+ * Poweradmin devcontainer settings: SQLite + PowerDNS API backend (experimental)
  *
- * Devcontainer configuration for SQLite database
- * with PowerDNS REST API backend (experimental)
+ * Everything not set here comes from settings-base.php (mounted next to this file).
  */
 
-return [
-    /**
-     * Database Settings
-     */
-    'database' => [
-        'type' => 'sqlite',
-        'file' => '/data/pdns.db',
-    ],
+// The base sits next to this file in the repo; inside a container only the instance file is
+// mounted, so fall back to the repo checkout mounted at /app.
+$base = is_file(__DIR__ . '/settings-base.php')
+    ? __DIR__ . '/settings-base.php'
+    : '/app/.devcontainer/conf/settings-base.php';
+$settings = require $base;
 
-    /**
-     * Security Settings
-     */
-    'security' => [
-        'session_key' => 'YV4@SQ(Wa8l8L7fDlU3e_(XhuCyuuEifm68Xtuh!MNE#!L',
-        'password_encryption' => 'bcrypt',
-        'login_token_validation' => true,
-        'global_token_validation' => true,
-        'mfa' => [
-            'enabled' => true,
-            'enforced' => false,
-            'email_enabled' => true,
-        ],
-        'password_reset' => [
-            'enabled' => true,
-            'token_lifetime' => 3600,
-        ],
-        'username_recovery' => [
-            'enabled' => true,
-        ],
-    ],
-
-    /**
-     * Mail Settings (Logger transport for development)
-     */
-    'mail' => [
-        'enabled' => true,
-        'transport' => 'logger',
-        'from' => 'poweradmin@example.com',
-    ],
-
-    /**
-     * Interface Settings
-     */
-    'interface' => [
-        'language' => 'en_EN',
-        'enabled_languages' => 'en_EN,de_DE,fr_FR,ja_JP,pl_PL',
-        'title' => 'Poweradmin (SQLite + API)',
-        'theme' => 'modern',
-        'show_pdns_status' => true,
-        'show_record_comments' => true,
-        'show_zone_comments' => false,
-        'enable_consistency_checks' => true,
-        'add_reverse_record' => true,
-        'search_group_records' => true,
-        'show_add_record_form' => true,
-        'display_signed_serial_in_zone_list' => true,
-    ],
-
-    /**
-     * DNS Settings
-     */
-    'dns' => [
-        'backend' => 'api',
-        'hostmaster' => 'hostmaster.example.com',
-        'ns1' => 'ns1.example.com',
-        'ns2' => 'ns2.example.com',
-    ],
-
-    /**
-     * DNSSEC Settings
-     */
-    'dnssec' => [
-        'enabled' => true,
-    ],
-
-    /**
-     * User Agreement Settings
-     */
-    'user_agreement' => [
-        'enabled' => false,
-        'current_version' => '1.0',
-        'require_on_version_change' => true,
-    ],
-
-    /**
-     * Miscellaneous Settings
-     */
-    'misc' => [
-        'record_comments_sync' => true,
-        'email_previews_enabled' => true,
-        // Turns on Twig strict_variables so an undefined template variable fails loudly.
-        'display_errors' => true,
-    ],
-
-    /**
-     * API Settings
-     */
-    'api' => [
-        'enabled' => true,
-        'docs_enabled' => true,
-        'basic_auth_enabled' => true,
-    ],
-
-    /**
-     * Health Check Settings
-     */
-    'health' => [
-        'enabled' => true,
-        'ping_enabled' => true,
-    ],
-
-    /**
-     * PowerDNS API Settings (API backend mode)
-     */
-    'pdns_api' => [
-        'display_name' => 'PowerDNS',
-        'url' => 'http://pdns-sqlite:8081',
-        'key' => 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA',
-        'server_name' => 'localhost',
-        'webserver_username' => '',
-        'webserver_password' => 'poweradmin',
-    ],
-
-    /**
-     * Logging Settings
-     */
-    'logging' => [
-        'type' => 'native',
-        'level' => 'debug',
-        'database_enabled' => true,
-        'syslog_enabled' => false,
-    ],
-
-    /**
-     * LDAP Settings
-     */
-    'ldap' => [
-        'enabled' => false,
-    ],
-
-    /**
-     * Module Settings
-     */
-    'modules' => [
-        'csv_export' => [
-            'enabled' => true,
-        ],
-        'zone_import_export' => [
-            'enabled' => true,
-            'auto_ttl_value' => 300,
-            'max_file_size' => 1048576,
-        ],
-        'whois' => [
-            'enabled' => true,
-            'restrict_to_admin' => false,
-        ],
-        'rdap' => [
-            'enabled' => true,
-            'restrict_to_admin' => false,
-        ],
-        'email_previews' => [
-            'enabled' => true,
-        ],
-        'dns_wizards' => [
-            'enabled' => true,
-        ],
-        'secondary_zone_import' => [
-            'enabled' => true,
-        ],
-    ],
+$settings['database'] = [
+  'type' => 'sqlite',
+  'file' => '/data/pdns.db',
 ];
+
+$settings['interface']['enabled_languages'] = 'en_EN,de_DE,fr_FR,ja_JP,pl_PL';
+$settings['interface']['title'] = 'Poweradmin (SQLite + API)';
+$settings['interface']['theme'] = 'modern';
+$settings['interface']['display_signed_serial_in_zone_list'] = true;
+$settings['dns']['backend'] = 'api';
+$settings['pdns_api']['url'] = 'http://pdns-sqlite:8081';
+$settings['ldap']['enabled'] = false;
+$settings['modules']['secondary_zone_import'] = [
+  'enabled' => true,
+];
+
+return $settings;

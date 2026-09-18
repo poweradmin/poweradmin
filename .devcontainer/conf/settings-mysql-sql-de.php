@@ -1,190 +1,21 @@
 <?php
 
 /**
- * Poweradmin Settings Configuration File (MySQL + SQL Backend, German only)
+ * Poweradmin devcontainer settings: MySQL + SQL backend, German interface only (single-language testing)
  *
- * Devcontainer configuration for MySQL/MariaDB database
- * with direct SQL backend, restricted to German language only.
- * Used for single-language localization testing.
+ * Everything not set here comes from settings-base.php (mounted next to this file).
  */
 
-return [
-    /**
-     * Database Settings
-     */
-    'database' => [
-        'host' => 'mariadb',
-        'port' => '3306',
-        'name' => 'poweradmin',
-        'user' => 'pdns',
-        'password' => 'poweradmin',
-        'type' => 'mysql',
-        'charset' => 'utf8',
-        'pdns_db_name' => 'pdns',
-    ],
+// The base sits next to this file in the repo; inside a container only the instance file is
+// mounted, so fall back to the repo checkout mounted at /app.
+$base = is_file(__DIR__ . '/settings-base.php')
+    ? __DIR__ . '/settings-base.php'
+    : '/app/.devcontainer/conf/settings-base.php';
+$settings = require $base;
 
-    /**
-     * Security Settings
-     */
-    'security' => [
-        'session_key' => 'YV4@SQ(Wa8l8L7fDlU3e_(XhuCyuuEifm68Xtuh!MNE#!L',
-        'password_encryption' => 'bcrypt',
-        'login_token_validation' => true,
-        'global_token_validation' => true,
-        'mfa' => [
-            'enabled' => true,
-            'enforced' => false,
-            'email_enabled' => true,
-        ],
-        'password_reset' => [
-            'enabled' => true,
-            'token_lifetime' => 3600,
-        ],
-        'username_recovery' => [
-            'enabled' => true,
-        ],
-    ],
+$settings['interface']['language'] = 'de_DE';
+$settings['interface']['enabled_languages'] = 'de_DE';
+$settings['interface']['title'] = 'Poweradmin (MySQL + SQL, German)';
+$settings['interface']['theme'] = 'modern';
 
-    /**
-     * Mail Settings (Logger transport for development)
-     */
-    'mail' => [
-        'enabled' => true,
-        'transport' => 'logger',
-        'from' => 'poweradmin@example.com',
-    ],
-
-    /**
-     * Interface Settings
-     */
-    'interface' => [
-        'language' => 'de_DE',
-        'enabled_languages' => 'de_DE',
-        'title' => 'Poweradmin (MySQL + SQL, German)',
-        'theme' => 'modern',
-        'show_pdns_status' => true,
-        'show_record_comments' => true,
-        'show_zone_comments' => false,
-        'enable_consistency_checks' => true,
-        'add_reverse_record' => true,
-        'search_group_records' => true,
-        'show_add_record_form' => true,
-    ],
-
-    /**
-     * DNS Settings
-     */
-    'dns' => [
-        'hostmaster' => 'hostmaster.example.com',
-        'ns1' => 'ns1.example.com',
-        'ns2' => 'ns2.example.com',
-    ],
-
-    /**
-     * DNSSEC Settings
-     */
-    'dnssec' => [
-        'enabled' => true,
-    ],
-
-    /**
-     * User Agreement Settings
-     */
-    'user_agreement' => [
-        'enabled' => false,
-        'current_version' => '1.0',
-        'require_on_version_change' => true,
-    ],
-
-    /**
-     * Miscellaneous Settings
-     */
-    'misc' => [
-        'record_comments_sync' => true,
-        'email_previews_enabled' => true,
-        // Turns on Twig strict_variables so an undefined template variable fails loudly.
-        'display_errors' => true,
-    ],
-
-    /**
-     * API Settings
-     */
-    'api' => [
-        'enabled' => true,
-        'docs_enabled' => true,
-    ],
-
-    /**
-     * Health Check Settings
-     */
-    'health' => [
-        'enabled' => true,
-        'ping_enabled' => true,
-    ],
-
-    /**
-     * PowerDNS API Settings
-     */
-    'pdns_api' => [
-        'display_name' => 'PowerDNS',
-        'url' => 'http://pdns-mysql:8081',
-        'key' => 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA',
-        'server_name' => 'localhost',
-        'webserver_username' => '',
-        'webserver_password' => 'poweradmin',
-    ],
-
-    /**
-     * Logging Settings
-     */
-    'logging' => [
-        'type' => 'native',
-        'level' => 'debug',
-        'database_enabled' => true,
-        'syslog_enabled' => false,
-    ],
-
-    /**
-     * LDAP Settings
-     */
-    'ldap' => [
-        'enabled' => true,
-        'debug' => false,
-        'uri' => 'ldap://ldap',
-        'base_dn' => 'ou=users,dc=poweradmin,dc=org',
-        'bind_dn' => 'cn=admin,dc=poweradmin,dc=org',
-        'bind_password' => 'poweradmin',
-        'user_attribute' => 'uid',
-        'protocol_version' => 3,
-        'search_filter' => '',
-        'session_cache_timeout' => 300,
-    ],
-
-    /**
-     * Module Settings
-     */
-    'modules' => [
-        'csv_export' => [
-            'enabled' => true,
-        ],
-        'zone_import_export' => [
-            'enabled' => true,
-            'auto_ttl_value' => 300,
-            'max_file_size' => 1048576,
-        ],
-        'whois' => [
-            'enabled' => true,
-            'restrict_to_admin' => false,
-        ],
-        'rdap' => [
-            'enabled' => true,
-            'restrict_to_admin' => false,
-        ],
-        'email_previews' => [
-            'enabled' => true,
-        ],
-        'dns_wizards' => [
-            'enabled' => true,
-        ],
-    ],
-];
+return $settings;

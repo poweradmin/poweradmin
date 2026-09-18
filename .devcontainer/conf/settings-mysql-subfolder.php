@@ -1,117 +1,21 @@
 <?php
 
 /**
- * Poweradmin Settings Configuration File (MySQL + SQL Backend, Subfolder)
+ * Poweradmin devcontainer settings: MySQL + SQL backend served under /poweradmin (subfolder deployment)
  *
- * Devcontainer configuration for testing subfolder deployments.
- * Reuses the MySQL/MariaDB database with base_url_prefix set.
+ * Everything not set here comes from settings-base.php (mounted next to this file).
  */
 
-return [
-    /**
-     * Database Settings
-     */
-    'database' => [
-        'host' => 'mariadb',
-        'port' => '3306',
-        'name' => 'poweradmin',
-        'user' => 'pdns',
-        'password' => 'poweradmin',
-        'type' => 'mysql',
-        'charset' => 'utf8',
-        'pdns_db_name' => 'pdns',
-    ],
+// The base sits next to this file in the repo; inside a container only the instance file is
+// mounted, so fall back to the repo checkout mounted at /app.
+$base = is_file(__DIR__ . '/settings-base.php')
+    ? __DIR__ . '/settings-base.php'
+    : '/app/.devcontainer/conf/settings-base.php';
+$settings = require $base;
 
-    /**
-     * Security Settings
-     */
-    'security' => [
-        'session_key' => 'subfolder_session_key_for_testing_only_12345',
-        'password_encryption' => 'bcrypt',
-        'login_token_validation' => true,
-        'global_token_validation' => true,
-        'mfa' => [
-            'enabled' => false,
-            'enforced' => false,
-        ],
-    ],
+$settings['security']['session_key'] = 'subfolder_session_key_for_testing_only_12345';
+$settings['security']['mfa']['enabled'] = false;
+$settings['interface']['title'] = 'Poweradmin (MySQL + Subfolder)';
+$settings['interface']['base_url_prefix'] = '/poweradmin';
 
-    /**
-     * Interface Settings
-     */
-    'interface' => [
-        'language' => 'en_EN',
-        'title' => 'Poweradmin (MySQL + Subfolder)',
-        'base_url_prefix' => '/poweradmin',
-        'show_pdns_status' => true,
-        'show_record_comments' => true,
-        'show_zone_comments' => false,
-        'enable_consistency_checks' => true,
-        'add_reverse_record' => true,
-        'search_group_records' => true,
-        'show_add_record_form' => true,
-    ],
-
-    /**
-     * DNS Settings
-     */
-    'dns' => [
-        'hostmaster' => 'hostmaster.example.com',
-        'ns1' => 'ns1.example.com',
-        'ns2' => 'ns2.example.com',
-    ],
-
-    /**
-     * DNSSEC Settings
-     */
-    'dnssec' => [
-        'enabled' => true,
-    ],
-
-    /**
-     * Miscellaneous Settings
-     */
-    'misc' => [
-        'record_comments_sync' => true,
-        // Turns on Twig strict_variables so an undefined template variable fails loudly.
-        'display_errors' => true,
-    ],
-
-    /**
-     * API Settings
-     */
-    'api' => [
-        'enabled' => true,
-        'docs_enabled' => true,
-    ],
-
-    /**
-     * Health Check Settings
-     */
-    'health' => [
-        'enabled' => true,
-        'ping_enabled' => true,
-    ],
-
-    /**
-     * PowerDNS API Settings
-     */
-    'pdns_api' => [
-        'display_name' => 'PowerDNS',
-        'url' => 'http://pdns-mysql:8081',
-        'key' => 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA',
-        'server_name' => 'localhost',
-        'webserver_username' => '',
-        'webserver_password' => 'poweradmin',
-    ],
-
-    /**
-     * Logging Settings
-     */
-    'logging' => [
-        'type' => 'native',
-        'level' => 'debug',
-        'database_enabled' => true,
-        'syslog_enabled' => false,
-    ],
-];
+return $settings;
