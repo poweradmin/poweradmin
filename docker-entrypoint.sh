@@ -1747,7 +1747,7 @@ EOF
     # Set proper permissions (root only - non-root already owns the file)
     if [ "$IS_ROOT" = true ]; then
         chmod 640 "${CONFIG_FILE}"
-        chown www-data:www-data "${CONFIG_FILE}"
+        chown www-data:0 "${CONFIG_FILE}"
     fi
 
     log "Configuration file generated successfully"
@@ -1808,19 +1808,23 @@ setup_permissions() {
     # This eliminates the need for volume pre-initialization
 
     # Database directory
+    # Group 0 plus g+w matches the image layout, so a volume first used in root mode still
+    # works when the container later runs as an arbitrary UID (OpenShift, K8s fsGroup)
     if [ -d "${DB_DIR}" ]; then
-        chown -R www-data:www-data "${DB_DIR}"
+        chown -R www-data:0 "${DB_DIR}"
+        chmod -R g+w "${DB_DIR}"
     fi
 
     # Config directory (when using custom PA_CONFIG_PATH)
     config_dir=$(dirname "${CONFIG_FILE}")
     if [ "${config_dir}" != "/app/config" ] && [ -d "${config_dir}" ]; then
-        chown -R www-data:www-data "${config_dir}"
+        chown -R www-data:0 "${config_dir}"
+        chmod -R g+w "${config_dir}"
     fi
 
     # Caddy data directory (may fail on read-only filesystem, that's OK)
     if [ -d "/var/caddy" ]; then
-        chown -R www-data:www-data /var/caddy 2>/dev/null || true
+        chown -R www-data:0 /var/caddy 2>/dev/null || true
     fi
 
     log "File permissions set successfully"
