@@ -1,0 +1,167 @@
+name: Docker Image Publish
+
+# The v3.* release-tag publisher: 3.9.13, 3.9 and 3 on GHCR and Docker Hub. The moving lts
+# tag comes from master's docker-3.x.yml after every green validations run.
+# The 3.x image runs as 82:82 on port 80 and has no port-switching entrypoint, so the
+# non-root smoke mode does not apply.
+on:
+  push:
+    tags:
+      - 'v3.*'
+  workflow_dispatch:
+    inputs:
+      no_cache:
+        description: 'Build without layer cache to pull in updated base packages'
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  GHCR_IMAGE_NAME: poweradmin
+  DOCKERHUB_IMAGE_NAME: poweradmin/poweradmin
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: write
+      actions: read
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Lint Dockerfile with hadolint
+        uses: hadolint/hadolint-action@06be81baf89a55ffd0e24b8f04a4185738dd3387 # v3.5.0
+        with:
+          dockerfile: Dockerfile
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          registry: docker.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # metadata-action derives revision from github.sha; read it from the checkout instead
+      - name: Resolve build revision
+        id: vars
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6
+        with:
+          images: |
+            ghcr.io/${{ github.repository_owner }}/${{ env.GHCR_IMAGE_NAME }}
+            ${{ env.DOCKERHUB_IMAGE_NAME }}
+          flavor: |
+            latest=false
+          labels: |
+            org.opencontainers.image.revision=${{ steps.vars.outputs.sha }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      - name: Resolve build cache ref
+        id: cache
+        env:
+          BUILD_REF: ${{ github.ref_name }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          slug=$(printf '%s' "$BUILD_REF" | tr '/' '-' | tr -cd '[:alnum:]._-')
+          owner=$(printf '%s' "$OWNER" | tr '[:upper:]' '[:lower:]')
+          echo "ref=ghcr.io/${owner}/${GHCR_IMAGE_NAME}:buildcache-${slug}" >> "$GITHUB_OUTPUT"
+
+      - name: Build local image for smoke test
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: poweradmin:smoke-test
+          cache-from: |
+            type=registry,ref=${{ steps.cache.outputs.ref }}
+          no-cache: ${{ inputs.no_cache == true }}
+
+      - name: Smoke test
+        run: ./.github/scripts/docker-smoke.sh poweradmin:smoke-test basic --skip-nonroot
+
+      - name: Build and push
+        id: build
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: |
+            type=registry,ref=${{ steps.cache.outputs.ref }}
+          cache-to: type=registry,ref=${{ steps.cache.outputs.ref }},mode=max,ignore-error=true
+          no-cache: ${{ inputs.no_cache == true }}
+
+      - name: Generate SBOM
+        if: github.event_name != 'pull_request' && success()
+        uses: anchore/sbom-action@3ad7283483fc7af8ff2b4ea19663c2d5ca935e26 # v0.24.2
+        with:
+          image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          format: spdx-json
+          output-file: sbom.spdx.json
+
+      - name: Upload SBOM as artifact
+        if: github.event_name != 'pull_request' && success()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: sbom-${{ github.run_id }}
+          path: sbom.spdx.json
+
+      - name: Job Summary
+        if: always()
+        env:
+          IMAGE_TAGS: ${{ steps.meta.outputs.tags }}
+          IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
+          EVENT_NAME: ${{ github.event_name }}
+          RUN_ID: ${{ github.run_id }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+          RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          echo "### Docker Build Summary 🐳" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Build Information:**" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Tags: $IMAGE_TAGS" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Platforms: linux/amd64, linux/arm64" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Digest: $IMAGE_DIGEST" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Security & Compliance:**" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$EVENT_NAME" != "pull_request" ]; then
+            echo "- ✅ SBOM generated (artifact: sbom-$RUN_ID)" >> "$GITHUB_STEP_SUMMARY"
+            echo "- ✅ Images pushed to GHCR and Docker Hub" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- 🔍 Build-only mode (PR)" >> "$GITHUB_STEP_SUMMARY"
+            echo "- ⏭️ SBOM skipped" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Workflow:** $WORKFLOW_NAME (#$RUN_NUMBER)" >> "$GITHUB_STEP_SUMMARY"
