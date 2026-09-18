@@ -100,7 +100,9 @@ COPY --chown=www-data:0 . .
 
 # Entrypoint outside the app tree, data directory, pristine copy of the defaults
 COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN mkdir -p /db /app/config \
+# /app itself predates the COPY (WORKDIR), so it and the runtime cache dir need owners of their own
+RUN mkdir -p /db /app/config /app/var \
+    && chown www-data:0 /app /app/var \
     && cp /app/config/settings.defaults.php /usr/local/share/settings.defaults.php
 
 # Create Caddyfile for FrankenPHP
@@ -190,7 +192,7 @@ ENV XDG_DATA_HOME=/var/caddy
 #   - OpenShift arbitrary UIDs (which always run as GID 0)
 # Root-mode entrypoint re-asserts www-data ownership via setup_permissions()
 RUN chown www-data:0 /db \
-    && chmod -R g+w /app/config /db \
+    && chmod -R g+w /app/config /app/var /db \
     && mkdir -p /var/caddy/caddy \
     && chown -R www-data:0 /var/caddy \
     && chmod -R g+w /var/caddy \
