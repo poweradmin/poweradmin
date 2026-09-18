@@ -41,8 +41,9 @@
     @denied path /config* /lib* /tests* /vendor*
     @bootstrap path /vendor/twbs/bootstrap/dist/* /vendor/twbs/bootstrap-icons/font/*
 
-    # Allow Bootstrap files (override general vendor blocking)
+    # Allow Bootstrap files (override general vendor blocking); versioned by the vendor path
     handle @bootstrap {
+        header Cache-Control "public, max-age=604800"
         file_server
     }
 
@@ -57,30 +58,31 @@
         respond "Forbidden" 403
     }
 
-    # Static assets with caching
-    @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
-    handle @static {
+    # Scripts and styles carry a content fingerprint in their URL, fonts never change;
+    # icons and images are not versioned, so they get a day
+    @versioned path *.js *.css *.woff *.woff2 *.ttf *.eot
+    handle @versioned {
         header Cache-Control "public, max-age=31536000"
         file_server
     }
-
-    # Handle OPTIONS preflight requests for CORS
-    @options method OPTIONS
-    handle @options {
-        header Access-Control-Allow-Origin "*"
-        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-        header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
-        header Access-Control-Max-Age "3600"
-        respond "" 204
+    @images path *.png *.jpg *.jpeg *.gif *.ico *.svg
+    handle @images {
+        header Cache-Control "public, max-age=86400"
+        file_server
     }
 
-    # API endpoints with CORS
+    # API endpoints with CORS; preflight is answered here only, never for the web UI
     @api path /api*
     handle @api {
         header Access-Control-Allow-Origin "*"
         header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
         header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
         header Access-Control-Max-Age "3600"
+
+        @options method OPTIONS
+        handle @options {
+            respond "" 204
+        }
 
         # Forward all API requests to index.php with proper query handling
         rewrite * /index.php{uri}
