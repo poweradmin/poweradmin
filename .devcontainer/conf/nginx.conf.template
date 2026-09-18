@@ -34,7 +34,7 @@ server {
 
     # Handle PHP files
     location ~ \.php$ {
-        set $fpm app-sqlite-api:9000;
+        set $fpm ${FPM_UPSTREAM};
         fastcgi_pass $fpm;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;

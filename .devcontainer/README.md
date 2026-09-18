@@ -96,12 +96,10 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 ## Configuration Files
 
 ### Web Server Configs
-- `conf/nginx.conf` - Nginx configuration (MySQL + SQL)
+- `conf/nginx.conf.template` - Nginx configuration shared by every nginx front (`FPM_UPSTREAM` selects the PHP-FPM container)
+- `conf/nginx-subfolder.conf` - Nginx configuration for the subfolder instance
 - `conf/apache-vhost.conf` - Apache virtual host (PostgreSQL + SQL)
 - `conf/Caddyfile` - Caddy configuration (SQLite + SQL)
-- `conf/nginx-mysql-api.conf` - Nginx configuration (MySQL + API)
-- `conf/nginx-pgsql-api.conf` - Nginx configuration (PostgreSQL + API)
-- `conf/nginx-sqlite-api.conf` - Nginx configuration (SQLite + API)
 
 ### PowerDNS Configs (DNSSEC enabled)
 - `conf/pdns-mysql.conf` - PowerDNS for MySQL
