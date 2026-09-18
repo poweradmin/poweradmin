@@ -52,7 +52,8 @@ services:
       - sqlite_data:/data
       - ./conf/settings-sqlite-sql.php:/etc/poweradmin/settings.php:ro
     depends_on:
-      - sqlite
+      sqlite:
+        condition: service_healthy
 
   # PHP-FPM for MySQL + API backend (used by nginx)
   app-mysql-api:
@@ -93,7 +94,8 @@ services:
       - sqlite_data:/data
       - ./conf/settings-sqlite-api.php:/etc/poweradmin/settings.php:ro
     depends_on:
-      - sqlite
+      sqlite:
+        condition: service_healthy
 
   # PHP-FPM for MySQL + SQL backend (subfolder deployment testing)
   app-mysql-subfolder:
@@ -291,7 +293,10 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
+      # The socket answers while the init scripts still run; TCP only once the real server is up
+      test: [ "CMD-SHELL", "pg_isready -h 127.0.0.1 -U ${DB_USER} -d ${DB_NAME}" ]
+      start_period: 1m
+      start_interval: 5s
       interval: 30s
       timeout: 5s
       retries: 3
@@ -309,6 +314,15 @@ services:
     command: ["/bin/sh", "-c", "/init-db.sh && tail -f /dev/null"]
     stdin_open: true
     tty: true
+    restart: unless-stopped
+    healthcheck:
+      # The image's own check only runs sqlite3 --version; this waits for the schema
+      test: [ "CMD-SHELL", "sqlite3 /data/pdns.db 'SELECT 1 FROM domains LIMIT 1'" ]
+      start_period: 30s
+      start_interval: 2s
+      interval: 30s
+      timeout: 3s
+      retries: 3
 
   # =============================================================================
   # PowerDNS Servers (one per database type - all with DNSSEC enabled)
@@ -317,6 +331,7 @@ services:
   pdns-mysql:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
     container_name: pdns-mysql
+    restart: unless-stopped
     networks:
       - internal
     volumes:
@@ -332,6 +347,7 @@ services:
   pdns-pgsql:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
     container_name: pdns-pgsql
+    restart: unless-stopped
     networks:
       - internal
     volumes:
@@ -347,6 +363,7 @@ services:
   pdns-sqlite:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
     container_name: pdns-sqlite
+    restart: unless-stopped
     networks:
       - internal
     volumes:
@@ -357,7 +374,8 @@ services:
       - "127.0.0.1:1055:53/udp"
       - "127.0.0.1:8183:8081"
     depends_on:
-      - sqlite
+      sqlite:
+        condition: service_healthy
 
   # Opt-in, since LMDB is the only backend that implements views and network
   # mappings: docker compose --profile lmdb up pdns-lmdb
