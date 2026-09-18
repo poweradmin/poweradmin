@@ -181,6 +181,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `DB_SSL_CERT` | Path to client certificate file (for client cert auth) | Empty | No |
 | `PDNS_VERSION` | PowerDNS schema version to use (45, 46, 47, 48, 49) | `49` | No |
 | `PA_INIT_PDNS_SCHEMA` | Load the PowerDNS schema into an empty `DB_NAME` database on startup (**MySQL/PostgreSQL**, skipped when `PA_PDNS_DB_NAME` is set) | `false` | No |
+| `DB_WAIT_TIMEOUT` | Seconds to wait for the MySQL/PostgreSQL server to answer before schema initialization is skipped | `30` | No |
 
 ### DNS Configuration
 
