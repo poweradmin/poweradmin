@@ -54,6 +54,11 @@ playwright-report/
 test-results/
 *.trace.zip
 
+# Local developer state (gitignored, never part of the image)
+config/settings.php
+var/
+playwright-sweep-logs/
+
 # Configuration files
 composer.json
 composer.lock
