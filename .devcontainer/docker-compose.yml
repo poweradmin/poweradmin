@@ -267,7 +267,7 @@ services:
       - ./scripts/mysql-init-poweradmin.sh:/docker-entrypoint-initdb.d/02-poweradmin.sh
       - ./scripts/custom-healthcheck.sh:/custom-healthcheck.sh
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     healthcheck:
       test: [ "CMD", "/custom-healthcheck.sh" ]
       start_period: 1m
@@ -289,7 +289,7 @@ services:
       - pgsql_data:/var/lib/postgresql/data
       - ../sql/pdns/${PDNS_BRANCH}/schema.pgsql.sql:/docker-entrypoint-initdb.d/01-init.sql
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
       interval: 30s
@@ -322,9 +322,9 @@ services:
     volumes:
       - ./conf/pdns-mysql.conf:/etc/powerdns/pdns.conf
     ports:
-      - "1053:53"
-      - "1053:53/udp"
-      - "8181:8081"
+      - "127.0.0.1:1053:53"
+      - "127.0.0.1:1053:53/udp"
+      - "127.0.0.1:8181:8081"
     depends_on:
       mysql:
         condition: service_healthy
@@ -337,9 +337,9 @@ services:
     volumes:
       - ./conf/pdns-pgsql.conf:/etc/powerdns/pdns.conf
     ports:
-      - "1054:53"
-      - "1054:53/udp"
-      - "8182:8081"
+      - "127.0.0.1:1054:53"
+      - "127.0.0.1:1054:53/udp"
+      - "127.0.0.1:8182:8081"
     depends_on:
       pgsql:
         condition: service_healthy
@@ -353,9 +353,9 @@ services:
       - ./conf/pdns-sqlite.conf:/etc/powerdns/pdns.conf
       - sqlite_data:/data
     ports:
-      - "1055:53"
-      - "1055:53/udp"
-      - "8183:8081"
+      - "127.0.0.1:1055:53"
+      - "127.0.0.1:1055:53/udp"
+      - "127.0.0.1:8183:8081"
     depends_on:
       - sqlite
 
@@ -374,9 +374,9 @@ services:
       # lands as root and the backend cannot create its database.
       - lmdb_data:/var/lib/powerdns
     ports:
-      - "1056:53"
-      - "1056:53/udp"
-      - "8184:8081"
+      - "127.0.0.1:1056:53"
+      - "127.0.0.1:1056:53/udp"
+      - "127.0.0.1:8184:8081"
 
   # =============================================================================
   # Admin Tools
@@ -388,7 +388,7 @@ services:
     networks:
       - internal
     ports:
-      - "8090:8080"
+      - "127.0.0.1:8090:8080"
     volumes:
       - sqlite_data:/data
       - ./adminer/login-password-less.php:/var/www/html/plugins-enabled/login-password-less.php
@@ -412,8 +412,8 @@ services:
       - ./ldap/bootstrap:/container/service/slapd/assets/config/bootstrap/ldif/custom:ro
     command: ["--copy-service"]
     ports:
-      - "389:389"
-      - "636:636"
+      - "127.0.0.1:389:389"
+      - "127.0.0.1:636:636"
     healthcheck:
       test: ["CMD-SHELL", "ldapsearch -x -H ldap://localhost -b dc=poweradmin,dc=org -D 'cn=admin,dc=poweradmin,dc=org' -w poweradmin"]
       interval: 10s
@@ -433,7 +433,7 @@ services:
       - LDAP_PASSWORD=poweradmin
       - LDAP_BASE_DN=dc=poweradmin,dc=org
     ports:
-      - "8443:8080"
+      - "127.0.0.1:8443:8080"
 
 volumes:
   mysql_data: { }

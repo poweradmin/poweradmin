@@ -19,6 +19,10 @@ All seven PHP-FPM instances run the same image (`poweradmin-devcontainer-fpm:loc
 the `app-mysql` service. `up` builds it before starting anything; to rebuild after editing
 `.devcontainer/Dockerfile` run `docker compose ... build app-mysql` and recreate the app services.
 
+Only the web instances (8080-8087) listen on all interfaces. Databases, LDAP, the PowerDNS
+DNS/API ports, Adminer and phpLDAPadmin are bound to 127.0.0.1, so they are unreachable from
+other machines on your network.
+
 ## Architecture
 
 Each database has two Poweradmin instances - one using direct SQL and one using the PowerDNS REST API backend (experimental). All share the same PowerDNS servers (DNSSEC enabled):
