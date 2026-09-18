@@ -635,7 +635,7 @@ create_admin_user() {
     local create_admin
     create_admin=$(to_php_bool "${PA_CREATE_ADMIN:-false}")
 
-    if [ "$create_admin" != "true" ] && [ "$create_admin" != "1" ] && [ "$create_admin" != "yes" ]; then
+    if [ "$create_admin" != "true" ]; then
         debug_log "Admin user creation disabled"
         return 0
     fi
@@ -940,19 +940,9 @@ generate_config() {
     # IP. The Caddy-only 'private_ranges' keyword is dropped (PHP trusts those
     # automatically). PA_TRUSTED_PROXIES overrides if the two layers must differ;
     # setting it to an empty string clears the application allowlist entirely.
-    local trusted_proxies_php="[]"
     local trusted_proxies_src="${PA_TRUSTED_PROXIES-${TRUSTED_PROXIES:-}}"
-    if [ -n "${trusted_proxies_src}" ]; then
-        local proxy_items=""
-        local proxy_entry
-        for proxy_entry in $(echo "${trusted_proxies_src}" | tr ',' ' ' | tr -s ' '); do
-            [ "${proxy_entry}" = "private_ranges" ] && continue
-            proxy_items="${proxy_items}$(php_sq "${proxy_entry}"), "
-        done
-        if [ -n "${proxy_items}" ]; then
-            trusted_proxies_php="[${proxy_items%, }]"
-        fi
-    fi
+    local trusted_proxies_php
+    trusted_proxies_php=$(php_str_array "$(printf '%s' "${trusted_proxies_src}" | tr ',' '\n' | sed 's/^ *//; s/ *$//' | grep -vx 'private_ranges' | paste -sd, -)")
 
     # Convert notification boolean values to lowercase
     local notification_zone_access
@@ -1107,43 +1097,33 @@ generate_config() {
     # can map to multiple Poweradmin groups (e.g. 'team1=Editors|Viewers').
     # Single quotes are escaped, whitespace around commas/delimiters is trimmed
     parse_mapping() {
-        local input="$1"
-        echo "$input" | sed "s/'/\\\\'/g" | sed 's/ *, */,/g' | sed 's/ *= */=/g' | sed 's/ *: */:/g' | sed 's/ *| */|/g' | \
-            awk -F',' '{
-                for (i=1; i<=NF; i++) {
-                    # Try = first, then :
-                    if (index($i, "=") > 0) {
-                        split($i, a, "=")
-                        key = a[1]
-                        val = a[2]
-                    } else {
-                        # Split on last : for backward compatibility with group:Template format
-                        idx = 0
-                        for (j=1; j<=length($i); j++) {
-                            if (substr($i, j, 1) == ":") idx = j
-                        }
-                        if (idx > 0) {
-                            key = substr($i, 1, idx-1)
-                            val = substr($i, idx+1)
-                        } else {
-                            key = $i
-                            val = ""
-                        }
-                    }
-                    if (i > 1) printf ","
-                    if (index(val, "|") > 0) {
-                        n = split(val, parts, "|")
-                        printf "'\''%s'\'' => [", key
-                        for (k=1; k<=n; k++) {
-                            if (k > 1) printf ", "
-                            printf "'\''%s'\''", parts[k]
-                        }
-                        printf "]"
-                    } else {
-                        printf "'\''%s'\'' => '\''%s'\''", key, val
-                    }
-                }
-            }'
+        local IFS=',' item key val part items="" parts=""
+        for item in $1; do
+            item="${item#"${item%%[![:space:]]*}"}"; item="${item%"${item##*[![:space:]]}"}"
+            [ -n "${item}" ] || continue
+            # = is the delimiter; a bare group:Template pair splits on the last colon
+            if [[ "${item}" == *=* ]]; then
+                key="${item%%=*}"; val="${item#*=}"
+            elif [[ "${item}" == *:* ]]; then
+                key="${item%:*}"; val="${item##*:}"
+            else
+                key="${item}"; val=""
+            fi
+            key="${key%"${key##*[![:space:]]}"}"; val="${val#"${val%%[![:space:]]*}"}"
+            if [[ "${val}" == *\|* ]]; then
+                parts=""
+                local IFS='|'
+                for part in ${val}; do
+                    part="${part#"${part%%[![:space:]]*}"}"; part="${part%"${part##*[![:space:]]}"}"
+                    parts="${parts}$(php_sq "${part}"), "
+                done
+                IFS=','
+                items="${items}$(php_sq "${key}") => [${parts%, }], "
+            else
+                items="${items}$(php_sq "${key}") => $(php_sq "${val}"), "
+            fi
+        done
+        printf '%s' "${items%, }"
     }
 
     # Process OIDC permission template mapping
@@ -1802,8 +1782,8 @@ print_config_summary() {
         log "Modules: csv_export=${PA_MODULE_CSV_EXPORT_ENABLED:-true}, zone_import_export=${PA_MODULE_ZONE_IMPORT_EXPORT_ENABLED:-false}, whois=${PA_MODULE_WHOIS_ENABLED:-false}, rdap=${PA_MODULE_RDAP_ENABLED:-false}, email_previews=${PA_MODULE_EMAIL_PREVIEWS_ENABLED:-false}, dns_wizards=${PA_MODULE_DNS_WIZARDS_ENABLED:-false}"
     fi
 
-    log "Admin User Creation: ${PA_CREATE_ADMIN:-false}"
-    if [ "${PA_CREATE_ADMIN:-false}" = "true" ]; then
+    log "Admin User Creation: $(to_php_bool "${PA_CREATE_ADMIN:-false}")"
+    if [ "$(to_php_bool "${PA_CREATE_ADMIN:-false}")" = "true" ]; then
         log "Admin Username: ${PA_ADMIN_USERNAME:-admin}"
         log "Admin Email: ${PA_ADMIN_EMAIL:-admin@example.com}"
     fi
