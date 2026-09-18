@@ -65,6 +65,36 @@ updates:
       - dependency-name: "*"
         update-types: ["version-update:semver-major", "version-update:semver-minor"]
 
+  - package-ecosystem: "docker"
+    directory: "/.devcontainer"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "09:00"
+      timezone: "Europe/Vilnius"
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "chore(devcontainer)"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
+  - package-ecosystem: "docker-compose"
+    directory: "/.devcontainer"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "09:00"
+      timezone: "Europe/Vilnius"
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "chore(devcontainer)"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -132,6 +162,38 @@ updates:
       default-days: 3
     commit-message:
       prefix: "chore(deps)"
+
+  - package-ecosystem: "docker"
+    directory: "/.devcontainer"
+    target-branch: "develop"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "13:00"
+      timezone: "Europe/Vilnius"
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "chore(devcontainer)"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
+  - package-ecosystem: "docker-compose"
+    directory: "/.devcontainer"
+    target-branch: "develop"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "13:00"
+      timezone: "Europe/Vilnius"
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "chore(devcontainer)"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
 
   - package-ecosystem: "npm"
     directory: "/"
