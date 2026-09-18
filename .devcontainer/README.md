@@ -15,9 +15,19 @@ docker compose -f .devcontainer/docker-compose.yml --project-directory .devconta
 
 Then load the fixtures: `.devcontainer/scripts/import-test-data.sh`
 
-All seven PHP-FPM instances run the same image (`poweradmin-devcontainer-fpm:local`), built by
-the `app-mysql` service. `up` builds it before starting anything; to rebuild after editing
-`.devcontainer/Dockerfile` run `docker compose ... build app-mysql` and recreate the app services.
+Each database family runs its own PHP version (set in `.env`), so one E2E sweep over the three
+SQL instances covers three versions at once:
+
+| Family | Instances | PHP |
+|--------|-----------|-----|
+| MySQL/MariaDB | 8080, 8083, 8086 | `PHP_VERSION_MYSQL` = 8.2 (the supported floor) |
+| SQLite | 8082, 8085 | `PHP_VERSION_SQLITE` = 8.3 |
+| PostgreSQL | 8081 (Apache), 8084 | `PHP_VERSION_PGSQL` = 8.4 (same as the production image) |
+| German-only | 8087 | `PHP_VERSION_DE` = 8.5 (newest release) |
+
+The images are tagged `poweradmin-devcontainer-fpm:<version>`; the first service of a family
+builds, the others reuse the tag. After editing `.devcontainer/Dockerfile` or a version in
+`.env`, run `docker compose ... build` and recreate the app services.
 
 Only the web instances (8080-8087) listen on all interfaces. Databases, LDAP, the PowerDNS
 DNS/API ports, Adminer and phpLDAPadmin are bound to 127.0.0.1, so they are unreachable from

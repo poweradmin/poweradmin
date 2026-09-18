@@ -1,8 +1,8 @@
 name: poweradmin_devcontainer
 
-# One php-fpm image serves every app instance: app-mysql builds it, the others reuse the tag.
+# One php-fpm image per PHP version (see .env): the first service of each database family
+# builds it, the others in that family reuse the tag.
 x-app: &app
-  image: poweradmin-devcontainer-fpm:local
   networks:
     - internal
   environment:
@@ -23,11 +23,12 @@ services:
   app-mysql:
     <<: *app
     container_name: pwa-mysql-sql
+    image: poweradmin-devcontainer-fpm:${PHP_VERSION_MYSQL}
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        - VARIANT=${PHP_VERSION}-fpm-${DEBIAN_VERSION}
+        - VARIANT=${PHP_VERSION_MYSQL}-fpm-${DEBIAN_VERSION}
     volumes:
       - *vol-app
       - *vol-xdebug
@@ -43,6 +44,12 @@ services:
   app-sqlite:
     <<: *app
     container_name: pwa-sqlite-sql
+    image: poweradmin-devcontainer-fpm:${PHP_VERSION_SQLITE}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VARIANT=${PHP_VERSION_SQLITE}-fpm-${DEBIAN_VERSION}
     volumes:
       - *vol-app
       - *vol-xdebug
@@ -59,6 +66,7 @@ services:
   app-mysql-api:
     <<: *app
     container_name: pwa-mysql-api
+    image: poweradmin-devcontainer-fpm:${PHP_VERSION_MYSQL}
     volumes:
       - *vol-app
       - *vol-xdebug
@@ -72,6 +80,12 @@ services:
   app-pgsql-api:
     <<: *app
     container_name: pwa-pgsql-api
+    image: poweradmin-devcontainer-fpm:${PHP_VERSION_PGSQL}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VARIANT=${PHP_VERSION_PGSQL}-fpm-${DEBIAN_VERSION}
     volumes:
       - *vol-app
       - *vol-xdebug
@@ -87,6 +101,7 @@ services:
   app-sqlite-api:
     <<: *app
     container_name: pwa-sqlite-api
+    image: poweradmin-devcontainer-fpm:${PHP_VERSION_SQLITE}
     volumes:
       - *vol-app
       - *vol-xdebug
@@ -101,6 +116,7 @@ services:
   app-mysql-subfolder:
     <<: *app
     container_name: pwa-mysql-subfolder
+    image: poweradmin-devcontainer-fpm:${PHP_VERSION_MYSQL}
     volumes:
       - *vol-app
       - *vol-xdebug
@@ -114,6 +130,12 @@ services:
   app-mysql-de:
     <<: *app
     container_name: pwa-mysql-sql-de
+    image: poweradmin-devcontainer-fpm:${PHP_VERSION_DE}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VARIANT=${PHP_VERSION_DE}-fpm-${DEBIAN_VERSION}
     volumes:
       - *vol-app
       - *vol-xdebug
@@ -146,6 +168,8 @@ services:
     build:
       context: .
       dockerfile: apache.Dockerfile
+      args:
+        - VARIANT=${PHP_VERSION_PGSQL}-apache-${DEBIAN_VERSION}
     container_name: pwa-pgsql-sql
     networks:
       - internal
