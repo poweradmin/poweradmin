@@ -3,15 +3,12 @@
 /**
  * Poweradmin devcontainer settings: MySQL + SQL backend served under /poweradmin (subfolder deployment)
  *
- * Everything not set here comes from settings-base.php (mounted next to this file).
+ * Shared values come from settings-base.php and settings-mysql.php.
  */
 
-// The base sits next to this file in the repo; inside a container only the instance file is
-// mounted, so fall back to the repo checkout mounted at /app.
-$base = is_file(__DIR__ . '/settings-base.php')
-    ? __DIR__ . '/settings-base.php'
-    : '/app/.devcontainer/conf/settings-base.php';
-$settings = require $base;
+require_once is_file(__DIR__ . '/settings-base.php') ? __DIR__ . '/settings-base.php' : '/app/.devcontainer/conf/settings-base.php';
+
+$settings = devcontainer_settings('mysql');
 
 $settings['security']['session_key'] = 'subfolder_session_key_for_testing_only_12345';
 $settings['security']['mfa']['enabled'] = false;

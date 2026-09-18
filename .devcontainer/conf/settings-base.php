@@ -3,9 +3,39 @@
 /**
  * Poweradmin devcontainer settings shared by every instance.
  *
- * The per-instance settings-*.php files require this file and override what differs
- * (database, title, backend mode, ...). Edit shared behaviour here, once.
+ * Instance files call devcontainer_settings('<family>') and override what differs
+ * (title, backend mode, ...). Families (mysql, pgsql, sqlite) live in settings-<family>.php
+ * next to this file. Edit shared behaviour here, once.
  */
+
+// Inside a container only the instance file is mounted, so siblings resolve through /app.
+if (!function_exists('devcontainer_settings')) {
+    function devcontainer_conf_dir(): string
+    {
+        return is_file(__DIR__ . '/settings-base.php') ? __DIR__ : '/app/.devcontainer/conf';
+    }
+
+    function devcontainer_settings(string $family): array
+    {
+        $settings = require devcontainer_conf_dir() . '/settings-base.php';
+        $overrides = require devcontainer_conf_dir() . "/settings-$family.php";
+        // The database block is a different shape per engine, so it replaces as a whole
+        if (isset($overrides['database'])) {
+            $settings['database'] = $overrides['database'];
+            unset($overrides['database']);
+        }
+        return array_replace_recursive($settings, $overrides);
+    }
+
+    // The PowerDNS REST API backend (experimental) instead of direct SQL writes
+    function devcontainer_api_backend(array $settings): array
+    {
+        $settings['dns']['backend'] = 'api';
+        $settings['interface']['display_signed_serial_in_zone_list'] = true;
+        $settings['modules']['secondary_zone_import'] = ['enabled' => true];
+        return $settings;
+    }
+}
 
 return [
     /**
