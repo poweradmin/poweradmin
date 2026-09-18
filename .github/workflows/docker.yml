@@ -116,7 +116,6 @@ jobs:
           tags: poweradmin:smoke-test
           cache-from: |
             type=registry,ref=${{ steps.cache.outputs.ref }}
-            type=gha
           no-cache: ${{ github.event_name == 'schedule' || inputs.no_cache == true }}
 
       - name: Smoke test (root mode - port 80)
@@ -197,7 +196,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: |
             type=registry,ref=${{ steps.cache.outputs.ref }}
-            type=gha
           cache-to: type=registry,ref=${{ steps.cache.outputs.ref }},mode=max,ignore-error=true
           no-cache: ${{ github.event_name == 'schedule' || inputs.no_cache == true }}
 
