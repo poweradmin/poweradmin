@@ -1,7 +1,7 @@
 #!/bin/bash
 
 case "$MYSQL_IMAGE" in
-  mysql*)
+  mysql*|percona*)
     mysqladmin ping -h "localhost"
     ;;
   mariadb*)
