@@ -331,7 +331,6 @@ services:
     volumes:
       - pgsql_data:/var/lib/postgresql/data
       - ../sql/pdns/${PDNS_BRANCH}/schema.pgsql.sql:/docker-entrypoint-initdb.d/01-init.sql
-      - ./scripts/postgres-init-keycloak.sh:/docker-entrypoint-initdb.d/02-keycloak.sh
     ports:
       - "5432:5432"
     healthcheck:
@@ -476,34 +475,6 @@ services:
       - LDAP_BASE_DN=dc=poweradmin,dc=org
     ports:
       - 8443:8080
-
-  # =============================================================================
-  # Keycloak (commented out by default - uncomment to use)
-  # =============================================================================
-
-  # keycloak:
-  #   image: quay.io/keycloak/keycloak:26.2
-  #   container_name: keycloak
-  #   networks:
-  #     - internal
-  #   environment:
-  #     - KEYCLOAK_ADMIN=admin
-  #     - KEYCLOAK_ADMIN_PASSWORD=admin
-  #     - KC_DB=postgres
-  #     - KC_DB_URL=jdbc:postgresql://pgsql:5432/keycloak
-  #     - KC_DB_USERNAME=keycloak
-  #     - KC_DB_PASSWORD=keycloak
-  #     - KC_HOSTNAME_STRICT=false
-  #     - KC_HOSTNAME_STRICT_HTTPS=false
-  #     - KC_HTTP_ENABLED=true
-  #   ports:
-  #     - "8084:8080"
-  #   command: ["start-dev"]
-  #   depends_on:
-  #     pgsql:
-  #       condition: service_healthy
-  #   volumes:
-  #     - ./scripts/keycloak-init.sh:/opt/keycloak/bin/keycloak-init.sh
 
 volumes:
   mysql_data: { }
