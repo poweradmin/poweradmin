@@ -27,6 +27,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Psr\Log\NullLogger;
 use ReflectionClass;
 
 /**
@@ -46,13 +47,13 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
         [$settings, $initialized] = $this->readConfigState();
         $this->configBackup = $settings;
         $this->configInitializedBackup = $initialized;
-        unset($_SESSION['pdns_server_info']);
+        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
     }
 
     protected function tearDown(): void
     {
         $this->writeConfigState($this->configBackup, $this->configInitializedBackup);
-        unset($_SESSION['pdns_server_info']);
+        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
         parent::tearDown();
     }
 
@@ -112,6 +113,11 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
         $configProperty = (new ReflectionClass(BaseController::class))->getProperty('config');
         $configProperty->setAccessible(true);
         $configProperty->setValue($controller, $this->buildConfig($overrides));
+
+        // An expired or missing cache now triggers a refresh, which logs failures.
+        $loggerProperty = (new ReflectionClass(BaseController::class))->getProperty('logger');
+        $loggerProperty->setAccessible(true);
+        $loggerProperty->setValue($controller, new NullLogger());
 
         $method = (new ReflectionClass(BaseController::class))->getMethod('getRecordTypeCapabilities');
         $method->setAccessible(true);

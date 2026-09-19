@@ -319,16 +319,20 @@ abstract class BaseController
 
     /**
      * Build a PdnsCapabilities snapshot from the session-cached PowerDNS
-     * version. Constant-time and synchronous - never triggers detection,
-     * never makes a network call. Safe to call from render() on every page.
-     *
-     * Controllers that want a freshly-detected version should call
-     * refreshPdnsCapabilities() explicitly before rendering so they own
-     * the latency cost rather than imposing it on every other page.
+     * version. Reads the cache without a network call while it is fresh;
+     * once the entry expires it runs one rate-limited refresh, otherwise
+     * every capability gate would silently turn off five minutes after the
+     * last dashboard visit and hide catalog zones and newer record types.
+     * A failed refresh keeps the expired entry rather than flipping the UI
+     * to "unknown" over a transient API error.
      */
     protected function getPdnsCapabilities(): PdnsCapabilities
     {
         $info = PdnsVersionService::getCachedInfo();
+        if ($info === null) {
+            $this->refreshPdnsCapabilities();
+            $info = PdnsVersionService::getCachedInfo(true);
+        }
         return PdnsCapabilities::fromVersion($info['version'] ?? null);
     }
 
@@ -358,9 +362,9 @@ abstract class BaseController
      *
      * Makes at most one API call per minute (rate-limited via the session
      * timestamp `pdns_version_last_attempt`) and is a no-op on non-API
-     * backends. Call from controllers that need an up-to-date capability
-     * snapshot - e.g. the dashboard. Page renders that don't call this just
-     * read whatever is already cached.
+     * backends. getPdnsCapabilities() calls this itself once the cached entry
+     * expires; call it directly only where a fresh version matters more than
+     * the cached one - e.g. the dashboard.
      */
     protected function refreshPdnsCapabilities(): void
     {
