@@ -6,12 +6,14 @@
 
 namespace OpenApi\Spec;
 
+use OpenApi\Undefined;
+
 /**
  * Describes an example value for a parameter, media type, or schema.
  *
  * @see [Example Object](https://spec.openapis.org/oas/v3.1.1.html#example-object)
  */
-#[\Attribute(\Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY | \Attribute::TARGET_PARAMETER | \Attribute::IS_REPEATABLE)]
 class Example extends AbstractAttribute
 {
     /**
@@ -28,7 +30,7 @@ class Example extends AbstractAttribute
         public ?string $example = null,
         public ?string $summary = null,
         public ?string $description = null,
-        public mixed $value = null,
+        public mixed $value = Undefined::UNDEFINED,
         public ?string $externalValue = null,
         public string|Schema\Ref|null $ref = null,
         ?array $x = null,
