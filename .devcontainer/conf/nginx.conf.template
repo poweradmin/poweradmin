@@ -2,6 +2,8 @@ server {
     listen 80 default_server;
     # Re-resolve the fpm container on each request instead of caching its IP at startup
     resolver 127.0.0.11 valid=10s ipv6=off;
+    # Directory redirects (/install -> /install/) must keep the host port the browser used
+    absolute_redirect off;
     root /app;
     index index.php index.html;
 
