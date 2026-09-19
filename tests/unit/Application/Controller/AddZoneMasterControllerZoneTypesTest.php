@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\AddZoneMasterController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Psr\Log\NullLogger;
 use ReflectionClass;
 
 class AddZoneMasterControllerZoneTypesTest extends TestCase
@@ -34,12 +35,12 @@ class AddZoneMasterControllerZoneTypesTest extends TestCase
     protected function setUp(): void
     {
         $this->reflection = new ReflectionClass(AddZoneMasterController::class);
-        unset($_SESSION['pdns_server_info']);
+        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
     }
 
     protected function tearDown(): void
     {
-        unset($_SESSION['pdns_server_info']);
+        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
         parent::tearDown();
     }
 
@@ -55,6 +56,11 @@ class AddZoneMasterControllerZoneTypesTest extends TestCase
         $property = $this->reflection->getParentClass()->getProperty('config');
         $property->setAccessible(true);
         $property->setValue($controller, $config);
+
+        // An expired or missing version cache triggers a refresh, which needs the logger.
+        $logger = $this->reflection->getParentClass()->getProperty('logger');
+        $logger->setAccessible(true);
+        $logger->setValue($controller, new NullLogger());
 
         return $controller;
     }
