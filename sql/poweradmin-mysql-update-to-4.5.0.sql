@@ -219,11 +219,55 @@ WHERE `name` = 'zone_content_view_own';
 UPDATE `perm_items` SET `descr` = 'User is allowed to see the content of zones he does not own.'
 WHERE `name` = 'zone_content_view_others';
 
--- Index the API log timestamp so per-request logging (closes #1137) can prune
--- old rows by retention date without a full scan.
-ALTER TABLE `log_api` ADD INDEX `idx_log_api_created_at` (`created_at`);
-
 -- Widen the template record type to match PowerDNS's own records.type. Types
 -- longer than six characters (NSEC3PARAM, OPENPGPKEY, IPSECKEY, CDNSKEY,
 -- RESINFO) are offered in the UI but could not be stored as template records.
 ALTER TABLE `zone_templ_records` MODIFY `type` varchar(10) NOT NULL;
+
+-- Repair of a 4.3.0 update that stopped at the zone backfill (PowerDNS tables in
+-- a separate database, see #1563). Everything after that backfill was skipped:
+-- the users.perm_templ_source column, the zone_name unique index, the wider
+-- record_comment_links.record_id and the log_api table. Each step below is a
+-- no-op on a database where 4.3.0 completed.
+SET @has_perm_templ_source = (
+    SELECT COUNT(*) FROM information_schema.columns
+    WHERE table_schema = DATABASE() AND table_name = 'users' AND column_name = 'perm_templ_source'
+);
+SET @repair = IF(@has_perm_templ_source = 0,
+    'ALTER TABLE `users` ADD COLUMN `perm_templ_source` varchar(20) NOT NULL DEFAULT ''admin''',
+    'SELECT ''users.perm_templ_source already present'' AS notice');
+PREPARE repair FROM @repair;
+EXECUTE repair;
+DEALLOCATE PREPARE repair;
+
+SET @has_zone_name_index = (
+    SELECT COUNT(*) FROM information_schema.statistics
+    WHERE table_schema = DATABASE() AND table_name = 'zones' AND index_name = 'idx_zones_zone_name'
+);
+SET @repair = IF(@has_zone_name_index = 0,
+    'CREATE UNIQUE INDEX `idx_zones_zone_name` ON `zones` (`zone_name`)',
+    'SELECT ''idx_zones_zone_name already present'' AS notice');
+PREPARE repair FROM @repair;
+EXECUTE repair;
+DEALLOCATE PREPARE repair;
+
+ALTER TABLE `record_comment_links` MODIFY `record_id` VARCHAR(3072) CHARACTER SET ascii NOT NULL;
+
+CREATE TABLE IF NOT EXISTS `log_api` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `event` varchar(2048) NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `priority` int(11) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `log_api` (`event`, `created_at`, `priority`)
+SELECT `event`, `created_at`, `priority`
+FROM `log_users`
+WHERE `event` LIKE '%operation:api_key_%';
+
+DELETE FROM `log_users` WHERE `event` LIKE '%operation:api_key_%';
+
+-- Index the API log timestamp so per-request logging (closes #1137) can prune
+-- old rows by retention date without a full scan.
+ALTER TABLE `log_api` ADD INDEX `idx_log_api_created_at` (`created_at`);
