@@ -6,9 +6,11 @@
 
 namespace OpenApi\Compiler;
 
+use OpenApi\Contracts\AttributeInterface;
 use OpenApi\Contracts\CompilerInterface;
 use OpenApi\Spec as OA;
 use OpenApi\Specification;
+use OpenApi\Specification\ComponentName;
 use OpenApi\Undefined;
 use OpenApi\Utils\CollectingLogger;
 use Psr\Log\LoggerInterface;
@@ -21,6 +23,26 @@ class OpenApi31Compiler implements CompilerInterface
     protected const VERSIONS = ['3.1.0', '3.1.1', '3.1.2'];
 
     protected const OPERATION_REQUEST_BODY_METHODS = ['put', 'post', 'delete', 'patch'];
+
+    /**
+     * Every type the wire format accepts as input. `null` is included for 3.0 as well, where
+     * the compiler translates it to `nullable` rather than dropping it.
+     */
+    protected const SCHEMA_TYPES = ['string', 'number', 'integer', 'boolean', 'array', 'object', 'null'];
+
+    protected const RESPONSE_KEY = '/^(default|[1-5][0-9]{2}|[1-5]XX)$/';
+
+    /**
+     * Maps nested in another object, as container => [property => the member field keying it].
+     * `Schema::$examples` is absent: it is the JSON Schema keyword, which takes a list.
+     */
+    protected const NESTED_MAPS = [
+        OA\Response::class => ['headers' => 'header', 'links' => 'link'],
+        OA\MediaType::class => ['examples' => 'example', 'encoding' => 'encoding'],
+        OA\Encoding::class => ['headers' => 'header'],
+        OA\Parameter::class => ['examples' => 'example'],
+        OA\Header::class => ['examples' => 'example'],
+    ];
 
     protected CollectingLogger $logger;
 
@@ -69,6 +91,16 @@ class OpenApi31Compiler implements CompilerInterface
 
         $this->validateOperations($specification);
 
+        $this->validateOperationIds($specification);
+
+        $this->validateResponses($specification);
+
+        $this->validateNames($specification);
+
+        $this->validateNestedNames($specification);
+
+        $this->validateSchemaExamples($specification);
+
         return $this->logger->entries();
     }
 
@@ -89,6 +121,9 @@ class OpenApi31Compiler implements CompilerInterface
         ], $specification->openapi);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileInfo(OA\Info $info): array
     {
         return $this->filter([
@@ -102,6 +137,9 @@ class OpenApi31Compiler implements CompilerInterface
         ], $info);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileContact(OA\Contact $contact): array
     {
         return $this->filter([
@@ -111,6 +149,9 @@ class OpenApi31Compiler implements CompilerInterface
         ], $contact);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileLicense(OA\License $license): array
     {
         return $this->filter([
@@ -120,6 +161,9 @@ class OpenApi31Compiler implements CompilerInterface
         ], $license);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileServer(OA\Server $server): array
     {
         $variables = null;
@@ -140,6 +184,9 @@ class OpenApi31Compiler implements CompilerInterface
         ], $server);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileServerVariable(OA\ServerVariable $variable): array
     {
         return $this->filter([
@@ -149,6 +196,9 @@ class OpenApi31Compiler implements CompilerInterface
         ], $variable);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileTag(OA\Tag $tag): array
     {
         return $this->filter([
@@ -158,6 +208,9 @@ class OpenApi31Compiler implements CompilerInterface
         ], $tag);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileExternalDocs(OA\ExternalDocumentation $docs): array
     {
         return $this->filter([
@@ -195,6 +248,9 @@ class OpenApi31Compiler implements CompilerInterface
         return $paths;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compilePathItem(OA\PathItem $pathItem): array
     {
         return $this->filter([
@@ -225,6 +281,9 @@ class OpenApi31Compiler implements CompilerInterface
         return $webhooks;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileOperation(OA\Operation $operation): array
     {
         return $this->filter([
@@ -249,6 +308,9 @@ class OpenApi31Compiler implements CompilerInterface
 
     /**
      * Recursively compile callback structures, resolving any DTO objects found within.
+     *
+     * @param  array<string,mixed> $callbacks
+     * @return array<string,mixed>
      */
     protected function compileCallbacks(array $callbacks): array
     {
@@ -276,6 +338,9 @@ class OpenApi31Compiler implements CompilerInterface
         return $value;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileParameter(OA\Parameter $parameter): array
     {
         if ($parameter->ref !== null) {
@@ -294,11 +359,14 @@ class OpenApi31Compiler implements CompilerInterface
             'allowReserved' => $parameter->allowReserved,
             'schema' => $parameter->schema instanceof OA\Schema ? $this->compileSchema($parameter->schema) : null,
             'example' => $parameter->example,
-            'examples' => $this->compileExamples($parameter->examples ?? []),
+            'examples' => $this->compileKeyedMap($parameter->examples ?? [], 'example', $this->compileExample(...)),
             'content' => $this->compileMediaTypes($parameter->content ?? []),
         ], $parameter);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileRequestBody(OA\RequestBody $body, ?string $method = null): array|\stdClass|null
     {
         if ($method && !in_array($method, static::OPERATION_REQUEST_BODY_METHODS)) {
@@ -327,6 +395,9 @@ class OpenApi31Compiler implements CompilerInterface
         return $this->compileNamedMap($responses, fn (OA\Response $response): string => (string) $response->response, $this->compileResponse(...));
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileResponse(OA\Response $response): array
     {
         if ($response->ref !== null) {
@@ -335,12 +406,15 @@ class OpenApi31Compiler implements CompilerInterface
 
         return $this->filter([
             'description' => $response->description,
-            'headers' => $this->compileNamedMap($response->headers ?? [], 'header', $this->compileHeader(...)),
+            'headers' => $this->compileKeyedMap($response->headers ?? [], 'header', $this->compileHeader(...)),
             'content' => $this->compileMediaTypes($response->content ?? []),
-            'links' => $this->compileNamedMap($response->links ?? [], fn (OA\Link $link): string => $link->link ?? $link->operationId ?? 'link', $this->compileLink(...)),
+            'links' => $this->compileKeyedMap($response->links ?? [], 'link', $this->compileLink(...)),
         ], $response);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileHeader(OA\Header $header): array
     {
         if ($header->ref !== null) {
@@ -355,7 +429,7 @@ class OpenApi31Compiler implements CompilerInterface
             'explode' => $header->explode,
             'schema' => $header->schema instanceof OA\Schema ? $this->compileSchema($header->schema) : null,
             'example' => $header->example,
-            'examples' => $this->compileExamples($header->examples ?? []),
+            'examples' => $this->compileKeyedMap($header->examples ?? [], 'example', $this->compileExample(...)),
             'content' => $this->compileMediaTypes($header->content ?? []),
         ], $header);
     }
@@ -369,43 +443,60 @@ class OpenApi31Compiler implements CompilerInterface
         return $this->compileNamedMap($mediaTypes, fn (OA\MediaType $mediaType): string => $mediaType->mediaType ?? 'application/json', $this->compileMediaType(...));
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileMediaType(OA\MediaType $mediaType): array
     {
         return $this->filter([
             'schema' => $mediaType->schema instanceof OA\Schema ? $this->compileSchema($mediaType->schema) : null,
             'example' => $mediaType->example,
-            'examples' => $this->compileExamples($mediaType->examples ?? []),
-            'encoding' => $this->compileNamedMap($mediaType->encoding ?? [], 'encoding', $this->compileEncoding(...)),
+            'examples' => $this->compileKeyedMap($mediaType->examples ?? [], 'example', $this->compileExample(...)),
+            'encoding' => $this->compileKeyedMap($mediaType->encoding ?? [], 'encoding', $this->compileEncoding(...)),
         ], $mediaType);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileEncoding(OA\Encoding $encoding): array
     {
         return $this->filter([
             'contentType' => $encoding->contentType,
-            'headers' => $this->compileNamedMap($encoding->headers ?? [], 'header', $this->compileHeader(...)),
+            'headers' => $this->compileKeyedMap($encoding->headers ?? [], 'header', $this->compileHeader(...)),
             'style' => $encoding->style,
             'explode' => $encoding->explode,
             'allowReserved' => $encoding->allowReserved,
         ], $encoding);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileLink(OA\Link $link): array
     {
         if ($link->ref !== null) {
             return ['$ref' => $link->ref];
         }
 
-        return $this->filter([
+        $result = $this->filter([
             'operationRef' => $link->operationRef,
             'operationId' => $link->operationId,
             'parameters' => $link->parameters,
-            'requestBody' => $link->requestBody,
             'description' => $link->description,
             'server' => $link->server instanceof OA\Server ? $this->compileServer($link->server) : null,
         ], $link);
+
+        if ($link->requestBody !== Undefined::UNDEFINED) {
+            $result['requestBody'] = $link->requestBody;
+        }
+
+        return $result;
     }
 
+    /**
+     * @return array<string,mixed>|\stdClass
+     */
     protected function compileSchema(OA\Schema|string $schema): array|\stdClass
     {
         if (is_string($schema)) {
@@ -497,8 +588,8 @@ class OpenApi31Compiler implements CompilerInterface
             'then' => $schema->then instanceof OA\Schema ? $this->compileSchema($schema->then) : null,
             'else' => $schema->else instanceof OA\Schema ? $this->compileSchema($schema->else) : null,
 
-            // Examples
-            'examples' => $this->compileExamples($schema->examples ?? []),
+            // Examples — the JSON Schema keyword, a list of values rather than a map
+            'examples' => $schema->examples,
 
             // Meta
             'deprecated' => $schema->deprecated,
@@ -533,6 +624,10 @@ class OpenApi31Compiler implements CompilerInterface
         $result = [];
 
         foreach ($properties as $property) {
+            if ($property->property === null) {
+                continue;
+            }
+
             $result[$property->property] = $property->schema instanceof OA\Schema
                 ? $this->compileSchema($property->schema)
                 : new \stdClass();
@@ -541,6 +636,9 @@ class OpenApi31Compiler implements CompilerInterface
         return $result;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileDiscriminator(OA\Discriminator $discriminator): array
     {
         return $this->filter([
@@ -549,6 +647,9 @@ class OpenApi31Compiler implements CompilerInterface
         ], $discriminator);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileXml(OA\Xml $xml): array
     {
         return $this->filter([
@@ -560,24 +661,39 @@ class OpenApi31Compiler implements CompilerInterface
         ], $xml);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileComponents(Specification $specification): array
     {
         return array_filter([
-            'schemas' => $this->compileNamedMap($specification->schemas, fn (OA\Schema $schema): string => $schema->schema ?? $schema->title ?? 'Schema', $this->compileSchema(...)),
-            'responses' => $this->compileNamedMap($specification->responses, fn (OA\Response $response): string => (string) $response->response, $this->compileResponse(...)),
-            'parameters' => $this->compileNamedMap($specification->parameters, fn (OA\Parameter $parameter): string => $parameter->parameter ?? $parameter->name ?? 'param', $this->compileParameter(...)),
-            'requestBodies' => $this->compileNamedMap($specification->requestBodies, fn (OA\RequestBody $body, int $index): string => $body->request ?? 'body' . $index, $this->compileRequestBody(...)),
-            'headers' => $this->compileNamedMap($specification->headers, 'header', $this->compileHeader(...)),
+            'schemas' => $this->compileComponentMap($specification->schemas, $this->compileSchema(...)),
+            'responses' => $this->compileComponentMap($specification->responses, $this->compileResponse(...)),
+            'parameters' => $this->compileComponentMap($specification->parameters, $this->compileParameter(...)),
+            'requestBodies' => $this->compileComponentMap($specification->requestBodies, $this->compileRequestBody(...)),
+            'headers' => $this->compileComponentMap($specification->headers, $this->compileHeader(...)),
             'securitySchemes' => $this->compileSecuritySchemes($specification->securitySchemes),
-            'links' => $this->compileNamedMap($specification->links, fn (OA\Link $link): string => $link->link ?? $link->operationId ?? 'link', $this->compileLink(...)),
-            'examples' => $this->compileNamedMap($specification->examples, 'example', $this->compileExample(...)),
+            'links' => $this->compileComponentMap($specification->links, $this->compileLink(...)),
+            'examples' => $this->compileComponentMap($specification->examples, $this->compileExample(...)),
         ]);
+    }
+
+    /**
+     * A version that does not support every scheme type filters here; the keying stays shared.
+     *
+     * @param  list<OA\Security\Scheme> $schemes
+     * @return array<string,mixed>
+     */
+    protected function compileSecuritySchemes(array $schemes): array
+    {
+        return $this->compileComponentMap($schemes, $this->compileSecurityScheme(...));
     }
 
     /**
      * Passing raw arrays is deprecated; use OA\Security\Requirement instances instead.
      *
-     * @param list<OA\Security\Requirement|array<string,list<string>>> $security
+     * @param  list<OA\Security\Requirement|array<string,list<string>>> $security
+     * @return list<array<string,mixed>>
      */
     protected function compileSecurity(array $security): array
     {
@@ -591,14 +707,8 @@ class OpenApi31Compiler implements CompilerInterface
     }
 
     /**
-     * @param  list<OA\Security\Scheme> $schemes
      * @return array<string,mixed>
      */
-    protected function compileSecuritySchemes(array $schemes): array
-    {
-        return $this->compileNamedMap($schemes, 'securityScheme', $this->compileSecurityScheme(...));
-    }
-
     protected function compileSecurityScheme(OA\Security\Scheme $scheme): array
     {
         return $this->filter([
@@ -614,7 +724,8 @@ class OpenApi31Compiler implements CompilerInterface
     }
 
     /**
-     * @param list<OA\Flow> $flows
+     * @param  list<OA\Flow>       $flows
+     * @return array<string,mixed>
      */
     protected function compileFlows(array $flows): array
     {
@@ -629,33 +740,131 @@ class OpenApi31Compiler implements CompilerInterface
         return $result;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileFlow(OA\Flow $flow): array
     {
         return $this->filter([
             'authorizationUrl' => $flow->authorizationUrl,
             'tokenUrl' => $flow->tokenUrl,
             'refreshUrl' => $flow->refreshUrl,
-            'scopes' => $flow->scopes ?? new \stdClass(),
+            'scopes' => $flow->scopes ?: new \stdClass(),
         ], $flow);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     protected function compileExample(OA\Example $example): array
     {
-        return $this->filter([
+        if ($example->ref !== null) {
+            return ['$ref' => $example->ref];
+        }
+
+        $result = $this->filter([
             'summary' => $example->summary,
             'description' => $example->description,
-            'value' => $example->value,
             'externalValue' => $example->externalValue,
         ], $example);
+
+        if ($example->value !== Undefined::UNDEFINED) {
+            $result['value'] = $example->value;
+        }
+
+        return $result;
     }
 
     /**
-     * @param  list<OA\Example>    $examples
-     * @return array<string,mixed>
+     * Every component takes its key from one field, and a property from `property`. None can
+     * be derived from a method or a non-constructor parameter, so an attribute declared there
+     * has to carry its own name — the same requirement classic enforces. `Augmenter\Names`
+     * fills the key in for anything declared on a class, so what reaches here is unnameable.
      */
-    protected function compileExamples(array $examples): array
+    protected function validateNames(Specification $specification): void
     {
-        return $this->compileNamedMap($examples, 'example', $this->compileExample(...));
+        foreach (ComponentName::BUCKETS as $bucket) {
+            $seen = [];
+            foreach ($specification->{$bucket} as $component) {
+                $type = (new \ReflectionClass($component))->getShortName();
+                $name = ComponentName::of($component);
+
+                if ($name === null) {
+                    $this->logger->warning(sprintf(
+                        '%s is missing key-field: "%s" in %s',
+                        $type,
+                        ComponentName::keyField($component),
+                        $component->getSourceLocation(),
+                    ));
+                    continue;
+                }
+
+                if (isset($seen[$name])) {
+                    $this->logger->warning(sprintf('%s "%s" is declared more than once in %s', $type, $name, $component->getSourceLocation()));
+                }
+                $seen[$name] = true;
+            }
+        }
+
+        foreach ($this->collectSchemas($specification) as $schema) {
+            foreach ($schema->properties ?? [] as $property) {
+                if ($property->property === null) {
+                    $this->logger->warning('Property is missing key-field: "property" in ' . $property->getSourceLocation());
+                }
+            }
+        }
+    }
+
+    /**
+     * A member of one of these maps carries the key, so an entry without one cannot be placed.
+     * The compiler drops it; without this it would go silently, and classic rejects the same
+     * input outright.
+     */
+    protected function validateNestedNames(Specification $specification): void
+    {
+        $walker = $specification->getWalker();
+
+        foreach (static::NESTED_MAPS as $container => $maps) {
+            $walker->visit($container, function (AttributeInterface $attribute) use ($maps): void {
+                foreach ($maps as $property => $keyField) {
+                    foreach ($attribute->{$property} ?? [] as $item) {
+                        if (($item->{$keyField} ?? null) !== null) {
+                            continue;
+                        }
+
+                        $this->logger->warning(sprintf(
+                            '%s is missing key-field: "%s" in %s',
+                            (new \ReflectionClass($item))->getShortName(),
+                            $keyField,
+                            $item->getSourceLocation(),
+                        ));
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * `Schema::$examples` is the JSON Schema keyword: a list of values, as its own docblock
+     * says. An Example Object belongs to the `examples` a media type, parameter or header
+     * takes, which is a map. Nothing else catches the mix-up — the property is `?array`, so
+     * `mixed` accepts an Example and the output merely looks odd.
+     */
+    protected function validateSchemaExamples(Specification $specification): void
+    {
+        $specification->getWalker()->visit(OA\Schema::class, function (OA\Schema $schema): void {
+            foreach ($schema->examples ?? [] as $example) {
+                if (!$example instanceof OA\Example) {
+                    continue;
+                }
+
+                $this->logger->warning(sprintf(
+                    'Schema%s: examples takes values, not Example objects, in %s',
+                    $schema->schema !== null ? " \"{$schema->schema}\"" : '',
+                    $example->getSourceLocation(),
+                ));
+            }
+        });
     }
 
     protected function validateSchemas(Specification $specification): void
@@ -668,6 +877,23 @@ class OpenApi31Compiler implements CompilerInterface
                     $this->logger->warning('Schema' . ($schema->schema ? " \"$schema->schema\"" : '') . ' has type "array" but no items in ' . $schema->getSourceLocation());
                 }
             }
+
+            $this->validateSchemaType($schema);
+        }
+    }
+
+    protected function validateSchemaType(OA\Schema $schema): void
+    {
+        if ($schema->type === null) {
+            return;
+        }
+
+        foreach (is_array($schema->type) ? $schema->type : [$schema->type] as $type) {
+            if (in_array($type, static::SCHEMA_TYPES, true)) {
+                continue;
+            }
+
+            $this->logger->warning('Schema' . ($schema->schema ? " \"$schema->schema\"" : '') . " has unknown type \"$type\", expecting one of " . implode(', ', static::SCHEMA_TYPES) . ' in ' . $schema->getSourceLocation());
         }
     }
 
@@ -676,6 +902,55 @@ class OpenApi31Compiler implements CompilerInterface
         $specification->getWalker()->visit(OA\Operation::class, function (OA\Operation $operation): void {
             if ($operation->requestBody instanceof OA\RequestBody && !in_array($operation->method, static::OPERATION_REQUEST_BODY_METHODS)) {
                 $this->logger->warning("Request body not supported for method {$operation->method} in " . $operation->getSourceLocation());
+            }
+        });
+    }
+
+    /**
+     * Generated ids cannot collide — `OperationIds` derives them from method, path and
+     * source — so this only ever fires for values set by hand.
+     *
+     * Uniqueness is a property of the document, so an operation carrying neither a path nor
+     * a webhook is skipped: it is emitted nowhere and its id is never written down.
+     */
+    protected function validateOperationIds(Specification $specification): void
+    {
+        $seen = [];
+        $specification->getWalker()->visit(OA\Operation::class, function (OA\Operation $operation) use (&$seen): void {
+            if ($operation->operationId === null || ($operation->path === null && $operation->webhook === null)) {
+                return;
+            }
+
+            if (isset($seen[$operation->operationId])) {
+                $this->logger->warning("operationId must be unique, found \"{$operation->operationId}\" again in " . $operation->getSourceLocation());
+
+                return;
+            }
+
+            $seen[$operation->operationId] = true;
+        });
+    }
+
+    /**
+     * Only responses nested in an operation are checked, because position is what gives
+     * `Response::$response` its meaning: a status code there, and a component key in the
+     * `responses` bucket, where `components.responses.product` is a name. `isRoot()` cannot
+     * tell them apart — it is true whenever the key is set.
+     *
+     * A nested response carries no reflector of its own, so the operation is reported
+     * instead, which is where the reader has to go to fix it anyway.
+     */
+    protected function validateResponses(Specification $specification): void
+    {
+        $specification->getWalker()->visit(OA\Operation::class, function (OA\Operation $operation): void {
+            foreach ($operation->responses ?? [] as $response) {
+                if ($response->response === null) {
+                    continue;
+                }
+
+                if (preg_match(static::RESPONSE_KEY, (string) $response->response) !== 1) {
+                    $this->logger->warning("Invalid response \"{$response->response}\", expecting \"default\", a HTTP status code or a range such as \"2XX\" in " . $operation->getSourceLocation());
+                }
             }
         });
     }
@@ -694,6 +969,63 @@ class OpenApi31Compiler implements CompilerInterface
     }
 
     /**
+     * Compiles one `components` bucket, keyed the way `ComponentIndex` resolves a `$ref`.
+     *
+     * A component with no key is dropped rather than given a positional one: it cannot be
+     * referenced, and an integer key turns the whole bucket into a JSON array where OpenAPI
+     * requires a map. A key claimed twice keeps the last. `validateNames()` reports both.
+     *
+     * @param  list<AttributeInterface> $components
+     * @return array<string,mixed>
+     */
+    protected function compileComponentMap(array $components, \Closure $compiler): array
+    {
+        $result = [];
+
+        foreach ($components as $component) {
+            $name = ComponentName::of($component);
+            if ($name === null) {
+                continue;
+            }
+
+            $result[$name] = $compiler($component);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Compiles a map keyed by a field of its own members — a response's `headers`, a media
+     * type's `encoding`.
+     *
+     * An entry with no key is dropped rather than given its position: an integer key turns
+     * the map into a JSON array, and OpenAPI requires `Map[string, Object]` everywhere one of
+     * these appears. `validateNestedNames()` reports it.
+     *
+     * @param  list<object>        $items
+     * @return array<string,mixed>
+     */
+    protected function compileKeyedMap(array $items, string $keyField, \Closure $compiler): array
+    {
+        $result = [];
+
+        foreach ($items as $item) {
+            $name = $item->{$keyField} ?? null;
+            if ($name === null) {
+                continue;
+            }
+
+            $result[$name] = $compiler($item);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Compiles a map whose key is a *value* rather than a name — a status code, a media type.
+     * Those have a meaningful fallback; a missing name does not, so it goes to
+     * {@see compileKeyedMap()} instead.
+     *
      * @param  list<object>        $items
      * @param  string|\Closure     $key   Property name or fn($item, $index): string
      * @return array<string,mixed>
@@ -756,6 +1088,9 @@ class OpenApi31Compiler implements CompilerInterface
 
     /**
      * Remove null entries and apply x- extensions.
+     *
+     * @param  array<string,mixed> $result
+     * @return array<string,mixed>
      */
     protected function filter(array $result, OA\AbstractAttribute|null $attribute = null): array
     {

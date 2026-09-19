@@ -68,8 +68,6 @@ class OpenApi30Compiler extends OpenApi31Compiler
             }
         }
 
-        $this->validateSchemas($specification);
-
         return $this->logger->entries();
     }
 
@@ -88,6 +86,9 @@ class OpenApi30Compiler extends OpenApi31Compiler
         )));
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     #[\Override]
     protected function compileInfo(OA\Info $info): array
     {
@@ -101,6 +102,9 @@ class OpenApi30Compiler extends OpenApi31Compiler
         ], $info);
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     #[\Override]
     protected function compileLicense(OA\License $license): array
     {
@@ -112,6 +116,8 @@ class OpenApi30Compiler extends OpenApi31Compiler
 
     /**
      * Compile schema using OAS 3.0 / JSON Schema draft-04 semantics.
+     *
+     * @return array<string,mixed>|\stdClass
      */
     #[\Override]
     protected function compileSchema(OA\Schema|string $schema): array|\stdClass
@@ -250,6 +256,8 @@ class OpenApi30Compiler extends OpenApi31Compiler
             if ($type === 'array' && $schema->items === null) {
                 $this->logger->warning('Schema' . ($schema->schema ? " \"$schema->schema\"" : '') . ' has type "array" but no items');
             }
+
+            $this->validateSchemaType($schema);
 
             if ($schema->prefixItems !== null) {
                 $this->logger->warning('Schema' . ($schema->schema ? " \"$schema->schema\"" : '') . ': prefixItems is not supported in OpenAPI 3.0');

@@ -38,6 +38,22 @@ for the conventions those pages follow.
 
 Pull request titles follow `type(Scope): subject`, e.g. `feat(Spec): add encoding shortcut`.
 
+Pull request descriptions follow the [template](.github/PULL_REQUEST_TEMPLATE.md): a short
+**Overview** explaining why the change exists, in plain language — the problem, not the
+implementation — followed by a **Changes** list of the key changes, kept high level and
+free of code snippets unless one is genuinely unavoidable. Wrap class names, method calls,
+file paths and other identifiers in backticks.
+
+Keep the description to the changes at hand. History that lives elsewhere — earlier
+attempts, abandoned branches, related work in other pull requests — belongs in the issue
+or commit trail, not here, unless it has a direct bearing on the change being reviewed.
+
+The prose rules in [Writing documentation](docs/dev/writing-docs.md) apply to descriptions
+and commit messages as well as to pages: state a fact once, do not claim what you have not
+verified, no marketing filler, no volatile values, no line-number citations.
+
+A commit message body documents what the diff does; the reasoning belongs in the pull
+request description.
 
 ## Documentation
 
