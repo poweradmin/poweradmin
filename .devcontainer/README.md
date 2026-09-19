@@ -77,6 +77,13 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 - **MySQL + Subfolder** (Nginx): http://localhost:8086/poweradmin/
 - **MySQL + German only** (Nginx): http://localhost:8087
 
+### Installer
+Every instance serves the installer at `/install/` (subfolder: http://localhost:8086/poweradmin/install/).
+It only runs while `config/settings.php` is absent; with the file in place it reports that
+the installation is skipped. Browsers cache 301 redirects, so if `/install` once sent you to
+`http://localhost/install/` without the port, open the URL with the trailing slash or clear
+the site data for that origin.
+
 ### PowerDNS Servers (with DNSSEC)
 - **MySQL backend**: DNS port 1053, API port 8181
 - **PostgreSQL backend**: DNS port 1054, API port 8182
