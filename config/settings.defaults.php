@@ -25,7 +25,7 @@ return [
         'charset' => 'latin1', // or 'utf8' (added in 2.1.8)
         'file' => '',          // Only used for SQLite, provide full path to database file (added in 2.1.6)
         'debug' => false,      // Show all SQL queries (added in 2.1.6)
-        'pdns_db_name' => '',  // Separate database for PowerDNS (added in 3.8.0)
+        'pdns_db_name' => '',  // Separate database for PowerDNS, MySQL/MariaDB only (added in 3.8.0)
 
         /**
          * SSL/TLS Settings for database connections (added in 4.1.0)
