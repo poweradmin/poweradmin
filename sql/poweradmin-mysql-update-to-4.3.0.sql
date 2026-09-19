@@ -4,26 +4,15 @@
 -- Backfill zone metadata from PowerDNS domains table for existing zones
 --
 -- NOTE (MySQL/MariaDB only): If pdns_db_name is set (PowerDNS tables in a separate
--- database), the `domains` reference in the UPDATE below will not resolve. Before
--- running this script, replace `domains` with the qualified name, e.g. `pdns`.`domains`.
+-- database), set @pdns_db at the end of this script to that database name first.
+-- If an earlier run of this script stopped at the backfill, do not re-run it: the
+-- upgrade guide lists the statements that are still missing.
 -- See: https://docs.poweradmin.org/upgrading/v4.3.0/#step-3-run-database-updates
 
 ALTER TABLE `zones` MODIFY `domain_id` int(11) NULL DEFAULT NULL;
 ALTER TABLE `zones` ADD COLUMN `zone_name` varchar(255) DEFAULT NULL;
 ALTER TABLE `zones` ADD COLUMN `zone_type` varchar(8) DEFAULT NULL;
 ALTER TABLE `zones` ADD COLUMN `zone_master` varchar(255) DEFAULT NULL;
-
--- Backfill zone_name, zone_type, zone_master from PowerDNS domains table.
--- Only updates the lowest-id row per domain_id to respect the UNIQUE index on zone_name.
-UPDATE `zones` z
-INNER JOIN `domains` d ON z.domain_id = d.id
-INNER JOIN (
-    SELECT domain_id, MIN(id) AS min_id FROM `zones` GROUP BY domain_id
-) m ON m.domain_id = z.domain_id AND m.min_id = z.id
-SET z.zone_name = d.name,
-    z.zone_type = d.type,
-    z.zone_master = d.master
-WHERE z.zone_name IS NULL;
 
 CREATE UNIQUE INDEX `idx_zones_zone_name` ON `zones` (`zone_name`);
 
@@ -54,3 +43,28 @@ WHERE `event` LIKE '%operation:api_key_%';
 
 -- Remove migrated API key entries from log_users
 DELETE FROM `log_users` WHERE `event` LIKE '%operation:api_key_%';
+
+-- Backfill zone_name, zone_type, zone_master from PowerDNS domains table.
+-- Only updates the lowest-id row per domain_id to respect the UNIQUE index on zone_name.
+-- The backfill runs last and only when the domains table exists in @pdns_db, so a
+-- database without PowerDNS tables (API backend, or pdns_db_name left unset here)
+-- still gets every statement above. SQL mode reads zone names from domains and does
+-- not need the backfill; it matters only before switching a database to API mode.
+-- Edit here when pdns_db_name is set, e.g. SET @pdns_db = 'pdns';
+SET @pdns_db = DATABASE();
+
+SET @has_domains = (
+    SELECT COUNT(*) FROM information_schema.tables
+    WHERE table_schema = @pdns_db AND table_name = 'domains'
+);
+SET @backfill = IF(@has_domains > 0, CONCAT(
+    'UPDATE `zones` z ',
+    'INNER JOIN `', @pdns_db, '`.`domains` d ON z.domain_id = d.id ',
+    'INNER JOIN (SELECT domain_id, MIN(id) AS min_id FROM `zones` GROUP BY domain_id) m ',
+    '    ON m.domain_id = z.domain_id AND m.min_id = z.id ',
+    'SET z.zone_name = d.name, z.zone_type = d.type, z.zone_master = d.master ',
+    'WHERE z.zone_name IS NULL'),
+    'SELECT ''PowerDNS domains table not found, zone backfill skipped'' AS notice');
+PREPARE backfill FROM @backfill;
+EXECUTE backfill;
+DEALLOCATE PREPARE backfill;
