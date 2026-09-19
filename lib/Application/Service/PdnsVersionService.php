@@ -156,19 +156,20 @@ class PdnsVersionService
      * Returns null when the cached entry is older than TTL_SECONDS so that
      * capability-driven UI does not silently follow a stale version after a
      * PowerDNS upgrade or downgrade for the rest of the session - callers
-     * that get null fall through to detect() and refresh the cache.
+     * that get null fall through to detect() and refresh the cache. Pass
+     * $allowExpired to read the old entry anyway once that refresh has failed.
      *
      * @param array<string, mixed> $cache Normally $_SESSION
      * @return array{version: string, daemon_type: string, id: string, backends?: string, views?: string}|null
      */
-    public static function getCachedInfo(array $cache): ?array
+    public static function getCachedInfo(array $cache, bool $allowExpired = false): ?array
     {
         $cached = $cache[self::SESSION_KEY] ?? null;
         if (!is_array($cached)) {
             return null;
         }
         $fetchedAt = $cached['fetched_at'] ?? 0;
-        if ((time() - (int) $fetchedAt) >= self::TTL_SECONDS) {
+        if (!$allowExpired && (time() - (int) $fetchedAt) >= self::TTL_SECONDS) {
             return null;
         }
         $info = $cached['info'] ?? null;
