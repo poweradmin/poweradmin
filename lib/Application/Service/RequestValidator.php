@@ -69,6 +69,12 @@ class RequestValidator
                 unset($data[$key]);
             }
         }
+        // Collection skips absent keys even for Required, so a missing field fails its NotBlank rule
+        foreach ($this->constraints as $field => $constraint) {
+            if ($constraint instanceof Assert\Required && !array_key_exists($field, $data)) {
+                $data[$field] = '';
+            }
+        }
 
         $collectionConstraint = new Assert\Collection([
             'fields' => $this->constraints,

@@ -58,9 +58,22 @@ class RequestValidatorTest extends TestCase
 
         // '' would fail the numeric type check; the filter turns an optional field into a
         // missing one, which the tolerant collection allows
-        $this->assertSame(0, $validator->validate(['zone_id' => ''])->count());
+        $this->assertSame(0, $validator->validate(['zone_id' => '', 'name' => 'www'])->count());
         // but a Required field keeps its empty value and fails
         $this->assertGreaterThan(0, $validator->validate(['name' => ''])->count());
+    }
+
+    public function testARequiredFieldFailsWhenAbsent(): void
+    {
+        $validator = new RequestValidator();
+        $validator->setConstraints([
+            'name' => new Assert\Required([new Assert\NotBlank(['message' => 'name is required'])]),
+            'ttl' => new Assert\Type('numeric'),
+        ]);
+
+        $this->assertSame('name is required', $validator->firstErrorMessage([]));
+        $this->assertSame('name is required', $validator->firstErrorMessage(['ttl' => '300']));
+        $this->assertNull($validator->firstErrorMessage(['name' => 'www']));
     }
 
     public function testExtraFieldsAreAllowed(): void

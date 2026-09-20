@@ -139,11 +139,9 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
     // ---------------------------------------------------------------- gates
 
-    public function testAMissingIdIsNotActuallyCaughtByCheckId(): void
+    public function testAMissingZoneIdIsRefusedAsAnUnknownZone(): void
     {
-        // checkId() declares a NotBlank constraint on `id`, but the request
-        // validator allows missing fields and strips blank ones, so nothing is
-        // refused: the run continues into the zone lookup with id 0.
+        // The route guarantees a numeric zone_id, so the zone lookup is the only gate
         $_GET = ['zone_id' => ''];
         $this->zoneExists = false;
         $this->domains->expects($this->once())->method('zoneIdExists')->with(0);
@@ -254,28 +252,26 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
     // ------------------------------------------------------ single record
 
-    /** @return array<string, array{0: array<string, string>}> */
+    /** @return array<string, array{0: array<string, string>, 1: string}> */
     public static function incompleteSubmissionProvider(): array
     {
         return [
-            'no content' => [['type' => 'A', 'content' => '']],
-            'no type' => [['type' => '', 'content' => '192.0.2.1']],
+            'no content' => [['type' => 'A', 'content' => ''], 'The content field is required.'],
+            'no type' => [['type' => '', 'content' => '192.0.2.1'], 'The type field is required.'],
+            'content missing' => [['type' => 'A'], 'The content field is required.'],
         ];
     }
 
     #[DataProvider('incompleteSubmissionProvider')]
-    public function testBlankContentOrTypeIsNotRefusedByTheDeclaredConstraints(array $fields): void
+    public function testBlankContentOrTypeIsRefusedBeforeTheAddService(array $fields, string $message): void
     {
-        // addRecord() declares NotBlank on content and type, but the request
-        // validator drops blank fields and tolerates missing ones, so the empty
-        // submission is handed to the add service and refused there instead.
         $this->post($fields);
 
-        $this->haltOf($this->makeController());
+        $halt = $this->haltOf($this->makeController());
 
-        $this->assertCount(1, $this->addCalls);
-        $this->assertSame($fields['type'], $this->addCalls[0][3]);
-        $this->assertSame($fields['content'], $this->addCalls[0][4]);
+        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame($message, $halt->target);
+        $this->assertCount(0, $this->addCalls);
     }
 
     public function testASuccessfulAddFlashesTheZoneEditorAndRedirectsThere(): void

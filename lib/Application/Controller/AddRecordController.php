@@ -66,8 +66,6 @@ class AddRecordController extends BaseController
 
     public function run(): void
     {
-        $this->checkId();
-
         $perm_edit = $this->createPermissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
         $this->checkCondition(!$this->domainRepository->zoneIdExists($zone_id), _('There is no zone with this ID.'));
@@ -94,23 +92,16 @@ class AddRecordController extends BaseController
 
     private function addRecord(): void
     {
-        // These are required fields
-        $constraints = [
-            'content' => [
-                new Assert\NotBlank()
-            ],
-            'type' => [
-                new Assert\NotBlank()
-            ]
-        ];
-
-        // Optional fields won't be validated if they're empty due to the filter in BaseController
-
-        $this->setValidationConstraints($constraints);
+        // Required wraps the rule so a blank or missing field fails instead of being skipped
+        $this->setValidationConstraints([
+            'content' => new Assert\Required([new Assert\NotBlank(message: sprintf(_('The %s field is required.'), 'content'))]),
+            'type' => new Assert\Required([new Assert\NotBlank(message: sprintf(_('The %s field is required.'), 'type'))]),
+        ]);
 
         $postParams = $this->httpRequest->getPostParams();
         if (!$this->doValidateRequest($postParams)) {
             $this->showFirstValidationError($postParams);
+            return;
         }
 
         $name = (string)$this->httpRequest->getPostParam('name', '');
@@ -238,21 +229,6 @@ class AddRecordController extends BaseController
             'form_data' => $formData,
             'saved_records' => $savedRecords,
         ]);
-    }
-
-    public function checkId(): void
-    {
-        $constraints = [
-            'id' => [
-                new Assert\NotBlank()
-            ]
-        ];
-
-        $this->setValidationConstraints($constraints);
-
-        if (!$this->doValidateRequest($this->httpRequest->getQueryParams())) {
-            $this->showFirstValidationError($this->httpRequest->getQueryParams());
-        }
     }
 
     private function addMultipleRecords(): void
