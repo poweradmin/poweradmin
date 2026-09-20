@@ -157,6 +157,9 @@
                             {% elseif zone["soa_health"]|default('') == 'unknown' %}
                             <span class="badge bg-secondary-subtle text-secondary-emphasis ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}The DNS server could not be reached, so this zone's SOA status is unknown{% endtrans %}"><i class="bi bi-question-circle"></i> {% trans %}Unknown{% endtrans %}</span>
                             {% endif %}
+                            {% if pending_change_requests_by_zone[zone['id']] is defined %}
+                            <a class="badge bg-warning text-dark ms-1 text-decoration-none" href="{{ base_url_prefix }}/zones/requests?zone_id={{ zone['id'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}Pending change requests{% endtrans %}" data-testid="zone-pending-change-requests-{{ zone['id'] }}"><i class="bi bi-inbox"></i> {{ pending_change_requests_by_zone[zone['id']] }}</a>
+                            {% endif %}
                         </td>
                         <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone_type_label(zone['type']) }}</span>{% if zone_is_read_only(zone['type']) %} <span class="badge bg-secondary-subtle text-secondary-emphasis" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans %}Records for this zone are replicated from its primary and cannot be edited here.{% endtrans %}">{% trans %}Read-only{% endtrans %}</span>{% endif %}</td>
                         {% if iface_zonelist_record_count %}

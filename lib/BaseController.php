@@ -742,6 +742,30 @@ abstract class BaseController
     }
 
     /**
+     * Pending change requests per zone for a zone list, empty when the feature is off
+     * or the current user neither files nor reviews requests.
+     *
+     * @param list<int> $zoneIds
+     * @return array<int, int>
+     */
+    protected function pendingChangeRequestsByZone(array $zoneIds): array
+    {
+        $userId = $this->getCurrentUserId();
+        if ($userId === null || $zoneIds === [] || !$this->changeApprovalEnabled()) {
+            return [];
+        }
+        $permissions = $this->createPermissionService();
+        $takesPart = $permissions->getChangeRequestPermissionLevel($userId) !== 'none'
+            || $permissions->getChangeApprovePermissionLevel($userId) !== 'none'
+            || (bool)$this->config->get('approval', 'require_review_for_all', false);
+        if (!$takesPart) {
+            return [];
+        }
+
+        return $this->createZoneChangeRequestRepository()->countPendingByZone($zoneIds);
+    }
+
+    /**
      * Pending requests awaiting the current user's review, for the navigation badge.
      */
     private function pendingChangeRequestCount(): int

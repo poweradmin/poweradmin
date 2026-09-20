@@ -231,4 +231,16 @@ class DbZoneChangeRequestRepositoryTest extends TestCase
         $this->assertSame([$inReviewedZone], $this->ids($this->repository->list($filters + ['zoneIds' => [1]], 0, 10)));
         $this->assertSame([], $this->repository->list($filters + ['zoneIds' => []], 0, 10));
     }
+
+    public function testPendingCountsPerZoneSkipZonesWithoutAny(): void
+    {
+        $this->file(1);
+        $this->file(1);
+        $decided = $this->file(2);
+        $this->repository->markReviewed($decided, ZoneChangeRequest::STATUS_REJECTED, 9, 'bob', null);
+        $this->file(3);
+
+        $this->assertSame([1 => 2, 3 => 1], $this->repository->countPendingByZone([1, 2, 3]));
+        $this->assertSame([], $this->repository->countPendingByZone([]));
+    }
 }

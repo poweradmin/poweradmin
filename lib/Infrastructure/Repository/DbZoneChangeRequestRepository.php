@@ -114,6 +114,34 @@ class DbZoneChangeRequestRepository implements ZoneChangeRequestRepositoryInterf
         return $this->count(['status' => ZoneChangeRequest::STATUS_PENDING, 'zoneIds' => $zoneIds]);
     }
 
+    public function countPendingByZone(array $zoneIds): array
+    {
+        if ($zoneIds === []) {
+            return [];
+        }
+        $placeholders = [];
+        foreach (array_values($zoneIds) as $i => $zoneId) {
+            $placeholders[] = ":zone_id_$i";
+        }
+        $stmt = $this->db->prepare(
+            'SELECT zone_id, COUNT(*) AS pending FROM zone_change_requests
+             WHERE status = :status AND zone_id IN (' . implode(', ', $placeholders) . ')
+             GROUP BY zone_id'
+        );
+        $stmt->bindValue(':status', ZoneChangeRequest::STATUS_PENDING, PDO::PARAM_STR);
+        foreach (array_values($zoneIds) as $i => $zoneId) {
+            $stmt->bindValue(":zone_id_$i", (int)$zoneId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $counts = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $counts[(int)$row['zone_id']] = (int)$row['pending'];
+        }
+
+        return $counts;
+    }
+
     public function markReviewed(int $id, string $status, int $reviewerId, string $reviewerName, ?string $comment, array $fromStatuses = [ZoneChangeRequest::STATUS_PENDING]): bool
     {
         // Only a row still in one of the given states moves, so two concurrent decisions cannot both win

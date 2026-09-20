@@ -221,6 +221,7 @@ class ListReverseZonesController extends BaseController
 
         $this->render('list_reverse_zones.html', [
             'zones' => $reverse_zones,
+            'pending_change_requests_by_zone' => $this->pendingChangeRequestsByZone(array_map('intval', array_column($reverse_zones, 'id'))),
             'count_zones_view' => $count_zones_view,
             'count_zones_edit' => $count_zones_edit,
             'count_zones_delete' => $count_zones_delete,

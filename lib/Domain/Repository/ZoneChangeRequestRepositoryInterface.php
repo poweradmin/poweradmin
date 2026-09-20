@@ -75,6 +75,14 @@ interface ZoneChangeRequestRepositoryInterface
     public function countPending(?array $zoneIds): int;
 
     /**
+     * Pending requests per zone, for the zones that have any.
+     *
+     * @param list<int> $zoneIds
+     * @return array<int, int> zone id => pending count
+     */
+    public function countPendingByZone(array $zoneIds): array;
+
+    /**
      * @param list<string> $fromStatuses The states the request may be in for the decision to take
      * @return bool False when the request was in none of them, so nothing changed
      */

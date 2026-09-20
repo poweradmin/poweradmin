@@ -235,6 +235,7 @@ class ListForwardZonesController extends BaseController
 
         $this->render('list_forward_zones.html', [
             'zones' => $zones,
+            'pending_change_requests_by_zone' => $this->pendingChangeRequestsByZone(array_map('intval', array_column($zones, 'id'))),
             'count_zones_all_letterstart' => $count_zones_all_letterstart,
             'count_zones_view' => $count_zones_view,
             'count_zones_edit' => $count_zones_edit,
