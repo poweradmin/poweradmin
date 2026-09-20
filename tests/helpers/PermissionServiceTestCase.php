@@ -23,7 +23,6 @@
 namespace TestHelpers;
 
 use PHPUnit\Framework\TestCase;
-
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;

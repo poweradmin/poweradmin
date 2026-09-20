@@ -23,7 +23,6 @@
 namespace TestHelpers;
 
 use PHPUnit\Framework\TestCase;
-
 use PDO;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
