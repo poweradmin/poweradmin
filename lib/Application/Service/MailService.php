@@ -240,13 +240,7 @@ class MailService
                 $email->text($plainBody);
             }
 
-            // Add custom headers (excluding problematic ones)
-            foreach ($headers as $name => $value) {
-                // Skip headers that could cause SMTP protocol issues
-                if (!in_array(strtolower($name), ['x-mailer', 'mime-version', 'content-type'])) {
-                    $email->getHeaders()->addTextHeader($name, $value);
-                }
-            }
+            $this->applySmtpHeaders($email, $headers);
 
             $mailer->send($email);
             return true;
@@ -398,6 +392,26 @@ class MailService
     /**
      * Build SMTP DSN for Symfony Mailer
      */
+    /**
+     * Custom headers on a Symfony message, skipping the ones the transport sets itself.
+     *
+     * @param array<string, string> $headers
+     */
+    private function applySmtpHeaders(Email $email, array $headers): void
+    {
+        foreach ($headers as $name => $value) {
+            if (in_array(strtolower($name), ['x-mailer', 'mime-version', 'content-type'], true)) {
+                continue;
+            }
+            // Address headers are typed in Symfony Mailer and refuse the text form
+            if (strtolower($name) === 'reply-to') {
+                $email->replyTo($value);
+                continue;
+            }
+            $email->getHeaders()->addTextHeader($name, $value);
+        }
+    }
+
     private function buildSmtpDsn(): string
     {
         $host = $this->config->get('mail', 'host', 'localhost');

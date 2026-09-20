@@ -469,8 +469,8 @@ class ZoneChangeRequestService
 
         switch ($action['op'] ?? null) {
             case ZoneChangeRequest::OP_ADD:
-                // Already there (a retry after a partial apply): the request asked for exactly this
-                if ($this->records->recordExists($zoneId, strtolower((string)($after['name'] ?? '')), (string)($after['type'] ?? ''), (string)($after['content'] ?? ''))) {
+                // Already there in full (a retry after a partial apply): the request asked for exactly this
+                if ($this->rowMatching($zoneId, $after) !== null) {
                     return RecordWriteResult::ok();
                 }
 
@@ -479,7 +479,10 @@ class ZoneChangeRequestService
             case ZoneChangeRequest::OP_EDIT:
                 $recordId = $this->resolveRecordId($zoneId, $action);
                 if ($recordId === null) {
-                    return RecordWriteResult::notFound('Record not found.');
+                    // The previous attempt may have written it before failing later; API ids change with the content
+                    return $this->rowMatching($zoneId, $after) !== null
+                        ? RecordWriteResult::ok()
+                        : RecordWriteResult::notFound('Record not found.');
                 }
                 $submission = new ZoneEditSubmission($zoneId, $request->zoneName, $reviewerId, $reviewerName, null, true, null, false, null);
                 $change = $this->zoneEdit->diffRow($submission, $this->postedRow($recordId, $zoneId, $after));
@@ -554,6 +557,28 @@ class ZoneChangeRequestService
         }
         foreach ($this->records->getRecordsByName($zoneId, $name, $type) as $row) {
             if ((string)($row['content'] ?? '') === (string)($before['content'] ?? '')) {
+                return $row;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * A stored row equal to the wanted state in name, type, content, ttl, prio and disabled.
+     *
+     * @param array<string, mixed> $wanted
+     * @return array<string, mixed>|null
+     */
+    private function rowMatching(int $zoneId, array $wanted): ?array
+    {
+        $name = (string)($wanted['name'] ?? '');
+        $type = (string)($wanted['type'] ?? '');
+        if ($name === '' || $type === '') {
+            return null;
+        }
+        foreach ($this->records->getRecordsByName($zoneId, $name, $type) as $row) {
+            if (!RecordManager::recordFieldsDiffer($wanted, $row)) {
                 return $row;
             }
         }

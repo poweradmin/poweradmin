@@ -310,10 +310,11 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
         }
         $fields = preg_split('/\s+/', trim($this->soaRecords->getSOARecord($zoneId)));
         $rname = rtrim((string)($fields[1] ?? ''), '.');
-        if ($rname === '' || !str_contains($rname, '.')) {
+        // The mailbox ends at the first unescaped dot; "\." inside it is a literal dot (RFC 1035)
+        if (!preg_match('/^((?:\\\\.|[^.\\\\])+)\\.(.+)$/', $rname, $parts)) {
             return null;
         }
-        $email = preg_replace('/^([^.]+)\./', '$1@', $rname);
+        $email = stripslashes($parts[1]) . '@' . $parts[2];
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return null;
         }

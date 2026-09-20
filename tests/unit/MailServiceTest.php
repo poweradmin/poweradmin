@@ -76,6 +76,19 @@ class MailServiceTest extends TestCase
         return $method->invoke($service);
     }
 
+    public function testReplyToBecomesAnAddressHeaderOnSmtpMessages(): void
+    {
+        $service = new MailService($this->config, $this->logger);
+        $email = new \Symfony\Component\Mime\Email();
+
+        $method = new \ReflectionMethod($service, 'applySmtpHeaders');
+        $method->invoke($service, $email, ['Reply-To' => 'rita@example.com', 'X-Mailer' => 'skip', 'X-Custom' => 'kept']);
+
+        $this->assertSame('rita@example.com', $email->getReplyTo()[0]->getAddress());
+        $this->assertSame('kept', $email->getHeaders()->get('X-Custom')?->getBodyAsString());
+        $this->assertFalse($email->getHeaders()->has('X-Mailer'));
+    }
+
     public function testTlsEncryptionEnforcesStartTls(): void
     {
         // encryption=tls must enforce STARTTLS via require_tls (Symfony ignores a

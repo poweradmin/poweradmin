@@ -257,7 +257,7 @@ class ChangeRequestsController extends PublicApiController
                             property: 'data',
                             properties: [
                                 new OA\Property(property: 'change_request', ref: '#/components/schemas/ChangeRequest'),
-                                new OA\Property(property: 'snapshot', type: 'string', nullable: true, description: 'BIND zone file taken before an approved zone deletion, otherwise null'),
+                                new OA\Property(property: 'snapshot', type: 'string', nullable: true, description: 'BIND zone file taken before an approved zone deletion; null when none was kept or the caller may not view the zone'),
                                 new OA\Property(property: 'stale_actions', type: 'array', items: new OA\Items(type: 'integer'), example: [0]),
                                 new OA\Property(property: 'base_serial_mismatch', type: 'boolean', example: false),
                             ],
@@ -283,17 +283,21 @@ class ChangeRequestsController extends PublicApiController
             }
 
             $userId = $this->getAuthenticatedUserId();
+            $isRequester = $request->requesterId === $userId;
+            $canReview = $this->apiPermissionService->canReviewChangeRequests($userId, $request->zoneId);
             if (
-                $request->requesterId !== $userId
-                && !$this->apiPermissionService->canReviewChangeRequests($userId, $request->zoneId)
+                !$isRequester
+                && !$canReview
                 && $this->apiPermissionService->getChangeApprovalMode($userId, $request->zoneId) === ChangeApprovalPolicy::MODE_NONE
             ) {
                 return $this->returnApiError('You do not have permission to view this change request', 403);
             }
+            // The snapshot is the whole zone, so requesting rights alone do not open it
+            $canSeeSnapshot = $isRequester || $canReview || $this->apiPermissionService->canViewZone($userId, $request->zoneId);
 
             return $this->returnApiResponse([
                 'change_request' => $this->serialize($request),
-                'snapshot' => $request->snapshot,
+                'snapshot' => $canSeeSnapshot ? $request->snapshot : null,
                 'stale_actions' => $request->canBeApplied() ? $this->changeRequests->staleActions($request) : [],
                 'base_serial_mismatch' => $request->canBeApplied() && $this->changeRequests->baseSerialMismatch($request),
             ], true, 'Change request retrieved successfully');

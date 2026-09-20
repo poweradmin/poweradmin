@@ -241,8 +241,11 @@ class DbZoneChangeRequestRepositoryTest extends TestCase
         $this->repository->markReviewed($decided, ZoneChangeRequest::STATUS_REJECTED, 9, 'bob', null);
         $this->file(3);
 
-        $this->assertSame([1 => 2, 3 => 1], $this->repository->countPendingByZone([1, 2, 3]));
-        $this->assertSame([], $this->repository->countPendingByZone([]));
+        $this->assertSame([1 => 2, 3 => 1], $this->repository->countPendingByZone([1, 2, 3], null, 99));
+        $this->assertSame([1 => 2], $this->repository->countPendingByZone([1, 2, 3], [1], 99));
+        $this->assertSame([1 => 2, 3 => 1], $this->repository->countPendingByZone([1, 2, 3], [], 7));
+        $this->assertSame([], $this->repository->countPendingByZone([1, 2, 3], [], 99));
+        $this->assertSame([], $this->repository->countPendingByZone([], null, 7));
     }
 
     public function testASnapshotIsKeptWithTheRequest(): void

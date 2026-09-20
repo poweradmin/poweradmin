@@ -75,12 +75,14 @@ interface ZoneChangeRequestRepositoryInterface
     public function countPending(?array $zoneIds): int;
 
     /**
-     * Pending requests per zone, for the zones that have any.
+     * Pending requests per zone, for the zones that have any, counting only the
+     * requests the user may list: those in the zones they review or their own.
      *
      * @param list<int> $zoneIds
+     * @param list<int>|null $reviewableZoneIds null for every zone
      * @return array<int, int> zone id => pending count
      */
-    public function countPendingByZone(array $zoneIds): array;
+    public function countPendingByZone(array $zoneIds, ?array $reviewableZoneIds, int $requesterId): array;
 
     /**
      * @param list<string> $fromStatuses The states the request may be in for the decision to take

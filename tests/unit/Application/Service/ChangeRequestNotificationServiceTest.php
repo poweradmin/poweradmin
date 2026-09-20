@@ -212,6 +212,15 @@ class ChangeRequestNotificationServiceTest extends TestCase
         $this->assertCount(3, $this->sent);
     }
 
+    public function testAnEscapedDotInTheSoaMailboxIsKept(): void
+    {
+        $soa = 'ns1.example.com. john\\.doe.example.com. 2026092001 10800 3600 604800 3600';
+
+        $this->assertTrue($this->fileRequest($this->makeService(soaRecord: $soa, mailSoaContact: true)));
+
+        $this->assertContains('john.doe@example.com', array_column($this->sent, 'to'));
+    }
+
     public function testASoaContactAlreadyReviewingIsNotMailedTwice(): void
     {
         $soa = 'ns1.example.com. olaf.example.com. 2026092001 10800 3600 604800 3600';

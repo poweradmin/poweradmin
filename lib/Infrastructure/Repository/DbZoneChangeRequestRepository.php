@@ -122,24 +122,22 @@ class DbZoneChangeRequestRepository implements ZoneChangeRequestRepositoryInterf
         $stmt->execute();
     }
 
-    public function countPendingByZone(array $zoneIds): array
+    public function countPendingByZone(array $zoneIds, ?array $reviewableZoneIds, int $requesterId): array
     {
         if ($zoneIds === []) {
             return [];
         }
-        $placeholders = [];
-        foreach (array_values($zoneIds) as $i => $zoneId) {
-            $placeholders[] = ":zone_id_$i";
+        [$where, $bindings] = $this->whereClause([
+            'status' => ZoneChangeRequest::STATUS_PENDING,
+            'zoneIds' => array_values($zoneIds),
+            'reviewableZoneIds' => $reviewableZoneIds,
+            'orRequesterId' => $requesterId,
+        ]);
+        if ($where === null) {
+            return [];
         }
-        $stmt = $this->db->prepare(
-            'SELECT zone_id, COUNT(*) AS pending FROM zone_change_requests
-             WHERE status = :status AND zone_id IN (' . implode(', ', $placeholders) . ')
-             GROUP BY zone_id'
-        );
-        $stmt->bindValue(':status', ZoneChangeRequest::STATUS_PENDING, PDO::PARAM_STR);
-        foreach (array_values($zoneIds) as $i => $zoneId) {
-            $stmt->bindValue(":zone_id_$i", (int)$zoneId, PDO::PARAM_INT);
-        }
+        $stmt = $this->db->prepare('SELECT zone_id, COUNT(*) AS pending FROM zone_change_requests' . $where . ' GROUP BY zone_id');
+        $this->bindFilters($stmt, $bindings);
         $stmt->execute();
 
         $counts = [];

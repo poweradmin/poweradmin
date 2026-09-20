@@ -66,12 +66,18 @@ class ChangeRequestController extends BaseController
             $this->decide($request, $canReview, $isRequester);
             return;
         }
+        // The snapshot is the whole zone, so requesting rights alone do not open it
+        $canSeeSnapshot = $canReview || $isRequester || $this->createPermissionService()->canViewZone($userId, $request->zoneId);
         if ($this->httpRequest->getQueryParam('snapshot') !== null) {
+            if (!$canSeeSnapshot) {
+                $this->showError(_('You do not have permission to view this zone.'));
+                return;
+            }
             $this->sendSnapshot($request);
             return;
         }
 
-        $this->show($request, $canReview, $isRequester);
+        $this->show($request, $canReview, $isRequester, $canSeeSnapshot);
     }
 
     /**
@@ -140,7 +146,7 @@ class ChangeRequestController extends BaseController
         $this->redirect('/zones/requests/' . $request->id);
     }
 
-    private function show(ZoneChangeRequest $request, bool $canReview, bool $isRequester): void
+    private function show(ZoneChangeRequest $request, bool $canReview, bool $isRequester, bool $canSeeSnapshot): void
     {
         $service = $this->createZoneChangeRequestService();
         // Staleness only matters while the request can still be applied
@@ -155,7 +161,7 @@ class ChangeRequestController extends BaseController
             'base_serial_mismatch' => $request->canBeApplied() && $service->baseSerialMismatch($request),
             'zone_comment' => $request->zoneComment,
             'zone_exists' => $zoneExists,
-            'has_snapshot' => $request->snapshot !== null,
+            'has_snapshot' => $canSeeSnapshot && $request->snapshot !== null,
             'zone_display_name' => DnsIdnService::toDisplay($request->zoneName),
             'is_reverse_zone' => DnsHelper::isReverseZoneName($request->zoneName),
             'can_review' => $canReview && $request->isPending(),

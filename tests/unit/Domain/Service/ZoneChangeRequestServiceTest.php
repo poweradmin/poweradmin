@@ -508,8 +508,11 @@ class ZoneChangeRequestServiceTest extends TestCase
     {
         $this->records = $this->createMock(RecordRepositoryInterface::class);
         $this->records->method('getRecordFromId')->willReturnCallback(fn(int|string $id): ?array => $this->stored[(string)$id] ?? null);
-        $this->records->method('getRecordsByName')->willReturn([]);
-        $this->records->method('recordExists')->willReturnCallback(fn(int $z, string $name): bool => $name === 'new.example.com');
+        // The add of the first attempt landed in full before the edit failed
+        $this->records->method('getRecordsByName')->willReturnCallback(fn(int $z, string $name): array => $name === 'new.example.com'
+            ? [['id' => '9', 'domain_id' => self::ZONE_ID, 'name' => 'new.example.com', 'type' => 'A', 'content' => '192.0.2.5', 'ttl' => 300, 'prio' => 0, 'disabled' => 0]]
+            : []);
+        $this->records->method('recordExists')->willReturn(false);
         $this->recordManager->expects($this->never())->method('addRecordGetId');
         $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
         $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
@@ -524,6 +527,20 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertSame(ZoneChangeRequest::STATUS_APPROVED, $request->status);
         $this->assertNull($request->error);
         $this->assertNotNull($request->appliedAt);
+    }
+
+    public function testAnAddIsAppliedWhenTheStoredRowDiffersInTtl(): void
+    {
+        $this->records = $this->createMock(RecordRepositoryInterface::class);
+        $this->records->method('getRecordFromId')->willReturnCallback(fn(int|string $id): ?array => $this->stored[(string)$id] ?? null);
+        $this->records->method('getRecordsByName')->willReturn([['id' => '9', 'domain_id' => self::ZONE_ID, 'name' => 'new.example.com', 'type' => 'A', 'content' => '192.0.2.5', 'ttl' => 60, 'prio' => 0, 'disabled' => 0]]);
+        $this->records->method('recordExists')->willReturn(false);
+        $this->recordManager->expects($this->once())->method('addRecordGetId')->willReturn(RecordWriteResult::ok(9));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        $id = $this->fileThreeActions();
+
+        $this->assertTrue($this->makeService()->approve($id, self::REVIEWER, 'bob')->success);
     }
 
     public function testRejectAndCancelStillRefuseAFailedRequest(): void

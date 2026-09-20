@@ -762,7 +762,8 @@ abstract class BaseController
             return [];
         }
 
-        return $this->createZoneChangeRequestRepository()->countPendingByZone($zoneIds);
+        // The same requests the list page shows: the reviewed zones or the user's own
+        return $this->createZoneChangeRequestRepository()->countPendingByZone($zoneIds, $this->changeRequestReviewScope(), $userId);
     }
 
     /**
