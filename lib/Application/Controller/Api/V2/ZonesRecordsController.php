@@ -675,15 +675,6 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
-            // Block changing the record into one the user may not manage, e.g.
-            // retyping to SOA/NS or renaming a subzone NS onto the zone apex
-            $hostnameValidator = new HostnameValidator($this->getConfig());
-            $newType = strtoupper(trim((string)($input['type'] ?? $existingRecord['type'])));
-            $newName = $hostnameValidator->normalizeRecordName(trim((string)($input['name'] ?? $existingRecord['name'])), (string)$zone['name']);
-            if (!$this->apiPermissionService->canEditZoneRecord($userId, $zoneId, $newType, $zone['type'] ?? null, $newName, $zone['name'] ?? null)) {
-                return $this->returnApiError('You do not have permission to edit this record type', 403);
-            }
-
             // Prepare record data for update - use existing values if not provided
             $name = $this->inputString($input, 'name', $existingRecord['name']);
             $type = $this->inputString($input, 'type', $existingRecord['type']);
@@ -694,6 +685,15 @@ class ZonesRecordsController extends PublicApiController
             $updatePtr = $this->inputBool($input, 'update_ptr', false);
             if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
                 return $this->returnApiError('Invalid field types in request body', 400);
+            }
+
+            // Block changing the record into one the user may not manage, e.g.
+            // retyping to SOA/NS or renaming a subzone NS onto the zone apex
+            $hostnameValidator = new HostnameValidator($this->getConfig());
+            $newType = strtoupper(trim($type));
+            $newName = $hostnameValidator->normalizeRecordName(trim($name), (string)$zone['name']);
+            if (!$this->apiPermissionService->canEditZoneRecord($userId, $zoneId, $newType, $zone['type'] ?? null, $newName, $zone['name'] ?? null)) {
+                return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
             $name = $this->normalizeV2RecordName($name, (string)$zone['name']);
 

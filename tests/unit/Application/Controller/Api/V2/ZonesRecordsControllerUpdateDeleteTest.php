@@ -222,7 +222,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
      * before the type guard below finally answers 400. The refusal is correct; the
      * warning and the bogus permission subject are not.
      */
-    public function testAnArrayNameIsStringifiedBeforeThePermissionCheckAndWarns(): void
+    public function testAnArrayNameIs400BeforeThePermissionCheckSeesIt(): void
     {
         $this->records->method('getRecordById')->willReturn($this->existingRecord());
         $this->permissions = $this->createMock(ApiPermissionService::class);
@@ -249,8 +249,9 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Invalid field types in request body', $this->messageOf($response));
-        $this->assertContains('Array to string conversion', $warnings);
-        $this->assertSame('Array.example.com', $subjects[count($subjects) - 1]);
+        $this->assertSame([], $warnings);
+        // The record-type check ran once on the stored record, never on the bogus name
+        $this->assertNotContains('Array.example.com', $subjects);
     }
 
     public function testANegativeTtlIs400OnUpdate(): void
