@@ -508,7 +508,7 @@ class ControllerServiceFactory
      */
     public function zoneTemplateRepository(): ZoneTemplateRepositoryInterface
     {
-        return $this->zoneTemplateRepository ??= new DbZoneTemplateRepository($this->db, $this->config);
+        return $this->zoneTemplateRepository ??= new DbZoneTemplateRepository($this->db, $this->config, $this->dnsBackendProvider());
     }
 
     public function zoneTemplate(): ZoneTemplate

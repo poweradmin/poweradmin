@@ -270,4 +270,43 @@ interface ZoneTemplateRepositoryInterface
      * @return bool True on success
      */
     public function unlinkZoneFromTemplate(int $zoneId): bool;
+
+    /**
+     * Zone IDs of the zones linked to a template. On SQL backends a link whose
+     * PowerDNS domain no longer exists is left out.
+     *
+     * @param int $templateId Zone template ID
+     * @param int|null $ownerId Only zones owned (zones.owner) by this user, or null for all
+     * @return array Zone IDs (zones.domain_id, or the canonical id on API backends)
+     */
+    public function listLinkedZoneIds(int $templateId, ?int $ownerId): array;
+
+    /**
+     * Both ids of every zone linked to a template, so callers can address the
+     * PowerDNS side (domain_id) and Poweradmin-native tracking (zone_id) correctly.
+     * On SQL backends a link whose PowerDNS domain no longer exists is left out.
+     *
+     * @param int $templateId Zone template ID
+     * @param int|null $ownerId Only zones owned (zones.owner) by this user, or null for all
+     * @return array<int, array{zone_id:int, domain_id:int}>
+     */
+    public function listLinkedZoneIdPairs(int $templateId, ?int $ownerId): array;
+
+    /**
+     * The zones linked to a template with name, type, record count and owner
+     * details, ordered by zone name.
+     *
+     * @param int $templateId Zone template ID
+     * @param int|null $ownerId Only zones owned (zones.owner) by this user, or null for all
+     * @return array Rows with id, name, type, count_records, owner, comment, owner_name, owner_fullname
+     */
+    public function listLinkedZones(int $templateId, ?int $ownerId): array;
+
+    /**
+     * Name and type of the given zones, ordered by name.
+     *
+     * @param int[] $zoneIds Zone IDs (non-empty)
+     * @return array Rows with id, name, type
+     */
+    public function getZonesByIds(array $zoneIds): array;
 }

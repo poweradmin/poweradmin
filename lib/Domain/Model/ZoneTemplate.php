@@ -37,12 +37,9 @@ use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use LogicException;
 use PDO;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 
 /**
  * Zone template records and the placeholder expansion that turns them into real records.
@@ -53,7 +50,6 @@ class ZoneTemplate
     private PDO $db;
     private DnsFormatter $dnsFormatter;
     private MessageService $messageService;
-    private TableNameService $tableNameService;
     private ?DnsBackendProviderInterface $backendProvider;
     private LoggerInterface $logger;
     private ?PermissionService $permissionService = null;
@@ -66,7 +62,6 @@ class ZoneTemplate
         $this->config = $config;
         $this->dnsFormatter = new DnsFormatter($config);
         $this->messageService = new MessageService();
-        $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
         $this->logger = $logger ?? new NullLogger();
         $this->repository = $repository;
@@ -76,7 +71,7 @@ class ZoneTemplate
      * Builds a repository for a bare connection. Registered once at start-up so
      * this model never names a persistence class; see AppInitializer.
      *
-     * @var (callable(object, ?ConfigurationInterface): ZoneTemplateRepositoryInterface)|null
+     * @var (callable(object, ?ConfigurationInterface, ?DnsBackendProviderInterface): ZoneTemplateRepositoryInterface)|null
      */
     private static $repositoryResolver = null;
 
@@ -85,7 +80,7 @@ class ZoneTemplate
      * this; the static accessors below are handed a bare connection and have no
      * other way to reach persistence.
      *
-     * @param callable(object, ?ConfigurationInterface): ZoneTemplateRepositoryInterface $resolver
+     * @param callable(object, ?ConfigurationInterface, ?DnsBackendProviderInterface): ZoneTemplateRepositoryInterface $resolver
      */
     public static function useRepositoryResolver(callable $resolver): void
     {
@@ -98,7 +93,7 @@ class ZoneTemplate
      */
     private function repository(): ZoneTemplateRepositoryInterface
     {
-        return $this->repository ??= self::resolveRepository($this->db, $this->config);
+        return $this->repository ??= self::resolveRepository($this->db, $this->config, $this->backendProvider);
     }
 
     /**
@@ -107,22 +102,27 @@ class ZoneTemplate
      */
     private static function readRepository(object $db): ZoneTemplateRepositoryInterface
     {
-        return self::resolveRepository($db, null);
+        return self::resolveRepository($db, null, null);
     }
 
     /**
      * @param ConfigurationInterface|null $config Needed by the write paths; the
      *        read-only static accessors are handed a bare connection
+     * @param DnsBackendProviderInterface|null $backendProvider Decides how the zone
+     *        listings read PowerDNS state; the static accessors never list zones
      */
-    private static function resolveRepository(object $db, ?ConfigurationInterface $config): ZoneTemplateRepositoryInterface
-    {
+    private static function resolveRepository(
+        object $db,
+        ?ConfigurationInterface $config,
+        ?DnsBackendProviderInterface $backendProvider
+    ): ZoneTemplateRepositoryInterface {
         if (self::$repositoryResolver === null) {
             throw new LogicException(
                 'No zone template repository resolver registered; call ZoneTemplate::useRepositoryResolver() at start-up.'
             );
         }
 
-        return (self::$repositoryResolver)($db, $config);
+        return (self::$repositoryResolver)($db, $config, $backendProvider);
     }
 
     /**
@@ -136,11 +136,6 @@ class ZoneTemplate
         }
         $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
         return $this->permissionService->hasPermission($userId, $permission);
-    }
-
-    private function isApiBackend(): bool
-    {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     /**
@@ -849,67 +844,23 @@ class ZoneTemplate
      */
     public function getListZoneUseTempl(int $zone_templ_id, int $userid): array
     {
-        if ($this->isApiBackend()) {
-            $perm_edit = Permission::getEditPermission($this->db, $this->config);
-            $params = [':zone_templ_id' => $zone_templ_id];
-            $sql_add = '';
-
-            if ($perm_edit != "all") {
-                $sql_add = " AND zones.owner = :userid";
-                $params[':userid'] = $userid;
-            }
-
-            $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
-            try {
-                $stmt = $this->db->prepare($query);
-                $stmt->execute($params);
-                return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
-            } catch (Exception $e) {
-                $this->messageService->addSystemError(_('Error retrieving zones using template: ') . $e->getMessage());
-                return [];
-            }
-        }
-
-        $perm_edit = Permission::getEditPermission($this->db, $this->config);
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-        $params = [':zone_templ_id' => $zone_templ_id];
-        $sql_add = '';
-
-        if ($perm_edit != "all") {
-            $sql_add = " AND zones.domain_id = $domains_table.id AND zones.owner = :userid";
-            $params[':userid'] = $userid;
-        }
-
-        $query = "SELECT zones.id,
-            zones.domain_id,
-            $domains_table.name,
-            $domains_table.type,
-            Record_Count.count_records
-            FROM $domains_table
-            INNER JOIN zones ON $domains_table.id=zones.domain_id
-            LEFT JOIN (
-                SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table GROUP BY domain_id
-            ) Record_Count ON Record_Count.domain_id=$domains_table.id
-            WHERE 1=1" . $sql_add . "
-            AND zones.zone_templ_id = :zone_templ_id
-            GROUP BY $domains_table.name, zones.id, zones.domain_id, $domains_table.type, Record_Count.count_records";
+        $ownerFilter = $this->linkedZoneOwnerFilter($userid);
 
         try {
-            $stmt = $this->db->prepare($query);
-            $stmt->execute($params);
-
-            $zone_list = [];
-            while ($zone = $stmt->fetch()) {
-                $zone_list[] = $zone['domain_id'];
-            }
-            return $zone_list;
+            return $this->repository()->listLinkedZoneIds($zone_templ_id, $ownerFilter);
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error retrieving zones using template: ') . $e->getMessage());
             return [];
         }
+    }
+
+    /**
+     * Owner the zone listings are narrowed to: null when the user may edit every
+     * zone, otherwise the user themselves.
+     */
+    private function linkedZoneOwnerFilter(int $userid): ?int
+    {
+        return Permission::getEditPermission($this->db, $this->config) != "all" ? $userid : null;
     }
 
     /**
@@ -928,41 +879,10 @@ class ZoneTemplate
      */
     public function getZoneAndDomainIdsByTemplate(int $zone_templ_id, int $userid): array
     {
-        $perm_edit = Permission::getEditPermission($this->db, $this->config);
-        $params = [':zone_templ_id' => $zone_templ_id];
-
-        if ($this->isApiBackend()) {
-            $sql_add = '';
-            if ($perm_edit != "all") {
-                $sql_add = " AND owner = :userid";
-                $params[':userid'] = $userid;
-            }
-            $query = "SELECT id AS zone_id, " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
-        } else {
-            $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-            $sql_add = '';
-            if ($perm_edit != "all") {
-                $sql_add = " AND zones.owner = :userid";
-                $params[':userid'] = $userid;
-            }
-            $query = "SELECT zones.id AS zone_id, zones.domain_id
-                      FROM zones
-                      INNER JOIN $domains_table ON $domains_table.id = zones.domain_id
-                      WHERE zones.zone_templ_id = :zone_templ_id" . $sql_add;
-        }
+        $ownerFilter = $this->linkedZoneOwnerFilter($userid);
 
         try {
-            $stmt = $this->db->prepare($query);
-            $stmt->execute($params);
-
-            $rows = [];
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $rows[] = [
-                    'zone_id' => (int) $row['zone_id'],
-                    'domain_id' => (int) $row['domain_id'],
-                ];
-            }
-            return $rows;
+            return $this->repository()->listLinkedZoneIdPairs($zone_templ_id, $ownerFilter);
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error retrieving zones using template: ') . $e->getMessage());
             return [];
@@ -979,90 +899,10 @@ class ZoneTemplate
      */
     public function getZonesUsingTemplate(int $zone_templ_id, int $userid): array
     {
-        if ($this->isApiBackend()) {
-            $perm_edit = Permission::getEditPermission($this->db, $this->config);
-            $params = [':zone_templ_id' => $zone_templ_id];
-            $sql_add = '';
-
-            if ($perm_edit != "all") {
-                $sql_add = " AND zones.owner = :userid";
-                $params[':userid'] = $userid;
-            }
-
-            try {
-                $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn('zones') . " AS domain_id, zones.owner, zones.comment,
-                          u.username as owner_name, u.fullname as owner_fullname
-                          FROM zones
-                          LEFT JOIN users u ON zones.owner = u.id
-                          WHERE zones.zone_templ_id = :zone_templ_id" . $sql_add . "
-                          ORDER BY 1";
-                $stmt = $this->db->prepare($query);
-                $stmt->execute($params);
-                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                $result = [];
-                foreach ($rows as $row) {
-                    $zoneId = (int)$row['domain_id'];
-                    $zoneData = $this->backendProvider->getZoneById($zoneId);
-                    $countRecords = $this->backendProvider->countZoneRecords($zoneId);
-                    $result[] = [
-                        'id' => $zoneId,
-                        'name' => $zoneData['name'] ?? '',
-                        'type' => $zoneData['type'] ?? '',
-                        'count_records' => $countRecords,
-                        'owner' => $row['owner'],
-                        'comment' => $row['comment'],
-                        'owner_name' => $row['owner_name'],
-                        'owner_fullname' => $row['owner_fullname'],
-                    ];
-                }
-
-                usort($result, fn($a, $b) => strcasecmp($a['name'], $b['name']));
-                return $result;
-            } catch (Exception $e) {
-                $this->messageService->addSystemError(_('Failed to get list of zones using template: ') . $e->getMessage());
-                return [];
-            }
-        }
-
-        $perm_edit = Permission::getEditPermission($this->db, $this->config);
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-        $params = [':zone_templ_id' => $zone_templ_id];
-        $sql_add = '';
-
-        if ($perm_edit != "all") {
-            $sql_add = " AND zones.domain_id = $domains_table.id AND zones.owner = :userid";
-            $params[':userid'] = $userid;
-        }
-
-        $query = "SELECT $domains_table.id,
-                $domains_table.name,
-                $domains_table.type,
-                Record_Count.count_records,
-                zones.owner,
-                zones.comment,
-                u.username as owner_name,
-                u.fullname as owner_fullname
-                FROM $domains_table
-                LEFT JOIN zones ON $domains_table.id=zones.domain_id
-                LEFT JOIN users u ON zones.owner=u.id
-                LEFT JOIN (
-                    SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table GROUP BY domain_id
-                ) Record_Count ON Record_Count.domain_id=$domains_table.id
-                WHERE 1=1" . $sql_add . "
-                AND zone_templ_id = :zone_templ_id
-                GROUP BY $domains_table.name, $domains_table.id, $domains_table.type,
-                        Record_Count.count_records, zones.owner, zones.comment,
-                        u.username, u.fullname
-                ORDER BY $domains_table.name";
+        $ownerFilter = $this->linkedZoneOwnerFilter($userid);
 
         try {
-            $stmt = $this->db->prepare($query);
-            $stmt->execute($params);
-            return $stmt->fetchAll();
+            return $this->repository()->listLinkedZones($zone_templ_id, $ownerFilter);
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Failed to get list of zones using template: ') . $e->getMessage());
             return [];
@@ -1130,19 +970,7 @@ class ZoneTemplate
         }
 
         try {
-            if ($this->backendProvider !== null) {
-                return $this->backendProvider->getZonesByIds($zone_ids);
-            }
-
-            $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-            $placeholders = str_repeat('?,', count($zone_ids) - 1) . '?';
-            $stmt = $this->db->prepare("SELECT d.id, d.name, d.type
-                                        FROM $domains_table d
-                                        WHERE d.id IN ($placeholders)
-                                        ORDER BY d.name");
-            $stmt->execute($zone_ids);
-            return $stmt->fetchAll();
+            return $this->repository()->getZonesByIds($zone_ids);
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error retrieving zones: ') . $e->getMessage());
             return [];

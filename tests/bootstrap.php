@@ -28,11 +28,16 @@
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 ZoneTemplate::useRepositoryResolver(
-    static fn(object $db, ?ConfigurationInterface $config = null): ZoneTemplateRepositoryInterface
-        => new DbZoneTemplateRepository($db, $config)
+    static fn(
+        object $db,
+        ?ConfigurationInterface $config = null,
+        ?DnsBackendProviderInterface $backendProvider = null
+    ): ZoneTemplateRepositoryInterface
+        => new DbZoneTemplateRepository($db, $config, $backendProvider)
 );

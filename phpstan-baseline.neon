@@ -205,18 +205,6 @@ parameters:
 			path: lib/Domain/Model/Permission.php
 
 		-
-			message: '#^Class Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.class
-			count: 6
-			path: lib/Domain/Model/ZoneTemplate.php
-
-		-
-			message: '#^Class Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Model/ZoneTemplate.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\DbUserRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
@@ -229,39 +217,15 @@ parameters:
 			path: lib/Domain/Model/ZoneTemplate.php
 
 		-
-			message: '#^Enum Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.enum
-			count: 6
-			path: lib/Domain/Model/ZoneTemplate.php
-
-		-
 			message: '#^Namespace Poweradmin\\Application\\Service\\DnsBackendProviderFactory is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\DnsBackendProviderFactory matches Poweradmin\\Application\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 2
 			path: lib/Domain/Model/ZoneTemplate.php
 
 		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 5
-			path: lib/Domain/Model/ZoneTemplate.php
-
-		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\DbCompat is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\DbCompat matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 7
-			path: lib/Domain/Model/ZoneTemplate.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Model/ZoneTemplate.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
 			path: lib/Domain/Model/ZoneTemplate.php
 
 		-

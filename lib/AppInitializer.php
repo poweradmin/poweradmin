@@ -32,6 +32,7 @@ use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Database\DebugPDO;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
@@ -131,8 +132,12 @@ class AppInitializer
         // and must not name a persistence class themselves
         $config = $this->configManager;
         ZoneTemplate::useRepositoryResolver(
-            static fn(object $db, ?ConfigurationInterface $resolverConfig = null): ZoneTemplateRepositoryInterface
-                => new DbZoneTemplateRepository($db, $resolverConfig ?? $config)
+            static fn(
+                object $db,
+                ?ConfigurationInterface $resolverConfig = null,
+                ?DnsBackendProviderInterface $backendProvider = null
+            ): ZoneTemplateRepositoryInterface
+                => new DbZoneTemplateRepository($db, $resolverConfig ?? $config, $backendProvider)
         );
     }
 
