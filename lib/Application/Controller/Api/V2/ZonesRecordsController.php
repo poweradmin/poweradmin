@@ -179,7 +179,7 @@ class ZonesRecordsController extends PublicApiController
                     'type' => $record['type'],
                     'content' => $this->stripTxtQuotes($record['content'], $record['type']),
                     'ttl' => (int)$record['ttl'],
-                    'priority' => isset($record['prio']) ? (int)$record['prio'] : null,
+                    'priority' => isset($record['prio']) ? (int)$record['prio'] : 0,
                     'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false,
                     'auth' => isset($record['auth']) ? (bool)DbCompat::boolFromDb($record['auth']) : true
                 ];
@@ -439,7 +439,7 @@ class ZonesRecordsController extends PublicApiController
             $content = $originalContent;
             $zoneName = $this->createDomainRepository()->getDomainNameById($zoneId);
             if ($zoneName === null) {
-                return $this->returnApiError(_('Zone not found.'), 404);
+                return $this->returnApiError('Zone not found', 404);
             }
             $isReverseZone = DnsHelper::isReverseZoneName($zoneName);
             $ttl = $this->inputInt($input, 'ttl', $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone));

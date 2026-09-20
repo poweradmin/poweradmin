@@ -172,16 +172,15 @@ class ZonesRecordsControllerCreateTest extends TestCase
         $this->assertSame($message, $this->messageOf($response));
     }
 
-    public function testAZoneWithoutAResolvableNameIs404WithTheTranslatedWording(): void
+    public function testAZoneWithoutAResolvableNameIs404(): void
     {
         $this->zoneName = null;
 
         $response = $this->create($this->validBody());
 
         $this->assertSame(404, $response->getStatusCode());
-        // Note the trailing period: this path uses the translated string, unlike
-        // the bare 'Zone not found' returned a few lines above.
-        $this->assertSame('Zone not found.', $this->messageOf($response));
+        // Same wording as every other zone 404 on this controller
+        $this->assertSame('Zone not found', $this->messageOf($response));
     }
 
     /**

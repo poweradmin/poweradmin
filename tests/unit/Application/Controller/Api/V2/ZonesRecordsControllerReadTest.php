@@ -116,17 +116,16 @@ class ZonesRecordsControllerReadTest extends TestCase
         $this->assertSame(2, $records[0]['id']);
     }
 
-    public function testAListedRecordWithoutAPriorityReportsNull(): void
+    public function testAListedRecordWithoutAPriorityReportsZero(): void
     {
-        // The listing reports a missing prio as null; the single-record fetch
-        // reports it as 0 for the same row. Pinned as-is - the two disagree.
+        // The listing and the single-record fetch agree on 0 for a missing prio
         $this->records->method('getRecordsByDomainId')->willReturn([
             ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600],
         ]);
 
         $record = $this->decode($this->invokeHandler('listRecords'))['data']['records'][0];
 
-        $this->assertNull($record['priority']);
+        $this->assertSame(0, $record['priority']);
         // Absent auth reads as authoritative, absent disabled as enabled.
         $this->assertTrue($record['auth']);
         $this->assertFalse($record['disabled']);

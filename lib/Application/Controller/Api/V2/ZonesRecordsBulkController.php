@@ -449,6 +449,14 @@ class ZonesRecordsBulkController extends PublicApiController
         if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
             throw new ApiErrorException('Invalid field types in request body', 400);
         }
+        // The same range checks a single-record update applies, so a batch cannot
+        // store values one PUT would have refused
+        if ($ttl < 1) {
+            throw new ApiErrorException('TTL must be greater than 0', 400);
+        }
+        if ($disabled !== 0 && $disabled !== 1) {
+            throw new ApiErrorException('Disabled field must be 0 or 1', 400);
+        }
         $name = $this->normalizeV2RecordName($name, (string)$zoneName);
         // Format content the same way create does so TXT records round-trip
         // (GET strips the quotes V2 adds; an update echoing GET output must re-quote).
