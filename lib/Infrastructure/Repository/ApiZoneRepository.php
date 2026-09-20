@@ -30,7 +30,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;

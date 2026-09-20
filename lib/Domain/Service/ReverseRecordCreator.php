@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use PDO;
 use Poweradmin\Application\Service\AuditService;

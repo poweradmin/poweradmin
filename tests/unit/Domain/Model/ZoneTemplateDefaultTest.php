@@ -27,7 +27,7 @@ use PDOStatement;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 
 /**

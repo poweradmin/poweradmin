@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\UrlService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 class UrlServiceHostValidationTest extends TestCase
 {

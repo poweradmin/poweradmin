@@ -35,7 +35,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DomainUtility;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use PDO;

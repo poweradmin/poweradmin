@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\DnsWizard\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Builds TLSA records at _port._protocol.hostname for DANE; the zone must be DNSSEC-signed.

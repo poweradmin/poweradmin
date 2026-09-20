@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Http;
 
 use Closure;
 use Poweradmin\Application\Controller\NotFoundController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Throwable;
 
 /**

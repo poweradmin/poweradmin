@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\DnsWizard\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Builds SRV records giving the host and port of a service.

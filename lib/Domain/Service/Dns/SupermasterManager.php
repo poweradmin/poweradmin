@@ -27,7 +27,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\SupermasterBackendInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 /**

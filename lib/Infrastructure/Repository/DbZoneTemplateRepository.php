@@ -25,7 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use Exception;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsFormatter;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 /**

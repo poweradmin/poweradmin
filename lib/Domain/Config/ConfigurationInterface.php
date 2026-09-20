@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Configuration;
+namespace Poweradmin\Domain\Config;
 
 /**
  * Read access to settings by group and key.

@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;

@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\ValueObject;
 
 use InvalidArgumentException;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * A hostname that passed validation (full HostnameValidator when config is given, a syntax check otherwise).

@@ -63,9 +63,9 @@ class MetadataDefinitionsTest extends TestCase
         $this->assertNull(MetadataDefinitions::getOptions('X-CUSTOM-KIND'));
     }
 
-    private function configWithDnsSettings(array $settings): \Poweradmin\Infrastructure\Configuration\ConfigurationInterface
+    private function configWithDnsSettings(array $settings): \Poweradmin\Domain\Config\ConfigurationInterface
     {
-        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationInterface::class);
+        $config = $this->createMock(\Poweradmin\Domain\Config\ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             fn(string $group, string $key, mixed $default = null) => $settings[$key] ?? $default
         );

@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\Error\LoaderError;

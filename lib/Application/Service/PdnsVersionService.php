@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;

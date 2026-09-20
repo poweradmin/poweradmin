@@ -31,7 +31,7 @@ use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\ZoneSigningService;
 use Poweradmin\Domain\Service\ZoneValidationService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\NullLogger;
 
 /**

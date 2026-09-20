@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service;
 
 use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;

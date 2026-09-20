@@ -15,7 +15,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Logger;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Psr\Log\NullLogger;
 

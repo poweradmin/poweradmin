@@ -32,7 +32,7 @@ use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;

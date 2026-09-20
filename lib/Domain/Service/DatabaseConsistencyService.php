@@ -26,7 +26,7 @@ use Exception;
 use PDO;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;

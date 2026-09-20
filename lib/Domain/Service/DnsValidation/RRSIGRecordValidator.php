@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 use DateTime;
 use Exception;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * RRSIG (Resource Record Signature) record validator for DNSSEC

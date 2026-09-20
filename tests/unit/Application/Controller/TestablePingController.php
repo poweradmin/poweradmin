@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use Poweradmin\Application\Controller\PingController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Test double supplying settings without going through the config singleton.

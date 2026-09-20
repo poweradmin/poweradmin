@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;

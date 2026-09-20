@@ -33,7 +33,7 @@ use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\ZoneMetadataOutcome;
 use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use TestHelpers\BuildsPermissionService;
 

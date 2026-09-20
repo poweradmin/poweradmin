@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * TLSA (TLS Authentication) record validator

@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Database;
 
 use InvalidArgumentException;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Enum\SortDirection;
 
 /**

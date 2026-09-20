@@ -26,7 +26,7 @@ use PDO;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Domain\Enum\PermissionTemplateType;

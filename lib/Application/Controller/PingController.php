@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\Response;
 

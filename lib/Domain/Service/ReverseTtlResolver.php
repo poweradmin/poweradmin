@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Resolves the default TTL for new records.

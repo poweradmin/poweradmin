@@ -28,7 +28,7 @@ use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
 use Poweradmin\Infrastructure\Logger\SyslogLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;

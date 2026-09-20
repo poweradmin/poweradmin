@@ -26,7 +26,7 @@ use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
 

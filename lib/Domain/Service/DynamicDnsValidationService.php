@@ -28,7 +28,7 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\ValueObject\IpAddressList;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Validates a DDNS request's user agent, username, hostname and IP lists before any update is applied.

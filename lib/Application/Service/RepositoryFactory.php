@@ -30,7 +30,7 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;

@@ -26,7 +26,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * A missed ownership lookup here does not merely skip the sync: it pushes an empty account

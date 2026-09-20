@@ -35,7 +35,7 @@ use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 
 /**

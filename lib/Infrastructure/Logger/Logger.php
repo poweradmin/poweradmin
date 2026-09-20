@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use DateTimeImmutable;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 class PingControllerTest extends TestCase
 {

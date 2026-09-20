@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\ChangeRequestNotifierInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Twig\Error\LoaderError;

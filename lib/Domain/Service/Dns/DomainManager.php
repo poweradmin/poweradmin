@@ -36,7 +36,7 @@ use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Database\TableNameService;

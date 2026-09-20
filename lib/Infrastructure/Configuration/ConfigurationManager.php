@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Configuration;
 
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 

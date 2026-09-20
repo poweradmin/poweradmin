@@ -25,7 +25,7 @@ namespace unit\Domain\Model;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Zone templates are private to their owner unless global. Applying one by a posted

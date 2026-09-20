@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 /**

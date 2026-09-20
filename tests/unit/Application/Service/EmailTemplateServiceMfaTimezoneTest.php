@@ -26,7 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\EmailTemplateService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 #[CoversClass(EmailTemplateService::class)]
 class EmailTemplateServiceMfaTimezoneTest extends TestCase

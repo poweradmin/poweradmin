@@ -5,7 +5,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;

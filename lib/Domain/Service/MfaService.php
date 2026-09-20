@@ -31,7 +31,7 @@ use PDOException;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
 use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;

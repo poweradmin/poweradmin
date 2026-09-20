@@ -25,7 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;

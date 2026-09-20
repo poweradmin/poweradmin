@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Resolves the dns.zone_ownership_mode setting into ownership-side flags.

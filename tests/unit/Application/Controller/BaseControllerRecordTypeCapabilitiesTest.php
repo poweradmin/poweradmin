@@ -95,7 +95,7 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
     {
         $caps = $this->resolveCapabilities(['dns' => ['backend' => 'sql']]);
 
-        $recordConfig = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationInterface::class);
+        $recordConfig = $this->createMock(\Poweradmin\Domain\Config\ConfigurationInterface::class);
         $recordConfig->method('get')->willReturn(null);
         $types = (new RecordTypeService($recordConfig))->getAllTypes($caps);
 

@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 use DateTime;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\Validator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * SOA record validator

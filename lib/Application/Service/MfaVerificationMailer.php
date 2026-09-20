@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Service\MfaVerificationMailerInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Renders the MFA verification email through Twig and sends it with MailService.

@@ -26,7 +26,7 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Test for ZoneTemplateSyncService::removeStaleSyncRecords()

@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use PDO;
 use Poweradmin\Domain\Model\UserPreference;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 
 /**

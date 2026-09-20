@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Normalizes record content before saving; wraps TXT content in quotes when dns.txt_auto_quote is on.

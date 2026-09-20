@@ -22,7 +22,7 @@
 
 namespace TestHelpers;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * In-memory ConfigurationInterface backed by a plain array, for tests.

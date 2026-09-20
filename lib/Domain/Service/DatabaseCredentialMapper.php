@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Maps the database settings block to the PDO connection arguments.

@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Web;
 
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Decides once per request which navigation entries the current user gets, so

@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Throwable;
 use Poweradmin\Domain\Enum\PermissionTemplateType;

@@ -26,7 +26,7 @@ use PDO;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**

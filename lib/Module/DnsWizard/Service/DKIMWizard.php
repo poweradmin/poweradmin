@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\DnsWizard\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Builds the DKIM public-key TXT record at <selector>._domainkey.<domain>; the key itself comes from the mail server.

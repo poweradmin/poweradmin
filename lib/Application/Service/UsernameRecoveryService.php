@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;

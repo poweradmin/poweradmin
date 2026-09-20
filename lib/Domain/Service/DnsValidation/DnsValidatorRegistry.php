@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Registry for DNS record validators

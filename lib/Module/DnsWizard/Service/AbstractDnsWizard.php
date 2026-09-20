@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\DnsWizard\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Shared validation, TXT quoting and record assembly for the record wizards; each wizard fills in its type.

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Unit\Api;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Covers the /api/health payload without touching a database or a PowerDNS server.

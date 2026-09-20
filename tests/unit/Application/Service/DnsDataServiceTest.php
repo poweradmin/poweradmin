@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
 
 #[CoversClass(DnsDataService::class)]

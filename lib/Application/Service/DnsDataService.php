@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneCountService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 

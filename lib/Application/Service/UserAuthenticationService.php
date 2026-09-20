@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use InvalidArgumentException;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Hashes and verifies user passwords across bcrypt, argon2 and the legacy md5 formats.

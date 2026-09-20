@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 
 /**

@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;

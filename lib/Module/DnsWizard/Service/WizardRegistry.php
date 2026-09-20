@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Module\DnsWizard\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Lookup of the available record wizards by type.

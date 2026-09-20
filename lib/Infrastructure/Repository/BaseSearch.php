@@ -27,7 +27,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DomainUtility;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 /**

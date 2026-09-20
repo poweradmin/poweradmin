@@ -29,7 +29,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Psr\Log\LoggerInterface;

@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Model;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Built-in PowerDNS domain metadata kind definitions.

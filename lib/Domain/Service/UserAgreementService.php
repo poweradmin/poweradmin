@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Decides whether a user must accept the current user-agreement version and records acceptances.

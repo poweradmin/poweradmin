@@ -29,7 +29,7 @@ use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;

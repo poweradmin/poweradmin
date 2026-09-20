@@ -31,7 +31,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;

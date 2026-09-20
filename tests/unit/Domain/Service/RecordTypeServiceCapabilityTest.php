@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\RecordTypeService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 class RecordTypeServiceCapabilityTest extends TestCase
 {

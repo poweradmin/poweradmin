@@ -4,7 +4,7 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\RecordTypeService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 class RecordTypeServiceTest extends TestCase
 {

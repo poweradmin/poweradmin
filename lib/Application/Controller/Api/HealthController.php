@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Controller\Api;
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\Logger;

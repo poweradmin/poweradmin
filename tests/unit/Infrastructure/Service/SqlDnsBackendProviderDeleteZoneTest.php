@@ -16,7 +16,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
 

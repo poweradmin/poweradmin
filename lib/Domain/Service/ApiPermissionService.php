@@ -26,7 +26,7 @@ use InvalidArgumentException;
 use PDO;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 

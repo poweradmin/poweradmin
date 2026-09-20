@@ -26,7 +26,7 @@ use InvalidArgumentException;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Repository\UserPreferenceRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Reads and writes per-user preferences with a request cache and config-derived defaults.

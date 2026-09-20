@@ -18,7 +18,7 @@ use Closure;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\BootstrapErrorResponder;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use RuntimeException;
 use Throwable;
 

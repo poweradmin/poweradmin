@@ -28,7 +28,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Adds the matching A record in the managed forward zone when a PTR record is created in a reverse zone.

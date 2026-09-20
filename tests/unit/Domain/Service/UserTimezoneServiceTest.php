@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 #[CoversClass(UserTimezoneService::class)]
 class UserTimezoneServiceTest extends TestCase

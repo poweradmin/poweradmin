@@ -26,7 +26,7 @@ use Poweradmin\Domain\Utility\TopLevelDomain;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Utility\IpHelper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Hostname validation service

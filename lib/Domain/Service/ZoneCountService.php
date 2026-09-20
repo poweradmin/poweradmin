@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use PDO;
 use Poweradmin\Domain\Utility\DnsHelper;

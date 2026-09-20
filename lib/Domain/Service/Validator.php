@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Syntax checks for email addresses and digit-only strings.

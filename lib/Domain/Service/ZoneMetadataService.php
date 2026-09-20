@@ -27,7 +27,7 @@ use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneWriteRepositoryInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
