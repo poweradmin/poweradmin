@@ -145,7 +145,7 @@ final readonly class BootstrapErrorResponder
             return;
         }
 
-        echo 'An error occurred while processing the request.';
+        echo 'An error occurred while processing the request. Details have been written to the PHP error log.';
     }
 
     private function renderNotFound(): void
