@@ -163,22 +163,14 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame('Forbidden: this API key is not permitted to perform the delete operation', $this->messageOf($response));
     }
 
-    public function testAnUnknownActionSlipsPastTheScopeCheckAndFailsWhileApplying(): void
+    public function testAnUnknownActionIsRefusedByTheScopeGateBeforeAnythingIsApplied(): void
     {
-        $this->scope = new ApiKeyScope(null, [ApiKeyScope::OP_VIEW], false);
+        $this->recordManager->expects($this->never())->method('addRecordGetId');
 
-        $response = $this->bulk(['operations' => [['action' => 'frobnicate']]]);
-        $body = $this->decode($response);
+        $response = $this->bulk(['operations' => [$this->createOperation(), ['action' => 'frobnicate']]]);
 
-        // A view-only key reaches the apply loop because "frobnicate" maps to no
-        // operation type; the loop then refuses it as an invalid action.
         $this->assertSame(400, $response->getStatusCode());
-        $this->assertSame('Bulk operations failed', $body['message']);
-        $this->assertSame(
-            ["Operation 0 (frobnicate): Invalid action: frobnicate. Must be 'create', 'update', or 'delete'"],
-            $body['data']['errors']
-        );
-        $this->assertSame(1, $body['data']['failed']);
+        $this->assertSame("Invalid action: frobnicate. Must be 'create', 'update', or 'delete'", $this->messageOf($response));
     }
 
     public function testACreateMissingARequiredFieldFailsTheWholeBatch(): void

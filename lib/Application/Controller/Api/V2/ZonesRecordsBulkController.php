@@ -222,7 +222,10 @@ class ZonesRecordsBulkController extends PublicApiController
                     'delete' => ApiKeyScope::OP_DELETE,
                     default => null,
                 };
-                if ($operationType !== null && !$scope->isOperationTypeAllowed($operationType)) {
+                if ($operationType === null) {
+                    return $this->returnApiError("Invalid action: $action. Must be 'create', 'update', or 'delete'", 400);
+                }
+                if (!$scope->isOperationTypeAllowed($operationType)) {
                     return $this->returnApiError(
                         "Forbidden: this API key is not permitted to perform the {$action} operation",
                         403
