@@ -100,6 +100,25 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
     }
 
     /**
+     * Ownership is dual: the zones.owner column or membership of an owning group, the
+     * same rule PermissionService::userOwnsZone() applies.
+     */
+    private static function ownedZoneFilter(): string
+    {
+        // zones_groups is keyed by the canonical id, which API mode may take from zones.id
+        return " AND (zones.owner = :userid OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('zones') . " AND ugm.user_id = :userid_group))";
+    }
+
+    /** @return array<string, int> */
+    private static function ownedZoneParams(int $ownerId): array
+    {
+        return [':userid' => $ownerId, ':userid_group' => $ownerId];
+    }
+
+    /**
      * List zone templates visible to the given user
      *
      * @param int|null $userId User ID (null for all)
@@ -676,22 +695,22 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
 
         if ($this->isApiBackend()) {
             if ($ownerId !== null) {
-                $sql_add = " AND zones.owner = :userid";
-                $params[':userid'] = $ownerId;
+                $sql_add = self::ownedZoneFilter();
+                $params += self::ownedZoneParams($ownerId);
             }
 
             $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
             $stmt = $this->db->prepare($query);
             $stmt->execute($params);
-            return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+            return self::uniqueInts($stmt->fetchAll(PDO::FETCH_COLUMN));
         }
 
         $domains_table = $this->pdnsTable(PdnsTable::DOMAINS);
         $records_table = $this->pdnsTable(PdnsTable::RECORDS);
 
         if ($ownerId !== null) {
-            $sql_add = " AND zones.domain_id = $domains_table.id AND zones.owner = :userid";
-            $params[':userid'] = $ownerId;
+            $sql_add = " AND zones.domain_id = $domains_table.id" . self::ownedZoneFilter();
+            $params += self::ownedZoneParams($ownerId);
         }
 
         $query = "SELECT zones.id,
@@ -711,11 +730,40 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
 
-        $zone_list = [];
-        while ($zone = $stmt->fetch()) {
-            $zone_list[] = $zone['domain_id'];
+        return self::uniqueInts($stmt->fetchAll(PDO::FETCH_COLUMN, 1));
+    }
+
+    /**
+     * A zone with several owners has one zones row per owner; the listings that
+     * count or propagate to zones want each zone once.
+     *
+     * @param list<mixed> $ids
+     * @return list<int>
+     */
+    private static function uniqueInts(array $ids): array
+    {
+        return array_values(array_unique(array_map('intval', $ids)));
+    }
+
+    /**
+     * Keep the first row per zone id (the SQL and API listings both sort by name).
+     *
+     * @param list<array<string, mixed>> $rows
+     * @return list<array<string, mixed>>
+     */
+    private static function uniqueByZoneId(array $rows): array
+    {
+        $seen = [];
+        $unique = [];
+        foreach ($rows as $row) {
+            $id = (int)$row['id'];
+            if (isset($seen[$id])) {
+                continue;
+            }
+            $seen[$id] = true;
+            $unique[] = $row;
         }
-        return $zone_list;
+        return $unique;
     }
 
     /**
@@ -732,8 +780,8 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
 
         if ($this->isApiBackend()) {
             if ($ownerId !== null) {
-                $sql_add = " AND owner = :userid";
-                $params[':userid'] = $ownerId;
+                $sql_add = self::ownedZoneFilter();
+                $params += self::ownedZoneParams($ownerId);
             }
             $query = "SELECT id AS zone_id, " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE zone_templ_id = :zone_templ_id" . $sql_add;
         } else {
@@ -741,8 +789,8 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
             // crash later in updateZoneRecords.
             $domains_table = $this->pdnsTable(PdnsTable::DOMAINS);
             if ($ownerId !== null) {
-                $sql_add = " AND zones.owner = :userid";
-                $params[':userid'] = $ownerId;
+                $sql_add = self::ownedZoneFilter();
+                $params += self::ownedZoneParams($ownerId);
             }
             $query = "SELECT zones.id AS zone_id, zones.domain_id
                       FROM zones
@@ -777,8 +825,8 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
 
         if ($this->isApiBackend()) {
             if ($ownerId !== null) {
-                $sql_add = " AND zones.owner = :userid";
-                $params[':userid'] = $ownerId;
+                $sql_add = self::ownedZoneFilter();
+                $params += self::ownedZoneParams($ownerId);
             }
 
             $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn('zones') . " AS domain_id, zones.owner, zones.comment,
@@ -809,15 +857,15 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
             }
 
             usort($result, fn($a, $b) => strcasecmp($a['name'], $b['name']));
-            return $result;
+            return self::uniqueByZoneId($result);
         }
 
         $domains_table = $this->pdnsTable(PdnsTable::DOMAINS);
         $records_table = $this->pdnsTable(PdnsTable::RECORDS);
 
         if ($ownerId !== null) {
-            $sql_add = " AND zones.domain_id = $domains_table.id AND zones.owner = :userid";
-            $params[':userid'] = $ownerId;
+            $sql_add = " AND zones.domain_id = $domains_table.id" . self::ownedZoneFilter();
+            $params += self::ownedZoneParams($ownerId);
         }
 
         $query = "SELECT $domains_table.id,
@@ -843,7 +891,7 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
 
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
-        return $stmt->fetchAll();
+        return self::uniqueByZoneId($stmt->fetchAll());
     }
 
     /**

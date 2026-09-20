@@ -145,14 +145,33 @@ class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
         $this->assertEqualsCanonicalizing([self::DIRECT_DOMAIN, self::GROUP_DOMAIN, self::FOREIGN_DOMAIN], $ids);
     }
 
-    public function testEditOwnListsOnlyDirectlyOwnedZones(): void
+    public function testEditOwnListsDirectlyAndGroupOwnedZones(): void
     {
         $this->actingAs(self::OWN_EDITOR);
 
         $ids = $this->model($this->dnsBackendStub(false))->getListZoneUseTempl(self::TEMPLATE, self::OWN_EDITOR);
 
-        // Group ownership (zones_groups) does not widen this listing: only zones.owner counts.
-        $this->assertSame([self::DIRECT_DOMAIN], $ids);
+        // Ownership is dual: zones.owner or membership of an owning group (zones_groups)
+        $this->assertSame([self::DIRECT_DOMAIN, self::GROUP_DOMAIN], $ids);
+    }
+
+    public function testAZoneWithSeveralOwnersIsListedOnce(): void
+    {
+        // A second ownership row for the direct zone: sync tracking needs both id pairs,
+        // the count and detail listings want the zone once
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, comment, zone_templ_id) VALUES
+            (6, " . self::DIRECT_DOMAIN . ", " . self::OTHER_USER . ", 'co-owner', " . self::TEMPLATE . ")");
+        $this->actingAs(self::ADMIN_USER_ID);
+        $model = $this->model($this->dnsBackendStub(false));
+
+        $ids = $model->getListZoneUseTempl(self::TEMPLATE, self::ADMIN_USER_ID);
+        $details = array_column($model->getZonesUsingTemplate(self::TEMPLATE, self::ADMIN_USER_ID), 'id');
+        $pairs = array_column($model->getZoneAndDomainIdsByTemplate(self::TEMPLATE, self::ADMIN_USER_ID), 'zone_id');
+
+        $this->assertSame(1, count(array_keys($ids, self::DIRECT_DOMAIN, true)));
+        $this->assertSame(1, count(array_keys($details, self::DIRECT_DOMAIN, true)));
+        $this->assertContains(1, $pairs);
+        $this->assertContains(6, $pairs);
     }
 
     public function testEditOwnFilterIsKeyedByTheGivenUserNotTheSession(): void
@@ -179,7 +198,7 @@ class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
 
         $ids = $this->model($this->apiBackend())->getListZoneUseTempl(self::TEMPLATE, self::OWN_EDITOR);
 
-        $this->assertSame([self::DIRECT_DOMAIN, self::ORPHAN_DOMAIN], $ids);
+        $this->assertSame([self::DIRECT_DOMAIN, self::GROUP_DOMAIN, self::ORPHAN_DOMAIN], $ids);
     }
 
     public function testIdPairsCarryBothIdsAndSkipStaleLinks(): void
@@ -201,7 +220,10 @@ class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
 
         $rows = $this->model($this->dnsBackendStub(false))->getZoneAndDomainIdsByTemplate(self::TEMPLATE, self::OWN_EDITOR);
 
-        $this->assertSame([['zone_id' => 1, 'domain_id' => self::DIRECT_DOMAIN]], $rows);
+        $this->assertSame([
+            ['zone_id' => 1, 'domain_id' => self::DIRECT_DOMAIN],
+            ['zone_id' => 2, 'domain_id' => self::GROUP_DOMAIN],
+        ], $rows);
     }
 
     public function testIdPairsOnTheApiBackendKeepStaleLinks(): void
@@ -213,6 +235,7 @@ class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
 
         $this->assertSame([
             ['zone_id' => 1, 'domain_id' => self::DIRECT_DOMAIN],
+            ['zone_id' => 2, 'domain_id' => self::GROUP_DOMAIN],
             ['zone_id' => 5, 'domain_id' => self::ORPHAN_DOMAIN],
         ], $rows);
     }
@@ -264,7 +287,7 @@ class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
 
         $rows = $this->model($this->dnsBackendStub(false))->getZonesUsingTemplate(self::TEMPLATE, self::OWN_EDITOR);
 
-        $this->assertSame([self::DIRECT_DOMAIN], array_column($rows, 'id'));
+        $this->assertSame([self::DIRECT_DOMAIN, self::GROUP_DOMAIN], array_column($rows, 'id'));
     }
 
     public function testZoneDetailsOnTheApiBackendComeFromTheClient(): void
@@ -326,7 +349,7 @@ class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
 
         $rows = $this->model($this->apiBackend())->getZonesUsingTemplate(self::TEMPLATE, self::OWN_EDITOR);
 
-        $this->assertSame([self::ORPHAN_DOMAIN, self::DIRECT_DOMAIN], array_column($rows, 'id'));
+        $this->assertSame([self::ORPHAN_DOMAIN, self::DIRECT_DOMAIN, self::GROUP_DOMAIN], array_column($rows, 'id'));
     }
 
     public function testZonesByIdsWithNoIdsAsksNobody(): void
