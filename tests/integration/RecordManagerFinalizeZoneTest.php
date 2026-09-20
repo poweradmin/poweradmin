@@ -26,6 +26,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManager;
+use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
@@ -158,6 +159,6 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
             $backend->method('addRecordGetId')->willReturn(55);
         }
 
-        return new RecordManager($this->db, $config, $validation, $soa, $domainRepository, new RepositoryFactory($this->db, $config, $backend), $backend, null, $changeLogger);
+        return new RecordManager($this->db, $config, $validation, $soa, $domainRepository, new RepositoryFactory($this->db, $config, $backend), fn() => $this->createMock(DnssecProviderInterface::class), $backend, null, $changeLogger);
     }
 }

@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Closure;
 use Exception;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -31,6 +31,7 @@ use PDO;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
@@ -40,7 +41,6 @@ use Poweradmin\Domain\Utility\DomainUtility;
  */
 class BatchReverseRecordCreator
 {
-    private PDO $db;
     private ConfigurationInterface $config;
     private AuditLoggerInterface $audit;
     private DomainRepositoryInterface $domainRepository;
@@ -48,17 +48,22 @@ class BatchReverseRecordCreator
     private IPAddressValidator $ipValidator;
     private RecordRepositoryInterface $recordRepository;
     private RecordMatchingService $recordMatchingService;
+    private Closure $dnssecProvider;
+    private ?DnssecProviderInterface $builtDnssecProvider = null;
 
+    /**
+     * @param Closure(): DnssecProviderInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
+     */
     public function __construct(
         PDO $db,
         ConfigurationInterface $config,
         AuditLoggerInterface $audit,
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,
+        Closure $dnssecProvider,
         ?IPAddressValidator $ipValidator = null,
         ?RecordRepositoryInterface $recordRepository = null
     ) {
-        $this->db = $db;
         $this->config = $config;
         $this->audit = $audit;
         $this->domainRepository = $domainRepository;
@@ -66,6 +71,7 @@ class BatchReverseRecordCreator
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
         $this->recordRepository = $recordRepository ?? new SqlRecordRepository($db, $config);
         $this->recordMatchingService = new RecordMatchingService($domainRepository, $this->recordRepository);
+        $this->dnssecProvider = $dnssecProvider;
     }
 
     /**
@@ -625,9 +631,9 @@ class BatchReverseRecordCreator
                 $isDnssecEnabled = $this->config->get('dnssec', 'enabled');
 
                 if ($isDnssecEnabled) {
-                    $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
+                    $this->builtDnssecProvider ??= ($this->dnssecProvider)();
                     $zone_name = $this->domainRepository->getDomainNameById($zone_rev_id);
-                    $dnssecProvider->rectifyZone($zone_name);
+                    $this->builtDnssecProvider->rectifyZone($zone_name);
                 }
 
                 return true;

@@ -479,6 +479,7 @@ class ControllerServiceFactory
             $this->auditService(),
             $this->domainRepository(),
             $this->recordManager(),
+            fn() => DnssecProviderFactory::create($this->db, $this->config),
             null,
             $this->recordRepository()
         );

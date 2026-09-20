@@ -289,12 +289,6 @@ parameters:
 			path: lib/Domain/Service/BatchReverseRecordCreator.php
 
 		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\DnssecProviderFactory is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\DnssecProviderFactory matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 2
-			path: lib/Domain/Service/BatchReverseRecordCreator.php
-
-		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
@@ -424,12 +418,6 @@ parameters:
 			message: '#^Namespace Poweradmin\\Application\\Service\\DnsBackendProviderFactory is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\DnsBackendProviderFactory matches Poweradmin\\Application\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 3
-			path: lib/Domain/Service/Dns/RecordManager.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\DnssecProviderFactory is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\DnssecProviderFactory matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 2
 			path: lib/Domain/Service/Dns/RecordManager.php
 
 		-

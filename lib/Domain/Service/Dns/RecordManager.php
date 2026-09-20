@@ -22,16 +22,17 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use Closure;
 use Exception;
 use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsFormatter;
+use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\PermissionService;
@@ -64,6 +65,8 @@ class RecordManager implements RecordManagerInterface
     private ?PermissionService $permissionService = null;
     private UserContextService $userContext;
     private RepositoryFactoryInterface $repositoryFactory;
+    private Closure $dnssecProvider;
+    private ?DnssecProviderInterface $builtDnssecProvider = null;
 
     /**
      * Constructor
@@ -74,6 +77,7 @@ class RecordManager implements RecordManagerInterface
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
      * @param RepositoryFactoryInterface $repositoryFactory Builds the record and comment repositories
+     * @param Closure(): DnssecProviderInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
      * @param DnsBackendProviderInterface|null $backendProvider DNS backend provider (auto-created if null)
      */
     public function __construct(
@@ -83,6 +87,7 @@ class RecordManager implements RecordManagerInterface
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
         RepositoryFactoryInterface $repositoryFactory,
+        Closure $dnssecProvider,
         ?DnsBackendProviderInterface $backendProvider = null,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
@@ -100,6 +105,7 @@ class RecordManager implements RecordManagerInterface
         $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
         $this->userContext = $userContext ?? new UserContextService();
         $this->repositoryFactory = $repositoryFactory;
+        $this->dnssecProvider = $dnssecProvider;
     }
 
     private function captureChange(callable $callback): void
@@ -538,12 +544,8 @@ class RecordManager implements RecordManagerInterface
             return;
         }
         try {
-            $dnssecProvider = DnssecProviderFactory::create(
-                $this->db,
-                $this->config,
-                DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
-            );
-            if (!$dnssecProvider->rectifyZone($zoneName)) {
+            $this->builtDnssecProvider ??= ($this->dnssecProvider)();
+            if (!$this->builtDnssecProvider->rectifyZone($zoneName)) {
                 $this->logger->warning('Zone rectify refused for {zone}', ['zone' => $zoneName]);
             }
         } catch (\Throwable $e) {

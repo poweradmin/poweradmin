@@ -35,6 +35,7 @@ use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -102,6 +103,7 @@ class DnsServiceFactory
             self::createSOARecordManager($db, $config, $backendProvider),
             $repositoryFactory->createDomainRepository(),
             $repositoryFactory,
+            fn() => DnssecProviderFactory::create($db, $config, DnsBackendProviderFactory::apiClientFrom($backendProvider)),
             $backendProvider
         );
     }
