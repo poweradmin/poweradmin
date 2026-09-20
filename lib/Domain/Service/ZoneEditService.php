@@ -190,6 +190,23 @@ class ZoneEditService
      */
     private function saveRow(ZoneEditSubmission $submission, array $record): ?RecordWriteResult
     {
+        $change = $this->diffRow($submission, $record);
+        if ($change === null) {
+            return null;
+        }
+
+        return $this->writeRow($submission, $change);
+    }
+
+    /**
+     * Normalises one posted row and compares it with the zone, writing nothing.
+     * A change request files what this reports and replays it through writeRow().
+     *
+     * @param array<string, mixed> $record A posted row (name, type, content, ttl, prio, disabled, comment, rid, zid)
+     * @return ZoneEditRowChange|null The change, or null when the row matched the zone
+     */
+    public function diffRow(ZoneEditSubmission $submission, array $record): ?ZoneEditRowChange
+    {
         // Always the full name, so "@" and bare labels compare against what the zone holds
         if (isset($record['name'])) {
             $record['name'] = DnsHelper::restoreZoneSuffix((string)$record['name'], $submission->zoneName);
@@ -209,6 +226,19 @@ class ZoneEditService
         if (!$log->hasChanged($record)) {
             return null;
         }
+
+        return new ZoneEditRowChange($record, $log);
+    }
+
+    /**
+     * Writes one changed row without bumping the serial: the record, its audit
+     * line, and the record comment with its PTR/A sync when comments are shown.
+     */
+    public function writeRow(ZoneEditSubmission $submission, ZoneEditRowChange $change): RecordWriteResult
+    {
+        $record = $change->record;
+        $log = $change->log;
+        $showComments = (bool)$this->config->get('interface', 'show_record_comments', false);
 
         $newComment = (string)($record['comment'] ?? '');
         $edited = $this->recordManager->editRecord($record, false, $showComments ? [

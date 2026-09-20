@@ -29,6 +29,7 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -52,6 +53,7 @@ use Poweradmin\Domain\Service\UserProfileAssembler;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
+use Poweradmin\Domain\Service\ZoneChangeRequestService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneMetadataService;
@@ -68,6 +70,7 @@ use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Psr\Log\LoggerInterface;
@@ -105,6 +108,8 @@ class ControllerServiceFactory
     private ?SOARecordManagerInterface $soaRecordManager = null;
     private ?DnssecProviderInterface $dnssecProvider = null;
     private ?PowerdnsApiClient $apiClient = null;
+    private ?ZoneChangeRequestRepositoryInterface $zoneChangeRequestRepository = null;
+    private ?ZoneChangeRequestService $zoneChangeRequestService = null;
     private bool $apiClientResolved = false;
 
     public function __construct(PDO $db, ConfigurationManager $config, LoggerInterface $logger)
@@ -361,6 +366,32 @@ class ControllerServiceFactory
             $comments,
             new RecordCommentSyncService($comments, $this->recordRepository(), $this->dnsBackendProvider()),
             $this->auditService()
+        );
+    }
+
+    public function zoneChangeRequestRepository(): ZoneChangeRequestRepositoryInterface
+    {
+        return $this->zoneChangeRequestRepository ??= new DbZoneChangeRequestRepository($this->db);
+    }
+
+    public function zoneChangeRequestService(): ZoneChangeRequestService
+    {
+        return $this->zoneChangeRequestService ??= new ZoneChangeRequestService(
+            $this->zoneChangeRequestRepository(),
+            $this->zoneEditService(),
+            DnsServiceFactory::createDnsRecordValidationService($this->db, $this->config, $this->dnsBackendProvider()),
+            $this->recordRepository(),
+            $this->domainRepository(),
+            $this->zoneRepository(),
+            $this->recordManager(),
+            $this->soaRecordManager(),
+            $this->zoneManagementService(),
+            $this->dnsBackendProvider(),
+            $this->db,
+            $this->config,
+            $this->repositoryFactory()->createRecordCommentRepository(),
+            RecordChangeLogger::withChangeset(...),
+            $this->permissionService()
         );
     }
 

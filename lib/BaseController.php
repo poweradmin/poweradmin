@@ -49,6 +49,7 @@ use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Service\ZoneChangeRequestService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneEditService;
 use Poweradmin\Domain\Service\ZoneListPermissionService;
@@ -64,6 +65,7 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\CatalogZoneService;
@@ -647,6 +649,16 @@ abstract class BaseController
     protected function createZoneEditService(): ZoneEditService
     {
         return $this->services()->zoneEditService();
+    }
+
+    protected function createZoneChangeRequestRepository(): ZoneChangeRequestRepositoryInterface
+    {
+        return $this->services()->zoneChangeRequestRepository();
+    }
+
+    protected function createZoneChangeRequestService(): ZoneChangeRequestService
+    {
+        return $this->services()->zoneChangeRequestService();
     }
 
     protected function createZoneListPermissionService(): ZoneListPermissionService
