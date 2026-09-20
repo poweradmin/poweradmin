@@ -449,10 +449,11 @@ class ZonesRecordsBulkController extends PublicApiController
         if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
             throw new ApiErrorException('Invalid field types in request body', 400);
         }
-        // The same range checks a single-record update applies, so a batch cannot
-        // store values one PUT would have refused
-        if ($ttl < 1) {
-            throw new ApiErrorException('TTL must be greater than 0', 400);
+        // A TTL of 0 is RFC-valid ("do not cache") and TTLValidator accepts it, so
+        // only a negative value is refused here. An update that leaves ttl out
+        // inherits the stored value and must not be rejected for it.
+        if ($ttl < 0) {
+            throw new ApiErrorException('TTL must not be negative', 400);
         }
         if ($disabled !== 0 && $disabled !== 1) {
             throw new ApiErrorException('Disabled field must be 0 or 1', 400);

@@ -275,6 +275,49 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         );
     }
 
+    public function testABulkUpdateKeepsAStoredTtlOfZero(): void
+    {
+        // 0 means "do not cache" and TTLValidator accepts it; an update that does
+        // not mention ttl inherits it and must not be refused for that
+        $this->records->method('getRecordById')->willReturn([
+            'id' => 3,
+            'domain_id' => self::ZONE_ID,
+            'name' => 'www.example.com',
+            'type' => 'A',
+            'content' => '192.0.2.1',
+            'ttl' => 0,
+            'prio' => 0,
+            'disabled' => 0,
+        ]);
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->with($this->callback(static fn(array $record): bool => $record['ttl'] === 0))
+            ->willReturn(RecordWriteResult::ok(3));
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'content' => '192.0.2.9']]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testABulkUpdateRefusesANegativeTtl(): void
+    {
+        $this->records->method('getRecordById')->willReturn([
+            'id' => 3,
+            'domain_id' => self::ZONE_ID,
+            'name' => 'www.example.com',
+            'type' => 'A',
+            'content' => '192.0.2.1',
+            'ttl' => 3600,
+            'prio' => 0,
+            'disabled' => 0,
+        ]);
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'ttl' => -1]]]);
+        $body = $this->decode($response);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertStringContainsString('TTL must not be negative', implode(' ', $body['data']['errors']));
+    }
+
     public function testTheAuditRowRecordsHowManyOperationsRan(): void
     {
         $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
