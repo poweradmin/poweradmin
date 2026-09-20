@@ -74,8 +74,11 @@ interface ZoneChangeRequestRepositoryInterface
     /** @param list<int>|null $zoneIds null for every zone, [] for none */
     public function countPending(?array $zoneIds): int;
 
-    /** @return bool False when the request was no longer pending, so nothing changed */
-    public function markReviewed(int $id, string $status, int $reviewerId, string $reviewerName, ?string $comment): bool;
+    /**
+     * @param list<string> $fromStatuses The states the request may be in for the decision to take
+     * @return bool False when the request was in none of them, so nothing changed
+     */
+    public function markReviewed(int $id, string $status, int $reviewerId, string $reviewerName, ?string $comment, array $fromStatuses = [ZoneChangeRequest::STATUS_PENDING]): bool;
 
     public function markApplied(int $id): void;
 

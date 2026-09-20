@@ -122,7 +122,7 @@ class ChangeRequestController extends BaseController
     {
         $service = $this->createZoneChangeRequestService();
         // Staleness only matters while the request can still be applied
-        $stale = $request->isPending() ? $service->staleActions($request) : [];
+        $stale = $request->canBeApplied() ? $service->staleActions($request) : [];
         $zoneExists = $this->createDomainRepository()->zoneIdExists($request->zoneId);
 
         $this->render('change_request.html', [
@@ -130,12 +130,13 @@ class ChangeRequestController extends BaseController
             'actions' => ChangeRequestPresenter::actions($request, $stale),
             'stale_count' => count($stale),
             'base_serial' => $request->baseSerial,
-            'base_serial_mismatch' => $request->isPending() && $service->baseSerialMismatch($request),
+            'base_serial_mismatch' => $request->canBeApplied() && $service->baseSerialMismatch($request),
             'zone_comment' => $request->zoneComment,
             'zone_exists' => $zoneExists,
             'zone_display_name' => DnsIdnService::toDisplay($request->zoneName),
             'is_reverse_zone' => DnsHelper::isReverseZoneName($request->zoneName),
             'can_review' => $canReview && $request->isPending(),
+            'can_retry' => $canReview && $request->status === ZoneChangeRequest::STATUS_FAILED && $zoneExists,
             'can_cancel' => $isRequester && $request->isPending(),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', false),
         ]);

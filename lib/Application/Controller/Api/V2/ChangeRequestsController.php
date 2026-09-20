@@ -292,8 +292,8 @@ class ChangeRequestsController extends PublicApiController
 
             return $this->returnApiResponse([
                 'change_request' => $this->serialize($request),
-                'stale_actions' => $request->isPending() ? $this->changeRequests->staleActions($request) : [],
-                'base_serial_mismatch' => $request->isPending() && $this->changeRequests->baseSerialMismatch($request),
+                'stale_actions' => $request->canBeApplied() ? $this->changeRequests->staleActions($request) : [],
+                'base_serial_mismatch' => $request->canBeApplied() && $this->changeRequests->baseSerialMismatch($request),
             ], true, 'Change request retrieved successfully');
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ChangeRequestsController::getChangeRequest', 'Failed to retrieve change request');
@@ -305,7 +305,8 @@ class ChangeRequestsController extends PublicApiController
         operationId: 'v2ApproveChangeRequest',
         summary: 'Approve and apply a change request',
         description: 'Applies the stored actions to the zone as the caller. Needs the change approve permission for the zone together with the edit permission. '
-            . 'A refused or failed write leaves the request in the failed state and answers with the failure.',
+            . 'A refused or failed write leaves the request in the failed state and answers with the failure. '
+            . 'Approving a failed request applies it again; actions that already landed are skipped.',
         tags: ['change-requests'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [

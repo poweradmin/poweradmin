@@ -475,6 +475,37 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertTrue($service->cancel($id, self::REQUESTER)->success);
     }
 
+    public function testAFailedRequestCanBeTriedAgainAndSkipsWhatAlreadyLanded(): void
+    {
+        $this->records = $this->createMock(RecordRepositoryInterface::class);
+        $this->records->method('getRecordFromId')->willReturnCallback(fn(int|string $id): ?array => $this->stored[(string)$id] ?? null);
+        $this->records->method('getRecordsByName')->willReturn([]);
+        $this->records->method('recordExists')->willReturnCallback(fn(int $z, string $name): bool => $name === 'new.example.com');
+        $this->recordManager->expects($this->never())->method('addRecordGetId');
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        $id = $this->fileThreeActions();
+        $this->repository->markReviewed($id, ZoneChangeRequest::STATUS_APPROVED, self::REVIEWER, 'bob', null);
+        $this->repository->markFailed($id, 'Action 2 (edit) failed: boom. Applied before the failure: 1.');
+
+        $result = $this->makeService()->approve($id, self::REVIEWER, 'bob', 'fixed');
+
+        $this->assertTrue($result->success, $result->message);
+        $request = $this->repository->find($id);
+        $this->assertSame(ZoneChangeRequest::STATUS_APPROVED, $request->status);
+        $this->assertNull($request->error);
+        $this->assertNotNull($request->appliedAt);
+    }
+
+    public function testRejectAndCancelStillRefuseAFailedRequest(): void
+    {
+        $id = $this->makeService()->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]))->requestId;
+        $this->repository->markFailed($id, 'boom');
+
+        $this->assertSame(ZoneChangeRequestResult::CODE_NOT_PENDING, $this->makeService()->reject($id, self::REVIEWER, 'bob')->code);
+        $this->assertSame(ZoneChangeRequestResult::CODE_NOT_PENDING, $this->makeService()->cancel($id, self::REQUESTER)->code);
+    }
+
     public function testAThrowingNotifierDoesNotUndoTheEvent(): void
     {
         $notifier = $this->createMock(ChangeRequestNotifierInterface::class);

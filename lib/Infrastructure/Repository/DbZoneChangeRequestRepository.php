@@ -114,21 +114,27 @@ class DbZoneChangeRequestRepository implements ZoneChangeRequestRepositoryInterf
         return $this->count(['status' => ZoneChangeRequest::STATUS_PENDING, 'zoneIds' => $zoneIds]);
     }
 
-    public function markReviewed(int $id, string $status, int $reviewerId, string $reviewerName, ?string $comment): bool
+    public function markReviewed(int $id, string $status, int $reviewerId, string $reviewerName, ?string $comment, array $fromStatuses = [ZoneChangeRequest::STATUS_PENDING]): bool
     {
-        // Only a pending row moves, so two concurrent decisions cannot both win
+        // Only a row still in one of the given states moves, so two concurrent decisions cannot both win
+        $placeholders = [];
+        foreach (array_values($fromStatuses) as $i => $from) {
+            $placeholders[] = ":from_$i";
+        }
         $stmt = $this->db->prepare(
             'UPDATE zone_change_requests
              SET status = :status, reviewer_id = :reviewer_id, reviewer_name = :reviewer_name,
-                 review_comment = :review_comment, reviewed_at = CURRENT_TIMESTAMP
-             WHERE id = :id AND status = :pending'
+                 review_comment = :review_comment, reviewed_at = CURRENT_TIMESTAMP, error = NULL
+             WHERE id = :id AND status IN (' . implode(', ', $placeholders) . ')'
         );
         $stmt->bindValue(':status', $status, PDO::PARAM_STR);
         $stmt->bindValue(':reviewer_id', $reviewerId, PDO::PARAM_INT);
         $stmt->bindValue(':reviewer_name', $reviewerName, PDO::PARAM_STR);
         $stmt->bindValue(':review_comment', $comment, $comment === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->bindValue(':pending', ZoneChangeRequest::STATUS_PENDING, PDO::PARAM_STR);
+        foreach (array_values($fromStatuses) as $i => $from) {
+            $stmt->bindValue(":from_$i", $from, PDO::PARAM_STR);
+        }
         $stmt->execute();
 
         return $stmt->rowCount() === 1;

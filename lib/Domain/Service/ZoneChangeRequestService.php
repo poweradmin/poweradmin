@@ -221,12 +221,14 @@ class ZoneChangeRequestService
      */
     public function approve(int $requestId, int $reviewerId, string $reviewerName, ?string $comment = null): ZoneChangeRequestResult
     {
-        $request = $this->pending($requestId);
+        $request = $this->pending($requestId, allowFailed: true);
         if ($request instanceof ZoneChangeRequestResult) {
             return $request;
         }
 
-        if (!$this->requests->markReviewed($requestId, ZoneChangeRequest::STATUS_APPROVED, $reviewerId, $reviewerName, $comment)) {
+        // A failed request may be tried again once the reviewer has fixed what refused it
+        $from = [ZoneChangeRequest::STATUS_PENDING, ZoneChangeRequest::STATUS_FAILED];
+        if (!$this->requests->markReviewed($requestId, ZoneChangeRequest::STATUS_APPROVED, $reviewerId, $reviewerName, $comment, $from)) {
             return $this->decidedMeanwhile($requestId);
         }
 
@@ -448,6 +450,11 @@ class ZoneChangeRequestService
 
         switch ($action['op'] ?? null) {
             case ZoneChangeRequest::OP_ADD:
+                // Already there (a retry after a partial apply): the request asked for exactly this
+                if ($this->records->recordExists($zoneId, strtolower((string)($after['name'] ?? '')), (string)($after['type'] ?? ''), (string)($after['content'] ?? ''))) {
+                    return RecordWriteResult::ok();
+                }
+
                 return $this->applyAdd($zoneId, $after, $reviewerName);
 
             case ZoneChangeRequest::OP_EDIT:
@@ -632,13 +639,13 @@ class ZoneChangeRequestService
     /**
      * The request when it can still be decided, otherwise the refusal to relay.
      */
-    private function pending(int $requestId): ZoneChangeRequest|ZoneChangeRequestResult
+    private function pending(int $requestId, bool $allowFailed = false): ZoneChangeRequest|ZoneChangeRequestResult
     {
         $request = $this->requests->find($requestId);
         if ($request === null) {
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_NOT_FOUND, 'Change request not found.', 404);
         }
-        if (!$request->isPending()) {
+        if (!($allowFailed ? $request->canBeApplied() : $request->isPending())) {
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_NOT_PENDING, 'This change request has already been decided.', 409, [], $request->id);
         }
 

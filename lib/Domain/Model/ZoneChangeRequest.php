@@ -73,6 +73,14 @@ final readonly class ZoneChangeRequest
         return $this->status === self::STATUS_PENDING;
     }
 
+    /**
+     * Pending requests are applied on approval; a failed one may be tried again.
+     */
+    public function canBeApplied(): bool
+    {
+        return $this->status === self::STATUS_PENDING || $this->status === self::STATUS_FAILED;
+    }
+
     public function isDecided(): bool
     {
         return in_array($this->status, [self::STATUS_APPROVED, self::STATUS_REJECTED, self::STATUS_FAILED], true);

@@ -141,10 +141,21 @@
         {% endif %}
     </div>
 
-    {% if can_review or can_cancel %}
+    {% if can_review or can_retry or can_cancel %}
     <div class="card-footer py-3">
         <form method="post" action="{{ base_url_prefix }}/zones/requests/{{ request.id }}" class="row g-2 align-items-center">
             {{ macros.csrf_field() }}
+            {% if can_retry %}
+            <div class="col-md-5">
+                <input type="text" class="form-control form-control-sm" name="review_comment" maxlength="200" placeholder="{% trans %}Review comment (optional){% endtrans %}" data-testid="review-comment-input">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-warning btn-sm" name="action" value="approve" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="retry-change-request">
+                    <i class="bi bi-arrow-repeat me-1"></i>{% trans %}Try again{% endtrans %}
+                </button>
+                <span class="small text-muted ms-2">{% trans %}Applies the request again after the cause of the failure was fixed. Actions that already landed are skipped.{% endtrans %}</span>
+            </div>
+            {% endif %}
             {% if can_review %}
             <div class="col-md-5">
                 <input type="text" class="form-control form-control-sm" name="review_comment" maxlength="200" placeholder="{% trans %}Review comment (optional){% endtrans %}" data-testid="review-comment-input">
