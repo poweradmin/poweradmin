@@ -25,10 +25,12 @@ namespace Poweradmin;
 use InvalidArgumentException;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Http\RequestContext;
+use Poweradmin\Application\Presenter\OwnerOptionsPresenter;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ChangeRequestNotificationService;
 use Poweradmin\Application\Service\ControllerEnvironment;
+use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\RequestValidator;
 use Poweradmin\Application\Service\CsrfTokenService;
@@ -44,7 +46,6 @@ use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserManagementService;
@@ -108,6 +109,7 @@ abstract class BaseController
     private string $pageTitle = '';
     protected LoggerInterface $logger;
     private ?ControllerServiceFactory $serviceFactory = null;
+    private ?ChangeApprovalContext $changeApprovalContext = null;
     private ?ModuleRegistry $moduleRegistry = null;
     private ?PageRenderer $pageRenderer = null;
 
@@ -668,112 +670,55 @@ abstract class BaseController
         return $this->services()->changeRequestNotificationService();
     }
 
+    /**
+     * Change-approval answers for the logged-in user; the policy itself lives in
+     * ChangeApprovalContext, which takes the user id rather than reading it.
+     */
+    private function changeApproval(): ChangeApprovalContext
+    {
+        return $this->changeApprovalContext ??= new ChangeApprovalContext(
+            $this->config,
+            fn() => $this->createPermissionService(),
+            fn() => $this->createZoneRepository(),
+            fn() => $this->createZoneChangeRequestRepository()
+        );
+    }
+
     protected function changeApprovalEnabled(): bool
     {
-        return (bool)$this->config->get('approval', 'enabled', false);
+        return $this->changeApproval()->enabled();
     }
 
-    /**
-     * How the current user's changes to the zone are handled: written directly,
-     * filed as a change request, or refused (one of ChangeApprovalPolicy::MODE_*).
-     * With approval.enabled off this is today's edit check.
-     */
     protected function changeApprovalModeForZone(int $zoneId): string
     {
-        $userId = $this->getCurrentUserId();
-        if ($userId === null) {
-            return ChangeApprovalPolicy::MODE_NONE;
-        }
-        $permissions = $this->createPermissionService();
-        $enabled = $this->changeApprovalEnabled();
-
-        return ChangeApprovalPolicy::mode(
-            $enabled,
-            $enabled && (bool)$this->config->get('approval', 'require_review_for_all', false),
-            $permissions->getEditPermissionLevelForZone($userId, $zoneId),
-            $enabled ? $permissions->getChangeRequestPermissionLevelForZone($userId, $zoneId) : 'none',
-            $permissions->userOwnsZone($userId, $zoneId)
-        );
+        return $this->changeApproval()->modeForZone($this->getCurrentUserId(), $zoneId);
     }
 
-    /**
-     * Whether the current user may approve or reject change requests for the zone.
-     */
     protected function canReviewChangeRequestsForZone(int $zoneId): bool
     {
-        $userId = $this->getCurrentUserId();
-        if ($userId === null || !$this->changeApprovalEnabled()) {
-            return false;
-        }
-        $permissions = $this->createPermissionService();
-
-        return ChangeApprovalPolicy::canReview(
-            $permissions->getChangeApprovePermissionLevelForZone($userId, $zoneId),
-            $permissions->getEditPermissionLevelForZone($userId, $zoneId),
-            $permissions->userOwnsZone($userId, $zoneId)
-        );
+        return $this->changeApproval()->canReviewZone($this->getCurrentUserId(), $zoneId);
     }
 
     /**
-     * The zones whose change requests the current user reviews, in the shape the
-     * request repository filters take: null for every zone, [] for none, otherwise
-     * the owned zone ids.
-     *
      * @return list<int>|null
      */
     protected function changeRequestReviewScope(): ?array
     {
-        $userId = $this->getCurrentUserId();
-        if ($userId === null || !$this->changeApprovalEnabled()) {
-            return [];
-        }
-        // Reviewing needs the edit permission too, so the scope is the narrower of the two levels
-        $permissions = $this->createPermissionService();
-        $approve = $permissions->getChangeApprovePermissionLevel($userId);
-        $edit = $permissions->getEditPermissionLevel($userId);
-        if ($approve === 'none' || $edit === 'none') {
-            return [];
-        }
-        if ($approve === 'all' && $edit === 'all') {
-            return null;
-        }
-
-        return $this->createZoneRepository()->getOwnedZoneIds($userId);
+        return $this->changeApproval()->reviewScope($this->getCurrentUserId());
     }
 
     /**
-     * Pending change requests per zone for a zone list, empty when the feature is off
-     * or the current user neither files nor reviews requests.
-     *
      * @param list<int> $zoneIds
      * @return array<int, int>
      */
     protected function pendingChangeRequestsByZone(array $zoneIds): array
     {
-        $userId = $this->getCurrentUserId();
-        if ($userId === null || $zoneIds === [] || !$this->changeApprovalEnabled()) {
-            return [];
-        }
-        $permissions = $this->createPermissionService();
-        $takesPart = $permissions->getChangeRequestPermissionLevel($userId) !== 'none'
-            || $permissions->getChangeApprovePermissionLevel($userId) !== 'none'
-            || (bool)$this->config->get('approval', 'require_review_for_all', false);
-        if (!$takesPart) {
-            return [];
-        }
-
-        // The same requests the list page shows: the reviewed zones or the user's own
-        return $this->createZoneChangeRequestRepository()->countPendingByZone($zoneIds, $this->changeRequestReviewScope(), $userId);
+        return $this->changeApproval()->pendingByZone($this->getCurrentUserId(), $zoneIds);
     }
 
-    /**
-     * Pending requests awaiting the current user's review, for the navigation badge.
-     */
     private function pendingChangeRequestCount(): int
     {
-        $scope = $this->changeRequestReviewScope();
-
-        return $scope === [] ? 0 : $this->createZoneChangeRequestRepository()->countPending($scope);
+        return $this->changeApproval()->pendingReviewCount($this->getCurrentUserId());
     }
 
     protected function createZoneListPermissionService(): ZoneListPermissionService
@@ -936,14 +881,7 @@ abstract class BaseController
      */
     protected function preservedOwnerChoice(array $assignableOwners, mixed $ownerInput): int|string
     {
-        if ($ownerInput === '') {
-            return '';
-        }
-        $ownerId = is_scalar($ownerInput) ? filter_var($ownerInput, FILTER_VALIDATE_INT) : false;
-        if ($ownerId !== false && in_array($ownerId, array_map('intval', array_column($assignableOwners, 'id')), true)) {
-            return $ownerId;
-        }
-        return (int)$this->getCurrentUserId();
+        return OwnerOptionsPresenter::preservedChoice($assignableOwners, $ownerInput, $this->getCurrentUserId());
     }
 
     /**
@@ -952,11 +890,7 @@ abstract class BaseController
      */
     private function ownersOffered(bool $everyone, array $users): array
     {
-        if ($everyone) {
-            return array_values($users);
-        }
-        $userId = $this->getCurrentUserId();
-        return array_values(array_filter($users, static fn(array $user): bool => (int)($user['id'] ?? 0) === $userId));
+        return OwnerOptionsPresenter::offered($everyone, $users, $this->getCurrentUserId());
     }
 
     /**
