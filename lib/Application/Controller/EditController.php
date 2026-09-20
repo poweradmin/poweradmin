@@ -25,13 +25,12 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Application\Http\ZoneEditIntent;
-use Poweradmin\Application\Presenter\RecordLockPresenter;
+use Poweradmin\Application\Presenter\EditZonePresenter;
 use Poweradmin\Application\Presenter\ChangeRequestPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
-use Poweradmin\Application\Service\RejectedZoneEditPresenter;
 use Poweradmin\Application\Service\ZoneSaveMessages;
 use Poweradmin\Application\Service\ZoneSigningMessages;
 use Poweradmin\BaseController;
@@ -41,7 +40,6 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
-use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
 use Poweradmin\Domain\Service\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\ZoneEditSubmission;
@@ -49,7 +47,6 @@ use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
-use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Domain\Service\RecordDisplayService;
@@ -108,10 +105,8 @@ class EditController extends BaseController
         $userPreferenceService = $this->createUserPreferenceService();
         $iface_edit_add_record_top = $userPreferenceService->getRecordFormPosition($userId) === 'top';
         $iface_edit_save_changes_top = $userPreferenceService->getSaveButtonPosition($userId) === 'top';
-        // API-backend records have no numeric ID, only an opaque composite identifier;
-        // showing it as a column is unreadable, so suppress it regardless of preference.
         $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->getConfig());
-        $iface_show_id = $userPreferenceService->getShowRecordId($userId) && !$isApiBackend;
+        $iface_show_id = $userPreferenceService->getShowRecordId($userId);
         $iface_show_add_record_form = $userPreferenceService->getShowAddRecordForm($userId);
         $iface_show_record_edit_button = $userPreferenceService->getShowRecordEditButton($userId);
         $iface_show_record_delete_button = $userPreferenceService->getShowRecordDeleteButton($userId);
@@ -170,9 +165,6 @@ class EditController extends BaseController
             return;
         }
         $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
-        // Form pre-fill stays on dns.ttl; JS updateTtlForType() swaps in dns.ttl_reverse
-        // for PTR selections so display tracks what's persisted.
-        $defaultTtl = $this->reverseTtlResolver->getForwardTtl();
 
         // Process form submissions; which form arrived is decided in one place
         $postParams = $this->httpRequest->getPostParams();
@@ -182,17 +174,7 @@ class EditController extends BaseController
         // processing, so a failed validation can re-display them (a truncated POST
         // never did, and still must not)
         if (($intent === ZoneEditIntent::ADD_RECORD || $intent === ZoneEditIntent::SAVE_RECORDS) && ZoneEditIntent::hasAddRecordFields($postParams)) {
-            $prio = $this->httpRequest->getPostParam('prio');
-            $ttl = $this->httpRequest->getPostParam('ttl');
-            $type = (string)$this->httpRequest->getPostParam('type');
-            $this->formStateService->rememberAddRecordForm([
-                'name' => $this->httpRequest->getPostParam('name'),
-                'content' => $this->httpRequest->getPostParam('content'),
-                'type' => $type,
-                'prio' => $prio !== null && $prio !== '' ? (int)$prio : 0,
-                'ttl' => $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone),
-                'comment' => $this->httpRequest->getPostParam('comment', '')
-            ]);
+            $this->rememberAddRecordForm($isReverseZone);
         }
 
         $edit_mode = $this->changeApprovalModeForZone($zone_id);
@@ -231,11 +213,6 @@ class EditController extends BaseController
         $meta_edit = ZoneAccessPolicy::levelAppliesToZone($perm_meta_edit, $user_is_zone_owner);
         $can_manage_dnssec = $this->permissionService->canManageDnssecForZone($userId, $zone_id);
 
-        $perm_metadata_view = $this->permissionService->getZoneMetadataViewPermissionLevel($userId);
-        $perm_ownership_view = $this->permissionService->getZoneOwnershipViewPermissionLevel($userId);
-        $metadata_view = ZoneAccessPolicy::levelAppliesToZone($perm_metadata_view, $user_is_zone_owner);
-        $ownership_view = ZoneAccessPolicy::levelAppliesToZone($perm_ownership_view, $user_is_zone_owner);
-
         $this->requireZoneView($zone_id);
 
         if ($this->isPost() && $meta_edit) {
@@ -247,14 +224,11 @@ class EditController extends BaseController
         }
 
         $domain_type = $this->domainRepository->getDomainType($zone_id);
-        $record_count = $this->recordRepository->countZoneRecords($zone_id);
-        $slave_master = $this->domainRepository->getDomainMaster($zone_id);
-        $types = ZoneType::getTypes();
 
         // Only zones PowerDNS would actually publish from a catalog get the selector,
         // so nothing below runs for the kinds that would discard the result.
-        $catalog_selector_view = $this->getPdnsCapabilities()->supportsCatalogZones()
-            && in_array($domain_type, CatalogZoneService::PUBLISHABLE_KINDS, true);
+        $supports_catalog_zones = $this->getPdnsCapabilities()->supportsCatalogZones();
+        $catalog_selector_view = $supports_catalog_zones && in_array($domain_type, CatalogZoneService::PUBLISHABLE_KINDS, true);
 
         // Read after the record listing above: in API mode the zone body is already
         // held, so the catalog read costs nothing extra here.
@@ -263,20 +237,10 @@ class EditController extends BaseController
         $catalog_producer = $catalog_name !== '' ? $catalog_service->getCatalogProducer($zone_id) : null;
         $catalog_producers = $catalog_selector_view && $meta_edit ? $catalog_service->getManageableProducers($userId) : [];
 
-        // Get zone templates
-        $zone_templates = $this->createZoneTemplateModel();
-        $zone_templates = $zone_templates->getListZoneTempl($userId);
         $zone_template_id = DomainManager::getZoneTemplate($this->db, $zone_id);
-        $zone_template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_template_id);
 
-        // Twig escapes this for the textarea. Escaping it here as well would put the
-        // entities in front of the operator and save them back on the next submit.
-        $zone_comment = (string)$this->zoneRepository->getZoneComment($zone_id);
-
-        $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
         // Get records via DnsDataService (supports both SQL and API backends)
-        $dnsDataService = $this->createDnsDataService();
-        $recordResult = $dnsDataService->getZoneRecords(
+        $recordResult = $this->createDnsDataService()->getZoneRecords(
             $zone_id,
             $zone_name,
             $row_start,
@@ -288,10 +252,7 @@ class EditController extends BaseController
             $recordTypeFilter,
             $contentFilter
         );
-        $records = $recordResult['records'];
         $total_filtered_count = $recordResult['total'];
-
-        $soa_record = $this->soaRecordManager->getSOARecord($zone_id);
 
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
         $dnssecProvider = $this->createDnssecProvider();
@@ -302,149 +263,121 @@ class EditController extends BaseController
         $signed_serial = ($isDnsSecEnabled && $is_secured) ? $dnssecProvider->getEditedSerial($zone_name) : null;
 
         // Transform records for display using the RecordDisplayService
-        $recordDisplayService = new RecordDisplayService($display_hostname_only);
+        $displayRecords = (new RecordDisplayService($display_hostname_only))->transformRecords($recordResult['records'], $zone_name);
 
-        $displayRecords = $recordDisplayService->transformRecords($records, $zone_name);
-
-        $perm_edit_ns_subzone = $this->hasPermission(Permission::PERM_EDIT_NS_SUBZONE);
-        $perm_is_godlike = $this->permissionService->isAdmin($userId);
-        $zone_is_read_only = ZoneType::isReadOnly($domain_type);
-        $user_can_edit_zone = ZoneAccessPolicy::canEditZone($perm_edit, $user_is_zone_owner);
         // A requester gets the same inputs as an editor; the save files a request instead
-        $requests_only = $edit_mode === ChangeApprovalPolicy::MODE_REQUEST && !$user_can_edit_zone;
+        $requests_only = $edit_mode === ChangeApprovalPolicy::MODE_REQUEST && !ZoneAccessPolicy::canEditZone($perm_edit, $user_is_zone_owner);
         if ($requests_only) {
             $perm_edit = $this->permissionService->getChangeRequestPermissionLevelForZone($userId, $zone_id);
-            $user_can_edit_zone = true;
         }
-        $zone_is_editable = $user_can_edit_zone && !$zone_is_read_only;
-        $can_edit_records = $perm_edit !== 'none';
-        $pending_change_requests = $this->changeApprovalEnabled() && $can_edit_records
+        $pending_change_requests = $this->changeApprovalEnabled() && $perm_edit !== 'none'
             ? ChangeRequestPresenter::summaries($this->createZoneChangeRequestRepository()->listPendingForZone($zone_id))
             : [];
-        $log_permission = $this->permissionService->getZoneLogPermissionLevel($userId);
-        $can_view_zone_logs = ZoneAccessPolicy::levelAppliesToZone($log_permission, $user_is_zone_owner);
 
-        $displayRecords = RecordLockPresenter::decorate(
-            $displayRecords,
-            $zone_name,
-            $perm_edit,
-            $perm_edit_ns_subzone,
-            $zone_is_read_only
-        );
-
-        $stale_form_dropped = RejectedZoneEditPresenter::restore($displayRecords, $this->rejectedRecords);
-        $stored_zone_comment = $zone_comment;
-        $zone_comment_conflict = false;
-        if ($this->rejectedZoneComment !== null) {
-            // The retry writes the submitted comment over the stored one, so say what
-            // the zone holds when another writer has changed it in the meantime.
-            $zone_comment_conflict = $stored_zone_comment !== $this->rejectedZoneComment;
-            $zone_comment = $this->rejectedZoneComment;
-        }
-
-        $recordTypes = $isReverseZone
-            ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities())
-            : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled, $this->getRecordTypeCapabilities());
-
-        $this->render('edit.html', [
-            'zone_id' => $zone_id,
-            'zone_name' => $zone_name,
-            'zone_name_to_display' => $zone_name,
-            'idn_zone_name' => $idn_zone_name,
-            'zone_display_name' => DnsIdnService::toDisplay($zone_name),
-            'zone_comment' => $zone_comment,
-            'zone_comment_conflict' => $zone_comment_conflict,
-            'stored_zone_comment' => $stored_zone_comment,
-            'domain_type' => $domain_type,
-            'slave_master' => $slave_master,
-            'zone_types' => $types,
-            'zone_replicates_from_primary' => ZoneType::replicatesFromPrimary($domain_type),
-            // Only the API backend can ask PowerDNS for a transfer, so the button is hidden otherwise
-            'can_retrieve_zone' => $isApiBackend && $domain_type === ZoneType::SLAVE && ($slave_master ?? '') !== '',
-            // Catalog kinds are absent from $types, so the browser would preselect the
-            // first option and one click would silently retype the zone.
-            'zone_type_change_allowed' => in_array($domain_type, $types, true),
-            'catalog_members_view' => $domain_type === ZoneType::PRODUCER && $metadata_view
-                && $this->getPdnsCapabilities()->supportsCatalogZones(),
-            'catalog_selector_view' => $catalog_selector_view,
-            'catalog_producers' => $catalog_producers,
-            'catalog_producer_id' => $catalog_producer['id'] ?? null,
-            // Non-empty with a null producer id means the zone is in a catalog whose
-            // producer this install does not manage. Shown so it is not silently lost.
-            'catalog_name' => $catalog_name,
-            'zone_templates' => $zone_templates,
-            'zone_template_id' => $zone_template_id,
-            'zone_template_details' => $zone_template_details,
-            'record_count' => $record_count,
-            'filtered_record_count' => $total_filtered_count,
-            'records' => $displayRecords,
-            'stale_form_dropped' => $stale_form_dropped,
-            'perm_view' => $perm_view,
-            'perm_edit' => $perm_edit,
-            'perm_edit_ns_subzone' => $perm_edit_ns_subzone,
-            'perm_meta_edit' => $perm_meta_edit,
-            'meta_edit' => $meta_edit,
-            'metadata_view' => $metadata_view,
-            'ownership_view' => $ownership_view,
-            'zone_is_read_only' => $zone_is_read_only,
-            'user_can_edit_zone' => $user_can_edit_zone,
-            'zone_is_editable' => $zone_is_editable,
-            'can_edit_records' => $can_edit_records,
-            'edit_mode' => $edit_mode,
-            'require_change_comment' => (bool)$this->config->get('logging', 'require_change_comment', false),
-            'pending_change_requests' => $pending_change_requests,
-            'can_review_change_requests' => $pending_change_requests !== [] && $this->canReviewChangeRequestsForZone($zone_id),
-            'can_view_zone_logs' => $can_view_zone_logs,
-            'can_manage_dnssec' => $can_manage_dnssec,
-            'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
-            'perm_is_godlike' => $perm_is_godlike,
-            'dblog_use' => $this->config->get('logging', 'database_enabled', false),
-            'perm_view_zone_own' => $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OWN),
-            'perm_view_zone_other' => $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS),
-            'user_is_zone_owner' => $user_is_zone_owner,
-            'row_start' => $row_start,
-            'row_amount' => $iface_rowamount,
-            'record_sort_by' => $record_sort_by,
-            'sort_direction' => $sort_direction,
-            'pagination' => $this->presentPagination($total_filtered_count, $iface_rowamount, '/zones/' . $zone_id . '/edit?start={PageNumber}', [
+        $presenter = new EditZonePresenter(
+            zoneId: $zone_id,
+            zoneName: $zone_name,
+            // Twig escapes this for the textarea. Escaping it here as well would put the
+            // entities in front of the operator and save them back on the next submit.
+            storedZoneComment: (string)$this->zoneRepository->getZoneComment($zone_id),
+            rejectedZoneComment: $this->rejectedZoneComment,
+            domainType: $domain_type,
+            slaveMaster: $this->domainRepository->getDomainMaster($zone_id),
+            zoneTemplates: $this->createZoneTemplateModel()->getListZoneTempl($userId),
+            zoneTemplateId: $zone_template_id,
+            zoneTemplateDetails: ZoneTemplate::getZoneTemplDetails($this->db, $zone_template_id),
+            recordCount: $this->recordRepository->countZoneRecords($zone_id),
+            filteredRecordCount: $total_filtered_count,
+            records: $displayRecords,
+            rejectedRecords: $this->rejectedRecords,
+            soaRecord: $this->soaRecordManager->getSOARecord($zone_id),
+            isReverseZone: $isReverseZone,
+            supportsCatalogZones: $supports_catalog_zones,
+            catalogSelectorView: $catalog_selector_view,
+            catalogProducers: $catalog_producers,
+            catalogProducerId: $catalog_producer['id'] ?? null,
+            catalogName: $catalog_name,
+            userId: $userId,
+            userIsZoneOwner: $user_is_zone_owner,
+            permView: $perm_view,
+            permEdit: $perm_edit,
+            requestsOnly: $requests_only,
+            permEditNsSubzone: $this->hasPermission(Permission::PERM_EDIT_NS_SUBZONE),
+            permMetaEdit: $perm_meta_edit,
+            metaEdit: $meta_edit,
+            permMetadataView: $this->permissionService->getZoneMetadataViewPermissionLevel($userId),
+            permOwnershipView: $this->permissionService->getZoneOwnershipViewPermissionLevel($userId),
+            logPermission: $this->permissionService->getZoneLogPermissionLevel($userId),
+            canManageDnssec: $can_manage_dnssec,
+            permZoneTemplAdd: $this->permissionService->canAddZoneTemplates($userId),
+            permIsGodlike: $this->permissionService->isAdmin($userId),
+            permViewZoneOwn: $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OWN),
+            permViewZoneOther: $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS),
+            editMode: $edit_mode,
+            pendingChangeRequests: $pending_change_requests,
+            canReviewChangeRequests: $pending_change_requests !== [] && $this->canReviewChangeRequestsForZone($zone_id),
+            dnssecEnabled: (bool)$isDnsSecEnabled,
+            isSecured: $is_secured,
+            isPresigned: $is_presigned,
+            signedSerial: $signed_serial,
+            recordTypeService: $this->recordTypeService,
+            recordTypeCapabilities: $this->getRecordTypeCapabilities(),
+            forwardTtl: $this->reverseTtlResolver->getForwardTtl(),
+            ptrDefaultTtl: $this->reverseTtlResolver->getConfiguredReverseTtl(),
+            typeDefaultTtls: $this->reverseTtlResolver->getTypeDefaults(),
+            isApiBackend: $isApiBackend,
+            showRecordId: $iface_show_id,
+            showAddRecordForm: $iface_show_add_record_form,
+            showRecordEditButton: $iface_show_record_edit_button,
+            showRecordDeleteButton: $iface_show_record_delete_button,
+            addRecordFormTop: $iface_edit_add_record_top,
+            saveChangesTop: $iface_edit_save_changes_top,
+            displayHostnameOnly: $display_hostname_only,
+            recordComments: (bool)$iface_record_comments,
+            zoneComments: (bool)$iface_zone_comments,
+            requireChangeComment: (bool)$this->config->get('logging', 'require_change_comment', false),
+            dblogUse: (bool)$this->config->get('logging', 'database_enabled', false),
+            addReverseRecord: (bool)$this->config->get('interface', 'add_reverse_record', true),
+            addDomainRecord: (bool)$this->config->get('interface', 'add_domain_record', true),
+            rowStart: $row_start,
+            rowAmount: $iface_rowamount,
+            recordSortBy: $record_sort_by,
+            sortDirection: $sort_direction,
+            pagination: $this->presentPagination($total_filtered_count, $iface_rowamount, '/zones/' . $zone_id . '/edit?start={PageNumber}', [
                 'search' => $this->httpRequest->getQueryParam('search'),
                 'record_type' => $this->httpRequest->getQueryParam('record_type'),
                 'content' => $this->httpRequest->getQueryParam('content'),
             ]),
-            'pdnssec_use' => $isDnsSecEnabled,
-            'is_secured' => $is_secured,
-            'is_presigned' => $is_presigned,
-            'signed_serial' => $signed_serial,
-            'session_userid' => $this->userContextService->getLoggedInUserId(),
-            'dns_ttl' => $defaultTtl,
-            'default_ttl' => $this->reverseTtlResolver->getForwardTtl(),
-            'ptr_default_ttl' => $this->reverseTtlResolver->getConfiguredReverseTtl(),
-            'type_default_ttls' => $this->reverseTtlResolver->getTypeDefaults(),
-            'ttl_defaults_by_type' => $this->reverseTtlResolver->resolveTtlsForTypes($recordTypes, $isReverseZone),
-            'is_reverse_zone' => $isReverseZone,
-            'record_types' => $recordTypes,
-            'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', true),
-            'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', true),
-            'iface_edit_show_id' => $iface_show_id,
-            'iface_show_add_record_form' => $iface_show_add_record_form,
-            'iface_show_record_edit_button' => $iface_show_record_edit_button,
-            'iface_show_record_delete_button' => $iface_show_record_delete_button,
-            'iface_edit_add_record_top' => $iface_edit_add_record_top,
-            'iface_edit_save_changes_top' => $iface_edit_save_changes_top,
-            'iface_record_comments' => $iface_record_comments,
-            'iface_zone_comments' => $iface_zone_comments,
-            'serial' => SOARecordManager::getSOASerial($soa_record),
-            'whois_actions' => $this->moduleCapabilityData('whois_lookup', ['zone_id' => $zone_id]),
-            'rdap_actions' => $this->moduleCapabilityData('rdap_lookup', ['zone_id' => $zone_id]),
-            'form_token' => $formToken,
-            'form_data' => $formData,
-            'search_term' => $searchTerm,
-            'record_type_filter' => $recordTypeFilter,
-            'content_filter' => $contentFilter,
-            'display_hostname_only' => $display_hostname_only,
-            'dns_wizard_actions' => $this->moduleCapabilityData('dns_wizard', ['zone_id' => $zone_id]),
-            'export_formats' => $this->moduleCapabilityData('zone_export', ['zone_id' => $zone_id]),
-            'import_enabled' => $this->moduleProvides('zone_import'),
+            searchTerm: $searchTerm,
+            recordTypeFilter: $recordTypeFilter,
+            contentFilter: $contentFilter,
+            formToken: $formToken,
+            formData: $formData,
+            whoisActions: $this->moduleCapabilityData('whois_lookup', ['zone_id' => $zone_id]),
+            rdapActions: $this->moduleCapabilityData('rdap_lookup', ['zone_id' => $zone_id]),
+            dnsWizardActions: $this->moduleCapabilityData('dns_wizard', ['zone_id' => $zone_id]),
+            exportFormats: $this->moduleCapabilityData('zone_export', ['zone_id' => $zone_id]),
+            importEnabled: $this->moduleProvides('zone_import'),
+        );
+
+        $this->render('edit.html', $presenter->toTemplateVariables());
+    }
+
+    /**
+     * Stash the inline add form's values so a failed validation can re-display them.
+     */
+    private function rememberAddRecordForm(bool $isReverseZone): void
+    {
+        $prio = $this->httpRequest->getPostParam('prio');
+        $ttl = $this->httpRequest->getPostParam('ttl');
+        $type = (string)$this->httpRequest->getPostParam('type');
+        $this->formStateService->rememberAddRecordForm([
+            'name' => $this->httpRequest->getPostParam('name'),
+            'content' => $this->httpRequest->getPostParam('content'),
+            'type' => $type,
+            'prio' => $prio !== null && $prio !== '' ? (int)$prio : 0,
+            'ttl' => $ttl !== null && $ttl !== '' ? (int)$ttl : $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone),
+            'comment' => $this->httpRequest->getPostParam('comment', '')
         ]);
     }
 

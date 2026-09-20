@@ -1561,6 +1561,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Http\\RequestContext' => __DIR__ . '/../..' . '/lib/Application/Http/RequestContext.php',
         'Poweradmin\\Application\\Http\\ZoneEditIntent' => __DIR__ . '/../..' . '/lib/Application/Http/ZoneEditIntent.php',
         'Poweradmin\\Application\\Presenter\\ChangeRequestPresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/ChangeRequestPresenter.php',
+        'Poweradmin\\Application\\Presenter\\EditZonePresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/EditZonePresenter.php',
         'Poweradmin\\Application\\Presenter\\OwnerGroupColumnPresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/OwnerGroupColumnPresenter.php',
         'Poweradmin\\Application\\Presenter\\OwnerOptionsPresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/OwnerOptionsPresenter.php',
         'Poweradmin\\Application\\Presenter\\PaginationPresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/PaginationPresenter.php',

@@ -118,9 +118,21 @@ class ReverseTtlResolver
      */
     public function resolveTtlsForTypes(array $recordTypes, bool $isInReverseZone): array
     {
-        $typeDefaults = $this->getTypeDefaults();
-        $forwardTtl = $this->getForwardTtl();
-        $ptrTtl = $isInReverseZone ? ($this->getConfiguredReverseTtl() ?? $forwardTtl) : $forwardTtl;
+        return self::ttlsForTypes($recordTypes, $this->getTypeDefaults(), $this->getForwardTtl(), $this->getConfiguredReverseTtl(), $isInReverseZone);
+    }
+
+    /**
+     * The same map as resolveTtlsForTypes(), computed from already-read values
+     * so a presenter can build it without the repository.
+     *
+     * @param array<int, string> $recordTypes
+     * @param array<string, int> $typeDefaults Per-type defaults keyed by uppercase type
+     * @param ?int $reverseTtl The configured dns.ttl_reverse, null when unset
+     * @return array<string, int>
+     */
+    public static function ttlsForTypes(array $recordTypes, array $typeDefaults, int $forwardTtl, ?int $reverseTtl, bool $isInReverseZone): array
+    {
+        $ptrTtl = $isInReverseZone ? ($reverseTtl ?? $forwardTtl) : $forwardTtl;
 
         $out = [];
         foreach ($recordTypes as $type) {

@@ -1155,6 +1155,7 @@ return array(
     'Poweradmin\\Application\\Http\\RequestContext' => $baseDir . '/lib/Application/Http/RequestContext.php',
     'Poweradmin\\Application\\Http\\ZoneEditIntent' => $baseDir . '/lib/Application/Http/ZoneEditIntent.php',
     'Poweradmin\\Application\\Presenter\\ChangeRequestPresenter' => $baseDir . '/lib/Application/Presenter/ChangeRequestPresenter.php',
+    'Poweradmin\\Application\\Presenter\\EditZonePresenter' => $baseDir . '/lib/Application/Presenter/EditZonePresenter.php',
     'Poweradmin\\Application\\Presenter\\OwnerGroupColumnPresenter' => $baseDir . '/lib/Application/Presenter/OwnerGroupColumnPresenter.php',
     'Poweradmin\\Application\\Presenter\\OwnerOptionsPresenter' => $baseDir . '/lib/Application/Presenter/OwnerOptionsPresenter.php',
     'Poweradmin\\Application\\Presenter\\PaginationPresenter' => $baseDir . '/lib/Application/Presenter/PaginationPresenter.php',
