@@ -4,30 +4,6 @@ parameters:
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 1
-			path: lib/Application/Controller/AddSupermasterController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 3
-			path: lib/Application/Controller/AddZoneMasterController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 4
-			path: lib/Application/Controller/AddZoneSlaveController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 5
-			path: lib/Application/Controller/AddZoneTemplController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 1
 			path: lib/Application/Controller/Api/InternalApiController.php
 
 		-
@@ -51,92 +27,20 @@ parameters:
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
-			count: 2
-			path: lib/Application/Controller/ApiKeysController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 3
-			path: lib/Application/Controller/BulkRegistrationController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
 			count: 1
 			path: lib/Application/Controller/ChangePasswordController.php
 
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
-			count: 2
-			path: lib/Application/Controller/DeleteUserController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 1
-			path: lib/Application/Controller/DeleteZoneTemplController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 1
-			path: lib/Application/Controller/DeleteZoneTemplRecordController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 1
-			path: lib/Application/Controller/DnssecController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 20
-			path: lib/Application/Controller/EditController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 1
-			path: lib/Application/Controller/EditSupermasterController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 1
-			path: lib/Application/Controller/EditZoneTemplController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 6
+			count: 3
 			path: lib/Application/Controller/ListForwardZonesController.php
 
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
 			identifier: disallowed.variable
 			count: 3
-			path: lib/Application/Controller/ListTemplateZonesController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 3
 			path: lib/Application/Controller/MfaSetupController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 1
-			path: lib/Application/Controller/SearchController.php
-
-		-
-			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
-			identifier: disallowed.variable
-			count: 1
-			path: lib/Application/Controller/UsersController.php
 
 		-
 			message: '#^Using \$_SESSION is forbidden, read the session in the auth layer or BaseController and pass the value down \(UserContextService for the current user\)\.$#'
@@ -217,12 +121,6 @@ parameters:
 			path: lib/Domain/Model/ZoneTemplate.php
 
 		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\DbCompat is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\DbCompat matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 7
-			path: lib/Domain/Model/ZoneTemplate.php
-
-		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Repository\\DbUserRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
@@ -241,19 +139,7 @@ parameters:
 			path: lib/Domain/Service/ApiKeyService.php
 
 		-
-			message: '#^Class Poweradmin\\Infrastructure\\Service\\MessageService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Service\\MessageService matches Poweradmin\\Infrastructure\\Service\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/ApiKeyService.php
-
-		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Repository\\DbUserRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/ApiKeyService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Service\\MessageService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Service\\MessageService matches Poweradmin\\Infrastructure\\Service\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/ApiKeyService.php
@@ -333,13 +219,13 @@ parameters:
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
 			identifier: disallowed.class
-			count: 2
+			count: 1
 			path: lib/Domain/Service/Dns/DomainManager.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
 			identifier: disallowed.class
-			count: 2
+			count: 1
 			path: lib/Domain/Service/Dns/DomainManager.php
 
 		-
@@ -357,7 +243,7 @@ parameters:
 		-
 			message: '#^Enum Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
 			identifier: disallowed.enum
-			count: 2
+			count: 1
 			path: lib/Domain/Service/Dns/DomainManager.php
 
 		-
@@ -457,21 +343,9 @@ parameters:
 			path: lib/Domain/Service/Dns/SOARecordManager.php
 
 		-
-			message: '#^Class Poweradmin\\Infrastructure\\Service\\MessageService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Service\\MessageService matches Poweradmin\\Infrastructure\\Service\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/Dns/SupermasterManager.php
-
-		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\DbCompat is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\DbCompat matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 2
-			path: lib/Domain/Service/Dns/SupermasterManager.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Service\\MessageService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Service\\MessageService matches Poweradmin\\Infrastructure\\Service\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
 			path: lib/Domain/Service/Dns/SupermasterManager.php
 
 		-
