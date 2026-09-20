@@ -104,8 +104,8 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
      * check the container starts and only fails at login time.
      *
      * @param array<int, string> $expectedVariables
-     * @dataProvider ssoValidatorProvider
      */
+    #[DataProvider('ssoValidatorProvider')]
     public function testEntrypointRequiresAUrlSourceForSso(string $function, array $expectedVariables): void
     {
         $body = $this->validatorBody($function);
