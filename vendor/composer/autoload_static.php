@@ -1564,6 +1564,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Service\\ApiStatusService' => __DIR__ . '/../..' . '/lib/Application/Service/ApiStatusService.php',
         'Poweradmin\\Application\\Service\\AuditService' => __DIR__ . '/../..' . '/lib/Application/Service/AuditService.php',
         'Poweradmin\\Application\\Service\\AvatarService' => __DIR__ . '/../..' . '/lib/Application/Service/AvatarService.php',
+        'Poweradmin\\Application\\Service\\ChangeRequestNotificationService' => __DIR__ . '/../..' . '/lib/Application/Service/ChangeRequestNotificationService.php',
         'Poweradmin\\Application\\Service\\ControllerEnvironment' => __DIR__ . '/../..' . '/lib/Application/Service/ControllerEnvironment.php',
         'Poweradmin\\Application\\Service\\ControllerServiceFactory' => __DIR__ . '/../..' . '/lib/Application/Service/ControllerServiceFactory.php',
         'Poweradmin\\Application\\Service\\CsrfTokenService' => __DIR__ . '/../..' . '/lib/Application/Service/CsrfTokenService.php',

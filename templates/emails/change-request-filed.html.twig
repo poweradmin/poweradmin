@@ -1,0 +1,52 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Change Request Filed{% endblock %}
+
+{% block content %}
+    <h2 class="heading">Change Request Filed</h2>
+    <p>{{ greeting }}</p>
+    <p>A change request is waiting for your review:</p>
+
+    <table style="border-collapse: collapse; width: 100%; margin: 20px 0;" class="table-border">
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Zone:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ zoneName }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Request:</strong></td>
+            <td style="padding: 10px;" class="table-border">#{{ requestId }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Requested by:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ requesterName }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Kind:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ kindLabel }}</td>
+        </tr>
+        {% if comment %}
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Comment:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ comment|nl2br }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Date:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ filedAt }}</td>
+        </tr>
+    </table>
+
+    <p>Open the request to see the proposed changes and approve or reject them.</p>
+
+    {% if requestUrl %}
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="{{ requestUrl }}" style="display: inline-block; padding: 12px 30px; text-decoration: none; border-radius: 4px;" class="button-primary">
+            Review Request
+        </a>
+    </div>
+    {% endif %}
+
+    <p style="font-size: 14px;" class="disclaimer-text">
+        You receive this message because you can review change requests for this zone.
+    </p>
+{% endblock %}

@@ -110,6 +110,7 @@ class ControllerServiceFactory
     private ?PowerdnsApiClient $apiClient = null;
     private ?ZoneChangeRequestRepositoryInterface $zoneChangeRequestRepository = null;
     private ?ZoneChangeRequestService $zoneChangeRequestService = null;
+    private ?ChangeRequestNotificationService $changeRequestNotificationService = null;
     private bool $apiClientResolved = false;
 
     public function __construct(PDO $db, ConfigurationManager $config, LoggerInterface $logger)
@@ -392,6 +393,19 @@ class ControllerServiceFactory
             $this->repositoryFactory()->createRecordCommentRepository(),
             RecordChangeLogger::withChangeset(...),
             $this->permissionService()
+        );
+    }
+
+    public function changeRequestNotificationService(): ChangeRequestNotificationService
+    {
+        return $this->changeRequestNotificationService ??= new ChangeRequestNotificationService(
+            $this->db,
+            $this->config,
+            new MailService($this->config, $this->logger),
+            new EmailTemplateService($this->config),
+            $this->domainRepository(),
+            $this->permissionService(),
+            $this->logger
         );
     }
 

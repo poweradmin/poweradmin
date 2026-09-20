@@ -1,0 +1,26 @@
+{% extends "base.txt.twig" %}
+
+{% block content %}
+CHANGE REQUEST {{ statusLabel|upper }}
+======================
+
+{{ greeting }}
+
+{% if status == 'approved' %}Your change request has been approved and applied to the zone.
+{% elseif status == 'rejected' %}Your change request has been rejected. The zone was not changed.
+{% else %}Your change request was approved, but applying it to the zone failed. The zone may be partially changed; please check it and contact your administrator.
+{% endif %}
+
+Zone: {{ zoneName }}
+Request: #{{ requestId }}
+Status: {{ statusLabel }}
+{% if reviewerName %}Reviewed by: {{ reviewerName }}
+{% endif %}{% if reviewComment %}Review comment: {{ reviewComment }}
+{% endif %}Date: {{ decidedAt }}
+
+{% if requestUrl %}To view the request, visit:
+{{ requestUrl }}
+{% endif %}
+
+You receive this message because you filed this change request.
+{% endblock %}

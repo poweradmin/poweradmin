@@ -27,6 +27,7 @@ use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\ChangeRequestNotificationService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\RequestValidator;
@@ -659,6 +660,11 @@ abstract class BaseController
     protected function createZoneChangeRequestService(): ZoneChangeRequestService
     {
         return $this->services()->zoneChangeRequestService();
+    }
+
+    protected function createChangeRequestNotificationService(): ChangeRequestNotificationService
+    {
+        return $this->services()->changeRequestNotificationService();
     }
 
     protected function createZoneListPermissionService(): ZoneListPermissionService

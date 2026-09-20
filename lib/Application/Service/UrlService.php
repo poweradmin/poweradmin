@@ -199,4 +199,15 @@ class UrlService
     {
         return $this->getEmailUrl("/zones/$zoneId/edit");
     }
+
+    /**
+     * Get a change request review URL for use inside outbound emails
+     *
+     * @param int $requestId Change request ID
+     * @return string|null Full URL to the review page, or null if application_url is not configured
+     */
+    public function getChangeRequestUrl(int $requestId): ?string
+    {
+        return $this->getEmailUrl("/zones/requests/$requestId");
+    }
 }

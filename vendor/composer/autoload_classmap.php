@@ -1158,6 +1158,7 @@ return array(
     'Poweradmin\\Application\\Service\\ApiStatusService' => $baseDir . '/lib/Application/Service/ApiStatusService.php',
     'Poweradmin\\Application\\Service\\AuditService' => $baseDir . '/lib/Application/Service/AuditService.php',
     'Poweradmin\\Application\\Service\\AvatarService' => $baseDir . '/lib/Application/Service/AvatarService.php',
+    'Poweradmin\\Application\\Service\\ChangeRequestNotificationService' => $baseDir . '/lib/Application/Service/ChangeRequestNotificationService.php',
     'Poweradmin\\Application\\Service\\ControllerEnvironment' => $baseDir . '/lib/Application/Service/ControllerEnvironment.php',
     'Poweradmin\\Application\\Service\\ControllerServiceFactory' => $baseDir . '/lib/Application/Service/ControllerServiceFactory.php',
     'Poweradmin\\Application\\Service\\CsrfTokenService' => $baseDir . '/lib/Application/Service/CsrfTokenService.php',

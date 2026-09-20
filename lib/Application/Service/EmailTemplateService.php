@@ -289,6 +289,115 @@ class EmailTemplateService
     }
 
     /**
+     * Render the "change request filed" email sent to each reviewer of a zone
+     *
+     * @param string $zoneName Zone the request targets
+     * @param int $requestId Change request ID
+     * @param string $recipientName Reviewer's full name or username
+     * @param string $requesterName Name of the user who filed the request
+     * @param string $kind 'records' or 'zone_delete'
+     * @param string $comment Requester's comment, may be empty
+     * @param string $filedAt Timestamp of when the request was filed
+     * @param string|null $requestUrl URL of the review page, or null to omit the link
+     * @return array ['html' => string, 'text' => string, 'subject' => string]
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function renderChangeRequestFiledEmail(
+        string $zoneName,
+        int $requestId,
+        string $recipientName,
+        string $requesterName,
+        string $kind,
+        string $comment,
+        string $filedAt,
+        ?string $requestUrl
+    ): array {
+        $variables = [
+            'greeting' => $recipientName ? "Hi $recipientName," : "Hi,",
+            'zoneName' => $zoneName,
+            'requestId' => $requestId,
+            'requesterName' => $requesterName,
+            'kindLabel' => self::changeRequestKindLabel($kind),
+            'comment' => $comment,
+            'filedAt' => $filedAt,
+            'requestUrl' => $requestUrl,
+        ];
+
+        return [
+            'html' => $this->render('change-request-filed.html.twig', $variables),
+            'text' => $this->render('change-request-filed.txt.twig', $variables),
+            'subject' => sprintf('Change Request #%d Filed: %s', $requestId, $zoneName)
+        ];
+    }
+
+    /**
+     * Render the "change request decided" email sent to the requester
+     *
+     * @param string $zoneName Zone the request targets
+     * @param int $requestId Change request ID
+     * @param string $recipientName Requester's full name or username
+     * @param string $status 'approved', 'rejected' or 'failed'
+     * @param string $reviewerName Name of the reviewer, may be empty
+     * @param string $reviewComment Reviewer's comment, may be empty
+     * @param string $decidedAt Timestamp of the decision
+     * @param string|null $requestUrl URL of the review page, or null to omit the link
+     * @return array ['html' => string, 'text' => string, 'subject' => string]
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function renderChangeRequestDecidedEmail(
+        string $zoneName,
+        int $requestId,
+        string $recipientName,
+        string $status,
+        string $reviewerName,
+        string $reviewComment,
+        string $decidedAt,
+        ?string $requestUrl
+    ): array {
+        $statusLabel = self::changeRequestStatusLabel($status);
+
+        $variables = [
+            'greeting' => $recipientName ? "Hi $recipientName," : "Hi,",
+            'zoneName' => $zoneName,
+            'requestId' => $requestId,
+            'status' => $status,
+            'statusLabel' => $statusLabel,
+            'reviewerName' => $reviewerName,
+            'reviewComment' => $reviewComment,
+            'decidedAt' => $decidedAt,
+            'requestUrl' => $requestUrl,
+        ];
+
+        return [
+            'html' => $this->render('change-request-decided.html.twig', $variables),
+            'text' => $this->render('change-request-decided.txt.twig', $variables),
+            'subject' => sprintf('Change Request #%d %s: %s', $requestId, $statusLabel, $zoneName)
+        ];
+    }
+
+    private static function changeRequestKindLabel(string $kind): string
+    {
+        return match ($kind) {
+            'zone_delete' => 'Zone deletion',
+            default => 'Record changes',
+        };
+    }
+
+    private static function changeRequestStatusLabel(string $status): string
+    {
+        return match ($status) {
+            'approved' => 'Approved',
+            'rejected' => 'Rejected',
+            'failed' => 'Failed',
+            default => ucfirst($status),
+        };
+    }
+
+    /**
      * Check if a custom template exists
      *
      * @param string $template Template name

@@ -1,0 +1,307 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Service;
+
+use PDO;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+
+/**
+ * Emails the reviewers of a zone when a change request is filed and the
+ * requester when it is decided. Failures are logged and reported as false;
+ * nothing here throws to the caller, so a mail problem never blocks a request.
+ */
+class ChangeRequestNotificationService
+{
+    public const KIND_RECORDS = 'records';
+    public const KIND_ZONE_DELETE = 'zone_delete';
+
+    private PDO $db;
+    private ConfigurationInterface $config;
+    private MailService $mailService;
+    private EmailTemplateService $emailTemplateService;
+    private DomainRepositoryInterface $domainRepository;
+    private PermissionService $permissions;
+    private UrlService $urlService;
+    private LoggerInterface $logger;
+
+    /**
+     * @param LoggerInterface|null $logger Omit to discard log lines
+     */
+    public function __construct(
+        PDO $db,
+        ConfigurationInterface $config,
+        MailService $mailService,
+        EmailTemplateService $emailTemplateService,
+        DomainRepositoryInterface $domainRepository,
+        PermissionService $permissions,
+        ?LoggerInterface $logger = null
+    ) {
+        $this->db = $db;
+        $this->config = $config;
+        $this->mailService = $mailService;
+        $this->emailTemplateService = $emailTemplateService;
+        $this->domainRepository = $domainRepository;
+        $this->permissions = $permissions;
+        $this->urlService = new UrlService($config);
+        $this->logger = $logger ?? new NullLogger();
+    }
+
+    /**
+     * Mail every reviewer of the zone about a newly filed request.
+     *
+     * Reviewers are the active users with an email address for whom
+     * ChangeApprovalPolicy::canReview() holds, minus the requester. This walks
+     * all active users, which is acceptable because filing a request is rare.
+     *
+     * @param string $kind KIND_RECORDS or KIND_ZONE_DELETE
+     * @return bool True when at least one reviewer was mailed and no send failed
+     */
+    public function notifyRequestFiled(
+        int $requestId,
+        int $zoneId,
+        string $zoneName,
+        int $requesterId,
+        string $requesterName,
+        ?string $comment,
+        string $kind
+    ): bool {
+        if (!$this->isNotificationEnabled()) {
+            return false;
+        }
+
+        try {
+            $zoneName = $this->resolveZoneName($zoneId, $zoneName);
+            $reviewers = $this->findReviewers($zoneId, $requesterId);
+            if ($reviewers === []) {
+                $this->logger->info("No reviewer with an email address for zone '$zoneName', change request $requestId not announced");
+                return false;
+            }
+
+            $requestUrl = $this->urlService->getChangeRequestUrl($requestId);
+            $sent = 0;
+
+            foreach ($reviewers as $reviewer) {
+                $templates = $this->emailTemplateService->renderChangeRequestFiledEmail(
+                    $zoneName,
+                    $requestId,
+                    $reviewer['fullname'] ?: $reviewer['username'],
+                    $requesterName,
+                    $kind,
+                    $comment ?? '',
+                    date('Y-m-d H:i:s'),
+                    $requestUrl
+                );
+
+                $result = $this->mailService->sendMail(
+                    $reviewer['email'],
+                    $templates['subject'],
+                    $templates['html'],
+                    $templates['text']
+                );
+
+                if ($result) {
+                    $sent++;
+                } else {
+                    $this->logger->error("Failed to send change request $requestId notification for zone '$zoneName' to user '{$reviewer['username']}'");
+                }
+            }
+
+            $this->logger->info("Change request $requestId for zone '$zoneName' announced to $sent of " . count($reviewers) . " reviewers");
+
+            return $sent === count($reviewers);
+        } catch (LoaderError | RuntimeError | SyntaxError $e) {
+            $this->logger->error("Template error sending change request filed notification: " . $e->getMessage());
+            return false;
+        } catch (\Exception $e) {
+            $this->logger->error("Error sending change request filed notification: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Mail the requester about the outcome of their request.
+     *
+     * @param string $status 'approved', 'rejected' or 'failed'
+     * @return bool True if the notification was sent
+     */
+    public function notifyRequestDecided(
+        int $requestId,
+        int $zoneId,
+        string $zoneName,
+        int $requesterId,
+        string $status,
+        int $reviewerId,
+        ?string $reviewComment
+    ): bool {
+        if (!$this->isNotificationEnabled()) {
+            return false;
+        }
+
+        try {
+            $zoneName = $this->resolveZoneName($zoneId, $zoneName);
+
+            $requester = $this->getUserDetails($requesterId);
+            if (!$requester || empty($requester['email'])) {
+                $this->logger->warning("User $requesterId has no email address, skipping change request $requestId decision notification");
+                return false;
+            }
+
+            $reviewer = $this->getUserDetails($reviewerId);
+            $reviewerName = $reviewer ? ($reviewer['fullname'] ?: $reviewer['username']) : '';
+
+            $templates = $this->emailTemplateService->renderChangeRequestDecidedEmail(
+                $zoneName,
+                $requestId,
+                $requester['fullname'] ?: $requester['username'],
+                $status,
+                $reviewerName,
+                $reviewComment ?? '',
+                date('Y-m-d H:i:s'),
+                $this->urlService->getChangeRequestUrl($requestId)
+            );
+
+            $result = $this->mailService->sendMail(
+                $requester['email'],
+                $templates['subject'],
+                $templates['html'],
+                $templates['text']
+            );
+
+            if ($result) {
+                $this->logger->info("Change request $requestId decision ($status) for zone '$zoneName' sent to user '{$requester['username']}'");
+            } else {
+                $this->logger->error("Failed to send change request $requestId decision for zone '$zoneName' to user '{$requester['username']}'");
+            }
+
+            return $result;
+        } catch (LoaderError | RuntimeError | SyntaxError $e) {
+            $this->logger->error("Template error sending change request decision notification: " . $e->getMessage());
+            return false;
+        } catch (\Exception $e) {
+            $this->logger->error("Error sending change request decision notification: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Check if change request notifications are enabled
+     *
+     * @return bool True if notifications are enabled and mail is configured
+     */
+    private function isNotificationEnabled(): bool
+    {
+        if (!$this->config->get('notifications', 'change_request_enabled', false)) {
+            return false;
+        }
+
+        if (!$this->config->get('mail', 'enabled', false)) {
+            $this->logger->warning("Change request notifications enabled but mail is disabled");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Callers pass the zone name they already hold; the repository is only asked
+     * when it is empty (for example after the zone was deleted).
+     */
+    private function resolveZoneName(int $zoneId, string $zoneName): string
+    {
+        if ($zoneName !== '') {
+            return $zoneName;
+        }
+
+        return $this->domainRepository->getDomainNameById($zoneId) ?: "zone #$zoneId";
+    }
+
+    /**
+     * Active users with an email address who may review requests for the zone,
+     * excluding the requester.
+     *
+     * @return array<int, array{id: int, username: string, fullname: string, email: string}>
+     */
+    private function findReviewers(int $zoneId, int $requesterId): array
+    {
+        $stmt = $this->db->prepare('
+            SELECT id, username, fullname, email
+            FROM users
+            WHERE active = 1 AND email IS NOT NULL AND email <> :empty
+            ORDER BY id
+        ');
+        $stmt->execute(['empty' => '']);
+
+        $reviewers = [];
+        while ($user = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $userId = (int)$user['id'];
+            if ($userId === $requesterId) {
+                continue;
+            }
+
+            $canReview = ChangeApprovalPolicy::canReview(
+                $this->permissions->getChangeApprovePermissionLevelForZone($userId, $zoneId),
+                $this->permissions->getEditPermissionLevelForZone($userId, $zoneId),
+                $this->permissions->userOwnsZone($userId, $zoneId)
+            );
+
+            if ($canReview) {
+                $reviewers[] = [
+                    'id' => $userId,
+                    'username' => (string)$user['username'],
+                    'fullname' => (string)($user['fullname'] ?? ''),
+                    'email' => (string)$user['email'],
+                ];
+            }
+        }
+
+        return $reviewers;
+    }
+
+    /**
+     * Get user details from database
+     *
+     * @return array|null User details array with keys: id, username, fullname, email
+     */
+    private function getUserDetails(int $userId): ?array
+    {
+        $stmt = $this->db->prepare('
+            SELECT id, username, fullname, email
+            FROM users
+            WHERE id = :user_id
+            LIMIT 1
+        ');
+
+        $stmt->execute(['user_id' => $userId]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $user ?: null;
+    }
+}
