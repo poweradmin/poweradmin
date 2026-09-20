@@ -32,6 +32,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DomainUtility;
@@ -78,6 +79,7 @@ class ZoneManagementService
     private ?RepositoryFactory $repositoryFactory = null;
     private ?DomainRepositoryInterface $domainRepository;
     private ?PermissionService $permissions;
+    private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository;
     private ?DomainManagerInterface $domainManager = null;
     private ?ZoneOverlapService $overlapService = null;
     private ?HostnameValidator $hostnameValidator = null;
@@ -99,8 +101,10 @@ class ZoneManagementService
         PdnsCapabilities|Closure|null $capabilities = null,
         ?ZoneSigningService $signing = null,
         ?DomainRepositoryInterface $domainRepository = null,
-        ?PermissionService $permissions = null
+        ?PermissionService $permissions = null,
+        ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null
     ) {
+        $this->zoneTemplateRepository = $zoneTemplateRepository;
         $this->zoneRepository = $zoneRepository;
         $this->domainRepository = $domainRepository;
         $this->permissions = $permissions;
@@ -134,7 +138,7 @@ class ZoneManagementService
     private function lookUpZoneTemplate(string $zoneTemplate, ?int $actingUserId): array
     {
 
-        $zoneTemplateModel = new ZoneTemplate($this->db, $this->config, $this->backendProvider(), $this->logger);
+        $zoneTemplateModel = new ZoneTemplate($this->db, $this->config, $this->backendProvider(), $this->logger, $this->zoneTemplateRepository);
         if (is_numeric($zoneTemplate)) {
             if (!ZoneTemplate::zoneTemplIdExists($this->db, (int)$zoneTemplate)) {
                 return ['success' => false, 'message' => 'Zone template not found', 'status' => 404, 'code' => self::ERR_TEMPLATE_NOT_FOUND];

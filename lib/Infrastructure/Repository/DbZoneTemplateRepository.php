@@ -23,25 +23,58 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use Exception;
-use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Domain\Service\DnsFormatter;
+use LogicException;
+use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
+use Poweradmin\Domain\Service\DnsFormatter;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
 /**
  * SQL persistence for zone templates in zone_templ and their records in zone_templ_records.
  */
-class DbZoneTemplateRepository
+class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
 {
-    private object $db;
-    private ConfigurationInterface $config;
-    private DnsFormatter $dnsFormatter;
+    /**
+     * Default SOA record stamped into a template that carries none.
+     */
+    private const DEFAULT_SOA_NAME = '[ZONE]';
+    private const DEFAULT_SOA_CONTENT = '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400';
 
-    public function __construct(object $db, ConfigurationInterface $config)
+    private object $db;
+
+    /**
+     * Read-only lookups never touch configuration, so callers that only read
+     * (the static accessors on the ZoneTemplate model) may omit it.
+     */
+    private ?ConfigurationInterface $config;
+    private ?DnsFormatter $dnsFormatter = null;
+
+    public function __construct(object $db, ?ConfigurationInterface $config = null)
     {
         $this->db = $db;
         $this->config = $config;
-        $this->dnsFormatter = new DnsFormatter($config);
+    }
+
+    private function config(): ConfigurationInterface
+    {
+        if ($this->config === null) {
+            throw new LogicException('DbZoneTemplateRepository was built without configuration; this operation needs it.');
+        }
+
+        return $this->config;
+    }
+
+    private function dnsFormatter(): DnsFormatter
+    {
+        return $this->dnsFormatter ??= new DnsFormatter($this->config());
+    }
+
+    private function dbType(): string
+    {
+        return (string) $this->config()->get('database', 'type');
     }
 
     /**
@@ -89,29 +122,98 @@ class DbZoneTemplateRepository
      */
     public function getZoneTemplateDetails(int $id): array|false
     {
-        return ZoneTemplate::getZoneTemplDetails($this->db, $id) ?: false;
+        $stmt = $this->db->prepare("SELECT * FROM zone_templ WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+
+        return $stmt->fetch() ?: false;
+    }
+
+    /**
+     * Get the template name linked to a zone
+     *
+     * @param int|string $zoneId Zone ID
+     * @return string Template name or an empty string
+     */
+    public function getTemplateNameForZone(int|string $zoneId): string
+    {
+        $stmt = $this->db->prepare("SELECT zt.name FROM zones z JOIN zone_templ zt ON zt.id = z.zone_templ_id WHERE " . CanonicalZoneSql::canonicalIdColumn('z') . " = :zone_id");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch();
+
+        return $result ? (string)$result['name'] : '';
     }
 
     /**
      * Get all records for a zone template
      *
      * @param int $templateId Zone template ID
+     * @param int $rowStart Starting row
+     * @param int $rowAmount Number of rows
+     * @param string $sortBy Column to sort by
      * @return array Template records
      */
-    public function getZoneTemplateRecords(int $templateId): array
-    {
-        return ZoneTemplate::getZoneTemplRecords($this->db, $templateId);
+    public function getZoneTemplateRecords(
+        int $templateId,
+        int $rowStart = 0,
+        int $rowAmount = Constants::DEFAULT_MAX_ROWS,
+        string $sortBy = 'name'
+    ): array {
+        $allowedSortColumns = ['name', 'type', 'content', 'priority', 'ttl'];
+        $sortBy = in_array($sortBy, $allowedSortColumns) ? htmlspecialchars($sortBy) : 'name';
+
+        $query = "SELECT id FROM zone_templ_records WHERE zone_templ_id = :id ORDER BY " . $sortBy;
+        if ($rowAmount < Constants::DEFAULT_MAX_ROWS) {
+            $query .= " LIMIT " . $rowAmount;
+            if ($rowStart > 0) {
+                $query .= " OFFSET " . $rowStart;
+            }
+        }
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':id' => $templateId]);
+
+        $ret = [];
+        $retCount = 0;
+        while ($r = $stmt->fetch()) {
+            // Look each row up in full, so one shape of record array is produced here.
+            $ret[$retCount] = $this->getZoneTemplateRecordById((int)$r["id"]);
+            $retCount++;
+        }
+
+        return ($retCount > 0 ? $ret : []);
     }
 
     /**
      * Get a single zone template record by ID
      *
      * @param int $id Record ID
+     * @param int|null $templateId Restrict the lookup to this template
      * @return array Record details or empty array
      */
-    public function getZoneTemplateRecordById(int $id): array
+    public function getZoneTemplateRecordById(int $id, ?int $templateId = null): array
     {
-        return ZoneTemplate::getZoneTemplRecordFromId($this->db, $id);
+        $query = "SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id = :id";
+        $params = [':id' => $id];
+
+        if ($templateId !== null) {
+            $query .= " AND zone_templ_id = :zone_templ_id";
+            $params[':zone_templ_id'] = $templateId;
+        }
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        $result = $stmt->fetch();
+
+        return $result ? array(
+            "id" => $result["id"],
+            "zone_templ_id" => $result["zone_templ_id"],
+            "name" => $result["name"],
+            "type" => $result["type"],
+            "content" => $result["content"],
+            "ttl" => $result["ttl"],
+            "prio" => $result["prio"],
+        ) : [];
     }
 
     /**
@@ -122,7 +224,82 @@ class DbZoneTemplateRepository
      */
     public function countZoneTemplateRecords(int $templateId): int
     {
-        return ZoneTemplate::countZoneTemplRecords($this->db, $templateId);
+        $stmt = $this->db->prepare("SELECT COUNT(id) FROM zone_templ_records WHERE zone_templ_id = :zone_templ_id");
+        $stmt->execute([':zone_templ_id' => $templateId]);
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * ID of the global template flagged is_default, if any
+     *
+     * @return int|null Template ID or null
+     */
+    public function findFlaggedDefaultTemplateId(): ?int
+    {
+        $boolTrue = DbCompat::boolTrue($this->dbType());
+        $stmt = $this->db->prepare("SELECT id FROM zone_templ WHERE is_default = $boolTrue AND owner = 0 ORDER BY id LIMIT 1");
+        $stmt->execute();
+        $dbId = $stmt->fetchColumn();
+
+        return ($dbId !== false && $dbId !== null) ? (int)$dbId : null;
+    }
+
+    /**
+     * Whether a global template (owner 0) with this ID exists
+     *
+     * @param int $id Template ID
+     * @return bool True if it exists and is global
+     */
+    public function globalTemplateExists(int $id): bool
+    {
+        $stmt = $this->db->prepare("SELECT 1 FROM zone_templ WHERE id = :id AND owner = 0");
+        $stmt->execute([':id' => $id]);
+
+        return $stmt->fetchColumn() !== false;
+    }
+
+    /**
+     * Find global templates (owner 0) by name
+     *
+     * @param string $name Template name
+     * @return int[] Matching template IDs
+     */
+    public function findGlobalTemplateIdsByName(string $name): array
+    {
+        $stmt = $this->db->prepare("SELECT id FROM zone_templ WHERE name = :name AND owner = 0");
+        $stmt->execute([':name' => $name]);
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    /**
+     * Flag one global template as the default, clearing every other global template
+     *
+     * @param int $templateId Template to flag
+     */
+    public function flagDefaultTemplate(int $templateId): void
+    {
+        // Atomic CASE-WHEN: prevents concurrent writers from each leaving
+        // their chosen row flagged.
+        $dbType = $this->dbType();
+        $boolTrue = DbCompat::boolTrue($dbType);
+        $boolFalse = DbCompat::boolFalse($dbType);
+        $stmt = $this->db->prepare(
+            "UPDATE zone_templ SET is_default = CASE WHEN id = :id THEN $boolTrue ELSE $boolFalse END WHERE owner = 0"
+        );
+        $stmt->execute([':id' => $templateId]);
+    }
+
+    /**
+     * Clear the system-wide default template flag
+     */
+    public function clearDefaultTemplate(): void
+    {
+        $dbType = $this->dbType();
+        $boolTrue = DbCompat::boolTrue($dbType);
+        $boolFalse = DbCompat::boolFalse($dbType);
+        $this->db->exec("UPDATE zone_templ SET is_default = $boolFalse WHERE is_default = $boolTrue");
     }
 
     /**
@@ -137,6 +314,27 @@ class DbZoneTemplateRepository
      */
     public function createZoneTemplate(string $name, string $description, int $owner, int $createdBy): int
     {
+        return $this->createZoneTemplateWithRecords($name, $description, $owner, $createdBy, []);
+    }
+
+    /**
+     * Create a zone template together with its records, in one transaction
+     *
+     * @param string $name Template name
+     * @param string $description Template description
+     * @param int $owner Owner user ID (0 for global)
+     * @param int $createdBy Creator user ID
+     * @param array<int, array{name: string, type: string, content: string, ttl: mixed, prio?: mixed}> $records
+     * @return int New template ID
+     * @throws Exception On database error
+     */
+    public function createZoneTemplateWithRecords(
+        string $name,
+        string $description,
+        int $owner,
+        int $createdBy,
+        array $records
+    ): int {
         $this->db->beginTransaction();
         try {
             $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by) VALUES (:name, :descr, :owner, :created_by)");
@@ -150,17 +348,35 @@ class DbZoneTemplateRepository
             // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
             $templateId = (int)$this->db->lastInsertId('zone_templ_id_seq');
 
-            // Add default SOA record
-            $ttl = (int)$this->config->get('dns', 'ttl');
-            $stmt = $this->db->prepare("INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)");
-            $stmt->execute([
-                ':zone_templ_id' => $templateId,
-                ':name' => '[ZONE]',
-                ':type' => 'SOA',
-                ':content' => '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400',
-                ':ttl' => $ttl,
-                ':prio' => 0
-            ]);
+            // Prepared once outside the loop for better performance.
+            $recordStmt = $this->db->prepare("INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)");
+
+            $hasSOA = false;
+            foreach ($records as $record) {
+                if ($record['type'] === 'SOA') {
+                    $hasSOA = true;
+                }
+
+                $recordStmt->execute([
+                    ':zone_templ_id' => $templateId,
+                    ':name' => $record['name'],
+                    ':type' => $record['type'],
+                    ':content' => $record['content'],
+                    ':ttl' => $record['ttl'],
+                    ':prio' => $record['prio'] ?? 0
+                ]);
+            }
+
+            if (!$hasSOA) {
+                $recordStmt->execute([
+                    ':zone_templ_id' => $templateId,
+                    ':name' => self::DEFAULT_SOA_NAME,
+                    ':type' => 'SOA',
+                    ':content' => self::DEFAULT_SOA_CONTENT,
+                    ':ttl' => (int)$this->config()->get('dns', 'ttl'),
+                    ':prio' => 0
+                ]);
+            }
 
             $this->db->commit();
             return $templateId;
@@ -194,8 +410,7 @@ class DbZoneTemplateRepository
             // Private templates cannot be the default; clear the flag to
             // avoid leaving an orphan that the resolver would then ignore.
             if ($owner !== 0) {
-                $db_type = (string) $this->config->get('database', 'type');
-                $query .= ', is_default = ' . DbCompat::boolFalse($db_type);
+                $query .= ', is_default = ' . DbCompat::boolFalse($this->dbType());
             }
         }
 
@@ -277,7 +492,7 @@ class DbZoneTemplateRepository
      */
     public function addRecord(int $templateId, string $name, string $type, string $content, int $ttl, int $prio): int
     {
-        $content = $this->dnsFormatter->formatContent($type, $content);
+        $content = $this->dnsFormatter()->formatContent($type, $content);
 
         $stmt = $this->db->prepare("INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)");
         $stmt->execute([
@@ -306,7 +521,7 @@ class DbZoneTemplateRepository
      */
     public function updateRecord(int $id, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
-        $content = $this->dnsFormatter->formatContent($type, $content);
+        $content = $this->dnsFormatter()->formatContent($type, $content);
 
         $stmt = $this->db->prepare("UPDATE zone_templ_records SET name = :name, type = :type, content = :content, ttl = :ttl, prio = :prio WHERE id = :id");
         $stmt->execute([
@@ -336,6 +551,21 @@ class DbZoneTemplateRepository
     }
 
     /**
+     * Unlink a zone from its template
+     *
+     * @param int $zoneId Zone ID
+     * @return bool True on success
+     */
+    public function unlinkZoneFromTemplate(int $zoneId): bool
+    {
+        $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE domain_id = ?");
+        $stmt->bindValue(1, $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return true;
+    }
+
+    /**
      * Check if a zone template exists
      *
      * @param int $id Template ID
@@ -343,7 +573,10 @@ class DbZoneTemplateRepository
      */
     public function zoneTemplateExists(int $id): bool
     {
-        return ZoneTemplate::zoneTemplIdExists($this->db, $id);
+        $stmt = $this->db->prepare("SELECT COUNT(id) FROM zone_templ WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+
+        return (bool)$stmt->fetchColumn();
     }
 
     /**
@@ -367,6 +600,20 @@ class DbZoneTemplateRepository
     }
 
     /**
+     * Find every template ID carrying the given name
+     *
+     * @param string $name Zone template name
+     * @return int[] Matching template IDs
+     */
+    public function findTemplateIdsByName(string $name): array
+    {
+        $stmt = $this->db->prepare("SELECT id FROM zone_templ WHERE name = :name");
+        $stmt->execute([':name' => $name]);
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    /**
      * Check if user is the owner of a zone template
      *
      * @param int $templateId Template ID
@@ -375,7 +622,7 @@ class DbZoneTemplateRepository
      */
     public function isOwner(int $templateId, int $userId): bool
     {
-        return (new ZoneTemplate($this->db, $this->config))->isUserOwnerOfTemplate($templateId, $userId);
+        return $this->getOwner($templateId) == $userId;
     }
 
     /**
@@ -389,6 +636,7 @@ class DbZoneTemplateRepository
         $stmt = $this->db->prepare("SELECT owner FROM zone_templ WHERE id = :id");
         $stmt->execute([':id' => $templateId]);
         $result = $stmt->fetchColumn();
-        return $result !== false ? (int)$result : null;
+
+        return ($result !== false && $result !== null) ? (int)$result : null;
     }
 }

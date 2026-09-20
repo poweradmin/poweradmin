@@ -33,8 +33,9 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
+use LogicException;
 use PDO;
-use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -57,8 +58,9 @@ class ZoneTemplate
     private LoggerInterface $logger;
     private ?PermissionService $permissionService = null;
     private ?ZoneTemplateRecordValidationService $recordValidationService = null;
+    private ?ZoneTemplateRepositoryInterface $repository;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProviderInterface $backendProvider = null, ?LoggerInterface $logger = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProviderInterface $backendProvider = null, ?LoggerInterface $logger = null, ?ZoneTemplateRepositoryInterface $repository = null)
     {
         $this->db = $db;
         $this->config = $config;
@@ -67,6 +69,60 @@ class ZoneTemplate
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
         $this->logger = $logger ?? new NullLogger();
+        $this->repository = $repository;
+    }
+
+    /**
+     * Builds a repository for a bare connection. Registered once at start-up so
+     * this model never names a persistence class; see AppInitializer.
+     *
+     * @var (callable(object, ?ConfigurationInterface): ZoneTemplateRepositoryInterface)|null
+     */
+    private static $repositoryResolver = null;
+
+    /**
+     * Teaches the model how to build its repository. The composition root calls
+     * this; the static accessors below are handed a bare connection and have no
+     * other way to reach persistence.
+     *
+     * @param callable(object, ?ConfigurationInterface): ZoneTemplateRepositoryInterface $resolver
+     */
+    public static function useRepositoryResolver(callable $resolver): void
+    {
+        self::$repositoryResolver = $resolver;
+    }
+
+    /**
+     * Persistence for zone_templ and zone_templ_records. Resolved on demand so
+     * the paths that only expand placeholders never touch the database layer.
+     */
+    private function repository(): ZoneTemplateRepositoryInterface
+    {
+        return $this->repository ??= self::resolveRepository($this->db, $this->config);
+    }
+
+    /**
+     * Repository for the static accessors, which are handed a bare connection.
+     * Those are read-only lookups, so no configuration is needed.
+     */
+    private static function readRepository(object $db): ZoneTemplateRepositoryInterface
+    {
+        return self::resolveRepository($db, null);
+    }
+
+    /**
+     * @param ConfigurationInterface|null $config Needed by the write paths; the
+     *        read-only static accessors are handed a bare connection
+     */
+    private static function resolveRepository(object $db, ?ConfigurationInterface $config): ZoneTemplateRepositoryInterface
+    {
+        if (self::$repositoryResolver === null) {
+            throw new LogicException(
+                'No zone template repository resolver registered; call ZoneTemplate::useRepositoryResolver() at start-up.'
+            );
+        }
+
+        return (self::$repositoryResolver)($db, $config);
     }
 
     /**
@@ -193,32 +249,10 @@ class ZoneTemplate
      */
     public function getListZoneTempl(int $userid): array
     {
-        $query = "SELECT zt.id, zt.name, zt.descr, zt.owner, zt.created_by, zt.is_default,
-                      owner_user.username as owner_username,
-                      owner_user.fullname as owner_fullname,
-                      creator_user.username as creator_username,
-                      creator_user.fullname as creator_fullname,
-                      COUNT(z.zone_templ_id) as zones_linked
-                FROM zone_templ zt
-                LEFT JOIN users owner_user ON zt.owner = owner_user.id
-                LEFT JOIN users creator_user ON zt.created_by = creator_user.id
-                LEFT JOIN zones z ON zt.id = z.zone_templ_id";
-        $params = [];
-
-        if (!$this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
-            $query .= " WHERE zt.owner = :userid OR zt.owner = 0";
-            $params[':userid'] = $userid;
-        }
-
-        $query .= " GROUP BY zt.id, zt.name, zt.descr, zt.owner, zt.created_by, zt.is_default,
-                           owner_user.username, owner_user.fullname,
-                           creator_user.username, creator_user.fullname
-                  ORDER BY zt.name";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
-
-        return $stmt->fetchAll();
+        return $this->repository()->listZoneTemplates(
+            $userid,
+            $this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER)
+        );
     }
 
     /**
@@ -237,13 +271,9 @@ class ZoneTemplate
      */
     public function getDefaultTemplateId(): ?int
     {
-        $db_type = (string) $this->config->get('database', 'type');
-        $boolTrue = DbCompat::boolTrue($db_type);
-        $stmt = $this->db->prepare("SELECT id FROM zone_templ WHERE is_default = $boolTrue AND owner = 0 ORDER BY id LIMIT 1");
-        $stmt->execute();
-        $dbId = $stmt->fetchColumn();
-        if ($dbId !== false && $dbId !== null) {
-            return (int) $dbId;
+        $dbId = $this->repository()->findFlaggedDefaultTemplateId();
+        if ($dbId !== null) {
+            return $dbId;
         }
 
         $configured = $this->config->get('dns', 'default_zone_template', null);
@@ -253,9 +283,7 @@ class ZoneTemplate
 
         if (is_int($configured) || (is_string($configured) && ctype_digit($configured))) {
             $id = (int) $configured;
-            $check = $this->db->prepare("SELECT 1 FROM zone_templ WHERE id = :id AND owner = 0");
-            $check->execute([':id' => $id]);
-            if ($check->fetchColumn() === false) {
+            if (!$this->repository()->globalTemplateExists($id)) {
                 $this->logger->warning(
                     'Poweradmin: dns.default_zone_template = {id} does not match any global zone template; falling back to "none".',
                     ['id' => $id]
@@ -266,9 +294,7 @@ class ZoneTemplate
         }
 
         if (is_string($configured)) {
-            $check = $this->db->prepare("SELECT id FROM zone_templ WHERE name = :name AND owner = 0");
-            $check->execute([':name' => $configured]);
-            $matches = $check->fetchAll(PDO::FETCH_COLUMN);
+            $matches = $this->repository()->findGlobalTemplateIdsByName($configured);
             if (count($matches) === 0) {
                 $this->logger->warning(
                     'Poweradmin: dns.default_zone_template = "{name}" does not match any global zone template; falling back to "none".',
@@ -299,28 +325,18 @@ class ZoneTemplate
      */
     public function setDefaultTemplate(int $zone_templ_id): bool
     {
-        $owner = $this->db->prepare("SELECT owner FROM zone_templ WHERE id = :id");
-        $owner->execute([':id' => $zone_templ_id]);
-        $ownerVal = $owner->fetchColumn();
-        if ($ownerVal === false) {
+        $ownerVal = $this->repository()->getOwner($zone_templ_id);
+        if ($ownerVal === null) {
             $this->messageService->addSystemError(_('Zone template not found.'));
             return false;
         }
-        if ((int) $ownerVal !== 0) {
+        if ($ownerVal !== 0) {
             $this->messageService->addSystemError(_('Only global zone templates can be set as the default.'));
             return false;
         }
 
         try {
-            // Atomic CASE-WHEN: prevents concurrent writers from each leaving
-            // their chosen row flagged.
-            $db_type = (string) $this->config->get('database', 'type');
-            $boolTrue = DbCompat::boolTrue($db_type);
-            $boolFalse = DbCompat::boolFalse($db_type);
-            $stmt = $this->db->prepare(
-                "UPDATE zone_templ SET is_default = CASE WHEN id = :id THEN $boolTrue ELSE $boolFalse END WHERE owner = 0"
-            );
-            $stmt->execute([':id' => $zone_templ_id]);
+            $this->repository()->flagDefaultTemplate($zone_templ_id);
             return true;
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error setting default zone template: ') . $e->getMessage());
@@ -336,10 +352,7 @@ class ZoneTemplate
     public function unsetDefaultTemplate(): bool
     {
         try {
-            $db_type = (string) $this->config->get('database', 'type');
-            $boolTrue = DbCompat::boolTrue($db_type);
-            $boolFalse = DbCompat::boolFalse($db_type);
-            $this->db->exec("UPDATE zone_templ SET is_default = $boolFalse WHERE is_default = $boolTrue");
+            $this->repository()->clearDefaultTemplate();
             return true;
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error clearing default zone template: ') . $e->getMessage());
@@ -365,29 +378,19 @@ class ZoneTemplate
         } elseif ($zone_name_exists != '0') {
             $this->messageService->addSystemError(_('Zone template with this name already exists, please choose another one.'));
         } else {
-            $this->db->beginTransaction();
-
             try {
-                // Insert the zone template
-                $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by) VALUES (:name, :descr, :owner, :created_by)");
-                $stmt->execute([
-                    ':name' => $details['templ_name'],
-                    ':descr' => $details['templ_descr'],
-                    // Only ueberusers may create a global template; others get a personal one.
-                    ':owner' => $this->resolveTemplateOwner(isset($details['templ_global']), $userid),
-                    ':created_by' => $userid // Always set created_by to current user
-                ]);
+                // The repository writes the template and its default SOA record in
+                // one transaction. Only ueberusers may create a global template;
+                // others get a personal one. created_by is always the current user.
+                $this->repository()->createZoneTemplate(
+                    $details['templ_name'],
+                    $details['templ_descr'],
+                    $this->resolveTemplateOwner(isset($details['templ_global']), $userid),
+                    $userid
+                );
 
-                // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
-                $zone_templ_id = $this->db->lastInsertId('zone_templ_id_seq');
-
-                // Add a default SOA record to the template
-                $this->addDefaultSOARecordToTemplate((int)$zone_templ_id);
-
-                $this->db->commit();
                 return true;
             } catch (Exception $e) {
-                $this->db->rollBack();
                 $this->messageService->addSystemError(_('Error creating zone template: ') . $e->getMessage());
                 return false;
             }
@@ -395,48 +398,9 @@ class ZoneTemplate
         return false;
     }
 
-    /**
-     * Add a default SOA record to a zone template
-     *
-     * @param int $zone_templ_id Zone template ID
-     * @return bool True on success, false otherwise
-     */
-    private function addDefaultSOARecordToTemplate(int $zone_templ_id): bool
-    {
-        try {
-            // Default values for SOA record
-            $name = '[ZONE]';
-            $type = 'SOA';
-            $content = '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400';
-            $ttl = (int)$this->config->get('dns', 'ttl');
-            $prio = 0;
-
-            // Insert the SOA record
-            $stmt = $this->db->prepare("INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)");
-            $stmt->execute([
-                ':zone_templ_id' => $zone_templ_id,
-                ':name' => $name,
-                ':type' => $type,
-                ':content' => $content,
-                ':ttl' => $ttl,
-                ':prio' => $prio
-            ]);
-
-            return true;
-        } catch (Exception $e) {
-            $this->messageService->addSystemError(_('Error adding default SOA record to template: ') . $e->getMessage());
-            return false;
-        }
-    }
-
     public static function getZoneTemplName($db, $zone_id)
     {
-        $stmt = $db->prepare("SELECT zt.name FROM zones z JOIN zone_templ zt ON zt.id = z.zone_templ_id WHERE " . CanonicalZoneSql::canonicalIdColumn('z') . " = :zone_id");
-        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch();
-
-        return $result ? $result['name'] : '';
+        return self::readRepository($db)->getTemplateNameForZone($zone_id);
     }
 
     /**
@@ -449,9 +413,7 @@ class ZoneTemplate
      */
     public static function getZoneTemplDetails($db, int $zone_templ_id): array
     {
-        $stmt = $db->prepare("SELECT * FROM zone_templ WHERE id = :id");
-        $stmt->execute([':id' => $zone_templ_id]);
-        return $stmt->fetch() ?: [];
+        return self::readRepository($db)->getZoneTemplateDetails($zone_templ_id) ?: [];
     }
 
     /** Delete a zone template
@@ -467,32 +429,8 @@ class ZoneTemplate
             return false;
         } else {
             try {
-                $this->db->beginTransaction();
-
-                // Delete the zone template
-                $stmt = $this->db->prepare("DELETE FROM zone_templ WHERE id = :zone_templ_id");
-                $stmt->execute([':zone_templ_id' => $zone_templ_id]);
-
-                // Delete the zone template records
-                $stmt = $this->db->prepare("DELETE FROM zone_templ_records WHERE zone_templ_id = :zone_templ_id");
-                $stmt->execute([':zone_templ_id' => $zone_templ_id]);
-
-                // Delete references to zone template
-                $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE zone_templ_id = :zone_templ_id");
-                $stmt->execute([':zone_templ_id' => $zone_templ_id]);
-
-                $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE zone_templ_id = :zone_templ_id");
-                $stmt->execute([':zone_templ_id' => $zone_templ_id]);
-
-                // Unlink the zones that used it. Leaving the id behind re-links them to
-                // whichever template later reuses it (SQLite and MariaDB reuse ids).
-                $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE zone_templ_id = :zone_templ_id");
-                $stmt->execute([':zone_templ_id' => $zone_templ_id]);
-
-                $this->db->commit();
-                return true;
+                return $this->repository()->deleteZoneTemplate($zone_templ_id);
             } catch (Exception $e) {
-                $this->db->rollBack();
                 $this->messageService->addSystemError(_('Error deleting zone template: ') . $e->getMessage());
                 return false;
             }
@@ -509,9 +447,7 @@ class ZoneTemplate
      */
     public static function countZoneTemplRecords($db, int $zone_templ_id): int
     {
-        $stmt = $db->prepare("SELECT COUNT(id) FROM zone_templ_records WHERE zone_templ_id = :zone_templ_id");
-        $stmt->execute([':zone_templ_id' => $zone_templ_id]);
-        return (int)$stmt->fetchColumn();
+        return self::readRepository($db)->countZoneTemplateRecords($zone_templ_id);
     }
 
     /**
@@ -524,9 +460,7 @@ class ZoneTemplate
      */
     public static function zoneTemplIdExists($db, int $zone_templ_id): bool
     {
-        $stmt = $db->prepare("SELECT COUNT(id) FROM zone_templ WHERE id = :id");
-        $stmt->execute([':id' => $zone_templ_id]);
-        return (bool)$stmt->fetchColumn();
+        return self::readRepository($db)->zoneTemplateExists($zone_templ_id);
     }
 
     /**
@@ -545,26 +479,7 @@ class ZoneTemplate
      */
     public static function getZoneTemplRecordFromId($db, int $id, ?int $zone_templ_id = null): array
     {
-        $query = "SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id = :id";
-        $params = [':id' => $id];
-
-        if ($zone_templ_id !== null) {
-            $query .= " AND zone_templ_id = :zone_templ_id";
-            $params[':zone_templ_id'] = $zone_templ_id;
-        }
-
-        $stmt = $db->prepare($query);
-        $stmt->execute($params);
-        $result = $stmt->fetch();
-        return $result ? array(
-            "id" => $result["id"],
-            "zone_templ_id" => $result["zone_templ_id"],
-            "name" => $result["name"],
-            "type" => $result["type"],
-            "content" => $result["content"],
-            "ttl" => $result["ttl"],
-            "prio" => $result["prio"],
-        ) : [];
+        return self::readRepository($db)->getZoneTemplateRecordById($id, $zone_templ_id);
     }
 
     /**
@@ -583,28 +498,7 @@ class ZoneTemplate
      */
     public static function getZoneTemplRecords($db, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name'): array
     {
-        $allowedSortColumns = ['name', 'type', 'content', 'priority', 'ttl'];
-        $sortby = in_array($sortby, $allowedSortColumns) ? htmlspecialchars($sortby) : 'name';
-
-        $query = "SELECT id FROM zone_templ_records WHERE zone_templ_id = :id ORDER BY " . $sortby;
-        if ($rowamount < Constants::DEFAULT_MAX_ROWS) {
-            $query .= " LIMIT " . $rowamount;
-            if ($rowstart > 0) {
-                $query .= " OFFSET " . $rowstart;
-            }
-        }
-
-        $stmt = $db->prepare($query);
-        $stmt->execute([':id' => $id]);
-
-        $ret = [];
-        $retCount = 0;
-        while ($r = $stmt->fetch()) {
-            // Call get_record_from_id for each row.
-            $ret[$retCount] = ZoneTemplate::getZoneTemplRecordFromId($db, $r["id"]);
-            $retCount++;
-        }
-        return ($retCount > 0 ? $ret : []);
+        return self::readRepository($db)->getZoneTemplateRecords($id, $rowstart, $rowamount, $sortby);
     }
 
     /**
@@ -660,18 +554,8 @@ class ZoneTemplate
             return false;
         }
 
-        $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)";
-
         try {
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([
-                ':zone_templ_id' => $zone_templ_id,
-                ':name' => $name,
-                ':type' => $type,
-                ':content' => $content,
-                ':ttl' => $ttl,
-                ':prio' => $prio
-            ]);
+            $this->repository()->addRecord($zone_templ_id, $name, $type, $content, $ttl, $prio);
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error adding zone template record: ') . $e->getMessage());
             return false;
@@ -774,24 +658,14 @@ class ZoneTemplate
         }
 
         try {
-            $stmt = $this->db->prepare("UPDATE zone_templ_records
-                                SET name = :name,
-                                type = :type,
-                                content = :content,
-                                ttl = :ttl,
-                                prio = :prio
-                                WHERE id = :id");
-
-            $stmt->execute([
-                ':name' => $record['name'],
-                ':type' => $record['type'],
-                ':content' => $record['content'],
-                ':ttl' => $record['ttl'],
-                ':prio' => $record['prio'] ?? 0,
-                ':id' => $record['rid']
-            ]);
-
-            return true;
+            return $this->repository()->updateRecord(
+                (int)$record['rid'],
+                (string)$record['name'],
+                (string)$record['type'],
+                (string)$record['content'],
+                (int)$record['ttl'],
+                (int)($record['prio'] ?? 0)
+            );
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error updating zone template record: ') . $e->getMessage());
             return false;
@@ -827,9 +701,7 @@ class ZoneTemplate
         }
 
         try {
-            $stmt = $this->db->prepare("DELETE FROM zone_templ_records WHERE id = :id");
-            $stmt->execute([':id' => $rid]);
-            return true;
+            return $this->repository()->deleteRecord($rid);
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error deleting zone template record: ') . $e->getMessage());
             return false;
@@ -868,14 +740,12 @@ class ZoneTemplate
             return true;
         }
 
-        $stmt = $this->db->prepare("SELECT owner FROM zone_templ WHERE id = :id");
-        $stmt->execute([':id' => $zone_templ_id]);
-        $owner = $stmt->fetchColumn();
-        if ($owner === false || $owner === null) {
+        $owner = $this->repository()->getOwner($zone_templ_id);
+        if ($owner === null) {
             return false;
         }
 
-        return (int)$owner === 0 || (int)$owner === $userid;
+        return $owner === 0 || $owner === $userid;
     }
 
     /**
@@ -891,11 +761,7 @@ class ZoneTemplate
     public function isUserOwnerOfTemplate(int $zone_templ_id, int $userid): bool
     {
         try {
-            $stmt = $this->db->prepare("SELECT owner FROM zone_templ WHERE id = :id");
-            $stmt->execute([':id' => $zone_templ_id]);
-            $result = $stmt->fetchColumn();
-
-            return ($result == $userid);
+            return $this->repository()->isOwner($zone_templ_id, $userid);
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error checking template ownership: ') . $e->getMessage());
             return false;
@@ -921,34 +787,12 @@ class ZoneTemplate
             return false;
         } else {
             try {
-                $this->db->beginTransaction();
-
                 // A global template (owner 0) is reserved for ueberusers.
                 $isGlobal = isset($options['global']) && $options['global'] === true;
                 $owner = $this->resolveTemplateOwner($isGlobal, $userid);
 
-                $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by) 
-                    VALUES (:name, :descr, :owner, :created_by)");
-
-                $stmt->execute([
-                    ':name' => $template_name,
-                    ':descr' => $description,
-                    ':owner' => $owner,
-                    ':created_by' => $userid
-                ]);
-
-                // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
-                $zone_templ_id = $this->db->lastInsertId('zone_templ_id_seq');
-
-                // Check if the records include an SOA record
-                $hasSOA = false;
-
-                // Prepare statement once outside the loop for better performance
-                $recordStmt = $this->db->prepare("INSERT INTO zone_templ_records 
-                    (zone_templ_id, name, type, content, ttl, prio) 
-                    VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)");
-
                 $skippedTypes = [];
+                $templateRecords = [];
 
                 foreach ($records as $record) {
                     // Skip rather than fail: a saved zone legitimately carries records
@@ -958,28 +802,26 @@ class ZoneTemplate
                         continue;
                     }
 
-                    if ($record['type'] === 'SOA') {
-                        $hasSOA = true;
-                    }
-
                     list($name, $content) = self::replaceWithTemplatePlaceholders($domain, $record, $options);
 
-                    $recordStmt->execute([
-                        ':zone_templ_id' => $zone_templ_id,
-                        ':name' => $name,
-                        ':type' => $record['type'],
-                        ':content' => $content,
-                        ':ttl' => $record['ttl'],
-                        ':prio' => $record['prio'] ?? 0
-                    ]);
+                    $templateRecords[] = [
+                        'name' => $name,
+                        'type' => $record['type'],
+                        'content' => $content,
+                        'ttl' => $record['ttl'],
+                        'prio' => $record['prio'] ?? 0,
+                    ];
                 }
 
-                // If there's no SOA record, add one automatically
-                if (!$hasSOA) {
-                    $this->addDefaultSOARecordToTemplate((int)$zone_templ_id);
-                }
-
-                $this->db->commit();
+                // The repository writes the template, its records and - when the
+                // records carry no SOA - a default SOA, in one transaction.
+                $this->repository()->createZoneTemplateWithRecords(
+                    $template_name,
+                    $description,
+                    $owner,
+                    $userid,
+                    $templateRecords
+                );
 
                 if ($skippedTypes !== []) {
                     $this->messageService->addSystemError(sprintf(
@@ -990,7 +832,7 @@ class ZoneTemplate
 
                 return true;
             } catch (Exception $e) {
-                $this->db->rollBack();
+                // The repository already rolled its transaction back.
                 $this->messageService->addSystemError(_('Error creating zone template: ') . $e->getMessage());
                 return false;
             }
@@ -1246,31 +1088,15 @@ class ZoneTemplate
             $this->messageService->addSystemError(_('Zone template with this name already exists, please choose another one.'));
             return false;
         } else {
-            $query = 'UPDATE zone_templ SET name=:templ_name, descr=:templ_descr';
-            $params = [
-                "templ_name" => $details['templ_name'],
-                "templ_descr" => $details['templ_descr'],
-                "templ_id" => $zone_templ_id
-            ];
-
-            // Making a template global (owner 0) is reserved for ueberusers; keep created_by intact.
-            if ($this->resolveTemplateOwner(isset($details['templ_global']), $user_id) === 0) {
-                $query .= ', owner=0';
-            } else {
-                // Private templates cannot be the default; clear the flag to
-                // avoid leaving an orphan that the resolver would then ignore.
-                $db_type = (string) $this->config->get('database', 'type');
-                $boolFalse = DbCompat::boolFalse($db_type);
-                $query .= ', owner=:templ_owner, is_default=' . $boolFalse;
-                $params['templ_owner'] = $user_id;
-            }
-
-            $query .= ' WHERE id=:templ_id';
-            $stmt = $this->db->prepare($query);
-
-            $stmt->execute($params);
-
-            return true;
+            // Making a template global (owner 0) is reserved for ueberusers; keep
+            // created_by intact. A private template also loses the default flag,
+            // which the repository clears along with a non-zero owner.
+            return $this->repository()->updateZoneTemplate(
+                $zone_templ_id,
+                $details['templ_name'],
+                $details['templ_descr'],
+                $this->resolveTemplateOwner(isset($details['templ_global']), $user_id)
+            );
         }
     }
 
@@ -1284,10 +1110,7 @@ class ZoneTemplate
     public function unlinkZoneFromTemplate(int $zone_id): bool
     {
         try {
-            $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE domain_id = ?");
-            $stmt->bindValue(1, $zone_id, PDO::PARAM_INT);
-            $stmt->execute();
-            return true;
+            return $this->repository()->unlinkZoneFromTemplate($zone_id);
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error unlinking zone from template: ') . $e->getMessage());
             return false;
@@ -1336,9 +1159,7 @@ class ZoneTemplate
     public function zoneTemplNameExists(string $zone_templ_name): bool
     {
         try {
-            $stmt = $this->db->prepare("SELECT COUNT(id) FROM zone_templ WHERE name = :name");
-            $stmt->execute([':name' => $zone_templ_name]);
-            return (bool) $stmt->fetchColumn();
+            return $this->repository()->zoneTemplateNameExists($zone_templ_name);
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error checking template name existence: ') . $e->getMessage());
             return false;
@@ -1357,9 +1178,7 @@ class ZoneTemplate
     public function getZoneTemplIdsByName(string $name): array
     {
         try {
-            $stmt = $this->db->prepare("SELECT id FROM zone_templ WHERE name = :name");
-            $stmt->execute([':name' => $name]);
-            return array_map('intval', $stmt->fetchAll(\PDO::FETCH_COLUMN));
+            return $this->repository()->findTemplateIdsByName($name);
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error looking up template by name: ') . $e->getMessage());
             return [];
@@ -1377,12 +1196,7 @@ class ZoneTemplate
     public function zoneTemplNameAndIdExists(string $zone_templ_name, int $zone_templ_id): bool
     {
         try {
-            $stmt = $this->db->prepare("SELECT COUNT(id) FROM zone_templ WHERE name = :name AND id != :id");
-            $stmt->execute([
-                ':name' => $zone_templ_name,
-                ':id' => $zone_templ_id
-            ]);
-            return (bool) $stmt->fetchColumn();
+            return $this->repository()->zoneTemplateNameExists($zone_templ_name, $zone_templ_id);
         } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error checking template existence: ') . $e->getMessage());
             return false;

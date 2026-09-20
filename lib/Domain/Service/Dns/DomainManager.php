@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
+use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
@@ -61,6 +62,7 @@ class DomainManager implements DomainManagerInterface
     private ?PermissionService $permissionService = null;
     private ?DbUserRepository $userRepository = null;
     private UserContextService $userContext;
+    private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository;
 
     /**
      * Constructor
@@ -79,8 +81,10 @@ class DomainManager implements DomainManagerInterface
         ?DnsBackendProviderInterface $backendProvider = null,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
-        ?UserContextService $userContext = null
+        ?UserContextService $userContext = null,
+        ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null
     ) {
+        $this->zoneTemplateRepository = $zoneTemplateRepository;
         $this->db = $db;
         $this->config = $config;
         $this->soaRecordManager = $soaRecordManager;
@@ -336,7 +340,7 @@ class DomainManager implements DomainManagerInterface
 
                             $templ_records = ZoneTemplate::getZoneTemplRecords($db, (int)$zone_template);
                             if (!empty($templ_records)) {
-                                $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger);
+                                $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger, $this->zoneTemplateRepository);
                                 foreach ($templ_records as $r) {
                                     if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
                                         $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
@@ -739,7 +743,7 @@ class DomainManager implements DomainManagerInterface
 
                     // Get all records from the template
                     $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
-                    $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger);
+                    $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger, $this->zoneTemplateRepository);
 
                     // Writes outside this transaction would not see the rows above until it commits
                     if (!$localTransaction) {

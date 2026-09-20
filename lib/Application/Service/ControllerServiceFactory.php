@@ -32,6 +32,7 @@ use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
@@ -72,6 +73,7 @@ use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
 use Psr\Log\LoggerInterface;
@@ -102,6 +104,7 @@ class ControllerServiceFactory
     private ?DomainManagerInterface $domainManager = null;
     private ?SupermasterManager $supermasterManager = null;
     private ?ZoneTemplate $zoneTemplate = null;
+    private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null;
     private ?DnsDataService $dnsDataService = null;
     private ?ZoneRepositoryInterface $zoneRepository = null;
     private ?DomainRepositoryInterface $domainRepository = null;
@@ -253,7 +256,8 @@ class ControllerServiceFactory
             capabilities: $capabilities,
             signing: $this->zoneSigningService(),
             domainRepository: $this->domainRepository(),
-            permissions: $this->permissionService()
+            permissions: $this->permissionService(),
+            zoneTemplateRepository: $this->zoneTemplateRepository()
         );
     }
 
@@ -486,7 +490,8 @@ class ControllerServiceFactory
             $this->config,
             $this->soaRecordManager(),
             $this->domainRepository(),
-            $this->dnsBackendProvider()
+            $this->dnsBackendProvider(),
+            zoneTemplateRepository: $this->zoneTemplateRepository()
         );
     }
 
@@ -495,9 +500,18 @@ class ControllerServiceFactory
         return $this->supermasterManager ??= DnsServiceFactory::createSupermasterManager($this->db, $this->config, $this->dnsBackendProvider());
     }
 
+    /**
+     * Shared so the zone template model, the domain manager and the zone
+     * management service all read through one instance.
+     */
+    public function zoneTemplateRepository(): ZoneTemplateRepositoryInterface
+    {
+        return $this->zoneTemplateRepository ??= new DbZoneTemplateRepository($this->db, $this->config);
+    }
+
     public function zoneTemplate(): ZoneTemplate
     {
-        return $this->zoneTemplate ??= new ZoneTemplate($this->db, $this->config, $this->dnsBackendProvider(), $this->logger);
+        return $this->zoneTemplate ??= new ZoneTemplate($this->db, $this->config, $this->dnsBackendProvider(), $this->logger, $this->zoneTemplateRepository());
     }
 
     public function catalogZoneService(): CatalogZoneService
