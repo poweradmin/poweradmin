@@ -469,7 +469,7 @@ abstract class AbstractAnnotation implements \JsonSerializable
         }
 
         // validate refs
-        if ($analysis?->openapi && property_exists($this, 'ref') && !Undefined::isDefault($this->ref) && is_string($this->ref)) {
+        if ($analysis?->openapi instanceof OpenApi && property_exists($this, 'ref') && !Undefined::isDefault($this->ref) && is_string($this->ref)) {
             if (str_starts_with($this->ref, '#/')) {
                 try {
                     $analysis->openapi->ref($this->ref);
@@ -550,7 +550,7 @@ abstract class AbstractAnnotation implements \JsonSerializable
             /** @var class-string<AbstractAnnotation> $parent */
             foreach (static::$_parents as $parent) {
                 foreach ($parent::$_nested as $annotationClass => $entry) {
-                    if ($annotationClass === $class && is_array($entry) && !Undefined::isDefault($this->{$entry[1]})) {
+                    if ($annotationClass === $class && is_array($entry) && count($entry) > 1 && !Undefined::isDefault($this->{$entry[1]})) {
                         $properties[] = $entry[1];
                         break 2;
                     }

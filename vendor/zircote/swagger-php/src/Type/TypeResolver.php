@@ -25,6 +25,7 @@ use Symfony\Component\TypeInfo\Type\ArrayShapeType;
 use Symfony\Component\TypeInfo\Type\BuiltinType;
 use Symfony\Component\TypeInfo\Type\CollectionType;
 use Symfony\Component\TypeInfo\Type\CompositeTypeInterface;
+use Symfony\Component\TypeInfo\Type\GenericType;
 use Symfony\Component\TypeInfo\Type\IntersectionType;
 use Symfony\Component\TypeInfo\Type\NullableType;
 use Symfony\Component\TypeInfo\Type\ObjectType;
@@ -62,7 +63,7 @@ class TypeResolver
         }
 
         $nullable = null;
-        if (($docblockType && $docblockType->isNullable()) || ($reflectionType && $reflectionType->isNullable())) {
+        if (($docblockType instanceof Type && $docblockType->isNullable()) || ($reflectionType instanceof Type && $reflectionType->isNullable())) {
             $nullable = true;
         }
 
@@ -86,7 +87,7 @@ class TypeResolver
     {
         $docComment = match (true) {
             $reflector instanceof \ReflectionProperty => $reflector->isPromoted()
-                && $reflector->getDeclaringClass() && $reflector->getDeclaringClass()->getConstructor()
+                && $reflector->getDeclaringClass() instanceof \ReflectionClass && $reflector->getDeclaringClass()->getConstructor() instanceof \ReflectionMethod
                     ? $reflector->getDeclaringClass()->getConstructor()->getDocComment()
                     : $reflector->getDocComment(),
             $reflector instanceof \ReflectionParameter => $reflector->getDeclaringFunction()->getDocComment(),
@@ -155,11 +156,16 @@ class TypeResolver
         }
 
         if ($type instanceof ObjectType) {
-            if ($type->getClassName() === \stdClass::class) {
+            // In the global namespace a short-name docblock comes back as `\Foo`, while
+            // `\Foo` itself comes back as `Foo`. `ComponentIndex` keys on `getClassName()`,
+            // which carries no leading slash.
+            $className = ltrim($type->getClassName(), '\\');
+
+            if ($className === \stdClass::class) {
                 return new SchemaType(type: 'object');
             }
 
-            return new SchemaType(type: $type->getClassName());
+            return new SchemaType(type: $className);
         }
 
         if ($type instanceof IntRangeType) {
@@ -180,6 +186,13 @@ class TypeResolver
 
         if ($type instanceof CollectionType) {
             return $this->mapCollectionType($type);
+        }
+
+        // `Foo<T>` on a class. OpenAPI can express nothing about the parameters, so the
+        // type being parameterised is what is left. Last, so `array<...>` and `int<...>`
+        // reach the arms above.
+        if ($type instanceof GenericType) {
+            return $this->mapType($type->getWrappedType());
         }
 
         return new SchemaType();
