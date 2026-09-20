@@ -253,14 +253,24 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->assertSame('Array.example.com', $subjects[count($subjects) - 1]);
     }
 
-    public function testATtlBelowOneIs400OnUpdate(): void
+    public function testANegativeTtlIs400OnUpdate(): void
     {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+
+        $response = $this->update(['ttl' => -1]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('TTL must not be negative', $this->messageOf($response));
+    }
+
+    public function testAZeroTtlIsAcceptedOnUpdate(): void
+    {
+        // TTLValidator allows 0, so the API must not refuse it either
         $this->records->method('getRecordById')->willReturn($this->existingRecord());
 
         $response = $this->update(['ttl' => 0]);
 
-        $this->assertSame(400, $response->getStatusCode());
-        $this->assertSame('TTL must be greater than 0', $this->messageOf($response));
+        $this->assertNotSame(400, $response->getStatusCode());
     }
 
     public function testADisabledValueOtherThanZeroOrOneIs400OnUpdate(): void

@@ -255,23 +255,30 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
     /**
      * @return array<string, array{int|string}>
      */
-    public static function nonPositiveTtlProvider(): array
+    public static function negativeTtlProvider(): array
     {
         return [
-            'zero' => [0],
             'negative' => [-1],
-            // Numeric strings are coerced first, so "0" fails the same range check.
-            'numeric string zero' => ['0'],
+            // Numeric strings are coerced first, so "-1" fails the same range check.
+            'numeric string negative' => ['-1'],
         ];
     }
 
-    #[DataProvider('nonPositiveTtlProvider')]
-    public function testATtlBelowOneIs400(int|string $ttl): void
+    #[DataProvider('negativeTtlProvider')]
+    public function testANegativeTtlIs400(int|string $ttl): void
     {
         $response = $this->replace(['name' => 'www', 'type' => 'A', 'ttl' => $ttl, 'records' => [['content' => '192.0.2.1']]]);
 
         $this->assertSame(400, $response->getStatusCode());
-        $this->assertSame('TTL must be greater than 0', $this->messageOf($response));
+        $this->assertSame('TTL must not be negative', $this->messageOf($response));
+    }
+
+    public function testAZeroTtlIsAcceptedAsDoNotCache(): void
+    {
+        // TTLValidator allows 0, so the API must not refuse it either
+        $response = $this->replace(['name' => 'www', 'type' => 'A', 'ttl' => 0, 'records' => [['content' => '192.0.2.1']]]);
+
+        $this->assertNotSame(400, $response->getStatusCode());
     }
 
     public function testAnOmittedTtlFallsBackToTheResolverAndPassesTheRangeCheck(): void

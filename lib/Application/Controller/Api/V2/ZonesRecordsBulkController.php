@@ -371,8 +371,8 @@ class ZonesRecordsBulkController extends PublicApiController
         }
 
         // Validate TTL
-        if ($ttl < 1) {
-            throw new ApiErrorException('TTL must be greater than 0', 400);
+        if ($ttl < 0) {
+            throw new ApiErrorException('TTL must not be negative', 400);
         }
 
         // Convert name to FQDN

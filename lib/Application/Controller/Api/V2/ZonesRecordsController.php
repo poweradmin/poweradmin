@@ -452,8 +452,9 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Validate TTL
-            if ($ttl < 1) {
-                return $this->returnApiError('TTL must be greater than 0', 400);
+            // 0 is RFC-valid ("do not cache") and TTLValidator accepts it
+            if ($ttl < 0) {
+                return $this->returnApiError('TTL must not be negative', 400);
             }
 
             // Validate disabled field
@@ -716,8 +717,9 @@ class ZonesRecordsController extends PublicApiController
             ];
 
             // Validate TTL
-            if ($recordData['ttl'] < 1) {
-                return $this->returnApiError('TTL must be greater than 0', 400);
+            // 0 is RFC-valid ("do not cache") and TTLValidator accepts it
+            if ($recordData['ttl'] < 0) {
+                return $this->returnApiError('TTL must not be negative', 400);
             }
 
             // Validate disabled field

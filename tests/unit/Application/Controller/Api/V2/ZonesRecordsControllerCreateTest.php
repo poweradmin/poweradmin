@@ -207,12 +207,20 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
         $this->assertSame('Fields ttl, priority, and disabled must be numeric', $this->messageOf($response));
     }
 
-    public function testATtlBelowOneIs400(): void
+    public function testANegativeTtlIs400(): void
     {
-        $response = $this->create(array_merge($this->validBody(), ['ttl' => 0]));
+        $response = $this->create(array_merge($this->validBody(), ['ttl' => -1]));
 
         $this->assertSame(400, $response->getStatusCode());
-        $this->assertSame('TTL must be greater than 0', $this->messageOf($response));
+        $this->assertSame('TTL must not be negative', $this->messageOf($response));
+    }
+
+    public function testAZeroTtlIsAcceptedAsDoNotCache(): void
+    {
+        // TTLValidator allows 0, so the API must not refuse it either
+        $response = $this->create(array_merge($this->validBody(), ['ttl' => 0]));
+
+        $this->assertNotSame(400, $response->getStatusCode());
     }
 
     public function testADisabledValueOtherThanZeroOrOneIs400(): void

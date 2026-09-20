@@ -284,8 +284,9 @@ class ZonesChangeRequestsController extends PublicApiController
             if ($ttl === null || $priority === null || $disabled === null) {
                 return $this->returnApiError($label . ': fields ttl, priority, and disabled must be numeric', 400);
             }
-            if ($ttl < 1) {
-                return $this->returnApiError($label . ': TTL must be greater than 0', 400);
+            // 0 is RFC-valid ("do not cache") and TTLValidator accepts it
+            if ($ttl < 0) {
+                return $this->returnApiError($label . ': TTL must not be negative', 400);
             }
             if (!$this->apiPermissionService->canRequestZoneRecord($userId, $zoneId, $type, $name, $zoneName)) {
                 return $this->returnApiError('You do not have permission to edit this record type', 403);
@@ -328,8 +329,8 @@ class ZonesChangeRequestsController extends PublicApiController
         if ($type === '' || $name === null || $content === null || $ttl === null || $priority === null || $disabled === null) {
             return $this->returnApiError($label . ': invalid field types in record', 400);
         }
-        if ($ttl < 1) {
-            return $this->returnApiError($label . ': TTL must be greater than 0', 400);
+        if ($ttl < 0) {
+            return $this->returnApiError($label . ': TTL must not be negative', 400);
         }
         $name = $this->normalizeV2RecordName($name, $zoneName);
         $fqdn = (new HostnameValidator($this->getConfig()))->normalizeRecordName($name, $zoneName);

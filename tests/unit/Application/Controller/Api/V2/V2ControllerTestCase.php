@@ -23,7 +23,6 @@
 namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 
 use PHPUnit\Framework\TestCase;
-
 use PDO;
 use PDOStatement;
 use Poweradmin\Application\Service\AuditService;
