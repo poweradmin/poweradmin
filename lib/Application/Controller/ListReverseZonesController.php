@@ -245,7 +245,6 @@ class ListReverseZonesController extends BaseController
             'pdnssec_use' => $pdnssec_use,
             'pagination' => $this->presentPagination($pagination_count, $iface_rowamount, '/zones/reverse?start={PageNumber}', [
                 'reverse_type' => $this->httpRequest->getQueryParam('reverse_type'),
-                'rows_per_page' => $this->httpRequest->getQueryParam('rows_per_page'),
             ]),
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),
             'perm_edit' => $perm_edit,

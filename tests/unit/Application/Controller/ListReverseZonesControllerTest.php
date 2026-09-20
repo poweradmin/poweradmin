@@ -182,17 +182,16 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $this->assertSame(25, $this->runController()->renderedParams()['iface_rowamount']);
     }
 
-    public function testPaginationRepeatsThePageSizeItAlreadyCarries(): void
+    public function testPaginationCarriesTheFilterAndThePageSizeOnce(): void
     {
-        // This page passes rows_per_page as an extra query parameter while the
-        // presenter appends it too, so every link carries it twice. The forward
-        // list passes no extras and carries it once. Pinned as-is.
+        // The presenter appends rows_per_page itself, so the page passes only the filter
         $this->reverseZoneCounts = ['count_all' => 100, 'count_ipv4' => 60, 'count_ipv6' => 40];
         $this->query(['rows_per_page' => '20', 'reverse_type' => 'ipv4']);
 
         $pagination = $this->runController()->renderedParams()['pagination'];
 
-        $this->assertStringContainsString('/zones/reverse?start=1&reverse_type=ipv4&rows_per_page=20&rows_per_page=20', $pagination);
+        $this->assertStringContainsString('/zones/reverse?start=1&reverse_type=ipv4&rows_per_page=20"', $pagination);
+        $this->assertStringNotContainsString('rows_per_page=20&rows_per_page=20', $pagination);
     }
 
     // ----------------------------------------------------- reverse-type filter
