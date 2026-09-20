@@ -276,16 +276,10 @@ class ZonesRecordsBulkControllerTest extends TestCase
         );
     }
 
-    /**
-     * Pinned as-is, and it looks wrong: the audit row is written with
-     * count($results) - the number of keys in the counters array, always 6 - where
-     * the number of operations was clearly meant
-     * (ZonesRecordsBulkController.php:318).
-     */
-    public function testTheAuditRowRecordsSixOperationsNoMatterHowManyRan(): void
+    public function testTheAuditRowRecordsHowManyOperationsRan(): void
     {
         $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
-        $this->audit->expects($this->once())->method('logApiBulkRecords')->with(self::ZONE_ID, 6);
+        $this->audit->expects($this->once())->method('logApiBulkRecords')->with(self::ZONE_ID, 2);
 
         $response = $this->bulk(['operations' => [$this->createOperation(), $this->createOperation(['name' => 'www2'])]]);
 
