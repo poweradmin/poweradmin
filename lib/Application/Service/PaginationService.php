@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use InvalidArgumentException;
 use Poweradmin\Domain\Model\Pagination;
+use Poweradmin\Domain\Model\PaginationLimits;
 use Poweradmin\Domain\Service\UserPreferenceService;
 
 /**
@@ -31,15 +32,13 @@ use Poweradmin\Domain\Service\UserPreferenceService;
  */
 class PaginationService
 {
-    /** Lower and upper bounds for a usable page size; shared with UserPreferenceService. */
-    public const MIN_ROWS_PER_PAGE = 5;
-    public const MAX_ROWS_PER_PAGE = 500;
+    public const MIN_ROWS_PER_PAGE = PaginationLimits::MIN_ROWS_PER_PAGE;
+    public const MAX_ROWS_PER_PAGE = PaginationLimits::MAX_ROWS_PER_PAGE;
 
     /** Offered in the page-size dropdowns; any value within the bounds is still honoured. */
     public const ROWS_PER_PAGE_PRESETS = [10, 20, 50, 100];
 
-    /** Used when nothing usable was supplied; matches interface.rows_per_page's default. */
-    public const DEFAULT_ROWS_PER_PAGE = 10;
+    public const DEFAULT_ROWS_PER_PAGE = PaginationLimits::DEFAULT_ROWS_PER_PAGE;
 
     private ?UserPreferenceService $userPreferenceService;
 

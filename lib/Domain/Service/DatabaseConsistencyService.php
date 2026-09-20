@@ -40,12 +40,23 @@ class DatabaseConsistencyService
     private TableNameService $tableNameService;
     private ?DnsBackendProviderInterface $backendProvider;
     private bool $apiReadFailed = false;
+    private ?ApiStatusInterface $apiStatus;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProviderInterface $backendProvider = null)
-    {
+    public function __construct(
+        PDO $db,
+        ConfigurationInterface $config,
+        ?DnsBackendProviderInterface $backendProvider = null,
+        ?ApiStatusInterface $apiStatus = null
+    ) {
         $this->db = $db;
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
+        $this->apiStatus = $apiStatus;
+    }
+
+    private function apiStatus(): ApiStatusInterface
+    {
+        return $this->apiStatus ??= new ApiStatusService();
     }
 
     private function isApiBackend(): bool
@@ -61,7 +72,7 @@ class DatabaseConsistencyService
      */
     private function apiZonesUnavailable(array $zones): bool
     {
-        return empty($zones) && (new ApiStatusService())->getLastError() !== null;
+        return empty($zones) && $this->apiStatus()->getLastError() !== null;
     }
 
     /**
@@ -73,7 +84,7 @@ class DatabaseConsistencyService
     private function fetchRecordsTracked(int $zoneId, ?string $type = null): array
     {
         $records = $this->backendProvider->getRecordsByZoneId($zoneId, $type);
-        if ((new ApiStatusService())->getLastError() !== null) {
+        if ($this->apiStatus()->getLastError() !== null) {
             $this->apiReadFailed = true;
         }
         return $records;

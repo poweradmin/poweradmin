@@ -309,7 +309,7 @@ parameters:
 		-
 			message: '#^Class Poweradmin\\Application\\Service\\ApiStatusService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\ApiStatusService matches Poweradmin\\Application\\\*\]$#'
 			identifier: disallowed.class
-			count: 2
+			count: 1
 			path: lib/Domain/Service/DatabaseConsistencyService.php
 
 		-
@@ -623,18 +623,6 @@ parameters:
 			identifier: disallowed.variable
 			count: 14
 			path: lib/Domain/Service/UserContextService.php
-
-		-
-			message: '#^Class Poweradmin\\Application\\Service\\PaginationService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\PaginationService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 4
-			path: lib/Domain/Service/UserPreferenceService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\PaginationService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\PaginationService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/UserPreferenceService.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\DbUserPreferenceRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserPreferenceRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'

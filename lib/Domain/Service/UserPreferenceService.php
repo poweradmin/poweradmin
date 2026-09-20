@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use InvalidArgumentException;
-use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Domain\Model\PaginationLimits;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Repository\UserPreferenceRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -137,11 +137,11 @@ class UserPreferenceService
 
     public function setRowsPerPage(int $userId, int $rows): void
     {
-        if ($rows < PaginationService::MIN_ROWS_PER_PAGE || $rows > PaginationService::MAX_ROWS_PER_PAGE) {
+        if ($rows < PaginationLimits::MIN_ROWS_PER_PAGE || $rows > PaginationLimits::MAX_ROWS_PER_PAGE) {
             throw new InvalidArgumentException(sprintf(
                 'Rows per page must be between %d and %d',
-                PaginationService::MIN_ROWS_PER_PAGE,
-                PaginationService::MAX_ROWS_PER_PAGE
+                PaginationLimits::MIN_ROWS_PER_PAGE,
+                PaginationLimits::MAX_ROWS_PER_PAGE
             ));
         }
 

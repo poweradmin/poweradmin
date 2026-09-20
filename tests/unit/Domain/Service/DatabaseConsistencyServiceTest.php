@@ -29,6 +29,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Domain\Service\ApiStatusInterface;
 use Poweradmin\Domain\Service\DatabaseConsistencyService;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -278,5 +279,40 @@ class DatabaseConsistencyServiceTest extends TestCase
         $this->assertArrayHasKey('zones_have_owners', $results);
         $this->assertArrayHasKey('zones_have_canonical_ids', $results);
         $this->assertArrayHasKey('zones_without_soa', $results);
+    }
+
+    #[Test]
+    public function injectedApiStatusPortDecidesZoneListOutage(): void
+    {
+        $backend = $this->apiBackend([]);
+        $apiStatus = $this->createMock(ApiStatusInterface::class);
+        $apiStatus->method('getLastError')->willReturn(['message' => 'down', 'context' => [], 'timestamp' => 1]);
+
+        $service = new DatabaseConsistencyService($this->db, $this->config, $backend, $apiStatus);
+
+        // The session holds no error; only the injected port reports the outage.
+        $this->assertNull($service->runAllChecks());
+    }
+
+    #[Test]
+    public function injectedApiStatusPortDecidesPerZoneReadFailure(): void
+    {
+        $backend = $this->apiBackend([['id' => 5, 'name' => 'z.example.com.', 'type' => 'NATIVE']]);
+        $ownerStmt = $this->createMock(PDOStatement::class);
+        $ownerStmt->method('execute')->willReturn(true);
+        $ownerStmt->method('fetch')->willReturn(['owner_count' => 1, 'group_count' => 0]);
+        $this->db->method('prepare')->willReturn($ownerStmt);
+        $emptyStmt = $this->createMock(PDOStatement::class);
+        $emptyStmt->method('fetch')->willReturn(false);
+        $this->db->method('query')->willReturn($emptyStmt);
+        $backend->method('getRecordsByZoneId')->willReturn([]);
+
+        // The zone list is non-empty so the outage guard never asks; the per-zone read does.
+        $apiStatus = $this->createMock(ApiStatusInterface::class);
+        $apiStatus->method('getLastError')->willReturn(['message' => '502 Bad Gateway', 'context' => [], 'timestamp' => 1]);
+
+        $service = new DatabaseConsistencyService($this->db, $this->config, $backend, $apiStatus);
+
+        $this->assertNull($service->runAllChecks());
     }
 }

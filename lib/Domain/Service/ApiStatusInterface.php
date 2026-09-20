@@ -20,40 +20,15 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Service;
-
-use Poweradmin\Domain\Service\ApiStatusInterface;
+namespace Poweradmin\Domain\Service;
 
 /**
- * Tracks the most recent PowerDNS API error so the UI can surface it.
- *
- * Session-backed so admins see a banner on the dashboard after a failing
- * request without having to tail log files. Cleared on the next successful
- * request.
+ * Exposes the most recent PowerDNS API error so domain checks can tell an outage from an empty backend.
  */
-class ApiStatusService implements ApiStatusInterface
+interface ApiStatusInterface
 {
-    private const SESSION_KEY = 'pdns_api_last_error';
-
-    public function recordError(string $message, array $context = []): void
-    {
-        $_SESSION[self::SESSION_KEY] = [
-            'message' => $message,
-            'context' => $context,
-            'timestamp' => time(),
-        ];
-    }
-
-    public function clearError(): void
-    {
-        unset($_SESSION[self::SESSION_KEY]);
-    }
-
     /**
      * @return array{message: string, context: array, timestamp: int}|null
      */
-    public function getLastError(): ?array
-    {
-        return $_SESSION[self::SESSION_KEY] ?? null;
-    }
+    public function getLastError(): ?array;
 }
