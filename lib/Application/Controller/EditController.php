@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Application\Http\ZoneEditIntent;
+use Poweradmin\Application\Presenter\RecordLockPresenter;
 use Poweradmin\Application\Presenter\ChangeRequestPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\ChangeRequestMessages;
@@ -241,26 +242,8 @@ class EditController extends BaseController
             $this->handleZoneMetadataPost($zone_id);
         }
 
-        if ($this->httpRequest->getPostParam('sign_zone') !== null) {
-            if (!$can_manage_dnssec) {
-                $this->setMessage('edit', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
-                $this->redirect('/zones/' . $zone_id . '/edit');
-                return;
-            }
-
-            [$type, $message] = ZoneSigningMessages::forSign($this->createZoneSigningService()->sign($zone_id, $zone_name));
-            $this->setMessage('edit', $type, $message);
-        }
-
-        if ($this->httpRequest->getPostParam('unsign_zone') !== null) {
-            if (!$can_manage_dnssec) {
-                $this->setMessage('edit', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
-                $this->redirect('/zones/' . $zone_id . '/edit');
-                return;
-            }
-
-            [$type, $message] = ZoneSigningMessages::forUnsign($this->createZoneSigningService()->unsign($zone_id, $zone_name));
-            $this->setMessage('edit', $type, $message);
+        if (!$this->handleSigningRequest($zone_id, $zone_name, $can_manage_dnssec)) {
+            return;
         }
 
         $domain_type = $this->domainRepository->getDomainType($zone_id);
@@ -341,26 +324,13 @@ class EditController extends BaseController
         $log_permission = $this->permissionService->getZoneLogPermissionLevel($userId);
         $can_view_zone_logs = ZoneAccessPolicy::levelAppliesToZone($log_permission, $user_is_zone_owner);
 
-        foreach ($displayRecords as &$record) {
-            $record['display_name'] ??= $record['name'];
-            $record['editable_name'] ??= $record['name'];
-            $record['unsaved_edit'] = false;
-            $record['stored_summary'] = '';
-            $nsRecordLocked = ZoneAccessPolicy::isNsRecordLocked(
-                $record['type'],
-                $perm_edit,
-                $perm_edit_ns_subzone,
-                $record['name'],
-                $zone_name
-            );
-            $record['record_locked'] = ZoneAccessPolicy::isRecordLocked(
-                $zone_is_read_only,
-                $record['type'],
-                $perm_edit,
-                $nsRecordLocked
-            );
-        }
-        unset($record);
+        $displayRecords = RecordLockPresenter::decorate(
+            $displayRecords,
+            $zone_name,
+            $perm_edit,
+            $perm_edit_ns_subzone,
+            $zone_is_read_only
+        );
 
         $stale_form_dropped = RejectedZoneEditPresenter::restore($displayRecords, $this->rejectedRecords);
         $stored_zone_comment = $zone_comment;
@@ -482,6 +452,43 @@ class EditController extends BaseController
      * Join or leave a catalog. The producer arrives as a zone id so the service can
      * resolve its name and check rights on it, rather than trusting a posted name.
      */
+    /**
+     * Sign or unsign the zone when the page posted either button.
+     *
+     * @return bool False when the caller must stop because a redirect was sent
+     */
+    private function handleSigningRequest(int $zone_id, string $zone_name, bool $canManageDnssec): bool
+    {
+        // Both buttons are read, in the order the page posted them, so a request
+        // carrying each one behaves exactly as the two separate blocks did
+        $requested = [];
+        if ($this->httpRequest->getPostParam('sign_zone') !== null) {
+            $requested[] = 'sign';
+        }
+        if ($this->httpRequest->getPostParam('unsign_zone') !== null) {
+            $requested[] = 'unsign';
+        }
+        if ($requested === []) {
+            return true;
+        }
+
+        if (!$canManageDnssec) {
+            $this->setMessage('edit', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
+            $this->redirect('/zones/' . $zone_id . '/edit');
+            return false;
+        }
+
+        $service = $this->createZoneSigningService();
+        foreach ($requested as $action) {
+            [$type, $message] = $action === 'sign'
+                ? ZoneSigningMessages::forSign($service->sign($zone_id, $zone_name))
+                : ZoneSigningMessages::forUnsign($service->unsign($zone_id, $zone_name));
+            $this->setMessage('edit', $type, $message);
+        }
+
+        return true;
+    }
+
     private function handleCatalogChange(int $zone_id): void
     {
         $userId = $this->userContextService->getLoggedInUserId();
