@@ -680,4 +680,49 @@ class PermissionServiceTest extends TestCase
         $this->assertFalse($this->service->canDeleteZone($userId, true));
         $this->assertFalse($this->service->canDeleteZone($userId, false));
     }
+
+    #[Test]
+    public function testChangeRequestAndApproveLevels(): void
+    {
+        $this->userRepository->method('hasAdminPermission')->willReturnMap([[1, true], [2, false], [3, false], [4, false]]);
+        $this->userRepository->method('getUserPermissions')->willReturnMap([
+            [1, []],
+            [2, [Permission::PERM_ZONE_CHANGE_REQUEST_OTHERS, Permission::PERM_ZONE_CHANGE_APPROVE_OTHERS]],
+            [3, [Permission::PERM_ZONE_CHANGE_REQUEST_OWN, Permission::PERM_ZONE_CHANGE_APPROVE_OWN]],
+            [4, [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS]],
+        ]);
+
+        $this->assertSame('all', $this->service->getChangeRequestPermissionLevel(1));
+        $this->assertSame('all', $this->service->getChangeRequestPermissionLevel(2));
+        $this->assertSame('own', $this->service->getChangeRequestPermissionLevel(3));
+        $this->assertSame('none', $this->service->getChangeRequestPermissionLevel(4));
+
+        $this->assertSame('all', $this->service->getChangeApprovePermissionLevel(1));
+        $this->assertSame('all', $this->service->getChangeApprovePermissionLevel(2));
+        $this->assertSame('own', $this->service->getChangeApprovePermissionLevel(3));
+        $this->assertSame('none', $this->service->getChangeApprovePermissionLevel(4));
+    }
+
+    #[Test]
+    public function testChangeRequestAndApproveLevelsForZoneNeedOwnershipForOwn(): void
+    {
+        $this->userRepository->method('hasAdminPermission')->willReturn(false);
+        $this->userRepository->method('getUserPermissions')->willReturnMap([
+            [1, [Permission::PERM_ZONE_CHANGE_REQUEST_OWN, Permission::PERM_ZONE_CHANGE_APPROVE_OWN]],
+            [2, [Permission::PERM_ZONE_CHANGE_REQUEST_OTHERS, Permission::PERM_ZONE_CHANGE_APPROVE_OTHERS]],
+            [3, []],
+        ]);
+        $this->userRepository->method('userOwnsZone')->willReturnCallback(fn(int $userId, int $domainId) => $domainId === 100);
+
+        $this->assertSame('own', $this->service->getChangeRequestPermissionLevelForZone(1, 100));
+        $this->assertSame('none', $this->service->getChangeRequestPermissionLevelForZone(1, 200));
+        $this->assertSame('own', $this->service->getChangeApprovePermissionLevelForZone(1, 100));
+        $this->assertSame('none', $this->service->getChangeApprovePermissionLevelForZone(1, 200));
+
+        $this->assertSame('all', $this->service->getChangeRequestPermissionLevelForZone(2, 200));
+        $this->assertSame('all', $this->service->getChangeApprovePermissionLevelForZone(2, 200));
+
+        $this->assertSame('none', $this->service->getChangeRequestPermissionLevelForZone(3, 100));
+        $this->assertSame('none', $this->service->getChangeApprovePermissionLevelForZone(3, 100));
+    }
 }

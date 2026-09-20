@@ -191,12 +191,7 @@ class PermissionService
      */
     public function getEditPermissionLevelForZone(int $userId, int $domainId): string
     {
-        $level = $this->getEditPermissionLevel($userId);
-        if ($level === 'all' || $level === 'none') {
-            return $level;
-        }
-
-        return $this->userOwnsZone($userId, $domainId) ? $level : 'none';
+        return $this->narrowLevelToZone($this->getEditPermissionLevel($userId), $userId, $domainId);
     }
 
     /**
@@ -484,6 +479,71 @@ class PermissionService
         }
 
         return 'none';
+    }
+
+    /**
+     * Change request level: "all" (others or admin), "own", or "none". Decides
+     * whether the user may file a change request instead of editing directly.
+     */
+    public function getChangeRequestPermissionLevel(int $userId): string
+    {
+        $permissions = $this->getUserPermissions($userId);
+
+        if (in_array(Permission::PERM_ZONE_CHANGE_REQUEST_OTHERS, $permissions) || $this->isAdmin($userId)) {
+            return 'all';
+        } elseif (in_array(Permission::PERM_ZONE_CHANGE_REQUEST_OWN, $permissions)) {
+            return 'own';
+        }
+
+        return 'none';
+    }
+
+    /**
+     * Change approve level: "all" (others or admin), "own", or "none". Reviewing
+     * additionally requires the edit permission, see ChangeApprovalPolicy::canReview().
+     */
+    public function getChangeApprovePermissionLevel(int $userId): string
+    {
+        $permissions = $this->getUserPermissions($userId);
+
+        if (in_array(Permission::PERM_ZONE_CHANGE_APPROVE_OTHERS, $permissions) || $this->isAdmin($userId)) {
+            return 'all';
+        } elseif (in_array(Permission::PERM_ZONE_CHANGE_APPROVE_OWN, $permissions)) {
+            return 'own';
+        }
+
+        return 'none';
+    }
+
+    /**
+     * The user's change request level narrowed to one zone: "own" applies only
+     * when the zone is owned directly or via any group.
+     *
+     * @return string "all", "own", or "none"
+     */
+    public function getChangeRequestPermissionLevelForZone(int $userId, int $domainId): string
+    {
+        return $this->narrowLevelToZone($this->getChangeRequestPermissionLevel($userId), $userId, $domainId);
+    }
+
+    /**
+     * The user's change approve level narrowed to one zone: "own" applies only
+     * when the zone is owned directly or via any group.
+     *
+     * @return string "all", "own", or "none"
+     */
+    public function getChangeApprovePermissionLevelForZone(int $userId, int $domainId): string
+    {
+        return $this->narrowLevelToZone($this->getChangeApprovePermissionLevel($userId), $userId, $domainId);
+    }
+
+    private function narrowLevelToZone(string $level, int $userId, int $domainId): string
+    {
+        if ($level === 'all' || $level === 'none') {
+            return $level;
+        }
+
+        return $this->userOwnsZone($userId, $domainId) ? $level : 'none';
     }
 
     /**

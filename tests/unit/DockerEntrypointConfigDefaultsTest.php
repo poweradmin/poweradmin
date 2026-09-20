@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -131,6 +132,56 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
         $this->assertStringContainsString('PA_SAML_SP_ENTITY_ID', $body);
         $this->assertStringContainsString('PA_SAML_SP_ACS_URL', $body);
         $this->assertStringContainsString('PA_SAML_SP_SLS_URL', $body);
+    }
+
+    /**
+     * The change approval switches ship off, and the entrypoint must both read
+     * the PA_* variable with the same default and emit it into the matching
+     * settings group.
+     */
+    #[DataProvider('approvalVariableProvider')]
+    public function testEntrypointApprovalDefaultsMatchShippedDefaults(string $variable, string $group, string $key, string $shellVariable): void
+    {
+        $repoRoot = dirname(__DIR__, 2);
+
+        $entrypoint = file_get_contents($repoRoot . '/docker-entrypoint.sh');
+        $this->assertNotFalse($entrypoint, 'docker-entrypoint.sh could not be read');
+
+        $defaults = require $repoRoot . '/config/settings.defaults.php';
+        $this->assertArrayHasKey($key, $defaults[$group], sprintf('%s.%s missing from settings.defaults.php', $group, $key));
+        $this->assertFalse($defaults[$group][$key], sprintf('%s.%s must ship disabled', $group, $key));
+
+        $this->assertStringContainsString(
+            sprintf('%s=$(to_php_bool "${%s:-false}")', $shellVariable, $variable),
+            $entrypoint,
+            sprintf('%s must default to false in docker-entrypoint.sh', $variable)
+        );
+
+        $this->assertStringContainsString(
+            sprintf("'%s' => \${%s},", $key, $shellVariable),
+            $this->settingsGroupBody($entrypoint, $group),
+            sprintf('%s must be emitted as %s.%s in the generated settings.php', $variable, $group, $key)
+        );
+    }
+
+    public static function approvalVariableProvider(): array
+    {
+        return [
+            'approval enabled' => ['PA_APPROVAL_ENABLED', 'approval', 'enabled', 'approval_enabled'],
+            'approval require review for all' => ['PA_APPROVAL_REQUIRE_REVIEW_FOR_ALL', 'approval', 'require_review_for_all', 'approval_require_review_for_all'],
+            'change request notifications' => ['PA_NOTIFICATION_CHANGE_REQUEST', 'notifications', 'change_request_enabled', 'notification_change_request'],
+        ];
+    }
+
+    private function settingsGroupBody(string $entrypoint, string $group): string
+    {
+        $start = strpos($entrypoint, sprintf("    '%s' => [\n", $group));
+        $this->assertNotFalse($start, sprintf("'%s' group not found in the generated settings.php", $group));
+
+        $end = strpos($entrypoint, "\n    ],\n", $start);
+        $this->assertNotFalse($end, sprintf("'%s' group has no closing bracket", $group));
+
+        return substr($entrypoint, $start, $end - $start);
     }
 
     private function validatorBody(string $function): string

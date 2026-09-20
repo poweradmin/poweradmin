@@ -282,6 +282,15 @@ return [
      */
     'notifications' => [
         'zone_access_enabled' => false,      // Enable/disable zone access change notifications
+        'change_request_enabled' => false,   // Mail reviewers on new change requests and requesters on decisions (added in 4.6.0)
+    ],
+
+    /**
+     * Change Approval Settings
+     */
+    'approval' => [
+        'enabled' => false,                  // Route changes of request-only users through review (added in 4.6.0)
+        'require_review_for_all' => false,   // Every zone change becomes a request, even for editors and admins (added in 4.6.0)
     ],
 
     /**

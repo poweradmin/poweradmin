@@ -157,7 +157,11 @@ INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (76,	'zone_metadata_view_own',	'User is allowed to see the meta data of zones he owns.'),
                                                      (77,	'zone_metadata_view_others',	'User is allowed to see the meta data of zones he does not own.'),
                                                      (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.'),
-                                                     (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.');
+                                                     (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.'),
+                                                     (80,	'zone_change_request_own',	'User is allowed to request changes to zones they own'),
+                                                     (81,	'zone_change_request_others',	'User is allowed to request changes to any zone'),
+                                                     (82,	'zone_change_approve_own',	'User is allowed to review change requests for zones they own'),
+                                                     (83,	'zone_change_approve_others',	'User is allowed to review change requests for any zone');
 
 CREATE TABLE `perm_templ` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -531,4 +535,29 @@ CREATE TABLE `app_settings` (
     `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
     `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     PRIMARY KEY (`setting_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `zone_change_requests` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `zone_id` int(11) NOT NULL,
+    `zone_name` varchar(255) NOT NULL,
+    `kind` varchar(16) NOT NULL,
+    `status` varchar(16) NOT NULL,
+    `requester_id` int(11) DEFAULT NULL,
+    `requester_name` varchar(64) NOT NULL,
+    `request_comment` text DEFAULT NULL,
+    `base_serial` varchar(32) DEFAULT NULL,
+    `payload` text NOT NULL,
+    `reviewer_id` int(11) DEFAULT NULL,
+    `reviewer_name` varchar(64) DEFAULT NULL,
+    `review_comment` text DEFAULT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `reviewed_at` timestamp NULL DEFAULT NULL,
+    `applied_at` timestamp NULL DEFAULT NULL,
+    `error` text DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_zone_change_requests_zone_id` (`zone_id`),
+    KEY `idx_zone_change_requests_status` (`status`),
+    KEY `idx_zone_change_requests_requester_id` (`requester_id`),
+    KEY `idx_zone_change_requests_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

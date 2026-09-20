@@ -957,6 +957,14 @@ generate_config() {
     # Convert notification boolean values to lowercase
     local notification_zone_access
     notification_zone_access=$(to_php_bool "${PA_NOTIFICATION_ZONE_ACCESS:-false}")
+    local notification_change_request
+    notification_change_request=$(to_php_bool "${PA_NOTIFICATION_CHANGE_REQUEST:-false}")
+
+    # Convert change approval boolean values to lowercase
+    local approval_enabled
+    approval_enabled=$(to_php_bool "${PA_APPROVAL_ENABLED:-false}")
+    local approval_require_review_for_all
+    approval_require_review_for_all=$(to_php_bool "${PA_APPROVAL_REQUIRE_REVIEW_FOR_ALL:-false}")
 
     # Convert user agreement boolean values to lowercase
     local user_agreement_enabled
@@ -1331,6 +1339,11 @@ return [
     ],
     'notifications' => [
         'zone_access_enabled' => ${notification_zone_access},
+        'change_request_enabled' => ${notification_change_request},
+    ],
+    'approval' => [
+        'enabled' => ${approval_enabled},
+        'require_review_for_all' => ${approval_require_review_for_all},
     ],
     'interface' => [
         'title' => $(php_sq "${PA_APP_TITLE:-Poweradmin}"),

@@ -32,16 +32,19 @@ class ConfigValidator
 {
     private array $config;
     private array $errors;
+    private array $warnings;
 
     public function __construct(array $config)
     {
         $this->config = $config;
         $this->errors = [];
+        $this->warnings = [];
     }
 
     public function validate(): bool
     {
         $this->errors = [];
+        $this->warnings = [];
 
         $this->validateIfaceRowAmount();
         $this->validateSessionTimeout();
@@ -58,6 +61,7 @@ class ConfigValidator
         $this->validateDnsBackend();
         $this->validatePdnsDbName();
         $this->validatePermissions();
+        $this->validateApproval();
 
         return empty($this->errors);
     }
@@ -65,6 +69,14 @@ class ConfigValidator
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    /**
+     * Settings that are legal but ineffective; they never fail validate().
+     */
+    public function getWarnings(): array
+    {
+        return $this->warnings;
     }
 
     /**
@@ -319,6 +331,19 @@ class ConfigValidator
 
         if (!$showUser && !$showGroup) {
             $this->errors['permissions'] = 'At least one of show_user_access_templates or show_group_access_templates must be enabled';
+        }
+    }
+
+    /**
+     * require_review_for_all only takes effect once the approval workflow is on.
+     */
+    private function validateApproval(): void
+    {
+        $enabled = $this->getSetting('approval', 'enabled', false);
+        $requireReviewForAll = $this->getSetting('approval', 'require_review_for_all', false);
+
+        if ($requireReviewForAll && !$enabled) {
+            $this->warnings['approval.require_review_for_all'] = 'approval.require_review_for_all has no effect while approval.enabled is false';
         }
     }
 

@@ -72,6 +72,10 @@ class PermissionHelper
             [77, Permission::PERM_ZONE_METADATA_VIEW_OTHERS, 'User is allowed to see the meta data of zones he does not own.'],
             [78, Permission::PERM_ZONE_OWNERSHIP_VIEW_OWN, 'User is allowed to see the owners of zones he owns.'],
             [79, Permission::PERM_ZONE_OWNERSHIP_VIEW_OTHERS, 'User is allowed to see the owners of zones he does not own.'],
+            [80, Permission::PERM_ZONE_CHANGE_REQUEST_OWN, 'User is allowed to request changes to zones they own'],
+            [81, Permission::PERM_ZONE_CHANGE_REQUEST_OTHERS, 'User is allowed to request changes to any zone'],
+            [82, Permission::PERM_ZONE_CHANGE_APPROVE_OWN, 'User is allowed to review change requests for zones they own'],
+            [83, Permission::PERM_ZONE_CHANGE_APPROVE_OTHERS, 'User is allowed to review change requests for any zone'],
         ];
     }
 }

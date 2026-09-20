@@ -81,6 +81,10 @@ class Permission
     public const PERM_ZONE_METADATA_VIEW_OTHERS = 'zone_metadata_view_others';
     public const PERM_ZONE_OWNERSHIP_VIEW_OWN = 'zone_ownership_view_own';
     public const PERM_ZONE_OWNERSHIP_VIEW_OTHERS = 'zone_ownership_view_others';
+    public const PERM_ZONE_CHANGE_REQUEST_OWN = 'zone_change_request_own';
+    public const PERM_ZONE_CHANGE_REQUEST_OTHERS = 'zone_change_request_others';
+    public const PERM_ZONE_CHANGE_APPROVE_OWN = 'zone_change_approve_own';
+    public const PERM_ZONE_CHANGE_APPROVE_OTHERS = 'zone_change_approve_others';
 
     /**
      * Every permission name known to perm_items, for validation and lint tooling.
@@ -124,6 +128,10 @@ class Permission
         self::PERM_ZONE_METADATA_VIEW_OTHERS,
         self::PERM_ZONE_OWNERSHIP_VIEW_OWN,
         self::PERM_ZONE_OWNERSHIP_VIEW_OTHERS,
+        self::PERM_ZONE_CHANGE_REQUEST_OWN,
+        self::PERM_ZONE_CHANGE_REQUEST_OTHERS,
+        self::PERM_ZONE_CHANGE_APPROVE_OWN,
+        self::PERM_ZONE_CHANGE_APPROVE_OTHERS,
     ];
 
     private static ?PermissionService $permissionService = null;

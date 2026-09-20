@@ -88,6 +88,10 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (76,	'zone_metadata_view
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (77,	'zone_metadata_view_others',	'User is allowed to see the meta data of zones he does not own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (80,	'zone_change_request_own',	'User is allowed to request changes to zones they own');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (81,	'zone_change_request_others',	'User is allowed to request changes to any zone');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (82,	'zone_change_approve_own',	'User is allowed to review change requests for zones they own');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (83,	'zone_change_approve_others',	'User is allowed to review change requests for any zone');
 
 CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user', CHECK(template_type IN ('user', 'group')));
 
@@ -450,3 +454,28 @@ CREATE TABLE app_settings (
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE zone_change_requests (
+    id integer PRIMARY KEY,
+    zone_id integer NOT NULL,
+    zone_name VARCHAR(255) NOT NULL,
+    kind VARCHAR(16) NOT NULL,
+    status VARCHAR(16) NOT NULL,
+    requester_id integer,
+    requester_name VARCHAR(64) NOT NULL,
+    request_comment TEXT,
+    base_serial VARCHAR(32),
+    payload TEXT NOT NULL,
+    reviewer_id integer,
+    reviewer_name VARCHAR(64),
+    review_comment TEXT,
+    created_at timestamp DEFAULT current_timestamp NOT NULL,
+    reviewed_at timestamp,
+    applied_at timestamp,
+    error TEXT
+);
+
+CREATE INDEX idx_zone_change_requests_zone_id ON zone_change_requests(zone_id);
+CREATE INDEX idx_zone_change_requests_status ON zone_change_requests(status);
+CREATE INDEX idx_zone_change_requests_requester_id ON zone_change_requests(requester_id);
+CREATE INDEX idx_zone_change_requests_created_at ON zone_change_requests(created_at);

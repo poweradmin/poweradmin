@@ -1276,6 +1276,7 @@ return array(
     'Poweradmin\\Domain\\Service\\BulkRecordParser' => $baseDir . '/lib/Domain/Service/BulkRecordParser.php',
     'Poweradmin\\Domain\\Service\\CatalogBackendInterface' => $baseDir . '/lib/Domain/Service/CatalogBackendInterface.php',
     'Poweradmin\\Domain\\Service\\CatalogZoneService' => $baseDir . '/lib/Domain/Service/CatalogZoneService.php',
+    'Poweradmin\\Domain\\Service\\ChangeApprovalPolicy' => $baseDir . '/lib/Domain/Service/ChangeApprovalPolicy.php',
     'Poweradmin\\Domain\\Service\\DatabaseConsistencyService' => $baseDir . '/lib/Domain/Service/DatabaseConsistencyService.php',
     'Poweradmin\\Domain\\Service\\DatabaseCredentialMapper' => $baseDir . '/lib/Domain/Service/DatabaseCredentialMapper.php',
     'Poweradmin\\Domain\\Service\\DatabaseSchemaService' => $baseDir . '/lib/Domain/Service/DatabaseSchemaService.php',

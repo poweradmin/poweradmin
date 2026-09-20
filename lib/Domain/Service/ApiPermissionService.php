@@ -317,6 +317,22 @@ class ApiPermissionService
     }
 
     /**
+     * Change request level narrowed to the zone: "all", "own", or "none".
+     */
+    public function getChangeRequestPermissionLevelForZone(int $userId, int $zoneId): string
+    {
+        return $this->permissions->getChangeRequestPermissionLevelForZone($userId, $zoneId);
+    }
+
+    /**
+     * Change approve level narrowed to the zone: "all", "own", or "none".
+     */
+    public function getChangeApprovePermissionLevelForZone(int $userId, int $zoneId): string
+    {
+        return $this->permissions->getChangeApprovePermissionLevelForZone($userId, $zoneId);
+    }
+
+    /**
      * Get all zone IDs that the user is allowed to view (stateless)
      *
      * @param int $userId User ID to check

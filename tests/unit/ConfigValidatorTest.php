@@ -1228,4 +1228,63 @@ class ConfigValidatorTest extends TestCase
         $this->assertArrayHasKey('interface.theme', $errors);
         $this->assertStringContainsString('must be a non-empty string', $errors['interface.theme']);
     }
+
+    public function testApprovalRequireReviewForAllWithoutEnabledIsAWarning(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+            'approval' => [
+                'enabled' => false,
+                'require_review_for_all' => true,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getErrors());
+        $this->assertArrayHasKey('approval.require_review_for_all', $validator->getWarnings());
+    }
+
+    public function testApprovalRequireReviewForAllWithEnabledHasNoWarning(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+            'approval' => [
+                'enabled' => true,
+                'require_review_for_all' => true,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getWarnings());
+    }
+
+    public function testApprovalDefaultsProduceNoWarning(): void
+    {
+        $validator = new ConfigValidator(require dirname(__DIR__, 2) . '/config/settings.defaults.php');
+        $validator->validate();
+
+        $this->assertEmpty($validator->getWarnings());
+    }
 }

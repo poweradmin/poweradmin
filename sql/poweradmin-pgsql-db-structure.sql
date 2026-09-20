@@ -135,7 +135,11 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES
                                                      (76,	'zone_metadata_view_own',	'User is allowed to see the meta data of zones he owns.'),
                                                      (77,	'zone_metadata_view_others',	'User is allowed to see the meta data of zones he does not own.'),
                                                      (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.'),
-                                                     (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.');
+                                                     (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.'),
+                                                     (80,	'zone_change_request_own',	'User is allowed to request changes to zones they own'),
+                                                     (81,	'zone_change_request_others',	'User is allowed to request changes to any zone'),
+                                                     (82,	'zone_change_approve_own',	'User is allowed to review change requests for zones they own'),
+                                                     (83,	'zone_change_approve_others',	'User is allowed to review change requests for any zone');
 
 SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items));
 
@@ -601,3 +605,31 @@ CREATE TABLE app_settings (
     updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (setting_key)
 );
+
+CREATE SEQUENCE zone_change_requests_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."zone_change_requests" (
+    "id" integer DEFAULT nextval('zone_change_requests_id_seq') NOT NULL,
+    "zone_id" integer NOT NULL,
+    "zone_name" character varying(255) NOT NULL,
+    "kind" character varying(16) NOT NULL,
+    "status" character varying(16) NOT NULL,
+    "requester_id" integer,
+    "requester_name" character varying(64) NOT NULL,
+    "request_comment" text,
+    "base_serial" character varying(32),
+    "payload" text NOT NULL,
+    "reviewer_id" integer,
+    "reviewer_name" character varying(64),
+    "review_comment" text,
+    "created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "reviewed_at" timestamp,
+    "applied_at" timestamp,
+    "error" text,
+    CONSTRAINT "zone_change_requests_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+CREATE INDEX "idx_zone_change_requests_zone_id" ON "public"."zone_change_requests" USING btree ("zone_id");
+CREATE INDEX "idx_zone_change_requests_status" ON "public"."zone_change_requests" USING btree ("status");
+CREATE INDEX "idx_zone_change_requests_requester_id" ON "public"."zone_change_requests" USING btree ("requester_id");
+CREATE INDEX "idx_zone_change_requests_created_at" ON "public"."zone_change_requests" USING btree ("created_at");

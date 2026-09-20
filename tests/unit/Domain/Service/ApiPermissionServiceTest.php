@@ -340,4 +340,22 @@ class ApiPermissionServiceTest extends TestCase
         $this->assertSame([1, 2], $service->getUserVisibleZoneIds(self::OWN));
         $this->assertSame([], $service->getUserVisibleZoneIds(self::NOBODY));
     }
+
+    #[Test]
+    public function testChangeRequestAndApproveLevelsForZone(): void
+    {
+        $service = $this->service([
+            self::OWN => [Permission::PERM_ZONE_CHANGE_REQUEST_OWN, Permission::PERM_ZONE_CHANGE_APPROVE_OWN],
+            self::OTHERS => [Permission::PERM_ZONE_CHANGE_REQUEST_OTHERS],
+        ]);
+
+        $this->assertSame('all', $service->getChangeRequestPermissionLevelForZone(self::ADMIN, self::OTHER_ZONE));
+        $this->assertSame('all', $service->getChangeApprovePermissionLevelForZone(self::ADMIN, self::OTHER_ZONE));
+        $this->assertSame('all', $service->getChangeRequestPermissionLevelForZone(self::OTHERS, self::OTHER_ZONE));
+        $this->assertSame('none', $service->getChangeApprovePermissionLevelForZone(self::OTHERS, self::OTHER_ZONE));
+        $this->assertSame('own', $service->getChangeRequestPermissionLevelForZone(self::OWN, self::OWNED_ZONE));
+        $this->assertSame('none', $service->getChangeRequestPermissionLevelForZone(self::OWN, self::OTHER_ZONE));
+        $this->assertSame('own', $service->getChangeApprovePermissionLevelForZone(self::OWN, self::OWNED_ZONE));
+        $this->assertSame('none', $service->getChangeApprovePermissionLevelForZone(self::NOBODY, self::OWNED_ZONE));
+    }
 }

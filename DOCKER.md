@@ -339,6 +339,14 @@ docker run -d --name poweradmin -p 80:80 \
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
 | `PA_NOTIFICATION_ZONE_ACCESS` | Enable zone access change notifications | `false` | No |
+| `PA_NOTIFICATION_CHANGE_REQUEST` | Mail reviewers on new change requests and requesters on decisions | `false` | No |
+
+### Change Approval
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_APPROVAL_ENABLED` | Route zone changes of request-only users through review | `false` | No |
+| `PA_APPROVAL_REQUIRE_REVIEW_FOR_ALL` | Every zone change becomes a change request, even for editors and admins | `false` | No |
 
 ### User Agreement
 
