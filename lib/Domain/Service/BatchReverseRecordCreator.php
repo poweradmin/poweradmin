@@ -28,7 +28,6 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -43,7 +42,7 @@ class BatchReverseRecordCreator
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private AuditService $audit;
+    private AuditLoggerInterface $audit;
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
     private IPAddressValidator $ipValidator;
@@ -53,7 +52,7 @@ class BatchReverseRecordCreator
     public function __construct(
         PDO $db,
         ConfigurationInterface $config,
-        AuditService $audit,
+        AuditLoggerInterface $audit,
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,
         ?IPAddressValidator $ipValidator = null,

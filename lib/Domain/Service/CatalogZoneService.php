@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
@@ -45,7 +44,7 @@ class CatalogZoneService
     private DnsBackendProviderInterface $backendProvider;
     private PermissionService $permissionService;
 
-    private ?AuditService $auditService;
+    private ?AuditLoggerInterface $auditService;
 
     /** @var array<int, array{id: int, name: string, catalog: string}>|null */
     private ?array $producers = null;
@@ -53,7 +52,7 @@ class CatalogZoneService
     public function __construct(
         DnsBackendProviderInterface $backendProvider,
         PermissionService $permissionService,
-        ?AuditService $auditService = null
+        ?AuditLoggerInterface $auditService = null
     ) {
         $this->backendProvider = $backendProvider;
         $this->permissionService = $permissionService;

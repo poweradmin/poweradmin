@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 
 /**
@@ -34,10 +33,10 @@ class RecordLog
     private ?array $record_after = null;
 
     private bool $record_changed = false;
-    private AuditService $audit;
+    private AuditLoggerInterface $audit;
     private RecordRepositoryInterface $recordRepository;
 
-    public function __construct(AuditService $audit, RecordRepositoryInterface $recordRepository)
+    public function __construct(AuditLoggerInterface $audit, RecordRepositoryInterface $recordRepository)
     {
         $this->recordRepository = $recordRepository;
         $this->audit = $audit;

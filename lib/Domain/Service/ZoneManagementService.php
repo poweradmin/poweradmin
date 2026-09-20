@@ -31,6 +31,7 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
@@ -76,7 +77,7 @@ class ZoneManagementService
     private PdnsCapabilities|Closure|null $capabilities;
     private ?ZoneSigningService $signing;
     private ?DnsBackendProviderInterface $backendProvider = null;
-    private ?RepositoryFactory $repositoryFactory = null;
+    private ?RepositoryFactoryInterface $repositoryFactory;
     private ?DomainRepositoryInterface $domainRepository;
     private ?PermissionService $permissions;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository;
@@ -91,6 +92,7 @@ class ZoneManagementService
      * @param ZoneSigningService|null $signing Needed for enable_dnssec; without it a create is never signed
      * @param DomainRepositoryInterface|null $domainRepository Zone lookups; built from the repository factory when omitted
      * @param PermissionService|null $permissions Shares the request's permission cache; built on demand when omitted
+     * @param RepositoryFactoryInterface|null $repositoryFactory Builds the record and domain repositories; built on demand when omitted
      */
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
@@ -102,9 +104,11 @@ class ZoneManagementService
         ?ZoneSigningService $signing = null,
         ?DomainRepositoryInterface $domainRepository = null,
         ?PermissionService $permissions = null,
-        ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null
+        ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null,
+        ?RepositoryFactoryInterface $repositoryFactory = null
     ) {
         $this->zoneTemplateRepository = $zoneTemplateRepository;
+        $this->repositoryFactory = $repositoryFactory;
         $this->zoneRepository = $zoneRepository;
         $this->domainRepository = $domainRepository;
         $this->permissions = $permissions;
@@ -472,7 +476,7 @@ class ZoneManagementService
         return $this->backendProvider ??= DnsBackendProviderFactory::create($this->db, $this->config);
     }
 
-    private function repositoryFactory(): RepositoryFactory
+    private function repositoryFactory(): RepositoryFactoryInterface
     {
         return $this->repositoryFactory ??= new RepositoryFactory($this->db, $this->config, $this->backendProvider());
     }

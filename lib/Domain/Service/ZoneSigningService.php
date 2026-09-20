@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
@@ -38,7 +37,7 @@ class ZoneSigningService
         private readonly DnssecProviderInterface $dnssec,
         private readonly ZoneValidationService $validator,
         private readonly SOARecordManagerInterface $soaRecordManager,
-        private readonly AuditService $audit,
+        private readonly AuditLoggerInterface $audit,
         private readonly ConfigurationInterface $config,
         private readonly LoggerInterface $logger
     ) {

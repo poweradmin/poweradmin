@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
@@ -63,6 +64,7 @@ class RecordManager implements RecordManagerInterface
     private RecordChangeLogger $changeLogger;
     private ?PermissionService $permissionService = null;
     private UserContextService $userContext;
+    private ?RepositoryFactoryInterface $repositoryFactory;
 
     /**
      * Constructor
@@ -73,6 +75,7 @@ class RecordManager implements RecordManagerInterface
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
      * @param DnsBackendProviderInterface|null $backendProvider DNS backend provider (auto-created if null)
+     * @param RepositoryFactoryInterface|null $repositoryFactory Builds the record and comment repositories (auto-created if null)
      */
     public function __construct(
         PDO $db,
@@ -83,7 +86,8 @@ class RecordManager implements RecordManagerInterface
         ?DnsBackendProviderInterface $backendProvider = null,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
-        ?UserContextService $userContext = null
+        ?UserContextService $userContext = null,
+        ?RepositoryFactoryInterface $repositoryFactory = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -96,6 +100,12 @@ class RecordManager implements RecordManagerInterface
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
         $this->userContext = $userContext ?? new UserContextService();
+        $this->repositoryFactory = $repositoryFactory;
+    }
+
+    private function repositoryFactory(): RepositoryFactoryInterface
+    {
+        return $this->repositoryFactory ??= new RepositoryFactory($this->db, $this->config, $this->backendProvider);
     }
 
     private function captureChange(callable $callback): void
@@ -248,7 +258,7 @@ class RecordManager implements RecordManagerInterface
         $validatedPrio = $validatedData['prio'];
 
         // Create RecordRepository to check if record exists
-        $recordRepository = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
+        $recordRepository = $this->repositoryFactory()->createRecordRepository();
         if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
             return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), 409, RecordWriteResult::FIELD_DUPLICATE);
         }
@@ -337,7 +347,7 @@ class RecordManager implements RecordManagerInterface
 
         // Derive the zone from the record id; a caller-supplied zid could name an
         // owned zone to pass the ownership check while editing another zone's record.
-        $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
+        $recordRepository = $this->repositoryFactory()->createRecordRepository();
         $recordDetails = $recordRepository->getRecordDetailsFromRecordId($record['rid']);
         if (empty($recordDetails)) {
             return RecordWriteResult::notFound(_("Record not found."));
@@ -462,8 +472,7 @@ class RecordManager implements RecordManagerInterface
     {
         $perm_edit = Permission::getEditPermission($this->db, $this->config);
 
-        $repositoryFactory = new RepositoryFactory($this->db, $this->config, $this->backendProvider);
-        $recordRepository = $repositoryFactory->createRecordRepository();
+        $recordRepository = $this->repositoryFactory()->createRecordRepository();
         $record = $recordRepository->getRecordDetailsFromRecordId($rid);
         if (empty($record)) {
             return RecordWriteResult::notFound(_("Record not found."));
@@ -501,7 +510,7 @@ class RecordManager implements RecordManagerInterface
         // comment, and the RRset comment once no sibling record is left to carry it.
         $zoneId = (int)$record['zid'];
         self::deleteRecordZoneTempl($this->db, $rid);
-        $comments = $repositoryFactory->createRecordCommentRepository();
+        $comments = $this->repositoryFactory()->createRecordCommentRepository();
         $comments->deleteByRecordId($rid);
         if (!$recordRepository->hasSimilarRecords($zoneId, (string)$record['name'], (string)$record['type'], $rid)) {
             $comments->delete($zoneId, (string)$record['name'], (string)$record['type']);

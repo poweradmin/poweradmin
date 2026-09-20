@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Service;
 
 use Closure;
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\User;
@@ -47,7 +46,7 @@ readonly class DynamicDnsUpdateService
         private DynamicDnsValidationService $validationService,
         private DynamicDnsAuthenticationService $authService,
         private DynamicDnsRepositoryInterface $repository,
-        private ?AuditService $auditService = null,
+        private ?AuditLoggerInterface $auditService = null,
         private ?IpAddressRetriever $ipRetriever = null,
         private ?Closure $requiresApproval = null
     ) {

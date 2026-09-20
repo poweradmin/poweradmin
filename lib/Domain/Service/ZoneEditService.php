@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Enum\ZoneSaveOutcome;
@@ -55,7 +54,7 @@ class ZoneEditService
         private readonly SOARecordManagerInterface $soaRecords,
         private readonly RecordCommentService $comments,
         private readonly RecordCommentSyncService $commentSync,
-        private readonly AuditService $audit
+        private readonly AuditLoggerInterface $audit
     ) {
     }
 

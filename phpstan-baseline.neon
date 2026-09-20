@@ -319,20 +319,8 @@ parameters:
 			path: lib/Domain/Service/ApiPermissionService.php
 
 		-
-			message: '#^Class Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/BatchReverseRecordCreator.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/BatchReverseRecordCreator.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/BatchReverseRecordCreator.php
 
@@ -347,18 +335,6 @@ parameters:
 			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/BatchReverseRecordCreator.php
-
-		-
-			message: '#^Class Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/CatalogZoneService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/CatalogZoneService.php
 
 		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient matches Poweradmin\\Infrastructure\\Api\\\*\]$#'
@@ -489,7 +465,7 @@ parameters:
 		-
 			message: '#^Class Poweradmin\\Application\\Service\\RepositoryFactory is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\RepositoryFactory matches Poweradmin\\Application\\\*\]$#'
 			identifier: disallowed.class
-			count: 3
+			count: 1
 			path: lib/Domain/Service/Dns/RecordManager.php
 
 		-
@@ -631,20 +607,8 @@ parameters:
 			path: lib/Domain/Service/DynamicDnsAuthenticationService.php
 
 		-
-			message: '#^Class Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/DynamicDnsUpdateService.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever matches Poweradmin\\Infrastructure\\Utility\\\*\]$#'
 			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/DynamicDnsUpdateService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/DynamicDnsUpdateService.php
 
@@ -653,24 +617,6 @@ parameters:
 			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/DynamicDnsUpdateService.php
-
-		-
-			message: '#^Class Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/RecordLog.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/RecordLog.php
-
-		-
-			message: '#^Class Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/ReverseRecordCreator.php
 
 		-
 			message: '#^Class Poweradmin\\Application\\Service\\RepositoryFactory is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\RepositoryFactory matches Poweradmin\\Application\\\*\]$#'
@@ -700,12 +646,6 @@ parameters:
 			message: '#^Enum Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
 			identifier: disallowed.enum
 			count: 2
-			path: lib/Domain/Service/ReverseRecordCreator.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
 			path: lib/Domain/Service/ReverseRecordCreator.php
 
 		-
@@ -841,12 +781,6 @@ parameters:
 			path: lib/Domain/Service/ZoneCountService.php
 
 		-
-			message: '#^Class Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/ZoneEditService.php
-
-		-
 			message: '#^Class Poweradmin\\Application\\Service\\RecordCommentService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\RecordCommentService matches Poweradmin\\Application\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
@@ -855,12 +789,6 @@ parameters:
 		-
 			message: '#^Class Poweradmin\\Application\\Service\\RecordCommentSyncService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\RecordCommentSyncService matches Poweradmin\\Application\\\*\]$#'
 			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/ZoneEditService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/ZoneEditService.php
 
@@ -879,7 +807,7 @@ parameters:
 		-
 			message: '#^Class Poweradmin\\Application\\Service\\RepositoryFactory is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\RepositoryFactory matches Poweradmin\\Application\\\*\]$#'
 			identifier: disallowed.class
-			count: 3
+			count: 1
 			path: lib/Domain/Service/ZoneManagementService.php
 
 		-
@@ -913,12 +841,6 @@ parameters:
 			path: lib/Domain/Service/ZoneManagementService.php
 
 		-
-			message: '#^Class Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/ZoneMetadataService.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient matches Poweradmin\\Infrastructure\\Api\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
@@ -927,12 +849,6 @@ parameters:
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger matches Poweradmin\\Infrastructure\\Logger\\\*\]$#'
 			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/ZoneMetadataService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/ZoneMetadataService.php
 
@@ -989,18 +905,6 @@ parameters:
 			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/ZoneOverlapService.php
-
-		-
-			message: '#^Class Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/ZoneSigningService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\AuditService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\AuditService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/ZoneSigningService.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting matches Poweradmin\\Infrastructure\\Utility\\\*\]$#'

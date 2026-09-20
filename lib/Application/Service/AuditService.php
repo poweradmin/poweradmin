@@ -27,6 +27,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\AuditLoggerInterface;
 use Poweradmin\Domain\Service\UserContextService;
 
 /**
@@ -34,7 +35,7 @@ use Poweradmin\Domain\Service\UserContextService;
  * starts with the same actor context; one method per event keeps the field
  * names in one place.
  */
-class AuditService
+class AuditService implements AuditLoggerInterface
 {
     private AuditLogWriter $logger;
     private IpAddressRetriever $ipRetriever;

@@ -257,7 +257,8 @@ class ControllerServiceFactory
             signing: $this->zoneSigningService(),
             domainRepository: $this->domainRepository(),
             permissions: $this->permissionService(),
-            zoneTemplateRepository: $this->zoneTemplateRepository()
+            zoneTemplateRepository: $this->zoneTemplateRepository(),
+            repositoryFactory: $this->repositoryFactory()
         );
     }
 
@@ -491,7 +492,8 @@ class ControllerServiceFactory
             $this->soaRecordManager(),
             $this->domainRepository(),
             $this->dnsBackendProvider(),
-            zoneTemplateRepository: $this->zoneTemplateRepository()
+            zoneTemplateRepository: $this->zoneTemplateRepository(),
+            repositoryFactory: $this->repositoryFactory()
         );
     }
 

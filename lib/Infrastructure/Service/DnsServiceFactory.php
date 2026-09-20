@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
-use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
@@ -87,19 +86,6 @@ class DnsServiceFactory
     }
 
     /**
-     * Build the domain repository the record and domain managers depend on.
-     * Repository construction stays owned by RepositoryFactory.
-     */
-    private static function createDomainRepository(
-        PDO $db,
-        ConfigurationManager $config,
-        ?DnsBackendProviderInterface $backendProvider = null
-    ): DomainRepositoryInterface {
-        $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
-        return (new RepositoryFactory($db, $config, $backendProvider))->createDomainRepository();
-    }
-
-    /**
      * Create RecordManager instance with all dependencies
      */
     public static function createRecordManager(
@@ -108,13 +94,15 @@ class DnsServiceFactory
         ?DnsBackendProviderInterface $backendProvider = null
     ): RecordManagerInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        $repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
         return new RecordManager(
             $db,
             $config,
             self::createDnsRecordValidationService($db, $config, $backendProvider),
             self::createSOARecordManager($db, $config, $backendProvider),
-            self::createDomainRepository($db, $config, $backendProvider),
-            $backendProvider
+            $repositoryFactory->createDomainRepository(),
+            $backendProvider,
+            repositoryFactory: $repositoryFactory
         );
     }
 
@@ -127,12 +115,14 @@ class DnsServiceFactory
         ?DnsBackendProviderInterface $backendProvider = null
     ): DomainManagerInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        $repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
         return new DomainManager(
             $db,
             $config,
             self::createSOARecordManager($db, $config, $backendProvider),
-            self::createDomainRepository($db, $config, $backendProvider),
-            $backendProvider
+            $repositoryFactory->createDomainRepository(),
+            $backendProvider,
+            repositoryFactory: $repositoryFactory
         );
     }
 

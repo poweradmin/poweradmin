@@ -27,6 +27,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
@@ -51,7 +52,7 @@ use Psr\Log\LoggerInterface;
  * Selects between SQL and API backend implementations based on
  * the configured DnsBackendProviderInterface.
  */
-class RepositoryFactory
+class RepositoryFactory implements RepositoryFactoryInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;

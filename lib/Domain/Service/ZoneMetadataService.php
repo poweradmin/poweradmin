@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneWriteRepositoryInterface;
@@ -50,7 +49,7 @@ class ZoneMetadataService
         private readonly ZoneWriteRepositoryInterface $zoneRepository,
         private readonly ConfigurationInterface $config,
         private readonly PermissionService $permissions,
-        private readonly AuditService $audit,
+        private readonly AuditLoggerInterface $audit,
         private readonly RecordChangeLogger $changeLogger,
         private readonly ?PowerdnsApiClient $apiClient = null,
         ?LoggerInterface $logger = null
