@@ -42,9 +42,11 @@ class ApiPermissionService
 
     private PDO $db;
     private PermissionService $permissions;
+    private ?ConfigurationInterface $config;
 
     /**
-     * @param ConfigurationInterface|null $config Required when no PermissionService is given
+     * @param ConfigurationInterface|null $config Required when no PermissionService is given;
+     *        omitted with one, the change approval flags read as off
      */
     public function __construct(PDO $db, ?PermissionService $permissions = null, ?ConfigurationInterface $config = null)
     {
@@ -53,6 +55,7 @@ class ApiPermissionService
             throw new InvalidArgumentException('ApiPermissionService needs a PermissionService or a configuration to build one');
         }
         $this->permissions = $permissions ?? new PermissionService(new DbUserRepository($db, $config));
+        $this->config = $config;
     }
 
     /**
@@ -333,6 +336,125 @@ class ApiPermissionService
     }
 
     /**
+     * How the user's zone changes are handled: written directly, filed as a
+     * change request, or refused. With change approval off this is today's
+     * edit rule.
+     *
+     * @return string One of the ChangeApprovalPolicy::MODE_* constants
+     */
+    public function getChangeApprovalMode(int $userId, int $zoneId): string
+    {
+        return ChangeApprovalPolicy::mode(
+            $this->changeApprovalEnabled(),
+            $this->changeApprovalRequiredForAll(),
+            $this->permissions->getEditPermissionLevelForZone($userId, $zoneId),
+            $this->permissions->getChangeRequestPermissionLevelForZone($userId, $zoneId),
+            $this->permissions->userOwnsZone($userId, $zoneId)
+        );
+    }
+
+    /**
+     * Whether the user may approve or reject change requests for the zone.
+     */
+    public function canReviewChangeRequests(int $userId, int $zoneId): bool
+    {
+        return ChangeApprovalPolicy::canReview(
+            $this->permissions->getChangeApprovePermissionLevelForZone($userId, $zoneId),
+            $this->permissions->getEditPermissionLevelForZone($userId, $zoneId),
+            $this->permissions->userOwnsZone($userId, $zoneId)
+        );
+    }
+
+    /**
+     * Zones whose change requests the user may review: null for every zone,
+     * otherwise the owned zones (or none) that the approve and edit levels cover.
+     *
+     * @return int[]|null
+     */
+    public function getReviewableZoneIds(int $userId): ?array
+    {
+        $approve = $this->permissions->getChangeApprovePermissionLevel($userId);
+        $edit = $this->permissions->getEditPermissionLevel($userId);
+        if ($approve === 'none' || $edit === 'none') {
+            return [];
+        }
+        if ($approve === 'all' && $edit === 'all') {
+            return null;
+        }
+
+        return $this->getUserOwnedZoneIds($userId);
+    }
+
+    /**
+     * Whether a zone deletion has to go through a change request. Deleting
+     * stays direct for holders of the delete permission unless every change
+     * is reviewed.
+     */
+    public function zoneDeleteRequiresApproval(int $userId, int $zoneId): bool
+    {
+        return $this->changeApprovalEnabled()
+            && $this->changeApprovalRequiredForAll()
+            && $this->canDeleteZone($userId, $zoneId);
+    }
+
+    /**
+     * Whether the user may file a request to delete the zone: their request
+     * level covers it, or every change is reviewed and they could delete it.
+     */
+    public function canRequestZoneDelete(int $userId, int $zoneId): bool
+    {
+        if (!$this->changeApprovalEnabled()) {
+            return false;
+        }
+        if ($this->getChangeRequestPermissionLevelForZone($userId, $zoneId) !== 'none') {
+            return true;
+        }
+
+        return $this->changeApprovalRequiredForAll() && $this->canDeleteZone($userId, $zoneId);
+    }
+
+    /**
+     * canEditZoneRecord()'s record-type rule for filing a request: SOA/NS/LUA
+     * need an edit grant above own_as_client or a request level that covers the
+     * zone, except subzone NS records for zone_content_edit_ns_subzone holders.
+     */
+    public function canRequestZoneRecord(int $userId, int $zoneId, string $recordType, ?string $recordName = null, ?string $zoneName = null): bool
+    {
+        if (!in_array(strtoupper($recordType), Permission::RESTRICTED_TYPES_FOR_CLIENT, true)) {
+            return true;
+        }
+        if ($this->permissions->hasZoneContentEditPermission($userId, $zoneId)) {
+            return true;
+        }
+        if ($this->getChangeRequestPermissionLevelForZone($userId, $zoneId) !== 'none') {
+            return true;
+        }
+
+        return Permission::isSubzoneNsRecord($recordType, $recordName, $zoneName)
+            && $this->permissions->hasPermission($userId, Permission::PERM_EDIT_NS_SUBZONE);
+    }
+
+    /**
+     * Zones the user owns directly or through any group.
+     *
+     * @return int[]
+     */
+    public function getUserOwnedZoneIds(int $userId): array
+    {
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn();
+        $stmt = $this->db->prepare("
+            SELECT $canonicalId FROM zones WHERE owner = :user_id
+            UNION
+            SELECT zg.domain_id FROM zones_groups zg
+            INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+            WHERE ugm.user_id = :user_id2
+        ");
+        $stmt->execute([':user_id' => $userId, ':user_id2' => $userId]);
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    /**
      * Get all zone IDs that the user is allowed to view (stateless)
      *
      * @param int $userId User ID to check
@@ -352,19 +474,20 @@ class ApiPermissionService
 
         // User with zone_content_view_own can view only their own zones (direct + group)
         if ($this->userHasPermission($userId, Permission::PERM_ZONE_CONTENT_VIEW_OWN)) {
-            $canonicalId = CanonicalZoneSql::canonicalIdColumn();
-            $stmt = $this->db->prepare("
-                SELECT $canonicalId FROM zones WHERE owner = :user_id
-                UNION
-                SELECT zg.domain_id FROM zones_groups zg
-                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                WHERE ugm.user_id = :user_id2
-            ");
-            $stmt->execute([':user_id' => $userId, ':user_id2' => $userId]);
-            return array_map('intval', $stmt->fetchAll(\PDO::FETCH_COLUMN));
+            return $this->getUserOwnedZoneIds($userId);
         }
 
         // No view permissions - return empty array
         return [];
+    }
+
+    private function changeApprovalEnabled(): bool
+    {
+        return (bool)$this->config?->get('approval', 'enabled', false);
+    }
+
+    private function changeApprovalRequiredForAll(): bool
+    {
+        return (bool)$this->config?->get('approval', 'require_review_for_all', false);
     }
 }

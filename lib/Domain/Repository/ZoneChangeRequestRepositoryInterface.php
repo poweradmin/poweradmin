@@ -28,7 +28,8 @@ use Poweradmin\Domain\Model\ZoneChangeRequest;
  * Persistence for zone change requests. Lists come back newest first.
  *
  * Filters accepted by list() and count(): "status" (string), "zoneIds"
- * (list<int>|null, null means every zone and [] means none), "requesterId" (int).
+ * (list<int>|null, null means every zone and [] means none), "requesterId" (int),
+ * and "reviewableZoneIds" with "orRequesterId" for rows in those zones or filed by that user.
  */
 interface ZoneChangeRequestRepositoryInterface
 {
@@ -51,13 +52,13 @@ interface ZoneChangeRequestRepositoryInterface
     public function find(int $id): ?ZoneChangeRequest;
 
     /**
-     * @param array{status?: string, zoneIds?: list<int>|null, requesterId?: int} $filters
+     * @param array{status?: string, zoneIds?: list<int>|null, requesterId?: int, reviewableZoneIds?: list<int>|null, orRequesterId?: int} $filters
      * @return list<ZoneChangeRequest>
      */
     public function list(array $filters, int $offset, int $limit): array;
 
     /**
-     * @param array{status?: string, zoneIds?: list<int>|null, requesterId?: int} $filters
+     * @param array{status?: string, zoneIds?: list<int>|null, requesterId?: int, reviewableZoneIds?: list<int>|null, orRequesterId?: int} $filters
      */
     public function count(array $filters): int;
 

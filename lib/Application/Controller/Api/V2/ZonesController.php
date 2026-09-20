@@ -896,6 +896,10 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to delete this zone', 403);
             }
 
+            if ($this->apiPermissionService->zoneDeleteRequiresApproval($userId, $zoneId)) {
+                return $this->returnApiError(self::CHANGE_REQUEST_REQUIRED, 403);
+            }
+
             // Capture zone name before deletion
             $zone = $this->zoneRepository->getZoneById($zoneId);
             $zoneName = $zone['name'] ?? 'unknown';

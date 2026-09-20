@@ -27,6 +27,8 @@ use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\ApiKeyService;
+use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\UserContextService;
@@ -48,6 +50,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 abstract class PublicApiController extends AbstractApiController
 {
     protected const MAX_PAGE_SIZE = 10000;
+
+    /** Refusal for a direct write when the caller's changes to the zone go through review */
+    public const CHANGE_REQUEST_REQUIRED = 'Changes to this zone require approval; create a change request instead';
+
+    /** Every change request endpoint answers this while approval.enabled is off */
+    public const CHANGE_APPROVAL_DISABLED = 'Change approval is not enabled';
 
     protected array $pathParameters;
     protected int $authenticatedUserId = 0;
@@ -228,6 +236,19 @@ abstract class PublicApiController extends AbstractApiController
         return ZoneType::isReadOnly($zoneType)
             ? 'Records in Secondary and Consumer zones are read-only; they replicate from a primary'
             : 'You do not have permission to edit this zone';
+    }
+
+    /**
+     * The 403 a direct write gets when the caller's changes to the zone are
+     * routed through change requests, or null when the write may proceed.
+     */
+    protected function refuseWhenChangeRequestRequired(ApiPermissionService $permissions, int $userId, int $zoneId): ?JsonResponse
+    {
+        if ($permissions->getChangeApprovalMode($userId, $zoneId) !== ChangeApprovalPolicy::MODE_REQUEST) {
+            return null;
+        }
+
+        return $this->returnApiError(self::CHANGE_REQUEST_REQUIRED, 403);
     }
 
     /**

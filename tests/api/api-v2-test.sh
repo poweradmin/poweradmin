@@ -2246,6 +2246,7 @@ cleanup_existing_test_zones() {
         "metadata-test.example.com"
         "disabled-test.example.com"
         "group-assign-test.example.com"
+        "change-request-test.example.com"
     )
 
     local all_zones
@@ -3243,6 +3244,68 @@ test_v1_removed() {
     fi
 }
 
+##############################################################################
+# Test: Change requests (approval.enabled)
+##############################################################################
+
+test_change_requests() {
+    print_section "Change Requests API Tests"
+
+    # The feature is opt-in: every endpoint answers 404 while approval.enabled is off
+    local probe_code
+    probe_code=$(curl -s -o /dev/null -w "%{http_code}" -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/change-requests" 2>/dev/null || echo "000")
+    if [[ "$probe_code" == "404" ]]; then
+        print_info "approval.enabled is off (GET /change-requests answered 404) - skipping change request tests"
+        return 0
+    fi
+
+    local zone_id=""
+    if api_request_v2 "POST" "/zones" '{"name":"change-request-test.example.com","type":"MASTER"}' 201 "Create test zone for change requests"; then
+        zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    else
+        print_fail "Failed to create test zone - skipping change request tests"
+        return 1
+    fi
+
+    # An admin key may file even though its own writes stay direct
+    local request_id=""
+    local file_body='{"comment":"api suite","actions":[{"op":"add","record":{"name":"www","type":"A","content":"192.0.2.77","ttl":3600}}]}'
+    if api_request_v2 "POST" "/zones/${zone_id}/change-requests" "$file_body" 201 "File an add change request"; then
+        request_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.change_request.id')
+        assert_json "Filed request is pending" "$LAST_RESPONSE_BODY" '.data.change_request.status' "pending"
+        assert_json "Filed request stores the add action" "$LAST_RESPONSE_BODY" '.data.change_request.actions[0].op' "add"
+        assert_json "Filed request names the zone" "$LAST_RESPONSE_BODY" '.data.change_request.zone_name' "change-request-test.example.com"
+    fi
+
+    if [[ -n "$request_id" && "$request_id" != "null" ]]; then
+        api_request_v2 "GET" "/zones/${zone_id}/records?type=A" "" 200 "Record is not written before approval" || true
+        assert_json "No A record exists while the request is pending" "$LAST_RESPONSE_BODY" '[.data.records[]? | select(.content=="192.0.2.77")] | length' "0"
+
+        api_request_v2 "GET" "/change-requests?zone_id=${zone_id}" "" 200 "List pending change requests for the zone" || true
+        assert_json "Pending list contains the filed request" "$LAST_RESPONSE_BODY" "[.data.change_requests[] | select(.id==${request_id})] | length" "1"
+
+        api_request_v2 "GET" "/change-requests/${request_id}" "" 200 "Get the change request" || true
+        assert_json "Detail carries stale_actions" "$LAST_RESPONSE_BODY" '.data.stale_actions | length' "0"
+        assert_json "Detail carries base_serial_mismatch" "$LAST_RESPONSE_BODY" '.data.base_serial_mismatch' "false"
+
+        api_request_v2 "POST" "/change-requests/${request_id}/approve" '{"comment":"ok"}' 200 "Approve the change request" || true
+        assert_json "Approved request is applied" "$LAST_RESPONSE_BODY" '.data.change_request.status' "approved"
+        assert_json "Reviewer is recorded" "$LAST_RESPONSE_BODY" '.data.change_request.reviewer.id != null' "true"
+
+        api_request_v2 "GET" "/zones/${zone_id}/records?type=A" "" 200 "Record exists after approval" || true
+        assert_json "Approved add wrote the A record" "$LAST_RESPONSE_BODY" '[.data.records[]? | select(.content=="192.0.2.77")] | length' "1"
+
+        api_request_v2 "POST" "/change-requests/${request_id}/approve" "" 409 "Approving a decided request is refused" || true
+    fi
+
+    # A mixed body is refused before anything is filed
+    api_request_v2 "POST" "/zones/${zone_id}/change-requests" '{"actions":[{"op":"zone_delete"},{"op":"delete","record_id":1}]}' 400 "zone_delete must be the only action" || true
+    assert_json "Mixed body message" "$LAST_RESPONSE_BODY" '.message' "Only one action per change request is supported"
+
+    api_request_v2 "DELETE" "/zones/${zone_id}" "" 204 "Cleanup change request test zone" || true
+}
+
 main() {
     print_header "PowerAdmin API v2 Test Suite"
 
@@ -3278,6 +3341,7 @@ main() {
     test_limited_user_gates
     test_api_key_scopes
     test_zone_overlap_guard
+    test_change_requests
 
     # Cleanup
     cleanup

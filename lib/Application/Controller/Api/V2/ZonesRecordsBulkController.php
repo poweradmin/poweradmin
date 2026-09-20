@@ -196,6 +196,10 @@ class ZonesRecordsBulkController extends PublicApiController
                 return $this->returnApiError($this->zoneEditDeniedMessage($zoneType), 403);
             }
 
+            if (($approval = $this->refuseWhenChangeRequestRequired($this->apiPermissionService, $userId, $zoneId)) !== null) {
+                return $approval;
+            }
+
             $input = $this->getValidatedJsonBody() ?? [];
             if (!isset($input['operations']) || !is_array($input['operations'])) {
                 return $this->returnApiError("Field 'operations' is required and must be an array", 400);

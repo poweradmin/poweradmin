@@ -203,6 +203,7 @@ class DbZoneChangeRequestRepositoryTest extends TestCase
     {
         return array_map(fn(ZoneChangeRequest $r): int => $r->id, $requests);
     }
+
     public function testOnlyAPendingRequestCanBeDecidedOrCancelled(): void
     {
         $id = $this->file(1);
@@ -214,5 +215,20 @@ class DbZoneChangeRequestRepositoryTest extends TestCase
         $decided = $this->repository->find($id);
         $this->assertSame(ZoneChangeRequest::STATUS_REJECTED, $decided->status);
         $this->assertSame('bob', $decided->reviewerName);
+    }
+
+    public function testReviewableZonesOrOwnRequestsCombineWithinTheZoneScope(): void
+    {
+        $inReviewedZone = $this->file(1, requesterId: 9);
+        $ownElsewhere = $this->file(2, requesterId: 7);
+        $this->file(3, requesterId: 9);
+
+        $filters = ['reviewableZoneIds' => [1], 'orRequesterId' => 7];
+        $this->assertSame([$ownElsewhere, $inReviewedZone], $this->ids($this->repository->list($filters, 0, 10)));
+        $this->assertSame(2, $this->repository->count($filters));
+
+        $this->assertSame([$ownElsewhere], $this->ids($this->repository->list(['reviewableZoneIds' => [], 'orRequesterId' => 7], 0, 10)));
+        $this->assertSame([$inReviewedZone], $this->ids($this->repository->list($filters + ['zoneIds' => [1]], 0, 10)));
+        $this->assertSame([], $this->repository->list($filters + ['zoneIds' => []], 0, 10));
     }
 }

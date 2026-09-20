@@ -217,7 +217,7 @@ class ControllerServiceFactory
      */
     public function apiPermissionService(): ApiPermissionService
     {
-        return $this->apiPermissionService ??= new ApiPermissionService($this->db, $this->permissionService());
+        return $this->apiPermissionService ??= new ApiPermissionService($this->db, $this->permissionService(), $this->config);
     }
 
     /**

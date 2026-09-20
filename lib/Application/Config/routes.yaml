@@ -613,6 +613,43 @@ api_v2_zone_rrset:
     type: '[A-Za-z0-9]+'
   methods: [GET, DELETE]
 
+api_v2_zone_change_requests:
+  path: /api/v2/zones/{id}/change-requests
+  controller: Poweradmin\Application\Controller\Api\V2\ZonesChangeRequestsController::run
+  requirements:
+    id: '\d+'
+  methods: [POST]
+
+api_v2_change_requests:
+  path: /api/v2/change-requests
+  controller: Poweradmin\Application\Controller\Api\V2\ChangeRequestsController::run
+  methods: [GET]
+
+api_v2_change_request:
+  path: /api/v2/change-requests/{id}
+  controller: Poweradmin\Application\Controller\Api\V2\ChangeRequestsController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, DELETE]
+
+api_v2_change_request_approve:
+  path: /api/v2/change-requests/{id}/approve
+  controller: Poweradmin\Application\Controller\Api\V2\ChangeRequestsController::run
+  requirements:
+    id: '\d+'
+  defaults:
+    decision: approve
+  methods: [POST]
+
+api_v2_change_request_reject:
+  path: /api/v2/change-requests/{id}/reject
+  controller: Poweradmin\Application\Controller\Api\V2\ChangeRequestsController::run
+  requirements:
+    id: '\d+'
+  defaults:
+    decision: reject
+  methods: [POST]
+
 api_v2_dynamic_dns:
   path: /api/v2/dynamic-dns
   controller: Poweradmin\Application\Controller\Api\V2\DynamicDnsController::run

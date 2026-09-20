@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Closure;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -38,12 +39,17 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
  */
 readonly class DynamicDnsUpdateService
 {
+    /**
+     * @param Closure|null $requiresApproval fn(int $userId, int $zoneId): bool, true when the user's changes
+     *        to the zone go through change requests; omitted, updates are never refused for review
+     */
     public function __construct(
         private DynamicDnsValidationService $validationService,
         private DynamicDnsAuthenticationService $authService,
         private DynamicDnsRepositoryInterface $repository,
         private ?AuditService $auditService = null,
-        private ?IpAddressRetriever $ipRetriever = null
+        private ?IpAddressRetriever $ipRetriever = null,
+        private ?Closure $requiresApproval = null
     ) {
     }
 
@@ -73,8 +79,8 @@ readonly class DynamicDnsUpdateService
         $result = $this->applyForUser($user, $request->getUsername(), $hostname, $ipList, $request->isDualstackUpdate());
 
         if ($result['status'] !== 'good') {
-            // The dyndns2 text protocol has no read-only status; report it as not the client's.
-            return $result['status'] === 'readonly' ? '!yours' : $result['status'];
+            // The dyndns2 text protocol has no read-only or review status; report those as not the client's.
+            return in_array($result['status'], ['readonly', 'approval'], true) ? '!yours' : $result['status'];
         }
 
         // dyndns2 clients expect "nochg <ip>" when the address already matched and
@@ -113,6 +119,11 @@ readonly class DynamicDnsUpdateService
         // Secondary and Consumer zones replicate from a primary - records are read-only
         if (ZoneType::isReadOnly($this->repository->getZoneType($zoneId))) {
             return $this->emptyResult('readonly', $zoneId);
+        }
+
+        // A DDNS client cannot file a change request, so a reviewed zone refuses the update
+        if ($this->requiresApproval !== null && ($this->requiresApproval)($user->getId(), $zoneId)) {
+            return $this->emptyResult('approval', $zoneId);
         }
 
         try {

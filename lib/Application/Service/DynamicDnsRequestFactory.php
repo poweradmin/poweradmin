@@ -22,14 +22,18 @@
 
 namespace Poweradmin\Application\Service;
 
+use Closure;
 use PDO;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsUpdateService;
 use Poweradmin\Domain\Service\DynamicDnsValidationService;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -55,8 +59,25 @@ class DynamicDnsRequestFactory
             ),
             $repository,
             $auditService ?? new AuditService($db),
-            new IpAddressRetriever($_SERVER)
+            new IpAddressRetriever($_SERVER),
+            self::requiresApproval($db, $config)
         );
+    }
+
+    /**
+     * Whether a DDNS user's changes to a zone would have to go through review.
+     */
+    private static function requiresApproval(PDO $db, ConfigurationManager $config): Closure
+    {
+        $permissions = new PermissionService(new DbUserRepository($db, $config));
+
+        return static fn(int $userId, int $zoneId): bool => ChangeApprovalPolicy::mode(
+            (bool)$config->get('approval', 'enabled', false),
+            (bool)$config->get('approval', 'require_review_for_all', false),
+            $permissions->getEditPermissionLevelForZone($userId, $zoneId),
+            $permissions->getChangeRequestPermissionLevelForZone($userId, $zoneId),
+            $permissions->userOwnsZone($userId, $zoneId)
+        ) === ChangeApprovalPolicy::MODE_REQUEST;
     }
 
     public static function fromHttpRequest(Request $request): DynamicDnsRequest

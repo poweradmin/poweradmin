@@ -414,6 +414,10 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
+            if (($approval = $this->refuseWhenChangeRequestRequired($this->apiPermissionService, $userId, $zoneId)) !== null) {
+                return $approval;
+            }
+
             $input = $this->getValidatedJsonBody();
             if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
@@ -650,6 +654,10 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
+            if (($approval = $this->refuseWhenChangeRequestRequired($this->apiPermissionService, $userId, $zoneId)) !== null) {
+                return $approval;
+            }
+
             // Get existing record
             $existingRecord = $this->recordRepository->getRecordById($recordId);
             if (!$existingRecord || $existingRecord['domain_id'] != $zoneId) {
@@ -874,6 +882,10 @@ class ZonesRecordsController extends PublicApiController
             // Check if user has permission to edit this zone
             if (!$this->apiPermissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
                 return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
+            }
+
+            if (($approval = $this->refuseWhenChangeRequestRequired($this->apiPermissionService, $userId, $zoneId)) !== null) {
+                return $approval;
             }
 
             // Verify record exists in this zone

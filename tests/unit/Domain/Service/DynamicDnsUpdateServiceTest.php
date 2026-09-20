@@ -148,6 +148,29 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->assertFalse($result['changed']);
     }
 
+    public function testApplyForUserRefusesAZoneWhoseChangesNeedReview(): void
+    {
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('test.example.com');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->expects($this->never())->method('insertDnsRecord');
+        $service = new DynamicDnsUpdateService(
+            $this->validationService,
+            $this->authService,
+            $this->repository,
+            null,
+            null,
+            fn(int $userId, int $zoneId): bool => $userId === 1 && $zoneId === 1
+        );
+
+        $result = $service->applyForUser($user, 'user', $hostname, $ipList, false);
+
+        $this->assertSame('approval', $result['status']);
+        $this->assertSame(1, $result['zone_id']);
+    }
+
     public function testApplyForUserAuditsAWrittenUpdateButNotANoChange(): void
     {
         $user = new User(1, 'hashedpass', false);

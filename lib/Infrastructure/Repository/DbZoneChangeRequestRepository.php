@@ -168,7 +168,7 @@ class DbZoneChangeRequestRepository implements ZoneChangeRequestRepositoryInterf
     }
 
     /**
-     * @param array{status?: string, zoneIds?: list<int>|null, requesterId?: int} $filters
+     * @param array{status?: string, zoneIds?: list<int>|null, requesterId?: int, reviewableZoneIds?: list<int>|null, orRequesterId?: int} $filters
      * @return list<ZoneChangeRequest> Newest first; the whole match when no window is given
      */
     private function select(array $filters, ?int $offset, ?int $limit): array
@@ -199,7 +199,7 @@ class DbZoneChangeRequestRepository implements ZoneChangeRequestRepositoryInterf
     }
 
     /**
-     * @param array{status?: string, zoneIds?: list<int>|null, requesterId?: int} $filters
+     * @param array{status?: string, zoneIds?: list<int>|null, requesterId?: int, reviewableZoneIds?: list<int>|null, orRequesterId?: int} $filters
      * @return array{0: string|null, 1: array<string, array{0: int|string, 1: int}>} The WHERE clause (null when
      *         the zone filter matches nothing) and the bindings as name => [value, type]
      */
@@ -226,6 +226,20 @@ class DbZoneChangeRequestRepository implements ZoneChangeRequestRepositoryInterf
                 $bindings[":zone_id_$i"] = [(int)$zoneId, PDO::PARAM_INT];
             }
             $conditions[] = 'zone_id IN (' . implode(', ', $placeholders) . ')';
+        }
+        // What a reviewer sees: requests in the zones they review, or their own
+        if (isset($filters['orRequesterId']) && array_key_exists('reviewableZoneIds', $filters) && $filters['reviewableZoneIds'] !== null) {
+            $bindings[':or_requester_id'] = [(int)$filters['orRequesterId'], PDO::PARAM_INT];
+            if ($filters['reviewableZoneIds'] === []) {
+                $conditions[] = 'requester_id = :or_requester_id';
+            } else {
+                $placeholders = [];
+                foreach (array_values($filters['reviewableZoneIds']) as $i => $zoneId) {
+                    $placeholders[] = ":reviewable_zone_id_$i";
+                    $bindings[":reviewable_zone_id_$i"] = [(int)$zoneId, PDO::PARAM_INT];
+                }
+                $conditions[] = '(zone_id IN (' . implode(', ', $placeholders) . ') OR requester_id = :or_requester_id)';
+            }
         }
 
         return [$conditions === [] ? '' : ' WHERE ' . implode(' AND ', $conditions), $bindings];
