@@ -23,8 +23,6 @@
 namespace Poweradmin\Domain\Service;
 
 use Exception;
-use Poweradmin\Application\Service\PasswordPolicyService;
-use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Model\Pagination;
@@ -59,8 +57,8 @@ class UserManagementService
     private UserRepositoryInterface $userRepository;
     private PermissionService $permissions;
     private UserProfileAssembler $profileAssembler;
-    private UserAuthenticationService $authService;
-    private PasswordPolicyService $passwordPolicy;
+    private PasswordHasherInterface $authService;
+    private PasswordPolicyInterface $passwordPolicy;
     private bool $ldapEnabled;
     private DomainManagerInterface $domainManager;
     private ZoneManagementService $zones;
@@ -69,8 +67,8 @@ class UserManagementService
         UserRepositoryInterface $userRepository,
         PermissionService $permissionService,
         UserProfileAssembler $profileAssembler,
-        UserAuthenticationService $authService,
-        PasswordPolicyService $passwordPolicy,
+        PasswordHasherInterface $authService,
+        PasswordPolicyInterface $passwordPolicy,
         bool $ldapEnabled,
         DomainManagerInterface $domainManager,
         ZoneManagementService $zones

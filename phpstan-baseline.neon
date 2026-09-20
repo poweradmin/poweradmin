@@ -547,30 +547,6 @@ parameters:
 			path: lib/Domain/Service/Dns/SupermasterManager.php
 
 		-
-			message: '#^Class Poweradmin\\Application\\Service\\LoginAttemptService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\LoginAttemptService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/DynamicDnsAuthenticationService.php
-
-		-
-			message: '#^Class Poweradmin\\Application\\Service\\UserAuthenticationService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\UserAuthenticationService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/DynamicDnsAuthenticationService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\LoginAttemptService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\LoginAttemptService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/DynamicDnsAuthenticationService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\UserAuthenticationService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\UserAuthenticationService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/DynamicDnsAuthenticationService.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever matches Poweradmin\\Infrastructure\\Utility\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
@@ -647,30 +623,6 @@ parameters:
 			identifier: disallowed.variable
 			count: 14
 			path: lib/Domain/Service/UserContextService.php
-
-		-
-			message: '#^Class Poweradmin\\Application\\Service\\PasswordPolicyService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\PasswordPolicyService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/UserManagementService.php
-
-		-
-			message: '#^Class Poweradmin\\Application\\Service\\UserAuthenticationService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\UserAuthenticationService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/UserManagementService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\PasswordPolicyService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\PasswordPolicyService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/UserManagementService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\UserAuthenticationService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\UserAuthenticationService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/UserManagementService.php
 
 		-
 			message: '#^Class Poweradmin\\Application\\Service\\PaginationService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\PaginationService matches Poweradmin\\Application\\\*\]$#'

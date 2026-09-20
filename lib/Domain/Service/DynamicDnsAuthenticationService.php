@@ -22,8 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Application\Service\LoginAttemptService;
-use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
@@ -35,8 +33,8 @@ readonly class DynamicDnsAuthenticationService
 {
     public function __construct(
         private DynamicDnsRepositoryInterface $repository,
-        private UserAuthenticationService $userAuthService,
-        private ?LoginAttemptService $loginAttemptService = null
+        private PasswordHasherInterface $userAuthService,
+        private ?LoginThrottleInterface $loginAttemptService = null
     ) {
     }
 

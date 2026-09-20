@@ -24,11 +24,12 @@ namespace Poweradmin\Application\Service;
 
 use InvalidArgumentException;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Service\PasswordHasherInterface;
 
 /**
  * Hashes and verifies user passwords across bcrypt, argon2 and the legacy md5 formats.
  */
-class UserAuthenticationService
+class UserAuthenticationService implements PasswordHasherInterface
 {
     private const BCRYPT_MIN_COST = 4;
 

@@ -26,11 +26,12 @@ use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Domain\Enum\LoginAttemptStage;
+use Poweradmin\Domain\Service\LoginThrottleInterface;
 
 /**
  * Records attempts in login_attempts and enforces the password- and MFA-stage lockouts per user and IP.
  */
-class LoginAttemptService
+class LoginAttemptService implements LoginThrottleInterface
 {
     /** Kept as string constants for callers; {@see LoginAttemptStage} owns the vocabulary. */
     public const STAGE_PASSWORD = 'password';

@@ -22,12 +22,13 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Domain\Service\PasswordPolicyInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Checks a password against the security.password_policy rules and reports the ones it fails.
  */
-class PasswordPolicyService
+class PasswordPolicyService implements PasswordPolicyInterface
 {
     private ConfigurationManager $configManager;
 
