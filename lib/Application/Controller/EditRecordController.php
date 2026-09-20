@@ -86,7 +86,7 @@ class EditRecordController extends BaseController
 
         // Get zone ID from record first
         $zid = $recordRepository->getZoneIdFromRecordId($record_id);
-        if ($zid == null) {
+        if ($zid === 0) {
             $this->showError(_('Invalid record ID.'));
             return;
         }
@@ -139,6 +139,10 @@ class EditRecordController extends BaseController
         $recordRepository = $this->createRecordRepository();
         $domainRepository = $this->createDomainRepository();
         $zone_name = $domainRepository->getDomainNameById($zid);
+        if ($zone_name === null) {
+            $this->showError(_('Zone not found.'));
+            return;
+        }
 
         $recordTypes = $this->recordTypeService->getAllTypes($this->getRecordTypeCapabilities());
         $record = $recordRepository->getRecordFromId($record_id);

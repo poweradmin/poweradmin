@@ -351,23 +351,18 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $this->assertSame([['error', 'Record not found.']], $this->messagesFor('edit'));
     }
 
-    public function testAMissingZoneNameStopsTheSaveButThenBreaksTheForm(): void
+    public function testAMissingZoneNameStopsTheSaveAndTheForm(): void
     {
-        // saveRecord() reports "Zone not found." and returns false, but the
-        // form it falls through to hands the same null zone name to
-        // DnsIdnService::toDisplay(), which only accepts a string.
+        // saveRecord() reports "Zone not found." and returns false; the form it
+        // falls through to must stop on the same null instead of rendering
         $this->zoneName = null;
         $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9']);
 
         $controller = $this->makeController();
+        $halt = $this->haltOf($controller);
 
-        try {
-            $controller->run();
-            $this->fail('Expected the render of the form to fail on the null zone name.');
-        } catch (\TypeError $error) {
-            $this->assertStringContainsString('toDisplay', $error->getMessage());
-        }
-
+        $this->assertSame(ControllerHalt::KIND_ERROR, $halt->kind);
+        $this->assertSame('Zone not found.', $halt->target);
         $this->assertNull($controller->redirectedTo);
         $this->assertSame([['error', 'Zone not found.']], $this->messagesFor('edit'));
     }
