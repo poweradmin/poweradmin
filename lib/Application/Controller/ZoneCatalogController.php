@@ -47,7 +47,7 @@ class ZoneCatalogController extends BaseController
         $this->userContextService = new UserContextService();
         $this->domainRepository = $this->createDomainRepository();
         $this->permissionService = $this->createPermissionService();
-        $this->catalogService = $this->createCatalogZoneService();
+        $this->catalogService = $this->services()->catalogZoneService();
     }
 
     public function run(): void

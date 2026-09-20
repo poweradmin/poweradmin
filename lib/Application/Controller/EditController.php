@@ -258,7 +258,7 @@ class EditController extends BaseController
 
         // Read after the record listing above: in API mode the zone body is already
         // held, so the catalog read costs nothing extra here.
-        $catalog_service = $this->createCatalogZoneService();
+        $catalog_service = $this->services()->catalogZoneService();
         $catalog_name = $catalog_selector_view ? $catalog_service->getCatalog($zone_id) : '';
         $catalog_producer = $catalog_name !== '' ? $catalog_service->getCatalogProducer($zone_id) : null;
         $catalog_producers = $catalog_selector_view && $meta_edit ? $catalog_service->getManageableProducers($userId) : [];
@@ -492,7 +492,7 @@ class EditController extends BaseController
     private function handleCatalogChange(int $zone_id): void
     {
         $userId = $this->userContextService->getLoggedInUserId();
-        $catalogService = $this->createCatalogZoneService();
+        $catalogService = $this->services()->catalogZoneService();
         $producerId = $this->httpRequest->getPostParam('new_catalog', '');
 
         // The zone is in a catalog with no local producer; leave it as it is rather
@@ -667,7 +667,7 @@ class EditController extends BaseController
         $serial = $this->httpRequest->getPostParam('serial');
         $zoneComment = $this->httpRequest->getPostParam('zone_comment');
 
-        $result = $this->createZoneEditService()->save(new ZoneEditSubmission(
+        $result = $this->services()->zoneEditService()->save(new ZoneEditSubmission(
             $zone_id,
             $zone_name,
             (int)$this->getCurrentUserId(),

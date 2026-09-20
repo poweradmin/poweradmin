@@ -115,7 +115,7 @@ class IndexController extends BaseController
         $dashboardStats = null;
         $showDashboardStats = $this->config->get('interface', 'show_dashboard_stats', true);
         if ($permissions[Permission::PERM_USER_IS_UEBERUSER] && $showDashboardStats) {
-            $dashboardStats = $this->createDashboardStatsService()->stats((int)$this->getCurrentUserId(), $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS));
+            $dashboardStats = $this->services()->dashboardStatsService()->stats((int)$this->getCurrentUserId(), $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS));
         }
 
         // Dashboard owns the version refresh so other pages read from cache only.

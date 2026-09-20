@@ -28,13 +28,11 @@ use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Presenter\OwnerOptionsPresenter;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Application\Service\ChangeRequestNotificationService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\RequestValidator;
 use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Application\Service\DashboardStatsService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
@@ -50,14 +48,11 @@ use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
-use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Service\ZoneChangeRequestService;
 use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
-use Poweradmin\Domain\Service\ZoneEditService;
 use Poweradmin\Domain\Service\ZoneListPermissionService;
 use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 use Poweradmin\Domain\Service\ZoneSigningService;
 use PDO;
@@ -71,9 +66,7 @@ use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\CatalogZoneService;
 use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -398,7 +391,7 @@ abstract class BaseController
      * Lazily builds the shared service factory so per-request memoized
      * instances (backend provider, permission cache) span all accessors.
      */
-    private function services(): ControllerServiceFactory
+    protected function services(): ControllerServiceFactory
     {
         return $this->serviceFactory ??= new ControllerServiceFactory($this->db, $this->config, $this->logger);
     }
@@ -406,11 +399,6 @@ abstract class BaseController
     protected function createUserPreferenceService(): UserPreferenceService
     {
         return $this->services()->userPreferenceService();
-    }
-
-    protected function createUserTimezoneService(): UserTimezoneService
-    {
-        return $this->services()->userTimezoneService();
     }
 
     protected function createPaginationService(): PaginationService
@@ -599,11 +587,6 @@ abstract class BaseController
         return $this->services()->auditService();
     }
 
-    protected function createZoneMetadataService(): ZoneMetadataService
-    {
-        return $this->services()->zoneMetadataService();
-    }
-
     protected function createZoneSigningService(): ZoneSigningService
     {
         return $this->services()->zoneSigningService();
@@ -645,16 +628,6 @@ abstract class BaseController
         return $this->services()->permissionTemplateWriteService();
     }
 
-    protected function createDashboardStatsService(): DashboardStatsService
-    {
-        return $this->services()->dashboardStatsService();
-    }
-
-    protected function createZoneEditService(): ZoneEditService
-    {
-        return $this->services()->zoneEditService();
-    }
-
     protected function createZoneChangeRequestRepository(): ZoneChangeRequestRepositoryInterface
     {
         return $this->services()->zoneChangeRequestRepository();
@@ -663,11 +636,6 @@ abstract class BaseController
     protected function createZoneChangeRequestService(): ZoneChangeRequestService
     {
         return $this->services()->zoneChangeRequestService();
-    }
-
-    protected function createChangeRequestNotificationService(): ChangeRequestNotificationService
-    {
-        return $this->services()->changeRequestNotificationService();
     }
 
     /**
@@ -800,11 +768,6 @@ abstract class BaseController
         return $this->services()->reverseRecordCreator();
     }
 
-    protected function createBatchReverseRecordCreator(): BatchReverseRecordCreator
-    {
-        return $this->services()->batchReverseRecordCreator();
-    }
-
     protected function createDomainManager(): DomainManagerInterface
     {
         return $this->services()->domainManager();
@@ -813,11 +776,6 @@ abstract class BaseController
     protected function createSupermasterManager(): SupermasterManager
     {
         return $this->services()->supermasterManager();
-    }
-
-    protected function createCatalogZoneService(): CatalogZoneService
-    {
-        return $this->services()->catalogZoneService();
     }
 
     protected function createZoneTemplateModel(): ZoneTemplate

@@ -60,7 +60,7 @@ class EditZoneMetadataController extends BaseController
     {
         parent::__construct($request);
         $this->zoneRepository = $this->createZoneRepository();
-        $this->metadataService = $this->createZoneMetadataService();
+        $this->metadataService = $this->services()->zoneMetadataService();
     }
 
     /**

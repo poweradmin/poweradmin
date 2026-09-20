@@ -54,7 +54,7 @@ class BatchPtrRecordController extends BaseController
     {
         parent::__construct($request);
         $this->domainRepository = $this->createDomainRepository();
-        $this->batchReverseRecordCreator = $this->createBatchReverseRecordCreator();
+        $this->batchReverseRecordCreator = $this->services()->batchReverseRecordCreator();
         $this->userContextService = new UserContextService();
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
         $this->permissionService = $this->createPermissionService();

@@ -47,7 +47,7 @@ class MfaSetupController extends BaseController
 
         $userMfaRepository = new DbUserMfaRepository($this->db, $this->config);
         $mailer = new MfaVerificationMailer(new MailService($this->config, $this->logger), $this->config);
-        $this->mfaService = new MfaService($userMfaRepository, $this->config, $mailer, null, $this->createUserTimezoneService());
+        $this->mfaService = new MfaService($userMfaRepository, $this->config, $mailer, null, $this->services()->userTimezoneService());
         $this->userContextService = new UserContextService();
     }
 
