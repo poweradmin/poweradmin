@@ -45,4 +45,24 @@ class TestableAbstractApiHelpersController extends AbstractApiController
     {
         return $this->methodNotAllowed($allowedMethods);
     }
+
+    public function callInputString(array $input, string $key, ?string $default = null): ?string
+    {
+        return $this->inputString($input, $key, $default);
+    }
+
+    public function callInputInt(array $input, string $key, ?int $default = null): ?int
+    {
+        return $this->inputInt($input, $key, $default);
+    }
+
+    public function callInputBool(array $input, string $key, ?bool $default = null): ?bool
+    {
+        return $this->inputBool($input, $key, $default);
+    }
+
+    public function callInputIntFromBool(array $input, string $key, ?int $default = 0): ?int
+    {
+        return $this->inputIntFromBool($input, $key, $default);
+    }
 }

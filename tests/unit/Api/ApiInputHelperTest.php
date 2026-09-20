@@ -98,6 +98,18 @@ class ApiInputHelperTest extends TestCase
         $this->assertNull($this->helper->callInputInt(['key' => 'abc'], 'key', 0));
     }
 
+    public function testInputIntAcceptsNegativeIntegerString(): void
+    {
+        $this->assertSame(-5, $this->helper->callInputInt(['key' => '-5'], 'key'));
+    }
+
+    public function testInputIntRejectsFractionalString(): void
+    {
+        $this->assertNull($this->helper->callInputInt(['key' => '0.5'], 'key', 0));
+        $this->assertNull($this->helper->callInputInt(['key' => '-0.5'], 'key', 0));
+        $this->assertNull($this->helper->callInputInt(['key' => '1e3'], 'key', 0));
+    }
+
     // =========================================================================
     // inputBool
     // =========================================================================
@@ -184,6 +196,11 @@ class ApiInputHelperTest extends TestCase
     public function testInputIntFromBoolAcceptsNumericString(): void
     {
         $this->assertSame(1, $this->helper->callInputIntFromBool(['key' => '1'], 'key'));
+    }
+
+    public function testInputIntFromBoolRejectsFractionalString(): void
+    {
+        $this->assertNull($this->helper->callInputIntFromBool(['key' => '0.5'], 'key'));
     }
 
     public function testInputIntFromBoolAcceptsStringTrue(): void

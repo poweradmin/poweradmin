@@ -238,8 +238,8 @@ abstract class AbstractApiController extends BaseController
 
     /**
      * Extract an integer value from input array.
-     * Accepts integers and numeric strings. Returns default when key is absent;
-     * returns null for present non-numeric values.
+     * Accepts integers and integer-shaped strings. Returns default when key is
+     * absent; returns null for present non-integer values.
      */
     protected function inputInt(array $input, string $key, ?int $default = null): ?int
     {
@@ -250,7 +250,8 @@ abstract class AbstractApiController extends BaseController
         if (is_int($value)) {
             return $value;
         }
-        if (is_string($value) && is_numeric($value)) {
+        // A fractional string would silently truncate ("0.5" -> 0, "-0.5" -> 0)
+        if (is_string($value) && preg_match('/^-?\d+$/', $value) === 1) {
             return (int)$value;
         }
         return null;
@@ -300,7 +301,7 @@ abstract class AbstractApiController extends BaseController
         if ($value === 'true' || $value === 'false') {
             return $value === 'true' ? 1 : 0;
         }
-        if (is_string($value) && is_numeric($value)) {
+        if (is_string($value) && preg_match('/^-?\d+$/', $value) === 1) {
             return (int)$value;
         }
         return null;
