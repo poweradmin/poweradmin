@@ -62,6 +62,7 @@ class PageRenderer
     private Closure $hasPermission;
     private Closure $getDebugQueries;
     private bool $wideLayout;
+    private ?Closure $pendingChangeRequestCount;
 
     private bool $twigEnvironmentReady = false;
     /** @var list<array<string, mixed>>|null */
@@ -76,7 +77,8 @@ class PageRenderer
         UserContextService $userContextService,
         Closure $hasPermission,
         Closure $getDebugQueries,
-        bool $wideLayout
+        bool $wideLayout,
+        ?Closure $pendingChangeRequestCount = null
     ) {
         $this->app = $app;
         $this->config = $config;
@@ -85,6 +87,7 @@ class PageRenderer
         $this->hasPermission = $hasPermission;
         $this->getDebugQueries = $getDebugQueries;
         $this->wideLayout = $wideLayout;
+        $this->pendingChangeRequestCount = $pendingChangeRequestCount;
     }
 
     private function hasPermission(string $permission): bool
@@ -118,7 +121,12 @@ class PageRenderer
         $this->app->addTwigGlobal('user_logged_in', $this->userContextService->isAuthenticated());
         $this->app->addTwigGlobal('file_version', $this->getAssetVersion());
         // Record forms read these in JS; one source keeps them in step with the validators.
-        $this->app->addTwigGlobal('nav', $this->navigationVisibility());
+        $nav = $this->navigationVisibility();
+        $this->app->addTwigGlobal('nav', $nav);
+        // One count query, and only for users who get the Change requests entry
+        $this->app->addTwigGlobal('pending_change_requests', $nav['change_requests'] && $this->pendingChangeRequestCount !== null
+            ? (int)($this->pendingChangeRequestCount)()
+            : 0);
         $this->app->addTwigGlobal('record_types_with_priority', RecordType::TYPES_WITH_PRIORITY);
         $this->app->addTwigGlobal('deprecated_record_types', RecordType::DEPRECATED_TYPES);
         // Page-size choices, so the dropdowns offer the configured value rather than

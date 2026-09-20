@@ -25,7 +25,9 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Application\Http\ZoneEditIntent;
+use Poweradmin\Application\Presenter\ChangeRequestPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Application\Service\RejectedZoneEditPresenter;
@@ -37,8 +39,10 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\CatalogZoneService;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\ZoneEditSubmission;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneSortingService;
@@ -190,9 +194,13 @@ class EditController extends BaseController
             ]);
         }
 
+        $edit_mode = $this->changeApprovalModeForZone($zone_id);
+
         if ($intent === ZoneEditIntent::ADD_RECORD) {
             // Handle record addition directly in edit controller (no redirect)
-            $result = $this->addRecord($zone_id, $zone_name);
+            $result = $edit_mode === ChangeApprovalPolicy::MODE_REQUEST
+                ? $this->requestRecordAdd($zone_id, $zone_name)
+                : $this->addRecord($zone_id, $zone_name);
 
             // If the record was added successfully, clear the stored data
             if ($result) {
@@ -204,7 +212,11 @@ class EditController extends BaseController
         } elseif ($intent === ZoneEditIntent::SAVE_RECORDS || $intent === ZoneEditIntent::SAVE_TRUNCATED) {
             // SAVE_TRUNCATED: max_input_vars dropped the bottom save button; run the
             // save anyway so incomplete rows are skipped and the operator is warned.
-            $this->saveRecords($zone_id, $zone_name);
+            if ($edit_mode === ChangeApprovalPolicy::MODE_REQUEST) {
+                $this->requestRecordEdits($zone_id, $zone_name);
+            } else {
+                $this->saveRecords($zone_id, $zone_name);
+            }
         }
 
         // If we have stored validation error data from a previous request, use it
@@ -315,8 +327,17 @@ class EditController extends BaseController
         $perm_is_godlike = $this->permissionService->isAdmin($userId);
         $zone_is_read_only = ZoneType::isReadOnly($domain_type);
         $user_can_edit_zone = ZoneAccessPolicy::canEditZone($perm_edit, $user_is_zone_owner);
+        // A requester gets the same inputs as an editor; the save files a request instead
+        $requests_only = $edit_mode === ChangeApprovalPolicy::MODE_REQUEST && !$user_can_edit_zone;
+        if ($requests_only) {
+            $perm_edit = $this->permissionService->getChangeRequestPermissionLevelForZone($userId, $zone_id);
+            $user_can_edit_zone = true;
+        }
         $zone_is_editable = $user_can_edit_zone && !$zone_is_read_only;
         $can_edit_records = $perm_edit !== 'none';
+        $pending_change_requests = $this->changeApprovalEnabled() && $can_edit_records
+            ? ChangeRequestPresenter::summaries($this->createZoneChangeRequestRepository()->listPendingForZone($zone_id))
+            : [];
         $log_permission = $this->permissionService->getZoneLogPermissionLevel($userId);
         $can_view_zone_logs = ZoneAccessPolicy::levelAppliesToZone($log_permission, $user_is_zone_owner);
 
@@ -399,6 +420,9 @@ class EditController extends BaseController
             'user_can_edit_zone' => $user_can_edit_zone,
             'zone_is_editable' => $zone_is_editable,
             'can_edit_records' => $can_edit_records,
+            'edit_mode' => $edit_mode,
+            'pending_change_requests' => $pending_change_requests,
+            'can_review_change_requests' => $pending_change_requests !== [] && $this->canReviewChangeRequestsForZone($zone_id),
             'can_view_zone_logs' => $can_view_zone_logs,
             'can_manage_dnssec' => $can_manage_dnssec,
             'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
@@ -550,6 +574,78 @@ class EditController extends BaseController
         } else {
             $this->setMessage('edit', 'error', _('Failed to request a zone transfer from the primary. Check the PowerDNS logs for details.'));
         }
+    }
+
+    /**
+     * Files the edited rows as a change request instead of writing them.
+     */
+    private function requestRecordEdits(int $zone_id, string $zone_name): void
+    {
+        $records = $this->httpRequest->getPostParam('record');
+        $serial = $this->httpRequest->getPostParam('serial');
+        $zoneComment = $this->httpRequest->getPostParam('zone_comment');
+
+        $result = $this->createZoneChangeRequestService()->fileRecordEdits(new ZoneEditSubmission(
+            $zone_id,
+            $zone_name,
+            (int)$this->getCurrentUserId(),
+            (string)$this->userContextService->getLoggedInUsername(),
+            is_array($records) ? $records : null,
+            $this->httpRequest->getPostParam('form_complete') !== null,
+            $serial === null ? null : (string)$serial,
+            $this->httpRequest->getPostParam('changed_rows_only') === '1',
+            $zoneComment === null ? null : (string)$zoneComment
+        ), $this->requestComment());
+
+        if ($result->success) {
+            $this->setMessage('edit', 'success', ChangeRequestMessages::submitted());
+            $this->redirect('/zones/' . $zone_id . '/edit');
+            return;
+        }
+
+        foreach ($result->errors as $error) {
+            $this->addSystemMessage('error', $error);
+        }
+        $this->setMessage('edit', $result->code === ZoneChangeRequestResult::CODE_NO_CHANGES ? 'info' : 'error', ChangeRequestMessages::forResult($result));
+    }
+
+    /**
+     * Files the inline add form as a change request. Returns true when it was filed.
+     */
+    private function requestRecordAdd(int $zone_id, string $zone_name): bool
+    {
+        $ttl = $this->httpRequest->getPostParam('ttl');
+        $prio = $this->httpRequest->getPostParam('prio');
+        $result = $this->createZoneChangeRequestService()->fileRecordAdd($zone_id, $zone_name, [
+            'name' => (string)$this->httpRequest->getPostParam('name', ''),
+            'type' => (string)$this->httpRequest->getPostParam('type', ''),
+            'content' => (string)$this->httpRequest->getPostParam('content', ''),
+            'ttl' => $ttl !== null && $ttl !== '' ? (int)$ttl : null,
+            'prio' => $prio !== null && $prio !== '' ? (int)$prio : 0,
+            'comment' => (string)$this->httpRequest->getPostParam('comment', ''),
+        ], (int)$this->getCurrentUserId(), (string)$this->userContextService->getLoggedInUsername(), $this->requestComment());
+
+        if (!$result->success) {
+            $this->formStateService->rememberAddRecordError([
+                'error' => true,
+                'errorMessage' => ChangeRequestMessages::forResult($result),
+                'fieldError' => 'content',
+            ]);
+            return false;
+        }
+
+        $this->formStateService->forgetAddRecordForm();
+        $this->setMessage('edit', 'success', ChangeRequestMessages::submitted());
+        $this->redirect('/zones/' . $zone_id . '/edit');
+
+        return true;
+    }
+
+    private function requestComment(): ?string
+    {
+        $comment = trim((string)$this->httpRequest->getPostParam('request_comment', ''));
+
+        return $comment === '' ? null : $comment;
     }
 
     public function saveRecords(int $zone_id, string $zone_name): void

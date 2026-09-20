@@ -22,9 +22,11 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
@@ -80,15 +82,18 @@ class DeleteRecordController extends BaseController
 
         // Check zone-specific edit permission (includes group permissions)
         $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zid);
+        $edit_mode = $this->changeApprovalModeForZone($zid);
 
-        if ($perm_edit === "none") {
+        if ($perm_edit === "none" && $edit_mode !== ChangeApprovalPolicy::MODE_REQUEST) {
             $this->showError(_('You do not have permission to delete records in this zone.'));
             return;
         }
 
         $domain_id = $recordRepository->recidToDomid($record_id);
 
-        if ($this->isPost()) {
+        if ($this->isPost() && $edit_mode === ChangeApprovalPolicy::MODE_REQUEST) {
+            $this->requestRecordDelete($zid, $record_id);
+        } elseif ($this->isPost()) {
             $record_info = $recordRepository->getRecordFromId($record_id);
             if ($record_info === null) {
                 $this->showError(_('Record not found.'));
@@ -174,10 +179,32 @@ class DeleteRecordController extends BaseController
 
         // Permission already validated with zone-aware check at top of method
 
-        $this->showQuestion((string)$record_id, $zid, $domain_id);
+        $this->showQuestion((string)$record_id, $zid, $domain_id, $edit_mode);
     }
 
-    public function showQuestion(string $record_id, $zid, int $zone_id): void
+    /**
+     * Files the deletion as a change request; a filed request redirects to the zone.
+     */
+    private function requestRecordDelete(int $zid, int|string $record_id): void
+    {
+        $comment = trim((string)$this->httpRequest->getPostParam('request_comment', ''));
+        $result = $this->createZoneChangeRequestService()->fileRecordDelete(
+            $zid,
+            $record_id,
+            (int)$this->getCurrentUserId(),
+            (string)$this->userContextService->getLoggedInUsername(),
+            $comment === '' ? null : $comment
+        );
+        if (!$result->success) {
+            $this->addSystemMessage('error', ChangeRequestMessages::forResult($result));
+            return;
+        }
+
+        $this->setMessage('edit', 'success', ChangeRequestMessages::submitted());
+        $this->redirect('/zones/' . $zid . '/edit');
+    }
+
+    public function showQuestion(string $record_id, $zid, int $zone_id, string $edit_mode = ChangeApprovalPolicy::MODE_DIRECT): void
     {
         $recordRepository = $this->createRecordRepository();
         $domainRepository = $this->createDomainRepository();
@@ -209,6 +236,7 @@ class DeleteRecordController extends BaseController
             'zone_display_name' => DnsIdnService::toDisplay($zone_name),
             'record_info' => $record_info,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),
+            'edit_mode' => $edit_mode,
         ]);
     }
 }

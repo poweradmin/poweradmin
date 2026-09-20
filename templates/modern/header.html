@@ -136,7 +136,7 @@
 
                     {% if nav.zones %}
                     <!-- Zones Section -->
-                    {% set zones_active = current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] or current_page starts with 'module_dns_wizard' %}
+                    {% set zones_active = current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'list_change_requests', 'change_request', 'edit'] or current_page starts with 'module_dns_wizard' %}
                     <li class="nav-item">
                         <div class="nav-section-header {{ zones_active ? 'text-primary' : '' }}" role="button" data-bs-target="#navZones" aria-expanded="{{ zones_active ? 'true' : 'false' }}" aria-controls="navZones">
                             <i class="bi bi-diagram-3 me-2"></i>{% trans %}Zones{% endtrans %}
@@ -196,6 +196,13 @@
                                 </a>
                             </li>
                             {% endif %}
+                            {% endif %}
+                            {% if nav.change_requests %}
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page in ['list_change_requests', 'change_request'] ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/requests" data-testid="change-requests-link">
+                                    <i class="bi bi-inbox me-2"></i>{% trans %}Change requests{% endtrans %}{% if pending_change_requests > 0 %} <span class="badge bg-warning text-dark ms-1" data-testid="pending-change-requests-badge">{{ pending_change_requests }}</span>{% endif %}
+                                </a>
+                            </li>
                             {% endif %}
                         </ul>
                     </li>

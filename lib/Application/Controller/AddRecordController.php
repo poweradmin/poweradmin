@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Application\Service\RecordAddMessages;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Application\Service\RecordAddService;
@@ -37,6 +38,7 @@ use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
 
 /**
@@ -72,6 +74,11 @@ class AddRecordController extends BaseController
         $zone_type = $this->domainRepository->getDomainType($zone_id);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
+        // Multi-record mode stays direct-only: users whose changes need review use the zone editor
+        $this->checkCondition(
+            $this->changeApprovalModeForZone($zone_id) === ChangeApprovalPolicy::MODE_REQUEST,
+            ChangeRequestMessages::requiresApproval()
+        );
         $this->checkCondition(ZoneType::isReadOnly($zone_type)
             || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner), _("You do not have the permission to add a record to this zone."));
 

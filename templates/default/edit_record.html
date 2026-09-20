@@ -126,9 +126,15 @@
                 </table>
             </div>
 
+            {% if edit_mode == 'request' %}
+            <div class="mt-3">
+                <label class="form-label small mb-1" for="request_comment">{% trans %}Reason for this change{% endtrans %}</label>
+                <input type="text" class="form-control form-control-sm" id="request_comment" name="request_comment" maxlength="200" data-testid="request-comment-input">
+            </div>
+            {% endif %}
             <div class="mt-4">
                 <button class="btn btn-primary btn-sm" type="submit" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
-                    <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update{% endtrans %}
+                    <i class="bi bi-check-circle me-1 text-white"></i>{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Update{% endtrans %}{% endif %}
                 </button>
                 <button class="btn btn-secondary btn-sm" type="reset" name="reset">
                     <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}

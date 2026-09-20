@@ -15,7 +15,11 @@
             {% else %}
             {% trans %}You are about to delete a record in zone{% endtrans %} <strong>"{{ zone_name }}"</strong>.
             {% endif %}
+            {% if edit_mode == 'request' %}
+            {% trans %}The deletion is filed as a change request and happens once a reviewer approves it.{% endtrans %}
+            {% else %}
             {% trans %}This action cannot be undone.{% endtrans %}
+            {% endif %}
         </div>
 
         <div class="card mb-4">
@@ -62,7 +66,14 @@
         <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ record_id }}/delete" id="delete_form">
             {{ macros.csrf_field() }}
 
-            {% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}
+            {% if edit_mode == 'request' %}
+            <div class="mb-3">
+                <label class="form-label small mb-1" for="request_comment">{% trans %}Reason for this change{% endtrans %}</label>
+                <input type="text" class="form-control form-control-sm" id="request_comment" name="request_comment" maxlength="200" data-testid="request-comment-input">
+            </div>
+            {% endif %}
+
+            {% if edit_mode != 'request' and (record_info['type'] == 'A' or record_info['type'] == 'AAAA') %}
             <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" id="delete_ptr" name="delete_ptr" value="1" checked>
                 <label class="form-check-label" for="delete_ptr">
@@ -71,7 +82,7 @@
             </div>
             {% endif %}
 
-            {% if record_info['type'] == 'PTR' %}
+            {% if edit_mode != 'request' and record_info['type'] == 'PTR' %}
             <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" id="delete_forward" name="delete_forward" value="1" checked>
                 <label class="form-check-label" for="delete_forward">
@@ -81,7 +92,7 @@
             {% endif %}
 
             <div class="mt-4">
-                {{ macros.delete_actions('Yes, delete this record'|trans, base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit', 'No, keep this record'|trans) }}
+                {{ macros.delete_actions((edit_mode == 'request' ? 'Request deletion'|trans : 'Yes, delete this record'|trans), base_url_prefix ~ '/zones/' ~ zone_id ~ '/edit', 'No, keep this record'|trans, 'confirm-delete-record') }}
             </div>
         </form>
     </div>

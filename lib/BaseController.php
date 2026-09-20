@@ -44,6 +44,7 @@ use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserManagementService;
@@ -667,6 +668,83 @@ abstract class BaseController
         return $this->services()->changeRequestNotificationService();
     }
 
+    protected function changeApprovalEnabled(): bool
+    {
+        return (bool)$this->config->get('approval', 'enabled', false);
+    }
+
+    /**
+     * How the current user's changes to the zone are handled: written directly,
+     * filed as a change request, or refused (one of ChangeApprovalPolicy::MODE_*).
+     * With approval.enabled off this is today's edit check.
+     */
+    protected function changeApprovalModeForZone(int $zoneId): string
+    {
+        $userId = $this->getCurrentUserId();
+        if ($userId === null) {
+            return ChangeApprovalPolicy::MODE_NONE;
+        }
+        $permissions = $this->createPermissionService();
+        $enabled = $this->changeApprovalEnabled();
+
+        return ChangeApprovalPolicy::mode(
+            $enabled,
+            $enabled && (bool)$this->config->get('approval', 'require_review_for_all', false),
+            $permissions->getEditPermissionLevelForZone($userId, $zoneId),
+            $enabled ? $permissions->getChangeRequestPermissionLevelForZone($userId, $zoneId) : 'none',
+            $permissions->userOwnsZone($userId, $zoneId)
+        );
+    }
+
+    /**
+     * Whether the current user may approve or reject change requests for the zone.
+     */
+    protected function canReviewChangeRequestsForZone(int $zoneId): bool
+    {
+        $userId = $this->getCurrentUserId();
+        if ($userId === null || !$this->changeApprovalEnabled()) {
+            return false;
+        }
+        $permissions = $this->createPermissionService();
+
+        return ChangeApprovalPolicy::canReview(
+            $permissions->getChangeApprovePermissionLevelForZone($userId, $zoneId),
+            $permissions->getEditPermissionLevelForZone($userId, $zoneId),
+            $permissions->userOwnsZone($userId, $zoneId)
+        );
+    }
+
+    /**
+     * The zones whose change requests the current user reviews, in the shape the
+     * request repository filters take: null for every zone, [] for none, otherwise
+     * the owned zone ids.
+     *
+     * @return list<int>|null
+     */
+    protected function changeRequestReviewScope(): ?array
+    {
+        $userId = $this->getCurrentUserId();
+        if ($userId === null || !$this->changeApprovalEnabled()) {
+            return [];
+        }
+        $level = $this->createPermissionService()->getChangeApprovePermissionLevel($userId);
+        if ($level === 'all') {
+            return null;
+        }
+
+        return $level === 'own' ? $this->createZoneRepository()->getOwnedZoneIds($userId) : [];
+    }
+
+    /**
+     * Pending requests awaiting the current user's review, for the navigation badge.
+     */
+    private function pendingChangeRequestCount(): int
+    {
+        $scope = $this->changeRequestReviewScope();
+
+        return $scope === [] ? 0 : $this->createZoneChangeRequestRepository()->countPending($scope);
+    }
+
     protected function createZoneListPermissionService(): ZoneListPermissionService
     {
         return $this->services()->zoneListPermissionService();
@@ -937,6 +1015,15 @@ abstract class BaseController
     }
 
     /**
+     * Answers with the standard 404 page, for routes whose feature is switched off.
+     */
+    protected function renderNotFound(): void
+    {
+        http_response_code(404);
+        $this->render('404.html', ['title' => _('Page Not Found')]);
+    }
+
+    /**
      * Displays an error message.
      *
      * @param string $error The error message to display.
@@ -993,7 +1080,8 @@ abstract class BaseController
             $this->userContextService,
             $this->hasPermission(...),
             fn(): array => $this->init?->getDebugQueries() ?? [],
-            $this->getWideLayout()
+            $this->getWideLayout(),
+            fn(): int => $this->pendingChangeRequestCount()
         );
     }
 

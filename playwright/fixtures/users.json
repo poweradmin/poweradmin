@@ -29,6 +29,11 @@
     "password": "Poweradmin123",
     "description": "Inactive account (cannot login)"
   },
+  "requester": {
+    "username": "requester",
+    "password": "Poweradmin123",
+    "description": "Files change requests for owned zones (cannot edit directly)"
+  },
   "invalidUser": {
     "username": "invaliduser",
     "password": "wrongpassword",

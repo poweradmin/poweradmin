@@ -100,8 +100,8 @@
                 {% endif %}
                 {% if nav.zones %}
                 <li class="p-2">
-                    <a href="{{ base_url_prefix }}/zones/forward" class="nav-link text-{{ current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] or current_page starts with 'module_dns_wizard' ? 'primary' : 'secondary' }}" data-testid="list-zones-link"><i class="bi bi-diagram-3 fs-5"></i></a>
-                    <a class="text-{{ current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] or current_page starts with 'module_dns_wizard' ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    <a href="{{ base_url_prefix }}/zones/forward" class="nav-link text-{{ current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'list_change_requests', 'change_request', 'edit'] or current_page starts with 'module_dns_wizard' ? 'primary' : 'secondary' }}" data-testid="list-zones-link"><i class="bi bi-diagram-3 fs-5"></i></a>
+                    <a class="text-{{ current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'list_change_requests', 'change_request', 'edit'] or current_page starts with 'module_dns_wizard' ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Zones{% endtrans %}</a>
                     <ul class="dropdown-menu">
@@ -138,6 +138,12 @@
                         {% if nav.record_changes %}
                         <li><a class="dropdown-item {{ current_page == 'list_record_changes' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/changes"><i class="bi bi-clock-history me-2"></i>{% trans %}Record Change Log{% endtrans %}</a></li>
                         {% endif %}
+                        {% endif %}
+                        {% if nav.change_requests %}
+                        {% if not nav.zone_logs %}
+                        <li><hr class="dropdown-divider"></li>
+                        {% endif %}
+                        <li><a class="dropdown-item {{ current_page in ['list_change_requests', 'change_request'] ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/requests" data-testid="change-requests-link"><i class="bi bi-inbox me-2"></i>{% trans %}Change requests{% endtrans %}{% if pending_change_requests > 0 %} <span class="badge bg-warning text-dark ms-1" data-testid="pending-change-requests-badge">{{ pending_change_requests }}</span>{% endif %}</a></li>
                         {% endif %}
                     </ul>
                 </li>

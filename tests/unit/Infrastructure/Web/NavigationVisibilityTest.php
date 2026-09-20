@@ -103,6 +103,20 @@ class NavigationVisibilityTest extends TestCase
         $this->assertTrue($this->build([], ['api' => ['enabled' => true, 'docs_enabled' => true]])['api_docs']);
     }
 
+    public function testChangeRequestsNeedTheFeatureAndARequestOrApproveGrant(): void
+    {
+        $on = ['approval' => ['enabled' => true]];
+
+        $this->assertFalse($this->build([Permission::PERM_ZONE_CHANGE_REQUEST_OWN])['change_requests']);
+        $this->assertFalse($this->build([Permission::PERM_ZONE_CONTENT_VIEW_OWN], $on)['change_requests']);
+        $this->assertTrue($this->build([Permission::PERM_ZONE_CHANGE_REQUEST_OWN], $on)['change_requests']);
+        $this->assertTrue($this->build([Permission::PERM_ZONE_CHANGE_APPROVE_OTHERS], $on)['change_requests']);
+        $this->assertTrue($this->build([Permission::PERM_USER_IS_UEBERUSER], $on)['change_requests']);
+        // The entry opens the Zones menu even without a zone view grant.
+        $this->assertTrue($this->build([Permission::PERM_ZONE_CHANGE_REQUEST_OWN], $on)['zones']);
+        $this->assertFalse($this->build([Permission::PERM_USER_IS_UEBERUSER])['change_requests']);
+    }
+
     public function testBatchPtrNeedsAnEditGrantLikeItsPage(): void
     {
         $reverse = ['interface' => ['add_reverse_record' => true]];

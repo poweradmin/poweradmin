@@ -17,7 +17,11 @@
             <p>{% trans %}You are about to delete the zone{% endtrans %}: <strong>"{{ zone_info['name'] }}"</strong></p>
             {% endif %}
 
+            {% if requests_deletion %}
+            <p class="mb-0">{% trans %}The deletion is filed as a change request and happens once a reviewer approves it.{% endtrans %}</p>
+            {% else %}
             <p class="mb-0">{% trans %}This action cannot be undone. Are you sure you want to proceed?{% endtrans %}</p>
+            {% endif %}
         </div>
 
         <div class="card mb-4">
@@ -55,7 +59,13 @@
         <div class="mt-4">
             <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/delete" style="display: inline;">
                 {{ macros.csrf_field() }}
-                {{ macros.delete_actions('Yes, delete this zone'|trans, base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward'), 'No, keep this zone'|trans, 'confirm-delete-zone', 'cancel-delete-zone') }}
+                {% if requests_deletion %}
+                <div class="mb-3">
+                    <label class="form-label small mb-1" for="request_comment">{% trans %}Reason for this change{% endtrans %}</label>
+                    <input type="text" class="form-control form-control-sm" id="request_comment" name="request_comment" maxlength="200" data-testid="request-comment-input">
+                </div>
+                {% endif %}
+                {{ macros.delete_actions((requests_deletion ? 'Request deletion'|trans : 'Yes, delete this zone'|trans), base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward'), 'No, keep this zone'|trans, 'confirm-delete-zone', 'cancel-delete-zone') }}
             </form>
         </div>
     </div>

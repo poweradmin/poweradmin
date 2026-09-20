@@ -49,10 +49,13 @@ final class NavigationVisibility
             && (bool)$config->get('permissions', 'show_group_access_templates', true);
         $apiKeys = ($ueberuser || $can(Permission::PERM_API_MANAGE_KEYS)) && $apiEnabled;
         $consistency = $ueberuser && (bool)$config->get('interface', 'enable_consistency_checks', false);
+        $changeRequests = (bool)$config->get('approval', 'enabled', false)
+            && ($ueberuser || $can(Permission::PERM_ZONE_CHANGE_REQUEST_OWN) || $can(Permission::PERM_ZONE_CHANGE_REQUEST_OTHERS)
+                || $can(Permission::PERM_ZONE_CHANGE_APPROVE_OWN) || $can(Permission::PERM_ZONE_CHANGE_APPROVE_OTHERS));
 
         return [
             'search' => $can(Permission::PERM_SEARCH),
-            'zones' => $viewZones || $can(Permission::PERM_ZONE_MASTER_ADD) || $can(Permission::PERM_ZONE_SLAVE_ADD) || ($viewZoneLogs && $dbLog),
+            'zones' => $viewZones || $can(Permission::PERM_ZONE_MASTER_ADD) || $can(Permission::PERM_ZONE_SLAVE_ADD) || ($viewZoneLogs && $dbLog) || $changeRequests,
             'zone_list' => $viewZones,
             'zone_add_master' => $can(Permission::PERM_ZONE_MASTER_ADD),
             'zone_add_slave' => $can(Permission::PERM_ZONE_SLAVE_ADD),
@@ -62,6 +65,7 @@ final class NavigationVisibility
                 && ($can(Permission::PERM_ZONE_CONTENT_EDIT_OWN) || $can(Permission::PERM_ZONE_CONTENT_EDIT_OTHERS)),
             'zone_logs' => $zoneLogs,
             'record_changes' => $zoneLogs && $ueberuser,
+            'change_requests' => $changeRequests,
             'users' => $userList || ($can(Permission::PERM_USER_LOGS_VIEW) && $dbLog),
             'user_list' => $userList,
             'user_add' => $can(Permission::PERM_USER_ADD_NEW),

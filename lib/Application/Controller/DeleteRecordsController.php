@@ -24,9 +24,11 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
@@ -59,6 +61,8 @@ class DeleteRecordsController extends BaseController
 
         $record_ids = array_values(array_filter($raw_ids, fn($id) => is_int($id) || is_string($id)));
 
+        $this->refuseZonesNeedingApproval($record_ids);
+
         if ($this->httpRequest->getPostParam('confirm') !== null) {
             $comment = (string)($this->httpRequest->getPostParam('change_comment') ?? '');
             if (trim($comment) === '' && RecordChangeLogger::changeCommentRequired()) {
@@ -69,6 +73,36 @@ class DeleteRecordsController extends BaseController
         }
 
         $this->showRecords($record_ids);
+    }
+
+    /**
+     * Multi-record deletion stays direct-only: a selection touching a zone the
+     * user may only request changes to is sent back to the zone editor.
+     *
+     * @param array<int|string> $record_ids
+     */
+    private function refuseZonesNeedingApproval(array $record_ids): void
+    {
+        if (!$this->changeApprovalEnabled()) {
+            return;
+        }
+        $recordRepository = $this->createRecordRepository();
+        $checked = [];
+        foreach ($record_ids as $record_id) {
+            $zid = (int)$recordRepository->getZoneIdFromRecordId($record_id);
+            if ($zid <= 0 || isset($checked[$zid])) {
+                continue;
+            }
+            $checked[$zid] = true;
+            if ($this->changeApprovalModeForZone($zid) !== ChangeApprovalPolicy::MODE_REQUEST) {
+                continue;
+            }
+            $post_zone_id = $this->httpRequest->getPostParam('zone_id');
+            $fromZone = is_numeric($post_zone_id);
+            $this->setMessage($fromZone ? 'edit' : 'search', 'error', ChangeRequestMessages::requiresApproval());
+            $this->redirect($fromZone ? $this->buildModernRoute('edit', ['id' => (int)$post_zone_id]) : '/search');
+            return;
+        }
     }
 
     /**

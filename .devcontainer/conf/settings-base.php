@@ -151,6 +151,13 @@ return [
     ],
 
     /**
+     * Change approval workflow (require_review_for_all stays off)
+     */
+    'approval' => [
+        'enabled' => true,
+    ],
+
+    /**
      * PowerDNS API Settings
      */
     'pdns_api' => [

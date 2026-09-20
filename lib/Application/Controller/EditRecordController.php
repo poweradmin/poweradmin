@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Model\Permission;
@@ -31,7 +32,10 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\ZoneChangeRequestResult;
+use Poweradmin\Domain\Service\ZoneEditSubmission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
@@ -110,6 +114,11 @@ class EditRecordController extends BaseController
         }
 
         $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zid);
+        $edit_mode = $this->changeApprovalModeForZone($zid);
+        // A requester gets the editor's form; the save files a request instead
+        if ($edit_mode === ChangeApprovalPolicy::MODE_REQUEST && !ZoneAccessPolicy::canEditZone($perm_edit, $user_is_zone_owner)) {
+            $perm_edit = $this->permissionService->getChangeRequestPermissionLevelForZone($userId, $zid);
+        }
         if ($perm_edit === 'none') {
             $this->showError(_("You do not have permission to edit this record."));
             return;
@@ -117,13 +126,15 @@ class EditRecordController extends BaseController
 
         $validationFailed = false;
         if ($this->isPost()) {
-            $validationFailed = !$this->saveRecord($zid);
+            $validationFailed = $edit_mode === ChangeApprovalPolicy::MODE_REQUEST
+                ? !$this->requestRecordEdit($zid)
+                : !$this->saveRecord($zid);
         }
 
-        $this->showRecordEditForm($record_id, $zone_type, $zid, $perm_edit, $user_is_zone_owner, $validationFailed);
+        $this->showRecordEditForm($record_id, $zone_type, $zid, $perm_edit, $user_is_zone_owner, $validationFailed, $edit_mode);
     }
 
-    public function showRecordEditForm($record_id, string $zone_type, $zid, string $perm_edit, $user_is_zone_owner, bool $validationFailed = false): void
+    public function showRecordEditForm($record_id, string $zone_type, $zid, string $perm_edit, $user_is_zone_owner, bool $validationFailed = false, string $edit_mode = ChangeApprovalPolicy::MODE_DIRECT): void
     {
         $recordRepository = $this->createRecordRepository();
         $domainRepository = $this->createDomainRepository();
@@ -169,6 +180,7 @@ class EditRecordController extends BaseController
             'perm_edit' => $perm_edit,
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_is_editable' => $user_can_edit_zone && !$zone_is_read_only,
+            'edit_mode' => $edit_mode,
             'iface_record_comments' => $iface_record_comments,
             'comment' => $recordComment ? $recordComment->getComment() : '',
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),
@@ -186,6 +198,63 @@ class EditRecordController extends BaseController
         $saved_record_info = $recordRepository->getRecordFromId($rid);
 
         return $saved_record_info === null || RecordManager::recordFieldsDiffer($old_record_info, $saved_record_info);
+    }
+
+    /**
+     * Files the posted row as a change request instead of writing it. Returns
+     * true when it was filed (the request then redirects to the zone).
+     */
+    private function requestRecordEdit(int $zid): bool
+    {
+        $zone_name = $this->createDomainRepository()->getDomainNameById($zid);
+        if ($zone_name === null) {
+            $this->setMessage('edit', 'error', _('Zone not found.'));
+            return false;
+        }
+
+        // The zone editor's row shape, so the same diff and validation serve both forms
+        $row = [
+            'rid' => (string)$this->httpRequest->getPostParam('rid', ''),
+            'zid' => (string)$zid,
+            'name' => DnsIdnService::toPunycode((string)$this->httpRequest->getPostParam('name', '')),
+            'type' => (string)$this->httpRequest->getPostParam('type', ''),
+            'content' => (string)$this->httpRequest->getPostParam('content', ''),
+            'ttl' => (string)$this->httpRequest->getPostParam('ttl', ''),
+            'prio' => (string)$this->httpRequest->getPostParam('prio', '0'),
+            'comment' => (string)$this->httpRequest->getPostParam('comment', ''),
+            '_complete' => '1',
+        ];
+        $row['content'] = DnsIdnService::convertContentToPunycode($row['type'], $row['content']);
+        if ($this->httpRequest->getPostParam('disabled') === 'on') {
+            $row['disabled'] = 'on';
+        }
+
+        $submission = new ZoneEditSubmission(
+            $zid,
+            $zone_name,
+            (int)$this->getCurrentUserId(),
+            (string)$this->userContextService->getLoggedInUsername(),
+            [$row],
+            true,
+            null,
+            false,
+            null
+        );
+        $comment = trim((string)$this->httpRequest->getPostParam('request_comment', ''));
+        $result = $this->createZoneChangeRequestService()->fileRecordEdits($submission, $comment === '' ? null : $comment);
+
+        if (!$result->success) {
+            foreach ($result->errors as $error) {
+                $this->addSystemMessage('error', $error);
+            }
+            $this->setMessage('edit_record', $result->code === ZoneChangeRequestResult::CODE_NO_CHANGES ? 'info' : 'error', ChangeRequestMessages::forResult($result));
+            return false;
+        }
+
+        $this->setMessage('edit', 'success', ChangeRequestMessages::submitted());
+        $this->redirect('/zones/' . $zid . '/edit');
+
+        return true;
     }
 
     public function saveRecord($zid): bool

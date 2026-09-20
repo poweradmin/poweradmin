@@ -39,6 +39,10 @@ INSERT INTO `perm_templ` (`id`, `name`, `descr`) VALUES
     (5, 'No Access', 'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.')
 ON DUPLICATE KEY UPDATE `name` = 'No Access', `descr` = 'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.';
 
+INSERT INTO `perm_templ` (`id`, `name`, `descr`) VALUES
+    (11, 'Change Requester', 'Views own zones and files change requests that a reviewer applies.')
+ON DUPLICATE KEY UPDATE `name` = 'Change Requester', `descr` = 'Views own zones and files change requests that a reviewer applies.';
+
 -- Recreate Administrator permissions (template 1)
 INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`)
 SELECT 1, `id` FROM `perm_items` WHERE `name` = 'user_is_ueberuser'
@@ -50,7 +54,7 @@ SELECT 2, `id` FROM `perm_items` WHERE `name` IN (
     'zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
     'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
     'api_manage_keys', 'zone_delete_own', 'zone_logs_view_own',
-    'zone_metadata_view_own', 'zone_ownership_view_own'
+    'zone_metadata_view_own', 'zone_ownership_view_own', 'zone_change_approve_own'
 ) AND NOT EXISTS (SELECT 1 FROM `perm_templ_items` pti WHERE pti.`templ_id` = 2 AND pti.`perm_id` = `perm_items`.`id`);
 
 -- Recreate DNS Editor permissions (template 3)
@@ -66,6 +70,13 @@ SELECT 4, `id` FROM `perm_items` WHERE `name` IN (
     'zone_content_view_own', 'search', 'zone_logs_view_own',
     'zone_metadata_view_own', 'zone_ownership_view_own'
 ) AND NOT EXISTS (SELECT 1 FROM `perm_templ_items` pti WHERE pti.`templ_id` = 4 AND pti.`perm_id` = `perm_items`.`id`);
+
+-- Recreate Change Requester permissions (template 11)
+INSERT IGNORE INTO `perm_templ_items` (`templ_id`, `perm_id`)
+SELECT 11, `id` FROM `perm_items` WHERE `name` IN (
+    'zone_content_view_own', 'search', 'user_edit_own', 'zone_change_request_own', 'zone_logs_view_own',
+    'zone_metadata_view_own', 'zone_ownership_view_own'
+) AND NOT EXISTS (SELECT 1 FROM `perm_templ_items` pti WHERE pti.`templ_id` = 11 AND pti.`perm_id` = `perm_items`.`id`);
 
 -- Template 5 (No Access) has no permissions
 
@@ -98,6 +109,10 @@ WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'noperm');
 INSERT INTO `users` (`username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`, `auth_method`)
 SELECT 'inactive', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'Inactive User', 'inactive@example.com', 'Inactive account - cannot login', 5, 0, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'inactive');
+
+INSERT INTO `users` (`username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`, `auth_method`)
+SELECT 'requester', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'Change Requester', 'requester@example.com', 'Files change requests for owned zones', 11, 1, 0, 'sql'
+WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'requester');
 
 -- =============================================================================
 -- POWERADMIN DATABASE - API KEY FOR AUTOMATED TESTING
@@ -229,6 +244,14 @@ WHERE d.`name` = 'shared-zone.example.com' AND u.`username` = 'client'
   AND NOT EXISTS (
     SELECT 1 FROM poweradmin.`zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
   );
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
+SELECT d.`id`, u.`id`, 0
+FROM pdns.`domains` d
+CROSS JOIN poweradmin.`users` u
+WHERE d.`name` = 'shared-zone.example.com' AND u.`username` = 'requester'
+  AND NOT EXISTS (
+    SELECT 1 FROM poweradmin.`zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
+  );
 
 -- Admin owns test858.example.com (for issue #858 comment testing)
 INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
@@ -327,7 +350,7 @@ SELECT
     pt.`name` as `permission_template`
 FROM poweradmin.`users` u
 LEFT JOIN poweradmin.`perm_templ` pt ON u.`perm_templ` = pt.`id`
-WHERE u.`username` IN ('admin', 'manager', 'client', 'viewer', 'noperm', 'inactive')
+WHERE u.`username` IN ('admin', 'manager', 'client', 'viewer', 'noperm', 'inactive', 'requester')
 ORDER BY u.`id`;
 
 -- Verify zones and ownership (including multi-owner zones)
@@ -356,6 +379,7 @@ ORDER BY d.`name`, u.`username`;
 -- viewer    | Poweradmin123  | Read Only       | Yes    | View-only access (2 perms)
 -- noperm    | Poweradmin123  | No Access       | Yes    | Can login but has no permissions (0 perms)
 -- inactive  | Poweradmin123  | No Access       | No     | Cannot login - inactive account
+-- requester | Poweradmin123  | Change Requester| Yes    | Files change requests for owned zones (7 perms)
 --
 -- Test Domains Created:
 -- ---------------------
@@ -364,7 +388,7 @@ ORDER BY d.`name`, u.`username`;
 -- admin-zone.example.com      | admin              | Standard admin zone
 -- manager-zone.example.com    | manager            | Zone management testing
 -- client-zone.example.com     | client             | Client editing testing
--- shared-zone.example.com     | manager, client    | Multi-owner zone testing
+-- shared-zone.example.com     | manager, client, requester | Multi-owner zone testing
 -- test858.example.com         | admin              | Issue #858 CAA comment testing
 -- 168.192.in-addr.arpa        | admin              | A/PTR comment sync testing
 --

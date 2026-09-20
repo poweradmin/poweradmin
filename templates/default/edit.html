@@ -10,6 +10,7 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
         <div>
+            {% if edit_mode != 'request' %}
             {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone %}
             {% for action in dns_wizard_actions %}
             <a href="{{ base_url_prefix }}{{ action.url }}" class="btn btn-primary btn-sm me-1" title="{% trans %}Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records{% endtrans %}">
@@ -23,6 +24,7 @@
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-secondary btn-sm">
                 <i class="bi bi-file-earmark-text me-1 text-white"></i>{% trans %}Bulk add{% endtrans %}
             </a>
+            {% endif %}
         </div>
     </div>
     <div class="card-body">
@@ -145,7 +147,7 @@
                     </td>
                     <td class="col-sm-1">
                         <button class="btn btn-primary btn-sm" type="submit" name="commit" value="1" data-testid="add-record-button"
-                            data-busy-text="{% trans %}Saving...{% endtrans %}">{% trans %}Add record{% endtrans %}</button>
+                            data-busy-text="{% trans %}Saving...{% endtrans %}">{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Add record{% endtrans %}{% endif %}</button>
                     </td>
                 </tr>
             </table>
@@ -172,19 +174,22 @@
         </strong>
         <div>
             {% if zone_is_editable and iface_edit_save_changes_top %}
-            <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
-                <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
+            {% if edit_mode == 'request' %}
+            <input type="text" class="form-control form-control-sm d-inline-block w-auto" form="edit-zone-form" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="request-comment-input">
+            {% endif %}
+            <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="save-changes-button">
+                <i class="bi bi-check-circle me-1 text-white"></i>{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Save changes{% endtrans %}{% endif %}
             </button>
             <button class="btn btn-secondary btn-sm" type="reset" form="edit-zone-form" name="reset">
                 <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
             </button>
             {% endif %}
-            {% if not iface_show_add_record_form and zone_is_editable %}
+            {% if not iface_show_add_record_form and zone_is_editable and edit_mode != 'request' %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/add" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
             </a>
             {% endif %}
-            {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone and zone_is_editable %}
+            {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone and zone_is_editable and edit_mode != 'request' %}
             {% for action in dns_wizard_actions %}
             <a href="{{ base_url_prefix }}{{ action.url }}" class="btn btn-primary btn-sm" title="{% trans %}Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records{% endtrans %}">
                 <i class="bi bi-{{ action.icon }} me-1 text-white"></i>{{ action.label|trans }}
@@ -546,9 +551,11 @@
                             <i class="bi bi-pencil-square me-1 text-white"></i>{% trans %}Edit selected{% endtrans %}
                         </button>
                         {% endif %}
+                        {% if edit_mode != 'request' %}
                         <button type="submit" form="delete-records-form" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
                             <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
                         </button>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -558,7 +565,7 @@
                 <label class="form-label"><strong>{% trans %}Comments{% endtrans %}:</strong></label>
                 <div class="d-flex gap-2 align-items-start">
                     <textarea class="form-control form-control-sm" rows="5" name="zone_comment">{{ zone_comment }}</textarea>
-                    {% if can_edit_records %}
+                    {% if can_edit_records and edit_mode != 'request' %}
                     <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/comment/edit">
                         <i class="bi bi-pencil-square text-primary"></i> {% trans %}Edit comment{% endtrans %}</a>
                     {% endif %}
@@ -579,8 +586,11 @@
 <div class="card-footer py-3 d-flex justify-content-between align-items-center">
     <div>
         {% if zone_is_editable and not iface_edit_save_changes_top %}
-        <button class="btn btn-primary btn-sm" type="submit" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
-            <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
+        {% if edit_mode == 'request' %}
+        <input type="text" class="form-control form-control-sm d-inline-block w-auto" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="request-comment-input">
+        {% endif %}
+        <button class="btn btn-primary btn-sm" type="submit" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="save-changes-button">
+            <i class="bi bi-check-circle me-1 text-white"></i>{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Save changes{% endtrans %}{% endif %}
         </button>
         <button class="btn btn-secondary btn-sm" type="reset" name="reset">
             <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
@@ -588,7 +598,7 @@
         {% endif %}
     </div>
     <div class="d-flex gap-2">
-        {% if zone_is_editable %}
+        {% if zone_is_editable and edit_mode != 'request' %}
         <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-outline-primary btn-sm">
             <i class="bi bi-file-earmark-text me-1 text-primary"></i>{% trans %}Bulk add{% endtrans %}
         </a>
@@ -633,12 +643,52 @@
 </div>
 </div>
 
+{% if pending_change_requests %}
+<div class="card shadow-sm mb-4" data-testid="pending-change-requests-card">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <strong><i class="bi bi-inbox me-2"></i>{% trans %}Pending change requests{% endtrans %}</strong>
+        <span class="badge bg-warning text-dark">{{ pending_change_requests|length }}</span>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-sm table-hover align-middle mb-0">
+            <thead class="table-light">
+            <tr>
+                <th>{% trans %}Request{% endtrans %}</th>
+                <th>{% trans %}Requester{% endtrans %}</th>
+                <th>{% trans %}Filed{% endtrans %}</th>
+                <th>{% trans %}Changes{% endtrans %}</th>
+                <th>{% trans %}Reason{% endtrans %}</th>
+                <th class="text-end"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for request in pending_change_requests %}
+            <tr>
+                <td class="small">#{{ request.id }}{% if request.kind == 'zone_delete' %} <span class="badge bg-danger">{% trans %}Delete zone{% endtrans %}</span>{% endif %}</td>
+                <td class="small">{{ request.requester_name }}</td>
+                <td class="small" title="{{ macros.log_timestamp(request.created_at) }}">{{ request.age }}</td>
+                <td class="small">{{ request.action_count }}</td>
+                <td class="small text-muted">{{ request.request_comment ?: '-' }}</td>
+                <td class="text-end">
+                    <a href="{{ base_url_prefix }}/zones/requests/{{ request.id }}" class="btn btn-outline-{{ can_review_change_requests ? 'primary' : 'secondary' }} btn-sm" data-testid="change-request-link-{{ request.id }}">
+                        <i class="bi bi-{{ can_review_change_requests ? 'check2-square' : 'eye' }} me-1"></i>{% if can_review_change_requests %}{% trans %}Review{% endtrans %}{% else %}{% trans %}View{% endtrans %}{% endif %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
 {% if user_can_edit_zone %}
 {% if not zone_is_read_only and not iface_edit_add_record_top and iface_show_add_record_form %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
         <div>
+            {% if edit_mode != 'request' %}
             {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone %}
             {% for action in dns_wizard_actions %}
             <a href="{{ base_url_prefix }}{{ action.url }}" class="btn btn-primary btn-sm me-1" title="{% trans %}Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records{% endtrans %}">
@@ -652,6 +702,7 @@
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-secondary btn-sm">
                 <i class="bi bi-file-earmark-text me-1 text-white"></i>{% trans %}Bulk add{% endtrans %}
             </a>
+            {% endif %}
         </div>
     </div>
     <div class="card-body">
@@ -775,7 +826,7 @@
                     </td>
                     <td class="col-sm-1">
                         <button class="btn btn-primary btn-sm" type="submit" name="commit" value="1" data-testid="add-record-button"
-                            data-busy-text="{% trans %}Saving...{% endtrans %}">{% trans %}Add record{% endtrans %}</button>
+                            data-busy-text="{% trans %}Saving...{% endtrans %}">{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Add record{% endtrans %}{% endif %}</button>
                     </td>
                 </tr>
             </table>
@@ -858,7 +909,8 @@
                     <!-- Template -->
                     <div class="col-md-4">
                         <h6 class="text-muted mb-3">{% trans %}Template{% endtrans %}</h6>
-                        {% if meta_edit %}
+                        {# Applying a template writes records directly, so requesters only see the current one #}
+                        {% if meta_edit and edit_mode != 'request' %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
                             {{ macros.csrf_field() }}
                             <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">

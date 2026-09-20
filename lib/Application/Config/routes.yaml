@@ -204,6 +204,17 @@ record_changes:
   path: /zones/changes
   controller: Poweradmin\Application\Controller\ListRecordChangesController::run
 
+change_requests:
+  path: /zones/requests
+  controller: Poweradmin\Application\Controller\ListChangeRequestsController::run
+
+change_request:
+  path: /zones/requests/{id}
+  controller: Poweradmin\Application\Controller\ChangeRequestController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
 zones_templates:
   path: /zones/templates
   controller: Poweradmin\Application\Controller\ListZoneTemplController::run

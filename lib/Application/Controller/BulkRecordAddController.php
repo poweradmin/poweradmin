@@ -23,10 +23,12 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
+use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\BulkRecordParser;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -67,6 +69,11 @@ class BulkRecordAddController extends BaseController
 
         $perm_edit = $this->permissionService->getEditPermissionLevelForZone($userId, $zone_id);
 
+        // Bulk add stays direct-only: users whose changes need review use the zone editor
+        $this->checkCondition(
+            $this->changeApprovalModeForZone($zone_id) === ChangeApprovalPolicy::MODE_REQUEST,
+            ChangeRequestMessages::requiresApproval()
+        );
         $this->checkCondition(
             ZoneType::isReadOnly($zone_type) || $perm_edit === 'none',
             _('You do not have permission to add records to this zone.')

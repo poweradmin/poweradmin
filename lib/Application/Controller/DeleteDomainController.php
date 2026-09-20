@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -66,19 +67,57 @@ class DeleteDomainController extends BaseController
         // Check zone-specific delete permission (includes group permissions)
         $userId = $this->userContextService->getLoggedInUserId();
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
-        $canDelete = $this->createPermissionService()->canPerformZoneAction($userId, $zone_id, Permission::PERM_ZONE_DELETE_OWN);
+        $permissionService = $this->createPermissionService();
+        $canDelete = $permissionService->canPerformZoneAction($userId, $zone_id, Permission::PERM_ZONE_DELETE_OWN);
         $canDeleteOthers = $this->hasPermission(Permission::PERM_ZONE_DELETE_OTHERS);
+        $canDeleteDirectly = $canDeleteOthers || $canDelete;
+
+        // With approval on, a request level stands in for the missing delete permission,
+        // and require_review_for_all turns every deletion into a request
+        $requestsDeletion = false;
+        if ($this->changeApprovalEnabled()) {
+            $canRequest = $permissionService->getChangeRequestPermissionLevelForZone((int)$userId, $zone_id) !== 'none';
+            $requestsDeletion = (bool)$this->config->get('approval', 'require_review_for_all', false)
+                ? ($canDeleteDirectly || $canRequest)
+                : (!$canDeleteDirectly && $canRequest);
+        }
 
         $this->checkCondition(
-            !$canDeleteOthers && !$canDelete,
+            !$canDeleteDirectly && !$requestsDeletion,
             _("You do not have the permission to delete a zone.")
         );
 
-        if ($this->isPost()) {
+        if ($this->isPost() && $requestsDeletion) {
+            $this->requestDomainDeletion($zone_id);
+        } elseif ($this->isPost()) {
             $this->deleteDomain($zone_id);
         } else {
-            $this->showDeleteDomain($zone_id);
+            $this->showDeleteDomain($zone_id, $requestsDeletion);
         }
+    }
+
+    /**
+     * Files the deletion as a change request and returns to the zone list.
+     */
+    private function requestDomainDeletion(int $zone_id): void
+    {
+        $zone_info = $this->createDomainRepository()->getZoneInfoFromId($zone_id);
+        $comment = trim((string)$this->httpRequest->getPostParam('request_comment', ''));
+        $result = $this->createZoneChangeRequestService()->fileZoneDelete(
+            $zone_id,
+            (int)$this->getCurrentUserId(),
+            (string)$this->userContextService->getLoggedInUsername(),
+            $comment === '' ? null : $comment
+        );
+
+        $isReverse = !empty($zone_info['name']) && DnsHelper::isReverseZoneName($zone_info['name']);
+        $listPage = $isReverse ? 'list_reverse_zones' : 'list_forward_zones';
+        if ($result->success) {
+            $this->setMessage($listPage, 'success', _('The zone deletion was submitted for approval.'));
+        } else {
+            $this->setMessage($listPage, 'error', ChangeRequestMessages::forResult($result));
+        }
+        $this->redirect($isReverse ? '/zones/reverse' : '/zones/forward');
     }
 
     private function deleteDomain(int $zone_id): void
@@ -107,7 +146,7 @@ class DeleteDomainController extends BaseController
         }
     }
 
-    private function showDeleteDomain(int $zone_id): void
+    private function showDeleteDomain(int $zone_id, bool $requestsDeletion = false): void
     {
         $domainRepository = $this->createDomainRepository();
         $zone_info = $domainRepository->getZoneInfoFromId($zone_id);
@@ -140,6 +179,7 @@ class DeleteDomainController extends BaseController
             'zone_owners' => $zone_owners,
             'slave_master_exists' => $slave_master_exists,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_info['name']),
+            'requests_deletion' => $requestsDeletion,
         ]);
     }
 }

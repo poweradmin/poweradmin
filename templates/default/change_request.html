@@ -1,0 +1,171 @@
+{% import '_macros.html' as macros %}
+{{ macros.breadcrumb([
+    {label: 'Change requests'|trans, url: base_url_prefix ~ '/zones/requests'},
+    {label: '#' ~ request.id ~ ' ' ~ zone_display_name},
+]) }}
+
+{% set status_class = request.status == 'pending' ? 'bg-warning text-dark' : (request.status == 'approved' ? 'bg-success' : (request.status in ['rejected', 'failed'] ? 'bg-danger' : 'bg-secondary')) %}
+
+<div class="card shadow-sm mb-4" data-testid="change-request-card">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <strong>
+            <i class="bi bi-inbox me-2"></i>{% trans %}Change request{% endtrans %} #{{ request.id }}
+            <span class="badge {{ status_class }} ms-2" data-testid="change-request-status">{{ request.status }}</span>
+        </strong>
+        <div>
+            {% if zone_exists %}
+            <a href="{{ base_url_prefix }}/zones/{{ request.zone_id }}/edit" class="btn btn-secondary btn-sm">
+                <i class="bi bi-pencil-square me-1 text-white"></i>{% trans %}Open zone{% endtrans %}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card-body">
+        <dl class="row small mb-3">
+            <dt class="col-sm-2">{% trans %}Zone{% endtrans %}</dt>
+            <dd class="col-sm-10">{{ zone_display_name }}{% if not zone_exists %} <span class="badge bg-secondary">{% trans %}deleted{% endtrans %}</span>{% endif %}</dd>
+            <dt class="col-sm-2">{% trans %}Kind{% endtrans %}</dt>
+            <dd class="col-sm-10">{% if request.kind == 'zone_delete' %}<span class="badge bg-danger">{% trans %}Delete zone{% endtrans %}</span>{% else %}{% trans %}Record changes{% endtrans %} ({{ request.action_count }}){% endif %}</dd>
+            <dt class="col-sm-2">{% trans %}Requester{% endtrans %}</dt>
+            <dd class="col-sm-10">{{ request.requester_name }}, {{ macros.log_timestamp(request.created_at) }} ({{ request.age }})</dd>
+            {% if request.request_comment %}
+            <dt class="col-sm-2">{% trans %}Reason{% endtrans %}</dt>
+            <dd class="col-sm-10 fst-italic">{{ request.request_comment }}</dd>
+            {% endif %}
+            {% if request.reviewer_name %}
+            <dt class="col-sm-2">{% trans %}Reviewer{% endtrans %}</dt>
+            <dd class="col-sm-10">{{ request.reviewer_name }}{% if request.reviewed_at %}, {{ macros.log_timestamp(request.reviewed_at) }}{% endif %}</dd>
+            {% endif %}
+            {% if request.review_comment %}
+            <dt class="col-sm-2">{% trans %}Review comment{% endtrans %}</dt>
+            <dd class="col-sm-10 fst-italic">{{ request.review_comment }}</dd>
+            {% endif %}
+            {% if request.applied_at %}
+            <dt class="col-sm-2">{% trans %}Applied{% endtrans %}</dt>
+            <dd class="col-sm-10">{{ macros.log_timestamp(request.applied_at) }}</dd>
+            {% endif %}
+            {% if request.error %}
+            <dt class="col-sm-2">{% trans %}Error{% endtrans %}</dt>
+            <dd class="col-sm-10 text-danger">{{ request.error }}</dd>
+            {% endif %}
+        </dl>
+
+        {% if stale_count > 0 %}
+        <div class="alert alert-warning py-2 small" role="alert" data-testid="stale-actions-warning">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            {% trans %}The zone has changed since this request was filed; the marked changes no longer match what the zone holds. Approving still applies them.{% endtrans %}
+        </div>
+        {% elseif base_serial_mismatch %}
+        <div class="alert alert-info py-2 small" role="alert">
+            <i class="bi bi-info-circle me-1"></i>
+            {% trans %}The zone serial has moved since this request was filed.{% endtrans %} ({% trans %}Filed at serial{% endtrans %} {{ base_serial }})
+        </div>
+        {% endif %}
+
+        {% if request.kind == 'zone_delete' %}
+        <div class="alert alert-danger py-2 small" role="alert">
+            <i class="bi bi-trash-fill me-1"></i>{% trans %}Approving deletes the whole zone with all of its records.{% endtrans %}
+        </div>
+        {% else %}
+        <div class="table-responsive">
+            <table class="table table-sm align-middle" data-testid="change-request-actions">
+                <thead class="table-light">
+                <tr>
+                    <th>{% trans %}Action{% endtrans %}</th>
+                    <th>{% trans %}Name{% endtrans %}</th>
+                    <th>{% trans %}Type{% endtrans %}</th>
+                    <th>{% trans %}Content{% endtrans %}</th>
+                    <th>{% trans %}TTL{% endtrans %}</th>
+                    <th>{% trans %}Prio{% endtrans %}</th>
+                    <th>{% trans %}Disabled{% endtrans %}</th>
+                    {% if iface_record_comments %}
+                    <th>{% trans %}Comment{% endtrans %}</th>
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for action in actions %}
+                    {% set changed = action.changed %}
+                    {% set op_badge %}
+                        {% if action.op == 'add' %}<span class="badge bg-success">{% trans %}add{% endtrans %}</span>
+                        {% elseif action.op == 'delete' %}<span class="badge bg-danger">{% trans %}delete{% endtrans %}</span>
+                        {% else %}<span class="badge bg-primary">{% trans %}edit{% endtrans %}</span>{% endif %}
+                        {% if action.stale %}<span class="badge bg-warning text-dark ms-1" data-testid="stale-action-badge">{% trans %}stale{% endtrans %}</span>{% endif %}
+                    {% endset %}
+                    {% if action.op == 'edit' and action.before and action.after %}
+                    <tr class="table-danger">
+                        <td rowspan="2">{{ op_badge }}</td>
+                        <td class="small {% if 'name' in changed %}fw-bold{% endif %}">{{ action.before.name }}</td>
+                        <td class="small {% if 'type' in changed %}fw-bold{% endif %}">{{ action.before.type }}</td>
+                        <td class="small {% if 'content' in changed %}fw-bold{% endif %}"><code>{{ action.before.content }}</code></td>
+                        <td class="small {% if 'ttl' in changed %}fw-bold{% endif %}">{{ action.before.ttl }}</td>
+                        <td class="small {% if 'prio' in changed %}fw-bold{% endif %}">{{ action.before.prio }}</td>
+                        <td class="small {% if 'disabled' in changed %}fw-bold{% endif %}">{{ action.before.disabled ? 'Yes'|trans : 'No'|trans }}</td>
+                        {% if iface_record_comments %}
+                        <td class="small {% if 'comment' in changed %}fw-bold{% endif %}">{{ action.before.comment }}</td>
+                        {% endif %}
+                    </tr>
+                    <tr class="table-success">
+                        <td class="small {% if 'name' in changed %}fw-bold{% endif %}">{{ action.after.name }}</td>
+                        <td class="small {% if 'type' in changed %}fw-bold{% endif %}">{{ action.after.type }}</td>
+                        <td class="small {% if 'content' in changed %}fw-bold{% endif %}"><code>{{ action.after.content }}</code></td>
+                        <td class="small {% if 'ttl' in changed %}fw-bold{% endif %}">{{ action.after.ttl }}</td>
+                        <td class="small {% if 'prio' in changed %}fw-bold{% endif %}">{{ action.after.prio }}</td>
+                        <td class="small {% if 'disabled' in changed %}fw-bold{% endif %}">{{ action.after.disabled ? 'Yes'|trans : 'No'|trans }}</td>
+                        {% if iface_record_comments %}
+                        <td class="small {% if 'comment' in changed %}fw-bold{% endif %}">{{ action.after.comment }}</td>
+                        {% endif %}
+                    </tr>
+                    {% else %}
+                    {% set snap = action.after ?: action.before %}
+                    <tr class="{{ action.op == 'add' ? 'table-success' : (action.op == 'delete' ? 'table-danger' : '') }}">
+                        <td>{{ op_badge }}</td>
+                        <td class="small">{{ snap.name ?? '' }}</td>
+                        <td class="small">{{ snap.type ?? '' }}</td>
+                        <td class="small"><code>{{ snap.content ?? '' }}</code></td>
+                        <td class="small">{{ snap.ttl ?? '' }}</td>
+                        <td class="small">{{ snap.prio ?? '' }}</td>
+                        <td class="small">{{ (snap.disabled ?? false) ? 'Yes'|trans : 'No'|trans }}</td>
+                        {% if iface_record_comments %}
+                        <td class="small">{{ snap.comment ?? '' }}</td>
+                        {% endif %}
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if zone_comment is not null %}
+        <p class="small mb-0"><strong>{% trans %}Zone comment{% endtrans %}:</strong> {{ zone_comment ?: '-' }}</p>
+        {% endif %}
+        {% endif %}
+    </div>
+
+    {% if can_review or can_cancel %}
+    <div class="card-footer py-3">
+        <form method="post" action="{{ base_url_prefix }}/zones/requests/{{ request.id }}" class="row g-2 align-items-center">
+            {{ macros.csrf_field() }}
+            {% if can_review %}
+            <div class="col-md-5">
+                <input type="text" class="form-control form-control-sm" name="review_comment" maxlength="200" placeholder="{% trans %}Review comment (optional){% endtrans %}" data-testid="review-comment-input">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-success btn-sm" name="action" value="approve" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="approve-change-request">
+                    <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Approve{% endtrans %}
+                </button>
+                <button type="submit" class="btn btn-danger btn-sm" name="action" value="reject" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="reject-change-request">
+                    <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Reject{% endtrans %}
+                </button>
+            </div>
+            {% endif %}
+            {% if can_cancel %}
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-secondary btn-sm" name="action" value="cancel" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="cancel-change-request">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>{% trans %}Cancel request{% endtrans %}
+                </button>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+    {% endif %}
+</div>

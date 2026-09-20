@@ -34,6 +34,8 @@ INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
     (4, 'Read Only', 'Read-only access to own zones with search capability.');
 INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
     (5, 'No Access', 'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.');
+INSERT OR REPLACE INTO "perm_templ" ("id", "name", "descr") VALUES
+    (11, 'Change Requester', 'Views own zones and files change requests that a reviewer applies.');
 
 -- Recreate Administrator permissions (template 1)
 INSERT OR IGNORE INTO "perm_templ_items" ("templ_id", "perm_id")
@@ -46,7 +48,7 @@ SELECT 2, "id" FROM "perm_items" WHERE "name" IN (
     'zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
     'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
     'api_manage_keys', 'zone_delete_own', 'zone_logs_view_own',
-    'zone_metadata_view_own', 'zone_ownership_view_own'
+    'zone_metadata_view_own', 'zone_ownership_view_own', 'zone_change_approve_own'
 );
 
 -- Recreate DNS Editor permissions (template 3)
@@ -60,6 +62,13 @@ SELECT 3, "id" FROM "perm_items" WHERE "name" IN (
 INSERT OR IGNORE INTO "perm_templ_items" ("templ_id", "perm_id")
 SELECT 4, "id" FROM "perm_items" WHERE "name" IN (
     'zone_content_view_own', 'search', 'zone_logs_view_own',
+    'zone_metadata_view_own', 'zone_ownership_view_own'
+);
+
+-- Recreate Change Requester permissions (template 11)
+INSERT OR IGNORE INTO "perm_templ_items" ("templ_id", "perm_id")
+SELECT 11, "id" FROM "perm_items" WHERE "name" IN (
+    'zone_content_view_own', 'search', 'user_edit_own', 'zone_change_request_own', 'zone_logs_view_own',
     'zone_metadata_view_own', 'zone_ownership_view_own'
 );
 
@@ -95,6 +104,10 @@ WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'noperm');
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
 SELECT 'inactive', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'Inactive User', 'inactive@example.com', 'Inactive account - cannot login', 5, 0, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'inactive');
+
+INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
+SELECT 'requester', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'Change Requester', 'requester@example.com', 'Files change requests for owned zones', 11, 1, 0, 'sql'
+WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'requester');
 
 -- =============================================================================
 -- API KEY FOR AUTOMATED TESTING
@@ -222,6 +235,14 @@ SELECT d."id", u."id", 0
 FROM pdns."domains" d
 CROSS JOIN "users" u
 WHERE d."name" = 'shared-zone.example.com' AND u."username" = 'client'
+  AND NOT EXISTS (
+    SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id"
+  );
+INSERT INTO "zones" ("domain_id", "owner", "zone_templ_id")
+SELECT d."id", u."id", 0
+FROM pdns."domains" d
+CROSS JOIN "users" u
+WHERE d."name" = 'shared-zone.example.com' AND u."username" = 'requester'
   AND NOT EXISTS (
     SELECT 1 FROM "zones" z WHERE z."domain_id" = d."id" AND z."owner" = u."id"
   );
@@ -377,7 +398,7 @@ SELECT
     pt."name" as "permission_template"
 FROM "users" u
 LEFT JOIN "perm_templ" pt ON u."perm_templ" = pt."id"
-WHERE u."username" IN ('admin', 'manager', 'client', 'viewer', 'noperm', 'inactive')
+WHERE u."username" IN ('admin', 'manager', 'client', 'viewer', 'noperm', 'inactive', 'requester')
 ORDER BY u."id";
 
 -- Verify zones and ownership (including multi-owner zones)
@@ -415,6 +436,7 @@ ORDER BY d."name";
 -- viewer    | Poweradmin123  | Read Only       | Yes    | View-only access (2 perms)
 -- noperm    | Poweradmin123  | No Access       | Yes    | Can login but has no permissions (0 perms)
 -- inactive  | Poweradmin123  | No Access       | No     | Cannot login - inactive account
+-- requester | Poweradmin123  | Change Requester| Yes    | Files change requests for owned zones (7 perms)
 --
 -- Test Domains Created:
 -- ---------------------
@@ -423,7 +445,7 @@ ORDER BY d."name";
 -- admin-zone.example.com      | admin
 -- manager-zone.example.com    | manager
 -- client-zone.example.com     | client
--- shared-zone.example.com     | manager, client (multi-owner)
+-- shared-zone.example.com     | manager, client, requester (multi-owner)
 --
 -- IDN Zones (Internationalized Domain Names):
 -- -------------------------------------------
