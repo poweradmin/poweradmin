@@ -727,12 +727,18 @@ abstract class BaseController
         if ($userId === null || !$this->changeApprovalEnabled()) {
             return [];
         }
-        $level = $this->createPermissionService()->getChangeApprovePermissionLevel($userId);
-        if ($level === 'all') {
+        // Reviewing needs the edit permission too, so the scope is the narrower of the two levels
+        $permissions = $this->createPermissionService();
+        $approve = $permissions->getChangeApprovePermissionLevel($userId);
+        $edit = $permissions->getEditPermissionLevel($userId);
+        if ($approve === 'none' || $edit === 'none') {
+            return [];
+        }
+        if ($approve === 'all' && $edit === 'all') {
             return null;
         }
 
-        return $level === 'own' ? $this->createZoneRepository()->getOwnedZoneIds($userId) : [];
+        return $this->createZoneRepository()->getOwnedZoneIds($userId);
     }
 
     /**

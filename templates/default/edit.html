@@ -63,11 +63,15 @@
                         <th>{% trans %}Comment{% endtrans %}</th>
                     {% endif %}
                     <th class="text-center">
+                        {% if edit_mode == 'request' %}
+                            {% trans %}Reason{% endtrans %}
+                        {% else %}
                         {% if not is_reverse_zone and iface_add_reverse_record %}
                             {% trans %}Add PTR{% endtrans %}
                         {% endif %}
                         {% if is_reverse_zone and iface_add_domain_record %}
                             {% trans %}Add A/AAAA{% endtrans %}
+                        {% endif %}
                         {% endif %}
                     </th>
                     <th></th>
@@ -134,6 +138,10 @@
                     <td><input class="form-control form-control-sm" type="text" name="comment" value="{{ form_data.comment|default('') }}"></td>
                     {% endif %}
                     <td class="col-sm-1 text-center">
+                        {% if edit_mode == 'request' %}
+                        {# Companion PTR/A records are not filed with a request, so the box would be ignored #}
+                        <input type="text" class="form-control form-control-sm" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="add-request-comment-input"{% if require_change_comment %} required{% endif %}>
+                        {% else %}
                         {% if not is_reverse_zone and iface_add_reverse_record %}
                         <span class="align-middle">
                             <input class="form-check-input" type="checkbox" name="reverse" data-testid="add-reverse-record-checkbox">
@@ -143,6 +151,7 @@
                         <span class="align-middle">
                             <input class="form-check-input" type="checkbox" name="create_domain_record" data-testid="add-domain-record-checkbox">
                         </span>
+                        {% endif %}
                         {% endif %}
                     </td>
                     <td class="col-sm-1">
@@ -175,7 +184,7 @@
         <div>
             {% if zone_is_editable and iface_edit_save_changes_top %}
             {% if edit_mode == 'request' %}
-            <input type="text" class="form-control form-control-sm d-inline-block w-auto" form="edit-zone-form" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="request-comment-input">
+            <input type="text" class="form-control form-control-sm d-inline-block w-auto" form="edit-zone-form" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="request-comment-input"{% if require_change_comment %} required{% endif %}>
             {% endif %}
             <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="save-changes-button">
                 <i class="bi bi-check-circle me-1 text-white"></i>{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Save changes{% endtrans %}{% endif %}
@@ -587,7 +596,7 @@
     <div>
         {% if zone_is_editable and not iface_edit_save_changes_top %}
         {% if edit_mode == 'request' %}
-        <input type="text" class="form-control form-control-sm d-inline-block w-auto" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="request-comment-input">
+        <input type="text" class="form-control form-control-sm d-inline-block w-auto" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="request-comment-input"{% if require_change_comment %} required{% endif %}>
         {% endif %}
         <button class="btn btn-primary btn-sm" type="submit" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="save-changes-button">
             <i class="bi bi-check-circle me-1 text-white"></i>{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Save changes{% endtrans %}{% endif %}
@@ -742,11 +751,15 @@
                         <th>{% trans %}Comment{% endtrans %}</th>
                     {% endif %}
                     <th class="text-center">
+                        {% if edit_mode == 'request' %}
+                            {% trans %}Reason{% endtrans %}
+                        {% else %}
                         {% if not is_reverse_zone and iface_add_reverse_record %}
                             {% trans %}Add PTR{% endtrans %}
                         {% endif %}
                         {% if is_reverse_zone and iface_add_domain_record %}
                             {% trans %}Add A/AAAA{% endtrans %}
+                        {% endif %}
                         {% endif %}
                     </th>
                     <th></th>
@@ -813,6 +826,10 @@
                         <td><input class="form-control form-control-sm" type="text" name="comment" value="{{ form_data.comment|default('') }}"></td>
                     {% endif %}
                     <td class="col-sm-1 text-center">
+                        {% if edit_mode == 'request' %}
+                        {# Companion PTR/A records are not filed with a request, so the box would be ignored #}
+                        <input type="text" class="form-control form-control-sm" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="add-request-comment-input"{% if require_change_comment %} required{% endif %}>
+                        {% else %}
                         {% if not is_reverse_zone and iface_add_reverse_record %}
                         <span class="align-middle">
                             <input class="form-check-input" type="checkbox" name="reverse" data-testid="add-reverse-record-checkbox">
@@ -822,6 +839,7 @@
                         <span class="align-middle">
                             <input class="form-check-input" type="checkbox" name="create_domain_record" data-testid="add-domain-record-checkbox">
                         </span>
+                        {% endif %}
                         {% endif %}
                     </td>
                     <td class="col-sm-1">

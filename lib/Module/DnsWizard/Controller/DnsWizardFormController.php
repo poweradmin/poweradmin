@@ -31,6 +31,8 @@ use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
+use Poweradmin\Application\Service\ChangeRequestMessages;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 
 /**
  * Renders the form for one wizard at /zones/{id}/wizard/{type} and creates the records it builds.
@@ -84,6 +86,10 @@ class DnsWizardFormController extends BaseController
 
         if (ZoneType::isReadOnly($zone_type) || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
             $this->showError(_('You do not have permission to add records to this zone.'));
+        }
+        // Wizards write directly, so a reviewed zone sends the user to the zone editor
+        if ($this->changeApprovalModeForZone($zone_id) === ChangeApprovalPolicy::MODE_REQUEST) {
+            $this->showError(ChangeRequestMessages::requiresApproval());
         }
 
         // Check if zone is reverse zone

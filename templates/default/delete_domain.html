@@ -62,7 +62,7 @@
                 {% if requests_deletion %}
                 <div class="mb-3">
                     <label class="form-label small mb-1" for="request_comment">{% trans %}Reason for this change{% endtrans %}</label>
-                    <input type="text" class="form-control form-control-sm" id="request_comment" name="request_comment" maxlength="200" data-testid="request-comment-input">
+                    <input type="text" class="form-control form-control-sm" id="request_comment" name="request_comment" maxlength="200" data-testid="request-comment-input"{% if require_change_comment %} required{% endif %}>
                 </div>
                 {% endif %}
                 {{ macros.delete_actions((requests_deletion ? 'Request deletion'|trans : 'Yes, delete this zone'|trans), base_url_prefix ~ (is_reverse_zone ? '/zones/reverse' : '/zones/forward'), 'No, keep this zone'|trans, 'confirm-delete-zone', 'cancel-delete-zone') }}

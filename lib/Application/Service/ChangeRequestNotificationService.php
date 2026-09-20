@@ -36,9 +36,10 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
 /**
- * Emails the reviewers of a zone when a change request is filed and the
- * requester when it is decided. Failures are logged and reported as false;
- * nothing here throws to the caller, so a mail problem never blocks a request.
+ * Writes the zone audit line for each change request event, then emails the
+ * reviewers of the zone when a request is filed and the requester when it is
+ * decided. Mail failures are logged and reported as false; nothing here throws
+ * to the caller, so a mail problem never blocks a request.
  */
 class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
 {
@@ -64,7 +65,8 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
         EmailTemplateService $emailTemplateService,
         DomainRepositoryInterface $domainRepository,
         PermissionService $permissions,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        private readonly ?AuditService $audit = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -78,15 +80,22 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
 
     public function requestFiled(ZoneChangeRequest $request): void
     {
+        $this->audit?->logChangeRequest($request->zoneId, $request->zoneName, $request->id, 'filed', $request->requestComment);
         $this->notifyRequestFiled($request->id, $request->zoneId, $request->zoneName, (int)$request->requesterId, $request->requesterName, $request->requestComment, $request->kind);
     }
 
     public function requestDecided(ZoneChangeRequest $request): void
     {
+        $this->audit?->logChangeRequest($request->zoneId, $request->zoneName, $request->id, $request->status, $request->reviewComment);
         if ($request->requesterId === null || $request->reviewerId === null) {
             return;
         }
         $this->notifyRequestDecided($request->id, $request->zoneId, $request->zoneName, $request->requesterId, $request->status, $request->reviewerId, $request->reviewComment);
+    }
+
+    public function requestCancelled(ZoneChangeRequest $request): void
+    {
+        $this->audit?->logChangeRequest($request->zoneId, $request->zoneName, $request->id, 'cancelled');
     }
 
     /**

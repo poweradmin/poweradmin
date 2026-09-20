@@ -189,6 +189,7 @@ abstract class ChangeRequestControllerTestCase extends TestCase
         $this->permissions->method('getChangeApprovePermissionLevelForZone')->willReturn($canReview ? 'all' : 'none');
         $this->permissions->method('getChangeApprovePermissionLevel')->willReturn($canReview ? 'all' : 'none');
         $this->permissions->method('getEditPermissionLevelForZone')->willReturn($canReview ? 'all' : 'none');
+        $this->permissions->method('getEditPermissionLevel')->willReturn($canReview ? 'all' : 'none');
         $this->permissions->method('userOwnsZone')->willReturn(false);
     }
 }

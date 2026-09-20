@@ -26,6 +26,7 @@ use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ZoneChangeRequestResult;
@@ -281,7 +282,11 @@ class ChangeRequestsController extends PublicApiController
             }
 
             $userId = $this->getAuthenticatedUserId();
-            if ($request->requesterId !== $userId && !$this->apiPermissionService->canReviewChangeRequests($userId, $request->zoneId)) {
+            if (
+                $request->requesterId !== $userId
+                && !$this->apiPermissionService->canReviewChangeRequests($userId, $request->zoneId)
+                && $this->apiPermissionService->getChangeApprovalMode($userId, $request->zoneId) === ChangeApprovalPolicy::MODE_NONE
+            ) {
                 return $this->returnApiError('You do not have permission to view this change request', 403);
             }
 

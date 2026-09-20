@@ -374,6 +374,20 @@ class AuditService
         ]), $zoneId);
     }
 
+    /**
+     * A change request event: filed, approved, rejected, cancelled or failed.
+     * The acting user comes from the session, so the requester is logged on
+     * file and cancel, and the reviewer on a decision.
+     */
+    public function logChangeRequest(int $zoneId, string $zoneName, int $requestId, string $event, ?string $comment = null): void
+    {
+        $this->logger->logInfo($this->line('change_request_' . $event, [
+            'zone' => $zoneName,
+            'request_id' => $requestId,
+            'comment' => $comment,
+        ]), $zoneId);
+    }
+
     public function logZoneDelete(int $zoneId, string $zoneName, string $zoneType): void
     {
         $this->logger->logInfo($this->line('delete_zone', ['zone' => $zoneName, 'zone_type' => $zoneType]), $zoneId);

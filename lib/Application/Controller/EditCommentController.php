@@ -29,6 +29,8 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
+use Poweradmin\Application\Service\ChangeRequestMessages;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 
 /**
  * Handles the zone comment form: shows the comment and saves it when the user may edit the zone.
@@ -59,6 +61,11 @@ class EditCommentController extends BaseController
 
         if (!$domainRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
+            return;
+        }
+        // The zone comment is filed with the zone editor's request, not here
+        if ($this->changeApprovalModeForZone($zone_id) === ChangeApprovalPolicy::MODE_REQUEST) {
+            $this->showError(ChangeRequestMessages::requiresApproval());
             return;
         }
 

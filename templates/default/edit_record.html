@@ -37,7 +37,7 @@
                             <th>{% trans %}Comment{% endtrans %}</th>
                         {% endif %}
                         <th>{% trans %}Disabled{% endtrans %}</th>
-                        {% if not is_reverse_zone and iface_add_reverse_record %}
+                        {% if not is_reverse_zone and iface_add_reverse_record and edit_mode != 'request' %}
                             <th class="text-center">{% trans %}Update PTR{% endtrans %}</th>
                         {% endif %}
                     </tr>
@@ -112,7 +112,8 @@
                                 <label class="form-check-label visually-hidden" for="disabledCheckbox">{% trans %}Disabled{% endtrans %}</label>
                             </div>
                         </td>
-                        {% if not is_reverse_zone and iface_add_reverse_record %}
+                        {# A request files the forward record only, so the PTR sync box is not offered #}
+                        {% if not is_reverse_zone and iface_add_reverse_record and edit_mode != 'request' %}
                         <td class="text-center">
                             <div class="form-check d-inline-block">
                                 <input class="form-check-input" type="checkbox" name="update_ptr" id="updatePtrCheckbox">
@@ -129,7 +130,7 @@
             {% if edit_mode == 'request' %}
             <div class="mt-3">
                 <label class="form-label small mb-1" for="request_comment">{% trans %}Reason for this change{% endtrans %}</label>
-                <input type="text" class="form-control form-control-sm" id="request_comment" name="request_comment" maxlength="200" data-testid="request-comment-input">
+                <input type="text" class="form-control form-control-sm" id="request_comment" name="request_comment" maxlength="200" data-testid="request-comment-input"{% if require_change_comment %} required{% endif %}>
             </div>
             {% endif %}
             <div class="mt-4">

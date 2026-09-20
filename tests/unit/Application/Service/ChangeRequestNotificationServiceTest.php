@@ -25,10 +25,12 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ChangeRequestNotificationService;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use TestHelpers\BuildsPermissionService;
@@ -112,7 +114,8 @@ class ChangeRequestNotificationServiceTest extends TestCase
         bool $notificationsEnabled = true,
         bool $mailEnabled = true,
         bool $sendResult = true,
-        ?PermissionService $permissions = null
+        ?PermissionService $permissions = null,
+        ?AuditService $audit = null
     ): ChangeRequestNotificationService {
         $config = new FakeConfiguration([
             'notifications' => ['change_request_enabled' => $notificationsEnabled],
@@ -137,7 +140,9 @@ class ChangeRequestNotificationServiceTest extends TestCase
             $mailService,
             new EmailTemplateService($config),
             $domainRepository,
-            $permissions ?? $this->defaultPermissions()
+            $permissions ?? $this->defaultPermissions(),
+            null,
+            $audit
         );
     }
 
@@ -189,6 +194,53 @@ class ChangeRequestNotificationServiceTest extends TestCase
 
         $this->assertFalse($this->fileRequest($this->makeService(permissions: $permissions)));
         $this->assertSame([], $this->sent);
+    }
+
+    public function testEveryEventWritesAnAuditLineEvenWithNotificationsOff(): void
+    {
+        $audit = $this->createMock(AuditService::class);
+        $events = [];
+        $audit->method('logChangeRequest')->willReturnCallback(function (int $zoneId, string $zoneName, int $requestId, string $event, ?string $comment) use (&$events): void {
+            $events[] = [$zoneId, $requestId, $event, $comment];
+        });
+        $service = $this->makeService(notificationsEnabled: false, audit: $audit);
+
+        $service->requestFiled($this->request(ZoneChangeRequest::STATUS_PENDING, 'add it'));
+        $service->requestDecided($this->request(ZoneChangeRequest::STATUS_REJECTED, 'add it', 'no'));
+        $service->requestCancelled($this->request(ZoneChangeRequest::STATUS_CANCELLED, 'add it'));
+
+        $this->assertSame([
+            [self::ZONE_ID, 7, 'filed', 'add it'],
+            [self::ZONE_ID, 7, 'rejected', 'no'],
+            [self::ZONE_ID, 7, 'cancelled', null],
+        ], $events);
+        $this->assertSame([], $this->sent);
+    }
+
+    private function request(string $status, ?string $comment, ?string $reviewComment = null): ZoneChangeRequest
+    {
+        $decided = $status !== ZoneChangeRequest::STATUS_PENDING;
+
+        return new ZoneChangeRequest(
+            7,
+            self::ZONE_ID,
+            self::ZONE_NAME,
+            ZoneChangeRequest::KIND_RECORDS,
+            $status,
+            self::REQUESTER_ID,
+            'rita',
+            $comment,
+            null,
+            [['op' => 'add', 'after' => ['name' => 'mx.example.com', 'type' => 'A', 'content' => '192.0.2.9', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0, 'comment' => '']]],
+            null,
+            $decided ? self::OWNER_APPROVER_ID : null,
+            $decided ? 'olaf' : null,
+            $reviewComment,
+            '2026-09-20 10:00:00',
+            $decided ? '2026-09-20 11:00:00' : null,
+            null,
+            null
+        );
     }
 
     public function testDecidedRequestMailsTheRequester(): void

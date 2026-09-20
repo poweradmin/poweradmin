@@ -180,6 +180,7 @@ class DeleteDomainController extends BaseController
             'slave_master_exists' => $slave_master_exists,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_info['name']),
             'requests_deletion' => $requestsDeletion,
+            'require_change_comment' => (bool)$this->config->get('logging', 'require_change_comment', false),
         ]);
     }
 }

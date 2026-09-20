@@ -421,6 +421,7 @@ class EditController extends BaseController
             'zone_is_editable' => $zone_is_editable,
             'can_edit_records' => $can_edit_records,
             'edit_mode' => $edit_mode,
+            'require_change_comment' => (bool)$this->config->get('logging', 'require_change_comment', false),
             'pending_change_requests' => $pending_change_requests,
             'can_review_change_requests' => $pending_change_requests !== [] && $this->canReviewChangeRequestsForZone($zone_id),
             'can_view_zone_logs' => $can_view_zone_logs,
@@ -542,6 +543,11 @@ class EditController extends BaseController
         $zone_template = (string)($this->httpRequest->getPostParam('zone_template') ?? 'none');
         $new_zone_template = $zone_template === 'none' ? 0 : $zone_template;
         if ($this->httpRequest->getPostParam('current_zone_template', 0) == $new_zone_template) {
+            return;
+        }
+        // Applying a template rewrites records directly, which a reviewed zone does not allow
+        if ($this->changeApprovalModeForZone($zone_id) === ChangeApprovalPolicy::MODE_REQUEST) {
+            $this->setMessage('edit', 'error', ChangeRequestMessages::requiresApproval());
             return;
         }
 

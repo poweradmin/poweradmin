@@ -237,6 +237,7 @@ class DeleteRecordController extends BaseController
             'record_info' => $record_info,
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),
             'edit_mode' => $edit_mode,
+            'require_change_comment' => (bool)$this->config->get('logging', 'require_change_comment', false),
         ]);
     }
 }

@@ -93,6 +93,7 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
     public function testOwnerScopedReviewerCannotPeekAtAnotherZone(): void
     {
         $this->permissions->method('getChangeApprovePermissionLevel')->willReturn('own');
+        $this->permissions->method('getEditPermissionLevel')->willReturn('own');
         $this->permissions->method('getChangeRequestPermissionLevel')->willReturn('none');
         $zones = $this->createMock(ZoneRepositoryInterface::class);
         $zones->method('getOwnedZoneIds')->willReturn([42, 43]);
@@ -106,6 +107,21 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
 
         $this->assertSame(['zoneIds' => []], $this->listedWith);
         $this->assertSame('all', $controller->rendered[0][1]['status_filter']);
+    }
+
+    public function testAGlobalApproverWithOwnEditRightsReviewsOnlyOwnedZones(): void
+    {
+        $this->permissions->method('getChangeApprovePermissionLevel')->willReturn('all');
+        $this->permissions->method('getEditPermissionLevel')->willReturn('own');
+        $this->permissions->method('getChangeRequestPermissionLevel')->willReturn('none');
+        $zones = $this->createMock(ZoneRepositoryInterface::class);
+        $zones->method('getOwnedZoneIds')->willReturn([42]);
+        $this->factory->method('zoneRepository')->willReturn($zones);
+        $controller = $this->makeController(true, ['status' => 'all']);
+
+        $controller->run();
+
+        $this->assertSame(['zoneIds' => [42]], $this->listedWith);
     }
 
     public function testGlobalReviewerListsEveryZoneAndRejectsUnknownStatus(): void

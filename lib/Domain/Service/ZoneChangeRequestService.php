@@ -275,6 +275,7 @@ class ZoneChangeRequestService
         if (!$this->requests->cancel($requestId)) {
             return $this->decidedMeanwhile($requestId);
         }
+        $this->notify($requestId, fn(ZoneChangeRequest $r) => $this->notifier?->requestCancelled($r));
 
         return ZoneChangeRequestResult::ok($requestId, 'Change request cancelled.');
     }
@@ -333,8 +334,12 @@ class ZoneChangeRequestService
             ? $this->applyZoneDelete($request, $reviewerId)
             : $this->applyRecords($request, $reviewerId, $reviewerName);
 
-        // The requester's reason is the reason for the change; the reviewer's note is a fallback
-        $reason = $request->requestComment ?? $reviewComment;
+        // The change log names the requester, since the reviewer is the session user who writes
+        $reason = sprintf('Change request #%d from %s', $request->id, $request->requesterName);
+        $comment = $request->requestComment ?? $reviewComment;
+        if ($comment !== null && $comment !== '') {
+            $reason .= ': ' . $comment;
+        }
 
         try {
             return $this->changeset === null ? $work() : ($this->changeset)($request->zoneId, $reason, $work);
@@ -591,6 +596,11 @@ class ZoneChangeRequestService
     private function store(int $zoneId, string $zoneName, string $kind, int $userId, string $username, ?string $comment, ?string $baseSerial, array $actions, ?string $zoneComment): ZoneChangeRequestResult
     {
         $comment = $comment !== null && trim($comment) !== '' ? trim($comment) : null;
+        // The same rule the change log applies to direct bulk edits, checked before the request exists
+        if ($comment === null && $this->config->get('logging', 'require_change_comment', false)) {
+            $error = 'A reason for this change is required.';
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, 400, [$error]);
+        }
         if (strlen(ZoneChangeRequest::encodePayload($actions, $zoneComment)) > self::MAX_PAYLOAD_BYTES) {
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_PAYLOAD_TOO_LARGE, 'The request is too large to store; submit it as several smaller changes.', 413);
         }

@@ -263,7 +263,7 @@ class ZoneChangeRequestServiceTest extends TestCase
             'zone_comment:approved comment',
             'finalize',
         ], $this->calls);
-        $this->assertSame([[self::ZONE_ID, 'reason given']], $scoped);
+        $this->assertSame([[self::ZONE_ID, 'Change request #' . $id . ' from alice: reason given']], $scoped);
         $request = $this->repository->find($id);
         $this->assertSame(ZoneChangeRequest::STATUS_APPROVED, $request->status);
         $this->assertSame(self::REVIEWER, $request->reviewerId);
@@ -452,6 +452,29 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertSame(['filed:pending', 'decided:approved', 'filed:pending', 'decided:rejected', 'filed:pending', 'decided:failed'], $heard);
     }
 
+    public function testARequiredReasonIsCheckedWhenFiling(): void
+    {
+        $service = $this->makeService(requireComment: true);
+
+        $refused = $service->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]));
+        $this->assertFalse($refused->success);
+        $this->assertSame(ZoneChangeRequestResult::CODE_VALIDATION, $refused->code);
+        $this->assertSame(0, $this->repository->countPending(null));
+
+        $this->assertTrue($service->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]), 'because')->success);
+    }
+
+    public function testCancellingTellsTheNotifier(): void
+    {
+        $notifier = $this->createMock(ChangeRequestNotifierInterface::class);
+        $notifier->expects($this->once())->method('requestCancelled')
+            ->with($this->callback(fn(ZoneChangeRequest $r): bool => $r->status === ZoneChangeRequest::STATUS_CANCELLED));
+        $service = $this->makeService(null, null, $notifier);
+        $id = $service->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]))->requestId;
+
+        $this->assertTrue($service->cancel($id, self::REQUESTER)->success);
+    }
+
     public function testAThrowingNotifierDoesNotUndoTheEvent(): void
     {
         $notifier = $this->createMock(ChangeRequestNotifierInterface::class);
@@ -549,10 +572,11 @@ class ZoneChangeRequestServiceTest extends TestCase
         ], $zoneComment);
     }
 
-    private function makeService(?\Closure $changeset = null, ?PermissionService $reviewerPermissions = null, ?ChangeRequestNotifierInterface $notifier = null): ZoneChangeRequestService
+    private function makeService(?\Closure $changeset = null, ?PermissionService $reviewerPermissions = null, ?ChangeRequestNotifierInterface $notifier = null, bool $requireComment = false): ZoneChangeRequestService
     {
         $config = new FakeConfiguration([
             'interface' => ['show_record_comments' => false, 'show_zone_comments' => true],
+            'logging' => ['require_change_comment' => $requireComment],
             'misc' => ['edit_conflict_resolution' => 'last_writer_wins', 'record_comments_sync' => false],
             'dns' => ['bump_serial_on_unchanged_save' => true, 'hostmaster' => 'hostmaster.example.com', 'ttl' => 86400, 'txt_auto_quote' => false],
         ]);

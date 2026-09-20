@@ -181,6 +181,7 @@ class EditRecordController extends BaseController
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_is_editable' => $user_can_edit_zone && !$zone_is_read_only,
             'edit_mode' => $edit_mode,
+            'require_change_comment' => (bool)$this->config->get('logging', 'require_change_comment', false),
             'iface_record_comments' => $iface_record_comments,
             'comment' => $recordComment ? $recordComment->getComment() : '',
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),

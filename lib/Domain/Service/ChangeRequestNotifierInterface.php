@@ -35,4 +35,6 @@ interface ChangeRequestNotifierInterface
      * The request was approved (applied or failed to apply) or rejected.
      */
     public function requestDecided(ZoneChangeRequest $request): void;
+
+    public function requestCancelled(ZoneChangeRequest $request): void;
 }

@@ -406,7 +406,8 @@ class ControllerServiceFactory
             new EmailTemplateService($this->config),
             $this->domainRepository(),
             $this->permissionService(),
-            $this->logger
+            $this->logger,
+            $this->auditService()
         );
     }
 

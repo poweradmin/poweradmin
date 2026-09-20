@@ -36,6 +36,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Application\Service\ChangeRequestMessages;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 
 /**
  * Handles the batch PTR form: creates PTR records for an IPv4 or IPv6 network, optionally with forward records.
@@ -96,6 +98,16 @@ class BatchPtrRecordController extends BaseController
             $this->checkCondition(
                 ZoneType::isReadOnly($zone_type) || $perm_edit === 'none',
                 _("You do not have permission to add records to this zone.")
+            );
+            $this->checkCondition(
+                $this->changeApprovalModeForZone($zone_id) === ChangeApprovalPolicy::MODE_REQUEST,
+                ChangeRequestMessages::requiresApproval()
+            );
+        } else {
+            // Without a zone the PTR targets are only known at save time, so a reviewed install refuses upfront
+            $this->checkCondition(
+                $this->changeApprovalEnabled() && (bool)$this->config->get('approval', 'require_review_for_all', false),
+                ChangeRequestMessages::requiresApproval()
             );
         }
 

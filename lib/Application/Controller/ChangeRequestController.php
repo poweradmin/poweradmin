@@ -26,6 +26,7 @@ use Poweradmin\Application\Presenter\ChangeRequestPresenter;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
 
@@ -55,7 +56,8 @@ class ChangeRequestController extends BaseController
         $userId = (int)$this->getCurrentUserId();
         $canReview = $this->canReviewChangeRequestsForZone($request->zoneId);
         $isRequester = $request->requesterId === $userId;
-        if (!$canReview && !$isRequester) {
+        // The edit page lists pending requests to everyone who may change the zone, so reading one follows the same rule
+        if (!$canReview && !$isRequester && $this->changeApprovalModeForZone($request->zoneId) === ChangeApprovalPolicy::MODE_NONE) {
             $this->showError(_('You do not have permission to view this change request.'));
             return;
         }

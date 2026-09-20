@@ -34,6 +34,8 @@ use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Enum\ZoneKind;
+use Poweradmin\Application\Service\ChangeRequestMessages;
+use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 
 /**
  * The /tools/zone-import page: uploads a BIND zone file, previews the parsed records and creates the zone.
@@ -166,6 +168,10 @@ class ZoneFileImportController extends BaseController
                 $this->showError(_('You do not have permission to modify this zone.'));
                 return;
             }
+            if ($this->changeApprovalModeForZone($existingZoneId) === ChangeApprovalPolicy::MODE_REQUEST) {
+                $this->showError(ChangeRequestMessages::requiresApproval());
+                return;
+            }
         }
 
         // Auto-detect existing zone when importing from the menu
@@ -287,6 +293,10 @@ class ZoneFileImportController extends BaseController
             $existingZoneName = $domainRepository->getDomainNameById($existingZoneId);
             if (!$existingZoneName) {
                 $this->showError(_('The selected zone does not exist.'));
+                return;
+            }
+            if ($this->changeApprovalModeForZone($existingZoneId) === ChangeApprovalPolicy::MODE_REQUEST) {
+                $this->showError(ChangeRequestMessages::requiresApproval());
                 return;
             }
 
