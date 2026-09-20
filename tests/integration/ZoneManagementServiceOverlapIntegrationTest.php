@@ -25,6 +25,8 @@ namespace Poweradmin\Tests\Integration;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -107,7 +109,9 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             }
         );
 
-        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db);
+        $repositoryFactory = new RepositoryFactory($this->db, $config, DnsBackendProviderFactory::create($this->db, $config));
+
+        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, $repositoryFactory);
     }
 
     public function testApiCreateRejectsOverlapForNonOwnerWith409(): void

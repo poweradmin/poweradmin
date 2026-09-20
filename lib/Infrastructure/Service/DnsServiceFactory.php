@@ -101,8 +101,8 @@ class DnsServiceFactory
             self::createDnsRecordValidationService($db, $config, $backendProvider),
             self::createSOARecordManager($db, $config, $backendProvider),
             $repositoryFactory->createDomainRepository(),
-            $backendProvider,
-            repositoryFactory: $repositoryFactory
+            $repositoryFactory,
+            $backendProvider
         );
     }
 
@@ -121,8 +121,8 @@ class DnsServiceFactory
             $config,
             self::createSOARecordManager($db, $config, $backendProvider),
             $repositoryFactory->createDomainRepository(),
-            $backendProvider,
-            repositoryFactory: $repositoryFactory
+            $repositoryFactory,
+            $backendProvider
         );
     }
 

@@ -24,7 +24,6 @@ namespace Poweradmin\Domain\Service;
 
 use Exception;
 use PDO;
-use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -40,23 +39,18 @@ class DatabaseConsistencyService
     private TableNameService $tableNameService;
     private ?DnsBackendProviderInterface $backendProvider;
     private bool $apiReadFailed = false;
-    private ?ApiStatusInterface $apiStatus;
+    private ApiStatusInterface $apiStatus;
 
     public function __construct(
         PDO $db,
         ConfigurationInterface $config,
-        ?DnsBackendProviderInterface $backendProvider = null,
-        ?ApiStatusInterface $apiStatus = null
+        ApiStatusInterface $apiStatus,
+        ?DnsBackendProviderInterface $backendProvider = null
     ) {
         $this->db = $db;
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
         $this->apiStatus = $apiStatus;
-    }
-
-    private function apiStatus(): ApiStatusInterface
-    {
-        return $this->apiStatus ??= new ApiStatusService();
     }
 
     private function isApiBackend(): bool
@@ -72,7 +66,7 @@ class DatabaseConsistencyService
      */
     private function apiZonesUnavailable(array $zones): bool
     {
-        return empty($zones) && $this->apiStatus()->getLastError() !== null;
+        return empty($zones) && $this->apiStatus->getLastError() !== null;
     }
 
     /**
@@ -84,7 +78,7 @@ class DatabaseConsistencyService
     private function fetchRecordsTracked(int $zoneId, ?string $type = null): array
     {
         $records = $this->backendProvider->getRecordsByZoneId($zoneId, $type);
-        if ($this->apiStatus()->getLastError() !== null) {
+        if ($this->apiStatus->getLastError() !== null) {
             $this->apiReadFailed = true;
         }
         return $records;

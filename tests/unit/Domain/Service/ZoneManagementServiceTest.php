@@ -28,6 +28,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -60,6 +61,7 @@ class ZoneManagementServiceTest extends TestCase
             $this->zoneRepository,
             $this->config,
             $this->db,
+            $this->createMock(RepositoryFactoryInterface::class),
             domainRepository: $this->domainRepository
         );
     }

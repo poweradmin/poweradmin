@@ -84,7 +84,7 @@ class DatabaseConsistencyServiceTest extends TestCase
             }))
             ->willReturn($stmt);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config);
+        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService());
         $result = $service->checkZonesHaveOwners();
 
         $this->assertSame('success', $result['status']);
@@ -102,7 +102,7 @@ class DatabaseConsistencyServiceTest extends TestCase
 
         $this->db->method('query')->willReturn($stmt);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config);
+        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService());
         $result = $service->checkZonesHaveOwners();
 
         $this->assertSame('warning', $result['status']);
@@ -131,7 +131,7 @@ class DatabaseConsistencyServiceTest extends TestCase
             ->with($this->callback(fn(string $sql) => str_contains($sql, 'c.zone_name = ?')))
             ->willReturn($stmt);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, $backend);
+        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
         $result = $service->checkZonesHaveOwners();
 
         $this->assertSame('success', $result['status']);
@@ -157,7 +157,7 @@ class DatabaseConsistencyServiceTest extends TestCase
             ->with($this->callback(fn(string $sql) => str_contains($sql, 'c.zone_name = ?')))
             ->willReturn($stmt);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, $backend);
+        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
         $result = $service->checkZonesHaveOwners();
 
         $this->assertSame('success', $result['status']);
@@ -181,7 +181,7 @@ class DatabaseConsistencyServiceTest extends TestCase
             ->with($this->callback(fn(string $sql) => str_contains($sql, 'c.zone_name = ?')))
             ->willReturn($stmt);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, $backend);
+        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
         $result = $service->checkZonesHaveOwners();
 
         $this->assertSame('warning', $result['status']);
@@ -199,7 +199,7 @@ class DatabaseConsistencyServiceTest extends TestCase
 
         $this->db->expects($this->never())->method('prepare');
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, $backend);
+        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
         $result = $service->checkZonesHaveOwners();
 
         $this->assertSame('success', $result['status']);
@@ -212,7 +212,7 @@ class DatabaseConsistencyServiceTest extends TestCase
         // domain_id 0 would insert a dangling zones row; the guard must refuse it.
         $this->db->expects($this->never())->method('prepare');
 
-        $service = new DatabaseConsistencyService($this->db, $this->config);
+        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService());
 
         $this->assertFalse($service->fixZoneWithoutOwner(0, 1));
     }
@@ -224,7 +224,7 @@ class DatabaseConsistencyServiceTest extends TestCase
         $backend = $this->apiBackend([]);
         (new ApiStatusService())->recordError('connection refused', ['endpoint' => 'zones']);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, $backend);
+        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
 
         $this->assertNull($service->runAllChecks());
     }
@@ -249,7 +249,7 @@ class DatabaseConsistencyServiceTest extends TestCase
             return [];
         });
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, $backend);
+        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
 
         $this->assertNull($service->runAllChecks());
     }
@@ -272,7 +272,7 @@ class DatabaseConsistencyServiceTest extends TestCase
             ['id' => 'enc', 'type' => 'SOA'],
         ]);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, $backend);
+        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
         $results = $service->runAllChecks();
 
         $this->assertIsArray($results);
@@ -288,7 +288,7 @@ class DatabaseConsistencyServiceTest extends TestCase
         $apiStatus = $this->createMock(ApiStatusInterface::class);
         $apiStatus->method('getLastError')->willReturn(['message' => 'down', 'context' => [], 'timestamp' => 1]);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, $backend, $apiStatus);
+        $service = new DatabaseConsistencyService($this->db, $this->config, $apiStatus, $backend);
 
         // The session holds no error; only the injected port reports the outage.
         $this->assertNull($service->runAllChecks());
@@ -311,7 +311,7 @@ class DatabaseConsistencyServiceTest extends TestCase
         $apiStatus = $this->createMock(ApiStatusInterface::class);
         $apiStatus->method('getLastError')->willReturn(['message' => '502 Bad Gateway', 'context' => [], 'timestamp' => 1]);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, $backend, $apiStatus);
+        $service = new DatabaseConsistencyService($this->db, $this->config, $apiStatus, $backend);
 
         $this->assertNull($service->runAllChecks());
     }

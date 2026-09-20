@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Service\DatabaseConsistencyService;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -51,7 +52,7 @@ class DatabaseConsistencyCanonicalIdTest extends TestCase
         $config = ConfigurationManager::getInstance();
         $config->initialize();
 
-        return new DatabaseConsistencyService($this->db, $config, $provider);
+        return new DatabaseConsistencyService($this->db, $config, new ApiStatusService(), $provider);
     }
 
     private function seed(int $id, ?int $domainId, ?string $name): void

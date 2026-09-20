@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Service;
 use Closure;
 use Exception;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
@@ -77,7 +76,7 @@ class ZoneManagementService
     private PdnsCapabilities|Closure|null $capabilities;
     private ?ZoneSigningService $signing;
     private ?DnsBackendProviderInterface $backendProvider = null;
-    private ?RepositoryFactoryInterface $repositoryFactory;
+    private RepositoryFactoryInterface $repositoryFactory;
     private ?DomainRepositoryInterface $domainRepository;
     private ?PermissionService $permissions;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository;
@@ -88,24 +87,24 @@ class ZoneManagementService
     private array $resolvedTemplates = [];
 
     /**
+     * @param RepositoryFactoryInterface $repositoryFactory Builds the record and domain repositories
      * @param PdnsCapabilities|Closure|null $capabilities What the connected server supports, or a closure returning it; null admits only the basic kinds
      * @param ZoneSigningService|null $signing Needed for enable_dnssec; without it a create is never signed
      * @param DomainRepositoryInterface|null $domainRepository Zone lookups; built from the repository factory when omitted
      * @param PermissionService|null $permissions Shares the request's permission cache; built on demand when omitted
-     * @param RepositoryFactoryInterface|null $repositoryFactory Builds the record and domain repositories; built on demand when omitted
      */
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
         ConfigurationInterface $config,
         object $db,
+        RepositoryFactoryInterface $repositoryFactory,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
         PdnsCapabilities|Closure|null $capabilities = null,
         ?ZoneSigningService $signing = null,
         ?DomainRepositoryInterface $domainRepository = null,
         ?PermissionService $permissions = null,
-        ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null,
-        ?RepositoryFactoryInterface $repositoryFactory = null
+        ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null
     ) {
         $this->zoneTemplateRepository = $zoneTemplateRepository;
         $this->repositoryFactory = $repositoryFactory;
@@ -228,7 +227,7 @@ class ZoneManagementService
 
         // Check if non-delegation records exist (prevents zone hijacking)
         // Only delegation records (NS, DS) are allowed
-        if ($this->repositoryFactory()->createRecordRepository()->hasNonDelegationRecords($domain)) {
+        if ($this->repositoryFactory->createRecordRepository()->hasNonDelegationRecords($domain)) {
             return ['success' => false, 'message' => 'Domain already exists', 'status' => 409, 'code' => self::ERR_EXISTS];
         }
 
@@ -476,11 +475,6 @@ class ZoneManagementService
         return $this->backendProvider ??= DnsBackendProviderFactory::create($this->db, $this->config);
     }
 
-    private function repositoryFactory(): RepositoryFactoryInterface
-    {
-        return $this->repositoryFactory ??= new RepositoryFactory($this->db, $this->config, $this->backendProvider());
-    }
-
     private function permissions(): PermissionService
     {
         return $this->permissions ??= (new ApiPermissionService($this->db, config: $this->config))->permissions();
@@ -488,6 +482,6 @@ class ZoneManagementService
 
     private function domainRepository(): DomainRepositoryInterface
     {
-        return $this->domainRepository ??= $this->repositoryFactory()->createDomainRepository();
+        return $this->domainRepository ??= $this->repositoryFactory->createDomainRepository();
     }
 }

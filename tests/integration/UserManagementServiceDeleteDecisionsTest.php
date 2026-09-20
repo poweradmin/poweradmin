@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Integration;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Application\Service\PasswordPolicyService;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -202,7 +203,7 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
         $domainRepository->method('getDomainNameById')->willReturn('zone.example');
         $backend = $this->dnsBackendStub(false);
         $backend->method('deleteZone')->willReturn(true);
-        $domainManager = new DomainManager($this->db, $config, $this->createMock(SOARecordManagerInterface::class), $domainRepository, $backend);
+        $domainManager = new DomainManager($this->db, $config, $this->createMock(SOARecordManagerInterface::class), $domainRepository, new RepositoryFactory($this->db, $config, $backend), $backend);
 
         return new UserManagementService(
             $userRepository,

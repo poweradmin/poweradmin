@@ -24,7 +24,6 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Model\Permission;
@@ -64,7 +63,7 @@ class DomainManager implements DomainManagerInterface
     private ?DbUserRepository $userRepository = null;
     private UserContextService $userContext;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository;
-    private ?RepositoryFactoryInterface $repositoryFactory;
+    private RepositoryFactoryInterface $repositoryFactory;
 
     /**
      * Constructor
@@ -73,20 +72,20 @@ class DomainManager implements DomainManagerInterface
      * @param ConfigurationInterface $config Configuration manager
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
+     * @param RepositoryFactoryInterface $repositoryFactory Builds the zone repository
      * @param DnsBackendProviderInterface|null $backendProvider DNS backend provider (auto-created if null)
-     * @param RepositoryFactoryInterface|null $repositoryFactory Builds the zone repository (auto-created if null)
      */
     public function __construct(
         PDO $db,
         ConfigurationInterface $config,
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
+        RepositoryFactoryInterface $repositoryFactory,
         ?DnsBackendProviderInterface $backendProvider = null,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
         ?UserContextService $userContext = null,
-        ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null,
-        ?RepositoryFactoryInterface $repositoryFactory = null
+        ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null
     ) {
         $this->zoneTemplateRepository = $zoneTemplateRepository;
         $this->repositoryFactory = $repositoryFactory;
@@ -99,11 +98,6 @@ class DomainManager implements DomainManagerInterface
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
         $this->userContext = $userContext ?? new UserContextService();
-    }
-
-    private function repositoryFactory(): RepositoryFactoryInterface
-    {
-        return $this->repositoryFactory ??= new RepositoryFactory($this->db, $this->config, $this->backendProvider);
     }
 
     private function captureChange(callable $callback): void
@@ -635,7 +629,7 @@ class DomainManager implements DomainManagerInterface
             return ZoneWriteResult::failure(sprintf(_('Unknown user ID: %s'), $user_id), 404);
         }
 
-        $zoneRepository = $this->repositoryFactory()->createZoneRepository();
+        $zoneRepository = $this->repositoryFactory->createZoneRepository();
         if (!$zoneRepository->isUserZoneOwner($zone_id, $user_id) && !$zoneRepository->addOwnerToZone($zone_id, $user_id)) {
             return ZoneWriteResult::backendFailure(_('Failed to add the owner to the zone.'));
         }

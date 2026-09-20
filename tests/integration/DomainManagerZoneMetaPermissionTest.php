@@ -15,6 +15,7 @@
 namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
@@ -224,13 +225,15 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $soa = $this->createMock(SOARecordManagerInterface::class);
         $repo = $this->createMock(DomainRepositoryInterface::class);
         $changeLogger = $this->createMock(RecordChangeLogger::class);
+        $backend ??= $this->dnsBackendStub(false);
 
         return new DomainManager(
             $this->db,
             $config,
             $soa,
             $repo,
-            $backend ?? $this->dnsBackendStub(false),
+            new RepositoryFactory($this->db, $config, $backend),
+            $backend,
             null,
             $changeLogger
         );

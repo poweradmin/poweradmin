@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Integration;
 
 use PDO;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -236,6 +237,7 @@ class DomainManagerTemplateMaterialisationTest extends SqliteIntegrationTestCase
             $config,
             $this->createMock(SOARecordManagerInterface::class),
             $domainRepository,
+            new RepositoryFactory($this->db, $config, $backend),
             $backend
         );
     }

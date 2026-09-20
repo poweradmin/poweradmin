@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManager;
@@ -173,6 +174,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
             $validation,
             $soa,
             $domainRepository,
+            new RepositoryFactory($this->db, $config, $backend),
             $backend,
             null,
             $changeLogger

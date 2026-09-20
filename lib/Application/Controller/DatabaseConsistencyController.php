@@ -58,8 +58,8 @@ class DatabaseConsistencyController extends BaseController
         $consistencyService = new DatabaseConsistencyService(
             $this->db,
             $this->config,
-            $this->createDnsBackendProvider(),
-            new ApiStatusService()
+            new ApiStatusService(),
+            $this->createDnsBackendProvider()
         );
 
         // Handle fix actions before the outage check below: owner assignment touches
