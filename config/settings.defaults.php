@@ -283,6 +283,7 @@ return [
     'notifications' => [
         'zone_access_enabled' => false,      // Enable/disable zone access change notifications
         'change_request_enabled' => false,   // Mail reviewers on new change requests and requesters on decisions (added in 4.6.0)
+        'change_request_soa_contact' => false, // Also mail the zone's SOA contact about new change requests (added in 4.6.0)
     ],
 
     /**

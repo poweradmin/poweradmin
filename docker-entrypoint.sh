@@ -959,6 +959,8 @@ generate_config() {
     notification_zone_access=$(to_php_bool "${PA_NOTIFICATION_ZONE_ACCESS:-false}")
     local notification_change_request
     notification_change_request=$(to_php_bool "${PA_NOTIFICATION_CHANGE_REQUEST:-false}")
+    local notification_change_request_soa_contact
+    notification_change_request_soa_contact=$(to_php_bool "${PA_NOTIFICATION_CHANGE_REQUEST_SOA_CONTACT:-false}")
 
     # Convert change approval boolean values to lowercase
     local approval_enabled
@@ -1340,6 +1342,7 @@ return [
     'notifications' => [
         'zone_access_enabled' => ${notification_zone_access},
         'change_request_enabled' => ${notification_change_request},
+        'change_request_soa_contact' => ${notification_change_request_soa_contact},
     ],
     'approval' => [
         'enabled' => ${approval_enabled},

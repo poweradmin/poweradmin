@@ -170,6 +170,7 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
             'approval enabled' => ['PA_APPROVAL_ENABLED', 'approval', 'enabled', 'approval_enabled'],
             'approval require review for all' => ['PA_APPROVAL_REQUIRE_REVIEW_FOR_ALL', 'approval', 'require_review_for_all', 'approval_require_review_for_all'],
             'change request notifications' => ['PA_NOTIFICATION_CHANGE_REQUEST', 'notifications', 'change_request_enabled', 'notification_change_request'],
+            'change request SOA contact mail' => ['PA_NOTIFICATION_CHANGE_REQUEST_SOA_CONTACT', 'notifications', 'change_request_soa_contact', 'notification_change_request_soa_contact'],
         ];
     }
 

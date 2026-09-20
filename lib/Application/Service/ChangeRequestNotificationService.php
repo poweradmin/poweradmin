@@ -27,6 +27,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\ChangeRequestNotifierInterface;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
@@ -66,7 +67,8 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
         DomainRepositoryInterface $domainRepository,
         PermissionService $permissions,
         ?LoggerInterface $logger = null,
-        private readonly ?AuditService $audit = null
+        private readonly ?AuditService $audit = null,
+        private readonly ?SOARecordManagerInterface $soaRecords = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -124,6 +126,10 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
         try {
             $zoneName = $this->resolveZoneName($zoneId, $zoneName);
             $reviewers = $this->findReviewers($zoneId, $requesterId);
+            $soaContact = $this->soaContact($zoneId, $reviewers);
+            if ($soaContact !== null) {
+                $reviewers[] = $soaContact;
+            }
             if ($reviewers === []) {
                 $this->logger->info("No reviewer with an email address for zone '$zoneName', change request $requestId not announced");
                 return false;
@@ -131,6 +137,8 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
 
             $requestUrl = $this->urlService->getChangeRequestUrl($requestId);
             $sent = 0;
+            // Replies go to the person who asked for the change
+            $headers = $this->replyToRequester($requesterId);
 
             foreach ($reviewers as $reviewer) {
                 $templates = $this->emailTemplateService->renderChangeRequestFiledEmail(
@@ -148,7 +156,8 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
                     $reviewer['email'],
                     $templates['subject'],
                     $templates['html'],
-                    $templates['text']
+                    $templates['text'],
+                    $headers
                 );
 
                 if ($result) {
@@ -273,6 +282,50 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
      *
      * @return array<int, array{id: int, username: string, fullname: string, email: string}>
      */
+    /**
+     * @return array<string, string> Reply-To header for the requester, or nothing when they have no address
+     */
+    private function replyToRequester(int $requesterId): array
+    {
+        $requester = $this->getUserDetails($requesterId);
+        if ($requester === null || empty($requester['email'])) {
+            return [];
+        }
+
+        return ['Reply-To' => $requester['email']];
+    }
+
+    /**
+     * The zone's SOA contact as a recipient when notifications.change_request_soa_contact
+     * is on: the RNAME with its first label turned into the mailbox, as dns-ui does.
+     * Skipped when it already is a reviewer's address.
+     *
+     * @param list<array{id: int, username: string, fullname: string, email: string}> $reviewers
+     * @return array{id: int, username: string, fullname: string, email: string}|null
+     */
+    private function soaContact(int $zoneId, array $reviewers): ?array
+    {
+        if ($this->soaRecords === null || !$this->config->get('notifications', 'change_request_soa_contact', false)) {
+            return null;
+        }
+        $fields = preg_split('/\s+/', trim($this->soaRecords->getSOARecord($zoneId)));
+        $rname = rtrim((string)($fields[1] ?? ''), '.');
+        if ($rname === '' || !str_contains($rname, '.')) {
+            return null;
+        }
+        $email = preg_replace('/^([^.]+)\./', '$1@', $rname);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return null;
+        }
+        foreach ($reviewers as $reviewer) {
+            if (strcasecmp($reviewer['email'], $email) === 0) {
+                return null;
+            }
+        }
+
+        return ['id' => 0, 'username' => $email, 'fullname' => '', 'email' => $email];
+    }
+
     private function findReviewers(int $zoneId, int $requesterId): array
     {
         $stmt = $this->db->prepare('

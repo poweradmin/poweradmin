@@ -340,6 +340,7 @@ docker run -d --name poweradmin -p 80:80 \
 |----------|-------------|---------|----------|
 | `PA_NOTIFICATION_ZONE_ACCESS` | Enable zone access change notifications | `false` | No |
 | `PA_NOTIFICATION_CHANGE_REQUEST` | Mail reviewers on new change requests and requesters on decisions | `false` | No |
+| `PA_NOTIFICATION_CHANGE_REQUEST_SOA_CONTACT` | Also mail the zone's SOA contact about new change requests | `false` | No |
 
 ### Change Approval
 

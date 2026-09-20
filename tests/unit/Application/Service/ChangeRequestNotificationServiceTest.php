@@ -32,6 +32,7 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use TestHelpers\BuildsPermissionService;
 use TestHelpers\FakeConfiguration;
@@ -51,7 +52,7 @@ class ChangeRequestNotificationServiceTest extends TestCase
     private const INACTIVE_APPROVER_ID = 6;
     private const OTHER_ZONE_OWNER_APPROVER_ID = 7;
 
-    /** @var array<int, array{to: string, subject: string, html: string, text: string}> */
+    /** @var array<int, array{to: string, subject: string, html: string, text: string, headers: array<string, string>}> */
     private array $sent = [];
 
     private PDO $db;
@@ -115,18 +116,20 @@ class ChangeRequestNotificationServiceTest extends TestCase
         bool $mailEnabled = true,
         bool $sendResult = true,
         ?PermissionService $permissions = null,
-        ?AuditService $audit = null
+        ?AuditService $audit = null,
+        ?string $soaRecord = null,
+        bool $mailSoaContact = false
     ): ChangeRequestNotificationService {
         $config = new FakeConfiguration([
-            'notifications' => ['change_request_enabled' => $notificationsEnabled],
+            'notifications' => ['change_request_enabled' => $notificationsEnabled, 'change_request_soa_contact' => $mailSoaContact],
             'mail' => ['enabled' => $mailEnabled],
             'interface' => ['application_url' => 'https://dns.example.test/pa'],
         ]);
 
         $mailService = $this->createMock(MailService::class);
         $mailService->method('sendMail')->willReturnCallback(
-            function (string $to, string $subject, string $body, string $plainBody = '') use ($sendResult): bool {
-                $this->sent[] = ['to' => $to, 'subject' => $subject, 'html' => $body, 'text' => $plainBody];
+            function (string $to, string $subject, string $body, string $plainBody = '', array $headers = []) use ($sendResult): bool {
+                $this->sent[] = ['to' => $to, 'subject' => $subject, 'html' => $body, 'text' => $plainBody, 'headers' => $headers];
                 return $sendResult;
             }
         );
@@ -142,8 +145,17 @@ class ChangeRequestNotificationServiceTest extends TestCase
             $domainRepository,
             $permissions ?? $this->defaultPermissions(),
             null,
-            $audit
+            $audit,
+            $soaRecord === null ? null : $this->soaRecords($soaRecord)
         );
+    }
+
+    private function soaRecords(string $soaRecord): SOARecordManagerInterface
+    {
+        $soa = $this->createMock(SOARecordManagerInterface::class);
+        $soa->method('getSOARecord')->willReturn($soaRecord);
+
+        return $soa;
     }
 
     private function fileRequest(ChangeRequestNotificationService $service): bool
@@ -183,7 +195,31 @@ class ChangeRequestNotificationServiceTest extends TestCase
         $this->assertStringContainsString('https://dns.example.test/pa/zones/requests/7', $first['text']);
         $this->assertStringContainsString('Rita Requester', $first['text']);
         $this->assertStringContainsString('Please add the MX record', $first['text']);
+        $this->assertSame(['Reply-To' => 'rita@example.com'], $first['headers']);
         $this->assertStringContainsString('Record changes', $first['text']);
+    }
+
+    public function testTheSoaContactIsMailedOnlyWhenSwitchedOn(): void
+    {
+        $soa = 'ns1.example.com. hostmaster.example.com. 2026092001 10800 3600 604800 3600';
+
+        $this->assertTrue($this->fileRequest($this->makeService(soaRecord: $soa)));
+        $this->assertNotContains('hostmaster@example.com', array_column($this->sent, 'to'));
+
+        $this->sent = [];
+        $this->assertTrue($this->fileRequest($this->makeService(soaRecord: $soa, mailSoaContact: true)));
+        $this->assertContains('hostmaster@example.com', array_column($this->sent, 'to'));
+        $this->assertCount(3, $this->sent);
+    }
+
+    public function testASoaContactAlreadyReviewingIsNotMailedTwice(): void
+    {
+        $soa = 'ns1.example.com. olaf.example.com. 2026092001 10800 3600 604800 3600';
+
+        $this->assertTrue($this->fileRequest($this->makeService(soaRecord: $soa, mailSoaContact: true)));
+
+        $this->assertSame(1, count(array_keys(array_column($this->sent, 'to'), 'olaf@example.com', true)));
+        $this->assertCount(2, $this->sent);
     }
 
     public function testFiledRequestReturnsFalseWhenNoReviewerHasAnEmail(): void

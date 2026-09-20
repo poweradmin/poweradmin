@@ -407,7 +407,8 @@ class ControllerServiceFactory
             $this->domainRepository(),
             $this->permissionService(),
             $this->logger,
-            $this->auditService()
+            $this->auditService(),
+            $this->soaRecordManager()
         );
     }
 
