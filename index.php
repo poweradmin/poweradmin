@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -96,7 +96,7 @@ try {
         } elseif ($configManager->get('misc', 'display_errors', false)) {
             displayHtmlError($e);
         } else {
-            echo 'An error occurred while processing the request.';
+            echo 'An error occurred while processing the request. Details have been written to the PHP error log.';
         }
     }
 }
