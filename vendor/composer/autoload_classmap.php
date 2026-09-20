@@ -1399,6 +1399,8 @@ return array(
     'Poweradmin\\Domain\\Service\\PermissionService' => $baseDir . '/lib/Domain/Service/PermissionService.php',
     'Poweradmin\\Domain\\Service\\PermissionTemplateAssignmentGuard' => $baseDir . '/lib/Domain/Service/PermissionTemplateAssignmentGuard.php',
     'Poweradmin\\Domain\\Service\\PermissionTemplateContentGuard' => $baseDir . '/lib/Domain/Service/PermissionTemplateContentGuard.php',
+    'Poweradmin\\Domain\\Service\\RecordCommentEditorInterface' => $baseDir . '/lib/Domain/Service/RecordCommentEditorInterface.php',
+    'Poweradmin\\Domain\\Service\\RecordCommentSyncInterface' => $baseDir . '/lib/Domain/Service/RecordCommentSyncInterface.php',
     'Poweradmin\\Domain\\Service\\RecordDisplayService' => $baseDir . '/lib/Domain/Service/RecordDisplayService.php',
     'Poweradmin\\Domain\\Service\\RecordLog' => $baseDir . '/lib/Domain/Service/RecordLog.php',
     'Poweradmin\\Domain\\Service\\RecordMatchingService' => $baseDir . '/lib/Domain/Service/RecordMatchingService.php',

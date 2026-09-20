@@ -25,13 +25,14 @@ namespace Poweradmin\Application\Service;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Service\RecordCommentSyncInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\DomainUtility;
 
 /**
  * Keeps the comment on an A/AAAA record and its PTR counterpart in sync when either is created or edited.
  */
-class RecordCommentSyncService
+class RecordCommentSyncService implements RecordCommentSyncInterface
 {
     private RecordCommentService $commentService;
     private ?RecordRepositoryInterface $recordRepository;

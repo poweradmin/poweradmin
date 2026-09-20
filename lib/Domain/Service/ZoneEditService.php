@@ -22,8 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Enum\ZoneSaveOutcome;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -52,8 +50,8 @@ class ZoneEditService
         private readonly RecordRepositoryInterface $records,
         private readonly RecordManagerInterface $recordManager,
         private readonly SOARecordManagerInterface $soaRecords,
-        private readonly RecordCommentService $comments,
-        private readonly RecordCommentSyncService $commentSync,
+        private readonly RecordCommentEditorInterface $comments,
+        private readonly RecordCommentSyncInterface $commentSync,
         private readonly AuditLoggerInterface $audit
     ) {
     }

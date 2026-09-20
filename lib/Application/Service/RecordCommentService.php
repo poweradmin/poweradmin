@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
+use Poweradmin\Domain\Service\RecordCommentEditorInterface;
 
 /**
  * Reads and writes the comment attached to a record.
@@ -32,7 +33,7 @@ use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
  * that associates individual record IDs with comment IDs in the PowerDNS comments table.
  * This allows different records with the same name and type to have different comments.
  */
-class RecordCommentService
+class RecordCommentService implements RecordCommentEditorInterface
 {
     private RecordCommentRepositoryInterface $recordCommentRepository;
 

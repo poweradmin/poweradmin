@@ -745,30 +745,6 @@ parameters:
 			path: lib/Domain/Service/ZoneCountService.php
 
 		-
-			message: '#^Class Poweradmin\\Application\\Service\\RecordCommentService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\RecordCommentService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/ZoneEditService.php
-
-		-
-			message: '#^Class Poweradmin\\Application\\Service\\RecordCommentSyncService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\RecordCommentSyncService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/ZoneEditService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\RecordCommentService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\RecordCommentService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/ZoneEditService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\RecordCommentSyncService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\RecordCommentSyncService matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/ZoneEditService.php
-
-		-
 			message: '#^Class Poweradmin\\Application\\Service\\RepositoryFactory is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\RepositoryFactory matches Poweradmin\\Application\\\*\]$#'
 			identifier: disallowed.class
 			count: 1
