@@ -555,6 +555,7 @@ CREATE TABLE `zone_change_requests` (
     `reviewed_at` timestamp NULL DEFAULT NULL,
     `applied_at` timestamp NULL DEFAULT NULL,
     `error` text DEFAULT NULL,
+    `snapshot` text DEFAULT NULL,
     PRIMARY KEY (`id`),
     KEY `idx_zone_change_requests_zone_id` (`zone_id`),
     KEY `idx_zone_change_requests_status` (`status`),

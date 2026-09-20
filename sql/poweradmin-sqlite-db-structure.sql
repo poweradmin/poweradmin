@@ -472,7 +472,8 @@ CREATE TABLE zone_change_requests (
     created_at timestamp DEFAULT current_timestamp NOT NULL,
     reviewed_at timestamp,
     applied_at timestamp,
-    error TEXT
+    error TEXT,
+    snapshot TEXT
 );
 
 CREATE INDEX idx_zone_change_requests_zone_id ON zone_change_requests(zone_id);

@@ -90,6 +90,11 @@ interface ZoneChangeRequestRepositoryInterface
 
     public function markApplied(int $id): void;
 
+    /**
+     * Keeps a copy of the zone (a BIND zone file) taken before an approved deletion.
+     */
+    public function storeSnapshot(int $id, string $snapshot): void;
+
     public function markFailed(int $id, string $error): void;
 
     /** @return bool False when the request was no longer pending, so nothing changed */

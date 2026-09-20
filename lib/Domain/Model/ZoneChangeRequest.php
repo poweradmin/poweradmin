@@ -64,7 +64,8 @@ final readonly class ZoneChangeRequest
         public string $createdAt,
         public ?string $reviewedAt,
         public ?string $appliedAt,
-        public ?string $error
+        public ?string $error,
+        public ?string $snapshot = null
     ) {
     }
 

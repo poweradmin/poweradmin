@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS "public"."zone_change_requests" (
     "reviewed_at" timestamp,
     "applied_at" timestamp,
     "error" text,
+    "snapshot" text,
     CONSTRAINT "zone_change_requests_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 

@@ -1222,6 +1222,13 @@ class DatabaseStructureHelper
                         'name' => 'error',
                         'table' => 'zone_change_requests',
                         'flags' => ''
+                    ),
+                    'snapshot' => array(
+                        'notnull' => 0,
+                        'type' => 'text',
+                        'name' => 'snapshot',
+                        'table' => 'zone_change_requests',
+                        'flags' => ''
                     )
                 ),
                 'indexes' => array(

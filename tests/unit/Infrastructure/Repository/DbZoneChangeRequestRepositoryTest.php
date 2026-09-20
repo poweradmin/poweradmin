@@ -60,7 +60,8 @@ class DbZoneChangeRequestRepositoryTest extends TestCase
                 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 reviewed_at TIMESTAMP NULL,
                 applied_at TIMESTAMP NULL,
-                error TEXT NULL
+                error TEXT NULL,
+                snapshot TEXT NULL
             )
         SQL);
         $this->repository = new DbZoneChangeRequestRepository($this->db);
@@ -242,5 +243,15 @@ class DbZoneChangeRequestRepositoryTest extends TestCase
 
         $this->assertSame([1 => 2, 3 => 1], $this->repository->countPendingByZone([1, 2, 3]));
         $this->assertSame([], $this->repository->countPendingByZone([]));
+    }
+
+    public function testASnapshotIsKeptWithTheRequest(): void
+    {
+        $id = $this->file(1);
+        $this->assertNull($this->repository->find($id)->snapshot);
+
+        $this->repository->storeSnapshot($id, "\$ORIGIN zone1.test.\n@ IN SOA ns1 hostmaster 1 1 1 1 1\n");
+
+        $this->assertStringStartsWith('$ORIGIN zone1.test.', (string)$this->repository->find($id)->snapshot);
     }
 }

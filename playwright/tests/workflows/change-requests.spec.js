@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getTestZoneId } from '../../helpers/zones.js';
+import { getTestZoneId, createZone } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // One record in the shared zone travels through file -> approve -> reject ->
@@ -153,6 +153,64 @@ test.describe('Change approval workflow', () => {
     await expect(page.getByTestId(`change-request-row-${requestId}`)).toContainText('cancelled');
 
     await expect(await recordTtlInput(page)).toHaveValue('7200');
+  });
+
+  test('the zone list shows the pending count per zone', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.requester.username, users.requester.password);
+    requestId = await submitRequest(page, 900, 'list badge check');
+
+    await page.goto('/zones/forward?letter=all');
+    await page.waitForLoadState('networkidle');
+    const badge = page.getByTestId(`zone-pending-change-requests-${zoneId}`);
+    await expect(badge).toBeVisible();
+    expect(Number((await badge.textContent()).trim())).toBeGreaterThanOrEqual(1);
+
+    await page.goto(`/zones/requests/${requestId}`);
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('cancel-change-request').click();
+    await page.waitForLoadState('networkidle');
+  });
+
+  test('an approved deletion request keeps a zone file snapshot', async ({ page }) => {
+    const zoneName = `cr-delete-${Date.now()}.example.com`;
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    const tempZoneId = await createZone(page, zoneName);
+    expect(tempZoneId, 'temporary zone should be created').not.toBeNull();
+
+    // The requester has to own the zone to ask for its deletion
+    await page.goto(`/zones/${tempZoneId}/ownership`);
+    await page.waitForLoadState('networkidle');
+    await page.locator(`.user-item[data-username*="${users.requester.username}"] input[name="newowner"]`).check();
+    await page.locator('#add-owner-btn').click();
+    await page.waitForLoadState('networkidle');
+
+    await page.context().clearCookies();
+    await loginAndWaitForDashboard(page, users.requester.username, users.requester.password);
+    await page.goto(`/zones/${tempZoneId}/delete`);
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('request-comment-input').fill('retire it');
+    await page.getByTestId('confirm-delete-zone').click();
+    await page.waitForLoadState('networkidle');
+    await expect(page.getByTestId('system-message').filter({ hasText: 'submitted for approval' })).toBeVisible();
+
+    await page.context().clearCookies();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto(`/zones/requests?zone_id=${tempZoneId}`);
+    await page.waitForLoadState('networkidle');
+    const link = page.locator('a[data-testid^="change-request-link-"]').first();
+    const deleteRequestId = (await link.getAttribute('href')).match(/\/zones\/requests\/(\d+)/)[1];
+    await page.goto(`/zones/requests/${deleteRequestId}`);
+    await page.waitForLoadState('networkidle');
+    await page.getByTestId('approve-change-request').click();
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.getByTestId('change-request-status')).toHaveText('approved');
+    const download = page.getByTestId('download-zone-snapshot');
+    await expect(download).toBeVisible();
+    const snapshot = await page.request.get(await download.getAttribute('href'));
+    expect(snapshot.status()).toBe(200);
+    expect(await snapshot.text()).toContain(`$ORIGIN ${zoneName}.`);
+    await expect(page.locator('body')).toContainText('deleted');
   });
 
   test('bulk add is refused for a requester', async ({ page }) => {

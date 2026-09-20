@@ -85,7 +85,7 @@ class ZoneChangeRequestServiceTest extends TestCase
             zone_name VARCHAR(255) NOT NULL, kind VARCHAR(16) NOT NULL, status VARCHAR(16) NOT NULL, requester_id INTEGER NULL,
             requester_name VARCHAR(64) NOT NULL, request_comment TEXT NULL, base_serial VARCHAR(32) NULL, payload TEXT NOT NULL,
             reviewer_id INTEGER NULL, reviewer_name VARCHAR(64) NULL, review_comment TEXT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, reviewed_at TIMESTAMP NULL, applied_at TIMESTAMP NULL, error TEXT NULL)');
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, reviewed_at TIMESTAMP NULL, applied_at TIMESTAMP NULL, error TEXT NULL, snapshot TEXT NULL)');
         $this->repository = new DbZoneChangeRequestRepository($this->db);
 
         $this->stored = [
@@ -365,6 +365,35 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertSame(ZoneChangeRequest::STATUS_APPROVED, $this->repository->find($id)->status);
     }
 
+    public function testAnApprovedZoneDeleteKeepsAZoneFileSnapshot(): void
+    {
+        $order = [];
+        $this->zoneManagement->method('deleteZone')->willReturnCallback(function () use (&$order): array {
+            $order[] = 'delete';
+            return ['success' => true, 'message' => 'Zone deleted successfully'];
+        });
+        $snapshot = function (int $zoneId, string $zoneName) use (&$order): string {
+            $order[] = 'snapshot';
+            return "\$ORIGIN $zoneName.\n";
+        };
+        $id = $this->makeService()->fileZoneDelete(self::ZONE_ID, self::REQUESTER, 'alice')->requestId;
+
+        $this->assertTrue($this->makeService(zoneSnapshot: $snapshot)->approve($id, self::REVIEWER, 'bob')->success);
+
+        $this->assertSame(['snapshot', 'delete'], $order);
+        $this->assertSame("\$ORIGIN example.com.\n", $this->repository->find($id)->snapshot);
+    }
+
+    public function testAnOversizedSnapshotIsNotKept(): void
+    {
+        $this->zoneManagement->method('deleteZone')->willReturn(['success' => true, 'message' => 'Zone deleted successfully']);
+        $id = $this->makeService()->fileZoneDelete(self::ZONE_ID, self::REQUESTER, 'alice')->requestId;
+
+        $this->assertTrue($this->makeService(zoneSnapshot: fn(): string => str_repeat('x', ZoneChangeRequestService::MAX_PAYLOAD_BYTES + 1))->approve($id, self::REVIEWER, 'bob')->success);
+
+        $this->assertNull($this->repository->find($id)->snapshot);
+    }
+
     public function testAFailedZoneDeleteMarksTheRequestFailed(): void
     {
         $this->zoneManagement->method('deleteZone')->willReturn(['success' => false, 'message' => 'Zone not found', 'status' => 404]);
@@ -603,7 +632,7 @@ class ZoneChangeRequestServiceTest extends TestCase
         ], $zoneComment);
     }
 
-    private function makeService(?\Closure $changeset = null, ?PermissionService $reviewerPermissions = null, ?ChangeRequestNotifierInterface $notifier = null, bool $requireComment = false): ZoneChangeRequestService
+    private function makeService(?\Closure $changeset = null, ?PermissionService $reviewerPermissions = null, ?ChangeRequestNotifierInterface $notifier = null, bool $requireComment = false, ?\Closure $zoneSnapshot = null): ZoneChangeRequestService
     {
         $config = new FakeConfiguration([
             'interface' => ['show_record_comments' => false, 'show_zone_comments' => true],
@@ -641,7 +670,8 @@ class ZoneChangeRequestServiceTest extends TestCase
             null,
             $changeset,
             $reviewerPermissions,
-            $notifier
+            $notifier,
+            $zoneSnapshot
         );
     }
 

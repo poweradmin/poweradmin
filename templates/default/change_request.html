@@ -23,7 +23,7 @@
     <div class="card-body">
         <dl class="row small mb-3">
             <dt class="col-sm-2">{% trans %}Zone{% endtrans %}</dt>
-            <dd class="col-sm-10">{{ zone_display_name }}{% if not zone_exists %} <span class="badge bg-secondary">{% trans %}deleted{% endtrans %}</span>{% endif %}</dd>
+            <dd class="col-sm-10">{{ zone_display_name }}{% if not zone_exists %} <span class="badge bg-secondary">{% trans %}deleted{% endtrans %}</span>{% endif %}{% if has_snapshot %} <a class="btn btn-outline-secondary btn-sm ms-2" href="{{ base_url_prefix }}/zones/requests/{{ request.id }}?snapshot=1" data-testid="download-zone-snapshot"><i class="bi bi-download me-1"></i>{% trans %}Download zone file taken before deletion{% endtrans %}</a>{% endif %}</dd>
             <dt class="col-sm-2">{% trans %}Kind{% endtrans %}</dt>
             <dd class="col-sm-10">{% if request.kind == 'zone_delete' %}<span class="badge bg-danger">{% trans %}Delete zone{% endtrans %}</span>{% else %}{% trans %}Record changes{% endtrans %} ({{ request.action_count }}){% endif %}</dd>
             <dt class="col-sm-2">{% trans %}Requester{% endtrans %}</dt>

@@ -64,6 +64,8 @@ class ZoneChangeRequestService
      *        applied writes in the change log; omitted, the work runs ungrouped
      * @param PermissionService|null $permissions Gates zone deletion on the reviewer's delete permission; omitted, no gate
      * @param ChangeRequestNotifierInterface|null $notifier Told about filed and decided requests; omitted, nobody is
+     * @param Closure|null $zoneSnapshot fn(int $zoneId, string $zoneName): ?string rendering the zone as a zone
+     *        file, kept with the request before an approved deletion; omitted, nothing is kept
      */
     public function __construct(
         private readonly ZoneChangeRequestRepositoryInterface $requests,
@@ -81,7 +83,8 @@ class ZoneChangeRequestService
         private readonly ?RecordCommentRepositoryInterface $recordComments = null,
         private readonly ?Closure $changeset = null,
         private readonly ?PermissionService $permissions = null,
-        private readonly ?ChangeRequestNotifierInterface $notifier = null
+        private readonly ?ChangeRequestNotifierInterface $notifier = null,
+        private readonly ?Closure $zoneSnapshot = null
     ) {
         $this->formatter = new DnsFormatter($config);
     }
@@ -358,12 +361,28 @@ class ZoneChangeRequestService
             return ['You do not have the permission to delete a zone.', 403];
         }
 
+        $this->keepSnapshot($request);
         $result = $this->zoneManagement->deleteZone($request->zoneId);
         if (!($result['success'] ?? false)) {
             return [(string)($result['message'] ?? 'Failed to delete zone'), (int)($result['status'] ?? 500)];
         }
 
         return [null, 200];
+    }
+
+    /**
+     * A copy of the zone the reviewer is about to delete, so it can be re-imported by
+     * hand. Skipped when it does not fit the column, which has the change log's ceiling.
+     */
+    private function keepSnapshot(ZoneChangeRequest $request): void
+    {
+        if ($this->zoneSnapshot === null) {
+            return;
+        }
+        $snapshot = ($this->zoneSnapshot)($request->zoneId, $request->zoneName);
+        if (is_string($snapshot) && $snapshot !== '' && strlen($snapshot) <= self::MAX_PAYLOAD_BYTES) {
+            $this->requests->storeSnapshot($request->id, $snapshot);
+        }
     }
 
     /**

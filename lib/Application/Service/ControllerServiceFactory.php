@@ -73,6 +73,7 @@ use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -393,8 +394,22 @@ class ControllerServiceFactory
             $this->repositoryFactory()->createRecordCommentRepository(),
             RecordChangeLogger::withChangeset(...),
             $this->permissionService(),
-            $this->changeRequestNotificationService()
+            $this->changeRequestNotificationService(),
+            $this->zoneFileSnapshot(...)
         );
+    }
+
+    /**
+     * The zone as a BIND zone file, or null when it has no records.
+     */
+    private function zoneFileSnapshot(int $zoneId, string $zoneName): ?string
+    {
+        $records = $this->recordRepository()->getRecordsFromDomainId((string)$this->config->get('database', 'type', 'mysql'), $zoneId);
+        if ($records === []) {
+            return null;
+        }
+
+        return (new BindZoneFileGenerator())->generate($zoneName, $records);
     }
 
     public function changeRequestNotificationService(): ChangeRequestNotificationService

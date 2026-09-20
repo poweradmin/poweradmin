@@ -66,8 +66,30 @@ class ChangeRequestController extends BaseController
             $this->decide($request, $canReview, $isRequester);
             return;
         }
+        if ($this->httpRequest->getQueryParam('snapshot') !== null) {
+            $this->sendSnapshot($request);
+            return;
+        }
 
         $this->show($request, $canReview, $isRequester);
+    }
+
+    /**
+     * The zone file kept before an approved deletion, as a download.
+     */
+    private function sendSnapshot(ZoneChangeRequest $request): void
+    {
+        if ($request->snapshot === null) {
+            $this->showError(_('This change request has no zone snapshot.'));
+            return;
+        }
+        $filename = sprintf('%s-request-%d.zone', $request->zoneName, $request->id);
+        if (!headers_sent()) {
+            header('Content-Type: text/plain; charset=utf-8');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('X-Content-Type-Options: nosniff');
+        }
+        echo $request->snapshot;
     }
 
     private function decide(ZoneChangeRequest $request, bool $canReview, bool $isRequester): void
@@ -133,6 +155,7 @@ class ChangeRequestController extends BaseController
             'base_serial_mismatch' => $request->canBeApplied() && $service->baseSerialMismatch($request),
             'zone_comment' => $request->zoneComment,
             'zone_exists' => $zoneExists,
+            'has_snapshot' => $request->snapshot !== null,
             'zone_display_name' => DnsIdnService::toDisplay($request->zoneName),
             'is_reverse_zone' => DnsHelper::isReverseZoneName($request->zoneName),
             'can_review' => $canReview && $request->isPending(),

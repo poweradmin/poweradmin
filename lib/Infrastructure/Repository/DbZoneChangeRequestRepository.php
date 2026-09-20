@@ -33,7 +33,7 @@ use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 class DbZoneChangeRequestRepository implements ZoneChangeRequestRepositoryInterface
 {
     private const COLUMNS = 'id, zone_id, zone_name, kind, status, requester_id, requester_name, request_comment,
-        base_serial, payload, reviewer_id, reviewer_name, review_comment, created_at, reviewed_at, applied_at, error';
+        base_serial, payload, reviewer_id, reviewer_name, review_comment, created_at, reviewed_at, applied_at, error, snapshot';
 
     public function __construct(private readonly PDO $db)
     {
@@ -112,6 +112,14 @@ class DbZoneChangeRequestRepository implements ZoneChangeRequestRepositoryInterf
     public function countPending(?array $zoneIds): int
     {
         return $this->count(['status' => ZoneChangeRequest::STATUS_PENDING, 'zoneIds' => $zoneIds]);
+    }
+
+    public function storeSnapshot(int $id, string $snapshot): void
+    {
+        $stmt = $this->db->prepare('UPDATE zone_change_requests SET snapshot = :snapshot WHERE id = :id');
+        $stmt->bindValue(':snapshot', $snapshot, PDO::PARAM_STR);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     public function countPendingByZone(array $zoneIds): array
@@ -310,7 +318,8 @@ class DbZoneChangeRequestRepository implements ZoneChangeRequestRepositoryInterf
             (string)$row['created_at'],
             $row['reviewed_at'] === null ? null : (string)$row['reviewed_at'],
             $row['applied_at'] === null ? null : (string)$row['applied_at'],
-            $row['error'] === null ? null : (string)$row['error']
+            $row['error'] === null ? null : (string)$row['error'],
+            ($row['snapshot'] ?? null) === null ? null : (string)$row['snapshot']
         );
     }
 }
