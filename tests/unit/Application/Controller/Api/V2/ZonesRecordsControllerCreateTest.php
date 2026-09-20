@@ -217,10 +217,29 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
 
     public function testAZeroTtlIsAcceptedAsDoNotCache(): void
     {
-        // TTLValidator allows 0, so the API must not refuse it either
+        // TTLValidator allows 0, so the API must not refuse it either; assert the
+        // value reaches the write rather than merely that the request is not a 400
+        $this->addService->expects($this->once())
+            ->method('add')
+            ->with(
+                self::ZONE_ID,
+                self::ZONE_NAME,
+                'www.example.com',
+                'A',
+                '192.0.2.1',
+                0,
+                0,
+                '',
+                self::USER_ID,
+                'apiuser',
+                '',
+                0
+            )
+            ->willReturn(new RecordAddResult(RecordWriteResult::ok(99)));
+
         $response = $this->create(array_merge($this->validBody(), ['ttl' => 0]));
 
-        $this->assertNotSame(400, $response->getStatusCode());
+        $this->assertSame(201, $response->getStatusCode());
     }
 
     public function testADisabledValueOtherThanZeroOrOneIs400(): void

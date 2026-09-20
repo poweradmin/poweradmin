@@ -275,10 +275,17 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
 
     public function testAZeroTtlIsAcceptedAsDoNotCache(): void
     {
-        // TTLValidator allows 0, so the API must not refuse it either
+        // TTLValidator allows 0, so the API must not refuse it either. Proven the
+        // way the omitted-TTL case below is: the next gate is the one that answers.
+        $this->permissions = $this->createMock(ApiPermissionService::class);
+        $this->permissions->method('canEditZoneContent')->willReturn(true);
+        $this->permissions->method('getChangeApprovalMode')->willReturn(ChangeApprovalPolicy::MODE_DIRECT);
+        $this->permissions->expects($this->once())->method('canEditZoneRecord')->willReturn(false);
+
         $response = $this->replace(['name' => 'www', 'type' => 'A', 'ttl' => 0, 'records' => [['content' => '192.0.2.1']]]);
 
-        $this->assertNotSame(400, $response->getStatusCode());
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertSame('You do not have permission to edit this record type', $this->messageOf($response));
     }
 
     public function testAnOmittedTtlFallsBackToTheResolverAndPassesTheRangeCheck(): void

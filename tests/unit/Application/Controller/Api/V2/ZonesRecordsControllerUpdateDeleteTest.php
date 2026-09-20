@@ -265,8 +265,13 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
 
     public function testAZeroTtlIsAcceptedOnUpdate(): void
     {
-        // TTLValidator allows 0, so the API must not refuse it either
+        // TTLValidator allows 0, so the API must not refuse it either; assert the
+        // value reaches the write rather than merely that the request is not a 400
         $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->recordManager->expects($this->once())
+            ->method('editRecord')
+            ->with($this->callback(static fn(array $record): bool => $record['ttl'] === 0))
+            ->willReturn(RecordWriteResult::ok());
 
         $response = $this->update(['ttl' => 0]);
 
