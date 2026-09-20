@@ -1692,6 +1692,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\CatalogBackendInterface' => __DIR__ . '/../..' . '/lib/Domain/Service/CatalogBackendInterface.php',
         'Poweradmin\\Domain\\Service\\CatalogZoneService' => __DIR__ . '/../..' . '/lib/Domain/Service/CatalogZoneService.php',
         'Poweradmin\\Domain\\Service\\ChangeApprovalPolicy' => __DIR__ . '/../..' . '/lib/Domain/Service/ChangeApprovalPolicy.php',
+        'Poweradmin\\Domain\\Service\\ChangeRequestNotifierInterface' => __DIR__ . '/../..' . '/lib/Domain/Service/ChangeRequestNotifierInterface.php',
         'Poweradmin\\Domain\\Service\\DatabaseConsistencyService' => __DIR__ . '/../..' . '/lib/Domain/Service/DatabaseConsistencyService.php',
         'Poweradmin\\Domain\\Service\\DatabaseCredentialMapper' => __DIR__ . '/../..' . '/lib/Domain/Service/DatabaseCredentialMapper.php',
         'Poweradmin\\Domain\\Service\\DatabaseSchemaService' => __DIR__ . '/../..' . '/lib/Domain/Service/DatabaseSchemaService.php',

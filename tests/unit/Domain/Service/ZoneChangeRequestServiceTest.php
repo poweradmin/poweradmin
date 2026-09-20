@@ -33,6 +33,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Service\ChangeRequestNotifierInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -427,6 +428,43 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertSame(0, $this->repository->countPending(null));
     }
 
+    public function testTheNotifierHearsAboutFilingAndEveryDecision(): void
+    {
+        $heard = [];
+        $notifier = $this->createMock(ChangeRequestNotifierInterface::class);
+        $notifier->method('requestFiled')->willReturnCallback(function (ZoneChangeRequest $r) use (&$heard): void {
+            $heard[] = 'filed:' . $r->status;
+        });
+        $notifier->method('requestDecided')->willReturnCallback(function (ZoneChangeRequest $r) use (&$heard): void {
+            $heard[] = 'decided:' . $r->status;
+        });
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $service = $this->makeService(null, null, $notifier);
+
+        $approved = $service->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]))->requestId;
+        $service->approve($approved, self::REVIEWER, 'bob');
+        $rejected = $service->fileRecordEdits($this->submission(['6' => $this->row('6', 'mail', '192.0.2.3')]))->requestId;
+        $service->reject($rejected, self::REVIEWER, 'bob', 'no');
+        $this->zoneManagement->method('deleteZone')->willReturn(['success' => false, 'message' => 'Zone not found', 'status' => 404]);
+        $failed = $service->fileZoneDelete(self::ZONE_ID, self::REQUESTER, 'alice')->requestId;
+        $service->approve($failed, self::REVIEWER, 'bob');
+
+        $this->assertSame(['filed:pending', 'decided:approved', 'filed:pending', 'decided:rejected', 'filed:pending', 'decided:failed'], $heard);
+    }
+
+    public function testAThrowingNotifierDoesNotUndoTheEvent(): void
+    {
+        $notifier = $this->createMock(ChangeRequestNotifierInterface::class);
+        $notifier->method('requestFiled')->willThrowException(new \RuntimeException('smtp down'));
+        $notifier->method('requestDecided')->willThrowException(new \RuntimeException('smtp down'));
+        $service = $this->makeService(null, null, $notifier);
+
+        $filed = $service->fileRecordEdits($this->submission(['5' => $this->row('5', 'www', '192.0.2.9')]));
+        $this->assertTrue($filed->success);
+        $this->assertTrue($service->reject($filed->requestId, self::REVIEWER, 'bob')->success);
+        $this->assertSame(ZoneChangeRequest::STATUS_REJECTED, $this->repository->find($filed->requestId)->status);
+    }
+
     public function testRejectRecordsTheDecisionWithoutWriting(): void
     {
         $this->recordManager->expects($this->never())->method('addRecordGetId');
@@ -511,7 +549,7 @@ class ZoneChangeRequestServiceTest extends TestCase
         ], $zoneComment);
     }
 
-    private function makeService(?\Closure $changeset = null, ?PermissionService $reviewerPermissions = null): ZoneChangeRequestService
+    private function makeService(?\Closure $changeset = null, ?PermissionService $reviewerPermissions = null, ?ChangeRequestNotifierInterface $notifier = null): ZoneChangeRequestService
     {
         $config = new FakeConfiguration([
             'interface' => ['show_record_comments' => false, 'show_zone_comments' => true],
@@ -547,7 +585,8 @@ class ZoneChangeRequestServiceTest extends TestCase
             $config,
             null,
             $changeset,
-            $reviewerPermissions
+            $reviewerPermissions,
+            $notifier
         );
     }
 

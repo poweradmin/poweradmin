@@ -392,7 +392,8 @@ class ControllerServiceFactory
             $this->config,
             $this->repositoryFactory()->createRecordCommentRepository(),
             RecordChangeLogger::withChangeset(...),
-            $this->permissionService()
+            $this->permissionService(),
+            $this->changeRequestNotificationService()
         );
     }
 

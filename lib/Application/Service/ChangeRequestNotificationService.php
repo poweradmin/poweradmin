@@ -24,7 +24,9 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\ChangeRequestNotifierInterface;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
@@ -38,7 +40,7 @@ use Twig\Error\SyntaxError;
  * requester when it is decided. Failures are logged and reported as false;
  * nothing here throws to the caller, so a mail problem never blocks a request.
  */
-class ChangeRequestNotificationService
+class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
 {
     public const KIND_RECORDS = 'records';
     public const KIND_ZONE_DELETE = 'zone_delete';
@@ -72,6 +74,19 @@ class ChangeRequestNotificationService
         $this->permissions = $permissions;
         $this->urlService = new UrlService($config);
         $this->logger = $logger ?? new NullLogger();
+    }
+
+    public function requestFiled(ZoneChangeRequest $request): void
+    {
+        $this->notifyRequestFiled($request->id, $request->zoneId, $request->zoneName, (int)$request->requesterId, $request->requesterName, $request->requestComment, $request->kind);
+    }
+
+    public function requestDecided(ZoneChangeRequest $request): void
+    {
+        if ($request->requesterId === null || $request->reviewerId === null) {
+            return;
+        }
+        $this->notifyRequestDecided($request->id, $request->zoneId, $request->zoneName, $request->requesterId, $request->status, $request->reviewerId, $request->reviewComment);
     }
 
     /**

@@ -63,6 +63,7 @@ class ZoneChangeRequestService
      * @param Closure|null $changeset fn(?int $zoneId, ?string $comment, callable $work): mixed grouping the
      *        applied writes in the change log; omitted, the work runs ungrouped
      * @param PermissionService|null $permissions Gates zone deletion on the reviewer's delete permission; omitted, no gate
+     * @param ChangeRequestNotifierInterface|null $notifier Told about filed and decided requests; omitted, nobody is
      */
     public function __construct(
         private readonly ZoneChangeRequestRepositoryInterface $requests,
@@ -79,7 +80,8 @@ class ZoneChangeRequestService
         private readonly ConfigurationInterface $config,
         private readonly ?RecordCommentRepositoryInterface $recordComments = null,
         private readonly ?Closure $changeset = null,
-        private readonly ?PermissionService $permissions = null
+        private readonly ?PermissionService $permissions = null,
+        private readonly ?ChangeRequestNotifierInterface $notifier = null
     ) {
         $this->formatter = new DnsFormatter($config);
     }
@@ -231,11 +233,13 @@ class ZoneChangeRequestService
         [$error, $status] = $this->apply($request, $reviewerId, $reviewerName, $comment);
         if ($error !== null) {
             $this->requests->markFailed($requestId, $error);
+            $this->notify($requestId, fn(ZoneChangeRequest $r) => $this->notifier?->requestDecided($r));
 
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_APPLY_FAILED, $error, $status, [], $requestId);
         }
 
         $this->requests->markApplied($requestId);
+        $this->notify($requestId, fn(ZoneChangeRequest $r) => $this->notifier?->requestDecided($r));
 
         return ZoneChangeRequestResult::ok($requestId, 'Change request approved and applied.');
     }
@@ -250,6 +254,7 @@ class ZoneChangeRequestService
         if (!$this->requests->markReviewed($requestId, ZoneChangeRequest::STATUS_REJECTED, $reviewerId, $reviewerName, $comment)) {
             return $this->decidedMeanwhile($requestId);
         }
+        $this->notify($requestId, fn(ZoneChangeRequest $r) => $this->notifier?->requestDecided($r));
 
         return ZoneChangeRequestResult::ok($requestId, 'Change request rejected.');
     }
@@ -591,6 +596,7 @@ class ZoneChangeRequestService
         }
 
         $id = $this->requests->create($zoneId, $zoneName, $kind, $userId, $username, $comment, $baseSerial, $actions, $zoneComment);
+        $this->notify($id, fn(ZoneChangeRequest $r) => $this->notifier?->requestFiled($r));
 
         return ZoneChangeRequestResult::ok($id, 'Change request filed for review.');
     }
@@ -627,6 +633,23 @@ class ZoneChangeRequestService
         }
 
         return $request;
+    }
+
+    /**
+     * A notification failure must not undo the event it announces.
+     */
+    private function notify(int $requestId, Closure $tell): void
+    {
+        if ($this->notifier === null) {
+            return;
+        }
+        try {
+            $request = $this->requests->find($requestId);
+            if ($request !== null) {
+                $tell($request);
+            }
+        } catch (Throwable) {
+        }
     }
 
     private function decidedMeanwhile(int $requestId): ZoneChangeRequestResult
