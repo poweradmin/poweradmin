@@ -715,12 +715,6 @@ parameters:
 			path: lib/Domain/Service/ZoneOverlapService.php
 
 		-
-			message: '#^Namespace Poweradmin\\Application\\Service\\DnsBackendProviderFactory is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Application\\Service\\DnsBackendProviderFactory matches Poweradmin\\Application\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 2
-			path: lib/Domain/Service/ZoneOverlapService.php
-
-		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 2

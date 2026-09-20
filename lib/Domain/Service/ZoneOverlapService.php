@@ -24,7 +24,6 @@
 namespace Poweradmin\Domain\Service;
 
 use PDO;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -160,7 +159,7 @@ class ZoneOverlapService
      */
     private function zoneSource(): array
     {
-        if (DnsBackendProviderFactory::isApiBackend($this->config)) {
+        if ($this->config->get('dns', 'backend') === 'api') {
             // The id is only ever selected, never matched on, so the canonical expression
             // stands in for the column here.
             return ['zones', 'zone_name', CanonicalZoneSql::canonicalIdColumn()];
