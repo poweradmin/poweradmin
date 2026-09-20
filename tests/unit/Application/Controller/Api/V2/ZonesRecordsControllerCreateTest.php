@@ -46,9 +46,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Characterization of POST /api/v2/zones/{id}/records: the gate order, every
  * input refusal, and the shape of the 201 envelope.
  */
-class ZonesRecordsControllerCreateTest extends TestCase
+class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
 {
-    use V2ControllerTestSupport;
 
     private const USER_ID = 4;
     private const ZONE_ID = 21;

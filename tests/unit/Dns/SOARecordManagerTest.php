@@ -9,11 +9,10 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use PDO;
 use TestHelpers\FakeConfiguration;
-use TestHelpers\SqliteDnsBackend;
+use TestHelpers\SqliteDnsBackendTestCase;
 
-class SOARecordManagerTest extends TestCase
+class SOARecordManagerTest extends SqliteDnsBackendTestCase
 {
-    use SqliteDnsBackend;
 
     private PDO $db;
     private $configMock;

@@ -25,14 +25,13 @@ namespace Poweradmin\Tests\Unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
-use TestHelpers\SqliteDnsBackend;
+use TestHelpers\SqliteDnsBackendTestCase;
 
 /**
  * Tests for common DNS validation functions
  */
-class DnsCommonValidatorTest extends TestCase
+class DnsCommonValidatorTest extends SqliteDnsBackendTestCase
 {
-    use SqliteDnsBackend;
 
     private DnsCommonValidator $validator;
 

@@ -28,12 +28,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ZoneOverlapService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use TestHelpers\BuildsPermissionService;
+use TestHelpers\PermissionServiceTestCase;
 
 #[CoversClass(ZoneOverlapService::class)]
-class ZoneOverlapServiceTest extends TestCase
+class ZoneOverlapServiceTest extends PermissionServiceTestCase
 {
-    use BuildsPermissionService;
 
     private const USER_ID = 2;
 

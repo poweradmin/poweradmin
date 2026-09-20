@@ -32,16 +32,15 @@ use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use TestHelpers\BuildsPermissionService;
+use TestHelpers\PermissionServiceTestCase;
 
 /**
  * The add-zone forms drop the owner or groups the ownership mode disallows
  * instead of refusing, and word refusals for the page rather than the API.
  */
 #[CoversClass(ZoneOwnershipFormResolver::class)]
-class ZoneOwnershipFormResolverTest extends TestCase
+class ZoneOwnershipFormResolverTest extends PermissionServiceTestCase
 {
-    use BuildsPermissionService;
 
     private const CALLER_ID = 7;
 

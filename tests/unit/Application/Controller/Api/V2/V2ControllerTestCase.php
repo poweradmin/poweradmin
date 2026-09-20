@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 
+use PHPUnit\Framework\TestCase;
+
 use PDO;
 use PDOStatement;
 use Poweradmin\Application\Service\AuditService;
@@ -39,7 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
  * collaborators are injected directly and private handlers invoked by reflection,
  * the same seam the Api/UsersController* tests use.
  */
-trait V2ControllerTestSupport
+abstract class V2ControllerTestCase extends TestCase
 {
     /**
      * Instantiate a controller with no constructor run at all.
@@ -48,7 +50,7 @@ trait V2ControllerTestSupport
      * @param class-string<T> $class
      * @return T
      */
-    private function bareController(string $class): object
+    protected function bareController(string $class): object
     {
         return (new ReflectionClass($class))->newInstanceWithoutConstructor();
     }
@@ -56,7 +58,7 @@ trait V2ControllerTestSupport
     /**
      * Set a property declared anywhere in the controller's hierarchy.
      */
-    private function inject(object $controller, string $property, mixed $value): void
+    protected function inject(object $controller, string $property, mixed $value): void
     {
         $reflection = new ReflectionClass($controller);
         while (!$reflection->hasProperty($property)) {
@@ -77,7 +79,7 @@ trait V2ControllerTestSupport
      * @param array<string, mixed>|null $body Decoded JSON body, or null for no body
      * @param array<string, mixed> $query Query string parameters
      */
-    private function injectBaseCollaborators(
+    protected function injectBaseCollaborators(
         object $controller,
         string $method = 'GET',
         ?array $body = null,
@@ -97,7 +99,7 @@ trait V2ControllerTestSupport
      * A PDO whose prepare() returns a statement, so the request logging and the
      * username lookup on the response path never explode.
      */
-    private function stubDb(): PDO
+    protected function stubDb(): PDO
     {
         $statement = $this->createMock(PDOStatement::class);
         $statement->method('fetchColumn')->willReturn('apiuser');
@@ -115,7 +117,7 @@ trait V2ControllerTestSupport
      * Routes every create*() accessor on BaseController through mocks. Only the
      * accessors a test actually reaches need a return value; the rest stay unused.
      */
-    private function stubServiceFactory(): ControllerServiceFactory
+    protected function stubServiceFactory(): ControllerServiceFactory
     {
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('auditService')->willReturn($this->createMock(AuditService::class));
@@ -126,7 +128,7 @@ trait V2ControllerTestSupport
     /**
      * Invoke one of the controller's private request handlers.
      */
-    private function callHandler(object $controller, string $handler): JsonResponse
+    protected function callHandler(object $controller, string $handler): JsonResponse
     {
         $method = new ReflectionMethod($controller, $handler);
         $method->setAccessible(true);
@@ -142,7 +144,7 @@ trait V2ControllerTestSupport
      *
      * @return array<string, mixed>
      */
-    private function decode(JsonResponse $response): array
+    protected function decode(JsonResponse $response): array
     {
         $decoded = json_decode((string)$response->getContent(), true);
         self::assertIsArray($decoded);
@@ -150,7 +152,7 @@ trait V2ControllerTestSupport
         return $decoded;
     }
 
-    private function messageOf(JsonResponse $response): string
+    protected function messageOf(JsonResponse $response): string
     {
         return (string)($this->decode($response)['message'] ?? '');
     }

@@ -30,7 +30,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
-use TestHelpers\BuildsPermissionService;
+use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\FakeConfiguration;
 
 /**
@@ -38,9 +38,8 @@ use TestHelpers\FakeConfiguration;
  * who may review, and which zones a reviewer's list covers.
  */
 #[CoversClass(ApiPermissionService::class)]
-class ApiPermissionServiceChangeApprovalTest extends TestCase
+class ApiPermissionServiceChangeApprovalTest extends PermissionServiceTestCase
 {
-    use BuildsPermissionService;
 
     private const ADMIN = 1;
     private const EDITOR = 2;      // zone_content_edit_own, owns zone 100

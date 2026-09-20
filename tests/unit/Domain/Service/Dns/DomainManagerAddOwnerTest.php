@@ -29,16 +29,15 @@ use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
-use TestHelpers\BuildsPermissionService;
+use TestHelpers\PermissionServiceTestCase;
 
 /**
  * addOwnerToZone() is the guarded write behind the change-owner page: it
  * refuses callers without meta-edit rights and users that do not exist.
  */
 #[CoversClass(DomainManager::class)]
-class DomainManagerAddOwnerTest extends TestCase
+class DomainManagerAddOwnerTest extends PermissionServiceTestCase
 {
-    use BuildsPermissionService;
 
     private const CALLER_ID = 7;
 

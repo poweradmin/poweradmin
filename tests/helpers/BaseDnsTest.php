@@ -35,9 +35,8 @@ use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 /**
  * Base DNS test class with common setup for all DNS-related tests
  */
-class BaseDnsTest extends TestCase
+class BaseDnsTest extends SqliteDnsBackendTestCase
 {
-    use SqliteDnsBackend;
 
     protected DnsRecordValidationServiceInterface $validationService;
     protected SqlDnsBackendProvider $backendProvider;

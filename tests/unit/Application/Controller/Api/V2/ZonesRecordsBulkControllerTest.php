@@ -46,9 +46,8 @@ use Symfony\Component\HttpFoundation\Request;
  * key scope check, the all-or-nothing rollback, and the counters the caller gets
  * back. Behaviour is pinned as it stands, including the odd parts.
  */
-class ZonesRecordsBulkControllerTest extends TestCase
+class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
 {
-    use V2ControllerTestSupport;
 
     private const USER_ID = 9;
     private const ZONE_ID = 51;

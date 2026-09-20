@@ -30,7 +30,7 @@ use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
-use TestHelpers\BuildsPermissionService;
+use TestHelpers\PermissionServiceTestCase;
 
 /**
  * Applying a template writes records straight to the backend, so it takes the
@@ -38,9 +38,8 @@ use TestHelpers\BuildsPermissionService;
  * is not enough.
  */
 #[CoversClass(DomainManager::class)]
-class DomainManagerUpdateZoneRecordsGateTest extends TestCase
+class DomainManagerUpdateZoneRecordsGateTest extends PermissionServiceTestCase
 {
-    use BuildsPermissionService;
 
     private const CALLER_ID = 7;
     private const ZONE_ID = 5;

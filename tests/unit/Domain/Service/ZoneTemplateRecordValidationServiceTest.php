@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use TestHelpers\SqliteDnsBackend;
+use TestHelpers\SqliteDnsBackendTestCase;
 
 /**
  * Test for zone template record validation
@@ -36,9 +36,8 @@ use TestHelpers\SqliteDnsBackend;
  * PowerDNS refuses to serve
  * @see https://github.com/poweradmin/poweradmin/issues/560
  */
-class ZoneTemplateRecordValidationServiceTest extends TestCase
+class ZoneTemplateRecordValidationServiceTest extends SqliteDnsBackendTestCase
 {
-    use SqliteDnsBackend;
 
     private ZoneTemplateRecordValidationService $service;
 

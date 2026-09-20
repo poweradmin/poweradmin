@@ -31,16 +31,15 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ApiPermissionService;
-use TestHelpers\BuildsPermissionService;
+use TestHelpers\PermissionServiceTestCase;
 
 /**
  * The API permission gate as a decision table over facts: who is admin, who holds
  * which permission (own template or any group), who owns which zone.
  */
 #[CoversClass(ApiPermissionService::class)]
-class ApiPermissionServiceTest extends TestCase
+class ApiPermissionServiceTest extends PermissionServiceTestCase
 {
-    use BuildsPermissionService;
 
     private const ADMIN = 1;
     private const OTHERS = 2;   // holds every *_others grant

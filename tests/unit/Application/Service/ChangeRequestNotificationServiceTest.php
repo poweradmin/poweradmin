@@ -34,13 +34,12 @@ use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\PermissionService;
-use TestHelpers\BuildsPermissionService;
+use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\FakeConfiguration;
 
 #[CoversClass(ChangeRequestNotificationService::class)]
-class ChangeRequestNotificationServiceTest extends TestCase
+class ChangeRequestNotificationServiceTest extends PermissionServiceTestCase
 {
-    use BuildsPermissionService;
 
     private const ZONE_ID = 42;
     private const ZONE_NAME = 'example.com';

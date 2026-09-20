@@ -26,7 +26,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use TestHelpers\SqliteDnsBackend;
+use TestHelpers\SqliteDnsBackendTestCase;
 
 /**
  * Tests for the CNAMERecordValidator
@@ -34,9 +34,8 @@ use TestHelpers\SqliteDnsBackend;
  * Conflict lookups run against a SqlDnsBackendProvider over in-memory sqlite,
  * seeded per test; an unseeded provider means "no conflicting records".
  */
-class CNAMERecordValidatorTest extends TestCase
+class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 {
-    use SqliteDnsBackend;
 
     private CNAMERecordValidator $validator;
     private MockObject&ConfigurationManager $configMock;

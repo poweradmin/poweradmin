@@ -43,9 +43,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * every input-validation refusal it can answer with before it touches the DNS
  * validation service. The rules here are pinned as the code behaves today.
  */
-class ZonesRRSetsControllerReplaceTest extends TestCase
+class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
 {
-    use V2ControllerTestSupport;
 
     private const USER_ID = 7;
     private const ZONE_ID = 42;

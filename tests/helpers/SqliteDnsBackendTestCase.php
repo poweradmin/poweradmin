@@ -22,6 +22,8 @@
 
 namespace TestHelpers;
 
+use PHPUnit\Framework\TestCase;
+
 use PDO;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
@@ -30,7 +32,7 @@ use Psr\Log\NullLogger;
  * Builds a SqlDnsBackendProvider over an in-memory sqlite records table, so
  * validator tests exercise the provider's real SQL instead of a mocked PDO.
  */
-trait SqliteDnsBackend
+abstract class SqliteDnsBackendTestCase extends TestCase
 {
     /**
      * @param array<int, array{int, int, string, ?string, string}> $records Rows as [id, domain_id, name, type, content]

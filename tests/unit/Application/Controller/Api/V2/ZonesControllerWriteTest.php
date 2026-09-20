@@ -40,9 +40,8 @@ use Symfony\Component\HttpFoundation\Request;
  * 404-before-403 ordering, the split between metadata and description
  * permissions on an update, and the input refusals a create answers with.
  */
-class ZonesControllerWriteTest extends TestCase
+class ZonesControllerWriteTest extends V2ControllerTestCase
 {
-    use V2ControllerTestSupport;
 
     private const USER_ID = 8;
     private const ZONE_ID = 71;

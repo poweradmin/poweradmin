@@ -35,7 +35,7 @@ use Poweradmin\Domain\Service\ZoneMetadataService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use TestHelpers\BuildsPermissionService;
+use TestHelpers\PermissionServiceTestCase;
 
 /**
  * The metadata rules the editor and the API share: vocabulary and single-value
@@ -44,9 +44,8 @@ use TestHelpers\BuildsPermissionService;
  * backend.
  */
 #[CoversClass(ZoneMetadataService::class)]
-class ZoneMetadataServiceTest extends TestCase
+class ZoneMetadataServiceTest extends PermissionServiceTestCase
 {
-    use BuildsPermissionService;
 
     private const ZONE_ID = 42;
     private const ZONE = 'example.com';

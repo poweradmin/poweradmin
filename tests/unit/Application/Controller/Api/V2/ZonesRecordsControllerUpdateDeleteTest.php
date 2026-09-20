@@ -45,9 +45,8 @@ use Symfony\Component\HttpFoundation\Request;
  * malformed ids, the two record-type permission checks an update runs, and the
  * fallback the response takes when the row's id changed under it.
  */
-class ZonesRecordsControllerUpdateDeleteTest extends TestCase
+class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
 {
-    use V2ControllerTestSupport;
 
     private const USER_ID = 6;
     private const ZONE_ID = 31;

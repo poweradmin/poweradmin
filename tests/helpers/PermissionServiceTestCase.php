@@ -22,6 +22,8 @@
 
 namespace TestHelpers;
 
+use PHPUnit\Framework\TestCase;
+
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
@@ -30,7 +32,7 @@ use Poweradmin\Domain\Service\PermissionService;
  * Builds a real PermissionService over a scripted UserRepositoryInterface, so tests state
  * facts (who holds what, who owns what) instead of ordered query results.
  */
-trait BuildsPermissionService
+abstract class PermissionServiceTestCase extends TestCase
 {
     /**
      * @param array<int, string[]> $permissionsByUser user id => granted permission names

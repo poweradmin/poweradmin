@@ -44,9 +44,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * Characterization of the read and delete halves of ZonesRRSetsController: how
  * records are grouped and serialized, and the gate order a delete walks.
  */
-class ZonesRRSetsControllerReadDeleteTest extends TestCase
+class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
 {
-    use V2ControllerTestSupport;
 
     private const USER_ID = 3;
     private const ZONE_ID = 11;

@@ -44,9 +44,8 @@ use Symfony\Component\HttpFoundation\Request;
  * Characterization of the record listing and single-record fetch, plus the API
  * key operation sets the write endpoints declare for their HTTP methods.
  */
-class ZonesRecordsControllerReadTest extends TestCase
+class ZonesRecordsControllerReadTest extends V2ControllerTestCase
 {
-    use V2ControllerTestSupport;
 
     private const USER_ID = 5;
     private const ZONE_ID = 81;

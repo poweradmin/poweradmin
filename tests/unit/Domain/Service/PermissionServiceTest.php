@@ -29,12 +29,11 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
-use TestHelpers\BuildsPermissionService;
+use TestHelpers\PermissionServiceTestCase;
 
 #[CoversClass(PermissionService::class)]
-class PermissionServiceTest extends TestCase
+class PermissionServiceTest extends PermissionServiceTestCase
 {
-    use BuildsPermissionService;
 
     private PermissionService $service;
     private UserRepositoryInterface&MockObject $userRepository;

@@ -26,11 +26,10 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\SelfEditFieldGuard;
-use TestHelpers\BuildsPermissionService;
+use TestHelpers\PermissionServiceTestCase;
 
-class SelfEditFieldGuardTest extends TestCase
+class SelfEditFieldGuardTest extends PermissionServiceTestCase
 {
-    use BuildsPermissionService;
 
     // Callers in these cases are user 4 (editing 7) or user 7 (editing themselves).
     private const CALLERS = [4, 7];

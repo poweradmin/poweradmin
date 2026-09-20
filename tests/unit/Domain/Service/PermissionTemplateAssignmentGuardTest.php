@@ -26,11 +26,10 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
-use TestHelpers\BuildsPermissionService;
+use TestHelpers\PermissionServiceTestCase;
 
-class PermissionTemplateAssignmentGuardTest extends TestCase
+class PermissionTemplateAssignmentGuardTest extends PermissionServiceTestCase
 {
-    use BuildsPermissionService;
 
     /**
      * A real PermissionService over scripted facts, so the assignment rules in

@@ -39,9 +39,8 @@ use Symfony\Component\HttpFoundation\Request;
  * listing pages and narrows to an API key's zones, and the envelope a single
  * zone comes back in.
  */
-class ZonesControllerReadTest extends TestCase
+class ZonesControllerReadTest extends V2ControllerTestCase
 {
-    use V2ControllerTestSupport;
 
     private const USER_ID = 2;
     private const ZONE_ID = 61;

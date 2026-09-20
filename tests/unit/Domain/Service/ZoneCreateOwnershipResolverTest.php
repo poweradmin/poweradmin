@@ -32,12 +32,11 @@ use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneOwnershipResolution;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use TestHelpers\BuildsPermissionService;
+use TestHelpers\PermissionServiceTestCase;
 
 #[CoversClass(ZoneCreateOwnershipResolver::class)]
-class ZoneCreateOwnershipResolverTest extends TestCase
+class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
 {
-    use BuildsPermissionService;
 
     private const CALLER_ID = 7;
 
