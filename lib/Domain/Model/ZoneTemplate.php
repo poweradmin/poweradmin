@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Model;
 
 use Exception;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DomainParsingService;
@@ -50,13 +49,13 @@ class ZoneTemplate
     private PDO $db;
     private DnsFormatter $dnsFormatter;
     private MessageService $messageService;
-    private ?DnsBackendProviderInterface $backendProvider;
+    private DnsBackendProviderInterface $backendProvider;
     private LoggerInterface $logger;
     private ?PermissionService $permissionService = null;
     private ?ZoneTemplateRecordValidationService $recordValidationService = null;
     private ?ZoneTemplateRepositoryInterface $repository;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProviderInterface $backendProvider = null, ?LoggerInterface $logger = null, ?ZoneTemplateRepositoryInterface $repository = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, DnsBackendProviderInterface $backendProvider, ?LoggerInterface $logger = null, ?ZoneTemplateRepositoryInterface $repository = null)
     {
         $this->db = $db;
         $this->config = $config;
@@ -139,15 +138,6 @@ class ZoneTemplate
     }
 
     /**
-     * Callers that construct the model without a provider can still validate records,
-     * so resolve one from config. Not stored: the null-probes above keep their meaning.
-     */
-    private function backendProvider(): DnsBackendProviderInterface
-    {
-        return $this->backendProvider ?? DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
-    }
-
-    /**
      * Check a template record against the validator for its type.
      *
      * Built on demand because the validator registry instantiates every record-type
@@ -156,7 +146,7 @@ class ZoneTemplate
     private function validateTemplateRecord(string $name, string $type, string $content, mixed $ttl, mixed $prio): ValidationResult
     {
         $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
-            new DnsValidatorRegistry($this->config, $this->backendProvider())
+            new DnsValidatorRegistry($this->config, $this->backendProvider)
         );
 
         return $this->recordValidationService->validate(

@@ -109,9 +109,9 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             }
         );
 
-        $repositoryFactory = new RepositoryFactory($this->db, $config, DnsBackendProviderFactory::create($this->db, $config));
+        $backend = DnsBackendProviderFactory::create($this->db, $config);
 
-        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, $repositoryFactory);
+        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, new RepositoryFactory($this->db, $config, $backend), $backend);
     }
 
     public function testApiCreateRejectsOverlapForNonOwnerWith409(): void

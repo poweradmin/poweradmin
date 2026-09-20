@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 
@@ -33,7 +34,7 @@ class ZoneTemplateParsingTest extends TestCase
                 ['database', 'pdns_db_name', null, null],
             ]);
 
-        $this->zoneTemplate = new ZoneTemplate($this->mockDb, $this->mockConfig);
+        $this->zoneTemplate = new ZoneTemplate($this->mockDb, $this->mockConfig, $this->createMock(DnsBackendProviderInterface::class));
     }
 
     /**

@@ -26,6 +26,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use ReflectionProperty;
 use TestHelpers\SqliteIntegrationTestCase;
 
@@ -94,7 +95,7 @@ class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (" . self::GROUP_DOMAIN . ", " . self::EDITOR_GROUP . ")");
     }
 
-    private function model(?DnsBackendProviderInterface $backend): ZoneTemplate
+    private function model(DnsBackendProviderInterface $backend): ZoneTemplate
     {
         return new ZoneTemplate($this->db, $this->config, $backend);
     }
@@ -375,7 +376,8 @@ class ZoneTemplateLinkedZonesTest extends SqliteIntegrationTestCase
 
     public function testZonesByIdsReadTheDomainsTableWithoutABackend(): void
     {
-        $rows = $this->model(null)->getZonesByIds([self::GROUP_DOMAIN, self::DIRECT_DOMAIN, self::ORPHAN_DOMAIN]);
+        // The model always carries a provider; only the static read accessors build the repository without one.
+        $rows = (new DbZoneTemplateRepository($this->db, $this->config))->getZonesByIds([self::GROUP_DOMAIN, self::DIRECT_DOMAIN, self::ORPHAN_DOMAIN]);
 
         $this->assertArrayHasKey(0, $rows[0], 'Rows keep the positional columns of FETCH_BOTH.');
         $this->assertSame([

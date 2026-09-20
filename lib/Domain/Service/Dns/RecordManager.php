@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Service\Dns;
 use Closure;
 use Exception;
 use PDO;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -78,7 +77,7 @@ class RecordManager implements RecordManagerInterface
      * @param DomainRepositoryInterface $domainRepository Domain repository
      * @param RepositoryFactoryInterface $repositoryFactory Builds the record and comment repositories
      * @param Closure(): DnssecProviderInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
-     * @param DnsBackendProviderInterface|null $backendProvider DNS backend provider (auto-created if null)
+     * @param DnsBackendProviderInterface $backendProvider DNS backend provider
      */
     public function __construct(
         PDO $db,
@@ -88,7 +87,7 @@ class RecordManager implements RecordManagerInterface
         DomainRepositoryInterface $domainRepository,
         RepositoryFactoryInterface $repositoryFactory,
         Closure $dnssecProvider,
-        ?DnsBackendProviderInterface $backendProvider = null,
+        DnsBackendProviderInterface $backendProvider,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
         ?UserContextService $userContext = null
@@ -100,7 +99,7 @@ class RecordManager implements RecordManagerInterface
         $this->validationService = $validationService;
         $this->soaRecordManager = $soaRecordManager;
         $this->domainRepository = $domainRepository;
-        $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        $this->backendProvider = $backendProvider;
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
         $this->userContext = $userContext ?? new UserContextService();

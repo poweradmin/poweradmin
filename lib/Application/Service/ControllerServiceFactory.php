@@ -253,6 +253,7 @@ class ControllerServiceFactory
             $this->config,
             $this->db,
             $this->repositoryFactory(),
+            $this->dnsBackendProvider(),
             $this->logger,
             capabilities: $capabilities,
             signing: $this->zoneSigningService(),

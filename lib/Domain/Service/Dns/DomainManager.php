@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Model\Permission;
@@ -73,7 +72,7 @@ class DomainManager implements DomainManagerInterface
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
      * @param RepositoryFactoryInterface $repositoryFactory Builds the zone repository
-     * @param DnsBackendProviderInterface|null $backendProvider DNS backend provider (auto-created if null)
+     * @param DnsBackendProviderInterface $backendProvider DNS backend provider
      */
     public function __construct(
         PDO $db,
@@ -81,7 +80,7 @@ class DomainManager implements DomainManagerInterface
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
         RepositoryFactoryInterface $repositoryFactory,
-        ?DnsBackendProviderInterface $backendProvider = null,
+        DnsBackendProviderInterface $backendProvider,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
         ?UserContextService $userContext = null,
@@ -94,7 +93,7 @@ class DomainManager implements DomainManagerInterface
         $this->soaRecordManager = $soaRecordManager;
         $this->domainRepository = $domainRepository;
         $this->ipAddressValidator = new IPAddressValidator();
-        $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        $this->backendProvider = $backendProvider;
         $this->logger = $logger ?? new NullLogger();
         $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
         $this->userContext = $userContext ?? new UserContextService();

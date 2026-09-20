@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\SupermasterBackendInterface;
@@ -46,15 +45,15 @@ class SupermasterManager
      *
      * @param PDO $db Database connection
      * @param ConfigurationInterface $config Configuration manager
-     * @param SupermasterBackendInterface|null $backendProvider DNS backend provider (auto-created if null)
+     * @param SupermasterBackendInterface $backendProvider DNS backend provider
      */
-    public function __construct(PDO $db, ConfigurationInterface $config, ?SupermasterBackendInterface $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, SupermasterBackendInterface $backendProvider)
     {
         $this->db = $db;
         $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ipAddressValidator = new IPAddressValidator();
-        $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        $this->backendProvider = $backendProvider;
     }
 
     /**

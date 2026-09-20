@@ -24,7 +24,6 @@ namespace Poweradmin\Domain\Service;
 
 use Closure;
 use Exception;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
@@ -75,7 +74,7 @@ class ZoneManagementService
     /** @var PdnsCapabilities|Closure|null Resolved on first use so a lookup only happens for a catalog kind */
     private PdnsCapabilities|Closure|null $capabilities;
     private ?ZoneSigningService $signing;
-    private ?DnsBackendProviderInterface $backendProvider = null;
+    private DnsBackendProviderInterface $backendProvider;
     private RepositoryFactoryInterface $repositoryFactory;
     private ?DomainRepositoryInterface $domainRepository;
     private ?PermissionService $permissions;
@@ -88,6 +87,7 @@ class ZoneManagementService
 
     /**
      * @param RepositoryFactoryInterface $repositoryFactory Builds the record and domain repositories
+     * @param DnsBackendProviderInterface $backendProvider Backend used by the zone template model and the domain manager
      * @param PdnsCapabilities|Closure|null $capabilities What the connected server supports, or a closure returning it; null admits only the basic kinds
      * @param ZoneSigningService|null $signing Needed for enable_dnssec; without it a create is never signed
      * @param DomainRepositoryInterface|null $domainRepository Zone lookups; built from the repository factory when omitted
@@ -98,6 +98,7 @@ class ZoneManagementService
         ConfigurationInterface $config,
         object $db,
         RepositoryFactoryInterface $repositoryFactory,
+        DnsBackendProviderInterface $backendProvider,
         ?LoggerInterface $logger = null,
         ?RecordChangeLogger $changeLogger = null,
         PdnsCapabilities|Closure|null $capabilities = null,
@@ -108,6 +109,7 @@ class ZoneManagementService
     ) {
         $this->zoneTemplateRepository = $zoneTemplateRepository;
         $this->repositoryFactory = $repositoryFactory;
+        $this->backendProvider = $backendProvider;
         $this->zoneRepository = $zoneRepository;
         $this->domainRepository = $domainRepository;
         $this->permissions = $permissions;
@@ -141,7 +143,7 @@ class ZoneManagementService
     private function lookUpZoneTemplate(string $zoneTemplate, ?int $actingUserId): array
     {
 
-        $zoneTemplateModel = new ZoneTemplate($this->db, $this->config, $this->backendProvider(), $this->logger, $this->zoneTemplateRepository);
+        $zoneTemplateModel = new ZoneTemplate($this->db, $this->config, $this->backendProvider, $this->logger, $this->zoneTemplateRepository);
         if (is_numeric($zoneTemplate)) {
             if (!ZoneTemplate::zoneTemplIdExists($this->db, (int)$zoneTemplate)) {
                 return ['success' => false, 'message' => 'Zone template not found', 'status' => 404, 'code' => self::ERR_TEMPLATE_NOT_FOUND];
@@ -467,12 +469,7 @@ class ZoneManagementService
 
     private function domainManager(): DomainManagerInterface
     {
-        return $this->domainManager ??= DnsServiceFactory::createDomainManager($this->db, $this->config, $this->backendProvider());
-    }
-
-    private function backendProvider(): DnsBackendProviderInterface
-    {
-        return $this->backendProvider ??= DnsBackendProviderFactory::create($this->db, $this->config);
+        return $this->domainManager ??= DnsServiceFactory::createDomainManager($this->db, $this->config, $this->backendProvider);
     }
 
     private function permissions(): PermissionService

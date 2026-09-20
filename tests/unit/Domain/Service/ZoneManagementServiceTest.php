@@ -30,6 +30,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
@@ -62,6 +63,7 @@ class ZoneManagementServiceTest extends TestCase
             $this->config,
             $this->db,
             $this->createMock(RepositoryFactoryInterface::class),
+            $this->createMock(DnsBackendProviderInterface::class),
             domainRepository: $this->domainRepository
         );
     }

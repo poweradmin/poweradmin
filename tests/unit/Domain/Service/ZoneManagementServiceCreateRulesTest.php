@@ -75,12 +75,9 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             return $default;
         });
 
-        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, $this->repositoryFactory($config), null, null, $capabilities, null, $domains);
-    }
+        $backend = DnsBackendProviderFactory::create($this->db, $config);
 
-    private function repositoryFactory(ConfigurationManager $config): RepositoryFactory
-    {
-        return new RepositoryFactory($this->db, $config, DnsBackendProviderFactory::create($this->db, $config));
+        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, new RepositoryFactory($this->db, $config, $backend), $backend, null, null, $capabilities, null, $domains);
     }
 
     private function existingZoneOfType(string $type): DomainRepositoryInterface
@@ -133,7 +130,8 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         };
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(fn(string $group, string $key, $default = null) => $default);
-        $service = new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, $this->repositoryFactory($config), null, null, $lazy);
+        $backend = DnsBackendProviderFactory::create($this->db, $config);
+        $service = new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db, new RepositoryFactory($this->db, $config, $backend), $backend, null, null, $lazy);
 
         $service->createZone('new.example', 'BOGUS', self::ADMIN_USER_ID);
         $this->assertSame(0, $lookups, 'a basic-kind refusal must not fetch the server version');
