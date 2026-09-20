@@ -247,7 +247,7 @@ class BootstrapErrorResponderTest extends TestCase
         $_SERVER['CONTENT_TYPE'] = 'application/json';
 
         $this->assertSame(
-            'An error occurred while processing the request.',
+            'An error occurred while processing the request. Details have been written to the PHP error log.',
             $this->capture(new Exception('boom'))
         );
     }
@@ -258,7 +258,7 @@ class BootstrapErrorResponderTest extends TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/html';
 
         $this->assertSame(
-            'An error occurred while processing the request.',
+            'An error occurred while processing the request. Details have been written to the PHP error log.',
             $this->capture(new Exception('boom'))
         );
     }
@@ -303,7 +303,7 @@ class BootstrapErrorResponderTest extends TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/html';
 
         $this->assertSame(
-            'An error occurred while processing the request.',
+            'An error occurred while processing the request. Details have been written to the PHP error log.',
             $this->capture(new Exception('database credentials rejected'))
         );
         $this->assertSame(500, http_response_code());
@@ -315,7 +315,7 @@ class BootstrapErrorResponderTest extends TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/html';
 
         $this->assertSame(
-            'An error occurred while processing the request.',
+            'An error occurred while processing the request. Details have been written to the PHP error log.',
             $this->capture(new Exception('Method not allowed', 405))
         );
         $this->assertSame(405, http_response_code());
