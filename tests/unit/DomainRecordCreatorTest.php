@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class DomainRecordCreatorTest extends TestCase
@@ -37,7 +38,7 @@ class DomainRecordCreatorTest extends TestCase
             }
             return $reverseZoneName;
         });
-        $recordManager->method('addRecord')->willReturn($addRecordResult);
+        $recordManager->method('addRecordGetId')->willReturn($addRecordResult ? RecordWriteResult::ok(1) : RecordWriteResult::forbidden('You do not have the permission to add a record to this zone.'));
 
         return new DomainRecordCreator($config, $domainRepository, $recordManager);
     }
@@ -78,6 +79,20 @@ class DomainRecordCreatorTest extends TestCase
         );
 
         $this->assertTrue($result['success']);
+    }
+
+    public function testReportsARefusedWriteAsAFailure(): void
+    {
+        $creator = $this->createCreator([
+            'example.com' => 1,
+            '2.0.192.in-addr.arpa' => 5,
+        ], addRecordResult: false);
+
+        $result = $creator->addDomainRecord('55', 'PTR', 'host.example.com', 5);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('error', $result['type']);
+        $this->assertSame('You do not have the permission to add a record to this zone.', $result['message']);
     }
 
     public function testFailsWhenNoManagedForwardZone(): void
@@ -230,9 +245,9 @@ class DomainRecordCreatorTest extends TestCase
         $domainRepository->method('getDomainNameById')->willReturnCallback(function ($id) {
             return $id === 5 ? '2.0.192.in-addr.arpa' : 'example.com';
         });
-        $recordManager->method('addRecord')->willReturnCallback(function ($domainId, $name, $type, $content) use (&$addedIP) {
+        $recordManager->method('addRecordGetId')->willReturnCallback(function ($domainId, $name, $type, $content) use (&$addedIP) {
             $addedIP = $content;
-            return true;
+            return RecordWriteResult::ok(1);
         });
 
         $config = $this->createMock(ConfigurationManager::class);
@@ -262,9 +277,9 @@ class DomainRecordCreatorTest extends TestCase
         $domainRepository->method('getDomainNameById')->willReturnCallback(function ($id) {
             return $id === 5 ? '2.0.192.in-addr.arpa' : 'manager-zone.example.com';
         });
-        $recordManager->method('addRecord')->willReturnCallback(function ($domainId, $name) use (&$addedName) {
+        $recordManager->method('addRecordGetId')->willReturnCallback(function ($domainId, $name) use (&$addedName) {
             $addedName = $name;
-            return true;
+            return RecordWriteResult::ok(1);
         });
 
         $config = $this->createMock(ConfigurationManager::class);
@@ -292,9 +307,9 @@ class DomainRecordCreatorTest extends TestCase
         $domainRepository->method('getDomainNameById')->willReturnCallback(function ($id) {
             return $id === 5 ? '2.0.192.in-addr.arpa' : 'example.com';
         });
-        $recordManager->method('addRecord')->willReturnCallback(function ($domainId, $name) use (&$addedName) {
+        $recordManager->method('addRecordGetId')->willReturnCallback(function ($domainId, $name) use (&$addedName) {
             $addedName = $name;
-            return true;
+            return RecordWriteResult::ok(1);
         });
 
         $config = $this->createMock(ConfigurationManager::class);

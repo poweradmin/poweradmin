@@ -39,7 +39,6 @@ use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\RecordWriteBackendInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
@@ -53,7 +52,6 @@ class RecordManager implements RecordManagerInterface
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private MessageService $messageService;
     private DnsFormatter $dnsFormatter;
     private DnsRecordValidationServiceInterface $validationService;
     private SOARecordManagerInterface $soaRecordManager;
@@ -97,7 +95,6 @@ class RecordManager implements RecordManagerInterface
     ) {
         $this->db = $db;
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->dnsFormatter = new DnsFormatter($config);
         $this->validationService = $validationService;
         $this->soaRecordManager = $soaRecordManager;
@@ -191,17 +188,11 @@ class RecordManager implements RecordManagerInterface
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
      *
-     * @return boolean true if successful
+     * @return boolean true if successful; addRecordGetId() carries the reason for a refusal
      */
     public function addRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): bool
     {
-        // Callers on this signature still read failures from MessageService.
-        $result = $this->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
-        if (!$result->success) {
-            $this->messageService->addSystemError((string)$result->message);
-        }
-
-        return $result->success;
+        return $this->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio)->success;
     }
 
     /**
@@ -616,9 +607,9 @@ class RecordManager implements RecordManagerInterface
      * @param int $zone_id Zone ID
      * @param string $comment Comment to set
      *
-     * @return boolean true on success
+     * @return RecordWriteResult Success, or the reason the write was refused
      */
-    public function editZoneComment(int $zone_id, string $comment): bool
+    public function editZoneComment(int $zone_id, string $comment): RecordWriteResult
     {
         $perm_edit = $this->editPermissionLevel();
 
@@ -626,27 +617,26 @@ class RecordManager implements RecordManagerInterface
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
         if (ZoneType::isReadOnly($zone_type) || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
-            $this->messageService->addSystemError(_("You do not have the permission to edit this comment."));
-
-            return false;
-        } else {
-            $query = "SELECT COUNT(*) FROM zones WHERE domain_id = :zone_id";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            $count = $stmt->fetchColumn();
-
-            if ($count > 0) {
-                $query = "UPDATE zones SET comment = :comment WHERE domain_id = :zone_id";
-            } else {
-                $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id) VALUES (:zone_id, 1, :comment, 0)";
-            }
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-            $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
-            $stmt->execute();
+            return RecordWriteResult::forbidden(_("You do not have the permission to edit this comment."));
         }
-        return true;
+
+        $query = "SELECT COUNT(*) FROM zones WHERE domain_id = :zone_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $count = $stmt->fetchColumn();
+
+        if ($count > 0) {
+            $query = "UPDATE zones SET comment = :comment WHERE domain_id = :zone_id";
+        } else {
+            $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id) VALUES (:zone_id, 1, :comment, 0)";
+        }
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return RecordWriteResult::ok();
     }
 }

@@ -32,6 +32,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Domain\Utility\DomainUtility;
 
@@ -423,15 +424,15 @@ class BatchReverseRecordCreator
         try {
             $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ttl, $prio, $comment, $account);
 
-            if ($result && $forwardType !== null) {
+            if ($result->success && $forwardType !== null) {
                 $this->createForwardRecord($domain, $fqdn, $forwardType, $ip, $forwardTtl, $prio, $tally);
             }
 
-            if ($result) {
+            if ($result->success) {
                 $tally['success']++;
             } else {
                 $tally['fail']++;
-                $tally['errors'][] = "Failed to create PTR record for $ip";
+                $tally['errors'][] = "Failed to create PTR record for $ip: " . $result->message;
             }
         } catch (Exception $e) {
             $tally['fail']++;
@@ -454,7 +455,10 @@ class BatchReverseRecordCreator
         }
 
         try {
-            $this->recordManager->addRecord($forwardDomainId, $hostname, $type, $ip, $ttl, $prio);
+            $written = $this->recordManager->addRecordGetId($forwardDomainId, $hostname, $type, $ip, $ttl, $prio);
+            if (!$written->success) {
+                $tally['errors'][] = "Failed to create forward $type record for $ip: " . $written->message;
+            }
         } catch (Exception $e) {
             $tally['errors'][] = "Failed to create forward $type record for $ip: " . $e->getMessage();
         }
@@ -502,7 +506,7 @@ class BatchReverseRecordCreator
         ];
     }
 
-    private function addReverseRecord($zone_id, $content_rev, $fqdn_name, $ttl, $prio, string $comment, string $account): bool
+    private function addReverseRecord($zone_id, $content_rev, $fqdn_name, $ttl, $prio, string $comment, string $account): RecordWriteResult
     {
         $zone_rev_id = $this->domainRepository->getBestMatchingZoneIdFromName($content_rev);
 
@@ -522,27 +526,20 @@ class BatchReverseRecordCreator
             throw new Exception("No matching reverse zone found for $content_rev");
         }
 
-        try {
-            $result = $this->recordManager->addRecord($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio);
-
-            if ($result) {
-                $this->audit->logBatchPtrRecordAdd($zone_rev_id, $content_rev, $fqdn_name, $ttl, $prio);
-
-                $isDnssecEnabled = $this->config->get('dnssec', 'enabled');
-
-                if ($isDnssecEnabled) {
-                    $this->builtDnssecProvider ??= ($this->dnssecProvider)();
-                    $zone_name = $this->domainRepository->getDomainNameById($zone_rev_id);
-                    $this->builtDnssecProvider->rectifyZone($zone_name);
-                }
-
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception $e) {
-            throw $e;
+        $result = $this->recordManager->addRecordGetId($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio);
+        if (!$result->success) {
+            return $result;
         }
+
+        $this->audit->logBatchPtrRecordAdd($zone_rev_id, $content_rev, $fqdn_name, $ttl, $prio);
+
+        if ($this->config->get('dnssec', 'enabled')) {
+            $this->builtDnssecProvider ??= ($this->dnssecProvider)();
+            $zone_name = $this->domainRepository->getDomainNameById($zone_rev_id);
+            $this->builtDnssecProvider->rectifyZone($zone_name);
+        }
+
+        return $result;
     }
 
     private function createErrorResponse(string $message): array

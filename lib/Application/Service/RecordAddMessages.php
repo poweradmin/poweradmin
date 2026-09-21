@@ -44,8 +44,14 @@ class RecordAddMessages
                 : ['success', _('The record was successfully added, but PTR record creation failed.')];
         }
 
-        if ($result->companion === RecordAddResult::COMPANION_A && $result->companionCreated) {
-            return ['success', _('Record successfully added. A matching A record was also created.')];
+        if ($result->companion === RecordAddResult::COMPANION_A) {
+            if ($result->companionCreated) {
+                return ['success', _('Record successfully added. A matching A record was also created.')];
+            }
+
+            return $result->companionMessage !== null
+                ? ['warning', _('Record successfully added, but A record creation failed: ') . $result->companionMessage]
+                : ['success', _('The record was successfully added.')];
         }
 
         return ['success', _('The record was successfully added.')];

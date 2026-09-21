@@ -109,7 +109,7 @@ class RecordAddServiceTest extends TestCase
         );
     }
 
-    public function testACompanionIsReportedOnlyWhenCreated(): void
+    public function testAFailedACompanionKeepsTheRecordAndWordsTheFailure(): void
     {
         $records = $this->createMock(RecordManagerService::class);
         $records->method('createRecord')->willReturn(RecordWriteResult::ok(1));
@@ -121,7 +121,7 @@ class RecordAddServiceTest extends TestCase
 
         $this->assertSame(RecordAddResult::COMPANION_A, $result->companion);
         $this->assertSame('no zone', $result->companionMessage);
-        $this->assertSame(['success', 'The record was successfully added.'], RecordAddMessages::forAdded($result));
+        $this->assertSame(['warning', 'Record successfully added, but A record creation failed: no zone'], RecordAddMessages::forAdded($result));
     }
 
     public function testPassesTheDisabledFlagThroughToTheWrite(): void

@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
@@ -86,16 +85,18 @@ class EditCommentController extends BaseController
 
         if ($this->httpRequest->getPostParam('commit') !== null) {
             if ($perm_edit_comment) {
-                $messageService = new MessageService();
-                $messageService->addSystemError(_("You do not have the permission to edit this comment."));
+                $this->addSystemMessage('error', _("You do not have the permission to edit this comment."));
             } else {
-                $this->createRecordManager()->editZoneComment($zone_id, $this->httpRequest->getPostParam('comment'));
+                $written = $this->createRecordManager()->editZoneComment($zone_id, $this->httpRequest->getPostParam('comment'));
+                if (!$written->success) {
+                    $this->addSystemMessage('error', (string)$written->message);
+                } else {
+                    $auditService = $this->createAuditService();
+                    $auditService->logZoneCommentEdit($zone_id, $domainRepository->getDomainNameById($zone_id));
 
-                $auditService = $this->createAuditService();
-                $auditService->logZoneCommentEdit($zone_id, $domainRepository->getDomainNameById($zone_id));
-
-                $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));
-                $this->redirect('/zones/' . $zone_id . '/edit');
+                    $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));
+                    $this->redirect('/zones/' . $zone_id . '/edit');
+                }
             }
         }
 

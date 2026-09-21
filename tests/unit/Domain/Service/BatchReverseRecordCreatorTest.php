@@ -8,6 +8,7 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -29,10 +30,10 @@ class BatchReverseRecordCreatorTest extends TestCase
             $config = $this->createMock(ConfigurationManager::class);
             $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
                 if ($group === 'interface' && $key === 'add_reverse_record') {
-                    return true;
+                    return RecordWriteResult::ok(1);
                 }
                 if ($group === 'dns' && $key === 'prevent_duplicate_ptr') {
-                    return true;
+                    return RecordWriteResult::ok(1);
                 }
                 return $default;
             });
@@ -61,7 +62,7 @@ class BatchReverseRecordCreatorTest extends TestCase
                 return $enabled;
             }
             if ($group === 'interface' && $key === 'add_reverse_record') {
-                return true;
+                return RecordWriteResult::ok(1);
             }
             return $default;
         });
@@ -75,7 +76,7 @@ class BatchReverseRecordCreatorTest extends TestCase
         $domainRepository->method('getDomainNameById')->willReturn('1.0.0.0.1.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa');
 
         $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('addRecord')->willReturn(true);
+        $recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
         $recordRepo->method('hasPtrRecord')->willReturn(false);
@@ -127,10 +128,10 @@ class BatchReverseRecordCreatorTest extends TestCase
         $domainRepository->method('getBestMatchingZoneIdFromName')
             ->willReturn(42);
 
-        $recordManager->method('addRecord')
+        $recordManager->method('addRecordGetId')
             ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$createdRecords) {
                 $createdRecords[] = ['name' => $name, 'content' => $content];
-                return true;
+                return RecordWriteResult::ok(1);
             });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
@@ -213,10 +214,10 @@ class BatchReverseRecordCreatorTest extends TestCase
             ->willReturn(42);
 
         $addedNames = [];
-        $recordManager->method('addRecord')
+        $recordManager->method('addRecordGetId')
             ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$addedNames) {
                 $addedNames[] = $name;
-                return true;
+                return RecordWriteResult::ok(1);
             });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
@@ -254,10 +255,10 @@ class BatchReverseRecordCreatorTest extends TestCase
             ->willReturn(42);
 
         $addCount = 0;
-        $recordManager->method('addRecord')
+        $recordManager->method('addRecordGetId')
             ->willReturnCallback(function () use (&$addCount) {
                 $addCount++;
-                return true;
+                return RecordWriteResult::ok(1);
             });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
@@ -291,10 +292,10 @@ class BatchReverseRecordCreatorTest extends TestCase
         $domainRepository->method('getDomainIdByName')->willReturn(7);
 
         $created = [];
-        $recordManager->method('addRecord')
+        $recordManager->method('addRecordGetId')
             ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$created) {
                 $created[] = ['name' => $name, 'content' => $content, 'ttl' => $ttl];
-                return true;
+                return RecordWriteResult::ok(1);
             });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
@@ -340,9 +341,9 @@ class BatchReverseRecordCreatorTest extends TestCase
         $domainRepository->method('getDomainIdByName')->willReturn(7);
 
         $addCount = 0;
-        $recordManager->method('addRecord')->willReturnCallback(function () use (&$addCount) {
+        $recordManager->method('addRecordGetId')->willReturnCallback(function () use (&$addCount) {
             $addCount++;
-            return true;
+            return RecordWriteResult::ok(1);
         });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
@@ -381,10 +382,10 @@ class BatchReverseRecordCreatorTest extends TestCase
         $domainRepository->method('getDomainIdByName')->willReturn(7);
 
         $ttls = [];
-        $recordManager->method('addRecord')
+        $recordManager->method('addRecordGetId')
             ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$ttls) {
                 $ttls[] = $ttl;
-                return true;
+                return RecordWriteResult::ok(1);
             });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
@@ -414,8 +415,8 @@ class BatchReverseRecordCreatorTest extends TestCase
         $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
 
         $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('addRecord')
-            ->willReturnCallback(fn($zoneId, $name) => !str_starts_with($name, '2.'));
+        $recordManager->method('addRecordGetId')
+            ->willReturnCallback(fn($zoneId, $name) => str_starts_with($name, '2.') ? RecordWriteResult::failure('refused') : RecordWriteResult::ok(1));
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
         $recordRepo->method('hasPtrRecord')->willReturn(false);
@@ -428,14 +429,14 @@ class BatchReverseRecordCreatorTest extends TestCase
             'success' => true,
             'type' => 'success',
             'message' => 'Created 2 IPv6 PTR records successfully (1 skipped - PTR record already exists for IP address) (1 failed)',
-            'errors' => ['Failed to create PTR record for 2001:db8:1:1::2'],
+            'errors' => ['Failed to create PTR record for 2001:db8:1:1::2: refused'],
         ], $result);
     }
 
     public function testCreateIPv6NetworkFailsWhenEveryPtrFails(): void
     {
         $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('addRecord')->willReturn(true);
+        $recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
         $recordRepo->method('hasPtrRecord')->willReturn(false);
@@ -474,10 +475,10 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $added = [];
         $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('addRecord')
+        $recordManager->method('addRecordGetId')
             ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$added) {
                 $added[] = [$zoneId, $name, $type, $content, $ttl];
-                return true;
+                return RecordWriteResult::ok(1);
             });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
@@ -551,10 +552,10 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $added = [];
         $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('addRecord')
+        $recordManager->method('addRecordGetId')
             ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$added) {
                 $added[] = [$zoneId, $name, $type, $content, $ttl, $prio];
-                return true;
+                return RecordWriteResult::ok(1);
             });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
@@ -584,10 +585,10 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $targets = [];
         $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('addRecord')
+        $recordManager->method('addRecordGetId')
             ->willReturnCallback(function ($zoneId, $name, $type, $content) use (&$targets) {
                 $targets[$name] = $content;
-                return true;
+                return RecordWriteResult::ok(1);
             });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
@@ -609,7 +610,7 @@ class BatchReverseRecordCreatorTest extends TestCase
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
             if ($group === 'interface' && $key === 'add_reverse_record') {
-                return true;
+                return RecordWriteResult::ok(1);
             }
             if ($group === 'dns' && $key === 'prevent_duplicate_ptr') {
                 return false;
@@ -621,7 +622,7 @@ class BatchReverseRecordCreatorTest extends TestCase
         $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
 
         $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('addRecord')->willReturn(true);
+        $recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
         $recordRepo->expects($this->never())->method('hasPtrRecord');
@@ -642,12 +643,12 @@ class BatchReverseRecordCreatorTest extends TestCase
             ->willReturnCallback(fn(string $name) => $name === '6.1.168.192.in-addr.arpa' ? -1 : 42);
 
         $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('addRecord')
+        $recordManager->method('addRecordGetId')
             ->willReturnCallback(function ($zoneId, $name) {
                 if ($name === '5.1.168.192.in-addr.arpa') {
                     throw new \Exception('boom');
                 }
-                return false;
+                return RecordWriteResult::failure('refused');
             });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
@@ -662,10 +663,10 @@ class BatchReverseRecordCreatorTest extends TestCase
             'type' => 'success',
             'message' => 'Created 0 PTR records successfully (2 skipped - PTR record already exists for IP address) (6 failed)',
             'errors' => [
-                'Failed to create PTR record for 192.168.1.1',
-                'Failed to create PTR record for 192.168.1.2',
-                'Failed to create PTR record for 192.168.1.3',
-                'Failed to create PTR record for 192.168.1.4',
+                'Failed to create PTR record for 192.168.1.1: refused',
+                'Failed to create PTR record for 192.168.1.2: refused',
+                'Failed to create PTR record for 192.168.1.3: refused',
+                'Failed to create PTR record for 192.168.1.4: refused',
                 'Failed to create PTR record for 192.168.1.5: boom',
                 'No matching reverse zone found for 6.1.168.192.in-addr.arpa',
             ],
@@ -679,7 +680,7 @@ class BatchReverseRecordCreatorTest extends TestCase
         $domainRepository->method('getDomainIdByName')->willReturn(7);
 
         $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('addRecord')->willReturn(false);
+        $recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::failure('refused'));
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
         $recordRepo->method('hasPtrRecord')->willReturn(false);
@@ -695,7 +696,7 @@ class BatchReverseRecordCreatorTest extends TestCase
         $this->assertSame([
             'success' => false,
             'type' => 'error',
-            'message' => 'Failed to create any PTR records. Failed to create PTR record for 192.168.1.1 Failed to create PTR record for 192.168.1.2',
+            'message' => 'Failed to create any PTR records. Failed to create PTR record for 192.168.1.1: refused Failed to create PTR record for 192.168.1.2: refused',
         ], $result);
     }
 
@@ -707,13 +708,13 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $added = [];
         $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('addRecord')
+        $recordManager->method('addRecordGetId')
             ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$added) {
                 if ($type === 'A' && $content === '192.168.1.6') {
                     throw new \Exception('forward boom');
                 }
                 $added[] = [$zoneId, $name, $type, $content, $ttl];
-                return true;
+                return RecordWriteResult::ok(1);
             });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
@@ -735,6 +736,32 @@ class BatchReverseRecordCreatorTest extends TestCase
             [7, 'host1.example.com', 'A', '192.168.1.5', 300],
             [42, '6.1.168.192.in-addr.arpa', 'PTR', 'host2.example.com', 3600],
         ], $added);
+    }
+
+    public function testCreateIPv4NetworkReportsARefusedForwardWriteWithoutStopping(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $domainRepository->method('getDomainIdByName')->willReturn(7);
+
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecordGetId')
+            ->willReturnCallback(fn($zoneId, $name, $type, $content) => $type === 'A' && $content === '192.168.1.6' ? RecordWriteResult::forbidden('no A for you') : RecordWriteResult::ok(1));
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturn(false);
+        $recordRepo->method('recordExists')->willReturn(false);
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo);
+
+        $result = $service->createIPv4Network('192.168.1.4/30', 'host', 'example.com', '1', 3600, 0, '', '', true, false, 300);
+
+        $this->assertSame([
+            'success' => true,
+            'type' => 'success',
+            'message' => 'Created 2 PTR records successfully (2 skipped - PTR record already exists for IP address)',
+            'errors' => ['Failed to create forward A record for 192.168.1.6: no A for you'],
+        ], $result);
     }
 
     public function testCreateIPv4NetworkMatchingModeReturnsErrorWhenNoMatches(): void
@@ -767,10 +794,10 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $added = [];
         $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('addRecord')
+        $recordManager->method('addRecordGetId')
             ->willReturnCallback(function ($zoneId, $name, $type, $content, $ttl, $prio) use (&$added) {
                 $added[] = [$zoneId, $name, $type, $content, $ttl, $prio];
-                return true;
+                return RecordWriteResult::ok(1);
             });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
@@ -804,9 +831,9 @@ class BatchReverseRecordCreatorTest extends TestCase
         $domainRepository->method('getDomainIdByName')->willReturn(7);
 
         $addCount = 0;
-        $recordManager->method('addRecord')->willReturnCallback(function () use (&$addCount) {
+        $recordManager->method('addRecordGetId')->willReturnCallback(function () use (&$addCount) {
             $addCount++;
-            return true;
+            return RecordWriteResult::ok(1);
         });
 
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);

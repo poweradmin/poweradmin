@@ -126,9 +126,9 @@ class DomainRecordCreator
         $ttl = $this->reverseTtlResolver !== null
             ? $this->reverseTtlResolver->resolveTtlForType(RecordType::A, false)
             : $this->config->get('dns', 'ttl');
-        $result = $this->recordManager->addRecord($domainId, $domainName, RecordType::A, $proposedIP, $ttl, 0);
+        $result = $this->recordManager->addRecordGetId($domainId, $domainName, RecordType::A, $proposedIP, $ttl, 0);
 
-        if ($result) {
+        if ($result->success) {
             return [
                 'success' => true,
                 'type' => 'success',
@@ -136,7 +136,7 @@ class DomainRecordCreator
             ];
         }
 
-        return $this->errorResponse(_('This domain record was not valid and could not be added.'));
+        return $this->errorResponse((string)$result->message);
     }
 
     /**

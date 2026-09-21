@@ -37,7 +37,7 @@ interface RecordManagerInterface
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
      *
-     * @return boolean true if successful
+     * @return boolean true if successful; addRecordGetId() carries the reason for a refusal
      */
     public function addRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): bool;
 
@@ -103,7 +103,7 @@ interface RecordManagerInterface
      * @param int $zone_id Zone ID
      * @param string $comment Comment to set
      *
-     * @return boolean true on success
+     * @return RecordWriteResult Success, or the reason the write was refused
      */
-    public function editZoneComment(int $zone_id, string $comment): bool;
+    public function editZoneComment(int $zone_id, string $comment): RecordWriteResult;
 }

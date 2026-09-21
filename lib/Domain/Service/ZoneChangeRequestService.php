@@ -448,8 +448,11 @@ class ZoneChangeRequestService
             $applied[] = $index;
         }
 
-        if ($request->zoneComment !== null && !$this->recordManager->editZoneComment($request->zoneId, $request->zoneComment)) {
-            return [$this->describeFailure(count($request->actions), ['op' => 'zone_comment'], 'Failed to update the zone comment.', $applied, $rolledBackOnFailure), 500];
+        if ($request->zoneComment !== null) {
+            $written = $this->recordManager->editZoneComment($request->zoneId, $request->zoneComment);
+            if (!$written->success) {
+                return [$this->describeFailure(count($request->actions), ['op' => 'zone_comment'], (string)$written->message, $applied, $rolledBackOnFailure), $written->status];
+            }
         }
 
         return null;

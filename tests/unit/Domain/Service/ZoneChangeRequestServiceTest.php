@@ -239,9 +239,9 @@ class ZoneChangeRequestServiceTest extends TestCase
             $this->calls[] = "delete:$rid:" . ($finalize ? 'finalize' : 'batch');
             return RecordWriteResult::ok();
         });
-        $this->recordManager->method('editZoneComment')->willReturnCallback(function (int $zoneId, string $comment): bool {
+        $this->recordManager->method('editZoneComment')->willReturnCallback(function (int $zoneId, string $comment): RecordWriteResult {
             $this->calls[] = "zone_comment:$comment";
-            return true;
+            return RecordWriteResult::ok();
         });
         $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID)->willReturnCallback(function (): void {
             $this->calls[] = 'finalize';
@@ -316,6 +316,26 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertSame(ZoneChangeRequest::STATUS_FAILED, $request->status);
         $this->assertSame('Action 2 (edit) failed: You do not have permission to edit this record. Applied before the failure: 1.', $request->error);
         $this->assertSame(self::REVIEWER, $request->reviewerId);
+    }
+
+    public function testARefusedZoneCommentMarksTheRequestFailedAfterTheRecords(): void
+    {
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(77));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->method('editZoneComment')->willReturn(RecordWriteResult::forbidden('You do not have the permission to edit this comment.'));
+        $this->recordManager->expects($this->never())->method('finalizeZone');
+        $id = $this->fileThreeActions(zoneComment: 'approved comment');
+
+        $result = $this->makeService()->approve($id, self::REVIEWER, 'bob');
+
+        $this->assertFalse($result->success);
+        $this->assertSame(ZoneChangeRequestResult::CODE_APPLY_FAILED, $result->code);
+        $this->assertSame(403, $result->status);
+        $this->assertSame(
+            'Action 4 (zone_comment) failed: You do not have the permission to edit this comment. Applied before the failure: 1, 2, 3.',
+            $this->repository->find($id)->error
+        );
     }
 
     public function testARefusedWriteOnATransactionalBackendRollsBack(): void
