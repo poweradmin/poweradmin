@@ -27,7 +27,7 @@ use PDO;
 use PDOException;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -38,10 +38,10 @@ use Psr\Log\NullLogger;
 class DbUserMfaRepository implements UserMfaRepositoryInterface
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private LoggerInterface $logger;
 
-    public function __construct(PDO $db, ConfigurationManager $config, ?LoggerInterface $logger = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->config = $config;

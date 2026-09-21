@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 
 /**
@@ -30,13 +30,13 @@ use Poweradmin\Infrastructure\Network\ProxyContext;
  */
 class RecaptchaService
 {
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
     private bool $enabled;
     private string $secretKey;
     private string $version;
     private float $v3Threshold;
 
-    public function __construct(ConfigurationManager $configManager)
+    public function __construct(ConfigurationInterface $configManager)
     {
         $this->configManager = $configManager;
         $this->enabled = $this->configManager->get('security', 'recaptcha.enabled', false);

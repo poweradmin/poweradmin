@@ -29,7 +29,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Database\ZoneHealthSql;
 use Poweradmin\Domain\Database\PdnsTable;
@@ -44,13 +44,13 @@ use Poweradmin\Domain\Enum\ZoneSoaHealth;
 class SqlDomainRepository implements DomainRepositoryInterface
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TableNameService $tableNameService;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null;
 
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;

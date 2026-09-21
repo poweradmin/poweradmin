@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Logger;
 use PDO;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Domain\Database\PdnsTable;
@@ -36,7 +37,7 @@ use Poweradmin\Domain\Database\TableNameService;
 class DbZoneLogger
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private ?BackendCapabilitiesInterface $backendProvider;
 
     public function __construct($db, ?BackendCapabilitiesInterface $backendProvider = null)

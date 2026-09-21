@@ -49,7 +49,7 @@ use Poweradmin\Domain\Service\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Service\ZoneValidationService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -65,7 +65,7 @@ use Psr\Log\LoggerInterface;
 class ZoneServices
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private LoggerInterface $logger;
     private ControllerServiceFactory $services;
 
@@ -77,7 +77,7 @@ class ZoneServices
     private ?ZoneTemplateService $zoneTemplateService = null;
     private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null;
 
-    public function __construct(PDO $db, ConfigurationManager $config, LoggerInterface $logger, ControllerServiceFactory $services)
+    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ControllerServiceFactory $services)
     {
         $this->db = $db;
         $this->config = $config;

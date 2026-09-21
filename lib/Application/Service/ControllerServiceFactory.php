@@ -92,7 +92,7 @@ use Poweradmin\Domain\Service\ZoneSigningService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Service\ZoneTemplateService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
@@ -122,7 +122,7 @@ class ControllerServiceFactory
     private ZoneServices $zones;
     private RecordServices $records;
 
-    public function __construct(PDO $db, ConfigurationManager $config, LoggerInterface $logger)
+    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger)
     {
         $this->backend = new BackendServices($db, $config, $logger);
         $this->users = new UserServices($db, $config, $logger, $this);

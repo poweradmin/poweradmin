@@ -24,15 +24,16 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Service\PasswordPolicyInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Checks a password against the security.password_policy rules and reports the ones it fails.
  */
 class PasswordPolicyService implements PasswordPolicyInterface
 {
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
 
-    public function __construct(?ConfigurationManager $configManager = null)
+    public function __construct(?ConfigurationInterface $configManager = null)
     {
         $this->configManager = $configManager ?? ConfigurationManager::getInstance();
     }

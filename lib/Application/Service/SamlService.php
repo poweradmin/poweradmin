@@ -32,7 +32,7 @@ use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 
@@ -42,7 +42,7 @@ use Psr\Log\LoggerInterface;
 class SamlService
 {
     private LoggerInterface $logger;
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
     private AuthenticationService $authenticationService;
     private SamlConfigurationService $samlConfigurationService;
     private UserProvisioningService $userProvisioningService;
@@ -52,7 +52,7 @@ class SamlService
     private AuditService $auditService;
 
     public function __construct(
-        ConfigurationManager $configManager,
+        ConfigurationInterface $configManager,
         SamlConfigurationService $samlConfigurationService,
         UserProvisioningService $userProvisioningService,
         LoggerInterface $logger,

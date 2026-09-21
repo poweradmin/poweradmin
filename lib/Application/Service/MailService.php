@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Exception;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Mailer\Mailer;
@@ -38,11 +38,11 @@ use Twig\Error\SyntaxError;
  */
 class MailService
 {
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private LoggerInterface $logger;
     private EmailTemplateService $templateService;
 
-    public function __construct(ConfigurationManager $config, ?LoggerInterface $logger = null)
+    public function __construct(ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
         $this->config = $config;
         $this->logger = $logger ?? new NullLogger();

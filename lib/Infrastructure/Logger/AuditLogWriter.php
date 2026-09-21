@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use PDO;
 use Psr\Log\LoggerInterface;
@@ -34,7 +35,7 @@ use Psr\Log\LoggerInterface;
 class AuditLogWriter
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private ?DnsBackendProviderInterface $backendProvider;
     private LoggerInterface $syslog;
 

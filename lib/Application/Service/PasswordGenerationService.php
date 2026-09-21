@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Random\Engine\Secure;
 use Random\Randomizer;
 
@@ -31,7 +32,7 @@ use Random\Randomizer;
  */
 class PasswordGenerationService
 {
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
 
     // Default settings used when password policy is disabled
     private array $defaultSettings = [
@@ -43,7 +44,7 @@ class PasswordGenerationService
         'special_characters' => '!@#$%^&*()-_=+[]{}|;:,.<>?'
     ];
 
-    public function __construct(?ConfigurationManager $configManager = null)
+    public function __construct(?ConfigurationInterface $configManager = null)
     {
         $this->configManager = $configManager ?? ConfigurationManager::getInstance();
     }

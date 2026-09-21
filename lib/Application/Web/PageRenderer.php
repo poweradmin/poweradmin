@@ -31,7 +31,7 @@ use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
 use Poweradmin\Infrastructure\Service\StyleManager;
@@ -55,7 +55,7 @@ class PageRenderer
     private const MIN_SESSION_KEY_LENGTH = 32;
 
     private AppManager $app;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private CsrfTokenService $csrfTokenService;
     private UserContextService $userContextService;
     private ModuleRegistry $moduleRegistry;
@@ -79,7 +79,7 @@ class PageRenderer
      */
     public function __construct(
         AppManager $app,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         CsrfTokenService $csrfTokenService,
         UserContextService $userContextService,
         ModuleRegistry $moduleRegistry,

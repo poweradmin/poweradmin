@@ -37,7 +37,7 @@ use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Repository\ApiZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
@@ -55,7 +55,7 @@ use Psr\Log\LoggerInterface;
 class BackendServices
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private LoggerInterface $logger;
 
     private ?DnsBackendProviderInterface $dnsBackendProvider = null;
@@ -69,7 +69,7 @@ class BackendServices
     private ?PowerdnsApiClient $apiClient = null;
     private bool $apiClientResolved = false;
 
-    public function __construct(PDO $db, ConfigurationManager $config, LoggerInterface $logger)
+    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger)
     {
         $this->db = $db;
         $this->config = $config;

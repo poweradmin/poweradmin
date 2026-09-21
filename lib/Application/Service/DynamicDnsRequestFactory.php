@@ -34,7 +34,7 @@ use Poweradmin\Domain\Service\DynamicDnsValidationService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -51,7 +51,7 @@ class DynamicDnsRequestFactory
      */
     public static function createUpdateService(
         PDO $db,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         DynamicDnsRepositoryInterface $repository,
         PermissionService $permissions,
         ?AuditService $auditService = null
@@ -75,7 +75,7 @@ class DynamicDnsRequestFactory
     /**
      * Whether a DDNS user's changes to a zone would have to go through review.
      */
-    private static function requiresApproval(ConfigurationManager $config, PermissionService $permissions): Closure
+    private static function requiresApproval(ConfigurationInterface $config, PermissionService $permissions): Closure
     {
         return static fn(int $userId, int $zoneId): bool => ChangeApprovalPolicy::mode(
             (bool)$config->get('approval', 'enabled', false),

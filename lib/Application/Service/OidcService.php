@@ -33,7 +33,7 @@ use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Network\ProxyContext;
@@ -50,7 +50,7 @@ class OidcService
     private const FLOW_COOKIE_TTL = 300;
 
     private LoggerInterface $logger;
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
     private AuthenticationService $authenticationService;
     private OidcConfigurationService $oidcConfigurationService;
     private UserProvisioningService $userProvisioningService;
@@ -60,7 +60,7 @@ class OidcService
     private AuditService $auditService;
 
     public function __construct(
-        ConfigurationManager $configManager,
+        ConfigurationInterface $configManager,
         OidcConfigurationService $oidcConfigurationService,
         UserProvisioningService $userProvisioningService,
         LoggerInterface $logger,

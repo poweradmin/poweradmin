@@ -36,6 +36,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\ZoneCreateService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
@@ -66,7 +67,7 @@ abstract class BaseController
     private ?RequestValidator $requestValidator = null;
     private CsrfTokenService $csrfTokenService;
     protected MessageService $messageService;
-    protected ConfigurationManager $config;
+    protected ConfigurationInterface $config;
     private UserContextService $userContextService;
     private string $pageTitle = '';
     protected LoggerInterface $logger;
@@ -105,16 +106,17 @@ abstract class BaseController
             $this->userContextService = $environment->userContextService ?? new UserContextService();
         } else {
             // Create logger early so AppManager and ConfigurationManager can use it
-            $this->config = ConfigurationManager::getInstance();
-            $this->config->initialize();
+            $manager = ConfigurationManager::getInstance();
+            $manager->initialize();
 
-            $this->logger = Logger::fromConfig($this->config);
+            $this->logger = Logger::fromConfig($manager);
 
-            $this->config->setLogger($this->logger);
+            $manager->setLogger($this->logger);
+            $this->config = $manager;
 
             // Kept eager: the template stack below is lazy, and a broken configuration
             // should still stop the request rather than surface deep in a handler
-            AppManager::assertConfigurationUsable($this->config);
+            AppManager::assertConfigurationUsable($manager);
 
             $this->init = new AppInitializer($authenticate);
             $this->db = $this->init->getDb();
@@ -158,9 +160,9 @@ abstract class BaseController
     /**
      * Gets the application configuration.
      *
-     * @return ConfigurationManager The application configuration.
+     * @return ConfigurationInterface The application configuration.
      */
-    public function getConfig(): ConfigurationManager
+    public function getConfig(): ConfigurationInterface
     {
         return $this->config;
     }

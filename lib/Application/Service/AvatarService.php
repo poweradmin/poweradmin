@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,16 +22,16 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Resolves a user's avatar URL from an OAuth profile picture or Gravatar, per the interface.avatar_* settings.
  */
 class AvatarService
 {
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
 
-    public function __construct(ConfigurationManager $configManager)
+    public function __construct(ConfigurationInterface $configManager)
     {
         $this->configManager = $configManager;
     }

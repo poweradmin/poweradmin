@@ -32,7 +32,7 @@ use Poweradmin\Domain\Service\ZoneReadBackendInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -44,12 +44,12 @@ use Poweradmin\Domain\Enum\ZoneSoaHealth;
 class ApiDomainRepository implements DomainRepositoryInterface
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private ZoneReadBackendInterface $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationManager $config, ZoneReadBackendInterface $backendProvider)
+    public function __construct(PDO $db, ConfigurationInterface $config, ZoneReadBackendInterface $backendProvider)
     {
         $this->db = $db;
         $this->config = $config;

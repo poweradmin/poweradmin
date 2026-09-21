@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Domain\Repository\UserAgreementRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
 use PDO;
 
@@ -33,9 +33,9 @@ use PDO;
 class DbUserAgreementRepository implements UserAgreementRepositoryInterface
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;

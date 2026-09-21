@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Resolves the interface language for the current request.
@@ -38,7 +38,7 @@ readonly class LocaleResolver
     private const DEFAULT_LOCALE = 'en_EN';
 
     public function __construct(
-        private ConfigurationManager $config,
+        private ConfigurationInterface $config,
         private UserContextService $userContext,
         private Request $request
     ) {

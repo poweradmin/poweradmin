@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use PDO;
 
@@ -43,7 +43,7 @@ class RecordManagerService
     private RecordManagerInterface $recordManager;
     private RecordCommentService $recordCommentService;
     private AuditService $audit;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private ?DnsBackendProviderInterface $backendProvider;
 
     public function __construct(
@@ -52,7 +52,7 @@ class RecordManagerService
         RecordManagerInterface $recordManager,
         RecordCommentService $recordCommentService,
         AuditService $audit,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         ?DnsBackendProviderInterface $backendProvider = null
     ) {
         $this->db = $db;

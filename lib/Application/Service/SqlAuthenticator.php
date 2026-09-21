@@ -32,7 +32,7 @@ use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 
@@ -43,7 +43,7 @@ class SqlAuthenticator
 {
     private LoggerInterface $logger;
     private PDO $connection;
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
     private AuditService $auditService;
     private $authService; // Can be either AuthenticationService or UserAuthenticationService
     private CsrfTokenService $csrfTokenService;
@@ -54,7 +54,7 @@ class SqlAuthenticator
 
     public function __construct(
         PDO $connection,
-        ConfigurationManager $configManager,
+        ConfigurationInterface $configManager,
         AuditService $auditService,
         $authService, // Changed type to allow UserAuthenticationService
         CsrfTokenService $csrfTokenService,

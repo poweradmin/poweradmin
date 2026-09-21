@@ -30,7 +30,7 @@ use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Model\PdnsCapabilities;
@@ -437,7 +437,7 @@ abstract class PublicApiController extends AbstractApiController
      * low probability (like PHP session GC) to keep the table bounded without a
      * DELETE on every request. Retention of 0 means keep forever.
      */
-    private function pruneApiLog(ConfigurationManager $config): void
+    private function pruneApiLog(ConfigurationInterface $config): void
     {
         $retentionDays = (int)$config->get('logging', 'api_log_retention_days', 0);
         if ($retentionDays <= 0) {

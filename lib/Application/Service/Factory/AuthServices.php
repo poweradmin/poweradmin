@@ -32,7 +32,7 @@ use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
@@ -53,7 +53,7 @@ use Psr\Log\LoggerInterface;
 class AuthServices
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private LoggerInterface $logger;
     private ControllerServiceFactory $services;
 
@@ -66,7 +66,7 @@ class AuthServices
     private ?RedirectService $redirectService = null;
     private ?AuthenticationService $authenticationService = null;
 
-    public function __construct(PDO $db, ConfigurationManager $config, LoggerInterface $logger, ControllerServiceFactory $services)
+    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ControllerServiceFactory $services)
     {
         $this->db = $db;
         $this->config = $config;

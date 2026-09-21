@@ -30,7 +30,7 @@ use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UserProvisioningService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -53,7 +53,7 @@ class SessionAuthenticator
     private LoggerInterface $logger;
     private AuthenticationService $authService;
     private PDO $db;
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
     private CsrfTokenService $csrfTokenService;
     private ?LdapAuthenticator $ldapAuthenticator = null;
     private ?SqlAuthenticator $sqlAuthenticator = null;
@@ -62,7 +62,7 @@ class SessionAuthenticator
     private RedirectService $redirectService;
     private ControllerServiceFactory $services;
 
-    public function __construct(PDO $connection, ConfigurationManager $configManager)
+    public function __construct(PDO $connection, ConfigurationInterface $configManager)
     {
         $this->logger = ClassContextLogger::for(Logger::fromConfig($configManager), self::class);
 

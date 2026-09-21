@@ -27,6 +27,7 @@ use PDO;
 use Poweradmin\Domain\Service\RecordChangeWriterInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Writes before/after record and zone snapshots to log_record_changes, grouped into log_changesets rows.
@@ -56,7 +57,7 @@ class RecordChangeLogger implements RecordChangeWriterInterface
 
     private PDO $db;
     private UserContextService $userContext;
-    private ?ConfigurationManager $config;
+    private ?ConfigurationInterface $config;
 
     // Changeset scope, shared across every instance for the life of the request.
     // Write paths build their own logger (RecordManager, the v2 controllers), so an
@@ -72,7 +73,7 @@ class RecordChangeLogger implements RecordChangeWriterInterface
     public function __construct(
         PDO $db,
         ?UserContextService $userContext = null,
-        ?ConfigurationManager $config = null
+        ?ConfigurationInterface $config = null
     ) {
         $this->db = $db;
         $this->userContext = $userContext ?? new UserContextService();

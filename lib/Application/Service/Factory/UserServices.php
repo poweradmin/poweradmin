@@ -39,7 +39,7 @@ use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Domain\Service\UserProfileAssembler;
 use Poweradmin\Domain\Service\UserTimezoneService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Logger\DbUserLogger;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -57,7 +57,7 @@ use Psr\Log\LoggerInterface;
 class UserServices
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private LoggerInterface $logger;
     private ControllerServiceFactory $services;
 
@@ -67,7 +67,7 @@ class UserServices
     private ?UserPreferenceService $userPreferenceService = null;
     private ?UserProvisioningService $userProvisioningService = null;
 
-    public function __construct(PDO $db, ConfigurationManager $config, LoggerInterface $logger, ControllerServiceFactory $services)
+    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ControllerServiceFactory $services)
     {
         $this->db = $db;
         $this->config = $config;

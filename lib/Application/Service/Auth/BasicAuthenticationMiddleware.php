@@ -27,7 +27,7 @@ use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\SessionKeys;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,16 +40,16 @@ use Symfony\Component\HttpFoundation\Request;
 class BasicAuthenticationMiddleware
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private LoginAttemptService $loginAttemptService;
 
     /**
      * Constructor
      *
      * @param PDO $db Database connection
-     * @param ConfigurationManager $config Configuration manager
+     * @param ConfigurationInterface $config Configuration manager
      */
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;

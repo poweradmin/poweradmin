@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Enum\LoginAttemptStage;
 use Poweradmin\Domain\Service\LoginThrottleInterface;
@@ -37,7 +38,7 @@ class LoginAttemptService implements LoginThrottleInterface
     public const STAGE_PASSWORD = 'password';
     public const STAGE_MFA = 'mfa';
 
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
     private PDO $connection;
 
     // Cached per-connection so the introspection cost is paid once per request.
@@ -45,7 +46,7 @@ class LoginAttemptService implements LoginThrottleInterface
     // 4.5.0 SQL update (when `attempt_type` does not exist yet).
     private ?bool $attemptTypeColumnExists = null;
 
-    public function __construct(PDO $connection, ?ConfigurationManager $configManager = null)
+    public function __construct(PDO $connection, ?ConfigurationInterface $configManager = null)
     {
         $this->connection = $connection;
         $this->configManager = $configManager ?? ConfigurationManager::getInstance();

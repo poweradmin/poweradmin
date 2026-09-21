@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Domain\Database\DbCompat;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
 
 /**
@@ -32,9 +32,9 @@ use PDO;
 class DbPasswordResetTokenRepository
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;

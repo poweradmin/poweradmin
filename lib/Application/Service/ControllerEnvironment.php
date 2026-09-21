@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 
@@ -42,7 +42,7 @@ use Psr\Log\LoggerInterface;
 final class ControllerEnvironment
 {
     public function __construct(
-        public readonly ConfigurationManager $config,
+        public readonly ConfigurationInterface $config,
         public readonly PDO $db,
         public readonly LoggerInterface $logger,
         public readonly ?ControllerServiceFactory $serviceFactory = null,

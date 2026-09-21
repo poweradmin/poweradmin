@@ -27,7 +27,7 @@ use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Database\PdnsTable;
 
@@ -42,7 +42,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface, Rec
     private string $links_table = 'record_comment_links';
     private ?BackendCapabilitiesInterface $backendProvider;
 
-    public function __construct(PDO $connection, ConfigurationManager $config, ?BackendCapabilitiesInterface $backendProvider = null)
+    public function __construct(PDO $connection, ConfigurationInterface $config, ?BackendCapabilitiesInterface $backendProvider = null)
     {
         $this->connection = $connection;
         $tableNameService = new TableNameService($config);

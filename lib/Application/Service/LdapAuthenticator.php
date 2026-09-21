@@ -34,7 +34,7 @@ use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
@@ -46,7 +46,7 @@ class LdapAuthenticator
 {
     private LoggerInterface $logger;
     private PDO $db;
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
     private AuditService $auditService;
     private AuthenticationService $authenticationService;
     private CsrfTokenService $csrfTokenService;
@@ -61,7 +61,7 @@ class LdapAuthenticator
 
     public function __construct(
         PDO $connection,
-        ConfigurationManager $configManager,
+        ConfigurationInterface $configManager,
         AuditService $auditService,
         AuthenticationService $authService,
         CsrfTokenService $csrfTokenService,

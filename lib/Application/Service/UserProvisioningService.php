@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
@@ -48,7 +48,7 @@ class UserProvisioningService
 
     private LoggerInterface $logger;
     private PDO $db;
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
     private UserRepositoryInterface $userRepository;
 
     /** Collation clause forcing byte-exact matches on OIDC/SAML subject lookups. */
@@ -59,7 +59,7 @@ class UserProvisioningService
 
     public function __construct(
         PDO $connection,
-        ConfigurationManager $configManager,
+        ConfigurationInterface $configManager,
         LoggerInterface $logger,
         UserRepositoryInterface $userRepository
     ) {

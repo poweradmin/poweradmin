@@ -24,7 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Twig\Error\LoaderError;
@@ -40,7 +40,7 @@ use Twig\Error\SyntaxError;
 class ZoneAccessNotificationService
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private MailService $mailService;
     private EmailTemplateService $emailTemplateService;
     private DomainRepositoryInterface $domainRepository;
@@ -49,7 +49,7 @@ class ZoneAccessNotificationService
 
     public function __construct(
         PDO $db,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         MailService $mailService,
         EmailTemplateService $emailTemplateService,
         DomainRepositoryInterface $domainRepository,

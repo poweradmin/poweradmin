@@ -27,7 +27,7 @@ use Exception;
 use PDO;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -38,17 +38,17 @@ use Psr\Log\NullLogger;
 class DbApiKeyRepository implements ApiKeyRepositoryInterface
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private LoggerInterface $logger;
 
     /**
      * DbApiKeyRepository constructor
      *
      * @param PDO $db The PDO database layer
-     * @param ConfigurationManager $config The configuration manager
+     * @param ConfigurationInterface $config The configuration manager
      * @param LoggerInterface|null $logger The logger instance
      */
-    public function __construct(PDO $db, ConfigurationManager $config, ?LoggerInterface $logger = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->config = $config;

@@ -47,7 +47,7 @@ use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\ZoneChangeRequestService;
 use Poweradmin\Domain\Service\ZoneEditService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordTypeDefaultRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
@@ -62,7 +62,7 @@ use Psr\Log\LoggerInterface;
 class RecordServices
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private LoggerInterface $logger;
     private ControllerServiceFactory $services;
 
@@ -74,7 +74,7 @@ class RecordServices
     private ?ChangeRequestNotificationService $changeRequestNotificationService = null;
     private ?RecordTypeDefaultRepositoryInterface $recordTypeDefaultRepository = null;
 
-    public function __construct(PDO $db, ConfigurationManager $config, LoggerInterface $logger, ControllerServiceFactory $services)
+    public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ControllerServiceFactory $services)
     {
         $this->db = $db;
         $this->config = $config;

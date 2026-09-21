@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Network\ProxyContext;
@@ -33,10 +33,10 @@ use Poweradmin\Infrastructure\Network\ProxyContext;
 class OidcConfigurationService
 {
     private LoggerInterface $logger;
-    private ConfigurationManager $configManager;
+    private ConfigurationInterface $configManager;
     private array $discoveredConfigs = [];
 
-    public function __construct(ConfigurationManager $configManager, LoggerInterface $logger)
+    public function __construct(ConfigurationInterface $configManager, LoggerInterface $logger)
     {
         $this->logger = ClassContextLogger::for($logger, self::class);
 

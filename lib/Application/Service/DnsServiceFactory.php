@@ -42,7 +42,7 @@ use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use PDO;
 use Psr\Log\NullLogger;
@@ -58,12 +58,12 @@ class DnsServiceFactory
      * Create DnsRecordValidationService instance with all dependencies
      *
      * @param PDO $db Database connection
-     * @param ConfigurationManager $config Configuration manager
+     * @param ConfigurationInterface $config Configuration manager
      * @return DnsRecordValidationServiceInterface The DNS record validation service
      */
     public static function createDnsRecordValidationService(
         PDO $db,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         ?DnsBackendProviderInterface $backendProvider = null
     ): DnsRecordValidationServiceInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
@@ -85,7 +85,7 @@ class DnsServiceFactory
      */
     public static function createSOARecordManager(
         PDO $db,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         ?DnsBackendProviderInterface $backendProvider = null
     ): SOARecordManagerInterface {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
@@ -99,7 +99,7 @@ class DnsServiceFactory
      */
     public static function createRecordManager(
         PDO $db,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         ?DnsBackendProviderInterface $backendProvider = null,
         ?PermissionService $permissions = null
     ): RecordManagerInterface {
@@ -126,7 +126,7 @@ class DnsServiceFactory
      */
     public static function createDomainManager(
         PDO $db,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         ?DnsBackendProviderInterface $backendProvider = null,
         ?PermissionService $permissions = null
     ): DomainManagerInterface {
@@ -164,7 +164,7 @@ class DnsServiceFactory
         );
     }
 
-    private static function createPermissionService(PDO $db, ConfigurationManager $config): PermissionService
+    private static function createPermissionService(PDO $db, ConfigurationInterface $config): PermissionService
     {
         return new PermissionService(new DbUserRepository($db, $config));
     }
@@ -174,7 +174,7 @@ class DnsServiceFactory
      */
     public static function createSupermasterManager(
         PDO $db,
-        ConfigurationManager $config,
+        ConfigurationInterface $config,
         ?DnsBackendProviderInterface $backendProvider = null
     ): SupermasterManager {
         $backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
