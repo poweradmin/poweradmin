@@ -23,6 +23,8 @@
 namespace Poweradmin\Application\Routing;
 
 use Exception;
+use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Module\ModuleRegistry;
 use Symfony\Component\Config\FileLocator;
@@ -163,6 +165,10 @@ class SymfonyRouter
      */
     public function process(): void
     {
+        // Every request starts without an API principal: a handler that exits
+        // skips its finally block, and the next request may be a web route.
+        UserContextService::clearApiUserContext();
+
         $routeInfo = $this->match();
 
         $controllerClass = $routeInfo['controller'];
@@ -181,6 +187,15 @@ class SymfonyRouter
         );
 
         // Create controller instance
+        if ($this->isApiRoute() && is_subclass_of($controllerClass, PublicApiController::class)) {
+            PublicApiController::handle(function () use ($controllerClass, $requestData, $parameters, $method): object {
+                $controller = new $controllerClass($requestData, $parameters);
+                $this->assertMethodExists($controller, $method, $controllerClass);
+                return $controller;
+            }, $method);
+            return;
+        }
+
         if ($this->isApiRoute()) {
             $controller = new $controllerClass($requestData, $parameters);
         } else {
@@ -191,13 +206,15 @@ class SymfonyRouter
             $controller = new $controllerClass($requestData);
         }
 
-        // Check if method exists
+        $this->assertMethodExists($controller, $method, $controllerClass);
+        $controller->$method();
+    }
+
+    private function assertMethodExists(object $controller, string $method, string $controllerClass): void
+    {
         if (!method_exists($controller, $method)) {
             throw new Exception("Method {$method} not found in {$controllerClass}", 404);
         }
-
-        // Execute controller method
-        $controller->$method();
     }
 
     /**

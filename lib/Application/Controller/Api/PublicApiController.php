@@ -100,6 +100,24 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
+     * Builds and runs an API controller inside one request scope. The principal is
+     * cleared before construction and again afterwards, so an exit() inside a
+     * handler (which skips finally) cannot leave one request's user for the next.
+     *
+     * @param callable(): object $factory builds the controller, may throw or exit
+     */
+    final public static function handle(callable $factory, string $method): void
+    {
+        UserContextService::clearApiUserContext();
+        try {
+            $controller = $factory();
+            $controller->$method();
+        } finally {
+            UserContextService::clearApiUserContext();
+        }
+    }
+
+    /**
      * Authenticate the API request using API key or HTTP Basic auth
      *
      * @return void
