@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -35,9 +35,9 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
  */
 class DNSViolationValidator
 {
-    private RecordRepositoryInterface $recordRepository;
+    private RecordLookupInterface $recordRepository;
 
-    public function __construct(RecordRepositoryInterface $recordRepository)
+    public function __construct(RecordLookupInterface $recordRepository)
     {
         $this->recordRepository = $recordRepository;
     }

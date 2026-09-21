@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Enum\ZoneSaveOutcome;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
@@ -47,7 +47,7 @@ class ZoneEditService
         private readonly PermissionService $permissions,
         private readonly ZoneRepositoryInterface $zones,
         private readonly DomainRepositoryInterface $domains,
-        private readonly RecordRepositoryInterface $records,
+        private readonly RecordLookupInterface $records,
         private readonly RecordManagerInterface $recordManager,
         private readonly SOARecordManagerInterface $soaRecords,
         private readonly RecordCommentEditorInterface $comments,

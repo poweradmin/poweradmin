@@ -33,7 +33,7 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
@@ -46,7 +46,7 @@ use OpenApi\Attributes as OA;
 class ZonesRecordsBulkController extends PublicApiController
 {
     private ZoneReadRepositoryInterface $zoneRepository;
-    private RecordRepositoryInterface $recordRepository;
+    private RecordLookupInterface $recordRepository;
     private RecordManagerInterface $recordManager;
     private ApiPermissionService $apiPermissionService;
     private BackendCapabilitiesInterface $backendProvider;

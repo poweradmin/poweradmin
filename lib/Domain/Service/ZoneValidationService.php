@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordListingInterface;
 
 /**
  * Checks a zone is fit for DNSSEC signing and formats the reasons when it is not.
@@ -32,9 +32,9 @@ use Poweradmin\Domain\Repository\RecordRepositoryInterface;
  */
 class ZoneValidationService
 {
-    private RecordRepositoryInterface $recordRepository;
+    private RecordListingInterface $recordRepository;
 
-    public function __construct(RecordRepositoryInterface $recordRepository)
+    public function __construct(RecordListingInterface $recordRepository)
     {
         $this->recordRepository = $recordRepository;
     }

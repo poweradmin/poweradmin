@@ -29,7 +29,8 @@ use Poweradmin\Domain\Model\ReverseNetwork;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordListingInterface;
+use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Domain\Utility\IpHelper;
@@ -45,7 +46,7 @@ class BatchReverseRecordCreator
     private DomainRepositoryInterface $domainRepository;
     private RecordManagerInterface $recordManager;
     private IPAddressValidator $ipValidator;
-    private RecordRepositoryInterface $recordRepository;
+    private RecordLookupInterface&RecordListingInterface $recordRepository;
     private RecordMatchingService $recordMatchingService;
     private Closure $dnssecProvider;
     private ?DnssecProviderInterface $builtDnssecProvider = null;
@@ -57,7 +58,7 @@ class BatchReverseRecordCreator
         ConfigurationInterface $config,
         AuditLoggerInterface $audit,
         DomainRepositoryInterface $domainRepository,
-        RecordRepositoryInterface $recordRepository,
+        RecordLookupInterface&RecordListingInterface $recordRepository,
         RecordManagerInterface $recordManager,
         Closure $dnssecProvider,
         ?IPAddressValidator $ipValidator = null

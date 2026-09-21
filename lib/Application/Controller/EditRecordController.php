@@ -40,7 +40,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
@@ -200,7 +200,7 @@ class EditRecordController extends BaseController
      * Whether the stored row differs from its pre-edit copy. In API mode the record
      * ID changes with name, type, content or prio, so a missing row is itself a change.
      */
-    private function savedRecordDiffers(RecordRepositoryInterface $recordRepository, int|string $rid, array $old_record_info): bool
+    private function savedRecordDiffers(RecordLookupInterface $recordRepository, int|string $rid, array $old_record_info): bool
     {
         $saved_record_info = $recordRepository->getRecordFromId($rid);
 

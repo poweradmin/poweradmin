@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Service\AuditLoggerInterface;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 
@@ -35,7 +35,7 @@ use Poweradmin\Domain\Service\ReverseRecordCreator;
 class RecordDeletionService
 {
     public function __construct(
-        private readonly RecordRepositoryInterface $recordRepository,
+        private readonly RecordLookupInterface $recordRepository,
         private readonly RecordManagerInterface $recordManager,
         private readonly ReverseRecordCreator $reverseRecordCreator,
         private readonly AuditLoggerInterface $audit,

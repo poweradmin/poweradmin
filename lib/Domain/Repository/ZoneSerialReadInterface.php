@@ -23,13 +23,24 @@
 namespace Poweradmin\Domain\Repository;
 
 /**
- * Reads on the records table; implemented for SQL and for the API backend mode.
- *
- * Union of the RecordRepositoryInterface roles; consumers should depend on the narrowest role they use.
+ * Read access to zone SOA serials.
  */
-interface RecordRepositoryInterface extends
-    RecordLookupInterface,
-    RecordListingInterface,
-    ZoneSerialReadInterface
+interface ZoneSerialReadInterface
 {
+    /**
+     * Get Serial for Zone ID
+     *
+     * @param int $zid Zone ID
+     *
+     * @return string Serial Number or false if not found
+     */
+    public function getSerialByZid(int $zid): string;
+
+    /**
+     * Get serial numbers for multiple zones in a single query
+     *
+     * @param array $zoneIds Array of zone IDs
+     * @return array<int, string> Array mapping zone ID to serial number
+     */
+    public function getSerialsByZoneIds(array $zoneIds): array;
 }

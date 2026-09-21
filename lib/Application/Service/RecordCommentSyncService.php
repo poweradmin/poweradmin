@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\RecordCommentSyncInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -35,12 +35,12 @@ use Poweradmin\Domain\Utility\DomainUtility;
 class RecordCommentSyncService implements RecordCommentSyncInterface
 {
     private RecordCommentService $commentService;
-    private ?RecordRepositoryInterface $recordRepository;
+    private ?RecordListingInterface $recordRepository;
     private bool $numericRecordIds;
 
     public function __construct(
         RecordCommentService $commentService,
-        ?RecordRepositoryInterface $recordRepository = null,
+        ?RecordListingInterface $recordRepository = null,
         ?BackendCapabilitiesInterface $backendProvider = null
     ) {
         $this->commentService = $commentService;

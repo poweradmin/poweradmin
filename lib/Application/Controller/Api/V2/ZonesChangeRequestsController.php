@@ -28,7 +28,7 @@ use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -52,7 +52,7 @@ class ZonesChangeRequestsController extends PublicApiController
     private const ONE_ACTION_ONLY = 'Only one action per change request is supported';
 
     private ZoneReadRepositoryInterface $zoneRepository;
-    private RecordRepositoryInterface $recordRepository;
+    private RecordLookupInterface $recordRepository;
     private RecordCommentRepositoryInterface $recordComments;
     private ?RecordLinkedCommentRepositoryInterface $linkedComments;
     private ZoneChangeRequestRepositoryInterface $requests;

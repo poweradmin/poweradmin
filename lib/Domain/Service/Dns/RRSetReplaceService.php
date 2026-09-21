@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Service\AuditLoggerInterface;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
@@ -43,7 +43,7 @@ class RRSetReplaceService
         private readonly ConfigurationInterface $config,
         private readonly BackendCapabilitiesInterface $backend,
         private readonly DnsRecordValidationServiceInterface $validationService,
-        private readonly RecordRepositoryInterface $recordRepository,
+        private readonly RecordListingInterface $recordRepository,
         private readonly RecordManagerInterface $recordManager,
         private readonly SOARecordManagerInterface $soaRecordManager,
         private readonly AuditLoggerInterface $audit

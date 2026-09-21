@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLookupInterface;
 
 /**
  * Captures a record before and after an edit and writes the change to the zone audit log.
@@ -34,9 +34,9 @@ class RecordLog
 
     private bool $record_changed = false;
     private AuditLoggerInterface $audit;
-    private RecordRepositoryInterface $recordRepository;
+    private RecordLookupInterface $recordRepository;
 
-    public function __construct(AuditLoggerInterface $audit, RecordRepositoryInterface $recordRepository)
+    public function __construct(AuditLoggerInterface $audit, RecordLookupInterface $recordRepository)
     {
         $this->recordRepository = $recordRepository;
         $this->audit = $audit;

@@ -31,7 +31,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManager;
@@ -74,7 +74,7 @@ class ZoneChangeRequestService
         private readonly ZoneChangeRequestRepositoryInterface $requests,
         private readonly ZoneEditService $zoneEdit,
         private readonly DnsRecordValidationServiceInterface $validator,
-        private readonly RecordRepositoryInterface $records,
+        private readonly RecordLookupInterface $records,
         private readonly DomainRepositoryInterface $domains,
         private readonly ZoneRepositoryInterface $zones,
         private readonly RecordManagerInterface $recordManager,

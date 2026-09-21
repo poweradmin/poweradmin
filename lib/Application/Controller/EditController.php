@@ -53,7 +53,7 @@ use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -70,7 +70,7 @@ class EditController extends BaseController
     private UserContextService $userContextService;
     private ZoneReadRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
-    private RecordRepositoryInterface $recordRepository;
+    private RecordListingInterface $recordRepository;
     private DomainRepositoryInterface $domainRepository;
     /** Rows and comment from a submission rejected as stale, so the re-render can restore them. */
     private array $rejectedRecords = [];

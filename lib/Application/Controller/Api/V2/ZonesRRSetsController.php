@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,7 +41,7 @@ use OpenApi\Attributes as OA;
 class ZonesRRSetsController extends PublicApiController
 {
     private ZoneReadRepositoryInterface $zoneRepository;
-    private RecordRepositoryInterface $recordRepository;
+    private RecordListingInterface $recordRepository;
     private RecordManagerInterface $recordManager;
     private ApiPermissionService $apiPermissionService;
     private ReverseTtlResolver $reverseTtlResolver;
