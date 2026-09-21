@@ -63,6 +63,15 @@ class ControllerServiceFactoryTest extends TestCase
         $this->assertSame($factory->userPreferenceService(), $factory->userPreferenceService());
     }
 
+    public function testAuthenticationServiceAndItsSessionAndRedirectPartsAreMemoized(): void
+    {
+        $factory = $this->makeFactory();
+
+        $this->assertSame($factory->sessionService(), $factory->sessionService());
+        $this->assertSame($factory->redirectService(), $factory->redirectService());
+        $this->assertSame($factory->authenticationService(), $factory->authenticationService());
+    }
+
     public function testRepositoryFactoryMemoizesTheSharedProviderPath(): void
     {
         $factory = $this->makeFactory();

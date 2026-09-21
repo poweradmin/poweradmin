@@ -29,7 +29,6 @@ use Poweradmin\Application\Service\UsernameRecoveryService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
-use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -112,9 +111,8 @@ class ForgotUsernameController extends BaseController
                 'ip' => $this->ipRetriever->getClientIp(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
-            $redirectService = new RedirectService();
             $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-            $redirectService->redirectTo($baseUrlPrefix . '/');
+            $this->services()->redirectService()->redirectTo($baseUrlPrefix . '/');
             return;
         }
 

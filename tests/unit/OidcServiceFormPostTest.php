@@ -32,6 +32,7 @@ use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Service\AuthenticationService;
 use ReflectionMethod;
 
 class OidcServiceFormPostTest extends TestCase
@@ -74,7 +75,8 @@ class OidcServiceFormPostTest extends TestCase
             $this->createMock(OidcConfigurationService::class),
             $this->createMock(UserProvisioningService::class),
             $this->createMock(Logger::class),
-            $this->createMock(PDO::class)
+            $this->createMock(PDO::class),
+            $this->createMock(AuthenticationService::class)
         );
     }
 

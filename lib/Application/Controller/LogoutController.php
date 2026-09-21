@@ -27,11 +27,10 @@ use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\UserProvisioningService;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Infrastructure\Service\AuthenticationService;
-use Poweradmin\Infrastructure\Session\SessionService;
-use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -41,13 +40,11 @@ class LogoutController extends BaseController
 {
     private AuthenticationService $authService;
 
-    public function __construct(array $request)
+    public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
-        parent::__construct($request);
+        parent::__construct($request, true, $environment);
 
-        $sessionService = new SessionService();
-        $redirectService = new RedirectService();
-        $this->authService = new AuthenticationService($sessionService, $redirectService, $this->config);
+        $this->authService = $this->services()->authenticationService();
     }
 
     public function run(): void
@@ -118,7 +115,8 @@ class LogoutController extends BaseController
                 $samlConfigService,
                 $userProvisioningService,
                 $this->logger,
-                $this->db
+                $this->db,
+                $this->services()->authenticationService()
             );
 
             // Initiate SAML Single Logout

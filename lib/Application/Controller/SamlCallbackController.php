@@ -25,12 +25,11 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\UserProvisioningService;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Infrastructure\Service\AuthenticationService;
-use Poweradmin\Infrastructure\Session\SessionService;
-use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
 
 /**
@@ -41,10 +40,10 @@ class SamlCallbackController extends BaseController
     private SamlService $samlService;
     private AuthenticationService $authService;
 
-    public function __construct(array $request)
+    public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
         // Don't authenticate - this is the callback endpoint
-        parent::__construct($request, false);
+        parent::__construct($request, false, $environment);
 
         // Initialize SAML services
         $samlConfigService = new SamlConfigurationService($this->config, $this->logger);
@@ -56,14 +55,12 @@ class SamlCallbackController extends BaseController
             $userProvisioningService,
             $this->logger,
             $this->db,
+            $this->services()->authenticationService(),
             $this->httpRequest,
             $this->createAuditService()
         );
 
-        // Initialize authentication service
-        $sessionService = new SessionService();
-        $redirectService = new RedirectService();
-        $this->authService = new AuthenticationService($sessionService, $redirectService, $this->config);
+        $this->authService = $this->services()->authenticationService();
     }
 
     /**

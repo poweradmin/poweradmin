@@ -25,11 +25,10 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\OidcService;
 use Poweradmin\Application\Service\UserProvisioningService;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Infrastructure\Service\AuthenticationService;
-use Poweradmin\Infrastructure\Session\SessionService;
-use Poweradmin\Infrastructure\Service\RedirectService;
 
 /**
  * Starts the OIDC login flow by redirecting to the chosen or first configured provider.
@@ -39,10 +38,10 @@ class OidcLoginController extends BaseController
     private OidcService $oidcService;
     private AuthenticationService $authService;
 
-    public function __construct(array $request)
+    public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
         // Don't authenticate - this is a login endpoint
-        parent::__construct($request, false);
+        parent::__construct($request, false, $environment);
 
         // Initialize OIDC services
         $oidcConfigService = new OidcConfigurationService($this->config, $this->logger);
@@ -54,13 +53,11 @@ class OidcLoginController extends BaseController
             $oidcProvisioningService,
             $this->logger,
             $this->db,
+            $this->services()->authenticationService(),
             $this->httpRequest
         );
 
-        // Initialize authentication service
-        $sessionService = new SessionService();
-        $redirectService = new RedirectService();
-        $this->authService = new AuthenticationService($sessionService, $redirectService, $this->config);
+        $this->authService = $this->services()->authenticationService();
     }
 
     public function run(): void

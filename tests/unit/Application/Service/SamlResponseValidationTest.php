@@ -11,6 +11,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Service\AuthenticationService;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -39,6 +40,7 @@ class SamlResponseValidationTest extends TestCase
             $this->mockUserProvisioning,
             $this->mockLogger,
             $this->mockDb,
+            $this->createMock(AuthenticationService::class),
             $this->mockRequest
         );
 

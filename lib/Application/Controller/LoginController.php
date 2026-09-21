@@ -53,7 +53,8 @@ class LoginController extends BaseController
             $samlConfigService,
             $userProvisioningService,
             $this->logger,
-            $this->db
+            $this->db,
+            $this->services()->authenticationService()
         );
     }
 

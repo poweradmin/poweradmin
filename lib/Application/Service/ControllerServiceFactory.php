@@ -87,7 +87,10 @@ use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
+use Poweradmin\Infrastructure\Service\AuthenticationService;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Infrastructure\Session\SessionService;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
 use Psr\Log\LoggerInterface;
@@ -130,6 +133,9 @@ class ControllerServiceFactory
     private ?ZoneChangeRequestRepositoryInterface $zoneChangeRequestRepository = null;
     private ?ZoneChangeRequestService $zoneChangeRequestService = null;
     private ?ChangeRequestNotificationService $changeRequestNotificationService = null;
+    private ?SessionService $sessionService = null;
+    private ?RedirectService $redirectService = null;
+    private ?AuthenticationService $authenticationService = null;
     private bool $apiClientResolved = false;
 
     public function __construct(PDO $db, ConfigurationManager $config, LoggerInterface $logger)
@@ -292,6 +298,25 @@ class ControllerServiceFactory
             $this->apiPermissionService(),
             $this->auditService()
         );
+    }
+
+    public function sessionService(): SessionService
+    {
+        return $this->sessionService ??= new SessionService();
+    }
+
+    public function redirectService(): RedirectService
+    {
+        return $this->redirectService ??= new RedirectService();
+    }
+
+    /**
+     * Shared login/logout redirect handling for the session-backed controllers
+     * and the OIDC and SAML flows they hand off to.
+     */
+    public function authenticationService(): AuthenticationService
+    {
+        return $this->authenticationService ??= new AuthenticationService($this->sessionService(), $this->redirectService(), $this->config);
     }
 
     public function auditService(): AuditService

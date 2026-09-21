@@ -25,12 +25,11 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\PasswordChangeService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Infrastructure\Service\AuthenticationService;
-use Poweradmin\Infrastructure\Session\SessionService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -45,12 +44,10 @@ class ChangePasswordController extends BaseController
     private PasswordChangeService $passwordService;
     private UserContextService $userContextService;
 
-    public function __construct(array $request)
+    public function __construct(array $request, ?ControllerEnvironment $environment = null)
     {
-        parent::__construct($request);
-        $sessionService = new SessionService();
-        $redirectService = new RedirectService();
-        $this->authService = new AuthenticationService($sessionService, $redirectService, $this->config);
+        parent::__construct($request, true, $environment);
+        $this->authService = $this->services()->authenticationService();
         $this->policyService = new PasswordPolicyService();
 
         $userAuthService = UserAuthenticationService::fromConfig($this->config);

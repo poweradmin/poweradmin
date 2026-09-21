@@ -30,7 +30,6 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
-use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -114,9 +113,8 @@ class ResetPasswordController extends BaseController
                 'token' => $this->token ?? 'none',
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
-            $redirectService = new RedirectService();
             $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
-            $redirectService->redirectTo($baseUrlPrefix . '/');
+            $this->services()->redirectService()->redirectTo($baseUrlPrefix . '/');
             return;
         }
 

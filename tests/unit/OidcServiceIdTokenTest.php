@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Service\AuthenticationService;
 use ReflectionMethod;
 
 class OidcServiceIdTokenTest extends TestCase
@@ -51,7 +52,8 @@ class OidcServiceIdTokenTest extends TestCase
             $oidcConfigService,
             $userProvisioningService,
             $logger,
-            $db
+            $db,
+            $this->createMock(AuthenticationService::class)
         );
 
         $this->decodeMethod = new ReflectionMethod(OidcService::class, 'decodeIdTokenPayload');

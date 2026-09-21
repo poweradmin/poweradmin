@@ -31,14 +31,12 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Infrastructure\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
-use Poweradmin\Infrastructure\Session\SessionService;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
-use Poweradmin\Infrastructure\Service\RedirectService;
 
 /**
  * Runs the SAML login flow: builds the IdP redirect, consumes the assertion and handles single logout.
@@ -48,7 +46,6 @@ class SamlService
     private LoggerInterface $logger;
     private ConfigurationManager $configManager;
     private AuthenticationService $authenticationService;
-    private SessionService $sessionService;
     private SamlConfigurationService $samlConfigurationService;
     private UserProvisioningService $userProvisioningService;
     private Request $request;
@@ -63,6 +60,7 @@ class SamlService
         UserProvisioningService $userProvisioningService,
         LoggerInterface $logger,
         PDO $db,
+        AuthenticationService $authenticationService,
         ?Request $request = null,
         ?AuditService $auditService = null
     ) {
@@ -74,10 +72,7 @@ class SamlService
         $this->request = $request ?: new Request();
         $this->db = $db;
 
-        // Initialize services following existing patterns
-        $this->sessionService = new SessionService();
-        $redirectService = new RedirectService();
-        $this->authenticationService = new AuthenticationService($this->sessionService, $redirectService, $this->configManager);
+        $this->authenticationService = $authenticationService;
         $this->csrfTokenService = new CsrfTokenService();
         $this->auditService = $auditService ?? new AuditService($db);
     }
