@@ -33,7 +33,7 @@ use Poweradmin\Domain\Service\ApiStatusInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;

@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Database;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
 
 /**
  * The zones id spaces overlap on installs migrated from SQL mode, so one identifier can

@@ -30,10 +30,10 @@ use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsFormatter;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 
 /**
  * SQL persistence for zone templates in zone_templ and their records in zone_templ_records.

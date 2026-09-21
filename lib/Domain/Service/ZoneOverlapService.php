@@ -25,9 +25,9 @@ namespace Poweradmin\Domain\Service;
 
 use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
 
 /**
  * Blocks creating a zone that overlaps an existing zone owned by another user.

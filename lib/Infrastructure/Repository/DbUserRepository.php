@@ -27,8 +27,8 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
-use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 use Poweradmin\Domain\Enum\AuthMethod;
 

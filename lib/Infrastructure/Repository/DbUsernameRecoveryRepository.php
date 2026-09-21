@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
-use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**

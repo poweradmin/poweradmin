@@ -25,8 +25,8 @@ namespace Poweradmin\Infrastructure\Service\Consistency;
 use Exception;
 use PDO;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 
 /**
  * Consistency checks against the PowerDNS tables in the local database.

@@ -26,9 +26,9 @@ use PDO;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 
 /**

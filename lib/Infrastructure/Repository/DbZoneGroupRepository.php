@@ -26,9 +26,9 @@ use PDO;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
 
 /**
  * SQL persistence for zone-to-group links in zones_groups; joins domains, or the zones table under the API backend.

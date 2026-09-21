@@ -26,7 +26,7 @@ use PDO;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\ValueObject\UserInfoInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Enum\AuthMethod;

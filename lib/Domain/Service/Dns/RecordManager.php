@@ -43,7 +43,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
 use Poweradmin\Domain\Service\ZoneAccessPolicy;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
 
 /**
  * Creates, updates and deletes records for the web UI, with validation, logging and serial updates.

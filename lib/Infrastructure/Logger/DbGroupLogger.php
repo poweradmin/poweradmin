@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
-use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Database\DbCompat;
 
 /**
  * Writes group events to the log_groups table and queries them, joined to user_groups, for the group log page.

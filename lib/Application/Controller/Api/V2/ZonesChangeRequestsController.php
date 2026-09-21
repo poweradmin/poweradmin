@@ -40,7 +40,7 @@ use Poweradmin\Domain\Service\ZoneChangeRequestService;
 use Poweradmin\Domain\Service\ZoneEditSubmission;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
-use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Database\DbCompat;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**

@@ -31,7 +31,7 @@ use Poweradmin\Domain\Service\RecordReadBackendInterface;
 use Poweradmin\Domain\Service\RecordWriteBackendInterface;
 use Poweradmin\Domain\Service\ZoneReadBackendInterface;
 use Poweradmin\Domain\ValueObject\HostnameValue;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
 
 /**
  * Dynamic DNS persistence for the API backend mode.

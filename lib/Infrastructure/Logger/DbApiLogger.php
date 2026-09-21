@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
-use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Database\DbCompat;
 
 /**
  * Writes API events to the log_api table and queries, filters and prunes them for the API log page.

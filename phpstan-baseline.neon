@@ -139,12 +139,6 @@ parameters:
 			path: lib/Domain/Service/ApiPermissionService.php
 
 		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 2
-			path: lib/Domain/Service/ApiPermissionService.php
-
-		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Repository\\DbUserRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
@@ -169,18 +163,6 @@ parameters:
 			path: lib/Domain/Service/CatalogZoneService.php
 
 		-
-			message: '#^Class Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
-			message: '#^Class Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger matches Poweradmin\\Infrastructure\\Logger\\\*\]$#'
 			identifier: disallowed.class
 			count: 3
@@ -190,24 +172,6 @@ parameters:
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\DbUserRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\DbUserRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.class
 			count: 3
-			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
-			message: '#^Enum Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.enum
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/Dns/DomainManager.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
 			path: lib/Domain/Service/Dns/DomainManager.php
 
 		-
@@ -241,12 +205,6 @@ parameters:
 			path: lib/Domain/Service/Dns/RecordManager.php
 
 		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 2
-			path: lib/Domain/Service/Dns/RecordManager.php
-
-		-
 			message: '#^Namespace Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger matches Poweradmin\\Infrastructure\\Logger\\\*\]$#'
 			identifier: disallowed.namespace
 			count: 1
@@ -263,42 +221,6 @@ parameters:
 			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/Dns/RecordManager.php
-
-		-
-			message: '#^Class Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/Dns/SOARecordManager.php
-
-		-
-			message: '#^Class Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/Dns/SOARecordManager.php
-
-		-
-			message: '#^Enum Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.enum
-			count: 1
-			path: lib/Domain/Service/Dns/SOARecordManager.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/Dns/SOARecordManager.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/Dns/SOARecordManager.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\DbCompat is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\DbCompat matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 2
-			path: lib/Domain/Service/Dns/SupermasterManager.php
 
 		-
 			message: '#^Class Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever matches Poweradmin\\Infrastructure\\Utility\\\*\]$#'
@@ -319,44 +241,8 @@ parameters:
 			path: lib/Domain/Service/ReverseRecordCreator.php
 
 		-
-			message: '#^Class Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/ReverseRecordCreator.php
-
-		-
-			message: '#^Class Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/ReverseRecordCreator.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository matches Poweradmin\\Infrastructure\\Repository\\\*\]$#'
 			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/ReverseRecordCreator.php
-
-		-
-			message: '#^Enum Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.enum
-			count: 2
-			path: lib/Domain/Service/ReverseRecordCreator.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\DbCompat is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\DbCompat matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 3
-			path: lib/Domain/Service/ReverseRecordCreator.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/ReverseRecordCreator.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/ReverseRecordCreator.php
 
@@ -391,54 +277,6 @@ parameters:
 			path: lib/Domain/Service/UserTimezoneService.php
 
 		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 2
-			path: lib/Domain/Service/ZoneAccountSyncService.php
-
-		-
-			message: '#^Class Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/ZoneCountService.php
-
-		-
-			message: '#^Class Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/ZoneCountService.php
-
-		-
-			message: '#^Enum Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.enum
-			count: 1
-			path: lib/Domain/Service/ZoneCountService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 2
-			path: lib/Domain/Service/ZoneCountService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\DbCompat is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\DbCompat matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 4
-			path: lib/Domain/Service/ZoneCountService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/ZoneCountService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/ZoneCountService.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Logger\\RecordChangeLogger matches Poweradmin\\Infrastructure\\Logger\\\*\]$#'
 			identifier: disallowed.class
 			count: 3
@@ -469,42 +307,6 @@ parameters:
 			path: lib/Domain/Service/ZoneMetadataService.php
 
 		-
-			message: '#^Class Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.class
-			count: 1
-			path: lib/Domain/Service/ZoneOverlapService.php
-
-		-
-			message: '#^Class Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.class
-			count: 2
-			path: lib/Domain/Service/ZoneOverlapService.php
-
-		-
-			message: '#^Enum Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.enum
-			count: 1
-			path: lib/Domain/Service/ZoneOverlapService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 2
-			path: lib/Domain/Service/ZoneOverlapService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\PdnsTable is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\PdnsTable matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/ZoneOverlapService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\TableNameService is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\TableNameService matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 1
-			path: lib/Domain/Service/ZoneOverlapService.php
-
-		-
 			message: '#^Class Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting matches Poweradmin\\Infrastructure\\Utility\\\*\]$#'
 			identifier: disallowed.class
 			count: 2
@@ -515,12 +317,6 @@ parameters:
 			identifier: disallowed.namespace
 			count: 1
 			path: lib/Domain/Service/ZoneSortingService.php
-
-		-
-			message: '#^Namespace Poweradmin\\Infrastructure\\Database\\DbCompat is forbidden, lib/Domain depends on Application and Infrastructure only through interfaces; inject the dependency or move the code\. \[Poweradmin\\Infrastructure\\Database\\DbCompat matches Poweradmin\\Infrastructure\\Database\\\*\]$#'
-			identifier: disallowed.namespace
-			count: 15
-			path: lib/Domain/Service/ZoneTemplateSyncService.php
 
 		-
 			message: '#^Using \$_POST is forbidden, use Poweradmin\\Application\\Http\\Request instead\.$#'

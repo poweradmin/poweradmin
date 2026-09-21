@@ -28,8 +28,8 @@ use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Domain\Database\PdnsTable;
 
 /**
  * SQL persistence for record comments in the PowerDNS comments table, linked to records via record_comment_links.
@@ -306,7 +306,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface, Rec
         }
 
         $dbType = $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $castId = \Poweradmin\Infrastructure\Database\DbCompat::castToString($dbType, 'r.id');
+        $castId = \Poweradmin\Domain\Database\DbCompat::castToString($dbType, 'r.id');
 
         // Find all records in the RRset that don't have linked comments (excluding the current record)
         $query = "SELECT r.id FROM {$this->records_table} r

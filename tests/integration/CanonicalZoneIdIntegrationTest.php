@@ -25,7 +25,7 @@ namespace Poweradmin\Tests\Integration;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
 
 /**
  * CanonicalZoneSql::canonicalIdColumn() leans on NULLIF to fold a stranded domain_id of 0

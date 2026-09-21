@@ -27,7 +27,7 @@ use PDO;
 use Poweradmin\Domain\Service\ApiStatusInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
 
 /**
  * Consistency checks for the API backend: zone and record state comes from the

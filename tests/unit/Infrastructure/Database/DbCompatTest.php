@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Database;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Database\DbCompat;
 
 class DbCompatTest extends TestCase
 {

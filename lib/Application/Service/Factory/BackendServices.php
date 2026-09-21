@@ -38,7 +38,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Repository\ApiZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;

@@ -28,7 +28,7 @@ use PDO;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Database\DbCompat;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 

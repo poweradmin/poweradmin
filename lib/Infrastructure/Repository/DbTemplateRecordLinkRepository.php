@@ -26,8 +26,8 @@ use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 
 /**
  * SQL persistence for records_zone_templ (numeric ids) and records_zone_templ_api (encoded ids).

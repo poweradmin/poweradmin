@@ -3,7 +3,7 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Domain\Database\PdnsTable;
 
 class PdnsTableTest extends TestCase
 {

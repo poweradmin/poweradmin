@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Database;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
 
 /**
  * The canonical id joins zones to the tables keyed by it: zones_groups for group ownership

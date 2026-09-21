@@ -25,10 +25,10 @@ namespace Poweradmin\Infrastructure\Logger;
 use PDO;
 use Poweradmin\Domain\Service\BackendCapabilitiesInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 
 /**
  * Writes zone events to the log_zones table and queries them by domain or filter, with SQL and API-backend joins.

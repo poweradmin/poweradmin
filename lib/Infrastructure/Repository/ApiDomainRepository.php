@@ -33,8 +33,8 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
-use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
 

@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Infrastructure\Database;
+namespace Poweradmin\Domain\Database;
 
 /**
  * DbCompat class provides compatibility methods for different database types.
