@@ -258,7 +258,7 @@ class ZoneOwnersController extends PublicApiController
             return $this->returnApiError('You do not have permission to edit zone ownership', 403);
         }
 
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
+        $ownershipMode = $this->services()->zoneOwnershipModeService();
         if (!$ownershipMode->isUserOwnerAllowed()) {
             return $this->returnApiError(
                 'User-owner assignment is disabled by the current zone ownership mode (groups_only).',

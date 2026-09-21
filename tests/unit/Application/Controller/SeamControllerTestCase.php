@@ -34,6 +34,7 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
@@ -162,6 +163,8 @@ abstract class SeamControllerTestCase extends TestCase
         $db = $this->createMock(PDO::class);
         // Resolved per call: a test may reconfigure dns.backend between two controllers
         $this->factory->method('dnsBackendProvider')->willReturnCallback(fn() => $this->backendProvider($config, $db));
+        // The real mode resolver, so the ownership flags a page renders follow dns.zone_ownership_mode
+        $this->factory->method('zoneOwnershipModeService')->willReturn(new ZoneOwnershipModeService($config));
         $registry = new ModuleRegistry($config);
         $registry->loadModules();
 

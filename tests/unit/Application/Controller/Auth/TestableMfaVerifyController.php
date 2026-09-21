@@ -25,23 +25,17 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\Auth\MfaVerifyController;
-use Poweradmin\Application\Service\LoginAttemptService;
-use ReflectionProperty;
 
 /**
  * Builds the MFA verification controller through the ControllerEnvironment
- * seam and captures the page it would have rendered. The attempt counter is
- * planted, since the real one reads and writes the login_attempts table.
+ * seam and captures the page it would have rendered. The attempt counter
+ * comes from the stubbed service factory, since the real one reads and
+ * writes the login_attempts table.
  */
 class TestableMfaVerifyController extends MfaVerifyController
 {
     /** @var list<array{0: string, 1: array<string, mixed>}> */
     public array $rendered = [];
-
-    public function plantLoginAttemptService(LoginAttemptService $service): void
-    {
-        (new ReflectionProperty(MfaVerifyController::class, 'loginAttemptService'))->setValue($this, $service);
-    }
 
     public function render(string $template, array $params): void
     {

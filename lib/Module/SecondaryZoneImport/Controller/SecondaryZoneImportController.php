@@ -27,7 +27,6 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 
 /**
@@ -202,7 +201,7 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
 
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
+        $ownershipMode = $this->moduleServices()->zoneOwnershipModeService();
         $sessionUserId = $this->userContextService->getLoggedInUserId();
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $userGroupRepo = $this->moduleServices()->userGroupRepository();

@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Auth;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\PasswordResetService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\UserAuthenticationService;
@@ -53,7 +52,7 @@ class ForgotPasswordController extends BaseController
         // Create PasswordResetService with dependencies
         $tokenRepository = $this->services()->passwordResetTokenRepository();
         $userRepository = $this->services()->userRepository();
-        $mailService = new MailService($this->config, $this->logger);
+        $mailService = $this->services()->mailService();
         $authService = UserAuthenticationService::fromConfig($this->config);
         $this->client = $this->services()->clientContext();
 
@@ -68,7 +67,7 @@ class ForgotPasswordController extends BaseController
             $this->services()->urlService()
         );
 
-        $this->recaptchaService = new RecaptchaService($this->config);
+        $this->recaptchaService = $this->services()->recaptchaService();
         $this->userContextService = new UserContextService();
     }
 

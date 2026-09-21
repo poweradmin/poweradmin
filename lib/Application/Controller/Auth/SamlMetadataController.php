@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller\Auth;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\SamlService;
 
 /**
@@ -39,7 +38,7 @@ class SamlMetadataController extends BaseController
         parent::__construct($request, false);
 
         // Initialize SAML services
-        $samlConfigService = new SamlConfigurationService($this->config, $this->logger);
+        $samlConfigService = $this->services()->samlConfigurationService();
         $userProvisioningService = $this->services()->userProvisioningService();
 
         $this->samlService = new SamlService(

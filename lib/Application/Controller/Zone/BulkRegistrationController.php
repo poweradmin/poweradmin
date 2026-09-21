@@ -26,7 +26,6 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ZoneCreateRequest;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DomainHelper;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -129,7 +128,7 @@ class BulkRegistrationController extends BaseController
     private function showBulkRegistrationForm(array $failed_domains = [], array $added_domains = []): void
     {
         $zone_templates = $this->services()->zoneTemplateService();
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
+        $ownershipMode = $this->services()->zoneOwnershipModeService();
 
         $userGroupRepo = $this->services()->userGroupRepository();
         $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);

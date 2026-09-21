@@ -24,8 +24,6 @@ namespace Poweradmin\Application\Controller\Auth;
 
 use Exception;
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\OidcConfigurationService;
-use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\SamlService;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Domain\Model\SessionEntity;
@@ -69,7 +67,7 @@ class LogoutController extends BaseController
     {
         try {
             // Initialize OIDC configuration service
-            $oidcConfigService = new OidcConfigurationService($this->config, $this->logger);
+            $oidcConfigService = $this->services()->oidcConfigurationService();
 
             // Get provider configuration
             $providerConfig = $oidcConfigService->getProviderConfig($providerId);
@@ -107,7 +105,7 @@ class LogoutController extends BaseController
     {
         try {
             // Initialize SAML service for logout
-            $samlConfigService = new SamlConfigurationService($this->config, $this->logger);
+            $samlConfigService = $this->services()->samlConfigurationService();
             $userProvisioningService = $this->services()->userProvisioningService();
             $samlService = new SamlService(
                 $this->config,

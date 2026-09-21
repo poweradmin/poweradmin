@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Auth;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\CsrfTokenService;
-use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\UsernameRecoveryService;
 use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
@@ -52,7 +51,7 @@ class ForgotUsernameController extends BaseController
         // Create UsernameRecoveryService with dependencies
         try {
             $recoveryRepository = $this->services()->usernameRecoveryRepository();
-            $mailService = new MailService($this->config, $this->logger);
+            $mailService = $this->services()->mailService();
             $this->client = $this->services()->clientContext();
 
             $this->usernameRecoveryService = new UsernameRecoveryService(
@@ -65,7 +64,7 @@ class ForgotUsernameController extends BaseController
                 $this->services()->urlService()
             );
 
-            $this->recaptchaService = new RecaptchaService($this->config);
+            $this->recaptchaService = $this->services()->recaptchaService();
             $this->userContextService = new UserContextService();
         } catch (\Exception $e) {
             $this->logger->error('Failed to initialize username recovery controller', [

@@ -27,7 +27,6 @@ use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ChangeRequestNotificationService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\EmailTemplateService;
-use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
@@ -79,6 +78,8 @@ class RecordServices
     private ?ZoneChangeRequestService $zoneChangeRequestService = null;
     private ?ChangeRequestNotificationService $changeRequestNotificationService = null;
     private ?RecordTypeDefaultRepositoryInterface $recordTypeDefaultRepository = null;
+    private ?DnsValidatorRegistry $dnsValidatorRegistry = null;
+    private ?EmailTemplateService $emailTemplateService = null;
 
     public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ControllerServiceFactory $services)
     {
@@ -108,11 +109,24 @@ class RecordServices
     public function dnsRecordValidationService(): DnsRecordValidationServiceInterface
     {
         return $this->dnsRecordValidationService ??= new DnsRecordValidationService(
-            new DnsValidatorRegistry($this->config, $this->services->dnsBackendProvider()),
+            $this->dnsValidatorRegistry(),
             new DnsCommonValidator($this->services->dnsBackendProvider()),
             $this->services->domainRepository(),
             new DNSViolationValidator($this->services->recordRepository())
         );
+    }
+
+    /**
+     * Built once per request: the registry instantiates every record-type validator.
+     */
+    public function dnsValidatorRegistry(): DnsValidatorRegistry
+    {
+        return $this->dnsValidatorRegistry ??= new DnsValidatorRegistry($this->config, $this->services->dnsBackendProvider());
+    }
+
+    public function emailTemplateService(): EmailTemplateService
+    {
+        return $this->emailTemplateService ??= new EmailTemplateService($this->config);
     }
 
     public function recordChangeLogger(): RecordChangeWriterInterface
@@ -239,8 +253,8 @@ class RecordServices
         return $this->changeRequestNotificationService ??= new ChangeRequestNotificationService(
             $this->db,
             $this->config,
-            new MailService($this->config, $this->logger),
-            new EmailTemplateService($this->config),
+            $this->services->mailService(),
+            $this->emailTemplateService(),
             $this->services->domainRepository(),
             $this->services->permissionService(),
             $this->services->urlService(),

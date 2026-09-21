@@ -24,8 +24,6 @@
 namespace Poweradmin\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\EmailTemplateService;
-use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\ZoneAccessNotificationService;
 use Poweradmin\Application\Service\ZoneOwnershipMessages;
 use Poweradmin\Domain\Model\Permission;
@@ -33,7 +31,6 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
-use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 
@@ -134,7 +131,7 @@ class ZoneOwnershipController extends BaseController
             ];
         }, $groupOwnerships);
 
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
+        $ownershipMode = $this->services()->zoneOwnershipModeService();
 
         $has_user_owners = $owners !== [];
 
@@ -161,7 +158,7 @@ class ZoneOwnershipController extends BaseController
     private function handleFormSubmission(int $zone_id, string $zone_name, int $userId, bool $meta_edit): void
     {
         $auditService = $this->services()->auditService();
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
+        $ownershipMode = $this->services()->zoneOwnershipModeService();
 
         // Add owner
         $newowner = $this->httpRequest->getPostParam('newowner');
@@ -256,8 +253,8 @@ class ZoneOwnershipController extends BaseController
 
     private function createZoneAccessNotificationService(): ZoneAccessNotificationService
     {
-        $mailService = new MailService($this->config, $this->logger);
-        $emailTemplateService = new EmailTemplateService($this->config);
+        $mailService = $this->services()->mailService();
+        $emailTemplateService = $this->services()->emailTemplateService();
 
         return new ZoneAccessNotificationService(
             $this->db,

@@ -204,7 +204,7 @@ class GroupZonesController extends PublicApiController
             return $this->returnApiError('Only administrators can assign zones to groups', 403);
         }
 
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
+        $ownershipMode = $this->services()->zoneOwnershipModeService();
         if (!$ownershipMode->isGroupOwnerAllowed()) {
             return $this->returnApiError(
                 'Group-ownership assignment is disabled by the current zone ownership mode (users_only).',

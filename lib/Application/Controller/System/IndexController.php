@@ -23,9 +23,6 @@
 namespace Poweradmin\Application\Controller\System;
 
 use Poweradmin\Application\Controller\BaseController;
-use Poweradmin\Application\Service\OidcConfigurationService;
-use Poweradmin\Application\Service\PowerdnsStatusService;
-use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -93,7 +90,7 @@ class IndexController extends BaseController
         $showPdnsStatus = $this->config->get('interface', 'show_pdns_status', false);
 
         if ($pdnsApiEnabled && $showPdnsStatus && $permissions[Permission::PERM_USER_IS_UEBERUSER]) {
-            $statusService = new PowerdnsStatusService($this->config);
+            $statusService = $this->services()->powerdnsStatusService();
             $serverStatus = $statusService->getServerStatus();
             $pdnsServerStatus = [
                 'display' => $serverStatus['display_name'] ?? 'PowerDNS',
@@ -193,8 +190,8 @@ class IndexController extends BaseController
      */
     private function ssoProvisioningTemplateMissing(): bool
     {
-        return (new OidcConfigurationService($this->config, $this->logger))->isAutoProvisioningTemplateMissing()
-            || (new SamlConfigurationService($this->config, $this->logger))->isAutoProvisioningTemplateMissing();
+        return $this->services()->oidcConfigurationService()->isAutoProvisioningTemplateMissing()
+            || $this->services()->samlConfigurationService()->isAutoProvisioningTemplateMissing();
     }
 
     private function getModuleNavItemsForDashboard(): array

@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\PasswordGenerationService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
 use Poweradmin\Application\Service\UserAuthenticationService;
@@ -69,6 +70,8 @@ class UserServices
     private ?UserManagementService $userManagementService = null;
     private ?UserPreferenceService $userPreferenceService = null;
     private ?UserProvisioningService $userProvisioningService = null;
+    private ?PasswordPolicyService $passwordPolicyService = null;
+    private ?PasswordGenerationService $passwordGenerationService = null;
 
     public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ControllerServiceFactory $services)
     {
@@ -118,11 +121,21 @@ class UserServices
             $this->permissionService(),
             new UserProfileAssembler($this->permissionService(), $this->userGroupRepository()),
             UserAuthenticationService::fromConfig($this->config),
-            new PasswordPolicyService($this->config),
+            $this->passwordPolicyService(),
             (bool)$this->config->get('ldap', 'enabled', false),
             $this->services->domainManager(),
             $this->services->zoneManagementService()
         );
+    }
+
+    public function passwordPolicyService(): PasswordPolicyService
+    {
+        return $this->passwordPolicyService ??= new PasswordPolicyService($this->config);
+    }
+
+    public function passwordGenerationService(): PasswordGenerationService
+    {
+        return $this->passwordGenerationService ??= new PasswordGenerationService($this->config);
     }
 
     public function userGroupRepository(): UserGroupRepositoryInterface

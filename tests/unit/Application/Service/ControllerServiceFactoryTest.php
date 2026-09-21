@@ -17,8 +17,19 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Application\Service\EmailTemplateService;
+use Poweradmin\Application\Service\LoginAttemptService;
+use Poweradmin\Application\Service\MailService;
+use Poweradmin\Application\Service\OidcConfigurationService;
+use Poweradmin\Application\Service\PasswordGenerationService;
+use Poweradmin\Application\Service\PasswordPolicyService;
+use Poweradmin\Application\Service\PowerdnsStatusService;
+use Poweradmin\Application\Service\RecaptchaService;
+use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Psr\Log\NullLogger;
 
 /**
@@ -156,5 +167,35 @@ class ControllerServiceFactoryTest extends TestCase
         $explicit = $factory->repositoryFactory($other);
 
         $this->assertNotSame($factory->repositoryFactory(), $explicit);
+    }
+
+    /**
+     * The collaborators controllers used to build inline are now handed out
+     * once per request by the concern factory that owns them.
+     */
+    public function testFormerlyInlineCollaboratorsAreMemoizedOnTheirConcernFactory(): void
+    {
+        $factory = $this->makeFactory();
+
+        $expected = [
+            'mailService' => [MailService::class, $factory->auth()],
+            'samlConfigurationService' => [SamlConfigurationService::class, $factory->auth()],
+            'oidcConfigurationService' => [OidcConfigurationService::class, $factory->auth()],
+            'recaptchaService' => [RecaptchaService::class, $factory->auth()],
+            'loginAttemptService' => [LoginAttemptService::class, $factory->auth()],
+            'powerdnsStatusService' => [PowerdnsStatusService::class, $factory->backend()],
+            'zoneSyncService' => [ZoneSyncService::class, $factory->backend()],
+            'dnsValidatorRegistry' => [DnsValidatorRegistry::class, $factory->records()],
+            'emailTemplateService' => [EmailTemplateService::class, $factory->records()],
+            'passwordPolicyService' => [PasswordPolicyService::class, $factory->users()],
+            'passwordGenerationService' => [PasswordGenerationService::class, $factory->users()],
+        ];
+
+        foreach ($expected as $accessor => [$class, $owner]) {
+            $instance = $factory->$accessor();
+            $this->assertInstanceOf($class, $instance, $accessor);
+            $this->assertSame($instance, $factory->$accessor(), "$accessor is memoized");
+            $this->assertSame($instance, $owner->$accessor(), "$accessor delegates to its concern factory");
+        }
     }
 }

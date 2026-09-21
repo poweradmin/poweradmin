@@ -54,10 +54,10 @@ class MfaVerifyControllerTest extends SeamControllerTestCase
 
         $attempts = $this->createMock(LoginAttemptService::class);
         $attempts->method('isAccountLocked')->willReturn(false);
+        $this->factory->method('loginAttemptService')->willReturn($attempts);
 
         $this->post(['mfa_code' => '123456', 'mfa_token' => 'stale']);
         $controller = new TestableMfaVerifyController([], $this->environment($config));
-        $controller->plantLoginAttemptService($attempts);
         $controller->run();
 
         $this->assertSame('mfa_verify.html', $controller->rendered[0][0]);

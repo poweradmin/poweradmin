@@ -27,6 +27,7 @@ use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -46,6 +47,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
+use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -69,6 +71,8 @@ class BackendServices
     private ?DnssecProviderInterface $dnssecProvider = null;
     private ?PowerdnsApiClient $apiClient = null;
     private bool $apiClientResolved = false;
+    private ?PowerdnsStatusService $powerdnsStatusService = null;
+    private ?ZoneSyncService $zoneSyncService = null;
 
     public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger)
     {
@@ -158,5 +162,19 @@ class BackendServices
         return $provider->isApiBackend()
             ? new ApiConsistencyChecks($this->db, $provider, new ApiStatusService(), $ownerRepair)
             : new SqlConsistencyChecks($this->db, new TableNameService($this->config), $ownerRepair);
+    }
+
+    public function powerdnsStatusService(): PowerdnsStatusService
+    {
+        return $this->powerdnsStatusService ??= new PowerdnsStatusService($this->config, $this->logger);
+    }
+
+    /**
+     * The forced zone-list sync for API-backed installs; the 300s interval is
+     * the same floor the automatic sync uses.
+     */
+    public function zoneSyncService(): ZoneSyncService
+    {
+        return $this->zoneSyncService ??= new ZoneSyncService($this->db, $this->dnsBackendProvider(), 300, $this->logger);
     }
 }

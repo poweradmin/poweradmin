@@ -26,8 +26,12 @@ use PDO;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\MfaVerificationMailer;
+use Poweradmin\Application\Service\OidcConfigurationService;
+use Poweradmin\Application\Service\RecaptchaService;
+use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\UrlService;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\PasswordResetTokenRepositoryInterface;
@@ -70,6 +74,11 @@ class AuthServices
     private ?SessionService $sessionService = null;
     private ?RedirectService $redirectService = null;
     private ?AuthenticationService $authenticationService = null;
+    private ?MailService $mailService = null;
+    private ?SamlConfigurationService $samlConfigurationService = null;
+    private ?OidcConfigurationService $oidcConfigurationService = null;
+    private ?RecaptchaService $recaptchaService = null;
+    private ?LoginAttemptService $loginAttemptService = null;
 
     public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ControllerServiceFactory $services)
     {
@@ -126,10 +135,39 @@ class AuthServices
         return $this->mfaService ??= new MfaService(
             $this->userMfaRepository(),
             $this->config,
-            new MfaVerificationMailer(new MailService($this->config, $this->logger), $this->config),
+            new MfaVerificationMailer($this->mailService(), $this->config),
             null,
             $this->services->userTimezoneService()
         );
+    }
+
+    /**
+     * One mail transport per request, shared by MFA, password reset, username
+     * recovery and the zone-access notifications.
+     */
+    public function mailService(): MailService
+    {
+        return $this->mailService ??= new MailService($this->config, $this->logger);
+    }
+
+    public function samlConfigurationService(): SamlConfigurationService
+    {
+        return $this->samlConfigurationService ??= new SamlConfigurationService($this->config, $this->logger);
+    }
+
+    public function oidcConfigurationService(): OidcConfigurationService
+    {
+        return $this->oidcConfigurationService ??= new OidcConfigurationService($this->config, $this->logger);
+    }
+
+    public function recaptchaService(): RecaptchaService
+    {
+        return $this->recaptchaService ??= new RecaptchaService($this->config);
+    }
+
+    public function loginAttemptService(): LoginAttemptService
+    {
+        return $this->loginAttemptService ??= new LoginAttemptService($this->db, $this->config);
     }
 
     public function apiKeyRepository(): ApiKeyRepositoryInterface

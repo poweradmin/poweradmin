@@ -40,7 +40,7 @@ class EmailPreviewsController extends BaseController
     {
         parent::__construct($request);
 
-        $this->emailTemplateService = new EmailTemplateService($this->config);
+        $this->emailTemplateService = $this->moduleServices()->emailTemplateService();
         $this->emailPreviewService = new EmailPreviewService($this->emailTemplateService);
     }
 

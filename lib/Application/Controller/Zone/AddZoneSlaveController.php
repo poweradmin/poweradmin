@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Zone;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ZoneCreateRequest;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -121,7 +120,7 @@ class AddZoneSlaveController extends BaseController
         $groupsInput = $this->httpRequest->getPostParam('groups');
         $selected_groups = is_array($groupsInput) ? array_map('intval', $groupsInput) : [];
 
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
+        $ownershipMode = $this->services()->zoneOwnershipModeService();
 
         // Preserve reverse-zone context so the form returns to the reverse list
         $is_reverse_zone = $this->httpRequest->getQueryParam('type') === 'reverse'

@@ -31,18 +31,27 @@ use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\ChangeRequestNotificationService;
 use Poweradmin\Application\Service\DashboardStatsService;
 use Poweradmin\Application\Service\DnsDataService;
+use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\Factory\AuthServices;
 use Poweradmin\Application\Service\Factory\BackendServices;
 use Poweradmin\Application\Service\Factory\RecordServices;
 use Poweradmin\Application\Service\Factory\UserServices;
 use Poweradmin\Application\Service\Factory\ZoneServices;
+use Poweradmin\Application\Service\LoginAttemptService;
+use Poweradmin\Application\Service\MailService;
+use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\PasswordGenerationService;
+use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
+use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\Application\Service\RecordEditService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
+use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Application\Service\RepositoryFactory;
+use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\UrlService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Application\Service\ZoneCreateService;
@@ -72,6 +81,7 @@ use Poweradmin\Domain\Service\Zone\CatalogZoneService;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
 use Poweradmin\Domain\Service\Dns\RecordDeletionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -115,6 +125,7 @@ use Poweradmin\Application\Service\Auth\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Application\Service\Auth\BasicAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Infrastructure\Session\SessionService;
 use Psr\Log\LoggerInterface;
 
@@ -220,6 +231,16 @@ class ControllerServiceFactory implements ModuleServices
         return $this->backend->consistencyChecker();
     }
 
+    public function powerdnsStatusService(): PowerdnsStatusService
+    {
+        return $this->backend->powerdnsStatusService();
+    }
+
+    public function zoneSyncService(): ZoneSyncService
+    {
+        return $this->backend->zoneSyncService();
+    }
+
     public function userRepository(): UserRepositoryInterface
     {
         return $this->users->userRepository();
@@ -295,6 +316,16 @@ class ControllerServiceFactory implements ModuleServices
         return $this->users->groupLogger();
     }
 
+    public function passwordPolicyService(): PasswordPolicyService
+    {
+        return $this->users->passwordPolicyService();
+    }
+
+    public function passwordGenerationService(): PasswordGenerationService
+    {
+        return $this->users->passwordGenerationService();
+    }
+
     public function sessionService(): SessionService
     {
         return $this->auth->sessionService();
@@ -368,6 +399,31 @@ class ControllerServiceFactory implements ModuleServices
     public function apiLogger(): DbApiLogger
     {
         return $this->auth->apiLogger();
+    }
+
+    public function mailService(): MailService
+    {
+        return $this->auth->mailService();
+    }
+
+    public function samlConfigurationService(): SamlConfigurationService
+    {
+        return $this->auth->samlConfigurationService();
+    }
+
+    public function oidcConfigurationService(): OidcConfigurationService
+    {
+        return $this->auth->oidcConfigurationService();
+    }
+
+    public function recaptchaService(): RecaptchaService
+    {
+        return $this->auth->recaptchaService();
+    }
+
+    public function loginAttemptService(): LoginAttemptService
+    {
+        return $this->auth->loginAttemptService();
     }
 
     public function zoneManagementService(PdnsCapabilities|Closure|null $capabilities = null): ZoneManagementService
@@ -583,5 +639,15 @@ class ControllerServiceFactory implements ModuleServices
     public function recordTypeDefaultRepository(): RecordTypeDefaultRepositoryInterface
     {
         return $this->records->recordTypeDefaultRepository();
+    }
+
+    public function dnsValidatorRegistry(): DnsValidatorRegistry
+    {
+        return $this->records->dnsValidatorRegistry();
+    }
+
+    public function emailTemplateService(): EmailTemplateService
+    {
+        return $this->records->emailTemplateService();
     }
 }

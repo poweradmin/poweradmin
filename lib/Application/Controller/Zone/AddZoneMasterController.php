@@ -29,7 +29,6 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -278,7 +277,7 @@ class AddZoneMasterController extends BaseController
         $groupsInput = $this->httpRequest->getPostParam('groups');
         $selected_groups = is_array($groupsInput) ? array_map('intval', $groupsInput) : [];
 
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
+        $ownershipMode = $this->services()->zoneOwnershipModeService();
 
         // Preserve reverse-zone context so the form returns to the reverse list
         $is_reverse_zone = $this->httpRequest->getQueryParam('type') === 'reverse'

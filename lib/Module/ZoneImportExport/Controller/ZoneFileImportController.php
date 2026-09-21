@@ -29,7 +29,6 @@ use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\Auth\UserContextService;
-use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Application\Service\ZoneCreateFormMessages;
 use Poweradmin\Application\Service\ZoneOwnershipFormResolver;
@@ -236,7 +235,7 @@ class ZoneFileImportController extends BaseController
             // For new-zone imports, expose the ownership-mode flags + group list
             // so the preview step can offer a group picker without inferring all
             // memberships at execute time.
-            $ownershipMode = new ZoneOwnershipModeService($this->config);
+            $ownershipMode = $this->moduleServices()->zoneOwnershipModeService();
             $userId = $this->userContextService->getLoggedInUserId();
             $userGroupRepo = $this->moduleServices()->userGroupRepository();
             $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
@@ -341,7 +340,7 @@ class ZoneFileImportController extends BaseController
                 $this->showError(_('Invalid zone type.'));
                 return;
             }
-            $ownershipMode = new ZoneOwnershipModeService($this->config);
+            $ownershipMode = $this->moduleServices()->zoneOwnershipModeService();
             $noUserOwnerRequested = !empty($this->httpRequest->getPostParam('no_user_owner'));
             if (!$ownershipMode->isUserOwnerAllowed()) {
                 $ownerForCreate = null;

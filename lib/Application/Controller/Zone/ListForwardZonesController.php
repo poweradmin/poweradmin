@@ -26,7 +26,6 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
 use Poweradmin\Application\Service\DnsDataService;
-use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
@@ -79,8 +78,7 @@ class ListForwardZonesController extends BaseController
             return;
         }
 
-        $backendProvider = $this->services()->dnsBackendProvider();
-        $syncService = new ZoneSyncService($this->db, $backendProvider, 300, $this->logger);
+        $syncService = $this->services()->zoneSyncService();
 
         try {
             $result = $syncService->sync();

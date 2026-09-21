@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Module;
 
 use Poweradmin\Application\Service\AuditService;
+use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\RecordAddService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
@@ -34,6 +35,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 
 /**
  * The module-facing service surface: the collaborators a module controller may
@@ -54,6 +56,8 @@ interface ModuleServices
 
     public function domainRepository(): DomainRepositoryInterface;
 
+    public function emailTemplateService(): EmailTemplateService;
+
     public function permissionService(): PermissionService;
 
     public function recordAddService(): RecordAddService;
@@ -69,4 +73,6 @@ interface ModuleServices
     public function userRepository(): UserRepositoryInterface;
 
     public function zoneCreateOwnershipResolver(): ZoneCreateOwnershipResolver;
+
+    public function zoneOwnershipModeService(): ZoneOwnershipModeService;
 }

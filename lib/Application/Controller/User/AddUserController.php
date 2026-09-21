@@ -52,11 +52,11 @@ class AddUserController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->passwordPolicyService = new PasswordPolicyService($this->config);
-        $this->passwordGenerationService = new PasswordGenerationService($this->config);
+        $this->passwordPolicyService = $this->services()->passwordPolicyService();
+        $this->passwordGenerationService = $this->services()->passwordGenerationService();
 
         // Initialize mail service
-        $this->mailService = new MailService($this->config, $this->logger);
+        $this->mailService = $this->services()->mailService();
 
         // Initialize permission template repository
         $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();

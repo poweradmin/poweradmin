@@ -26,7 +26,6 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
-use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\Template\ZoneTemplateRecordValidationService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -56,7 +55,7 @@ class ZoneTemplateRecordsController extends PublicApiController
     private function validateTemplateRecord(string $name, string $type, string $content, int $ttl, int $priority): ?JsonResponse
     {
         $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
-            new DnsValidatorRegistry($this->config, $this->services()->dnsBackendProvider())
+            $this->services()->dnsValidatorRegistry()
         );
 
         $result = $this->recordValidationService->validate(

@@ -55,7 +55,7 @@ class MfaVerifyController extends BaseController
         $this->csrfTokenService = new CsrfTokenService();
         $this->userContextService = new UserContextService();
         $this->client = $this->services()->clientContext();
-        $this->loginAttemptService = new LoginAttemptService($this->db, $this->config);
+        $this->loginAttemptService = $this->services()->loginAttemptService();
     }
 
     /**
