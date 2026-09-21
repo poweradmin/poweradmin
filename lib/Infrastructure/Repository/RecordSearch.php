@@ -27,19 +27,21 @@ use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Port\RecordSearchInterface;
 
 // TODO: search_group_records relies on MySQL sql_mode hacks plus per-backend
 // MIN() workarounds; rewrite with proper cross-database GROUP BY.
 /**
  * Runs the record search page query with grouping, comments, sorting and pagination.
  */
-class RecordSearch extends BaseSearch
+class RecordSearch extends BaseSearch implements RecordSearchInterface
 {
     /**
      * Search for records based on specified parameters.
      *
      * @param array $parameters An array of search parameters.
      * @param string $permission_view The permission view for the search.
+     * @param int|null $userId The user an 'own' view is limited to.
      * @param string $sort_records_by The column to sort the records by.
      * @param string $record_sort_direction
      * @param bool $iface_search_group_records Whether to group records or not.
@@ -48,8 +50,17 @@ class RecordSearch extends BaseSearch
      * @param int $page The current page number (default is 1).
      * @return array An array of found records; `disabled` is a bool.
      */
-    public function searchRecords(array $parameters, string $permission_view, string $sort_records_by, string $record_sort_direction, bool $iface_search_group_records, int $iface_rowamount, bool $iface_record_comments, int $page = 1): array
-    {
+    public function searchRecords(
+        array $parameters,
+        string $permission_view,
+        ?int $userId,
+        string $sort_records_by,
+        string $record_sort_direction,
+        bool $iface_search_group_records,
+        int $iface_rowamount,
+        bool $iface_record_comments,
+        int $page = 1
+    ): array {
         $foundRecords = array();
 
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
@@ -63,6 +74,7 @@ class RecordSearch extends BaseSearch
                 $parameters['reverse'],
                 $reverse_search_string,
                 $permission_view,
+                $userId,
                 $iface_search_group_records,
                 $sort_records_by,
                 $record_sort_direction,
@@ -85,6 +97,7 @@ class RecordSearch extends BaseSearch
      * @param bool $reverse Whether to perform a reverse search
      * @param mixed $reverse_search_string Reverse search string for matching records
      * @param string $permission_view Permission view for the search
+     * @param int|null $userId The user an 'own' view is limited to
      * @param bool $iface_search_group_records Whether to search group records
      * @param string $sort_records_by Column to sort records by
      * @param string $record_sort_direction Sort direction
@@ -99,6 +112,7 @@ class RecordSearch extends BaseSearch
         bool $reverse,
         mixed $reverse_search_string,
         string $permission_view,
+        ?int $userId,
         bool $iface_search_group_records,
         string $sort_records_by,
         string $record_sort_direction,
@@ -213,7 +227,7 @@ class RecordSearch extends BaseSearch
         LEFT JOIN zones z on $records_table.domain_id = z.domain_id
         LEFT JOIN users u on z.owner = u.id
         WHERE
-            " . $this->buildWhereConditionsFetch($records_table, $search_string, $reverse, $reverse_search_string, $iface_record_comments, $parameters, $permission_view, $params) .
+            " . $this->buildWhereConditionsFetch($records_table, $search_string, $reverse, $reverse_search_string, $iface_record_comments, $parameters, $permission_view, $userId, $params) .
             $typeFilter .
             $contentFilter .
             $groupByClause .
@@ -240,15 +254,16 @@ class RecordSearch extends BaseSearch
      *
      * @param array $parameters An array of search parameters.
      * @param string $permission_view The permission view for the search.
+     * @param int|null $userId The user an 'own' view is limited to.
      * @param bool $iface_search_group_records Whether to search group records or not.
      * @return int The total number of found records.
      */
-    public function getTotalRecords(array $parameters, string $permission_view, bool $iface_search_group_records): int
+    public function getTotalRecords(array $parameters, string $permission_view, ?int $userId, bool $iface_search_group_records): int
     {
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
 
         $originalSqlMode = $this->handleSqlMode();
-        $foundRecords = $this->getFoundRecords($parameters, $search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $iface_search_group_records);
+        $foundRecords = $this->getFoundRecords($parameters, $search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $userId, $iface_search_group_records);
         $this->restoreSqlMode($originalSqlMode);
 
         return $foundRecords;
@@ -262,10 +277,11 @@ class RecordSearch extends BaseSearch
      * @param bool $reverse Whether to perform a reverse search or not.
      * @param mixed $reverse_search_string The reverse search string to use for matching records.
      * @param string $permission_view The permission view for the search.
+     * @param int|null $userId The user an 'own' view is limited to.
      * @param bool $iface_search_group_records Whether to search group records or not.
      * @return int The total number of found records.
      */
-    public function getFoundRecords(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records): int
+    public function getFoundRecords(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, ?int $userId, bool $iface_search_group_records): int
     {
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
@@ -311,7 +327,7 @@ class RecordSearch extends BaseSearch
             LEFT JOIN zones z on $records_table.domain_id = z.domain_id
             LEFT JOIN users u on z.owner = u.id
             WHERE
-                " . $this->buildWhereConditionsCount($records_table, $search_string, $reverse, $reverse_search_string, $parameters, $permission_view, $params) .
+                " . $this->buildWhereConditionsCount($records_table, $search_string, $reverse, $reverse_search_string, $parameters, $permission_view, $userId, $params) .
             $typeFilter .
             $contentFilter .
             " $groupByClause
@@ -325,7 +341,7 @@ class RecordSearch extends BaseSearch
     /**
      * Build WHERE conditions for fetch records query
      */
-    private function buildWhereConditionsFetch(string $records_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, bool $iface_record_comments, array $parameters, string $permission_view, array &$params): string
+    private function buildWhereConditionsFetch(string $records_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, bool $iface_record_comments, array $parameters, string $permission_view, ?int $userId, array &$params): string
     {
         // Add main search parameters. Content holds free text, so it takes the raw
         // query; only the name column stores punycode.
@@ -367,7 +383,6 @@ class RecordSearch extends BaseSearch
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
                 WHERE zg.domain_id = ' . $records_table . '.domain_id AND ugm.user_id = :user_id_group
             ))';
-            $userId = $this->userContext->getLoggedInUserId();
             $params[':user_id'] = $userId;
             $params[':user_id_group'] = $userId;
         } elseif ($permission_view != 'all') {
@@ -382,7 +397,7 @@ class RecordSearch extends BaseSearch
     /**
      * Build WHERE conditions for count records query
      */
-    private function buildWhereConditionsCount(string $records_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, array $parameters, string $permission_view, array &$params): string
+    private function buildWhereConditionsCount(string $records_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, array $parameters, string $permission_view, ?int $userId, array &$params): string
     {
         // Add main search parameters. Content holds free text, so it takes the raw
         // query; only the name column stores punycode.
@@ -424,7 +439,6 @@ class RecordSearch extends BaseSearch
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
                 WHERE zg.domain_id = ' . $records_table . '.domain_id AND ugm.user_id = :user_id_count_group
             ))';
-            $userId = $this->userContext->getLoggedInUserId();
             $params[':user_id_count'] = $userId;
             $params[':user_id_count_group'] = $userId;
         } elseif ($permission_view != 'all') {

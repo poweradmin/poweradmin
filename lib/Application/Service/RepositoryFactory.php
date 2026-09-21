@@ -32,6 +32,8 @@ use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\RecordSearchInterface;
+use Poweradmin\Domain\Port\ZoneSearchInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
@@ -40,6 +42,10 @@ use Poweradmin\Infrastructure\Repository\ApiDynamicDnsRepository;
 use Poweradmin\Infrastructure\Repository\ApiRecordRepository;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use Poweradmin\Infrastructure\Repository\ApiRecordCommentRepository;
+use Poweradmin\Infrastructure\Repository\ApiRecordSearch;
+use Poweradmin\Infrastructure\Repository\ApiZoneSearch;
+use Poweradmin\Infrastructure\Repository\RecordSearch;
+use Poweradmin\Infrastructure\Repository\ZoneSearch;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
@@ -131,6 +137,22 @@ class RepositoryFactory implements RepositoryFactoryInterface
             $tableNameService->getTable(PdnsTable::RECORDS),
             $tableNameService->getTable(PdnsTable::DOMAINS)
         );
+    }
+
+    public function createZoneSearch(): ZoneSearchInterface
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            return new ApiZoneSearch($this->db, $this->backendProvider, $this->createZoneRepository());
+        }
+        return new ZoneSearch($this->db, $this->config, $this->config->get('database', 'type', 'mysql'));
+    }
+
+    public function createRecordSearch(): RecordSearchInterface
+    {
+        if ($this->backendProvider->isApiBackend()) {
+            return new ApiRecordSearch($this->db, $this->backendProvider, $this->createZoneRepository());
+        }
+        return new RecordSearch($this->db, $this->config, $this->config->get('database', 'type', 'mysql'));
     }
 
     public function getBackendProvider(): DnsBackendProviderInterface

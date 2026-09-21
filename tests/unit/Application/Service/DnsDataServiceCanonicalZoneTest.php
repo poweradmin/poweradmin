@@ -26,6 +26,7 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use TestHelpers\FakeConfiguration;
 
 /**
@@ -57,7 +58,7 @@ class DnsDataServiceCanonicalZoneTest extends TestCase
         ]);
         $backend->method('countZoneRecords')->willReturn(0);
 
-        return new DnsDataService($backend, $this->db, new FakeConfiguration());
+        return new DnsDataService($backend, $this->db, new FakeConfiguration(['database' => ['type' => 'sqlite']]), new UserContextService());
     }
 
     public function testStrandedZoneKeepsItsOwnerWhenTheRowIdIsCanonical(): void

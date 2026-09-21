@@ -20,7 +20,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Repository\RecordSearch;
 use Poweradmin\Infrastructure\Repository\ZoneSearch;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
@@ -54,24 +53,17 @@ class SearchViewPermissionTest extends TestCase
         return $db;
     }
 
-    private function makeUserContext(): UserContextService
-    {
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(42);
-        return $userContext;
-    }
-
     private function zoneQuery(string $permissionView, bool $count): string
     {
         $captured = '';
         $config = $this->makeConfig();
-        $search = new ZoneSearch($this->makeDb($captured), $config, 'mysql', null, $this->makeUserContext());
+        $search = new ZoneSearch($this->makeDb($captured), $config, 'mysql');
         $parameters = ['comments' => false];
 
         if ($count) {
-            $search->getFoundZones($parameters, '%test%', false, '', $permissionView);
+            $search->getFoundZones($parameters, '%test%', false, '', $permissionView, 42);
         } else {
-            $search->fetchZones($parameters, '%test%', false, '', $permissionView, 'name', 'DESC', 10, false, 1);
+            $search->fetchZones($parameters, '%test%', false, '', $permissionView, 42, 'name', 'DESC', 10, false, 1);
         }
 
         return $captured;
@@ -81,13 +73,13 @@ class SearchViewPermissionTest extends TestCase
     {
         $captured = '';
         $config = $this->makeConfig();
-        $search = new RecordSearch($this->makeDb($captured), $config, 'mysql', null, $this->makeUserContext());
+        $search = new RecordSearch($this->makeDb($captured), $config, 'mysql');
         $parameters = ['comments' => false];
 
         if ($count) {
-            $search->getFoundRecords($parameters, '%test%', false, '', $permissionView, false);
+            $search->getFoundRecords($parameters, '%test%', false, '', $permissionView, 42, false);
         } else {
-            $search->fetchRecords($parameters, '%test%', false, '', $permissionView, false, 'name', 'DESC', 10, false, 1);
+            $search->fetchRecords($parameters, '%test%', false, '', $permissionView, 42, false, 'name', 'DESC', 10, false, 1);
         }
 
         return $captured;

@@ -26,7 +26,6 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\RecordSearch;
 
@@ -64,7 +63,7 @@ class RecordSearchRowShapeTest extends TestCase
             fn(string $group, string $key, $default = null) => $group === 'database' && $key === 'type' ? 'sqlite' : $default
         );
 
-        return new RecordSearch($this->db, $config, 'sqlite', null, $this->createMock(UserContextService::class));
+        return new RecordSearch($this->db, $config, 'sqlite');
     }
 
     private function insertRecord(int $id, string $name, mixed $disabled): void
@@ -88,7 +87,7 @@ class RecordSearchRowShapeTest extends TestCase
             'content_filter' => '',
         ];
 
-        return $this->search()->searchRecords($parameters, 'all', 'name', 'ASC', $grouped, 10, false, 1);
+        return $this->search()->searchRecords($parameters, 'all', null, 'name', 'ASC', $grouped, 10, false, 1);
     }
 
     public function testRowsCarryTheSelectedColumnsPlusTheOwner(): void

@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use PDO;
 
 #[CoversClass(DnsDataService::class)]
@@ -44,7 +45,7 @@ class DnsDataServiceTest extends TestCase
 
     private function createService(): DnsDataService
     {
-        return new DnsDataService($this->mockBackend, $this->mockDb, $this->mockConfig);
+        return new DnsDataService($this->mockBackend, $this->mockDb, $this->mockConfig, new UserContextService());
     }
 
     // ---------------------------------------------------------------

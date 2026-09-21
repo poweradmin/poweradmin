@@ -26,17 +26,19 @@ use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Port\ZoneSearchInterface;
 
 /**
  * Runs the zone search page query, counting and fetching the domains that match the search string.
  */
-class ZoneSearch extends BaseSearch
+class ZoneSearch extends BaseSearch implements ZoneSearchInterface
 {
     /**
      * Search for zones based on specified parameters.
      *
      * @param array $parameters An array of search parameters.
      * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
+     * @param int|null $userId The user an 'own' view is limited to.
      * @param string $sort_zones_by The column to sort the zone results by.
      * @param string $zone_sort_direction
      * @param int $iface_rowamount The number of rows to display per page.
@@ -44,14 +46,14 @@ class ZoneSearch extends BaseSearch
      * @param int $page The current page number.
      * @return array An array of found zones.
      */
-    public function searchZones(array $parameters, string $permission_view, string $sort_zones_by, string $zone_sort_direction, int $iface_rowamount, bool $iface_zone_comments, int $page): array
+    public function searchZones(array $parameters, string $permission_view, ?int $userId, string $sort_zones_by, string $zone_sort_direction, int $iface_rowamount, bool $iface_zone_comments, int $page): array
     {
         $foundZones = array();
 
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
 
         if ($parameters['zones']) {
-            $foundZones = $this->fetchZones($parameters, $search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $sort_zones_by, $zone_sort_direction, $iface_rowamount, $iface_zone_comments, $page);
+            $foundZones = $this->fetchZones($parameters, $search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $userId, $sort_zones_by, $zone_sort_direction, $iface_rowamount, $iface_zone_comments, $page);
         }
 
         return $foundZones;
@@ -106,6 +108,7 @@ class ZoneSearch extends BaseSearch
      * @param bool $reverse Whether to perform a reverse search
      * @param mixed $reverse_search_string Reverse search string for matching zones
      * @param string $permission_view Permission view for the search
+     * @param int|null $userId The user an 'own' view is limited to
      * @param string $sort_zones_by Column to sort zones by
      * @param string $zone_sort_direction Sort direction
      * @param int $iface_rowamount Rows per page
@@ -119,6 +122,7 @@ class ZoneSearch extends BaseSearch
         bool $reverse,
         mixed $reverse_search_string,
         string $permission_view,
+        ?int $userId,
         string $sort_zones_by,
         string $zone_sort_direction,
         int $iface_rowamount,
@@ -140,7 +144,7 @@ class ZoneSearch extends BaseSearch
         $params = [];
 
         // Build WHERE conditions
-        $whereConditions = $this->buildWhereConditionsFetch($domains_table, $search_string, $reverse, $reverse_search_string, $iface_zone_comments, $parameters, $permission_view, $params);
+        $whereConditions = $this->buildWhereConditionsFetch($domains_table, $search_string, $reverse, $reverse_search_string, $iface_zone_comments, $parameters, $permission_view, $userId, $params);
 
         $zonesQuery = "
             SELECT
@@ -182,13 +186,14 @@ class ZoneSearch extends BaseSearch
      *
      * @param array $parameters Array of parameters to configure the search.
      * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
+     * @param int|null $userId The user an 'own' view is limited to.
      * @return int The total number of zones found.
      */
-    public function getTotalZones(array $parameters, string $permission_view): int
+    public function getTotalZones(array $parameters, string $permission_view, ?int $userId): int
     {
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
 
-        return $this->getFoundZones($parameters, $search_string, $parameters['reverse'], $reverse_search_string, $permission_view);
+        return $this->getFoundZones($parameters, $search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $userId);
     }
 
     /**
@@ -199,9 +204,10 @@ class ZoneSearch extends BaseSearch
      * @param bool $reverse Whether to perform a reverse search or not.
      * @param mixed $reverse_search_string The reversed search string to be used in the query.
      * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
+     * @param int|null $userId The user an 'own' view is limited to.
      * @return int The number of zones found.
      */
-    public function getFoundZones(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view): int
+    public function getFoundZones(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, ?int $userId): int
     {
         $tableNameService = new TableNameService($this->config);
         $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
@@ -211,7 +217,7 @@ class ZoneSearch extends BaseSearch
         $params = [];
 
         // Build WHERE conditions
-        $whereConditions = $this->buildWhereConditionsCount($domains_table, $search_string, $reverse, $reverse_search_string, $parameters, $permission_view, $params);
+        $whereConditions = $this->buildWhereConditionsCount($domains_table, $search_string, $reverse, $reverse_search_string, $parameters, $permission_view, $userId, $params);
 
         // Build a query that correctly applies permission filters for accurate counting
         $zonesQuery = "
@@ -233,7 +239,7 @@ class ZoneSearch extends BaseSearch
     /**
      * Build WHERE conditions for fetch zones query
      */
-    private function buildWhereConditionsFetch(string $domains_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, bool $iface_zone_comments, array $parameters, string $permission_view, array &$params): string
+    private function buildWhereConditionsFetch(string $domains_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, bool $iface_zone_comments, array $parameters, string $permission_view, ?int $userId, array &$params): string
     {
         // Add main search parameters
         $params[':search_string1'] = $search_string;
@@ -263,7 +269,6 @@ class ZoneSearch extends BaseSearch
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
                 WHERE zg.domain_id = ' . $domains_table . '.id AND ugm.user_id = :user_id_group
             ))';
-            $userId = $this->userContext->getLoggedInUserId();
             $params[':user_id'] = $userId;
             $params[':user_id_group'] = $userId;
         } elseif ($permission_view != 'all') {
@@ -278,7 +283,7 @@ class ZoneSearch extends BaseSearch
     /**
      * Build WHERE conditions for count zones query
      */
-    private function buildWhereConditionsCount(string $domains_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, array $parameters, string $permission_view, array &$params): string
+    private function buildWhereConditionsCount(string $domains_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, array $parameters, string $permission_view, ?int $userId, array &$params): string
     {
         // Add main search parameters
         $params[':search_string1'] = $search_string;
@@ -308,7 +313,6 @@ class ZoneSearch extends BaseSearch
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
                 WHERE zg.domain_id = ' . $domains_table . '.id AND ugm.user_id = :user_id_count_group
             ))';
-            $userId = $this->userContext->getLoggedInUserId();
             $params[':user_id_count'] = $userId;
             $params[':user_id_count_group'] = $userId;
         } elseif ($permission_view != 'all') {

@@ -57,7 +57,7 @@ class RecordSearchSortTest extends TestCase
         });
 
         $search = new RecordSearch($db, $config, 'mysql');
-        $search->fetchRecords([], '%test%', false, '', 'all', $groupRecords, $sortBy, 'DESC', 10, false, 1);
+        $search->fetchRecords([], '%test%', false, '', 'all', null, $groupRecords, $sortBy, 'DESC', 10, false, 1);
 
         return $capturedQuery;
     }

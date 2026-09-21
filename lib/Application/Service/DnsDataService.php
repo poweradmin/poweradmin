@@ -23,18 +23,13 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
-use Poweradmin\Infrastructure\Repository\RecordSearch;
-use Poweradmin\Infrastructure\Repository\ZoneSearch;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
-use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
-use Poweradmin\Domain\Utility\DnsIdnService;
-use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneCountService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Domain\Service\Auth\SessionKeys;
-use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Port\RecordSearchInterface;
+use Poweradmin\Domain\Port\ZoneSearchInterface;
 
 /**
  * Orchestration service for DNS data reads.
@@ -47,19 +42,22 @@ use Poweradmin\Domain\Database\CanonicalZoneSql;
 class DnsDataService
 {
     private DnsBackendProviderInterface $backendProvider;
-    private PDO $db;
     private ConfigurationInterface $config;
+    private UserContextService $userContext;
     private ?ZoneSyncService $zoneSyncService = null;
     private RepositoryFactory $repositoryFactory;
+    private ?ZoneSearchInterface $zoneSearch = null;
+    private ?RecordSearchInterface $recordSearch = null;
 
     public function __construct(
         DnsBackendProviderInterface $backendProvider,
         PDO $db,
-        ConfigurationInterface $config
+        ConfigurationInterface $config,
+        UserContextService $userContext
     ) {
         $this->backendProvider = $backendProvider;
-        $this->db = $db;
         $this->config = $config;
+        $this->userContext = $userContext;
         $this->repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
 
         if ($backendProvider->isApiBackend()) {
@@ -191,7 +189,7 @@ class DnsDataService
      */
     public function countZones(string $perm, string $letterStart = 'all', string $zoneType = 'forward'): int
     {
-        $zoneCountService = new ZoneCountService($this->repositoryFactory->createZoneRepository(), new UserContextService());
+        $zoneCountService = new ZoneCountService($this->repositoryFactory->createZoneRepository(), $this->userContext);
         return $zoneCountService->countZones($perm, $letterStart, $zoneType);
     }
 
@@ -285,10 +283,8 @@ class DnsDataService
     // ---------------------------------------------------------------
 
     /**
-     * Search zones.
-     *
-     * In SQL mode, delegates to ZoneSearch.
-     * In API mode, uses DnsBackendProviderInterface::searchDnsData() with enrichment.
+     * Search zones through the backend's search; an 'own' view is limited to
+     * the logged-in user's zones.
      */
     public function searchZones(
         array $parameters,
@@ -299,21 +295,16 @@ class DnsDataService
         bool $includeComments,
         int $page
     ): array {
-        if (!$this->backendProvider->isApiBackend()) {
-            $dbType = $this->config->get('database', 'type', 'mysql');
-            $zoneSearch = new ZoneSearch($this->db, $this->config, $dbType);
-            return $zoneSearch->searchZones(
-                $parameters,
-                $permissionView,
-                $sortBy,
-                $sortDirection,
-                $rowAmount,
-                $includeComments,
-                $page
-            );
-        }
-
-        return $this->searchZonesApi($parameters, $permissionView, $sortBy, $sortDirection, $rowAmount, $includeComments, $page);
+        return $this->zoneSearch()->searchZones(
+            $parameters,
+            $permissionView,
+            $this->userContext->getLoggedInUserId(),
+            $sortBy,
+            $sortDirection,
+            $rowAmount,
+            $includeComments,
+            $page
+        );
     }
 
     /**
@@ -321,24 +312,12 @@ class DnsDataService
      */
     public function searchZonesTotalCount(array $parameters, string $permissionView): int
     {
-        if (!$this->backendProvider->isApiBackend()) {
-            $dbType = $this->config->get('database', 'type', 'mysql');
-            $zoneSearch = new ZoneSearch($this->db, $this->config, $dbType);
-            return $zoneSearch->getTotalZones($parameters, $permissionView);
-        }
-
-        // API mode: get all matching zones (unpaginated) and count. This one is
-        // deliberately unpaginated, so record counts must stay off - they would
-        // cost an API call per matched zone only to be discarded.
-        $allZones = $this->searchZonesApi($parameters, $permissionView, 'name', 'ASC', PHP_INT_MAX, false, 1, false);
-        return count($allZones);
+        return $this->zoneSearch()->getTotalZones($parameters, $permissionView, $this->userContext->getLoggedInUserId());
     }
 
     /**
-     * Search records. Rows carry `disabled` as a bool in both modes.
-     *
-     * In SQL mode, delegates to RecordSearch.
-     * In API mode, uses DnsBackendProviderInterface::searchDnsData() with enrichment.
+     * Search records through the backend's search. Rows carry `disabled` as a bool
+     * in both modes; an 'own' view is limited to the logged-in user's zones.
      */
     public function searchRecords(
         array $parameters,
@@ -350,22 +329,17 @@ class DnsDataService
         bool $includeComments,
         int $page
     ): array {
-        if (!$this->backendProvider->isApiBackend()) {
-            $dbType = $this->config->get('database', 'type', 'mysql');
-            $recordSearch = new RecordSearch($this->db, $this->config, $dbType);
-            return $recordSearch->searchRecords(
-                $parameters,
-                $permissionView,
-                $sortBy,
-                $sortDirection,
-                $groupRecords,
-                $rowAmount,
-                $includeComments,
-                $page
-            );
-        }
-
-        return $this->searchRecordsApi($parameters, $permissionView, $sortBy, $sortDirection, $groupRecords, $rowAmount, $includeComments, $page);
+        return $this->recordSearch()->searchRecords(
+            $parameters,
+            $permissionView,
+            $this->userContext->getLoggedInUserId(),
+            $sortBy,
+            $sortDirection,
+            $groupRecords,
+            $rowAmount,
+            $includeComments,
+            $page
+        );
     }
 
     /**
@@ -373,144 +347,17 @@ class DnsDataService
      */
     public function searchRecordsTotalCount(array $parameters, string $permissionView, bool $groupRecords): int
     {
-        if (!$this->backendProvider->isApiBackend()) {
-            $dbType = $this->config->get('database', 'type', 'mysql');
-            $recordSearch = new RecordSearch($this->db, $this->config, $dbType);
-            return $recordSearch->getTotalRecords($parameters, $permissionView, $groupRecords);
-        }
-
-        $allRecords = $this->searchRecordsApi($parameters, $permissionView, 'name', 'ASC', $groupRecords, PHP_INT_MAX, false, 1);
-        return count($allRecords);
+        return $this->recordSearch()->getTotalRecords($parameters, $permissionView, $this->userContext->getLoggedInUserId(), $groupRecords);
     }
 
-    // ---------------------------------------------------------------
-    // Private: Zone filtering
-    // ---------------------------------------------------------------
-
-    /**
-     * Filter zones to only those owned by a user (direct or group ownership).
-     */
-    private function filterZonesByOwnership(array $zones, int $userId): array
+    private function zoneSearch(): ZoneSearchInterface
     {
-        // Get all domain IDs this user owns (directly or via groups)
-        $ownedDomainIds = $this->getOwnedDomainIds($userId);
-
-        return array_values(array_filter($zones, function ($zone) use ($ownedDomainIds) {
-            $id = $zone['id'] ?? 0;
-            return in_array($id, $ownedDomainIds, true);
-        }));
+        return $this->zoneSearch ??= $this->repositoryFactory->createZoneSearch();
     }
 
-    /**
-     * Filter records to only those in zones owned by a user.
-     */
-    private function filterRecordsByZoneOwnership(array $records, int $userId): array
+    private function recordSearch(): RecordSearchInterface
     {
-        $ownedDomainIds = $this->getOwnedDomainIds($userId);
-
-        return array_values(array_filter($records, function ($record) use ($ownedDomainIds) {
-            $domainId = $record['domain_id'] ?? 0;
-            return in_array($domainId, $ownedDomainIds, true);
-        }));
-    }
-
-    /**
-     * @return int[]
-     */
-    private function getOwnedDomainIds(int $userId): array
-    {
-        return $this->repositoryFactory->createZoneRepository()->getOwnedZoneIds($userId);
-    }
-
-    // ---------------------------------------------------------------
-    // Private: Zone enrichment
-    // ---------------------------------------------------------------
-
-    /**
-     * Enrich zones with Poweradmin ownership and comments.
-     */
-    private function enrichZonesWithOwnership(array $zones): array
-    {
-        if (empty($zones)) {
-            return $zones;
-        }
-
-        // Query Poweradmin's zones table for ownership and comments
-        $stmt = $this->db->query(
-            "SELECT " . CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally()) . " AS domain_id, z.owner, z.comment, u.username, u.fullname
-             FROM zones z
-             LEFT JOIN users u ON z.owner = u.id"
-        );
-
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $domainId = (int)$row['domain_id'];
-            // Match by ID
-            foreach ($zones as $i => &$zone) {
-                if (($zone['id'] ?? 0) === $domainId) {
-                    if (!isset($zone['owners'])) {
-                        $zone['owners'] = [];
-                        $zone['full_names'] = [];
-                        $zone['owner_ids'] = [];
-                        $zone['comment'] = $row['comment'] ?? '';
-                    }
-                    if ($row['username'] !== null) {
-                        $zone['owners'][] = $row['username'];
-                        $zone['full_names'][] = $row['fullname'] ?: '';
-                        $zone['owner_ids'][] = (int)$row['owner'];
-                    }
-                }
-            }
-            unset($zone);
-        }
-
-        // Ensure all zones have defaults and set owner_username for sorting
-        foreach ($zones as &$zone) {
-            if (!isset($zone['owners'])) {
-                $zone['owners'] = [];
-                $zone['full_names'] = [];
-                $zone['owner_ids'] = [];
-            }
-            $zone['owner_username'] = $zone['owners'][0] ?? '';
-        }
-        unset($zone);
-
-        return $zones;
-    }
-
-    /**
-     * Fill in record counts. Costs one API call per zone in API mode, so only
-     * ever call this with the zones on the current page.
-     */
-    private function enrichWithRecordCounts(array $zones): array
-    {
-        $recordCounts = $this->batchCountZoneRecords($zones);
-        foreach ($zones as &$zone) {
-            $zone['count_records'] = $recordCounts[$zone['id'] ?? 0] ?? 0;
-        }
-        unset($zone);
-
-        return $zones;
-    }
-
-    /**
-     * Count records per zone, one backend call each. Only the API search path
-     * needs this (the SQL search joins the count itself), and PowerDNS's /zones
-     * list carries no record count, so only ever pass the zones on the current page.
-     *
-     * @param array<int, array{id?: int}> $zones
-     * @return array<int, int> zone ID => record count
-     */
-    private function batchCountZoneRecords(array $zones): array
-    {
-        $counts = [];
-        foreach ($zones as $zone) {
-            $id = (int)($zone['id'] ?? 0);
-            if ($id <= 0) {
-                continue;
-            }
-            $counts[$id] = $this->backendProvider->countZoneRecords($id);
-        }
-        return $counts;
+        return $this->recordSearch ??= $this->repositoryFactory->createRecordSearch();
     }
 
     // ---------------------------------------------------------------
@@ -570,394 +417,5 @@ class DnsDataService
         }
 
         return ['records' => $records, 'total' => $total];
-    }
-
-    // ---------------------------------------------------------------
-    // Private: API-mode search
-    // ---------------------------------------------------------------
-
-    /**
-     * Preprocess search query for API mode: punycode normalization and reverse IP expansion.
-     *
-     * Mirrors the preprocessing done by BaseSearch::buildSearchString() for SQL mode,
-     * so API-mode searches handle IDN domains and reverse lookups consistently.
-     */
-    private function preprocessSearchQuery(array $parameters): array
-    {
-        $query = trim($parameters['query'] ?? '');
-
-        // Punycode normalization (matches BaseSearch line 78)
-        $query = DnsIdnService::toPunycode($query);
-
-        $parameters['query'] = $query;
-
-        // Reverse IP expansion (matches BaseSearch lines 61-71)
-        $reverseQuery = '';
-        if (!empty($parameters['reverse'])) {
-            $ipValidator = new IPAddressValidator();
-            if ($ipValidator->isValidIPv4($query)) {
-                $reverseQuery = implode('.', array_reverse(explode('.', $query)));
-            } elseif ($ipValidator->isValidIPv6($query)) {
-                $hex = unpack('H*hex', inet_pton($query));
-                $reverseQuery = implode('.', array_reverse(str_split($hex['hex'])));
-            }
-        }
-        $parameters['reverse_query'] = $reverseQuery;
-
-        return $parameters;
-    }
-
-    /**
-     * Search zones via API backend with enrichment, filtering, sorting, pagination.
-     */
-    private function searchZonesApi(
-        array $parameters,
-        string $permissionView,
-        string $sortBy,
-        string $sortDirection,
-        int $rowAmount,
-        bool $includeComments,
-        int $page,
-        bool $includeRecordCount = true
-    ): array {
-        $query = $parameters['query'] ?? '';
-        if (empty($query) || !$parameters['zones']) {
-            return [];
-        }
-
-        // Preprocess: punycode + reverse IP expansion
-        $parameters = $this->preprocessSearchQuery($parameters);
-        $query = $parameters['query'];
-
-        $results = $this->backendProvider->searchDnsData($query, 'zone', 10000);
-        $zones = $results['zones'];
-
-        // If reverse query exists, issue second search and merge unique results
-        $reverseQuery = $parameters['reverse_query'] ?? '';
-        if (!empty($reverseQuery)) {
-            $reverseResults = $this->backendProvider->searchDnsData($reverseQuery, 'zone', 10000);
-            $reverseZones = $reverseResults['zones'];
-            if (!empty($reverseZones)) {
-                $seenNames = array_flip(array_column($zones, 'name'));
-                foreach ($reverseZones as $rz) {
-                    if (!isset($seenNames[$rz['name'] ?? ''])) {
-                        $zones[] = $rz;
-                    }
-                }
-            }
-        }
-
-        if (empty($zones)) {
-            return [];
-        }
-
-        // If wildcard is explicitly off, post-filter for exact match
-        // Also allow matches against the reverse query (e.g. reverse-IP zone names)
-        if (isset($parameters['wildcard']) && !$parameters['wildcard']) {
-            $zones = array_values(array_filter($zones, function ($zone) use ($query, $reverseQuery) {
-                $name = $zone['name'] ?? '';
-                return strcasecmp($name, $query) === 0
-                    || (!empty($reverseQuery) && strcasecmp($name, $reverseQuery) === 0);
-            }));
-            if (empty($zones)) {
-                return [];
-            }
-        }
-
-        // Enrich with ownership
-        $zones = $this->enrichZonesWithOwnership($zones);
-
-        // Filter by permission
-        if ($permissionView === 'own') {
-            $userId = $_SESSION[SessionKeys::USERID] ?? null;
-            if ($userId) {
-                $zones = $this->filterZonesByOwnership($zones, (int)$userId);
-            } else {
-                return [];
-            }
-        }
-
-        // Map sortBy to data keys
-        $apiSortBy = $sortBy;
-        if ($sortBy === 'fullname') {
-            $apiSortBy = 'owner_username';
-        }
-
-        // Sort
-        $zones = ResultPaginator::sort($zones, $apiSortBy, $sortDirection);
-
-        // Paginate
-        $offset = ($page - 1) * $rowAmount;
-        $zones = ResultPaginator::paginate($zones, $offset, $rowAmount);
-
-        // After paging so the per-zone API calls scale with the page, not the
-        // whole result set
-        if ($includeRecordCount) {
-            $zones = $this->enrichWithRecordCounts($zones);
-        }
-
-        // Format to match template shape
-        $result = [];
-        foreach ($zones as $zone) {
-            $formatted = [
-                'id' => $zone['id'] ?? 0,
-                'name' => DnsIdnService::toUtf8($zone['name'] ?? ''),
-                'type' => $zone['type'] ?? '',
-                'count_records' => $zone['count_records'] ?? 0,
-                'user_id' => $zone['owner_ids'][0] ?? 0,
-                'fullname' => $this->formatOwnerFullnames($zone),
-                'owner_fullnames' => $zone['full_names'] ?? [],
-                'owner_usernames' => $zone['owners'] ?? [],
-            ];
-
-            if ($includeComments) {
-                $formatted['comment'] = $zone['comment'] ?? '';
-            }
-
-            $result[] = $formatted;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Search records via API backend with enrichment, filtering, sorting, pagination.
-     */
-    private function searchRecordsApi(
-        array $parameters,
-        string $permissionView,
-        string $sortBy,
-        string $sortDirection,
-        bool $groupRecords,
-        int $rowAmount,
-        bool $includeComments,
-        int $page
-    ): array {
-        $query = $parameters['query'] ?? '';
-        if (empty($query) || !$parameters['records']) {
-            return [];
-        }
-
-        // Preprocess: punycode + reverse IP expansion
-        $parameters = $this->preprocessSearchQuery($parameters);
-        $query = $parameters['query'];
-
-        $results = $this->backendProvider->searchDnsData($query, 'record', 10000);
-        $records = $results['records'];
-
-        // If reverse query exists, issue second search and merge unique results
-        $reverseQuery = $parameters['reverse_query'] ?? '';
-        if (!empty($reverseQuery)) {
-            $reverseResults = $this->backendProvider->searchDnsData($reverseQuery, 'record', 10000);
-            $reverseRecords = $reverseResults['records'];
-            if (!empty($reverseRecords)) {
-                $seenKeys = [];
-                foreach ($records as $r) {
-                    $seenKeys[($r['name'] ?? '') . '|' . ($r['type'] ?? '') . '|' . ($r['content'] ?? '')] = true;
-                }
-                foreach ($reverseRecords as $rr) {
-                    $key = ($rr['name'] ?? '') . '|' . ($rr['type'] ?? '') . '|' . ($rr['content'] ?? '');
-                    if (!isset($seenKeys[$key])) {
-                        $records[] = $rr;
-                    }
-                }
-            }
-        }
-
-        if (empty($records)) {
-            return [];
-        }
-
-        // If wildcard is explicitly off, post-filter for exact match on name or content
-        // Also allow matches against the reverse query (e.g. reverse PTR lookups from an IP)
-        if (isset($parameters['wildcard']) && !$parameters['wildcard']) {
-            $records = array_values(array_filter($records, function ($record) use ($query, $reverseQuery) {
-                $name = $record['name'] ?? '';
-                $content = $record['content'] ?? '';
-                return strcasecmp($name, $query) === 0
-                    || strcasecmp($content, $query) === 0
-                    || (!empty($reverseQuery) && (strcasecmp($name, $reverseQuery) === 0 || strcasecmp($content, $reverseQuery) === 0));
-            }));
-            if (empty($records)) {
-                return [];
-            }
-        }
-
-        // Apply type filter
-        $typeFilter = $parameters['type_filter'] ?? '';
-        if (!empty($typeFilter)) {
-            $records = ResultPaginator::filterByValue($records, 'type', strtoupper($typeFilter));
-        }
-
-        // Apply content filter
-        $contentFilter = $parameters['content_filter'] ?? '';
-        if (!empty($contentFilter)) {
-            $records = ResultPaginator::filterByPattern($records, $contentFilter, ['content']);
-        }
-
-        // Filter by permission (via zone ownership)
-        if ($permissionView === 'own') {
-            $userId = $_SESSION[SessionKeys::USERID] ?? null;
-            if ($userId) {
-                $records = $this->filterRecordsByZoneOwnership($records, (int)$userId);
-            } else {
-                return [];
-            }
-        }
-
-        // Enrich with zone ownership data for template
-        $records = $this->enrichRecordsWithZoneOwnership($records);
-
-        // Group by name|content if requested (deduplicate)
-        if ($groupRecords) {
-            $seen = [];
-            $records = array_values(array_filter($records, function ($record) use (&$seen) {
-                $key = ($record['name'] ?? '') . '|' . ($record['content'] ?? '');
-                if (isset($seen[$key])) {
-                    return false;
-                }
-                $seen[$key] = true;
-                return true;
-            }));
-        }
-
-        // Sort
-        $records = ResultPaginator::sort($records, $sortBy, $sortDirection);
-
-        // Paginate
-        $offset = ($page - 1) * $rowAmount;
-        $records = ResultPaginator::paginate($records, $offset, $rowAmount);
-
-        // Format to match template shape
-        $result = [];
-        foreach ($records as $record) {
-            $formatted = [
-                'id' => $record['id'] ?? 0,
-                'domain_id' => $record['domain_id'] ?? 0,
-                'name' => DnsIdnService::toUtf8($record['name'] ?? ''),
-                'type' => $record['type'] ?? '',
-                'content' => $record['content'] ?? '',
-                'ttl' => $record['ttl'] ?? 0,
-                'prio' => $record['prio'] ?? 0,
-                'disabled' => (bool)($record['disabled'] ?? false),
-                'user_id' => $record['zone_owner_id'] ?? 0,
-                'fullname' => $record['zone_owner_fullname'] ?? '',
-            ];
-
-                $result[] = $formatted;
-        }
-
-        if ($includeComments) {
-            $result = $this->enrichSearchResultsWithComments($records, $result);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Enrich search results with comments from API RRset data.
-     */
-    private function enrichSearchResultsWithComments(array $sourceRecords, array $formattedResult): array
-    {
-        $apiComments = $this->loadApiRRsetComments($sourceRecords);
-
-        foreach ($formattedResult as $i => &$row) {
-            $name = $sourceRecords[$i]['name'] ?? '';
-            $type = $sourceRecords[$i]['type'] ?? '';
-            $zoneName = $sourceRecords[$i]['zone_name'] ?? '';
-            $zoneKey = $name . '|' . $type;
-            $row['comment'] = $apiComments[$zoneName][$zoneKey] ?? '';
-        }
-        unset($row);
-
-        return $formattedResult;
-    }
-
-    private function loadApiRRsetComments(array $sourceRecords): array
-    {
-        $zoneComments = [];
-        foreach ($sourceRecords as $record) {
-            $zoneName = $record['zone_name'] ?? '';
-            if ($zoneName === '' || isset($zoneComments[$zoneName])) {
-                continue;
-            }
-
-            $zoneComments[$zoneName] = [];
-            $zoneRecords = $this->backendProvider->getZoneRecords($record['domain_id'] ?? 0, $zoneName);
-            foreach ($zoneRecords as $zr) {
-                $key = ($zr['name'] ?? '') . '|' . ($zr['type'] ?? '');
-                if (!empty($zr['api_comment']) && !isset($zoneComments[$zoneName][$key])) {
-                    $zoneComments[$zoneName][$key] = $zr['api_comment'];
-                }
-            }
-        }
-        return $zoneComments;
-    }
-
-    /**
-     * Enrich records with zone ownership data for search results.
-     */
-    private function enrichRecordsWithZoneOwnership(array $records): array
-    {
-        if (empty($records)) {
-            return $records;
-        }
-
-        // Get unique domain IDs
-        $domainIds = array_unique(array_filter(array_map(fn($r) => $r['domain_id'] ?? 0, $records)));
-        if (empty($domainIds)) {
-            return $records;
-        }
-
-        $placeholders = implode(',', array_fill(0, count($domainIds), '?'));
-        $stmt = $this->db->prepare(
-            "SELECT " . CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally()) . " AS domain_id, z.owner, u.id as user_id, u.username, u.fullname
-             FROM zones z
-             LEFT JOIN users u ON z.owner = u.id
-             WHERE " . CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally()) . " IN ($placeholders)"
-        );
-        foreach (array_values($domainIds) as $i => $domainId) {
-            $stmt->bindValue($i + 1, (int)$domainId, PDO::PARAM_INT);
-        }
-        $stmt->execute();
-
-        $ownershipMap = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $did = (int)$row['domain_id'];
-            $ownershipMap[$did] = [
-                'zone_owner_id' => (int)($row['user_id'] ?? 0),
-                'zone_owner_fullname' => $row['fullname'] ?? '',
-                'zone_owner_username' => $row['username'] ?? '',
-            ];
-        }
-
-        foreach ($records as &$record) {
-            $did = $record['domain_id'] ?? 0;
-            if (isset($ownershipMap[$did])) {
-                $record['zone_owner_id'] = $ownershipMap[$did]['zone_owner_id'];
-                $record['zone_owner_fullname'] = $ownershipMap[$did]['zone_owner_fullname'];
-            } else {
-                $record['zone_owner_id'] = 0;
-                $record['zone_owner_fullname'] = '';
-            }
-        }
-        unset($record);
-
-        return $records;
-    }
-
-    /**
-     * Format owner fullnames for display (matching ZoneSearch format).
-     */
-    private function formatOwnerFullnames(array $zone): string
-    {
-        $owners = $zone['owners'] ?? [];
-        $fullNames = $zone['full_names'] ?? [];
-        $parts = [];
-        foreach ($owners as $i => $username) {
-            $fullname = $fullNames[$i] ?? '';
-            $parts[] = $fullname ? "$fullname ($username)" : $username;
-        }
-        return implode(', ', $parts);
     }
 }

@@ -32,6 +32,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
@@ -141,7 +142,7 @@ class BackendServices
 
     public function dnsDataService(): DnsDataService
     {
-        return $this->dnsDataService ??= new DnsDataService($this->dnsBackendProvider(), $this->db, $this->config);
+        return $this->dnsDataService ??= new DnsDataService($this->dnsBackendProvider(), $this->db, $this->config, new UserContextService());
     }
 
     public function zoneMetadataStore(): ZoneMetadataStoreInterface

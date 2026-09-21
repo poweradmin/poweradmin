@@ -25,7 +25,6 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
@@ -39,15 +38,13 @@ abstract class BaseSearch
     protected string $db_type;
     protected ConfigurationInterface $config;
     protected IPAddressValidator $ipValidator;
-    protected UserContextService $userContext;
 
-    public function __construct($db, $config, string $db_type, ?IPAddressValidator $ipValidator = null, ?UserContextService $userContext = null)
+    public function __construct($db, $config, string $db_type, ?IPAddressValidator $ipValidator = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->db_type = $db_type;
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
-        $this->userContext = $userContext ?? new UserContextService();
     }
 
     /**
