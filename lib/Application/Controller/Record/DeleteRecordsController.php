@@ -20,8 +20,9 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\Record;
 
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Application\Service\ChangeRequestMessages;

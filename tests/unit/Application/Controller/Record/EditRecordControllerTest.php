@@ -20,12 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
-use Poweradmin\Application\Controller\EditRecordController;
+use Poweradmin\Application\Controller\Record\EditRecordController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
@@ -40,6 +40,8 @@ use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\User\UserPreferenceService;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
+use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
  * Characterizes the edit-record page: the order in which it refuses a request,

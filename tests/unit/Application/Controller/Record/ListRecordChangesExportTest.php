@@ -20,11 +20,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Controller\ListRecordChangesController;
+use Poweradmin\Application\Controller\Record\ListRecordChangesController;
 use ReflectionClass;
 use ReflectionMethod;
 

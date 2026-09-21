@@ -279,7 +279,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/zones/123/records/add';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\AddRecordController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Record\AddRecordController', $routeInfo['controller']);
         $this->assertEquals('record_add', $routeInfo['route']);
         $this->assertEquals(['zone_id' => '123'], $routeInfo['parameters']);
 
@@ -287,7 +287,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/zones/456/records/789/edit';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\EditRecordController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Record\EditRecordController', $routeInfo['controller']);
         $this->assertEquals('record_edit', $routeInfo['route']);
         $this->assertEquals([
             'zone_id' => '456',
@@ -298,7 +298,7 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/zones/111/records/222/delete';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('Poweradmin\Application\Controller\DeleteRecordController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Record\DeleteRecordController', $routeInfo['controller']);
         $this->assertEquals('record_delete', $routeInfo['route']);
         $this->assertEquals([
             'zone_id' => '111',

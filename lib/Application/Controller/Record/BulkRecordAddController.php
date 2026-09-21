@@ -20,9 +20,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Application\Controller;
+namespace Poweradmin\Application\Controller\Record;
 
 use Exception;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ChangeRequestMessages;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Model\ZoneType;

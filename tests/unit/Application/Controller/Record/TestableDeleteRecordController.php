@@ -20,33 +20,44 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
-use Poweradmin\Application\Controller\EditCommentController;
+use Poweradmin\Application\Controller\Record\DeleteRecordController;
 use Poweradmin\Application\Service\ControllerEnvironment;
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
 use ReflectionMethod;
+use ReflectionProperty;
 
 /**
- * Builds the zone comment controller through the ControllerEnvironment seam.
+ * Builds the delete-record controller through the ControllerEnvironment seam,
+ * wiring its private collaborators off the seam's service factory.
  *
  * redirect() and showError() end the request in production, so each throws a
- * ControllerHalt; the form render is recorded instead of hitting the database
- * for the stored comment.
+ * ControllerHalt to stop the run at the same statement.
  */
-class TestableEditCommentController extends EditCommentController
+class TestableDeleteRecordController extends DeleteRecordController
 {
-    /** @var list<array{0: int, 1: bool}> */
-    public array $formsShown = [];
+    /** @var list<array{0: string, 1: array<string, mixed>}> */
+    public array $rendered = [];
 
     public function __construct(array $request, ControllerEnvironment $environment)
     {
         (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
+
+        $this->plant('userContextService', new UserContextService());
+        $this->plant('permissionService', $this->services()->permissionService());
     }
 
-    public function showCommentForm(int $zone_id, bool $perm_edit_comment): void
+    private function plant(string $property, object $value): void
     {
-        $this->formsShown[] = [$zone_id, $perm_edit_comment];
+        (new ReflectionProperty(DeleteRecordController::class, $property))->setValue($this, $value);
+    }
+
+    public function render(string $template, array $params): void
+    {
+        $this->rendered[] = [$template, $params];
     }
 
     public function redirect(string $url, array $args = []): void

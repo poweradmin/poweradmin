@@ -20,16 +20,18 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
-use Poweradmin\Application\Controller\EditCommentController;
+use Poweradmin\Application\Controller\Record\EditCommentController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
  * Characterizes the zone comment form: who may save, and what a save that the

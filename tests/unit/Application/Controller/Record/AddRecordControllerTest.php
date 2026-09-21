@@ -20,12 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
-use Poweradmin\Application\Controller\AddRecordController;
+use Poweradmin\Application\Controller\Record\AddRecordController;
 use Poweradmin\Application\Service\ChangeApprovalContext;
 use Poweradmin\Application\Service\RecordAddResult;
 use Poweradmin\Application\Service\RecordAddService;
@@ -41,6 +41,8 @@ use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Service\User\UserPreferenceService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Session\FormStateService;
+use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
  * Characterizes the add-record page: the order of its gates, what a refused

@@ -20,49 +20,46 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
-use Poweradmin\Application\Controller\EditRecordController;
+use Poweradmin\Application\Controller\Record\AddRecordController;
 use Poweradmin\Application\Service\ControllerEnvironment;
-use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Infrastructure\Session\FormStateService;
+use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
 use ReflectionMethod;
 use ReflectionProperty;
 
 /**
- * Builds the edit-record controller through the ControllerEnvironment seam.
+ * Builds the add-record controller through the ControllerEnvironment seam,
+ * wiring the private collaborators exactly as its own constructor does but off
+ * the seam's service factory.
  *
- * Its constructor reaches past the service factory into the repository factory
- * to build the two comment services, so those are handed in ready-made; the
- * rest is wired exactly as the real constructor wires it.
+ * redirect(), showError() and checkCondition() end the request in production,
+ * so each throws a ControllerHalt to stop the run at the same statement.
  */
-class TestableEditRecordController extends EditRecordController
+class TestableAddRecordController extends AddRecordController
 {
     /** @var list<array{0: string, 1: array<string, mixed>}> */
     public array $rendered = [];
     public ?string $redirectedTo = null;
 
-    public function __construct(
-        array $request,
-        ControllerEnvironment $environment,
-        RecordCommentService $recordCommentService,
-        RecordCommentSyncService $commentSyncService
-    ) {
+    public function __construct(array $request, ControllerEnvironment $environment)
+    {
         (new ReflectionMethod(BaseController::class, '__construct'))->invoke($this, $request, true, $environment);
 
-        $this->plant('recordCommentService', $recordCommentService);
-        $this->plant('commentSyncService', $commentSyncService);
+        $this->plant('formStateService', new FormStateService());
+        $this->plant('recordAdd', $this->services()->recordAddService());
         $this->plant('recordTypeService', new RecordTypeService($this->getConfig()));
+        $this->plant('reverseTtlResolver', $this->services()->reverseTtlResolver());
         $this->plant('userContextService', new UserContextService());
-        $this->plant('permissionService', $this->services()->permissionService());
     }
 
     private function plant(string $property, object $value): void
     {
-        (new ReflectionProperty(EditRecordController::class, $property))->setValue($this, $value);
+        (new ReflectionProperty(AddRecordController::class, $property))->setValue($this, $value);
     }
 
     public function render(string $template, array $params): void
@@ -80,6 +77,13 @@ class TestableEditRecordController extends EditRecordController
     {
         $this->redirectedTo = $url;
         throw new ControllerHalt(ControllerHalt::KIND_REDIRECT, $url);
+    }
+
+    public function checkCondition(bool $condition, string $errorMessage): void
+    {
+        if ($condition) {
+            throw new ControllerHalt(ControllerHalt::KIND_CONDITION, $errorMessage);
+        }
     }
 
     public function showError(string $error, ?string $recordName = null): void

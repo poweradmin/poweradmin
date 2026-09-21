@@ -20,12 +20,12 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Application\Controller;
+namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
-use Poweradmin\Application\Controller\DeleteRecordController;
+use Poweradmin\Application\Controller\Record\DeleteRecordController;
 use Poweradmin\Application\Service\AuditService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -38,6 +38,8 @@ use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Tests\Unit\Application\Controller\ControllerHalt;
+use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
  * Characterizes the delete-record page: the gates in front of the deletion,

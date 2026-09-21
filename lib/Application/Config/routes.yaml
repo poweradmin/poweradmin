@@ -193,7 +193,7 @@ delete_domains:
 
 batch_ptr:
   path: /zones/batch-ptr
-  controller: Poweradmin\Application\Controller\BatchPtrRecordController::run
+  controller: Poweradmin\Application\Controller\Record\BatchPtrRecordController::run
   methods: [GET, POST]
 
 zones_logs:
@@ -202,7 +202,7 @@ zones_logs:
 
 record_changes:
   path: /zones/changes
-  controller: Poweradmin\Application\Controller\ListRecordChangesController::run
+  controller: Poweradmin\Application\Controller\Record\ListRecordChangesController::run
 
 change_requests:
   path: /zones/requests
@@ -269,14 +269,14 @@ zone_template_record_delete:
 # Record Management
 record_add:
   path: /zones/{zone_id}/records/add
-  controller: Poweradmin\Application\Controller\AddRecordController::run
+  controller: Poweradmin\Application\Controller\Record\AddRecordController::run
   requirements:
     zone_id: '\d+'
   methods: [GET, POST]
 
 record_edit:
   path: /zones/{zone_id}/records/{id}/edit
-  controller: Poweradmin\Application\Controller\EditRecordController::run
+  controller: Poweradmin\Application\Controller\Record\EditRecordController::run
   requirements:
     zone_id: '\d+'
     id: '[\w\-=.]+'
@@ -284,7 +284,7 @@ record_edit:
 
 record_delete:
   path: /zones/{zone_id}/records/{id}/delete
-  controller: Poweradmin\Application\Controller\DeleteRecordController::run
+  controller: Poweradmin\Application\Controller\Record\DeleteRecordController::run
   requirements:
     zone_id: '\d+'
     id: '[\w\-=.]+'
@@ -492,7 +492,7 @@ database_consistency:
 
 record_type_defaults:
   path: /tools/record-type-defaults
-  controller: Poweradmin\Application\Controller\RecordTypeDefaultsController::run
+  controller: Poweradmin\Application\Controller\Record\RecordTypeDefaultsController::run
 
 
 pdns_status:
@@ -812,21 +812,21 @@ api_internal_zone:
 # Additional Zone Management Routes
 bulk_record_add:
   path: /zones/{id}/records/bulk
-  controller: Poweradmin\Application\Controller\BulkRecordAddController::run
+  controller: Poweradmin\Application\Controller\Record\BulkRecordAddController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 edit_comment:
   path: /zones/{id}/comment/edit
-  controller: Poweradmin\Application\Controller\EditCommentController::run
+  controller: Poweradmin\Application\Controller\Record\EditCommentController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]
 
 delete_records:
   path: /zones/records/delete
-  controller: Poweradmin\Application\Controller\DeleteRecordsController::run
+  controller: Poweradmin\Application\Controller\Record\DeleteRecordsController::run
   methods: [GET, POST]
 
 # Zone Template Routes
