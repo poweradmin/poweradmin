@@ -20,21 +20,25 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Infrastructure\Service\Consistency;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ApiStatusService;
-use Poweradmin\Domain\Service\DatabaseConsistencyService;
+use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
+use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
+use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 
 /**
  * The repair points a stranded zones row's domain_id at its own id. That is only valid in
  * API backend mode; in SQL mode domain_id is a domains foreign key, so the same write would
  * link the row to an unrelated zone and hand out ownership with it.
  */
-class DatabaseConsistencyCanonicalIdTest extends TestCase
+class CanonicalIdRepairTest extends TestCase
 {
     private PDO $db;
 
@@ -44,15 +48,17 @@ class DatabaseConsistencyCanonicalIdTest extends TestCase
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER, zone_templ_id INTEGER DEFAULT 0, zone_name TEXT)");
     }
 
-    private function service(bool $apiBackend): DatabaseConsistencyService
+    private function service(bool $apiBackend): ConsistencyCheckerInterface
     {
-        $provider = $this->createMock(DnsBackendProviderInterface::class);
-        $provider->method('isApiBackend')->willReturn($apiBackend);
+        $ownerRepair = new ZoneOwnerRepair($this->db);
+        if ($apiBackend) {
+            return new ApiConsistencyChecks($this->db, $this->createMock(DnsBackendProviderInterface::class), new ApiStatusService(), $ownerRepair);
+        }
 
         $config = ConfigurationManager::getInstance();
         $config->initialize();
 
-        return new DatabaseConsistencyService($this->db, $config, new ApiStatusService(), $provider);
+        return new SqlConsistencyChecks($this->db, new TableNameService($config), $ownerRepair);
     }
 
     private function seed(int $id, ?int $domainId, ?string $name): void

@@ -23,10 +23,9 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
-use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Service\DatabaseConsistencyService;
+use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 
 /**
  * Renders the database consistency page for admins and applies the fix actions it offers.
@@ -53,14 +52,7 @@ class DatabaseConsistencyController extends BaseController
             return;
         }
 
-        // Pass the backend provider so checks run against the PowerDNS API when the
-        // API backend is configured, instead of querying tables that aren't local.
-        $consistencyService = new DatabaseConsistencyService(
-            $this->db,
-            $this->config,
-            new ApiStatusService(),
-            $this->createDnsBackendProvider()
-        );
+        $consistencyService = $this->services()->consistencyChecker();
 
         // Handle fix actions before the outage check below: owner assignment touches
         // only the local zones table, so it must still work when the API is briefly
@@ -102,7 +94,7 @@ class DatabaseConsistencyController extends BaseController
         ]);
     }
 
-    private function handleFixAction(DatabaseConsistencyService $service): void
+    private function handleFixAction(ConsistencyCheckerInterface $service): void
     {
         $checkType = $this->httpRequest->getPostParam('check_type', '');
         $action = $this->httpRequest->getPostParam('action', '');

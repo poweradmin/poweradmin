@@ -20,7 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Poweradmin\Tests\Unit\Domain\Service;
+namespace Poweradmin\Tests\Unit\Infrastructure\Service\Consistency;
 
 use PDO;
 use PDOStatement;
@@ -30,12 +30,21 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Service\ApiStatusInterface;
-use Poweradmin\Domain\Service\DatabaseConsistencyService;
+use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
+use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
+use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 
-#[CoversClass(DatabaseConsistencyService::class)]
-class DatabaseConsistencyServiceTest extends TestCase
+/**
+ * Pins the statements each strategy issues against a mocked PDO: the SQL owner
+ * query shape, the API-mode per-zone ownership lookup, and the outage guards.
+ */
+#[CoversClass(SqlConsistencyChecks::class)]
+#[CoversClass(ApiConsistencyChecks::class)]
+class ConsistencyChecksStatementTest extends TestCase
 {
     private PDO&MockObject $db;
     private ConfigurationManager&MockObject $config;
@@ -62,9 +71,18 @@ class DatabaseConsistencyServiceTest extends TestCase
     private function apiBackend(array $zones): DnsBackendProviderInterface&MockObject
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
-        $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getZones')->willReturn($zones);
         return $backend;
+    }
+
+    private function sqlChecks(): ConsistencyCheckerInterface
+    {
+        return new SqlConsistencyChecks($this->db, new TableNameService($this->config), new ZoneOwnerRepair($this->db));
+    }
+
+    private function apiChecks(DnsBackendProviderInterface $backend, ?ApiStatusInterface $apiStatus = null): ConsistencyCheckerInterface
+    {
+        return new ApiConsistencyChecks($this->db, $backend, $apiStatus ?? new ApiStatusService(), new ZoneOwnerRepair($this->db));
     }
 
     #[Test]
@@ -84,7 +102,7 @@ class DatabaseConsistencyServiceTest extends TestCase
             }))
             ->willReturn($stmt);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService());
+        $service = $this->sqlChecks();
         $result = $service->checkZonesHaveOwners();
 
         $this->assertSame('success', $result['status']);
@@ -102,7 +120,7 @@ class DatabaseConsistencyServiceTest extends TestCase
 
         $this->db->method('query')->willReturn($stmt);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService());
+        $service = $this->sqlChecks();
         $result = $service->checkZonesHaveOwners();
 
         $this->assertSame('warning', $result['status']);
@@ -116,7 +134,6 @@ class DatabaseConsistencyServiceTest extends TestCase
     public function apiBackendTreatsZoneWithGroupOwnershipAsHealthy(): void
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
-        $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getZones')->willReturn([
             ['id' => 7, 'name' => 'group-only.example.com.'],
         ]);
@@ -131,7 +148,7 @@ class DatabaseConsistencyServiceTest extends TestCase
             ->with($this->callback(fn(string $sql) => str_contains($sql, 'c.zone_name = ?')))
             ->willReturn($stmt);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
+        $service = $this->apiChecks($backend);
         $result = $service->checkZonesHaveOwners();
 
         $this->assertSame('success', $result['status']);
@@ -142,7 +159,6 @@ class DatabaseConsistencyServiceTest extends TestCase
     public function apiBackendTreatsZoneWithDirectOwnerAsHealthy(): void
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
-        $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getZones')->willReturn([
             ['id' => 11, 'name' => 'user-owned.example.com.'],
         ]);
@@ -157,7 +173,7 @@ class DatabaseConsistencyServiceTest extends TestCase
             ->with($this->callback(fn(string $sql) => str_contains($sql, 'c.zone_name = ?')))
             ->willReturn($stmt);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
+        $service = $this->apiChecks($backend);
         $result = $service->checkZonesHaveOwners();
 
         $this->assertSame('success', $result['status']);
@@ -167,7 +183,6 @@ class DatabaseConsistencyServiceTest extends TestCase
     public function apiBackendFlagsZoneWithNeitherOwnerNorGroup(): void
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
-        $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getZones')->willReturn([
             ['id' => 99, 'name' => 'orphan.example.com.'],
         ]);
@@ -181,7 +196,7 @@ class DatabaseConsistencyServiceTest extends TestCase
             ->with($this->callback(fn(string $sql) => str_contains($sql, 'c.zone_name = ?')))
             ->willReturn($stmt);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
+        $service = $this->apiChecks($backend);
         $result = $service->checkZonesHaveOwners();
 
         $this->assertSame('warning', $result['status']);
@@ -199,7 +214,7 @@ class DatabaseConsistencyServiceTest extends TestCase
 
         $this->db->expects($this->never())->method('prepare');
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
+        $service = $this->apiChecks($backend);
         $result = $service->checkZonesHaveOwners();
 
         $this->assertSame('success', $result['status']);
@@ -212,7 +227,7 @@ class DatabaseConsistencyServiceTest extends TestCase
         // domain_id 0 would insert a dangling zones row; the guard must refuse it.
         $this->db->expects($this->never())->method('prepare');
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService());
+        $service = $this->sqlChecks();
 
         $this->assertFalse($service->fixZoneWithoutOwner(0, 1));
     }
@@ -224,7 +239,7 @@ class DatabaseConsistencyServiceTest extends TestCase
         $backend = $this->apiBackend([]);
         (new ApiStatusService())->recordError('connection refused', ['endpoint' => 'zones']);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
+        $service = $this->apiChecks($backend);
 
         $this->assertNull($service->runAllChecks());
     }
@@ -249,7 +264,7 @@ class DatabaseConsistencyServiceTest extends TestCase
             return [];
         });
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
+        $service = $this->apiChecks($backend);
 
         $this->assertNull($service->runAllChecks());
     }
@@ -272,7 +287,7 @@ class DatabaseConsistencyServiceTest extends TestCase
             ['id' => 'enc', 'type' => 'SOA'],
         ]);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, new ApiStatusService(), $backend);
+        $service = $this->apiChecks($backend);
         $results = $service->runAllChecks();
 
         $this->assertIsArray($results);
@@ -288,7 +303,7 @@ class DatabaseConsistencyServiceTest extends TestCase
         $apiStatus = $this->createMock(ApiStatusInterface::class);
         $apiStatus->method('getLastError')->willReturn(['message' => 'down', 'context' => [], 'timestamp' => 1]);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, $apiStatus, $backend);
+        $service = $this->apiChecks($backend, $apiStatus);
 
         // The session holds no error; only the injected port reports the outage.
         $this->assertNull($service->runAllChecks());
@@ -311,7 +326,7 @@ class DatabaseConsistencyServiceTest extends TestCase
         $apiStatus = $this->createMock(ApiStatusInterface::class);
         $apiStatus->method('getLastError')->willReturn(['message' => '502 Bad Gateway', 'context' => [], 'timestamp' => 1]);
 
-        $service = new DatabaseConsistencyService($this->db, $this->config, $apiStatus, $backend);
+        $service = $this->apiChecks($backend, $apiStatus);
 
         $this->assertNull($service->runAllChecks());
     }

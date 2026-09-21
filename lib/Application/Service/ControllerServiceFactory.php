@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\CatalogZoneService;
+use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\PermissionService;
@@ -70,6 +71,7 @@ use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Service\DnssecProviderInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\ApiZoneMetadataStore;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
@@ -82,6 +84,9 @@ use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
+use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
+use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
@@ -312,6 +317,16 @@ class ControllerServiceFactory
         return $apiClient === null
             ? new DbZoneMetadataStore($this->db, $this->config)
             : new ApiZoneMetadataStore($apiClient);
+    }
+
+    public function consistencyChecker(): ConsistencyCheckerInterface
+    {
+        $provider = $this->dnsBackendProvider();
+        $ownerRepair = new ZoneOwnerRepair($this->db);
+
+        return $provider->isApiBackend()
+            ? new ApiConsistencyChecks($this->db, $provider, new ApiStatusService(), $ownerRepair)
+            : new SqlConsistencyChecks($this->db, new TableNameService($this->config), $ownerRepair);
     }
 
     public function zoneSigningService(): ZoneSigningService

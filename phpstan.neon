@@ -56,11 +56,6 @@ parameters:
     -
       identifier: booleanAnd.rightAlwaysFalse
       path: lib/Application/Service/ZoneSyncService.php
-    #   DatabaseConsistencyService - the check* calls set $apiReadFailed, which
-    #   PHPStan cannot see, so the "did any API read fail?" ternary reads as dead.
-    -
-      identifier: ternary.alwaysFalse
-      path: lib/Domain/Service/DatabaseConsistencyService.php
     # processIPv6() is kept alongside its commented-out call site until IPv6
     # reverse-record creation is finished; see the FIXME above that call.
     -
